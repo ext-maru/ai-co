@@ -1,0 +1,14 @@
+=== Task Information ===
+Task ID: test_20250628_204344
+Worker: worker-2
+Timestamp: 2025-06-28T20:43:44.742027
+Model: claude-3-5-sonnet-20241022
+
+=== Prompt ===
+これはテスト送信用のプロンプトです。
+
+=== Response ===
+エラー: error: unknown option '--max-tokens'
+
+
+=== End ===
