@@ -26,3 +26,80 @@
 2025-06-28 20:43:44,741 [TaskWorker] INFO: ファイル保存開始: /root/ai_co/output/task_test_20250628_204344.txt
 2025-06-28 20:43:44,742 [TaskWorker] INFO: ファイル保存成功: /root/ai_co/output/task_test_20250628_204344.txt (サイズ: 295 bytes)
 2025-06-28 20:43:44,742 [TaskWorker] INFO: タスク完了: test_20250628_204344
+2025-06-28 22:34:58,212 [TaskWorker] INFO: タスク受信: pm_cli_task
+2025-06-28 22:34:58,227 [TaskWorker] INFO: プロンプト: hi...
+2025-06-28 22:34:58,232 [TaskWorker] INFO: 出力先: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:34:58,245 [TaskWorker] INFO: コマンド実行: claude --model claude-3-5-sonnet-20241022 --max-tokens 4000
+2025-06-28 22:34:59,607 [TaskWorker] INFO: 実行完了 - リターンコード: 1
+2025-06-28 22:34:59,608 [TaskWorker] ERROR: Claude CLIエラー: error: unknown option '--max-tokens'
+
+2025-06-28 22:34:59,608 [TaskWorker] INFO: ファイル保存開始: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:34:59,609 [TaskWorker] INFO: ファイル保存成功: /root/ai_co/output/task_pm_cli_task.txt (サイズ: 234 bytes)
+2025-06-28 22:34:59,613 [TaskWorker] INFO: タスク完了: pm_cli_task
+2025-06-28 22:38:54,089 [pika.adapters.utils.connection_workflow] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-28 22:38:54,089 [pika.adapters.utils.io_services_utils] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 60624), raddr=('127.0.0.1', 5672)>
+2025-06-28 22:38:54,090 [pika.adapters.utils.connection_workflow] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c94453c1fd0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c94453c1fd0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-28 22:38:54,099 [pika.adapters.utils.connection_workflow] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c94453c1fd0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-28 22:38:54,099 [pika.adapters.utils.connection_workflow] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c94453c1fd0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-28 22:38:54,099 [pika.adapters.blocking_connection] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c94453c1fd0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-28 22:38:54,099 [pika.adapters.blocking_connection] INFO: Created channel=1
+2025-06-28 22:38:54,104 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-06-28 22:38:54,110 [TaskWorker] INFO: worker-1 起動完了 - タスク待機中...
+2025-06-28 22:41:23,078 [TaskWorker] INFO: タスク受信: pm_cli_task
+2025-06-28 22:41:23,082 [TaskWorker] INFO: プロンプト: Pythonで素数判定関数を書いて...
+2025-06-28 22:41:23,086 [TaskWorker] INFO: 出力先: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:41:23,092 [TaskWorker] INFO: コマンド実行: claude --model claude-3-5-sonnet-20241022 --max-tokens 4000
+2025-06-28 22:41:23,838 [TaskWorker] INFO: 実行完了 - リターンコード: 1
+2025-06-28 22:41:23,839 [TaskWorker] ERROR: Claude CLIエラー: error: unknown option '--max-tokens'
+
+2025-06-28 22:41:23,839 [TaskWorker] INFO: ファイル保存開始: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:41:23,839 [TaskWorker] INFO: ファイル保存成功: /root/ai_co/output/task_pm_cli_task.txt (サイズ: 271 bytes)
+2025-06-28 22:41:23,841 [TaskWorker] INFO: タスク完了: pm_cli_task
+2025-06-28 22:50:26,589 [TaskWorker] INFO: タスク受信: pm_cli_task
+2025-06-28 22:50:26,590 [TaskWorker] INFO: プロンプト: hello...
+2025-06-28 22:50:26,591 [TaskWorker] INFO: 出力先: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:50:26,594 [TaskWorker] INFO: コマンド実行: claude --model claude-3-5-sonnet-20241022 --max-tokens 4000
+2025-06-28 22:50:27,753 [TaskWorker] INFO: 実行完了 - リターンコード: 1
+2025-06-28 22:50:27,755 [TaskWorker] ERROR: Claude CLIエラー: error: unknown option '--max-tokens'
+
+2025-06-28 22:50:27,755 [TaskWorker] INFO: ファイル保存開始: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:50:27,756 [TaskWorker] INFO: ファイル保存成功: /root/ai_co/output/task_pm_cli_task.txt (サイズ: 237 bytes)
+2025-06-28 22:50:27,757 [TaskWorker] INFO: タスク完了: pm_cli_task
+2025-06-28 22:51:59,102 [pika.adapters.utils.connection_workflow] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-28 22:51:59,102 [pika.adapters.utils.io_services_utils] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 36802), raddr=('127.0.0.1', 5672)>
+2025-06-28 22:51:59,103 [pika.adapters.utils.connection_workflow] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7aa24a4c9e80>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7aa24a4c9e80> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-28 22:51:59,107 [pika.adapters.utils.connection_workflow] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7aa24a4c9e80> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-28 22:51:59,107 [pika.adapters.utils.connection_workflow] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7aa24a4c9e80> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-28 22:51:59,108 [pika.adapters.blocking_connection] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7aa24a4c9e80> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-28 22:51:59,108 [pika.adapters.blocking_connection] INFO: Created channel=1
+2025-06-28 22:51:59,112 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-06-28 22:51:59,115 [TaskWorker] INFO: worker-1 起動完了 - タスク待機中...
+2025-06-28 22:51:59,136 [pika.adapters.utils.connection_workflow] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-28 22:51:59,137 [pika.adapters.utils.io_services_utils] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 36804), raddr=('127.0.0.1', 5672)>
+2025-06-28 22:51:59,137 [pika.adapters.utils.connection_workflow] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7775fdd6dfa0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7775fdd6dfa0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-28 22:51:59,146 [pika.adapters.utils.connection_workflow] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7775fdd6dfa0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-28 22:51:59,147 [pika.adapters.utils.connection_workflow] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7775fdd6dfa0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-28 22:51:59,147 [pika.adapters.blocking_connection] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7775fdd6dfa0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-28 22:51:59,148 [pika.adapters.blocking_connection] INFO: Created channel=1
+2025-06-28 22:51:59,151 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-06-28 22:51:59,154 [TaskWorker] INFO: worker-2 起動完了 - タスク待機中...
+2025-06-28 22:52:14,515 [TaskWorker] INFO: タスク受信: pm_cli_task
+2025-06-28 22:52:14,515 [TaskWorker] INFO: プロンプト: hello...
+2025-06-28 22:52:14,516 [TaskWorker] INFO: 出力先: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:52:14,520 [TaskWorker] INFO: コマンド実行: claude --model claude-3-5-sonnet-20241022 --max-tokens 4000
+2025-06-28 22:52:15,399 [TaskWorker] INFO: 実行完了 - リターンコード: 1
+2025-06-28 22:52:15,399 [TaskWorker] ERROR: Claude CLIエラー: error: unknown option '--max-tokens'
+
+2025-06-28 22:52:15,399 [TaskWorker] INFO: ファイル保存開始: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:52:15,400 [TaskWorker] INFO: ファイル保存成功: /root/ai_co/output/task_pm_cli_task.txt (サイズ: 237 bytes)
+2025-06-28 22:52:15,401 [TaskWorker] INFO: タスク完了: pm_cli_task
+2025-06-28 22:52:26,163 [TaskWorker] INFO: タスク受信: pm_cli_task
+2025-06-28 22:52:26,163 [TaskWorker] INFO: プロンプト: [A[A...
+2025-06-28 22:52:26,163 [TaskWorker] INFO: 出力先: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:52:26,164 [TaskWorker] INFO: コマンド実行: claude --model claude-sonnet-4-20250514 --max-tokens 4000
+2025-06-28 22:52:27,065 [TaskWorker] INFO: 実行完了 - リターンコード: 1
+2025-06-28 22:52:27,066 [TaskWorker] ERROR: Claude CLIエラー: error: unknown option '--max-tokens'
+
+2025-06-28 22:52:27,066 [TaskWorker] INFO: ファイル保存開始: /root/ai_co/output/task_pm_cli_task.txt
+2025-06-28 22:52:27,067 [TaskWorker] INFO: ファイル保存成功: /root/ai_co/output/task_pm_cli_task.txt (サイズ: 236 bytes)
+2025-06-28 22:52:27,068 [TaskWorker] INFO: タスク完了: pm_cli_task

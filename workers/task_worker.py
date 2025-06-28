@@ -28,7 +28,7 @@ logger = logging.getLogger("TaskWorker")
 class TaskWorker:
     def __init__(self, worker_id="worker-1"):
         self.worker_id = worker_id
-        self.model = "claude-3-5-sonnet-20241022"  # 正しいモデル名
+        self.model = "claude-sonnet-4-20250514"  # 正しいモデル名
         
     def connect(self):
         """RabbitMQ接続"""
