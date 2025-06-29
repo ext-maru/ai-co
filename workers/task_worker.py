@@ -138,7 +138,7 @@ class TaskWorker:
 
             # 📱 Slack通知送信
             try:
-                slack_success = self.slack.send_task_completion(
+                slack_success = self.slack.send_task_completion_simple(
                     task_id=task_id,
                     worker=self.worker_id,
                     prompt=prompt,
