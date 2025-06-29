@@ -9,11 +9,7 @@ from datetime import datetime
 from pathlib import Path
 import logging
 
-# RAGシステムをインポート
-sys.path.append(str(Path(__file__).parent.parent))
-from libs.rag_manager import RAGManager
-
-# プロジェクトルートディレクトリ
+# プロジェクトルートディレクトリ（適宜変更）
 PROJECT_DIR = Path(__file__).parent.parent
 OUTPUT_DIR = PROJECT_DIR / "output"
 LOG_DIR = PROJECT_DIR / "logs"
@@ -32,9 +28,7 @@ logger = logging.getLogger("TaskWorker")
 class TaskWorker:
     def __init__(self, worker_id="worker-1"):
         self.worker_id = worker_id
-        self.model = "claude-sonnet-4-20250514"
-        # RAGマネージャー初期化
-        self.rag = RAGManager(model=self.model)
+        self.model = "claude-sonnet-4-20250514"  # 最新の正しいモデル名
 
     def connect(self):
         try:
@@ -42,6 +36,7 @@ class TaskWorker:
                 pika.ConnectionParameters('localhost')
             )
             self.channel = self.connection.channel()
+            # task_queueのみ監視。pm_task_queueはPMワーカー専用
             self.channel.queue_declare(queue='task_queue', durable=True)
             self.channel.queue_declare(queue='result_queue', durable=True)
             logger.info(f"{self.worker_id} - RabbitMQ接続成功")
@@ -60,11 +55,6 @@ class TaskWorker:
             logger.info(f"タスク受信: {task_id} (タイプ: {task_type})")
             logger.info(f"プロンプト(先頭100文字): {prompt[:100]}")
 
-            # 🧠 RAG機能：過去の履歴を含めたプロンプト構築
-            enhanced_prompt = self.rag.build_context_prompt(prompt, include_history=True)
-            if len(enhanced_prompt) > len(prompt):
-                logger.info(f"✨ RAG適用: プロンプト拡張 {len(prompt)} → {len(enhanced_prompt)} 文字")
-
             # 保存フォルダ作成
             task_output_dir = OUTPUT_DIR / task_type / task_id
             os.makedirs(task_output_dir, exist_ok=True)
@@ -72,14 +62,14 @@ class TaskWorker:
             output_file = task_output_dir / "result.txt"
             logger.info(f"結果ファイル保存先: {output_file}")
 
-            # Claude CLI 呼び出し（拡張プロンプト使用）
+            # Claude CLI 呼び出し
             if self.check_claude_cli():
                 cmd = ["claude", "--model", self.model, "--allowedTools", "Edit,Write,FileSystem", "--print"]
                 logger.info(f"CLIコマンド実行: {' '.join(cmd)}")
                 try:
                     result = subprocess.run(
                         cmd,
-                        input=enhanced_prompt,  # RAG拡張プロンプトを使用
+                        input=prompt,
                         capture_output=True,
                         text=True,
                         cwd="/root/ai_co/output",
@@ -90,20 +80,16 @@ class TaskWorker:
                     if result.returncode == 0:
                         output_text = result.stdout
                         logger.info(f"出力文字数: {len(output_text)}")
-                        status = "completed"
                     else:
                         output_text = f"エラー: {result.stderr}"
                         logger.error(f"CLIエラー: {result.stderr}")
-                        status = "failed"
 
                 except subprocess.TimeoutExpired:
                     output_text = "エラー: CLIタイムアウト(5分)"
                     logger.error("CLIタイムアウト発生")
-                    status = "failed"
             else:
                 logger.warning("Claude CLI未検出。シミュレーションモードで応答生成。")
                 output_text = f"[シミュレーション応答]\nタスクID: {task_id}\nプロンプト: {prompt}\n"
-                status = "completed"
 
             # ファイルに結果保存
             try:
@@ -113,8 +99,7 @@ class TaskWorker:
                     f.write(f"Worker: {self.worker_id}\n")
                     f.write(f"Timestamp: {datetime.now().isoformat()}\n")
                     f.write(f"Model: {self.model}\n")
-                    f.write(f"RAG Applied: {'Yes' if len(enhanced_prompt) > len(prompt) else 'No'}\n")
-                    f.write(f"\n=== Original Prompt ===\n{prompt}\n")
+                    f.write(f"\n=== Prompt ===\n{prompt}\n")
                     f.write(f"\n=== Response ===\n{output_text}\n")
                     f.write(f"=== End ===\n")
                 logger.info(f"結果ファイル保存成功: {output_file} (サイズ: {output_file.stat().st_size} bytes)")
@@ -122,28 +107,11 @@ class TaskWorker:
                 logger.error(f"結果ファイル保存失敗: {e}")
                 traceback.print_exc()
 
-            # 🧠 RAG機能：タスク履歴を保存（要約自動生成）
-            try:
-                rag_success = self.rag.save_task_with_summary(
-                    task_id=task_id,
-                    worker=self.worker_id,
-                    prompt=prompt,  # 元のプロンプトを保存
-                    response=output_text,
-                    status=status,
-                    task_type=task_type
-                )
-                if rag_success:
-                    logger.info(f"🧠 RAG履歴保存成功: {task_id}")
-                else:
-                    logger.warning(f"RAG履歴保存失敗: {task_id}")
-            except Exception as e:
-                logger.error(f"RAG履歴保存例外: {e}")
-
             # 結果キューへ送信
             result_data = {
                 "task_id": task_id,
                 "worker": self.worker_id,
-                "status": status,
+                "status": "completed" if 'エラー' not in output_text else "failed",
                 "output_file": str(output_file),
                 "timestamp": datetime.now().isoformat()
             }
@@ -181,7 +149,7 @@ class TaskWorker:
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(queue='task_queue', on_message_callback=self.process_task)
 
-        logger.info(f"🧠 {self.worker_id} RAG統合版起動完了 - task_queue待機中...")
+        logger.info(f"{self.worker_id} 起動完了 - task_queue待機中...")
         try:
             self.channel.start_consuming()
         except KeyboardInterrupt:
@@ -194,3 +162,4 @@ if __name__ == "__main__":
     worker_id = sys.argv[1] if len(sys.argv) > 1 else "worker-1"
     worker = TaskWorker(worker_id)
     worker.start()
+

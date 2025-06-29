@@ -590,3 +590,84 @@
 2025-06-29 14:49:55,529 [TaskWorker] INFO: 出力文字数: 36
 2025-06-29 14:49:55,529 [TaskWorker] INFO: 結果ファイル保存成功: /root/ai_co/output/general/pm_cli_task/result.txt (サイズ: 269 bytes)
 2025-06-29 14:49:55,530 [TaskWorker] INFO: 結果をresult_queueに送信: pm_cli_task
+2025-06-29 16:01:25,561 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 16:01:25,562 [TaskWorker] INFO: Socket connected: <socket.socket fd=4, family=2, type=1, proto=6, laddr=('127.0.0.1', 51966), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:01:25,562 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x71edee8e18b0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x71edee8e18b0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 16:01:25,568 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x71edee8e18b0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:01:25,568 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x71edee8e18b0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:01:25,568 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x71edee8e18b0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:01:25,568 [TaskWorker] INFO: Created channel=1
+2025-06-29 16:01:25,570 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-06-29 16:01:25,572 [TaskWorker] INFO: 🧠 worker-1 RAG統合版起動完了 - task_queue待機中...
+2025-06-29 16:01:25,579 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 16:01:25,579 [TaskWorker] INFO: Socket connected: <socket.socket fd=4, family=2, type=1, proto=6, laddr=('127.0.0.1', 51970), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:01:25,580 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x793d4dbaf2c0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x793d4dbaf2c0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 16:01:25,584 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x793d4dbaf2c0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:01:25,584 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x793d4dbaf2c0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:01:25,584 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x793d4dbaf2c0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:01:25,584 [TaskWorker] INFO: Created channel=1
+2025-06-29 16:01:25,586 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-06-29 16:01:25,587 [TaskWorker] INFO: 🧠 worker-2 RAG統合版起動完了 - task_queue待機中...
+2025-06-29 16:01:25,604 [TaskWorker] INFO: タスク受信: code_20250629_160125 (タイプ: code)
+2025-06-29 16:01:25,604 [TaskWorker] INFO: プロンプト(先頭100文字): Pythonでフィボナッチ数列を生成する関数を作って
+2025-06-29 16:01:25,608 [TaskWorker] INFO: 結果ファイル保存先: /root/ai_co/output/code/code_20250629_160125/result.txt
+2025-06-29 16:01:25,610 [TaskWorker] INFO: CLIコマンド実行: claude --model claude-sonnet-4-20250514 --allowedTools Edit,Write,FileSystem --print
+2025-06-29 16:01:35,678 [TaskWorker] INFO: タスク受信: code_20250629_160135 (タイプ: code)
+2025-06-29 16:01:35,679 [TaskWorker] INFO: プロンプト(先頭100文字): Pythonで素数判定関数を作って
+2025-06-29 16:01:35,682 [TaskWorker] INFO: 結果ファイル保存先: /root/ai_co/output/code/code_20250629_160135/result.txt
+2025-06-29 16:01:35,684 [TaskWorker] INFO: CLIコマンド実行: claude --model claude-sonnet-4-20250514 --allowedTools Edit,Write,FileSystem --print
+2025-06-29 16:01:40,533 [TaskWorker] INFO: CLI実行終了 リターンコード: 0
+2025-06-29 16:01:40,534 [TaskWorker] INFO: 出力文字数: 90
+2025-06-29 16:01:40,535 [TaskWorker] INFO: 結果ファイル保存成功: /root/ai_co/output/code/code_20250629_160125/result.txt (サイズ: 452 bytes)
+2025-06-29 16:01:40,536 [TaskWorker] INFO: タスク履歴保存成功: code_20250629_160125
+2025-06-29 16:01:40,541 [TaskWorker] INFO: 🧠 RAG履歴保存成功: code_20250629_160125
+2025-06-29 16:01:40,542 [TaskWorker] INFO: 結果をresult_queueに送信: code_20250629_160125
+2025-06-29 16:01:53,189 [TaskWorker] INFO: CLI実行終了 リターンコード: 0
+2025-06-29 16:01:53,190 [TaskWorker] INFO: 出力文字数: 58
+2025-06-29 16:01:53,191 [TaskWorker] INFO: 結果ファイル保存成功: /root/ai_co/output/code/code_20250629_160135/result.txt (サイズ: 391 bytes)
+2025-06-29 16:01:53,192 [TaskWorker] INFO: タスク履歴保存成功: code_20250629_160135
+2025-06-29 16:01:53,197 [TaskWorker] INFO: 🧠 RAG履歴保存成功: code_20250629_160135
+2025-06-29 16:01:53,197 [TaskWorker] INFO: 結果をresult_queueに送信: code_20250629_160135
+2025-06-29 16:03:54,538 [TaskWorker] INFO: タスク受信: code_20250629_160354 (タイプ: code)
+2025-06-29 16:03:54,538 [TaskWorker] INFO: プロンプト(先頭100文字): Pythonで素数判定関数を作って
+2025-06-29 16:03:54,541 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 17 → 104 文字
+2025-06-29 16:03:54,543 [TaskWorker] INFO: 結果ファイル保存先: /root/ai_co/output/code/code_20250629_160354/result.txt
+2025-06-29 16:03:54,544 [TaskWorker] INFO: CLIコマンド実行: claude --model claude-sonnet-4-20250514 --allowedTools Edit,Write,FileSystem --print
+2025-06-29 16:04:10,704 [TaskWorker] INFO: CLI実行終了 リターンコード: 0
+2025-06-29 16:04:10,704 [TaskWorker] INFO: 出力文字数: 64
+2025-06-29 16:04:10,705 [TaskWorker] INFO: 結果ファイル保存成功: /root/ai_co/output/code/code_20250629_160354/result.txt (サイズ: 418 bytes)
+2025-06-29 16:04:10,706 [TaskWorker] INFO: タスク履歴保存成功: code_20250629_160354
+2025-06-29 16:04:10,712 [TaskWorker] INFO: 🧠 RAG履歴保存成功: code_20250629_160354
+2025-06-29 16:04:10,712 [TaskWorker] INFO: 結果をresult_queueに送信: code_20250629_160354
+2025-06-29 16:04:49,115 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 16:04:49,116 [TaskWorker] INFO: Socket connected: <socket.socket fd=4, family=2, type=1, proto=6, laddr=('127.0.0.1', 47852), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:04:49,117 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7124f9ee4f20>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7124f9ee4f20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 16:04:49,122 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7124f9ee4f20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:04:49,122 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7124f9ee4f20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:04:49,123 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7124f9ee4f20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:04:49,123 [TaskWorker] INFO: Created channel=1
+2025-06-29 16:04:49,126 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-06-29 16:04:49,126 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 16:04:49,126 [TaskWorker] INFO: Socket connected: <socket.socket fd=4, family=2, type=1, proto=6, laddr=('127.0.0.1', 47860), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:04:49,127 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7506f55d5700>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7506f55d5700> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 16:04:49,128 [TaskWorker] INFO: 🧠 worker-1 RAG統合版起動完了 - task_queue待機中...
+2025-06-29 16:04:49,130 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7506f55d5700> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:04:49,131 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7506f55d5700> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:04:49,131 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7506f55d5700> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:04:49,131 [TaskWorker] INFO: Created channel=1
+2025-06-29 16:04:49,132 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-06-29 16:04:49,133 [TaskWorker] INFO: 🧠 worker-2 RAG統合版起動完了 - task_queue待機中...
+2025-06-29 16:04:57,505 [TaskWorker] INFO: タスク受信: code_20250629_160457 (タイプ: code)
+2025-06-29 16:04:57,505 [TaskWorker] INFO: プロンプト(先頭100文字): Pythonで素数判定関数を作って
+2025-06-29 16:04:57,507 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 17 → 126 文字
+2025-06-29 16:04:57,508 [TaskWorker] INFO: 結果ファイル保存先: /root/ai_co/output/code/code_20250629_160457/result.txt
+2025-06-29 16:04:57,509 [TaskWorker] INFO: CLIコマンド実行: claude --model claude-sonnet-4-20250514 --allowedTools Edit,Write,FileSystem --print
+2025-06-29 16:05:21,612 [TaskWorker] INFO: CLI実行終了 リターンコード: 0
+2025-06-29 16:05:21,612 [TaskWorker] INFO: 出力文字数: 102
+2025-06-29 16:05:21,612 [TaskWorker] INFO: 結果ファイル保存成功: /root/ai_co/output/code/code_20250629_160457/result.txt (サイズ: 508 bytes)
+2025-06-29 16:05:21,613 [TaskWorker] INFO: タスク履歴保存成功: code_20250629_160457
+2025-06-29 16:05:27,547 [TaskWorker] INFO: 要約生成成功: 85文字
+2025-06-29 16:05:27,548 [TaskWorker] INFO: 要約更新成功: code_20250629_160457
+2025-06-29 16:05:27,553 [TaskWorker] INFO: 要約保存完了: code_20250629_160457 -> Pythonの素数判定関数が既に`prime_checker.py`に実装済み。効率的なアルゴリズム...
+2025-06-29 16:05:27,554 [TaskWorker] INFO: 🧠 RAG履歴保存成功: code_20250629_160457
+2025-06-29 16:05:27,554 [TaskWorker] INFO: 結果をresult_queueに送信: code_20250629_160457
