@@ -24,7 +24,7 @@ logger = logging.getLogger("PMWorker")
 
 class PMWorker:
     def __init__(self):
-        self.model = "claude-sonnet-4-20250514"
+        self.model = "claude-opus-4-20250514"
 
     def connect(self):
         try:
