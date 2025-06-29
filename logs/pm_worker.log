@@ -136,3 +136,72 @@
 2025-06-29 16:04:49,101 [PMWorker] INFO: Created channel=1
 2025-06-29 16:04:49,104 [PMWorker] INFO: RabbitMQ接続成功
 2025-06-29 16:04:49,106 [PMWorker] INFO: PM Worker 起動 - pm_task_queue待機中...
+2025-06-29 16:37:51,042 [PMWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 16:37:51,043 [PMWorker] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 58170), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:37:51,043 [PMWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72fb9ced4fb0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72fb9ced4fb0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 16:37:51,049 [PMWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72fb9ced4fb0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:37:51,050 [PMWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72fb9ced4fb0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:37:51,050 [PMWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72fb9ced4fb0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:37:51,050 [PMWorker] INFO: Created channel=1
+2025-06-29 16:37:51,053 [PMWorker] INFO: RabbitMQ接続成功
+2025-06-29 16:37:51,054 [PMWorker] INFO: PM Worker 起動 - pm_task_queue待機中...
+2025-06-29 16:38:02,229 [PMWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 16:38:02,230 [PMWorker] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 53682), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:38:02,230 [PMWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72c0167b3bc0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72c0167b3bc0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 16:38:02,236 [PMWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72c0167b3bc0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:38:02,236 [PMWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72c0167b3bc0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:38:02,237 [PMWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x72c0167b3bc0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:38:02,237 [PMWorker] INFO: Created channel=1
+2025-06-29 16:38:02,239 [PMWorker] INFO: RabbitMQ接続成功
+2025-06-29 16:38:02,240 [PMWorker] INFO: PM Worker 起動 - pm_task_queue待機中...
+2025-06-29 16:38:49,343 [PMWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 16:38:49,345 [PMWorker] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 36522), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:38:49,345 [PMWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7e99143d4f80>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7e99143d4f80> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 16:38:49,350 [PMWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7e99143d4f80> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:38:49,350 [PMWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7e99143d4f80> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:38:49,350 [PMWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7e99143d4f80> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:38:49,351 [PMWorker] INFO: Created channel=1
+2025-06-29 16:38:49,354 [PMWorker] INFO: RabbitMQ接続成功
+2025-06-29 16:38:49,358 [PMWorker] INFO: PM Worker 起動 - pm_task_queue待機中...
+2025-06-29 16:46:23,154 [PMWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 16:46:23,155 [PMWorker] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 44946), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:46:23,156 [PMWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f7fc4f88350>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f7fc4f88350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 16:46:23,161 [PMWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f7fc4f88350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:46:23,161 [PMWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f7fc4f88350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:46:23,161 [PMWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f7fc4f88350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:46:23,161 [PMWorker] INFO: Created channel=1
+2025-06-29 16:46:23,164 [PMWorker] INFO: RabbitMQ接続成功
+2025-06-29 16:46:23,165 [PMWorker] INFO: 📁 結果監視開始 - ファイル生成時自動Git処理
+2025-06-29 16:46:23,165 [PMWorker] INFO: 🚀 PM Worker起動 - 自動Git機能付き
+2025-06-29 16:46:23,166 [PMWorker] INFO: 📋 監視中: pm_task_queue (PM専用)
+2025-06-29 16:46:23,166 [PMWorker] INFO: 📁 監視中: result_queue (自動Git)
+2025-06-29 16:47:24,331 [PMWorker] INFO: PM Worker停止中...
+2025-06-29 16:47:24,333 [PMWorker] INFO: Closing connection (200): Normal shutdown
+2025-06-29 16:47:24,333 [PMWorker] INFO: Closing channel (200): 'Normal shutdown' on <Channel number=1 OPEN conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f7fc4f88350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>>
+2025-06-29 16:47:24,334 [PMWorker] INFO: Received <Channel.CloseOk> on <Channel number=1 CLOSING conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f7fc4f88350> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>>
+2025-06-29 16:47:24,334 [PMWorker] INFO: Closing connection (200): 'Normal shutdown'
+2025-06-29 16:47:24,335 [PMWorker] INFO: Aborting transport connection: state=1; <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 44946), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:47:24,335 [PMWorker] INFO: _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=None; <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 44946), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:47:24,335 [PMWorker] INFO: Deactivating transport: state=1; <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 44946), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:47:24,335 [PMWorker] INFO: AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=None; pending-error=ConnectionClosedByClient: (200) 'Normal shutdown'
+2025-06-29 16:47:24,335 [PMWorker] INFO: Stack terminated due to ConnectionClosedByClient: (200) 'Normal shutdown'
+2025-06-29 16:47:24,335 [PMWorker] INFO: Closing transport socket and unlinking: state=3; <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 44946), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:47:24,336 [PMWorker] INFO: User-initiated close: result=BlockingConnection__OnClosedArgs(connection=<SelectConnection CLOSED transport=None params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>, error=ConnectionClosedByClient: (200) 'Normal shutdown')
+2025-06-29 16:47:37,042 [PMWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 16:47:37,043 [PMWorker] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 53920), raddr=('127.0.0.1', 5672)>
+2025-06-29 16:47:37,043 [PMWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7978acee0470>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7978acee0470> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 16:47:37,047 [PMWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7978acee0470> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:47:37,047 [PMWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7978acee0470> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:47:37,047 [PMWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7978acee0470> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 16:47:37,048 [PMWorker] INFO: Created channel=1
+2025-06-29 16:47:37,050 [PMWorker] INFO: RabbitMQ接続成功
+2025-06-29 16:47:37,053 [PMWorker] INFO: 📁 結果監視開始 - ファイル生成時自動Git処理
+2025-06-29 16:47:37,054 [PMWorker] INFO: 🚀 PM Worker起動 - 自動Git機能付き
+2025-06-29 16:47:37,054 [PMWorker] INFO: 📋 監視中: pm_task_queue (PM専用)
+2025-06-29 16:47:37,054 [PMWorker] INFO: 📁 監視中: result_queue (自動Git)
+2025-06-29 16:48:08,678 [PMWorker] INFO: 📋 タスク完了検知: code_20250629_164737 (completed)
+2025-06-29 16:48:08,681 [PMWorker] INFO: 📁 新規ファイル検出: 2件
+2025-06-29 16:48:08,681 [PMWorker] INFO:   - output/time_display.py
+2025-06-29 16:48:08,681 [PMWorker] INFO:   - output/code/code_20250629_164737/result.txt
+2025-06-29 16:48:08,709 [PMWorker] INFO: Git add: output/time_display.py
+2025-06-29 16:48:08,711 [PMWorker] INFO: Git add: output/code/code_20250629_164737/result.txt
