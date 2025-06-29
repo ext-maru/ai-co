@@ -896,3 +896,50 @@
 2025-06-29 23:11:04,301 [TaskWorker] INFO: Slack通知送信成功
 2025-06-29 23:11:04,302 [TaskWorker] INFO: 📱 Slack通知送信完了
 2025-06-29 23:11:04,303 [TaskWorker] INFO: 🎯 タスク完了: code_20250629_231036
+2025-06-29 23:15:46,150 [TaskWorker] INFO: 📨 タスク受信: general_20250629_231546 (タイプ: general)
+2025-06-29 23:15:46,151 [TaskWorker] INFO: プロンプト: MCP接続テスト
+2025-06-29 23:15:46,156 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-29 23:15:54,378 [TaskWorker] INFO: ✅ CLI成功: 出力18文字
+2025-06-29 23:15:54,379 [TaskWorker] INFO: 💾 ファイル保存: /root/ai_co/output/general/general_20250629_231546/result.txt
+2025-06-29 23:15:54,381 [TaskWorker] INFO: タスク履歴保存成功: general_20250629_231546
+2025-06-29 23:15:54,394 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-06-29 23:15:54,831 [TaskWorker] INFO: Slack通知送信成功
+2025-06-29 23:15:54,832 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-06-29 23:15:54,832 [TaskWorker] INFO: 🎯 タスク完了: general_20250629_231546
+2025-06-29 23:42:51,733 [TaskWorker] INFO: 📨 タスク受信: code_20250629_234251 (タイプ: code)
+2025-06-29 23:42:51,735 [TaskWorker] INFO: プロンプト: PythonでWebスクレイピング+データ分析+可視化の統合クラスを作って。Beautiful Soup、pandas、matplotlib、seabornを使用した包括的なWebAnalyzerクラ
+2025-06-29 23:42:51,754 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-29 23:43:18,230 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 23:43:18,231 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 48994), raddr=('127.0.0.1', 5672)>
+2025-06-29 23:43:18,231 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x79a6dd4e1280>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x79a6dd4e1280> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 23:43:18,232 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-29 23:43:18,233 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 49002), raddr=('127.0.0.1', 5672)>
+2025-06-29 23:43:18,233 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ac97d4f2180>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ac97d4f2180> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-29 23:43:18,237 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x79a6dd4e1280> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 23:43:18,237 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x79a6dd4e1280> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 23:43:18,238 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x79a6dd4e1280> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 23:43:18,238 [TaskWorker] INFO: Created channel=1
+2025-06-29 23:43:18,239 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ac97d4f2180> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 23:43:18,239 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ac97d4f2180> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 23:43:18,239 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ac97d4f2180> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-29 23:43:18,240 [TaskWorker] INFO: Created channel=1
+2025-06-29 23:43:18,241 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-06-29 23:43:18,243 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-06-29 23:43:18,244 [TaskWorker] INFO: 🚀 worker-1 RAG+Slack統合版起動 - task_queue待機中...
+2025-06-29 23:43:18,244 [TaskWorker] INFO: 📨 タスク受信: code_20250629_234251 (タイプ: code)
+2025-06-29 23:43:18,244 [TaskWorker] INFO: プロンプト: PythonでWebスクレイピング+データ分析+可視化の統合クラスを作って。Beautiful Soup、pandas、matplotlib、seabornを使用した包括的なWebAnalyzerクラ
+2025-06-29 23:43:18,244 [TaskWorker] INFO: 🚀 worker-2 RAG+Slack統合版起動 - task_queue待機中...
+2025-06-29 23:43:18,251 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-29 23:43:35,589 [TaskWorker] INFO: 📨 タスク受信: code~_20250629_234335 (タイプ: code~)
+2025-06-29 23:43:35,590 [TaskWorker] INFO: プロンプト: PythonでWebスクレイピング+データ分析+可視化の統合クラスを作って。Beautiful Soup、pandas、matplotlib、seabornを使用した包括的なWebAnalyzerクラ
+2025-06-29 23:43:35,598 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-29 23:44:31,872 [TaskWorker] INFO: ✅ CLI成功: 出力311文字
+2025-06-29 23:44:31,873 [TaskWorker] INFO: 💾 ファイル保存: /root/ai_co/output/code/code_20250629_234251/result.txt
+2025-06-29 23:44:31,874 [TaskWorker] INFO: タスク履歴保存成功: code_20250629_234251
+2025-06-29 23:44:37,557 [TaskWorker] INFO: 要約生成成功: 126文字
+2025-06-29 23:44:37,559 [TaskWorker] INFO: 要約更新成功: code_20250629_234251
+2025-06-29 23:44:37,568 [TaskWorker] INFO: 要約保存完了: code_20250629_234251 -> PythonでWebスクレイピング～可視化まで一貫処理するWebAnalyzerクラスを作成。Bea...
+2025-06-29 23:44:37,568 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-06-29 23:44:39,093 [TaskWorker] INFO: Slack通知送信成功
+2025-06-29 23:44:39,094 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-06-29 23:44:39,097 [TaskWorker] INFO: 🎯 タスク完了: code_20250629_234251
