@@ -943,3 +943,95 @@
 2025-06-29 23:44:39,093 [TaskWorker] INFO: Slack通知送信成功
 2025-06-29 23:44:39,094 [TaskWorker] INFO: 📱 Slack通知送信完了
 2025-06-29 23:44:39,097 [TaskWorker] INFO: 🎯 タスク完了: code_20250629_234251
+2025-06-29 23:46:16,504 [TaskWorker] INFO: 📨 タスク受信: code~_20250629_234335 (タイプ: code~)
+2025-06-29 23:46:16,505 [TaskWorker] INFO: プロンプト: PythonでWebスクレイピング+データ分析+可視化の統合クラスを作って。Beautiful Soup、pandas、matplotlib、seabornを使用した包括的なWebAnalyzerクラ
+2025-06-29 23:46:16,506 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 141 → 293 文字
+2025-06-29 23:46:16,508 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-29 23:48:13,576 [TaskWorker] INFO: ✅ CLI成功: 出力589文字
+2025-06-29 23:48:13,578 [TaskWorker] INFO: 💾 ファイル保存: /root/ai_co/output/code~/code~_20250629_234335/result.txt
+2025-06-29 23:48:13,579 [TaskWorker] INFO: タスク履歴保存成功: code~_20250629_234335
+2025-06-29 23:48:18,311 [TaskWorker] INFO: ✅ CLI成功: 出力836文字
+2025-06-29 23:48:18,312 [TaskWorker] INFO: 💾 ファイル保存: /root/ai_co/output/code~/code~_20250629_234335/result.txt
+2025-06-29 23:48:18,313 [TaskWorker] INFO: タスク履歴保存成功: code~_20250629_234335
+2025-06-29 23:48:18,418 [TaskWorker] INFO: 要約生成成功: 118文字
+2025-06-29 23:48:18,419 [TaskWorker] INFO: 要約更新成功: code~_20250629_234335
+2025-06-29 23:48:18,429 [TaskWorker] INFO: 要約保存完了: code~_20250629_234335 -> Webスクレイピング+データ分析+可視化を統合したWebAnalyzerクラスを作成。Beautif...
+2025-06-29 23:48:18,429 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-06-29 23:48:18,714 [TaskWorker] INFO: Slack通知送信成功
+2025-06-29 23:48:18,715 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-06-29 23:48:18,724 [TaskWorker] ERROR: _AsyncBaseTransport._produce() failed, aborting connection: error=ConnectionResetError(104, 'Connection reset by peer'); sock=<socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 49002)>; Caller's stack:
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+2025-06-29 23:48:18,724 [TaskWorker] INFO: _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=ConnectionResetError(104, 'Connection reset by peer'); <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 49002)>
+2025-06-29 23:48:18,724 [TaskWorker] INFO: Deactivating transport: state=1; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 49002)>
+2025-06-29 23:48:18,725 [TaskWorker] ERROR: connection_lost: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-06-29 23:48:18,725 [TaskWorker] INFO: AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",); pending-error=None
+2025-06-29 23:48:18,725 [TaskWorker] INFO: Stack terminated due to StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-06-29 23:48:18,725 [TaskWorker] INFO: Closing transport socket and unlinking: state=2; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 49002)>
+2025-06-29 23:48:18,725 [TaskWorker] ERROR: Unexpected connection close detected: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-06-29 23:48:18,726 [TaskWorker] ERROR: ❌ タスク処理例外: Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')
+2025-06-29 23:48:23,451 [TaskWorker] INFO: 要約生成成功: 133文字
+2025-06-29 23:48:23,452 [TaskWorker] INFO: 要約更新成功: code~_20250629_234335
+2025-06-29 23:48:23,462 [TaskWorker] INFO: 要約保存完了: code~_20250629_234335 -> **WebAnalyzerクラス作成完了** Beautiful Soup/pandas/matpl...
+2025-06-29 23:48:23,463 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-06-29 23:48:23,936 [TaskWorker] INFO: Slack通知送信成功
+2025-06-29 23:48:23,936 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-06-29 23:48:23,939 [TaskWorker] ERROR: _AsyncBaseTransport._produce() failed, aborting connection: error=ConnectionResetError(104, 'Connection reset by peer'); sock=<socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 48994)>; Caller's stack:
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+2025-06-29 23:48:23,940 [TaskWorker] INFO: _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=ConnectionResetError(104, 'Connection reset by peer'); <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 48994)>
+2025-06-29 23:48:23,940 [TaskWorker] INFO: Deactivating transport: state=1; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 48994)>
+2025-06-29 23:48:23,941 [TaskWorker] ERROR: connection_lost: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-06-29 23:48:23,942 [TaskWorker] INFO: AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",); pending-error=None
+2025-06-29 23:48:23,942 [TaskWorker] INFO: Stack terminated due to StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-06-29 23:48:23,943 [TaskWorker] INFO: Closing transport socket and unlinking: state=2; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 48994)>
+2025-06-29 23:48:23,943 [TaskWorker] ERROR: Unexpected connection close detected: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-06-29 23:48:23,943 [TaskWorker] ERROR: ❌ タスク処理例外: Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')

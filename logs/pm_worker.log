@@ -292,3 +292,6 @@
 2025-06-29 23:44:39,113 [PMWorker] INFO:   - output/code/code_20250629_234251/result.txt
 2025-06-29 23:44:39,136 [PMWorker] INFO: Git add: output/web_analyzer.py
 2025-06-29 23:44:39,143 [PMWorker] INFO: Git add: output/code/code_20250629_234251/result.txt
+2025-06-29 23:44:39,186 [PMWorker] INFO: Git commit成功: 🤖
+2025-06-29 23:44:41,400 [PMWorker] INFO: Git push成功
+2025-06-29 23:44:41,400 [PMWorker] INFO: ✅ Git自動コミット成功: code_20250629_234251
