@@ -316,3 +316,31 @@
 2025-06-30 14:17:12,957 [PMWorker] INFO: Git commit成功: 🤖
 2025-06-30 14:17:18,665 [PMWorker] INFO: Git push成功
 2025-06-30 14:17:18,665 [PMWorker] INFO: ✅ Git自動コミット成功: code~_20250629_234335
+2025-06-30 14:28:34,477 [PMWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-30 14:28:34,478 [PMWorker] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 40838), raddr=('127.0.0.1', 5672)>
+2025-06-30 14:28:34,479 [PMWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a27c1780680>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a27c1780680> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-30 14:28:34,491 [PMWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a27c1780680> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:28:34,491 [PMWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a27c1780680> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:28:34,492 [PMWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a27c1780680> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:28:34,492 [PMWorker] INFO: Created channel=1
+2025-06-30 14:28:34,495 [PMWorker] INFO: RabbitMQ接続成功
+2025-06-30 14:28:34,502 [PMWorker] INFO: 📁 結果監視開始 - ファイル生成時自動Git処理
+2025-06-30 14:28:34,502 [PMWorker] INFO: 🚀 PM Worker起動 - 自動Git機能付き
+2025-06-30 14:28:34,502 [PMWorker] INFO: 📋 監視中: pm_task_queue (PM専用)
+2025-06-30 14:28:34,502 [PMWorker] INFO: 📁 監視中: result_queue (自動Git)
+2025-06-30 14:30:41,361 [PMWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-30 14:30:41,362 [PMWorker] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 60166), raddr=('127.0.0.1', 5672)>
+2025-06-30 14:30:41,362 [PMWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x735df15802c0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x735df15802c0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-30 14:30:41,368 [PMWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x735df15802c0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:30:41,368 [PMWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x735df15802c0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:30:41,369 [PMWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x735df15802c0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:30:41,369 [PMWorker] INFO: Created channel=1
+2025-06-30 14:30:41,373 [PMWorker] INFO: RabbitMQ接続成功
+2025-06-30 14:30:41,379 [PMWorker] INFO: 📁 結果監視開始 - ファイル生成時自動Git処理
+2025-06-30 14:30:41,379 [PMWorker] INFO: 🚀 PM Worker起動 - 自動Git機能付き
+2025-06-30 14:30:41,380 [PMWorker] INFO: 📋 監視中: pm_task_queue (PM専用)
+2025-06-30 14:30:41,380 [PMWorker] INFO: 📁 監視中: result_queue (自動Git)
+2025-06-30 14:31:44,318 [PMWorker] INFO: 📋 タスク完了検知: code_20250630_143051 (completed)
+2025-06-30 14:31:44,327 [PMWorker] INFO: 📁 新規ファイル検出: 1件
+2025-06-30 14:31:44,327 [PMWorker] INFO:   - output/code/code_20250630_143051/result.txt
+2025-06-30 14:31:44,346 [PMWorker] INFO: Git add: output/code/code_20250630_143051/result.txt

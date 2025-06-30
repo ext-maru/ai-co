@@ -1081,3 +1081,61 @@ ConnectionResetError: [Errno 104] Connection reset by peer
 2025-06-30 14:17:12,879 [TaskWorker] INFO: Slack通知送信成功
 2025-06-30 14:17:12,880 [TaskWorker] INFO: 📱 Slack通知送信完了
 2025-06-30 14:17:12,882 [TaskWorker] INFO: 🎯 タスク完了: code~_20250629_234335
+2025-06-30 14:27:56,657 [TaskWorker] INFO: 📨 タスク受信: code_20250630_142756 (タイプ: code)
+2025-06-30 14:27:56,658 [TaskWorker] INFO: プロンプト: 新しいワーカークラス作成: EmailNotificationWorker。Gmailと連携してメール通知を送信する高度なワーカーを実装してください
+2025-06-30 14:27:56,665 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-30 14:28:34,654 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-30 14:28:34,655 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 40860), raddr=('127.0.0.1', 5672)>
+2025-06-30 14:28:34,655 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a4e58ff2960>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a4e58ff2960> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-30 14:28:34,660 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a4e58ff2960> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:28:34,660 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a4e58ff2960> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:28:34,660 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a4e58ff2960> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:28:34,660 [TaskWorker] INFO: Created channel=1
+2025-06-30 14:28:34,662 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-30 14:28:34,663 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-06-30 14:28:34,664 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 40870), raddr=('127.0.0.1', 5672)>
+2025-06-30 14:28:34,665 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7863dac6fce0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7863dac6fce0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-30 14:28:34,665 [TaskWorker] INFO: 🚀 worker-1 自己進化版起動 - task_queue待機中...
+2025-06-30 14:28:34,665 [TaskWorker] INFO: 📨 タスク受信: code_20250630_142756 (タイプ: code)
+2025-06-30 14:28:34,665 [TaskWorker] INFO: プロンプト: 新しいワーカークラス作成: EmailNotificationWorker。Gmailと連携してメール通知を送信する高度なワーカーを実装してください
+2025-06-30 14:28:34,671 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7863dac6fce0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:28:34,672 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7863dac6fce0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:28:34,672 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7863dac6fce0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:28:34,672 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-30 14:28:34,672 [TaskWorker] INFO: Created channel=1
+2025-06-30 14:28:34,675 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-06-30 14:28:34,676 [TaskWorker] INFO: 🚀 worker-2 自己進化版起動 - task_queue待機中...
+2025-06-30 14:30:41,480 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-30 14:30:41,481 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 60182), raddr=('127.0.0.1', 5672)>
+2025-06-30 14:30:41,481 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x765f26d5f890>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x765f26d5f890> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-30 14:30:41,488 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x765f26d5f890> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:30:41,488 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x765f26d5f890> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:30:41,488 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x765f26d5f890> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:30:41,488 [TaskWorker] INFO: Created channel=1
+2025-06-30 14:30:41,492 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-06-30 14:30:41,493 [TaskWorker] INFO: 🚀 worker-1 自己進化版起動 - task_queue待機中...
+2025-06-30 14:30:41,494 [TaskWorker] INFO: 📨 タスク受信: code_20250630_142756 (タイプ: code)
+2025-06-30 14:30:41,494 [TaskWorker] INFO: プロンプト: 新しいワーカークラス作成: EmailNotificationWorker。Gmailと連携してメール通知を送信する高度なワーカーを実装してください
+2025-06-30 14:30:41,497 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-30 14:30:41,514 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-30 14:30:41,514 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 60184), raddr=('127.0.0.1', 5672)>
+2025-06-30 14:30:41,515 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7855c0c290a0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7855c0c290a0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-30 14:30:41,523 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7855c0c290a0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:30:41,523 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7855c0c290a0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:30:41,524 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7855c0c290a0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:30:41,524 [TaskWorker] INFO: Created channel=1
+2025-06-30 14:30:41,528 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-06-30 14:30:41,529 [TaskWorker] INFO: 🚀 worker-2 自己進化版起動 - task_queue待機中...
+2025-06-30 14:30:51,098 [TaskWorker] INFO: 📨 タスク受信: code_20250630_143051 (タイプ: code)
+2025-06-30 14:30:51,098 [TaskWorker] INFO: プロンプト: 新しいワーカークラス作成: EmailNotificationWorker。Gmailと連携してメール通知を送信する高度なワーカーを実装してください
+2025-06-30 14:30:51,105 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-30 14:31:39,041 [TaskWorker] INFO: ✅ CLI成功: 出力313文字
+2025-06-30 14:31:39,042 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/code/code_20250630_143051/result.txt
+2025-06-30 14:31:39,043 [TaskWorker] INFO: タスク履歴保存成功: code_20250630_143051
+2025-06-30 14:31:44,036 [TaskWorker] INFO: 要約生成成功: 80文字
+2025-06-30 14:31:44,037 [TaskWorker] INFO: 要約更新成功: code_20250630_143051
+2025-06-30 14:31:44,049 [TaskWorker] INFO: 要約保存完了: code_20250630_143051 -> EmailNotificationWorkerクラスは既に実装済み。Gmail API統合、メール送...
+2025-06-30 14:31:44,049 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-06-30 14:31:44,310 [TaskWorker] INFO: Slack通知送信成功
+2025-06-30 14:31:44,311 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-06-30 14:31:44,315 [TaskWorker] INFO: 🎯 タスク完了: code_20250630_143051
