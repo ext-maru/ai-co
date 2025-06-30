@@ -397,3 +397,6 @@
 2025-06-30 14:52:24,757 [PMWorker] INFO: Git add: output/code/code_20250630_145142/result.txt
 2025-06-30 14:52:24,764 [PMWorker] INFO: Git add: output/code/code_20250630_145046/result.txt
 2025-06-30 14:52:24,768 [PMWorker] INFO: Git add: output/code/code_20250630_144101/result.txt
+2025-06-30 14:52:24,797 [PMWorker] INFO: Git commit成功: 🤖
+2025-06-30 14:52:27,327 [PMWorker] INFO: Git push成功
+2025-06-30 14:52:27,327 [PMWorker] INFO: ✅ Git自動コミット成功: code_20250630_145142

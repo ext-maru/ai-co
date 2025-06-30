@@ -76,9 +76,8 @@ class TaskWorker:
             result_file = task_output_dir / "result.txt"
 
             # Claude CLI実行
-            evolution_result = None
             if self.check_claude_cli():
-                cmd = ["claude", "--model", self.model, "--print"]  # allowedTools除去
+                cmd = ["claude", "--model", self.model, "--allowedTools", "Edit,Write", "--print"]
                 logger.info(f"🤖 Claude CLI実行中...")
                 
                 try:
@@ -87,7 +86,7 @@ class TaskWorker:
                         input=enhanced_prompt,
                         capture_output=True,
                         text=True,
-                        cwd=str(OUTPUT_DIR),
+                        cwd=str(OUTPUT_DIR),  # プロジェクトルートで実行
                         timeout=300
                     )
 
@@ -96,26 +95,24 @@ class TaskWorker:
                         status = "completed"
                         logger.info(f"✅ CLI成功: 出力{len(output_text)}文字")
                         
-                        # 🧬 自己進化: 必ず実行
-                        logger.info(f"🧬 自己進化処理開始...")
+                        # 🧬 自己進化: 生成されたコードを自動配置
                         evolution_result = self.handle_evolution(output_text, task_id, prompt)
-                        if evolution_result:
-                            logger.info(f"🧬 自己進化成功: {evolution_result}")
-                        else:
-                            logger.info(f"🧬 自己進化: 該当コードなし")
                         
                     else:
                         output_text = f"エラー: {result.stderr}"
                         status = "failed"
+                        evolution_result = None
                         logger.error(f"❌ CLI失敗: {result.stderr}")
 
                 except subprocess.TimeoutExpired:
                     output_text = "エラー: CLIタイムアウト(5分)"
                     status = "failed"
+                    evolution_result = None
                     logger.error("⏱️ CLIタイムアウト")
             else:
                 output_text = f"[シミュレーション]\nタスク: {prompt}\n応答: シミュレーション結果"
                 status = "completed"
+                evolution_result = None
                 logger.warning("🔧 シミュレーションモード")
 
             # result.txt 保存
@@ -127,7 +124,7 @@ class TaskWorker:
                     f.write(f"Timestamp: {datetime.now().isoformat()}\n")
                     f.write(f"Model: {self.model}\n")
                     f.write(f"RAG Applied: {'Yes' if rag_applied else 'No'}\n")
-                    f.write(f"Evolution Applied: {'Yes' if evolution_result and evolution_result.get('success') else 'No'}\n")
+                    f.write(f"Evolution Applied: {'Yes' if evolution_result else 'No'}\n")
                     f.write(f"\n=== Original Prompt ===\n{prompt}\n")
                     f.write(f"\n=== Response ===\n{output_text}\n")
                     if evolution_result:
@@ -155,16 +152,13 @@ class TaskWorker:
             try:
                 evolution_info = ""
                 if evolution_result and evolution_result.get("success"):
-                    evolved_files = evolution_result.get("evolved_files", [])
-                    if evolved_files:
-                        evolution_info = f"\n🧬 自己進化: {evolved_files[0]['relative_path']}"
+                    evolution_info = f"\n🧬 自己進化: {evolution_result['relative_path']}"
                 
-                slack_response = output_text + evolution_info
                 slack_success = self.slack.send_task_completion_simple(
                     task_id=task_id,
                     worker=self.worker_id,
                     prompt=prompt,
-                    response=slack_response,
+                    response=output_text + evolution_info,
                     status=status,
                     task_type=task_type,
                     rag_applied=rag_applied
@@ -203,23 +197,16 @@ class TaskWorker:
 
     def handle_evolution(self, claude_output, task_id, original_prompt):
         """
-        Claude出力から自己進化候補を検出・配置（デバッグ強化版）
+        Claude出力から自己進化候補を検出・配置
         """
         try:
-            logger.info(f"🧬 handle_evolution開始: 出力長{len(claude_output)}文字")
-            
-            # コードブロック抽出（修正版）
+            # コードブロック抽出
             code_blocks = self.extract_code_blocks(claude_output)
-            logger.info(f"🧬 抽出されたコードブロック数: {len(code_blocks)}")
             
             evolution_results = []
             
             for i, code_block in enumerate(code_blocks):
-                logger.info(f"🧬 コードブロック{i+1}: 言語={code_block['language']}, 長さ={len(code_block['content'])}文字")
-                
                 if self.is_significant_code(code_block['content']):
-                    logger.info(f"🧬 有意なコードと判定: ブロック{i+1}")
-                    
                     # ファイル名推測
                     suggested_name = self.suggest_filename(
                         code_block['content'], 
@@ -228,7 +215,6 @@ class TaskWorker:
                         task_id,
                         i
                     )
-                    logger.info(f"🧬 推測ファイル名: {suggested_name}")
                     
                     # 自己進化配置実行
                     evolution_result = self.evolution.auto_place_file(
@@ -242,8 +228,6 @@ class TaskWorker:
                         evolution_results.append(evolution_result)
                     else:
                         logger.warning(f"🧬 自己進化失敗: {evolution_result.get('error')}")
-                else:
-                    logger.info(f"🧬 有意でないコードのためスキップ: ブロック{i+1}")
             
             if evolution_results:
                 return {
@@ -255,26 +239,20 @@ class TaskWorker:
                 return None
                 
         except Exception as e:
-            logger.error(f"🧬 自己進化処理エラー: {e}")
-            traceback.print_exc()
+            logger.error(f"自己進化処理エラー: {e}")
             return None
 
     def extract_code_blocks(self, text):
-        """Claude出力からコードブロックを抽出（修正版）"""
-        logger.info(f"🧬 コードブロック抽出開始: テキスト長{len(text)}文字")
-        
-        # ```language code ``` パターン（修正版）
+        """Claude出力からコードブロックを抽出"""
+        # ```language code ``` パターン
         pattern = r'```(\w+)?\n(.*?)\n```'
         matches = re.findall(pattern, text, re.DOTALL)
         
-        logger.info(f"🧬 正規表現マッチ数: {len(matches)}")
-        
         code_blocks = []
-        for i, match in enumerate(matches):
+        for match in matches:
             language = match[0] or 'text'
             content = match[1].strip()
             if content:
-                logger.info(f"🧬 コードブロック{i+1}: {language}, {len(content)}文字")
                 code_blocks.append({
                     'language': language,
                     'content': content
@@ -283,11 +261,9 @@ class TaskWorker:
         return code_blocks
 
     def is_significant_code(self, content):
-        """有意なコードかどうか判定（緩和版）"""
-        # 最小行数チェック（緩和）
-        lines = content.split('\n')
-        if len(lines) < 3:  # 5から3に緩和
-            logger.info(f"🧬 行数不足: {len(lines)}行")
+        """有意なコードかどうか判定"""
+        # 最小行数チェック
+        if len(content.split('\n')) < 5:
             return False
         
         # 重要なキーワードを含むか
@@ -296,16 +272,13 @@ class TaskWorker:
             r'class\s+\w+',  # クラス定義
             r'import\s+\w+',  # インポート
             r'#!/bin/bash',  # シェルスクリプト
-            r'echo\s+',  # echo文
             r'if\s+__name__\s*==\s*["\']__main__["\']',  # メイン実行
         ]
         
         for pattern in significant_patterns:
             if re.search(pattern, content):
-                logger.info(f"🧬 有意パターンマッチ: {pattern}")
                 return True
         
-        logger.info(f"🧬 有意パターンなし")
         return False
 
     def suggest_filename(self, content, language, prompt, task_id, index=0):
@@ -314,16 +287,16 @@ class TaskWorker:
         prompt_lower = prompt.lower()
         
         # 特定のキーワードからファイル名推測
-        if 'test_fix' in prompt_lower:
-            return "test_fix.sh"
-        elif 'setup' in prompt_lower and 'database' in prompt_lower:
-            return "setup_database.sh"
-        elif 'worker' in prompt_lower:
+        if 'worker' in prompt_lower:
             return f"enhanced_worker_{task_id}.py"
         elif 'manager' in prompt_lower:
             return f"new_manager_{task_id}.py"
+        elif 'notifier' in prompt_lower:
+            return f"improved_notifier_{task_id}.py"
         elif 'script' in prompt_lower:
-            return f"script_{task_id}.sh"
+            return f"generated_script_{task_id}.sh"
+        elif 'test' in prompt_lower:
+            return f"test_{task_id}.py"
         
         # 言語別デフォルト
         if language == 'python':
@@ -347,7 +320,7 @@ class TaskWorker:
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(queue='task_queue', on_message_callback=self.process_task)
 
-        logger.info(f"🚀 {self.worker_id} 自己進化デバッグ版起動 - task_queue待機中...")
+        logger.info(f"🚀 {self.worker_id} 自己進化版起動 - task_queue待機中...")
         try:
             self.channel.start_consuming()
         except KeyboardInterrupt:
