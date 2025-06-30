@@ -378,3 +378,14 @@
 2025-06-30 14:50:46,558 [ResultWorker] INFO: Created channel=1
 2025-06-30 14:50:46,561 [ResultWorker] INFO: RabbitMQ接続成功
 2025-06-30 14:50:46,564 [ResultWorker] INFO: ResultWorker起動 - 結果待機中...
+2025-06-30 14:51:19,982 [ResultWorker] INFO: 結果受信: code_20250630_145046 - completed
+2025-06-30 14:51:19,982 [ResultWorker] INFO: 出力ファイル: /root/ai_co/output/code/code_20250630_145046/result.txt
+2025-06-30 14:51:38,674 [ResultWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-06-30 14:51:38,676 [ResultWorker] INFO: Socket connected: <socket.socket fd=7, family=2, type=1, proto=6, laddr=('127.0.0.1', 52470), raddr=('127.0.0.1', 5672)>
+2025-06-30 14:51:38,677 [ResultWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x750eb6497d70>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x750eb6497d70> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-06-30 14:51:38,685 [ResultWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x750eb6497d70> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:51:38,687 [ResultWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x750eb6497d70> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:51:38,687 [ResultWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x750eb6497d70> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-06-30 14:51:38,688 [ResultWorker] INFO: Created channel=1
+2025-06-30 14:51:38,690 [ResultWorker] INFO: RabbitMQ接続成功
+2025-06-30 14:51:38,691 [ResultWorker] INFO: ResultWorker起動 - 結果待機中...
