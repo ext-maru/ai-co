@@ -77,7 +77,7 @@ class TaskWorker:
 
             # Claude CLI実行
             if self.check_claude_cli():
-                cmd = ["claude", "--model", self.model, "--allowedTools", "Edit,Write", "--print"]
+                cmd = ["claude", "--model", self.model, "--allowedTools", "Edit,Write,FileSystem", "--print"]
                 logger.info(f"🤖 Claude CLI実行中...")
                 
                 try:
@@ -86,7 +86,7 @@ class TaskWorker:
                         input=enhanced_prompt,
                         capture_output=True,
                         text=True,
-                        cwd=str(OUTPUT_DIR),  # プロジェクトルートで実行
+                        cwd=str(PROJECT_DIR),  # プロジェクトルートで実行
                         timeout=300
                     )
 
