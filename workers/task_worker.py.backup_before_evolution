@@ -8,13 +8,11 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 import logging
-import re
 
-# RAG・Slack・自己進化統合
+# RAG・Slack統合
 sys.path.append(str(Path(__file__).parent.parent))
 from libs.rag_manager import RAGManager
 from libs.slack_notifier import SlackNotifier
-from libs.self_evolution_manager import SelfEvolutionManager
 
 PROJECT_DIR = Path(__file__).parent.parent
 OUTPUT_DIR = PROJECT_DIR / "output"
@@ -34,10 +32,9 @@ class TaskWorker:
     def __init__(self, worker_id="worker-1"):
         self.worker_id = worker_id
         self.model = "claude-sonnet-4-20250514"
-        # RAG・Slack・自己進化統合
+        # RAG・Slack統合
         self.rag = RAGManager(model=self.model)
         self.slack = SlackNotifier()
-        self.evolution = SelfEvolutionManager()
 
     def connect(self):
         try:
@@ -70,10 +67,10 @@ class TaskWorker:
             if rag_applied:
                 logger.info(f"✨ RAG適用: プロンプト拡張 {len(prompt)} → {len(enhanced_prompt)} 文字")
 
-            # 出力フォルダ作成（従来通り）
+            # 出力フォルダ作成
             task_output_dir = OUTPUT_DIR / task_type / task_id
             os.makedirs(task_output_dir, exist_ok=True)
-            result_file = task_output_dir / "result.txt"
+            output_file = task_output_dir / "result.txt"
 
             # Claude CLI実行
             if self.check_claude_cli():
@@ -86,7 +83,7 @@ class TaskWorker:
                         input=enhanced_prompt,
                         capture_output=True,
                         text=True,
-                        cwd=str(PROJECT_DIR),  # プロジェクトルートで実行
+                        cwd="/root/ai_co/output",
                         timeout=300
                     )
 
@@ -94,43 +91,34 @@ class TaskWorker:
                         output_text = result.stdout
                         status = "completed"
                         logger.info(f"✅ CLI成功: 出力{len(output_text)}文字")
-                        
-                        # 🧬 自己進化: 生成されたコードを自動配置
-                        evolution_result = self.handle_evolution(output_text, task_id, prompt)
-                        
                     else:
                         output_text = f"エラー: {result.stderr}"
                         status = "failed"
-                        evolution_result = None
                         logger.error(f"❌ CLI失敗: {result.stderr}")
 
                 except subprocess.TimeoutExpired:
                     output_text = "エラー: CLIタイムアウト(5分)"
                     status = "failed"
-                    evolution_result = None
                     logger.error("⏱️ CLIタイムアウト")
             else:
                 output_text = f"[シミュレーション]\nタスク: {prompt}\n応答: シミュレーション結果"
                 status = "completed"
-                evolution_result = None
                 logger.warning("🔧 シミュレーションモード")
 
-            # result.txt 保存
+            # ファイル保存
             try:
-                with open(result_file, 'w', encoding='utf-8') as f:
+                with open(output_file, 'w', encoding='utf-8') as f:
                     f.write(f"=== Task Info ===\n")
                     f.write(f"Task ID: {task_id}\n")
                     f.write(f"Worker: {self.worker_id}\n")
                     f.write(f"Timestamp: {datetime.now().isoformat()}\n")
                     f.write(f"Model: {self.model}\n")
                     f.write(f"RAG Applied: {'Yes' if rag_applied else 'No'}\n")
-                    f.write(f"Evolution Applied: {'Yes' if evolution_result else 'No'}\n")
+                    f.write(f"Slack Sent: Yes\n")
                     f.write(f"\n=== Original Prompt ===\n{prompt}\n")
                     f.write(f"\n=== Response ===\n{output_text}\n")
-                    if evolution_result:
-                        f.write(f"\n=== Evolution Result ===\n{json.dumps(evolution_result, indent=2)}\n")
                     f.write(f"=== End ===\n")
-                logger.info(f"💾 結果ファイル保存: {result_file}")
+                logger.info(f"💾 ファイル保存: {output_file}")
             except Exception as e:
                 logger.error(f"💾 ファイル保存失敗: {e}")
 
@@ -148,17 +136,13 @@ class TaskWorker:
             except Exception as e:
                 logger.error(f"🧠 RAG履歴保存失敗: {e}")
 
-            # 📱 Slack通知送信（自己進化情報も含む）
+            # 📱 Slack通知送信
             try:
-                evolution_info = ""
-                if evolution_result and evolution_result.get("success"):
-                    evolution_info = f"\n🧬 自己進化: {evolution_result['relative_path']}"
-                
                 slack_success = self.slack.send_task_completion_simple(
                     task_id=task_id,
                     worker=self.worker_id,
                     prompt=prompt,
-                    response=output_text + evolution_info,
+                    response=output_text,
                     status=status,
                     task_type=task_type,
                     rag_applied=rag_applied
@@ -175,8 +159,7 @@ class TaskWorker:
                 "task_id": task_id,
                 "worker": self.worker_id,
                 "status": status,
-                "output_file": str(result_file),
-                "evolution_result": evolution_result,
+                "output_file": str(output_file),
                 "timestamp": datetime.now().isoformat()
             }
 
@@ -195,117 +178,6 @@ class TaskWorker:
             traceback.print_exc()
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
-    def handle_evolution(self, claude_output, task_id, original_prompt):
-        """
-        Claude出力から自己進化候補を検出・配置
-        """
-        try:
-            # コードブロック抽出
-            code_blocks = self.extract_code_blocks(claude_output)
-            
-            evolution_results = []
-            
-            for i, code_block in enumerate(code_blocks):
-                if self.is_significant_code(code_block['content']):
-                    # ファイル名推測
-                    suggested_name = self.suggest_filename(
-                        code_block['content'], 
-                        code_block['language'], 
-                        original_prompt,
-                        task_id,
-                        i
-                    )
-                    
-                    # 自己進化配置実行
-                    evolution_result = self.evolution.auto_place_file(
-                        source_content=code_block['content'],
-                        suggested_filename=suggested_name,
-                        task_id=task_id
-                    )
-                    
-                    if evolution_result.get("success"):
-                        logger.info(f"🧬 自己進化成功: {evolution_result['relative_path']}")
-                        evolution_results.append(evolution_result)
-                    else:
-                        logger.warning(f"🧬 自己進化失敗: {evolution_result.get('error')}")
-            
-            if evolution_results:
-                return {
-                    "success": True,
-                    "evolved_files": evolution_results,
-                    "count": len(evolution_results)
-                }
-            else:
-                return None
-                
-        except Exception as e:
-            logger.error(f"自己進化処理エラー: {e}")
-            return None
-
-    def extract_code_blocks(self, text):
-        """Claude出力からコードブロックを抽出"""
-        # ```language code ``` パターン
-        pattern = r'```(\w+)?\n(.*?)\n```'
-        matches = re.findall(pattern, text, re.DOTALL)
-        
-        code_blocks = []
-        for match in matches:
-            language = match[0] or 'text'
-            content = match[1].strip()
-            if content:
-                code_blocks.append({
-                    'language': language,
-                    'content': content
-                })
-        
-        return code_blocks
-
-    def is_significant_code(self, content):
-        """有意なコードかどうか判定"""
-        # 最小行数チェック
-        if len(content.split('\n')) < 5:
-            return False
-        
-        # 重要なキーワードを含むか
-        significant_patterns = [
-            r'def\s+\w+',  # 関数定義
-            r'class\s+\w+',  # クラス定義
-            r'import\s+\w+',  # インポート
-            r'#!/bin/bash',  # シェルスクリプト
-            r'if\s+__name__\s*==\s*["\']__main__["\']',  # メイン実行
-        ]
-        
-        for pattern in significant_patterns:
-            if re.search(pattern, content):
-                return True
-        
-        return False
-
-    def suggest_filename(self, content, language, prompt, task_id, index=0):
-        """ファイル名提案"""
-        # プロンプトから名前のヒントを抽出
-        prompt_lower = prompt.lower()
-        
-        # 特定のキーワードからファイル名推測
-        if 'worker' in prompt_lower:
-            return f"enhanced_worker_{task_id}.py"
-        elif 'manager' in prompt_lower:
-            return f"new_manager_{task_id}.py"
-        elif 'notifier' in prompt_lower:
-            return f"improved_notifier_{task_id}.py"
-        elif 'script' in prompt_lower:
-            return f"generated_script_{task_id}.sh"
-        elif 'test' in prompt_lower:
-            return f"test_{task_id}.py"
-        
-        # 言語別デフォルト
-        if language == 'python':
-            return f"evolution_{task_id}_{index}.py"
-        elif language == 'bash':
-            return f"evolution_{task_id}_{index}.sh"
-        else:
-            return f"evolution_{task_id}_{index}.{language}"
-
     def check_claude_cli(self):
         try:
             result = subprocess.run(["which", "claude"], capture_output=True)
@@ -320,7 +192,7 @@ class TaskWorker:
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(queue='task_queue', on_message_callback=self.process_task)
 
-        logger.info(f"🚀 {self.worker_id} 自己進化版起動 - task_queue待機中...")
+        logger.info(f"🚀 {self.worker_id} RAG+Slack統合版起動 - task_queue待機中...")
         try:
             self.channel.start_consuming()
         except KeyboardInterrupt:
