@@ -365,3 +365,5 @@
 2025-06-30 14:30:41,441 [ResultWorker] INFO: Created channel=1
 2025-06-30 14:30:41,443 [ResultWorker] INFO: RabbitMQ接続成功
 2025-06-30 14:30:41,444 [ResultWorker] INFO: ResultWorker起動 - 結果待機中...
+2025-06-30 14:31:50,801 [ResultWorker] INFO: 結果受信: code_20250630_142756 - completed
+2025-06-30 14:31:50,802 [ResultWorker] INFO: 出力ファイル: /root/ai_co/output/code/code_20250630_142756/result.txt

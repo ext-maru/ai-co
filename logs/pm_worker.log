@@ -344,3 +344,14 @@
 2025-06-30 14:31:44,327 [PMWorker] INFO: 📁 新規ファイル検出: 1件
 2025-06-30 14:31:44,327 [PMWorker] INFO:   - output/code/code_20250630_143051/result.txt
 2025-06-30 14:31:44,346 [PMWorker] INFO: Git add: output/code/code_20250630_143051/result.txt
+2025-06-30 14:31:44,384 [PMWorker] INFO: Git commit成功: 🤖
+2025-06-30 14:31:46,454 [PMWorker] INFO: Git push成功
+2025-06-30 14:31:46,455 [PMWorker] INFO: ✅ Git自動コミット成功: code_20250630_143051
+2025-06-30 14:33:58,427 [PMWorker] INFO: 📋 タスク完了検知: code_20250630_143324 (completed)
+2025-06-30 14:33:58,436 [PMWorker] INFO: 📁 新規ファイル検出: 3件
+2025-06-30 14:33:58,437 [PMWorker] INFO:   - output/code/code_20250630_143051/result.txt
+2025-06-30 14:33:58,437 [PMWorker] INFO:   - output/code/code_20250630_143324/result.txt
+2025-06-30 14:33:58,437 [PMWorker] INFO:   - output/code/code_20250630_142756/result.txt
+2025-06-30 14:33:58,452 [PMWorker] INFO: Git add: output/code/code_20250630_143051/result.txt
+2025-06-30 14:33:58,459 [PMWorker] INFO: Git add: output/code/code_20250630_143324/result.txt
+2025-06-30 14:33:58,466 [PMWorker] INFO: Git add: output/code/code_20250630_142756/result.txt

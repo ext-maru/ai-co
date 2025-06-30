@@ -1139,3 +1139,29 @@ ConnectionResetError: [Errno 104] Connection reset by peer
 2025-06-30 14:31:44,310 [TaskWorker] INFO: Slack通知送信成功
 2025-06-30 14:31:44,311 [TaskWorker] INFO: 📱 Slack通知送信完了
 2025-06-30 14:31:44,315 [TaskWorker] INFO: 🎯 タスク完了: code_20250630_143051
+2025-06-30 14:31:45,999 [TaskWorker] INFO: ✅ CLI成功: 出力460文字
+2025-06-30 14:31:46,002 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/code/code_20250630_142756/result.txt
+2025-06-30 14:31:46,003 [TaskWorker] INFO: タスク履歴保存成功: code_20250630_142756
+2025-06-30 14:31:50,505 [TaskWorker] INFO: 要約生成成功: 110文字
+2025-06-30 14:31:50,506 [TaskWorker] INFO: 要約更新成功: code_20250630_142756
+2025-06-30 14:31:50,517 [TaskWorker] INFO: 要約保存完了: code_20250630_142756 -> EmailNotificationWorker（Gmail連携メール通知ワーカー）は既に実装済み。G...
+2025-06-30 14:31:50,517 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-06-30 14:31:50,794 [TaskWorker] INFO: Slack通知送信成功
+2025-06-30 14:31:50,794 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-06-30 14:31:50,797 [TaskWorker] INFO: 🎯 タスク完了: code_20250630_142756
+2025-06-30 14:33:17,758 [TaskWorker] INFO: 📨 タスク受信: code_20250630_143317 (タイプ: code)
+2025-06-30 14:33:17,758 [TaskWorker] INFO: プロンプト: DatabaseManagerクラス作成: SQLite操作、コネクションプール、トランザクション管理を含む高度なデータベース管理ライブラリ
+2025-06-30 14:33:17,763 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-30 14:33:24,949 [TaskWorker] INFO: 📨 タスク受信: code_20250630_143324 (タイプ: code)
+2025-06-30 14:33:24,949 [TaskWorker] INFO: プロンプト: database.conf設定ファイル作成: データベース接続先、認証情報、プール設定などを管理する設定ファイル
+2025-06-30 14:33:24,954 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-06-30 14:33:52,905 [TaskWorker] INFO: ✅ CLI成功: 出力224文字
+2025-06-30 14:33:52,906 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/code/code_20250630_143324/result.txt
+2025-06-30 14:33:52,907 [TaskWorker] INFO: タスク履歴保存成功: code_20250630_143324
+2025-06-30 14:33:58,182 [TaskWorker] INFO: 要約生成成功: 72文字
+2025-06-30 14:33:58,183 [TaskWorker] INFO: 要約更新成功: code_20250630_143324
+2025-06-30 14:33:58,188 [TaskWorker] INFO: 要約保存完了: code_20250630_143324 -> database.conf設定ファイルをconfig/に作成。接続先、認証、プール、SSL、バックア...
+2025-06-30 14:33:58,188 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-06-30 14:33:58,421 [TaskWorker] INFO: Slack通知送信成功
+2025-06-30 14:33:58,422 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-06-30 14:33:58,423 [TaskWorker] INFO: 🎯 タスク完了: code_20250630_143324
