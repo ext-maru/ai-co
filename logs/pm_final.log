@@ -1,0 +1,48 @@
+nohup: 入力を無視します
+2025-07-01 17:07:23,937 [PMWorker] INFO: 設定読み込み完了: {'MIN_WORKERS': 1, 'MAX_WORKERS': 5, 'SCALE_UP_QUEUE_LENGTH': 5, 'SCALE_DOWN_QUEUE_LENGTH': 1, 'COOLDOWN_SECONDS': 60, 'CHECK_INTERVAL': 30, 'HEALTH_CHECK_INTERVAL': 60, 'GRACEFUL_SHUTDOWN_TIMEOUT': 30, 'MAX_CPU_PERCENT': 80, 'MAX_MEMORY_PERCENT': 80, 'WORKER_START_DELAY': 2, 'WORKER_STOP_DELAY': 1}
+2025-07-01 17:07:23,938 [PMWorker] INFO: 🚀 スケーリング監視開始
+2025-07-01 17:07:23,939 [PMWorker] INFO: 📊 スケーリング監視スレッド開始 (間隔: 30秒)
+2025-07-01 17:07:23,940 [PMWorker] INFO: 🏥 ヘルスチェック監視開始
+2025-07-01 17:07:23,941 [PMWorker] INFO: 🏥 ヘルスチェック監視スレッド開始 (間隔: 60秒)
+2025-07-01 17:07:23,947 [PMWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 17:07:23,948 [PMWorker] INFO: Socket connected: <socket.socket fd=9, family=2, type=1, proto=6, laddr=('127.0.0.1', 44138), raddr=('127.0.0.1', 5672)>
+2025-07-01 17:07:23,949 [PMWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7dfdfaf06030>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7dfdfaf06030> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 17:07:23,955 [PMWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7dfdfaf06030> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 17:07:23,955 [PMWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7dfdfaf06030> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 17:07:23,955 [PMWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7dfdfaf06030> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 17:07:23,955 [PMWorker] INFO: Created channel=1
+2025-07-01 17:07:23,957 [PMWorker] INFO: RabbitMQ接続成功
+2025-07-01 17:07:23,960 [PMWorker] INFO: 📁 結果監視開始 - ファイル生成時自動Git処理
+2025-07-01 17:07:23,960 [PMWorker] INFO: 🚀 PM Worker起動 - 自動Git機能付き
+2025-07-01 17:07:23,960 [PMWorker] INFO: 📋 監視中: pm_task_queue (PM専用)
+2025-07-01 17:07:23,960 [PMWorker] INFO: 📁 監視中: result_queue (自動Git)
+2025-07-01 17:07:24,960 [PMWorker] WARNING: ⚠️ worker-1 不健康: ['RabbitMQ接続なし'] (連続1回)
+2025-07-01 17:07:25,827 [PMWorker] INFO: 📊 メトリクス: ワーカー=2, キュー=0
+2025-07-01 17:07:25,828 [PMWorker] INFO: 📉 スケールダウン条件: キュー長 0 <= 1
+2025-07-01 17:07:25,828 [PMWorker] INFO: 🎯 スケーリング実行: down (2 → 1)
+2025-07-01 17:07:25,829 [PMWorker] INFO: 設定読み込み完了: {'MIN_WORKERS': 1, 'MAX_WORKERS': 5, 'SCALE_UP_QUEUE_LENGTH': 5, 'SCALE_DOWN_QUEUE_LENGTH': 1, 'COOLDOWN_SECONDS': 60, 'CHECK_INTERVAL': 30, 'HEALTH_CHECK_INTERVAL': 60, 'GRACEFUL_SHUTDOWN_TIMEOUT': 30, 'MAX_CPU_PERCENT': 80, 'MAX_MEMORY_PERCENT': 80, 'WORKER_START_DELAY': 2, 'WORKER_STOP_DELAY': 1}
+2025-07-01 17:07:25,838 [PMWorker] INFO: 📊 スケーリング: 現在 2 → 目標 1
+2025-07-01 17:07:25,844 [PMWorker] INFO: 📤 SIGTERM送信: worker-2 (PID: 11030)
+2025-07-01 17:07:25,962 [PMWorker] INFO: ⚠️ 不健康なワーカー: 2/2
+Exception in thread Thread-2 (monitor_health):
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/ai_co/workers/pm_worker.py", line 330, in monitor_health
+    time.sleep(self.health_check_interval)
+    ^^^^
+NameError: name 'time' is not defined. Did you forget to import 'time'?
+2025-07-01 17:07:26,845 [PMWorker] INFO: ✅ ワーカー正常終了: worker-2
+2025-07-01 17:07:26,847 [PMWorker] INFO: ✅ スケーリング成功
+Exception in thread Thread-1 (monitor_and_scale):
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/threading.py", line 1073, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.12/threading.py", line 1010, in run
+    self._target(*self._args, **self._kwargs)
+  File "/root/ai_co/workers/pm_worker.py", line 272, in monitor_and_scale
+    time.sleep(self.check_interval)
+    ^^^^
+NameError: name 'time' is not defined. Did you forget to import 'time'?

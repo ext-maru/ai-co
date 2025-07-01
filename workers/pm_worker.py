@@ -34,6 +34,14 @@ logger = logging.getLogger("PMWorker")
 class PMWorker:
     def __init__(self):
         self.model = "claude-opus-4-20250514"
+        # 動的管理関連
+        self.monitor = WorkerMonitor()
+        self.controller = WorkerController()
+        self.policy = ScalingPolicy()
+        self.health_checker = HealthChecker()
+        self.scaling_enabled = True
+        self.check_interval = 30
+        self.health_check_interval = 60
 
     def connect(self):
         try:
