@@ -2465,3 +2465,80 @@ def is_prime(n):
 2025-07-01 22:04:56,847 [TaskWorker] INFO: 🎯 タスク完了: general_20250701_212004
 2025-07-01 22:04:56,855 [TaskWorker] INFO: 📨 タスク受信: general_20250701_212004 (タイプ: general)
 2025-07-01 22:04:56,856 [TaskWorker] INFO: プロンプト: 現在のシステムのセキュリティ脆弱性を分析して、特に機密情報の管理方法について改善案を提示してください
+2025-07-01 22:04:57,231 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 50 → 252 文字
+2025-07-01 22:04:57,233 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 22:07:02,148 [TaskWorker] INFO: 📝 CLI stdout: '## Summary
+
+I have successfully enhanced the `SelfEvolutionManager`'s `auto_place_file` function wit...'
+2025-07-01 22:07:02,149 [TaskWorker] INFO: ✅ CLI処理完了: 最終出力1814文字
+2025-07-01 22:07:02,149 [TaskWorker] INFO: 🧬 自己進化処理開始...
+2025-07-01 22:07:02,149 [TaskWorker] INFO: 🧬 handle_evolution開始: 出力長1814文字
+2025-07-01 22:07:02,149 [TaskWorker] INFO: 🧬 コードブロック抽出開始: テキスト長1814文字
+2025-07-01 22:07:02,150 [TaskWorker] INFO: 🧬 正規表現マッチ数: 0
+2025-07-01 22:07:02,150 [TaskWorker] INFO: 🧬 抽出されたコードブロック数: 0
+2025-07-01 22:07:02,151 [TaskWorker] INFO: 🧬 自己進化: 該当コードなし
+2025-07-01 22:07:02,152 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/code/code_20250701_212004/result.txt
+2025-07-01 22:07:02,153 [TaskWorker] INFO: タスク履歴保存成功: code_20250701_212004
+2025-07-01 22:07:08,423 [TaskWorker] INFO: 要約生成成功: 109文字
+2025-07-01 22:07:08,423 [TaskWorker] INFO: 要約更新成功: code_20250701_212004
+2025-07-01 22:07:08,433 [TaskWorker] INFO: 要約保存完了: code_20250701_212004 -> SelfEvolutionManagerのauto_place_file関数を機械学習アプローチで強...
+2025-07-01 22:07:08,434 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-07-01 22:07:08,679 [TaskWorker] INFO: Slack通知送信成功
+2025-07-01 22:07:08,680 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-07-01 22:07:08,808 [TaskWorker] ERROR: _AsyncBaseTransport._produce() failed, aborting connection: error=ConnectionResetError(104, 'Connection reset by peer'); sock=<socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 36678)>; Caller's stack:
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+2025-07-01 22:07:08,809 [TaskWorker] INFO: _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=ConnectionResetError(104, 'Connection reset by peer'); <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 36678)>
+2025-07-01 22:07:08,809 [TaskWorker] INFO: Deactivating transport: state=1; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 36678)>
+2025-07-01 22:07:08,810 [TaskWorker] ERROR: connection_lost: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-07-01 22:07:08,810 [TaskWorker] INFO: AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",); pending-error=None
+2025-07-01 22:07:08,810 [TaskWorker] INFO: Stack terminated due to StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-07-01 22:07:08,811 [TaskWorker] INFO: Closing transport socket and unlinking: state=2; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 36678)>
+2025-07-01 22:07:08,811 [TaskWorker] ERROR: Unexpected connection close detected: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-07-01 22:07:08,811 [TaskWorker] ERROR: ❌ タスク処理例外: Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')
+2025-07-01 22:07:27,481 [TaskWorker] INFO: 📝 CLI stdout: 'セキュリティ脆弱性分析が完了しました。主要な発見事項：
+
+**🚨 Critical級の問題:**
+- GitHub Token、Slack Webhook URL、DB passwordが平文で設定フ...'
+2025-07-01 22:07:27,482 [TaskWorker] INFO: ✅ CLI処理完了: 最終出力326文字
+2025-07-01 22:07:27,482 [TaskWorker] INFO: 🧬 自己進化処理開始...
+2025-07-01 22:07:27,482 [TaskWorker] INFO: 🧬 handle_evolution開始: 出力長326文字
+2025-07-01 22:07:27,483 [TaskWorker] INFO: 🧬 コードブロック抽出開始: テキスト長326文字
+2025-07-01 22:07:27,483 [TaskWorker] INFO: 🧬 正規表現マッチ数: 0
+2025-07-01 22:07:27,483 [TaskWorker] INFO: 🧬 抽出されたコードブロック数: 0
+2025-07-01 22:07:27,483 [TaskWorker] INFO: 🧬 自己進化: 該当コードなし
+2025-07-01 22:07:27,483 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/general/general_20250701_212004/result.txt
+2025-07-01 22:07:27,484 [TaskWorker] INFO: タスク履歴保存成功: general_20250701_212004
+2025-07-01 22:07:33,003 [TaskWorker] INFO: 要約生成成功: 100文字
+2025-07-01 22:07:33,004 [TaskWorker] INFO: 要約更新成功: general_20250701_212004
+2025-07-01 22:07:33,017 [TaskWorker] INFO: 要約保存完了: general_20250701_212004 -> **セキュリティ脆弱性分析完了**: 機密情報の平文保存・SSL無効化などCritical級問題を発...
+2025-07-01 22:07:33,017 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-07-01 22:07:33,513 [TaskWorker] INFO: Slack通知送信成功
+2025-07-01 22:07:33,514 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-07-01 22:07:33,515 [TaskWorker] INFO: 🎯 タスク完了: general_20250701_212004
+2025-07-01 22:07:33,516 [TaskWorker] INFO: 📨 タスク受信: code_20250701_212004 (タイプ: code)
+2025-07-01 22:07:33,516 [TaskWorker] INFO: プロンプト: SelfEvolutionManagerのauto_place_file関数を改良して、より賢い配置ルールを実装してください。機械学習的なアプローチも検討して

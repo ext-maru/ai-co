@@ -69,3 +69,6 @@ hint: Turn this message off by running
 hint: "git config advice.addIgnoredFile false"
 
 2025-07-01 22:04:56,885 [PMWorker] INFO: Git add: output/ai_company_system_analysis.md
+2025-07-01 22:04:56,913 [PMWorker] INFO: Git commit成功: 🤖
+2025-07-01 22:04:59,083 [PMWorker] INFO: Git push成功
+2025-07-01 22:04:59,083 [PMWorker] INFO: ✅ Git自動コミット成功: general_20250701_212004

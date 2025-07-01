@@ -641,3 +641,30 @@ hint: Turn this message off by running
 hint: "git config advice.addIgnoredFile false"
 
 2025-07-01 22:04:56,885 [PMWorker] INFO: Git add: output/ai_company_system_analysis.md
+2025-07-01 22:04:56,913 [PMWorker] INFO: Git commit成功: 🤖
+2025-07-01 22:04:59,083 [PMWorker] INFO: Git push成功
+2025-07-01 22:04:59,083 [PMWorker] INFO: ✅ Git自動コミット成功: general_20250701_212004
+2025-07-01 22:07:33,519 [PMWorker] INFO: 📋 タスク完了検知: general_20250701_212004 (completed)
+2025-07-01 22:07:33,532 [PMWorker] INFO: 📁 新規ファイル検出: 6件
+2025-07-01 22:07:33,532 [PMWorker] INFO:   - output/test_enhanced_placement.py
+2025-07-01 22:07:33,532 [PMWorker] INFO:   - output/code/code_20250701_212004/result.txt
+2025-07-01 22:07:33,532 [PMWorker] INFO:   - output/general/general_20250701_212004/result.txt
+2025-07-01 22:07:33,532 [PMWorker] INFO:   - output/security_vulnerability_analysis.md
+2025-07-01 22:07:33,532 [PMWorker] INFO:   - output/ai_company_system_analysis.md
+2025-07-01 22:07:33,532 [PMWorker] INFO:   - output/ai_company_analysis_and_improvements.md
+2025-07-01 22:07:33,541 [PMWorker] INFO: Git add: output/test_enhanced_placement.py
+2025-07-01 22:07:33,545 [PMWorker] WARNING: Git add失敗: output/code/code_20250701_212004/result.txt - The following paths are ignored by one of your .gitignore files:
+output/code/code_20250701_212004
+hint: Use -f if you really want to add them.
+hint: Turn this message off by running
+hint: "git config advice.addIgnoredFile false"
+
+2025-07-01 22:07:33,549 [PMWorker] WARNING: Git add失敗: output/general/general_20250701_212004/result.txt - The following paths are ignored by one of your .gitignore files:
+output/general/general_20250701_212004
+hint: Use -f if you really want to add them.
+hint: Turn this message off by running
+hint: "git config advice.addIgnoredFile false"
+
+2025-07-01 22:07:33,555 [PMWorker] INFO: Git add: output/security_vulnerability_analysis.md
+2025-07-01 22:07:33,562 [PMWorker] INFO: Git add: output/ai_company_system_analysis.md
+2025-07-01 22:07:33,567 [PMWorker] INFO: Git add: output/ai_company_analysis_and_improvements.md
