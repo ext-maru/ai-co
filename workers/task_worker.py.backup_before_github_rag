@@ -15,7 +15,7 @@ import re
 
 # RAG・Slack・自己進化統合
 sys.path.append(str(Path(__file__).parent.parent))
-from libs.github_aware_rag import GitHubAwareRAGManager
+from libs.rag_manager import RAGManager
 from libs.slack_notifier import SlackNotifier
 from libs.self_evolution_manager import SelfEvolutionManager
 
@@ -38,7 +38,7 @@ class TaskWorker:
         self.worker_id = worker_id
         self.model = "claude-sonnet-4-20250514"
         # RAG・Slack・自己進化統合
-        self.rag = GitHubAwareRAGManager(model=self.model)
+        self.rag = RAGManager(model=self.model)
         self.slack = SlackNotifier()
         self.evolution = SelfEvolutionManager()
 

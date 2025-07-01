@@ -497,3 +497,32 @@
 2025-07-01 17:07:25,962 [PMWorker] INFO: ⚠️ 不健康なワーカー: 2/2
 2025-07-01 17:07:26,845 [PMWorker] INFO: ✅ ワーカー正常終了: worker-2
 2025-07-01 17:07:26,847 [PMWorker] INFO: ✅ スケーリング成功
+2025-07-01 21:19:46,246 [PMWorker] INFO: 設定読み込み完了: {'MIN_WORKERS': 1, 'MAX_WORKERS': 5, 'SCALE_UP_QUEUE_LENGTH': 5, 'SCALE_DOWN_QUEUE_LENGTH': 1, 'COOLDOWN_SECONDS': 60, 'CHECK_INTERVAL': 30, 'HEALTH_CHECK_INTERVAL': 60, 'GRACEFUL_SHUTDOWN_TIMEOUT': 30, 'MAX_CPU_PERCENT': 80, 'MAX_MEMORY_PERCENT': 80, 'WORKER_START_DELAY': 2, 'WORKER_STOP_DELAY': 1}
+2025-07-01 21:19:46,246 [PMWorker] INFO: 🚀 スケーリング監視開始
+2025-07-01 21:19:46,247 [PMWorker] INFO: 📊 スケーリング監視スレッド開始 (間隔: 30秒)
+2025-07-01 21:19:46,248 [PMWorker] INFO: 🏥 ヘルスチェック監視開始
+2025-07-01 21:19:46,248 [PMWorker] INFO: 🏥 ヘルスチェック監視スレッド開始 (間隔: 60秒)
+2025-07-01 21:19:46,256 [PMWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 21:19:46,257 [PMWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 47884), raddr=('127.0.0.1', 5672)>
+2025-07-01 21:19:46,257 [PMWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x78e1b68e2750>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x78e1b68e2750> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 21:19:46,271 [PMWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x78e1b68e2750> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 21:19:46,271 [PMWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x78e1b68e2750> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 21:19:46,272 [PMWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x78e1b68e2750> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 21:19:46,272 [PMWorker] INFO: Created channel=1
+2025-07-01 21:19:46,276 [PMWorker] INFO: RabbitMQ接続成功
+2025-07-01 21:19:46,280 [PMWorker] INFO: 📁 結果監視開始 - ファイル生成時自動Git処理
+2025-07-01 21:19:46,280 [PMWorker] INFO: 🚀 PM Worker起動 - 自動Git機能付き
+2025-07-01 21:19:46,281 [PMWorker] INFO: 📋 監視中: pm_task_queue (PM専用)
+2025-07-01 21:19:46,281 [PMWorker] INFO: 📁 監視中: result_queue (自動Git)
+2025-07-01 21:19:47,272 [PMWorker] WARNING: ⚠️ worker-1 不健康: ['RabbitMQ接続なし'] (連続1回)
+2025-07-01 21:19:47,273 [PMWorker] INFO: ⚠️ 不健康なワーカー: 1/1
+2025-07-01 21:19:48,580 [PMWorker] INFO: 📊 メトリクス: ワーカー=1, キュー=0
+2025-07-01 21:21:58,378 [PMWorker] INFO: 📋 タスク完了検知: code_20250701_212004 (completed)
+2025-07-01 21:21:58,404 [PMWorker] INFO: 📁 新規ファイル検出: 1件
+2025-07-01 21:21:58,404 [PMWorker] INFO:   - output/code/code_20250701_212004/result.txt
+2025-07-01 21:21:58,415 [PMWorker] WARNING: Git add失敗: output/code/code_20250701_212004/result.txt - The following paths are ignored by one of your .gitignore files:
+output/code/code_20250701_212004
+hint: Use -f if you really want to add them.
+hint: Turn this message off by running
+hint: "git config advice.addIgnoredFile false"
+
