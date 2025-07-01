@@ -418,3 +418,5 @@
 2025-07-01 14:54:00,572 [ResultWorker] INFO: ResultWorker起動 - 結果待機中...
 2025-07-01 15:04:25,183 [ResultWorker] INFO: 結果受信: code_20250701_150400 - completed
 2025-07-01 15:04:25,184 [ResultWorker] INFO: 出力ファイル: /root/ai_co/output/code/code_20250701_150400/result.txt
+2025-07-01 15:40:46,981 [ResultWorker] INFO: 結果受信: code_20250701_154040 - failed
+2025-07-01 15:40:46,984 [ResultWorker] INFO: 出力ファイル: /root/ai_co/output/code/code_20250701_154040/result.txt

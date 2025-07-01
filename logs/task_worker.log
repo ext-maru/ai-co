@@ -1467,3 +1467,75 @@ ConnectionResetError: [Errno 104] Connection reset by peer
 2025-07-01 15:39:08,814 [TaskWorker] INFO: Slack通知送信成功
 2025-07-01 15:39:08,815 [TaskWorker] INFO: 📱 Slack通知送信完了
 2025-07-01 15:39:08,817 [TaskWorker] INFO: 🎯 タスク完了: code_20250701_153851
+2025-07-01 15:40:37,342 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 15:40:37,343 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 46130), raddr=('127.0.0.1', 5672)>
+2025-07-01 15:40:37,343 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7325732980e0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7325732980e0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 15:40:37,346 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 15:40:37,347 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 46136), raddr=('127.0.0.1', 5672)>
+2025-07-01 15:40:37,347 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a409e262a20>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a409e262a20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 15:40:37,350 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7325732980e0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:40:37,351 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7325732980e0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:40:37,351 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7325732980e0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:40:37,351 [TaskWorker] INFO: Created channel=1
+2025-07-01 15:40:37,352 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a409e262a20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:40:37,352 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a409e262a20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:40:37,352 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a409e262a20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:40:37,352 [TaskWorker] INFO: Created channel=1
+2025-07-01 15:40:37,354 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-07-01 15:40:37,355 [TaskWorker] INFO: 🚀 worker-1 自己進化デバッグ版起動 - task_queue待機中...
+2025-07-01 15:40:37,356 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-07-01 15:40:37,357 [TaskWorker] INFO: 🚀 worker-2 自己進化デバッグ版起動 - task_queue待機中...
+2025-07-01 15:40:40,282 [TaskWorker] INFO: 📨 タスク受信: code_20250701_154040 (タイプ: code)
+2025-07-01 15:40:40,282 [TaskWorker] INFO: プロンプト: 簡単な挨拶プログラムを作って: Hello, AI Company!
+2025-07-01 15:40:40,286 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 34 → 311 文字
+2025-07-01 15:40:40,290 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 15:40:41,207 [TaskWorker] ERROR: ❌ CLI失敗: --dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+
+2025-07-01 15:40:41,208 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/code/code_20250701_154040/result.txt
+2025-07-01 15:40:41,209 [TaskWorker] INFO: タスク履歴保存成功: code_20250701_154040
+2025-07-01 15:40:46,436 [TaskWorker] INFO: 要約生成成功: 75文字
+2025-07-01 15:40:46,437 [TaskWorker] INFO: 要約更新成功: code_20250701_154040
+2025-07-01 15:40:46,448 [TaskWorker] INFO: 要約保存完了: code_20250701_154040 -> 簡潔な挨拶プログラム作成タスクで、権限エラー（root/sudo使用時の--dangerously-...
+2025-07-01 15:40:46,448 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-07-01 15:40:46,970 [TaskWorker] INFO: Slack通知送信成功
+2025-07-01 15:40:46,971 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-07-01 15:40:46,972 [TaskWorker] INFO: 🎯 タスク完了: code_20250701_154040
+2025-07-01 15:41:47,100 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 15:41:47,100 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 59288), raddr=('127.0.0.1', 5672)>
+2025-07-01 15:41:47,101 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c27ceb66ed0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c27ceb66ed0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 15:41:47,103 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 15:41:47,103 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 59296), raddr=('127.0.0.1', 5672)>
+2025-07-01 15:41:47,104 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7da9addb75f0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7da9addb75f0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 15:41:47,107 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c27ceb66ed0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:41:47,108 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c27ceb66ed0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:41:47,108 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7c27ceb66ed0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:41:47,108 [TaskWorker] INFO: Created channel=1
+2025-07-01 15:41:47,110 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7da9addb75f0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:41:47,110 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7da9addb75f0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:41:47,110 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-07-01 15:41:47,110 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7da9addb75f0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 15:41:47,111 [TaskWorker] INFO: Created channel=1
+2025-07-01 15:41:47,112 [TaskWorker] INFO: 🚀 worker-1 自己進化デバッグ版起動 - task_queue待機中...
+2025-07-01 15:41:47,113 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-07-01 15:41:47,114 [TaskWorker] INFO: 🚀 worker-2 自己進化デバッグ版起動 - task_queue待機中...
+2025-07-01 15:41:50,070 [TaskWorker] INFO: 📨 タスク受信: code_20250701_154150 (タイプ: code)
+2025-07-01 15:41:50,070 [TaskWorker] INFO: プロンプト: Pythonでシンプルな'Hello, AI Company!'を出力するプログラムを作成してください。ファイル名はhello_ai_company.pyにしてください。
+2025-07-01 15:41:50,073 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 85 → 380 文字
+2025-07-01 15:41:50,078 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 15:42:10,320 [TaskWorker] INFO: 📝 CLI stdout: 'Created `hello_ai_company.py` with the requested Hello, AI Company! output....'
+2025-07-01 15:42:10,320 [TaskWorker] INFO: ✅ CLI処理完了: 最終出力75文字
+2025-07-01 15:42:10,320 [TaskWorker] INFO: 🧬 自己進化処理開始...
+2025-07-01 15:42:10,321 [TaskWorker] INFO: 🧬 handle_evolution開始: 出力長75文字
+2025-07-01 15:42:10,321 [TaskWorker] INFO: 🧬 コードブロック抽出開始: テキスト長75文字
+2025-07-01 15:42:10,321 [TaskWorker] INFO: 🧬 正規表現マッチ数: 0
+2025-07-01 15:42:10,321 [TaskWorker] INFO: 🧬 抽出されたコードブロック数: 0
+2025-07-01 15:42:10,321 [TaskWorker] INFO: 🧬 自己進化: 該当コードなし
+2025-07-01 15:42:10,322 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/code/code_20250701_154150/result.txt
+2025-07-01 15:42:10,323 [TaskWorker] INFO: タスク履歴保存成功: code_20250701_154150
+2025-07-01 15:42:15,138 [TaskWorker] INFO: 要約生成成功: 79文字
+2025-07-01 15:42:15,139 [TaskWorker] INFO: 要約更新成功: code_20250701_154150
+2025-07-01 15:42:15,154 [TaskWorker] INFO: 要約保存完了: code_20250701_154150 -> Pythonで「Hello, AI Company!」を出力するプログラム作成タスクが完了し、`he...
+2025-07-01 15:42:15,155 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-07-01 15:42:15,620 [TaskWorker] INFO: Slack通知送信成功
+2025-07-01 15:42:15,620 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-07-01 15:42:15,621 [TaskWorker] INFO: 🎯 タスク完了: code_20250701_154150

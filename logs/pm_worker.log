@@ -449,3 +449,16 @@
 2025-07-01 15:39:08,851 [PMWorker] INFO:   - output/code/code_20250701_153851/result.txt
 2025-07-01 15:39:08,881 [PMWorker] INFO: Git add: output/calculate.py
 2025-07-01 15:39:08,886 [PMWorker] INFO: Git add: output/code/code_20250701_153851/result.txt
+2025-07-01 15:39:08,947 [PMWorker] INFO: Git commit成功: 🤖
+2025-07-01 15:39:12,074 [PMWorker] INFO: Git push成功
+2025-07-01 15:39:12,075 [PMWorker] INFO: ✅ Git自動コミット成功: code_20250701_153851
+2025-07-01 15:42:15,625 [PMWorker] INFO: 📋 タスク完了検知: code_20250701_154150 (completed)
+2025-07-01 15:42:15,634 [PMWorker] INFO: 📁 新規ファイル検出: 4件
+2025-07-01 15:42:15,634 [PMWorker] INFO:   - output/hello_ai_company.py
+2025-07-01 15:42:15,634 [PMWorker] INFO:   - output/code/code_20250701_154150/result.txt
+2025-07-01 15:42:15,634 [PMWorker] INFO:   - output/code/code_20250701_154040/result.txt
+2025-07-01 15:42:15,634 [PMWorker] INFO:   - output/code/code_20250701_153851/result.txt
+2025-07-01 15:42:15,648 [PMWorker] INFO: Git add: output/hello_ai_company.py
+2025-07-01 15:42:15,653 [PMWorker] INFO: Git add: output/code/code_20250701_154150/result.txt
+2025-07-01 15:42:15,657 [PMWorker] INFO: Git add: output/code/code_20250701_154040/result.txt
+2025-07-01 15:42:15,659 [PMWorker] INFO: Git add: output/code/code_20250701_153851/result.txt
