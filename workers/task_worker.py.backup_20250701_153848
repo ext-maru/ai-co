@@ -78,7 +78,7 @@ class TaskWorker:
             # Claude CLI実行
             evolution_result = None
             if self.check_claude_cli():
-                cmd = ["claude", "--model", self.model, "--allowedTools", "Edit,Write,FileSystem", "--print"]
+                cmd = ["claude", "--model", self.model, "--print"]  # allowedTools除去
                 logger.info(f"🤖 Claude CLI実行中...")
                 
                 try:
@@ -92,46 +92,9 @@ class TaskWorker:
                     )
 
                     if result.returncode == 0:
-                        output_text = result.stdout.strip()
-                        
-                        # デバッグ: 実際の出力を確認
-                        logger.info(f"📝 CLI stdout: '{output_text[:100]}...'")
-                        if result.stderr:
-                            logger.info(f"📝 CLI stderr: '{result.stderr[:100]}...'")
-                        
-                        # Claude Codeが短い応答やエラーメッセージを返すことがある
-                        if len(output_text) < 50 or "error" in output_text.lower():
-                            logger.warning(f"⚠️ 短い応答またはエラー: '{output_text}'")
-                            
-                            # ファイルが生成されているか確認
-                            import glob
-                            import time
-                            time.sleep(1)  # ファイル生成を待つ
-                            
-                            recent_files = sorted(
-                                glob.glob(str(OUTPUT_DIR / "*.py")), 
-                                key=lambda x: os.path.getmtime(x) if os.path.exists(x) else 0,
-                                reverse=True
-                            )
-                            
-                            # 最近作成されたファイルを確認
-                            for recent_file in recent_files[:3]:
-                                file_age = time.time() - os.path.getmtime(recent_file)
-                                if file_age < 30:  # 30秒以内
-                                    logger.info(f"📁 最近のファイル検出: {os.path.basename(recent_file)} ({file_age:.1f}秒前)")
-                                    with open(recent_file, 'r') as f:
-                                        file_content = f.read()
-                                    output_text = f"ファイルを生成しました: {os.path.basename(recent_file)}\n\n```python\n{file_content}\n```"
-                                    break
-                            else:
-                                # ファイルが見つからない場合
-                                if "error" in output_text.lower():
-                                    output_text = f"Claude CLI エラー: {output_text}"
-                                else:
-                                    output_text = f"Claude CLI 応答: {output_text}"
-                        
+                        output_text = result.stdout
                         status = "completed"
-                        logger.info(f"✅ CLI処理完了: 最終出力{len(output_text)}文字")
+                        logger.info(f"✅ CLI成功: 出力{len(output_text)}文字")
                         
                         # 🧬 自己進化: 必ず実行
                         logger.info(f"🧬 自己進化処理開始...")
