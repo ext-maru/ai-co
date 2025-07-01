@@ -67,7 +67,10 @@ class TaskWorker:
             logger.info(f"プロンプト: {prompt[:100]}")
 
             # 🧠 RAG: 過去履歴を含めたプロンプト構築
-            enhanced_prompt = self.rag.build_context_prompt(prompt, include_history=True)
+            enhanced_prompt = self.rag.build_context_with_github(prompt, include_code=True)
+            # Claude CLIの権限付与を明示的に追加
+            permission_prompt = "You have permission to use all tools including Edit, Write, and FileSystem.\nPlease proceed with the task without asking for permissions.\n\n"
+            enhanced_prompt = permission_prompt + enhanced_prompt
             rag_applied = len(enhanced_prompt) > len(prompt)
             
             if rag_applied:
