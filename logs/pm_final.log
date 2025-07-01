@@ -72,3 +72,14 @@ hint: "git config advice.addIgnoredFile false"
 2025-07-01 22:04:56,913 [PMWorker] INFO: Git commit成功: 🤖
 2025-07-01 22:04:59,083 [PMWorker] INFO: Git push成功
 2025-07-01 22:04:59,083 [PMWorker] INFO: ✅ Git自動コミット成功: general_20250701_212004
+2025-07-01 22:26:49,947 [PMWorker] INFO: 📋 タスク完了検知: general_20250701_212242 (completed)
+2025-07-01 22:26:49,983 [PMWorker] INFO: 📁 新規ファイル検出: 2件
+2025-07-01 22:26:49,983 [PMWorker] INFO:   - output/general/general_20250701_212242/result.txt
+2025-07-01 22:26:49,983 [PMWorker] INFO:   - output/ai_company_technical_documentation.md
+2025-07-01 22:26:50,018 [PMWorker] WARNING: Git add失敗: output/general/general_20250701_212242/result.txt - The following paths are ignored by one of your .gitignore files:
+output/general/general_20250701_212242
+hint: Use -f if you really want to add them.
+hint: Turn this message off by running
+hint: "git config advice.addIgnoredFile false"
+
+2025-07-01 22:26:50,027 [PMWorker] INFO: Git add: output/ai_company_technical_documentation.md

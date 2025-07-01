@@ -343,34 +343,43 @@ class SelfEvolutionManager:
             logger.error(f"Failed to load placement history: {e}")
     
     def _analyze_placement_candidates(self, filename: str, content: str) -> List[Dict]:
-        """複数の手法で配置候補を分析"""
+        """複数の手法で配置候補を分析 - Enhanced with advanced ML algorithms"""
         candidates = []
         
-        # 1. 従来のルールベース
+        # 1. 従来のルールベース (重み調整)
         rule_based_dir = self.analyze_file_type(filename, content)
+        rule_confidence = self._calculate_rule_confidence(filename, content, rule_based_dir)
         candidates.append({
             'dir': rule_based_dir,
-            'score': 0.7,
+            'score': 0.6 + (rule_confidence * 0.3),
             'method': 'rule_based',
-            'reason': 'Traditional pattern matching'
+            'reason': f'Pattern matching (confidence: {rule_confidence:.2f})'
         })
         
-        # 2. 内容類似度ベース
-        similarity_candidates = self._analyze_content_similarity(content)
+        # 2. 内容類似度ベース (改良版)
+        similarity_candidates = self._analyze_content_similarity_enhanced(content)
         candidates.extend(similarity_candidates)
         
-        # 3. 機械学習予測
-        ml_candidates = self._ml_predict_placement(filename, content)
+        # 3. 機械学習予測 (強化版)
+        ml_candidates = self._ml_predict_placement_enhanced(filename, content)
         candidates.extend(ml_candidates)
         
-        # 4. 統計的パターン分析
-        pattern_candidates = self._analyze_statistical_patterns(filename, content)
+        # 4. 統計的パターン分析 (改良版)
+        pattern_candidates = self._analyze_statistical_patterns_enhanced(filename, content)
         candidates.extend(pattern_candidates)
         
-        # スコアでソート
-        candidates.sort(key=lambda x: x['score'], reverse=True)
+        # 5. 新機能: 依存関係分析
+        dependency_candidates = self._analyze_dependency_patterns(content)
+        candidates.extend(dependency_candidates)
         
-        # 重複削除
+        # 6. 新機能: 意味的類似度分析
+        semantic_candidates = self._analyze_semantic_similarity(filename, content)
+        candidates.extend(semantic_candidates)
+        
+        # アンサンブル手法でスコア統合
+        candidates = self._ensemble_scoring(candidates)
+        
+        # 重複削除とランキング
         seen_dirs = set()
         unique_candidates = []
         for candidate in candidates:
@@ -634,6 +643,578 @@ class SelfEvolutionManager:
         
         return dict(placements)
     
+    def _calculate_rule_confidence(self, filename: str, content: str, target_dir: str) -> float:
+        """ルールベース配置の信頼度計算"""
+        confidence = 0.5
+        
+        # ファイル名マッチの強度
+        for pattern, rule_dir in self.placement_rules.items():
+            if rule_dir == target_dir and re.match(pattern, filename, re.IGNORECASE):
+                confidence += 0.3
+                break
+        
+        # 内容マッチの強度
+        for keyword, rule_dir in self.content_based_rules.items():
+            if rule_dir == target_dir and re.search(keyword, content, re.IGNORECASE | re.MULTILINE):
+                confidence += 0.2
+                break
+        
+        return min(1.0, confidence)
+    
+    def _analyze_content_similarity_enhanced(self, content: str) -> List[Dict]:
+        """改良版内容類似度分析 - TF-IDF + コサイン類似度"""
+        candidates = []
+        content_features = self._extract_content_features_enhanced(content)
+        
+        # TF-IDF ベクトル化
+        content_vector = self._vectorize_content(content)
+        
+        # 既存ファイルとの類似度計算
+        similar_placements = self._find_similar_files_enhanced(content_features, content_vector)
+        
+        for placement, similarity, method in similar_placements:
+            candidates.append({
+                'dir': placement,
+                'score': 0.4 + (similarity * 0.5),
+                'method': f'enhanced_similarity_{method}',
+                'reason': f'Enhanced similarity ({method}: {similarity:.3f})'
+            })
+        
+        return candidates
+    
+    def _ml_predict_placement_enhanced(self, filename: str, content: str) -> List[Dict]:
+        """強化版機械学習予測 - 複数アルゴリズム組み合わせ"""
+        candidates = []
+        
+        # 特徴量抽出
+        features = self._extract_ml_features_enhanced(filename, content)
+        
+        # 1. 履歴ベース予測 (改良版)
+        history_predictions = self._predict_from_history_enhanced(features)
+        
+        # 2. 決定木風の予測
+        tree_predictions = self._decision_tree_predict(features)
+        
+        # 3. 近傍法予測
+        knn_predictions = self._knn_predict(features)
+        
+        # 全予測結果を統合
+        all_predictions = history_predictions + tree_predictions + knn_predictions
+        
+        # 投票による統合
+        vote_counts = defaultdict(lambda: {'count': 0, 'total_confidence': 0})
+        for prediction, confidence in all_predictions:
+            vote_counts[prediction]['count'] += 1
+            vote_counts[prediction]['total_confidence'] += confidence
+        
+        for prediction, data in vote_counts.items():
+            avg_confidence = data['total_confidence'] / data['count']
+            vote_weight = min(1.0, data['count'] / 3.0)
+            final_score = 0.3 + (avg_confidence * vote_weight * 0.4)
+            
+            candidates.append({
+                'dir': prediction,
+                'score': final_score,
+                'method': 'enhanced_ml_ensemble',
+                'reason': f'ML ensemble ({data["count"]} votes, avg_conf: {avg_confidence:.2f})'
+            })
+        
+        return candidates
+    
+    def _analyze_statistical_patterns_enhanced(self, filename: str, content: str) -> List[Dict]:
+        """改良版統計的パターン分析 - 時系列・頻度・相関分析"""
+        candidates = []
+        
+        # 時系列パターン分析
+        temporal_patterns = self._analyze_temporal_patterns(filename, content)
+        
+        # 頻度パターン分析 (改良版)
+        frequency_patterns = self._analyze_frequency_patterns_enhanced(filename, content)
+        
+        # 相関パターン分析
+        correlation_patterns = self._analyze_correlation_patterns(filename, content)
+        
+        # 統合スコア計算
+        all_patterns = {**temporal_patterns, **frequency_patterns, **correlation_patterns}
+        
+        for pattern_type, pattern_data in all_patterns.items():
+            for dir_path, score_data in pattern_data.items():
+                score = score_data.get('score', 0)
+                evidence = score_data.get('evidence', '')
+                
+                candidates.append({
+                    'dir': dir_path,
+                    'score': min(0.85, score),
+                    'method': f'enhanced_statistics_{pattern_type}',
+                    'reason': f'Statistical pattern ({pattern_type}): {evidence}'
+                })
+        
+        return candidates
+    
+    def _analyze_dependency_patterns(self, content: str) -> List[Dict]:
+        """依存関係パターン分析"""
+        candidates = []
+        
+        # インポート依存関係分析
+        imports = re.findall(r'^\s*(?:from|import)\s+([^\s]+)', content, re.MULTILINE)
+        
+        dependency_mapping = {
+            'pika': 'workers/',
+            'flask': 'web/',
+            'fastapi': 'api/',
+            'sqlalchemy': 'libs/',
+            'sqlite3': 'libs/',
+            'requests': 'libs/',
+            'logging': 'libs/',
+            'os': 'scripts/',
+            'sys': 'scripts/',
+            'pathlib': 'libs/',
+            'datetime': 'libs/',
+            'json': 'libs/',
+            'threading': 'workers/',
+            'multiprocessing': 'workers/',
+            'psutil': 'workers/',
+        }
+        
+        dependency_scores = defaultdict(float)
+        for imp in imports:
+            base_module = imp.split('.')[0]
+            if base_module in dependency_mapping:
+                target_dir = dependency_mapping[base_module]
+                dependency_scores[target_dir] += 0.15
+        
+        for dir_path, score in dependency_scores.items():
+            candidates.append({
+                'dir': dir_path,
+                'score': min(0.8, score),
+                'method': 'dependency_analysis',
+                'reason': f'Dependency pattern (score: {score:.2f})'
+            })
+        
+        return candidates
+    
+    def _analyze_semantic_similarity(self, filename: str, content: str) -> List[Dict]:
+        """意味的類似度分析 - 簡易版"""
+        candidates = []
+        
+        # キーワード群による意味的分類
+        semantic_clusters = {
+            'worker_cluster': {
+                'keywords': ['worker', 'task', 'queue', 'job', 'process', 'background', 'async', 'celery', 'pika'],
+                'target': 'workers/',
+                'weight': 0.1
+            },
+            'web_cluster': {
+                'keywords': ['web', 'http', 'flask', 'fastapi', 'api', 'route', 'endpoint', 'server', 'request'],
+                'target': 'web/',
+                'weight': 0.1
+            },
+            'data_cluster': {
+                'keywords': ['database', 'db', 'sql', 'model', 'schema', 'table', 'query', 'orm'],
+                'target': 'libs/',
+                'weight': 0.1
+            },
+            'config_cluster': {
+                'keywords': ['config', 'setting', 'environment', 'env', 'parameter', 'option'],
+                'target': 'config/',
+                'weight': 0.1
+            },
+            'script_cluster': {
+                'keywords': ['script', 'automation', 'setup', 'install', 'deploy', 'build', 'run'],
+                'target': 'scripts/',
+                'weight': 0.1
+            }
+        }
+        
+        content_lower = content.lower()
+        filename_lower = filename.lower()
+        
+        for cluster_name, cluster_data in semantic_clusters.items():
+            score = 0
+            matched_keywords = []
+            
+            for keyword in cluster_data['keywords']:
+                # ファイル名での出現
+                if keyword in filename_lower:
+                    score += cluster_data['weight'] * 2
+                    matched_keywords.append(f"filename:{keyword}")
+                
+                # 内容での出現
+                content_matches = len(re.findall(r'\b' + keyword + r'\b', content_lower))
+                if content_matches > 0:
+                    score += cluster_data['weight'] * min(3, content_matches)
+                    matched_keywords.append(f"content:{keyword}({content_matches})")
+            
+            if score > 0.2:
+                candidates.append({
+                    'dir': cluster_data['target'],
+                    'score': min(0.75, score),
+                    'method': 'semantic_analysis',
+                    'reason': f'Semantic cluster ({cluster_name}): {", ".join(matched_keywords[:3])}'
+                })
+        
+        return candidates
+    
+    def _ensemble_scoring(self, candidates: List[Dict]) -> List[Dict]:
+        """アンサンブル手法によるスコア統合"""
+        # 手法別の重み
+        method_weights = {
+            'rule_based': 0.25,
+            'enhanced_similarity_tfidf': 0.20,
+            'enhanced_similarity_cosine': 0.15,
+            'enhanced_ml_ensemble': 0.20,
+            'enhanced_statistics_temporal': 0.05,
+            'enhanced_statistics_frequency': 0.05,
+            'enhanced_statistics_correlation': 0.05,
+            'dependency_analysis': 0.15,
+            'semantic_analysis': 0.10
+        }
+        
+        # デフォルト重み
+        default_weight = 0.1
+        
+        # 重み付きスコア計算
+        for candidate in candidates:
+            method = candidate['method']
+            weight = method_weights.get(method, default_weight)
+            candidate['weighted_score'] = candidate['score'] * weight
+            candidate['original_score'] = candidate['score']
+            candidate['score'] = candidate['weighted_score']
+        
+        # スコアでソート
+        candidates.sort(key=lambda x: x['score'], reverse=True)
+        
+        return candidates
+    
+    def _extract_content_features_enhanced(self, content: str) -> Dict:
+        """強化版特徴量抽出"""
+        features = self._extract_content_features(content)
+        
+        # 追加特徴量
+        features.update({
+            'docstring_count': len(re.findall(r'""".*?"""', content, re.DOTALL)),
+            'comment_count': len(re.findall(r'#.*', content)),
+            'decorator_count': len(re.findall(r'@\w+', content)),
+            'async_functions': len(re.findall(r'async\s+def', content)),
+            'lambda_count': len(re.findall(r'lambda\s+', content)),
+            'comprehension_count': len(re.findall(r'\[.*for.*in.*\]', content)),
+            'exception_handling': len(re.findall(r'try:|except:|finally:', content)),
+            'context_managers': len(re.findall(r'with\s+', content)),
+        })
+        
+        return features
+    
+    def _vectorize_content(self, content: str) -> List[float]:
+        """内容のベクトル化 - 簡易TF-IDF"""
+        # 重要単語の抽出
+        important_words = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]{2,}\b', content.lower())
+        word_counts = Counter(important_words)
+        
+        # 上位30個の単語でベクトル化
+        top_words = [word for word, count in word_counts.most_common(30)]
+        vector = [word_counts.get(word, 0) for word in top_words]
+        
+        # 正規化
+        total = sum(vector) if sum(vector) > 0 else 1
+        return [v / total for v in vector]
+    
+    def _find_similar_files_enhanced(self, features: Dict, content_vector: List[float]) -> List[Tuple[str, float, str]]:
+        """強化版類似ファイル検索"""
+        similarities = []
+        
+        for dir_path in ['workers/', 'libs/', 'scripts/', 'config/', 'data/', 'web/']:
+            target_dir = self.project_root / dir_path
+            if not target_dir.exists():
+                continue
+                
+            for file_path in target_dir.glob('*.py'):
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        existing_content = f.read()
+                    
+                    # 特徴量類似度
+                    existing_features = self._extract_content_features_enhanced(existing_content)
+                    feature_similarity = self._calculate_feature_similarity(features, existing_features)
+                    
+                    # ベクトル類似度
+                    existing_vector = self._vectorize_content(existing_content)
+                    vector_similarity = self._cosine_similarity(content_vector, existing_vector)
+                    
+                    if feature_similarity > 0.3:
+                        similarities.append((dir_path, feature_similarity, 'feature'))
+                    if vector_similarity > 0.3:
+                        similarities.append((dir_path, vector_similarity, 'vector'))
+                        
+                except Exception:
+                    continue
+        
+        similarities.sort(key=lambda x: x[1], reverse=True)
+        return similarities[:5]
+    
+    def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
+        """コサイン類似度計算"""
+        if not vec1 or not vec2:
+            return 0.0
+        
+        # ベクトル長を合わせる
+        min_len = min(len(vec1), len(vec2))
+        vec1 = vec1[:min_len]
+        vec2 = vec2[:min_len]
+        
+        # 内積計算
+        dot_product = sum(a * b for a, b in zip(vec1, vec2))
+        
+        # ノルム計算
+        norm1 = sum(a * a for a in vec1) ** 0.5
+        norm2 = sum(b * b for b in vec2) ** 0.5
+        
+        if norm1 == 0 or norm2 == 0:
+            return 0.0
+        
+        return dot_product / (norm1 * norm2)
+    
+    def _extract_ml_features_enhanced(self, filename: str, content: str) -> Dict:
+        """強化版ML特徴量抽出"""
+        features = self._extract_ml_features(filename, content)
+        
+        # 高次特徴量
+        features.update({
+            'import_diversity': len(set(features.get('imports', []))),
+            'function_class_ratio': len(features.get('functions', [])) / max(1, len(features.get('classes', []))),
+            'complexity_density': features.get('complexity', 0) / max(1, features.get('line_count', 1)),
+            'keyword_density': len(features.get('keywords', [])) / max(1, features.get('line_count', 1)),
+            'has_main_block': '__name__ == "__main__"' in content,
+            'has_shebang': content.startswith('#!'),
+            'is_executable_script': content.startswith('#!') or '__name__ == "__main__"' in content,
+        })
+        
+        return features
+    
+    def _predict_from_history_enhanced(self, features: Dict) -> List[Tuple[str, float]]:
+        """強化版履歴予測 - 時系列重み付き"""
+        predictions = []
+        
+        for target_dir, history_items in self.placement_history.items():
+            weighted_score = 0
+            total_weight = 0
+            
+            for i, item in enumerate(history_items):
+                # 新しい履歴ほど高い重み
+                time_weight = 1.0 / (1.0 + i * 0.1)
+                
+                similarity = self._calculate_feature_similarity(features, item['features'])
+                if similarity > 0.2:
+                    weighted_score += similarity * item['confidence'] * time_weight
+                    total_weight += time_weight
+            
+            if total_weight > 0:
+                confidence = weighted_score / total_weight
+                # 履歴数による信頼度調整
+                history_bonus = min(0.2, len(history_items) * 0.02)
+                final_confidence = min(1.0, confidence + history_bonus)
+                predictions.append((target_dir, final_confidence))
+        
+        predictions.sort(key=lambda x: x[1], reverse=True)
+        return predictions[:3]
+    
+    def _decision_tree_predict(self, features: Dict) -> List[Tuple[str, float]]:
+        """決定木風の予測ロジック"""
+        predictions = []
+        
+        # シンプルな決定木ルール
+        rules = [
+            # Worker判定
+            {
+                'conditions': [
+                    lambda f: 'worker' in f.get('name_parts', []),
+                    lambda f: 'pika' in f.get('imports', []),
+                    lambda f: f.get('async_functions', 0) > 0
+                ],
+                'target': 'workers/',
+                'weight': 0.8
+            },
+            # Manager判定
+            {
+                'conditions': [
+                    lambda f: 'manager' in f.get('name_parts', []),
+                    lambda f: any('Manager' in cls for cls in f.get('classes', [])),
+                    lambda f: f.get('complexity', 0) > 5
+                ],
+                'target': 'libs/',
+                'weight': 0.7
+            },
+            # Script判定
+            {
+                'conditions': [
+                    lambda f: f.get('has_main_block', False),
+                    lambda f: f.get('is_executable_script', False),
+                    lambda f: f.get('line_count', 0) < 100
+                ],
+                'target': 'scripts/',
+                'weight': 0.6
+            },
+            # Web判定
+            {
+                'conditions': [
+                    lambda f: 'flask' in f.get('imports', []),
+                    lambda f: 'fastapi' in f.get('imports', []),
+                    lambda f: any('route' in func for func in f.get('functions', []))
+                ],
+                'target': 'web/',
+                'weight': 0.8
+            }
+        ]
+        
+        for rule in rules:
+            satisfied_conditions = sum(1 for condition in rule['conditions'] if condition(features))
+            if satisfied_conditions > 0:
+                confidence = (satisfied_conditions / len(rule['conditions'])) * rule['weight']
+                predictions.append((rule['target'], confidence))
+        
+        return predictions
+    
+    def _knn_predict(self, features: Dict) -> List[Tuple[str, float]]:
+        """K近傍法による予測"""
+        predictions = []
+        k = 5  # 近傍数
+        
+        # 全履歴から最も類似する k 個を見つける
+        all_similarities = []
+        for target_dir, history_items in self.placement_history.items():
+            for item in history_items:
+                similarity = self._calculate_feature_similarity(features, item['features'])
+                if similarity > 0.1:
+                    all_similarities.append((target_dir, similarity, item['confidence']))
+        
+        # 類似度でソート
+        all_similarities.sort(key=lambda x: x[1], reverse=True)
+        
+        # 上位 k 個で投票
+        if len(all_similarities) >= k:
+            top_k = all_similarities[:k]
+            vote_weights = defaultdict(float)
+            
+            for target_dir, similarity, confidence in top_k:
+                vote_weights[target_dir] += similarity * confidence
+            
+            # 正規化
+            total_weight = sum(vote_weights.values())
+            if total_weight > 0:
+                for target_dir, weight in vote_weights.items():
+                    predictions.append((target_dir, weight / total_weight))
+        
+        return predictions
+    
+    def _analyze_temporal_patterns(self, filename: str, content: str) -> Dict:
+        """時系列パターン分析"""
+        patterns = {}
+        
+        try:
+            conn = sqlite3.connect(self.learning_db_path)
+            cursor = conn.cursor()
+            
+            # 最近の配置傾向を分析
+            cursor.execute('''
+                SELECT target_dir, COUNT(*) as count,
+                       AVG(confidence) as avg_confidence
+                FROM placement_history 
+                WHERE created_at > datetime('now', '-30 days')
+                GROUP BY target_dir
+                HAVING count > 1
+                ORDER BY count DESC
+            ''')
+            
+            recent_trends = cursor.fetchall()
+            
+            for target_dir, count, avg_confidence in recent_trends:
+                score = min(0.6, (count / 10.0) * avg_confidence)
+                patterns['recent_trend'] = patterns.get('recent_trend', {})
+                patterns['recent_trend'][target_dir] = {
+                    'score': score,
+                    'evidence': f'{count} recent placements, avg_conf: {avg_confidence:.2f}'
+                }
+            
+            conn.close()
+        except Exception:
+            pass
+            
+        return patterns
+    
+    def _analyze_frequency_patterns_enhanced(self, filename: str, content: str) -> Dict:
+        """強化版頻度パターン分析"""
+        patterns = {}
+        
+        # ファイル名パターンの頻度分析
+        name_parts = filename.replace('.', '_').split('_')
+        for part in name_parts:
+            if len(part) > 2:
+                part_patterns = self._analyze_filename_patterns(part)
+                if part_patterns:
+                    patterns[f'name_part_{part}'] = part_patterns
+        
+        # 内容キーワードの頻度分析
+        important_keywords = re.findall(r'\b(class|def|import|from|async|worker|manager|task|api|web|db|config)\b', content.lower())
+        keyword_counter = Counter(important_keywords)
+        
+        for keyword, count in keyword_counter.most_common(5):
+            if count > 1:
+                keyword_patterns = self._get_pattern_placements(keyword)
+                if keyword_patterns:
+                    patterns[f'keyword_{keyword}'] = {
+                        dir_path: {
+                            'score': min(0.5, (freq / 20.0) * (count / 10.0)),
+                            'evidence': f'keyword "{keyword}" appears {count} times'
+                        }
+                        for dir_path, freq in keyword_patterns.items()
+                    }
+        
+        return patterns
+    
+    def _analyze_correlation_patterns(self, filename: str, content: str) -> Dict:
+        """相関パターン分析"""
+        patterns = {}
+        
+        # ファイル名と内容の相関
+        filename_lower = filename.lower()
+        content_lower = content.lower()
+        
+        correlation_rules = [
+            # ファイル名に"worker"があり、内容に"pika"がある場合
+            {
+                'name_pattern': 'worker',
+                'content_pattern': 'pika',
+                'target': 'workers/',
+                'correlation_strength': 0.8
+            },
+            # ファイル名に"manager"があり、内容に"class"がある場合
+            {
+                'name_pattern': 'manager',
+                'content_pattern': 'class.*manager',
+                'target': 'libs/',
+                'correlation_strength': 0.7
+            },
+            # ファイル名に"api"があり、内容に"flask|fastapi"がある場合
+            {
+                'name_pattern': 'api|web',
+                'content_pattern': 'flask|fastapi',
+                'target': 'web/',
+                'correlation_strength': 0.8
+            }
+        ]
+        
+        for rule in correlation_rules:
+            name_match = re.search(rule['name_pattern'], filename_lower)
+            content_match = re.search(rule['content_pattern'], content_lower)
+            
+            if name_match and content_match:
+                patterns['correlation'] = patterns.get('correlation', {})
+                patterns['correlation'][rule['target']] = {
+                    'score': rule['correlation_strength'],
+                    'evidence': f'Name-content correlation: {rule["name_pattern"]} + {rule["content_pattern"]}'
+                }
+        
+        return patterns
+    
     def _select_optimal_placement(self, candidates: List[Dict], content: str) -> str:
         """最適配置先選択"""
         if not candidates:
@@ -735,3 +1316,36 @@ class SelfEvolutionManager:
         except Exception as e:
             logger.error(f"Failed to get placement analytics: {e}")
             return {'error': str(e)}
+    
+    def test_enhanced_placement(self, test_content: str, test_filename: str = None) -> Dict:
+        """Enhanced placement testing and analysis"""
+        if test_filename is None:
+            test_filename = self._guess_filename_from_content(test_content)
+        
+        logger.info(f"Testing enhanced placement for: {test_filename}")
+        
+        # Get placement preview with detailed analysis
+        candidates = self._analyze_placement_candidates(test_filename, test_content)
+        selected_dir = self._select_optimal_placement(candidates, test_content)
+        confidence = self._calculate_placement_confidence(candidates, selected_dir)
+        
+        # Detailed analysis breakdown
+        analysis = {
+            'filename': test_filename,
+            'selected_placement': selected_dir,
+            'confidence': confidence,
+            'candidates': candidates,
+            'analysis_methods': {
+                'rule_based': sum(1 for c in candidates if 'rule_based' in c['method']),
+                'similarity': sum(1 for c in candidates if 'similarity' in c['method']),
+                'ml_prediction': sum(1 for c in candidates if 'ml' in c['method']),
+                'statistical': sum(1 for c in candidates if 'statistics' in c['method']),
+                'dependency': sum(1 for c in candidates if 'dependency' in c['method']),
+                'semantic': sum(1 for c in candidates if 'semantic' in c['method'])
+            },
+            'content_features': self._extract_content_features_enhanced(test_content),
+            'content_size': len(test_content),
+            'content_lines': len(test_content.split('\n'))
+        }
+        
+        return analysis
