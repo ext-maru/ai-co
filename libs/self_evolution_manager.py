@@ -155,7 +155,14 @@ class SelfEvolutionManager:
     
     def auto_place_file(self, source_content, suggested_filename=None, task_id=None):
         """
-        Enhanced intelligent file placement with ML-based analysis
+        Next-generation intelligent file placement with advanced ML-based analysis
+        
+        New Features:
+        - Deep learning-inspired multi-layer analysis
+        - Adaptive confidence thresholds
+        - Real-time learning from placement outcomes
+        - Cross-file relationship analysis
+        - Semantic code understanding
         
         Args:
             source_content: ファイル内容
@@ -166,59 +173,64 @@ class SelfEvolutionManager:
             dict: 配置結果
         """
         try:
-            # ファイル名決定
+            # Phase 1: Enhanced filename determination with semantic analysis
             if suggested_filename:
                 filename = suggested_filename
             else:
-                filename = self._guess_filename_from_content(source_content)
+                filename = self._guess_filename_from_content_enhanced(source_content)
             
-            # 多段階配置先決定
-            placement_candidates = self._analyze_placement_candidates(filename, source_content)
+            # Phase 2: Multi-layer candidate analysis
+            placement_candidates = self._analyze_placement_candidates_enhanced(filename, source_content)
             
-            # 最適配置先選択
-            target_relative_dir = self._select_optimal_placement(placement_candidates, source_content)
+            # Phase 3: Deep learning-inspired selection with adaptive thresholds
+            target_relative_dir = self._select_optimal_placement_enhanced(
+                placement_candidates, source_content, filename, task_id
+            )
+            
+            # Phase 4: Cross-file relationship validation
+            target_relative_dir = self._validate_placement_with_relationships(
+                target_relative_dir, filename, source_content
+            )
+            
             target_dir = self.project_root / target_relative_dir
             target_file = target_dir / filename
             
-            # ディレクトリ作成
-            self._ensure_directory(target_dir)
+            # Directory creation with intelligent permissions
+            self._ensure_directory_enhanced(target_dir, target_relative_dir)
             
-            # 既存ファイルのバックアップ
+            # Smart backup strategy based on file importance
+            backup_info = None
             if target_file.exists():
-                backup_path = self._create_backup(target_file)
-                logger.info(f"既存ファイルバックアップ: {backup_path}")
+                backup_info = self._create_smart_backup(target_file, source_content)
+                logger.info(f"スマートバックアップ: {backup_info['path']} (importance: {backup_info['importance']})")
             
-            # ファイル書き込み
-            with open(target_file, 'w', encoding='utf-8') as f:
-                f.write(source_content)
+            # Write file with metadata preservation
+            self._write_file_with_metadata(target_file, source_content, task_id)
             
-            # 実行権限付与（.pyや.shファイル）
-            if filename.endswith(('.py', '.sh')):
-                os.chmod(target_file, 0o755)
+            # Intelligent permission setting
+            self._set_intelligent_permissions(target_file, filename, source_content)
             
-            # 配置結果を学習データに追加
-            self._record_placement_learning(filename, source_content, target_relative_dir, placement_candidates)
+            # Enhanced learning with real-time feedback
+            confidence = self._record_enhanced_placement_learning(
+                filename, source_content, target_relative_dir, placement_candidates, task_id
+            )
             
-            result = {
-                "success": True,
-                "file_path": str(target_file),
-                "relative_path": str(target_file.relative_to(self.project_root)),
-                "target_dir": target_relative_dir,
-                "filename": filename,
-                "size": len(source_content),
-                "task_id": task_id,
-                "placed_at": datetime.now().isoformat(),
-                "placement_confidence": self._calculate_placement_confidence(placement_candidates, target_relative_dir),
-                "alternatives": [{"dir": pc["dir"], "score": pc["score"]} for pc in placement_candidates[:3]]
-            }
+            # Generate comprehensive result with analytics
+            result = self._generate_placement_result(
+                target_file, target_relative_dir, filename, source_content, 
+                task_id, placement_candidates, confidence, backup_info
+            )
             
-            logger.info(f"自己進化配置成功: {result['relative_path']} (confidence: {result['placement_confidence']:.2f})")
+            # Post-placement analysis and learning
+            self._post_placement_analysis(result)
+            
+            logger.info(f"次世代自己進化配置成功: {result['relative_path']} (confidence: {confidence:.3f})")
             return result
             
         except Exception as e:
             error_msg = f"自己配置エラー: {e}"
-            logger.error(error_msg)
-            return {"success": False, "error": error_msg}
+            logger.error(error_msg, exc_info=True)
+            return {"success": False, "error": error_msg, "timestamp": datetime.now().isoformat()}
     
     def _guess_filename_from_content(self, content):
         """内容からファイル名を推測"""
@@ -1887,3 +1899,140 @@ class SelfEvolutionManager:
         if total_weight > 0:
             for key in self.neural_weights:
                 self.neural_weights[key] /= total_weight
+    
+    def _enhanced_ensemble_with_meta_learning(self, candidates: List[Dict]) -> List[Dict]:
+        """Meta-learning ensemble that learns from ensemble performance"""
+        if not candidates:
+            return candidates
+        
+        # Apply dynamic threshold based on recent performance
+        dynamic_threshold = self._calculate_dynamic_threshold()
+        
+        # Group by directory and apply meta-learning weights
+        directory_groups = defaultdict(list)
+        for candidate in candidates:
+            directory_groups[candidate['dir']].append(candidate)
+        
+        meta_candidates = []
+        for directory, dir_candidates in directory_groups.items():
+            # Calculate meta-learning score
+            meta_score = self._calculate_meta_learning_score(directory, dir_candidates)
+            
+            if meta_score > dynamic_threshold:
+                # Apply neural network-like combination
+                final_score = self._neural_combination(dir_candidates, meta_score)
+                
+                meta_candidates.append({
+                    'dir': directory,
+                    'score': final_score,
+                    'method': 'meta_learning_ensemble',
+                    'reason': f'Meta-learning (score: {meta_score:.3f}, candidates: {len(dir_candidates)})',
+                    'meta_score': meta_score,
+                    'component_count': len(dir_candidates)
+                })
+        
+        meta_candidates.sort(key=lambda x: x['score'], reverse=True)
+        return meta_candidates
+    
+    def _calculate_dynamic_threshold(self) -> float:
+        """Calculate dynamic threshold based on recent performance"""
+        base_threshold = self.adaptive_thresholds['ensemble_threshold']
+        
+        # Adjust based on recent placement success rate
+        if self.placement_feedback:
+            recent_successes = [fb for fb in self.placement_feedback.values() 
+                             if fb and fb[-1]['timestamp'] > datetime.now().timestamp() - 86400]  # Last 24h
+            if recent_successes:
+                avg_success = sum(fb[-1]['success_score'] for fb in recent_successes) / len(recent_successes)
+                threshold_adjustment = (avg_success - 0.7) * 0.2  # Scale adjustment
+                return max(0.3, min(0.8, base_threshold + threshold_adjustment))
+        
+        return base_threshold
+    
+    def _calculate_meta_learning_score(self, directory: str, candidates: List[Dict]) -> float:
+        """Calculate meta-learning score for a directory based on candidate agreement"""
+        if not candidates:
+            return 0.0
+        
+        # Base score from candidates
+        avg_score = sum(c['score'] for c in candidates) / len(candidates)
+        
+        # Method diversity bonus
+        unique_methods = len(set(c['method'] for c in candidates))
+        diversity_bonus = min(0.2, unique_methods * 0.04)
+        
+        # Historical success bonus
+        historical_bonus = self.placement_success_rates.get(directory, 0.5) * 0.1
+        
+        # Feature importance alignment
+        feature_alignment = self._calculate_feature_alignment(directory, candidates)
+        
+        meta_score = avg_score + diversity_bonus + historical_bonus + feature_alignment
+        return min(0.95, meta_score)
+    
+    def _calculate_feature_alignment(self, directory: str, candidates: List[Dict]) -> float:
+        """Calculate how well candidates align with important features for this directory"""
+        # This is a simplified version - in practice would analyze feature patterns
+        alignment_score = 0.0
+        
+        if directory in self.directory_embeddings:
+            embedding = self.directory_embeddings[directory]
+            # Check if candidates mention key terms for this directory
+            for candidate in candidates:
+                reason = candidate.get('reason', '').lower()
+                for keyword, weight in embedding.items():
+                    if keyword.lower() in reason:
+                        alignment_score += weight * 0.02
+        
+        return min(0.15, alignment_score)
+    
+    def _neural_combination(self, candidates: List[Dict], meta_score: float) -> float:
+        """Neural network-like combination of candidate scores"""
+        if not candidates:
+            return 0.0
+        
+        # Weighted combination using neural weights
+        weighted_sum = 0.0
+        total_weight = 0.0
+        
+        for candidate in candidates:
+            method = candidate['method']
+            score = candidate['score']
+            
+            # Map methods to neural weight categories
+            weight_key = self._map_method_to_weight_key(method)
+            weight = self.neural_weights.get(weight_key, 0.1)
+            
+            weighted_sum += score * weight
+            total_weight += weight
+        
+        if total_weight > 0:
+            base_score = weighted_sum / total_weight
+        else:
+            base_score = sum(c['score'] for c in candidates) / len(candidates)
+        
+        # Apply non-linear activation (sigmoid-like)
+        activated_score = base_score / (1 + math.exp(-5 * (base_score - 0.5)))
+        
+        # Combine with meta-score
+        final_score = 0.7 * activated_score + 0.3 * meta_score
+        
+        return min(0.95, final_score)
+    
+    def _map_method_to_weight_key(self, method: str) -> str:
+        """Map candidate method to neural weight key"""
+        method_mapping = {
+            'rule_based': 'filename_pattern',
+            'enhanced_similarity': 'content_similarity',
+            'dependency_analysis': 'import_dependencies',
+            'contextual_pattern': 'class_structure',
+            'semantic_analysis': 'function_patterns',
+            'enhanced_ml_ensemble': 'historical_success',
+            'advanced_embedding': 'temporal_patterns'
+        }
+        
+        for key, weight_key in method_mapping.items():
+            if key in method:
+                return weight_key
+        
+        return 'content_similarity'  # Default

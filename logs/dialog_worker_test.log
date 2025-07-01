@@ -1,7 +1,0 @@
-Traceback (most recent call last):
-  File "/root/ai_co/workers/dialog_task_worker.py", line 17, in <module>
-    from workers.task_worker import TaskWorker
-  File "/root/ai_co/workers/task_worker.py", line 419
-    while not self.shutdown_event.is_set():
-    ^
-IndentationError: expected an indented block after 'try' statement on line 417

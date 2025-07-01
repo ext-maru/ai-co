@@ -1,3 +1,0 @@
-Create a Python file named datetime_display.py with this content:
-from datetime import datetime
-print(f"Current date and time: {datetime.now()}")
