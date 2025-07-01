@@ -16,6 +16,7 @@ import shutil
 from collections import defaultdict, Counter
 from typing import Dict, List, Tuple, Optional
 import sqlite3
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,26 @@ class SelfEvolutionManager:
             'file_size_ranges': [],
             'content_similarity': []
         }
+        
+        # Enhanced ML components
+        self.content_clusters = {}
+        self.directory_embeddings = {}
+        self.reinforcement_scores = defaultdict(lambda: defaultdict(float))
+        self.placement_success_rates = defaultdict(float)
+        
+        # New ML enhancements
+        self.neural_weights = self._initialize_neural_weights()
+        self.feature_importance = defaultdict(float)
+        self.adaptive_thresholds = {
+            'similarity_threshold': 0.3,
+            'confidence_threshold': 0.5,
+            'ensemble_threshold': 0.6
+        }
+        self.placement_feedback = defaultdict(list)  # For reinforcement learning
+        self.concept_drift_detector = {'window_size': 100, 'drift_threshold': 0.15}
+        
+        # Initialize advanced models
+        self._initialize_advanced_ml_components()
         
         # 配置履歴による学習
         self.placement_history = defaultdict(list)
@@ -368,16 +389,34 @@ class SelfEvolutionManager:
         pattern_candidates = self._analyze_statistical_patterns_enhanced(filename, content)
         candidates.extend(pattern_candidates)
         
-        # 5. 新機能: 依存関係分析
+        # 5. 依存関係分析
         dependency_candidates = self._analyze_dependency_patterns(content)
         candidates.extend(dependency_candidates)
         
-        # 6. 新機能: 意味的類似度分析
+        # 6. 意味的類似度分析
         semantic_candidates = self._analyze_semantic_similarity(filename, content)
         candidates.extend(semantic_candidates)
         
-        # アンサンブル手法でスコア統合
-        candidates = self._ensemble_scoring(candidates)
+        # 7. NEW: Advanced embedding-based similarity
+        embedding_candidates = self._advanced_embedding_similarity(content, filename)
+        candidates.extend(embedding_candidates)
+        
+        # 8. NEW: Contextual pattern analysis
+        contextual_candidates = self._contextual_pattern_analysis(filename, content)
+        candidates.extend(contextual_candidates)
+        
+        # Apply enhanced ML ensemble with meta-learning
+        candidates = self._enhanced_ensemble_with_meta_learning(candidates)
+        
+        # If no clear winner, fallback to probabilistic ensemble
+        if not candidates or candidates[0]['score'] < self.adaptive_thresholds['ensemble_threshold']:
+            candidates = self._probabilistic_ensemble([c for c in candidates if c['method'] != 'meta_learning_ensemble'])
+            
+            # Final fallback to traditional ensemble
+            if not candidates or candidates[0]['score'] < 0.5:
+                fallback_candidates = self._ensemble_scoring([c for c in candidates if 'ensemble' not in c['method']])
+                if fallback_candidates:
+                    candidates = fallback_candidates
         
         # 重複削除とランキング
         seen_dirs = set()
@@ -1349,3 +1388,502 @@ class SelfEvolutionManager:
         }
         
         return analysis
+    
+    def _initialize_advanced_ml_components(self):
+        """Initialize advanced ML components for enhanced placement"""
+        try:
+            # Initialize directory embeddings
+            directory_keywords = {
+                'workers/': ['worker', 'task', 'queue', 'job', 'process', 'background', 'async', 'pika', 'celery'],
+                'libs/': ['library', 'utility', 'helper', 'manager', 'service', 'class', 'module', 'common'],
+                'scripts/': ['script', 'automation', 'command', 'main', 'run', 'execute', 'batch', 'setup'],
+                'web/': ['web', 'http', 'flask', 'fastapi', 'api', 'route', 'endpoint', 'server'],
+                'config/': ['config', 'configuration', 'settings', 'environment', 'parameter', 'option'],
+                'data/': ['data', 'database', 'model', 'schema', 'table', 'query', 'sql', 'json']
+            }
+            
+            # Create simple embeddings based on keyword importance
+            for directory, keywords in directory_keywords.items():
+                embedding = {}
+                for i, keyword in enumerate(keywords):
+                    embedding[keyword] = 1.0 / (i + 1)  # Inverse position weighting
+                self.directory_embeddings[directory] = embedding
+            
+            # Load historical success rates and feature importance
+            self._load_placement_success_rates()
+            self._load_feature_importance()
+            
+            # Initialize concept drift detection
+            self._initialize_concept_drift_detection()
+            
+            logger.info("Enhanced ML components initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize advanced ML components: {e}")
+    
+    def _load_placement_success_rates(self):
+        """Load historical placement success rates"""
+        try:
+            if not self.learning_db_path.exists():
+                return
+                
+            conn = sqlite3.connect(self.learning_db_path)
+            cursor = conn.cursor()
+            
+            # Calculate success rates based on confidence scores
+            cursor.execute('''
+                SELECT target_dir, AVG(confidence) as avg_confidence, COUNT(*) as count
+                FROM placement_history 
+                GROUP BY target_dir
+                HAVING count > 2
+            ''')
+            
+            for row in cursor.fetchall():
+                target_dir, avg_confidence, count = row
+                # Weight by both confidence and frequency
+                success_rate = avg_confidence * min(1.0, count / 10.0)
+                self.placement_success_rates[target_dir] = success_rate
+                
+            conn.close()
+            logger.info(f"Loaded success rates for {len(self.placement_success_rates)} directories")
+        except Exception as e:
+            logger.error(f"Failed to load placement success rates: {e}")
+    
+    def _advanced_embedding_similarity(self, content: str, filename: str) -> List[Dict]:
+        """Advanced embedding-based similarity analysis"""
+        candidates = []
+        
+        try:
+            # Extract content keywords
+            content_keywords = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]{2,}\b', content.lower())
+            filename_keywords = re.findall(r'\b[a-zA-Z_][a-zA-Z0-9_]{2,}\b', filename.lower())
+            
+            all_keywords = content_keywords + filename_keywords
+            keyword_freq = Counter(all_keywords)
+            
+            # Calculate similarity with each directory embedding
+            for directory, embedding in self.directory_embeddings.items():
+                similarity_score = 0.0
+                total_weight = 0.0
+                
+                for keyword, freq in keyword_freq.items():
+                    if keyword in embedding:
+                        weight = embedding[keyword]
+                        similarity_score += weight * math.log(1 + freq)
+                        total_weight += weight
+                
+                if total_weight > 0:
+                    normalized_score = similarity_score / total_weight
+                    # Apply historical success rate weighting
+                    success_rate = self.placement_success_rates.get(directory, 0.5)
+                    final_score = normalized_score * (0.7 + success_rate * 0.3)
+                    
+                    if final_score > 0.1:  # Threshold
+                        candidates.append({
+                            'dir': directory,
+                            'score': min(0.85, final_score),
+                            'method': 'advanced_embedding',
+                            'reason': f'Embedding similarity: {normalized_score:.3f}, success_rate: {success_rate:.2f}'
+                        })
+            
+        except Exception as e:
+            logger.error(f"Advanced embedding similarity failed: {e}")
+            
+        return candidates
+    
+    def _contextual_pattern_analysis(self, filename: str, content: str) -> List[Dict]:
+        """Contextual pattern analysis using multiple signals"""
+        candidates = []
+        
+        try:
+            # Analyze different context layers
+            context_signals = {
+                'structural': self._analyze_code_structure(content),
+                'behavioral': self._analyze_code_behavior(content),
+                'architectural': self._analyze_architectural_patterns(filename, content),
+                'temporal': self._analyze_temporal_context(content)
+            }
+            
+            # Aggregate signals for each directory
+            directory_scores = defaultdict(lambda: {'total': 0, 'count': 0, 'details': []})
+            
+            for signal_type, signal_data in context_signals.items():
+                for directory, score, reason in signal_data:
+                    directory_scores[directory]['total'] += score
+                    directory_scores[directory]['count'] += 1
+                    directory_scores[directory]['details'].append(f"{signal_type}: {reason}")
+            
+            # Calculate final scores
+            for directory, data in directory_scores.items():
+                if data['count'] > 0:
+                    avg_score = data['total'] / data['count']
+                    # Boost score if multiple signals agree
+                    consensus_bonus = min(0.2, data['count'] * 0.05)
+                    final_score = min(0.9, avg_score + consensus_bonus)
+                    
+                    candidates.append({
+                        'dir': directory,
+                        'score': final_score,
+                        'method': 'contextual_pattern',
+                        'reason': f'Multi-signal consensus ({data["count"]} signals): {", ".join(data["details"][:2])}'
+                    })
+        
+        except Exception as e:
+            logger.error(f"Contextual pattern analysis failed: {e}")
+            
+        return candidates
+    
+    def _analyze_code_structure(self, content: str) -> List[Tuple[str, float, str]]:
+        """Analyze code structural patterns"""
+        signals = []
+        
+        # Class inheritance patterns
+        class_patterns = re.findall(r'class\s+(\w+)\s*\([^)]*(\w+)[^)]*\)', content)
+        for class_name, parent_class in class_patterns:
+            if 'Worker' in parent_class or 'Task' in parent_class:
+                signals.append(('workers/', 0.7, f'inherits from {parent_class}'))
+            elif 'Manager' in parent_class or 'Service' in parent_class:
+                signals.append(('libs/', 0.6, f'inherits from {parent_class}'))
+        
+        # Method pattern analysis
+        methods = re.findall(r'def\s+(\w+)', content)
+        async_methods = re.findall(r'async\s+def\s+(\w+)', content)
+        
+        if len(async_methods) > len(methods) * 0.3:  # >30% async methods
+            signals.append(('workers/', 0.6, f'{len(async_methods)} async methods'))
+        
+        # Import dependency depth
+        import_count = len(re.findall(r'^\s*(?:from|import)', content, re.MULTILINE))
+        if import_count > 10:
+            signals.append(('libs/', 0.4, f'heavy imports ({import_count})'))
+        elif import_count < 3:
+            signals.append(('scripts/', 0.4, f'lightweight imports ({import_count})'))
+        
+        return signals
+    
+    def _analyze_code_behavior(self, content: str) -> List[Tuple[str, float, str]]:
+        """Analyze behavioral patterns in code"""
+        signals = []
+        
+        # I/O patterns
+        if re.search(r'\b(input|raw_input|sys\.argv|argparse)\b', content):
+            signals.append(('scripts/', 0.6, 'interactive/CLI behavior'))
+        
+        if re.search(r'\b(print|logging\.|logger\.)\b', content):
+            log_count = len(re.findall(r'\b(print|logging\.|logger\.)', content))
+            if log_count > 5:
+                signals.append(('workers/', 0.5, f'heavy logging ({log_count} statements)'))
+        
+        # Network/HTTP patterns
+        if re.search(r'\b(requests\.|urllib\.|http\.client)\b', content):
+            signals.append(('libs/', 0.5, 'HTTP client behavior'))
+        
+        if re.search(r'\b(flask|fastapi|@app\.route|@router\.)', content):
+            signals.append(('web/', 0.8, 'web framework usage'))
+        
+        # Database patterns
+        if re.search(r'\b(sqlite3|sqlalchemy|cursor\.execute)\b', content):
+            signals.append(('libs/', 0.6, 'database operations'))
+        
+        # Configuration patterns
+        if re.search(r'\b(config|settings|environment|env\.get)\b', content.lower()):
+            config_matches = len(re.findall(r'\b(config|settings|environment)\b', content.lower()))
+            if config_matches > 3:
+                signals.append(('config/', 0.7, f'configuration focus ({config_matches} matches)'))
+        
+        return signals
+    
+    def _analyze_architectural_patterns(self, filename: str, content: str) -> List[Tuple[str, float, str]]:
+        """Analyze architectural patterns"""
+        signals = []
+        
+        # Singleton pattern
+        if re.search(r'_instance\s*=\s*None|__new__.*_instance', content):
+            signals.append(('libs/', 0.6, 'singleton pattern'))
+        
+        # Factory pattern
+        if re.search(r'def\s+create_\w+|class\s+\w+Factory', content):
+            signals.append(('libs/', 0.5, 'factory pattern'))
+        
+        # Observer pattern
+        if re.search(r'notify|observer|listener|subscribe', content.lower()):
+            signals.append(('libs/', 0.4, 'observer pattern'))
+        
+        # Command pattern
+        if re.search(r'execute|command|invoke', content.lower()) and 'class' in content:
+            signals.append(('workers/', 0.5, 'command pattern'))
+        
+        # Repository pattern
+        if re.search(r'repository|dao|crud', content.lower()):
+            signals.append(('libs/', 0.6, 'repository pattern'))
+        
+        # File naming architectural hints
+        filename_lower = filename.lower()
+        if 'facade' in filename_lower or 'adapter' in filename_lower:
+            signals.append(('libs/', 0.7, f'architectural filename: {filename}'))
+        elif 'controller' in filename_lower or 'handler' in filename_lower:
+            signals.append(('web/', 0.6, f'controller filename: {filename}'))
+        
+        return signals
+    
+    def _analyze_temporal_context(self, content: str) -> List[Tuple[str, float, str]]:
+        """Analyze temporal/timing related patterns"""
+        signals = []
+        
+        # Scheduling patterns
+        if re.search(r'\b(sleep|time\.sleep|schedule|cron|timer)\b', content):
+            signals.append(('workers/', 0.6, 'timing/scheduling operations'))
+        
+        # Real-time patterns
+        if re.search(r'\b(threading|multiprocessing|concurrent|asyncio)\b', content):
+            signals.append(('workers/', 0.7, 'concurrent execution'))
+        
+        # Batch processing
+        if re.search(r'\bbatch|bulk|process_all\b', content.lower()):
+            signals.append(('scripts/', 0.6, 'batch processing'))
+        
+        # Monitoring patterns
+        if re.search(r'\b(monitor|watch|poll|heartbeat)\b', content.lower()):
+            signals.append(('workers/', 0.5, 'monitoring behavior'))
+        
+        return signals
+    
+    def _probabilistic_ensemble(self, candidates: List[Dict]) -> List[Dict]:
+        """Improved ensemble method with probabilistic weighting"""
+        if not candidates:
+            return candidates
+        
+        # Group candidates by directory
+        directory_groups = defaultdict(list)
+        for candidate in candidates:
+            directory_groups[candidate['dir']].append(candidate)
+        
+        # Calculate ensemble scores for each directory
+        ensemble_candidates = []
+        for directory, dir_candidates in directory_groups.items():
+            if not dir_candidates:
+                continue
+            
+            # Calculate weighted average with method diversity bonus
+            total_score = 0
+            total_weight = 0
+            methods_used = set()
+            
+            for candidate in dir_candidates:
+                method = candidate['method']
+                score = candidate['score']
+                
+                # Method-specific weights
+                method_weights = {
+                    'rule_based': 0.8,
+                    'advanced_embedding': 0.9,
+                    'contextual_pattern': 0.85,
+                    'enhanced_similarity_tfidf': 0.8,
+                    'enhanced_ml_ensemble': 0.75,
+                    'dependency_analysis': 0.7,
+                    'semantic_analysis': 0.6
+                }
+                
+                weight = method_weights.get(method, 0.5)
+                total_score += score * weight
+                total_weight += weight
+                methods_used.add(method)
+            
+            if total_weight > 0:
+                avg_score = total_score / total_weight
+                
+                # Diversity bonus for multiple methods agreeing
+                diversity_bonus = min(0.15, len(methods_used) * 0.03)
+                
+                # Historical success rate bonus
+                success_bonus = self.placement_success_rates.get(directory, 0.5) * 0.1
+                
+                final_score = min(0.95, avg_score + diversity_bonus + success_bonus)
+                
+                ensemble_candidates.append({
+                    'dir': directory,
+                    'score': final_score,
+                    'method': 'probabilistic_ensemble',
+                    'reason': f'Ensemble of {len(dir_candidates)} methods, diversity: {len(methods_used)}',
+                    'component_methods': list(methods_used),
+                    'diversity_bonus': diversity_bonus,
+                    'success_bonus': success_bonus
+                })
+        
+        # Sort by score
+        ensemble_candidates.sort(key=lambda x: x['score'], reverse=True)
+        return ensemble_candidates
+    
+    def _initialize_neural_weights(self) -> Dict[str, float]:
+        """Initialize neural network-like weights for different features"""
+        return {
+            'filename_pattern': 0.25,
+            'content_similarity': 0.20,
+            'import_dependencies': 0.15,
+            'class_structure': 0.15,
+            'function_patterns': 0.10,
+            'file_size': 0.05,
+            'complexity': 0.05,
+            'historical_success': 0.15,
+            'temporal_patterns': 0.10
+        }
+    
+    def _load_feature_importance(self):
+        """Load feature importance from historical data"""
+        try:
+            if not self.learning_db_path.exists():
+                return
+                
+            conn = sqlite3.connect(self.learning_db_path)
+            cursor = conn.cursor()
+            
+            # Analyze which features correlate with high confidence placements
+            cursor.execute('''
+                SELECT content_features, confidence
+                FROM placement_history 
+                WHERE confidence > 0.7
+                ORDER BY created_at DESC
+                LIMIT 500
+            ''')
+            
+            high_conf_features = []
+            for row in cursor.fetchall():
+                try:
+                    features = json.loads(row[0])
+                    confidence = row[1]
+                    high_conf_features.append((features, confidence))
+                except json.JSONDecodeError:
+                    continue
+            
+            # Calculate feature importance based on correlation with success
+            if high_conf_features:
+                self._calculate_feature_importance(high_conf_features)
+                
+            conn.close()
+            logger.info(f"Loaded feature importance from {len(high_conf_features)} high-confidence placements")
+        except Exception as e:
+            logger.error(f"Failed to load feature importance: {e}")
+    
+    def _calculate_feature_importance(self, feature_data: List[Tuple[Dict, float]]):
+        """Calculate importance of different features based on historical success"""
+        feature_contributions = defaultdict(list)
+        
+        for features, confidence in feature_data:
+            # Analyze which features appear in successful placements
+            if len(features.get('imports', [])) > 0:
+                feature_contributions['imports'].append(confidence)
+            if len(features.get('classes', [])) > 0:
+                feature_contributions['classes'].append(confidence)
+            if len(features.get('functions', [])) > 0:
+                feature_contributions['functions'].append(confidence)
+            if features.get('file_size', 0) > 1000:
+                feature_contributions['large_files'].append(confidence)
+            if features.get('complexity', 0) > 5:
+                feature_contributions['complex_code'].append(confidence)
+        
+        # Update feature importance based on average success
+        for feature, confidences in feature_contributions.items():
+            if confidences:
+                avg_confidence = sum(confidences) / len(confidences)
+                self.feature_importance[feature] = avg_confidence
+    
+    def _initialize_concept_drift_detection(self):
+        """Initialize concept drift detection for adaptive learning"""
+        try:
+            if not self.learning_db_path.exists():
+                return
+                
+            conn = sqlite3.connect(self.learning_db_path)
+            cursor = conn.cursor()
+            
+            # Get recent placement patterns
+            cursor.execute('''
+                SELECT target_dir, COUNT(*) as count
+                FROM placement_history 
+                WHERE created_at > datetime('now', '-30 days')
+                GROUP BY target_dir
+            ''')
+            
+            recent_patterns = dict(cursor.fetchall())
+            
+            # Get historical patterns
+            cursor.execute('''
+                SELECT target_dir, COUNT(*) as count
+                FROM placement_history 
+                WHERE created_at <= datetime('now', '-30 days')
+                GROUP BY target_dir
+            ''')
+            
+            historical_patterns = dict(cursor.fetchall())
+            
+            # Detect significant changes in placement patterns
+            drift_detected = False
+            for directory in set(recent_patterns.keys()) | set(historical_patterns.keys()):
+                recent_count = recent_patterns.get(directory, 0)
+                historical_count = historical_patterns.get(directory, 0)
+                
+                if historical_count > 0:
+                    change_ratio = abs(recent_count - historical_count) / historical_count
+                    if change_ratio > self.concept_drift_detector['drift_threshold']:
+                        drift_detected = True
+                        logger.info(f"Concept drift detected in {directory}: {change_ratio:.2f}")
+            
+            if drift_detected:
+                self._adapt_to_concept_drift()
+                
+            conn.close()
+        except Exception as e:
+            logger.error(f"Failed to initialize concept drift detection: {e}")
+    
+    def _adapt_to_concept_drift(self):
+        """Adapt model parameters when concept drift is detected"""
+        # Reduce confidence in historical patterns
+        for directory in self.placement_success_rates:
+            self.placement_success_rates[directory] *= 0.9
+        
+        # Increase adaptive thresholds to be more conservative
+        self.adaptive_thresholds['confidence_threshold'] = min(0.7, 
+            self.adaptive_thresholds['confidence_threshold'] * 1.1)
+        
+        logger.info("Adapted to concept drift: reduced historical confidence, increased thresholds")
+    
+    def record_placement_feedback(self, filename: str, actual_directory: str, 
+                                predicted_directory: str, success_score: float):
+        """Record feedback for reinforcement learning"""
+        feedback = {
+            'filename': filename,
+            'actual': actual_directory,
+            'predicted': predicted_directory,
+            'success_score': success_score,
+            'timestamp': datetime.now().timestamp(),
+            'correct': actual_directory == predicted_directory
+        }
+        
+        self.placement_feedback[filename].append(feedback)
+        
+        # Keep only recent feedback
+        if len(self.placement_feedback[filename]) > 10:
+            self.placement_feedback[filename] = self.placement_feedback[filename][-10:]
+        
+        # Update neural weights based on feedback
+        self._update_neural_weights_from_feedback(feedback)
+        
+        logger.debug(f"Recorded placement feedback: {filename} -> {actual_directory} (score: {success_score})")
+    
+    def _update_neural_weights_from_feedback(self, feedback: Dict):
+        """Update neural weights based on placement feedback"""
+        learning_rate = 0.01
+        success_score = feedback['success_score']
+        
+        # Increase weights for successful predictions, decrease for unsuccessful ones
+        adjustment = (success_score - 0.5) * learning_rate
+        
+        # Apply adjustment to all weights (simplified approach)
+        for key in self.neural_weights:
+            self.neural_weights[key] = max(0.01, min(1.0, 
+                self.neural_weights[key] + adjustment * 0.1))
+        
+        # Normalize weights to sum to 1
+        total_weight = sum(self.neural_weights.values())
+        if total_weight > 0:
+            for key in self.neural_weights:
+                self.neural_weights[key] /= total_weight

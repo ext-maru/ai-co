@@ -2679,3 +2679,134 @@ ConnectionResetError: [Errno 104] Connection reset by peer
 2025-07-01 22:26:49,921 [TaskWorker] INFO: 🎯 タスク完了: general_20250701_212242
 2025-07-01 22:26:49,927 [TaskWorker] INFO: 📨 タスク受信: code_20250701_212242 (タイプ: code)
 2025-07-01 22:26:49,927 [TaskWorker] INFO: プロンプト: 現在のシステムに「タスクの優先度管理機能」を追加する場合、どのファイルをどのように変更すべきか、具体的な実装計画を提示してください
+2025-07-01 22:26:50,258 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 65 → 267 文字
+2025-07-01 22:26:50,265 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 22:28:20,756 [TaskWorker] INFO: Learning database initialized
+2025-07-01 22:29:26,707 [TaskWorker] ERROR: ⏱️ CLIタイムアウト
+2025-07-01 22:29:26,710 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/code/code_20250701_212004/result.txt
+2025-07-01 22:29:26,713 [TaskWorker] INFO: タスク履歴保存成功: code_20250701_212004
+2025-07-01 22:29:26,730 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-07-01 22:29:27,038 [TaskWorker] INFO: Slack通知送信成功
+2025-07-01 22:29:27,039 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-07-01 22:29:27,044 [TaskWorker] ERROR: _AsyncBaseTransport._produce() failed, aborting connection: error=ConnectionResetError(104, 'Connection reset by peer'); sock=<socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52432)>; Caller's stack:
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+2025-07-01 22:29:27,045 [TaskWorker] INFO: _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=ConnectionResetError(104, 'Connection reset by peer'); <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52432)>
+2025-07-01 22:29:27,046 [TaskWorker] INFO: Deactivating transport: state=1; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52432)>
+2025-07-01 22:29:27,048 [TaskWorker] ERROR: connection_lost: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-07-01 22:29:27,048 [TaskWorker] INFO: AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",); pending-error=None
+2025-07-01 22:29:27,049 [TaskWorker] INFO: Stack terminated due to StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-07-01 22:29:27,049 [TaskWorker] INFO: Closing transport socket and unlinking: state=2; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52432)>
+2025-07-01 22:29:27,049 [TaskWorker] ERROR: Unexpected connection close detected: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-07-01 22:29:27,050 [TaskWorker] ERROR: ❌ タスク処理例外: Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')
+2025-07-01 22:31:06,811 [TaskWorker] INFO: 📝 CLI stdout: 'タスク優先度管理機能の具体的な実装計画を作成しました。
+
+## 実装計画の要点
+
+### 主要変更ファイル
+1. **`libs/task_history_db.py`** - データベーススキーマ拡...'
+2025-07-01 22:31:06,812 [TaskWorker] INFO: ✅ CLI処理完了: 最終出力592文字
+2025-07-01 22:31:06,812 [TaskWorker] INFO: 🧬 自己進化処理開始...
+2025-07-01 22:31:06,812 [TaskWorker] INFO: 🧬 handle_evolution開始: 出力長592文字
+2025-07-01 22:31:06,812 [TaskWorker] INFO: 🧬 コードブロック抽出開始: テキスト長592文字
+2025-07-01 22:31:06,812 [TaskWorker] INFO: 🧬 正規表現マッチ数: 0
+2025-07-01 22:31:06,812 [TaskWorker] INFO: 🧬 抽出されたコードブロック数: 0
+2025-07-01 22:31:06,812 [TaskWorker] INFO: 🧬 自己進化: 該当コードなし
+2025-07-01 22:31:06,812 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/code/code_20250701_212242/result.txt
+2025-07-01 22:31:06,813 [TaskWorker] INFO: タスク履歴保存成功: code_20250701_212242
+2025-07-01 22:31:13,529 [TaskWorker] INFO: 要約生成成功: 78文字
+2025-07-01 22:31:13,530 [TaskWorker] INFO: 要約更新成功: code_20250701_212242
+2025-07-01 22:31:13,536 [TaskWorker] INFO: 要約保存完了: code_20250701_212242 -> タスク優先度管理機能の実装計画を策定。主要5ファイルの変更でDB拡張・優先度キュー・動的リソース配分...
+2025-07-01 22:31:13,537 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-07-01 22:31:13,954 [TaskWorker] INFO: Slack通知送信成功
+2025-07-01 22:31:13,955 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-07-01 22:31:13,960 [TaskWorker] ERROR: _AsyncBaseTransport._produce() failed, aborting connection: error=ConnectionResetError(104, 'Connection reset by peer'); sock=<socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52442)>; Caller's stack:
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+Traceback (most recent call last):
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 1103, in _on_socket_writable
+    self._produce()
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 819, in _produce
+    num_bytes_sent = self._sigint_safe_send(self._sock,
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 79, in retry_sigint_wrap
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/root/ai_co/venv/lib/python3.12/site-packages/pika/adapters/utils/io_services_utils.py", line 861, in _sigint_safe_send
+    return sock.send(data)
+           ^^^^^^^^^^^^^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+2025-07-01 22:31:13,963 [TaskWorker] INFO: _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=ConnectionResetError(104, 'Connection reset by peer'); <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52442)>
+2025-07-01 22:31:13,964 [TaskWorker] INFO: Deactivating transport: state=1; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52442)>
+2025-07-01 22:31:13,965 [TaskWorker] ERROR: connection_lost: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-07-01 22:31:13,965 [TaskWorker] INFO: AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",); pending-error=None
+2025-07-01 22:31:13,966 [TaskWorker] INFO: Stack terminated due to StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-07-01 22:31:13,966 [TaskWorker] INFO: Closing transport socket and unlinking: state=2; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52442)>
+2025-07-01 22:31:13,967 [TaskWorker] ERROR: Unexpected connection close detected: StreamLostError: ("Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')",)
+2025-07-01 22:31:13,968 [TaskWorker] ERROR: ❌ タスク処理例外: Stream connection lost: ConnectionResetError(104, 'Connection reset by peer')
+2025-07-01 22:32:11,329 [TaskWorker] INFO: Learning database initialized
+2025-07-01 22:32:11,331 [TaskWorker] INFO: Loaded success rates for 0 directories
+2025-07-01 22:32:11,331 [TaskWorker] INFO: Advanced ML components initialized successfully
+2025-07-01 22:32:11,332 [TaskWorker] INFO: Loaded 0 placement patterns
+2025-07-01 22:32:11,334 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 22:32:11,335 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 51276), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:32:11,335 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7225cef5d3a0>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7225cef5d3a0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 22:32:11,340 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7225cef5d3a0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:32:11,340 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7225cef5d3a0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:32:11,340 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7225cef5d3a0> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:32:11,340 [TaskWorker] INFO: Created channel=1
+2025-07-01 22:32:11,342 [TaskWorker] INFO: dialog-worker-1 - RabbitMQ接続成功
+2025-07-01 22:32:11,343 [TaskWorker] INFO: dialog-worker-1 - 対話キュー接続成功
+2025-07-01 22:32:11,346 [TaskWorker] INFO: 🚀 dialog-worker-1 対話型モード起動
+2025-07-01 22:32:11,346 [TaskWorker] INFO: 📨 タスク受信: code_20250701_212004 (タイプ: code)
+2025-07-01 22:32:11,346 [TaskWorker] INFO: プロンプト: SelfEvolutionManagerのauto_place_file関数を改良して、より賢い配置ルールを実装してください。機械学習的なアプローチも検討して
+2025-07-01 22:32:26,546 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 79 → 2237 文字
+2025-07-01 22:32:26,557 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 22:34:44,411 [TaskWorker] INFO: Learning database initialized
+2025-07-01 22:34:44,412 [TaskWorker] INFO: Loaded success rates for 0 directories
+2025-07-01 22:34:44,412 [TaskWorker] INFO: Advanced ML components initialized successfully
+2025-07-01 22:34:44,413 [TaskWorker] INFO: Loaded 0 placement patterns
+2025-07-01 22:34:44,419 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 22:34:44,419 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 52314), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:34:44,421 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5bb83db410>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5bb83db410> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 22:34:44,429 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5bb83db410> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:34:44,429 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5bb83db410> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:34:44,429 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f5bb83db410> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:34:44,429 [TaskWorker] INFO: Created channel=1
+2025-07-01 22:34:44,433 [TaskWorker] INFO: dialog-worker-1 - RabbitMQ接続成功
+2025-07-01 22:34:44,434 [TaskWorker] INFO: dialog-worker-1 - 対話キュー接続成功
