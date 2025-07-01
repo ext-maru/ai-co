@@ -3,9 +3,6 @@ import os
 import sys
 import json
 import subprocess
-import signal
-import threading
-
 import pika
 import traceback
 from datetime import datetime
@@ -380,32 +377,6 @@ class TaskWorker:
         except:
             return False
 
-    
-    def setup_signal_handlers(self):
-        """シグナルハンドラーの設定"""
-        signal.signal(signal.SIGTERM, self.handle_shutdown)
-        signal.signal(signal.SIGINT, self.handle_shutdown)
-        logger.info("🛡️ Graceful Shutdownハンドラー設定完了")
-    
-    def handle_shutdown(self, signum, frame):
-        """シャットダウンシグナルの処理"""
-        logger.info(f"📤 シャットダウンシグナル受信: {signum}")
-        self.shutdown_event.set()
-        
-        if self.current_task:
-            logger.info("⏳ 現在のタスク完了を待機中...")
-            # 最大30秒待機
-            timeout = 30
-            start_time = time.time()
-            while self.current_task and (time.time() - start_time) < timeout:
-                time.sleep(0.5)
-            
-            if self.current_task:
-                logger.warning(f"⚠️ タスク完了待機タイムアウト: {self.current_task}")
-        
-        logger.info("👋 ワーカー終了")
-        sys.exit(0)
-
     def start(self):
         if not self.connect():
             return
@@ -415,14 +386,7 @@ class TaskWorker:
 
         logger.info(f"🚀 {self.worker_id} 自己進化デバッグ版起動 - task_queue待機中...")
         try:
-            # シャットダウンイベントをチェックしながら消費
-        while not self.shutdown_event.is_set():
-            try:
-                self.connection.process_data_events(time_limit=1)
-            except Exception as e:
-                if not self.shutdown_event.is_set():
-                    logger.error(f"データイベント処理エラー: {e}")
-                break
+            self.channel.start_consuming()
         except KeyboardInterrupt:
             logger.info("🛑 ワーカー停止中...")
             self.channel.stop_consuming()

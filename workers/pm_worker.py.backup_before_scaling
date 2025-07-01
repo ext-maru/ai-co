@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
-import sys
-sys.path.append("/root/ai_co")
-import sys
 import pika
 import json
 import logging
 import subprocess
-from libs.worker_monitor import WorkerMonitor
-from libs.worker_controller import WorkerController
-from libs.scaling_policy import ScalingPolicy
-from libs.health_checker import HealthChecker
-import threading
-
 import os
 import traceback
 from pathlib import Path
@@ -217,118 +208,7 @@ class PMWorker:
             traceback.print_exc()
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
-    
-    def start_scaling_monitor(self):
-        """スケーリング監視スレッドを開始"""
-        def monitor_and_scale():
-            logger.info("🚀 スケーリング監視開始")
-            while self.scaling_enabled:
-                try:
-                    # メトリクス取得
-                    metrics = self.monitor.get_all_metrics()
-                    logger.info(f"📊 メトリクス: ワーカー={metrics['active_workers']}, キュー={metrics['queue_length']}")
-                    
-                    # スケーリング判定
-                    action, target = self.policy.should_scale(metrics)
-                    
-                    if action != 'none' and target is not None:
-                        current = metrics['active_workers']
-                        logger.info(f"🎯 スケーリング実行: {action} ({current} → {target})")
-                        
-                        # スケーリング実行
-                        success = self.controller.scale_workers(target)
-                        
-                        if success:
-                            self.policy.record_scaling(action, current, target)
-                            logger.info(f"✅ スケーリング成功")
-                            
-                            # Slack通知
-                            if hasattr(self, 'slack') and self.slack:
-                                message = f"🔄 ワーカー自動スケーリング\n"
-                                message += f"アクション: {'スケールアップ' if action == 'up' else 'スケールダウン'}\n"
-                                message += f"ワーカー数: {current} → {target}\n"
-                                message += f"キュー長: {metrics['queue_length']}"
-                                self.slack.send_task_completion_simple(
-                                    task_id=f"scaling_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-                                    worker="pm_worker",
-                                    prompt="自動スケーリング",
-                                    response=message
-                                )
-                        else:
-                            logger.error(f"❌ スケーリング失敗")
-                    
-                except Exception as e:
-                    logger.error(f"スケーリング監視エラー: {e}")
-                
-                # 次回チェックまで待機
-                time.sleep(self.check_interval)
-        
-        # 監視スレッド開始
-        scaling_thread = threading.Thread(target=monitor_and_scale, daemon=True)
-        scaling_thread.start()
-        logger.info(f"📊 スケーリング監視スレッド開始 (間隔: {self.check_interval}秒)")
-
-    
-    def start_health_monitor(self):
-        """ヘルスチェック監視スレッドを開始"""
-        def monitor_health():
-            logger.info("🏥 ヘルスチェック監視開始")
-            while self.scaling_enabled:  # スケーリングと同じフラグを使用
-                try:
-                    # 全ワーカーの健康状態をチェック
-                    workers = self.monitor.get_active_workers()
-                    unhealthy_count = 0
-                    
-                    for worker_info in workers:
-                        health_status = self.health_checker.check_worker_health(worker_info)
-                        
-                        if not health_status['healthy']:
-                            unhealthy_count += 1
-                            worker_id = worker_info['worker_id']
-                            
-                            # 再起動が必要か判断
-                            if self.health_checker.should_restart_worker(worker_id):
-                                logger.warning(f"🔄 {worker_id} の再起動を実行")
-                                
-                                # 再起動実行
-                                success = self.controller.restart_worker(worker_id)
-                                
-                                if success:
-                                    self.health_checker.record_restart(worker_id)
-                                    logger.info(f"✅ {worker_id} 再起動成功")
-                                    
-                                    # Slack通知
-                                    if hasattr(self, 'slack') and self.slack:
-                                        issues_text = ', '.join(health_status['issues'])
-                                        message = f"🔄 ワーカー自動再起動\n"
-                                        message += f"ワーカー: {worker_id}\n"
-                                        message += f"理由: {issues_text}"
-                                        self.slack.send_task_completion_simple(
-                                            task_id=f"health_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-                                            worker="pm_worker",
-                                            prompt="ヘルスチェック",
-                                            response=message
-                                        )
-                                else:
-                                    logger.error(f"❌ {worker_id} 再起動失敗")
-                    
-                    if unhealthy_count > 0:
-                        logger.info(f"⚠️ 不健康なワーカー: {unhealthy_count}/{len(workers)}")
-                    
-                except Exception as e:
-                    logger.error(f"ヘルスチェックエラー: {e}")
-                
-                # 次回チェックまで待機
-                time.sleep(self.health_check_interval)
-        
-        # 監視スレッド開始
-        health_thread = threading.Thread(target=monitor_health, daemon=True)
-        health_thread.start()
-        logger.info(f"🏥 ヘルスチェック監視スレッド開始 (間隔: {self.health_check_interval}秒)")
-
     def start(self):
-        self.start_scaling_monitor()
-        self.start_health_monitor()
         if not self.connect():
             return
         

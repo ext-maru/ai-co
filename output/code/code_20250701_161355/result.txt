@@ -1,0 +1,52 @@
+=== Task Info ===
+Task ID: code_20250701_161355
+Worker: worker-1
+Timestamp: 2025-07-01T16:14:31.058954
+Model: claude-sonnet-4-20250514
+RAG Applied: No
+Evolution Applied: Yes
+
+=== Original Prompt ===
+テストタスク #2: 素数判定プログラムを作成してください（1から100までの素数を表示）
+
+=== Response ===
+素数判定プログラム：
+
+```python
+def is_prime(n):
+    if n < 2:
+        return False
+    for i in range(2, int(n ** 0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+
+primes = [n for n in range(1, 101) if is_prime(n)]
+print('Prime numbers from 1 to 100:')
+for i, prime in enumerate(primes, 1):
+    print(f'{prime:3d}', end=' ')
+    if i % 10 == 0:
+        print()
+print(f'\n\nTotal count: {len(primes)}')
+```
+
+1から100までの素数25個を表示します。
+
+=== Evolution Result ===
+{
+  "success": true,
+  "evolved_files": [
+    {
+      "success": true,
+      "file_path": "/root/ai_co/libs/evolution_code_20250701_161355_0.py",
+      "relative_path": "libs/evolution_code_20250701_161355_0.py",
+      "target_dir": "libs/",
+      "filename": "evolution_code_20250701_161355_0.py",
+      "size": 396,
+      "task_id": "code_20250701_161355",
+      "placed_at": "2025-07-01T16:14:31.057081"
+    }
+  ],
+  "count": 1
+}
+=== End ===
