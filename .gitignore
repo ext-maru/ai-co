@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Logs
+logs/*.log
+*.log
+
+# Database
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+
+# Output files
+output/code/*/
+output/general/*/
+
+# Credentials
+credentials/
+*.json
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# Config with secrets
+config/slack.conf
+config/github.conf
+config/github.conf
