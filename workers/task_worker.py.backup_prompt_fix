@@ -41,8 +41,6 @@ class TaskWorker:
         self.rag = GitHubAwareRAGManager(model=self.model)
         self.slack = SlackNotifier()
         self.evolution = SelfEvolutionManager()
-        
-        
 
     def connect(self):
         try:
@@ -71,11 +69,8 @@ class TaskWorker:
             # 🧠 RAG: 過去履歴を含めたプロンプト構築
             enhanced_prompt = self.rag.build_context_with_github(prompt, include_code=True)
             # Claude CLIの権限付与を明示的に追加
-            permission_prompt = """I'll help you with this task. I have full access to create and edit files.
-
-Task to complete:
-"""
-            enhanced_prompt = permission_prompt + "\n" + enhanced_prompt + "\n\nPlease complete this task by creating the necessary files."
+            permission_prompt = "You have permission to use all tools including Edit, Write, and FileSystem.\nPlease proceed with the task without asking for permissions.\n\n"
+            enhanced_prompt = permission_prompt + enhanced_prompt
             rag_applied = len(enhanced_prompt) > len(prompt)
             
             if rag_applied:
@@ -162,7 +157,7 @@ Task to complete:
                     status = "failed"
                     logger.error("⏱️ CLIタイムアウト")
             else:
-                output_text = self.generate_simulated_response(prompt, task_type)
+                output_text = f"[シミュレーション]\nタスク: {prompt}\n応答: シミュレーション結果"
                 status = "completed"
                 logger.warning("🔧 シミュレーションモード")
 
@@ -389,48 +384,6 @@ Task to complete:
             return False
 
     
-    def generate_simulated_response(self, prompt, task_type):
-        """シミュレーションモードでの応答生成"""
-        prompt_lower = prompt.lower()
-        
-        if task_type == "code":
-            if "hello" in prompt_lower or "挨拶" in prompt_lower:
-                return """Created hello_ai_company.py with the following content:
-```python
-print("Hello, AI Company!")
-```"""
-            elif "fibonacci" in prompt_lower or "フィボナッチ" in prompt_lower:
-                return """Created fibonacci.py with the following content:
-```python
-def fibonacci(n):
-    if n <= 1:
-        return n
-    return fibonacci(n-1) + fibonacci(n-2)
-
-# 使用例
-for i in range(10):
-    print(f"fibonacci({i}) = {fibonacci(i)}")
-```"""
-            elif "素数" in prompt_lower or "prime" in prompt_lower:
-                return """Created prime_checker.py with the following content:
-```python
-def is_prime(n):
-    if n < 2:
-        return False
-    for i in range(2, int(n**0.5) + 1):
-        if n % i == 0:
-            return False
-    return True
-
-# 1から100までの素数
-primes = [n for n in range(1, 101) if is_prime(n)]
-print(f"Prime numbers: {primes}")
-```"""
-            else:
-                return f"[シミュレーション] コードタスク処理完了: {prompt[:50]}..."
-        else:
-            return f"[シミュレーション] 一般タスク処理完了: {prompt[:50]}..."
-
     def setup_signal_handlers(self):
         """シグナルハンドラーの設定"""
         signal.signal(signal.SIGTERM, self.handle_shutdown)
@@ -440,7 +393,7 @@ print(f"Prime numbers: {primes}")
     def handle_shutdown(self, signum, frame):
         """シャットダウンシグナルの処理"""
         logger.info(f"📤 シャットダウンシグナル受信: {signum}")
-        pass
+        self.shutdown_event.set()
         
         if self.current_task:
             logger.info("⏳ 現在のタスク完了を待機中...")
@@ -465,7 +418,14 @@ print(f"Prime numbers: {primes}")
 
         logger.info(f"🚀 {self.worker_id} 自己進化デバッグ版起動 - task_queue待機中...")
         try:
-            self.channel.start_consuming()
+            # シャットダウンイベントをチェックしながら消費
+        while not self.shutdown_event.is_set():
+            try:
+                self.connection.process_data_events(time_limit=1)
+            except Exception as e:
+                if not self.shutdown_event.is_set():
+                    logger.error(f"データイベント処理エラー: {e}")
+                break
         except KeyboardInterrupt:
             logger.info("🛑 ワーカー停止中...")
             self.channel.stop_consuming()

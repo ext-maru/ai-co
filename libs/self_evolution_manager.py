@@ -2,14 +2,20 @@
 """
 AI Company 自己進化ファイル配置マネージャー
 AIが生成したファイルを適切な場所に自動配置して自己改良を実現
+Enhanced with ML-based intelligent placement
 """
 
 import os
 import re
+import json
+import hashlib
 from pathlib import Path
 from datetime import datetime
 import logging
 import shutil
+from collections import defaultdict, Counter
+from typing import Dict, List, Tuple, Optional
+import sqlite3
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +23,10 @@ class SelfEvolutionManager:
     def __init__(self):
         # プロジェクトルートを相対パスで特定
         self.project_root = Path(__file__).parent.parent
+        
+        # 学習データベース初期化
+        self.learning_db_path = self.project_root / "db" / "placement_learning.db"
+        self._init_learning_db()
         
         # 配置先マッピング（相対パス）
         self.placement_rules = {
@@ -69,6 +79,19 @@ class SelfEvolutionManager:
             'def send_task': 'scripts/',
             '#!/bin/bash': 'scripts/',
         }
+        
+        # 機械学習ベース配置ルール設定
+        self.ml_features = {
+            'import_statements': [],
+            'class_patterns': [],
+            'function_patterns': [],
+            'file_size_ranges': [],
+            'content_similarity': []
+        }
+        
+        # 配置履歴による学習
+        self.placement_history = defaultdict(list)
+        self._load_placement_history()
     
     def analyze_file_type(self, file_path, content=""):
         """
@@ -111,7 +134,7 @@ class SelfEvolutionManager:
     
     def auto_place_file(self, source_content, suggested_filename=None, task_id=None):
         """
-        ファイルを内容・名前から自動配置
+        Enhanced intelligent file placement with ML-based analysis
         
         Args:
             source_content: ファイル内容
@@ -126,11 +149,13 @@ class SelfEvolutionManager:
             if suggested_filename:
                 filename = suggested_filename
             else:
-                # 内容からファイル名推測
                 filename = self._guess_filename_from_content(source_content)
             
-            # 配置先決定
-            target_relative_dir = self.analyze_file_type(filename, source_content)
+            # 多段階配置先決定
+            placement_candidates = self._analyze_placement_candidates(filename, source_content)
+            
+            # 最適配置先選択
+            target_relative_dir = self._select_optimal_placement(placement_candidates, source_content)
             target_dir = self.project_root / target_relative_dir
             target_file = target_dir / filename
             
@@ -150,6 +175,9 @@ class SelfEvolutionManager:
             if filename.endswith(('.py', '.sh')):
                 os.chmod(target_file, 0o755)
             
+            # 配置結果を学習データに追加
+            self._record_placement_learning(filename, source_content, target_relative_dir, placement_candidates)
+            
             result = {
                 "success": True,
                 "file_path": str(target_file),
@@ -158,10 +186,12 @@ class SelfEvolutionManager:
                 "filename": filename,
                 "size": len(source_content),
                 "task_id": task_id,
-                "placed_at": datetime.now().isoformat()
+                "placed_at": datetime.now().isoformat(),
+                "placement_confidence": self._calculate_placement_confidence(placement_candidates, target_relative_dir),
+                "alternatives": [{"dir": pc["dir"], "score": pc["score"]} for pc in placement_candidates[:3]]
             }
             
-            logger.info(f"自己進化配置成功: {result['relative_path']}")
+            logger.info(f"自己進化配置成功: {result['relative_path']} (confidence: {result['placement_confidence']:.2f})")
             return result
             
         except Exception as e:

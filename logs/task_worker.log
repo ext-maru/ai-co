@@ -2369,3 +2369,99 @@ def is_prime(n):
 2025-07-01 21:21:58,364 [TaskWorker] INFO: 📨 タスク受信: general_20250701_212004 (タイプ: general)
 2025-07-01 21:21:58,365 [TaskWorker] INFO: プロンプト: AI Companyシステムの全体構成を分析して、現在のボトルネックと改善提案を5つ挙げてください。各提案には具体的な実装方法も含めて
 2025-07-01 21:21:58,375 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 22:00:58,398 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 22:00:58,399 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 39936), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:00:58,400 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x786269b15f10>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x786269b15f10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 22:00:58,408 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x786269b15f10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:00:58,408 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x786269b15f10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:00:58,408 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x786269b15f10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:00:58,408 [TaskWorker] INFO: Created channel=1
+2025-07-01 22:00:58,415 [TaskWorker] INFO: worker-debug - RabbitMQ接続成功
+2025-07-01 22:00:58,418 [TaskWorker] INFO: 🚀 worker-debug 自己進化デバッグ版起動 - task_queue待機中...
+2025-07-01 22:00:58,418 [TaskWorker] INFO: 📨 タスク受信: general_20250701_212004 (タイプ: general)
+2025-07-01 22:00:58,418 [TaskWorker] INFO: プロンプト: AI Companyシステムの全体構成を分析して、現在のボトルネックと改善提案を5つ挙げてください。各提案には具体的な実装方法も含めて
+2025-07-01 22:00:58,818 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 67 → 269 文字
+2025-07-01 22:00:58,821 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 22:02:07,627 [TaskWorker] INFO: 🛑 ワーカー停止中...
+2025-07-01 22:02:07,632 [TaskWorker] INFO: Closing connection (200): Normal shutdown
+2025-07-01 22:02:07,632 [TaskWorker] INFO: Closing channel (200): 'Normal shutdown' on <Channel number=1 OPEN conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x786269b15f10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>>
+2025-07-01 22:02:07,633 [TaskWorker] INFO: Received <Channel.CloseOk> on <Channel number=1 CLOSING conn=<SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x786269b15f10> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>>
+2025-07-01 22:02:07,634 [TaskWorker] INFO: Closing connection (200): 'Normal shutdown'
+2025-07-01 22:02:07,634 [TaskWorker] INFO: Aborting transport connection: state=1; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 39936), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:02:07,634 [TaskWorker] INFO: _AsyncTransportBase._initate_abort(): Initiating abrupt asynchronous transport shutdown: state=1; error=None; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 39936), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:02:07,635 [TaskWorker] INFO: Deactivating transport: state=1; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 39936), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:02:07,635 [TaskWorker] INFO: AMQP stack terminated, failed to connect, or aborted: opened=True, error-arg=None; pending-error=ConnectionClosedByClient: (200) 'Normal shutdown'
+2025-07-01 22:02:07,635 [TaskWorker] INFO: Stack terminated due to ConnectionClosedByClient: (200) 'Normal shutdown'
+2025-07-01 22:02:07,636 [TaskWorker] INFO: Closing transport socket and unlinking: state=3; <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 39936), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:02:07,637 [TaskWorker] INFO: User-initiated close: result=BlockingConnection__OnClosedArgs(connection=<SelectConnection CLOSED transport=None params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>, error=ConnectionClosedByClient: (200) 'Normal shutdown')
+2025-07-01 22:02:24,956 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 22:02:24,957 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 35482), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:02:24,958 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a391306e750>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a391306e750> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 22:02:24,963 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 22:02:24,963 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 35486), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:02:24,964 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a391306e750> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:24,964 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f87b2659b20>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f87b2659b20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 22:02:24,964 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a391306e750> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:24,964 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7a391306e750> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:24,965 [TaskWorker] INFO: Created channel=1
+2025-07-01 22:02:24,967 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-07-01 22:02:24,969 [TaskWorker] INFO: 🚀 worker-1 自己進化デバッグ版起動 - task_queue待機中...
+2025-07-01 22:02:24,969 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f87b2659b20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:24,969 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f87b2659b20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:24,969 [TaskWorker] INFO: 📨 タスク受信: general_20250701_212004 (タイプ: general)
+2025-07-01 22:02:24,969 [TaskWorker] INFO: プロンプト: AI Companyシステムの全体構成を分析して、現在のボトルネックと改善提案を5つ挙げてください。各提案には具体的な実装方法も含めて
+2025-07-01 22:02:24,970 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7f87b2659b20> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:24,970 [TaskWorker] INFO: Created channel=1
+2025-07-01 22:02:24,973 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-07-01 22:02:24,976 [TaskWorker] INFO: 🚀 worker-2 自己進化デバッグ版起動 - task_queue待機中...
+2025-07-01 22:02:24,976 [TaskWorker] INFO: 📨 タスク受信: code_20250701_212004 (タイプ: code)
+2025-07-01 22:02:24,976 [TaskWorker] INFO: プロンプト: SelfEvolutionManagerのauto_place_file関数を改良して、より賢い配置ルールを実装してください。機械学習的なアプローチも検討して
+2025-07-01 22:02:25,439 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 67 → 269 文字
+2025-07-01 22:02:25,441 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 22:02:51,452 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 22:02:51,452 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 36672), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:02:51,453 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x731822925f70>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x731822925f70> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 22:02:51,453 [TaskWorker] INFO: Pika version 1.3.2 connecting to ('127.0.0.1', 5672)
+2025-07-01 22:02:51,453 [TaskWorker] INFO: Socket connected: <socket.socket fd=8, family=2, type=1, proto=6, laddr=('127.0.0.1', 36678), raddr=('127.0.0.1', 5672)>
+2025-07-01 22:02:51,454 [TaskWorker] INFO: Streaming transport linked up: (<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ce2053fe630>, _StreamingProtocolShim: <SelectConnection PROTOCOL transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ce2053fe630> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>).
+2025-07-01 22:02:51,457 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x731822925f70> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:51,457 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x731822925f70> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:51,458 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x731822925f70> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:51,458 [TaskWorker] INFO: Created channel=1
+2025-07-01 22:02:51,459 [TaskWorker] INFO: AMQPConnector - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ce2053fe630> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:51,459 [TaskWorker] INFO: AMQPConnectionWorkflow - reporting success: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ce2053fe630> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:51,459 [TaskWorker] INFO: Connection workflow succeeded: <SelectConnection OPEN transport=<pika.adapters.utils.io_services_utils._AsyncPlaintextTransport object at 0x7ce2053fe630> params=<ConnectionParameters host=localhost port=5672 virtual_host=/ ssl=False>>
+2025-07-01 22:02:51,459 [TaskWorker] INFO: Created channel=1
+2025-07-01 22:02:51,461 [TaskWorker] INFO: worker-1 - RabbitMQ接続成功
+2025-07-01 22:02:51,462 [TaskWorker] INFO: worker-2 - RabbitMQ接続成功
+2025-07-01 22:02:51,463 [TaskWorker] INFO: 🚀 worker-1 自己進化デバッグ版起動 - task_queue待機中...
+2025-07-01 22:02:51,463 [TaskWorker] INFO: 📨 タスク受信: general_20250701_212004 (タイプ: general)
+2025-07-01 22:02:51,463 [TaskWorker] INFO: プロンプト: AI Companyシステムの全体構成を分析して、現在のボトルネックと改善提案を5つ挙げてください。各提案には具体的な実装方法も含めて
+2025-07-01 22:02:51,465 [TaskWorker] INFO: 🚀 worker-2 自己進化デバッグ版起動 - task_queue待機中...
+2025-07-01 22:02:51,465 [TaskWorker] INFO: 📨 タスク受信: code_20250701_212004 (タイプ: code)
+2025-07-01 22:02:51,465 [TaskWorker] INFO: プロンプト: SelfEvolutionManagerのauto_place_file関数を改良して、より賢い配置ルールを実装してください。機械学習的なアプローチも検討して
+2025-07-01 22:02:51,815 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 67 → 269 文字
+2025-07-01 22:02:51,819 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 22:03:00,482 [TaskWorker] INFO: ✨ RAG適用: プロンプト拡張 79 → 2098 文字
+2025-07-01 22:03:00,485 [TaskWorker] INFO: 🤖 Claude CLI実行中...
+2025-07-01 22:04:50,710 [TaskWorker] INFO: 📝 CLI stdout: 'AI Companyシステムの全体構成分析が完了しました。分析結果を `/root/ai_co/output/ai_company_system_analysis.md` に保存しました。
+
+## 主...'
+2025-07-01 22:04:50,711 [TaskWorker] INFO: ✅ CLI処理完了: 最終出力560文字
+2025-07-01 22:04:50,711 [TaskWorker] INFO: 🧬 自己進化処理開始...
+2025-07-01 22:04:50,711 [TaskWorker] INFO: 🧬 handle_evolution開始: 出力長560文字
+2025-07-01 22:04:50,711 [TaskWorker] INFO: 🧬 コードブロック抽出開始: テキスト長560文字
+2025-07-01 22:04:50,712 [TaskWorker] INFO: 🧬 正規表現マッチ数: 0
+2025-07-01 22:04:50,712 [TaskWorker] INFO: 🧬 抽出されたコードブロック数: 0
+2025-07-01 22:04:50,712 [TaskWorker] INFO: 🧬 自己進化: 該当コードなし
+2025-07-01 22:04:50,712 [TaskWorker] INFO: 💾 結果ファイル保存: /root/ai_co/output/general/general_20250701_212004/result.txt
+2025-07-01 22:04:50,714 [TaskWorker] INFO: タスク履歴保存成功: general_20250701_212004
+2025-07-01 22:04:56,561 [TaskWorker] INFO: 要約生成成功: 90文字
+2025-07-01 22:04:56,564 [TaskWorker] INFO: 要約更新成功: general_20250701_212004
+2025-07-01 22:04:56,581 [TaskWorker] INFO: 要約保存完了: general_20250701_212004 -> AIシステムの構成分析完了。RabbitMQ+Pythonワーカー構成で、メモリ最適化・キュー効率化...
+2025-07-01 22:04:56,581 [TaskWorker] INFO: 🧠 RAG履歴保存完了
+2025-07-01 22:04:56,845 [TaskWorker] INFO: Slack通知送信成功
+2025-07-01 22:04:56,846 [TaskWorker] INFO: 📱 Slack通知送信完了
+2025-07-01 22:04:56,847 [TaskWorker] INFO: 🎯 タスク完了: general_20250701_212004
+2025-07-01 22:04:56,855 [TaskWorker] INFO: 📨 タスク受信: general_20250701_212004 (タイプ: general)
+2025-07-01 22:04:56,856 [TaskWorker] INFO: プロンプト: 現在のシステムのセキュリティ脆弱性を分析して、特に機密情報の管理方法について改善案を提示してください
