@@ -5,8 +5,8 @@ __pycache__/
 venv/
 .env
 
-# Logs
-logs/*.log
+# Logs - 完全に無視
+logs/
 *.log
 
 # Database
@@ -17,9 +17,8 @@ logs/*.log
 .vscode/
 .idea/
 
-# Output files
-output/code/*/
-output/general/*/
+# Output files - 完全に無視
+output/
 
 # Credentials
 credentials/
@@ -30,8 +29,20 @@ credentials/
 *.bak
 *.swp
 *~
+.DS_Store
+
+# Backup files
+*.backup_*
+*.backup
+*.orig
 
 # Config with secrets
 config/slack.conf
 config/github.conf
-config/github.conf
+
+# Test files
+test_*.py
+test_*.sh
+
+# Session files
+*.session

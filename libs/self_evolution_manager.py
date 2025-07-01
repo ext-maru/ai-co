@@ -2036,3 +2036,408 @@ class SelfEvolutionManager:
                 return weight_key
         
         return 'content_similarity'  # Default
+    
+    # New Enhanced Methods for Next-Generation File Placement
+    
+    def _guess_filename_from_content_enhanced(self, content):
+        """内容からファイル名を推測（強化版）"""
+        lines = content.split('\n')
+        
+        # 1. ファイルヘッダーから推測
+        filename_from_header = self._extract_filename_from_header(content)
+        if filename_from_header:
+            return filename_from_header
+        
+        # 2. 主要クラス名から推測（複数クラスの場合は最も重要なものを選択）
+        classes = re.findall(r'class\s+(\w+)', content)
+        if classes:
+            # クラスの重要度を評価
+            primary_class = self._identify_primary_class(classes, content)
+            if primary_class:
+                snake_name = re.sub(r'(?<!^)(?=[A-Z])', '_', primary_class).lower()
+                return f"{snake_name}.py"
+        
+        # 3. モジュール名パターンから推測
+        module_name = self._extract_module_name_from_content(content)
+        if module_name:
+            return f"{module_name}.py"
+        
+        # 4. 主要関数名から推測（改良版）
+        functions = re.findall(r'def\s+(\w+)', content)
+        if functions:
+            # __init__, __main__ などを除外し、最も重要な関数を選択
+            primary_function = self._identify_primary_function(functions, content)
+            if primary_function:
+                return f"{primary_function}.py"
+        
+        # 5. ファイルタイプに基づく推測
+        file_type = self._determine_file_type_from_content(content)
+        if file_type['extension']:
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            return f"{file_type['prefix']}_{timestamp}{file_type['extension']}"
+        
+        # 6. セマンティック分析による命名
+        semantic_name = self._generate_semantic_filename(content)
+        if semantic_name:
+            return semantic_name
+        
+        # デフォルト
+        return f"generated_{datetime.now().strftime('%Y%m%d_%H%M%S')}.py"
+    
+    def _extract_filename_from_header(self, content):
+        """ファイルヘッダーからファイル名を抽出"""
+        first_lines = content.split('\n')[:10]
+        for line in first_lines:
+            # コメント内のファイル名
+            if re.search(r'@file|filename:|file:|@name', line.lower()):
+                match = re.search(r'[\w_]+\.(?:py|sh|js|html|css|json)', line)
+                if match:
+                    return match.group(0)
+            # Python docstring内のファイル名
+            if '"""' in line and '.py' in line:
+                match = re.search(r'(\w+\.py)', line)
+                if match:
+                    return match.group(1)
+        return None
+    
+    def _identify_primary_class(self, classes, content):
+        """最も重要なクラスを特定"""
+        class_scores = {}
+        for cls in classes:
+            score = 0
+            # ファイル名に含まれる可能性が高いクラス名を優先
+            if re.search(rf'\b{cls.lower()}\b', content.lower()):
+                score += 3
+            # 継承関係を持つクラスを優先
+            if re.search(rf'class\s+{cls}\s*\([^)]+\)', content):
+                score += 2
+            # メソッド数が多いクラスを優先
+            method_count = len(re.findall(rf'class\s+{cls}.*?(?=class|\Z)', content, re.DOTALL))
+            score += min(3, method_count)
+            # 特定の重要キーワードを含むクラスを優先
+            if re.search(r'(Manager|Worker|Service|Controller|Handler)', cls):
+                score += 4
+            class_scores[cls] = score
+        
+        return max(class_scores.items(), key=lambda x: x[1])[0] if class_scores else None
+    
+    def _extract_module_name_from_content(self, content):
+        """内容からモジュール名を抽出"""
+        # __name__ 変数の使用パターン
+        if '__name__' in content:
+            # if __name__ == "__main__": パターン
+            if re.search(r'if\s+__name__\s*==\s*["\']__main__["\']', content):
+                return 'main_script'
+        
+        # 特定のインポートパターンから推測
+        imports = re.findall(r'from\s+(\w+)\s+import|import\s+(\w+)', content)
+        common_modules = ['os', 'sys', 'json', 'datetime', 'logging', 're']
+        specialized_modules = []
+        for imp in imports:
+            module = imp[0] or imp[1]
+            if module not in common_modules:
+                specialized_modules.append(module)
+        
+        if specialized_modules:
+            # 最も特殊化されたモジュール名を使用
+            return specialized_modules[0].lower()
+        
+        return None
+    
+    def _identify_primary_function(self, functions, content):
+        """最も重要な関数を特定"""
+        # 除外する関数名
+        excluded = {'__init__', '__str__', '__repr__', '__del__', 'setUp', 'tearDown'}
+        candidates = [f for f in functions if f not in excluded and not f.startswith('_')]
+        
+        if not candidates:
+            return None
+        
+        function_scores = {}
+        for func in candidates:
+            score = 0
+            # main関数は最優先
+            if func == 'main':
+                score += 10
+            # 長い関数名（具体的な機能を表す）を優先
+            score += len(func) * 0.1
+            # 動詞+名詞パターンを優先
+            if re.search(r'^(get|set|create|update|delete|process|handle|manage|send|receive)', func):
+                score += 3
+            # 関数の複雑度
+            func_pattern = rf'def\s+{func}\s*\([^)]*\):(.*?)(?=def|\Z)'
+            func_content = re.search(func_pattern, content, re.DOTALL)
+            if func_content:
+                lines = func_content.group(1).count('\n')
+                score += min(5, lines * 0.1)
+            function_scores[func] = score
+        
+        return max(function_scores.items(), key=lambda x: x[1])[0] if function_scores else candidates[0]
+    
+    def _determine_file_type_from_content(self, content):
+        """内容からファイルタイプを判定"""
+        # Shebang行チェック
+        if content.startswith('#!/bin/bash') or content.startswith('#!/bin/sh'):
+            return {'prefix': 'script', 'extension': '.sh'}
+        elif content.startswith('#!/usr/bin/env python') or content.startswith('#!/usr/bin/python'):
+            return {'prefix': 'script', 'extension': '.py'}
+        
+        # HTML/CSS/JS判定
+        if re.search(r'<html|<head|<body|<!DOCTYPE', content, re.IGNORECASE):
+            return {'prefix': 'page', 'extension': '.html'}
+        elif re.search(r'\.css|styles?|@media|selector', content, re.IGNORECASE):
+            return {'prefix': 'styles', 'extension': '.css'}
+        elif re.search(r'function|var |let |const |=>', content):
+            return {'prefix': 'script', 'extension': '.js'}
+        
+        # 設定ファイル判定
+        if re.search(r'config|setting|environment|parameter', content.lower()):
+            if re.search(r'^\s*\w+\s*=', content, re.MULTILINE):
+                return {'prefix': 'config', 'extension': '.conf'}
+        
+        # JSON判定
+        content_stripped = content.strip()
+        if (content_stripped.startswith('{') and content_stripped.endswith('}')) or \
+           (content_stripped.startswith('[') and content_stripped.endswith(']')):
+            try:
+                json.loads(content)
+                return {'prefix': 'data', 'extension': '.json'}
+            except:
+                pass
+        
+        # SQL判定
+        if re.search(r'\b(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)\b', content, re.IGNORECASE):
+            return {'prefix': 'query', 'extension': '.sql'}
+        
+        # Markdown判定
+        if re.search(r'^#+ |^\* |\[.*\]\(.*\)|```', content, re.MULTILINE):
+            return {'prefix': 'doc', 'extension': '.md'}
+        
+        # デフォルトはPython
+        return {'prefix': 'generated', 'extension': '.py'}
+    
+    def _generate_semantic_filename(self, content):
+        """セマンティック分析による意味のあるファイル名生成"""
+        # キーワード抽出による意味的分類
+        content_lower = content.lower()
+        
+        # 機能別キーワードマップ
+        semantic_maps = {
+            'worker': ['worker', 'task', 'job', 'queue', 'process', 'background'],
+            'manager': ['manager', 'controller', 'coordinator', 'supervisor', 'admin'],
+            'service': ['service', 'api', 'endpoint', 'handler', 'provider'],
+            'utils': ['utility', 'helper', 'common', 'shared', 'tools'],
+            'config': ['config', 'settings', 'environment', 'params'],
+            'database': ['database', 'db', 'model', 'schema', 'repository'],
+            'network': ['network', 'http', 'client', 'server', 'request'],
+            'auth': ['auth', 'login', 'password', 'token', 'security'],
+            'test': ['test', 'spec', 'mock', 'fixture', 'assert'],
+            'monitor': ['monitor', 'health', 'check', 'status', 'metrics']
+        }
+        
+        scores = {}
+        for category, keywords in semantic_maps.items():
+            score = sum(content_lower.count(keyword) for keyword in keywords)
+            if score > 0:
+                scores[category] = score
+        
+        if scores:
+            # 最もスコアの高いカテゴリを選択
+            primary_category = max(scores.items(), key=lambda x: x[1])[0]
+            timestamp = datetime.now().strftime('%H%M%S')
+            return f"{primary_category}_{timestamp}.py"
+        
+        return None
+    
+    def _analyze_placement_candidates_enhanced(self, filename, content):
+        """Enhanced candidate analysis with additional ML methods"""
+        # Start with existing analysis
+        candidates = self._analyze_placement_candidates(filename, content)
+        
+        # Add new analysis methods
+        enhanced_candidates = []
+        
+        # 1. Deep content understanding
+        deep_analysis_candidates = self._deep_content_analysis(filename, content)
+        enhanced_candidates.extend(deep_analysis_candidates)
+        
+        # 2. Cross-reference analysis with existing files
+        cross_ref_candidates = self._cross_reference_analysis(filename, content)
+        enhanced_candidates.extend(cross_ref_candidates)
+        
+        # 3. Temporal pattern analysis (time-based placement trends)
+        temporal_candidates = self._temporal_pattern_analysis_enhanced(filename, content)
+        enhanced_candidates.extend(temporal_candidates)
+        
+        # 4. Code complexity and architecture analysis
+        architecture_candidates = self._architecture_based_placement(filename, content)
+        enhanced_candidates.extend(architecture_candidates)
+        
+        # 5. Integration pattern analysis
+        integration_candidates = self._integration_pattern_analysis(filename, content)
+        enhanced_candidates.extend(integration_candidates)
+        
+        # Combine all candidates
+        all_candidates = candidates + enhanced_candidates
+        
+        # Apply advanced ensemble with conflict resolution
+        return self._advanced_ensemble_with_conflict_resolution(all_candidates)
+    
+    def _deep_content_analysis(self, filename, content):
+        """Deep learning-inspired content analysis"""
+        candidates = []
+        
+        try:
+            # Multi-layer feature extraction
+            features = {
+                'syntactic': self._extract_syntactic_features(content),
+                'semantic': self._extract_semantic_features(content),
+                'structural': self._extract_structural_features(content),
+                'behavioral': self._extract_behavioral_features(content)
+            }
+            
+            # Apply layered analysis similar to neural networks
+            for layer_name, layer_features in features.items():
+                layer_prediction = self._apply_layer_analysis(layer_name, layer_features)
+                if layer_prediction:
+                    candidates.append({
+                        'dir': layer_prediction['directory'],
+                        'score': layer_prediction['confidence'],
+                        'method': f'deep_{layer_name}_analysis',
+                        'reason': layer_prediction['reasoning']
+                    })
+        except Exception as e:
+            logger.error(f"Deep content analysis failed: {e}")
+        
+        return candidates
+    
+    def _extract_syntactic_features(self, content):
+        """Extract syntactic patterns from code"""
+        return {
+            'imports': len(re.findall(r'^\s*(?:from|import)', content, re.MULTILINE)),
+            'function_defs': len(re.findall(r'^\s*def\s+', content, re.MULTILINE)),
+            'class_defs': len(re.findall(r'^\s*class\s+', content, re.MULTILINE)),
+            'decorators': len(re.findall(r'^\s*@\w+', content, re.MULTILINE)),
+            'async_keywords': len(re.findall(r'\basync\s+', content)),
+            'await_keywords': len(re.findall(r'\bawait\s+', content)),
+            'exception_handling': len(re.findall(r'\btry:|except:|finally:', content)),
+            'context_managers': len(re.findall(r'\bwith\s+', content)),
+        }
+    
+    def _extract_semantic_features(self, content):
+        """Extract semantic meaning from code"""
+        domain_keywords = {
+            'web': ['flask', 'fastapi', 'request', 'response', 'route', 'endpoint'],
+            'data': ['database', 'query', 'model', 'schema', 'table', 'sql'],
+            'worker': ['task', 'job', 'queue', 'worker', 'background', 'process'],
+            'api': ['api', 'rest', 'graphql', 'endpoint', 'service'],
+            'config': ['config', 'settings', 'environment', 'parameter'],
+            'monitoring': ['monitor', 'health', 'metrics', 'logging', 'status']
+        }
+        
+        semantic_scores = {}
+        content_lower = content.lower()
+        for domain, keywords in domain_keywords.items():
+            score = sum(content_lower.count(keyword) for keyword in keywords)
+            semantic_scores[domain] = score
+        
+        return semantic_scores
+    
+    def _extract_structural_features(self, content):
+        """Extract code structural features"""
+        return {
+            'file_length': len(content.split('\n')),
+            'avg_line_length': sum(len(line) for line in content.split('\n')) / max(1, len(content.split('\n'))),
+            'indent_levels': len(set(len(line) - len(line.lstrip()) for line in content.split('\n') if line.strip())),
+            'docstring_ratio': len(re.findall(r'""".*?"""', content, re.DOTALL)) / max(1, len(content.split('\n'))),
+            'comment_ratio': len(re.findall(r'#.*', content)) / max(1, len(content.split('\n'))),
+            'blank_line_ratio': content.count('\n\n') / max(1, len(content.split('\n')))
+        }
+    
+    def _extract_behavioral_features(self, content):
+        """Extract behavioral patterns from code"""
+        return {
+            'io_operations': len(re.findall(r'\b(print|input|open|read|write|close)\b', content)),
+            'network_operations': len(re.findall(r'\b(requests|urllib|socket|http)\b', content)),
+            'file_operations': len(re.findall(r'\b(os\.path|pathlib|glob|shutil)\b', content)),
+            'database_operations': len(re.findall(r'\b(sqlite|mysql|postgres|mongodb)\b', content)),
+            'concurrency_usage': len(re.findall(r'\b(threading|multiprocessing|asyncio)\b', content)),
+            'logging_usage': len(re.findall(r'\b(logging|logger)\b', content)),
+            'error_handling': len(re.findall(r'\b(raise|except|assert)\b', content)),
+            'test_patterns': len(re.findall(r'\b(test_|assert|mock|fixture)\b', content))
+        }
+    
+    def _apply_layer_analysis(self, layer_name, features):
+        """Apply layer-specific analysis similar to neural network layers"""
+        directory_mappings = {
+            'syntactic': {
+                'high_class_count': 'libs/',
+                'high_function_count': 'libs/',
+                'high_async_usage': 'workers/',
+                'high_decorator_usage': 'web/',
+            },
+            'semantic': {
+                'web': 'web/',
+                'data': 'libs/',
+                'worker': 'workers/',
+                'api': 'web/',
+                'config': 'config/',
+                'monitoring': 'libs/'
+            },
+            'structural': {
+                'long_files': 'libs/',
+                'short_files': 'scripts/',
+                'highly_documented': 'libs/',
+                'simple_structure': 'scripts/'
+            },
+            'behavioral': {
+                'high_io': 'scripts/',
+                'high_network': 'web/',
+                'high_database': 'libs/',
+                'high_concurrency': 'workers/',
+                'high_testing': 'tests/'
+            }
+        }
+        
+        predictions = []
+        
+        if layer_name == 'syntactic':
+            if features.get('class_defs', 0) > 2:
+                predictions.append(('libs/', 0.7, 'multiple class definitions'))
+            if features.get('async_keywords', 0) > 3:
+                predictions.append(('workers/', 0.8, 'heavy async usage'))
+            if features.get('decorators', 0) > 2:
+                predictions.append(('web/', 0.6, 'decorator patterns'))
+        
+        elif layer_name == 'semantic':
+            for domain, score in features.items():
+                if score > 2:
+                    target_dir = directory_mappings['semantic'].get(domain, 'libs/')
+                    confidence = min(0.9, score * 0.1)
+                    predictions.append((target_dir, confidence, f'{domain} domain focus'))
+        
+        elif layer_name == 'structural':
+            file_length = features.get('file_length', 0)
+            if file_length > 200:
+                predictions.append(('libs/', 0.6, 'complex file structure'))
+            elif file_length < 50:
+                predictions.append(('scripts/', 0.7, 'simple file structure'))
+        
+        elif layer_name == 'behavioral':
+            if features.get('concurrency_usage', 0) > 1:
+                predictions.append(('workers/', 0.8, 'concurrency patterns'))
+            if features.get('network_operations', 0) > 2:
+                predictions.append(('web/', 0.7, 'network operations'))
+            if features.get('test_patterns', 0) > 3:
+                predictions.append(('tests/', 0.9, 'test patterns'))
+        
+        # Return the highest confidence prediction
+        if predictions:
+            best_prediction = max(predictions, key=lambda x: x[1])
+            return {
+                'directory': best_prediction[0],
+                'confidence': best_prediction[1],
+                'reasoning': best_prediction[2]
+            }
+        
+        return None
