@@ -6,7 +6,7 @@ import pika
 from datetime import datetime
 from pathlib import Path
 
-PROJECT_DIR = Path(__file__).parent.parent
+PROJECT_DIR = Path(__file__).parent.parent.parent
 LOG_DIR = PROJECT_DIR / "logs"
 sys.path.append(str(PROJECT_DIR))
 

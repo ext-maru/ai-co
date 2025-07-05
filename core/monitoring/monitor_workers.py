@@ -19,7 +19,7 @@ def check_worker_health():
     
     for worker_type, expected_count in workers.items():
         # プロセス数をカウント
-        cmd = f"ps aux | grep 'python3 workers/{worker_type}.py' | grep -v grep | wc -l"
+        cmd = f"ps aux | grep 'python3 core/workers/{worker_type}.py' | grep -v grep | wc -l"
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
         actual_count = int(result.stdout.strip())
         
@@ -41,12 +41,12 @@ def restart_ai_company():
     print("🔄 AI Company を再起動します...")
     
     # 既存のプロセスを停止
-    subprocess.run("pkill -f 'python3 workers/'", shell=True)
+    subprocess.run("pkill -f 'python3 core/workers/'", shell=True)
     time.sleep(2)
     
     # 再起動
     os.chdir('/root/ai_co')
-    subprocess.run("bash scripts/start_company.sh", shell=True)
+    subprocess.run("bash utils/scripts/start_company.sh", shell=True)
     
     print("✅ 再起動完了")
 
