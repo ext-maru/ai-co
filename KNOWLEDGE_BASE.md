@@ -78,6 +78,115 @@ tail -f logs/*.log | grep -E '(ERROR|Exception|Connection reset)'
 
 ---
 
+### Pattern #015: ディレクトリ構造の再編成 (2025-07-05)
+
+#### 背景
+プロジェクトが成長し、libs/に21個、scripts/に20個のファイルが混在。機能別の整理が必要になった。
+
+#### 実施内容
+1. **新しいディレクトリ構造**
+   ```
+   core/       - システムコア（workers, monitoring, queue）
+   features/   - 機能別モジュール（ai, conversation, database, notification, integration）
+   utils/      - ユーティリティ（scripts, helpers）
+   tests/      - テストコード
+   ```
+
+2. **移動したファイル**
+   - workers/* → core/workers/
+   - libs/health_checker.py等 → core/monitoring/
+   - libs/rag_manager.py等 → features/ai/
+   - libs/conversation_*.py → features/conversation/
+   - libs/slack_notifier*.py → features/notification/
+   - scripts/test_*.py → tests/
+
+3. **import文の自動更新**
+   - update_imports.pyスクリプトで24ファイルを一括更新
+   - sys.path.append('/root/ai_co')を追加
+
+4. **設定ファイルパスの修正**
+   - SlackNotifierのconfig pathを絶対パスに変更
+   - Path("/root/ai_co/config/slack.conf")
+
+5. **後方互換性**
+   - シンボリックリンク作成
+   - scripts → utils/scripts
+   - workers → core/workers
+
+#### 注意点
+- PYTHONPATH=/root/ai_co の設定が必要
+- 新しいファイルは適切なディレクトリに配置
+- DIRECTORY_STRUCTURE.mdを参照
+
+---
+
+### Pattern #016: Slack通知V2デグレ修正 (2025-07-05)
+
+#### 問題の症状
+- `'NoneType' object has no attribute 'get'` エラーが発生
+- 拡張版Slack通知が送信されない
+- result_worker.pyでSlack通知処理が失敗
+
+#### 原因
+1. **データ検証不足**
+   - `result_worker.py`でNoneデータが渡される
+   - `slack_notifier_v2.py`でデータ型チェックが不十分
+
+2. **時刻データ処理の問題**
+   - datetime型とstring型の混在
+   - end_timeのNone処理が不適切
+
+3. **エラー処理の脆弱性**
+   - 例外発生時のフォールバック機能なし
+
+#### 解決方法
+1. **データ検証の強化**
+   ```python
+   # result_worker.py:53-55
+   if not result or not isinstance(result, dict):
+       logger.error("Slack通知送信エラー: 無効な結果データ")
+       return
+   ```
+
+2. **安全な時刻処理**
+   ```python
+   # slack_notifier_v2.py:109-118
+   end_time = task_data.get('end_time')
+   if not end_time:
+       end_time = datetime.now()
+   elif isinstance(end_time, str):
+       try:
+           end_time = datetime.fromisoformat(end_time.replace('Z', '+00:00'))
+       except ValueError:
+           end_time = datetime.now()
+   ```
+
+3. **フォールバック機能の実装**
+   ```python
+   # result_worker.py:106-116
+   if not success and self.slack_notifier_v1.enabled:
+       fallback_message = f"タスク {task_data['task_id']} が完了しました"
+       self.slack_notifier_v1.send_notification(fallback_message)
+   ```
+
+#### 関連ファイル
+- `/root/ai_co/core/workers/result_worker.py` - データ検証とフォールバック機能
+- `/root/ai_co/features/notification/slack_notifier_v2.py` - 例外処理強化
+
+#### テスト方法
+```bash
+# 修正後のテスト
+python3 -c "
+from features.notification.slack_notifier_v2 import SlackNotifierV2
+from datetime import datetime
+notifier = SlackNotifierV2()
+test_data = {'task_id': 'test_001', 'status': 'completed', 'end_time': datetime.now()}
+print('✅ Success' if notifier.send_enhanced_task_notification(test_data) else '❌ Failed')
+"
+```
+
+---
+
 ## 📚 その他のパターン
 
 ### Pattern #001-013
@@ -85,4 +194,4 @@ tail -f logs/*.log | grep -E '(ERROR|Exception|Connection reset)'
 
 ---
 
-最終更新: 2025-07-05 20:00
+最終更新: 2025-07-05 21:00

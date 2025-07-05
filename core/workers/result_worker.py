@@ -23,11 +23,13 @@ logger = logging.getLogger("ResultWorker")
 
 # Slack通知をインポート
 from features.notification.slack_notifier_v2 import SlackNotifierV2
+from features.notification.slack_notifier import SlackNotifier
 
 class ResultWorker:
     def __init__(self):
         # Slack通知の初期化
         self.slack_notifier = SlackNotifierV2()
+        self.slack_notifier_v1 = SlackNotifier()  # フォールバック用
         logger.info(f"Slack通知: {'有効' if self.slack_notifier.enabled else '無効'}")
         
     def connect(self):
@@ -49,6 +51,11 @@ class ResultWorker:
             return
             
         try:
+            # 結果データの検証
+            if not result or not isinstance(result, dict):
+                logger.error("Slack通知送信エラー: 無効な結果データ")
+                return
+                
             # 結果データから拡張情報を収集
             task_data = {
                 'task_id': result.get('task_id', 'N/A'),
@@ -66,8 +73,8 @@ class ResultWorker:
                 # AI処理情報
                 'rag_applied': result.get('rag_applied', False),
                 'rag_reference_count': result.get('rag_reference_count', 0),
-                'evolution_applied': bool(result.get('evolution_result', {}).get('success')),
-                'evolution_files': result.get('evolution_result', {}).get('evolved_files', []),
+                'evolution_applied': bool(result.get('evolution_result', {}).get('success')) if result.get('evolution_result') else False,
+                'evolution_files': result.get('evolution_result', {}).get('evolved_files', []) if result.get('evolution_result') else [],
                 'model': result.get('model', 'default'),
                 
                 # コンテンツ
@@ -95,6 +102,18 @@ class ResultWorker:
                 logger.info(f"拡張版Slack通知送信成功: タスク {task_data['task_id']}")
             else:
                 logger.warning(f"拡張版Slack通知送信失敗: タスク {task_data['task_id']}")
+                
+                # V2失敗時にV1フォールバックを実行
+                if self.slack_notifier_v1.enabled:
+                    logger.info("V1フォールバック通知を試行中...")
+                    fallback_message = f"タスク {task_data['task_id']} が完了しました\n" \
+                                     f"ワーカー: {task_data['worker']}\n" \
+                                     f"ステータス: {task_data['status']}"
+                    
+                    if self.slack_notifier_v1.send_notification(fallback_message):
+                        logger.info("V1フォールバック通知送信成功")
+                    else:
+                        logger.error("V1フォールバック通知も失敗")
                 
         except Exception as e:
             logger.error(f"Slack通知送信エラー: {e}")
