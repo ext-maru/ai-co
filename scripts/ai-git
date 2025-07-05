@@ -50,6 +50,8 @@ ai-git - AI-powered Git workflow tool with gitflow support
     sync                   メインブランチと同期
     status                 現在のブランチ状態を表示
     cleanup                マージ済みブランチを削除
+    commit [message]       AI支援による自動コミット
+    smart-commit           変更を分析して最適なコミット
     help                   このヘルプを表示
 
 例:
@@ -59,6 +61,7 @@ ai-git - AI-powered Git workflow tool with gitflow support
     ai-git finish feature
     ai-git pr "Add user authentication"
     ai-git sync
+    ai-git smart-commit
 EOF
 }
 
@@ -179,7 +182,7 @@ start_hotfix() {
     
     log_info "Hotfix開始: $branch_name"
     
-    # masterブランチに移動して最新化
+    # masterブランチに移動して最新化（hotfixは常にmaster基準）
     git checkout master
     git pull origin master
     
@@ -285,17 +288,54 @@ create_pr() {
     # 現在のブランチをプッシュ
     git push -u origin "$current_branch"
     
+    # AI支援でPR説明を生成
+    local pr_body="Auto-generated PR from ai-git"
+    if [[ -f "$VENV_PATH/bin/activate" ]]; then
+        source "$VENV_PATH/bin/activate"
+        if python3 -c "import sys; sys.path.append('$PROJECT_DIR'); from libs.ai_git_assistant import AIGitAssistant; print('AI available')" 2>/dev/null; then
+            log_info "AI支援でPR説明を生成中..."
+            pr_body=$(python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+from libs.ai_git_assistant import AIGitAssistant
+assistant = AIGitAssistant('$PROJECT_DIR')
+changes = assistant.analyze_changes()
+print(assistant.suggest_pr_description('$current_branch', changes))
+" 2>/dev/null || echo "Auto-generated PR from ai-git")
+        else
+            log_warning "AI支援が利用できません（モジュールが見つかりません）"
+        fi
+    else
+        log_warning "AI支援が利用できません（Python環境が見つかりません）"
+    fi
+    
     # GitHub CLI使用可能かチェック
     if command -v gh > /dev/null 2>&1; then
         log_info "GitHub CLI を使用してプルリクエストを作成します"
-        gh pr create --title "$title" --body "Auto-generated PR from ai-git" --base "$main_branch" --head "$current_branch"
-        log_success "プルリクエストを作成しました: $title"
+        
+        # 一時ファイルにPR本文を保存
+        local temp_file=$(mktemp)
+        echo "$pr_body" > "$temp_file"
+        
+        # PR作成（エラーハンドリング付き）
+        if gh pr create --title "$title" --body-file "$temp_file" --base "$main_branch" --head "$current_branch"; then
+            log_success "プルリクエストを作成しました: $title"
+        else
+            log_error "プルリクエストの作成に失敗しました"
+            log_info "手動で作成してください: https://github.com/$repo_name/compare/$main_branch...$current_branch"
+        fi
+        
+        # 一時ファイル削除
+        rm -f "$temp_file"
     else
         # GitHub CLI が無い場合はURLを表示
         local pr_url="https://github.com/$repo_name/compare/$main_branch...$current_branch"
         log_info "GitHub CLI が見つかりません"
         log_info "以下のURLからプルリクエストを作成してください:"
         echo "$pr_url"
+        echo
+        echo "=== AI生成PR説明 ==="
+        echo "$pr_body"
     fi
 }
 
@@ -395,6 +435,63 @@ cleanup_branches() {
     log_success "クリーンアップが完了しました"
 }
 
+# AI支援コミット
+smart_commit() {
+    local message="$1"
+    
+    log_info "AI支援でコミットを作成します"
+    
+    # 変更確認
+    if git diff --quiet && git diff --cached --quiet; then
+        log_warning "コミットする変更がありません"
+        return 0
+    fi
+    
+    # AI支援でコミットメッセージ生成
+    if [[ -f "$VENV_PATH/bin/activate" ]]; then
+        source "$VENV_PATH/bin/activate"
+        if python3 -c "import sys; sys.path.append('$PROJECT_DIR'); from libs.ai_git_assistant import AIGitAssistant; print('AI available')" 2>/dev/null; then
+            log_info "変更を分析中..."
+            
+            # AI支援でコミット実行
+            if python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+from libs.ai_git_assistant import AIGitAssistant
+assistant = AIGitAssistant('$PROJECT_DIR')
+success = assistant.auto_commit_with_ai('$message' if '$message' else None)
+exit(0 if success else 1)
+" 2>/dev/null; then
+                log_success "AI支援コミットが完了しました"
+            else
+                log_error "AI支援コミットに失敗しました"
+                exit 1
+            fi
+        else
+            log_warning "AI支援が利用できません。通常のコミットを実行します"
+            manual_commit "$message"
+        fi
+    else
+        log_warning "Python環境が見つかりません。通常のコミットを実行します"
+        manual_commit "$message"
+    fi
+}
+
+# 手動コミット
+manual_commit() {
+    local message="$1"
+    
+    if [[ -z "$message" ]]; then
+        log_error "コミットメッセージを指定してください"
+        exit 1
+    fi
+    
+    git add .
+    git commit -m "$message"
+    
+    log_success "コミットが完了しました: $message"
+}
+
 # メイン処理
 main() {
     if [[ $# -eq 0 ]]; then
@@ -433,6 +530,12 @@ main() {
             ;;
         "cleanup")
             cleanup_branches
+            ;;
+        "commit")
+            manual_commit "$*"
+            ;;
+        "smart-commit")
+            smart_commit "$*"
             ;;
         "help"|"-h"|"--help")
             show_help
