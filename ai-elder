@@ -1,0 +1,247 @@
+#!/usr/bin/env python3
+"""
+AI Elder 統合コマンド
+エルダーズ関連のすべての機能を統合した統一インターフェース
+"""
+
+import sys
+import argparse
+import subprocess
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).parent.resolve()
+# Check if running from scripts directory and adjust
+if PROJECT_ROOT.name == "scripts":
+    PROJECT_ROOT = PROJECT_ROOT.parent
+
+def run_command(cmd):
+    """コマンドを実行して結果を返す"""
+    try:
+        result = subprocess.run(cmd, shell=True, capture_output=True, text=True, cwd=PROJECT_ROOT)
+        if result.stdout:
+            print(result.stdout)
+        if result.stderr:
+            print(result.stderr, file=sys.stderr)
+        return result.returncode == 0
+    except Exception as e:
+        print(f"❌ コマンド実行エラー: {e}", file=sys.stderr)
+        return False
+
+def show_status():
+    """全体ステータス表示"""
+    print("🏛️ AI Elder システム統合ステータス")
+    print("=" * 50)
+    
+    print("\n📊 エルダー評議会:")
+    run_command("./commands/ai_elder_council.py status")
+    
+    print("\n📋 PM統合状況:")
+    run_command("./commands/ai_elder_pm.py list")
+
+def council_command(args):
+    """エルダー評議会関連コマンド"""
+    cmd_map = {
+        'status': './commands/ai_elder_council.py status',
+        'triggers': './commands/ai_elder_council.py triggers',
+        'councils': './commands/ai_elder_council.py councils',
+        'metrics': './commands/ai_elder_council.py metrics',
+        'start': './commands/ai_elder_council.py start --daemon',
+        'simulate': './commands/ai_elder_council.py simulate'
+    }
+    
+    if not args or args[0] not in cmd_map:
+        print("📋 利用可能なcouncilサブコマンド:")
+        for cmd in cmd_map.keys():
+            print(f"  - {cmd}")
+        return
+    
+    run_command(cmd_map[args[0]])
+
+def pm_command(args):
+    """PM統合コマンド"""
+    cmd_map = {
+        'list': './commands/ai_elder_pm.py list',
+        'approve': './commands/ai_elder_pm.py approve',
+        'reject': './commands/ai_elder_pm.py reject',
+        'council': './commands/ai_elder_pm.py council',
+        'monitor': './commands/ai_elder_pm.py monitor'
+    }
+    
+    if not args or args[0] not in cmd_map:
+        print("📋 利用可能なpmサブコマンド:")
+        for cmd in cmd_map.keys():
+            print(f"  - {cmd}")
+        return
+    
+    # 引数がある場合は渡す
+    cmd = cmd_map[args[0]]
+    if len(args) > 1:
+        cmd += " " + " ".join(args[1:])
+    
+    run_command(cmd)
+
+def cc_command(args):
+    """ClaudeCode用完全システム提供コマンド"""
+    if not args:
+        # デフォルト: 完全システム提供（ナレッジ + エルダーズ知識）
+        run_command("./ai-elder-start")
+        print("\n🎯 ClaudeCode完全システム提供完了！")
+        print("💡 AI Companyの全知識が提供されました")
+    elif args[0] == 'summary':
+        # エルダーズサマリーのみ
+        run_command("./ai-elder-start --summary")
+    elif args[0] == 'knowledge':
+        # ナレッジベースのみ
+        run_command("./ai-elder-start --knowledge")
+    elif args[0] == 'status':
+        # システム状況のみ
+        run_command("./ai-elder-start --status")
+    elif args[0] == 'greet':
+        # エルダーズ挨拶のみ
+        run_command("./ai-elder-start --greet")
+    elif args[0] == 'help':
+        # ヘルプ表示
+        run_command("./ai-elder-start --help")
+    else:
+        print("📋 利用可能なccサブコマンド:")
+        print("  - (なし): 完全システム提供")
+        print("  - summary: エルダーズサマリーのみ")
+        print("  - knowledge: ナレッジベースのみ")
+        print("  - status: システム状況確認のみ")
+        print("  - greet: エルダーズ挨拶のみ")
+        print("  - help: 詳細ヘルプ表示")
+
+def knights_command(args):
+    """騎士団関連コマンド"""
+    cmd_map = {
+        'status': './commands/ai_incident_knights.py status',
+        'plan': './commands/ai_incident_knights.py plan',
+        'pm': './commands/ai_incident_knights.py pm',
+        'sages': './commands/ai_incident_knights.py sages',
+        'metrics': './commands/ai_incident_knights.py metrics'
+    }
+    
+    if not args or args[0] not in cmd_map:
+        print("📋 利用可能なknightsサブコマンド:")
+        for cmd in cmd_map.keys():
+            print(f"  - {cmd}")
+        return
+    
+    run_command(cmd_map[args[0]])
+
+def servant_command(args):
+    """Elder Servant直接タスク割り当てコマンド"""
+    if not args:
+        # デフォルト: サーバント一覧表示
+        run_command("ai-servant list")
+        return
+    
+    # ai-servantコマンドに引数を渡す
+    cmd = "ai-servant " + " ".join(args)
+    run_command(cmd)
+
+def show_help():
+    """ヘルプ表示"""
+    help_text = """
+🏛️ AI Elder 統合コマンド
+
+使用方法:
+  ai-elder <subcommand> [options]
+
+サブコマンド:
+  status              全体ステータス表示
+  council <action>    エルダー評議会管理
+  pm <action>         PM統合管理
+  cc [option]         ClaudeCode用完全システム提供
+  knights <action>    騎士団管理
+  servant <action>    Elder Servant直接タスク割り当て
+  approval <action>   グランドエルダーへの承認申請 [NEW]
+  summon <sage>       4賢者召喚 [NEW]
+  emergency <action>  緊急時対応 [NEW]
+  help               このヘルプを表示
+
+詳細:
+  ai-elder council status     評議会状況確認
+  ai-elder pm list           承認待ちリスト
+  ai-elder cc                完全システム提供（推奨）
+  ai-elder cc summary        エルダーズサマリーのみ
+  ai-elder cc knowledge      ナレッジベースのみ
+  ai-elder cc status         システム状況確認のみ
+  ai-elder cc greet          エルダーズ挨拶のみ
+  ai-elder knights status    騎士団状況確認
+  ai-elder servant list      Elder Servant一覧
+  
+新機能:
+  ai-elder approval new      グランドエルダーへの承認申請作成
+  ai-elder approval list     保留中の承認申請一覧
+  ai-elder summon all        4賢者会議召集
+  ai-elder summon incident   インシデント賢者召喚
+  ai-elder emergency check   システム健康診断
+  ai-elder emergency council 緊急評議会召集
+
+例:
+  ai-elder status            # 全体状況確認
+  ai-elder council triggers  # アクティブトリガー確認
+  ai-elder cc                # ClaudeCode用完全システム提供（推奨）
+  ai-elder approval new --type system_change --title "新機能追加"
+  ai-elder summon incident -q "コード実装前のリスク確認"
+  ai-elder emergency check   # システム健康診断
+"""
+    print(help_text)
+
+def approval_command(args):
+    """承認申請コマンド"""
+    cmd = "bin/ai-elder-approval"
+    if args:
+        cmd += " " + " ".join(args)
+    run_command(cmd)
+
+def summon_command(args):
+    """4賢者召喚コマンド"""
+    cmd = "bin/ai-elder-summon"
+    if args:
+        cmd += " " + " ".join(args)
+    run_command(cmd)
+
+def emergency_command(args):
+    """緊急対応コマンド"""
+    cmd = "bin/ai-elder-emergency"
+    if args:
+        cmd += " " + " ".join(args)
+    run_command(cmd)
+
+def main():
+    if len(sys.argv) < 2:
+        show_help()
+        return
+    
+    command = sys.argv[1]
+    args = sys.argv[2:] if len(sys.argv) > 2 else []
+    
+    if command == 'status':
+        show_status()
+    elif command == 'council':
+        council_command(args)
+    elif command == 'pm':
+        pm_command(args)
+    elif command == 'cc':
+        cc_command(args)
+    elif command == 'knights':
+        knights_command(args)
+    elif command == 'servant':
+        servant_command(args)
+    elif command == 'approval':
+        approval_command(args)
+    elif command == 'summon':
+        summon_command(args)
+    elif command == 'emergency':
+        emergency_command(args)
+    elif command in ['help', '-h', '--help']:
+        show_help()
+    else:
+        print(f"❌ 不明なコマンド: {command}")
+        print("利用可能なコマンド: status, council, pm, cc, knights, servant, approval, summon, emergency, help")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

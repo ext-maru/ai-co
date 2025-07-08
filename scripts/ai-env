@@ -1,0 +1,165 @@
+#!/bin/bash
+#
+# AI Env - シンプル環境変数管理
+#
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+COMMAND="$1"
+
+if [[ -z "$COMMAND" ]]; then
+    echo "Usage: ai-env <command>"
+    echo ""
+    echo "Commands:"
+    echo "  check       Check environment configuration"
+    echo "  setup       Setup .env file from template"
+    echo "  verify      Verify required variables are set"
+    echo "  show        Show current environment (masked)"
+    echo ""
+    exit 1
+fi
+
+cd "$PROJECT_DIR"
+
+case "$COMMAND" in
+    check)
+        echo "🔍 Environment Configuration Check"
+        echo "=================================="
+        
+        # 仮想環境チェック
+        if [[ ! "$AI_VENV_ACTIVE" == "1" ]]; then
+            if [[ -f "venv/bin/activate" ]]; then
+                source venv/bin/activate
+                export AI_VENV_ACTIVE=1
+            fi
+        fi
+        
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+
+try:
+    from libs.env_config import verify_setup
+    verify_setup()
+except Exception as e:
+    print(f'❌ Check failed: {e}')
+    print('💡 Try: ai-setup')
+"
+        ;;
+        
+    setup)
+        echo "📋 Setting up .env file"
+        echo "======================="
+        
+        if [[ -f ".env" ]]; then
+            echo "⚠️  .env file already exists"
+            echo "Do you want to overwrite it? (y/N)"
+            read -r response
+            if [[ ! "$response" =~ ^[Yy]$ ]]; then
+                echo "Setup cancelled"
+                exit 0
+            fi
+        fi
+        
+        if [[ -f ".env.template" ]]; then
+            cp .env.template .env
+            echo "✅ .env file created from template"
+            echo ""
+            echo "📝 Please edit .env file and fill in your values:"
+            echo "   - ANTHROPIC_API_KEY"
+            echo "   - SLACK_BOT_TOKEN"
+            echo "   - SLACK_APP_TOKEN"
+            echo "   - SLACK_CHANNEL"
+        else
+            echo "❌ .env.template not found"
+            exit 1
+        fi
+        ;;
+        
+    verify)
+        echo "✅ Verifying Required Environment Variables"
+        echo "=========================================="
+        
+        # 必須変数リスト
+        REQUIRED_VARS=(
+            "ANTHROPIC_API_KEY"
+            "SLACK_BOT_TOKEN"
+            "SLACK_CHANNEL"
+            "PYTHONPATH"
+        )
+        
+        # .envファイル読み込み
+        if [[ -f ".env" ]]; then
+            set -a
+            source .env
+            set +a
+        fi
+        
+        all_good=true
+        
+        for var in "${REQUIRED_VARS[@]}"; do
+            if [[ -n "${!var}" && "${!var}" != "your_"*"_here" ]]; then
+                echo "✅ $var: Set"
+            else
+                echo "❌ $var: Missing or placeholder"
+                all_good=false
+            fi
+        done
+        
+        echo ""
+        if [[ "$all_good" == "true" ]]; then
+            echo "🎉 All required variables are set!"
+        else
+            echo "⚠️  Some required variables are missing"
+            echo "💡 Edit .env file to set missing values"
+        fi
+        ;;
+        
+    show)
+        echo "🔐 Current Environment Configuration"
+        echo "==================================="
+        
+        # .envファイル読み込み
+        if [[ -f ".env" ]]; then
+            set -a
+            source .env
+            set +a
+        fi
+        
+        # 重要な変数を表示（マスク付き）
+        SHOW_VARS=(
+            "ANTHROPIC_API_KEY"
+            "SLACK_BOT_TOKEN"
+            "SLACK_APP_TOKEN"
+            "SLACK_CHANNEL"
+            "RABBITMQ_HOST"
+            "PYTHONPATH"
+            "AI_VENV_ACTIVE"
+        )
+        
+        for var in "${SHOW_VARS[@]}"; do
+            value="${!var}"
+            if [[ -n "$value" ]]; then
+                # センシティブ情報をマスク
+                if [[ "$var" == *"TOKEN"* || "$var" == *"KEY"* ]]; then
+                    if [[ ${#value} -gt 8 ]]; then
+                        masked="${value:0:4}****${value: -4}"
+                    else
+                        masked="****"
+                    fi
+                    echo "🔑 $var: $masked"
+                else
+                    echo "📝 $var: $value"
+                fi
+            else
+                echo "❌ $var: Not set"
+            fi
+        done
+        ;;
+        
+    *)
+        echo "❌ Unknown command: $COMMAND"
+        exit 1
+        ;;
+esac

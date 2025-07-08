@@ -1,0 +1,144 @@
+"""
+Rate Limit Queue Processor
+制限検知時の自動キューイング処理とワーカー統合
+"""
+
+import json
+import time
+import logging
+import threading
+from datetime import datetime, timedelta
+from typing import Dict, List, Optional, Any, Callable
+from anthropic import RateLimitError, APIError
+import pika
+
+from .priority_queue_manager import PriorityQueueManager, TaskPriority, TaskStatus
+from .claude_client_with_rotation import ClaudeClientWithRotation
+
+class RateLimitQueueProcessor:
+    """
+    レート制限時の自動キューイング処理器
+    """
+    
+    def __init__(self, config_path: str = None):
+        self.logger = logging.getLogger(__name__)
+        self.config_path = config_path
+        
+        # コンポーネント初期化
+        self.queue_manager = PriorityQueueManager(config_path)
+        self.claude_client = ClaudeClientWithRotation(config_path)
+        
+        # 処理状態管理
+        self.processing = False
+        self.processor_thread = None
+        self.rate_limited = False
+        self.last_successful_request = datetime.now()
+        
+        # 統計情報
+        self.stats = {
+            'queued_tasks': 0,
+            'processed_tasks': 0,
+            'rate_limited_tasks': 0,
+            'failed_tasks': 0,
+            'queue_processing_start': None,
+            'last_rate_limit': None,
+            'recovery_time': None
+        }
+        
+        # RabbitMQ設定
+        self.connection = None
+        self.channel = None
+        self._setup_rabbitmq()
+        
+        # コールバック関数
+        self.on_task_completed: Optional[Callable] = None
+        self.on_rate_limit_detected: Optional[Callable] = None
+        self.on_queue_recovery: Optional[Callable] = None
+    
+    def _setup_rabbitmq(self):
+        """RabbitMQ接続とキュー設定"""
+        try:
+            self.connection = pika.BlockingConnection(
+                pika.ConnectionParameters('localhost')
+            )
+            self.channel = self.connection.channel()
+            
+            # レート制限関連キューを宣言
+            self.channel.queue_declare(queue='rate_limited_queue', durable=True)
+            self.channel.queue_declare(queue='priority_processing_queue', durable=True)
+            
+            self.logger.info("Rate Limit Queue Processor - RabbitMQ接続成功")
+            
+        except Exception as e:
+            self.logger.error(f"RabbitMQ接続失敗: {e}")
+    
+    def start_processing(self):
+        """キュー処理開始"""
+        if self.processing:
+            self.logger.warning("Already processing queues")
+            return
+        
+        self.processing = True
+        self.stats['queue_processing_start'] = datetime.now()
+        
+        # バックグラウンド処理開始
+        self.queue_manager.start_background_processing()
+        
+        # プロセッサースレッド開始
+        self.processor_thread = threading.Thread(target=self._process_queue_worker, daemon=True)
+        self.processor_thread.start()
+        
+        self.logger.info("🚀 Rate Limit Queue Processing 開始")
+    
+    def stop_processing(self):
+        """キュー処理停止"""
+        self.processing = False
+        
+        if self.processor_thread:
+            self.processor_thread.join(timeout=10)
+        
+        self.queue_manager.stop_background_processing()
+        
+        self.logger.info("🛑 Rate Limit Queue Processing 停止")
+    
+    def process_task_with_fallback(self, 
+                                 task_id: str,
+                                 prompt: str,
+                                 priority: int = TaskPriority.NORMAL.value,
+                                 task_type: str = "general",
+                                 max_immediate_retries: int = 2) -> Dict[str, Any]:
+        """
+        フォールバック付きタスク処理
+        制限時は自動的にキューに追加
+        """
+        
+        # 即座に処理を試行
+        for attempt in range(max_immediate_retries + 1):
+            try:
+                self.logger.info(f"🔄 Task処理試行 {attempt + 1}/{max_immediate_retries + 1}: {task_id}")
+                
+                messages = [{"role": "user", "content": prompt}]
+                
+                response = self.claude_client.create_message(
+                    messages=messages,
+                    max_tokens=4096,
+                    temperature=0.7
+                )
+                
+                # 成功時の処理
+                self.last_successful_request = datetime.now()
+                self.rate_limited = False
+                
+                if self.stats['last_rate_limit'] and not self.stats['recovery_time']:
+                    self.stats['recovery_time'] = datetime.now()
+                    self._handle_queue_recovery()
+                
+                self.stats['processed_tasks'] += 1
+                
+                return {
+                    'success': True,
+                    'response': response,
+                    'processed_immediately': True,
+                    'attempt': attempt + 1,
+                    'task_id': task_id
+                }\n                \n            except RateLimitError as e:\n                self.logger.warning(f"⏳ レート制限検知 (試行 {attempt + 1}): {task_id}")\n                \n                if attempt < max_immediate_retries:\n                    # 短い待機後にリトライ\n                    wait_time = (2 ** attempt) * 5  # 5, 10, 20秒\n                    time.sleep(wait_time)\n                    continue\n                else:\n                    # 最終試行も失敗した場合はキューに追加\n                    return self._handle_rate_limit_fallback(task_id, prompt, priority, task_type, e)\n                    \n            except APIError as e:\n                self.logger.error(f"❌ API Error: {e}")\n                # API Errorの場合もキューで再試行\n                return self._handle_rate_limit_fallback(task_id, prompt, priority, task_type, e)\n                \n            except Exception as e:\n                self.logger.error(f"❌ Unexpected Error: {e}")\n                return {\n                    'success': False,\n                    'error': str(e),\n                    'queued': False,\n                    'task_id': task_id\n                }\n        \n        # ここには到達しないはず\n        return {'success': False, 'error': 'Unexpected flow', 'task_id': task_id}\n    \n    def _handle_rate_limit_fallback(self, task_id: str, prompt: str, priority: int, task_type: str, error: Exception) -> Dict[str, Any]:\n        """レート制限時のフォールバック処理"""\n        \n        self.rate_limited = True\n        self.stats['last_rate_limit'] = datetime.now()\n        self.stats['rate_limited_tasks'] += 1\n        \n        # コールバック実行\n        if self.on_rate_limit_detected:\n            try:\n                self.on_rate_limit_detected(task_id, error)\n            except Exception as e:\n                self.logger.error(f"Rate limit callback error: {e}")\n        \n        # 高優先度でキューに追加\n        queue_priority = max(1, priority - 1)  # 優先度を1つ上げる\n        \n        queued = self.queue_manager.add_task(\n            task_id=task_id,\n            prompt=prompt,\n            priority=queue_priority,\n            task_type=task_type,\n            requester="rate_limit_fallback",\n            metadata={\n                'original_priority': priority,\n                'rate_limit_error': str(error),\n                'fallback_time': datetime.now().isoformat()\n            }\n        )\n        \n        if queued:\n            self.stats['queued_tasks'] += 1\n            self.logger.info(f"📥 レート制限によりキューに追加: {task_id} (優先度: {queue_priority})")\n        \n        return {\n            'success': False,\n            'queued': queued,\n            'queue_priority': queue_priority,\n            'error': str(error),\n            'estimated_delay': self._estimate_processing_delay(),\n            'task_id': task_id\n        }\n    \n    def _handle_queue_recovery(self):\n        """キュー復旧時の処理"""\n        \n        self.logger.info("🎉 レート制限から復旧 - キュー処理再開")\n        \n        if self.on_queue_recovery:\n            try:\n                self.on_queue_recovery()\n            except Exception as e:\n                self.logger.error(f"Recovery callback error: {e}")\n    \n    def _process_queue_worker(self):\n        """キュー処理ワーカー（バックグラウンド）"""\n        \n        processing_interval = 2  # 2秒間隔\n        consecutive_failures = 0\n        max_consecutive_failures = 5\n        \n        while self.processing:\n            try:\n                # レート制限中は処理を控える\n                if self.rate_limited:\n                    time_since_limit = (datetime.now() - self.stats['last_rate_limit']).total_seconds()\n                    if time_since_limit < 60:  # 1分間は待機\n                        time.sleep(processing_interval * 2)\n                        continue\n                \n                # 次のタスクを取得\n                task = self.queue_manager.get_next_task()\n                \n                if task is None:\n                    time.sleep(processing_interval)\n                    continue\n                \n                self.logger.info(f"📋 キューからタスク処理開始: {task.task_id}")\n                \n                # タスク処理実行\n                success = self._process_queued_task(task)\n                \n                if success:\n                    consecutive_failures = 0\n                    self.queue_manager.mark_task_completed(task.task_id, True)\n                    \n                    # 成功時コールバック\n                    if self.on_task_completed:\n                        try:\n                            self.on_task_completed(task)\n                        except Exception as e:\n                            self.logger.error(f"Task completion callback error: {e}")\n                else:\n                    consecutive_failures += 1\n                    \n                    if consecutive_failures >= max_consecutive_failures:\n                        self.logger.error(f"連続失敗上限到達 ({max_consecutive_failures}) - 処理一時停止")\n                        time.sleep(300)  # 5分間待機\n                        consecutive_failures = 0\n                \n                time.sleep(processing_interval)\n                \n            except Exception as e:\n                self.logger.error(f"Queue worker error: {e}")\n                time.sleep(processing_interval * 2)\n    \n    def _process_queued_task(self, task) -> bool:\n        """キューされたタスクの処理"""\n        \n        try:\n            messages = [{"role": "user", "content": task.prompt}]\n            \n            response = self.claude_client.create_message(\n                messages=messages,\n                max_tokens=4096,\n                temperature=0.7\n            )\n            \n            # 成功時の処理\n            self.last_successful_request = datetime.now()\n            self.rate_limited = False\n            self.stats['processed_tasks'] += 1\n            \n            self.logger.info(f"✅ キューされたタスク処理完了: {task.task_id}")\n            \n            # 結果をRabbitMQに送信\n            self._send_task_result(task, response, True)\n            \n            return True\n            \n        except RateLimitError as e:\n            self.logger.warning(f"⏳ キュー処理中もレート制限: {task.task_id}")\n            self.queue_manager.mark_task_rate_limited(task.task_id)\n            self.rate_limited = True\n            self.stats['last_rate_limit'] = datetime.now()\n            return False\n            \n        except Exception as e:\n            self.logger.error(f"❌ キューされたタスク処理失敗: {task.task_id} - {e}")\n            self.queue_manager.mark_task_completed(task.task_id, False)\n            self.stats['failed_tasks'] += 1\n            return False\n    \n    def _send_task_result(self, task, response, success: bool):\n        """タスク結果をRabbitMQに送信"""\n        \n        if not self.channel:\n            return\n        \n        try:\n            result_data = {\n                "task_id": task.task_id,\n                "worker": "rate_limit_queue_processor",\n                "status": "completed" if success else "failed",\n                "response": response.get('content', '') if success else '',\n                "queued_processing": True,\n                "priority": task.priority,\n                "queue_wait_time": (datetime.now() - task.created_at).total_seconds(),\n                "metadata": task.metadata,\n                "timestamp": datetime.now().isoformat()\n            }\n            \n            self.channel.basic_publish(\n                exchange='',\n                routing_key='ai_results',\n                body=json.dumps(result_data),\n                properties=pika.BasicProperties(delivery_mode=2)\n            )\n            \n        except Exception as e:\n            self.logger.error(f"Result publication failed: {e}")\n    \n    def _estimate_processing_delay(self) -> int:\n        """処理遅延の推定（秒）"""\n        \n        queue_size = self.queue_manager.get_queue_size()\n        avg_processing_time = 30  # 平均30秒と仮定\n        \n        # レート制限を考慮した推定\n        if self.rate_limited:\n            base_delay = 300  # 5分のクールダウン\n        else:\n            base_delay = 0\n        \n        return base_delay + (queue_size * avg_processing_time)\n    \n    def get_status(self) -> Dict[str, Any]:\n        """プロセッサーのステータス取得"""\n        \n        queue_status = self.queue_manager.get_queue_status()\n        \n        return {\n            'processing': self.processing,\n            'rate_limited': self.rate_limited,\n            'last_successful_request': self.last_successful_request.isoformat(),\n            'estimated_delay_seconds': self._estimate_processing_delay(),\n            'statistics': self.stats.copy(),\n            'queue_status': queue_status,\n            'claude_client_stats': self.claude_client.get_client_stats()\n        }\n    \n    def force_queue_processing(self):\n        """強制的にキュー処理を開始（デバッグ用）"""\n        \n        self.rate_limited = False\n        self.logger.info("🔧 強制キュー処理開始")\n    \n    def clear_rate_limit_state(self):\n        """レート制限状態をクリア"""\n        \n        self.rate_limited = False\n        self.stats['recovery_time'] = datetime.now()\n        self.logger.info("🔄 レート制限状態をリセット")\n    \n    def close(self):\n        """リソースのクリーンアップ"""\n        \n        self.stop_processing()\n        self.queue_manager.close()\n        \n        if self.connection and not self.connection.is_closed:\n            self.connection.close()\n        \n        self.logger.info("Rate Limit Queue Processor 終了")

@@ -1,0 +1,210 @@
+# 非同期ワーカー設定ファイル
+# AI Company Async Workers Configuration
+
+# 共通設定
+common:
+  # RabbitMQ設定
+  rabbitmq_host: "localhost"
+  rabbitmq_port: 5672
+  rabbitmq_user: "guest"
+  rabbitmq_pass: "guest"
+  rabbitmq_heartbeat: 600
+  
+  # Redis設定
+  redis_url: "redis://localhost:6379/0"
+  
+  # ログ設定
+  log_level: "INFO"
+  structured_logging: true
+  
+  # メトリクス設定
+  metrics_enabled: true
+  prometheus_port: 8000
+
+# AsyncBaseWorker設定
+base_worker:
+  # サーキットブレーカー
+  circuit_breaker_threshold: 5
+  circuit_breaker_timeout: 60
+  
+  # ヘルスチェック
+  health_check_interval: 30
+  health_check_timeout: 10
+  
+  # メトリクス収集間隔
+  metrics_interval: 60
+
+# Enhanced Task Worker設定
+enhanced_task_worker:
+  # Claude API設定
+  claude_model: "claude-3-5-sonnet-20241022"
+  max_tokens: 4096
+  temperature: 0.7
+  claude_timeout: 300
+  claude_rate_limit: 10  # req/min
+  
+  # セキュリティ設定
+  sandbox_base: "/tmp/ai_sandbox"
+  memory_limit_mb: 512
+  execution_timeout: 300
+  
+  # ツール設定
+  allowed_tools:
+    - "Edit"
+    - "Write"
+    - "Read"
+    - "FileSystem"
+    - "Bash"
+  
+  # キャッシュ設定
+  cache_ttl: 3600
+  enable_rag: true
+  
+  # 出力設定
+  output_dir: "/home/aicompany/ai_co/output"
+  
+  # 通知設定
+  slack_notifications: true
+
+# Result Worker設定
+result_worker:
+  # Slack設定
+  slack_rate_limit: 1  # msg/sec
+  slack_max_message_size: 3000
+  
+  # 統計設定
+  stats_file: "/home/aicompany/ai_co/data/result_worker_stats.json"
+  report_interval_hours: 1
+  
+  # キャッシュ設定
+  cache_ttl: 86400  # 24時間
+  
+  # リトライ設定
+  retry_failed_notifications: true
+  max_retry_attempts: 3
+  retry_delay: 300  # 5分
+
+# PM Worker設定
+pm_worker:
+  # メモリ管理
+  max_memory_mb: 1024
+  cleanup_threshold: 0.8
+  
+  # 並列処理
+  max_concurrent_tasks: 5
+  
+  # フェーズ設定
+  phase_timeout: 600  # 10分
+  
+  # チェックポイント
+  checkpoint_retention_hours: 24
+  
+  # キャッシュ設定
+  cache_ttl: 3600
+
+# Dialog Task Worker設定
+dialog_task_worker:
+  # 会話設定
+  max_conversation_turns: 50
+  conversation_timeout: 1800  # 30分
+  
+  # キャッシュ設定
+  conversation_cache_ttl: 7200  # 2時間
+
+# Error Intelligence Worker設定
+error_intelligence_worker:
+  # 分析設定
+  max_error_batch_size: 10
+  error_deduplication: true
+  
+  # インシデント設定
+  incident_threshold: 3  # 同じエラー3回でインシデント作成
+  incident_ttl: 86400  # 24時間
+
+# セキュリティ設定
+security:
+  # 許可されたコマンド
+  allowed_commands:
+    - "python"
+    - "python3"
+    - "node"
+    - "npm"
+    - "bash"
+    - "sh"
+    - "git"
+    - "pip"
+    - "pytest"
+    - "ruff"
+    - "black"
+    - "mypy"
+    - "ls"
+    - "cat"
+    - "echo"
+    - "grep"
+    - "find"
+    - "sed"
+    - "awk"
+  
+  # 禁止パターン
+  forbidden_patterns:
+    - 'rm\s+-rf\s+/'
+    - 'sudo'
+    - 'chmod\s+777'
+    - 'eval\s*\('
+    - 'exec\s*\('
+    - '__import__'
+    - 'os\.system'
+    - 'subprocess\.call'
+    - 'curl.*\|.*sh'
+    - 'wget.*\|.*sh'
+    - 'dd\s+if=/dev/zero'
+    - ':(){ :|:& };:'
+    - '>\s*/dev/sd'
+    - 'mkfs\.'
+    - 'fdisk'
+  
+  # サンドボックス設定
+  sandbox_cleanup_hours: 24
+  max_sandbox_size_mb: 1000
+
+# 監視設定
+monitoring:
+  # ヘルスチェック
+  health_endpoints:
+    - "/health"
+    - "/ready"
+  
+  # メトリクス
+  metrics_endpoints:
+    - "/metrics"
+  
+  # アラート設定
+  alerts:
+    memory_threshold: 90  # %
+    error_rate_threshold: 5  # %
+    response_time_threshold: 30  # seconds
+    queue_length_threshold: 1000
+
+# 開発設定
+development:
+  debug_mode: false
+  verbose_logging: false
+  
+  # テスト設定
+  test_mode: false
+  mock_external_services: false
+
+# 本番設定
+production:
+  # スケーリング
+  auto_scaling: true
+  min_workers: 2
+  max_workers: 10
+  
+  # バックアップ
+  backup_enabled: true
+  backup_interval_hours: 6
+  
+  # 監視
+  monitoring_enabled: true
+  alerting_enabled: true

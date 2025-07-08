@@ -1,0 +1,333 @@
+#!/usr/bin/env python3
+"""
+AI Company オートスケーリング管理コマンド
+"""
+
+import sys
+import argparse
+import json
+from pathlib import Path
+from tabulate import tabulate
+import psutil
+
+# プロジェクトルートをパスに追加
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from libs.autoscaling_manager import AutoScalingManager
+
+def show_status(args):
+    """オートスケーリングの状態を表示"""
+    # 設定ファイルを読み込む
+    config_path = Path('/home/aicompany/ai_co/config/autoscaling.json')
+    
+    if config_path.exists():
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+    else:
+        config = {
+            'enabled': False,
+            'workers': {}
+        }
+    
+    print("\n📈 Auto Scaling Status")
+    print("="*50)
+    print(f"Enabled: {'✅ Yes' if config.get('enabled') else '❌ No'}")
+    
+    if config.get('enabled'):
+        print(f"\n⚙️  Configuration:")
+        print(f"  Min Workers: {config.get('min_workers', 1)}")
+        print(f"  Max Workers: {config.get('max_workers', 10)}")
+        print(f"  Scale Up Threshold: {config.get('scale_up_threshold', 50)} messages")
+        print(f"  Scale Down Threshold: {config.get('scale_down_threshold', 10)} messages")
+        print(f"  Cooldown Period: {config.get('cooldown_period', 60)} seconds")
+    
+    # 現在のワーカー数を表示
+    print(f"\n👷 Current Workers:")
+    
+    worker_types = ['task_worker', 'pm_worker', 'result_worker', 'dialog_worker']
+    headers = ["Worker Type", "Running", "Min", "Max", "Status"]
+    rows = []
+    
+    for worker_type in worker_types:
+        # 実行中のワーカー数をカウント
+        count = 0
+        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            try:
+                cmdline = ' '.join(proc.info.get('cmdline', []))
+                if worker_type in cmdline:
+                    count += 1
+            except:
+                pass
+        
+        worker_config = config.get('workers', {}).get(worker_type, {})
+        min_workers = worker_config.get('min', 1)
+        max_workers = worker_config.get('max', 5)
+        
+        status = "✅ Normal"
+        if count < min_workers:
+            status = "⚠️  Below Min"
+        elif count > max_workers:
+            status = "⚠️  Above Max"
+        
+        rows.append([worker_type, count, min_workers, max_workers, status])
+    
+    print(tabulate(rows, headers=headers, tablefmt="grid"))
+
+def enable_autoscaling(args):
+    """オートスケーリングを有効化"""
+    config_path = Path('/home/aicompany/ai_co/config/autoscaling.json')
+    
+    # デフォルト設定
+    config = {
+        'enabled': True,
+        'min_workers': args.min_workers,
+        'max_workers': args.max_workers,
+        'scale_up_threshold': args.scale_up_threshold,
+        'scale_down_threshold': args.scale_down_threshold,
+        'cooldown_period': args.cooldown_period,
+        'check_interval': 10,
+        'workers': {
+            'task_worker': {
+                'min': 1,
+                'max': args.max_workers,
+                'script': 'workers/task_worker.py',
+                'queue': 'ai_tasks'
+            },
+            'pm_worker': {
+                'min': 1,
+                'max': 3,
+                'script': 'workers/pm_worker.py',
+                'queue': 'ai_pm'
+            },
+            'result_worker': {
+                'min': 1,
+                'max': 2,
+                'script': 'workers/result_worker.py',
+                'queue': 'ai_results'
+            },
+            'dialog_worker': {
+                'min': 1,
+                'max': 3,
+                'script': 'workers/dialog_task_worker.py',
+                'queue': 'ai_dialog'
+            }
+        }
+    }
+    
+    # 設定を保存
+    config_path.parent.mkdir(exist_ok=True)
+    with open(config_path, 'w') as f:
+        json.dump(config, f, indent=2)
+    
+    print("✅ Auto scaling enabled with following configuration:")
+    print(json.dumps(config, indent=2))
+    
+    # サービスを起動
+    if args.start:
+        start_service(None)
+
+def disable_autoscaling(args):
+    """オートスケーリングを無効化"""
+    config_path = Path('/home/aicompany/ai_co/config/autoscaling.json')
+    
+    if config_path.exists():
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+        
+        config['enabled'] = False
+        
+        with open(config_path, 'w') as f:
+            json.dump(config, f, indent=2)
+    
+    print("✅ Auto scaling disabled")
+    
+    # サービスを停止
+    stop_service(None)
+
+def start_service(args):
+    """オートスケーリングサービスを開始"""
+    import subprocess
+    
+    # 既存のプロセスをチェック
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        try:
+            cmdline = ' '.join(proc.info.get('cmdline', []))
+            if 'autoscaling_service.py' in cmdline:
+                print("⚠️  Auto scaling service is already running")
+                return
+        except:
+            pass
+    
+    # サービススクリプトを作成
+    service_script = Path('/home/aicompany/ai_co/scripts/autoscaling_service.py')
+    service_script.write_text("""#!/usr/bin/env python3
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from libs.autoscaling_manager import AutoScalingManager
+import json
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+# 設定を読み込む
+config_path = Path('/home/aicompany/ai_co/config/autoscaling.json')
+with open(config_path, 'r') as f:
+    config = json.load(f)
+
+# マネージャーを作成
+manager = AutoScalingManager(config)
+
+# ワーカー設定
+worker_configs = []
+for worker_type, worker_config in config['workers'].items():
+    worker_configs.append({
+        'worker_type': worker_type,
+        'worker_script': worker_config['script'],
+        'queue_name': worker_config['queue']
+    })
+
+# 監視とスケーリング開始
+try:
+    manager.monitor_and_scale(worker_configs)
+except KeyboardInterrupt:
+    manager.stop()
+""")
+    
+    # バックグラウンドで起動
+    subprocess.Popen([
+        'nohup', 'python3', str(service_script)
+    ], stdout=open('/home/aicompany/ai_co/logs/autoscaling.log', 'a'),
+       stderr=subprocess.STDOUT)
+    
+    print("✅ Auto scaling service started")
+    print("📝 Logs: /home/aicompany/ai_co/logs/autoscaling.log")
+
+def stop_service(args):
+    """オートスケーリングサービスを停止"""
+    stopped = False
+    
+    for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        try:
+            cmdline = ' '.join(proc.info.get('cmdline', []))
+            if 'autoscaling_service.py' in cmdline:
+                proc.terminate()
+                stopped = True
+                print(f"✅ Stopped auto scaling service (PID: {proc.info['pid']})")
+        except:
+            pass
+    
+    if not stopped:
+        print("ℹ️  Auto scaling service is not running")
+
+def show_metrics(args):
+    """スケーリングメトリクスを表示"""
+    # ログファイルから統計情報を抽出
+    log_path = Path('/home/aicompany/ai_co/logs/autoscaling.log')
+    
+    if not log_path.exists():
+        print("No metrics available yet.")
+        return
+    
+    print("\n📊 Auto Scaling Metrics")
+    print("="*50)
+    
+    # 簡易的な統計（実際はデータベースに保存すべき）
+    scale_up_count = 0
+    scale_down_count = 0
+    
+    with open(log_path, 'r') as f:
+        for line in f:
+            if 'Scaled up' in line:
+                scale_up_count += 1
+            elif 'Scaled down' in line:
+                scale_down_count += 1
+    
+    print(f"Scale Up Events: {scale_up_count}")
+    print(f"Scale Down Events: {scale_down_count}")
+    
+    # 現在のシステム負荷
+    print(f"\n💻 System Load:")
+    print(f"  CPU: {psutil.cpu_percent(interval=1)}%")
+    print(f"  Memory: {psutil.virtual_memory().percent}%")
+    print(f"  Load Average: {', '.join(map(str, psutil.getloadavg()))}")
+
+def configure_worker(args):
+    """特定ワーカーのスケーリング設定"""
+    config_path = Path('/home/aicompany/ai_co/config/autoscaling.json')
+    
+    if config_path.exists():
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+    else:
+        print("❌ Auto scaling is not configured. Run 'ai-scale enable' first.")
+        sys.exit(1)
+    
+    if args.worker not in config['workers']:
+        print(f"❌ Unknown worker type: {args.worker}")
+        sys.exit(1)
+    
+    # 設定を更新
+    config['workers'][args.worker]['min'] = args.min
+    config['workers'][args.worker]['max'] = args.max
+    
+    with open(config_path, 'w') as f:
+        json.dump(config, f, indent=2)
+    
+    print(f"✅ Updated scaling configuration for {args.worker}:")
+    print(f"  Min: {args.min}")
+    print(f"  Max: {args.max}")
+
+def main():
+    parser = argparse.ArgumentParser(description='AI Company Auto Scaling Manager')
+    subparsers = parser.add_subparsers(dest='command', help='Commands')
+    
+    # status コマンド
+    status_parser = subparsers.add_parser('status', help='Show auto scaling status')
+    status_parser.set_defaults(func=show_status)
+    
+    # enable コマンド
+    enable_parser = subparsers.add_parser('enable', help='Enable auto scaling')
+    enable_parser.add_argument('--min-workers', type=int, default=1, help='Minimum workers')
+    enable_parser.add_argument('--max-workers', type=int, default=10, help='Maximum workers')
+    enable_parser.add_argument('--scale-up-threshold', type=int, default=50, help='Queue length to scale up')
+    enable_parser.add_argument('--scale-down-threshold', type=int, default=10, help='Queue length to scale down')
+    enable_parser.add_argument('--cooldown-period', type=int, default=60, help='Cooldown period (seconds)')
+    enable_parser.add_argument('--start', action='store_true', help='Start service immediately')
+    enable_parser.set_defaults(func=enable_autoscaling)
+    
+    # disable コマンド
+    disable_parser = subparsers.add_parser('disable', help='Disable auto scaling')
+    disable_parser.set_defaults(func=disable_autoscaling)
+    
+    # start コマンド
+    start_parser = subparsers.add_parser('start', help='Start auto scaling service')
+    start_parser.set_defaults(func=start_service)
+    
+    # stop コマンド
+    stop_parser = subparsers.add_parser('stop', help='Stop auto scaling service')
+    stop_parser.set_defaults(func=stop_service)
+    
+    # metrics コマンド
+    metrics_parser = subparsers.add_parser('metrics', help='Show scaling metrics')
+    metrics_parser.set_defaults(func=show_metrics)
+    
+    # configure コマンド
+    config_parser = subparsers.add_parser('configure', help='Configure worker scaling')
+    config_parser.add_argument('worker', choices=['task_worker', 'pm_worker', 'result_worker', 'dialog_worker'],
+                              help='Worker type')
+    config_parser.add_argument('--min', type=int, required=True, help='Minimum instances')
+    config_parser.add_argument('--max', type=int, required=True, help='Maximum instances')
+    config_parser.set_defaults(func=configure_worker)
+    
+    args = parser.parse_args()
+    
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+    
+    args.func(args)
+
+if __name__ == '__main__':
+    main()

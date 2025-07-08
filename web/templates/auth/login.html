@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ログイン - AI Company Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1>🏛️ AI Company</h1>
+            <h2>叡智の間への参入</h2>
+            <p class="subtitle">四賢者評議会システムへようこそ</p>
+            
+            {% if error %}
+            <div class="error-message">
+                🚨 {{ error }}
+            </div>
+            {% endif %}
+            
+            <form method="POST" action="{{ url_for('auth.login') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="form-group">
+                    <label for="username">📝 賢者名</label>
+                    <input type="text" id="username" name="username" required autofocus placeholder="賢者の識別名を入力">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">🔐 秘印</label>
+                    <input type="password" id="password" name="password" required placeholder="叡智への鍵を入力">
+                </div>
+                
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="remember" value="1">
+                        🕰️ 長期の参席を保持
+                    </label>
+                </div>
+                
+                <button type="submit" class="login-button">
+                    👑 評議会に参席
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p>🧙‍♂️ 四賢者評議会システム v2.0</p>
+                <p class="small">Grand Elder maru承認済み</p>
+                <p class="wisdom-quote">「叡智は分かち合うことで増大する」</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,5 @@
+#!/bin/bash
+# AI Template Management Script
+# テンプレート管理
+
+python3 "/home/aicompany/ai_co/bin/ai_launcher.py" "template" "$@"

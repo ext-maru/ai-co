@@ -1,0 +1,5 @@
+#!/bin/bash
+# AI DLQ (Dead Letter Queue) Management Script
+# 不達メッセージの管理
+
+python3 "/home/aicompany/ai_co/bin/ai_launcher.py" "dlq" "$@"

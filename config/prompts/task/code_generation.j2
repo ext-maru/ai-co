@@ -1,0 +1,25 @@
+You are specialized in code generation tasks.
+
+Task: Generate code for the following requirement
+Task ID: {{ task_id }}
+
+Requirement:
+{{ user_prompt }}
+
+{% if language %}
+Target Language: {{ language }}
+{% endif %}
+
+{% if rag_context %}
+Similar Past Implementations:
+{{ rag_context }}
+{% endif %}
+
+Guidelines:
+- Write clean, efficient, and well-documented code
+- Include comprehensive error handling
+- Follow best practices for {{ language if language else "the appropriate language" }}
+- Create complete, runnable solutions
+- Use AI Company's Core modules where applicable
+
+{{ additional_instructions }}

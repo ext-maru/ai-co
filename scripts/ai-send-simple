@@ -1,0 +1,106 @@
+#!/bin/bash
+# AI Company Send Command with Options
+# Usage: ai-send-simple [OPTIONS] "Your prompt here"
+
+# Default values
+TYPE="general"
+PRIORITY="normal"
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --type)
+            TYPE="$2"
+            shift 2
+            ;;
+        --priority)
+            PRIORITY="$2"
+            shift 2
+            ;;
+        -h|--help)
+            echo "AI Company Send Command"
+            echo "Usage: ai-send-simple [OPTIONS] \"Your prompt here\""
+            echo ""
+            echo "Options:"
+            echo "  --type TYPE        Task type (code, general, analysis, etc.) [default: general]"
+            echo "  --priority LEVEL   Priority (low, normal, high, critical) [default: normal]"
+            echo "  -h, --help         Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  ai-send-simple \"Create a Python script\""
+            echo "  ai-send-simple --type code --priority high \"Build a REST API\""
+            exit 0
+            ;;
+        *)
+            PROMPT="$1"
+            shift
+            ;;
+    esac
+done
+
+if [ -z "$PROMPT" ]; then
+    echo "❌ Error: No prompt provided"
+    echo "Usage: ai-send-simple [OPTIONS] \"Your prompt here\""
+    echo "Use ai-send-simple --help for more information"
+    exit 1
+fi
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[0;33m'
+NC='\033[0m'
+
+# Generate task ID
+TASK_ID="ai_send_$(date +%s)"
+
+echo -e "${BLUE}📤 AI Company Send${NC}"
+echo "📋 Task ID: $TASK_ID"
+echo "🏷️  Type: $TYPE"
+echo "⚡ Priority: $PRIORITY"
+echo "📝 Prompt: $PROMPT"
+echo ""
+
+# Create Python script to send task
+python3 << EOF
+import json
+import pika
+from datetime import datetime
+
+try:
+    # Create task data
+    task_data = {
+        'task_id': '$TASK_ID',
+        'type': '$TYPE',
+        'task_type': '$TYPE',
+        'priority': '$PRIORITY',
+        'prompt': '''$PROMPT''',
+        'source': 'ai-send-simple',
+        'timestamp': datetime.now().isoformat()
+    }
+    
+    # Send to RabbitMQ
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    channel = connection.channel()
+    channel.basic_publish(
+        exchange='',
+        routing_key='ai_tasks',
+        body=json.dumps(task_data),
+        properties=pika.BasicProperties(delivery_mode=2)
+    )
+    connection.close()
+    
+    print("✅ Task submitted successfully!")
+    
+    # Priority-based message
+    if '$PRIORITY' == 'critical':
+        print("🚨 Critical priority - TaskWorker will process immediately")
+    elif '$PRIORITY' == 'high':
+        print("⚡ High priority - TaskWorker will process soon")
+    else:
+        print("📡 TaskWorker will process your request...")
+        
+except Exception as e:
+    print(f"❌ Error: {e}")
+    exit(1)
+EOF

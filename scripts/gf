@@ -1,0 +1,44 @@
+#!/bin/bash
+# GitHub Flow簡易コマンド
+
+case "$1" in
+    feature)
+        if [ -z "$2" ]; then
+            echo "❌ Feature name required"
+            exit 1
+        fi
+        /home/aicompany/ai_co/scripts/ai-git feature "$2"
+        ;;
+    fix)
+        if [ -z "$2" ]; then
+            echo "❌ Fix name required"
+            exit 1
+        fi
+        # fixブランチはfeatureブランチとして作成
+        /home/aicompany/ai_co/scripts/ai-git feature "fix/$2"
+        ;;
+    pr)
+        # PRは手動で作成することを通知
+        current_branch=$(git branch --show-current)
+        echo "📤 現在のブランチ: $current_branch"
+        echo ""
+        echo "PRを作成するには："
+        echo "1. git push -u origin $current_branch"
+        echo "2. GitHubでPRを作成"
+        ;;
+    commit)
+        shift
+        /home/aicompany/ai_co/scripts/ai-git commit "$@"
+        ;;
+    status)
+        /home/aicompany/ai_co/scripts/ai-git status
+        ;;
+    *)
+        echo "使用方法:"
+        echo "  gf feature [名前]  - featureブランチを作成"
+        echo "  gf fix [名前]      - fixブランチを作成"
+        echo "  gf pr             - PR作成の手順を表示"
+        echo "  gf commit         - ベストプラクティスに従ってコミット"
+        echo "  gf status         - Git状態を表示"
+        ;;
+esac

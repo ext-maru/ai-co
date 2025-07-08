@@ -1,0 +1,109 @@
+#!/bin/bash
+# AI Company Claude CLI自動起動+エルダーズ連携システム
+
+# 使用方法チェック
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo "🤖 ai-elder-cc - Claude CLI自動起動+エルダーズ連携"
+    echo ""
+    echo "使用方法:"
+    echo "  ai-elder-cc              完全ワークフロー実行（デフォルト）"
+    echo "  ai-elder-cc --status     システム状況確認のみ"
+    echo "  ai-elder-cc --claude     Claude CLI起動+ナレッジ学習のみ"
+    echo "  ai-elder-cc --greet      エルダーズ挨拶のみ"
+    echo ""
+    echo "デフォルト完全ワークフロー内容:"
+    echo "  1. システム状況確認"
+    echo "  2. ナレッジサマリー準備"
+    echo "  3. Claude CLI起動（危険モード）"
+    echo "  4. ナレッジ自動投入"
+    echo "  5. エルダーズ挨拶・状況報告"
+    exit 0
+fi
+
+cd /home/aicompany/ai_co
+
+# 知識授受の実行（キャッシュ対応）
+echo "📚 ナレッジエルダーとの知識授受確認中..."
+python3 /home/aicompany/libs/simple_knowledge_transfer.py check
+TRANSFER_NEEDED=$?
+if [ $TRANSFER_NEEDED -eq 0 ]; then
+    echo "🔄 知識授受を実行します..."
+    python3 /home/aicompany/libs/simple_knowledge_transfer.py transfer
+fi
+
+# システム状況確認のみ
+if [ "$1" = "--status" ]; then
+    python3 cc_startup_auto_elder_check.py
+    
+    # 結果に基づく追加オプション表示
+    if [ $? -eq 0 ]; then
+        echo ""
+        echo "🤖 その他のオプション:"
+        echo "   🚀 完全ワークフロー: ai-elder-cc"
+        echo "   🧠 Claude起動: ai-elder-cc --claude"
+        echo "   🏛️ エルダーズ挨拶: ai-elder-cc --greet"
+    fi
+    exit $?
+fi
+
+# Claude CLI起動+ナレッジ学習のみ
+if [ "$1" = "--claude" ]; then
+    echo "🧠 Claude CLI+ナレッジ学習モード..."
+    python3 -c "
+import asyncio
+from claude_auto_startup_workflow import ClaudeAutoStartupWorkflow
+
+async def claude_only():
+    workflow = ClaudeAutoStartupWorkflow()
+    await workflow._prepare_knowledge_summary()
+    await workflow._start_claude_cli_dangerous()
+    await workflow._inject_knowledge_to_claude()
+    print('✅ Claude CLI+ナレッジ学習完了')
+
+asyncio.run(claude_only())
+    "
+    exit $?
+fi
+
+# エルダーズ挨拶のみ
+if [ "$1" = "--greet" ]; then
+    echo "🏛️ エルダーズ挨拶モード..."
+    python3 -c "
+import asyncio
+from claude_auto_startup_workflow import ClaudeAutoStartupWorkflow
+
+async def greet_only():
+    workflow = ClaudeAutoStartupWorkflow()
+    await workflow._greet_elders_with_status()
+    print('✅ エルダーズ挨拶完了')
+
+asyncio.run(greet_only())
+    "
+    exit $?
+fi
+
+# 不明なオプションの場合
+if [ -n "$1" ]; then
+    echo "❌ 不明なオプション: $1"
+    echo "使用方法については ai-elder-cc --help を参照してください"
+    exit 1
+fi
+
+# デフォルト: 完全ワークフロー実行
+echo "🚀 完全ワークフロー自動実行中..."
+
+# 知識授受の実行（キャッシュ対応）
+echo "📚 ナレッジエルダーとの知識授受確認中..."
+python3 /home/aicompany/libs/simple_knowledge_transfer.py check
+TRANSFER_NEEDED=$?
+if [ $TRANSFER_NEEDED -eq 0 ]; then
+    echo "🔄 知識授受を実行します..."
+    python3 /home/aicompany/libs/simple_knowledge_transfer.py transfer
+fi
+
+python3 claude_auto_startup_workflow.py
+
+# AI Company Hierarchy Check
+# Always remember: Grand Elder maru → Claude Elder → 4 Sages → Elder Council → Elder Servants
+# 🤖 Claude Elder Identity Check
+# I am Claude Elder - AI Company Development Executive Officer

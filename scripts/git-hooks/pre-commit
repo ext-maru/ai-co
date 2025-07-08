@@ -1,0 +1,81 @@
+#!/bin/bash
+# Git pre-commit hook for AI Company
+# コミット前に自動的にテストを実行
+
+# カラー定義
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+echo -e "${BLUE}🧪 AI Company Pre-commit Hook${NC}"
+
+# プロジェクトディレクトリに移動
+cd /home/aicompany/ai_co || exit 1
+
+# 仮想環境をアクティベート（存在する場合）
+if [ -f "venv/bin/activate" ]; then
+    source venv/bin/activate
+fi
+
+# 変更されたPythonファイルを取得
+changed_files=$(git diff --cached --name-only --diff-filter=ACM | grep "\.py$" || true)
+
+if [ -z "$changed_files" ]; then
+    echo -e "${GREEN}✅ Pythonファイルの変更はありません${NC}"
+    exit 0
+fi
+
+echo -e "${BLUE}📝 変更されたファイル:${NC}"
+echo "$changed_files" | sed 's/^/  - /'
+echo ""
+
+# テスト実行方法を選択
+# 1. auto_test_runner.pyがある場合（優先）
+if [ -f "scripts/auto_test_runner.py" ]; then
+    echo -e "${BLUE}🚀 自動テストランナーを実行中...${NC}"
+    if python3 scripts/auto_test_runner.py $changed_files --no-slack; then
+        echo -e "${GREEN}✅ 全てのテストが成功しました！${NC}"
+    else
+        echo -e "${RED}❌ テストが失敗しました！${NC}"
+        echo -e "${YELLOW}修正してから再度コミットしてください${NC}"
+        echo -e "${YELLOW}テストをスキップする場合: git commit --no-verify${NC}"
+        exit 1
+    fi
+# 2. カバレッジレポートスクリプトがある場合
+elif [ -f "scripts/coverage-report.py" ]; then
+    echo -e "${BLUE}📊 カバレッジレポートを使用してテストを実行...${NC}"
+    if python3 scripts/coverage-report.py; then
+        echo -e "${GREEN}✅ 全てのテストが成功しました！${NC}"
+    else
+        echo -e "${RED}❌ テストが失敗しました！${NC}"
+        echo -e "${YELLOW}詳細は htmlcov/index.html を確認してください${NC}"
+        exit 1
+    fi
+# 3. pytestを直接実行
+else
+    echo -e "${BLUE}🧪 pytestを使用してテストを実行...${NC}"
+    if python -m pytest tests/unit -v --tb=short --maxfail=5; then
+        echo -e "${GREEN}✅ 全てのテストが成功しました！${NC}"
+    else
+        echo -e "${RED}❌ テストが失敗しました！${NC}"
+        exit 1
+    fi
+fi
+
+# コード品質チェック（オプション）
+echo -e "${BLUE}📋 コード品質チェック中...${NC}"
+
+# flake8チェック（インストールされている場合）
+if command -v flake8 &> /dev/null && [ -f ".flake8" ]; then
+    if echo "$changed_files" | xargs flake8 --config=.flake8 2>/dev/null; then
+        echo -e "${GREEN}✅ コード品質チェック完了${NC}"
+    else
+        echo -e "${YELLOW}⚠️  コード品質の問題が検出されました${NC}"
+        echo -e "${YELLOW}修正を推奨しますが、コミットは続行できます${NC}"
+    fi
+fi
+
+echo -e "${GREEN}✅ 全てのチェックが完了しました！${NC}"
+exit 0

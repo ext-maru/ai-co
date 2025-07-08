@@ -1,16 +1,19 @@
 #!/usr/bin/env python3
 """
-会話管理データベース
+会話管理データベース - PostgreSQL統合システム（AI Company Unified）
 """
-import sqlite3
 import json
 from datetime import datetime
 from typing import Dict, List, Optional, Tuple
 import logging
 
+# PostgreSQL統合システムを使用
+from .postgresql_conversation_db import ConversationDBCompat as ConversationDB
+
 logger = logging.getLogger(__name__)
 
-class ConversationDB:
+# 後方互換性のための元クラス定義（非推奨）
+class ConversationDBLegacy:
     def __init__(self, db_path="/root/ai_co/conversations.db"):
         self.db_path = db_path
         self.init_db()

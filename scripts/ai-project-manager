@@ -1,0 +1,476 @@
+#!/usr/bin/env python3
+"""
+AI Company Project Manager
+プロジェクトの作成、管理、組織化を自動化
+"""
+
+import sys
+import os
+import json
+import argparse
+from pathlib import Path
+from datetime import datetime
+import shutil
+
+class ProjectManager:
+    """AI Companyプロジェクト管理"""
+    
+    def __init__(self):
+        self.ai_company_root = Path("/home/aicompany/ai_co")
+        self.projects_root = Path("/home/aicompany/projects")
+        self.projects_root.mkdir(exist_ok=True)
+    
+    def create_project(self, project_name: str, project_type: str = "general", 
+                      template: str = None) -> Path:
+        """新しいプロジェクトを作成"""
+        
+        # プロジェクト名の正規化
+        safe_name = self._sanitize_project_name(project_name)
+        project_path = self.projects_root / safe_name
+        
+        # 既存チェック
+        if project_path.exists():
+            counter = 1
+            while (self.projects_root / f"{safe_name}_{counter}").exists():
+                counter += 1
+            project_path = self.projects_root / f"{safe_name}_{counter}"
+        
+        # プロジェクトディレクトリ作成
+        project_path.mkdir(parents=True, exist_ok=True)
+        
+        # 基本構造作成
+        self._create_project_structure(project_path, project_type)
+        
+        # プロジェクト設定ファイル作成
+        self._create_project_config(project_path, project_name, project_type)
+        
+        # テンプレート適用
+        if template:
+            self._apply_template(project_path, template)
+        
+        print(f"✅ プロジェクト作成完了: {project_path}")
+        return project_path
+    
+    def _sanitize_project_name(self, name: str) -> str:
+        """プロジェクト名を安全な形式に変換"""
+        import re
+        # 英数字、ハイフン、アンダースコアのみ許可
+        safe_name = re.sub(r'[^a-zA-Z0-9_-]', '_', name.lower())
+        safe_name = re.sub(r'_+', '_', safe_name)  # 連続アンダースコア除去
+        safe_name = safe_name.strip('_')  # 前後のアンダースコア除去
+        return safe_name or "unnamed_project"
+    
+    def _create_project_structure(self, project_path: Path, project_type: str):
+        """プロジェクト基本構造を作成"""
+        
+        # 共通ディレクトリ
+        common_dirs = [
+            "src",           # ソースコード
+            "tests",         # テストコード
+            "docs",          # ドキュメント
+            "config",        # 設定ファイル
+            "scripts",       # ユーティリティスクリプト
+            "data",          # データファイル
+            "logs",          # ログファイル
+            ".ai_company"    # AI Company管理用
+        ]
+        
+        # プロジェクトタイプ別ディレクトリ
+        type_specific_dirs = {
+            "web": ["frontend", "backend", "api", "static", "templates"],
+            "api": ["api", "models", "services", "middleware"],
+            "cli": ["cli", "commands", "utils"],
+            "ml": ["models", "data", "notebooks", "experiments"],
+            "general": ["lib", "bin", "examples"]
+        }
+        
+        # ディレクトリ作成
+        all_dirs = common_dirs + type_specific_dirs.get(project_type, [])
+        for dir_name in all_dirs:
+            (project_path / dir_name).mkdir(exist_ok=True)
+            
+            # .gitkeep 作成（空ディレクトリをGitで追跡）
+            gitkeep = project_path / dir_name / ".gitkeep"
+            if not any((project_path / dir_name).iterdir()):
+                gitkeep.touch()
+    
+    def _create_project_config(self, project_path: Path, project_name: str, project_type: str):
+        """プロジェクト設定ファイル作成"""
+        
+        config = {
+            "project": {
+                "name": project_name,
+                "type": project_type,
+                "created_at": datetime.now().isoformat(),
+                "ai_company_version": "1.0.0"
+            },
+            "development": {
+                "framework": self._suggest_framework(project_type),
+                "language": self._suggest_language(project_type),
+                "testing_framework": "pytest",
+                "development_approach": "TDD"
+            },
+            "ai_company": {
+                "auto_git": True,
+                "auto_tests": True,
+                "code_review": True,
+                "documentation": True
+            },
+            "structure": {
+                "src_dir": "src",
+                "test_dir": "tests",
+                "docs_dir": "docs",
+                "config_dir": "config"
+            }
+        }
+        
+        # 設定ファイル保存
+        config_file = project_path / ".ai_company" / "project.json"
+        config_file.parent.mkdir(exist_ok=True)
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump(config, f, indent=2, ensure_ascii=False)
+        
+        # README.md 作成
+        self._create_readme(project_path, project_name, project_type, config)
+        
+        # .gitignore 作成
+        self._create_gitignore(project_path, project_type)
+    
+    def _suggest_framework(self, project_type: str) -> str:
+        """プロジェクトタイプに基づくフレームワーク提案"""
+        suggestions = {
+            "web": "fastapi",
+            "api": "fastapi", 
+            "cli": "click",
+            "ml": "pytorch",
+            "general": "python"
+        }
+        return suggestions.get(project_type, "python")
+    
+    def _suggest_language(self, project_type: str) -> str:
+        """プロジェクトタイプに基づく言語提案"""
+        return "python"  # AI Companyは主にPython
+    
+    def _create_readme(self, project_path: Path, project_name: str, project_type: str, config: dict):
+        """README.md を作成"""
+        
+        readme_content = f"""# {project_name}
+
+{project_name} - AI Company generated project
+
+## 📋 Project Overview
+
+**Type**: {project_type.title()}  
+**Framework**: {config['development']['framework']}  
+**Language**: {config['development']['language']}  
+**Created**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+
+## 🚀 Quick Start
+
+```bash
+# プロジェクトに移動
+cd {project_path.name}
+
+# 依存関係インストール (例)
+pip install -r requirements.txt
+
+# テスト実行
+pytest tests/
+
+# 実行 (プロジェクトタイプに応じて)
+python src/main.py
+```
+
+## 📁 Project Structure
+
+```
+{project_path.name}/
+├── src/                    # ソースコード
+├── tests/                  # テストコード (TDD)
+├── docs/                   # ドキュメント
+├── config/                 # 設定ファイル
+├── scripts/                # ユーティリティ
+├── data/                   # データファイル
+└── .ai_company/           # AI Company管理用
+```
+
+## 🛠️ Development
+
+This project follows **Test-Driven Development (TDD)**:
+
+1. 🔴 **Red**: Write failing tests first
+2. 🟢 **Green**: Implement minimal code to pass
+3. 🔵 **Refactor**: Improve code quality
+
+## 📊 AI Company Integration
+
+このプロジェクトはAI Companyで管理されています:
+
+```bash
+# AI Companyでタスク実行
+ai-test "新機能を追加してください"
+
+# コード生成
+ai-codegen generate rest_api --params '{{"resource_name": "item"}}'
+
+# 要件から開発
+ai-requirements-to-code requirements.json --output .
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Write tests first (TDD)
+4. Implement the feature
+5. Ensure all tests pass
+6. Submit a pull request
+
+---
+Generated by AI Company - Autonomous Development System
+"""
+        
+        readme_file = project_path / "README.md"
+        with open(readme_file, 'w', encoding='utf-8') as f:
+            f.write(readme_content)
+    
+    def _create_gitignore(self, project_path: Path, project_type: str):
+        """プロジェクトタイプに応じた.gitignore作成"""
+        
+        common_ignores = [
+            "# Python",
+            "__pycache__/",
+            "*.py[cod]",
+            "*$py.class",
+            "*.so",
+            ".Python",
+            "build/",
+            "develop-eggs/",
+            "dist/",
+            "downloads/",
+            "eggs/",
+            ".eggs/",
+            "lib/",
+            "lib64/",
+            "parts/",
+            "sdist/",
+            "var/",
+            "wheels/",
+            "*.egg-info/",
+            ".installed.cfg",
+            "*.egg",
+            "",
+            "# Virtual environments",
+            "venv/",
+            "env/",
+            "ENV/",
+            "",
+            "# IDE",
+            ".vscode/",
+            ".idea/",
+            "*.swp",
+            "*.swo",
+            "",
+            "# Logs",
+            "logs/",
+            "*.log",
+            "",
+            "# Data",
+            "data/*.csv",
+            "data/*.json",
+            "!data/.gitkeep",
+            "",
+            "# AI Company",
+            ".ai_company/cache/",
+            ".ai_company/temp/"
+        ]
+        
+        type_specific_ignores = {
+            "web": [
+                "# Web specific",
+                "node_modules/",
+                "static/build/",
+                "media/"
+            ],
+            "ml": [
+                "# ML specific", 
+                "models/*.pkl",
+                "models/*.h5",
+                "experiments/",
+                "*.ipynb_checkpoints"
+            ]
+        }
+        
+        all_ignores = common_ignores + type_specific_ignores.get(project_type, [])
+        
+        gitignore_file = project_path / ".gitignore"
+        with open(gitignore_file, 'w', encoding='utf-8') as f:
+            f.write("\\n".join(all_ignores))
+    
+    def _apply_template(self, project_path: Path, template: str):
+        """テンプレート適用"""
+        template_path = self.ai_company_root / "templates" / "projects" / template
+        if template_path.exists():
+            # テンプレートファイルをコピー
+            for item in template_path.rglob("*"):
+                if item.is_file():
+                    relative_path = item.relative_to(template_path)
+                    target_path = project_path / relative_path
+                    target_path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(item, target_path)
+    
+    def list_projects(self) -> list:
+        """プロジェクト一覧を取得"""
+        projects = []
+        for project_dir in self.projects_root.iterdir():
+            if project_dir.is_dir():
+                config_file = project_dir / ".ai_company" / "project.json"
+                if config_file.exists():
+                    with open(config_file, 'r', encoding='utf-8') as f:
+                        config = json.load(f)
+                    projects.append({
+                        "name": config["project"]["name"],
+                        "path": str(project_dir),
+                        "type": config["project"]["type"],
+                        "created": config["project"]["created_at"]
+                    })
+        return projects
+    
+    def get_project_path(self, project_name: str) -> Path:
+        """プロジェクト名からパスを取得"""
+        safe_name = self._sanitize_project_name(project_name)
+        
+        # 完全一致
+        exact_path = self.projects_root / safe_name
+        if exact_path.exists():
+            return exact_path
+        
+        # 部分一致検索
+        for project_dir in self.projects_root.iterdir():
+            if project_dir.is_dir() and safe_name in project_dir.name:
+                return project_dir
+        
+        raise FileNotFoundError(f"Project not found: {project_name}")
+    
+    def create_from_requirements(self, requirements_file: str, project_name: str = None) -> Path:
+        """要件ファイルからプロジェクト作成"""
+        
+        with open(requirements_file, 'r', encoding='utf-8') as f:
+            requirements = json.load(f)
+        
+        # プロジェクト名決定
+        if not project_name:
+            project_name = requirements.get('project_overview', 'AI Generated Project')
+        
+        # プロジェクトタイプ推定
+        framework = requirements.get('technical_specs', {}).get('framework', 'general')
+        project_type = self._infer_project_type(framework)
+        
+        # プロジェクト作成
+        project_path = self.create_project(project_name, project_type)
+        
+        # 要件ファイルをプロジェクトにコピー
+        shutil.copy2(requirements_file, project_path / ".ai_company" / "requirements.json")
+        
+        return project_path
+    
+    def _infer_project_type(self, framework: str) -> str:
+        """フレームワークからプロジェクトタイプを推定"""
+        type_mapping = {
+            "fastapi": "api",
+            "flask": "web", 
+            "django": "web",
+            "click": "cli",
+            "pytorch": "ml",
+            "tensorflow": "ml"
+        }
+        return type_mapping.get(framework, "general")
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='AI Company Project Manager',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用例:
+  # 新しいプロジェクト作成
+  ai-project-manager create "My Ecommerce Site" --type web --output-dir custom_path
+  
+  # 要件ファイルからプロジェクト作成
+  ai-project-manager from-requirements requirements.json --name "Generated Project"
+  
+  # プロジェクト一覧表示
+  ai-project-manager list
+  
+  # プロジェクトパス取得
+  ai-project-manager path "My Project"
+
+プロジェクトタイプ:
+  - web: Webアプリケーション
+  - api: REST API / GraphQL API
+  - cli: コマンドラインツール
+  - ml: 機械学習プロジェクト
+  - general: 汎用プロジェクト
+        """
+    )
+    
+    subparsers = parser.add_subparsers(dest='command', help='Commands')
+    
+    # create コマンド
+    create_parser = subparsers.add_parser('create', help='新しいプロジェクトを作成')
+    create_parser.add_argument('name', help='プロジェクト名')
+    create_parser.add_argument('--type', default='general', 
+                             choices=['web', 'api', 'cli', 'ml', 'general'],
+                             help='プロジェクトタイプ')
+    create_parser.add_argument('--template', help='使用するテンプレート')
+    
+    # from-requirements コマンド
+    req_parser = subparsers.add_parser('from-requirements', 
+                                     help='要件ファイルからプロジェクト作成')
+    req_parser.add_argument('requirements_file', help='要件JSONファイル')
+    req_parser.add_argument('--name', help='プロジェクト名（指定しない場合は要件から推定）')
+    
+    # list コマンド
+    list_parser = subparsers.add_parser('list', help='プロジェクト一覧表示')
+    
+    # path コマンド
+    path_parser = subparsers.add_parser('path', help='プロジェクトパス取得')
+    path_parser.add_argument('name', help='プロジェクト名')
+    
+    args = parser.parse_args()
+    
+    manager = ProjectManager()
+    
+    if args.command == 'create':
+        project_path = manager.create_project(args.name, args.type, args.template)
+        print(f"📁 プロジェクトパス: {project_path}")
+        
+    elif args.command == 'from-requirements':
+        project_path = manager.create_from_requirements(args.requirements_file, args.name)
+        print(f"📁 プロジェクトパス: {project_path}")
+        
+    elif args.command == 'list':
+        projects = manager.list_projects()
+        if projects:
+            print("📋 AI Company Projects:")
+            print("=" * 60)
+            for project in projects:
+                print(f"📁 {project['name']}")
+                print(f"   Type: {project['type']}")
+                print(f"   Path: {project['path']}")
+                print(f"   Created: {project['created'][:10]}")
+                print()
+        else:
+            print("📭 No projects found")
+            
+    elif args.command == 'path':
+        try:
+            project_path = manager.get_project_path(args.name)
+            print(str(project_path))
+        except FileNotFoundError as e:
+            print(f"❌ {e}")
+            sys.exit(1)
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    main()

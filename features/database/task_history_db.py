@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
 """
-RAG履歴管理 - SQLite操作クラス（修正版）
+RAG履歴管理 - PostgreSQL統合システム（AI Company Unified）
 """
 
-import sqlite3
 import json
 from datetime import datetime
 from pathlib import Path
 import logging
 
-# プロジェクトディレクトリ
-PROJECT_DIR = Path(__file__).parent.parent
-DB_DIR = PROJECT_DIR / "db"
-DB_FILE = DB_DIR / "task_history.db"
+# PostgreSQL統合システムを使用
+from .postgresql_task_history import TaskHistoryDBCompat as TaskHistoryDB
 
 logger = logging.getLogger(__name__)
 
-class TaskHistoryDB:
+# 後方互換性のための元クラス定義（非推奨）
+class TaskHistoryDBLegacy:
     def __init__(self, db_path=None):
         if db_path is None:
             db_path = DB_FILE

@@ -1,0 +1,239 @@
+#!/bin/bash
+#
+# AI Slack PM - Slack対話型プロジェクトマネージャー制御
+#
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+COMMAND="$1"
+
+if [[ -z "$COMMAND" ]]; then
+    echo "Usage: ai-slack-pm <command> [options]"
+    echo ""
+    echo "Commands:"
+    echo "  start           Start Slack PM Worker"
+    echo "  stop            Stop Slack PM Worker"
+    echo "  restart         Restart Slack PM Worker"
+    echo "  status          Show Slack PM status"
+    echo "  sessions        Show active conversation sessions"
+    echo "  test-message    Send test message to Slack"
+    echo "  config          Show Slack PM configuration"
+    echo ""
+    exit 1
+fi
+
+cd "$PROJECT_DIR"
+
+# 仮想環境チェック
+if [[ ! "$AI_VENV_ACTIVE" == "1" ]]; then
+    if [[ -f "venv/bin/activate" ]]; then
+        source venv/bin/activate
+        export AI_VENV_ACTIVE=1
+    fi
+fi
+
+case "$COMMAND" in
+    start)
+        echo "🚀 Starting Slack PM Worker..."
+        
+        # tmuxセッション確認
+        if tmux has-session -t slack_pm_worker 2>/dev/null; then
+            echo "⚠️ Slack PM Worker already running in tmux session 'slack_pm_worker'"
+            echo "Use 'ai-slack-pm stop' first or 'tmux attach -t slack_pm_worker' to view"
+            exit 1
+        fi
+        
+        # 設定確認
+        if [[ ! -f ".env" ]] || ! grep -q "SLACK_BOT_TOKEN" .env; then
+            echo "❌ Slack configuration missing!"
+            echo "Please set SLACK_BOT_TOKEN and SLACK_APP_TOKEN in .env file"
+            exit 1
+        fi
+        
+        # tmuxでワーカー開始
+        tmux new-session -d -s slack_pm_worker \
+            "cd '$PROJECT_DIR' && python3 workers/slack_pm_worker.py"
+        
+        sleep 2
+        
+        if tmux has-session -t slack_pm_worker 2>/dev/null; then
+            echo "✅ Slack PM Worker started successfully"
+            echo "📋 View logs: tmux attach -t slack_pm_worker"
+            echo "📊 Check status: ai-slack-pm status"
+        else
+            echo "❌ Failed to start Slack PM Worker"
+            echo "📋 Check logs: ai-logs"
+        fi
+        ;;
+        
+    stop)
+        echo "🛑 Stopping Slack PM Worker..."
+        
+        if tmux has-session -t slack_pm_worker 2>/dev/null; then
+            tmux kill-session -t slack_pm_worker
+            echo "✅ Slack PM Worker stopped"
+        else
+            echo "⚠️ Slack PM Worker not running"
+        fi
+        ;;
+        
+    restart)
+        echo "🔄 Restarting Slack PM Worker..."
+        
+        # 停止
+        if tmux has-session -t slack_pm_worker 2>/dev/null; then
+            tmux kill-session -t slack_pm_worker
+            echo "🛑 Stopped Slack PM Worker"
+            sleep 2
+        fi
+        
+        # 開始
+        tmux new-session -d -s slack_pm_worker \
+            "cd '$PROJECT_DIR' && python3 workers/slack_pm_worker.py"
+        
+        sleep 2
+        
+        if tmux has-session -t slack_pm_worker 2>/dev/null; then
+            echo "✅ Slack PM Worker restarted successfully"
+        else
+            echo "❌ Failed to restart Slack PM Worker"
+        fi
+        ;;
+        
+    status)
+        echo "📊 Slack PM Worker Status"
+        echo "=" * 40
+        
+        # tmux状態確認
+        if tmux has-session -t slack_pm_worker 2>/dev/null; then
+            echo "Process: 🟢 Running (tmux session: slack_pm_worker)"
+        else
+            echo "Process: 🔴 Not Running"
+        fi
+        
+        # 詳細ステータス取得
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.slack_pm_manager import SlackPMManager
+    
+    pm = SlackPMManager('$PROJECT_DIR/config/config.json')
+    sessions = pm.get_active_sessions()
+    
+    print(f'Active Sessions: {len(sessions)}')
+    
+    if sessions:
+        print()
+        print('📋 Active Conversations:')
+        for user_id, session_info in sessions.items():
+            print(f'  👤 {user_id}:')
+            print(f'    State: {session_info[\"state\"]}')
+            print(f'    Task: {session_info[\"current_task\"] or \"None\"}')
+            print(f'    Messages: {session_info[\"messages_count\"]}')
+            print(f'    Last Activity: {session_info[\"last_activity\"]}')
+            print()
+    else:
+        print('No active conversations')
+        
+except Exception as e:
+    print(f'❌ Failed to get detailed status: {e}')
+"
+        ;;
+        
+    sessions)
+        echo "💬 Active Slack PM Sessions"
+        echo "=" * 50
+        
+        python3 -c "
+import sys
+import json
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.slack_pm_manager import SlackPMManager
+    
+    pm = SlackPMManager('$PROJECT_DIR/config/config.json')
+    sessions = pm.get_active_sessions()
+    
+    if not sessions:
+        print('No active sessions')
+    else:
+        for user_id, session_info in sessions.items():
+            print(f'👤 User: {user_id}')
+            print(f'   Session ID: {session_info[\"session_id\"]}')
+            print(f'   State: {session_info[\"state\"]}')
+            print(f'   Current Task: {session_info[\"current_task\"] or \"None\"}')
+            print(f'   Messages: {session_info[\"messages_count\"]}')
+            print(f'   Last Activity: {session_info[\"last_activity\"]}')
+            print('-' * 40)
+        
+except Exception as e:
+    print(f'❌ Error: {e}')
+"
+        ;;
+        
+    test-message)
+        echo "📤 Sending test message to Slack..."
+        
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.slack_notifier import SlackNotifier
+    
+    notifier = SlackNotifier()
+    success = notifier.send_message('🤖 Slack PM Worker テストメッセージ - ' + str(__import__('datetime').datetime.now()))
+    
+    if success:
+        print('✅ Test message sent successfully')
+    else:
+        print('❌ Failed to send test message')
+        
+except Exception as e:
+    print(f'❌ Error: {e}')
+"
+        ;;
+        
+    config)
+        echo "⚙️ Slack PM Configuration"
+        echo "=" * 40
+        
+        if [[ -f ".env" ]]; then
+            echo "🔐 Environment Variables:"
+            echo "  SLACK_BOT_TOKEN: $(grep SLACK_BOT_TOKEN .env | cut -d'=' -f2 | sed 's/.*/.../g')"
+            echo "  SLACK_APP_TOKEN: $(grep SLACK_APP_TOKEN .env | cut -d'=' -f2 | sed 's/.*/.../g')"
+            echo "  SLACK_CHANNEL: $(grep SLACK_CHANNEL .env | cut -d'=' -f2 || echo 'Not set')"
+        else
+            echo "❌ .env file not found"
+        fi
+        
+        echo ""
+        echo "📋 Configuration File:"
+        if [[ -f "config/config.json" ]]; then
+            python3 -c "
+import json
+try:
+    with open('config/config.json', 'r') as f:
+        config = json.load(f)
+        slack_config = config.get('slack_pm', {})
+        
+        print(f'  Response Delay: {slack_config.get(\"slack\", {}).get(\"response_delay\", \"Not set\")}s')
+        print(f'  Session Timeout: {slack_config.get(\"pm_settings\", {}).get(\"session_timeout_hours\", \"Not set\")}h')
+        print(f'  Auto Start Tasks: {slack_config.get(\"pm_settings\", {}).get(\"auto_start_tasks\", \"Not set\")}')
+        print(f'  Require Approval: {slack_config.get(\"pm_settings\", {}).get(\"require_approval\", \"Not set\")}')
+        
+except Exception as e:
+    print(f'❌ Error reading config: {e}')
+"
+        else
+            echo "❌ config/config.json not found"
+        fi
+        ;;
+        
+    *)
+        echo "❌ Unknown command: $COMMAND"
+        echo "Use 'ai-slack-pm' without arguments to see usage"
+        exit 1
+        ;;
+esac

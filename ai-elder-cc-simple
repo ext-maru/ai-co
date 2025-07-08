@@ -1,0 +1,14 @@
+#!/bin/bash
+# シンプルな ai-elder cc 実装
+
+cd /home/aicompany/ai_co
+
+echo "🚀 Claude CLI 起動中..."
+echo "📚 AI Company のナレッジが利用可能です"
+echo ""
+
+# 問題のある環境変数を削除
+unset CLAUDE_CODE_ENTRYPOINT
+
+# 直接 Claude を起動（exec でシェルを置き換え）
+exec claude

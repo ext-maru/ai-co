@@ -1,0 +1,4 @@
+#!/bin/bash
+cd /home/aicompany/ai_co
+source venv/bin/activate
+exec python3 scripts/ai-prompt "$@"

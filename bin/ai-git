@@ -1,0 +1,92 @@
+#!/bin/bash
+# AI Company Git運用コマンド
+
+# プロジェクトディレクトリに移動
+cd /home/aicompany/ai_co
+
+# 仮想環境をアクティベート（必要な場合）
+if [ -f "/home/aicompany/ai_co/venv/bin/activate" ]; then
+    source /home/aicompany/ai_co/venv/bin/activate
+fi
+
+# Gitコマンドのラッパー関数（所有権チェックを回避）
+git_safe() {
+    if [ "$(whoami)" = "root" ]; then
+        # rootの場合はaicompanyユーザーとして実行
+        sudo -u aicompany git -C /home/aicompany/ai_co "$@"
+    else
+        git "$@"
+    fi
+}
+
+case "$1" in
+    status)
+        echo "📊 Git Status:"
+        git_safe status
+        echo ""
+        echo "📝 Current branch:"
+        git_safe branch --show-current
+        echo ""
+        echo "📜 Recent commits:"
+        git_safe log --oneline -n 10
+        ;;
+    
+    flow)
+        echo "🌊 Git Flow Status:"
+        echo "Branches:"
+        git_safe branch -a
+        echo ""
+        echo "Develop ahead of main by:"
+        git_safe rev-list --count main..develop 2>/dev/null || echo "0"
+        echo "commits"
+        ;;
+    
+    release)
+        VERSION=${2:-$(date +%Y.%m.%d)}
+        echo "🚀 Creating release v$VERSION..."
+        cd /home/aicompany/ai_co
+        if [ "$(whoami)" = "root" ]; then
+            sudo -u aicompany python3 -c "
+from libs.git_flow_manager import GitFlowManager
+gfm = GitFlowManager()
+if gfm.create_release('$VERSION'):
+    print('✅ Release created successfully!')
+else:
+    print('❌ Release failed')
+"
+        else
+            python3 -c "
+from libs.git_flow_manager import GitFlowManager
+gfm = GitFlowManager()
+if gfm.create_release('$VERSION'):
+    print('✅ Release created successfully!')
+else:
+    print('❌ Release failed')
+"
+        fi
+        ;;
+    
+    cleanup)
+        echo "🧹 Cleaning up merged branches..."
+        git_safe branch --merged | grep -E 'auto/|feature/' | xargs -n 1 git_safe branch -d 2>/dev/null || true
+        echo "✅ Cleanup complete"
+        ;;
+    
+    fix-ownership)
+        echo "🔧 Fixing Git ownership issues..."
+        git config --global --add safe.directory /home/aicompany/ai_co
+        sudo -u aicompany git config --global --add safe.directory /home/aicompany/ai_co
+        echo "✅ Ownership issues fixed"
+        ;;
+    
+    *)
+        echo "Usage: ai-git {status|flow|release|cleanup|fix-ownership}"
+        echo ""
+        echo "Commands:"
+        echo "  status        - Show git status"
+        echo "  flow          - Show git flow status" 
+        echo "  release       - Create a release (develop → main)"
+        echo "  cleanup       - Remove merged branches"
+        echo "  fix-ownership - Fix Git ownership issues"
+        ;;
+esac

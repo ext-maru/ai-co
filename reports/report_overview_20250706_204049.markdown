@@ -1,0 +1,25 @@
+# システム概要レポート
+
+生成日時: 2025-07-06 20:40:49
+
+## サマリー
+
+期間: 過去7日間
+総タスク数: 150
+完了タスク数: 145
+アクティブワーカー: 8
+システム稼働時間: 7 days
+
+## 詳細メトリクス
+```json
+{
+  "total_tasks": 150,
+  "completed_tasks": 145,
+  "active_workers": 8,
+  "system_uptime": "7 days",
+  "queue_status": {
+    "pending": 5,
+    "processing": 3
+  }
+}
+```

@@ -1,0 +1,145 @@
+#!/usr/bin/env python3
+"""
+AI Send Command - Enhanced Version
+タスクを様々なタイプで送信可能
+"""
+
+import sys
+import argparse
+import json
+import subprocess
+from pathlib import Path
+from datetime import datetime
+
+# プロジェクトルート
+PROJECT_ROOT = Path(__file__).parent.parent
+
+# タスクタイプの読み込み
+def load_task_types():
+    """タスクタイプ設定を読み込む"""
+    config_file = PROJECT_ROOT / "config" / "task_types.json"
+    if config_file.exists():
+        with open(config_file, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    else:
+        # デフォルト
+        return {
+            "create": {"description": "新規作成タスク", "priority": 5}
+        }
+
+def send_task(task_type, description, priority=None, model=None):
+    """タスクを送信"""
+    task_types = load_task_types()
+    
+    # タスクタイプの検証
+    if task_type not in task_types:
+        print(f"❌ Unknown task type: {task_type}")
+        print(f"Available types: {', '.join(task_types.keys())}")
+        return False
+    
+    # 優先度の決定
+    if priority is None:
+        priority = task_types[task_type].get('priority', 5)
+    
+    # タスクデータの構築
+    task_data = {
+        "type": task_type,
+        "description": description,
+        "priority": priority,
+        "model": model or "claude-3-sonnet",
+        "timestamp": datetime.now().isoformat(),
+        "task_type_info": task_types[task_type]
+    }
+    
+    # ai-todoに送信
+    cmd = [
+        sys.executable,
+        str(PROJECT_ROOT / "scripts" / "ai-todo"),
+        json.dumps(description),  # プロンプトとして説明を使用
+        "--priority", str(priority)
+    ]
+    
+    if model:
+        cmd.extend(["--model", model])
+    
+    print(f"📨 Sending {task_type} task: {description}")
+    print(f"   Priority: {priority}")
+    print(f"   Model: {model or 'claude-3-sonnet'}")
+    
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            print("✅ Task sent successfully!")
+            if result.stdout:
+                print(result.stdout)
+            return True
+        else:
+            print("❌ Failed to send task")
+            if result.stderr:
+                print(f"Error: {result.stderr}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Error sending task: {str(e)}")
+        return False
+
+def list_task_types():
+    """利用可能なタスクタイプを表示"""
+    task_types = load_task_types()
+    
+    print("📋 Available Task Types:")
+    print("━" * 60)
+    print(f"{'Type':<12} {'Description':<35} {'Priority':<10}")
+    print("━" * 60)
+    
+    for task_type, info in sorted(task_types.items()):
+        desc = info.get('description', 'No description')
+        priority = info.get('priority', 5)
+        print(f"{task_type:<12} {desc:<35} {priority:<10}")
+    
+    print("━" * 60)
+    print(f"\nTotal: {len(task_types)} task types")
+
+def main():
+    """メイン処理"""
+    parser = argparse.ArgumentParser(
+        description='AI Send - Enhanced task submission with multiple types',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  ai-send test "Unit test for login function"
+  ai-send fix "Memory leak in worker process" --priority 9
+  ai-send deploy "Production release v2.0" --model claude-3-opus
+  ai-send list  # Show all available task types
+        """
+    )
+    
+    parser.add_argument('task_type', help='Task type or "list" to show available types')
+    parser.add_argument('description', nargs='?', help='Task description')
+    parser.add_argument('--priority', '-p', type=int, help='Priority (1-10)')
+    parser.add_argument('--model', '-m', help='AI model to use')
+    
+    args = parser.parse_args()
+    
+    # リスト表示
+    if args.task_type == 'list':
+        list_task_types()
+        return
+    
+    # 説明が必要
+    if not args.description:
+        parser.error('description is required unless using "list" command')
+    
+    # タスク送信
+    success = send_task(
+        args.task_type,
+        args.description,
+        args.priority,
+        args.model
+    )
+    
+    sys.exit(0 if success else 1)
+
+if __name__ == "__main__":
+    main()

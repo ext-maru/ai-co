@@ -1,0 +1,3 @@
+#!/bin/bash
+cd /home/aicompany/ai_co
+exec bash scripts/ai-dashboard "$@"

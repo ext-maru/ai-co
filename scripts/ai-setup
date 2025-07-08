@@ -1,0 +1,119 @@
+#!/bin/bash
+#
+# AI Setup - AI Company環境セットアップツール
+#
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+echo "🚀 AI Company Environment Setup"
+echo "=================================="
+
+cd "$PROJECT_DIR"
+
+# 1. .envファイルの確認・作成
+if [[ ! -f ".env" ]]; then
+    if [[ -f ".env.template" ]]; then
+        echo "📋 Creating .env file from template..."
+        cp .env.template .env
+        echo "✅ .env file created"
+        echo "⚠️  Please edit .env file and fill in your API keys and tokens"
+        echo ""
+    else
+        echo "❌ .env.template not found"
+        exit 1
+    fi
+else
+    echo "✅ .env file already exists"
+fi
+
+# 2. 仮想環境の確認
+if [[ ! -d "venv" ]]; then
+    echo "📦 Creating Python virtual environment..."
+    python3 -m venv venv
+    echo "✅ Virtual environment created"
+else
+    echo "✅ Virtual environment already exists"
+fi
+
+# 3. 仮想環境のアクティベート
+if [[ ! "$AI_VENV_ACTIVE" == "1" ]]; then
+    echo "🔄 Activating virtual environment..."
+    source venv/bin/activate
+    export AI_VENV_ACTIVE=1
+    echo "✅ Virtual environment activated"
+else
+    echo "✅ Virtual environment already active"
+fi
+
+# 4. 依存関係のインストール
+if [[ -f "requirements.txt" ]]; then
+    echo "📥 Installing Python dependencies..."
+    pip install -r requirements.txt
+    echo "✅ Dependencies installed"
+else
+    echo "⚠️  requirements.txt not found, skipping dependency installation"
+fi
+
+# 5. ディレクトリ構造の確認・作成
+echo "📁 Creating directory structure..."
+mkdir -p logs
+mkdir -p output
+mkdir -p data
+mkdir -p web
+echo "✅ Directory structure created"
+
+# 6. データベース初期化
+if [[ -f "scripts/setup_database.sh" ]]; then
+    echo "🗄️  Initializing database..."
+    chmod +x scripts/setup_database.sh
+    ./scripts/setup_database.sh
+    echo "✅ Database initialized"
+fi
+
+# 7. 設定検証
+echo "🔍 Verifying environment setup..."
+python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+
+try:
+    from libs.env_config import verify_setup
+    success = verify_setup()
+    
+    if success:
+        print()
+        print('🎉 Setup completed successfully!')
+        print()
+        print('Next steps:')
+        print('1. Edit .env file with your API keys')
+        print('2. Start the system: ai-start')
+        print('3. Check status: ai-status')
+        exit(0)
+    else:
+        print()
+        print('⚠️  Setup completed but some configuration issues found')
+        print('Please check the .env file')
+        exit(1)
+        
+except Exception as e:
+    print(f'❌ Setup verification failed: {e}')
+    exit(1)
+"
+
+setup_exit_code=$?
+
+echo ""
+echo "=========================================="
+
+if [[ $setup_exit_code -eq 0 ]]; then
+    echo "✅ AI Company setup completed successfully!"
+    echo ""
+    echo "Quick start commands:"
+    echo "  ai-start     # Start the system"
+    echo "  ai-status    # Check system status"
+    echo "  ai-help      # Get help"
+else
+    echo "⚠️  Setup completed with warnings"
+    echo "Please review the .env file configuration"
+fi

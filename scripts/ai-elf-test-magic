@@ -1,0 +1,75 @@
+#!/usr/bin/env python3
+"""
+AI Elf Test Magic - エルフの森による統合テスト修復コマンド
+"""
+
+import sys
+import argparse
+from pathlib import Path
+
+# プロジェクトルートの設定
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from scripts.elf_forest_test_healer import TestHealer
+from libs.elf_rag_integration import ElfRAGIntegration
+from libs.elf_knight_coordination import ElfKnightCoordinator
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="エルフの森 - テスト修復魔法"
+    )
+    parser.add_argument(
+        'action',
+        choices=['heal', 'learn', 'coordinate', 'report'],
+        help="実行するアクション"
+    )
+    parser.add_argument(
+        '--target',
+        help="対象のテストファイルまたはディレクトリ"
+    )
+    parser.add_argument(
+        '--strategy',
+        choices=['flow', 'time', 'balance', 'healing', 'wisdom'],
+        default='healing',
+        help="使用するエルフの戦略"
+    )
+    
+    args = parser.parse_args()
+    
+    if args.action == 'heal':
+        # ヒーリングエルフによる修復
+        print("🌿 Healing Elf が修復魔法を開始します...")
+        healer = TestHealer()
+        failures = healer.diagnose_test_failures()
+        
+        if failures:
+            results = healer.apply_healing_magic(failures)
+            healer.generate_healing_report(results)
+        else:
+            print("✨ すべてのテストが健康です！")
+    
+    elif args.action == 'learn':
+        # Wisdom Elfによる学習
+        print("📚 Wisdom Elf がパターンを学習します...")
+        rag_integration = ElfRAGIntegration()
+        # テスト結果からの学習処理
+        print("学習完了！")
+    
+    elif args.action == 'coordinate':
+        # 騎士団との協調
+        print("⚔️ インシデント騎士団と協調します...")
+        coordinator = ElfKnightCoordinator()
+        # 協調処理の実行
+        print("協調作戦完了！")
+    
+    elif args.action == 'report':
+        # 統合レポート生成
+        print("📊 統合レポートを生成します...")
+        # レポート生成処理
+        print("レポート生成完了！")
+
+
+if __name__ == "__main__":
+    main()

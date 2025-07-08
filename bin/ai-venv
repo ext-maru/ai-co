@@ -1,0 +1,54 @@
+#!/bin/bash
+# AI Company 仮想環境アクティベート用シェルスクリプト
+# このスクリプトは source で実行する必要があります
+
+# プロジェクトディレクトリ
+PROJECT_DIR="/home/aicompany/ai_co"
+VENV_DIR="$PROJECT_DIR/venv"
+
+# 仮想環境の存在確認
+if [ ! -d "$VENV_DIR" ]; then
+    echo "❌ 仮想環境が見つかりません: $VENV_DIR"
+    echo "作成方法: cd $PROJECT_DIR && python3 -m venv venv"
+    return 1 2>/dev/null || exit 1
+fi
+
+# 既にアクティブかチェック
+if [ -n "$VIRTUAL_ENV" ]; then
+    if [ "$VIRTUAL_ENV" = "$VENV_DIR" ]; then
+        echo "✅ AI Company 仮想環境は既にアクティブです"
+        return 0 2>/dev/null || exit 0
+    else
+        echo "⚠️  別の仮想環境がアクティブです: $VIRTUAL_ENV"
+        echo "deactivate を実行してから再度お試しください"
+        return 1 2>/dev/null || exit 1
+    fi
+fi
+
+# プロジェクトディレクトリに移動
+cd "$PROJECT_DIR"
+
+# 仮想環境をアクティベート
+source "$VENV_DIR/bin/activate"
+
+# カスタムプロンプト（オプション）
+export PS1="(ai-company) $PS1"
+
+# 便利なエイリアス
+alias ai-cd="cd $PROJECT_DIR"
+alias ai-pip="pip"
+alias ai-python="python"
+alias ai-req="pip install -r requirements.txt"
+
+# 成功メッセージ
+echo "🚀 AI Company 仮想環境がアクティブになりました"
+echo "📁 プロジェクト: $PROJECT_DIR"
+echo "🐍 Python: $(python --version)"
+echo ""
+echo "💡 便利なエイリアス:"
+echo "  ai-cd     - プロジェクトディレクトリに移動"
+echo "  ai-python - Python実行"
+echo "  ai-pip    - pip実行"
+echo "  ai-req    - requirements.txtからインストール"
+echo ""
+echo "終了: deactivate"

@@ -1,0 +1,423 @@
+#!/usr/bin/env python3
+"""
+エラー智能判断ワーカー
+DLQからエラーを取得し, 分析・分類・修正を行う
+"""
+
+import json
+import os
+import time
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, Optional
+import logging
+
+# プロジェクトルートをPythonパスに追加
+import sys
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from core.base_worker import BaseWorker
+from core import get_config, EMOJI
+from libs.error_intelligence_manager import ErrorIntelligenceManager
+from libs.ai_command_helper import AICommandHelper
+from libs.slack_notifier import SlackNotifier
+from libs.auto_fix_executor import AutoFixExecutor
+from libs.retry_orchestrator import RetryOrchestrator
+from libs.incident_manager import IncidentManager
+
+
+class ErrorIntelligenceWorker(BaseWorker):
+    """エラー智能判断を行うワーカー"""
+    
+    def __init__(self, worker_id: Optional[str] = None):
+        super().__init__('error_intelligence', worker_id)
+        self.manager = ErrorIntelligenceManager()
+        self.command_helper = AICommandHelper()
+        self.auto_fix_executor = AutoFixExecutor()
+        self.retry_orchestrator = RetryOrchestrator()
+        self.incident_manager = IncidentManager()
+        self.config = get_config()
+        self.slack_notifier = SlackNotifier()
+        
+        # 統計情報
+        self.stats = {
+            'processed': 0,
+            'auto_fixed': 0,
+            'ignored': 0,
+            'manual_required': 0
+        }
+        
+        self.logger.info(f"ErrorIntelligenceWorker initialized (pid: {os.getpid()})")
+    
+    def process_message(self, ch, method, properties, body) -> None:
+        """メッセージ処理（BaseWorkerの抽象メソッド実装）"""
+        # DLQメッセージの場合は専用処理を呼び出す
+        if method.routing_key.endswith('_dlq'):
+            self.process_dlq_message(ch, method, properties, body)
+        else:
+            # エラー分析リクエストの場合
+            self.process_error_analysis(ch, method, properties, body)
+    
+    def setup_consumer(self):
+        """DLQを監視するコンシューマーをセットアップ"""
+        # DLQキューを直接監視
+        self.consume_queue('ai_tasks_dlq', self.process_dlq_message)
+        self.consume_queue('ai_pm_dlq', self.process_dlq_message)
+        self.consume_queue('ai_results_dlq', self.process_dlq_message)
+        
+        # エラー分析結果を受け取るキュー
+        self.consume_queue('ai_error_analysis', self.process_error_analysis)
+    
+    def process_dlq_message(self, ch, method, properties, body):
+        """DLQメッセージを処理"""
+        try:
+            self.stats['processed'] += 1
+            
+            # デバッグ情報
+            self.logger.info(f"DLQメッセージ受信: method={method}, properties={properties}")
+            
+            # メッセージの解析
+            if isinstance(body, bytes):
+                body = body.decode('utf-8')
+            
+            message_data = json.loads(body) if isinstance(body, str) else body
+            self.logger.info(f"メッセージデータ: {message_data}")
+            
+            # エラー情報の抽出
+            error_info = self._extract_error_info(message_data, properties)
+            
+            # エラーを無視すべきか判断
+            if self.manager.should_ignore_error(error_info['error_text']):
+                self.logger.info(f"Ignoring error: {error_info['error_text'][:100]}")
+                self.stats['ignored'] += 1
+                ch.basic_ack(delivery_tag=method.delivery_tag)
+                return
+            
+            # エラー分析
+            analysis = self.manager.analyze_error(
+                error_info['error_text'],
+                context=error_info
+            )
+            
+            self.logger.info(
+                f"Error analyzed: {analysis['category']} | "
+                f"Severity: {analysis['severity']} | "
+                f"Auto-fixable: {analysis['auto_fixable']}"
+            )
+            
+            # インシデント作成（重要度が高い場合）
+            if analysis['severity'] in ['high', 'critical'] or not analysis['auto_fixable']:
+                incident_id = self._create_incident(analysis, error_info)
+                self._last_incident_id = incident_id  # 後で参照するため保存
+                self.logger.info(f"Created incident: {incident_id}")
+            
+            # Phase 2: 自動修正の実行
+            if analysis['auto_fixable'] and analysis['fix_strategies']:
+                # AutoFixExecutorで修正実行
+                fix_result = self.auto_fix_executor.execute_fix(analysis, error_info)
+                
+                if fix_result['success']:
+                    self.stats['auto_fixed'] += 1
+                    self._notify_fix_success(analysis, fix_result)
+                    
+                    # RetryOrchestratorでリトライ管理
+                    retry_result = self.retry_orchestrator.orchestrate_retry(
+                        message_data,  # original task info
+                        error_info,
+                        fix_result
+                    )
+                    
+                    if retry_result['retry_success']:
+                        self.logger.info(
+                            f"Task {error_info['task_id']} successfully retried after fix"
+                        )
+                        
+                        # インシデントを自動解決
+                        if hasattr(self, '_last_incident_id') and self._last_incident_id:
+                            self.incident_manager.resolve_incident(
+                                self._last_incident_id,
+                                resolution="自動修正により解決",
+                                actions_taken=[fix_result.get('strategy_used', 'unknown')],
+                                root_cause=analysis['category'],
+                                preventive_measures=["エラーパターンをナレッジベースに追加"]
+                            )
+                else:
+                    self._notify_fix_failure(analysis, fix_result)
+            
+            # 人間の介入が必要な場合
+            if analysis['requires_human'] or analysis['severity'] == 'high':
+                self.stats['manual_required'] += 1
+                self._notify_human_required(analysis, error_info)
+            
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            
+        except Exception as e:
+            import traceback
+            self.logger.error(f"Error processing DLQ message: {str(e)}")
+            self.logger.error(f"Traceback: {traceback.format_exc()}")
+            # このメッセージ自体をDLQに送らない（無限ループ防止）
+            ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+    
+    def process_error_analysis(self, ch, method, properties, body):
+        """エラー分析リクエストを処理"""
+        try:
+            request = json.loads(body) if isinstance(body, str) else body
+            error_text = request.get('error_text', '')
+            context = request.get('context', {})
+            
+            # エラー分析
+            analysis = self.manager.analyze_error(error_text, context)
+            
+            # 結果を返送
+            response_queue = request.get('response_queue')
+            if response_queue:
+                self.send_to_queue(response_queue, analysis)
+            
+            ch.basic_ack(delivery_tag=method.delivery_tag)
+            
+        except Exception as e:
+            self.logger.error(f"Error in error analysis: {str(e)}")
+            ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
+    
+    def _create_incident(self, analysis: Dict, error_info: Dict) -> str:
+        """エラーに基づいてインシデントを作成"""
+        try:
+            # インシデントカテゴリのマッピング
+            category_map = {
+                'ModuleNotFoundError': 'error',
+                'ConnectionError': 'failure',
+                'PermissionError': 'security',
+                'MemoryError': 'performance',
+                'TimeoutError': 'performance'
+            }
+            
+            incident_category = category_map.get(analysis['category'], 'error')
+            
+            # 優先度のマッピング
+            priority_map = {
+                'critical': 'critical',
+                'high': 'high',
+                'medium': 'medium',
+                'low': 'low'
+            }
+            
+            incident_priority = priority_map.get(analysis['severity'], 'medium')
+            
+            # インシデント作成
+            incident_data = {
+                'category': incident_category,
+                'priority': incident_priority,
+                'title': f"{analysis['category']}: {error_info['task_id']}",
+                'description': f"{error_info['error_text'][:500]}\n\n分析結果: {analysis.get('description', '')}",
+                'affected_components': [error_info['worker_type'], error_info['task_type']],
+                'impact': f"タスク実行失敗 - 自動修正{'可能' if analysis['auto_fixable'] else '不可'}",
+                'assignee': 'ai_system' if analysis['auto_fixable'] else 'human',
+                'metadata': {
+                    'error_analysis': analysis,
+                    'error_info': error_info
+                }
+            }
+            
+            incident_id = self.incident_manager.create_incident(**incident_data)
+            
+            # 自動修正が成功した場合、インシデントを自動解決
+            if analysis['auto_fixable']:
+                self.incident_manager.add_action(
+                    incident_id,
+                    "自動修正を試行中",
+                    {"strategies": analysis['fix_strategies']}
+                )
+            
+            return incident_id
+            
+        except Exception as e:
+            self.logger.error(f"Failed to create incident: {str(e)}")
+            return None
+    
+    def _extract_error_info(self, message_data: Dict, properties) -> Dict:
+        """メッセージからエラー情報を抽出"""
+        error_info = {
+            'error_text': '',
+            'task_id': message_data.get('task_id', 'unknown'),
+            'task_type': message_data.get('task_type', 'unknown'),
+            'worker_type': message_data.get('worker_type', 'unknown'),
+            'timestamp': datetime.now().isoformat(),
+            'original_message': message_data
+        }
+        
+        # エラーテキストの抽出
+        if 'error' in message_data:
+            error_info['error_text'] = str(message_data['error'])
+        elif 'exception' in message_data:
+            error_info['error_text'] = str(message_data['exception'])
+        elif 'stderr' in message_data:
+            error_info['error_text'] = message_data['stderr']
+        else:
+            # メッセージ全体から推測
+            error_info['error_text'] = str(message_data)
+        
+        # ワーカータイプの特定 (プロパティからも取得を試行)
+        if properties and hasattr(properties, 'headers') and properties.headers:
+            error_info['worker_type'] = properties.headers.get('x-worker-type', error_info['worker_type'])
+        
+        return error_info
+    
+
+    
+    def _notify_fix_success(self, analysis: Dict, fix_result: Dict):
+        """修正成功を通知"""
+        message = f"""
+    def stop(self):
+        """TODO: stopメソッドを実装してください"""
+        pass
+
+    def initialize(self) -> None:
+        """ワーカーの初期化処理"""
+        # TODO: 初期化ロジックを実装してください
+        logger.info(f"{self.__class__.__name__} initialized")
+        pass
+
+    def handle_error(self):
+        """TODO: handle_errorメソッドを実装してください"""
+        pass
+
+    def get_status(self):
+        """TODO: get_statusメソッドを実装してください"""
+        pass
+
+    def validate_config(self):
+        """TODO: validate_configメソッドを実装してください"""
+        pass
+
+{EMOJI['info']} **エラー自動修正完了 (Phase 2)**
+
+**エラーカテゴリ**: {analysis['category']}
+**重要度**: {analysis['severity']}
+**修正戦略**: {fix_result.get('strategy_used', 'N/A')}
+**実行時間**: {fix_result.get('execution_time', 0):.2f}秒
+**検証**: {'✅ 成功' if fix_result.get('verification_passed') else '❌ 失敗'}
+
+元のタスクは自動的に再試行されます。
+"""
+        try:
+            self.slack_notifier.send_message(message)
+        except:
+            self.logger.warning("Slack notification failed")
+    
+    def _notify_fix_failure(self, analysis: Dict, fix_result: Dict):
+        """修正失敗を通知"""
+        message = f"""
+{EMOJI['warning']} **エラー自動修正失敗**
+
+**エラーカテゴリ**: {analysis['category']}
+**重要度**: {analysis['severity']}
+**試行した戦略**: {fix_result.get('strategy_used', 'N/A')}
+**エラー**: {fix_result.get('error', '不明なエラー')}
+**ロールバック**: {'実行済み' if fix_result.get('rollback_performed') else '未実行'}
+
+手動での対応が必要です。
+"""
+        try:
+            self.slack_notifier.send_message(message)
+        except:
+            self.logger.warning("Slack notification failed")
+    
+    def _notify_human_required(self, analysis: Dict, error_info: Dict):
+        """人間の介入が必要な場合の通知"""
+        strategies_text = "\n".join([
+            f"- {s['description']}: `{s['command']}`"
+            for s in analysis['fix_strategies']
+        ]) if analysis['fix_strategies'] else "なし"
+        
+        message = f"""
+{EMOJI['info']} **要対応: 高重要度エラー**
+
+**タスクID**: {error_info['task_id']}
+**エラーカテゴリ**: {analysis['category']}
+**重要度**: {analysis['severity']}
+
+**エラー内容**:
+```
+{error_info['error_text'][:500]}
+```
+
+**推奨される対処法**:
+{strategies_text}
+
+このエラーは自動修正できません。手動での対応をお願いします。
+"""
+        try:
+            self.slack_notifier.send_message(message)
+        except:
+            self.logger.warning("Slack notification failed")
+    
+    def get_statistics(self) -> Dict:
+        """統計情報を取得"""
+        manager_stats = self.manager.get_error_statistics()
+        worker_stats = self.stats.copy()
+        executor_stats = self.auto_fix_executor.get_statistics()
+        retry_stats = self.retry_orchestrator.get_retry_statistics()
+        
+        return {
+            'worker_stats': worker_stats,
+            'manager_stats': manager_stats,
+            'executor_stats': executor_stats,
+            'retry_stats': retry_stats,
+            'auto_fix_rate': (
+                worker_stats['auto_fixed'] / worker_stats['processed'] * 100
+                if worker_stats['processed'] > 0 else 0
+            ),
+            'phase2_metrics': {
+                'fix_success_rate': executor_stats.get('success_rate', 0),
+                'retry_success_rate': retry_stats.get('success_rate', 0),
+                'avg_fix_time': executor_stats.get('avg_execution_time', 0),
+                'rollback_count': executor_stats.get('rollback_count', 0)
+            }
+        }
+    
+    def cleanup(self):
+        """クリーンアップ処理"""
+        super().cleanup()
+        
+        # 統計情報をログ出力
+        stats = self.get_statistics()
+        self.logger.info(
+            f"ErrorIntelligenceWorker statistics: "
+            f"Processed: {stats['worker_stats']['processed']} | "
+            f"Auto-fixed: {stats['worker_stats']['auto_fixed']} | "
+            f"Ignored: {stats['worker_stats']['ignored']} | "
+            f"Manual required: {stats['worker_stats']['manual_required']} | "
+            f"Auto-fix rate: {stats['auto_fix_rate']:.1f}%"
+        )
+
+
+if __name__ == "__main__":
+    worker = ErrorIntelligenceWorker()
+    
+    # DLQキューを監視
+    try:
+        import pika
+        connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        channel = connection.channel()
+        
+        # DLQキューを宣言
+        channel.queue_declare(queue='ai_tasks_dlq', durable=True)
+        channel.queue_declare(queue='ai_pm_dlq', durable=True)
+        channel.queue_declare(queue='ai_results_dlq', durable=True)
+        
+        print("🔍 ErrorIntelligenceWorker監視中... (DLQを監視)")
+        
+        # DLQからのメッセージを消費
+        channel.basic_consume(queue='ai_tasks_dlq', on_message_callback=worker.process_dlq_message, auto_ack=False)
+        channel.basic_consume(queue='ai_pm_dlq', on_message_callback=worker.process_dlq_message, auto_ack=False)
+        channel.basic_consume(queue='ai_results_dlq', on_message_callback=worker.process_dlq_message, auto_ack=False)
+        
+        channel.start_consuming()
+        
+    except KeyboardInterrupt:
+        print("⌨️ 停止中...")
+        channel.stop_consuming()
+        connection.close()
+    except Exception as e:
+        print(f"❌ エラー: {e}")

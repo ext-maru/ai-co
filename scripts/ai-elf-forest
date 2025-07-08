@@ -1,0 +1,160 @@
+#!/bin/bash
+# AI Elf Forest Command
+# エルフの森管理コマンド
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+cd "$PROJECT_ROOT"
+
+show_help() {
+    echo "Usage: ai-elf-forest [command]"
+    echo ""
+    echo "Commands:"
+    echo "  start         エルフの森を起動"
+    echo "  stop          エルフの森を停止"
+    echo "  status        ワーカー状態表示"
+    echo "  dashboard     ダッシュボード表示"
+    echo "  remind        リマインダー設定"
+    echo "  --help, -h    このヘルプを表示"
+    echo ""
+    echo "Examples:"
+    echo "  ai-elf-forest start"
+    echo "  ai-elf-forest status"
+    echo "  ai-elf-forest remind enhanced_task_worker \"メンテナンス時間です\""
+}
+
+start_forest() {
+    echo "🌲 エルフの森を起動しています..."
+    nohup python3 "$PROJECT_ROOT/start_elf_forest.py" > "$PROJECT_ROOT/logs/elf_forest.log" 2>&1 &
+    ELF_PID=$!
+    echo $ELF_PID > "$PROJECT_ROOT/logs/elf_forest.pid"
+    echo "✅ エルフの森が起動しました (PID: $ELF_PID)"
+    echo "📋 ログ: $PROJECT_ROOT/logs/elf_forest.log"
+}
+
+stop_forest() {
+    if [ -f "$PROJECT_ROOT/logs/elf_forest.pid" ]; then
+        ELF_PID=$(cat "$PROJECT_ROOT/logs/elf_forest.pid")
+        if kill -0 "$ELF_PID" 2>/dev/null; then
+            echo "🛑 エルフの森を停止しています (PID: $ELF_PID)..."
+            kill "$ELF_PID"
+            rm -f "$PROJECT_ROOT/logs/elf_forest.pid"
+            echo "✅ エルフの森が停止しました"
+        else
+            echo "⚠️ エルフの森は既に停止しています"
+            rm -f "$PROJECT_ROOT/logs/elf_forest.pid"
+        fi
+    else
+        echo "⚠️ エルフの森のPIDファイルが見つかりません"
+    fi
+}
+
+show_status() {
+    echo "📊 AI Company ワーカー状態:"
+    echo "=============================="
+    
+    # ワーカープロセスの確認
+    WORKERS=("enhanced_task_worker" "intelligent_pm_worker" "async_result_worker" "simple_task_worker")
+    
+    for worker in "${WORKERS[@]}"; do
+        PID=$(ps aux | grep "$worker" | grep -v grep | awk '{print $2}' | head -1)
+        if [ -n "$PID" ]; then
+            CPU=$(ps -p "$PID" -o %cpu= | tr -d ' ')
+            MEM=$(ps -p "$PID" -o %mem= | tr -d ' ')
+            echo "✅ $worker (PID: $PID, CPU: ${CPU}%, MEM: ${MEM}%)"
+        else
+            echo "❌ $worker (停止中)"
+        fi
+    done
+    
+    # エルフの森の状態
+    if [ -f "$PROJECT_ROOT/logs/elf_forest.pid" ]; then
+        ELF_PID=$(cat "$PROJECT_ROOT/logs/elf_forest.pid")
+        if kill -0 "$ELF_PID" 2>/dev/null; then
+            echo ""
+            echo "🌲 エルフの森: 稼働中 (PID: $ELF_PID)"
+        else
+            echo ""
+            echo "🌲 エルフの森: 停止中"
+        fi
+    else
+        echo ""
+        echo "🌲 エルフの森: 停止中"
+    fi
+}
+
+show_dashboard() {
+    echo "🌲 エルフの森 - リアルタイムダッシュボード"
+    echo "============================================="
+    
+    python3 -c "
+import sys
+sys.path.insert(0, '$PROJECT_ROOT')
+from libs.elf_forest_worker_manager import ElfForestWorkerManager
+import asyncio
+
+async def show_status():
+    manager = ElfForestWorkerManager()
+    await manager.update_worker_statuses()
+    manager.display_dashboard()
+
+if hasattr(asyncio, 'run'):
+    asyncio.run(show_status())
+else:
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(show_status())
+"
+}
+
+set_reminder() {
+    if [ $# -lt 2 ]; then
+        echo "Usage: ai-elf-forest remind <worker_name> <message>"
+        echo "Example: ai-elf-forest remind enhanced_task_worker \"メンテナンス時間です\""
+        return 1
+    fi
+    
+    WORKER_NAME="$1"
+    MESSAGE="$2"
+    TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+    
+    # リマインダーログに記録
+    REMINDER_LOG="$PROJECT_ROOT/logs/${WORKER_NAME}_reminders.log"
+    echo "[$TIMESTAMP] $MESSAGE" >> "$REMINDER_LOG"
+    echo "📝 リマインダーを設定しました:"
+    echo "   ワーカー: $WORKER_NAME"
+    echo "   メッセージ: $MESSAGE"
+    echo "   記録先: $REMINDER_LOG"
+}
+
+# メイン処理
+case "$1" in
+    start)
+        start_forest
+        ;;
+    stop)
+        stop_forest
+        ;;
+    status)
+        show_status
+        ;;
+    dashboard)
+        show_dashboard
+        ;;
+    remind)
+        shift
+        set_reminder "$@"
+        ;;
+    --help|-h|help)
+        show_help
+        ;;
+    "")
+        echo "エルフの森管理コマンド"
+        echo "使用方法については 'ai-elf-forest --help' を参照してください"
+        ;;
+    *)
+        echo "不明なコマンド: $1"
+        echo "使用方法については 'ai-elf-forest --help' を参照してください"
+        exit 1
+        ;;
+esac

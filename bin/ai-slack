@@ -1,0 +1,180 @@
+#!/bin/bash
+# AI Company Slack Workers Management Script
+
+source /home/aicompany/ai_co/venv/bin/activate
+cd /home/aicompany/ai_co
+
+# 色付き出力
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+# アクション判定
+ACTION=${1:-status}
+
+case "$ACTION" in
+  start)
+    echo -e "${GREEN}🚀 Starting Slack Workers...${NC}"
+    
+    # Slack設定確認
+    source config/slack.conf
+    
+    if [ "$SLACK_POLLING_ENABLED" = "true" ]; then
+      echo -e "${BLUE}📡 Starting Slack Polling Worker...${NC}"
+      tmux new-window -t ai_company -n slack_polling "cd /home/aicompany/ai_co && source venv/bin/activate && python3 workers/slack_polling_worker.py"
+      echo -e "${GREEN}✅ Slack Polling Worker started${NC}"
+    else
+      echo -e "${YELLOW}⚠️  Slack Polling is disabled in config${NC}"
+    fi
+    
+    if [ "$SLACK_MONITOR_ENABLED" = "true" ]; then
+      echo -e "${BLUE}🔍 Starting Slack Monitor Worker...${NC}"
+      tmux new-window -t ai_company -n slack_monitor "cd /home/aicompany/ai_co && source venv/bin/activate && python3 workers/slack_monitor_worker.py"
+      echo -e "${GREEN}✅ Slack Monitor Worker started${NC}"
+    else
+      echo -e "${YELLOW}⚠️  Slack Monitor is disabled in config${NC}"
+    fi
+    ;;
+    
+  stop)
+    echo -e "${RED}🛑 Stopping Slack Workers...${NC}"
+    
+    # Slackポーリングワーカー停止
+    if tmux list-windows -t ai_company 2>/dev/null | grep -q "slack_polling"; then
+      tmux kill-window -t ai_company:slack_polling 2>/dev/null
+      echo -e "${GREEN}✅ Slack Polling Worker stopped${NC}"
+    fi
+    
+    # Slack監視ワーカー停止
+    if tmux list-windows -t ai_company 2>/dev/null | grep -q "slack_monitor"; then
+      tmux kill-window -t ai_company:slack_monitor 2>/dev/null
+      echo -e "${GREEN}✅ Slack Monitor Worker stopped${NC}"
+    fi
+    ;;
+    
+  restart)
+    $0 stop
+    sleep 2
+    $0 start
+    ;;
+    
+  status)
+    echo -e "${BLUE}📊 Slack Workers Status:${NC}"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    
+    # 設定確認
+    source config/slack.conf
+    
+    # Polling Worker
+    if tmux list-windows -t ai_company 2>/dev/null | grep -q "slack_polling"; then
+      echo -e "📡 Slack Polling Worker: ${GREEN}Running${NC}"
+    else
+      if [ "$SLACK_POLLING_ENABLED" = "true" ]; then
+        echo -e "📡 Slack Polling Worker: ${RED}Not Running${NC} (but enabled)"
+      else
+        echo -e "📡 Slack Polling Worker: ${YELLOW}Disabled${NC}"
+      fi
+    fi
+    
+    # Monitor Worker
+    if tmux list-windows -t ai_company 2>/dev/null | grep -q "slack_monitor"; then
+      echo -e "🔍 Slack Monitor Worker: ${GREEN}Running${NC}"
+    else
+      if [ "$SLACK_MONITOR_ENABLED" = "true" ]; then
+        echo -e "🔍 Slack Monitor Worker: ${RED}Not Running${NC} (but enabled)"
+      else
+        echo -e "🔍 Slack Monitor Worker: ${YELLOW}Disabled${NC}"
+      fi
+    fi
+    
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    
+    # 設定情報表示
+    echo -e "\n${BLUE}⚙️  Current Configuration:${NC}"
+    echo "• Bot Token: $([ -n "$SLACK_BOT_TOKEN" ] && echo "Configured" || echo "Not Set")"
+    echo "• Webhook URL: $([ -n "$SLACK_WEBHOOK_URL" ] && echo "Configured" || echo "Not Set")"
+    echo "• Polling Channel: ${SLACK_POLLING_CHANNEL_ID:-Not Set}"
+    echo "• Error Channel: $SLACK_ERROR_CHANNEL"
+    echo "• Polling Interval: ${SLACK_POLLING_INTERVAL}s"
+    echo "• Monitor Interval: ${SLACK_MONITOR_INTERVAL}s"
+    ;;
+    
+  test)
+    echo -e "${BLUE}🧪 Testing Slack Workers...${NC}"
+    
+    # Polling Worker Test
+    echo -e "\n${YELLOW}Testing Slack Polling Worker:${NC}"
+    python3 workers/slack_polling_worker.py --test
+    
+    # Monitor Worker Test
+    echo -e "\n${YELLOW}Testing Slack Monitor Worker:${NC}"
+    python3 workers/slack_monitor_worker.py --test
+    
+    # Slack通知テスト
+    echo -e "\n${YELLOW}Testing Slack Notification:${NC}"
+    python3 -c "
+import sys
+sys.path.append('/home/aicompany/ai_co')
+from libs.slack_notifier import SlackNotifier
+notifier = SlackNotifier()
+if notifier.enabled:
+    notifier.send_success('🧪 Slack連携テスト: This is a test message from AI Company')
+    print('✅ Test notification sent')
+else:
+    print('⚠️  Slack is disabled in configuration')
+"
+    ;;
+    
+  logs)
+    # ログ表示
+    echo -e "${BLUE}📜 Slack Workers Logs:${NC}"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    
+    if [ -f "logs/slack_polling_worker.log" ]; then
+      echo -e "\n${YELLOW}📡 Slack Polling Worker (last 20 lines):${NC}"
+      tail -20 logs/slack_polling_worker.log
+    fi
+    
+    if [ -f "logs/slack_monitor_worker.log" ]; then
+      echo -e "\n${YELLOW}🔍 Slack Monitor Worker (last 20 lines):${NC}"
+      tail -20 logs/slack_monitor_worker.log
+    fi
+    ;;
+    
+  setup)
+    echo -e "${BLUE}🔧 Setting up Slack Integration...${NC}"
+    
+    # データベースディレクトリ作成
+    mkdir -p db
+    
+    # 設定ファイル編集
+    echo -e "${YELLOW}Please configure the following in config/slack.conf:${NC}"
+    echo "1. SLACK_BOT_TOKEN - Your Slack Bot Token (xoxb-...)"
+    echo "2. SLACK_WEBHOOK_URL - Your Slack Webhook URL"
+    echo "3. SLACK_POLLING_CHANNEL_ID - Channel ID to monitor (e.g., C1234567890)"
+    echo "4. Set SLACK_POLLING_ENABLED=true to enable polling"
+    echo "5. Set SLACK_MONITOR_ENABLED=true to enable monitoring"
+    echo ""
+    echo "Would you like to edit the config now? (y/n)"
+    read -r response
+    if [[ "$response" =~ ^[Yy]$ ]]; then
+      ${EDITOR:-nano} config/slack.conf
+    fi
+    ;;
+    
+  *)
+    echo "Usage: $0 {start|stop|restart|status|test|logs|setup}"
+    echo ""
+    echo "Commands:"
+    echo "  start    - Start Slack workers"
+    echo "  stop     - Stop Slack workers"
+    echo "  restart  - Restart Slack workers"
+    echo "  status   - Show worker status"
+    echo "  test     - Test worker functionality"
+    echo "  logs     - Show recent logs"
+    echo "  setup    - Initial setup guide"
+    exit 1
+    ;;
+esac

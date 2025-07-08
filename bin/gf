@@ -1,0 +1,94 @@
+#!/bin/bash
+# GitHub Flow エイリアスコマンド
+
+# ヘルプオプションの処理
+if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ $# -eq 0 ]; then
+    echo "GitHub Flow エイリアスコマンド"
+    echo ""
+    echo "使用方法: gf <command> [options]"
+    echo ""
+    echo "コマンド:"
+    echo "  feature <name>  新機能ブランチを作成"
+    echo "  fix <name>      バグ修正ブランチを作成"
+    echo "  commit -m <msg> コミット（ベストプラクティス適用）"
+    echo "  status          現在のステータスを確認"
+    echo "  pr              PR作成手順を表示"
+    echo ""
+    echo "例:"
+    echo "  gf feature user-auth"
+    echo "  gf fix login-bug"
+    echo "  gf commit -m \"feat: add user authentication\""
+    echo "  gf status"
+    echo ""
+    echo "オプション:"
+    echo "  -h, --help      このヘルプメッセージを表示"
+    exit 0
+fi
+
+# コマンドの処理
+case "$1" in
+    "feature")
+        if [ -z "$2" ]; then
+            echo "エラー: ブランチ名を指定してください"
+            echo "使用方法: gf feature <name>"
+            exit 1
+        fi
+        echo "🌟 新機能ブランチを作成中: feature/$2"
+        git checkout -b "feature/$2"
+        echo "✅ ブランチ作成完了: feature/$2"
+        ;;
+    "fix")
+        if [ -z "$2" ]; then
+            echo "エラー: ブランチ名を指定してください"
+            echo "使用方法: gf fix <name>"
+            exit 1
+        fi
+        echo "🐛 バグ修正ブランチを作成中: fix/$2"
+        git checkout -b "fix/$2"
+        echo "✅ ブランチ作成完了: fix/$2"
+        ;;
+    "commit")
+        if [ "$2" = "-m" ] && [ -n "$3" ]; then
+            echo "📝 コミット中..."
+            git add .
+            git commit -m "$3"
+            echo "✅ コミット完了"
+        else
+            echo "エラー: コミットメッセージを指定してください"
+            echo "使用方法: gf commit -m \"メッセージ\""
+            exit 1
+        fi
+        ;;
+    "status")
+        echo "📊 現在のステータス:"
+        echo ""
+        echo "ブランチ情報:"
+        git branch -v
+        echo ""
+        echo "変更状況:"
+        git status --short
+        echo ""
+        echo "最新のコミット:"
+        git log --oneline -n 5
+        ;;
+    "pr")
+        echo "📋 PR作成手順:"
+        echo ""
+        echo "1. 変更をコミット"
+        echo "   gf commit -m \"適切なメッセージ\""
+        echo ""
+        echo "2. リモートにプッシュ"
+        echo "   git push -u origin $(git branch --show-current)"
+        echo ""
+        echo "3. GitHubでPR作成"
+        echo "   ブラウザでリポジトリを開き、PR作成ボタンをクリック"
+        echo ""
+        echo "4. レビューを待つ"
+        echo "   チームメンバーからのレビューを待機"
+        ;;
+    *)
+        echo "エラー: 不明なコマンド: $1"
+        echo "使用方法: gf --help"
+        exit 1
+        ;;
+esac

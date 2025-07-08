@@ -1,0 +1,203 @@
+#!/bin/bash
+#
+# AI Queue Control - キュー処理の制御
+#
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+COMMAND="$1"
+
+if [[ -z "$COMMAND" ]]; then
+    echo "Usage: ai-queue-control <command> [options]"
+    echo ""
+    echo "Commands:"
+    echo "  start           Start queue processing"
+    echo "  stop            Stop queue processing"
+    echo "  restart         Restart queue processing"
+    echo "  status          Show queue processor status"
+    echo "  clear [priority] Clear queues (all or specific priority)"
+    echo "  force-process   Force process queue (bypass rate limits)"
+    echo "  reset-limits    Reset rate limit state"
+    echo ""
+    echo "Priority levels for clear command:"
+    echo "  CRITICAL, HIGH, NORMAL, LOW, BACKGROUND, all"
+    exit 1
+fi
+
+cd "$PROJECT_DIR"
+
+# 仮想環境チェック
+if [[ ! "$AI_VENV_ACTIVE" == "1" ]]; then
+    if [[ -f "venv/bin/activate" ]]; then
+        source venv/bin/activate
+        export AI_VENV_ACTIVE=1
+    fi
+fi
+
+case "$COMMAND" in
+    start)
+        echo "🚀 Starting queue processing..."
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.rate_limit_queue_processor import RateLimitQueueProcessor
+    
+    processor = RateLimitQueueProcessor('$PROJECT_DIR/config/config.json')
+    processor.start_processing()
+    
+    print('✅ Queue processing started')
+    print('📋 Monitor with: ai-queue-monitor --watch')
+    
+except Exception as e:
+    print(f'❌ Failed to start queue processing: {e}')
+"
+        ;;
+        
+    stop)
+        echo "🛑 Stopping queue processing..."
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.rate_limit_queue_processor import RateLimitQueueProcessor
+    
+    processor = RateLimitQueueProcessor('$PROJECT_DIR/config/config.json')
+    processor.stop_processing()
+    
+    print('✅ Queue processing stopped')
+    
+except Exception as e:
+    print(f'❌ Failed to stop queue processing: {e}')
+"
+        ;;
+        
+    restart)
+        echo "🔄 Restarting queue processing..."
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.rate_limit_queue_processor import RateLimitQueueProcessor
+    
+    processor = RateLimitQueueProcessor('$PROJECT_DIR/config/config.json')
+    processor.stop_processing()
+    print('🛑 Stopped queue processing')
+    
+    import time
+    time.sleep(2)
+    
+    processor.start_processing()
+    print('🚀 Started queue processing')
+    
+    print('✅ Queue processing restarted')
+    
+except Exception as e:
+    print(f'❌ Failed to restart queue processing: {e}')
+"
+        ;;
+        
+    status)
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.rate_limit_queue_processor import RateLimitQueueProcessor
+    import json
+    
+    processor = RateLimitQueueProcessor('$PROJECT_DIR/config/config.json')
+    status = processor.get_status()
+    
+    print('📊 Queue Processor Status')
+    print('=' * 40)
+    print(f'Processing: {\"🟢 Active\" if status[\"processing\"] else \"🔴 Inactive\"}')
+    print(f'Rate Limited: {\"🟡 Yes\" if status[\"rate_limited\"] else \"🟢 No\"}')
+    print(f'Queue Size: {status[\"queue_status\"][\"total_queued\"]}')
+    print(f'Processing Count: {status[\"queue_status\"][\"processing_count\"]}')
+    print(f'Estimated Delay: {status[\"estimated_delay_seconds\"]}s')
+    
+except Exception as e:
+    print(f'❌ Failed to get status: {e}')
+"
+        ;;
+        
+    clear)
+        PRIORITY="$2"
+        if [[ -z "$PRIORITY" ]]; then
+            PRIORITY="all"
+        fi
+        
+        echo "🗑️ Clearing queues (priority: $PRIORITY)..."
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.priority_queue_manager import PriorityQueueManager, TaskPriority
+    
+    manager = PriorityQueueManager('$PROJECT_DIR/config/config.json')
+    priority_str = '$PRIORITY'.upper()
+    
+    if priority_str == 'ALL':
+        manager.clear_queues()
+        print('✅ All queues cleared')
+    else:
+        # 特定優先度のみクリア
+        for priority in TaskPriority:
+            if priority.name == priority_str:
+                manager.clear_queues(priority)
+                print(f'✅ {priority_str} queue cleared')
+                break
+        else:
+            print(f'❌ Invalid priority: {priority_str}')
+            print('Valid priorities: CRITICAL, HIGH, NORMAL, LOW, BACKGROUND, all')
+    
+except Exception as e:
+    print(f'❌ Failed to clear queues: {e}')
+"
+        ;;
+        
+    force-process)
+        echo "🔧 Force processing queue (bypassing rate limits)..."
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.rate_limit_queue_processor import RateLimitQueueProcessor
+    
+    processor = RateLimitQueueProcessor('$PROJECT_DIR/config/config.json')
+    processor.force_queue_processing()
+    
+    print('✅ Forced queue processing initiated')
+    print('⚠️  Warning: This bypasses rate limit protections')
+    
+except Exception as e:
+    print(f'❌ Failed to force process: {e}')
+"
+        ;;
+        
+    reset-limits)
+        echo "🔄 Resetting rate limit state..."
+        python3 -c "
+import sys
+sys.path.append('$PROJECT_DIR')
+try:
+    from libs.rate_limit_queue_processor import RateLimitQueueProcessor
+    
+    processor = RateLimitQueueProcessor('$PROJECT_DIR/config/config.json')
+    processor.clear_rate_limit_state()
+    
+    print('✅ Rate limit state reset')
+    print('🚀 Queue processing will resume')
+    
+except Exception as e:
+    print(f'❌ Failed to reset rate limits: {e}')
+"
+        ;;
+        
+    *)
+        echo "❌ Unknown command: $COMMAND"
+        echo "Use 'ai-queue-control' without arguments to see usage"
+        exit 1
+        ;;
+esac

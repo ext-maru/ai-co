@@ -1,0 +1,270 @@
+#!/usr/bin/env python3
+"""
+Knowledge Management Scheduler
+ナレッジベースの統合と進化追跡を定期実行するシステム
+"""
+
+import sys
+from pathlib import Path
+
+# 仮想環境のパッケージパスを追加
+venv_site_packages = '/home/aicompany/ai_co/venv/lib/python3.12/site-packages'
+if venv_site_packages not in sys.path:
+    sys.path.insert(0, venv_site_packages)
+
+import schedule
+import time
+from datetime import datetime, timedelta
+import threading
+
+# プロジェクトルートをPythonパスに追加
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from core import BaseWorker, get_config, EMOJI
+from libs.knowledge_consolidator import KnowledgeConsolidator
+from libs.knowledge_evolution_tracker import KnowledgeEvolutionTracker
+from libs.slack_notifier import SlackNotifier
+import logging
+
+class KnowledgeManagementScheduler(BaseWorker):
+    """ナレッジ管理の定期実行スケジューラー"""
+    
+    def __init__(self):
+        super().__init__(worker_type='knowledge_scheduler')
+        self.config = get_config()
+        self.consolidator = KnowledgeConsolidator()
+        self.evolution_tracker = KnowledgeEvolutionTracker()
+        self.setup_schedule()
+        
+    def setup_schedule(self):
+        """スケジュールの設定"""
+        # 毎日午前3時に統合実行
+        schedule.every().day.at("03:00").do(self.run_consolidation)
+        
+        # 6時間ごとに進化追跡
+        schedule.every(6).hours.do(self.track_evolution)
+        
+        # 毎週月曜日に完全レポート生成
+        schedule.every().monday.at("09:00").do(self.generate_weekly_report)
+        
+        # 毎月1日に月次アーカイブ
+        schedule.every().day.at("00:00").do(self.check_monthly_archive)
+        
+        self.logger.info(f"{EMOJI['info']} Schedule configured:")
+        self.logger.info("- Daily consolidation at 03:00")
+        self.logger.info("- Evolution tracking every 6 hours")
+        self.logger.info("- Weekly report on Mondays at 09:00")
+        self.logger.info("- Monthly archive check at 00:00")
+        
+    def run_consolidation(self):
+        """ナレッジ統合の実行"""
+        try:
+            self.logger.info(f"{EMOJI['rocket']} Running scheduled knowledge consolidation...")
+            self.consolidator.run_consolidation()
+            self._notify_completion("Knowledge consolidation completed", "consolidation")
+        except Exception as e:
+            self.handle_error(e, "run_consolidation")
+            
+    def track_evolution(self):
+        """進化追跡の実行"""
+        try:
+            self.logger.info(f"{EMOJI['monitor']} Running scheduled evolution tracking...")
+            self.evolution_tracker.track_evolution(interval_hours=6)
+            self._notify_completion("Evolution tracking completed", "evolution")
+        except Exception as e:
+            self.handle_error(e, "track_evolution")
+            
+    def generate_weekly_report(self):
+        """週次レポートの生成"""
+        try:
+            self.logger.info(f"{EMOJI['file']} Generating weekly report...")
+            
+            # 統合実行
+            doc_path = self.consolidator.generate_documentation()
+            
+            # 進化可視化
+            viz_path = self.evolution_tracker.visualize_evolution()
+            
+            # 週次サマリー生成
+            summary = self._generate_weekly_summary()
+            
+            self._notify_weekly_report(doc_path, viz_path, summary)
+            
+        except Exception as e:
+            self.handle_error(e, "generate_weekly_report")
+            
+    def check_monthly_archive(self):
+        """月次アーカイブのチェック"""
+        if datetime.now().day == 1:
+            self.create_monthly_archive()
+            
+    def create_monthly_archive(self):
+        """月次アーカイブの作成"""
+        try:
+            self.logger.info(f"{EMOJI['info']} Creating monthly archive...")
+            
+            archive_dir = Path("/home/aicompany/ai_co/knowledge_base/archives")
+            archive_dir.mkdir(exist_ok=True)
+            
+            # 先月の年月を取得
+            last_month = datetime.now().replace(day=1) - timedelta(days=1)
+            archive_name = f"knowledge_archive_{last_month.strftime('%Y%m')}"
+            
+            # アーカイブ作成コマンド
+            import subprocess
+            subprocess.run([
+                "tar", "-czf",
+                f"{archive_dir}/{archive_name}.tar.gz",
+                "-C", "/home/aicompany/ai_co/knowledge_base",
+                "CONSOLIDATED_KNOWLEDGE",
+                "evolution_tracking"
+            ])
+            
+            self._notify_completion(f"Monthly archive created: {archive_name}", "archive")
+            
+        except Exception as e:
+            self.handle_error(e, "create_monthly_archive")
+            
+    def _generate_weekly_summary(self) -> str:
+        """週次サマリーの生成"""
+        summary = []
+        
+        # 最近の変更統計
+        evolution_db = Path("/home/aicompany/ai_co/knowledge_base/evolution_tracking")
+        comparisons = sorted(evolution_db.glob("comparison_*.json"), reverse=True)[:7]
+        
+        added_total = 0
+        modified_total = 0
+        
+        for comp_file in comparisons:
+            try:
+                import json
+                with open(comp_file, 'r') as f:
+                    comp = json.load(f)
+                    added_total += len(comp.get('added_files', []))
+                    modified_total += len(comp.get('modified_files', []))
+            except:
+                pass
+                
+        summary.append(f"Files added this week: {added_total}")
+        summary.append(f"Files modified this week: {modified_total}")
+        
+        return "\n".join(summary)
+        
+    def _notify_completion(self, message: str, task_type: str):
+        """完了通知"""
+        try:
+            notifier = SlackNotifier()
+            notifier.send_message(f"{EMOJI['success']} {message}")
+        except:
+            self.logger.warning("Failed to send Slack notification")
+            
+    def _notify_weekly_report(self, doc_path: Path, viz_path: Path, summary: str):
+        """週次レポート通知"""
+        try:
+            notifier = SlackNotifier()
+            message = f"""
+    def cleanup(self):
+        """TODO: cleanupメソッドを実装してください"""
+        pass
+
+    def stop(self):
+        """TODO: stopメソッドを実装してください"""
+        pass
+
+    def initialize(self) -> None:
+        """ワーカーの初期化処理"""
+        # TODO: 初期化ロジックを実装してください
+        logger.info(f"{self.__class__.__name__} initialized")
+        pass
+
+    def handle_error(self):
+        """TODO: handle_errorメソッドを実装してください"""
+        pass
+
+    def get_status(self):
+        """TODO: get_statusメソッドを実装してください"""
+        pass
+
+    def validate_config(self):
+        """TODO: validate_configメソッドを実装してください"""
+        pass
+
+{EMOJI['info']} Weekly Knowledge Report
+
+📊 Summary:
+{summary}
+
+📄 Full Documentation: {doc_path.name}
+📈 Evolution Visualization: {viz_path.name}
+
+View online: http://localhost:8080/{viz_path.name}
+"""
+            notifier.send_message(message)
+        except:
+            self.logger.warning("Failed to send weekly report notification")
+            
+    def process_message(self, ch, method, properties, body):
+        """メッセージ処理（使用しない）"""
+        pass
+        
+    def run(self):
+        """スケジューラーの実行"""
+        self.logger.info(f"{EMOJI['robot']} Knowledge Management Scheduler started")
+        
+        # 起動時に一度実行
+        self.track_evolution()
+        
+        # スケジュール実行ループ
+        while True:
+            try:
+                schedule.run_pending()
+                time.sleep(60)  # 1分ごとにチェック
+            except KeyboardInterrupt:
+                self.logger.info(f"{EMOJI['stop']} Scheduler stopped by user")
+                break
+            except Exception as e:
+                self.logger.error(f"Scheduler error: {e}")
+                time.sleep(60)
+
+
+class KnowledgeManagementService:
+    """ナレッジ管理サービス（バックグラウンド実行用）"""
+    
+    def __init__(self):
+        self.scheduler = KnowledgeManagementScheduler()
+        self.running = False
+        self.thread = None
+        
+    def start(self):
+        """サービス開始"""
+        if not self.running:
+            self.running = True
+            self.thread = threading.Thread(target=self._run_scheduler)
+            self.thread.daemon = True
+            self.thread.start()
+            print(f"{EMOJI['rocket']} Knowledge Management Service started")
+            
+    def stop(self):
+        """サービス停止"""
+        self.running = False
+        if self.thread:
+            self.thread.join(timeout=5)
+        print(f"{EMOJI['stop']} Knowledge Management Service stopped")
+        
+    def _run_scheduler(self):
+        """スケジューラー実行"""
+        while self.running:
+            try:
+                schedule.run_pending()
+                time.sleep(60)
+            except Exception as e:
+                print(f"Service error: {e}")
+                time.sleep(60)
+
+
+if __name__ == "__main__":
+    # 直接実行時はスケジューラーを起動
+    scheduler = KnowledgeManagementScheduler()
+    scheduler.run()

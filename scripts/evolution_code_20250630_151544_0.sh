@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Final Test Script - Comprehensive Testing Suite
+echo "=== Final Test Suite Starting ==="
+echo "Date: $(date)"
+echo "=================================="
+
+# Test counter
+TESTS_PASSED=0
+TESTS_FAILED=0
+
+# Function to run test and report result
+run_test() {
+    local test_name="$1"
+    local test_command="$2"
+    
+    echo -n "Testing $test_name... "
+    if eval "$test_command" >/dev/null 2>&1; then
+        echo "PASS"
+        ((TESTS_PASSED++))
+    else
+        echo "FAIL"
+        ((TESTS_FAILED++))
+    fi
+}
+
+# Basic System Tests
+echo -e "\n--- System Tests ---"
+run_test "Python Installation" "python3 --version"
+run_test "Bash Shell" "bash --version"
+
+# File Existence Tests
+echo -e "\n--- File Existence Tests ---"
+run_test "hello_world.py exists" "test -f hello_world.py"
+run_test "date_display.py exists" "test -f date_display.py"
+run_test "fibonacci.py exists" "test -f fibonacci.py"
+run_test "prime_checker.py exists" "test -f prime_checker.py"
+run_test "mobile_display_test.py exists" "test -f mobile_display_test.py"
+run_test "web_analyzer.py exists" "test -f web_analyzer.py"
+
+# Python Script Execution Tests
+echo -e "\n--- Python Script Tests ---"
+run_test "Hello World Script" "python3 hello_world.py"
+run_test "Date Display Script" "python3 date_display.py"
+run_test "Fibonacci Script" "python3 fibonacci.py"
+run_test "Prime Checker Script" "python3 prime_checker.py"
+run_test "Mobile Display Test" "python3 mobile_display_test.py"
+
+# File Permissions Tests
+echo -e "\n--- File Permissions Tests ---"
+run_test "test_fix.sh executable" "test -x test_fix.sh"
+run_test "final_test.sh executable" "test -x final_test.sh"
+
+# Directory Structure Tests
+echo -e "\n--- Directory Structure Tests ---"
+run_test "code directory exists" "test -d code"
+run_test "general directory exists" "test -d general"
+
+# Final Results
+echo -e "\n=================================="
+echo "=== Final Test Results ==="
+echo "Tests Passed: $TESTS_PASSED"
+echo "Tests Failed: $TESTS_FAILED"
+echo "Total Tests: $((TESTS_PASSED + TESTS_FAILED))"
+
+if [ $TESTS_FAILED -eq 0 ]; then
+    echo -e "\n🎉 ALL TESTS PASSED! 🎉"
+    exit 0
+else
+    echo -e "\n❌ Some tests failed. Please check the output above."
+    exit 1
+fi

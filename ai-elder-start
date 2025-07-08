@@ -1,0 +1,102 @@
+#!/bin/bash
+# AI Elder Start - ClaudeCode用ナレッジ・エルダーズ知識提供コマンド
+# ClaudeCode起動後に実行して、AI Companyの知識を習得
+
+set -e
+
+# プロジェクトルートに移動
+cd /home/aicompany/ai_co
+
+echo "🏛️ AI Elder Start - ClaudeCode用ナレッジ提供システム"
+echo "=" * 60
+
+# 使用方法チェック
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    cat << 'EOF'
+🏛️ ai-elder-start - ClaudeCode用ナレッジ・エルダーズ知識提供
+
+使用方法:
+  ai-elder-start [オプション]
+
+オプション:
+  --help, -h          このヘルプを表示
+  --summary, -s       エルダーズサマリーのみ表示
+  --knowledge, -k     ナレッジベースのみ表示
+  --status            システム状況のみ表示
+  --greet            エルダーズ挨拶のみ表示
+
+説明:
+  ClaudeCodeユーザーがAI Companyの知識を習得するためのコマンドです。
+  エルダーズの4賢者システム、最新の実装状況、ファンタジー分類システムなど
+  AI Companyの全体像を理解できるよう、重要な情報をまとめて提供します。
+
+例:
+  ai-elder-start              # 完全なナレッジ提供
+  ai-elder-start --summary    # エルダーズサマリーのみ
+  ai-elder-start --knowledge  # 技術ナレッジのみ
+EOF
+    exit 0
+fi
+
+# オプション別処理
+case "$1" in
+    "--summary"|"-s")
+        echo "📚 エルダーズサマリー表示モード"
+        python3 -c "
+import sys
+sys.path.insert(0, '/home/aicompany/ai_co')
+from ai_elder_start_provider import ElderStartProvider
+provider = ElderStartProvider()
+provider.show_elders_summary()
+"
+        ;;
+    "--knowledge"|"-k")
+        echo "📖 ナレッジベース表示モード"
+        python3 -c "
+import sys
+sys.path.insert(0, '/home/aicompany/ai_co')
+from ai_elder_start_provider import ElderStartProvider
+provider = ElderStartProvider()
+provider.show_knowledge_base()
+"
+        ;;
+    "--status")
+        echo "📊 システム状況表示モード"
+        python3 -c "
+import sys
+sys.path.insert(0, '/home/aicompany/ai_co')
+from ai_elder_start_provider import ElderStartProvider
+provider = ElderStartProvider()
+provider.show_system_status()
+"
+        ;;
+    "--greet")
+        echo "🏛️ エルダーズ挨拶モード"
+        python3 -c "
+import sys
+sys.path.insert(0, '/home/aicompany/ai_co')
+from ai_elder_start_provider import ElderStartProvider
+provider = ElderStartProvider()
+provider.show_elders_greeting()
+"
+        ;;
+    "")
+        echo "🚀 完全ナレッジ提供モード"
+        python3 -c "
+import sys
+sys.path.insert(0, '/home/aicompany/ai_co')
+from ai_elder_start_provider import ElderStartProvider
+provider = ElderStartProvider()
+provider.provide_full_knowledge()
+"
+        ;;
+    *)
+        echo "❌ 不明なオプション: $1"
+        echo "使用方法: ai-elder-start --help"
+        exit 1
+        ;;
+esac
+
+echo ""
+echo "✅ AI Elder Start 完了"
+echo "💡 AI Companyのナレッジが提供されました！"

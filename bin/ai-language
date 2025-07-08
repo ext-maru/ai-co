@@ -1,0 +1,12 @@
+#!/bin/bash
+# AI Language Command - 言語設定管理
+
+# スクリプトのディレクトリを取得
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+
+# Pythonパスを設定
+export PYTHONPATH="$PROJECT_ROOT:$PYTHONPATH"
+
+# Python実行
+python3 "$PROJECT_ROOT/commands/ai_language.py" "$@"
