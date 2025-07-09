@@ -11,18 +11,56 @@ from typing import Dict, Any, List, Optional, Callable
 from datetime import datetime
 try:
     from selenium import webdriver
-try:
     from selenium.webdriver.common.by import By
-try:
     from selenium.webdriver.support.ui import WebDriverWait
-try:
     from selenium.webdriver.support import expected_conditions as EC
+    SELENIUM_AVAILABLE = True
+except ImportError:
+    SELENIUM_AVAILABLE = False
+    # Mock classes for when selenium is not available
+    class webdriver:
+        class Chrome:
+            def __init__(self, *args, **kwargs):
+                pass
+        class Firefox:
+            def __init__(self, *args, **kwargs):
+                pass
+    
+    class By:
+        ID = "id"
+        CLASS_NAME = "class"
+        TAG_NAME = "tag"
+        XPATH = "xpath"
+    
+    class WebDriverWait:
+        def __init__(self, *args, **kwargs):
+            pass
+    
+    class expected_conditions:
+        @staticmethod
+        def presence_of_element_located(locator):
+            return None
+
 try:
     from selenium.webdriver.chrome.options import Options
-try:
     from selenium.webdriver.remote.webelement import WebElement
-try:
     from selenium.common.exceptions import TimeoutException, WebDriverException
+except ImportError:
+    class Options:
+        def __init__(self):
+            pass
+        def add_argument(self, arg):
+            pass
+    
+    class WebElement:
+        def __init__(self):
+            pass
+    
+    class TimeoutException(Exception):
+        pass
+    
+    class WebDriverException(Exception):
+        pass
 import pytest
 from pathlib import Path
 import threading

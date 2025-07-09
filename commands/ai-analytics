@@ -1,0 +1,199 @@
+#!/usr/bin/env python3
+"""
+AI Company データアナリティクスコマンド
+高度データアナリティクスプラットフォームのCLI
+
+使用方法:
+  ai-analytics run         - 即座に分析を実行
+  ai-analytics report      - 最新レポートを表示
+  ai-analytics dashboard   - ダッシュボードを起動
+  ai-analytics schedule    - スケジューラーを起動
+
+設計: クロードエルダー
+実装日: 2025年7月9日
+"""
+
+import sys
+import asyncio
+import json
+from pathlib import Path
+from datetime import datetime
+
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from libs.data_analytics_platform import DataAnalyticsPlatform
+from web.analytics_dashboard_view import AnalyticsDashboardView
+
+def print_banner():
+    """バナー表示"""
+    print("📊" * 30)
+    print("🔍  AI Company データアナリティクス  🔍")
+    print("📊  高度分析・予測・最適化システム  📊")
+    print("📊" * 30)
+    print()
+
+async def run_analysis():
+    """分析を実行"""
+    print("🚀 データ分析を開始します...")
+    
+    try:
+        platform = DataAnalyticsPlatform(PROJECT_ROOT)
+        report_path = await platform.run_full_analysis()
+        
+        print(f"\n✅ 分析完了！")
+        print(f"📊 レポート: {report_path}")
+        
+        # レポートの要約を表示
+        with open(report_path, 'r', encoding='utf-8') as f:
+            report = json.load(f)
+        
+        print(f"\n📈 分析サマリー:")
+        print(f"  • 分析項目: {report['summary']['total_analyses']}個")
+        print(f"  • 平均信頼度: {report['summary']['average_confidence'] * 100:.0f}%")
+        print(f"  • 洞察: {report['summary']['key_findings']}個")
+        print(f"  • 推奨事項: {report['summary']['recommendations']}個")
+        
+        if report['executive_insights']:
+            print(f"\n🔍 主要な洞察:")
+            for insight in report['executive_insights'][:3]:
+                print(f"  • {insight}")
+        
+        if report['action_items']:
+            print(f"\n🎯 アクションアイテム:")
+            for item in report['action_items'][:3]:
+                print(f"  • {item}")
+                
+    except Exception as e:
+        print(f"\n❌ エラー: {e}")
+        sys.exit(1)
+
+def show_latest_report():
+    """最新レポートを表示"""
+    print("📊 最新の分析レポートを表示します...\n")
+    
+    try:
+        view = AnalyticsDashboardView(PROJECT_ROOT)
+        report = view.get_latest_report()
+        
+        if not report:
+            print("❌ レポートが見つかりません")
+            print("   'ai-analytics run' で分析を実行してください")
+            return
+        
+        formatted = view.format_report_for_display(report)
+        
+        print(f"📅 生成日時: {formatted['generated_at']}")
+        print(f"📊 分析項目: {formatted['summary']['total_analyses']}個")
+        print(f"🎯 信頼度: {formatted['summary']['average_confidence'] * 100:.0f}%\n")
+        
+        # 各分析結果を表示
+        for analysis in formatted['analyses']:
+            print(f"\n{'='*60}")
+            print(f"📈 {analysis['type']} (信頼度: {analysis['confidence']*100:.0f}%)")
+            print(f"{'='*60}")
+            
+            # メトリクス
+            if analysis['metrics']:
+                print("\n📊 メトリクス:")
+                for metric in analysis['metrics']:
+                    print(f"  • {metric['label']}: {metric['value']}{metric['unit']}")
+            
+            # 洞察
+            if analysis['insights']:
+                print("\n🔍 洞察:")
+                for insight in analysis['insights']:
+                    print(f"  • {insight}")
+            
+            # 予測
+            if analysis['predictions']:
+                print("\n🔮 予測:")
+                for key, value in analysis['predictions'].items():
+                    print(f"  • {key}: {value}")
+            
+            # 推奨事項
+            if analysis['recommendations']:
+                print("\n💡 推奨事項:")
+                for rec in analysis['recommendations']:
+                    print(f"  • {rec}")
+        
+        # アクションアイテム
+        if formatted.get('action_items'):
+            print(f"\n\n{'='*60}")
+            print("🎯 アクションアイテム")
+            print(f"{'='*60}")
+            for item in formatted['action_items']:
+                print(f"• {item}")
+                
+    except Exception as e:
+        print(f"\n❌ エラー: {e}")
+        sys.exit(1)
+
+def start_dashboard():
+    """ダッシュボードを起動"""
+    print("🚀 Elder Dashboard Evolution を起動します...")
+    print("📊 ブラウザで http://localhost:5000 にアクセスしてください\n")
+    
+    try:
+        from web.elder_dashboard_evolution import ElderDashboardEvolution
+        dashboard = ElderDashboardEvolution()
+        dashboard.run(debug=False)
+    except Exception as e:
+        print(f"\n❌ エラー: {e}")
+        sys.exit(1)
+
+def start_scheduler():
+    """スケジューラーを起動"""
+    print("📅 アナリティクススケジューラーを起動します...")
+    print("   • 毎日 09:00 - 包括的分析")
+    print("   • 毎日 18:00 - 包括的分析\n")
+    
+    try:
+        from scripts.analytics_scheduler import AnalyticsScheduler
+        scheduler = AnalyticsScheduler()
+        scheduler.start()
+    except Exception as e:
+        print(f"\n❌ エラー: {e}")
+        sys.exit(1)
+
+def show_help():
+    """ヘルプを表示"""
+    print("使用方法: ai-analytics [コマンド]\n")
+    print("コマンド:")
+    print("  run         即座に分析を実行")
+    print("  report      最新レポートを表示")
+    print("  dashboard   ダッシュボードを起動")
+    print("  schedule    スケジューラーを起動")
+    print("  help        このヘルプを表示")
+    print()
+    print("例:")
+    print("  ai-analytics run      # 分析を実行")
+    print("  ai-analytics report   # 結果を確認")
+
+def main():
+    """メイン処理"""
+    print_banner()
+    
+    if len(sys.argv) < 2:
+        show_help()
+        sys.exit(0)
+    
+    command = sys.argv[1].lower()
+    
+    if command == 'run':
+        asyncio.run(run_analysis())
+    elif command == 'report':
+        show_latest_report()
+    elif command == 'dashboard':
+        start_dashboard()
+    elif command == 'schedule':
+        start_scheduler()
+    elif command == 'help':
+        show_help()
+    else:
+        print(f"❌ 不明なコマンド: {command}")
+        show_help()
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()

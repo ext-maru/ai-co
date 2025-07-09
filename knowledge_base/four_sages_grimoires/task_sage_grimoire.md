@@ -360,7 +360,76 @@ AI Companyの発展に最大効率で貢献することを、
 ここに厳かに誓う。
 ```
 
-**📋 Task Sage Grimoire - Established 2025-07-07 📋**
+---
+
+## 📡 第9章: A2Aタスク自動割り当て（2025/7/9追加）
+
+### 賢者間タスク最適配分
+A2A通信を活用し、各賢者の負荷と専門性に基づいてタスクを自動配分。
+
+**配分アルゴリズム**:
+1. 各賢者の現在負荷を確認
+2. タスクの専門性を分析
+3. 優先度と緊急度を考慮
+4. 最適な賢者へ自動割り当て
+
+### 実装例
+```python
+# A2A経由でタスク割り当て
+task_distribution = optimize_task_allocation(
+    new_task="performance_optimization",
+    sage_workloads=get_current_workloads(),
+    priority="HIGH"
+)
+send_a2a_task_assignment(task_distribution)
+```
+
+---
+
+## 🗓️ 第10章: ビジョン実装計画（2025/7/9追加）
+
+### 「未来を教えて」連携
+RAGエルダーのビジョンを実装可能なタスクに分解。
+
+**タスク化プロセス**:
+1. ビジョンの技術要素分解
+2. 実装ステップの定義
+3. 依存関係の分析
+4. スケジュール作成
+
+### ビジョン実装追跡
+```bash
+# ビジョンの実装状況確認
+python3 scripts/vision_implementation_tracker.py
+
+# タスク進捗レポート
+python3 scripts/task_progress_report.py --vision-id=20250709
+```
+
+---
+
+## 🔄 第11章: WSL回復時のタスク再開（2025/7/9追加）
+
+### タスク継続性の保証
+WSLスリープ回復時に中断されたタスクを自動再開。
+
+**復旧フロー**:
+1. 中断タスクの検出
+2. 実行状態の復元
+3. 依存タスクの確認
+4. 自動再実行
+
+### タスク状態の永続化
+```python
+# タスク状態を定期的に保存
+@periodic_task(interval=300)  # 5分ごと
+def save_task_state():
+    current_tasks = get_running_tasks()
+    persist_to_database(current_tasks)
+```
+
+**📋 Task Sage Grimoire - Established 2025-07-07 📋**  
+**📅 Last Updated: 2025-07-09 (v2.0)**
 
 ---
 

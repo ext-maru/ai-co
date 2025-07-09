@@ -12,7 +12,7 @@ from libs.ai_command_helper import AICommandHelper
 helper = AICommandHelper()
 
 # PMWorkerパッチコマンド
-patch_command = """#!/bin/bash
+patch_command = r"""#!/bin/bash
 cd /home/aicompany/ai_co
 
 echo "🔧 Patching PMWorker for commit best practices..."

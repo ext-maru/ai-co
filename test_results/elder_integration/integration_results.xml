@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.346" timestamp="2025-07-09T15:52:35.956929+09:00" hostname="MSI"><testcase classname="" name="tests.integration.test_elder_worker_integration" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/integration/test_elder_worker_integration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/test_elder_worker_integration.py:35: in &lt;module&gt;
+    from core.elder_aware_base_worker import (
+core/elder_aware_base_worker.py:21: in &lt;module&gt;
+    from core.security_module import SecurityModule
+E   ImportError: cannot import name 'SecurityModule' from 'core.security_module' (/home/aicompany/ai_co/core/security_module.py). Did you mean: 'security_module'?</error></testcase></testsuite></testsuites>

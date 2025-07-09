@@ -1,4 +1,3 @@
-    from {module_path.replace('.py', '').replace('/', '.')} import *
 #!/usr/bin/env python3
 """
 🏰 Coverage Knights Brigade - 第2週カバレッジ向上統合作戦

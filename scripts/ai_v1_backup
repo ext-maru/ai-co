@@ -1,0 +1,283 @@
+#!/usr/bin/env python3
+"""
+AI Command System - 統一エントリーポイント
+エルダー評議会承認済み新体系 (2025年7月9日)
+"""
+
+import sys
+import os
+from pathlib import Path
+import subprocess
+import json
+from typing import List, Dict, Optional
+
+class AICommandSystem:
+    """AI統一コマンドシステム"""
+    
+    def __init__(self):
+        self.scripts_dir = Path("/home/aicompany/ai_co/scripts")
+        self.version = "2.0.0"
+        self.categories = {
+            "core": {
+                "name": "Core Commands",
+                "description": "基本システムコマンド",
+                "commands": {
+                    "start": {"script": "ai-start", "desc": "システム起動"},
+                    "stop": {"script": "ai-stop", "desc": "システム停止"},
+                    "status": {"script": "ai-status", "desc": "システム状態確認"},
+                    "env": {"script": "ai-env", "desc": "環境設定"}
+                }
+            },
+            "elder": {
+                "name": "Elder Management",
+                "description": "エルダー管理機能",
+                "commands": {
+                    "status": {"script": "ai-elder", "desc": "エルダー状態確認"},
+                    "council": {"script": "ai-elder-council", "desc": "評議会管理"},
+                    "settings": {"script": "ai-elder-settings", "desc": "設定表示"},
+                    "tree": {"script": "ai-elder-tree", "desc": "エルダーツリー表示"},
+                    "compliance": {"script": "ai-elder-compliance", "desc": "コンプライアンス"},
+                    "servant": {"script": "ai-servant", "desc": "サーバント管理"}
+                }
+            },
+            "worker": {
+                "name": "Worker Management",
+                "description": "ワーカー管理",
+                "commands": {
+                    "status": {"script": "ai-worker-comm", "desc": "ワーカー通信状態"},
+                    "recovery": {"script": "ai-worker-recovery", "desc": "ワーカー復旧"},
+                    "dlq": {"script": "ai-dlq", "desc": "DLQ管理"}
+                }
+            },
+            "dev": {
+                "name": "Development Tools",
+                "description": "開発ツール",
+                "commands": {
+                    "codegen": {"script": "ai-codegen", "desc": "コード生成"},
+                    "document": {"script": "ai-document", "desc": "ドキュメント生成"},
+                    "git": {"script": "ai-git", "desc": "Git統合"},
+                    "tdd": {"script": "ai-tdd", "desc": "TDD開発"}
+                }
+            },
+            "test": {
+                "name": "Testing Tools",
+                "description": "テストツール",
+                "commands": {
+                    "coverage": {"script": "ai-test-coverage", "desc": "カバレッジ分析"},
+                    "quality": {"script": "ai-test-quality", "desc": "品質分析"},
+                    "runner": {"script": "ai-test-runner", "desc": "テスト実行"},
+                    "magic": {"script": "ai-elf-test-magic", "desc": "エルフテスト魔法"}
+                }
+            },
+            "ops": {
+                "name": "Operations",
+                "description": "運用ツール",
+                "commands": {
+                    "dashboard": {"script": "ai-dashboard", "desc": "ダッシュボード"},
+                    "api-status": {"script": "ai-api-status", "desc": "API状態"},
+                    "api-health": {"script": "ai-api-health", "desc": "APIヘルス"},
+                    "api-reset": {"script": "ai-api-reset", "desc": "APIリセット"}
+                }
+            },
+            "monitor": {
+                "name": "Monitoring",
+                "description": "監視・ログ",
+                "commands": {
+                    "logs": {"script": "ai-logs", "desc": "ログ表示"},
+                    "proactive": {"script": "ai-elder-proactive-monitor", "desc": "予防的監視"}
+                }
+            },
+            "integrate": {
+                "name": "Integrations",
+                "description": "外部連携",
+                "commands": {
+                    "slack": {"script": "ai-slack", "desc": "Slack統合"},
+                    "mcp": {"script": "ai-mcp", "desc": "MCP統合"},
+                    "send": {"script": "ai-send", "desc": "メッセージ送信"}
+                }
+            }
+        }
+        
+        # 特殊コマンド（エイリアス）
+        self.aliases = {
+            "help": self.show_help,
+            "h": self.show_help,
+            "?": self.show_help,
+            "version": self.show_version,
+            "v": self.show_version,
+            "find": self.find_command,
+            "search": self.find_command
+        }
+    
+    def show_help(self, args: List[str] = None):
+        """ヘルプ表示"""
+        if args and len(args) > 0:
+            # Category specific help
+            category = args[0]
+            if category in self.categories:
+                self.show_category_help(category)
+            else:
+                print(f"❌ Unknown category: {category}")
+                print(f"Available categories: {', '.join(self.categories.keys())}")
+        else:
+            # General help
+            print(f"""
+🏛️ AI Command System v{self.version}
+エルダー評議会承認済み統一コマンド体系
+
+Usage: ai <command> [options]
+       ai <category> <command> [options]
+
+Special Commands:
+  help, h, ?      Show this help
+  version, v      Show version
+  find <query>    Find commands by keyword
+  search <query>  Same as find
+
+Categories:
+""")
+            for cat_id, cat_info in self.categories.items():
+                print(f"  {cat_id:<12} {cat_info['description']}")
+            
+            print("""
+Examples:
+  ai status               # システム状態確認
+  ai elder status         # エルダー状態確認
+  ai help elder           # エルダー関連コマンドのヘルプ
+  ai find "test"          # "test"を含むコマンドを検索
+
+For detailed help on a category:
+  ai help <category>
+""")
+    
+    def show_category_help(self, category: str):
+        """カテゴリー別ヘルプ"""
+        cat_info = self.categories[category]
+        print(f"\n📁 {cat_info['name']}")
+        print(f"{cat_info['description']}\n")
+        print("Commands:")
+        
+        for cmd_name, cmd_info in cat_info['commands'].items():
+            if category == 'core':
+                usage = f"ai {cmd_name}"
+            else:
+                usage = f"ai {category} {cmd_name}"
+            print(f"  {usage:<30} {cmd_info['desc']}")
+        print()
+    
+    def show_version(self, args: List[str] = None):
+        """バージョン表示"""
+        print(f"AI Command System v{self.version}")
+        print("Elder Council Approved - 2025-07-09")
+    
+    def find_command(self, args: List[str]):
+        """コマンド検索"""
+        if not args:
+            print("Usage: ai find <query>")
+            return
+        
+        query = ' '.join(args).lower()
+        results = []
+        
+        # Search in all categories
+        for cat_id, cat_info in self.categories.items():
+            # Check category name/description
+            if query in cat_info['name'].lower() or query in cat_info['description'].lower():
+                results.append(f"Category: {cat_id} - {cat_info['description']}")
+            
+            # Check commands
+            for cmd_name, cmd_info in cat_info['commands'].items():
+                if query in cmd_name.lower() or query in cmd_info['desc'].lower():
+                    if cat_id == 'core':
+                        usage = f"ai {cmd_name}"
+                    else:
+                        usage = f"ai {cat_id} {cmd_name}"
+                    results.append(f"{usage:<30} {cmd_info['desc']}")
+        
+        if results:
+            print(f"\n🔍 Found {len(results)} matches for '{query}':\n")
+            for result in results:
+                print(f"  {result}")
+            print()
+        else:
+            print(f"❌ No commands found matching '{query}'")
+    
+    def execute_legacy_command(self, script_name: str, args: List[str]):
+        """レガシーコマンドの実行"""
+        script_path = self.scripts_dir / script_name
+        
+        if not script_path.exists():
+            print(f"❌ Command not found: {script_name}")
+            return 1
+        
+        # Execute the legacy command
+        cmd = [str(script_path)] + args
+        try:
+            return subprocess.call(cmd)
+        except Exception as e:
+            print(f"❌ Error executing command: {e}")
+            return 1
+    
+    def run(self, args: List[str]):
+        """メインエントリーポイント"""
+        if not args:
+            self.show_help()
+            return 0
+        
+        # Check for special commands
+        if args[0] in self.aliases:
+            self.aliases[args[0]](args[1:])
+            return 0
+        
+        # Check for core commands
+        if args[0] in self.categories['core']['commands']:
+            cmd_info = self.categories['core']['commands'][args[0]]
+            return self.execute_legacy_command(cmd_info['script'], args[1:])
+        
+        # Check for category commands
+        if args[0] in self.categories:
+            if len(args) < 2:
+                self.show_category_help(args[0])
+                return 0
+            
+            category = args[0]
+            command = args[1]
+            
+            if command in self.categories[category]['commands']:
+                cmd_info = self.categories[category]['commands'][command]
+                return self.execute_legacy_command(cmd_info['script'], args[2:])
+            else:
+                print(f"❌ Unknown command in {category}: {command}")
+                self.show_category_help(category)
+                return 1
+        
+        # Legacy fallback - try direct execution
+        legacy_name = f"ai-{args[0]}"
+        legacy_path = self.scripts_dir / legacy_name
+        if legacy_path.exists():
+            print(f"⚠️ Legacy command detected. Please use new syntax.")
+            print(f"  Old: ai-{args[0]}")
+            # Try to suggest new syntax
+            for cat_id, cat_info in self.categories.items():
+                for cmd_name, cmd_info in cat_info['commands'].items():
+                    if cmd_info['script'] == legacy_name:
+                        if cat_id == 'core':
+                            print(f"  New: ai {cmd_name}")
+                        else:
+                            print(f"  New: ai {cat_id} {cmd_name}")
+                        break
+            print()
+            return self.execute_legacy_command(legacy_name, args[1:])
+        
+        # Unknown command
+        print(f"❌ Unknown command: {args[0]}")
+        print("Try 'ai help' for available commands")
+        return 1
+
+def main():
+    """メイン実行"""
+    system = AICommandSystem()
+    sys.exit(system.run(sys.argv[1:]))
+
+if __name__ == "__main__":
+    main()

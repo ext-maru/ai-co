@@ -1,4 +1,3 @@
-    from {module_path.stem} import *
 #!/usr/bin/env python3
 """
 Enhanced Coverage Knights Brigade - 改良版テストカバレッジ向上システム

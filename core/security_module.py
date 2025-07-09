@@ -10,7 +10,7 @@ import shlex
 import asyncio
 import tempfile
 import hashlib
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple, Any
 from pathlib import Path
 from datetime import datetime
 import sys
@@ -389,3 +389,66 @@ class InputSanitizer:
             return value
         
         return clean_value(data)
+
+
+class SecurityModule:
+    """
+    Elder階層統合セキュリティモジュール
+    統合認証システムと連携したセキュリティ機能を提供
+    """
+    
+    def __init__(self):
+        self.logger = get_logger("security_module")
+        self.executor = SecureTaskExecutor()
+        self.sanitizer = InputSanitizer()
+        
+        # セキュリティレベル設定
+        self.security_levels = {
+            'GRAND_ELDER': 5,
+            'CLAUDE_ELDER': 4,
+            'SAGE': 3,
+            'SERVANT': 2,
+            'GUEST': 1
+        }
+    
+    def validate_elder_operation(self, user_role: str, operation: str) -> bool:
+        """Elder階層に基づく操作権限検証"""
+        required_level = self._get_operation_security_level(operation)
+        user_level = self.security_levels.get(user_role.upper(), 0)
+        
+        return user_level >= required_level
+    
+    def _get_operation_security_level(self, operation: str) -> int:
+        """操作に必要なセキュリティレベルを取得"""
+        high_security_ops = ['deploy', 'delete', 'promote', 'demote', 'configure']
+        medium_security_ops = ['create', 'modify', 'update', 'install']
+        
+        if any(op in operation.lower() for op in high_security_ops):
+            return 4  # CLAUDE_ELDER以上
+        elif any(op in operation.lower() for op in medium_security_ops):
+            return 3  # SAGE以上
+        else:
+            return 2  # SERVANT以上
+    
+    async def secure_execute(self, command: str, user_role: str, **kwargs) -> Dict[str, Any]:
+        """Elder階層権限に基づくセキュアな実行"""
+        if not self.validate_elder_operation(user_role, command):
+            raise SecurityError(f"Insufficient permissions for user role: {user_role}")
+        
+        return await self.executor.execute_secure(command, **kwargs)
+    
+    def sanitize_input(self, data: Any) -> Any:
+        """入力データのサニタイズ"""
+        if isinstance(data, str):
+            return self.sanitizer.sanitize_filename(data)
+        elif isinstance(data, dict):
+            return self.sanitizer.sanitize_json_input(data)
+        return data
+    
+    def get_security_audit_log(self) -> List[Dict]:
+        """セキュリティ監査ログの取得"""
+        return self.executor.get_execution_history()
+
+
+# エイリアスを追加してBackward compatibility維持
+security_module = SecurityModule()

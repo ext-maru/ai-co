@@ -136,6 +136,11 @@ ai-tdd new FeatureName "機能要件"
 - `ai-task-status <batch_id>` - バッチ処理の進捗確認
 - `ai-elder-council-record` - 評議会決定事項の公式記録
 
+### RAGエルダービジョン (2025/7/9制定)
+- `未来を教えて` - RAGエルダーの技術調査に基づく日次ビジョンを受け取る
+- `未来を教えて --stats` - 過去のビジョン統計
+- `未来を教えて --council` - エルダー評議会への承認要請
+
 ### TDD開発
 - `ai-tdd new <feature> <requirements>` - 新機能をTDDで開発
 - `ai-tdd test <file>` - 既存コードにテスト追加

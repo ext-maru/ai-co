@@ -270,7 +270,78 @@ Elder階層システムの安定を保ち、
 ここに厳かに誓う。
 ```
 
-**🛡️ Incident Sage Grimoire - Established 2025-07-07 🛡️**
+---
+
+## 🤖 第9章: 自動インシデント統合システム（2025/7/9追加）
+
+### @incident_awareデコレータ魔法
+全ての関数に自動インシデント検知を付与する最新魔法。
+
+**使用方法**:
+```python
+from libs.claude_elder_error_wrapper import incident_aware
+
+@incident_aware  # これだけで自動インシデント対応
+def critical_function():
+    # エラーが発生すると自動的に:
+    # 1. インシデント報告生成
+    # 2. エルダー評議会招集
+    # 3. 失敗学習記録作成
+    # 4. Crisis Sageへの報告
+    pass
+```
+
+### コンテキスト付きエラー管理
+```python
+from libs.claude_elder_error_wrapper import claude_error_context
+
+with claude_error_context({"task": "important_work"}):
+    # この中でのエラーは詳細コンテキスト付きで自動報告
+    risky_operation()
+```
+
+---
+
+## 🔄 第10章: WSL回復システム（2025/7/9追加）
+
+### スリープ検知と自動復旧
+PCスリープからの復帰を検知し、全システムを自動復旧。
+
+**主要コンポーネント**:
+- `wsl_sleep_recovery_system.py`: メイン復旧システム
+- `wsl_quick_start.py`: 緊急復旧用
+- `auto_startup.sh`: 自動起動スクリプト
+
+### 復旧フロー
+1. 10分以上のギャップでスリープ検知
+2. ワーカー、エルダー監視、サービス再起動
+3. ヘルスチェック実行
+4. 復旧ログ記録
+
+---
+
+## 📡 第11章: A2A通信エラー監視（2025/7/9追加）
+
+### 通信エラーパターン分析
+A2A通信で発生するエラーを即座に検知・分析。
+
+**監視項目**:
+- タイムアウトエラー
+- 接続拒否
+- メッセージ形式エラー
+- 認証エラー
+
+### 自動修復アクション
+```python
+# A2A通信の自動リトライと修復
+if communication_error:
+    auto_retry_with_exponential_backoff()
+    if still_failing:
+        trigger_incident_protocol()
+```
+
+**🛡️ Incident Sage Grimoire - Established 2025-07-07 🛡️**  
+**📅 Last Updated: 2025-07-09 (v2.0)**
 
 ---
 

@@ -196,9 +196,9 @@ class AutoCommitCLI:
             elif recommended_layer == DevelopmentLayer.COUNCIL:
                 return await self.council_cli.execute_council_commit(message, args)
             elif recommended_layer == DevelopmentLayer.GRAND:
-                print("👑 Grand Protocol は未実装です")
-                print("   現在は Council Protocol で実行します")
-                return await self.council_cli.execute_council_commit(message, args)
+                from commands.ai_commit_grand import GrandCommitCLI
+                grand_cli = GrandCommitCLI()
+                return await grand_cli.execute_grand_commit(message, args)
             
             return False
             
@@ -230,7 +230,7 @@ def main():
 🤖 自動プロトコル選択ルール:
   ⚡ Lightning: 緊急度 HIGH/EMERGENCY + 低複雑度
   🏛️ Council: 標準開発 (最も一般的)
-  👑 Grand: 大規模変更 (未実装)
+  👑 Grand: 大規模変更 (20ファイル以上、高複雑度)
         """
     )
     
