@@ -228,8 +228,11 @@ class LightningCommitSystem:
         file_count = len(context.get("files", []))
         complexity = context.get("complexity", 0.5)
         
-        # Lightning Protocol 判定
-        if urgency in [CommitUrgency.EMERGENCY, CommitUrgency.HIGH]:
+        # Lightning Protocol 判定 - 緊急時は条件を緩和
+        if urgency == CommitUrgency.EMERGENCY:
+            if file_count <= 5 and complexity <= 0.5:
+                return DevelopmentLayer.LIGHTNING
+        elif urgency == CommitUrgency.HIGH:
             if file_count <= 3 and complexity <= 0.3:
                 return DevelopmentLayer.LIGHTNING
         
@@ -357,16 +360,27 @@ class LightningCommitSystem:
         """Lightning Protocol事後レポート"""
         logger.info("📊 Lightning事後レポート生成中...")
         
+        # JSON シリアライズ可能なcontextに変換
+        serializable_context = {}
+        for key, value in context.items():
+            if isinstance(value, Enum):
+                serializable_context[key] = value.value
+            elif hasattr(value, '__dict__'):
+                serializable_context[key] = str(value)
+            else:
+                serializable_context[key] = value
+        
         report = {
             "protocol": "Lightning",
             "timestamp": datetime.now().isoformat(),
-            "context": context,
+            "context": serializable_context,
             "sage_consultations": [
                 {
                     "sage": r.sage_name,
                     "approval": r.approval,
                     "risk_score": r.risk_score,
-                    "advice": r.advice
+                    "advice": r.advice,
+                    "timestamp": r.timestamp.isoformat()
                 }
                 for r in sage_results
             ]
