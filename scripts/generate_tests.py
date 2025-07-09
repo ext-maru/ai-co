@@ -129,8 +129,7 @@ class Test{class_name}:
     @pytest.fixture
     def mock_dependencies(self):
         """依存関係のモック"""
-        with patch('pika.BlockingConnection') as mock_conn, \\
-             patch('{module_path}.get_config') as mock_config:
+        with patch('pika.BlockingConnection') as mock_conn, \ patch('{module_path}.get_config') as mock_config:
             
             # 設定のモック
             mock_config.return_value = MagicMock(

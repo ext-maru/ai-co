@@ -1,4 +1,25 @@
 """
+
+# Mock imports for testing
+try:
+    # Try real imports first
+    pass  # Real imports will be added here by individual tests
+except ImportError:
+    # Create mock classes if imports fail
+    class MockWorker:
+        def __init__(self, *args, **kwargs):
+            pass
+        async def process_message(self, *args, **kwargs):
+            return {'status': 'success'}
+        def process(self, *args, **kwargs):
+            return {'status': 'success'}
+
+    class MockManager:
+        def __init__(self, *args, **kwargs):
+            pass
+        def get_config(self, *args, **kwargs):
+            return {}
+
 Test isolation utilities
 """
 import functools

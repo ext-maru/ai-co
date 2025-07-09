@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="30" failures="0" skipped="0" tests="30" time="41.152" timestamp="2025-07-08T15:05:02.052386+09:00" hostname="MSI"><testcase classname="" name="tests.unit.libs.test_gui_test_framework" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/libs/test_gui_test_framework.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/libs/test_gui_test_framework.py:29: in &lt;module&gt;
+    from libs.gui_test_framework import (
+libs/gui_test_framework.py:12: in &lt;module&gt;
+    from selenium import webdriver
+E   ModuleNotFoundError: No module named 'selenium'</error></testcase><testcase classname="" name="tests.unit.test_ai_status" time="0.000"><error message="collection failure">tests/unit/test_ai_status.py:25: in &lt;module&gt;
+    sys.path.append(str(PROJECT_ROOT))
+                        ^^^^^^^^^^^^
+E   NameError: name 'PROJECT_ROOT' is not defined</error></testcase><testcase classname="" name="tests.unit.test_base_command" time="0.000"><error message="collection failure">tests/unit/test_base_command.py:26: in &lt;module&gt;
+    sys.path.append(str(PROJECT_ROOT))
+                        ^^^^^^^^^^^^
+E   NameError: name 'PROJECT_ROOT' is not defined</error></testcase><testcase classname="" name="tests.unit.test_documentation_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_documentation_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_documentation_worker.py:23: in &lt;module&gt;
+    from workers.documentation_worker import DocumentationWorker
+E   ModuleNotFoundError: No module named 'workers.documentation_worker'</error></testcase><testcase classname="" name="tests.unit.test_dwarf_workshop" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_dwarf_workshop.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_dwarf_workshop.py:22: in &lt;module&gt;
+    from libs.dwarf_workshop import (
+E   ImportError: cannot import name 'ResourceMonitor' from 'libs.dwarf_workshop' (/home/aicompany/ai_co/libs/dwarf_workshop.py)</error></testcase><testcase classname="" name="tests.unit.test_enhanced_task_worker_bug_fixes" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_enhanced_task_worker_bug_fixes.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_enhanced_task_worker_bug_fixes.py:23: in &lt;module&gt;
+    from workers.enhanced_task_worker import EnhancedTaskWorker, EMOJI
+E   ModuleNotFoundError: No module named 'workers.enhanced_task_worker'</error></testcase><testcase classname="" name="tests.unit.test_enhanced_task_worker_coverage" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_enhanced_task_worker_coverage.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_enhanced_task_worker_coverage.py:20: in &lt;module&gt;
+    from workers.enhanced_task_worker import EnhancedTaskWorker, EMOJI
+E   ModuleNotFoundError: No module named 'workers.enhanced_task_worker'</error></testcase><testcase classname="" name="tests.unit.test_enhanced_task_worker_edge_cases" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_enhanced_task_worker_edge_cases.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_enhanced_task_worker_edge_cases.py:23: in &lt;module&gt;
+    from workers.enhanced_task_worker import EnhancedTaskWorker, EMOJI
+E   ModuleNotFoundError: No module named 'workers.enhanced_task_worker'</error></testcase><testcase classname="" name="tests.unit.test_enhanced_task_worker_real" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_enhanced_task_worker_real.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_enhanced_task_worker_real.py:20: in &lt;module&gt;
+    from workers.enhanced_task_worker import EnhancedTaskWorker, EMOJI
+E   ModuleNotFoundError: No module named 'workers.enhanced_task_worker'</error></testcase><testcase classname="" name="tests.unit.test_grimoire_webapp" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_grimoire_webapp.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_grimoire_webapp.py:23: in &lt;module&gt;
+    from web.grimoire_app import GrimoireWebApp
+web/grimoire_app.py:21: in &lt;module&gt;
+    from flask import Flask, request, jsonify, render_template
+E   ImportError: cannot import name 'request' from 'flask' (/home/aicompany/ai_co/libs/flask.py)</error></testcase><testcase classname="" name="tests.unit.test_pm_worker_quality_eval" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_pm_worker_quality_eval.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_pm_worker_quality_eval.py:21: in &lt;module&gt;
+    from workers.code_review_pm_worker import CodeReviewPMWorker
+E   ModuleNotFoundError: No module named 'workers.code_review_pm_worker'</error></testcase><testcase classname="" name="tests.unit.test_result_worker_report_generation" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_result_worker_report_generation.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_result_worker_report_generation.py:21: in &lt;module&gt;
+    from workers.code_review_result_worker import CodeReviewResultWorker
+E   ModuleNotFoundError: No module named 'workers.code_review_result_worker'</error></testcase><testcase classname="" name="tests.unit.test_result_worker_simple" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_result_worker_simple.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_result_worker_simple.py:18: in &lt;module&gt;
+    from workers.result_worker import ResultWorkerV2, ResultWorker
+E   ModuleNotFoundError: No module named 'workers.result_worker'</error></testcase><testcase classname="" name="tests.unit.test_task_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_task_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_task_worker.py:20: in &lt;module&gt;
+    from workers.task_worker import TaskWorker
+E   ModuleNotFoundError: No module named 'workers.task_worker'</error></testcase><testcase classname="" name="tests.unit.test_task_worker_code_review" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_task_worker_code_review.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_task_worker_code_review.py:22: in &lt;module&gt;
+    from workers.code_review_task_worker import CodeReviewTaskWorker
+E   ModuleNotFoundError: No module named 'workers.code_review_task_worker'</error></testcase><testcase classname="" name="tests.unit.test_web_auth" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_web_auth.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_web_auth.py:24: in &lt;module&gt;
+    from web.auth_manager import (
+web/auth_manager.py:13: in &lt;module&gt;
+    from flask import request, jsonify
+E   ImportError: cannot import name 'request' from 'flask' (/home/aicompany/ai_co/libs/flask.py)</error></testcase><testcase classname="" name="tests.unit.test_worker_organizer" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_worker_organizer.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_worker_organizer.py:24: in &lt;module&gt;
+    from organize_workers import WorkerOrganizer
+E   ModuleNotFoundError: No module named 'organize_workers'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_command_executor_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_command_executor_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_command_executor_worker.py:20: in &lt;module&gt;
+    from workers.command_executor_worker import CommandExecutorWorker
+E   ModuleNotFoundError: No module named 'workers.command_executor_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_dialog_task_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_dialog_task_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_dialog_task_worker.py:20: in &lt;module&gt;
+    from workers.dialog_task_worker import DialogTaskWorker
+E   ModuleNotFoundError: No module named 'workers.dialog_task_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_email_notification_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_email_notification_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_email_notification_worker.py:20: in &lt;module&gt;
+    from workers.email_notification_worker import email_notification_worker
+E   ModuleNotFoundError: No module named 'workers.email_notification_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_enhanced_pm_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_enhanced_pm_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_enhanced_pm_worker.py:20: in &lt;module&gt;
+    from workers.enhanced_pm_worker import EnhancedPMWorker
+E   ModuleNotFoundError: No module named 'workers.enhanced_pm_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_enhanced_task_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_enhanced_task_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_enhanced_task_worker.py:20: in &lt;module&gt;
+    from workers.enhanced_task_worker import EnhancedTaskWorker
+E   ModuleNotFoundError: No module named 'workers.enhanced_task_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_error_intelligence_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_error_intelligence_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_error_intelligence_worker.py:20: in &lt;module&gt;
+    from workers.error_intelligence_worker import error_intelligence_worker
+E   ModuleNotFoundError: No module named 'workers.error_intelligence_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_image_pipeline_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_image_pipeline_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_image_pipeline_worker.py:20: in &lt;module&gt;
+    from workers.image_pipeline_worker import ImageProcessingWorker
+E   ModuleNotFoundError: No module named 'workers.image_pipeline_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_knowledge_scheduler_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_knowledge_scheduler_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_knowledge_scheduler_worker.py:20: in &lt;module&gt;
+    from workers.knowledge_scheduler_worker import knowledge_management_scheduler
+E   ModuleNotFoundError: No module named 'workers.knowledge_scheduler_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_result_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_result_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_result_worker.py:20: in &lt;module&gt;
+    from workers.result_worker import ResultWorkerV2
+E   ModuleNotFoundError: No module named 'workers.result_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_slack_monitor_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_slack_monitor_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_slack_monitor_worker.py:20: in &lt;module&gt;
+    from workers.slack_monitor_worker import SlackMonitorWorker
+E   ModuleNotFoundError: No module named 'workers.slack_monitor_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_slack_polling_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_slack_polling_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_slack_polling_worker.py:20: in &lt;module&gt;
+    from workers.slack_polling_worker import SlackPollingWorker
+E   ModuleNotFoundError: No module named 'workers.slack_polling_worker'</error></testcase><testcase classname="" name="tests.unit.test_workers.test_todo_worker" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/test_workers/test_todo_worker.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/test_workers/test_todo_worker.py:20: in &lt;module&gt;
+    from workers.todo_worker import TodoWorker
+E   ModuleNotFoundError: No module named 'workers.todo_worker'</error></testcase><testcase classname="" name="tests.unit.web.test_flask_app_tdd" time="0.000"><error message="collection failure">ImportError while importing test module '/home/aicompany/ai_co/tests/unit/web/test_flask_app_tdd.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/unit/web/test_flask_app_tdd.py:34: in &lt;module&gt;
+    from web.flask_app import app, _calculate_health_score
+web/flask_app.py:16: in &lt;module&gt;
+    from flask import Flask, jsonify, render_template_string, request
+E   ImportError: cannot import name 'render_template_string' from 'flask' (/home/aicompany/ai_co/libs/flask.py)</error></testcase></testsuite></testsuites>

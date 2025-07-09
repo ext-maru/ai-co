@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AICompanyConfig - AI Company 設定管理
+EldersGuildConfig - Elder's Guild 設定管理
 
 環境変数と設定ファイルを統合した設定管理システム。
 """
@@ -43,7 +43,7 @@ class SlackConfig:
     """Slack設定"""
     webhook_url: str = ""
     channel: str = "#general"
-    username: str = "AI-Company-Bot"
+    username: str = "エルダーズギルドBot"
     enabled: bool = True
     
     # Slack Polling設定
@@ -55,8 +55,8 @@ class SlackConfig:
     
     # Slack Monitor設定
     monitor_enabled: bool = False
-    error_channel: str = "#ai-company-errors"
-    notification_channel: str = "#ai-company-notifications"
+    error_channel: str = "#elders-guild-errors"
+    notification_channel: str = "#elders-guild-notifications"
     monitor_interval: int = 10
     error_threshold: int = 3
     error_surge_threshold: int = 20
@@ -94,7 +94,7 @@ class SlackConfig:
         return cls(
             webhook_url=config.get('SLACK_WEBHOOK_URL', ''),
             channel=config.get('SLACK_CHANNEL', '#general'),
-            username=config.get('SLACK_USERNAME', 'AI-Company-Bot'),
+            username=config.get('SLACK_USERNAME', 'エルダーズギルドBot'),
             enabled=config.get('ENABLE_SLACK', 'true').lower() == 'true',
             
             # Bot設定
@@ -106,8 +106,8 @@ class SlackConfig:
             
             # Monitor設定
             monitor_enabled=config.get('SLACK_MONITOR_ENABLED', 'false').lower() == 'true',
-            error_channel=config.get('SLACK_ERROR_CHANNEL', json_config.get('error_channel', '#ai-company-errors')),
-            notification_channel=config.get('SLACK_NOTIFICATION_CHANNEL', json_config.get('notification_channel', '#ai-company-notifications')),
+            error_channel=config.get('SLACK_ERROR_CHANNEL', json_config.get('error_channel', '#elders-guild-errors')),
+            notification_channel=config.get('SLACK_NOTIFICATION_CHANNEL', json_config.get('notification_channel', '#elders-guild-notifications')),
             monitor_interval=int(config.get('SLACK_MONITOR_INTERVAL', json_config.get('monitor_interval', 10))),
             error_threshold=int(config.get('SLACK_ERROR_THRESHOLD', json_config.get('error_threshold', 3))),
             error_surge_threshold=int(config.get('SLACK_ERROR_SURGE_THRESHOLD', json_config.get('error_surge_threshold', 20))),
@@ -172,8 +172,8 @@ class GitConfig:
     commit_prefix: str = "🤖 AI自動生成:"
 
 
-class AICompanyConfig:
-    """AI Company統合設定管理"""
+class EldersGuildConfig:
+    """エルダーズギルド統合設定管理"""
     
     def __init__(self, config_dir: Optional[Path] = None):
         """
@@ -340,27 +340,27 @@ class AICompanyConfig:
     
     def __repr__(self) -> str:
         """設定の文字列表現"""
-        return f"AICompanyConfig(rabbitmq={self.rabbitmq.host}, slack_enabled={self.slack.enabled}, workers={self.worker.min_workers}-{self.worker.max_workers})"
+        return f"EldersGuildConfig(rabbitmq={self.rabbitmq.host}, slack_enabled={self.slack.enabled}, workers={self.worker.min_workers}-{self.worker.max_workers})"
 
 
 # グローバル設定インスタンス（シングルトン）
-_global_config: Optional[AICompanyConfig] = None
+_global_config: Optional[EldersGuildConfig] = None
 
 
-def get_config() -> AICompanyConfig:
+def get_config() -> EldersGuildConfig:
     """グローバル設定インスタンスの取得"""
     global _global_config
     
     if _global_config is None:
-        _global_config = AICompanyConfig()
+        _global_config = EldersGuildConfig()
     
     return _global_config
 
 
-def reload_config() -> AICompanyConfig:
+def reload_config() -> EldersGuildConfig:
     """設定の再読み込み"""
     global _global_config
-    _global_config = AICompanyConfig()
+    _global_config = EldersGuildConfig()
     return _global_config
 
 
@@ -368,7 +368,7 @@ if __name__ == "__main__":
     # テスト実行
     config = get_config()
     
-    print("AI Company 設定:")
+    print("エルダーズギルド 設定:")
     print(f"  RabbitMQ: {config.rabbitmq.host}:{config.rabbitmq.port}")
     print(f"  Slack: {'有効' if config.slack.enabled else '無効'}")
     print(f"  デフォルトモデル: {config.worker.default_model}")

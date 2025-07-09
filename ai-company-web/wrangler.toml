@@ -1,0 +1,71 @@
+# Wrangler configuration for Cloudflare deployment
+
+name = "ai-company-web"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+name = "ai-company-web-prod"
+route = { pattern = "ai-company.com/*", zone_id = "YOUR_ZONE_ID" }
+
+[env.staging]
+name = "ai-company-web-staging"
+route = { pattern = "staging.ai-company.com/*", zone_id = "YOUR_ZONE_ID" }
+
+# KV Namespaces for caching
+[[kv_namespaces]]
+binding = "CACHE_KV"
+id = "YOUR_KV_NAMESPACE_ID"
+preview_id = "YOUR_KV_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "SESSION_KV"
+id = "YOUR_SESSION_KV_ID"
+preview_id = "YOUR_SESSION_KV_PREVIEW_ID"
+
+# R2 Buckets for asset storage
+[[r2_buckets]]
+binding = "ASSETS_BUCKET"
+bucket_name = "ai-company-assets"
+
+# Durable Objects for real-time features
+[[durable_objects.bindings]]
+name = "WEBSOCKET_DO"
+class_name = "WebSocketDurableObject"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
+API_BASE_URL = "https://ai-company-api.railway.app"
+WS_BASE_URL = "wss://ai-company-api.railway.app"
+ELDER_COUNCIL_ENABLED = "true"
+MAX_SAGES = "4"
+COVERAGE_TARGET = "66.7"
+
+# Build configuration
+[build]
+command = "npm run build"
+cwd = "/"
+watch_dir = "src"
+
+# Site configuration
+[site]
+bucket = "./out"
+entry-point = "workers-site"
+
+# Analytics
+[analytics_engine_datasets]
+[[analytics_engine_datasets.bindings]]
+name = "ANALYTICS"
+dataset = "ai_company_analytics"
+
+# Queue for background tasks
+[[queues.producers]]
+binding = "TASK_QUEUE"
+queue = "ai-company-tasks"
+
+[[queues.consumers]]
+queue = "ai-company-tasks"
+max_batch_size = 10
+max_batch_timeout = 30

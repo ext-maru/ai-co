@@ -90,7 +90,7 @@ class ImprovedBaseWorker(ABC):
                 self.logger.info(f"RabbitMQ connection established (attempt: {attempt + 1}/{retry_count})")
                 return True
                 
-            except pika.exceptions.AMQPConnectionError as e:
+            except pika_exceptions.AMQPConnectionError as e:
                 self.logger.warning(f"RabbitMQ connection failed (attempt: {attempt + 1}/{retry_count}): {e}")
                 if attempt < retry_count - 1:
                     time.sleep(retry_delay)

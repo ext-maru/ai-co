@@ -77,6 +77,13 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         # 通知設定
         self.slack_notifier = SlackNotifier()
         
+        # タスク履歴DB
+        try:
+            from libs.task_history_db import TaskHistoryDB
+            self.task_history_db = TaskHistoryDB()
+        except ImportError:
+            self.task_history_db = None
+        
         # RAG Grimoire Integration
         self.rag_integration = None
         self.rag_config = RagGrimoireConfig(
@@ -337,18 +344,16 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
     
     def _record_task_start(self, task_id: str, task_type: str, prompt: str, generated_prompt: str):
         """タスク開始を記録"""
-        from libs.task_history_db import TaskHistoryDB
-        
         try:
-            db = TaskHistoryDB()
-            db.add_task(
-                task_id=task_id,
-                task_type=task_type,
-                prompt=prompt,
-                worker=self.worker_id,
-                model=self.model,
-                request_content=generated_prompt
-            )
+            if self.task_history_db:
+                self.task_history_db.add_task(
+                    task_id=task_id,
+                    worker=self.worker_id,
+                    prompt=prompt,
+                    model=self.model,
+                    task_type=task_type,
+                    request_content=generated_prompt
+                )
         except Exception as e:
             self.logger.warning(f"Failed to record task start: {e}")
     
@@ -440,22 +445,19 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
     def _update_task_history(self, task_id: str, status: str, response: str, 
                            files: list, error: str = None):
         """タスク履歴を更新"""
-        from libs.task_history_db import TaskHistoryDB
-        
         try:
-            db = TaskHistoryDB()
-            
-            # Claudeの要約を抽出
-            summary = self._extract_summary(response) if response else None
-            
-            db.update_task(
-                task_id=task_id,
-                status=status,
-                response=response,
-                files_created=json.dumps(files) if files else None,
-                summary=summary,
-                error=error
-            )
+            if self.task_history_db:
+                # Claudeの要約を抽出
+                summary = self._extract_summary(response) if response else None
+                
+                self.task_history_db.update_task(
+                    task_id=task_id,
+                    status=status,
+                    response=response,
+                    files_created=json.dumps(files) if files else None,
+                    summary=summary,
+                    error=error
+                )
         except Exception as e:
             self.logger.warning(f"Failed to update task history: {e}")
     
@@ -504,14 +506,84 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         pass
 
     def stop(self):
-        """TODO: stopメソッドを実装してください"""
-        pass
+        """ワーカーの停止処理"""
+        try:
+            # RAGクリーンアップ
+            self.cleanup()
+            
+            # BaseWorkerの停止処理を呼び出し
+            super().stop()
+            
+            self.logger.info(f"{EMOJI['info']} Enhanced TaskWorker stopped successfully")
+        except Exception as e:
+            self.logger.error(f"{EMOJI['error']} Error during stop: {e}")
 
     def initialize(self) -> None:
         """ワーカーの初期化処理"""
-        # TODO: 初期化ロジックを実装してください
-        self.logger.info(f"{self.__class__.__name__} initialized")
-        pass
+        self.logger.info(f"{EMOJI['start']} Initializing {self.__class__.__name__}...")
+        
+        # 設定の妥当性を確認
+        if not self.validate_config():
+            raise ValueError("Configuration validation failed")
+        
+        # 出力ディレクトリの作成
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        
+        # プロンプトテンプレートシステムの初期化
+        try:
+            if hasattr(self, 'initialize_templates'):
+                self.initialize_templates()
+            self.logger.info(f"{EMOJI['success']} Template system initialized")
+        except Exception as e:
+            self.logger.warning(f"{EMOJI['warning']} Template system initialization failed: {e}")
+        
+        # RAG統合の初期化（非同期）
+        self._initialize_rag_integration()
+        
+        # Slack通知の初期化確認
+        try:
+            if hasattr(self.slack_notifier, 'test_connection'):
+                self.slack_notifier.test_connection()
+            self.logger.info(f"{EMOJI['success']} Slack notifier initialized")
+        except Exception as e:
+            self.logger.warning(f"{EMOJI['warning']} Slack notifier initialization failed: {e}")
+        
+        self.logger.info(f"{EMOJI['success']} {self.__class__.__name__} initialization completed")
+        
+    def _execute_claude_cli(self, task: dict) -> str:
+        """Claude CLIを実行（テスト用メソッド）"""
+        # テスト用に_execute_claudeを呼び出し
+        result = self._execute_claude(task.get('id', 'test'), task.get('prompt', ''))
+        if result['success']:
+            return result['output']
+        else:
+            raise Exception(result['error'])
+    
+    def _send_result(self, result_data: dict):
+        """結果を送信（テスト用メソッド）"""
+        return self.send_result(result_data)
+    
+    def _extract_created_files(self, output: str) -> list:
+        """作成されたファイルを抽出（テスト用メソッド）"""
+        import re
+        files = []
+        
+        # ファイル作成パターンを検索
+        patterns = [
+            r'Creating file:\s*([^\n]+)',
+            r'Writing to file:\s*([^\n]+)',
+            r'Created\s+([^\n]+\.[a-zA-Z0-9]+)',
+            r'Wrote\s+([^\n]+\.[a-zA-Z0-9]+)'
+        ]
+        
+        for pattern in patterns:
+            matches = re.findall(pattern, output, re.IGNORECASE)
+            for match in matches:
+                filename = match.strip()
+                if filename and filename not in files:
+                    files.append(filename)
+        
+        return files
 
     def handle_error(self, error: Exception, context: dict = None, severity=None):
         """エラー処理メソッド"""
@@ -539,12 +611,52 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         return False
 
     def get_status(self):
-        """TODO: get_statusメソッドを実装してください"""
-        pass
+        """ワーカーの状態を取得"""
+        base_status = self.health_check()
+        
+        # 拡張ステータス情報を追加
+        enhanced_status = {
+            **base_status,
+            'template_count': len(self.list_available_templates()) if hasattr(self, 'list_available_templates') else 0,
+            'rag_integration': self.rag_integration is not None,
+            'allowed_tools': len(self.allowed_tools),
+            'model': self.model,
+            'last_prompt_score': getattr(self, 'last_prompt_score', None)
+        }
+        
+        return enhanced_status
 
     def validate_config(self):
-        """TODO: validate_configメソッドを実装してください"""
-        pass
+        """設定の妥当性を検証"""
+        validation_errors = []
+        
+        # 必須設定の確認
+        required_attrs = ['ANTHROPIC_API_KEY']
+        for attr in required_attrs:
+            if not hasattr(self.config, attr) or not getattr(self.config, attr):
+                validation_errors.append(f"Missing required config: {attr}")
+        
+        # モデルの妥当性確認
+        valid_models = ['claude-sonnet-4-20250514', 'claude-3-5-sonnet-20241022']
+        if self.model not in valid_models:
+            validation_errors.append(f"Invalid model: {self.model}")
+        
+        # ツールの妥当性確認
+        valid_tools = ['Edit', 'Write', 'Read', 'MultiEdit', 'Bash', 'Glob', 'Grep', 'LS', 'WebFetch', 'WebSearch', 'NotebookRead', 'NotebookEdit', 'TodoRead', 'TodoWrite', 'Task', 'exit_plan_mode']
+        invalid_tools = [tool for tool in self.allowed_tools if tool not in valid_tools]
+        if invalid_tools:
+            validation_errors.append(f"Invalid tools: {invalid_tools}")
+        
+        # ディレクトリの存在確認
+        if not self.output_dir.exists():
+            validation_errors.append(f"Output directory does not exist: {self.output_dir}")
+        
+        if validation_errors:
+            self.logger.error(f"Configuration validation failed: {validation_errors}")
+            return False
+        
+        self.logger.info("Configuration validation passed")
+        return True
 
 if __name__ == "__main__":
     import argparse

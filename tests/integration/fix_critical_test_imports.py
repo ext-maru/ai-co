@@ -41,7 +41,6 @@ def fix_critical_tests():
                     new_lines.extend([
                         "",
                         "import sys",
-from pathlib import Path
                         "from pathlib import Path",
                         "",
                         "# Add project root to Python path",

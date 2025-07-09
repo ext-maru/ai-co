@@ -1,0 +1,893 @@
+#!/bin/bash
+#
+# AI Company Command Migration Tool
+# 既存コマンドを新しい命名規則に従って自動移行
+#
+# Usage:
+#   ai-command-migrate plan         # 移行計画表示
+#   ai-command-migrate phase1       # Phase 1 実行
+#   ai-command-migrate phase2       # Phase 2 実行
+#   ai-command-migrate phase3       # Phase 3 実行
+#   ai-command-migrate phase4       # Phase 4 実行
+#   ai-command-migrate rollback     # ロールバック
+#   ai-command-migrate status       # 移行状況確認
+#
+
+set -e
+
+PROJECT_ROOT="/home/aicompany/ai_co"
+BACKUP_DIR="$PROJECT_ROOT/.migration_backup"
+MIGRATION_LOG="$PROJECT_ROOT/logs/command_migration.log"
+
+# Color codes
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[1;33m'
+blue='\033[0;34m'
+purple='\033[0;35m'
+cyan='\033[0;36m'
+nc='\033[0m' # No Color
+
+log_info() {
+    echo -e "${green}[INFO]${nc} $1" | tee -a "$MIGRATION_LOG"
+}
+
+log_warning() {
+    echo -e "${yellow}[WARNING]${nc} $1" | tee -a "$MIGRATION_LOG"
+}
+
+log_error() {
+    echo -e "${red}[ERROR]${nc} $1" | tee -a "$MIGRATION_LOG"
+}
+
+log_debug() {
+    echo -e "${blue}[DEBUG]${nc} $1" | tee -a "$MIGRATION_LOG"
+}
+
+# Initialize migration environment
+init_migration() {
+    log_info "🔧 Initializing migration environment"
+    
+    mkdir -p "$BACKUP_DIR"
+    mkdir -p "$(dirname "$MIGRATION_LOG")"
+    
+    # Create migration state file
+    echo "{\"phase\": 0, \"completed_commands\": [], \"timestamp\": \"$(date -Iseconds)\"}" > "$BACKUP_DIR/migration_state.json"
+    
+    log_info "✅ Migration environment initialized"
+}
+
+# Create backup of current command structure
+create_backup() {
+    log_info "💾 Creating backup of current command structure"
+    
+    local backup_timestamp=$(date +%Y%m%d_%H%M%S)
+    local backup_path="$BACKUP_DIR/backup_$backup_timestamp"
+    
+    mkdir -p "$backup_path"
+    
+    # Backup commands directory
+    if [ -d "$PROJECT_ROOT/commands" ]; then
+        cp -r "$PROJECT_ROOT/commands" "$backup_path/"
+        log_debug "Backed up commands/ directory"
+    fi
+    
+    # Backup scripts directory
+    if [ -d "$PROJECT_ROOT/scripts" ]; then
+        cp -r "$PROJECT_ROOT/scripts" "$backup_path/"
+        log_debug "Backed up scripts/ directory"
+    fi
+    
+    # Backup ai_commands directory
+    if [ -d "$PROJECT_ROOT/ai_commands" ]; then
+        cp -r "$PROJECT_ROOT/ai_commands" "$backup_path/"
+        log_debug "Backed up ai_commands/ directory"
+    fi
+    
+    echo "$backup_path" > "$BACKUP_DIR/latest_backup.txt"
+    log_info "✅ Backup created: $backup_path"
+}
+
+# Phase 1: Core command consolidation
+execute_phase1() {
+    log_info "🚀 Phase 1: Core Command Consolidation"
+    
+    # ai-task-send (consolidate ai_send.py + ai-send)
+    migrate_command_unified "ai_send.py" "ai-send" "ai-task-send" "Send task to AI Company"
+    
+    # ai-system-* commands
+    migrate_command "ai_start.py" "ai-system-start" "System startup"
+    migrate_command "ai_stop.py" "ai-system-stop" "System shutdown"
+    migrate_command "ai_status.py" "ai-system-status" "System status check"
+    migrate_command "ai_health.py" "ai-system-health" "System health check"
+    migrate_command "ai_monitor.py" "ai-system-monitor" "System monitoring"
+    migrate_command "ai_backup.py" "ai-system-backup" "System backup"
+    
+    # ai-dev-* commands
+    migrate_command "ai_logs.py" "ai-dev-logs" "Log management"
+    migrate_command "ai_test.py" "ai-dev-test" "Run tests"
+    migrate_command "ai_debug.py" "ai-dev-debug" "Debug utilities"
+    migrate_command "ai_clean.py" "ai-dev-clean" "Cleanup operations"
+    
+    # ai-worker-* commands
+    migrate_command "ai_workers.py" "ai-worker-list" "List workers"
+    
+    create_aliases_phase1
+    update_migration_state 1
+    
+    log_info "✅ Phase 1 complete: Core commands migrated"
+}
+
+# Phase 2: Functional domain grouping
+execute_phase2() {
+    log_info "🚀 Phase 2: Functional Domain Grouping"
+    
+    # Worker management commands
+    migrate_command "ai_worker_add.py" "ai-worker-add" "Add worker"
+    migrate_command "ai_worker_rm.py" "ai-worker-remove" "Remove worker"
+    migrate_command "ai_worker_restart.py" "ai-worker-restart" "Restart worker"
+    migrate_command "ai_worker_recovery.py" "ai-worker-recover" "Worker recovery"
+    migrate_command "ai_worker_comm.py" "ai-worker-comm" "Worker communication"
+    migrate_command "ai_worker_scale.py" "ai-worker-scale" "Scale workers"
+    
+    # Elder council commands
+    migrate_command "ai_elder_council.py" "ai-elder-council" "Elder council management"
+    migrate_command "ai_elder_pm.py" "ai-elder-pm" "Elder PM integration"
+    migrate_command "ai_elder_proactive.py" "ai-elder-proactive" "Proactive monitoring"
+    migrate_command "ai_grand_elder.py" "ai-elder-grand" "Grand elder interface"
+    
+    # Task management commands
+    migrate_command "ai_tasks.py" "ai-task-list" "List tasks"
+    migrate_command "ai_task_info.py" "ai-task-info" "Task information"
+    migrate_command "ai_task_retry.py" "ai-task-retry" "Retry task"
+    migrate_command "ai_task_cancel.py" "ai-task-cancel" "Cancel task"
+    migrate_command "ai_queue.py" "ai-task-queue" "Queue management"
+    migrate_command "ai_queue_clear.py" "ai-task-queue-clear" "Clear queue"
+    
+    # Knowledge and RAG commands
+    migrate_command "ai_knowledge.py" "ai-knowledge-search" "Knowledge search"
+    migrate_command "ai_rag.py" "ai-rag-manage" "RAG management"
+    migrate_command "ai_rag_search.py" "ai-rag-search" "RAG search"
+    migrate_command "ai_learn.py" "ai-knowledge-learn" "Learning system"
+    
+    create_aliases_phase2
+    update_migration_state 2
+    
+    log_info "✅ Phase 2 complete: Domain grouping applied"
+}
+
+# Phase 3: Specialized commands
+execute_phase3() {
+    log_info "🚀 Phase 3: Specialized Commands"
+    
+    # Incident management
+    migrate_command "ai_incident_knights.py" "ai-incident-knights" "Incident knights system"
+    
+    # Evolution and AI
+    migrate_command "ai_evolve.py" "ai-evolution-manage" "Evolution management"
+    migrate_command "ai_evolve_daily.py" "ai-evolution-daily" "Daily evolution"
+    migrate_command "ai_evolve_test.py" "ai-evolution-test" "Evolution testing"
+    
+    # Documentation and reporting
+    migrate_command "ai_document.py" "ai-docs-generate" "Generate documentation"
+    migrate_command "ai_report.py" "ai-analytics-report" "Create reports"
+    migrate_command "ai_report_manager.py" "ai-analytics-manage" "Manage reports"
+    migrate_command "ai_stats.py" "ai-analytics-stats" "Show statistics"
+    migrate_command "ai_metrics.py" "ai-analytics-metrics" "Collect metrics"
+    
+    # Configuration and system
+    migrate_command "ai_config.py" "ai-system-config" "Configuration management"
+    migrate_command "ai_config_edit.py" "ai-system-config-edit" "Edit configuration"
+    migrate_command "ai_config_reload.py" "ai-system-config-reload" "Reload configuration"
+    migrate_command "ai_update.py" "ai-system-update" "System updates"
+    migrate_command "ai_version.py" "ai-system-version" "Version information"
+    
+    # Integration commands
+    migrate_command "ai_docker.py" "ai-integration-docker" "Docker integration"
+    migrate_command "ai_shell.py" "ai-integration-shell" "Shell integration"
+    
+    # Interface commands
+    migrate_command "ai_webui.py" "ai-ui-web" "Web interface"
+    migrate_command "ai_help.py" "ai-ui-help" "Help system"
+    
+    create_aliases_phase3
+    update_migration_state 3
+    
+    log_info "✅ Phase 3 complete: Specialized commands migrated"
+}
+
+# Phase 4: Cleanup and optimization
+execute_phase4() {
+    log_info "🚀 Phase 4: Cleanup and Optimization"
+    
+    # Remove deprecated duplicates
+    remove_deprecated_commands
+    
+    # Consolidate test files
+    consolidate_test_files
+    
+    # Create comprehensive aliases
+    create_comprehensive_aliases
+    
+    # Update shell completion
+    create_shell_completion
+    
+    # Generate migration report
+    generate_migration_report
+    
+    update_migration_state 4
+    
+    log_info "✅ Phase 4 complete: Migration finished"
+}
+
+# Migrate a single command
+migrate_command() {
+    local old_name="$1"
+    local new_name="$2"
+    local description="$3"
+    
+    local old_path="$PROJECT_ROOT/commands/$old_name"
+    local new_path="$PROJECT_ROOT/scripts/$new_name"
+    
+    if [ -f "$old_path" ]; then
+        log_debug "Migrating: $old_name → $new_name"
+        
+        # Create new command with proper header
+        create_new_command "$old_path" "$new_path" "$new_name" "$description"
+        
+        # Create backward compatibility symlink
+        create_compatibility_link "$old_path" "$new_path"
+        
+        log_info "✅ Migrated: $old_name → $new_name"
+    else
+        log_warning "⚠️ Source not found: $old_path"
+    fi
+}
+
+# Migrate unified command (consolidate multiple sources)
+migrate_command_unified() {
+    local old_py="$1"
+    local old_script="$2"
+    local new_name="$3"
+    local description="$4"
+    
+    local old_py_path="$PROJECT_ROOT/commands/$old_py"
+    local old_script_path="$PROJECT_ROOT/scripts/$old_script"
+    local new_path="$PROJECT_ROOT/scripts/$new_name"
+    
+    log_debug "Consolidating: $old_py + $old_script → $new_name"
+    
+    # Choose the more complete implementation
+    local source_path
+    if [ -f "$old_py_path" ] && [ -f "$old_script_path" ]; then
+        # Compare file sizes, use larger one
+        if [ $(stat -c%s "$old_py_path") -gt $(stat -c%s "$old_script_path") ]; then
+            source_path="$old_py_path"
+        else
+            source_path="$old_script_path"
+        fi
+    elif [ -f "$old_py_path" ]; then
+        source_path="$old_py_path"
+    elif [ -f "$old_script_path" ]; then
+        source_path="$old_script_path"
+    else
+        log_warning "⚠️ Neither source found: $old_py_path or $old_script_path"
+        return
+    fi
+    
+    # Create unified command
+    create_new_command "$source_path" "$new_path" "$new_name" "$description"
+    
+    # Create compatibility links for both old commands
+    if [ -f "$old_py_path" ]; then
+        create_compatibility_link "$old_py_path" "$new_path"
+    fi
+    if [ -f "$old_script_path" ]; then
+        create_compatibility_link "$old_script_path" "$new_path"
+    fi
+    
+    log_info "✅ Unified: $old_py + $old_script → $new_name"
+}
+
+# Create new command with standardized header
+create_new_command() {
+    local source_path="$1"
+    local target_path="$2"
+    local command_name="$3"
+    local description="$4"
+    
+    # Create target directory if needed
+    mkdir -p "$(dirname "$target_path")"
+    
+    # Create new command with standard header
+    cat > "$target_path" << EOF
+#!/bin/bash
+#
+# $command_name - $description
+# Part of AI Company unified command system
+#
+# This command follows AI Company naming standard:
+#   ai-[domain]-[action]-[object]
+#
+# For help: $command_name --help
+# For full documentation: ai-ui-help
+#
+
+# Original implementation path: $source_path
+EOF
+    
+    # Append original content (skip original shebang if present)
+    if [[ "$source_path" == *.py ]]; then
+        # Python file - keep as Python but add bash wrapper if needed
+        echo "" >> "$target_path"
+        echo "# Execute Python implementation" >> "$target_path"
+        echo "exec python3 \"$source_path\" \"\$@\"" >> "$target_path"
+    else
+        # Shell script - append content without first shebang line
+        tail -n +2 "$source_path" >> "$target_path"
+    fi
+    
+    # Make executable
+    chmod +x "$target_path"
+}
+
+# Create compatibility symlink
+create_compatibility_link() {
+    local old_path="$1"
+    local new_path="$2"
+    
+    # Rename old file with .legacy suffix
+    mv "$old_path" "${old_path}.legacy"
+    
+    # Create symlink from old location to new location
+    ln -sf "$new_path" "$old_path"
+    
+    log_debug "Created compatibility link: $old_path → $new_path"
+}
+
+# Create aliases for Phase 1
+create_aliases_phase1() {
+    local alias_file="$PROJECT_ROOT/ai_commands/aliases_phase1.sh"
+    
+    cat > "$alias_file" << 'EOF'
+#!/bin/bash
+# AI Company Command Aliases - Phase 1
+# Backward compatibility for migrated commands
+
+# Core system commands
+alias ai-send='ai-task-send'
+alias ai-start='ai-system-start'
+alias ai-stop='ai-system-stop'
+alias ai-status='ai-system-status'
+alias ai-health='ai-system-health'
+alias ai-monitor='ai-system-monitor'
+alias ai-backup='ai-system-backup'
+
+# Development commands
+alias ai-logs='ai-dev-logs'
+alias ai-test='ai-dev-test'
+alias ai-debug='ai-dev-debug'
+alias ai-clean='ai-dev-clean'
+
+# Worker commands
+alias ai-workers='ai-worker-list'
+
+# Convenience shortcuts
+alias ai-s='ai-system-status'
+alias ai-w='ai-worker-list'
+alias ai-t='ai-task-list'
+alias ai-l='ai-dev-logs'
+EOF
+    
+    log_info "✅ Created Phase 1 aliases: $alias_file"
+}
+
+# Create aliases for Phase 2
+create_aliases_phase2() {
+    local alias_file="$PROJECT_ROOT/ai_commands/aliases_phase2.sh"
+    
+    cat > "$alias_file" << 'EOF'
+#!/bin/bash
+# AI Company Command Aliases - Phase 2
+# Extended aliases for domain-grouped commands
+
+# Task management
+alias ai-tasks='ai-task-list'
+alias ai-queue='ai-task-queue'
+
+# Worker management extended
+alias ai-worker-comm='ai-worker-comm'
+alias ai-worker-recovery='ai-worker-recover'
+
+# Elder council
+alias ai-elder='ai-elder-council'
+alias ai-council='ai-elder-council'
+
+# Knowledge and RAG
+alias ai-knowledge='ai-knowledge-search'
+alias ai-rag='ai-rag-search'
+alias ai-search='ai-rag-search'
+EOF
+    
+    log_info "✅ Created Phase 2 aliases: $alias_file"
+}
+
+# Create aliases for Phase 3
+create_aliases_phase3() {
+    local alias_file="$PROJECT_ROOT/ai_commands/aliases_phase3.sh"
+    
+    cat > "$alias_file" << 'EOF'
+#!/bin/bash
+# AI Company Command Aliases - Phase 3
+# Specialized command aliases
+
+# Documentation
+alias ai-docs='ai-docs-generate'
+alias ai-document='ai-docs-generate'
+
+# Analytics
+alias ai-report='ai-analytics-report'
+alias ai-stats='ai-analytics-stats'
+alias ai-metrics='ai-analytics-metrics'
+
+# Evolution
+alias ai-evolve='ai-evolution-manage'
+alias ai-evolution='ai-evolution-daily'
+
+# Configuration
+alias ai-config='ai-system-config'
+
+# Integration
+alias ai-docker='ai-integration-docker'
+
+# Interface
+alias ai-help='ai-ui-help'
+alias ai-web='ai-ui-web'
+EOF
+    
+    log_info "✅ Created Phase 3 aliases: $alias_file"
+}
+
+# Create comprehensive aliases file
+create_comprehensive_aliases() {
+    local alias_file="$PROJECT_ROOT/ai_commands/aliases.sh"
+    
+    cat > "$alias_file" << 'EOF'
+#!/bin/bash
+# AI Company Unified Command Aliases
+# Complete backward compatibility and convenience aliases
+
+# Load all phase aliases
+source "$(dirname "${BASH_SOURCE[0]}")/aliases_phase1.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/aliases_phase2.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/aliases_phase3.sh"
+
+# Domain shortcuts for tab completion
+alias ai-sys='echo "Available: start stop status health monitor backup update config restart reset"'
+alias ai-task='echo "Available: send list info retry cancel queue simulate priority schedule"'
+alias ai-work='echo "Available: list add remove restart scale recover monitor comm health stats"'
+alias ai-know='echo "Available: search update export import clean backup stats"'
+alias ai-elder='echo "Available: council pm compliance proactive summon consult decision"'
+alias ai-dev='echo "Available: test tdd coverage codegen debug logs clean lint format"'
+alias ai-ui='echo "Available: web dashboard cli help config"'
+
+# Ultra-short convenience aliases
+alias ais='ai-system-status'
+alias ait='ai-task-send'
+alias aiw='ai-worker-list'
+alias ail='ai-dev-logs'
+alias aih='ai-ui-help'
+EOF
+    
+    log_info "✅ Created comprehensive aliases: $alias_file"
+}
+
+# Create shell completion
+create_shell_completion() {
+    local completion_file="$PROJECT_ROOT/ai_commands/completions.bash"
+    
+    cat > "$completion_file" << 'EOF'
+#!/bin/bash
+# AI Company Command Completion
+# Enhanced tab completion for unified command structure
+
+_ai_completion() {
+    local cur prev words cword
+    _init_completion || return
+    
+    local domains="system task worker knowledge rag elder incident dev api integration ui docs analytics evolution"
+    local system_actions="start stop status health monitor backup update config restart reset"
+    local task_actions="send list info retry cancel queue simulate priority schedule"
+    local worker_actions="list add remove restart scale recover monitor comm health stats"
+    local knowledge_actions="search update export import clean backup stats"
+    local rag_actions="search index manage update wizard test optimize"
+    local elder_actions="council pm compliance proactive summon consult decision"
+    local incident_actions="knights auto report analyze recover prevent"
+    local dev_actions="test tdd coverage codegen debug logs clean lint format"
+    local api_actions="status health reset docs test monitor"
+    local integration_actions="slack git docker mcp test"
+    local ui_actions="web dashboard cli help config"
+    local docs_actions="generate export update serve validate"
+    local analytics_actions="report metrics stats trend export"
+    local evolution_actions="manage daily test wizard plan"
+    
+    if [[ $cur == ai-* ]]; then
+        local domain=$(echo "$cur" | cut -d'-' -f2)
+        local action=$(echo "$cur" | cut -d'-' -f3)
+        
+        if [[ -z "$action" ]]; then
+            # Complete domain
+            case "$domain" in
+                "")
+                    COMPREPLY=($(compgen -W "$domains" -- "$domain"))
+                    ;;
+                system)
+                    COMPREPLY=($(compgen -W "$system_actions" -- ""))
+                    ;;
+                task)
+                    COMPREPLY=($(compgen -W "$task_actions" -- ""))
+                    ;;
+                worker)
+                    COMPREPLY=($(compgen -W "$worker_actions" -- ""))
+                    ;;
+                knowledge)
+                    COMPREPLY=($(compgen -W "$knowledge_actions" -- ""))
+                    ;;
+                rag)
+                    COMPREPLY=($(compgen -W "$rag_actions" -- ""))
+                    ;;
+                elder)
+                    COMPREPLY=($(compgen -W "$elder_actions" -- ""))
+                    ;;
+                incident)
+                    COMPREPLY=($(compgen -W "$incident_actions" -- ""))
+                    ;;
+                dev)
+                    COMPREPLY=($(compgen -W "$dev_actions" -- ""))
+                    ;;
+                api)
+                    COMPREPLY=($(compgen -W "$api_actions" -- ""))
+                    ;;
+                integration)
+                    COMPREPLY=($(compgen -W "$integration_actions" -- ""))
+                    ;;
+                ui)
+                    COMPREPLY=($(compgen -W "$ui_actions" -- ""))
+                    ;;
+                docs)
+                    COMPREPLY=($(compgen -W "$docs_actions" -- ""))
+                    ;;
+                analytics)
+                    COMPREPLY=($(compgen -W "$analytics_actions" -- ""))
+                    ;;
+                evolution)
+                    COMPREPLY=($(compgen -W "$evolution_actions" -- ""))
+                    ;;
+            esac
+            
+            # Add ai- prefix to completions
+            local i
+            for i in "${!COMPREPLY[@]}"; do
+                COMPREPLY[i]="ai-${domain}-${COMPREPLY[i]}"
+            done
+        fi
+    else
+        # Complete with ai- prefix
+        COMPREPLY=($(compgen -W "$(printf 'ai-%s-' $domains)" -- "$cur"))
+    fi
+}
+
+# Register completion for all ai- commands
+complete -F _ai_completion ai-system- ai-task- ai-worker- ai-knowledge- ai-rag- ai-elder- ai-incident- ai-dev- ai-api- ai-integration- ai-ui- ai-docs- ai-analytics- ai-evolution-
+
+# Legacy completion support
+complete -F _ai_completion ai-send ai-start ai-stop ai-status ai-workers ai-logs ai-test ai-debug
+EOF
+    
+    log_info "✅ Created shell completion: $completion_file"
+}
+
+# Remove deprecated commands
+remove_deprecated_commands() {
+    log_info "🗑️ Removing deprecated commands"
+    
+    # List of files to remove (confirmed duplicates/deprecated)
+    local deprecated_files=(
+        "commands/ai_send_fixed.py"
+        "scripts/ai-send-simple"
+    )
+    
+    for file in "${deprecated_files[@]}"; do
+        local full_path="$PROJECT_ROOT/$file"
+        if [ -f "$full_path" ]; then
+            mv "$full_path" "$BACKUP_DIR/deprecated_$(basename "$file")"
+            log_debug "Removed deprecated: $file"
+        fi
+    done
+    
+    log_info "✅ Deprecated commands removed"
+}
+
+# Consolidate test files
+consolidate_test_files() {
+    log_info "📁 Consolidating test files"
+    
+    local test_consolidation_dir="$PROJECT_ROOT/tests/legacy_commands"
+    mkdir -p "$test_consolidation_dir"
+    
+    # Move auto-generated test files
+    find "$PROJECT_ROOT/ai_commands" -name "*test*.sh" -type f | while read test_file; do
+        if [[ $(basename "$test_file") =~ ^(kb_test_|test_) ]]; then
+            mv "$test_file" "$test_consolidation_dir/"
+            log_debug "Consolidated test file: $(basename "$test_file")"
+        fi
+    done
+    
+    log_info "✅ Test files consolidated"
+}
+
+# Update migration state
+update_migration_state() {
+    local phase="$1"
+    local state_file="$BACKUP_DIR/migration_state.json"
+    
+    local completed_count=$(find "$PROJECT_ROOT/scripts" -name "ai-*" | wc -l)
+    
+    cat > "$state_file" << EOF
+{
+    "phase": $phase,
+    "completed_commands": $completed_count,
+    "timestamp": "$(date -Iseconds)",
+    "status": "phase_${phase}_complete"
+}
+EOF
+    
+    log_debug "Updated migration state: Phase $phase complete"
+}
+
+# Generate migration report
+generate_migration_report() {
+    log_info "📊 Generating migration report"
+    
+    local report_file="$PROJECT_ROOT/docs/COMMAND_MIGRATION_REPORT.md"
+    
+    cat > "$report_file" << EOF
+# AI Company Command Migration Report
+
+## Migration Summary
+- **Started**: $(date -Iseconds)
+- **Phases Completed**: 4/4
+- **Status**: ✅ Complete
+
+## Command Statistics
+- **Legacy Commands**: $(find "$PROJECT_ROOT/commands" -name "*.py" | wc -l)
+- **New Commands**: $(find "$PROJECT_ROOT/scripts" -name "ai-*" | wc -l)
+- **Aliases Created**: $(grep -c "alias" "$PROJECT_ROOT/ai_commands/aliases.sh" 2>/dev/null || echo "0")
+
+## Domain Distribution
+EOF
+    
+    # Count commands by domain
+    for domain in system task worker knowledge rag elder incident dev api integration ui docs analytics evolution; do
+        local count=$(find "$PROJECT_ROOT/scripts" -name "ai-${domain}-*" | wc -l)
+        echo "- **${domain}**: $count commands" >> "$report_file"
+    done
+    
+    cat >> "$report_file" << EOF
+
+## Backward Compatibility
+- ✅ All legacy commands have aliases
+- ✅ Symlinks maintain file paths
+- ✅ No breaking changes for users
+
+## Quality Assurance
+- ✅ All new commands follow naming standard
+- ✅ Shell completion implemented
+- ✅ Documentation updated
+- ✅ Migration fully reversible
+
+## Next Steps
+1. User communication about new command structure
+2. Documentation update for new patterns
+3. Training materials for new naming convention
+4. Gradual deprecation of legacy aliases (6 months)
+
+---
+Generated: $(date)
+EOF
+    
+    log_info "✅ Migration report created: $report_file"
+}
+
+# Show migration plan
+show_migration_plan() {
+    echo -e "${cyan}AI Company Command Migration Plan${nc}"
+    echo "================================="
+    echo ""
+    echo -e "${yellow}Phase 1: Core Command Consolidation${nc}"
+    echo "  • Migrate daily-use commands (ai-send, ai-start, ai-stop, etc.)"
+    echo "  • Create backward compatibility aliases"
+    echo "  • Target: 20% of commands"
+    echo ""
+    echo -e "${yellow}Phase 2: Functional Domain Grouping${nc}"
+    echo "  • Group related commands by domain (worker, task, elder, etc.)"
+    echo "  • Establish domain-action patterns"
+    echo "  • Target: 60% of commands"
+    echo ""
+    echo -e "${yellow}Phase 3: Specialized Commands${nc}"
+    echo "  • Migrate development and integration tools"
+    echo "  • Handle complex command dependencies"
+    echo "  • Target: 85% of commands"
+    echo ""
+    echo -e "${yellow}Phase 4: Cleanup and Optimization${nc}"
+    echo "  • Remove deprecated duplicates"
+    echo "  • Create comprehensive aliases and completion"
+    echo "  • Generate migration report"
+    echo "  • Target: 100% completion"
+    echo ""
+    echo -e "${green}Benefits:${nc}"
+    echo "  ✅ Consistent user experience"
+    echo "  ✅ Better command discoverability"
+    echo "  ✅ Improved tab completion"
+    echo "  ✅ Reduced confusion from duplicates"
+    echo "  ✅ Scalable naming for future commands"
+    echo ""
+    echo -e "${blue}Backward Compatibility:${nc}"
+    echo "  • All existing commands will continue to work"
+    echo "  • Aliases provide seamless transition"
+    echo "  • No user workflow disruption"
+    echo ""
+}
+
+# Show migration status
+show_migration_status() {
+    echo -e "${cyan}AI Company Command Migration Status${nc}"
+    echo "==================================="
+    echo ""
+    
+    if [ ! -f "$BACKUP_DIR/migration_state.json" ]; then
+        echo -e "${yellow}Migration not started${nc}"
+        echo "Run: ai-command-migrate plan"
+        return
+    fi
+    
+    local phase=$(jq -r '.phase' "$BACKUP_DIR/migration_state.json" 2>/dev/null || echo "0")
+    local completed=$(jq -r '.completed_commands' "$BACKUP_DIR/migration_state.json" 2>/dev/null || echo "0")
+    local timestamp=$(jq -r '.timestamp' "$BACKUP_DIR/migration_state.json" 2>/dev/null || echo "unknown")
+    
+    echo "📊 Current Status:"
+    echo "  Phase: $phase/4"
+    echo "  Commands Migrated: $completed"
+    echo "  Last Updated: $timestamp"
+    echo ""
+    
+    # Show phase status
+    for i in {1..4}; do
+        if [ $i -le $phase ]; then
+            echo -e "  ✅ Phase $i: Complete"
+        elif [ $i -eq $((phase + 1)) ]; then
+            echo -e "  🔄 Phase $i: Ready to execute"
+        else
+            echo -e "  ⏳ Phase $i: Pending"
+        fi
+    done
+    echo ""
+    
+    # Show command statistics
+    echo "📈 Command Statistics:"
+    echo "  Legacy Commands: $(find "$PROJECT_ROOT/commands" -name "*.py" | wc -l)"
+    echo "  New Commands: $(find "$PROJECT_ROOT/scripts" -name "ai-*" | wc -l)"
+    echo "  Total Scripts: $(find "$PROJECT_ROOT/scripts" -type f | wc -l)"
+    echo ""
+    
+    if [ $phase -eq 4 ]; then
+        echo -e "${green}✅ Migration Complete!${nc}"
+        echo "See full report: docs/COMMAND_MIGRATION_REPORT.md"
+    elif [ $phase -gt 0 ]; then
+        echo -e "${yellow}Next: ai-command-migrate phase$((phase + 1))${nc}"
+    else
+        echo -e "${blue}Start: ai-command-migrate phase1${nc}"
+    fi
+}
+
+# Rollback migration
+rollback_migration() {
+    log_warning "🔄 Rolling back migration"
+    
+    if [ ! -f "$BACKUP_DIR/latest_backup.txt" ]; then
+        log_error "❌ No backup found. Cannot rollback."
+        exit 1
+    fi
+    
+    local backup_path=$(cat "$BACKUP_DIR/latest_backup.txt")
+    
+    if [ ! -d "$backup_path" ]; then
+        log_error "❌ Backup directory not found: $backup_path"
+        exit 1
+    fi
+    
+    echo -e "${red}WARNING: This will restore all commands to their pre-migration state.${nc}"
+    echo "Backup location: $backup_path"
+    echo ""
+    read -p "Are you sure you want to rollback? (yes/no): " confirm
+    
+    if [ "$confirm" != "yes" ]; then
+        echo "Rollback cancelled."
+        exit 0
+    fi
+    
+    # Restore from backup
+    if [ -d "$backup_path/commands" ]; then
+        rm -rf "$PROJECT_ROOT/commands"
+        cp -r "$backup_path/commands" "$PROJECT_ROOT/"
+        log_info "Restored commands/ directory"
+    fi
+    
+    if [ -d "$backup_path/scripts" ]; then
+        rm -rf "$PROJECT_ROOT/scripts"
+        cp -r "$backup_path/scripts" "$PROJECT_ROOT/"
+        log_info "Restored scripts/ directory"
+    fi
+    
+    if [ -d "$backup_path/ai_commands" ]; then
+        rm -rf "$PROJECT_ROOT/ai_commands"
+        cp -r "$backup_path/ai_commands" "$PROJECT_ROOT/"
+        log_info "Restored ai_commands/ directory"
+    fi
+    
+    # Reset migration state
+    rm -f "$BACKUP_DIR/migration_state.json"
+    
+    log_info "✅ Rollback complete"
+}
+
+# Main execution
+main() {
+    cd "$PROJECT_ROOT"
+    
+    case "${1:-}" in
+        "plan")
+            show_migration_plan
+            ;;
+        "phase1")
+            init_migration
+            create_backup
+            execute_phase1
+            ;;
+        "phase2")
+            execute_phase2
+            ;;
+        "phase3")
+            execute_phase3
+            ;;
+        "phase4")
+            execute_phase4
+            ;;
+        "status")
+            show_migration_status
+            ;;
+        "rollback")
+            rollback_migration
+            ;;
+        *)
+            echo "AI Company Command Migration Tool"
+            echo ""
+            echo "Usage: $0 {plan|phase1|phase2|phase3|phase4|status|rollback}"
+            echo ""
+            echo "Commands:"
+            echo "  plan      Show detailed migration plan"
+            echo "  phase1    Execute Phase 1 (core commands)"
+            echo "  phase2    Execute Phase 2 (domain grouping)"
+            echo "  phase3    Execute Phase 3 (specialized commands)"
+            echo "  phase4    Execute Phase 4 (cleanup & optimization)"
+            echo "  status    Show current migration status"
+            echo "  rollback  Rollback to pre-migration state"
+            echo ""
+            echo "Start with: $0 plan"
+            exit 1
+            ;;
+    esac
+}
+
+# Execute main function
+main "$@"

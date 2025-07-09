@@ -127,7 +127,9 @@ class TaskHistoryDB(BaseManager):
                  response: str = None,
                  model: str = None,
                  summary: str = None,
-                 metadata: Dict[str, Any] = None) -> bool:
+                 metadata: Dict[str, Any] = None,
+                 task_type: str = None,
+                 **kwargs) -> bool:
         """Add new task to history"""
         try:
             query = """
@@ -276,6 +278,66 @@ class TaskHistoryDB(BaseManager):
         except Exception as e:
             self.logger.error(f"Failed to update summary: {e}")
             return False
+
+    def save_task(self, task_id: str, task_type: str, prompt: str, worker: str, model: str, **kwargs) -> bool:
+        """Save task (alias for add_task for backward compatibility)"""
+        return self.add_task(task_id, worker, prompt, model=model, task_type=task_type, **kwargs)
+
+    def update_task(self, task_id: str, status: str, response: str = None, files_created: str = None, summary: str = None, error: str = None) -> bool:
+        """Update task status and results"""
+        try:
+            # Build update query dynamically based on provided fields
+            update_fields = ["status = ?", "updated_at = CURRENT_TIMESTAMP"]
+            params = [status]
+            
+            if response:
+                update_fields.append("response = ?")
+                params.append(response)
+            
+            if files_created:
+                update_fields.append("files_created = ?")
+                params.append(files_created)
+            
+            if summary:
+                update_fields.append("summary = ?")
+                params.append(summary)
+            
+            if error:
+                update_fields.append("error = ?")
+                params.append(error)
+            
+            # Add task_id as final parameter
+            params.append(task_id)
+            
+            query = f"""
+            UPDATE task_history 
+            SET {', '.join(update_fields)}
+            WHERE task_id = ?
+            """
+            
+            self.execute_update(query, tuple(params))
+            self.logger.info(f"✅ Task updated: {task_id} -> {status}")
+            return True
+        except Exception as e:
+            self.logger.error(f"❌ Failed to update task: {e}")
+            return False
+
+    def search_tasks(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
+        """Search tasks by query (for RAG context)"""
+        try:
+            search_query = """
+            SELECT task_id, prompt, response, summary, created_at, status
+            FROM task_history
+            WHERE prompt LIKE ? OR response LIKE ? OR summary LIKE ?
+            ORDER BY created_at DESC
+            LIMIT ?
+            """
+            like_pattern = f"%{query}%"
+            results = self.execute_query(search_query, (like_pattern, like_pattern, like_pattern, limit))
+            return results
+        except Exception as e:
+            self.logger.error(f"❌ Failed to search tasks: {e}")
+            return []
 
 
 # Example usage and migration helper

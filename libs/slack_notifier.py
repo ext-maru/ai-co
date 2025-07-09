@@ -382,6 +382,18 @@ class SlackNotifier:
         """
         result = self.send_message("🔗 AI Company Slack connection test - OK")
         return bool(result)
+
+    def send_success(self, message: str, details: Optional[Dict[str, Any]] = None) -> bool:
+        """成功通知を送信（テスト用エイリアス）"""
+        return self.send_success_notification(message, details)
+
+    def send_error(self, message: str, error: str = None, context: Optional[Dict[str, Any]] = None) -> bool:
+        """エラー通知を送信（テスト用エイリアス）"""
+        if error:
+            error_obj = Exception(error)
+        else:
+            error_obj = Exception(message)
+        return self.send_error_notification(error_obj, context)
     
     def send_task_completion_simple(self, task_id: str, worker: str, prompt: str, 
                                    response: str, status: str = "completed",

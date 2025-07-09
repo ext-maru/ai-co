@@ -59,21 +59,25 @@ def wait_for_condition(condition_func, timeout=30, interval=0.1):
     return False
 
 
-def mock_successful_claude_response():
+def mock_successful_claude_response(response_text="Test response"):
     """成功レスポンスのモック"""
-    return {
-        "status": "success",
-        "content": "Task completed successfully",
-        "files_created": ["test_file.py"],
-        "execution_time": 1.5
-    }
+    from unittest.mock import Mock
+    
+    mock_result = Mock()
+    mock_result.returncode = 0
+    mock_result.stdout = response_text
+    mock_result.stderr = ""
+    
+    return mock_result
 
 
 def mock_failed_claude_response():
     """失敗レスポンスのモック"""
-    return {
-        "status": "error",
-        "error": "Claude API error",
-        "error_type": "APIError",
-        "execution_time": 0.5
-    }
+    from unittest.mock import Mock
+    
+    mock_result = Mock()
+    mock_result.returncode = 1
+    mock_result.stdout = ""
+    mock_result.stderr = "Claude API error"
+    
+    return mock_result

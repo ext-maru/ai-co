@@ -1,3 +1,4 @@
+    from workers.{worker_info['name']} import *
 #!/usr/bin/env python3
 """
 DWARF WORKSHOP - Mass Production of Worker Mock Tests
@@ -113,7 +114,6 @@ from tests.mock_utils import (
 
 # Import worker under test
 try:
-    from workers.{worker_info['name']} import *
 except ImportError as e:
     print(f"Import error: {{e}}")
     # Try alternative import

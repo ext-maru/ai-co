@@ -6,7 +6,7 @@ import os
 import sys
 import subprocess
 from pathlib import Path
-from base_command import BaseCommand
+from commands.base_command import BaseCommand
 
 class VenvCommand(BaseCommand):
     def __init__(self):

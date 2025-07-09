@@ -9,13 +9,20 @@ import json
 import logging
 from typing import Dict, Any, List, Optional, Callable
 from datetime import datetime
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.remote.webelement import WebElement
-from selenium.common.exceptions import TimeoutException, WebDriverException
+try:
+    from selenium import webdriver
+try:
+    from selenium.webdriver.common.by import By
+try:
+    from selenium.webdriver.support.ui import WebDriverWait
+try:
+    from selenium.webdriver.support import expected_conditions as EC
+try:
+    from selenium.webdriver.chrome.options import Options
+try:
+    from selenium.webdriver.remote.webelement import WebElement
+try:
+    from selenium.common.exceptions import TimeoutException, WebDriverException
 import pytest
 from pathlib import Path
 import threading

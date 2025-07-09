@@ -27,6 +27,10 @@ app.secret_key = 'ai_company_secret_key_2025'
 # 設定読み込み
 config = get_config()
 
+# ロギング設定
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # Docker API Blueprint登録
 try:
     from web.docker_api import docker_api
@@ -35,9 +39,13 @@ try:
 except Exception as e:
     logger.warning(f"Failed to register Docker API blueprint: {e}")
 
-# ロギング設定
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+# 4賢者 API Blueprint登録
+try:
+    from web.sages_api import sages_api
+    app.register_blueprint(sages_api)
+    logger.info("Sages API blueprint registered successfully")
+except Exception as e:
+    logger.warning(f"Failed to register Sages API blueprint: {e}")
 
 # ダッシュボードHTMLテンプレート
 DASHBOARD_TEMPLATE = """

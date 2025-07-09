@@ -1,3 +1,4 @@
+from tests.conftest import *
 #!/usr/bin/env python3
 """
 INCIDENT KNIGHTS - Integration Test Framework Repair
@@ -240,7 +241,6 @@ def cleanup_singletons():
 {test_dir.title()} test configuration
 """
 # Import from root conftest
-from tests.conftest import *
 ''')
                 print(f"✅ Created {conftest_path}")
     

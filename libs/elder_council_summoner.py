@@ -24,28 +24,17 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from libs.env_config import get_config
-# Worker auto recovery imports - 直接ファイルからインポート
+# Worker health monitor imports - 正しいモジュールから読み込み
 try:
-    # ディレクトリではなくファイルから直接インポート
-    import sys
-    import importlib.util
-    from pathlib import Path
-    
-    # worker_auto_recovery.py ファイルを直接読み込む
-    recovery_file = Path(__file__).parent / "worker_auto_recovery.py"
-    if recovery_file.exists():
-        spec = importlib.util.spec_from_file_location("worker_auto_recovery_direct", str(recovery_file))
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        
-        WorkerHealthMonitor = module.WorkerHealthMonitor
-        AutoRecoveryEngine = module.AutoRecoveryEngine
-    else:
-        # フォールバック
-        WorkerHealthMonitor = None
+    from libs.worker_health_monitor import WorkerHealthMonitor
+    # worker_auto_recovery.pyから必要な場合のみ
+    try:
+        from libs.worker_auto_recovery import AutoRecoveryEngine
+    except ImportError:
         AutoRecoveryEngine = None
-except Exception:
-    # Fallback if module not available
+        logger.warning("AutoRecoveryEngine not available")
+except ImportError:
+    logger.error("WorkerHealthMonitor import failed, using fallback")
     WorkerHealthMonitor = None
     AutoRecoveryEngine = None
 

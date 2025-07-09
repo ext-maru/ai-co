@@ -4,7 +4,7 @@ ai-stop: AI Company システム停止コマンド
 """
 import time
 import os
-from base_command import BaseCommand
+from commands.base_command import BaseCommand
 
 class StopCommand(BaseCommand):
     def __init__(self):

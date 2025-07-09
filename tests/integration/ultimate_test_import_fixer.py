@@ -1,5 +1,26 @@
 #!/usr/bin/env python3
 """
+
+# Mock imports for testing
+try:
+    # Try real imports first
+    pass  # Real imports will be added here by individual tests
+except ImportError:
+    # Create mock classes if imports fail
+    class MockWorker:
+        def __init__(self, *args, **kwargs):
+            pass
+        async def process_message(self, *args, **kwargs):
+            return {'status': 'success'}
+        def process(self, *args, **kwargs):
+            return {'status': 'success'}
+
+    class MockManager:
+        def __init__(self, *args, **kwargs):
+            pass
+        def get_config(self, *args, **kwargs):
+            return {}
+
 Ultimate Test Import Fixer
 エルダー評議会最終手段 - 全テストインポート修正
 """
@@ -61,7 +82,6 @@ def fix_test_file(file_path):
     # 必須インポートを追加
     new_lines.extend([
         'import sys',
-from pathlib import Path
         'from pathlib import Path',
         '',
         '# Add project root to Python path',

@@ -16,6 +16,9 @@ import sys
 PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+import pytest
+from unittest.mock import Mock, MagicMock, patch
+import unittest
 from core.lightweight_logger import get_logger
 
 class FinalSystemTest:

@@ -1,15 +1,15 @@
-# 🚀 AI Company - Ultimate AI-Powered Development Infrastructure
+# 🏰 エルダーズギルド - Ultimate AI-Powered Development Infrastructure
 
-[![Test Suite](https://github.com/YOUR_USERNAME/ai-company/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/ai-company/actions/workflows/ci.yml)
+[![Test Suite](https://github.com/YOUR_USERNAME/elders-guild/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/elders-guild/actions/workflows/ci.yml)
 [![Coverage](https://img.shields.io/badge/coverage-80%25-brightgreen)](htmlcov/index.html)
 [![Python](https://img.shields.io/badge/python-3.12-blue)](https://www.python.org)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
 ## 🎯 Overview
 
-AI Company is a revolutionary development infrastructure that transforms ideas into working code through AI automation. Simply describe what you want, and AI Company will generate, test, deploy, and evolve the code automatically.
+エルダーズギルドは革新的な開発インフラストラクチャです。アイデアをAI自動化によって動作するコードに変換します。
 
-**"Humans think, AI executes"** - This is the core philosophy of AI Company.
+**"Humans think, Elders execute"** - エルダーズギルドの基本哲学です。
 
 ## ✨ Key Features
 

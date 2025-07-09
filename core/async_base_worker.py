@@ -14,7 +14,7 @@ import aio_pika
 import structlog
 from prometheus_client import Counter, Histogram, Gauge, generate_latest
 import aioredis
-from circuitbreaker import CircuitBreaker
+from circuitbreaker import Circuitbreaker as CircuitBreaker
 
 class AsyncBaseWorker(ABC):
     """

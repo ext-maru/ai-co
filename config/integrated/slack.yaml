@@ -1,0 +1,100 @@
+# 💬 Slack Integration Configuration
+# 統合設定システム - Slack統合設定
+# 全てのSlack機能を統一管理
+
+# 基本設定
+basic:
+  enabled: true
+  rate_limit: 1
+  max_message_size: 3000
+  
+# 認証設定
+auth:
+  # bot_token: "xoxb-..." # 環境変数 SLACK_BOT_TOKEN で設定
+  # app_token: "xapp-..." # 環境変数 SLACK_APP_TOKEN で設定
+  team_id: "T093XU50M7T"
+  
+# チャンネル設定
+channels:
+  default: "#ai-notifications"
+  error: "#elders-guild-errors"
+  notification: "#elders-guild-notifications"
+  task_result: "#task-result"
+  
+  # チャンネルID設定
+  ids:
+    polling: "C0946R76UU8"
+    
+# ポーリング設定
+polling:
+  enabled: true
+  channel_id: "C0946R76UU8"
+  interval: 20
+  require_mention: true
+  
+# 通知設定
+notifications:
+  enabled: true
+  mention_on_critical: true
+  mention_users: ["@channel"]
+  
+  # 通知レベル設定
+  levels:
+    info: "📘"
+    warning: "⚠️"
+    error: "🚨"
+    critical: "🔴"
+    success: "✅"
+    robot: "🤖"
+    
+# レート制限設定
+rate_limiting:
+  max_messages_per_minute: 10
+  cooldown_seconds: 60
+  
+# PM Worker設定
+pm_worker:
+  enabled: true
+  channel: "#task-result"
+  feedback_enabled: true
+  
+# 監視設定
+monitoring:
+  enabled: true
+  interval: 10
+  error_threshold: 3
+  error_surge_threshold: 20
+  
+# 重要キーワード設定
+critical_keywords:
+  - "CRITICAL"
+  - "FATAL"
+  - "ERROR"
+  - "Exception"
+  - "Traceback"
+  - "Failed to"
+  - "Could not"
+  - "Unable to"
+  
+# メッセージフォーマット設定
+formatting:
+  use_improved_format: true
+  include_technical_details: true
+  minimize_emoji: true
+  professional_mode: true
+  
+# Webhook設定
+webhooks:
+  # webhook_url: "https://hooks.slack.com/..." # 環境変数 SLACK_WEBHOOK_URL で設定
+  enabled: true
+  
+# セキュリティ設定
+security:
+  token_validation: true
+  message_filtering: true
+  
+# パフォーマンス設定
+performance:
+  cache_enabled: true
+  cache_ttl: 300
+  async_enabled: true

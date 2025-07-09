@@ -1,0 +1,109 @@
+.sageStatusPanel {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.panelTitle {
+  margin: 0 0 20px 0;
+  color: #1F2937;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.sagesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.sageCard {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  padding: 16px;
+  transition: all 0.2s ease;
+}
+
+.sageCard:hover {
+  border-color: #3B82F6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.sageHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.sageIcon {
+  font-size: 2rem;
+  margin-right: 12px;
+}
+
+.sageInfo h4 {
+  margin: 0;
+  color: #1F2937;
+  font-size: 1.1rem;
+}
+
+.sageStatus {
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.sageHealth {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.healthBar {
+  flex: 1;
+  height: 8px;
+  background: #E5E7EB;
+  border-radius: 4px;
+  margin-right: 8px;
+  overflow: hidden;
+}
+
+.healthFill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.healthText {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.currentTask {
+  background: #EEF2FF;
+  border-left: 3px solid #3B82F6;
+  padding: 8px 12px;
+  margin: 12px 0;
+  border-radius: 0 4px 4px 0;
+}
+
+.currentTask p {
+  margin: 4px 0 0 0;
+  font-size: 0.875rem;
+  color: #1F2937;
+}
+
+.sageDetails p {
+  margin: 4px 0;
+  font-size: 0.875rem;
+  color: #6B7280;
+}
+
+.lastActive {
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: #9CA3AF;
+  text-align: right;
+}

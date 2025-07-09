@@ -21,7 +21,7 @@ def log_connection_status(status, details=""):
     
     print(f"{timestamp} - {status} - {details}")
 
-def test_rabbitmq_connection():
+def test_rabbitmq_connection(self):
     """Test RabbitMQ connection and return detailed status"""
     try:
         # Test basic connection
@@ -51,7 +51,7 @@ def test_rabbitmq_connection():
         
         return True, f"Connected successfully. Active queues: {json.dumps(queues_info)}"
         
-    except pika.exceptions.AMQPConnectionError as e:
+    except pika_exceptions.AMQPConnectionError as e:
         return False, f"Connection error: {str(e)}"
     except Exception as e:
         return False, f"Unexpected error: {str(e)}"

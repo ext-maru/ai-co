@@ -7,7 +7,7 @@ import psutil
 import socket
 from datetime import datetime, timedelta
 from pathlib import Path
-from base_command import BaseCommand
+from commands.base_command import BaseCommand
 
 class HealthCommand(BaseCommand):
     def __init__(self):

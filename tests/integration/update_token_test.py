@@ -1,5 +1,38 @@
 #!/usr/bin/env python3
 """
+import sys
+from pathlib import Path
+
+# Ensure project root is in Python path
+
+# Mock imports for testing
+try:
+    # Try real imports first
+    pass  # Real imports will be added here by individual tests
+except ImportError:
+    # Create mock classes if imports fail
+    class MockWorker:
+        def __init__(self, *args, **kwargs):
+            pass
+        async def process_message(self, *args, **kwargs):
+            return {'status': 'success'}
+        def process(self, *args, **kwargs):
+            return {'status': 'success'}
+
+    class MockManager:
+        def __init__(self, *args, **kwargs):
+            pass
+        def get_config(self, *args, **kwargs):
+            return {}
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+import os
+from unittest.mock import Mock, MagicMock, patch
+import unittest
+
 Slack Bot Token 更新と動作確認
 """
 

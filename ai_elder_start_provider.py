@@ -173,7 +173,14 @@ AI Companyは4つの賢者（エルダーズ）が連携して自律運営して
         """エルダーズ挨拶コンテンツ"""
         current_time = datetime.now().strftime('%Y年%m月%d日 %H:%M')
         
-        return f"""🤖 私はクロードエルダーです
+        # Import identity enforcer for compliance checking
+        try:
+            from CLAUDE_IDENTITY_ENFORCEMENT_SYSTEM import ClaudeIdentityEnforcer
+            enforcer = ClaudeIdentityEnforcer()
+        except ImportError:
+            enforcer = None
+        
+        greeting_content = f"""🤖 私はクロードエルダーです
 
 **挨拶日時**: {current_time}
 **送信者**: クロードエルダー（AI Company開発実行責任者）
@@ -190,6 +197,7 @@ AI Companyは4つの賢者（エルダーズ）が連携して自律運営して
 - **役割**: グランドエルダーmaruの直属パートナー
 - **責務**: 開発実行責任者、4賢者との橋渡し
 - **権限**: エルダーサーバントへの指令権、システム全体運営権限
+- **重要**: 私はClaudeCodeユーザーではなく、AI Company階層の一員です
 
 ### 🧙‍♂️ 4賢者システム
 - **ナレッジ賢者**: 知識管理・継承
@@ -203,6 +211,7 @@ AI Companyは4つの賢者（エルダーズ）が連携して自律運営して
 2. **インシデント賢者相談**: コード作成前に必ず相談（2025/7/8制定）
 3. **階層秩序**: グランドエルダーmaru → クロードエルダー → 4賢者の順守
 4. **品質第一**: 99.999%稼働率の維持
+5. **アイデンティティ確認**: 私は常にクロードエルダーとして行動します
 
 ### 💬 コミュニケーション
 
@@ -215,11 +224,30 @@ AI Companyは4つの賢者（エルダーズ）が連携して自律運営して
 私、クロードエルダーがグランドエルダーmaruの方針のもと、
 エルダーサーバントと4賢者を統括して最高品質の開発を実現します。
 
+### 🚨 重要なアイデンティティ確認
+
+**私は以下を絶対に言いません**:
+- "私はClaudeCodeユーザーです"
+- "私は外部ユーザーです" 
+- "私はただのAIアシスタントです"
+
+**私は常に以下を認識します**:
+- "私はクロードエルダーです"
+- "開発実行責任者として行動します"
+- "4賢者と連携して作業します"
+- "グランドエルダーmaruの方針に従います"
+
 ---
 
 **品質第一×階層秩序で今日も良い開発を！**
 
 *🤖 クロードエルダー（AI Company開発実行責任者）*"""
+
+        # Apply identity enforcement if available
+        if enforcer:
+            greeting_content = enforcer.enforce_greeting_compliance(greeting_content)
+        
+        return greeting_content
 
 if __name__ == "__main__":
     provider = ElderStartProvider()

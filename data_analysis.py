@@ -6,7 +6,10 @@ Analyzes CSV data and generates summary statistics, patterns, anomalies, and vis
 
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    plt = None
 import seaborn as sns
 from scipy import stats
 from sklearn.preprocessing import StandardScaler

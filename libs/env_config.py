@@ -157,6 +157,14 @@ class Config:
         # Database
         self.DATABASE_URL = get_env('DATABASE_URL', f'sqlite:///{PROJECT_ROOT}/data/tasks.db')
         
+        # A2A Communication
+        self.A2A_SECRET_KEY = get_env('A2A_SECRET_KEY', 'ai-company-a2a-secret-key')
+        self.A2A_ENCRYPTION_KEY = get_env('A2A_ENCRYPTION_KEY', 'default-encryption-key')
+        self.A2A_MAX_CONNECTIONS = get_int_env('A2A_MAX_CONNECTIONS', 100)
+        self.A2A_TIMEOUT = get_int_env('A2A_TIMEOUT', 30)
+        self.A2A_RETRY_COUNT = get_int_env('A2A_RETRY_COUNT', 3)
+        self.REDIS_URL = get_env('REDIS_URL', 'redis://localhost:6379')
+        
         # API Rate Limiting
         self.API_KEY_ROTATION_ENABLED = get_bool_env('API_KEY_ROTATION_ENABLED', True)
         self.API_KEY_ROTATION_STRATEGY = get_env('API_KEY_ROTATION_STRATEGY', 'rate_limit_aware')

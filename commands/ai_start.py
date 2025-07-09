@@ -6,7 +6,7 @@ import time
 import os
 import subprocess
 from pathlib import Path
-from base_command import BaseCommand
+from commands.base_command import BaseCommand
 
 class StartCommand(BaseCommand):
     def __init__(self):
@@ -55,7 +55,19 @@ class StartCommand(BaseCommand):
         if result and result.stdout.strip() != 'active':
             self.warning("RabbitMQが起動していません")
             self.info("起動中...")
-            self.run_command(['sudo', 'systemctl', 'start', 'rabbitmq-server'])
+            # RabbitMQの起動（sudoが必要な場合は事前に起動しておく）
+        try:
+            # まずステータスをチェック
+            result = subprocess.run(['systemctl', 'is-active', 'rabbitmq-server'], 
+                                    capture_output=True, text=True)
+            if result.returncode != 0:
+                self.console.print("[yellow]⚠️  RabbitMQが起動していません。")
+                self.console.print("[yellow]   事前に以下のコマンドを実行してください:")
+                self.console.print("[blue]   sudo systemctl start rabbitmq-server[/blue]")
+                # sudoなしでの起動を試みる（権限があれば成功）
+                self.run_command(['systemctl', 'start', 'rabbitmq-server'])
+        except subprocess.CalledProcessError:
+            self.console.print("[yellow]⚠️  RabbitMQ起動をスキップしました（権限不足）[/yellow]")
             time.sleep(2)
             
         # venv確認

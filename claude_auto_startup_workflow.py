@@ -232,6 +232,15 @@ class ClaudeAutoStartupWorkflow:
         return legacy_summary
     
     async def _start_claude_cli_dangerous(self):
+        """Claudeを危険モードで起動（権限チェック付き）"""
+        # Root権限チェック
+        if os.geteuid() == 0:
+            self.console.print("❌ [red]エラー: Claude CLIはroot/sudo権限では実行できません[/red]")
+            self.console.print("💡 [yellow]通常ユーザーとして実行してください[/yellow]")
+            self.console.print("   例: ai-elder-cc (sudoなし)")
+            return None
+            
+        
         """Claude CLI（危険モード）を起動"""
         
         with Progress(

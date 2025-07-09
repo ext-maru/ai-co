@@ -56,7 +56,6 @@ def clean_test_file(file_path):
     cleaned_lines.extend([
         '',
         'import sys',
-from pathlib import Path
         'from pathlib import Path',
         '',
         '# Add project root to Python path',

@@ -18,10 +18,18 @@ logger = logging.getLogger(__name__)
 class KnightType(Enum):
     """Types of incident knights"""
     SCOUT = "scout"
-    REPAIR = "repair"
     GUARDIAN = "guardian"
-    COVERAGE = "coverage"
-    EMERGENCY = "emergency"
+    HUNTER = "hunter"
+    ELDER = "elder"
+    DIAGNOSTIC = "diagnostic"
+
+class KnightStatus(Enum):
+    """Status of incident knights"""
+    READY = "ready"
+    ACTIVE = "active"
+    ANALYZING = "analyzing"
+    COMPLETE = "complete"
+    FAILED = "failed"
 
 class IssueSeverity(Enum):
     """Issue severity levels"""
@@ -68,9 +76,10 @@ class IncidentKnight:
     """Base class for all incident knights"""
     
     def __init__(self, knight_id: str = None, knight_type: KnightType = None, 
-                 config: Dict = None, project_root: Path = None):
+                 config: Dict = None, project_root: Path = None, specialty: str = None):
         self.knight_id = knight_id or f"knight_{id(self)}"
-        self.knight_type = knight_type or KnightType.EMERGENCY
+        self.knight_type = knight_type or KnightType.SCOUT
+        self.specialty = specialty or "General Operations"
         self.config = config or {}
         self.project_root = project_root or Path(__file__).parent.parent
         self.deployed = False

@@ -6,7 +6,7 @@ import json
 import time
 import pika
 from datetime import datetime
-from base_command import BaseCommand
+from commands.base_command import BaseCommand
 
 class SendCommand(BaseCommand):
     def __init__(self):

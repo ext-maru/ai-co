@@ -62,6 +62,17 @@ repos:
       - id: mypy
         args: [--ignore-missing-imports, --no-strict-optional]
         additional_dependencies: [types-requests, types-pyyaml]
+        
+  # AI Company Incident Knights Guard
+  - repo: local
+    hooks:
+      - id: incident-knights-guard
+        name: 🛡️ インシデント騎士団ガード
+        entry: python3 -m libs.precommit_incident_guard
+        language: python
+        pass_filenames: false
+        always_run: true
+        description: "AI Company独自のセキュリティ&リスク検出システム"
 
 # Configuration
 default_language_version:

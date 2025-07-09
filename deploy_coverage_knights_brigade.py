@@ -1,3 +1,4 @@
+    from {module_path.replace('.py', '').replace('/', '.')} import *
 #!/usr/bin/env python3
 """
 🏰 Coverage Knights Brigade - 第2週カバレッジ向上統合作戦
@@ -341,7 +342,6 @@ sys.path.insert(0, '/home/aicompany/ai_co')
 
 # Import target module
 try:
-    from {module_path.replace('.py', '').replace('/', '.')} import *
 except ImportError as e:
     pytest.skip(f"Cannot import {module_name}: {{e}}", allow_module_level=True)
 

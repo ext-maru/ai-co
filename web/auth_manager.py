@@ -10,6 +10,7 @@ from functools import wraps
 from typing import Optional, Tuple, Dict, Any
 
 import jwt
+from flask import Flask
 from flask import request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 
