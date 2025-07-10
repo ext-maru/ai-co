@@ -1,3 +1,4 @@
+from pathlib import Path
 """
 REST API Endpoint Generator Template for Elders Guild
 生成されるエンドポイントは FastAPI または Flask をサポート

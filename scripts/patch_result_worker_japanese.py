@@ -1,3 +1,4 @@
+import datetime
 #!/usr/bin/env python3
 """
 ResultWorker日本語化パッチ

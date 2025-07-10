@@ -23,7 +23,7 @@ services:
       timeout: 10s
       retries: 3
 
-  # 既存プロジェクト: Image Upload Manager
+  # Image Upload Manager
   image-upload-manager:
     build: 
       context: ./image-upload-manager
@@ -48,6 +48,89 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
+
+  # Elders Guild Web System
+  elders-guild-web:
+    build:
+      context: ./elders-guild-web
+      dockerfile: Dockerfile
+    container_name: elders-guild-web-system
+    ports:
+      - "9003:3000"
+      - "9004:8000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:9004/api
+      - NEXT_PUBLIC_WS_URL=ws://localhost:9004/api/ws
+      - DATABASE_URL=postgresql+asyncpg://projects:projects_pass@projects-postgres:5432/elders_guild_web
+      - REDIS_URL=redis://projects-redis:6379/1
+    depends_on:
+      - projects-postgres
+      - projects-redis
+    networks:
+      - projects-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Project Manager
+  frontend-project-manager:
+    build:
+      context: ./frontend-project-manager
+      dockerfile: Dockerfile
+    container_name: elders-frontend-project-manager
+    ports:
+      - "9005:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://localhost:9006/api
+    networks:
+      - projects-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Web Monitoring Dashboard
+  web-monitoring-dashboard:
+    build:
+      context: ./web-monitoring-dashboard
+      dockerfile: Dockerfile
+    container_name: elders-web-monitoring
+    ports:
+      - "9007:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=flask_app.py
+    networks:
+      - projects-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Test Calculator Project
+  test-calculator-project:
+    build:
+      context: ./test-calculator-project
+      dockerfile: Dockerfile
+    container_name: elders-test-calculator
+    ports:
+      - "9008:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=simple_web.py
+    networks:
+      - projects-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     security_opt:
       - no-new-privileges:true
     deploy:

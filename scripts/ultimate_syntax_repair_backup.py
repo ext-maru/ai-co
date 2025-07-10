@@ -141,13 +141,13 @@ class ErrorIntelligenceWorker:
     def process_error(self, error_data: Dict) -> Dict:
         """エラー処理"""
         try:
-            logger.info(f"🔍 Analyzing error: {error_data.get('type', 'unknown')}")
+            logger.info(f"🔍 Analyzing error: {error_data.get(\"type\", \"unknown\")}")
             
             result = {
-                'analysis': 'Error analyzed',
-                'recommendation': 'Apply standard fix',
-                'confidence': 0.8,
-                'processed_at': datetime.now().isoformat()
+                "analysis": "Error analyzed",
+                "recommendation": "Apply standard fix",
+                "confidence": 0.8,
+                "processed_at": datetime.now().isoformat()
             }
             
             self.processed_count += 1
@@ -155,7 +155,7 @@ class ErrorIntelligenceWorker:
             
         except Exception as e:
             logger.error(f"❌ Error analysis failed: {e}")
-            return {'error': str(e)}
+            return {"error": str(e)}
     
     def start(self):
         """ワーカー開始"""
@@ -198,7 +198,7 @@ class TDDWorkerTemplate:
         
         test_template = f"""
 def test_{test_name}():
-    '''Test for {requirements}'''
+    """Test for {requirements}"""
     # Arrange
     # Act  
     # Assert
@@ -207,8 +207,8 @@ def test_{test_name}():
         
         self.test_count += 1
         return {
-            'test_code': test_template,
-            'created_at': datetime.now().isoformat()
+            "test_code": test_template,
+            "created_at": datetime.now().isoformat()
         }
         
     def implement_feature(self, feature_name: str) -> Dict[str, Any]:
@@ -217,15 +217,15 @@ def test_{test_name}():
         
         implementation = f"""
 def {feature_name}():
-    '''Implementation for {feature_name}'''
+    """Implementation for {feature_name}"""
     # TODO: Implement actual logic
     pass
 """
         
         self.implementation_count += 1
         return {
-            'implementation': implementation,
-            'created_at': datetime.now().isoformat()
+            "implementation": implementation,
+            "created_at": datetime.now().isoformat()
         }
 ''',
 
@@ -414,7 +414,7 @@ class TestTDDWorkerTemplate:
         """TDDワークフローのテスト"""
         # Red-Green-Refactorサイクルのテスト
         assert True
-'''
+''',
     }
     
     fixed_count = 0

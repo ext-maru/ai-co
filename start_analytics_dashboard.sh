@@ -12,4 +12,4 @@ echo "🌐 ダッシュボードを起動中..."
 echo ""
 
 cd /home/aicompany/ai_co
-python3 web/dashboard_server.py
+python3 projects/web-monitoring-dashboard/dashboard_server.py

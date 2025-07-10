@@ -1,13 +1,13 @@
 """
-lightweight_logger - Auto-generated module
-Created by Auto Repair Knight to prevent import errors
+lightweight_logger - Auto-generated module by Incident Knights
+Created to prevent import errors
 """
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-# Placeholder implementations to prevent import errors
+# Placeholder implementations
 
 class LightweightLogger:
     """Auto-generated placeholder class"""
@@ -20,11 +20,6 @@ class LightweightLogger:
         return lambda *args, **kwargs: None
 
 # Common function placeholders
-def get_config(*args, **kwargs):
-    """Placeholder config function"""
-    logger.warning("Using placeholder get_config function")
-    return {}
-
 def setup(*args, **kwargs):
     """Placeholder setup function"""
     logger.warning("Using placeholder setup function")
@@ -35,8 +30,5 @@ def main(*args, **kwargs):
     logger.warning("Using placeholder main function")
     pass
 
-# Alias for backward compatibility
-Logger = LightweightLogger
-
-# Export common names
-__all__ = ['LightweightLogger', 'Logger', 'get_config', 'setup', 'main']
+# Export
+__all__ = ['LightweightLogger', 'setup', 'main']
