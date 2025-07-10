@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 統合RAG検索マネージャー v1.0
+Elders Guild 統合RAG検索マネージャー v1.0
 統一検索インターフェースによる横断的情報検索
 """
 

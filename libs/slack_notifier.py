@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Slack Notifier v5.0
+Elders Guild Slack Notifier v5.0
 高機能なSlack通知システム
 """
 
@@ -233,7 +233,7 @@ class SlackNotifier:
             **kwargs
         )
     
-    def send_blocks(self, blocks: List[Dict[str, Any]], text: str = "AI Company Notification") -> Dict[str, Any]:
+    def send_blocks(self, blocks: List[Dict[str, Any]], text: str = "Elders Guild Notification") -> Dict[str, Any]:
         """
         Slack Block Kitを使用してリッチなメッセージを送信
         
@@ -380,7 +380,7 @@ class SlackNotifier:
         Returns:
             bool: 接続成功時True
         """
-        result = self.send_message("🔗 AI Company Slack connection test - OK")
+        result = self.send_message("🔗 Elders Guild Slack connection test - OK")
         return bool(result)
 
     def send_success(self, message: str, details: Optional[Dict[str, Any]] = None) -> bool:
@@ -435,7 +435,7 @@ class SlackNotifier:
             f"**Response:**",
             f"{response_preview}",
             f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
-            f"*AI Company System*"
+            f"*Elders Guild System*"
         ]
         
         result = self.send_message("\n".join(message_parts))
@@ -486,7 +486,7 @@ if __name__ == "__main__":
     # テスト実行
     import sys
     
-    print("AI Company Slack Notifier v5.0 Test")
+    print("Elders Guild Slack Notifier v5.0 Test")
     print("=" * 50)
     
     notifier = SlackNotifier()

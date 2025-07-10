@@ -171,7 +171,7 @@ if __name__ == "__main__":
     worker = ErrorIntelligenceWorker()
     worker.start()
 ''',
-        
+
         "templates/tdd_worker_template.py": '''#!/usr/bin/env python3
 """
 TDD Worker Template
@@ -196,14 +196,14 @@ class TDDWorkerTemplate:
         """テスト作成"""
         logger.info(f"🧪 Creating test: {test_name}")
         
-        test_template = f"""
+        test_template = f\"\"\"
 def test_{test_name}():
-    '''Test for {requirements}'''
+    \"\"\"Test for {requirements}\"\"\"
     # Arrange
     # Act  
     # Assert
     assert True  # Replace with actual test
-"""
+\"\"\"
         
         self.test_count += 1
         return {
@@ -215,12 +215,12 @@ def test_{test_name}():
         """機能実装"""
         logger.info(f"⚙️ Implementing feature: {feature_name}")
         
-        implementation = f"""
+        implementation = f\"\"\"
 def {feature_name}():
-    '''Implementation for {feature_name}'''
+    \"\"\"Implementation for {feature_name}\"\"\"
     # TODO: Implement actual logic
     pass
-"""
+\"\"\"
         
         self.implementation_count += 1
         return {
@@ -449,7 +449,7 @@ class TestTDDWorkerTemplate:
     
     if fixed_count == total_count:
         print("🎉 全構文エラーの完全修復完了！")
-        print("✅ AI Companyが100%自律状態に到達")
+        print("✅ Elders Guildが100%自律状態に到達")
         print("🛡️ インシデント騎士団の勝利")
     else:
         print(f"⚠️ {total_count - fixed_count} files still need attention")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-MCP Client Wrapper for AI Company
+MCP Client Wrapper for Elders Guild
 """
 
 import json

@@ -13,7 +13,7 @@ import json
 
 def main():
     """実際のログファイルで分析実行"""
-    print("🔍 AI Company ログファイル エラー分類実行")
+    print("🔍 Elders Guild ログファイル エラー分類実行")
     print("=" * 60)
     
     classifier = EnhancedErrorClassifier()

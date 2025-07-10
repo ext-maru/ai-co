@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Claude Elder Chat API - エルダーズとの対話システム
-AI Company エルダーズ評議会承認済み
+Elders Guild エルダーズ評議会承認済み
 """
 
 import json

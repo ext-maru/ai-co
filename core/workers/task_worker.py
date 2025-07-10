@@ -397,7 +397,7 @@ Task to complete:
             if "hello" in prompt_lower or "挨拶" in prompt_lower:
                 return """Created hello_ai_company.py with the following content:
 ```python
-print("Hello, AI Company!")
+print("Hello, Elders Guild!")
 ```"""
             elif "fibonacci" in prompt_lower or "フィボナッチ" in prompt_lower:
                 return """Created fibonacci.py with the following content:

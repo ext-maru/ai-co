@@ -43,7 +43,7 @@ AI Command Executorは、AIとユーザー間のコマンド実行を完全自�
 
 ### 1. 通常の起動（推奨）
 ```bash
-# AI Company全体を起動（Command Executorも自動起動）
+# Elders Guild全体を起動（Command Executorも自動起動）
 ai-start
 
 # 状態確認

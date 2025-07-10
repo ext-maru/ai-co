@@ -1,7 +1,7 @@
 """
-AI Company Core - 共通基盤モジュール
+Elders Guild Core - 共通基盤モジュール
 
-このパッケージはAI Companyシステムの共通基盤を提供します。
+このパッケージはElders Guildシステムの共通基盤を提供します。
 """
 
 from .base_worker_ja import BaseWorker

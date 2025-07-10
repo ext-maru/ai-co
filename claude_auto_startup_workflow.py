@@ -50,7 +50,7 @@ class ClaudeAutoStartupWorkflow:
         self.console.print(Panel(
             "🚀 Claude CLI自動起動ワークフロー開始\n"
             "📚 ナレッジ読み込み → 🏛️ エルダーズ挨拶",
-            title="🤖 AI Company Auto Workflow",
+            title="🤖 Elders Guild Auto Workflow",
             border_style="bright_blue"
         ))
         
@@ -119,7 +119,7 @@ class ClaudeAutoStartupWorkflow:
     def _create_knowledge_summary(self, important_files):
         """重要ナレッジのサマリーを作成（PostgreSQL Magic Grimoire System統合）"""
         
-        summary = "# 🧠 AI Company ナレッジサマリー（Magic Grimoire System統合）\n\n"
+        summary = "# 🧠 Elders Guild ナレッジサマリー（Magic Grimoire System統合）\n\n"
         summary += f"**生成日時**: {datetime.now().strftime('%Y年%m月%d日 %H:%M')}\n"
         summary += "**システム**: PostgreSQL + pgvector Magic Grimoire System\n\n"
         
@@ -145,7 +145,7 @@ class ClaudeAutoStartupWorkflow:
                     # 重要なトピックの知識を取得
                     key_topics = [
                         "4賢者システム",
-                        "AI Company開発ガイド",
+                        "Elders Guild開発ガイド",
                         "TDD実装",
                         "PostgreSQL移行",
                         "エルダー評議会"
@@ -313,7 +313,7 @@ class ClaudeAutoStartupWorkflow:
                     
                     # Claude CLIにナレッジを送信
                     injection_prompt = f"""
-こんにちは！AI Companyの現在状況をお伝えします。
+こんにちは！Elders Guildの現在状況をお伝えします。
 以下のナレッジを確認して、現在の状況を理解してください：
 
 {knowledge_content}
@@ -399,7 +399,7 @@ class ClaudeAutoStartupWorkflow:
 
 ## 🌅 おはようございます、エルダーズの皆様
 
-AI Companyの一員として、本日のシステム起動をご報告申し上げます。
+Elders Guildの一員として、本日のシステム起動をご報告申し上げます。
 
 ### 📊 現在のシステム状況
 
@@ -410,7 +410,7 @@ AI Companyの一員として、本日のシステム起動をご報告申し上�
 
 ### 🎯 本日の準備状況
 
-1. **ナレッジ学習完了**: AI Companyの最新状況を理解
+1. **ナレッジ学習完了**: Elders Guildの最新状況を理解
 2. **システム確認済み**: 各コンポーネントの健全性をチェック
 3. **エルダーズ接続**: 報告・相談体制を確立
 
@@ -420,7 +420,7 @@ AI Companyの一員として、本日のシステム起動をご報告申し上�
 
 - システムの継続的改善への助言
 - 重要な意思決定に際してのご判断
-- AI Companyの発展に向けた戦略的ガイダンス
+- Elders Guildの発展に向けた戦略的ガイダンス
 
 ### 💬 コミュニケーション体制
 
@@ -430,7 +430,7 @@ AI Companyの一員として、本日のシステム起動をご報告申し上�
 
 ---
 
-**今日も一日、エルダーズのご指導のもと、AI Companyの発展に貢献してまいります。**
+**今日も一日、エルダーズのご指導のもと、Elders Guildの発展に貢献してまいります。**
 
 *自動生成 by Claude Auto Startup Workflow*
 """
@@ -490,7 +490,7 @@ AI Companyの一員として、本日のシステム起動をご報告申し上�
         """Claude CLIをインタラクティブモードで開始"""
         try:
             self.console.print("🎯 Claude CLIをお使いください！（Ctrl+D または exit で終了）")
-            self.console.print("💡 AI Companyのナレッジが学習済みです")
+            self.console.print("💡 Elders Guildのナレッジが学習済みです")
             self.console.print("📚 何でもお尋ねください！")
             self.console.print("")
             

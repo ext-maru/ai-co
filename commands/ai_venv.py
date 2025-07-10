@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ai-venv: AI Company 仮想環境アクティベートヘルパー
+ai-venv: Elders Guild 仮想環境アクティベートヘルパー
 """
 import os
 import sys
@@ -12,7 +12,7 @@ class VenvCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="venv",
-            description="AI Company の仮想環境をアクティベートします"
+            description="Elders Guild の仮想環境をアクティベートします"
         )
         
     def setup_arguments(self):
@@ -82,7 +82,7 @@ class VenvCommand(BaseCommand):
         
         if shell == 'bash' or shell == 'zsh':
             return f"""
-# AI Company 仮想環境アクティベート
+# Elders Guild 仮想環境アクティベート
 cd {self.project_root}
 source {venv_path}/bin/activate
 
@@ -94,7 +94,7 @@ alias ai-cd="cd {self.project_root}"
 alias ai-test="python3 -m pytest"
 alias ai-pip="pip"
 
-echo "🚀 AI Company 仮想環境がアクティブになりました"
+echo "🚀 Elders Guild 仮想環境がアクティブになりました"
 echo "📁 プロジェクトディレクトリ: {self.project_root}"
 echo "🐍 Python: $(python --version)"
 echo ""
@@ -104,7 +104,7 @@ echo "  - deactivate で仮想環境を終了"
 """
         elif shell == 'fish':
             return f"""
-# AI Company 仮想環境アクティベート (Fish)
+# Elders Guild 仮想環境アクティベート (Fish)
 cd {self.project_root}
 source {venv_path}/bin/activate.fish
 
@@ -112,7 +112,7 @@ source {venv_path}/bin/activate.fish
 alias ai-cd "cd {self.project_root}"
 alias ai-test "python3 -m pytest"
 
-echo "🚀 AI Company 仮想環境がアクティブになりました"
+echo "🚀 Elders Guild 仮想環境がアクティブになりました"
 """
         
     def check_venv_health(self):
@@ -158,7 +158,7 @@ echo "🚀 AI Company 仮想環境がアクティブになりました"
         """メイン実行"""
         # 情報表示モード
         if args.info:
-            self.header("AI Company 仮想環境情報")
+            self.header("Elders Guild 仮想環境情報")
             info = self.get_venv_info()
             
             self.section("基本情報")
@@ -180,7 +180,7 @@ echo "🚀 AI Company 仮想環境がアクティブになりました"
             
         # チェックモード
         if args.check:
-            self.header("AI Company 仮想環境チェック")
+            self.header("Elders Guild 仮想環境チェック")
             issues = self.check_venv_health()
             
             if not issues:
@@ -196,7 +196,7 @@ echo "🚀 AI Company 仮想環境がアクティブになりました"
             return
             
         # アクティベーションスクリプト生成
-        self.header("AI Company 仮想環境アクティベート")
+        self.header("Elders Guild 仮想環境アクティベート")
         
         # 仮想環境存在確認
         venv_path = self.project_root / "venv"

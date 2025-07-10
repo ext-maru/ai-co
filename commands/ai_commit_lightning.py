@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Lightning Commit Command
+Elders Guild Lightning Commit Command
 30秒以内の超高速コミットシステム
 
 使用方法:
@@ -157,7 +157,7 @@ class LightningCommitCLI:
         # エルダーズ署名
         enhanced_message += "\n\n🤖 Generated with Lightning Protocol"
         enhanced_message += "\n⚡ 30-second commit by Claude Elder"
-        enhanced_message += "\n🏛️ AI Company Elders Harmony System"
+        enhanced_message += "\n🏛️ Elders Guild Elders Harmony System"
         
         return enhanced_message
     
@@ -241,7 +241,7 @@ class LightningCommitCLI:
 def main():
     """メイン実行"""
     parser = argparse.ArgumentParser(
-        description="AI Company Lightning Commit - 30秒以内超高速コミット",
+        description="Elders Guild Lightning Commit - 30秒以内超高速コミット",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用例:
@@ -291,7 +291,7 @@ def main():
     
     # バナー表示
     print("⚡" * 50)
-    print("🏛️  AI Company Lightning Commit System")
+    print("🏛️  Elders Guild Lightning Commit System")
     print("⚡  30秒以内超高速コミット")
     print("🤖  Powered by Elders Harmony System")
     print("⚡" * 50)

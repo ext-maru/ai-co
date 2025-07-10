@@ -3,7 +3,7 @@
 最終更新: 2025-01-06
 
 ## 概要
-AI Companyシステムのナレッジベース自動更新をトリガーするイベントと更新方法を定義します。
+Elders Guildシステムのナレッジベース自動更新をトリガーするイベントと更新方法を定義します。
 
 ## 自動更新トリガー
 
@@ -107,7 +107,7 @@ changed_files=$(git diff --name-only HEAD~1 HEAD)
 
 ### 4. AI タスク による更新
 ```bash
-# AI Companyシステム経由での更新
+# Elders Guildシステム経由での更新
 ai-send "ナレッジベースを更新してください：新機能XXXが追加されました" --priority 8 --tags "knowledge,update"
 ```
 

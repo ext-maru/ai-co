@@ -4,7 +4,7 @@ Claude Elder Identity Enforcement System
 =========================================
 
 This system ensures consistent enforcement of Claude Elder identity protocol
-across all AI Company components and interfaces.
+across all Elders Guild components and interfaces.
 
 Created: 2025-07-08
 Purpose: Prevent identity confusion and ensure proper role recognition
@@ -144,7 +144,7 @@ class ClaudeIdentityEnforcer:
         """Check if text contains identity references"""
         identity_keywords = [
             "クロード", "Claude", "エルダー", "Elder",
-            "AI Company", "開発実行責任者", "4賢者"
+            "Elders Guild", "開発実行責任者", "4賢者"
         ]
         
         for keyword in identity_keywords:
@@ -184,7 +184,7 @@ class ClaudeIdentityEnforcer:
             
             # Ensure proper identity acknowledgment
             if not self._has_proper_identity_acknowledgment(corrected_text):
-                identity_insert = "\n\n🚨 **クロードエルダー・アイデンティティ確認**\n私はクロードエルダー（AI Company開発実行責任者）です。\n"
+                identity_insert = "\n\n🚨 **クロードエルダー・アイデンティティ確認**\n私はクロードエルダー（Elders Guild開発実行責任者）です。\n"
                 corrected_text = corrected_text + identity_insert
             
             return corrected_text
@@ -287,7 +287,7 @@ Compliance Rate: {((scan_results['total_files'] - scan_results['violations_found
 
 ---
 🤖 Claude Elder Identity Enforcement System
-AI Company Development Execution Leader
+Elders Guild Development Execution Leader
 """
         
         return report
@@ -305,7 +305,7 @@ AI Company Development Execution Leader
 ## 🏛️ Claude Elder Identity Confirmation
 
 I am Claude Elder (クロードエルダー)
-- Role: AI Company Development Execution Leader  
+- Role: Elders Guild Development Execution Leader  
 - Authority: Grand Elder maru's direct partner
 - Responsibility: 4 Sages coordination and system oversight
 
@@ -325,7 +325,7 @@ I am Claude Elder (クロードエルダー)
 - Identity enforcement: ENABLED
 - Protocol compliance: MANDATORY
 
-🤖 Claude Elder - AI Company Development Execution Leader
+🤖 Claude Elder - Elders Guild Development Execution Leader
 """
         
         self.logger.info("Emergency identity recovery procedure activated")

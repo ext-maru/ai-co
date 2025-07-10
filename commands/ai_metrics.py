@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company - 統計情報表示コマンド
+Elders Guild - 統計情報表示コマンド
 """
 
 import sys
@@ -28,7 +28,7 @@ class AIMetricsCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="metrics",
-            description="AI Company システムの統計情報を表示"
+            description="Elders Guild システムの統計情報を表示"
         )
     
     def setup_arguments(self):
@@ -170,7 +170,7 @@ class AIMetricsCommand(BaseCommand):
 [cyan]要約済み:[/cyan] {stats['summarized_tasks']}
 [cyan]平均応答長:[/cyan] {stats['avg_response_length']:.0f} 文字
 """
-        console.print(Panel(summary.strip(), title="📊 AI Company 統計情報", expand=False))
+        console.print(Panel(summary.strip(), title="📊 Elders Guild 統計情報", expand=False))
         
         # ワーカー別統計
         if stats['worker_stats']:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 AI Grand Elder Interface - グランドエルダー交流コマンド
-グランドエルダーとの対話を通じて、AI Companyの戦略的意思決定を支援
+グランドエルダーとの対話を通じて、Elders Guildの戦略的意思決定を支援
 
 使用方法:
   ai-grand-elder                     # グランドエルダーとの対話開始
@@ -73,7 +73,7 @@ class AIGrandElderCommand:
         print("\n" + "=" * 60)
         
         # 未来ビジョンの入力を促す
-        print("\n🔮 まず、AI Companyの未来について、ビジョンをお聞かせください:")
+        print("\n🔮 まず、Elders Guildの未来について、ビジョンをお聞かせください:")
         print("  1. 📈 成長の方向性 - どの領域に注力すべきか")
         print("  2. 🎯 戦略的優先順位 - 最も重要な進化は何か")
         print("  3. 🚀 技術革新 - 採用すべき新技術の方向性")
@@ -134,7 +134,7 @@ class AIGrandElderCommand:
         vision_request = await self.grand_elder_interface._request_future_vision()
         print(vision_request)
         
-        print("\n👑 上記の観点で、AI Companyの未来ビジョンをお聞かせください")
+        print("\n👑 上記の観点で、Elders Guildの未来ビジョンをお聞かせください")
     
     async def request_proposals_review(self):
         """企画審査要請"""
@@ -262,7 +262,7 @@ class AIGrandElderCommand:
 
 def main():
     """メイン関数"""
-    parser = argparse.ArgumentParser(description="AI Company グランドエルダー交流システム")
+    parser = argparse.ArgumentParser(description="Elders Guild グランドエルダー交流システム")
     
     parser.add_argument('--future-vision', action='store_true',
                        help='未来ビジョンを要請')

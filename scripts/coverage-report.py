@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company カバレッジレポート生成ツール
+Elders Guild カバレッジレポート生成ツール
 テストカバレッジの可視化と分析を行います
 """
 
@@ -114,7 +114,7 @@ class CoverageReporter:
     
     def generate_report(self, analysis: Dict) -> str:
         """マークダウン形式のレポートを生成"""
-        report = f"""# AI Company テストカバレッジレポート
+        report = f"""# Elders Guild テストカバレッジレポート
 
 生成日時: {analysis['timestamp']}
 

@@ -1,8 +1,8 @@
-# AI Company TDD導入完了レポート
+# Elders Guild TDD導入完了レポート
 
 ## 🎯 実施内容
 
-AI CompanyプロジェクトにTest Driven Development (TDD)を導入しました。
+Elders GuildプロジェクトにTest Driven Development (TDD)を導入しました。
 
 ### Phase 1: 基盤整備 ✅
 

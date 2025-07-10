@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company - システム状態確認コマンド（修正版）
+Elders Guild - システム状態確認コマンド（修正版）
 """
 
 import sys
@@ -29,7 +29,7 @@ class AIStatusCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="status",
-            description="AI Company システムの状態を確認"
+            description="Elders Guild システムの状態を確認"
         )
     
     def setup_arguments(self):

@@ -156,7 +156,7 @@ def generate_test_report(unit_results, integration_result, security_results):
     
     report = {
         "timestamp": datetime.now().isoformat(),
-        "project": "AI Company Elder Hierarchy Worker System",
+        "project": "Elders Guild Elder Hierarchy Worker System",
         "summary": {
             "total_unit_tests": len(unit_results),
             "passed_unit_tests": sum(1 for r in unit_results.values() if r.get("passed", False)),

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 GitHub Flow違反防止システム - Git Hooks
-AI Company エルダーズ（4賢者）による違反防止機構
+Elders Guild エルダーズ（4賢者）による違反防止機構
 
 インシデント賢者による緊急時対応設計
 ナレッジ賢者による学習機能実装
@@ -92,7 +92,7 @@ class GitHubFlowHooks:
     def create_pre_commit_hook(self):
         """pre-commit hook の作成"""
         hook_content = f'''#!/bin/bash
-# AI Company GitHub Flow Pre-Commit Hook
+# Elders Guild GitHub Flow Pre-Commit Hook
 # 4賢者による違反防止システム
 
 set -e
@@ -124,7 +124,7 @@ echo "✅ Pre-commit validation passed"
     def create_pre_push_hook(self):
         """pre-push hook の作成"""
         hook_content = f'''#!/bin/bash
-# AI Company GitHub Flow Pre-Push Hook
+# Elders Guild GitHub Flow Pre-Push Hook
 # 4賢者による分岐制御システム
 
 set -e
@@ -161,7 +161,7 @@ echo "✅ Pre-push validation passed"
     def create_commit_msg_hook(self):
         """commit-msg hook の作成"""
         hook_content = f'''#!/bin/bash
-# AI Company GitHub Flow Commit Message Hook
+# Elders Guild GitHub Flow Commit Message Hook
 # ナレッジ賢者による品質保証システム
 
 set -e
@@ -196,7 +196,7 @@ echo "✅ Commit message validation passed"
     def create_pre_receive_hook(self):
         """pre-receive hook の作成（サーバー側）"""
         hook_content = f'''#!/bin/bash
-# AI Company GitHub Flow Pre-Receive Hook
+# Elders Guild GitHub Flow Pre-Receive Hook
 # エルダーズによる最終承認システム
 
 set -e

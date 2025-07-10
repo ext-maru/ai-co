@@ -1,7 +1,7 @@
 # 🧪 Test Guardian Knight Documentation
 
 ## 概要
-Test Guardian Knight（テスト守護騎士）は、AI Companyのコードベースの品質を守る自動テスト実行システムです。システムのアイドル時間を活用して継続的にテストを実行し、問題を早期発見・自動修正します。
+Test Guardian Knight（テスト守護騎士）は、Elders Guildのコードベースの品質を守る自動テスト実行システムです。システムのアイドル時間を活用して継続的にテストを実行し、問題を早期発見・自動修正します。
 
 ## 主な機能
 

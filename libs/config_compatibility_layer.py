@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🔗 AI Company 設定互換性レイヤー
+🔗 Elders Guild 設定互換性レイヤー
 既存システムとの完全互換性を確保し、段階的移行を支援
 
 このレイヤーは：
@@ -132,7 +132,7 @@ class ConfigCompatibilityLayer:
         """レガシーコア設定を取得"""
         config = {
             "system": {
-                "name": "AI Company",
+                "name": "Elders Guild",
                 "version": "5.3",
                 "language": "ja"
             },
@@ -302,7 +302,7 @@ class ConfigCompatibilityLayer:
                 "driver": "postgresql",
                 "host": "localhost",
                 "port": 5432,
-                "database": "ai_company"
+                "database": "elders_guild"
             }
         }
         

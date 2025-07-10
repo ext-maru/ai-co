@@ -86,4 +86,4 @@ result = client.call_tool(
 2. `python3 mcp_final_report.py` で状態確認
 3. 成功したら `python3 demo_mcp_wrapper.py` でテスト
 
-MCP風のインターフェースで、AI Companyの開発効率が大幅に向上します！
+MCP風のインターフェースで、Elders Guildの開発効率が大幅に向上します！

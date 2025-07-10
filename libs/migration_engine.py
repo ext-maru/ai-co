@@ -125,7 +125,7 @@ class MDFileAnalyzer:
             'commands': r'`([^`]+)`'
         }
         
-        # AI Company特有のパターン
+        # Elders Guild特有のパターン
         self.aicompany_patterns = {
             'tdd_content': r'(TDD|test.*driven|pytest|テスト駆動)',
             'sage_references': r'(賢者|sage|ナレッジ賢者|タスク賢者|インシデント賢者|RAG賢者)',
@@ -148,7 +148,7 @@ class MDFileAnalyzer:
             # コンテンツ分析
             content_analysis = await self._analyze_content(content)
             
-            # AI Company固有分析
+            # Elders Guild固有分析
             aicompany_analysis = await self._analyze_aicompany_content(content)
             
             # メタデータ抽出
@@ -220,7 +220,7 @@ class MDFileAnalyzer:
         return analysis
     
     async def _analyze_aicompany_content(self, content: str) -> Dict[str, Any]:
-        """AI Company固有コンテンツ分析"""
+        """Elders Guild固有コンテンツ分析"""
         analysis = {}
         
         for category, pattern in self.aicompany_patterns.items():
@@ -417,7 +417,7 @@ class MDFileAnalyzer:
             if re.search(pattern, content_lower):
                 tags.add(tag)
         
-        # AI Company固有タグ
+        # Elders Guild固有タグ
         if re.search(r'賢者|sage', content_lower):
             tags.add('four-sages')
         if re.search(r'tdd|テスト駆動', content_lower):
@@ -444,8 +444,8 @@ class MDFileAnalyzer:
         if re.search(r'```', content):
             confidence += 0.1
         
-        # AI Company固有性
-        aicompany_keywords = ['賢者', 'claude', 'tdd', 'ai company', 'エルダー']
+        # Elders Guild固有性
+        aicompany_keywords = ['賢者', 'claude', 'tdd', 'elders guild', 'エルダー']
         matches = sum(1 for keyword in aicompany_keywords if keyword in content.lower())
         confidence += min(matches * 0.05, 0.1)
         
@@ -722,7 +722,7 @@ class MigrationEngine:
         if content_analysis.get('links', 0) > 3:
             score += 0.1
         
-        # AI Company知識
+        # Elders Guild知識
         if aicompany_analysis.get('sage_references', 0) > 0:
             score += 0.2
         
@@ -1002,7 +1002,7 @@ class MigrationEngine:
         spell_name = spell_name.replace('_', ' ').replace('-', ' ')
         spell_name = ' '.join(word.capitalize() for word in spell_name.split())
         
-        # AI Company固有の調整
+        # Elders Guild固有の調整
         if 'claude' in spell_name.lower():
             spell_name = spell_name.replace('Claude', '🤖 Claude')
         if 'tdd' in spell_name.lower():

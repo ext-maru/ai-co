@@ -1,5 +1,5 @@
 """
-AI Company MCP Wrapper
+Elders Guild MCP Wrapper
 MCP風のインターフェースを提供
 """
 

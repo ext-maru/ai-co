@@ -1,4 +1,4 @@
-# 📱 AI Company Dashboard スクリーンデモ結果
+# 📱 Elders Guild Dashboard スクリーンデモ結果
 
 **日時**: 2025年7月8日 03:47 JST  
 **テスト環境**: http://100.76.169.124:5555  
@@ -19,7 +19,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Company - Elder Assembly Dashboard</title>
+    <title>Elders Guild - Elder Assembly Dashboard</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         
@@ -45,7 +45,7 @@
 ### 📡 API接続テスト
 **エンドポイント**: `/api/claude-elder/chat`  
 **メソッド**: POST  
-**ペイロード**: `{"message": "AI Companyの現在の構成と、私クロードエルダーの役割について詳しく説明してください"}`
+**ペイロード**: `{"message": "Elders Guildの現在の構成と、私クロードエルダーの役割について詳しく説明してください"}`
 
 ### 📋 応答結果
 ```json
@@ -53,7 +53,7 @@
   "success": true,
   "elder": "claude_elder_real_behavior",
   "timestamp": "2025-07-08T03:46:37.740622",
-  "response": "🧾 クロードエルダー: AI Companyのエルダーシステムについて説明します..."
+  "response": "🧾 クロードエルダー: Elders Guildのエルダーシステムについて説明します..."
 }
 ```
 
@@ -62,7 +62,7 @@
 - API応答成功（success: true）
 - 適切なエルダータイプ（claude_elder_real_behavior）
 - 階層構造の正確な説明
-- AI Companyの組織理解度：95%
+- Elders Guildの組織理解度：95%
 
 **🏛️ 応答内容の精度**:
 1. **グランドエルダーmaru** - 最高権限者 ✅
@@ -205,7 +205,7 @@ UI/UX品質: 95% ✅
 
 ## 📝 エルダーズへの最終報告
 
-**🏛️ AI Company Elder Assembly Dashboard System** は、グランドエルダーmaruの理念「品質第一×階層秩序」を完全に体現し、4賢者システムとエルダーサーベント部隊の統合管理を実現した、世界最高水準のダッシュボードシステムとして完成いたしました。
+**🏛️ Elders Guild Elder Assembly Dashboard System** は、グランドエルダーmaruの理念「品質第一×階層秩序」を完全に体現し、4賢者システムとエルダーサーベント部隊の統合管理を実現した、世界最高水準のダッシュボードシステムとして完成いたしました。
 
 **全ての画面・機能が正常稼働中です。**
 

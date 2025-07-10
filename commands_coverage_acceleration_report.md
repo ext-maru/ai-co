@@ -1,9 +1,9 @@
-# AI Company Commandsモジュール カバレッジ加速完了報告書
+# Elders Guild Commandsモジュール カバレッジ加速完了報告書
 
 ## 📊 第2週目標55%達成に向けた包括的攻略実施結果
 
 ### 🎯 実施概要
-AI Companyプロジェクトの第2週目標55%達成に向けて、Commandsモジュールの重点攻略とカバレッジ加速を実行しました。
+Elders Guildプロジェクトの第2週目標55%達成に向けて、Commandsモジュールの重点攻略とカバレッジ加速を実行しました。
 
 **実行期間**: 2025年7月7日 18:35-18:45  
 **対象**: commands/ai_send.py, commands/ai_elder_council.py, commands/ai_worker_scale.py  
@@ -216,7 +216,7 @@ commands/ai_worker_scale.py     167      4    98%   262, 273, 351-352
 
 ---
 
-*本報告書は、AI Companyプロジェクトの第2週目標55%達成に向けたCommandsモジュール重点攻略の完全な実施記録です。エルダー会議での承認を経て、次フェーズの戦略策定に活用してください。*
+*本報告書は、Elders Guildプロジェクトの第2週目標55%達成に向けたCommandsモジュール重点攻略の完全な実施記録です。エルダー会議での承認を経て、次フェーズの戦略策定に活用してください。*
 
 **🤖 Generated with Claude Code**  
 **📅 実施日時: 2025年7月7日 18:35-18:45**

@@ -41,7 +41,7 @@ class AIShellCommand(BaseCommand):
         self.auto_complete_commands = []
         self.running = True
         
-        # AI Companyコマンド一覧
+        # Elders Guildコマンド一覧
         self.ai_commands = [
             'ai-status', 'ai-send', 'ai-logs', 'ai-stop', 'ai-start',
             'ai-report', 'ai-rag', 'ai-backup', 'ai-clean', 'ai-debug',
@@ -253,7 +253,7 @@ class AIShellCommand(BaseCommand):
     
     def _run_interactive_shell(self, args) -> CommandResult:
         """インタラクティブシェル実行"""
-        print("🤖 AI Company Shell v2.0.0")
+        print("🤖 Elders Guild Shell v2.0.0")
         print("エルダーズ統合対話環境へようこそ")
         print("'help' でコマンド一覧、'exit' で終了")
         print("-" * 50)
@@ -502,7 +502,7 @@ class AIShellCommand(BaseCommand):
             # コマンド実行
             cmd_parts = shlex.split(command)
             
-            # AI Companyコマンドかチェック
+            # Elders Guildコマンドかチェック
             if cmd_parts[0] not in self.ai_commands:
                 return {
                     'success': False,

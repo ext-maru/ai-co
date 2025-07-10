@@ -1,8 +1,8 @@
-# 🧪 AI Company テスト自動化システム
+# 🧪 Elders Guild テスト自動化システム
 
 ## 概要
 
-AI Companyのテスト自動化システムは、GitHub Actionsと連携した包括的なテストフレームワークです。AIを活用して自動的にテストを生成し、継続的な品質向上を実現します。
+Elders Guildのテスト自動化システムは、GitHub Actionsと連携した包括的なテストフレームワークです。AIを活用して自動的にテストを生成し、継続的な品質向上を実現します。
 
 ## 主な機能
 
@@ -175,7 +175,7 @@ pytest --cov=workers --cov=libs
 
 ## 関連ドキュメント
 
-- [AI Company ナレッジベース](../docs/knowledge_base.md)
+- [Elders Guild ナレッジベース](../docs/knowledge_base.md)
 - [開発ガイドライン](../docs/development.md)
 - [CI/CD設定](../.github/workflows/ci.yml)
 

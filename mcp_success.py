@@ -10,7 +10,7 @@ PROJECT_ROOT = Path("/home/aicompany/ai_co")
 sys.path.insert(0, str(PROJECT_ROOT))
 
 print("=" * 70)
-print("🎉 AI Company MCP - Setup Complete!")
+print("🎉 Elders Guild MCP - Setup Complete!")
 print("=" * 70)
 print("")
 print("✅ MCP wrapper has been successfully created!")

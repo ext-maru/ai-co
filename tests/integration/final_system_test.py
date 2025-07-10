@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 最終統合テスト
+Elders Guild 最終統合テスト
 全システム機能の総合動作確認
 """
 
@@ -279,7 +279,7 @@ class FinalSystemTest:
             
             # 出力にダッシュボード要素が含まれているかチェック
             expected_elements = [
-                'AI Company Monitoring Dashboard',
+                'Elders Guild Monitoring Dashboard',
                 'System Metrics',
                 'Workers',
                 'Queues'
@@ -451,7 +451,7 @@ class FinalSystemTest:
 def print_test_summary(summary: Dict[str, Any]):
     """テスト結果のサマリー表示"""
     print("\n" + "="*80)
-    print("🧪 AI Company Final System Test Results")
+    print("🧪 Elders Guild Final System Test Results")
     print("="*80)
     
     print(f"📊 Overall Results:")
@@ -467,7 +467,7 @@ def print_test_summary(summary: Dict[str, Any]):
     
     if summary['success_rate'] == 100:
         print(f"\n🎉 ALL TESTS PASSED!")
-        print(f"🚀 AI Company system is fully operational and ready for production!")
+        print(f"🚀 Elders Guild system is fully operational and ready for production!")
         print(f"\n✨ Key Achievements:")
         print(f"  • ✅ Async worker architecture implemented")
         print(f"  • ✅ Security enhancements deployed")
@@ -489,7 +489,7 @@ async def main():
     
     tester = FinalSystemTest()
     
-    print("🚀 Starting AI Company Final System Test")
+    print("🚀 Starting Elders Guild Final System Test")
     print("This comprehensive test will verify all system components...")
     
     summary = await tester.run_all_tests()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test Coverage Analysis Script for AI Company System
+Test Coverage Analysis Script for Elders Guild System
 Analyzes test coverage by module and identifies critical gaps
 """
 
@@ -158,7 +158,7 @@ class TestCoverageAnalyzer:
         test_files = self.find_test_files()
         
         report = []
-        report.append("# AI Company Test Coverage Analysis Report")
+        report.append("# Elders Guild Test Coverage Analysis Report")
         report.append("=" * 60)
         report.append("")
         

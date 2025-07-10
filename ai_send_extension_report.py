@@ -13,7 +13,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 def generate_report():
     """実装結果のレポートを生成"""
     print("=" * 60)
-    print("📊 AI Company ai-send拡張 実装結果レポート")
+    print("📊 Elders Guild ai-send拡張 実装結果レポート")
     print("=" * 60)
     print(f"実行日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()

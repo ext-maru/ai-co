@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company システムヘルス統合ダッシュボード
+Elders Guild システムヘルス統合ダッシュボード
 全システムの監視と障害予防
 """
 import time

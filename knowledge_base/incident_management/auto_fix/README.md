@@ -169,7 +169,7 @@ print(f"緊急対応結果: {emergency_result['final_resolution']['resolution_su
 ### ヘルスチェック項目
 
 1. **システムリソース**: CPU・メモリ・ディスク使用率
-2. **AI Companyサービス**: ワーカープロセス・API状態
+2. **Elders Guildサービス**: ワーカープロセス・API状態
 3. **RabbitMQ**: サービス状態・ポート接続性
 4. **ワーカーヘルス**: プロセス数・CPU使用率
 5. **ディスク容量**: 空き容量・使用率
@@ -266,7 +266,7 @@ print(f"緊急対応結果: {emergency_result['final_resolution']['resolution_su
 インシデント賢者は単なる「問題解決ツール」から、
 **予知・予防・修復・学習・進化する知的存在**へと昇華しました。
 
-4賢者システムの守護神として、AI Companyの永続的な安定運用を実現し、
+4賢者システムの守護神として、Elders Guildの永続的な安定運用を実現し、
 人間の開発者が創造的な仕事に集中できる環境を提供します。
 
-**Crisis Sage - The Ultimate Guardian of AI Company** 🛡️✨
+**Crisis Sage - The Ultimate Guardian of Elders Guild** 🛡️✨

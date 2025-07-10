@@ -13,7 +13,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from libs.ai_command_helper import AICommandHelper
 
 print("=" * 70)
-print("🎉 AI Company MCP Setup - Execution Summary")
+print("🎉 Elders Guild MCP Setup - Execution Summary")
 print("=" * 70)
 print("")
 

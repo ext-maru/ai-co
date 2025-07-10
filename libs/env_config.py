@@ -109,7 +109,7 @@ def get_list_env(key: str, default: list = None, separator: str = ',') -> list:
 
 class Config:
     """
-    AI Company設定クラス
+    Elders Guild設定クラス
     """
     
     def __init__(self):
@@ -264,11 +264,11 @@ def get_config() -> Config:
 
 def verify_setup() -> bool:
     """
-    AI Company環境セットアップを確認
+    Elders Guild環境セットアップを確認
     """
     validation = config.validate()
     
-    print("🔍 AI Company Environment Verification")
+    print("🔍 Elders Guild Environment Verification")
     print("=" * 40)
     
     all_good = True

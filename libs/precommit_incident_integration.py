@@ -380,7 +380,7 @@ class PreCommitIncidentIntegration:
         
         # ヘッダー
         status = "✅ PASSED" if result.success else "❌ FAILED"
-        lines.append(f"\n🔍 AI Company Pre-commit Check: {status}")
+        lines.append(f"\n🔍 Elders Guild Pre-commit Check: {status}")
         lines.append(f"⏱️  Execution time: {result.execution_time:.2f}s")
         lines.append(f"📊 Risk score: {result.risk_score:.2f}")
         
@@ -451,7 +451,7 @@ class PreCommitIncidentIntegration:
 def create_precommit_hook():
     """pre-commitフック作成"""
     hook_content = '''#!/bin/bash
-# AI Company Pre-commit Hook
+# Elders Guild Pre-commit Hook
 # Auto-generated incident prediction integration
 
 cd "$(git rev-parse --show-toplevel)"
@@ -531,7 +531,7 @@ def demo_precommit_integration():
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description='AI Company Pre-commit Integration')
+    parser = argparse.ArgumentParser(description='Elders Guild Pre-commit Integration')
     parser.add_argument('--demo', action='store_true', help='Run demo')
     parser.add_argument('--install-hook', action='store_true', help='Install pre-commit hook')
     parser.add_argument('--verbose', action='store_true', help='Verbose output')

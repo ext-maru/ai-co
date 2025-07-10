@@ -50,12 +50,12 @@ ai-start
 
 ### Before（現在）:
 ```
-**AI Company タスク完了ID:** general_20250703_015105 **ワーカー:** worker-1...
+**Elders Guild タスク完了ID:** general_20250703_015105 **ワーカー:** worker-1...
 ```
 
 ### After（修正後）:
 ```
-✅ **AI Company タスク完了**
+✅ **Elders Guild タスク完了**
 
 **タスクID:** general_20250703_015105
 **ワーカー:** worker-1
@@ -79,7 +79,7 @@ ai-start
 • 成功率: 98.5% (197/200)
 • 平均処理時間: 1.85秒
 
-*AI Company RAGシステム*
+*Elders Guild RAGシステム*
 ```
 
 ## トラブルシューティング

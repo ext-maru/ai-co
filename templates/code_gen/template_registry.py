@@ -1,5 +1,5 @@
 """
-Code Generation Template Registry for AI Company
+Code Generation Template Registry for Elders Guild
 すべてのコード生成テンプレートを管理
 """
 
@@ -110,7 +110,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='AI Company Code Generator',
+        description='Elders Guild Code Generator',
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     

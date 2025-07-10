@@ -10,7 +10,7 @@ from pathlib import Path
 def generate_4sages_report():
     """4賢者システムレポートを生成"""
     
-    print("🧙‍♂️ AI Company 4賢者システム統合レポート")
+    print("🧙‍♂️ Elders Guild 4賢者システム統合レポート")
     print("=" * 50)
     print(f"生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()

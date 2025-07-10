@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company プロンプトテンプレートマネージャー
+Elders Guild プロンプトテンプレートマネージャー
 各ワーカー専用の最適化されたプロンプトを管理
 """
 
@@ -120,7 +120,7 @@ Instructions:
 3. Use FileSystem tools to create all necessary files
 4. Ensure the code is immediately executable
 5. Include error handling and logging
-6. Follow AI Company coding standards
+6. Follow Elders Guild coding standards
 
 {{ additional_instructions }}
 
@@ -152,7 +152,7 @@ Guidelines:
 - Include comprehensive error handling
 - Follow best practices for {{ language if language else "the appropriate language" }}
 - Create complete, runnable solutions
-- Use AI Company's Core modules where applicable
+- Use Elders Guild's Core modules where applicable
 
 {{ additional_instructions }}''',
                     'variables': ['task_id', 'user_prompt', 'language', 'rag_context', 'additional_instructions'],
@@ -174,7 +174,7 @@ Project Structure:
 
 Instructions:
 1. Analyze the files and determine appropriate placement
-2. Follow AI Company's file organization rules
+2. Follow Elders Guild's file organization rules
 3. Create necessary directories
 4. Move files to their correct locations
 5. Update any import paths if needed
@@ -230,7 +230,7 @@ Recent Channel Context:
 {{ channel_context }}
 
 Instructions:
-1. Determine if this message requires AI Company action
+1. Determine if this message requires Elders Guild action
 2. Extract the user's intent clearly
 3. Route to appropriate worker if action needed
 4. Respond professionally and helpfully

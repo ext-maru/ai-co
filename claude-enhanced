@@ -1,0 +1,50 @@
+#!/bin/bash
+# Enhanced Claude CLI with CLAUDE.md Auto-loading
+# エルダーズギルド専用 Claude CLI ラッパー
+
+# プロジェクトルート設定
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+# CLAUDE.md自動読み込み
+echo "🏛️  Initializing Elders Guild Claude CLI..."
+
+# Node.js スタートアップフックの実行
+if [ -f "claude_startup_hook.js" ]; then
+    echo "📚 Loading CLAUDE.md knowledge..."
+    node claude_startup_hook.js
+    HOOK_EXIT_CODE=$?
+    
+    if [ $HOOK_EXIT_CODE -eq 0 ]; then
+        echo "✅ Knowledge loaded successfully"
+    else
+        echo "⚠️  Warning: Could not load CLAUDE.md knowledge"
+    fi
+else
+    echo "⚠️  Warning: claude_startup_hook.js not found"
+fi
+
+# エルダーズギルド環境変数設定
+export CLAUDE_ELDERS_GUILD="active"
+export CLAUDE_PROJECT_ROOT="$SCRIPT_DIR"
+export CLAUDE_KNOWLEDGE_BASE="$SCRIPT_DIR/knowledge_base"
+
+# 起動メッセージ
+echo ""
+echo "🤖 Claude Elder Starting..."
+echo "📍 Project: $(basename "$SCRIPT_DIR")"
+echo "📚 Knowledge: Elders Guild Active"
+echo "🛠️  Commands: ai-* available"
+echo ""
+
+# 既存の引数をすべてClaude CLIに転送
+if [ $# -eq 0 ]; then
+    # 引数なしの場合、インタラクティブモードで起動（dangerousオプション付き）
+    echo "Starting interactive Claude session with Elders Guild knowledge..."
+    echo "Type your first message or 'help' for available commands."
+    echo ""
+    claude --dangerously-skip-permissions
+else
+    # 引数ありの場合、そのまま転送（dangerousオプション付き）
+    claude --dangerously-skip-permissions "$@"
+fi

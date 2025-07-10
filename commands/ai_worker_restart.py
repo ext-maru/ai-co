@@ -105,7 +105,7 @@ class AIWorkerRestartCommand(BaseCommand):
                 return False
             
             # tmux内で起動
-            session_name = "ai_company"
+            session_name = "elders_guild"
             window_name = worker_file.replace('.py', '')
             
             subprocess.run([

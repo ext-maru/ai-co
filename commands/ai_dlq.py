@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Dead Letter Queue (DLQ) Management
+Elders Guild Dead Letter Queue (DLQ) Management
 不達メッセージの管理
 """
 import sys

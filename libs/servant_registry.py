@@ -1,6 +1,6 @@
 """
 🏛️ Elder Servant Registry
-Manages registration and status of all Elder Servants in the AI Company
+Manages registration and status of all Elder Servants in the Elders Guild
 """
 
 import asyncio

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Shared Enums for AI Company Project Management System
+Shared Enums for Elders Guild Project Management System
 Provides common enumerations to avoid circular imports
 """
 

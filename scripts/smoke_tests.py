@@ -230,7 +230,7 @@ class SmokeTest:
     def _check_local_process(self) -> bool:
         """ローカルプロセスの確認"""
         try:
-            # Check if any Python processes related to AI Company are running
+            # Check if any Python processes related to Elders Guild are running
             result = subprocess.run(
                 ["pgrep", "-f", "ai_co"],
                 capture_output=True,

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fix common RabbitMQ connection issues in AI Company system
+Fix common RabbitMQ connection issues in Elders Guild system
 """
 import sys
 import subprocess
@@ -35,7 +35,7 @@ def ensure_rabbitmq_running():
         return False
 
 def create_required_queues():
-    """Create all required queues for AI Company"""
+    """Create all required queues for Elders Guild"""
     print("\n2️⃣ Creating required queues...")
     
     required_queues = [
@@ -196,7 +196,7 @@ def verify_connections():
 
 def main():
     """Main function to fix RabbitMQ connection issues"""
-    print("🔧 AI Company RabbitMQ Connection Fixer")
+    print("🔧 Elders Guild RabbitMQ Connection Fixer")
     print("=" * 50)
     
     success = True

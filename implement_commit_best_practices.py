@@ -20,7 +20,7 @@ def main():
     master_command = """#!/bin/bash
 set -e
 
-echo "🎯 AI Company Commit Message Best Practices - Full Setup"
+echo "🎯 Elders Guild Commit Message Best Practices - Full Setup"
 echo "========================================================"
 echo ""
 

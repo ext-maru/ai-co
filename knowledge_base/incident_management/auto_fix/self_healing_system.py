@@ -117,7 +117,7 @@ class SelfHealingSystem:
             critical=True
         )
         
-        # AI Companyサービスチェック
+        # Elders Guildサービスチェック
         self.register_health_check(
             "ai_company_services",
             self._check_ai_company_services,
@@ -171,7 +171,7 @@ class SelfHealingSystem:
         # ワーカー復旧
         self.register_healing_action(HealingAction(
             name="recover_workers",
-            description="AI Company worker recovery",
+            description="Elders Guild worker recovery",
             action_func=self._recover_workers,
             prerequisites=["system_resources"]
         ))
@@ -601,7 +601,7 @@ class SelfHealingSystem:
             return {'healthy': False, 'error': str(e)}
     
     async def _check_ai_company_services(self) -> Dict:
-        """AI Companyサービスチェック"""
+        """Elders Guildサービスチェック"""
         try:
             import psutil
             
@@ -841,7 +841,7 @@ class SelfHealingSystem:
     async def _emergency_restart(self) -> Dict:
         """緊急再起動"""
         try:
-            # AI Companyサービスの再起動
+            # Elders Guildサービスの再起動
             import subprocess
             
             # ai-stop

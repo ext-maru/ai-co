@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 統合システムセットアップスクリプト v1.0
+Elders Guild 統合システムセットアップスクリプト v1.0
 統一アーキテクチャの初期化とデータマイグレーション
 """
 
@@ -61,7 +61,7 @@ class UnifiedSystemSetup:
     
     def setup_complete_system(self):
         """完全なシステムセットアップ実行"""
-        logger.info("=== AI Company 統合システムセットアップ開始 ===")
+        logger.info("=== Elders Guild 統合システムセットアップ開始 ===")
         
         try:
             # 1. ディレクトリ作成
@@ -582,7 +582,7 @@ class UnifiedSystemSetup:
         
         # コンソール出力
         print("\n" + "="*60)
-        print("AI Company 統合システムセットアップ完了")
+        print("Elders Guild 統合システムセットアップ完了")
         print("="*60)
         print(f"ナレッジファイル処理: {self.migration_stats['knowledge_files_processed']}件")
         print(f"インシデントマイグレーション: {self.migration_stats['incidents_migrated']}件")
@@ -682,7 +682,7 @@ class UnifiedSystemSetup:
 
 def main():
     """メイン実行関数"""
-    print("AI Company 統合システムセットアップを開始します...")
+    print("Elders Guild 統合システムセットアップを開始します...")
     
     setup = UnifiedSystemSetup()
     success = setup.setup_complete_system()

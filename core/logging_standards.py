@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company ログ出力基準
+Elders Guild ログ出力基準
 プロフェッショナルで客観的なログ出力を実現
 """
 
@@ -114,7 +114,7 @@ class ProfessionalLogger:
 
 # ログ出力のベストプラクティス
 LOG_BEST_PRACTICES = """
-# AI Company ログ出力ベストプラクティス
+# Elders Guild ログ出力ベストプラクティス
 
 ## 原則
 1. 客観的で技術的な情報を優先

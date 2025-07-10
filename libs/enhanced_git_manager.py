@@ -112,7 +112,7 @@ class EnhancedGitManager:
                 
                 # コマンド抽出
                 if 'ai-' in file_path:
-                    analysis['purpose'] = 'AI Companyコマンドスクリプト'
+                    analysis['purpose'] = 'Elders Guildコマンドスクリプト'
                 
                 # 主要コマンドの検出
                 if 'docker' in content:

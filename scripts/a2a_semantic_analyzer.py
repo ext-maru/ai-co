@@ -28,7 +28,10 @@ class A2ASemanticAnalyzer:
     """A2A通信のセマンティック分析"""
     
     def __init__(self):
-        self.a2a_db_path = PROJECT_ROOT / "logs" / "a2a_monitoring.db"
+        # 実際のデータベースパスを確認
+        self.a2a_db_path = PROJECT_ROOT / "db" / "a2a_monitoring.db"
+        if not self.a2a_db_path.exists():
+            self.a2a_db_path = PROJECT_ROOT / "logs" / "a2a_monitoring.db"
         self.embedding_cache = {}
         
         # Grimoire統合が利用可能な場合のみ初期化
@@ -53,9 +56,9 @@ class A2ASemanticAnalyzer:
         # 最近の通信を取得
         query = """
         SELECT source_agent, target_agent, message_type, metadata, 
-               response_time, created_at
+               response_time, timestamp
         FROM a2a_communications
-        ORDER BY created_at DESC
+        ORDER BY timestamp DESC
         LIMIT 1000
         """
         
@@ -120,7 +123,11 @@ class A2ASemanticAnalyzer:
             else:
                 # ベクトル生成 (Grimoire使用可能な場合のみ)
                 if self.grimoire_enabled:
-                    vector = self.vector_search._generate_embedding(description)
+                    try:
+                        vector = self.vector_search.generate_embedding(description)
+                    except (AttributeError, Exception):
+                        # Grimoireの埋め込み生成に失敗した場合は簡単な特徴ベクトルを使用
+                        vector = self._generate_simple_embedding(description)
                     if vector is not None:
                         self.embedding_cache[description] = vector
                 else:
@@ -201,7 +208,10 @@ class A2ASemanticAnalyzer:
         
         # クエリをベクトル化
         if self.grimoire_enabled:
-            query_vector = self.vector_search._generate_embedding(query)
+            try:
+                query_vector = self.vector_search.generate_embedding(query)
+            except (AttributeError, Exception):
+                query_vector = self._generate_simple_embedding(query)
         else:
             query_vector = self._generate_simple_embedding(query)
         
@@ -214,10 +224,9 @@ class A2ASemanticAnalyzer:
         
         # エラーのみ取得
         query_sql = """
-        SELECT id, source_agent, target_agent, error_message, 
-               error_type, created_at
+        SELECT id, error_type, error_message, timestamp
         FROM a2a_errors
-        ORDER BY created_at DESC
+        ORDER BY timestamp DESC
         LIMIT 100
         """
         
@@ -228,12 +237,15 @@ class A2ASemanticAnalyzer:
         # 各エラーとの類似度を計算
         similar_errors = []
         for error in errors:
-            error_id, source, target, msg, err_type, timestamp = error
+            error_id, err_type, msg, timestamp = error
             
             # エラーの説明文
-            error_desc = f"{source} to {target}: {err_type} - {msg}"
+            error_desc = f"{err_type}: {msg}"
             if self.grimoire_enabled:
-                error_vector = self.vector_search._generate_embedding(error_desc)
+                try:
+                    error_vector = self.vector_search.generate_embedding(error_desc)
+                except (AttributeError, Exception):
+                    error_vector = self._generate_simple_embedding(error_desc)
             else:
                 error_vector = self._generate_simple_embedding(error_desc)
             
@@ -246,7 +258,6 @@ class A2ASemanticAnalyzer:
                 if similarity > 0.7:  # 閾値
                     similar_errors.append({
                         "id": error_id,
-                        "flow": f"{source} -> {target}",
                         "error_type": err_type,
                         "message": msg,
                         "similarity": float(similarity),
@@ -272,7 +283,10 @@ class A2ASemanticAnalyzer:
         category_vectors = {}
         for cat_id, cat_desc in categories.items():
             if self.grimoire_enabled:
-                vector = self.vector_search._generate_embedding(cat_desc)
+                try:
+                    vector = self.vector_search.generate_embedding(cat_desc)
+                except (AttributeError, Exception):
+                    vector = self._generate_simple_embedding(cat_desc)
             else:
                 vector = self._generate_simple_embedding(cat_desc)
             if vector is not None:
@@ -288,7 +302,10 @@ class A2ASemanticAnalyzer:
             # パターンをベクトル化
             pattern_desc = f"{pattern['flow']} {pattern['type']} {pattern.get('context', '')}"
             if self.grimoire_enabled:
-                pattern_vector = self.vector_search._generate_embedding(pattern_desc)
+                try:
+                    pattern_vector = self.vector_search.generate_embedding(pattern_desc)
+                except (AttributeError, Exception):
+                    pattern_vector = self._generate_simple_embedding(pattern_desc)
             else:
                 pattern_vector = self._generate_simple_embedding(pattern_desc)
             
@@ -334,7 +351,7 @@ class A2ASemanticAnalyzer:
         query = """
         SELECT source_agent, target_agent, message_type, metadata
         FROM a2a_communications
-        ORDER BY created_at DESC
+        ORDER BY timestamp DESC
         LIMIT ?
         """
         

@@ -1,4 +1,4 @@
-# AI Company ナレッジベース
+# Elders Guild ナレッジベース
 
 ## 🐛 バグ修正履歴
 
@@ -37,7 +37,7 @@
    # RabbitMQのハートビート設定を60秒に変更
    sudo rabbitmqctl eval 'application:set_env(rabbit, heartbeat, 60).'
    
-   # AI Companyを再起動
+   # Elders Guildを再起動
    bash scripts/fix_worker_stability.sh
    ```
 

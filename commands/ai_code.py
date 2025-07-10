@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ai-code: AI Company コード生成タスクショートカット
+ai-code: Elders Guild コード生成タスクショートカット
 ai-send "..." code のエイリアス
 """
 import sys
@@ -13,7 +13,7 @@ class CodeCommand(SendCommand):
         # SendCommandを継承して初期化
         super().__init__()
         self.name = "code"
-        self.description = "AI Company にコード生成タスクを送信します（ai-send のショートカット）"
+        self.description = "Elders Guild にコード生成タスクを送信します（ai-send のショートカット）"
         
         # パーサーを再設定
         self.parser.prog = 'ai-code'

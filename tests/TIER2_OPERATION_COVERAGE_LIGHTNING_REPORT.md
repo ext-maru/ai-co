@@ -331,4 +331,4 @@ TIER 3では、より高度なシステム統合テストとプロダクショ�
 
 > *"Quality is not an act, it is a habit."* - Aristotle
 
-TIER 2 Operation Coverage Lightning の成功により、AI Company Worker基盤はより堅牢で信頼性の高いシステムへと進化しました。
+TIER 2 Operation Coverage Lightning の成功により、Elders Guild Worker基盤はより堅牢で信頼性の高いシステムへと進化しました。

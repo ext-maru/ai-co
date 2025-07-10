@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Slack通知機能 v2.0 - 進化したAI Companyに最適化
+Slack通知機能 v2.0 - 進化したElders Guildに最適化
 """
 
 import json
@@ -155,7 +155,7 @@ class SlackNotifierV2:
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": f"{status_emoji} AI Company タスク完了通知"
+                        "text": f"{status_emoji} Elders Guild タスク完了通知"
                     }
                 },
                 {
@@ -277,7 +277,7 @@ class SlackNotifierV2:
                 "elements": [
                     {
                         "type": "mrkdwn",
-                        "text": f"AI Company RAG System | {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+                        "text": f"Elders Guild RAG System | {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
                     }
                 ]
             })

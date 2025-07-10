@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company RabbitMQ 常時監視システム
+Elders Guild RabbitMQ 常時監視システム
 接続状態の監視と自動復旧
 """
 import time

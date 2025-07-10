@@ -105,7 +105,7 @@ def save_elder_naming_conventions():
     elder_tree_content = """# Elder Tree (エルダーツリー)
 
 ## 定義
-エルダーツリーとは、グランドエルダーmaruを頂点とする階層構造全体を指す、AI Companyの組織構造の中核概念。
+エルダーツリーとは、グランドエルダーmaruを頂点とする階層構造全体を指す、Elders Guildの組織構造の中核概念。
 
 ## 階層構造
 1. **根 (Root)**: グランドエルダーmaru - 全体統治
@@ -136,10 +136,10 @@ def save_elder_naming_conventions():
 
 ## 定義
 エルダーズギルドとは、エルダーツリーに属するすべての構成員と組織全体を包括する名称。
-AI Companyの開発・運営に関わるすべてのエルダー系組織の総称。
+Elders Guildの開発・運営に関わるすべてのエルダー系組織の総称。
 
 ## ギルドの目的
-1. AI Companyの持続的発展
+1. Elders Guildの持続的発展
 2. 知識の蓄積と継承
 3. 品質の維持向上（99.999%稼働率）
 4. 自律的な問題解決

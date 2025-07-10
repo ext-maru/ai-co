@@ -1,10 +1,10 @@
-# AI Company System Architecture v6.1
+# Elders Guild System Architecture v6.1
 
 *最終更新: 2025年7月5日 - Phase 1-3 システム統合完了版*
 
 ## システム概要
 
-AI Companyは、Claude APIを活用した自律的タスク処理システムです。RabbitMQベースのメッセージキューアーキテクチャを採用し、14個の専門ワーカーが協調して動作します。
+Elders Guildは、Claude APIを活用した自律的タスク処理システムです。RabbitMQベースのメッセージキューアーキテクチャを採用し、14個の専門ワーカーが協調して動作します。
 
 ## 基本構成
 

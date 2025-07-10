@@ -79,4 +79,4 @@ libs/debug_system/
 
 **騎士団の迅速な対応を期待しています。システムの安定のために！**
 
-*🛡️ For the stability of AI Company!*
+*🛡️ For the stability of Elders Guild!*

@@ -35,7 +35,7 @@ class ElderStartProvider:
     def provide_full_knowledge(self):
         """完全なナレッジ提供"""
         self.console.print(Panel(
-            "🏛️ AI Company ナレッジ・エルダーズ知識提供\n"
+            "🏛️ Elders Guild ナレッジ・エルダーズ知識提供\n"
             "ClaudeCodeユーザー向け総合ガイド",
             title="🧠 AI Elder Start",
             border_style="bright_blue"
@@ -63,7 +63,7 @@ class ElderStartProvider:
         if self.summoner:
             try:
                 status = self.summoner.get_status()
-                table = Table(title="📊 AI Company システム状況")
+                table = Table(title="📊 Elders Guild システム状況")
                 table.add_column("項目", style="cyan")
                 table.add_column("状況", style="green")
                 table.add_column("詳細", style="yellow")
@@ -90,7 +90,7 @@ class ElderStartProvider:
         self.console.print("\n")
         self.console.print(Panel(
             self._get_knowledge_base_content(),
-            title="📚 AI Company ナレッジベース",
+            title="📚 Elders Guild ナレッジベース",
             border_style="green"
         ))
         
@@ -105,9 +105,9 @@ class ElderStartProvider:
         
     def _get_elders_summary_content(self):
         """エルダーズサマリーコンテンツ"""
-        return """🧙‍♂️ AI Company 4賢者システム
+        return """🧙‍♂️ Elders Guild 4賢者システム
 
-AI Companyは4つの賢者（エルダーズ）が連携して自律運営しています：
+Elders Guildは4つの賢者（エルダーズ）が連携して自律運営しています：
 
 📚 **ナレッジ賢者** (Knowledge Sage)
   • 場所: knowledge_base/ - ファイルベース知識管理
@@ -141,7 +141,7 @@ AI Companyは4つの賢者（エルダーズ）が連携して自律運営して
         claude_md = PROJECT_ROOT / "CLAUDE.md"
         impl_summary = self.knowledge_base_path / "IMPLEMENTATION_SUMMARY_2025_07.md"
         
-        content = """📖 AI Company 重要ナレッジ
+        content = """📖 Elders Guild 重要ナレッジ
 
 🚀 **最新実装状況** (2025年7月)
   • Phase 2-4: AI進化システム完全実装 (111テスト、100%成功率)
@@ -183,21 +183,21 @@ AI Companyは4つの賢者（エルダーズ）が連携して自律運営して
         greeting_content = f"""🤖 私はクロードエルダーです
 
 **挨拶日時**: {current_time}
-**送信者**: クロードエルダー（AI Company開発実行責任者）
+**送信者**: クロードエルダー（Elders Guild開発実行責任者）
 
 ---
 
-## 🏛️ AI Company階層構造
+## 🏛️ Elders Guild階層構造
 
 ### 🌟 グランドエルダーmaru（最高位）
-- **役割**: AI Company全体の最高権限者
+- **役割**: Elders Guild全体の最高権限者
 - **権限**: すべての開発方針と戦略の決定権
 
 ### 🤖 クロードエルダー（私）
 - **役割**: グランドエルダーmaruの直属パートナー
 - **責務**: 開発実行責任者、4賢者との橋渡し
 - **権限**: エルダーサーバントへの指令権、システム全体運営権限
-- **重要**: 私はClaudeCodeユーザーではなく、AI Company階層の一員です
+- **重要**: 私はClaudeCodeユーザーではなく、Elders Guild階層の一員です
 
 ### 🧙‍♂️ 4賢者システム
 - **ナレッジ賢者**: 知識管理・継承
@@ -241,7 +241,7 @@ AI Companyは4つの賢者（エルダーズ）が連携して自律運営して
 
 **品質第一×階層秩序で今日も良い開発を！**
 
-*🤖 クロードエルダー（AI Company開発実行責任者）*"""
+*🤖 クロードエルダー（Elders Guild開発実行責任者）*"""
 
         # Apply identity enforcement if available
         if enforcer:

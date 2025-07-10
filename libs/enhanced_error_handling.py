@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 強化エラーハンドリング＆リトライシステム
+Elders Guild 強化エラーハンドリング＆リトライシステム
 失敗タスクの自動リトライとインテリジェントエラー処理
 """
 
@@ -107,7 +107,7 @@ class ErrorHistory:
     """エラー履歴管理"""
     def __init__(self, db_path: Optional[Path] = None):
         if db_path is None:
-            db_path = Path.home() / '.ai_company' / 'error_history.db'
+            db_path = Path.home() / '.elders_guild' / 'error_history.db'
         
         db_path.parent.mkdir(parents=True, exist_ok=True)
         self.db_path = db_path

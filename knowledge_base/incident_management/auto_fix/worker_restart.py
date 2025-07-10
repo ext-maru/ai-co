@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Worker Restart - AI Companyワーカー自動再起動
+Worker Restart - Elders Guildワーカー自動再起動
 インシデント賢者のワーカー治癒術
 """
 
@@ -15,7 +15,7 @@ from typing import Dict, List, Optional
 
 
 class WorkerRestart:
-    """AI Companyワーカー自動再起動システム"""
+    """Elders Guildワーカー自動再起動システム"""
     
     def __init__(self):
         self.logger = logging.getLogger(__name__)
@@ -147,7 +147,7 @@ class WorkerRestart:
             load_avg = psutil.getloadavg()
             health['load_average'] = load_avg[0]  # 1分平均
             
-            # AI Companyプロセス数
+            # Elders Guildプロセス数
             ai_process_count = 0
             for proc in psutil.process_iter(['cmdline']):
                 try:
@@ -481,7 +481,7 @@ class WorkerRestart:
 def main():
     import argparse
     
-    parser = argparse.ArgumentParser(description="AI Company Worker Restart System")
+    parser = argparse.ArgumentParser(description="Elders Guild Worker Restart System")
     parser.add_argument('action', choices=['diagnose', 'restart', 'restart_all', 'emergency', 'stats'],
                        help="Action to perform")
     parser.add_argument('--worker', help="Specific worker name for restart action")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-会話管理データベース - PostgreSQL統合システム（AI Company Unified）
+会話管理データベース - PostgreSQL統合システム（Elders Guild Unified）
 """
 import json
 from datetime import datetime

@@ -1,8 +1,8 @@
-# 🏗️ AI Company Core - 共通基盤モジュール
+# 🏗️ Elders Guild Core - 共通基盤モジュール
 
 ## 概要
 
-AI Company Coreは、ワーカーとマネージャーの共通処理を標準化するための基盤モジュールです。コードの重複を削減し、保守性を向上させます。
+Elders Guild Coreは、ワーカーとマネージャーの共通処理を標準化するための基盤モジュールです。コードの重複を削減し、保守性を向上させます。
 
 ## 🚀 クイックスタート
 
@@ -258,7 +258,7 @@ config = reload_config()
 
 ## 📄 ライセンス
 
-AI Company内部使用
+Elders Guild内部使用
 
 ---
 

@@ -125,7 +125,7 @@ exclude_lines =
 
 [html]
 directory = htmlcov
-title = AI Company Test Coverage Report
+title = Elders Guild Test Coverage Report
 
 [xml]
 output = coverage.xml
@@ -618,7 +618,7 @@ class TestProjectConfiguration:
         assert claude_md.exists()
         
         content = claude_md.read_text(encoding='utf-8')
-        assert 'AI Company' in content
+        assert 'Elders Guild' in content
         assert 'TDD' in content
         
     def test_requirements_files(self):

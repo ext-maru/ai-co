@@ -247,7 +247,7 @@ Slack Guardian Knightが以下の問題を検出しました：
 
 1. **Slack App設定に移動**
    ```
-   https://api.slack.com/apps → AI Company app選択
+   https://api.slack.com/apps → Elders Guild app選択
    ```
 
 2. **OAuth & Permissions**

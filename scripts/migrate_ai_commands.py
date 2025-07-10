@@ -268,7 +268,7 @@ def main():
     if len(sys.argv) > 1:
         target_path = Path(sys.argv[1])
     else:
-        # Default to AI Company directory
+        # Default to Elders Guild directory
         target_path = Path("/home/aicompany/ai_co")
     
     if not target_path.exists():

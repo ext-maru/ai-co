@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Command Executor MCP Server
+Elders Guild Command Executor MCP Server
 コマンド実行を管理し、結果を追跡するMCPサーバー
 """
 
@@ -17,14 +17,14 @@ from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 import logging
 
-# AI Companyプロジェクトルート
+# Elders Guildプロジェクトルート
 PROJECT_ROOT = Path("/home/aicompany/ai_co")
 AI_COMMANDS_DIR = PROJECT_ROOT / "ai_commands"
 AI_PROGRAMS_DIR = PROJECT_ROOT / "ai_programs"
 
 
 class AICompanyExecutorServer:
-    """AI Company Command Executor MCPサーバー"""
+    """Elders Guild Command Executor MCPサーバー"""
     
     def __init__(self):
         self.server = Server("ai-company-executor")

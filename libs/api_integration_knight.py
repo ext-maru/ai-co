@@ -497,7 +497,7 @@ class APIIntegrationKnight(IncidentKnight):
             
             # .envファイルが存在しない場合は作成
             if not env_file.exists():
-                env_content = """# AI Company API Configuration
+                env_content = """# Elders Guild API Configuration
 ANTHROPIC_API_KEY=sk-ant-api03-placeholder-key-please-replace-with-real-key
 CLAUDE_API_TIMEOUT=30
 CLAUDE_API_RETRY_COUNT=3

@@ -1,5 +1,5 @@
 """
-AI Company Web - FastAPI Backend Main Application
+Elders Guild Web - FastAPI Backend Main Application
 Phase 4: Production-Ready Elder's Guild Four Sages System
 """
 
@@ -59,7 +59,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     Enhanced with Elder's Guild production features.
     """
     # Startup
-    logger.info("🏰 Starting AI Company Web - Elder's Guild Phase 4")
+    logger.info("🏰 Starting Elders Guild Web - Elder's Guild Phase 4")
     
     try:
         # Initialize database
@@ -77,7 +77,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         
         # Announce startup completion
         logger.info(
-            "🚀 AI Company Web Elder's Guild System ONLINE",
+            "🚀 Elders Guild Web Elder's Guild System ONLINE",
             environment=settings.ENVIRONMENT,
             elder_council_enabled=settings.ELDER_COUNCIL_ENABLED,
             max_sages=settings.MAX_SAGES,
@@ -91,7 +91,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     yield
     
     # Shutdown
-    logger.info("🏰 Shutting down AI Company Web - Elder's Guild")
+    logger.info("🏰 Shutting down Elders Guild Web - Elder's Guild")
     
     try:
         # Cleanup WebSocket connections
@@ -110,7 +110,7 @@ def create_application() -> FastAPI:
     Enhanced for Elder's Guild production deployment.
     """
     app = FastAPI(
-        title="AI Company Web - Elder's Guild API",
+        title="Elders Guild Web - Elder's Guild API",
         description="Production-ready Four Sages System with Elder Council governance",
         version="1.0.0",
         docs_url="/api/docs" if not settings.is_production else None,
@@ -306,7 +306,7 @@ async def root():
     
     return JSONResponse(
         content={
-            "message": "🏰 AI Company Web - Elder's Guild API",
+            "message": "🏰 Elders Guild Web - Elder's Guild API",
             "description": "Production-ready Four Sages System with Elder Council governance",
             "version": "1.0.0",
             "environment": settings.ENVIRONMENT,
@@ -346,7 +346,7 @@ async def system_info():
         
         return JSONResponse(
             content={
-                "system": "AI Company Web - Elder's Guild",
+                "system": "Elders Guild Web - Elder's Guild",
                 "phase": "Phase 4 - Production Deployment",
                 "status": "operational",
                 "architecture": {
@@ -383,7 +383,7 @@ async def system_info():
 if __name__ == "__main__":
     import uvicorn
     
-    logger.info("🏰 Starting AI Company Web development server")
+    logger.info("🏰 Starting Elders Guild Web development server")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
     logger.info(f"Database: {settings.DATABASE_URL.split('@')[-1] if '@' in settings.DATABASE_URL else settings.DATABASE_URL}")
     logger.info(f"Redis: {settings.REDIS_URL.split('@')[-1] if '@' in settings.REDIS_URL else settings.REDIS_URL}")

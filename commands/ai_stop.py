@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ai-stop: AI Company システム停止コマンド
+ai-stop: Elders Guild システム停止コマンド
 """
 import time
 import os
@@ -10,7 +10,7 @@ class StopCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="stop",
-            description="AI Company システムを停止します"
+            description="Elders Guild システムを停止します"
         )
         
     def setup_arguments(self):
@@ -27,10 +27,10 @@ class StopCommand(BaseCommand):
         
     def stop_tmux_session(self):
         """tmuxセッション停止"""
-        result = self.run_command(['tmux', 'has-session', '-t', 'ai_company'])
+        result = self.run_command(['tmux', 'has-session', '-t', 'elders_guild'])
         if result and result.returncode == 0:
             self.info("tmuxセッション停止中...")
-            self.run_command(['tmux', 'kill-session', '-t', 'ai_company'])
+            self.run_command(['tmux', 'kill-session', '-t', 'elders_guild'])
             self.success("tmuxセッション停止完了")
             return True
         else:
@@ -161,7 +161,7 @@ class StopCommand(BaseCommand):
                 
     def execute(self, args):
         """メイン実行"""
-        self.header("AI Company システム停止")
+        self.header("Elders Guild システム停止")
         
         # 停止前の状態表示
         self.show_status_before_stop()

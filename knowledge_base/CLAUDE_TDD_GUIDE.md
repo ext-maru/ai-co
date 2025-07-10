@@ -1,8 +1,8 @@
-# Claude CLI TDDガイド - AI Company公式ガイドライン
+# Claude CLI TDDガイド - Elders Guild公式ガイドライン
 
 ## 🎯 概要
 
-このガイドは、Claude CLIを使用してAI Company内で開発を行う際のTDD（テスト駆動開発）実践方法を定めた公式ガイドラインです。**すべての新規開発はTDDで行うことを必須とします**。
+このガイドは、Claude CLIを使用してElders Guild内で開発を行う際のTDD（テスト駆動開発）実践方法を定めた公式ガイドラインです。**すべての新規開発はTDDで行うことを必須とします**。
 
 ## 🔴🟢🔵 TDD基本原則
 

@@ -62,4 +62,4 @@ Refs: code_20250703_123456
 ---
 
 *実装日: 2025-07-03*
-*実装者: AI Company System*
+*実装者: Elders Guild System*

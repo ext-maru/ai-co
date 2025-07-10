@@ -159,7 +159,7 @@ class WorkerDashboardHandler(BaseHTTPRequestHandler):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 Worker Dashboard - AI Company</title>
+    <title>🤖 Worker Dashboard - Elders Guild</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -336,7 +336,7 @@ class WorkerDashboardHandler(BaseHTTPRequestHandler):
     <div class="dashboard">
         <div class="header">
             <h1>🤖 Worker Dashboard</h1>
-            <p>AI Company Worker リアルタイム監視システム</p>
+            <p>Elders Guild Worker リアルタイム監視システム</p>
         </div>
         
         <div class="status-bar" id="statusBar">
@@ -619,7 +619,7 @@ class WorkerDashboard:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 Worker Dashboard - AI Company</title>
+    <title>🤖 Worker Dashboard - Elders Guild</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -788,7 +788,7 @@ class WorkerDashboard:
     <div class="dashboard">
         <div class="header">
             <h1>🤖 Worker Dashboard</h1>
-            <p>AI Company Worker リアルタイム監視システム</p>
+            <p>Elders Guild Worker リアルタイム監視システム</p>
         </div>
         
         <div class="status-bar" id="statusBar">

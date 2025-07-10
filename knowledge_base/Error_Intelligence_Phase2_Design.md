@@ -254,4 +254,4 @@ CREATE TABLE fix_history (
 
 ---
 
-**Phase 2により、AI Companyは自己修復能力を獲得します。**
+**Phase 2により、Elders Guildは自己修復能力を獲得します。**

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Worker Communication Management
+Elders Guild Worker Communication Management
 ワーカー間通信管理
 """
 import sys

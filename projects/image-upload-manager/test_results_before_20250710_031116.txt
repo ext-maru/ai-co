@@ -1,0 +1,368 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0 -- /usr/bin/python3
+cachedir: .pytest_cache
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/aicompany/ai_co/projects/image-upload-manager
+configfile: pytest.ini
+plugins: mock-3.14.0, asyncio-1.0.0, cov-6.2.1, anyio-4.9.0, benchmark-5.1.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 64 items
+
+tests/unit/test_app_routes.py::TestIndexRoute::test_index_page PASSED    [  1%]
+tests/unit/test_app_routes.py::TestCustomerRoutes::test_customer_page_not_found PASSED [  3%]
+tests/unit/test_app_routes.py::TestCustomerRoutes::test_customer_page_success PASSED [  4%]
+tests/unit/test_app_routes.py::TestCustomerRoutes::test_customer_page_with_images PASSED [  6%]
+tests/unit/test_app_routes.py::TestFileUpload::test_upload_no_file PASSED [  7%]
+tests/unit/test_app_routes.py::TestFileUpload::test_upload_no_image_type PASSED [  9%]
+tests/unit/test_app_routes.py::TestFileUpload::test_upload_invalid_file_type PASSED [ 10%]
+tests/unit/test_app_routes.py::TestFileUpload::test_upload_success PASSED [ 12%]
+tests/unit/test_app_routes.py::TestAdminRoutes::test_admin_page_empty PASSED [ 14%]
+tests/unit/test_app_routes.py::TestAdminRoutes::test_admin_page_with_customers PASSED [ 15%]
+tests/unit/test_app_routes.py::TestAdminRoutes::test_admin_customer_images PASSED [ 17%]
+tests/unit/test_app_routes.py::TestAdminRoutes::test_create_customer_get PASSED [ 18%]
+tests/unit/test_app_routes.py::TestAdminRoutes::test_create_customer_post_no_name PASSED [ 20%]
+tests/unit/test_app_routes.py::TestAdminRoutes::test_create_customer_post_success PASSED [ 21%]
+tests/unit/test_app_routes.py::TestImageReview::test_review_image_not_found FAILED [ 23%]
+tests/unit/test_app_routes.py::TestImageReview::test_review_image_approve PASSED [ 25%]
+tests/unit/test_app_routes.py::TestImageReview::test_review_image_reject PASSED [ 26%]
+tests/unit/test_app_routes.py::TestSettingsRoutes::test_settings_page_get PASSED [ 28%]
+tests/unit/test_app_routes.py::TestSettingsRoutes::test_settings_save PASSED [ 29%]
+tests/unit/test_app_routes.py::TestErrorHandlers::test_404_handler PASSED [ 31%]
+tests/unit/test_file_upload.py::TestAllowedFile::test_allowed_extensions PASSED [ 32%]
+tests/unit/test_file_upload.py::TestAllowedFile::test_disallowed_extensions PASSED [ 34%]
+tests/unit/test_file_upload.py::TestFileUploadIntegration::test_upload_empty_filename PASSED [ 35%]
+tests/unit/test_file_upload.py::TestFileUploadIntegration::test_upload_oversized_file FAILED [ 37%]
+tests/unit/test_file_upload.py::TestFileUploadIntegration::test_upload_with_special_characters PASSED [ 39%]
+tests/unit/test_file_upload.py::TestFileUploadIntegration::test_upload_replace_existing PASSED [ 40%]
+tests/unit/test_file_upload.py::TestFileUploadIntegration::test_upload_all_image_types PASSED [ 42%]
+tests/unit/test_file_upload.py::TestFileValidation::test_invalid_image_type PASSED [ 43%]
+tests/unit/test_file_upload.py::TestFileValidation::test_upload_different_mime_types PASSED [ 45%]
+tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_service_initialization_disabled PASSED [ 46%]
+tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_service_initialization_enabled_no_credentials FAILED [ 48%]
+tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_service_initialization_with_credentials FAILED [ 50%]
+tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_create_folder_service_disabled FAILED [ 51%]
+tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_create_folder_success FAILED [ 53%]
+tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_upload_file_service_disabled FAILED [ 54%]
+tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_upload_file_success FAILED [ 56%]
+tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_upload_file_not_exists FAILED [ 57%]
+tests/unit/test_google_drive_service.py::TestUploadApprovedImage::test_upload_approved_image_service_disabled FAILED [ 59%]
+tests/unit/test_google_drive_service.py::TestUploadApprovedImage::test_upload_approved_image_success FAILED [ 60%]
+tests/unit/test_google_drive_service.py::TestUploadApprovedImage::test_upload_approved_image_exception FAILED [ 62%]
+tests/unit/test_google_drive_service.py::TestGetDriveService::test_get_drive_service_singleton PASSED [ 64%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_large_image PASSED [ 65%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_small_image PASSED [ 67%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_with_exif_rotation FAILED [ 68%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_png_to_jpeg PASSED [ 70%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_rgba_image PASSED [ 71%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_portrait_image PASSED [ 73%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_landscape_image PASSED [ 75%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_corrupted_image PASSED [ 76%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_nonexistent_file PASSED [ 78%]
+tests/unit/test_image_processing.py::TestImageResize::test_resize_quality_optimization PASSED [ 79%]
+tests/unit/test_image_processing.py::TestImageProcessingEdgeCases::test_resize_zero_size_image PASSED [ 81%]
+tests/unit/test_image_processing.py::TestImageProcessingEdgeCases::test_resize_with_exception_handling PASSED [ 82%]
+tests/unit/test_models.py::TestCustomerModel::test_customer_creation FAILED [ 84%]
+tests/unit/test_models.py::TestCustomerModel::test_customer_repr FAILED  [ 85%]
+tests/unit/test_models.py::TestCustomerImageModel::test_customer_image_creation PASSED [ 87%]
+tests/unit/test_models.py::TestCustomerImageModel::test_customer_image_repr FAILED [ 89%]
+tests/unit/test_models.py::TestImageType::test_image_types_exist PASSED  [ 90%]
+tests/unit/test_models.py::TestImageType::test_get_image_type_display_name FAILED [ 92%]
+tests/unit/test_models.py::TestImageStatus::test_image_statuses_exist PASSED [ 93%]
+tests/unit/test_models.py::TestImageStatus::test_get_status_display_name PASSED [ 95%]
+tests/unit/test_models.py::TestImageStatus::test_get_status_symbol PASSED [ 96%]
+tests/unit/test_models.py::TestSystemConfig::test_system_config_creation FAILED [ 98%]
+tests/unit/test_models.py::TestSystemConfig::test_system_config_repr FAILED [100%]
+
+=================================== FAILURES ===================================
+_________________ TestImageReview.test_review_image_not_found __________________
+tests/unit/test_app_routes.py:185: in test_review_image_not_found
+    assert response.status_code == 404
+E   assert 500 == 404
+E    +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+----------------------------- Captured stdout call -----------------------------
+レビューエラー: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+_____________ TestFileUploadIntegration.test_upload_oversized_file _____________
+tests/unit/test_file_upload.py:69: in test_upload_oversized_file
+    with patch('app.request') as mock_request:
+/usr/lib/python3.12/unittest/mock.py:1481: in __enter__
+    if spec is None and _is_async_obj(original):
+                        ^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/unittest/mock.py:56: in _is_async_obj
+    if hasattr(obj, '__func__'):
+       ^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.local/lib/python3.12/site-packages/werkzeug/local.py:318: in __get__
+    obj = instance._get_current_object()
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.local/lib/python3.12/site-packages/werkzeug/local.py:519: in _get_current_object
+    raise RuntimeError(unbound_message) from None
+E   RuntimeError: Working outside of request context.
+E   
+E   This typically means that you attempted to use functionality that needed
+E   an active HTTP request. Consult the documentation on testing for
+E   information about how to avoid this problem.
+__ TestGoogleDriveService.test_service_initialization_enabled_no_credentials ___
+tests/unit/test_google_drive_service.py:23: in test_service_initialization_enabled_no_credentials
+    assert service.enabled is True
+E   assert False is True
+E    +  where False = <google_drive_service.GoogleDriveService object at 0x7d591e77d370>.enabled
+------------------------------ Captured log call -------------------------------
+ERROR    google_drive_service:google_drive_service.py:45 認証情報ファイルが見つかりません: /home/aicompany/ai_co/projects/image-upload-manager/config/google_credentials.json
+_____ TestGoogleDriveService.test_service_initialization_with_credentials ______
+/usr/lib/python3.12/unittest/mock.py:923: in assert_called_once
+    raise AssertionError(msg)
+E   AssertionError: Expected 'from_service_account_file' to have been called once. Called 2 times.
+E   Calls: [call('/app/config/google_credentials.json', scopes=['https://www.googleapis.com/auth/drive.file']),
+E    call('/app/config/google_credentials.json', scopes=['https://www.googleapis.com/auth/drive.file'])].
+
+During handling of the above exception, another exception occurred:
+tests/unit/test_google_drive_service.py:42: in test_service_initialization_with_credentials
+    mock_service_account.Credentials.from_service_account_file.assert_called_once()
+E   AssertionError: Expected 'from_service_account_file' to have been called once. Called 2 times.
+E   Calls: [call('/app/config/google_credentials.json', scopes=['https://www.googleapis.com/auth/drive.file']),
+E    call('/app/config/google_credentials.json', scopes=['https://www.googleapis.com/auth/drive.file'])].
+E   
+E   pytest introspection follows:
+E   
+E   Args:
+E   assert ('/app/config/google_credentials.json',) == ()
+E     
+E     Left contains one more item: '/app/config/google_credentials.json'
+E     
+E     Full diff:
+E     - ()
+E     + (
+E     +     '/app/config/google_credentials.json',
+E     + )
+E   Kwargs:
+E   assert {'scopes': ['https://www.googleapis.com/auth/drive.file']} == {}
+E     
+E     Left contains 1 more item:
+E     {'scopes': ['https://www.googleapis.com/auth/drive.file']}
+E     
+E     Full diff:
+E     - {}
+E     + {
+E     +     'scopes': [
+E     +         'https://www.googleapis.com/auth/drive.file',
+E     +     ],
+E     + }
+__________ TestGoogleDriveService.test_create_folder_service_disabled __________
+tests/unit/test_google_drive_service.py:51: in test_create_folder_service_disabled
+    result = service.create_folder('test_folder')
+             ^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'GoogleDriveService' object has no attribute 'create_folder'
+------------------------------ Captured log call -------------------------------
+ERROR    google_drive_service:google_drive_service.py:45 認証情報ファイルが見つかりません: /home/aicompany/ai_co/projects/image-upload-manager/config/google_credentials.json
+______________ TestGoogleDriveService.test_create_folder_success _______________
+tests/unit/test_google_drive_service.py:73: in test_create_folder_success
+    folder_id = service.create_folder('test_folder')
+                ^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'GoogleDriveService' object has no attribute 'create_folder'
+------------------------------ Captured log call -------------------------------
+ERROR    google_drive_service:google_drive_service.py:45 認証情報ファイルが見つかりません: /home/aicompany/ai_co/projects/image-upload-manager/config/google_credentials.json
+___________ TestGoogleDriveService.test_upload_file_service_disabled ___________
+tests/unit/test_google_drive_service.py:87: in test_upload_file_service_disabled
+    result = service.upload_file('/path/to/file.jpg', 'test.jpg')
+             ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'GoogleDriveService' object has no attribute 'upload_file'. Did you mean: 'upload_image'?
+------------------------------ Captured log call -------------------------------
+ERROR    google_drive_service:google_drive_service.py:45 認証情報ファイルが見つかりません: /home/aicompany/ai_co/projects/image-upload-manager/config/google_credentials.json
+_______________ TestGoogleDriveService.test_upload_file_success ________________
+/usr/lib/python3.12/unittest/mock.py:1387: in patched
+    with self.decoration_helper(patched,
+/usr/lib/python3.12/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+/usr/lib/python3.12/unittest/mock.py:1369: in decoration_helper
+    arg = exit_stack.enter_context(patching)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/contextlib.py:526: in enter_context
+    result = _enter(cm)
+             ^^^^^^^^^^
+/usr/lib/python3.12/unittest/mock.py:1458: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/unittest/mock.py:1431: in get_original
+    raise AttributeError(
+E   AttributeError: <module 'google_drive_service' from '/home/aicompany/ai_co/projects/image-upload-manager/tests/../app/google_drive_service.py'> does not have the attribute 'MediaFileUpload'
+______________ TestGoogleDriveService.test_upload_file_not_exists ______________
+tests/unit/test_google_drive_service.py:132: in test_upload_file_not_exists
+    result = service.upload_file('/path/to/nonexistent.jpg', 'test.jpg')
+             ^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'GoogleDriveService' object has no attribute 'upload_file'. Did you mean: 'upload_image'?
+------------------------------ Captured log call -------------------------------
+ERROR    google_drive_service:google_drive_service.py:45 認証情報ファイルが見つかりません: /home/aicompany/ai_co/projects/image-upload-manager/config/google_credentials.json
+_____ TestUploadApprovedImage.test_upload_approved_image_service_disabled ______
+tests/unit/test_google_drive_service.py:148: in test_upload_approved_image_service_disabled
+    assert result is None
+E   AssertionError: assert <Mock name='get_drive_service().upload_image()' id='137821716873392'> is None
+__________ TestUploadApprovedImage.test_upload_approved_image_success __________
+tests/unit/test_google_drive_service.py:170: in test_upload_approved_image_success
+    assert result == {
+E   AssertionError: assert <Mock name='get_drive_service().upload_image()' id='137821716879440'> == {'file_id': 'file_123', 'web_view_link': 'https://drive.google.com/file/123', 'folder_id': 'customer_folder_123'}
+_________ TestUploadApprovedImage.test_upload_approved_image_exception _________
+tests/unit/test_google_drive_service.py:189: in test_upload_approved_image_exception
+    assert result is None
+E   AssertionError: assert <Mock name='get_drive_service().upload_image()' id='137821716789728'> is None
+________________ TestImageResize.test_resize_with_exif_rotation ________________
+tests/unit/test_image_processing.py:64: in test_resize_with_exif_rotation
+    with patch('PIL.Image.Image._getexif') as mock_getexif:
+/usr/lib/python3.12/unittest/mock.py:1458: in __enter__
+    original, local = self.get_original()
+                      ^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/unittest/mock.py:1431: in get_original
+    raise AttributeError(
+E   AttributeError: <class 'PIL.Image.Image'> does not have the attribute '_getexif'
+___________________ TestCustomerModel.test_customer_creation ___________________
+tests/unit/test_models.py:23: in test_customer_creation
+    assert isinstance(customer.created_at, datetime)
+E   assert False
+E    +  where False = isinstance(None, datetime)
+E    +    where None = <Customer (transient 137821716775952)>.created_at
+_____________________ TestCustomerModel.test_customer_repr _____________________
+tests/unit/test_models.py:29: in test_customer_repr
+    assert repr(customer) == "<Customer test_123: 山田太郎>"
+E   AssertionError: assert '<Customer (transient 137821695311744)>' == '<Customer test_123: 山田太郎>'
+E     
+E     - <Customer test_123: 山田太郎>
+E     + <Customer (transient 137821695311744)>
+_______________ TestCustomerImageModel.test_customer_image_repr ________________
+tests/unit/test_models.py:60: in test_customer_image_repr
+    assert repr(image) == "<CustomerImage test_123: identity_card>"
+E   AssertionError: assert '<CustomerImage (transient 137821694998912)>' == '<CustomerImage test_123: identity_card>'
+E     
+E     - <CustomerImage test_123: identity_card>
+E     + <CustomerImage (transient 137821694998912)>
+________________ TestImageType.test_get_image_type_display_name ________________
+tests/unit/test_models.py:87: in test_get_image_type_display_name
+    assert get_image_type_display_name(ImageType.BANK_STATEMENT) == '銀行取引明細'
+E   AssertionError: assert '銀行明細' == '銀行取引明細'
+E     
+E     - 銀行取引明細
+E     ?   --
+E     + 銀行明細
+_________________ TestSystemConfig.test_system_config_creation _________________
+tests/unit/test_models.py:131: in test_system_config_creation
+    assert isinstance(config.created_at, datetime)
+E   assert False
+E    +  where False = isinstance(None, datetime)
+E    +    where None = <SystemConfig (transient 137821716780080)>.created_at
+___________________ TestSystemConfig.test_system_config_repr ___________________
+tests/unit/test_models.py:138: in test_system_config_repr
+    assert repr(config) == "<SystemConfig test_key: test_value>"
+E   AssertionError: assert '<SystemConfig (transient 137821716780560)>' == '<SystemConfig test_key: test_value>'
+E     
+E     - <SystemConfig test_key: test_value>
+E     + <SystemConfig (transient 137821716780560)>
+=============================== warnings summary ===============================
+tests/unit/test_app_routes.py: 11 warnings
+tests/unit/test_file_upload.py: 14 warnings
+  /home/aicompany/.local/lib/python3.12/site-packages/flask_sqlalchemy/query.py:30: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    rv = self.get(ident)
+
+tests/unit/test_app_routes.py: 41 warnings
+tests/unit/test_file_upload.py: 35 warnings
+  /home/aicompany/.local/lib/python3.12/site-packages/sqlalchemy/sql/schema.py:3624: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+
+tests/unit/test_app_routes.py: 1 warning
+tests/unit/test_file_upload.py: 9 warnings
+  /home/aicompany/ai_co/projects/image-upload-manager/tests/../app/app.py:181: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    uploaded_at=datetime.utcnow()
+
+tests/unit/test_app_routes.py::TestImageReview::test_review_image_approve
+tests/unit/test_app_routes.py::TestImageReview::test_review_image_reject
+  /home/aicompany/ai_co/projects/image-upload-manager/tests/../app/app.py:257: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    image.reviewed_at = datetime.utcnow()
+
+tests/unit/test_app_routes.py::TestImageReview::test_review_image_approve
+  /home/aicompany/ai_co/projects/image-upload-manager/tests/../app/app.py:263: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    customer = Customer.query.get(image.customer_id)
+
+tests/unit/test_app_routes.py::TestImageReview::test_review_image_approve
+  /home/aicompany/ai_co/projects/image-upload-manager/tests/unit/test_app_routes.py:216: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    image = CustomerImage.query.get(image.id)
+
+tests/unit/test_app_routes.py::TestImageReview::test_review_image_reject
+  /home/aicompany/ai_co/projects/image-upload-manager/tests/unit/test_app_routes.py:242: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    image = CustomerImage.query.get(image.id)
+
+tests/unit/test_file_upload.py::TestFileUploadIntegration::test_upload_replace_existing
+tests/unit/test_file_upload.py::TestFileValidation::test_upload_different_mime_types
+tests/unit/test_file_upload.py::TestFileValidation::test_upload_different_mime_types
+  /home/aicompany/ai_co/projects/image-upload-manager/tests/../app/app.py:166: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    existing_image.uploaded_at = datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/unit/test_app_routes.py::TestImageReview::test_review_image_not_found - assert 500 == 404
+ +  where 500 = <WrapperTestResponse streamed [500 INTERNAL SERVER ERROR]>.status_code
+FAILED tests/unit/test_file_upload.py::TestFileUploadIntegration::test_upload_oversized_file - RuntimeError: Working outside of request context.
+
+This typically means that you attempted to use functionality that needed
+an active HTTP request. Consult the documentation on testing for
+information about how to avoid this problem.
+FAILED tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_service_initialization_enabled_no_credentials - assert False is True
+ +  where False = <google_drive_service.GoogleDriveService object at 0x7d591e77d370>.enabled
+FAILED tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_service_initialization_with_credentials - AssertionError: Expected 'from_service_account_file' to have been called once. Called 2 times.
+Calls: [call('/app/config/google_credentials.json', scopes=['https://www.googleapis.com/auth/drive.file']),
+ call('/app/config/google_credentials.json', scopes=['https://www.googleapis.com/auth/drive.file'])].
+
+pytest introspection follows:
+
+Args:
+assert ('/app/config/google_credentials.json',) == ()
+  
+  Left contains one more item: '/app/config/google_credentials.json'
+  
+  Full diff:
+  - ()
+  + (
+  +     '/app/config/google_credentials.json',
+  + )
+Kwargs:
+assert {'scopes': ['https://www.googleapis.com/auth/drive.file']} == {}
+  
+  Left contains 1 more item:
+  {'scopes': ['https://www.googleapis.com/auth/drive.file']}
+  
+  Full diff:
+  - {}
+  + {
+  +     'scopes': [
+  +         'https://www.googleapis.com/auth/drive.file',
+  +     ],
+  + }
+FAILED tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_create_folder_service_disabled - AttributeError: 'GoogleDriveService' object has no attribute 'create_folder'
+FAILED tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_create_folder_success - AttributeError: 'GoogleDriveService' object has no attribute 'create_folder'
+FAILED tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_upload_file_service_disabled - AttributeError: 'GoogleDriveService' object has no attribute 'upload_file'. Did you mean: 'upload_image'?
+FAILED tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_upload_file_success - AttributeError: <module 'google_drive_service' from '/home/aicompany/ai_co/projects/image-upload-manager/tests/../app/google_drive_service.py'> does not have the attribute 'MediaFileUpload'
+FAILED tests/unit/test_google_drive_service.py::TestGoogleDriveService::test_upload_file_not_exists - AttributeError: 'GoogleDriveService' object has no attribute 'upload_file'. Did you mean: 'upload_image'?
+FAILED tests/unit/test_google_drive_service.py::TestUploadApprovedImage::test_upload_approved_image_service_disabled - AssertionError: assert <Mock name='get_drive_service().upload_image()' id='137821716873392'> is None
+FAILED tests/unit/test_google_drive_service.py::TestUploadApprovedImage::test_upload_approved_image_success - AssertionError: assert <Mock name='get_drive_service().upload_image()' id='137821716879440'> == {'file_id': 'file_123', 'web_view_link': 'https://drive.google.com/file/123', 'folder_id': 'customer_folder_123'}
+FAILED tests/unit/test_google_drive_service.py::TestUploadApprovedImage::test_upload_approved_image_exception - AssertionError: assert <Mock name='get_drive_service().upload_image()' id='137821716789728'> is None
+FAILED tests/unit/test_image_processing.py::TestImageResize::test_resize_with_exif_rotation - AttributeError: <class 'PIL.Image.Image'> does not have the attribute '_getexif'
+FAILED tests/unit/test_models.py::TestCustomerModel::test_customer_creation - assert False
+ +  where False = isinstance(None, datetime)
+ +    where None = <Customer (transient 137821716775952)>.created_at
+FAILED tests/unit/test_models.py::TestCustomerModel::test_customer_repr - AssertionError: assert '<Customer (transient 137821695311744)>' == '<Customer test_123: 山田太郎>'
+  
+  - <Customer test_123: 山田太郎>
+  + <Customer (transient 137821695311744)>
+FAILED tests/unit/test_models.py::TestCustomerImageModel::test_customer_image_repr - AssertionError: assert '<CustomerImage (transient 137821694998912)>' == '<CustomerImage test_123: identity_card>'
+  
+  - <CustomerImage test_123: identity_card>
+  + <CustomerImage (transient 137821694998912)>
+FAILED tests/unit/test_models.py::TestImageType::test_get_image_type_display_name - AssertionError: assert '銀行明細' == '銀行取引明細'
+  
+  - 銀行取引明細
+  ?   --
+  + 銀行明細
+FAILED tests/unit/test_models.py::TestSystemConfig::test_system_config_creation - assert False
+ +  where False = isinstance(None, datetime)
+ +    where None = <SystemConfig (transient 137821716780080)>.created_at
+FAILED tests/unit/test_models.py::TestSystemConfig::test_system_config_repr - AssertionError: assert '<SystemConfig (transient 137821716780560)>' == '<SystemConfig test_key: test_value>'
+  
+  - <SystemConfig test_key: test_value>
+  + <SystemConfig (transient 137821716780560)>
+================= 19 failed, 45 passed, 119 warnings in 2.61s ==================

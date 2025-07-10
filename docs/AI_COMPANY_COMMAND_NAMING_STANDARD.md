@@ -1,8 +1,8 @@
-# AI Company Command Naming Standard 📋
+# Elders Guild Command Naming Standard 📋
 
 ## 🎯 Overview
 
-AI Companyの統一コマンド命名規則と標準化ガイドライン。現在の混在する命名パターンを整理し、一貫性のあるユーザーエクスペリエンスを提供します。
+Elders Guildの統一コマンド命名規則と標準化ガイドライン。現在の混在する命名パターンを整理し、一貫性のあるユーザーエクスペリエンスを提供します。
 
 ## 🚨 Current State Analysis
 
@@ -313,7 +313,7 @@ commands/ai_send.py → ../scripts/ai-task-send
 
 ```bash
 #!/bin/bash
-# AI Company Command Aliases - Backward Compatibility
+# Elders Guild Command Aliases - Backward Compatibility
 
 # Legacy command support
 alias ai-send='ai-task-send'
@@ -340,7 +340,7 @@ alias ai-work='ai-worker-'   # Tab completion for worker commands
 **Enhanced tab completion**: `ai_commands/completions.bash`
 
 ```bash
-# AI Company Command Completion
+# Elders Guild Command Completion
 _ai_completion() {
     local cur prev domains actions
     cur="${COMP_WORDS[COMP_CWORD]}"
@@ -375,14 +375,14 @@ complete -F _ai_completion ai-system- ai-task- ai-worker- ai-knowledge- ai-rag- 
 
 ```bash
 #!/bin/bash
-# ai-task-send - Send task to AI Company
+# ai-task-send - Send task to Elders Guild
 # 
 # USAGE:
 #   ai-task-send [OPTIONS] <task_description>
 #   ai-task-send [OPTIONS] --file <task_file>
 #
 # DESCRIPTION:
-#   Sends a task to the AI Company system for processing.
+#   Sends a task to the Elders Guild system for processing.
 #   Tasks are queued and distributed to available workers.
 #
 # OPTIONS:
@@ -428,7 +428,7 @@ if [ ${#violations[@]} -gt 0 ]; then
         echo "  - $violation"
     done
     echo ""
-    echo "Please follow AI Company naming standard:"
+    echo "Please follow Elders Guild naming standard:"
     echo "  - Use: ai-domain-action-object"
     echo "  - See: docs/AI_COMPANY_COMMAND_NAMING_STANDARD.md"
     exit 1

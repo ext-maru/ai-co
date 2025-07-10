@@ -1,8 +1,8 @@
-# AI Company Master Knowledge Base v5.3
+# Elders Guild Master Knowledge Base v5.3
 
 ## 🏢 システム概要
 
-AI Companyは、Claude APIを活用した自律的タスク処理システムです。
+Elders Guildは、Claude APIを活用した自律的タスク処理システムです。
 
 ### 基本構成
 - **環境**: Ubuntu 24.04 LTS (WSL2)
@@ -370,7 +370,7 @@ tail -f logs/workers/*.log
 - **テーブル**: tasks, task_logs
 
 ### Claude Desktop統合
-Claude DesktopからAI Companyへのタスク送信時に自動的にTask Trackerで追跡：
+Claude DesktopからElders Guildへのタスク送信時に自動的にTask Trackerで追跡：
 
 ```python
 from claude_desktop_task_sender import ClaudeDesktopTaskSender

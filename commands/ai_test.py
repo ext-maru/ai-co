@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company テスト実行コマンド
+Elders Guild テスト実行コマンド
 scripts/ai-testを呼び出す
 """
 import sys
@@ -19,7 +19,7 @@ class AITestCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="ai-test",
-            description="AI Companyのテストを実行します",
+            description="Elders Guildのテストを実行します",
             version="1.0.0"
         )
     

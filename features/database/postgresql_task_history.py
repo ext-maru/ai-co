@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PostgreSQL統合タスク履歴管理 - AI Company Unified System
+PostgreSQL統合タスク履歴管理 - Elders Guild Unified System
 """
 
 import asyncio

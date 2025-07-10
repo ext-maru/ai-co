@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 統合認証プロバイダー
-AI Company Elder Hierarchy Authentication System
+Elders Guild Elder Hierarchy Authentication System
 
 エルダーズ評議会承認済み統合認証システム
 JWT + Session hybrid authentication with Elder hierarchy support
@@ -17,6 +17,11 @@ from dataclasses import dataclass, field
 from enum import Enum
 from functools import wraps
 import logging
+
+
+class SecurityError(Exception):
+    """セキュリティ違反時の例外"""
+    pass
 
 logger = logging.getLogger(__name__)
 
@@ -201,8 +206,8 @@ class UnifiedAuthProvider:
         
         return AuthResult.SUCCESS, session, user
     
-    def validate_token(self, token: str) -> Tuple[bool, Optional[AuthSession], Optional[User]]:
-        """トークン検証"""
+    def validate_token(self, token: str, current_ip: Optional[str] = None) -> Tuple[bool, Optional[AuthSession], Optional[User]]:
+        """トークン検証（IPアドレス検証付き）"""
         try:
             # JWT検証
             payload = jwt.decode(token, self.secret_key, algorithms=['HS256'])
@@ -217,6 +222,13 @@ class UnifiedAuthProvider:
             if session.expires_at < datetime.now():
                 del self.active_sessions[session_id]
                 return False, None, None
+            
+            # IPアドレス検証（セッションハイジャック防止）
+            if self.enable_device_tracking and current_ip and session.ip_address:
+                if session.ip_address != current_ip:
+                    # IPアドレス変更を検出 - セッション無効化
+                    del self.active_sessions[session_id]
+                    return False, None, None
             
             user = self.users.get(session.user_id)
             if not user or not user.is_active:
@@ -244,13 +256,30 @@ class UnifiedAuthProvider:
         totp = pyotp.TOTP(secret)
         provisioning_uri = totp.provisioning_uri(
             name=user.email,
-            issuer_name="AI Company Elder System"
+            issuer_name="Elders Guild Elder System"
         )
         
         return provisioning_uri
     
     def check_elder_permission(self, user: User, required_role: ElderRole) -> bool:
-        """Elder階層権限チェック"""
+        """Elder階層権限チェック（イミュータブル検証付き）"""
+        # ユーザー情報の改ざん検出：認証情報との照合
+        if user.username not in self.user_credentials:
+            return False
+        
+        user_creds = self.user_credentials[user.username]
+        stored_user = self.users[user_creds['user_id']]
+        
+        # セッション中の権限改ざんを検出
+        # 注意：Pythonではオブジェクト参照が同じになる可能性があるため、
+        # より厳密なチェックを実装
+        expected_role = stored_user.elder_role
+        
+        # ユーザーIDが改ざんされていないかチェック
+        if user.id != stored_user.id:
+            raise SecurityError(f"ユーザーID改ざん検出: 期待値={stored_user.id}, 実際値={user.id}")
+        
+        # 重要：stored_userの元の権限を使用して判定
         role_hierarchy = {
             ElderRole.GRAND_ELDER: 4,
             ElderRole.CLAUDE_ELDER: 3,
@@ -258,8 +287,11 @@ class UnifiedAuthProvider:
             ElderRole.SERVANT: 1
         }
         
-        user_level = role_hierarchy.get(user.elder_role, 0)
+        user_level = role_hierarchy.get(expected_role, 0)
         required_level = role_hierarchy.get(required_role, 0)
+        
+        # デバッグログ（権限チェック記録）
+        logger.info(f"権限チェック: user={user.username}, role={expected_role.value}, required={required_role.value}, granted={user_level >= required_level}")
         
         return user_level >= required_level
     
@@ -401,8 +433,11 @@ def sage_auth_required(required_sage_type: SageType):
 
 def create_demo_auth_system() -> UnifiedAuthProvider:
     """デモ認証システム作成"""
+    # 256bit（32バイト）の強力な秘密鍵を生成
+    strong_secret = secrets.token_urlsafe(32)
+    
     auth = UnifiedAuthProvider(
-        secret_key="demo-secret-key-2025",
+        secret_key=strong_secret,
         session_duration_hours=24,
         enable_mfa=True,
         enable_device_tracking=True

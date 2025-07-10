@@ -1,3 +1,3 @@
 """
-AI Company コマンドモジュール
+Elders Guild コマンドモジュール
 """

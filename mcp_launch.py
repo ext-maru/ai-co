@@ -18,7 +18,7 @@ helper = AICommandHelper()
 final_command = """#!/bin/bash
 cd /home/aicompany/ai_co
 
-echo "🚀 AI Company MCP Integration - Final Launch"
+echo "🚀 Elders Guild MCP Integration - Final Launch"
 echo "==========================================="
 echo ""
 

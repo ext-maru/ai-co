@@ -1,8 +1,8 @@
-# AI Company System Architecture (TDD対応版)
+# Elders Guild System Architecture (TDD対応版)
 
 ## システム概要
 
-AI Companyは、Claude APIを活用した**TDD（テスト駆動開発）ベース**の自律的タスク処理システムです。RabbitMQベースのメッセージキューアーキテクチャを採用し、複数の専門ワーカーが協調して動作します。
+Elders Guildは、Claude APIを活用した**TDD（テスト駆動開発）ベース**の自律的タスク処理システムです。RabbitMQベースのメッセージキューアーキテクチャを採用し、複数の専門ワーカーが協調して動作します。
 
 ### 開発手法
 - **メソドロジー**: Test Driven Development (TDD)

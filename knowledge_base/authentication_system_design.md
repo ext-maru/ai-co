@@ -1,4 +1,4 @@
-# AI Company Authentication System Architecture v2.0
+# Elders Guild Authentication System Architecture v2.0
 
 ## 📋 システム概要
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Knowledge Evolution Tracker
+Elders Guild Knowledge Evolution Tracker
 ナレッジベースの進化を追跡・可視化するシステム
 """
 
@@ -268,7 +268,7 @@ class KnowledgeEvolutionTracker(BaseManager):
         report_path = self.evolution_db / f"evolution_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
         
         with open(report_path, 'w', encoding='utf-8') as f:
-            f.write("# 🌱 AI Company Knowledge Evolution Report\n\n")
+            f.write("# 🌱 Elders Guild Knowledge Evolution Report\n\n")
             f.write(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
             
             # 最近の変更履歴
@@ -330,7 +330,7 @@ class KnowledgeEvolutionTracker(BaseManager):
             
             stats = snapshot['statistics']
             message = f"""
-{EMOJI['evolution']} AI Company Evolution Update
+{EMOJI['evolution']} Elders Guild Evolution Update
 
 📊 Current Status:
 - Workers: {stats['worker_count']}
@@ -382,7 +382,7 @@ class KnowledgeEvolutionTracker(BaseManager):
         return f"""<!DOCTYPE html>
 <html>
 <head>
-    <title>AI Company Evolution Visualization</title>
+    <title>Elders Guild Evolution Visualization</title>
     <meta charset="utf-8">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
@@ -394,7 +394,7 @@ class KnowledgeEvolutionTracker(BaseManager):
 </head>
 <body>
     <div class="container">
-        <h1>🌱 AI Company Evolution</h1>
+        <h1>🌱 Elders Guild Evolution</h1>
         
         <div id="componentsChart" class="chart"></div>
         <div id="linesChart" class="chart"></div>

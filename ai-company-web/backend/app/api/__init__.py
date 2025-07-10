@@ -1,3 +1,3 @@
 """
-API Package for AI Company Web Four Sages System
+API Package for Elders Guild Web Four Sages System
 """

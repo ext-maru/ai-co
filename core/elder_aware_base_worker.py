@@ -1,6 +1,6 @@
 """
 Elder階層統合BaseWorkerクラス v1.0
-AI Company Elder Hierarchy Integrated Worker System
+Elders Guild Elder Hierarchy Integrated Worker System
 
 エルダーズ評議会承認済み統合認証基盤
 """

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ai-dialog: AI Company 対話型タスク開始コマンド
+ai-dialog: Elders Guild 対話型タスク開始コマンド
 """
 import json
 import pika
@@ -11,7 +11,7 @@ class DialogCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="dialog",
-            description="AI Company で対話型タスクを開始します"
+            description="Elders Guild で対話型タスクを開始します"
         )
         
     def setup_arguments(self):
@@ -88,7 +88,7 @@ class DialogCommand(BaseCommand):
         
     def execute(self, args):
         """メイン実行"""
-        self.header("AI Company 対話型タスク")
+        self.header("Elders Guild 対話型タスク")
         
         # システム確認
         self.section("システム確認")

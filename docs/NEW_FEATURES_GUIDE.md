@@ -1,4 +1,4 @@
-# 🚀 AI Company 新機能ガイド
+# 🚀 Elders Guild 新機能ガイド
 
 ## 📝 タスクテンプレート機能
 
@@ -314,4 +314,4 @@ ai-template run data_analysis \
 
 ---
 
-**🎊 新機能により、AI Companyはさらに強力で使いやすくなりました！**
+**🎊 新機能により、Elders Guildはさらに強力で使いやすくなりました！**

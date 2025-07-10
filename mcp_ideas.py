@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-MCP Integration Ideas for AI Company
+MCP Integration Ideas for Elders Guild
 """
 
-print("🚀 MCP連携アイデア for AI Company")
+print("🚀 MCP連携アイデア for Elders Guild")
 print("=" * 60)
 print("")
 print("MCPラッパーを使って以下の連携を実装できます：")

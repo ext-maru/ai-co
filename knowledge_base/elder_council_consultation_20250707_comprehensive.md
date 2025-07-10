@@ -160,4 +160,4 @@ Worker健康スコア0.00%問題に対して、即座に取るべき行動は？
 
 ---
 
-*Claude CLI - AI Company 4賢者システム統合済み*
+*Claude CLI - Elders Guild 4賢者システム統合済み*

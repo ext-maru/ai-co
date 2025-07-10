@@ -113,7 +113,7 @@ def ensure_not_already_running():
 def main():
     """メイン実行"""
     logger.info("=" * 60)
-    logger.info("🏛️ AI Company Elder Council Monitoring System")
+    logger.info("🏛️ Elders Guild Elder Council Monitoring System")
     logger.info(f"開始時刻: {datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}")
     logger.info("=" * 60)
     

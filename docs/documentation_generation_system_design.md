@@ -1,8 +1,8 @@
-# AI Company 自動ドキュメント生成システム設計書
+# Elders Guild 自動ドキュメント生成システム設計書
 
 ## 🎯 概要
 
-**AI Company独自の機能として、既存のコード解析・品質評価システムを活用した自動ドキュメント生成システムを開発します。**
+**Elders Guild独自の機能として、既存のコード解析・品質評価システムを活用した自動ドキュメント生成システムを開発します。**
 
 ### システム名: AutoDocumentationSystem
 - **新規Worker**: `DocumentationWorker`
@@ -315,4 +315,4 @@ def test_template_customization():
 
 ---
 
-**AI Company 独自の革新的ドキュメント生成システムで、開発効率を飛躍的に向上させましょう！** 🚀
+**Elders Guild 独自の革新的ドキュメント生成システムで、開発効率を飛躍的に向上させましょう！** 🚀

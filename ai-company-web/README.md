@@ -1,4 +1,4 @@
-# AI Company Web - Four Sages Real-time System
+# Elders Guild Web - Four Sages Real-time System
 
 A comprehensive full-stack web application featuring the **Four Sages System** with real-time WebSocket communication, built with Next.js 14 and FastAPI.
 
@@ -260,4 +260,4 @@ MIT License - see LICENSE file for details.
 
 ---
 
-**AI Company Web** - Where the Four Sages collaborate in real-time to create intelligent, responsive systems. 🚀
+**Elders Guild Web** - Where the Four Sages collaborate in real-time to create intelligent, responsive systems. 🚀

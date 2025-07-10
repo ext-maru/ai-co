@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Development server startup script for AI Company Web FastAPI Backend
+Development server startup script for Elders Guild Web FastAPI Backend
 """
 
 import os
@@ -22,7 +22,7 @@ if __name__ == "__main__":
                 target.write(source.read())
         print(".env file created. You may want to customize it.")
     
-    print("Starting AI Company Web FastAPI Backend...")
+    print("Starting Elders Guild Web FastAPI Backend...")
     print("Four Sages Real-time System")
     print("=" * 50)
     print("API Documentation: http://localhost:8000/api/docs")

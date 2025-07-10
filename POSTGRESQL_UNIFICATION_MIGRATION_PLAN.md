@@ -1,5 +1,5 @@
 # 🏛️ PostgreSQL統一移行計画書
-**AI Company PostgreSQL Unification Migration Plan**  
+**Elders Guild PostgreSQL Unification Migration Plan**  
 **エルダーズ評議会承認申請書**
 
 ## 📋 移行計画概要
@@ -273,7 +273,7 @@ Day 11: 統合システム完全動作確認
 
 **🏛️ Grand Elder maru および エルダーズ評議会各位**
 
-AI Companyの真の統合システム実現のため、PostgreSQL統一移行計画の承認と即座実行をお願い申し上げます。
+Elders Guildの真の統合システム実現のため、PostgreSQL統一移行計画の承認と即座実行をお願い申し上げます。
 
 この移行により：
 - **統治力強化**: 全データの一元管理
@@ -285,7 +285,7 @@ AI Companyの真の統合システム実現のため、PostgreSQL統一移行計
 
 ---
 
-**提案者**: Claude Elder (AI Company Development Executive Officer)  
+**提案者**: Claude Elder (Elders Guild Development Executive Officer)  
 **承認要請**: Grand Elder maru, 4賢者評議会  
 **実行予定**: 承認後即座開始  
 **完了目標**: 7-10日以内  

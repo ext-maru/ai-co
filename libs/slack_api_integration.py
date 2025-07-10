@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Slack API Integration System v1.0
-AI Company統合Slack APIシステム
+Elders Guild統合Slack APIシステム
 
 Slack Web API、Webhooks、Socket Modeを統合した包括的なSlack統合機能を提供
 """
@@ -92,7 +92,7 @@ class SlackAPIIntegration:
     """Slack API統合システム
     
     Web API、Webhooks、Socket Modeを統合した包括的なSlack統合システム
-    AI Companyの4賢者システムとの連携機能付き
+    Elders Guildの4賢者システムとの連携機能付き
     """
     
     def __init__(self, config: Optional[Dict[str, Any]] = None):
@@ -585,7 +585,7 @@ class SlackAPIIntegration:
         if self.webhook_url:
             try:
                 test_results['webhook_test'] = await self.send_webhook_message(
-                    "🔗 AI Company Slack API Integration test - OK"
+                    "🔗 Elders Guild Slack API Integration test - OK"
                 )
             except Exception as e:
                 self.logger.error(f"Webhook test failed: {e}")
@@ -615,7 +615,7 @@ if __name__ == "__main__":
     import sys
     
     async def main():
-        print("AI Company Slack API Integration v1.0 Test")
+        print("Elders Guild Slack API Integration v1.0 Test")
         print("=" * 50)
         
         integration = await create_slack_integration()

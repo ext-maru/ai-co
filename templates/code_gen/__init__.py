@@ -1,5 +1,5 @@
 """
-AI Company Code Generation Templates
+Elders Guild Code Generation Templates
 
 This module provides templates for generating various types of code:
 - REST API endpoints (FastAPI/Flask)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company コマンドクリーンアップスクリプト
+Elders Guild コマンドクリーンアップスクリプト
 古いコマンド、バックアップファイル、未使用コマンドを整理
 """
 
@@ -185,12 +185,12 @@ class CommandCleaner:
     def generate_cleanup_script(self):
         """実際のクリーンアップを実行するスクリプトを生成"""
         script_content = f'''#!/bin/bash
-# AI Company コマンドクリーンアップ実行スクリプト
+# Elders Guild コマンドクリーンアップ実行スクリプト
 # 生成日時: {datetime.now().isoformat()}
 
 set -e
 
-echo "🧹 AI Company コマンドクリーンアップ開始..."
+echo "🧹 Elders Guild コマンドクリーンアップ開始..."
 
 # バックアップディレクトリ作成
 BACKUP_DIR="{self.backup_dir}"
@@ -245,7 +245,7 @@ echo "  - 削除されたファイル数: $(find "$BACKUP_DIR" -type f | wc -l)"
         
     def run_cleanup(self):
         """クリーンアップ実行"""
-        print(f"🔧 AI Company コマンドクリーンアップ {'(DRY-RUN)' if self.dry_run else ''}")
+        print(f"🔧 Elders Guild コマンドクリーンアップ {'(DRY-RUN)' if self.dry_run else ''}")
         print("=" * 60)
         
         # 各種クリーンアップ実行
@@ -283,7 +283,7 @@ def main():
     """メイン処理"""
     import argparse
     
-    parser = argparse.ArgumentParser(description="AI Company コマンドクリーンアップ")
+    parser = argparse.ArgumentParser(description="Elders Guild コマンドクリーンアップ")
     parser.add_argument('--execute', action='store_true', 
                        help='実際にクリーンアップを実行（デフォルトはdry-run）')
     args = parser.parse_args()

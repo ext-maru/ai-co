@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🚀 AI Company 設定統合マイグレーションツール
+🚀 Elders Guild 設定統合マイグレーションツール
 段階的統合実装 - 既存システムとの完全互換性確保
 
 このツールは設定ファイルの統合を段階的に実行し、
@@ -295,7 +295,7 @@ class ConfigMigrationTool:
         
         merged_config = {
             "system": {
-                "name": "AI Company",
+                "name": "Elders Guild",
                 "version": "6.0",
                 "language": "ja"
             },
@@ -605,7 +605,7 @@ if __name__ == "__main__":
 
 def main():
     """メイン関数"""
-    parser = argparse.ArgumentParser(description="AI Company Configuration Migration Tool")
+    parser = argparse.ArgumentParser(description="Elders Guild Configuration Migration Tool")
     parser.add_argument("--phase", choices=["phase1", "phase2", "phase3", "all"], 
                        default="all", help="Migration phase to execute")
     parser.add_argument("--dry-run", action="store_true", 

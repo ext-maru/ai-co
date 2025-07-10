@@ -1,6 +1,6 @@
-# AI Company Code Generation Templates
+# Elders Guild Code Generation Templates
 
-AI Companyには、さまざまな種類のコードを自動生成するためのテンプレートが用意されています。
+Elders Guildには、さまざまな種類のコードを自動生成するためのテンプレートが用意されています。
 
 ## 📋 利用可能なテンプレート
 
@@ -200,4 +200,4 @@ generated/
 
 - [TDD開発ガイド](TDD_WITH_CLAUDE_CLI.md)
 - [ワーカーテンプレート](../templates/README.md)
-- [AI Company開発ガイド](DEVELOPMENT_GUIDE.md)
+- [Elders Guild開発ガイド](DEVELOPMENT_GUIDE.md)

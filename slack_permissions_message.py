@@ -11,7 +11,7 @@ from libs.slack_channel_notifier import SlackChannelNotifier
 def send_permissions_list():
     """Slack権限一覧をSlackで送信"""
     
-    message = """🔐 AI Company Slack Bot 権限設定推奨一覧
+    message = """🔐 Elders Guild Slack Bot 権限設定推奨一覧
 
 📊 現在の問題:
 ❌ 現在のスコープ: incoming-webhook
@@ -57,9 +57,9 @@ def send_permissions_list():
 4. 新しいトークンを環境変数に設定
 
 🎯 理由:
-AI Companyのファイル共有、DM機能、インタラクティブ要素の実装予定のため、今のうちに設定推奨。
+Elders Guildのファイル共有、DM機能、インタラクティブ要素の実装予定のため、今のうちに設定推奨。
 
-🏛️ AI Company エルダーズより"""
+🏛️ Elders Guild エルダーズより"""
     
     notifier = SlackChannelNotifier()
     

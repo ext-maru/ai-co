@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🏛️ AI Company統合設定システム - 4賢者統合対応版
+🏛️ Elders Guild統合設定システム - 4賢者統合対応版
 設定ファイル統合プロジェクト - 全設定を一元管理し、4賢者システムとの完全統合を実現
 
 Design Principles:
@@ -193,7 +193,7 @@ class IntegratedConfigSystem:
                 defaults={
                     "host": "localhost",
                     "port": 5432,
-                    "database": "ai_company",
+                    "database": "elders_guild",
                     "driver": "postgresql"
                 }
             ),

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Flask Web Application with Authentication
+Elders Guild Flask Web Application with Authentication
 認証機能付きダッシュボード
 """
 

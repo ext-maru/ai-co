@@ -959,7 +959,7 @@ async def execute_comprehensive_migration():
         report_path = await migration_system.generate_migration_report(result)
         
         print("=" * 80)
-        print("🏛️ AI Company Grimoire Migration Complete!")
+        print("🏛️ Elders Guild Grimoire Migration Complete!")
         print("=" * 80)
         print(f"📊 Summary:")
         if result.get("migration_completed"):

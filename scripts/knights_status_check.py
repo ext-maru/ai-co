@@ -192,7 +192,7 @@ if __name__ == "__main__":
     print("\n" + "="*60)
     overall = status['overall_status']
     if overall == 'fully_operational':
-        print("🎊 騎士団は完全稼働中です！AI Companyを守護しています！")
+        print("🎊 騎士団は完全稼働中です！Elders Guildを守護しています！")
     elif overall == 'partially_operational':
         print("⚠️ 騎士団は部分稼働中です。完全稼働まであと少しです。")
     else:

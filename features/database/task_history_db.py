@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-RAG履歴管理 - PostgreSQL統合システム（AI Company Unified）
+RAG履歴管理 - PostgreSQL統合システム（Elders Guild Unified）
 """
 
 import json

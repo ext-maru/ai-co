@@ -56,7 +56,7 @@ def start_worker(worker_path, log_name):
 
 def main():
     print("=" * 60)
-    print("🏥 AI Company 緊急ワーカー診断＆修復")
+    print("🏥 Elders Guild 緊急ワーカー診断＆修復")
     print(f"実行時刻: {datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}")
     print("=" * 60)
     

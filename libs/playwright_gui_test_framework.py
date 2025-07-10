@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Playwright GUI Test Framework for AI Company WebUI
+Playwright GUI Test Framework for Elders Guild WebUI
 RAG賢者推奨 - 最新のPlaywrightベースGUIテストフレームワーク
 """
 
@@ -174,8 +174,8 @@ class PlaywrightGUITestFramework:
             self.logger.error(f"Visibility expectation failed: {e}")
             return False
 
-class AICompanyDashboardTest:
-    """AI Company ダッシュボード専用テストクラス"""
+class EldersGuildDashboardTest:
+    """Elders Guild ダッシュボード専用テストクラス"""
     
     def __init__(self, framework: PlaywrightGUITestFramework):
         self.framework = framework
@@ -197,9 +197,9 @@ class AICompanyDashboardTest:
                 return result
             
             # タイトル確認（モダンな方法）
-            if not self.framework.expect_text("title", "AI Company"):
+            if not self.framework.expect_text("title", "Elders Guild"):
                 # フォールバック: ページ内のテキスト確認
-                if not self.framework.wait_for_selector("h1:has-text('AI Company')"):
+                if not self.framework.wait_for_selector("h1:has-text('Elders Guild')"):
                     result["message"] = "Dashboard title not found"
                     return result
             
@@ -330,7 +330,7 @@ class PlaywrightTestRunner:
     
     def run_dashboard_tests(self) -> List[Dict[str, Any]]:
         """ダッシュボードテスト実行"""
-        dashboard_test = AICompanyDashboardTest(self.framework)
+        dashboard_test = EldersGuildDashboardTest(self.framework)
         
         tests = [
             dashboard_test.test_dashboard_load,

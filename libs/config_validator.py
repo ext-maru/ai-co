@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 設定検証システム
+Elders Guild 設定検証システム
 設定ファイルの整合性チェックと自動修正
 """
 import os
@@ -154,7 +154,7 @@ class ConfigValidator:
         env_result = self.validate_env_file()
         worker_results = self.validate_worker_configs()
         
-        report = "🔧 AI Company 設定検証レポート\n"
+        report = "🔧 Elders Guild 設定検証レポート\n"
         report += "=" * 50 + "\n\n"
         
         # .env ファイル検証結果

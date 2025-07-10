@@ -15,7 +15,7 @@ from sentry_sdk.integrations.redis import RedisIntegration
 from .config import settings
 
 class AICompanyLogger:
-    """Advanced logging system for AI Company Web"""
+    """Advanced logging system for Elders Guild Web"""
     
     def __init__(self):
         self.setup_logging()
@@ -416,7 +416,7 @@ def log_exception(exc: Exception, context: dict = None):
 def log_startup():
     """Log application startup"""
     logger.info(
-        "AI Company Web starting up",
+        "Elders Guild Web starting up",
         version=settings.VERSION,
         environment=settings.ENVIRONMENT,
         log_level=settings.LOG_LEVEL,
@@ -426,6 +426,6 @@ def log_startup():
 def log_shutdown():
     """Log application shutdown"""
     logger.info(
-        "AI Company Web shutting down",
+        "Elders Guild Web shutting down",
         event_type="shutdown"
     )

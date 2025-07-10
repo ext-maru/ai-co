@@ -2,7 +2,7 @@
 
 ## 🔄 概要
 
-GitHub Flowは、AI Companyプロジェクトの開発フローを標準化するためのシステムです。
+GitHub Flowは、Elders Guildプロジェクトの開発フローを標準化するためのシステムです。
 
 ## 📋 ブランチ戦略
 

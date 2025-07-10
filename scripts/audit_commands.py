@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company コマンド監査スクリプト
+Elders Guild コマンド監査スクリプト
 全コマンドの実装状況、使用頻度、依存関係を分析
 """
 
@@ -220,7 +220,7 @@ class CommandAuditor:
         
     def run_audit(self):
         """監査を実行"""
-        print("🔍 AI Company コマンド監査開始...")
+        print("🔍 Elders Guild コマンド監査開始...")
         
         # 全コマンド検出
         all_commands = self.find_all_commands()
@@ -262,7 +262,7 @@ class CommandAuditor:
     def _generate_markdown_report(self):
         """Markdownレポートを生成"""
         report = []
-        report.append("# AI Company コマンド監査レポート")
+        report.append("# Elders Guild コマンド監査レポート")
         report.append(f"\n生成日時: {self.results['timestamp']}")
         
         # サマリー

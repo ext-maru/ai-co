@@ -243,4 +243,4 @@ optimization_goals = {
 
 ---
 
-**Phase 3により、AI Companyは真の自己修復能力を獲得し、人間の介入をほぼ不要にします。**
+**Phase 3により、Elders Guildは真の自己修復能力を獲得し、人間の介入をほぼ不要にします。**

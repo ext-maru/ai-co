@@ -94,4 +94,4 @@ Slack Polling Workerは：
 3. ai-send形式でタスクキューに投入
 4. TaskWorkerが通常通り処理
 
-これでSlackからの指示が自動的にAI Companyシステムで処理されます。
+これでSlackからの指示が自動的にElders Guildシステムで処理されます。

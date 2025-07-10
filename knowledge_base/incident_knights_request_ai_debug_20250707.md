@@ -11,7 +11,7 @@
 
 ### 🔬 **ai-debug コマンドの実装**
 
-AI Companyシステムの診断・デバッグ機能を実装してください。
+Elders Guildシステムの診断・デバッグ機能を実装してください。
 
 ## 🎯 背景と緊急性
 
@@ -124,4 +124,4 @@ config/debug_config.yaml      # 設定ファイル
 
 **騎士団の迅速な対応に期待しています。システムの安定性向上のため、よろしくお願いします。**
 
-*🛡️ For the stability of AI Company!*
+*🛡️ For the stability of Elders Guild!*

@@ -1,1 +1,1 @@
-# End-to-end tests for AI Company
+# End-to-end tests for Elders Guild

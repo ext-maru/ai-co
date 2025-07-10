@@ -1,8 +1,8 @@
-# 📚 AI Company Knowledge Management System v5.3 - Quick Guide
+# 📚 Elders Guild Knowledge Management System v5.3 - Quick Guide
 
 ## 🎯 概要
 
-AI Company Knowledge Management Systemは、プロジェクト全体のナレッジを統合・追跡・可視化するシステムです。
+Elders Guild Knowledge Management Systemは、プロジェクト全体のナレッジを統合・追跡・可視化するシステムです。
 
 ## ✅ 修正完了内容
 

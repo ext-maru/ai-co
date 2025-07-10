@@ -1,5 +1,5 @@
 """
-AI Company テストユーティリティパッケージ
+Elders Guild テストユーティリティパッケージ
 """
 
 from .test_runner import TestRunner

@@ -138,7 +138,7 @@ def create_permission_wrapper():
     """権限チェックラッパースクリプトを作成"""
     wrapper_content = '''#!/usr/bin/env python3
 """
-AI Company コマンド実行時の権限チェックラッパー
+Elders Guild コマンド実行時の権限チェックラッパー
 root/sudo実行を防ぐ
 """
 import os
@@ -186,7 +186,7 @@ def show_recommendations():
     print("🔧 権限設定修正完了！")
     print("="*60)
     print("\n📋 今後の推奨事項:")
-    print("1. AI Companyコマンドは通常ユーザーで実行:")
+    print("1. Elders Guildコマンドは通常ユーザーで実行:")
     print("   ✅ ai-elder-cc")
     print("   ✅ ai-start")
     print("   ❌ sudo ai-elder-cc")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Worker Status Monitor - Worker専用ステータス監視システム
-AICompanyのWorker達の状態をリアルタイムで監視・管理
+EldersGuildのWorker達の状態をリアルタイムで監視・管理
 """
 
 import sys

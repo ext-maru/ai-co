@@ -15,7 +15,7 @@ helper = AICommandHelper()
 # AI成長用の初期ToDoリスト
 ai_growth_tasks = [
     {
-        "description": "AI Companyワーカー状態分析",
+        "description": "Elders Guildワーカー状態分析",
         "type": "python",
         "content": '''
 import subprocess
@@ -90,7 +90,7 @@ with open(kb_dir / "error_patterns.jsonl", "a") as f:
     {
         "description": "システム最適化の提案生成",
         "type": "ai-send",
-        "content": '"先ほどのワーカー分析とエラーパターンを踏まえて、AI Companyシステムの最適化案を3つ提案してください" general'
+        "content": '"先ほどのワーカー分析とエラーパターンを踏まえて、Elders Guildシステムの最適化案を3つ提案してください" general'
     },
     {
         "description": "自己診断レポート作成",

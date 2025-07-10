@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Self-Evolution System - 自己進化システム
-AI Companyが最新技術トレンドを自律的に調査・企画・実装する完全自律進化システム
+Elders Guildが最新技術トレンドを自律的に調査・企画・実装する完全自律進化システム
 
 🌟 自己進化フロー:
 1. 📡 RAGエルダー: 日次技術情報収集 (WebFetch, 論文検索, トレンド分析)
@@ -68,7 +68,7 @@ class TechTrend:
     category: TechCategory
     description: str
     source_url: str
-    relevance_score: float  # 0-1: AI Companyへの関連度
+    relevance_score: float  # 0-1: Elders Guildへの関連度
     impact_score: float     # 0-1: 導入時の影響度
     feasibility_score: float  # 0-1: 実装可能性
     discovered_at: datetime
@@ -258,7 +258,7 @@ class TechTrendCollector:
         return trends
     
     def _calculate_relevance_score(self, content: str) -> float:
-        """AI Companyへの関連度計算"""
+        """Elders Guildへの関連度計算"""
         content_lower = content.lower()
         keyword_matches = sum(1 for keyword in self.relevance_keywords 
                             if keyword in content_lower)
@@ -333,7 +333,7 @@ class EvolutionPlanner:
             category=TechCategory.AI_ML,
             phase=EvolutionPhase.PLANNING,
             
-            description="最新のAI技術トレンドを統合し、AI Companyの知能レベルを向上させる",
+            description="最新のAI技術トレンドを統合し、Elders Guildの知能レベルを向上させる",
             background=f"発見された{len(trends)}件のAI関連トレンドが示す技術進歩への対応",
             objectives=[
                 "AI応答精度の20%向上",
@@ -625,7 +625,7 @@ class GrandElderInterface:
         return """
 🔮 グランドエルダーへ:
 
-AI Companyの未来について、以下の観点でビジョンをお示しください：
+Elders Guildの未来について、以下の観点でビジョンをお示しください：
 
 1. 📈 **成長の方向性**: どの領域に注力すべきか
 2. 🎯 **戦略的優先順位**: 最も重要な進化は何か  
@@ -1192,7 +1192,7 @@ class SelfEvolutionSystem:
         """日次進化サマリー通知"""
         
         summary_message = f"""
-🌟 **AI Company 自己進化システム - 日次レポート**
+🌟 **Elders Guild 自己進化システム - 日次レポート**
 
 📊 **本日の成果**:
 - 🔍 発見技術トレンド: {consultation_log['trends_count']}件
@@ -1255,7 +1255,7 @@ async def main():
     """メイン実行関数"""
     import argparse
     
-    parser = argparse.ArgumentParser(description="AI Company Self-Evolution System")
+    parser = argparse.ArgumentParser(description="Elders Guild Self-Evolution System")
     parser.add_argument('--mode', choices=['daily-cycle', 'status', 'test'], 
                        default='daily-cycle', help='実行モード')
     parser.add_argument('--verbose', action='store_true', help='詳細出力')

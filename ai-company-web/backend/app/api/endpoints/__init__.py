@@ -1,3 +1,3 @@
 """
-API Endpoints Package for AI Company Web Four Sages System
+API Endpoints Package for Elders Guild Web Four Sages System
 """

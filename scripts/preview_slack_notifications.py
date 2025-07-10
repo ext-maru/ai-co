@@ -161,7 +161,7 @@ ai-logs template_daily_report_20250702_150000
 """)
 
 if __name__ == "__main__":
-    print("\n🚀 AI Company v5.0 - Result Worker Slack Notification Preview\n")
+    print("\n🚀 Elders Guild v5.0 - Result Worker Slack Notification Preview\n")
     
     # 各種通知のプレビュー
     preview_success_notification()

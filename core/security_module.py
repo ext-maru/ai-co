@@ -411,10 +411,20 @@ class SecurityModule:
             'GUEST': 1
         }
     
-    def validate_elder_operation(self, user_role: str, operation: str) -> bool:
-        """Elder階層に基づく操作権限検証"""
+    def validate_elder_operation(self, user_role: str, operation: str, user_context=None) -> bool:
+        """Elder階層に基づく操作権限検証（改ざん検出付き）"""
+        # ユーザーコンテキストがある場合は権限整合性をチェック
+        if user_context and hasattr(user_context, 'elder_role'):
+            # 渡されたロールとコンテキストのロールが一致しない場合はエラー
+            if user_context.elder_role.value.upper() != user_role.upper():
+                raise SecurityError(f"権限不整合検出: 要求ロール={user_role}, コンテキストロール={user_context.elder_role.value}")
+        
         required_level = self._get_operation_security_level(operation)
         user_level = self.security_levels.get(user_role.upper(), 0)
+        
+        # 危険操作の場合は追加検証
+        if required_level >= 4:  # GRAND_ELDER級操作
+            self.logger.warning(f"高権限操作試行: user={user_role}, operation={operation}")
         
         return user_level >= required_level
     

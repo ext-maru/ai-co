@@ -1,8 +1,8 @@
-# 🔗 AI Company Slack連携強化ガイド
+# 🔗 Elders Guild Slack連携強化ガイド
 
 ## 📋 概要
 
-AI Company v3.0のSlack連携強化により、以下の機能が追加されました：
+Elders Guild v3.0のSlack連携強化により、以下の機能が追加されました：
 
 1. **Slackポーリングワーカー** - SlackメッセージをAIタスクとして自動処理
 2. **Slack監視ワーカー** - システムエラーを検知してSlackへ自動通知
@@ -13,7 +13,7 @@ AI Company v3.0のSlack連携強化により、以下の機能が追加されま
 
 1. [Slack API](https://api.slack.com/apps) にアクセス
 2. "Create New App" → "From scratch"を選択
-3. App名: `AI Company Bot`
+3. App名: `Elders Guild Bot`
 4. ワークスペースを選択
 
 ### 2. Bot Tokenの取得
@@ -64,7 +64,7 @@ SLACK_POLLING_ENABLED=true               # ポーリングを有効化
 
 # 監視設定
 SLACK_MONITOR_ENABLED=true               # エラー監視を有効化
-SLACK_ERROR_CHANNEL="#ai-company-errors" # エラー通知先
+SLACK_ERROR_CHANNEL="#elders-guild-errors" # エラー通知先
 ```
 
 ## 📊 機能詳細
@@ -179,9 +179,9 @@ ai-slack test
 ## 🎯 ベストプラクティス
 
 1. **専用チャンネルの作成**
-   - `#ai-company-tasks` - タスク投入用
-   - `#ai-company-errors` - エラー通知用
-   - `#ai-company-notifications` - 一般通知用
+   - `#elders-guild-tasks` - タスク投入用
+   - `#elders-guild-errors` - エラー通知用
+   - `#elders-guild-notifications` - 一般通知用
 
 2. **権限の最小化**
    - 必要なチャンネルのみアクセス許可
@@ -193,4 +193,4 @@ ai-slack test
 
 ---
 
-**💡 Slack連携により、AI Companyがチームのコミュニケーションツールとシームレスに統合されます**
+**💡 Slack連携により、Elders Guildがチームのコミュニケーションツールとシームレスに統合されます**

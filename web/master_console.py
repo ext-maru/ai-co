@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company マスターコンソール
+Elders Guild マスターコンソール
 全システム統合管理ダッシュボード
 
 4賢者会議承認済み - 成功確率95%
@@ -403,7 +403,7 @@ def dashboard():
         <!DOCTYPE html>
         <html>
         <head>
-            <title>AI Company - マスターコンソール</title>
+            <title>Elders Guild - マスターコンソール</title>
             <meta charset="utf-8">
             <meta name="viewport" content="width=device-width, initial-scale=1">
             <style>
@@ -580,7 +580,7 @@ def dashboard():
         <body>
             <div class="container">
                 <div class="header">
-                    <h1>🏛️ AI Company マスターコンソール</h1>
+                    <h1>🏛️ Elders Guild マスターコンソール</h1>
                     <p>4賢者統合管理システム - すべてをここから制御</p>
                 </div>
                 
@@ -783,7 +783,7 @@ if __name__ == "__main__":
     app = Flask(__name__)
     app.register_blueprint(master_console)
     
-    print("🏛️ AI Company マスターコンソール")
+    print("🏛️ Elders Guild マスターコンソール")
     print("=" * 50)
     print("🎯 4賢者会議承認済み - 成功確率95%")
     print("📊 統合ダッシュボード: http://localhost:5010/master/")

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ai-send: AI Company タスク送信コマンド (優先度修正版)
+ai-send: Elders Guild タスク送信コマンド (優先度修正版)
 """
 import json
 import time
@@ -12,7 +12,7 @@ class SendCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="send",
-            description="AI Company にタスクを送信します"
+            description="Elders Guild にタスクを送信します"
         )
         
     def setup_arguments(self):
@@ -188,7 +188,7 @@ class SendCommand(BaseCommand):
         """メイン実行"""
         # ヘッダー
         if not args.json:
-            self.header("AI Company タスク送信")
+            self.header("Elders Guild タスク送信")
             
         # システム確認
         if not self.check_system_ready():

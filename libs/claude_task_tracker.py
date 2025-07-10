@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 class ClaudeTaskTracker:
     """タスク賢者 (Task Oracle) - 4賢者システム統合
     
-    AI Companyの4賢者システムの一翼を担う、プロジェクト進捗管理専門の賢者。
+    Elders Guildの4賢者システムの一翼を担う、プロジェクト進捗管理専門の賢者。
     最適な実行順序の導出、計画立案、進捗追跡、優先順位判断を行う。
     """
     

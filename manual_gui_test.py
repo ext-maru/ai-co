@@ -12,7 +12,7 @@ import os
 from unittest.mock import Mock, MagicMock, patch
 import unittest
 
-Manual GUI Testing Script for AI Company Dashboard
+Manual GUI Testing Script for Elders Guild Dashboard
 This script will validate the GUI testing framework and run basic tests
 """
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company コマンド実行時の権限チェックラッパー
+Elders Guild コマンド実行時の権限チェックラッパー
 root/sudo実行を防ぐ
 """
 import os

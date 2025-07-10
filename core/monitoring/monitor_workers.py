@@ -37,8 +37,8 @@ def check_worker_health():
     return problems
 
 def restart_ai_company():
-    """AI Companyを再起動"""
-    print("🔄 AI Company を再起動します...")
+    """Elders Guildを再起動"""
+    print("🔄 Elders Guild を再起動します...")
     
     # 既存のプロセスを停止
     subprocess.run("pkill -f 'python3 core/workers/'", shell=True)

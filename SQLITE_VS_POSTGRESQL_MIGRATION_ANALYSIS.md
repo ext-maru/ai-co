@@ -1,5 +1,5 @@
 # 🔄 SQLite → PostgreSQL 移行検討分析
-**SQLite vs PostgreSQL Migration Analysis for AI Company Systems**
+**SQLite vs PostgreSQL Migration Analysis for Elders Guild Systems**
 
 ## 🎯 現状のSQLite利用箇所
 
@@ -127,7 +127,7 @@
 1. **書込み量**: 大量ログでPostgreSQL負荷
 2. **複雑性**: 運用管理の複雑化
 
-## 🎯 AI Company固有の考慮事項
+## 🎯 Elders Guild固有の考慮事項
 
 ### 🏛️ **エルダーズ統治体制**
 **PostgreSQL統一の価値**:
@@ -283,7 +283,7 @@ keep_sqlite: # SQLite維持推奨
 
 ## 📝 **結論**
 
-**SQLiteからPostgreSQLへの移行は AI Companyの将来性を考えると非常に有効です！**
+**SQLiteからPostgreSQLへの移行は Elders Guildの将来性を考えると非常に有効です！**
 
 特に：
 1. **タスクトラッカー**: 即座移行推奨 🚀

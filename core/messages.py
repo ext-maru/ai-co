@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company メッセージ管理システム
+Elders Guild メッセージ管理システム
 言語切り替え可能なメッセージ定義
 """
 

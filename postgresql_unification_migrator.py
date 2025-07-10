@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 PostgreSQL統一移行システム
-AI Company SQLite → PostgreSQL Complete Migration System
+Elders Guild SQLite → PostgreSQL Complete Migration System
 """
 
 import os
@@ -435,7 +435,7 @@ async def main():
         
         if verification['migration_successful']:
             print("\n✅ 移行検証: 成功")
-            print("🏛️ AI Company PostgreSQL統一システム稼働開始!")
+            print("🏛️ Elders Guild PostgreSQL統一システム稼働開始!")
         else:
             print("\n❌ 移行検証: 失敗")
         

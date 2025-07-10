@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company - ワーカー管理コマンド
+Elders Guild - ワーカー管理コマンド
 """
 
 import sys
@@ -25,7 +25,7 @@ class AIWorkersCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="workers",
-            description="AI Company ワーカーの管理"
+            description="Elders Guild ワーカーの管理"
         )
     
     def setup_arguments(self):
@@ -71,7 +71,7 @@ class AIWorkersCommand(BaseCommand):
             ("DialogPMWorker", "dialog_pm_worker.py", "dialog_response_queue")
         ]
         
-        table = Table(title="👷 AI Company ワーカー状態")
+        table = Table(title="👷 Elders Guild ワーカー状態")
         table.add_column("ワーカー名", style="cyan", width=20)
         table.add_column("スクリプト", style="white", width=25)
         table.add_column("状態", justify="center", width=10)
@@ -139,7 +139,7 @@ class AIWorkersCommand(BaseCommand):
                 script_path = PROJECT_ROOT / worker_map[target]
                 cmd = f"cd {PROJECT_ROOT} && source venv/bin/activate && python3 {script_path}"
                 subprocess.run([
-                    "tmux", "send-keys", "-t", "ai_company",
+                    "tmux", "send-keys", "-t", "elders_guild",
                     cmd, "Enter"
                 ], check=False)
         

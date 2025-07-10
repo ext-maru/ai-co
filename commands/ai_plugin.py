@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company - プラグイン管理コマンド
+Elders Guild - プラグイン管理コマンド
 """
 
 import sys
@@ -17,7 +17,7 @@ class AIPluginCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="plugin",
-            description="AI Company プラグイン管理",
+            description="Elders Guild プラグイン管理",
             version="1.0.0"
         )
         self.console = Console()

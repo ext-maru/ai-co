@@ -149,3 +149,13 @@ python3 scripts/a2a_real_time_monitor.py    # リアルタイム監視
 ---
 
 **次の更新予定**: 2025年7月16日（定期更新）
+
+## 🔗 関連する賢者の知識
+
+
+### 📊 共通プロトコル
+
+- **00_common_knowledge.md**: 4賢者共通の基本知識
+- **MASTER_INDEX.md**: 全魔法書の統合索引
+- **TOPIC_INDEX.md**: トピック別知識索引
+- **QUICK_REFERENCE.md**: よく使用される知識

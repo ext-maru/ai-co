@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 A2A (Agent to Agent) Communication Library
-エージェント間通信ライブラリ - AI Company Phase 1 実装
+エージェント間通信ライブラリ - Elders Guild Phase 1 実装
 """
 
 import os

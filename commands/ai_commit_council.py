@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Council Commit Command
+Elders Guild Council Commit Command
 5分以内の評議会承認コミットシステム
 
 使用方法:
@@ -179,7 +179,7 @@ class CouncilCommitCLI:
         # エルダーズ署名
         enhanced_message += "\n\n🤖 Generated with Council Protocol"
         enhanced_message += "\n🏛️ 5-minute commit by 4 Sages Council"
-        enhanced_message += "\n⚡ AI Company Elders Harmony System"
+        enhanced_message += "\n⚡ Elders Guild Elders Harmony System"
         
         return enhanced_message
     
@@ -294,7 +294,7 @@ class CouncilCommitCLI:
 def main():
     """メイン実行"""
     parser = argparse.ArgumentParser(
-        description="AI Company Council Commit - 4賢者評議会承認コミット",
+        description="Elders Guild Council Commit - 4賢者評議会承認コミット",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用例:
@@ -338,7 +338,7 @@ def main():
     
     # バナー表示
     print("🏛️" * 50)
-    print("🧙‍♂️  AI Company Council Commit System")
+    print("🧙‍♂️  Elders Guild Council Commit System")
     print("🏛️  4賢者評議会承認コミット")
     print("🤖  Powered by Elders Harmony System")
     print("🏛️" * 50)

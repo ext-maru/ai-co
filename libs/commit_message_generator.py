@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Commit Message Generator
+Elders Guild Commit Message Generator
 Conventional Commitsベストプラクティスに基づく自動生成
 """
 

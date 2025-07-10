@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 自動テスト生成ツール
+Elders Guild 自動テスト生成ツール
 新規ワーカー/マネージャー作成時に自動的にテストを生成
 """
 

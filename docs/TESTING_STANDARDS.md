@@ -1,8 +1,8 @@
-# 🧪 AI Company テスト標準規約 v1.0
+# 🧪 Elders Guild テスト標準規約 v1.0
 
 ## 📋 概要
 
-AI Companyのすべてのコード変更に適用されるテスト標準規約です。新規作成・既存コード修正時は必ずこの規約に従ってテストを実装・実行します。
+Elders Guildのすべてのコード変更に適用されるテスト標準規約です。新規作成・既存コード修正時は必ずこの規約に従ってテストを実装・実行します。
 
 ## 🎯 テストの基本原則
 
@@ -189,7 +189,7 @@ python -m pytest tests/unit/ -v --tb=short
 
 ```yaml
 # .github/workflows/test.yml
-name: AI Company Tests
+name: Elders Guild Tests
 on: [push, pull_request]
 jobs:
   test:
@@ -299,4 +299,4 @@ def test_critical_functionality():
 
 ---
 
-**🧪 この規約により、AI Companyは高品質で信頼性の高いシステムを維持します**
+**🧪 この規約により、Elders Guildは高品質で信頼性の高いシステムを維持します**

@@ -1,7 +1,7 @@
 # Daily Report - July 2nd, 2025
 
 ## Summary
-This report covers system activity, task completion, and performance metrics for the AI Company system on July 2nd, 2025.
+This report covers system activity, task completion, and performance metrics for the Elders Guild system on July 2nd, 2025.
 
 ## Task Completion Statistics
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company システム手動再起動
+Elders Guild システム手動再起動
 """
 
 import sys
@@ -15,7 +15,7 @@ helper = AICommandHelper()
 manual_restart = """#!/bin/bash
 cd /home/aicompany/ai_co
 
-echo "🔧 AI Company 手動再起動"
+echo "🔧 Elders Guild 手動再起動"
 echo "======================="
 echo ""
 
@@ -125,7 +125,7 @@ notifier = SlackChannelNotifier()
 # システム再起動通知
 notifier.send_to_channel(
     '#ai-company-notifications',
-    f'🔄 AI Company システム再起動完了\\n時刻: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}\\nPMWorker: チャンネル別通知対応版'
+    f'🔄 Elders Guild システム再起動完了\\n時刻: {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}\\nPMWorker: チャンネル別通知対応版'
 )
 
 # スケーリング通知動作確認

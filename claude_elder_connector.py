@@ -126,15 +126,15 @@ class ClaudeElderConnector:
         if context:
             full_message += f"Context: {context}\n\n"
         
-        # AI Company階層構造を意識させる
-        full_message += "🏛️ AI Company階層構造:\n"
+        # Elders Guild階層構造を意識させる
+        full_message += "🏛️ Elders Guild階層構造:\n"
         full_message += "グランドエルダーmaru（最高位）→ クロードエルダー（あなた）→ 4賢者 → エルダー評議会 → エルダーサーベント\n\n"
         
         # ユーザーメッセージ
         full_message += f"ユーザーからの質問: {message}\n\n"
         
         # 応答指示
-        full_message += "AI Companyのクロードエルダーとして、適切に応答してください。"
+        full_message += "Elders Guildのクロードエルダーとして、適切に応答してください。"
         
         return full_message
     
@@ -150,7 +150,7 @@ class ClaudeElderConnector:
         elif 'task' in message_lower or 'タスク' in message:
             response += "タスクエルダーが最適な実行計画を立案します。具体的な内容をお聞かせください。"
         elif 'help' in message_lower or 'ヘルプ' in message:
-            response += "AI Companyのシステムについて何でもお尋ねください。4賢者システムが連携してサポートします。"
+            response += "Elders Guildのシステムについて何でもお尋ねください。4賢者システムが連携してサポートします。"
         elif 'elder' in message_lower or 'エルダー' in message:
             response += "エルダー評議会は4賢者（ナレッジ・タスク・インシデント・RAG）で構成されています。"
         else:
@@ -169,7 +169,7 @@ class ClaudeElderConnector:
             import psutil
             
             context = f"""
-AI Company System Context:
+Elders Guild System Context:
 - CPU: {psutil.cpu_percent()}%
 - Memory: {psutil.virtual_memory().percent}%
 - Active Workers: エルダーサーベント5体稼働中
@@ -178,7 +178,7 @@ AI Company System Context:
 """
             return context
         except:
-            return "AI Company System: Operational"
+            return "Elders Guild System: Operational"
 
 # テスト用
 if __name__ == '__main__':

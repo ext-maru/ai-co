@@ -1,8 +1,8 @@
-# AI Company Master Knowledge Base v6.0
+# Elders Guild Master Knowledge Base v6.0
 
 ## 🏢 システム概要
 
-AI Companyは、Claude APIを活用した自律的タスク処理システムです。RabbitMQベースのメッセージキューアーキテクチャを採用し、複数の専門ワーカーが協調して動作します。
+Elders Guildは、Claude APIを活用した自律的タスク処理システムです。RabbitMQベースのメッセージキューアーキテクチャを採用し、複数の専門ワーカーが協調して動作します。
 
 ### 基本構成
 - **OS**: Ubuntu 24.04 LTS (WSL2)
@@ -243,7 +243,7 @@ message = cmg.generate_commit_message()
 - **テーブル**: tasks, task_logs
 
 ### Claude Desktop統合
-Claude DesktopからAI Companyへのタスク送信時に自動的にTask Trackerで追跡。
+Claude DesktopからElders Guildへのタスク送信時に自動的にTask Trackerで追跡。
 
 ## 📁 ディレクトリ構造
 
@@ -491,6 +491,6 @@ sudo apt install python3-psutil python3-pika python3-rich python3-tabulate
 
 ---
 
-**AI Company Master Knowledge Base v6.0**  
+**Elders Guild Master Knowledge Base v6.0**  
 最終更新: 2025-01-05  
 統合・再編成版

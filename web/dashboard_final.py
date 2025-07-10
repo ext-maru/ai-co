@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company ダッシュボード - 正式版
+Elders Guild ダッシュボード - 正式版
 エルダーズ評議会承認済み構造
 """
 
@@ -92,7 +92,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Company - Elder Assembly Dashboard</title>
+    <title>Elders Guild - Elder Assembly Dashboard</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         
@@ -594,7 +594,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
     <div class="container">
         <div class="header">
             <div class="header-content">
-                <h1>🏛️ AI Company Elder Assembly</h1>
+                <h1>🏛️ Elders Guild Elder Assembly</h1>
                 <button id="nightModeToggle" class="night-mode-btn" onclick="toggleNightMode()">
                     <span id="nightModeIcon">🌙</span>
                     <span id="nightModeText">ナイト</span>
@@ -706,7 +706,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             </div>
             <div id="chatMessages" class="chat-messages">
                 <div class="chat-message elder-message">
-                    🧾 クロードエルダー: こんにちは！AI Companyの管理について何でもお尋ねください。
+                    🧾 クロードエルダー: こんにちは！Elders Guildの管理について何でもお尋ねください。
                 </div>
             </div>
             <div class="chat-input-container">
@@ -1682,7 +1682,7 @@ class DashboardServer:
         server = HTTPServer((self.host, self.port), DashboardHandler)
         self.logger.info(f"🌐 Elder Assembly Dashboard starting on http://{self.host}:{self.port}")
         self.logger.info(f"🌍 External access: http://100.76.169.124:{self.port}")
-        print(f"🏛️ AI Company Elder Assembly Dashboard available at http://localhost:{self.port}")
+        print(f"🏛️ Elders Guild Elder Assembly Dashboard available at http://localhost:{self.port}")
         
         try:
             server.serve_forever()
@@ -1693,7 +1693,7 @@ class DashboardServer:
 if __name__ == '__main__':
     import argparse
     
-    parser = argparse.ArgumentParser(description='AI Company Elder Assembly Dashboard')
+    parser = argparse.ArgumentParser(description='Elders Guild Elder Assembly Dashboard')
     parser.add_argument('--host', default=None, help='Server host (default: from config)')
     parser.add_argument('--port', type=int, default=None, help='Server port (default: from config)')
     args = parser.parse_args()

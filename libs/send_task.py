@@ -211,7 +211,7 @@ if __name__ == "__main__":
     # テスト実行
     import argparse
     
-    parser = argparse.ArgumentParser(description='Send task to AI Company')
+    parser = argparse.ArgumentParser(description='Send task to Elders Guild')
     parser.add_argument('prompt', help='Task prompt')
     parser.add_argument('type', choices=['code', 'general'], help='Task type')
     parser.add_argument('--priority', choices=['critical', 'high', 'normal', 'low'],

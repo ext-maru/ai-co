@@ -1,8 +1,8 @@
-# AI Company Master Knowledge Base v6.1
+# Elders Guild Master Knowledge Base v6.1
 
 ## 🏢 システム概要
 
-AI Companyは、Claude APIを活用した自律的タスク処理システムです。RabbitMQベースのメッセージキューアーキテクチャを採用し、複数の専門ワーカーが協調して動作します。
+Elders Guildは、Claude APIを活用した自律的タスク処理システムです。RabbitMQベースのメッセージキューアーキテクチャを採用し、複数の専門ワーカーが協調して動作します。
 
 ### 🧠 **NEW**: AI Evolution System (ネクスト計画) 搭載
 **実装完了**: 2025年7月6日 - 自律的学習・進化機能を実現
@@ -64,7 +64,7 @@ AI Companyは、Claude APIを活用した自律的タスク処理システムで
 詳細: `knowledge_base/UNIVERSAL_CLAUDE_ELDER_STANDARDS_METHODOLOGY.md`
 
 ### 🐉 ファンタジー分類システム (NEW)
-AI Companyの世界観を統一するファンタジー要素導入：
+Elders Guildの世界観を統一するファンタジー要素導入：
 
 #### 🏰 4組織特性分類
 - 🛡️ **インシデント騎士団**: 緊急対応 (⚡討伐令, 🗡️任務, 🛡️防衛)
@@ -247,7 +247,7 @@ strategy = meta_learner.optimize_learning_strategy(history)
 
 ---
 
-**🎯 重要**: AI Evolution System搭載により、AI Companyは真の自律的学習・進化システムとなりました。4賢者の協調による継続的改善により、システム全体の知能レベルが飛躍的に向上します。
+**🎯 重要**: AI Evolution System搭載により、Elders Guildは真の自律的学習・進化システムとなりました。4賢者の協調による継続的改善により、システム全体の知能レベルが飛躍的に向上します。
 
 **最終更新**: 2025年7月6日 - AI Evolution System実装完了  
 **バージョン**: v6.1 (AI進化システム統合版)

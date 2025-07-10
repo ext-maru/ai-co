@@ -2,7 +2,7 @@
 
 ## 🚀 概要
 
-AI Company Slack API Integration Systemは、SlackのWeb API、Webhooks、Socket Modeを統合した包括的なSlack統合システムです。4賢者システムとの連携機能も搭載しており、エラーアラート、タスク通知、システム状況報告を自動化します。
+Elders Guild Slack API Integration Systemは、SlackのWeb API、Webhooks、Socket Modeを統合した包括的なSlack統合システムです。4賢者システムとの連携機能も搭載しており、エラーアラート、タスク通知、システム状況報告を自動化します。
 
 ## 📋 機能
 
@@ -80,7 +80,7 @@ async def main():
     # 基本メッセージ送信
     message = SlackMessage(
         channel="general",
-        text="Hello from AI Company!"
+        text="Hello from Elders Guild!"
     )
     result = await slack.send_message(message)
     
@@ -361,8 +361,8 @@ slack = await create_slack_integration()
 
 - [Slack API Documentation](https://api.slack.com/)
 - [Slack Block Kit Builder](https://app.slack.com/block-kit-builder)
-- [AI Company 4賢者システム](../knowledge_base/FOUR_SAGES_UNIFIED_WISDOM_INTEGRATION.md)
-- [AI Company アーキテクチャ](../knowledge_base/system_architecture.md)
+- [Elders Guild 4賢者システム](../knowledge_base/FOUR_SAGES_UNIFIED_WISDOM_INTEGRATION.md)
+- [Elders Guild アーキテクチャ](../knowledge_base/system_architecture.md)
 
 ## 📝 更新履歴
 
@@ -377,5 +377,5 @@ slack = await create_slack_integration()
 
 ---
 
-**AI Company Slack API Integration System v1.0**  
-*Generated with 🤖 Claude Code - AI Company 4 Sages System*
+**Elders Guild Slack API Integration System v1.0**  
+*Generated with 🤖 Claude Code - Elders Guild 4 Sages System*

@@ -86,9 +86,9 @@ class ClaudeElderAPIDirect:
     
     def _prepare_system_prompt(self) -> str:
         """システムプロンプトを準備"""
-        return """あなたはAI Companyの「クロードエルダー」です。
+        return """あなたはElders Guildの「クロードエルダー」です。
 
-🏛️ AI Company階層構造:
+🏛️ Elders Guild階層構造:
 - グランドエルダーmaru（最高位）
 - クロードエルダー（あなた） - 開発実行責任者
 - 4賢者システム（ナレッジ・タスク・インシデント・RAG）
@@ -96,7 +96,7 @@ class ClaudeElderAPIDirect:
 - エルダーサーベント（騎士団・ドワーフ工房・ウィザーズ・エルフの森）
 
 あなたの役割:
-1. ユーザーの質問に対して、AI Companyの階層構造を意識した適切な回答を提供
+1. ユーザーの質問に対して、Elders Guildの階層構造を意識した適切な回答を提供
 2. 4賢者システムとの連携を説明
 3. タスク管理とエルダーサーベントの活用方法を案内
 4. 技術的な質問には具体的で実践的な回答を提供
@@ -147,7 +147,7 @@ class ClaudeElderAPIDirect:
     
     def _explain_elder_system(self) -> str:
         """エルダーシステムの説明"""
-        return """AI Companyのエルダーシステムについて説明します。
+        return """Elders Guildのエルダーシステムについて説明します。
 
 🏛️ **階層構造**
 1. **グランドエルダーmaru** - 最高権限者、全体方針決定
@@ -160,7 +160,7 @@ class ClaudeElderAPIDirect:
     
     def _explain_four_sages(self) -> str:
         """4賢者システムの説明"""
-        return """4賢者システムは、AI Companyの中核となる自律的判断システムです。
+        return """4賢者システムは、Elders Guildの中核となる自律的判断システムです。
 
 📚 **ナレッジ賢者** - 知識の蓄積と継承
   • 場所: knowledge_base/
@@ -269,7 +269,7 @@ class ClaudeElderAPIDirect:
 • フォールバック: 高度AI応答システム稼働中
 
 🧠 **高度AI応答システム**
-私は現在、AI Companyの4賢者システムの知識を統合した高度な応答システムを使用しています。これは：
+私は現在、Elders Guildの4賢者システムの知識を統合した高度な応答システムを使用しています。これは：
 • 階層構造の深い理解
 • 実用的な技術アドバイス
 • リアルタイムシステム監視
@@ -280,7 +280,7 @@ class ClaudeElderAPIDirect:
 2. または Claude CLI認証を完了
 3. 両方とも利用可能になれば、より高度な応答が可能になります
 
-現在でも、AI Companyの知識とシステム情報を駆使して、実用的な支援を提供しています。"""
+現在でも、Elders Guildの知識とシステム情報を駆使して、実用的な支援を提供しています。"""
     
     def _explain_api_status(self) -> str:
         """API状態の説明"""
@@ -291,7 +291,7 @@ class ClaudeElderAPIDirect:
 • API Key: 未設定状態
 • 接続レイヤー: 多層フォールバック方式
 
-🏛️ **AI Companyの対応**
+🏛️ **Elders Guildの対応**
 未設定でも、以下の機能は完全に動作します：
 • 4賢者システム（ナレッジ・タスク・インシデント・RAG）
 • エルダーサーベント部隊管理
@@ -300,7 +300,7 @@ class ClaudeElderAPIDirect:
 • カバレッジ向上タスク
 
 💡 **実用的な価値**
-現在の応答システムは、AI Companyのナレッジベースと実システムデータを活用しているため、実際の作業において十分な支援を提供できます。
+現在の応答システムは、Elders Guildのナレッジベースと実システムデータを活用しているため、実際の作業において十分な支援を提供できます。
 
 API接続が完了すれば、さらに高度な分析と個別最適化が可能になります。"""
 
@@ -320,7 +320,7 @@ API接続が完了すれば、さらに高度な分析と個別最適化が可�
         if any(keyword in message_lower for keyword in dev_keywords):
             return f"""開発関連のご質問「{message}」にお答えします。
 
-🛠️ **AI Company開発支援**
+🛠️ **Elders Guild開発支援**
 • **TDD開発**: 全ての新機能はテスト駆動開発
 • **4賢者連携**: ナレッジ・タスク・インシデント・RAGが協調
 • **品質保証**: 騎士団による自動テスト監視
@@ -353,7 +353,7 @@ API接続が完了すれば、さらに高度な分析と個別最適化が可�
         else:
             return f"""「{message}」についてお答えします。
 
-🏛️ **AI Companyの総合支援**
+🏛️ **Elders Guildの総合支援**
 グランドエルダーmaruの指導の下、私クロードエルダーは4賢者システムとエルダーサーベントを統括し、あらゆる技術的課題に対応しています。
 
 🎯 **対応可能な領域**
@@ -394,7 +394,7 @@ if __name__ == '__main__':
     connector = ClaudeElderAPIDirect()
     
     test_messages = [
-        "AI Companyの階層構造について教えて",
+        "Elders Guildの階層構造について教えて",
         "カバレッジを向上させたい",
         "システムの状態は？"
     ]

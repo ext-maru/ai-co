@@ -9,7 +9,7 @@ import subprocess
 import shutil
 from datetime import datetime
 
-# AI Companyのライブラリパスを追加
+# Elders Guildのライブラリパスを追加
 sys.path.append('/home/aicompany/ai_co')
 
 
@@ -69,7 +69,7 @@ def deploy_worker_recovery():
     # 4. systemdサービスファイルの作成
     print("\n4. Creating systemd service...")
     service_content = """[Unit]
-Description=AI Company Worker Recovery System
+Description=Elders Guild Worker Recovery System
 After=network.target rabbitmq-server.service
 
 [Service]

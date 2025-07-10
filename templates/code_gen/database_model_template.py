@@ -1,5 +1,5 @@
 """
-Database Model Generator Template for AI Company
+Database Model Generator Template for Elders Guild
 SQLAlchemy モデル、マイグレーション、CRUD操作を生成
 """
 
@@ -14,7 +14,7 @@ class DatabaseModelTemplate:
             "name": "Database Model",
             "version": "1.0.0", 
             "description": "Generate SQLAlchemy models with CRUD operations",
-            "author": "AI Company",
+            "author": "Elders Guild",
             "parameters": {
                 "model_name": {
                     "type": "str",

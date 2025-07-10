@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Intelligent Project Placement Manager
+Elders Guild Intelligent Project Placement Manager
 Automatically determines optimal project placement based on requirements, risk analysis, and resource availability
 Part of Phase 1: Foundation System
 """
@@ -636,7 +636,7 @@ class AIProjectPlacementManager:
                 "strategy_used": strategy.value
             }
             
-            metadata_file = project_path / ".ai_company" / "placement.json"
+            metadata_file = project_path / ".elders_guild" / "placement.json"
             with open(metadata_file, 'w', encoding='utf-8') as f:
                 json.dump(placement_metadata, f, indent=2, ensure_ascii=False, default=str)
             

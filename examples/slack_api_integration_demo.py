@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Slack API Integration Demo Script
-AI Company Slack API統合システムのデモンストレーション
+Elders Guild Slack API統合システムのデモンストレーション
 """
 
 import asyncio
@@ -20,7 +20,7 @@ from libs.slack_api_integration import (
 
 async def basic_demo():
     """基本機能のデモ"""
-    print("🚀 AI Company Slack API Integration Demo")
+    print("🚀 Elders Guild Slack API Integration Demo")
     print("=" * 50)
     
     # Slack統合システムの作成
@@ -54,7 +54,7 @@ async def message_demo(slack):
     print("Sending basic message...")
     message = SlackMessage(
         channel="general",
-        text="Hello from AI Company! 🤖"
+        text="Hello from Elders Guild! 🤖"
     )
     
     # 実際の送信はコメントアウト（テスト環境保護）
@@ -68,7 +68,7 @@ async def message_demo(slack):
             "type": "header",
             "text": {
                 "type": "plain_text",
-                "text": "AI Company System Status"
+                "text": "Elders Guild System Status"
             }
         },
         {
@@ -96,7 +96,7 @@ async def format_demo():
     # コードブロック
     code = """
 def hello_world():
-    print("Hello from AI Company!")
+    print("Hello from Elders Guild!")
     return "Success"
 """
     formatted_code = format_code_block(code, "python")
@@ -166,7 +166,7 @@ async def webhook_demo(slack):
     print("Preparing webhook message...")
     # 実際の送信はコメントアウト
     # success = await slack.send_webhook_message(
-    #     "🚀 AI Company Demo: Webhook integration test successful!"
+    #     "🚀 Elders Guild Demo: Webhook integration test successful!"
     # )
     print("✅ Webhook message prepared")
 
@@ -246,7 +246,7 @@ async def main():
         traceback.print_exc()
 
 if __name__ == "__main__":
-    print("AI Company Slack API Integration Demo")
+    print("Elders Guild Slack API Integration Demo")
     print("Starting demo in 3 seconds...")
     
     import time

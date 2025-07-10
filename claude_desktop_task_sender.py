@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Claude Desktop → AI Company Task送信
+Claude Desktop → Elders Guild Task送信
 Task Tracker統合版
 """
 
@@ -16,7 +16,7 @@ import json
 import uuid
 
 class ClaudeDesktopTaskSender:
-    """Claude DesktopからAI Companyへタスク送信（Task Tracker統合）"""
+    """Claude DesktopからElders Guildへタスク送信（Task Tracker統合）"""
     
     def __init__(self):
         self.rabbit = RabbitManager()
@@ -100,7 +100,7 @@ def create_claude_desktop_helper():
     
     helper_content = '''#!/usr/bin/env python3
 """
-Claude Desktop Helper for AI Company Integration
+Claude Desktop Helper for Elders Guild Integration
 Task Tracker統合サポート
 """
 

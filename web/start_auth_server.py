@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 if __name__ == '__main__':
     from web.flask_app_auth import app, create_initial_admin
     
-    print("🚀 AI Company 認証付きダッシュボードを起動しています...")
+    print("🚀 Elders Guild 認証付きダッシュボードを起動しています...")
     print("📝 初期管理者アカウント:")
     print("   ユーザー名: admin")
     print("   パスワード: admin123")

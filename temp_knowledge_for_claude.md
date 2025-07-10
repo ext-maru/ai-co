@@ -1,4 +1,4 @@
-# 🧠 AI Company ナレッジサマリー（Magic Grimoire System統合）
+# 🧠 Elders Guild ナレッジサマリー（Magic Grimoire System統合）
 
 **生成日時**: 2025年07月08日 03:37
 **システム**: PostgreSQL + pgvector Magic Grimoire System
@@ -11,9 +11,9 @@ Cannot run the event loop while another loop is running
 
 ### 📋 開発ガイド要約
 
-## 🧙‍♂️ AI Company 4賢者システム
+## 🧙‍♂️ Elders Guild 4賢者システム
 
-AI Companyは**4つの賢者**が連携して自律的に学習・進化するシステムです：
+Elders Guildは**4つの賢者**が連携して自律的に学習・進化するシステムです：
 
 ### 📚 **ナレッジ賢者** (Knowledge Sage)
 - **場所**: `knowledge_base/` - ファイルベース知識管理
@@ -38,15 +38,15 @@ AI Companyは**4つの賢者**が連携して自律的に学習・進化する�
 
 ### 🚀 最新実装状況
 
-# AI Company TDD実装サマリー - 2025年7月
+# Elders Guild TDD実装サマリー - 2025年7月
 
 ## 🎯 実装概要
 
-2025年7月6日、AI CompanyプロジェクトでTest-Driven Development (TDD)による包括的システム実装を完了しました。
+2025年7月6日、Elders GuildプロジェクトでTest-Driven Development (TDD)による包括的システム実装を完了しました。
 
-## 🧙‍♂️ AI Company 4賢者システム
+## 🧙‍♂️ Elders Guild 4賢者システム
 
-AI Companyの中核を成す**4賢者システム**により、PMは従来では不可能だった高度な開発プロジェクトを実現できます：
+Elders Guildの中核を成す**4賢者システム**により、PMは従来では不可能だった高度な開発プロジェクトを実現できます：
 
 ### 📚 **ナレッジ賢者** (Knowledge Sage)
 - **役割**: 過去の英知を蓄積・継承、学習による知恵の進化

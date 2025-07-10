@@ -2,7 +2,7 @@
 
 ## 📋 概要
 
-AI Git コミットベストプラクティスは、AI Companyの全ての自動コミットをConventional Commits形式で生成するシステムです。これにより、コミット履歴の可読性が向上し、自動化ツールとの連携が容易になります。
+AI Git コミットベストプラクティスは、Elders Guildの全ての自動コミットをConventional Commits形式で生成するシステムです。これにより、コミット履歴の可読性が向上し、自動化ツールとの連携が容易になります。
 
 ### **システムの特徴**
 - ✅ **Conventional Commits準拠**: 業界標準のコミットメッセージ形式
@@ -472,6 +472,6 @@ grep -n "use_best_practices" workers/pm_worker.py
 
 ---
 
-**🎯 このナレッジベースは、AI Companyのコミット品質向上の基礎となります**
+**🎯 このナレッジベースは、Elders Guildのコミット品質向上の基礎となります**
 
 *最終更新: 2025-07-03*

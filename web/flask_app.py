@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Flask Web Application
+Elders Guild Flask Web Application
 Apache mod_wsgi対応版
 """
 
@@ -54,7 +54,7 @@ DASHBOARD_TEMPLATE = """
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Company Dashboard</title>
+    <title>Elders Guild Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
@@ -189,7 +189,7 @@ DASHBOARD_TEMPLATE = """
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 AI Company Dashboard</h1>
+            <h1>🚀 Elders Guild Dashboard</h1>
         </div>
         
         <div class="server-info">

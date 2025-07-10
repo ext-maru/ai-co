@@ -61,8 +61,8 @@ class LocalizationManager:
         # 日本語メッセージ
         ja_messages = {
             "system": {
-                "startup": "AI Company システムを開始しています...",
-                "shutdown": "AI Company システムを終了しています...",
+                "startup": "Elders Guild システムを開始しています...",
+                "shutdown": "Elders Guild システムを終了しています...",
                 "error": "エラーが発生しました",
                 "success": "正常に完了しました",
                 "warning": "警告",
@@ -105,8 +105,8 @@ class LocalizationManager:
         # 英語メッセージ
         en_messages = {
             "system": {
-                "startup": "Starting AI Company system...",
-                "shutdown": "Shutting down AI Company system...",
+                "startup": "Starting Elders Guild system...",
+                "shutdown": "Shutting down Elders Guild system...",
                 "error": "An error occurred",
                 "success": "Completed successfully",
                 "warning": "Warning",

@@ -1,8 +1,8 @@
-# AI Company Web Dashboard with Authentication
+# Elders Guild Web Dashboard with Authentication
 
 ## 🚀 概要
 
-AI Company の認証機能付きWebダッシュボードです。タスク管理、ワーカー監視、キュー管理、4賢者システムの状態確認などが可能です。
+Elders Guild の認証機能付きWebダッシュボードです。タスク管理、ワーカー監視、キュー管理、4賢者システムの状態確認などが可能です。
 
 ## ✨ 実装済み機能
 
@@ -226,5 +226,5 @@ def custom_permission_required(permission):
 
 ---
 
-🎯 **開発者**: AI Company Development Team
+🎯 **開発者**: Elders Guild Development Team
 📅 **最終更新**: 2025年7月8日

@@ -1,4 +1,4 @@
-# AI Company Worker Refactoring Design Document
+# Elders Guild Worker Refactoring Design Document
 
 ## 改修設計書 v1.0
 作成日: 2025-01-06

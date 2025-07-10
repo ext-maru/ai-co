@@ -12,7 +12,7 @@ from datetime import datetime
 PROJECT_ROOT = Path("/home/aicompany/ai_co")
 sys.path.insert(0, str(PROJECT_ROOT))
 
-print("🎯 AI Company Knowledge Management System v5.3")
+print("🎯 Elders Guild Knowledge Management System v5.3")
 print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
 print(f"Status Check: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 print()

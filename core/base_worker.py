@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-BaseWorker - AI Company ワーカー基底クラス
+BaseWorker - Elders Guild ワーカー基底クラス
 
 すべてのワーカーが継承すべき基底クラス。
 RabbitMQ接続、ログ設定、シグナルハンドリングなどの共通処理を提供。

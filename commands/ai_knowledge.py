@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Knowledge Management Command
+Elders Guild Knowledge Management Command
 統合的なナレッジ管理コマンド
 """
 
@@ -20,7 +20,7 @@ from core import EMOJI
 
 def main():
     parser = argparse.ArgumentParser(
-        description='AI Company Knowledge Management System'
+        description='Elders Guild Knowledge Management System'
     )
     
     subparsers = parser.add_subparsers(dest='command', help='Commands')

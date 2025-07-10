@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Worker Task Flow Tracker - Worker間タスクフロー追跡システム
-AICompanyのWorker間でのタスクの流れを追跡・分析
+EldersGuildのWorker間でのタスクの流れを追跡・分析
 """
 
 import sys

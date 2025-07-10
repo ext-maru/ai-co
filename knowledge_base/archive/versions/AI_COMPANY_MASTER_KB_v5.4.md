@@ -1,8 +1,8 @@
-# AI Company Master Knowledge Base v5.4
+# Elders Guild Master Knowledge Base v5.4
 
 ## 🏢 システム概要
 
-AI Companyは、Claude APIを活用した**TDD駆動**の自律的タスク処理システムです。
+Elders Guildは、Claude APIを活用した**TDD駆動**の自律的タスク処理システムです。
 
 ### 基本構成
 - **環境**: Ubuntu 24.04 LTS (WSL2)

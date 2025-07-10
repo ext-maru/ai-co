@@ -1,11 +1,11 @@
 # 🎤 Meeting-to-Code Workflow
 
-AI Companyの会議駆動開発システム - 録音から完成コードまで全自動
+Elders Guildの会議駆動開発システム - 録音から完成コードまで全自動
 
 ## 🚀 コンセプト
 
 ```
-📱 会議録音 → 📝 文字起こし → 🤖 Gemini要約 → 🏗️ AI Company → ✅ 完成コード
+📱 会議録音 → 📝 文字起こし → 🤖 Gemini要約 → 🏗️ Elders Guild → ✅ 完成コード
     30分        2分           1分          10分         40分で完成
 ```
 
@@ -58,7 +58,7 @@ recording.mp4  # 30分の企画会議
 }
 ```
 
-### 4. **AI Company実行** 🏗️ (TDD自動開発)
+### 4. **Elders Guild実行** 🏗️ (TDD自動開発)
 ```bash
 # 各タスクを順次実行
 Task 1: 商品管理APIをTDDで作成
@@ -121,7 +121,7 @@ my-project/
 # .env に追加
 OPENAI_API_KEY=sk-...      # Whisper文字起こし用
 GEMINI_API_KEY=AI...       # Gemini要約用  
-ANTHROPIC_API_KEY=sk-...   # AI Company用
+ANTHROPIC_API_KEY=sk-...   # Elders Guild用
 ```
 
 ## 📊 実用例

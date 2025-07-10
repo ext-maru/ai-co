@@ -20,7 +20,7 @@ class GitHubFlowManager:
         """Git設定の初期化"""
         try:
             # 基本設定
-            self.run_git("config user.name 'AI Company Bot'")
+            self.run_git("config user.name 'Elders Guild Bot'")
             self.run_git("config user.email 'ai-company@localhost'")
             
             # GitHub Flowではmainブランチのみ使用
@@ -145,7 +145,7 @@ class GitHubFlowManager:
             self.run_git(f"push origin {branch_name}")
             
             # GitHub CLIでPR作成
-            pr_body = body or "Automated PR created by AI Company Bot"
+            pr_body = body or "Automated PR created by Elders Guild Bot"
             
             # GitHub CLI使用
             cmd = f"gh pr create --title '{title}' --body '{pr_body}' --base main --head {branch_name}"

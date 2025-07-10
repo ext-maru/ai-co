@@ -432,7 +432,7 @@ class ServiceHealer:
         """外部参考情報検索"""
         # 簡易実装
         return [
-            "AI Company Documentation",
+            "Elders Guild Documentation",
             "System Administration Guide",
             "Troubleshooting Manual"
         ]

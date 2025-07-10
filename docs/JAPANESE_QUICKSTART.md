@@ -1,4 +1,4 @@
-# 🚀 AI Company 日本語化クイックスタート
+# 🚀 Elders Guild 日本語化クイックスタート
 
 ## 🎯 3秒でできる日本語化
 
@@ -49,5 +49,5 @@ self.logger.info(msg('file_created', path='test.py'))  # → "ファイル作成
 
 ## 🎉 完了！
 
-これで、AI Companyは完全に日本語対応になりました。
+これで、Elders Guildは完全に日本語対応になりました。
 エラーが出た場合も、日本語でわかりやすく表示されます。

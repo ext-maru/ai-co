@@ -141,7 +141,7 @@ done
 ### **Systemd Service**
 ```ini
 [Unit]
-Description=AI Company Slack Polling Worker
+Description=Elders Guild Slack Polling Worker
 After=network.target
 
 [Service]

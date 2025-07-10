@@ -64,7 +64,7 @@ ai-test
 
 ## 🧪 Test System
 
-AI Company includes a comprehensive test system with AI-driven test generation:
+Elders Guild includes a comprehensive test system with AI-driven test generation:
 
 ### Features
 
@@ -178,6 +178,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**🎊 AI Company - Where ideas become reality through AI automation**
+**🎊 Elders Guild - Where ideas become reality through AI automation**
 
 For more information, check out our [comprehensive documentation](docs/README.md).

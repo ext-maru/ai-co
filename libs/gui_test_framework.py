@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-GUI Test Framework for AI Company WebUI
+GUI Test Framework for Elders Guild WebUI
 TDD実装 - GUI自動テストフレームワーク
 """
 
@@ -194,7 +194,7 @@ class DashboardGUITest:
             
             # タイトル確認
             title = self.framework.driver.title
-            if "AI Company" not in title:
+            if "Elders Guild" not in title:
                 result["message"] = f"Unexpected title: {title}"
                 return result
             

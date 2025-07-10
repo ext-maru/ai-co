@@ -1,4 +1,4 @@
-# 🧪 AI Company テスト適用プロンプトルール
+# 🧪 Elders Guild テスト適用プロンプトルール
 
 ## 📋 コード生成時の必須テストルール
 
@@ -252,4 +252,4 @@ cd /home/aicompany/ai_co && ./scripts/test_email_worker.sh
 
 ---
 
-**🧪 このルールにより、AI Companyのコードは常にテスト付きで生成されます**
+**🧪 このルールにより、Elders Guildのコードは常にテスト付きで生成されます**

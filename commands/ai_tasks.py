@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company - タスク管理コマンド
+Elders Guild - タスク管理コマンド
 """
 
 import sys
@@ -27,7 +27,7 @@ class AITasksCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="tasks",
-            description="AI Company タスクの管理"
+            description="Elders Guild タスクの管理"
         )
     
     def setup_arguments(self):
@@ -101,7 +101,7 @@ class AITasksCommand(BaseCommand):
     
     def _show_tasks_table(self, tasks):
         """タスク一覧をテーブル表示"""
-        table = Table(title="📋 AI Company タスク履歴")
+        table = Table(title="📋 Elders Guild タスク履歴")
         table.add_column("タスクID", style="cyan", width=25)
         table.add_column("タイプ", style="magenta", width=10)
         table.add_column("ワーカー", style="green", width=15)

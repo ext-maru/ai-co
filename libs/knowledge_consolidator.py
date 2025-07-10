@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Knowledge Consolidation System
+Elders Guild Knowledge Consolidation System
 全ての設計・ナレッジ・実装を統合管理するシステム
 """
 
@@ -296,7 +296,7 @@ class KnowledgeConsolidator(BaseManager):
         doc_path = self.consolidated_kb / f"AI_COMPANY_CONSOLIDATED_{timestamp}.md"
         
         with open(doc_path, 'w', encoding='utf-8') as f:
-            f.write(f"# 🎯 AI Company 統合ナレッジベース\n\n")
+            f.write(f"# 🎯 Elders Guild 統合ナレッジベース\n\n")
             f.write(f"生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
             
             # エグゼクティブサマリー
@@ -433,7 +433,7 @@ class KnowledgeConsolidator(BaseManager):
         return f"""<!DOCTYPE html>
 <html>
 <head>
-    <title>AI Company Knowledge Report</title>
+    <title>Elders Guild Knowledge Report</title>
     <meta charset="utf-8">
     <style>
         body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
@@ -454,7 +454,7 @@ class KnowledgeConsolidator(BaseManager):
 </head>
 <body>
     <div class="container">
-        <h1>🎯 AI Company Knowledge Report</h1>
+        <h1>🎯 Elders Guild Knowledge Report</h1>
         <p>Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
         
         <h2>📊 Overview</h2>
@@ -549,7 +549,7 @@ class KnowledgeConsolidator(BaseManager):
             notifier = SlackNotifier()
             
             message = f"""
-{EMOJI['party']} AI Company Knowledge Consolidation Complete!
+{EMOJI['party']} Elders Guild Knowledge Consolidation Complete!
 
 📄 Documentation: {doc_path.name}
 📊 Interactive Report: {report_path.name}

@@ -11,7 +11,7 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 import sys
 
-# AI Companyのライブラリパスを追加
+# Elders Guildのライブラリパスを追加
 sys.path.append('/home/aicompany/ai_co')
 
 from .report_tracker import CompletionReportTracker

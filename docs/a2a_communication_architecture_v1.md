@@ -2,7 +2,7 @@
 
 ## 📋 システム概要
 
-A2A（Agent to Agent）通信システムは、AI Company内の4賢者（Four Sages）、エルダーズ（Elders）、およびエルダーサーバント（Elder Servants）間の効率的で安全な通信を実現するフレームワークです。
+A2A（Agent to Agent）通信システムは、Elders Guild内の4賢者（Four Sages）、エルダーズ（Elders）、およびエルダーサーバント（Elder Servants）間の効率的で安全な通信を実現するフレームワークです。
 
 ### 🎯 設計目標
 

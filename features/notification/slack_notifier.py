@@ -143,7 +143,7 @@ class SlackNotifier:
         rag_emoji = "🧠" if rag_applied else "🔧"
         
         # 超シンプルなテキスト形式
-        message_text = f"""{status_emoji} {rag_emoji} *AI Company タスク完了*
+        message_text = f"""{status_emoji} {rag_emoji} *Elders Guild タスク完了*
 
 *ID:* {task_id}
 *ワーカー:* {worker}
@@ -155,12 +155,12 @@ class SlackNotifier:
 *応答:*
 {response[:120]}{'...' if len(response) > 120 else ''}
 
-_AI Company RAG System_"""
+_Elders Guild RAG System_"""
         
         return self.send_message(message_text)
     
     def test_notification(self):
         """テスト通知"""
-        test_message = f"🎉 *AI Company Slack通知テスト成功！*\n\n修正版 - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        test_message = f"🎉 *Elders Guild Slack通知テスト成功！*\n\n修正版 - {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
         success = self.send_message(test_message)
         return "✅ テスト通知送信成功" if success else "❌ テスト通知送信失敗"

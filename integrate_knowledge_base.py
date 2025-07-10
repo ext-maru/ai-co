@@ -60,7 +60,7 @@ AI Command Executorは、AIとユーザー間のコマンド実行を完全自�
 
 ### 1. 通常の起動（推奨）
 ```bash
-# AI Company全体を起動（Command Executorも自動起動）
+# Elders Guild全体を起動（Command Executorも自動起動）
 ai-start
 
 # 状態確認
@@ -332,7 +332,7 @@ with open(integrated_file, 'w', encoding='utf-8') as f:
 print(f"✅ 統合版ナレッジベース作成: {integrated_file}")
 
 # インデックスファイルも更新
-index_content = f"""# AI Company Knowledge Base Index
+index_content = f"""# Elders Guild Knowledge Base Index
 
 最終更新: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 

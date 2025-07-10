@@ -17,7 +17,7 @@ def execute_implementation():
     implementation_command = """#!/bin/bash
 cd /home/aicompany/ai_co
 
-echo "🚀 AI Company ai-send拡張実装を開始..."
+echo "🚀 Elders Guild ai-send拡張実装を開始..."
 echo "=================================="
 date
 

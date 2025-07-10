@@ -9,7 +9,7 @@
 
 ## 📋 Overview
 
-The Docker Management API provides RESTful endpoints for managing Docker containers, images, and templates within the AI Company infrastructure. This API integrates with the existing Docker Template Manager and follows the 4 Sages coordination principles.
+The Docker Management API provides RESTful endpoints for managing Docker containers, images, and templates within the Elders Guild infrastructure. This API integrates with the existing Docker Template Manager and follows the 4 Sages coordination principles.
 
 ## 🚀 Getting Started
 

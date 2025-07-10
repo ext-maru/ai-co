@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 自己進化ファイル配置マネージャー
+Elders Guild 自己進化ファイル配置マネージャー
 AIが生成したファイルを適切な場所に自動配置して自己改良を実現
 Enhanced with ML-based intelligent placement
 """

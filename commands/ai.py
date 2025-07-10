@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company インタラクティブメニュー
+Elders Guild インタラクティブメニュー
 """
 import sys
 from pathlib import Path
@@ -9,12 +9,12 @@ sys.path.append(str(Path(__file__).parent.parent))
 from commands.base_command import BaseCommand, CommandResult
 
 class AICommand(BaseCommand):
-    """AI Company メインコマンド"""
+    """Elders Guild メインコマンド"""
     
     def __init__(self):
         super().__init__(
             name="ai",
-            description="AI Company インタラクティブメニュー",
+            description="Elders Guild インタラクティブメニュー",
             version="1.0.0"
         )
     
@@ -34,7 +34,7 @@ class AICommand(BaseCommand):
         
         # メニュー表示
         menu_text = """
-🚀 AI Company インタラクティブメニュー
+🚀 Elders Guild インタラクティブメニュー
 
 【基本操作】
   ai-status    - システム状態確認

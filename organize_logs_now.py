@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company ログ整理ツール
+Elders Guild ログ整理ツール
 自動生成日時: 2025-01-04 16:58:00
 """
 

@@ -45,7 +45,7 @@ class WorkerController:
         try:
             # tmuxセッションの存在確認
             check_tmux = subprocess.run(
-                ['tmux', 'has-session', '-t', 'ai_company'],
+                ['tmux', 'has-session', '-t', 'elders_guild'],
                 capture_output=True
             )
             
@@ -55,19 +55,19 @@ class WorkerController:
                 
                 # ウィンドウが既に存在するか確認
                 check_window = subprocess.run(
-                    ['tmux', 'list-windows', '-t', 'ai_company', '-F', '#{window_name}'],
+                    ['tmux', 'list-windows', '-t', 'elders_guild', '-F', '#{window_name}'],
                     capture_output=True, text=True
                 )
                 
                 if window_name in check_window.stdout:
                     # 既存のウィンドウを削除
-                    subprocess.run(['tmux', 'kill-window', '-t', f'ai_company:{window_name}'])
+                    subprocess.run(['tmux', 'kill-window', '-t', f'elders_guild:{window_name}'])
                     time.sleep(0.5)
                 
                 # 新しいウィンドウを作成して起動
                 cmd = f"cd {self.ai_company_root} && source venv/bin/activate && python3 workers/task_worker.py {worker_id}"
                 subprocess.run([
-                    'tmux', 'new-window', '-t', 'ai_company', '-n', window_name, cmd
+                    'tmux', 'new-window', '-t', 'elders_guild', '-n', window_name, cmd
                 ])
                 
                 logger.info(f"✅ ワーカー起動 (tmux:{window_name}): {worker_id}")

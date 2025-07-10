@@ -14,7 +14,7 @@
 
 ### Strategic Initiative: Incident Knights System Implementation
 - **カテゴリ**: strategic_decision
-- **説明**: Proposal for creating an autonomous Incident Knights system to achieve zero-error development environment. This strategic initiative will transform AI Company into a truly self-healing system with predictive maintenance capabilities and seamless PM integration.
+- **説明**: Proposal for creating an autonomous Incident Knights system to achieve zero-error development environment. This strategic initiative will transform Elders Guild into a truly self-healing system with predictive maintenance capabilities and seamless PM integration.
 - **影響システム**: incident_sage, pm_worker, worker_system, error_handling, task_processing, four_sages_system
 - **発生時刻**: 2025年07月07日 01:43:56
 

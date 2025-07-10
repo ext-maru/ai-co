@@ -48,7 +48,7 @@ class AIVersionCommand(BaseCommand):
         
         # バージョン情報表示
         info_text = f"""
-🚀 AI Company - 自律進化AI基盤
+🚀 Elders Guild - 自律進化AI基盤
 
 バージョン: {version_info['version']}
 ビルド日: {version_info['build_date']}
@@ -61,7 +61,7 @@ Claude CLI: {version_info['claude_cli_version']}
   - SelfEvolution: v{version_info['components']['self_evolution']}
   - GitHub Integration: v{version_info['components']['github_integration']}
 
-作者: AI Company Development Team
+作者: Elders Guild Development Team
 ライセンス: MIT
 """
         

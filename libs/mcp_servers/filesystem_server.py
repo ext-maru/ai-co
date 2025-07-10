@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company FileSystem MCP Server
+Elders Guild FileSystem MCP Server
 プロジェクト構造を理解し、適切なファイル配置を行うMCPサーバー
 """
 
@@ -14,7 +14,7 @@ from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 import logging
 
-# AI Companyプロジェクトルート
+# Elders Guildプロジェクトルート
 PROJECT_ROOT = Path("/home/aicompany/ai_co")
 
 # ファイル配置ルール
@@ -31,7 +31,7 @@ FILE_PLACEMENT_RULES = {
 
 
 class AICompanyFileSystemServer:
-    """AI Company専用FileSystem MCPサーバー"""
+    """Elders Guild専用FileSystem MCPサーバー"""
     
     def __init__(self):
         self.server = Server("ai-company-filesystem")
@@ -142,7 +142,7 @@ class AICompanyFileSystemServer:
         """ワーカーテンプレートを生成"""
         return f'''#!/usr/bin/env python3
 """
-AI Company {name.title()} Worker
+Elders Guild {name.title()} Worker
 自動生成: MCP FileSystem Server
 """
 
@@ -212,7 +212,7 @@ if __name__ == "__main__":
         """マネージャーテンプレートを生成"""
         return f'''#!/usr/bin/env python3
 """
-AI Company {name.title()} Manager
+Elders Guild {name.title()} Manager
 自動生成: MCP FileSystem Server
 """
 

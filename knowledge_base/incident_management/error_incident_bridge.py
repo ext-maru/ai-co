@@ -96,7 +96,7 @@ class ErrorIncidentBridge:
     def generate_integrated_report(self) -> str:
         """エラー管理とインシデント管理の統合レポート"""
         report = []
-        report.append("# 📊 AI Company 統合インシデント・エラー管理レポート")
+        report.append("# 📊 Elders Guild 統合インシデント・エラー管理レポート")
         report.append(f"\n生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         
         # インシデント管理の統計

@@ -1,4 +1,4 @@
-# 📚 AI Company 軽量標準化ガイド
+# 📚 Elders Guild 軽量標準化ガイド
 
 ## 🎯 概要
 
@@ -184,7 +184,7 @@ python3 workers/test_worker_refactored.py --id test_001
 
 ## 🎉 まとめ
 
-この軽量標準化により、AI Companyシステムは：
+この軽量標準化により、Elders Guildシステムは：
 - より保守しやすく
 - より信頼性が高く
 - より拡張しやすく

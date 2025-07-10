@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Auto Commit Command
+Elders Guild Auto Commit Command
 最適なプロトコルを自動選択する統合コミットシステム
 
 使用方法:
@@ -136,7 +136,7 @@ class AutoCommitCLI:
     
     def display_analysis_report(self, context: Dict, recommended_layer: DevelopmentLayer, reasons: List[str]):
         """詳細分析レポートを表示"""
-        print("\n📊 AI Company Auto Commit Analysis Report")
+        print("\n📊 Elders Guild Auto Commit Analysis Report")
         print("=" * 60)
         
         # 基本情報
@@ -166,7 +166,7 @@ class AutoCommitCLI:
     
     async def execute_auto_commit(self, message: str, args) -> bool:
         """Auto Commit 自動実行"""
-        print("🤖 AI Company Auto Commit 開始...")
+        print("🤖 Elders Guild Auto Commit 開始...")
         print("🔍 最適なプロトコルを自動選択中...")
         
         try:
@@ -218,7 +218,7 @@ class AutoCommitCLI:
 def main():
     """メイン実行"""
     parser = argparse.ArgumentParser(
-        description="AI Company Auto Commit - 最適プロトコル自動選択",
+        description="Elders Guild Auto Commit - 最適プロトコル自動選択",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用例:
@@ -273,7 +273,7 @@ def main():
     
     # バナー表示
     print("🤖" * 50)
-    print("🚀  AI Company Auto Commit System")
+    print("🚀  Elders Guild Auto Commit System")
     print("🧠  Intelligent Protocol Selection")
     print("⚡  Lightning • 🏛️ Council • 👑 Grand")
     print("🤖" * 50)

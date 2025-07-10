@@ -1,4 +1,4 @@
-# 📚 AI Company ナレッジベース インデックス
+# 📚 Elders Guild ナレッジベース インデックス
 
 ## 🏗️ システムアーキテクチャ
 - **[コアナレッジベース](AI_COMPANY_CORE_KNOWLEDGE.md)** - システム全体の概要とアーキテクチャ

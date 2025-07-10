@@ -2,7 +2,7 @@
 """
 AI Language Command - 言語設定コマンド
 
-AI Companyシステムの言語設定を管理する
+Elders Guildシステムの言語設定を管理する
 """
 
 import sys

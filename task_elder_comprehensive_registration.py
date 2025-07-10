@@ -423,7 +423,7 @@ python3 -m pytest -n auto tests/
 - 継続的監視システム実装
 
 ## 最終目標
-60%カバレッジ達成により、AI Companyの品質と信頼性を飛躍的に向上させる
+60%カバレッジ達成により、Elders Guildの品質と信頼性を飛躍的に向上させる
 """
         
         plan_path = self.project_root / f"task_elder_execution_plan_{self.timestamp}.md"

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company コマンドランチャー（シンプル版）
+Elders Guild コマンドランチャー（シンプル版）
 全てのai-xxxコマンドはこのスクリプトを経由して実行される
 """
 import os

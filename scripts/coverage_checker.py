@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🧪 AI Company 4-Sage System カバレッジチェッカー
+🧪 Elders Guild 4-Sage System カバレッジチェッカー
 各ライブラリのテストカバレッジを分析・報告
 """
 
@@ -150,7 +150,7 @@ class CoverageAnalyzer:
         total_definitions = 0
         total_tested = 0
         
-        print("🧪 AI Company 4-Sage System カバレッジ分析")
+        print("🧪 Elders Guild 4-Sage System カバレッジ分析")
         print("=" * 60)
         
         for lib_name in target_libs:

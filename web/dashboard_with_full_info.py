@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company ダッシュボード - 完全版（CPU・メモリ詳細表示付き）
+Elders Guild ダッシュボード - 完全版（CPU・メモリ詳細表示付き）
 """
 
 import json
@@ -43,7 +43,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Company - Elder Assembly Dashboard</title>
+    <title>Elders Guild - Elder Assembly Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -278,7 +278,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <body>
     <div class="container">
         <div class="header">
-            <h1>🏛️ AI Company Elder Assembly</h1>
+            <h1>🏛️ Elders Guild Elder Assembly</h1>
         </div>
         
         <div class="metrics-grid">
@@ -311,7 +311,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             </div>
             <div id="chatMessages" class="chat-messages">
                 <div class="chat-message elder-message">
-                    🧾 クロードエルダー: こんにちは！AI Companyの管理について何でもお尋ねください。
+                    🧾 クロードエルダー: こんにちは！Elders Guildの管理について何でもお尋ねください。
                 </div>
             </div>
             <div class="chat-input-container">
@@ -543,7 +543,7 @@ class DashboardServer:
         """サーバーを起動"""
         server = HTTPServer((self.host, self.port), DashboardHandler)
         self.logger.info(f"🌐 Dashboard starting on http://{self.host}:{self.port}")
-        print(f"🏛️ AI Company Dashboard available at http://localhost:{self.port}")
+        print(f"🏛️ Elders Guild Dashboard available at http://localhost:{self.port}")
         
         try:
             server.serve_forever()
@@ -554,7 +554,7 @@ class DashboardServer:
 if __name__ == '__main__':
     import argparse
     
-    parser = argparse.ArgumentParser(description='AI Company Dashboard with Full Info')
+    parser = argparse.ArgumentParser(description='Elders Guild Dashboard with Full Info')
     parser.add_argument('--host', default='0.0.0.0', help='Server host')
     parser.add_argument('--port', type=int, default=5555, help='Server port')
     args = parser.parse_args()

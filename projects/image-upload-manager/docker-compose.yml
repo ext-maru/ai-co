@@ -1,0 +1,60 @@
+# 画像アップロード管理システム - Docker Compose
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: image-upload-manager
+    ports:
+      - "5000:5000"
+    volumes:
+      # データベースとアップロードファイルの永続化
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+      - ./config:/app/config
+    environment:
+      - FLASK_APP=app/app.py
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      # Google Drive API設定（環境変数で設定）
+      - GOOGLE_DRIVE_ENABLED=false
+      - GOOGLE_DRIVE_FOLDER_ID=""
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/config/google_credentials.json
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # セキュリティ設定
+    security_opt:
+      - no-new-privileges:true
+    # リソース制限
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.2'
+    # ログ設定
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+# ボリューム定義
+volumes:
+  upload_data:
+    driver: local
+  db_data:
+    driver: local
+
+# ネットワーク定義
+networks:
+  default:
+    name: image-upload-network
+    driver: bridge

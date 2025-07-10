@@ -641,7 +641,7 @@ def dashboard_html():
     <!DOCTYPE html>
     <html>
     <head>
-        <title>AI Company - 運用ダッシュボード</title>
+        <title>Elders Guild - 運用ダッシュボード</title>
         <meta charset="utf-8">
         <style>
             body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
@@ -658,7 +658,7 @@ def dashboard_html():
         </style>
     </head>
     <body>
-        <h1>🖥️ AI Company - 運用ダッシュボード</h1>
+        <h1>🖥️ Elders Guild - 運用ダッシュボード</h1>
         
         <div class="dashboard">
             <div class="card">

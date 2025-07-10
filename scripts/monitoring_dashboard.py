@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 監視ダッシュボード
+Elders Guild 監視ダッシュボード
 リアルタイムメトリクス表示と アラート機能
 """
 
@@ -112,7 +112,7 @@ class MonitoringDashboard:
                 try:
                     cmdline = ' '.join(proc.info['cmdline'] or [])
                     
-                    # AI Companyワーカーの検出
+                    # Elders Guildワーカーの検出
                     if 'worker' in cmdline and 'python' in cmdline:
                         worker_name = 'unknown'
                         
@@ -334,7 +334,7 @@ class MonitoringDashboard:
     def print_dashboard(self, data: Dict[str, Any]):
         """コンソールダッシュボード表示"""
         print("\n" + "="*80)
-        print("🖥️  AI Company Monitoring Dashboard")
+        print("🖥️  Elders Guild Monitoring Dashboard")
         print("="*80)
         print(f"📅 Time: {data['timestamp']}")
         print(f"🏥 Health: {data['summary']['system_health'].upper()}")
@@ -401,7 +401,7 @@ def main():
     """メイン実行関数"""
     import argparse
     
-    parser = argparse.ArgumentParser(description='AI Company Monitoring Dashboard')
+    parser = argparse.ArgumentParser(description='Elders Guild Monitoring Dashboard')
     parser.add_argument('--interval', type=int, default=60, 
                        help='Monitoring interval in seconds (default: 60)')
     parser.add_argument('--once', action='store_true',

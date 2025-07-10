@@ -17,7 +17,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer(auto_error=False)
 
 class SecurityManager:
-    """Comprehensive security manager for AI Company Web"""
+    """Comprehensive security manager for Elders Guild Web"""
     
     def __init__(self):
         self.pwd_context = pwd_context

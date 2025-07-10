@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company - 対話応答コマンド
+Elders Guild - 対話応答コマンド
 """
 
 import sys
@@ -17,7 +17,7 @@ class AIReplyCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="reply",
-            description="AI Company 対話への応答を送信",
+            description="Elders Guild 対話への応答を送信",
             version="1.0.0"
         )
         self.console = Console()

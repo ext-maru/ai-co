@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-BaseManager - AI Company マネージャー基底クラス
+BaseManager - Elders Guild マネージャー基底クラス
 
 すべてのマネージャーが継承すべき基底クラス。
 ログ設定、エラーハンドリング、共通処理を提供。

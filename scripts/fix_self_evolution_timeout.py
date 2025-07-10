@@ -24,7 +24,7 @@ def test_optimized_manager():
     # テスト用のコンテンツ
     test_content = '''#!/usr/bin/env python3
 """
-Test Worker for AI Company
+Test Worker for Elders Guild
 """
 import pika
 import json

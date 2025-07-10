@@ -210,7 +210,7 @@ import libs.not_yet_created_module  # <- これはエラーになる
 - `git` - バージョン管理の保護
 
 ### Phase 3: Full Coverage (Week 3-4)
-- 全AI Companyコマンド
+- 全Elders Guildコマンド
 - Python環境全般
 - カスタムスクリプト
 

@@ -1,4 +1,3 @@
-    from {module_path.replace('.py', '').replace('/', '.')} import *
 #!/usr/bin/env python3
 """
 COVERAGE ENHANCEMENT KNIGHT - Strategic Test Generation for Core Modules

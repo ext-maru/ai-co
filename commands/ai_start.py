@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ai-start: AI Company システム起動コマンド
+ai-start: Elders Guild システム起動コマンド
 """
 import time
 import os
@@ -12,7 +12,7 @@ class StartCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="start",
-            description="AI Company システムを起動します"
+            description="Elders Guild システムを起動します"
         )
         
     def setup_arguments(self):
@@ -81,7 +81,7 @@ class StartCommand(BaseCommand):
         
     def check_existing_session(self):
         """既存のtmuxセッション確認"""
-        result = self.run_command(['tmux', 'has-session', '-t', 'ai_company'])
+        result = self.run_command(['tmux', 'has-session', '-t', 'elders_guild'])
         if result and result.returncode == 0:
             self.warning("既存のセッションが見つかりました")
             self.info("ai-stop を実行してから再度お試しください")
@@ -91,7 +91,7 @@ class StartCommand(BaseCommand):
     def create_tmux_session(self):
         """tmuxセッション作成"""
         self.info("tmuxセッション作成中...")
-        self.run_command(['tmux', 'new-session', '-d', '-s', 'ai_company'])
+        self.run_command(['tmux', 'new-session', '-d', '-s', 'elders_guild'])
         
     def start_worker(self, worker_type: str, worker_id: str = None, window_name: str = None):
         """ワーカー起動"""
@@ -99,7 +99,7 @@ class StartCommand(BaseCommand):
             window_name = worker_type
             
         # 新しいウィンドウ作成
-        self.run_command(['tmux', 'new-window', '-t', 'ai_company', '-n', window_name])
+        self.run_command(['tmux', 'new-window', '-t', 'elders_guild', '-n', window_name])
         
         # コマンド構築
         if worker_type == 'task':
@@ -129,7 +129,7 @@ class StartCommand(BaseCommand):
             return
             
         # コマンド送信
-        self.run_command(['tmux', 'send-keys', '-t', f'ai_company:{window_name}', cmd, 'C-m'])
+        self.run_command(['tmux', 'send-keys', '-t', f'elders_guild:{window_name}', cmd, 'C-m'])
         self.success(f"{window_name} ワーカー起動")
         
 
@@ -171,7 +171,7 @@ class StartCommand(BaseCommand):
     
     def execute(self, args):
         """メイン実行"""
-        self.header("AI Company システム起動")
+        self.header("Elders Guild システム起動")
         
         # 前提条件チェック
         if not self.check_prerequisites():
@@ -241,8 +241,8 @@ class StartCommand(BaseCommand):
             self.error("ワーカーの起動に失敗した可能性があります")
             
         # 最終メッセージ
-        self.info("\ntmuxセッション 'ai_company' で起動しました")
-        self.info("接続: tmux attach -t ai_company")
+        self.info("\ntmuxセッション 'elders_guild' で起動しました")
+        self.info("接続: tmux attach -t elders_guild")
         self.info("状態確認: ai-status")
         self.success("\n起動完了！")
 

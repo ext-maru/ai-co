@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 統合エンティティマネージャー v1.0
+Elders Guild 統合エンティティマネージャー v1.0
 ナレッジ・インシデント・タスク統合管理システム
 """
 

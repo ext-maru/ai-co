@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 4賢者監視・チェック体制システム
-AI Company エルダーズによる統合監視システム
+Elders Guild エルダーズによる統合監視システム
 
 タスク賢者: 計画実行監視・進捗管理
 インシデント賢者: リスク監視・緊急対応
@@ -943,7 +943,7 @@ class FourSagesMonitoringSystem:
 
 def main():
     """メイン実行関数"""
-    print("🧙‍♂️ AI Company 4賢者監視システム")
+    print("🧙‍♂️ Elders Guild 4賢者監視システム")
     print("📋 タスク賢者 🚨 インシデント賢者 📚 ナレッジ賢者 🔍 RAG賢者")
     print("=" * 60)
     

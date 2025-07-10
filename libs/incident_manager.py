@@ -14,7 +14,7 @@ import logging
 class IncidentManager:
     """インシデント賢者 (Crisis Sage) - 4賢者システム統合
     
-    AI Companyの4賢者システムの一翼を担う、危機対応専門の賢者。
+    Elders Guildの4賢者システムの一翼を担う、危機対応専門の賢者。
     問題の即座感知・解決、エラー検知、自動復旧、インシデント履歴管理を行う。
     """
     

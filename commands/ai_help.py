@@ -42,7 +42,7 @@ class AIHelpCommand(BaseCommand):
         
         # 全般的なヘルプ
         help_text = """
-🚀 AI Company - 自律進化AI基盤
+🚀 Elders Guild - 自律進化AI基盤
 
 【基本コマンド】
   ai-start         システム起動

@@ -1,4 +1,4 @@
-# AI Company Knowledge Base Index
+# Elders Guild Knowledge Base Index
 
 最終更新: 2025-01-04 15:49:00
 
@@ -45,7 +45,7 @@
 3. **[commit_best_practices_integration.md](commit_best_practices_integration.md)**
    - 統合ガイド
 
-## 🎯 AI Company Core
+## 🎯 Elders Guild Core
 
 1. **[AI_Company_Core_Knowledge_v5.1.md](AI_Company_Core_Knowledge_v5.1.md)**
    - コアシステムの知識
@@ -87,4 +87,4 @@ knowledge_base/
 
 ---
 
-**Knowledge is Power - 知識の蓄積がAI Companyの成長を支えます**
+**Knowledge is Power - 知識の蓄積がElders Guildの成長を支えます**

@@ -230,7 +230,7 @@ def update_slack_config(config_data):
     print("✅ slack.conf更新完了")
 
 def main():
-    print("🔗 AI Company Slack設定自動検出ツール")
+    print("🔗 Elders Guild Slack設定自動検出ツール")
     print("=" * 50)
     
     # 既存設定を検索

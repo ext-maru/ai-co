@@ -13,7 +13,7 @@ import pytest
 from unittest.mock import Mock, MagicMock, patch
 import unittest
 
-Comprehensive GUI Testing Suite for AI Company Dashboard
+Comprehensive GUI Testing Suite for Elders Guild Dashboard
 This script runs complete GUI tests to verify the dashboard system
 """
 

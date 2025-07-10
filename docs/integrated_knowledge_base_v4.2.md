@@ -1,4 +1,4 @@
-# 📚 AI Company 統合ナレッジベース v4.2
+# 📚 Elders Guild 統合ナレッジベース v4.2
 
 ## 🎯 システム概要
 
@@ -7,7 +7,7 @@
 - **ユーザー**: aicompany (pass: aicompany) ※rootユーザーでの実行も可能
 - **パス**: `/home/aicompany/ai_co`
 - **Python**: 3.12.3
-- **tmuxセッション**: ai_company, ai_quality
+- **tmuxセッション**: elders_guild, ai_quality
 
 ## 🚀 主要システム一覧
 
@@ -143,4 +143,4 @@ tail -f ai_commands/logs/*.log
 
 ---
 
-**🎊 AI Company v4.2 - 完全自律型AI開発基盤**
+**🎊 Elders Guild v4.2 - 完全自律型AI開発基盤**

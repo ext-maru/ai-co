@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Webダッシュボード
+Elders Guild Webダッシュボード
 システム状態をブラウザで監視
 """
 
@@ -54,7 +54,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Company Dashboard</title>
+    <title>Elders Guild Dashboard</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         
@@ -391,7 +391,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧾 AI Company マインクラフトサーバー</h1>
+            <h1>🧾 Elders Guild マインクラフトサーバー</h1>
         </div>
         
         <div class="elder-council" id="elderCouncil">
@@ -734,7 +734,7 @@ class DashboardServer:
 if __name__ == '__main__':
     import argparse
     
-    parser = argparse.ArgumentParser(description='AI Company Web Dashboard')
+    parser = argparse.ArgumentParser(description='Elders Guild Web Dashboard')
     parser.add_argument('--host', default=None, help='Server host (default: from config)')
     parser.add_argument('--port', type=int, default=None, help='Server port (default: from config)')
     args = parser.parse_args()

@@ -342,7 +342,7 @@ Task to complete:
         prompt_lower = prompt.lower()
         
         if "hello" in prompt_lower:
-            output = """print("Hello, AI Company!")"""
+            output = """print("Hello, Elders Guild!")"""
         elif "fibonacci" in prompt_lower:
             output = """def fibonacci(n):
     if n <= 1:

@@ -48,7 +48,7 @@ def debug_slack_notification():
     test_message = {
         "channel": config.get('SLACK_CHANNEL', '#general'),
         "username": config.get('SLACK_USERNAME', 'AI-Company-Bot'),
-        "text": "🧪 AI Company Slack通知テスト\n\nこのメッセージが表示されれば、Slack通知は正常に動作しています！",
+        "text": "🧪 Elders Guild Slack通知テスト\n\nこのメッセージが表示されれば、Slack通知は正常に動作しています！",
         "icon_emoji": ":robot_face:"
     }
     
@@ -81,7 +81,7 @@ def debug_slack_notification():
         print(f"Has webhook: {bool(getattr(notifier, 'webhook_url', None))}")
         
         # 実際の送信メソッドテスト
-        result = notifier.send_notification("AI Company SlackNotifierクラス経由のテスト")
+        result = notifier.send_notification("Elders Guild SlackNotifierクラス経由のテスト")
         print(f"送信結果: {result}")
         
     except Exception as e:

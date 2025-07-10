@@ -1,4 +1,4 @@
-# AI Company Component Catalog v6.1
+# Elders Guild Component Catalog v6.1
 
 *最終更新: 2025年7月5日 - Phase 1-3 統合完了版*
 

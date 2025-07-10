@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company ナレッジベース管理システム
+Elders Guild ナレッジベース管理システム
 ワーカーがナレッジベースを自動参照できるようにする
 """
 import json
@@ -13,7 +13,7 @@ from datetime import datetime
 class KnowledgeBaseManager:
     """ナレッジ賢者 (Knowledge Sage) - 4賢者システム統合
     
-    AI Companyの4賢者システムの一翼を担う、過去の英智を蓄積・継承する賢者。
+    Elders Guildの4賢者システムの一翼を担う、過去の英智を蓄積・継承する賢者。
     学習による知恵の進化、ファイルベース知識管理、英智の継承を行う。
     """
     

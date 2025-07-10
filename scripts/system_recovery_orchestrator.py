@@ -426,7 +426,7 @@ if __name__ == "__main__":
     async def main():
         orchestrator = SystemRecoveryOrchestrator()
         
-        print("🎭 AI Company システム完全回復開始...")
+        print("🎭 Elders Guild システム完全回復開始...")
         report = await orchestrator.execute_full_recovery()
         
         # 結果表示

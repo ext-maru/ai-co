@@ -1,7 +1,7 @@
-# AI Company ディレクトリ構造
+# Elders Guild ディレクトリ構造
 
 ## 概要
-AI Companyのコードベースは機能別に整理された構造になっています。
+Elders Guildのコードベースは機能別に整理された構造になっています。
 
 ```
 /root/ai_co/

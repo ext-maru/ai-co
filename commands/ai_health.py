@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ai-health: AI Company 詳細ヘルスチェックコマンド
+ai-health: Elders Guild 詳細ヘルスチェックコマンド
 """
 import json
 import psutil
@@ -13,7 +13,7 @@ class HealthCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="health",
-            description="AI Company システムの詳細なヘルスチェックを実行します"
+            description="Elders Guild システムの詳細なヘルスチェックを実行します"
         )
         
     def setup_arguments(self):
@@ -394,7 +394,7 @@ class HealthCommand(BaseCommand):
     def execute(self, args):
         """メイン実行"""
         if not args.json:
-            self.header("AI Company ヘルスチェック")
+            self.header("Elders Guild ヘルスチェック")
             
         # 各種チェック実行
         health_data = {

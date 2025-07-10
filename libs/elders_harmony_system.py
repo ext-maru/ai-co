@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 エルダーズ・ハーモニー・システム
-AI Company 根本解決プラン: 品質第一×階層秩序×実行可能性の完全調和
+Elders Guild 根本解決プラン: 品質第一×階層秩序×実行可能性の完全調和
 
 設計者: クロードエルダー
 承認: エルダーズ評議会
@@ -193,7 +193,7 @@ class SagesHarmonyEngine:
         # AI判定シミュレーション
         approval_factors = {
             "complexity": 1.0 - request.get("complexity", 0.5),
-            "alignment": 0.8,  # AI Company理念との適合性
+            "alignment": 0.8,  # Elders Guild理念との適合性
             "quality": 0.9     # 品質基準適合性
         }
         

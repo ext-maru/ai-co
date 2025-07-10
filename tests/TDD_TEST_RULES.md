@@ -1,8 +1,8 @@
-# 🧪 AI Company TDDテストルール・ガイドライン v2.0
+# 🧪 Elders Guild TDDテストルール・ガイドライン v2.0
 
 ## 📋 概要
 
-AI CompanyのTest Driven Development (TDD)に基づくテストルールとガイドラインです。**すべての開発はテストファーストで行います**。
+Elders GuildのTest Driven Development (TDD)に基づくテストルールとガイドラインです。**すべての開発はテストファーストで行います**。
 
 ## 🔴🟢🔵 TDD基本原則
 

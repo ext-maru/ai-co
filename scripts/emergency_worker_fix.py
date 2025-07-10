@@ -108,7 +108,7 @@ def create_unified_startup_script():
     startup_script = PROJECT_ROOT / "scripts/start_worker.sh"
     
     script_content = '''#!/bin/bash
-# 🚀 AI Company 統一ワーカー起動スクリプト
+# 🚀 Elders Guild 統一ワーカー起動スクリプト
 # 4賢者システム提供
 
 set -e

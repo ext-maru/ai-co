@@ -1,8 +1,8 @@
-# 🧪 AI Company テストルール・ガイドライン ナレッジベース v1.0
+# 🧪 Elders Guild テストルール・ガイドライン ナレッジベース v1.0
 
 ## 📋 概要
 
-AI Companyの品質を保証するための包括的なテストルールとガイドラインです。すべての開発者とAIは、コード変更時にこれらのルールに従ってテストを作成・実行する必要があります。
+Elders Guildの品質を保証するための包括的なテストルールとガイドラインです。すべての開発者とAIは、コード変更時にこれらのルールに従ってテストを作成・実行する必要があります。
 
 ## 🎯 テストの基本原則
 
@@ -259,7 +259,7 @@ def test_concurrent_message_processing(self):
 
 ```yaml
 # .github/workflows/test.yml の例
-name: Test AI Company
+name: Test Elders Guild
 
 on: [push, pull_request]
 
@@ -403,4 +403,4 @@ def test_create_and_delete(self):
 
 ---
 
-**🧪 これらのルールに従うことで、AI Companyの品質と信頼性を継続的に向上させます**
+**🧪 これらのルールに従うことで、Elders Guildの品質と信頼性を継続的に向上させます**

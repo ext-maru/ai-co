@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 統合APIゲートウェイ v1.0
+Elders Guild 統合APIゲートウェイ v1.0
 統一APIインターフェースによる4賢者システム統合
 """
 
@@ -686,7 +686,7 @@ app.register_blueprint(api_v1)
 def index():
     """API情報"""
     return jsonify({
-        'name': 'AI Company Unified API Gateway',
+        'name': 'Elders Guild Unified API Gateway',
         'version': '1.0',
         'description': '統合エンティティ管理・検索API',
         'endpoints': {
@@ -712,7 +712,7 @@ def create_app(config=None):
 
 if __name__ == '__main__':
     # 開発サーバー起動
-    logger.info("Starting AI Company Unified API Gateway...")
+    logger.info("Starting Elders Guild Unified API Gateway...")
     app.run(
         host='0.0.0.0',
         port=5000,

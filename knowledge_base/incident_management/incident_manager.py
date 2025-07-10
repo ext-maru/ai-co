@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company インシデント管理ヘルパー
+Elders Guild インシデント管理ヘルパー
 既存のエラー管理機能を拡張した包括的インシデント管理システム
 """
 
@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from typing import Dict, List, Optional, Literal
 import uuid
 
-# プロジェクトパスを追加（AI Company標準）
+# プロジェクトパスを追加（Elders Guild標準）
 PROJECT_ROOT = Path(__file__).parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
@@ -266,7 +266,7 @@ class IncidentManager:
     def generate_report(self) -> str:
         """インシデントレポートを生成"""
         report = []
-        report.append("# 📊 AI Company インシデント管理レポート")
+        report.append("# 📊 Elders Guild インシデント管理レポート")
         report.append(f"\n生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         
         # サマリー
@@ -369,7 +369,7 @@ class IncidentManager:
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="AI Company インシデント管理システム")
+    parser = argparse.ArgumentParser(description="Elders Guild インシデント管理システム")
     parser.add_argument("action", choices=["create", "update", "resolve", "list", "show", "report", "analyze"],
                       help="実行するアクション")
     parser.add_argument("--category", choices=["error", "failure", "request", "change", "security", "performance"],

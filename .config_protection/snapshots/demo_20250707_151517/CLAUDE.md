@@ -1,8 +1,8 @@
-# Claude CLI 開発ガイド - AI Company
+# Claude CLI 開発ガイド - Elders Guild
 
-## 🧙‍♂️ AI Company 4賢者システム
+## 🧙‍♂️ Elders Guild 4賢者システム
 
-AI Companyは**4つの賢者**が連携して自律的に学習・進化するシステムです：
+Elders Guildは**4つの賢者**が連携して自律的に学習・進化するシステムです：
 
 ### 📚 **ナレッジ賢者** (Knowledge Sage)
 - **場所**: `knowledge_base/` - ファイルベース知識管理
@@ -36,7 +36,7 @@ RAG: 「最適解を発見しました」
 
 ## 🎯 重要: TDD（テスト駆動開発）必須
 
-**AI Companyのすべての開発はTDDで行います。コードを書く前に必ずテストを書いてください。**
+**Elders Guildのすべての開発はTDDで行います。コードを書く前に必ずテストを書いてください。**
 
 ### TDDサイクル
 1. 🔴 **Red**: 失敗するテストを先に書く

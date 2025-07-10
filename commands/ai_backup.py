@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 システムバックアップ管理コマンド
-AI Companyシステムの包括的なバックアップ・復元機能
+Elders Guildシステムの包括的なバックアップ・復元機能
 """
 import sys
 import json

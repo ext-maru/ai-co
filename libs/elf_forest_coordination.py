@@ -5,7 +5,7 @@
 
 Author: Elf Forest Council
 Date: 2025-07-07
-Mission: 60%カバレッジ達成による AI Company完全自律化
+Mission: 60%カバレッジ達成による Elders Guild完全自律化
 """
 
 import asyncio

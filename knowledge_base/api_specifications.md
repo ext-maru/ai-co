@@ -1,4 +1,4 @@
-# AI Company API Specifications
+# Elders Guild API Specifications
 
 ## 外部API
 

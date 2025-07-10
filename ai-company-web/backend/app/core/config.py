@@ -1,5 +1,5 @@
 """
-Configuration management for AI Company Web FastAPI Backend
+Configuration management for Elders Guild Web FastAPI Backend
 """
 
 import secrets
@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     """
     
     # Application
-    APP_NAME: str = "AI Company Web API"
+    APP_NAME: str = "Elders Guild Web API"
     VERSION: str = "1.0.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True

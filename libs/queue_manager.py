@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company - RabbitMQキュー管理
+Elders Guild - RabbitMQキュー管理
 """
 
 import pika

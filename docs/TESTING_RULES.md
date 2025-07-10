@@ -1,4 +1,4 @@
-# 🧪 AI Company テストルール・ガイドライン
+# 🧪 Elders Guild テストルール・ガイドライン
 
 ## 📋 基本原則
 
@@ -212,7 +212,7 @@ ai-test changed
 ### CI/CD統合
 ```yaml
 # .github/workflows/test.yml
-name: AI Company Tests
+name: Elders Guild Tests
 
 on: [push, pull_request]
 
@@ -356,4 +356,4 @@ def analyze_test_failure(test_name, error):
 
 ---
 
-**🧪 このテストルールにより、AI Companyは高品質で信頼性の高いシステムを維持します**
+**🧪 このテストルールにより、Elders Guildは高品質で信頼性の高いシステムを維持します**

@@ -1,6 +1,6 @@
 #\!/usr/bin/env python3
 """
-AI Company - スケジュール管理コマンド
+Elders Guild - スケジュール管理コマンド
 """
 
 import sys
@@ -17,7 +17,7 @@ class AIScheduleCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="schedule",
-            description="AI Company スケジュール管理",
+            description="Elders Guild スケジュール管理",
             version="1.0.0"
         )
         self.console = Console()

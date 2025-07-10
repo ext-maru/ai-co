@@ -1,4 +1,4 @@
-# AI Company ai-restart 修正指示書
+# Elders Guild ai-restart 修正指示書
 
 ## 問題の概要
 `ai-restart` コマンドが以下のエラーで失敗しています：
@@ -20,7 +20,7 @@ cat /home/aicompany/ai_co/knowledge_base/AI_COMPANY_MASTER_KB_v5.2.md | grep -A 
 sudo tee /usr/local/bin/ai-restart > /dev/null << 'EOF'
 #!/bin/bash
 echo "=================================================="
-echo "🚀 AI Company システム再起動 - $(date '+%H:%M:%S')"
+echo "🚀 Elders Guild システム再起動 - $(date '+%H:%M:%S')"
 echo "=================================================="
 
 # システム停止
@@ -65,10 +65,10 @@ sed -i '/TestGeneratorWorker/,/C-m/d' start_company.sh
 # ai-start
 sudo tee /usr/local/bin/ai-start > /dev/null << 'EOF'
 #!/bin/bash
-echo "🏢 AI Company を起動中..."
+echo "🏢 Elders Guild を起動中..."
 cd /home/aicompany/ai_co
 if tmux has-session -t ai_company 2>/dev/null; then
-    echo "⚠️  既にAI Companyが起動しています"
+    echo "⚠️  既にElders Guildが起動しています"
     exit 0
 fi
 bash scripts/start_company.sh
@@ -77,11 +77,11 @@ EOF
 # ai-stop
 sudo tee /usr/local/bin/ai-stop > /dev/null << 'EOF'
 #!/bin/bash
-echo "🛑 AI Company を停止中..."
+echo "🛑 Elders Guild を停止中..."
 tmux kill-session -t ai_company 2>/dev/null && echo "✅ tmuxセッション停止完了" || echo "ℹ️  tmuxセッションは既に停止しています"
 pkill -f "worker.py" 2>/dev/null
 rm -f /tmp/ai_command_executor.pid 2>/dev/null
-echo "✅ AI Company 停止完了"
+echo "✅ Elders Guild 停止完了"
 EOF
 
 # 実行権限を付与

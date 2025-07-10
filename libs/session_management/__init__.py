@@ -3,7 +3,7 @@
 PROJECT ELDERZAN - Session Management Module
 プロジェクトエルダーザン セッション管理モジュール
 
-AI Company 80-95%コストカット実現の核心システム
+Elders Guild 80-95%コストカット実現の核心システム
 エルダー評議会 + 4賢者システム監修による次世代セッション管理
 
 主要コンポーネント:

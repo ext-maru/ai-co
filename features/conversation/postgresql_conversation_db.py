@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PostgreSQL統合会話管理データベース - AI Company Unified System
+PostgreSQL統合会話管理データベース - Elders Guild Unified System
 """
 
 import asyncio

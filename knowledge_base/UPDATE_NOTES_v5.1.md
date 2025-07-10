@@ -1,8 +1,8 @@
-# 📚 AI Company ナレッジベース更新通知 v5.1
+# 📚 Elders Guild ナレッジベース更新通知 v5.1
 
 ## 🎯 更新概要
 
-AI Company v5.1のリリースに伴い、以下のナレッジベースを更新しました。
+Elders Guild v5.1のリリースに伴い、以下のナレッジベースを更新しました。
 
 ### 📋 更新されたドキュメント
 
@@ -93,14 +93,14 @@ ai-start  # Command Executorも含まれる
 
 ## 🎉 まとめ
 
-v5.1により、AI Companyはより統合され、使いやすくなりました。
+v5.1により、Elders Guildはより統合され、使いやすくなりました。
 手動での個別ワーカー起動は不要となり、一つのコマンドで全てが動作します。
 
 ---
 
 **更新日**: 2025-01-02
 **バージョン**: v5.1
-**作成者**: AI Company Development Team
+**作成者**: Elders Guild Development Team
 
 ---
 
@@ -158,4 +158,4 @@ Refs: code_20250703_120000
 
 **更新日**: 2025-01-03
 **バージョン**: v5.2
-**作成者**: AI Company Development Team
+**作成者**: Elders Guild Development Team

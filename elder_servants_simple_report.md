@@ -13,11 +13,11 @@
 - 自動テスト基盤の構築
 
 ## 📋 テスト結果
-- **test_elder_queue_manager.py**: ✅ 成功 (0.41s)
-- **test_elder_rag_manager.py**: ✅ 成功 (0.43s)
-- **test_elder_worker_monitor.py**: ✅ 成功 (0.41s)
-- **test_elder_base_worker.py**: ✅ 成功 (0.45s)
-- **test_elder_pm_worker.py**: ✅ 成功 (0.55s)
+- **test_elder_queue_manager.py**: ✅ 成功 (0.52s)
+- **test_elder_rag_manager.py**: ✅ 成功 (0.61s)
+- **test_elder_worker_monitor.py**: ✅ 成功 (0.45s)
+- **test_elder_base_worker.py**: ✅ 成功 (0.43s)
+- **test_elder_pm_worker.py**: ✅ 成功 (0.43s)
 
 ## 🚀 次のアクション
 - インシデント騎士団の問題解決システム展開
@@ -25,4 +25,4 @@
 - 35%カバレッジ達成への最終段階実行
 
 ---
-*Generated at 2025-07-08 17:28:17*
+*Generated at 2025-07-09 16:18:56*

@@ -10,7 +10,7 @@ from .core.error_handler import UnifiedErrorHandler
 from .core.performance_monitor import PerformanceMonitor
 
 __version__ = "1.0.0"
-__author__ = "AI Company - PROJECT ELDERZAN"
+__author__ = "Elders Guild - PROJECT ELDERZAN"
 __description__ = "統合API・4賢者システム・80%コストカット実現"
 
 __all__ = [

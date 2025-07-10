@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 自動テストランナー
+Elders Guild 自動テストランナー
 Git pre-commit hookから呼び出されるシンプルなテストランナー
 """
 
@@ -11,7 +11,7 @@ from pathlib import Path
 import argparse
 
 def main():
-    parser = argparse.ArgumentParser(description='AI Company 自動テストランナー')
+    parser = argparse.ArgumentParser(description='Elders Guild 自動テストランナー')
     parser.add_argument('files', nargs='*', help='テスト対象のファイル')
     parser.add_argument('--no-slack', action='store_true', help='Slack通知を無効化')
     args = parser.parse_args()

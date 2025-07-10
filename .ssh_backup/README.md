@@ -1,8 +1,8 @@
-# AI Company SSH Keys Backup
+# Elders Guild SSH Keys Backup
 
 ## 🔑 SSH鍵永続化バックアップ
 
-このディレクトリにはAI CompanyプロジェクトのGitHub認証用SSH鍵のバックアップが保存されています。
+このディレクトリにはElders GuildプロジェクトのGitHub認証用SSH鍵のバックアップが保存されています。
 
 ### 含まれるファイル
 - `id_rsa` / `id_rsa.pub` - RSA 4096bit鍵ペア

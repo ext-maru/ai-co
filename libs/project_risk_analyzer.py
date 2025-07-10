@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Advanced Project Risk Analysis System
-Part of AI Company Phase 1: Foundation System
+Part of Elders Guild Phase 1: Foundation System
 Provides comprehensive security risk assessment for automated project placement
 """
 

@@ -270,7 +270,7 @@ def test_complete_task_lifecycle_scenario(self):
 - ✅ 統合シナリオ: 8つの実用パターン検証完了
 - ✅ 4賢者システム: 全領域での最適化実現
 
-**次なるPhase 3では、90%カバレッジ達成とAI Company全体の完全制圧を目指します。**
+**次なるPhase 3では、90%カバレッジ達成とElders Guild全体の完全制圧を目指します。**
 
 ---
 

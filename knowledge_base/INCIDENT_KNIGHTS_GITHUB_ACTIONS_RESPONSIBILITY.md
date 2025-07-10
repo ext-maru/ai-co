@@ -252,7 +252,7 @@ Non-compliance will result in:
 
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
-| 1.0 | 2025-01-07 | AI Company Framework Team | Initial framework establishment |
+| 1.0 | 2025-01-07 | Elders Guild Framework Team | Initial framework establishment |
 
 ---
 

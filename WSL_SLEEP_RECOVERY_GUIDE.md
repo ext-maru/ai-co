@@ -1,7 +1,7 @@
 # 🚀 WSL スリープ復旧システム完全ガイド
 
 **作成日**: 2025年7月9日  
-**対象**: WSL2 + Windows環境でのAI Company運用
+**対象**: WSL2 + Windows環境でのElders Guild運用
 
 ---
 
@@ -230,6 +230,6 @@ python3 scripts/wsl_sleep_recovery_system.py
 
 ---
 
-**これで、PCをスリープしても AI Company が自動で復活します！** 🛡️⚔️🚀
+**これで、PCをスリープしても Elders Guild が自動で復活します！** 🛡️⚔️🚀
 
-*作成者: クロードエルダー（AI Company開発実行責任者）*
+*作成者: クロードエルダー（Elders Guild開発実行責任者）*

@@ -1,7 +1,7 @@
-# AI Company包括的テストカバレッジレポート
+# Elders Guild包括的テストカバレッジレポート
 
 ## 概要
-AI Companyプロジェクトの最重要ファイルである `core/base_worker.py` と `core/config.py` に対して包括的なテストを作成し、大幅なカバレッジ向上を達成しました。
+Elders Guildプロジェクトの最重要ファイルである `core/base_worker.py` と `core/config.py` に対して包括的なテストを作成し、大幅なカバレッジ向上を達成しました。
 
 ## 達成結果
 

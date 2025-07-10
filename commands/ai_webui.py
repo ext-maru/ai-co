@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company WebUI - Simple web interface
+Elders Guild WebUI - Simple web interface
 """
 import sys
 from pathlib import Path
@@ -35,7 +35,7 @@ class AIWebUICommand(BaseCommand):
     def execute(self, args) -> CommandResult:
         """実行"""
         try:
-            print(f"🌐 AI Company WebUI Starting...")
+            print(f"🌐 Elders Guild WebUI Starting...")
             print(f"URL: http://{args.host}:{args.port}")
             print(f"")
             print(f"📋 利用可能な機能:")

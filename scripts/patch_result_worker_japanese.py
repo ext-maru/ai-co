@@ -57,7 +57,7 @@ MESSAGES_JA = {
     'rag_applied': '適用済み',
     'rag_not_applied': '未適用',
     'prompt': 'プロンプト',
-    'ai_company_system': '*AI Company RAGシステム*'
+    'ai_company_system': '*Elders Guild RAGシステム*'
 }
 '''
     
@@ -81,7 +81,7 @@ MESSAGES_JA = {
         
         # プロフェッショナルなヘッダー（日本語）
         message_parts = [
-            f"✅ **AI Company タスク完了**",
+            f"✅ **Elders Guild タスク完了**",
             f"",
             f"**{MESSAGES_JA['task_id']}:** `{task_id}`",
             f"**{MESSAGES_JA['worker_info']}:** `{worker_id}`",

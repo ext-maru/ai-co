@@ -96,7 +96,7 @@ def run_coverage_test():
                 try:
                     coverage_percent = float(percentage)
                     if coverage_percent >= 60:
-                        print("🎉 SUCCESS: 60% Coverage Target Achieved\!")
+                        print("🎉 SUCCESS: 60% Coverage Target Achieved!")
                     else:
                         print(f"📈 Progress: {coverage_percent}% (Target: 60%)")
                 except ValueError:

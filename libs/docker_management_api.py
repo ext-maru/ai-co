@@ -35,7 +35,7 @@ logger = logging.getLogger(__name__)
 
 # FastAPI app
 app = FastAPI(
-    title="AI Company Docker Management API",
+    title="Elders Guild Docker Management API",
     description="Docker コンテナライフサイクル管理API",
     version="1.0.0"
 )

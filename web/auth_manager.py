@@ -1,6 +1,6 @@
 """
 Web認証システム実装
-AI Company Dashboard認証管理
+Elders Guild Dashboard認証管理
 """
 import sqlite3
 import secrets

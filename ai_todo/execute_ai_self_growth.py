@@ -10,8 +10,8 @@ from datetime import datetime
 from pathlib import Path
 
 def execute_task_0():
-    """AI Company ワーカー状態分析"""
-    print("🔄 タスク0: AI Company ワーカー状態分析")
+    """Elders Guild ワーカー状態分析"""
+    print("🔄 タスク0: Elders Guild ワーカー状態分析")
     
     # ワーカープロセスを確認
     result = subprocess.run(['ps', 'aux'], capture_output=True, text=True)

@@ -1,1 +1,1 @@
-# Unit tests for AI Company
+# Unit tests for Elders Guild

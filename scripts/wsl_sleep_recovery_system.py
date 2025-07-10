@@ -281,7 +281,7 @@ class WSLSleepRecoverySystem:
         """自動起動スクリプトを作成"""
         startup_content = f'''#!/bin/bash
 # WSL自動起動スクリプト
-# AI Company システム復旧用
+# Elders Guild システム復旧用
 
 PROJECT_ROOT="{self.project_root}"
 LOG_FILE="$PROJECT_ROOT/logs/auto_startup.log"
@@ -306,7 +306,7 @@ echo "[$(date)] WSL自動起動スクリプト実行完了" >> "$LOG_FILE"
     def create_windows_batch(self):
         """Windows側の自動起動バッチファイルを作成"""
         batch_content = '''@echo off
-echo Starting AI Company WSL Recovery System...
+echo Starting Elders Guild WSL Recovery System...
 
 REM WSLが起動していることを確認
 wsl --list --running | findstr "Ubuntu" >nul
@@ -318,7 +318,7 @@ if %errorlevel% neq 0 (
 REM 復旧スクリプトを実行
 wsl --distribution Ubuntu --exec bash -c "cd /home/aicompany/ai_co && ./scripts/auto_startup.sh"
 
-echo AI Company WSL Recovery System started!
+echo Elders Guild WSL Recovery System started!
 pause
 '''
         

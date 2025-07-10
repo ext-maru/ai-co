@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Grand Commit Command
+Elders Guild Grand Commit Command
 至高の品質を追求する最高位コミットプロトコル
 
 Grand Protocol の特徴:
@@ -491,7 +491,7 @@ class GrandCommitCLI:
 def main():
     """メイン実行"""
     parser = argparse.ArgumentParser(
-        description="AI Company Grand Commit - 至高の品質追求",
+        description="Elders Guild Grand Commit - 至高の品質追求",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用例:

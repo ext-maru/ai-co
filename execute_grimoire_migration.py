@@ -134,7 +134,7 @@ def create_migration_report(analyses: list) -> dict:
 def main():
     """メイン実行"""
     print("=" * 80)
-    print("🏛️ AI Company Grimoire Migration Analysis")
+    print("🏛️ Elders Guild Grimoire Migration Analysis")
     print("=" * 80)
     
     # 1. ファイル発見

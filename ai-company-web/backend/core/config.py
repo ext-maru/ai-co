@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     
     # API Configuration
     API_V1_STR: str = "/api/v1"
-    PROJECT_NAME: str = "AI Company Web API"
+    PROJECT_NAME: str = "Elders Guild Web API"
     VERSION: str = "1.0.0"
     
     # Server Configuration

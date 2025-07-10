@@ -220,7 +220,7 @@ class CommonFixes:
     def _fix_file_permissions(self) -> bool:
         """ファイル権限修正"""
         try:
-            # AI Companyディレクトリの権限修正
+            # Elders Guildディレクトリの権限修正
             subprocess.run(['chmod', '-R', '755', str(self.ai_co_path)], 
                           capture_output=True, timeout=30)
             return True

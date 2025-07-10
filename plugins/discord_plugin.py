@@ -147,7 +147,7 @@ class DiscordNotificationPlugin(WorkerPlugin):
         """Discord Webhookに通知を送信"""
         try:
             payload = {
-                "username": "AI Company Bot",
+                "username": "Elders Guild Bot",
                 "avatar_url": "https://example.com/ai-company-avatar.png",
                 "embeds": [embed]
             }

@@ -104,7 +104,7 @@ from bs4 import BeautifulSoup
 def test_page_content():
     response = requests.get("http://localhost:5555")
     soup = BeautifulSoup(response.content, 'html.parser')
-    assert soup.find('title').text == "AI Company Dashboard"
+    assert soup.find('title').text == "Elders Guild Dashboard"
 ```
 
 ## Implementation Priority

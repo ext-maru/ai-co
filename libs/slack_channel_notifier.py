@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Slack Channel Notifier
+Elders Guild Slack Channel Notifier
 チャンネル指定可能な拡張Slack通知システム
 """
 
@@ -163,7 +163,7 @@ class SlackChannelNotifier:
             message += f"**タスクID:** `{task_id}`\n"
         
         message += f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        message += f"*AI Company Auto Scaler*"
+        message += f"*Elders Guild Auto Scaler*"
         
         return self.send_to_channel(self.scaling_channel, message)
     
@@ -194,7 +194,7 @@ class SlackChannelNotifier:
         
         message += f"**時刻:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
         message += f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        message += f"*AI Company Health Monitor*"
+        message += f"*Elders Guild Health Monitor*"
         
         return self.send_to_channel(self.health_channel, message)
     
@@ -223,14 +223,14 @@ class SlackChannelNotifier:
         message += f"\n**Request:**\n`{prompt_preview}`\n"
         message += f"\n**Response:**\n{response_preview}\n"
         message += f"━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
-        message += f"*AI Company System*"
+        message += f"*Elders Guild System*"
         
         return self.send_to_channel(channel, message)
 
 
 if __name__ == "__main__":
     # テスト実行
-    print("AI Company Slack Channel Notifier Test")
+    print("Elders Guild Slack Channel Notifier Test")
     print("=" * 50)
     
     notifier = SlackChannelNotifier()

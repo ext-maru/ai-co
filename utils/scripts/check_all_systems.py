@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 全システムチェック
+Elders Guild 全システムチェック
 """
 import os
 import sys
@@ -140,7 +140,7 @@ def check_system(sections=None, output_format="text"):
     print(f"🎯 完成度: {score}% ({passed_checks}/{total_checks})")
     
     if score >= 90:
-        print("🎉 AI Company システム完全稼働中！")
+        print("🎉 Elders Guild システム完全稼働中！")
     elif score >= 70:
         print("⚠️ 一部機能に問題があります")
     else:
@@ -155,7 +155,7 @@ def check_system(sections=None, output_format="text"):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="AI Company system health check tool - Comprehensive system diagnostics",
+        description="Elders Guild system health check tool - Comprehensive system diagnostics",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

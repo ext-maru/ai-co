@@ -1,4 +1,4 @@
-# AI Company Command Test Coverage Improvement Report
+# Elders Guild Command Test Coverage Improvement Report
 
 **生成日時**: 2025-07-08  
 **対象コマンド**: ai_elder_proactive, ai_grand_elder, ai_evolve_daily
@@ -133,4 +133,4 @@
 実装に依存しない堅牢なテストスイートを構築できました。
 
 ---
-*このレポートは、AI Company Test Coverage Maximizerによって自動生成されました。*
+*このレポートは、Elders Guild Test Coverage Maximizerによって自動生成されました。*

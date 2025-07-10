@@ -1,8 +1,8 @@
 
-# AI Company MCP Integration
+# Elders Guild MCP Integration
 
 ## 概要
-AI CompanyにMCP (Model Context Protocol) 風のインターフェースを実装しました。
+Elders GuildにMCP (Model Context Protocol) 風のインターフェースを実装しました。
 これにより、ツールの呼び出しが統一され、開発効率が大幅に向上します。
 
 ## 実装内容
@@ -59,7 +59,7 @@ result = client.call_tool(
 
 ### 5. 実装の特徴
 
-- AI Companyの既存インフラを活用
+- Elders Guildの既存インフラを活用
 - 外部依存なし（MCPパッケージ不要）
 - asyncio対応で非同期処理可能
 - JSON-RPC風のリクエスト/レスポンス形式
@@ -76,6 +76,6 @@ python3 test_mcp_practical.py
 
 ## まとめ
 
-MCPラッパーの実装により、AI Companyの開発効率が大幅に向上しました。
+MCPラッパーの実装により、Elders Guildの開発効率が大幅に向上しました。
 将来的に本格的なMCPプロトコルが利用可能になった際も、
 スムーズに移行できる設計となっています。

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company Slack PM-AI連携の診断と修正
+Elders Guild Slack PM-AI連携の診断と修正
 AI Command Executorを使用して自動実行
 """
 

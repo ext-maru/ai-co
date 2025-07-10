@@ -1,4 +1,4 @@
-# AI Company Component Catalog (TDD対応版)
+# Elders Guild Component Catalog (TDD対応版)
 
 ## 🧪 TDD開発ツール
 

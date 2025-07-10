@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Base test class for all AI Company tests
+Base test class for all Elders Guild tests
 Restored by Elder Council Emergency Response
 """
 import unittest

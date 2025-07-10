@@ -1,5 +1,5 @@
 """
-WebSocket Manager for AI Company Web - Four Sages Real-time Communication
+WebSocket Manager for Elders Guild Web - Four Sages Real-time Communication
 """
 
 import asyncio

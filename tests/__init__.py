@@ -1,1 +1,1 @@
-# AI Company Test Suite
+# Elders Guild Test Suite

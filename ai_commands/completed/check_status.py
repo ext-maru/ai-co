@@ -16,7 +16,7 @@ helper = AICommandHelper()
 status_check = """#!/bin/bash
 cd /home/aicompany/ai_co
 
-echo "🔍 AI Company システム状態確認"
+echo "🔍 Elders Guild システム状態確認"
 echo "==============================="
 echo ""
 

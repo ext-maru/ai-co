@@ -1,7 +1,7 @@
-# 🚀 AI Company システム改善実行ガイド
+# 🚀 Elders Guild システム改善実行ガイド
 
 ## 概要
-このガイドは、AI Companyシステムの主要な問題を解決し、システムを改善するための完全な手順を提供します。
+このガイドは、Elders Guildシステムの主要な問題を解決し、システムを改善するための完全な手順を提供します。
 
 ## 実装した機能
 
@@ -124,7 +124,7 @@ bash scripts/ai_company_manager.sh backup
 
 ## 既存機能の活用
 
-以下のAI Company既存機能を活用しています:
+以下のElders Guild既存機能を活用しています:
 - AI Command Executor
 - Slack Notifier
 - Task Sender
@@ -144,4 +144,4 @@ bash scripts/ai_company_manager.sh backup
 継続的な改善のため、定期的な健全性チェックとメンテナンスを実施してください。
 
 ---
-*AI Company - より健全で効率的なシステムへ*
+*Elders Guild - より健全で効率的なシステムへ*

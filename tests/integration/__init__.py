@@ -1,1 +1,1 @@
-# Integration tests for AI Company
+# Integration tests for Elders Guild

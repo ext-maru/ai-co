@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company - ログ表示コマンド
+Elders Guild - ログ表示コマンド
 """
 
 import sys
@@ -25,7 +25,7 @@ class AILogsCommand(BaseCommand):
     def __init__(self):
         super().__init__(
             name="logs",
-            description="AI Company のログを表示"
+            description="Elders Guild のログを表示"
         )
         self.logs_dir = self.project_root / "logs"
     

@@ -17,7 +17,7 @@ final_command = """#!/bin/bash
 cd /home/aicompany/ai_co
 source venv/bin/activate
 
-echo "🚀 AI Company Slack チャンネル分離設定"
+echo "🚀 Elders Guild Slack チャンネル分離設定"
 echo "====================================="
 echo ""
 

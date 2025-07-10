@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Elf Forest Worker Manager
-エルフの森 - AI Companyワーカー管理システム
+エルフの森 - Elders Guildワーカー管理システム
 """
 
 import os

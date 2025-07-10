@@ -1,8 +1,8 @@
-# 🏛️ AI Company設定統合移行ガイド
+# 🏛️ Elders Guild設定統合移行ガイド
 
 **作成日**: 2025年7月9日  
 **バージョン**: 1.0  
-**対象**: AI Company開発・運用チーム
+**対象**: Elders Guild開発・運用チーム
 
 ---
 
@@ -21,7 +21,7 @@
 ## 📖 概要
 
 ### 移行の目的
-AI Company設定ファイル統合プロジェクトの実装により、以下の問題を解決します：
+Elders Guild設定ファイル統合プロジェクトの実装により、以下の問題を解決します：
 
 - **設定ファイルの分散**: 36個の設定ファイルを12個に統合
 - **重複設定の排除**: 15個の重複設定項目を完全統合
@@ -382,13 +382,13 @@ python -c "from libs.integrated_config_system import get_config; print(get_confi
 - **緊急対応**: クロードエルダー
 
 ### 関連ドキュメント
-- [AI Company設定統合レポート](config/AI_COMPANY_CONFIG_CONSOLIDATION.md)
+- [Elders Guild設定統合レポート](config/AI_COMPANY_CONFIG_CONSOLIDATION.md)
 - [統合設定システム仕様](libs/integrated_config_system.py)
 - [互換性レイヤー仕様](libs/config_compatibility_layer.py)
 
 ---
 
-**🏛️ AI Company設定統合により、より効率的で信頼性の高い設定管理を実現します**
+**🏛️ Elders Guild設定統合により、より効率的で信頼性の高い設定管理を実現します**
 
 **実装責任者**: クロードエルダー  
 **協力**: 4賢者システム  

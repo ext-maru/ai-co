@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-🧪 AI Company 4-Sage System 統合カバレッジテスト
+🧪 Elders Guild 4-Sage System 統合カバレッジテスト
 スタンドアロンテストランナーでカバレッジ90%以上を達成
 
 作成日: 2025年7月8日  
@@ -613,7 +613,7 @@ async def test_quantum_consensus_workflow():
 
 async def main():
     """メインテスト実行"""
-    print("🧪 AI Company 4-Sage System 統合カバレッジテスト開始")
+    print("🧪 Elders Guild 4-Sage System 統合カバレッジテスト開始")
     print("=" * 70)
     
     total_passed = 0

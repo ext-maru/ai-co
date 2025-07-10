@@ -418,4 +418,4 @@ echo "Backup completed: $BACKUP_DIR"
 
 ---
 
-**🤖 AI Command Executor v1.1により、AI Companyは真の自律的システムへと進化しました**
+**🤖 AI Command Executor v1.1により、Elders Guildは真の自律的システムへと進化しました**

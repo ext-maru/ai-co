@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 非同期ワーカー移行スクリプト
+Elders Guild 非同期ワーカー移行スクリプト
 既存ワーカーから新規非同期ワーカーへの段階的移行
 """
 
@@ -332,7 +332,7 @@ class WorkerMigrationManager:
 
 def main():
     """メイン実行関数"""
-    parser = argparse.ArgumentParser(description='AI Company Worker Migration Tool')
+    parser = argparse.ArgumentParser(description='Elders Guild Worker Migration Tool')
     parser.add_argument('action', choices=['status', 'migrate', 'rollback', 'migrate-all'],
                        help='Action to perform')
     parser.add_argument('--worker', help='Specific worker to migrate/rollback')

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Sample Data Generator for AI Company Web Four Sages System
+Sample Data Generator for Elders Guild Web Four Sages System
 Creates test data for development and demonstration
 """
 
@@ -42,7 +42,7 @@ SAMPLE_KNOWLEDGE_ARTICLES = [
 """,
         "category": "Development",
         "tags": ["fastapi", "python", "best-practices", "web-development"],
-        "author": "AI Company Tech Team",
+        "author": "Elders Guild Tech Team",
     },
     {
         "title": "WebSocket Real-time Communication",

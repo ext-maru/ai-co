@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 統合監視システム
+Elders Guild 統合監視システム
 4賢者システムと連携したリアルタイムモニタリング
 """
 import sys
@@ -26,12 +26,12 @@ from rich.progress import Progress, BarColumn, TextColumn
 from rich.text import Text
 
 class AIMonitorCommand(BaseCommand):
-    """AI Company 統合監視システム - 4賢者システム統合監視"""
+    """Elders Guild 統合監視システム - 4賢者システム統合監視"""
     
     def __init__(self):
         super().__init__(
             name="ai-monitor",
-            description="AI Company 統合監視システム - リアルタイム監視と4賢者ステータス",
+            description="Elders Guild 統合監視システム - リアルタイム監視と4賢者ステータス",
             version="2.0.0"
         )
         self.console = Console()
@@ -101,7 +101,7 @@ class AIMonitorCommand(BaseCommand):
     def _run_dashboard(self, args) -> CommandResult:
         """ダッシュボード実行"""
         try:
-            self.console.print("🖥️  AI Company 統合監視ダッシュボード", style="bold blue")
+            self.console.print("🖥️  Elders Guild 統合監視ダッシュボード", style="bold blue")
             self.console.print("Ctrl+C で終了\n")
             
             with Live(self._generate_dashboard(args.sages), refresh_per_second=1/args.interval) as live:
@@ -123,7 +123,7 @@ class AIMonitorCommand(BaseCommand):
                 data=status_data
             )
         else:
-            lines = ["📊 AI Company システムステータス", "=" * 50]
+            lines = ["📊 Elders Guild システムステータス", "=" * 50]
             lines.append(f"監視開始時刻: {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}")
             lines.append(f"稼働時間: {datetime.now() - self.start_time}")
             
@@ -194,7 +194,7 @@ class AIMonitorCommand(BaseCommand):
             for result in health_results.values()
         )
         
-        lines = ["🏥 AI Company システムヘルスチェック", "=" * 50]
+        lines = ["🏥 Elders Guild システムヘルスチェック", "=" * 50]
         
         for component, result in health_results.items():
             status_icon = "✅" if result.get('healthy') else "❌"

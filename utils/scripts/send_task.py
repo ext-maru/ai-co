@@ -37,7 +37,7 @@ def send_task(prompt, task_type="general"):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Task submission tool - Send tasks to the AI Company task queue",
+        description="Task submission tool - Send tasks to the Elders Guild task queue",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

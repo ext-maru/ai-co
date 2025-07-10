@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Claude Desktop × AI Company × Task Tracker
+Claude Desktop × Elders Guild × Task Tracker
 完全統合デモンストレーション
 """
 
@@ -15,7 +15,7 @@ import time
 def main():
     helper = AICommandHelper()
     
-    print("🤖 Claude Desktop × AI Company × Task Tracker")
+    print("🤖 Claude Desktop × Elders Guild × Task Tracker")
     print("完全統合デモンストレーション")
     print("=" * 80)
     
@@ -154,7 +154,7 @@ python3 libs/task_manager.py report | head -20
 
 echo ""
 echo "🎯 統合成功ポイント:"
-echo "  ✅ Claude DesktopからAI Companyへタスク送信"
+echo "  ✅ Claude DesktopからElders Guildへタスク送信"
 echo "  ✅ pm_workerがTask Trackerに自動登録"
 echo "  ✅ タスクの進捗がWebダッシュボードで確認可能"
 echo "  ✅ 優先度に応じた処理順序管理"

@@ -102,7 +102,7 @@ class LanguageCode(Enum):
 class EnhancedRAGManager:
     """RAG賢者 (Search Mystic) - 4賢者システム統合
     
-    AI Companyの4賤者システムの一翼を担う、情報探索と理解の専門賤者。
+    Elders Guildの4賤者システムの一翼を担う、情報探索と理解の専門賤者。
     膀大な知識から最適解発見、コンテキスト検索、知識統合、回答生成を行う。
     """
     

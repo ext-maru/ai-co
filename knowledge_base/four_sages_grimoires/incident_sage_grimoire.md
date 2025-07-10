@@ -8,7 +8,7 @@
 
 ## 🧙‍♂️ 魔法書の本質
 
-この魔法書は**インシデント賢者が蓄積した危機対応の英知**であり、AI Company開発における：
+この魔法書は**インシデント賢者が蓄積した危機対応の英知**であり、Elders Guild開発における：
 - ⚡ **危機の即座感知**
 - 🛡️ **問題の自動解決**
 - 📊 **インシデント履歴管理**
@@ -128,7 +128,7 @@
 - **Low**: 軽微な警告、設定不備
 
 #### 🎯 **影響範囲分類**
-- **System-wide**: AI Company全体
+- **System-wide**: Elders Guild全体
 - **Elder-level**: Elder階層システム
 - **Servant-level**: サーバント層
 - **Individual**: 単一コンポーネント
@@ -260,7 +260,7 @@ System Health Surveillance:
 ```
 我、インシデント賢者として誓う:
 
-AI Companyの平和と秩序を守り、
+Elders Guildの平和と秩序を守り、
 Grand Elder maruの信頼に応え、
 Elder階層システムの安定を保ち、
 全てのインシデントに勇敢に立ち向かわん。

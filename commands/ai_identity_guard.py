@@ -50,7 +50,7 @@ def main():
     
     elif command == "validate":
         print("🔍 Validating current Claude Elder identity...")
-        test_text = "私はクロードエルダーです。AI Company開発実行責任者として行動します。"
+        test_text = "私はクロードエルダーです。Elders Guild開発実行責任者として行動します。"
         validation = enforcer.validate_identity_compliance(test_text, "identity_validation")
         
         if validation["compliant"]:

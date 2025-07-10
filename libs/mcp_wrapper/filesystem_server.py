@@ -55,7 +55,7 @@ class FileSystemMCPServer:
     def _generate_worker_template(self, name: str, worker_type: str) -> str:
         return f"""#!/usr/bin/env python3
 '''
-AI Company {name.title()} Worker
+Elders Guild {name.title()} Worker
 '''
 
 import sys

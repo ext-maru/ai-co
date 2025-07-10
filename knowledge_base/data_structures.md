@@ -1,4 +1,4 @@
-# AI Company Data Structures
+# Elders Guild Data Structures
 
 ## タスクデータ構造
 

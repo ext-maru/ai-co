@@ -1,5 +1,5 @@
 """
-CLI Command Generator Template for AI Company
+CLI Command Generator Template for Elders Guild
 Click ベースのコマンドラインツールを生成
 """
 
@@ -13,7 +13,7 @@ class CliCommandTemplate:
             "name": "CLI Command",
             "version": "1.0.0",
             "description": "Generate Click-based CLI commands with proper structure",
-            "author": "AI Company",
+            "author": "Elders Guild",
             "parameters": {
                 "command_name": {
                     "type": "str",
@@ -355,7 +355,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="{command_name}",
     version="1.0.0",
-    author="AI Company",
+    author="Elders Guild",
     author_email="support@aicompany.com",
     description="{description}",
     long_description=long_description,
@@ -597,7 +597,7 @@ if __name__ == "__main__":
     # Example parameters
     params = {
         "command_name": "aictl",
-        "description": "AI Company Control CLI",
+        "description": "Elders Guild Control CLI",
         "subcommands": [
             {
                 "name": "deploy",

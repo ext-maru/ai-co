@@ -12,7 +12,7 @@ from pathlib import Path
 
 def quick_start():
     """クイックスタート実行"""
-    print("🚀 AI Company WSL クイックスタート")
+    print("🚀 Elders Guild WSL クイックスタート")
     print("=" * 50)
     
     project_root = Path(__file__).parent.parent
@@ -93,7 +93,7 @@ def quick_start():
         print(f"   ❌ 状態保存エラー: {e}")
     
     print("\n" + "=" * 50)
-    print("✅ AI Company WSL クイックスタート完了!")
+    print("✅ Elders Guild WSL クイックスタート完了!")
     print("💡 詳細ログ: logs/wsl_recovery.log")
     print("=" * 50)
 

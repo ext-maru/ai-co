@@ -1,13 +1,13 @@
 # 🧝‍♂️ エルフの森システム - ワーカー管理特化版
 
 **作成日**: 2025年7月7日  
-**目的**: AI Companyワーカー管理の最適化
+**目的**: Elders Guildワーカー管理の最適化
 
 ---
 
 ## 🎯 システム概要
 
-エルフの森は、AI Companyの**ワーカープロセス**（enhanced_task_worker、intelligent_pm_worker、async_result_worker等）を支援・管理するシステムです。各エルフがワーカーの健全性を見守り、タスク処理を円滑化します。
+エルフの森は、Elders Guildの**ワーカープロセス**（enhanced_task_worker、intelligent_pm_worker、async_result_worker等）を支援・管理するシステムです。各エルフがワーカーの健全性を見守り、タスク処理を円滑化します。
 
 ### 対象ワーカー
 - **enhanced_task_worker.py** - メインタスク処理

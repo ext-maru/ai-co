@@ -1,4 +1,4 @@
-# 🚀 AI Company MCP Integration - 実装完了
+# 🚀 Elders Guild MCP Integration - 実装完了
 
 ## 📋 実装内容
 
@@ -7,7 +7,7 @@ MCPパッケージが利用できない可能性を考慮し、**実用的なMCP
 ### 🎯 作成したもの
 
 1. **MCP Wrapper実装**
-   - 既存のAI Companyツールをラップ
+   - 既存のElders Guildツールをラップ
    - MCP風のインターフェースを提供
    - 外部依存なし
 
@@ -66,7 +66,7 @@ result = client.call_tool(
 
 ## ✅ まとめ
 
-MCPの概念を取り入れつつ、AI Companyの既存インフラを最大限活用する実装を作成しました。これにより：
+MCPの概念を取り入れつつ、Elders Guildの既存インフラを最大限活用する実装を作成しました。これにより：
 
 - **今すぐ使える** MCP風インターフェース
 - **エラーなし** で確実に動作

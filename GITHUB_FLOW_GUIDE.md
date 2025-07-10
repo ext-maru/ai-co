@@ -2,7 +2,7 @@
 
 ## 概要
 
-AI Companyプロジェクトは**GitHub Flow**運用に変更されました。
+Elders Guildプロジェクトは**GitHub Flow**運用に変更されました。
 
 ## GitHub Flowとは
 
@@ -106,7 +106,7 @@ gh auth login
 ## Pull Request
 
 ### 自動作成（AI）
-- AI Companyシステムが自動でPR作成
+- Elders Guildシステムが自動でPR作成
 - タイトル: `feat: 機能説明`
 - 本文: 自動生成された説明
 

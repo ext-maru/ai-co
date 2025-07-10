@@ -1,5 +1,5 @@
 """
-API Router configuration for AI Company Web FastAPI Backend
+API Router configuration for Elders Guild Web FastAPI Backend
 Four Sages System API endpoints
 """
 

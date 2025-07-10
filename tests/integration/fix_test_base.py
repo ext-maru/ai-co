@@ -10,7 +10,7 @@ def create_base_test_class():
     """WorkerTestCase基底クラスを作成/修復"""
     base_test_content = '''#!/usr/bin/env python3
 """
-Base test class for all AI Company tests
+Base test class for all Elders Guild tests
 Restored by Elder Council Emergency Response
 """
 import unittest

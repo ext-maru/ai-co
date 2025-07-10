@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-AI Company ProjectScope Integration
-AI CompanyシステムとProjectScopeの統合
+Elders Guild ProjectScope Integration
+Elders GuildシステムとProjectScopeの統合
 """
 
 import sys
@@ -20,16 +20,16 @@ from libs.slack_notifier import SlackNotifier
 from core import EMOJI
 
 class AICompanyProjectScope:
-    """AI Company専用のProjectScope拡張"""
+    """Elders Guild専用のProjectScope拡張"""
     
     def __init__(self):
         self.project_root = PROJECT_ROOT
         self.ps = ProjectScope(str(self.project_root))
         self.notifier = SlackNotifier()
         
-        # AI Company専用の設定を追加
+        # Elders Guild専用の設定を追加
         self.ps.config.update({
-            "project_name": "AI Company System",
+            "project_name": "Elders Guild System",
             "custom_components": {
                 "workers": "workers/*_worker.py",
                 "managers": "libs/*_manager.py",
@@ -42,13 +42,13 @@ class AICompanyProjectScope:
     
     def analyze_with_knowledge(self):
         """ナレッジベースを含めた分析"""
-        print(f"{EMOJI['rocket']} AI Company ProjectScope Analysis")
+        print(f"{EMOJI['rocket']} Elders Guild ProjectScope Analysis")
         print("━" * 50)
         
         # 基本分析
         analysis = self.ps.analyze()
         
-        # AI Company固有の分析を追加
+        # Elders Guild固有の分析を追加
         analysis['ai_company'] = {
             "workers": self._analyze_workers(),
             "managers": self._analyze_managers(),
@@ -202,17 +202,17 @@ class AICompanyProjectScope:
         return integrations
     
     def generate_ai_company_report(self, analysis):
-        """AI Company専用レポート生成"""
+        """Elders Guild専用レポート生成"""
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         report_path = self.project_root / "web" / f"ai_company_projectscope_{timestamp}.html"
         
         # 通常のHTMLレポートを生成
         html_report = self.ps.generate_report(analysis, "html")
         
-        # AI Company固有のセクションを追加
+        # Elders Guild固有のセクションを追加
         ai_company_section = f"""
         <div class="section">
-            <h2>🤖 AI Company Specific Analysis</h2>
+            <h2>🤖 Elders Guild Specific Analysis</h2>
             
             <h3>Workers ({len(analysis['ai_company']['workers'])})</h3>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
@@ -253,7 +253,7 @@ class AICompanyProjectScope:
     def notify_analysis_complete(self, analysis, report_path):
         """Slack通知"""
         message = f"""
-{EMOJI['rocket']} AI Company ProjectScope Analysis Complete!
+{EMOJI['rocket']} Elders Guild ProjectScope Analysis Complete!
 
 📊 **Project Health Score**: {analysis['insights']['health_score']}/100
 
@@ -263,7 +263,7 @@ class AICompanyProjectScope:
 - Workers: {len(analysis['ai_company']['workers'])}
 - Managers: {len(analysis['ai_company']['managers'])}
 
-**AI Company Specific:**
+**Elders Guild Specific:**
 - Knowledge Documents: {analysis['ai_company']['knowledge_base']['total_documents']}
 - RabbitMQ Queues: {len(analysis['ai_company']['rabbitmq_queues']['defined_queues'])}
 - External Integrations: {len(analysis['ai_company']['integrations']['external_services'])}
@@ -279,7 +279,7 @@ class AICompanyProjectScope:
         analysis = self.analyze_with_knowledge()
         
         # レポート生成
-        print("\n📝 Generating AI Company customized report...")
+        print("\n📝 Generating Elders Guild customized report...")
         report_path = self.generate_ai_company_report(analysis)
         print(f"✅ Report generated: {report_path}")
         
@@ -292,7 +292,7 @@ class AICompanyProjectScope:
         
         # サマリー表示
         print("\n" + "━" * 50)
-        print("📊 AI Company ProjectScope Summary")
+        print("📊 Elders Guild ProjectScope Summary")
         print("━" * 50)
         print(f"Health Score: {analysis['insights']['health_score']}/100")
         print(f"Total Code: {analysis['statistics']['total_lines']:,} lines")
@@ -305,11 +305,11 @@ class AICompanyProjectScope:
 
 def main():
     """メイン実行"""
-    print("◎ AI Company ProjectScope")
-    print("╱ ╲  Specialized Analysis for AI Company System")
+    print("◎ Elders Guild ProjectScope")
+    print("╱ ╲  Specialized Analysis for Elders Guild System")
     print("━" * 50)
     
-    # AI Company用ProjectScope実行
+    # Elders Guild用ProjectScope実行
     ai_ps = AICompanyProjectScope()
     analysis, report_path = ai_ps.run_full_analysis()
     

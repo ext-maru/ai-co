@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company 自動ドキュメント生成 - ユーザー向けCLIコマンド
+Elders Guild 自動ドキュメント生成 - ユーザー向けCLIコマンド
 人間でも簡単に使える統合インターフェース
 
 Usage:
@@ -63,7 +63,7 @@ class AutoPMOrchestrator:
         options = options or {}
         
         try:
-            print(f"🚀 AI Company ドキュメント生成開始: {project_path}")
+            print(f"🚀 Elders Guild ドキュメント生成開始: {project_path}")
             
             # Step 1: プロジェクト解析
             print("🔍 Step 1: コード解析中...")
@@ -296,7 +296,7 @@ class AutoPMOrchestrator:
 
 
 class AIDocumentCLI:
-    """AI Company ドキュメント生成CLI"""
+    """Elders Guild ドキュメント生成CLI"""
     
     def __init__(self):
         self.orchestrator = AutoPMOrchestrator()
@@ -304,7 +304,7 @@ class AIDocumentCLI:
     def create_parser(self) -> argparse.ArgumentParser:
         """CLIパーサー作成"""
         parser = argparse.ArgumentParser(
-            description="AI Company 自動ドキュメント生成システム",
+            description="Elders Guild 自動ドキュメント生成システム",
             formatter_class=argparse.RawDescriptionHelpFormatter,
             epilog="""
 使用例:
@@ -330,7 +330,7 @@ class AIDocumentCLI:
         analyze_parser.add_argument('file_path', help='解析するファイルパス')
         
         # バージョン情報
-        parser.add_argument('--version', action='version', version='AI Company Documentation System v1.0')
+        parser.add_argument('--version', action='version', version='Elders Guild Documentation System v1.0')
         
         return parser
     

@@ -69,7 +69,7 @@ class AIQueueCommand(BaseCommand):
                 )
             
             # テーブル表示
-            table = Table(title="🔄 AI Company キュー状態")
+            table = Table(title="🔄 Elders Guild キュー状態")
             table.add_column("キュー名", style="cyan")
             table.add_column("メッセージ数", justify="right", style="yellow")
             table.add_column("コンシューマー数", justify="right", style="green")

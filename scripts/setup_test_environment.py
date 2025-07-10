@@ -52,7 +52,7 @@ class TestEnvironmentSetup:
         
     def run(self):
         """Run the complete setup process"""
-        print("=== AI Company Test Environment Setup ===\n")
+        print("=== Elders Guild Test Environment Setup ===\n")
         
         steps = [
             ("Cleaning __pycache__ directories", self.clean_pycache),

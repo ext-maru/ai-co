@@ -1,15 +1,15 @@
-# 🔌 AI Company MCP Integration Plan v1.0
+# 🔌 Elders Guild MCP Integration Plan v1.0
 
 ## 📋 概要
 
-MCP (Model Context Protocol) を AI Company に統合し、より汎用的で拡張可能な開発基盤を構築します。
+MCP (Model Context Protocol) を Elders Guild に統合し、より汎用的で拡張可能な開発基盤を構築します。
 
 ## 🏗️ MCPサーバー構成案
 
 ### 1. **FileSystem MCPサーバー**
 ```yaml
 name: ai-company-filesystem
-description: AI Company専用ファイル操作
+description: Elders Guild専用ファイル操作
 capabilities:
   - プロジェクト構造認識
   - 自動配置ルール適用
@@ -92,7 +92,7 @@ tools:
 │ FS │Exec│Work│Know│Test│ External MCP │
 └────┴────┴────┴────┴────┴──────────────┘
      ↓    ↓    ↓    ↓    ↓
-   AI Company Infrastructure
+   Elders Guild Infrastructure
 ```
 
 ## 📦 実装計画

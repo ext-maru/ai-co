@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company ダッシュボード v2 - マルチページ対応
+Elders Guild ダッシュボード v2 - マルチページ対応
 スマホ対応のブロック風デザイン
 """
 
@@ -62,7 +62,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Company Dashboard</title>
+    <title>Elders Guild Dashboard</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         
@@ -793,7 +793,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧾 AI Company</h1>
+            <h1>🧾 Elders Guild</h1>
         </div>
         
         <nav class="nav-bar">
@@ -885,7 +885,7 @@ class DashboardHandler(BaseHTTPRequestHandler):
             </div>
             <div id="chatMessages" class="chat-messages">
                 <div class="chat-message elder-message">
-                    🧾 クロードエルダー: こんにちは！AI Companyの管理について何でもお尋ねください。
+                    🧾 クロードエルダー: こんにちは！Elders Guildの管理について何でもお尋ねください。
                 </div>
             </div>
             <div class="chat-input-container">
@@ -1682,7 +1682,7 @@ class DashboardServer:
 if __name__ == '__main__':
     import argparse
     
-    parser = argparse.ArgumentParser(description='AI Company Web Dashboard v2')
+    parser = argparse.ArgumentParser(description='Elders Guild Web Dashboard v2')
     parser.add_argument('--host', default=None, help='Server host (default: from config)')
     parser.add_argument('--port', type=int, default=None, help='Server port (default: from config)')
     args = parser.parse_args()

@@ -451,10 +451,301 @@ class NextGenAIIntegration:
         }
     
     # 以下、ヘルパーメソッド（簡略化）
-    def _evaluate_sage_synergies(self): pass
+    def _evaluate_sage_synergies(self):
+        """4賢者間の相乗効果を評価・計算"""
+        try:
+            synergies = {}
+            
+            # 各賢者ペアの相乗効果を計算
+            sage_names = list(self.sages.keys())
+            for i in range(len(sage_names)):
+                for j in range(i + 1, len(sage_names)):
+                    sage1, sage2 = sage_names[i], sage_names[j]
+                    
+                    # 相乗効果スコア計算
+                    synergy_score = self._calculate_pairwise_synergy(sage1, sage2)
+                    synergies[f"{sage1}_{sage2}"] = synergy_score
+            
+            # 全体的な相乗効果を計算
+            total_synergy = sum(synergies.values()) / len(synergies) if synergies else 0.0
+            
+            # 学習記憶に記録
+            self.learning_memory["cross_sage_synergies"] = synergies
+            
+            # 相乗効果に基づいて賢者の効率を更新
+            self._apply_synergy_bonuses(synergies)
+            
+            # データベースに記録
+            self._record_synergy_evaluation(synergies, total_synergy)
+            
+            return synergies
+            
+        except Exception as e:
+            print(f"⚠️ 相乗効果評価エラー: {e}")
+            return {}
+    
+    def _calculate_pairwise_synergy(self, sage1: str, sage2: str) -> float:
+        """2つの賢者間の相乗効果を計算"""
+        sage1_obj = self.sages[sage1]
+        sage2_obj = self.sages[sage2]
+        
+        # 基本相乗効果（両者の効率と学習進捗から計算）
+        base_synergy = (sage1_obj.efficiency + sage2_obj.efficiency) / 200
+        learning_synergy = (sage1_obj.learning_progress + sage2_obj.learning_progress) / 200
+        
+        # 特定の組み合わせボーナス
+        combination_bonus = self._get_combination_bonus(sage1, sage2)
+        
+        # 最終的な相乗効果
+        total_synergy = (base_synergy + learning_synergy + combination_bonus) / 3
+        
+        return min(max(total_synergy, 0.0), 1.0)  # 0.0-1.0の範囲に制限
+    
+    def _get_combination_bonus(self, sage1: str, sage2: str) -> float:
+        """特定の賢者組み合わせのボーナス"""
+        bonuses = {
+            "knowledge_task": 0.15,    # ナレッジ×タスク：計画立案強化
+            "knowledge_rag": 0.20,     # ナレッジ×RAG：知識統合強化
+            "knowledge_incident": 0.10, # ナレッジ×インシデント：履歴活用
+            "task_incident": 0.25,     # タスク×インシデント：予防的対応
+            "task_rag": 0.12,          # タスク×RAG：情報収集効率化
+            "incident_rag": 0.18       # インシデント×RAG：原因分析強化
+        }
+        
+        # 賢者名を正規化して組み合わせをチェック
+        pair_key = f"{sage1}_{sage2}"
+        reverse_key = f"{sage2}_{sage1}"
+        
+        return bonuses.get(pair_key, bonuses.get(reverse_key, 0.0))
+    
+    def _apply_synergy_bonuses(self, synergies: Dict[str, float]):
+        """相乗効果ボーナスを各賢者に適用"""
+        for sage_name, sage in self.sages.items():
+            # この賢者に関連する相乗効果を取得
+            related_synergies = [
+                score for key, score in synergies.items() 
+                if sage_name in key
+            ]
+            
+            if related_synergies:
+                # 平均相乗効果をボーナスとして適用
+                synergy_bonus = sum(related_synergies) / len(related_synergies)
+                sage.efficiency = min(sage.efficiency + synergy_bonus * 10, 100.0)
+                sage.learning_progress = min(sage.learning_progress + synergy_bonus * 5, 100.0)
+    
+    def _record_synergy_evaluation(self, synergies: Dict[str, float], total_synergy: float):
+        """相乗効果評価結果をデータベースに記録"""
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                INSERT INTO sage_evolution (timestamp, sage_name, efficiency, learning_progress, coordination_score)
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                datetime.now().isoformat(),
+                "synergy_evaluation",
+                total_synergy * 100,
+                len(synergies),
+                total_synergy
+            ))
+            self.db_connection.commit()
+        except Exception as e:
+            print(f"⚠️ 相乗効果記録エラー: {e}")
     def _calculate_learning_gain(self, sage_name: str) -> float: return 0.5
     def _calculate_efficiency_modifier(self, sage_name: str) -> float: return 0.1
-    def _update_learning_memory(self): pass
+    def _update_learning_memory(self):
+        """学習記憶を更新"""
+        try:
+            # 現在の賢者状態を学習記憶に保存
+            current_state = {
+                "timestamp": datetime.now().isoformat(),
+                "sage_states": {
+                    name: {
+                        "efficiency": sage.efficiency,
+                        "learning_progress": sage.learning_progress,
+                        "status": sage.status
+                    } for name, sage in self.sages.items()
+                },
+                "collective_intelligence": self.evolution.collective_intelligence,
+                "recent_collaborations": len(self.collaboration_results)
+            }
+            
+            # 成功パターンを記録
+            if self.evolution.collective_intelligence > 80:
+                self.learning_memory["successful_patterns"].append(current_state)
+                # 最新の10件のみ保持
+                if len(self.learning_memory["successful_patterns"]) > 10:
+                    self.learning_memory["successful_patterns"] = self.learning_memory["successful_patterns"][-10:]
+            
+            # 失敗パターンを記録
+            elif self.evolution.collective_intelligence < 50:
+                self.learning_memory["failed_approaches"].append(current_state)
+                if len(self.learning_memory["failed_approaches"]) > 10:
+                    self.learning_memory["failed_approaches"] = self.learning_memory["failed_approaches"][-10:]
+            
+            # 最適化発見を記録
+            if hasattr(self, '_last_intelligence_level'):
+                improvement = self.evolution.collective_intelligence - self._last_intelligence_level
+                if improvement > 5:  # 5%以上の改善
+                    self.learning_memory["optimization_discoveries"].append({
+                        "timestamp": datetime.now().isoformat(),
+                        "improvement": improvement,
+                        "state": current_state
+                    })
+            
+            self._last_intelligence_level = self.evolution.collective_intelligence
+            
+            # 学習記憶をファイルに保存
+            self._save_learning_memory()
+            
+        except Exception as e:
+            print(f"⚠️ 学習記憶更新エラー: {e}")
+    
+    def _save_learning_memory(self):
+        """学習記憶をファイルに保存"""
+        try:
+            memory_file = self.knowledge_base / "sage_learning_memory.json"
+            with open(memory_file, 'w', encoding='utf-8') as f:
+                json.dump(self.learning_memory, f, indent=2, ensure_ascii=False)
+        except Exception as e:
+            print(f"⚠️ 学習記憶保存エラー: {e}")
+    
+    def _update_collective_intelligence(self):
+        """集合知レベルを更新"""
+        try:
+            # 各賢者の効率と学習進捗から集合知を計算
+            sage_contributions = []
+            for sage_name, sage in self.sages.items():
+                # 各賢者の貢献度を計算
+                contribution = (sage.efficiency + sage.learning_progress) / 2
+                
+                # 賢者固有の重み付け
+                weight = self._get_sage_weight(sage_name)
+                weighted_contribution = contribution * weight
+                
+                sage_contributions.append(weighted_contribution)
+            
+            # 基本集合知レベル
+            base_intelligence = sum(sage_contributions) / len(sage_contributions)
+            
+            # 相乗効果ボーナス
+            synergy_bonus = self._calculate_synergy_bonus()
+            
+            # 協調ボーナス
+            collaboration_bonus = self._calculate_collaboration_bonus()
+            
+            # 学習履歴ボーナス
+            learning_bonus = self._calculate_learning_bonus()
+            
+            # 最終的な集合知レベル
+            new_intelligence = base_intelligence + synergy_bonus + collaboration_bonus + learning_bonus
+            
+            # 0-100の範囲に制限
+            new_intelligence = min(max(new_intelligence, 0.0), 100.0)
+            
+            # 滑らかな変化のため、前の値との加重平均
+            if hasattr(self.evolution, 'collective_intelligence'):
+                new_intelligence = (self.evolution.collective_intelligence * 0.7 + new_intelligence * 0.3)
+            
+            self.evolution.collective_intelligence = new_intelligence
+            
+            # 進化レベルを更新
+            self._update_evolution_level()
+            
+            # データベースに記録
+            self._record_intelligence_update(new_intelligence)
+            
+            return new_intelligence
+            
+        except Exception as e:
+            print(f"⚠️ 集合知更新エラー: {e}")
+            return self.evolution.collective_intelligence
+    
+    def _get_sage_weight(self, sage_name: str) -> float:
+        """賢者固有の重み付けを取得"""
+        weights = {
+            "knowledge": 1.2,   # ナレッジ賢者は基盤として重要
+            "task": 1.1,        # タスク賢者は実行効率に影響
+            "incident": 1.0,    # インシデント賢者は安定性に影響
+            "rag": 1.0          # RAG賢者は情報収集に影響
+        }
+        return weights.get(sage_name, 1.0)
+    
+    def _calculate_synergy_bonus(self) -> float:
+        """相乗効果ボーナスを計算"""
+        if "cross_sage_synergies" not in self.learning_memory:
+            return 0.0
+        
+        synergies = self.learning_memory["cross_sage_synergies"]
+        if not synergies:
+            return 0.0
+        
+        # 平均相乗効果 * 10をボーナスとして適用
+        average_synergy = sum(synergies.values()) / len(synergies)
+        return average_synergy * 10
+    
+    def _calculate_collaboration_bonus(self) -> float:
+        """協調ボーナスを計算"""
+        if not self.collaboration_results:
+            return 0.0
+        
+        # 最近の協調成功率からボーナス計算
+        recent_collaborations = list(self.collaboration_results.values())[-5:]  # 最新5件
+        success_rates = [result["success_rate"] for result in recent_collaborations]
+        
+        if success_rates:
+            average_success = sum(success_rates) / len(success_rates)
+            return average_success * 15  # 成功率をボーナスに変換
+        
+        return 0.0
+    
+    def _calculate_learning_bonus(self) -> float:
+        """学習履歴ボーナスを計算"""
+        successful_patterns = len(self.learning_memory.get("successful_patterns", []))
+        optimization_discoveries = len(self.learning_memory.get("optimization_discoveries", []))
+        
+        # 学習パターンの数に応じてボーナス
+        learning_bonus = (successful_patterns * 0.5) + (optimization_discoveries * 1.0)
+        
+        return min(learning_bonus, 10.0)  # 最大10%のボーナス
+    
+    def _update_evolution_level(self):
+        """進化レベルを更新"""
+        intelligence = self.evolution.collective_intelligence
+        
+        if intelligence >= 95:
+            self.evolution.evolution_level = "transcendent"
+        elif intelligence >= 85:
+            self.evolution.evolution_level = "advanced"
+        elif intelligence >= 70:
+            self.evolution.evolution_level = "intermediate"
+        elif intelligence >= 50:
+            self.evolution.evolution_level = "developing"
+        else:
+            self.evolution.evolution_level = "basic"
+    
+    def _record_intelligence_update(self, intelligence: float):
+        """集合知更新をデータベースに記録"""
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                INSERT INTO system_evolution (generation, evolution_level, collective_intelligence, 
+                                            adaptation_rate, innovation_index, timestamp)
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                getattr(self, '_generation_counter', 0),
+                self.evolution.evolution_level,
+                intelligence,
+                self.evolution.adaptation_rate,
+                self.evolution.innovation_index,
+                datetime.now().isoformat()
+            ))
+            self.db_connection.commit()
+            
+            # 世代カウンター更新
+            self._generation_counter = getattr(self, '_generation_counter', 0) + 1
+            
+        except Exception as e:
+            print(f"⚠️ 集合知記録エラー: {e}")
     def _generate_creative_solutions(self) -> List[str]: return []
     def _implement_innovation(self, innovation: Dict[str, Any]): pass
     def _calculate_coordination_bonus(self, sages: List[str]) -> float: return 5.0

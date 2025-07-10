@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company コマンド基底クラス（CommandResult追加版）
+Elders Guild コマンド基底クラス（CommandResult追加版）
 """
 import os
 import sys

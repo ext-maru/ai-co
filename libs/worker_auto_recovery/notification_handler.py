@@ -10,7 +10,7 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 import sys
 
-# AI Companyのライブラリパスを追加
+# Elders Guildのライブラリパスを追加
 sys.path.append('/home/aicompany/ai_co')
 
 logger = logging.getLogger(__name__)

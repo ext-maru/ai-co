@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Simple Test Generator for AI Company
+Simple Test Generator for Elders Guild
 Generates basic tests for modules without existing test coverage
 """
 

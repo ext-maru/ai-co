@@ -1,8 +1,8 @@
-# AI Company TDD ワークフローガイド
+# Elders Guild TDD ワークフローガイド
 
 ## 📌 概要
 
-このドキュメントは、AI CompanyプロジェクトにおけるTest Driven Development (TDD)の実践方法を説明します。
+このドキュメントは、Elders GuildプロジェクトにおけるTest Driven Development (TDD)の実践方法を説明します。
 
 ## 🔄 TDDサイクル
 

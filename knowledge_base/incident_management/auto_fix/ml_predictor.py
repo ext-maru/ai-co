@@ -70,7 +70,7 @@ class IncidentPredictor:
                 'load_average': psutil.getloadavg()[0]  # 1分平均
             })
             
-            # AI Company 特有の特徴量
+            # Elders Guild 特有の特徴量
             features.update(self._collect_ai_company_features())
             
             # 履歴ベース特徴量
@@ -83,7 +83,7 @@ class IncidentPredictor:
             return self._get_default_features()
     
     def _collect_ai_company_features(self) -> Dict:
-        """AI Company固有の特徴量収集"""
+        """Elders Guild固有の特徴量収集"""
         features = {}
         
         try:
@@ -114,7 +114,7 @@ class IncidentPredictor:
             features['network_throughput'] = (net_io.bytes_sent + net_io.bytes_recv) / 1024 / 1024  # MB
             
         except Exception as e:
-            self.logger.warning(f"AI Company features collection failed: {str(e)}")
+            self.logger.warning(f"Elders Guild features collection failed: {str(e)}")
             features.update({
                 'active_workers': 0,
                 'queue_length': 0,

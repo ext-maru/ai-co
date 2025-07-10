@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company プロジェクト管理マネージャー
+Elders Guild プロジェクト管理マネージャー
 要件定義から本番反映まで全フェーズを管理
 """
 

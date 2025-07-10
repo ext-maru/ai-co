@@ -592,7 +592,174 @@ class AISelfEvolutionEngine:
     def _generate_gene_id(self, base_name: str) -> str:
         return hashlib.md5(f"{base_name}_{time.time()}".encode()).hexdigest()[:12]
     
-    def _save_genetic_pool(self): pass
+    def _save_genetic_pool(self):
+        """遺伝子プールをファイルに保存"""
+        try:
+            # 遺伝子プールを辞書形式に変換
+            pool_data = {}
+            for gene_id, gene in self.genetic_pool_data.items():
+                pool_data[gene_id] = {
+                    "gene_id": gene.gene_id,
+                    "gene_type": gene.gene_type,
+                    "expression_level": gene.expression_level,
+                    "mutation_rate": gene.mutation_rate,
+                    "fitness_score": gene.fitness_score,
+                    "creation_time": gene.creation_time.isoformat(),
+                    "last_mutation": gene.last_mutation.isoformat() if gene.last_mutation else None
+                }
+            
+            # 一時ファイルに保存してから原子的に移動
+            temp_file = self.genetic_pool.with_suffix('.tmp')
+            
+            with open(temp_file, 'w', encoding='utf-8') as f:
+                json.dump(pool_data, f, indent=2, ensure_ascii=False)
+            
+            # 原子的にファイルを置き換え
+            temp_file.replace(self.genetic_pool)
+            
+            # 統計情報を更新
+            self._update_pool_statistics(pool_data)
+            
+            # データベースに保存状況を記録
+            self._record_pool_save_event(len(pool_data))
+            
+            logger.info(f"遺伝子プール保存完了: {len(pool_data)}個の遺伝子")
+            
+        except Exception as e:
+            logger.error(f"遺伝子プール保存エラー: {e}")
+            print(f"⚠️ 遺伝子プール保存エラー: {e}")
+    
+    def _update_pool_statistics(self, pool_data: Dict[str, Any]):
+        """プール統計情報を更新"""
+        try:
+            # 遺伝子タイプ別統計
+            type_stats = defaultdict(int)
+            fitness_stats = defaultdict(list)
+            
+            for gene_data in pool_data.values():
+                gene_type = gene_data["gene_type"]
+                fitness = gene_data["fitness_score"]
+                
+                type_stats[gene_type] += 1
+                fitness_stats[gene_type].append(fitness)
+            
+            # 統計を計算
+            stats = {
+                "total_genes": len(pool_data),
+                "gene_types": dict(type_stats),
+                "fitness_stats": {},
+                "last_save_time": datetime.now().isoformat()
+            }
+            
+            # 各タイプの適応度統計
+            for gene_type, fitness_list in fitness_stats.items():
+                stats["fitness_stats"][gene_type] = {
+                    "count": len(fitness_list),
+                    "average": sum(fitness_list) / len(fitness_list),
+                    "max": max(fitness_list),
+                    "min": min(fitness_list)
+                }
+            
+            # 統計ファイルに保存
+            stats_file = self.evolution_db.parent / "genetic_pool_stats.json"
+            with open(stats_file, 'w', encoding='utf-8') as f:
+                json.dump(stats, f, indent=2, ensure_ascii=False)
+                
+        except Exception as e:
+            logger.error(f"統計更新エラー: {e}")
+    
+    def _record_pool_save_event(self, gene_count: int):
+        """プール保存イベントをデータベースに記録"""
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                INSERT INTO evolution_history (timestamp, stage, metrics, description)
+                VALUES (?, ?, ?, ?)
+            """, (
+                datetime.now().isoformat(),
+                self.current_stage.value,
+                json.dumps({
+                    "gene_count": gene_count,
+                    "intelligence_quotient": self.current_metrics.intelligence_quotient,
+                    "adaptation_rate": self.current_metrics.adaptation_rate,
+                    "innovation_index": self.current_metrics.innovation_index
+                }),
+                f"遺伝子プール保存: {gene_count}個の遺伝子"
+            ))
+            self.db_connection.commit()
+            
+        except Exception as e:
+            logger.error(f"プール保存記録エラー: {e}")
+    
+    def backup_genetic_pool(self):
+        """遺伝子プールのバックアップを作成"""
+        try:
+            backup_dir = self.evolution_db.parent / "genetic_backups"
+            backup_dir.mkdir(exist_ok=True)
+            
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            backup_file = backup_dir / f"genetic_pool_{timestamp}.json"
+            
+            # 現在のプールをバックアップ
+            if self.genetic_pool.exists():
+                with open(self.genetic_pool, 'r', encoding='utf-8') as src:
+                    with open(backup_file, 'w', encoding='utf-8') as dst:
+                        dst.write(src.read())
+                
+                logger.info(f"遺伝子プールバックアップ作成: {backup_file}")
+                
+                # 古いバックアップを削除（最新10個のみ保持）
+                self._cleanup_old_backups(backup_dir)
+                
+        except Exception as e:
+            logger.error(f"バックアップ作成エラー: {e}")
+    
+    def _cleanup_old_backups(self, backup_dir: Path):
+        """古いバックアップファイルを削除"""
+        try:
+            backup_files = list(backup_dir.glob("genetic_pool_*.json"))
+            backup_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            
+            # 最新10個を超えるファイルを削除
+            for old_backup in backup_files[10:]:
+                old_backup.unlink()
+                logger.info(f"古いバックアップ削除: {old_backup}")
+                
+        except Exception as e:
+            logger.error(f"バックアップ削除エラー: {e}")
+    
+    def load_genetic_pool_from_backup(self, backup_file: Path):
+        """バックアップから遺伝子プールを復元"""
+        try:
+            if backup_file.exists():
+                # 現在のプールをバックアップ
+                self.backup_genetic_pool()
+                
+                # バックアップから復元
+                with open(backup_file, 'r', encoding='utf-8') as f:
+                    pool_data = json.load(f)
+                
+                # 遺伝子プールデータを更新
+                self.genetic_pool_data = {}
+                for gene_id, gene_data in pool_data.items():
+                    self.genetic_pool_data[gene_id] = EvolutionGene(
+                        gene_id=gene_data["gene_id"],
+                        gene_type=gene_data["gene_type"],
+                        expression_level=gene_data["expression_level"],
+                        mutation_rate=gene_data["mutation_rate"],
+                        fitness_score=gene_data["fitness_score"],
+                        creation_time=datetime.fromisoformat(gene_data["creation_time"]),
+                        last_mutation=datetime.fromisoformat(gene_data["last_mutation"]) if gene_data.get("last_mutation") else None
+                    )
+                
+                # 復元されたプールを保存
+                self._save_genetic_pool()
+                
+                logger.info(f"遺伝子プール復元完了: {len(self.genetic_pool_data)}個の遺伝子")
+                
+        except Exception as e:
+            logger.error(f"プール復元エラー: {e}")
+            print(f"⚠️ プール復元エラー: {e}")
     def _evaluate_gene_fitness(self, gene: EvolutionGene) -> float: 
         return min(1.0, gene.fitness_score + random.uniform(-0.02, 0.03))
     
@@ -608,9 +775,892 @@ class AISelfEvolutionEngine:
             return EvolutionStage.OPTIMIZING
         return None
     
-    def _record_evolution_milestone(self): pass
+    def _record_evolution_milestone(self):
+        """進化マイルストーンを記録"""
+        try:
+            # 現在の進化状況を取得
+            current_metrics = asdict(self.current_metrics)
+            current_stage = self.current_stage.value
+            
+            # マイルストーンデータを構築
+            milestone_data = {
+                "timestamp": datetime.now().isoformat(),
+                "stage": current_stage,
+                "metrics": current_metrics,
+                "genetic_pool_size": len(self.genetic_pool_data),
+                "significant_changes": self._detect_significant_changes(),
+                "achievements": self._calculate_achievements(),
+                "next_targets": self._calculate_next_targets()
+            }
+            
+            # マイルストーンファイルに記録
+            self._save_milestone_to_file(milestone_data)
+            
+            # データベースに記録
+            self._save_milestone_to_database(milestone_data)
+            
+            # 重要なマイルストーンの場合、特別な処理
+            if self._is_significant_milestone(milestone_data):
+                self._handle_significant_milestone(milestone_data)
+            
+            logger.info(f"進化マイルストーン記録完了: {current_stage}")
+            
+        except Exception as e:
+            logger.error(f"マイルストーン記録エラー: {e}")
+            print(f"⚠️ マイルストーン記録エラー: {e}")
+    
+    def _detect_significant_changes(self) -> List[Dict[str, Any]]:
+        """重要な変化を検出"""
+        significant_changes = []
+        
+        try:
+            # 前回のマイルストーンと比較
+            if hasattr(self, '_last_milestone_metrics'):
+                last_metrics = self._last_milestone_metrics
+                current_metrics = asdict(self.current_metrics)
+                
+                # 知能指数の変化
+                iq_change = current_metrics["intelligence_quotient"] - last_metrics.get("intelligence_quotient", 0)
+                if abs(iq_change) > 5:  # 5以上の変化
+                    significant_changes.append({
+                        "type": "intelligence_quotient",
+                        "change": iq_change,
+                        "description": f"知能指数が{iq_change:.1f}変化"
+                    })
+                
+                # 適応率の変化
+                adaptation_change = current_metrics["adaptation_rate"] - last_metrics.get("adaptation_rate", 0)
+                if abs(adaptation_change) > 0.1:  # 0.1以上の変化
+                    significant_changes.append({
+                        "type": "adaptation_rate",
+                        "change": adaptation_change,
+                        "description": f"適応率が{adaptation_change:.2f}変化"
+                    })
+                
+                # 革新指数の変化
+                innovation_change = current_metrics["innovation_index"] - last_metrics.get("innovation_index", 0)
+                if abs(innovation_change) > 0.05:  # 0.05以上の変化
+                    significant_changes.append({
+                        "type": "innovation_index",
+                        "change": innovation_change,
+                        "description": f"革新指数が{innovation_change:.2f}変化"
+                    })
+            
+            # 進化段階の変化
+            if hasattr(self, '_last_stage') and self._last_stage != self.current_stage:
+                significant_changes.append({
+                    "type": "stage_transition",
+                    "from": self._last_stage.value,
+                    "to": self.current_stage.value,
+                    "description": f"進化段階が{self._last_stage.value}から{self.current_stage.value}に変化"
+                })
+            
+            # 遺伝子プールサイズの変化
+            if hasattr(self, '_last_pool_size'):
+                pool_change = len(self.genetic_pool_data) - self._last_pool_size
+                if abs(pool_change) > 5:  # 5個以上の変化
+                    significant_changes.append({
+                        "type": "genetic_pool_size",
+                        "change": pool_change,
+                        "description": f"遺伝子プールサイズが{pool_change}変化"
+                    })
+            
+        except Exception as e:
+            logger.error(f"重要変化検出エラー: {e}")
+        
+        return significant_changes
+    
+    def _calculate_achievements(self) -> List[Dict[str, Any]]:
+        """達成事項を計算"""
+        achievements = []
+        
+        try:
+            metrics = self.current_metrics
+            
+            # 知能指数の達成
+            if metrics.intelligence_quotient >= 150:
+                achievements.append({
+                    "type": "intelligence_milestone",
+                    "level": "genius",
+                    "description": "天才レベル知能指数達成"
+                })
+            elif metrics.intelligence_quotient >= 140:
+                achievements.append({
+                    "type": "intelligence_milestone",
+                    "level": "superior",
+                    "description": "優秀レベル知能指数達成"
+                })
+            elif metrics.intelligence_quotient >= 130:
+                achievements.append({
+                    "type": "intelligence_milestone",
+                    "level": "above_average",
+                    "description": "平均以上知能指数達成"
+                })
+            
+            # 適応率の達成
+            if metrics.adaptation_rate >= 0.95:
+                achievements.append({
+                    "type": "adaptation_milestone",
+                    "level": "excellent",
+                    "description": "卓越した適応率達成"
+                })
+            elif metrics.adaptation_rate >= 0.85:
+                achievements.append({
+                    "type": "adaptation_milestone",
+                    "level": "good",
+                    "description": "良好な適応率達成"
+                })
+            
+            # 革新指数の達成
+            if metrics.innovation_index >= 0.9:
+                achievements.append({
+                    "type": "innovation_milestone",
+                    "level": "breakthrough",
+                    "description": "革新的突破達成"
+                })
+            elif metrics.innovation_index >= 0.7:
+                achievements.append({
+                    "type": "innovation_milestone",
+                    "level": "creative",
+                    "description": "創造的レベル達成"
+                })
+            
+            # 遺伝子プールの達成
+            pool_size = len(self.genetic_pool_data)
+            if pool_size >= 100:
+                achievements.append({
+                    "type": "genetic_diversity",
+                    "level": "rich",
+                    "description": "豊富な遺伝的多様性達成"
+                })
+            elif pool_size >= 50:
+                achievements.append({
+                    "type": "genetic_diversity",
+                    "level": "moderate",
+                    "description": "適度な遺伝的多様性達成"
+                })
+            
+            # 進化段階の達成
+            if self.current_stage == EvolutionStage.TRANSCENDING:
+                achievements.append({
+                    "type": "stage_achievement",
+                    "level": "transcendent",
+                    "description": "超越段階達成"
+                })
+            elif self.current_stage == EvolutionStage.INNOVATING:
+                achievements.append({
+                    "type": "stage_achievement",
+                    "level": "innovative",
+                    "description": "革新段階達成"
+                })
+            
+        except Exception as e:
+            logger.error(f"達成事項計算エラー: {e}")
+        
+        return achievements
+    
+    def _calculate_next_targets(self) -> List[Dict[str, Any]]:
+        """次の目標を計算"""
+        next_targets = []
+        
+        try:
+            metrics = self.current_metrics
+            
+            # 知能指数の次の目標
+            if metrics.intelligence_quotient < 130:
+                next_targets.append({
+                    "type": "intelligence_target",
+                    "current": metrics.intelligence_quotient,
+                    "target": 130,
+                    "description": "平均以上知能指数を目指す"
+                })
+            elif metrics.intelligence_quotient < 140:
+                next_targets.append({
+                    "type": "intelligence_target",
+                    "current": metrics.intelligence_quotient,
+                    "target": 140,
+                    "description": "優秀レベル知能指数を目指す"
+                })
+            elif metrics.intelligence_quotient < 150:
+                next_targets.append({
+                    "type": "intelligence_target",
+                    "current": metrics.intelligence_quotient,
+                    "target": 150,
+                    "description": "天才レベル知能指数を目指す"
+                })
+            
+            # 適応率の次の目標
+            if metrics.adaptation_rate < 0.85:
+                next_targets.append({
+                    "type": "adaptation_target",
+                    "current": metrics.adaptation_rate,
+                    "target": 0.85,
+                    "description": "良好な適応率を目指す"
+                })
+            elif metrics.adaptation_rate < 0.95:
+                next_targets.append({
+                    "type": "adaptation_target",
+                    "current": metrics.adaptation_rate,
+                    "target": 0.95,
+                    "description": "卓越した適応率を目指す"
+                })
+            
+            # 革新指数の次の目標
+            if metrics.innovation_index < 0.7:
+                next_targets.append({
+                    "type": "innovation_target",
+                    "current": metrics.innovation_index,
+                    "target": 0.7,
+                    "description": "創造的レベルを目指す"
+                })
+            elif metrics.innovation_index < 0.9:
+                next_targets.append({
+                    "type": "innovation_target",
+                    "current": metrics.innovation_index,
+                    "target": 0.9,
+                    "description": "革新的突破を目指す"
+                })
+            
+            # 進化段階の次の目標
+            next_stage = self._get_next_evolution_stage()
+            if next_stage:
+                next_targets.append({
+                    "type": "stage_target",
+                    "current": self.current_stage.value,
+                    "target": next_stage.value,
+                    "description": f"{next_stage.value}段階を目指す"
+                })
+            
+        except Exception as e:
+            logger.error(f"次の目標計算エラー: {e}")
+        
+        return next_targets
+    
+    def _get_next_evolution_stage(self) -> Optional[EvolutionStage]:
+        """次の進化段階を取得"""
+        stage_order = [
+            EvolutionStage.NASCENT,
+            EvolutionStage.LEARNING,
+            EvolutionStage.ADAPTING,
+            EvolutionStage.OPTIMIZING,
+            EvolutionStage.INNOVATING,
+            EvolutionStage.TRANSCENDING
+        ]
+        
+        try:
+            current_index = stage_order.index(self.current_stage)
+            if current_index < len(stage_order) - 1:
+                return stage_order[current_index + 1]
+        except ValueError:
+            pass
+        
+        return None
+    
+    def _save_milestone_to_file(self, milestone_data: Dict[str, Any]):
+        """マイルストーンをファイルに保存"""
+        try:
+            milestones_dir = self.evolution_db.parent / "milestones"
+            milestones_dir.mkdir(exist_ok=True)
+            
+            # タイムスタンプ付きファイル名
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            milestone_file = milestones_dir / f"milestone_{timestamp}.json"
+            
+            with open(milestone_file, 'w', encoding='utf-8') as f:
+                json.dump(milestone_data, f, indent=2, ensure_ascii=False)
+            
+            # 最新のマイルストーンとしても保存
+            latest_file = milestones_dir / "latest_milestone.json"
+            with open(latest_file, 'w', encoding='utf-8') as f:
+                json.dump(milestone_data, f, indent=2, ensure_ascii=False)
+            
+        except Exception as e:
+            logger.error(f"マイルストーンファイル保存エラー: {e}")
+    
+    def _save_milestone_to_database(self, milestone_data: Dict[str, Any]):
+        """マイルストーンをデータベースに保存"""
+        try:
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                INSERT INTO evolution_history (timestamp, stage, metrics, description)
+                VALUES (?, ?, ?, ?)
+            """, (
+                milestone_data["timestamp"],
+                milestone_data["stage"],
+                json.dumps(milestone_data["metrics"]),
+                f"進化マイルストーン: {milestone_data['stage']}段階"
+            ))
+            
+            # 達成事項も記録
+            for achievement in milestone_data["achievements"]:
+                cursor.execute("""
+                    INSERT INTO evolution_history (timestamp, stage, metrics, description)
+                    VALUES (?, ?, ?, ?)
+                """, (
+                    milestone_data["timestamp"],
+                    milestone_data["stage"],
+                    json.dumps(achievement),
+                    f"達成事項: {achievement['description']}"
+                ))
+            
+            self.db_connection.commit()
+            
+        except Exception as e:
+            logger.error(f"マイルストーンデータベース保存エラー: {e}")
+    
+    def _is_significant_milestone(self, milestone_data: Dict[str, Any]) -> bool:
+        """重要なマイルストーンかどうかを判定"""
+        try:
+            # 段階の変化があった場合
+            if milestone_data["significant_changes"]:
+                for change in milestone_data["significant_changes"]:
+                    if change["type"] == "stage_transition":
+                        return True
+            
+            # 高い達成レベルの場合
+            achievements = milestone_data["achievements"]
+            for achievement in achievements:
+                if achievement.get("level") in ["genius", "excellent", "breakthrough", "transcendent"]:
+                    return True
+            
+            # 遺伝子プールサイズが大きい場合
+            if milestone_data["genetic_pool_size"] >= 100:
+                return True
+            
+            return False
+            
+        except Exception as e:
+            logger.error(f"重要マイルストーン判定エラー: {e}")
+            return False
+    
+    def _handle_significant_milestone(self, milestone_data: Dict[str, Any]):
+        """重要なマイルストーンの特別処理"""
+        try:
+            # 遺伝子プールのバックアップ作成
+            self.backup_genetic_pool()
+            
+            # 特別なログ出力
+            logger.info("🎉 重要な進化マイルストーンに到達！")
+            logger.info(f"段階: {milestone_data['stage']}")
+            logger.info(f"達成事項: {len(milestone_data['achievements'])}個")
+            
+            # 4賢者システムに通知（統合されている場合）
+            if hasattr(self, 'four_sages_integration') and self.four_sages_integration:
+                self._notify_four_sages_of_milestone(milestone_data)
+            
+        except Exception as e:
+            logger.error(f"重要マイルストーン処理エラー: {e}")
+    
+    def _notify_four_sages_of_milestone(self, milestone_data: Dict[str, Any]):
+        """4賢者システムにマイルストーンを通知"""
+        try:
+            notification_data = {
+                "type": "evolution_milestone",
+                "stage": milestone_data["stage"],
+                "achievements": milestone_data["achievements"],
+                "timestamp": milestone_data["timestamp"]
+            }
+            
+            # 4賢者システムに通知
+            if hasattr(self.four_sages_integration, 'receive_evolution_milestone'):
+                self.four_sages_integration.receive_evolution_milestone(notification_data)
+            
+        except Exception as e:
+            logger.error(f"4賢者通知エラー: {e}")
+    
+    def get_milestone_history(self) -> List[Dict[str, Any]]:
+        """マイルストーン履歴を取得"""
+        try:
+            milestones_dir = self.evolution_db.parent / "milestones"
+            if not milestones_dir.exists():
+                return []
+            
+            milestone_files = list(milestones_dir.glob("milestone_*.json"))
+            milestone_files.sort(key=lambda x: x.stem)
+            
+            milestones = []
+            for file in milestone_files:
+                with open(file, 'r', encoding='utf-8') as f:
+                    milestone_data = json.load(f)
+                    milestones.append(milestone_data)
+            
+            return milestones
+            
+        except Exception as e:
+            logger.error(f"マイルストーン履歴取得エラー: {e}")
+            return []
     def _discover_new_knowledge(self) -> List[str]: return []
-    def _integrate_knowledge(self, knowledge: str): pass
+    def _integrate_knowledge(self, knowledge: str):
+        """新しい知識を統合"""
+        try:
+            if not knowledge or not knowledge.strip():
+                return
+            
+            # 知識を解析して構造化
+            knowledge_data = self._parse_knowledge(knowledge)
+            
+            # 既存知識との重複チェック
+            if self._is_duplicate_knowledge(knowledge_data):
+                logger.info(f"重複知識をスキップ: {knowledge_data.get('summary', 'unknown')}")
+                return
+            
+            # 知識の品質評価
+            quality_score = self._evaluate_knowledge_quality(knowledge_data)
+            if quality_score < 0.3:  # 低品質の知識は統合しない
+                logger.info(f"低品質知識をスキップ: {knowledge_data.get('summary', 'unknown')}")
+                return
+            
+            # 知識を遺伝子プールに統合
+            self._integrate_knowledge_to_genetic_pool(knowledge_data, quality_score)
+            
+            # 知識ベースに保存
+            self._save_knowledge_to_base(knowledge_data, quality_score)
+            
+            # 学習効率の最適化
+            self._optimize_learning_from_knowledge(knowledge_data)
+            
+            # 4賢者システムに通知
+            if hasattr(self, 'four_sages_integration') and self.four_sages_integration:
+                self._notify_four_sages_of_knowledge_integration(knowledge_data)
+            
+            logger.info(f"知識統合完了: {knowledge_data.get('summary', 'unknown')}")
+            
+        except Exception as e:
+            logger.error(f"知識統合エラー: {e}")
+            print(f"⚠️ 知識統合エラー: {e}")
+    
+    def _parse_knowledge(self, knowledge: str) -> Dict[str, Any]:
+        """知識を解析して構造化"""
+        try:
+            # 知識のタイプを判定
+            knowledge_type = self._determine_knowledge_type(knowledge)
+            
+            # 知識のキーワードを抽出
+            keywords = self._extract_keywords(knowledge)
+            
+            # 知識の概要を生成
+            summary = self._generate_knowledge_summary(knowledge)
+            
+            # 知識の複雑度を計算
+            complexity = self._calculate_knowledge_complexity(knowledge)
+            
+            # 関連する遺伝子タイプを特定
+            related_gene_types = self._identify_related_gene_types(knowledge, keywords)
+            
+            return {
+                "content": knowledge,
+                "type": knowledge_type,
+                "keywords": keywords,
+                "summary": summary,
+                "complexity": complexity,
+                "related_gene_types": related_gene_types,
+                "timestamp": datetime.now().isoformat(),
+                "hash": hashlib.md5(knowledge.encode()).hexdigest()
+            }
+            
+        except Exception as e:
+            logger.error(f"知識解析エラー: {e}")
+            return {
+                "content": knowledge,
+                "type": "unknown",
+                "keywords": [],
+                "summary": knowledge[:100] + "..." if len(knowledge) > 100 else knowledge,
+                "complexity": 0.5,
+                "related_gene_types": [],
+                "timestamp": datetime.now().isoformat(),
+                "hash": hashlib.md5(knowledge.encode()).hexdigest()
+            }
+    
+    def _determine_knowledge_type(self, knowledge: str) -> str:
+        """知識のタイプを判定"""
+        knowledge_lower = knowledge.lower()
+        
+        # パターンマッチングによる分類
+        if any(keyword in knowledge_lower for keyword in ["algorithm", "method", "approach", "technique"]):
+            return "algorithm"
+        elif any(keyword in knowledge_lower for keyword in ["pattern", "structure", "model", "framework"]):
+            return "pattern"
+        elif any(keyword in knowledge_lower for keyword in ["optimization", "improvement", "efficiency", "performance"]):
+            return "optimization"
+        elif any(keyword in knowledge_lower for keyword in ["innovation", "creative", "novel", "breakthrough"]):
+            return "innovation"
+        elif any(keyword in knowledge_lower for keyword in ["error", "bug", "issue", "problem", "solution"]):
+            return "problem_solving"
+        elif any(keyword in knowledge_lower for keyword in ["data", "information", "fact", "statistic"]):
+            return "data"
+        else:
+            return "general"
+    
+    def _extract_keywords(self, knowledge: str) -> List[str]:
+        """知識からキーワードを抽出"""
+        try:
+            # 基本的なキーワード抽出（簡易版）
+            import re
+            
+            # 技術的なキーワードのパターン
+            tech_patterns = [
+                r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)*\b',  # CamelCase
+                r'\b[a-z]+_[a-z]+\b',  # snake_case
+                r'\b[a-z]+-[a-z]+\b',  # kebab-case
+                r'\b\d+\.\d+\b',  # バージョン番号
+                r'\b[A-Z]{2,}\b',  # 略語
+            ]
+            
+            keywords = []
+            for pattern in tech_patterns:
+                matches = re.findall(pattern, knowledge)
+                keywords.extend(matches)
+            
+            # 頻出単語を抽出
+            words = re.findall(r'\b[a-zA-Z]{3,}\b', knowledge.lower())
+            word_freq = {}
+            for word in words:
+                word_freq[word] = word_freq.get(word, 0) + 1
+            
+            # 頻度の高い単語を追加
+            frequent_words = [word for word, freq in word_freq.items() if freq > 1]
+            keywords.extend(frequent_words[:10])  # 上位10個
+            
+            return list(set(keywords))[:20]  # 重複を除いて最大20個
+            
+        except Exception as e:
+            logger.error(f"キーワード抽出エラー: {e}")
+            return []
+    
+    def _generate_knowledge_summary(self, knowledge: str) -> str:
+        """知識の概要を生成"""
+        try:
+            # 最初の文または最初の100文字を概要とする
+            sentences = knowledge.split('.')
+            if sentences:
+                summary = sentences[0].strip()
+                if len(summary) > 100:
+                    summary = summary[:100] + "..."
+                return summary
+            else:
+                return knowledge[:100] + "..." if len(knowledge) > 100 else knowledge
+        except Exception as e:
+            logger.error(f"概要生成エラー: {e}")
+            return knowledge[:50] + "..." if len(knowledge) > 50 else knowledge
+    
+    def _calculate_knowledge_complexity(self, knowledge: str) -> float:
+        """知識の複雑度を計算"""
+        try:
+            # 複雑度の要素
+            factors = []
+            
+            # 長さによる複雑度
+            length_complexity = min(len(knowledge) / 1000, 1.0)
+            factors.append(length_complexity)
+            
+            # 技術用語の密度
+            tech_terms = len(re.findall(r'\b[A-Z][a-z]+(?:[A-Z][a-z]+)*\b', knowledge))
+            tech_density = min(tech_terms / max(len(knowledge.split()), 1), 1.0)
+            factors.append(tech_density)
+            
+            # 数字や記号の密度
+            numeric_density = len(re.findall(r'[\d\+\-\*\/\=\(\)\[\]\{\}]', knowledge)) / max(len(knowledge), 1)
+            factors.append(min(numeric_density, 1.0))
+            
+            # 行数による複雑度
+            lines = knowledge.count('\n') + 1
+            line_complexity = min(lines / 50, 1.0)
+            factors.append(line_complexity)
+            
+            # 平均複雑度を計算
+            return sum(factors) / len(factors)
+            
+        except Exception as e:
+            logger.error(f"複雑度計算エラー: {e}")
+            return 0.5
+    
+    def _identify_related_gene_types(self, knowledge: str, keywords: List[str]) -> List[str]:
+        """関連する遺伝子タイプを特定"""
+        try:
+            related_types = []
+            knowledge_lower = knowledge.lower()
+            
+            # 遺伝子タイプとキーワードのマッピング
+            gene_type_mapping = {
+                "algorithm": ["algorithm", "method", "approach", "technique", "procedure"],
+                "cognitive": ["pattern", "recognition", "understanding", "analysis", "thinking"],
+                "logic": ["decision", "reasoning", "logic", "inference", "conclusion"],
+                "performance": ["optimization", "efficiency", "speed", "memory", "resource"],
+                "innovation": ["creative", "novel", "breakthrough", "invention", "discovery"],
+                "learning": ["learning", "training", "education", "knowledge", "skill"],
+                "adaptation": ["adaptation", "adjustment", "modification", "evolution", "change"],
+                "communication": ["communication", "message", "interface", "protocol", "exchange"]
+            }
+            
+            # キーワードベースの関連性判定
+            for gene_type, type_keywords in gene_type_mapping.items():
+                if any(keyword in knowledge_lower for keyword in type_keywords):
+                    related_types.append(gene_type)
+                
+                # 抽出されたキーワードとの照合
+                if any(keyword.lower() in type_keywords for keyword in keywords):
+                    related_types.append(gene_type)
+            
+            return list(set(related_types))  # 重複を除去
+            
+        except Exception as e:
+            logger.error(f"関連遺伝子タイプ特定エラー: {e}")
+            return ["general"]
+    
+    def _is_duplicate_knowledge(self, knowledge_data: Dict[str, Any]) -> bool:
+        """重複知識かどうかをチェック"""
+        try:
+            # 知識ベースファイルをチェック
+            knowledge_base_file = self.evolution_db.parent / "knowledge_base.json"
+            if not knowledge_base_file.exists():
+                return False
+            
+            with open(knowledge_base_file, 'r', encoding='utf-8') as f:
+                existing_knowledge = json.load(f)
+            
+            # ハッシュによる重複チェック
+            current_hash = knowledge_data["hash"]
+            for knowledge in existing_knowledge:
+                if knowledge.get("hash") == current_hash:
+                    return True
+            
+            # 類似度による重複チェック
+            current_summary = knowledge_data["summary"]
+            for knowledge in existing_knowledge:
+                if self._calculate_similarity(current_summary, knowledge.get("summary", "")) > 0.8:
+                    return True
+            
+            return False
+            
+        except Exception as e:
+            logger.error(f"重複チェックエラー: {e}")
+            return False
+    
+    def _calculate_similarity(self, text1: str, text2: str) -> float:
+        """テキストの類似度を計算"""
+        try:
+            if not text1 or not text2:
+                return 0.0
+            
+            # 簡易的な類似度計算（共通単語の割合）
+            words1 = set(text1.lower().split())
+            words2 = set(text2.lower().split())
+            
+            if not words1 or not words2:
+                return 0.0
+            
+            intersection = words1.intersection(words2)
+            union = words1.union(words2)
+            
+            return len(intersection) / len(union)
+            
+        except Exception as e:
+            logger.error(f"類似度計算エラー: {e}")
+            return 0.0
+    
+    def _evaluate_knowledge_quality(self, knowledge_data: Dict[str, Any]) -> float:
+        """知識の品質を評価"""
+        try:
+            quality_factors = []
+            
+            # 複雑度による品質（適度な複雑さが重要）
+            complexity = knowledge_data["complexity"]
+            complexity_quality = 1.0 - abs(complexity - 0.6)  # 0.6が理想的
+            quality_factors.append(complexity_quality)
+            
+            # キーワード数による品質
+            keyword_count = len(knowledge_data["keywords"])
+            keyword_quality = min(keyword_count / 10, 1.0)  # 10個が理想的
+            quality_factors.append(keyword_quality)
+            
+            # 関連遺伝子タイプ数による品質
+            related_types_count = len(knowledge_data["related_gene_types"])
+            types_quality = min(related_types_count / 3, 1.0)  # 3個が理想的
+            quality_factors.append(types_quality)
+            
+            # 内容の長さによる品質
+            content_length = len(knowledge_data["content"])
+            length_quality = min(content_length / 500, 1.0)  # 500文字が理想的
+            quality_factors.append(length_quality)
+            
+            # 特定のタイプに対するボーナス
+            if knowledge_data["type"] in ["algorithm", "optimization", "innovation"]:
+                quality_factors.append(0.2)  # ボーナス
+            
+            return sum(quality_factors) / len(quality_factors)
+            
+        except Exception as e:
+            logger.error(f"品質評価エラー: {e}")
+            return 0.5
+    
+    def _integrate_knowledge_to_genetic_pool(self, knowledge_data: Dict[str, Any], quality_score: float):
+        """知識を遺伝子プールに統合"""
+        try:
+            # 知識から新しい遺伝子を生成
+            for gene_type in knowledge_data["related_gene_types"]:
+                gene_id = self._generate_gene_id(f"knowledge_{gene_type}")
+                
+                # 遺伝子の属性を知識から導出
+                expression_level = min(quality_score + 0.3, 1.0)
+                mutation_rate = max(0.01, 0.05 - quality_score * 0.03)
+                fitness_score = quality_score * 0.9 + random.uniform(-0.1, 0.1)
+                
+                # 新しい遺伝子を作成
+                new_gene = EvolutionGene(
+                    gene_id=gene_id,
+                    gene_type=gene_type,
+                    expression_level=expression_level,
+                    mutation_rate=mutation_rate,
+                    fitness_score=fitness_score,
+                    creation_time=datetime.now(),
+                    last_mutation=None
+                )
+                
+                # 遺伝子プールに追加
+                self.genetic_pool_data[gene_id] = new_gene
+                
+                logger.info(f"新しい遺伝子を生成: {gene_id} ({gene_type})")
+            
+            # 既存遺伝子の強化
+            self._enhance_existing_genes(knowledge_data, quality_score)
+            
+        except Exception as e:
+            logger.error(f"遺伝子プール統合エラー: {e}")
+    
+    def _enhance_existing_genes(self, knowledge_data: Dict[str, Any], quality_score: float):
+        """既存遺伝子を知識で強化"""
+        try:
+            enhancement_bonus = quality_score * 0.1
+            
+            for gene_id, gene in self.genetic_pool_data.items():
+                if gene.gene_type in knowledge_data["related_gene_types"]:
+                    # 適応度とexpression_levelを向上
+                    gene.fitness_score = min(gene.fitness_score + enhancement_bonus, 1.0)
+                    gene.expression_level = min(gene.expression_level + enhancement_bonus * 0.5, 1.0)
+                    gene.last_mutation = datetime.now()
+                    
+                    logger.debug(f"遺伝子強化: {gene_id} (+{enhancement_bonus:.3f})")
+            
+        except Exception as e:
+            logger.error(f"遺伝子強化エラー: {e}")
+    
+    def _save_knowledge_to_base(self, knowledge_data: Dict[str, Any], quality_score: float):
+        """知識をナレッジベースに保存"""
+        try:
+            knowledge_base_file = self.evolution_db.parent / "knowledge_base.json"
+            
+            # 既存の知識ベースを読み込み
+            if knowledge_base_file.exists():
+                with open(knowledge_base_file, 'r', encoding='utf-8') as f:
+                    knowledge_base = json.load(f)
+            else:
+                knowledge_base = []
+            
+            # 新しい知識を追加
+            knowledge_entry = {
+                **knowledge_data,
+                "quality_score": quality_score,
+                "integration_time": datetime.now().isoformat()
+            }
+            knowledge_base.append(knowledge_entry)
+            
+            # 知識ベースのサイズ制限（最新1000件のみ保持）
+            if len(knowledge_base) > 1000:
+                knowledge_base = knowledge_base[-1000:]
+            
+            # ファイルに保存
+            with open(knowledge_base_file, 'w', encoding='utf-8') as f:
+                json.dump(knowledge_base, f, indent=2, ensure_ascii=False)
+            
+            logger.info(f"知識ベースに保存: {knowledge_data['summary']}")
+            
+        except Exception as e:
+            logger.error(f"知識ベース保存エラー: {e}")
+    
+    def _optimize_learning_from_knowledge(self, knowledge_data: Dict[str, Any]):
+        """知識から学習効率を最適化"""
+        try:
+            # 知識のタイプに応じた学習効率の調整
+            learning_bonus = 0.0
+            
+            if knowledge_data["type"] == "algorithm":
+                learning_bonus = 0.15
+            elif knowledge_data["type"] == "optimization":
+                learning_bonus = 0.12
+            elif knowledge_data["type"] == "innovation":
+                learning_bonus = 0.10
+            elif knowledge_data["type"] == "pattern":
+                learning_bonus = 0.08
+            
+            # 現在のメトリクスを更新
+            self.current_metrics.learning_efficiency = min(
+                self.current_metrics.learning_efficiency + learning_bonus,
+                1.0
+            )
+            
+            # 知識の複雑度に応じた知能指数の向上
+            intelligence_bonus = knowledge_data["complexity"] * 2.0
+            self.current_metrics.intelligence_quotient = min(
+                self.current_metrics.intelligence_quotient + intelligence_bonus,
+                200.0
+            )
+            
+            logger.info(f"学習効率最適化: +{learning_bonus:.3f}, 知能指数: +{intelligence_bonus:.3f}")
+            
+        except Exception as e:
+            logger.error(f"学習効率最適化エラー: {e}")
+    
+    def _notify_four_sages_of_knowledge_integration(self, knowledge_data: Dict[str, Any]):
+        """4賢者システムに知識統合を通知"""
+        try:
+            notification_data = {
+                "type": "knowledge_integration",
+                "knowledge_summary": knowledge_data["summary"],
+                "knowledge_type": knowledge_data["type"],
+                "keywords": knowledge_data["keywords"],
+                "related_gene_types": knowledge_data["related_gene_types"],
+                "timestamp": knowledge_data["timestamp"]
+            }
+            
+            # 4賢者システムに通知
+            if hasattr(self.four_sages_integration, 'receive_knowledge_integration'):
+                self.four_sages_integration.receive_knowledge_integration(notification_data)
+            
+        except Exception as e:
+            logger.error(f"4賢者通知エラー: {e}")
+    
+    def get_knowledge_base_stats(self) -> Dict[str, Any]:
+        """知識ベースの統計情報を取得"""
+        try:
+            knowledge_base_file = self.evolution_db.parent / "knowledge_base.json"
+            if not knowledge_base_file.exists():
+                return {"total_knowledge": 0, "types": {}, "average_quality": 0.0}
+            
+            with open(knowledge_base_file, 'r', encoding='utf-8') as f:
+                knowledge_base = json.load(f)
+            
+            # 統計情報を計算
+            total_knowledge = len(knowledge_base)
+            type_counts = {}
+            quality_scores = []
+            
+            for knowledge in knowledge_base:
+                knowledge_type = knowledge.get("type", "unknown")
+                type_counts[knowledge_type] = type_counts.get(knowledge_type, 0) + 1
+                quality_scores.append(knowledge.get("quality_score", 0.0))
+            
+            average_quality = sum(quality_scores) / len(quality_scores) if quality_scores else 0.0
+            
+            return {
+                "total_knowledge": total_knowledge,
+                "types": type_counts,
+                "average_quality": average_quality,
+                "last_updated": datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"統計情報取得エラー: {e}")
+            return {"total_knowledge": 0, "types": {}, "average_quality": 0.0}
     def _optimize_learning_efficiency(self): pass
     def _record_mutation(self, gene: EvolutionGene, mutation_type: str, old_fitness: float, new_fitness: float): pass
     def _calculate_evolution_velocity(self) -> float: return 0.85

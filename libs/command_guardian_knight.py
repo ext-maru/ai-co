@@ -42,7 +42,7 @@ class CommandGuardianKnight(IncidentKnight):
         
         # 保護対象コマンド定義
         self.protected_commands = {
-            # AI Company Core Commands
+            # Elders Guild Core Commands
             'ai-start': {'path': 'scripts/ai-start', 'critical': True},
             'ai-stop': {'path': 'scripts/ai-stop', 'critical': True},
             'ai-status': {'path': 'scripts/ai-status', 'critical': True},
@@ -181,7 +181,7 @@ class CommandGuardianKnight(IncidentKnight):
         """コマンドのヘルプ実行でテスト"""
         try:
             if cmd_name.startswith('ai-'):
-                # AI Companyコマンドは--helpで確認
+                # Elders Guildコマンドは--helpで確認
                 result = await asyncio.create_subprocess_shell(
                     f"{cmd_name} --help",
                     stdout=asyncio.subprocess.PIPE,
@@ -450,8 +450,8 @@ class CommandGuardianKnight(IncidentKnight):
                 root_cause = f"System command {cmd_name} not installed or not in PATH"
                 actions = [f"Install {cmd_name}", "Update PATH"]
             else:
-                # AI Companyコマンドの場合
-                root_cause = f"AI Company command {cmd_name} missing or broken"
+                # Elders Guildコマンドの場合
+                root_cause = f"Elders Guild command {cmd_name} missing or broken"
                 actions = ["Check file permissions", "Recreate command file", "Update symlinks"]
                 
         else:

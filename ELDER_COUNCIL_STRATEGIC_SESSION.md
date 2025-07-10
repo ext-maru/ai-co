@@ -80,7 +80,7 @@ INDUSTRY BENCHMARKS:
 - Enterprise systems: 80-85% coverage typical
 - AI/ML systems: 70-80% average
 - Mission-critical: 90%+ required
-- AI Company current: 85% (ABOVE INDUSTRY AVERAGE)
+- Elders Guild current: 85% (ABOVE INDUSTRY AVERAGE)
 
 STRATEGIC OPPORTUNITIES:
 1. 90% coverage puts us in TOP 10% of software projects

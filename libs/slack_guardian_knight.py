@@ -428,7 +428,7 @@ Slack統合を正常に動作させるために、以下のスコープが必要
 ## 修復手順
 
 1. https://api.slack.com/apps にアクセス
-2. AI Company appを選択
+2. Elders Guild appを選択
 3. "OAuth & Permissions" に移動
 4. "Scopes" > "Bot Token Scopes" で上記スコープを追加
 5. "Reinstall App" を実行

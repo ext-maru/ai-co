@@ -158,7 +158,7 @@ class AutomatedReportingSystem:
             'slack_webhook': None,
             'smtp_config': {},
             'branding': {
-                'company': 'AI Company',
+                'company': 'Elders Guild',
                 'logo': None,
                 'colors': {
                     'primary': '#2E86AB',

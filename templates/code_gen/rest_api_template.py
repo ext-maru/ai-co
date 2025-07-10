@@ -1,5 +1,5 @@
 """
-REST API Endpoint Generator Template for AI Company
+REST API Endpoint Generator Template for Elders Guild
 生成されるエンドポイントは FastAPI または Flask をサポート
 """
 
@@ -15,7 +15,7 @@ class RestApiTemplate:
             "name": "REST API Endpoint",
             "version": "1.0.0",
             "description": "Generate REST API endpoints with validation and tests",
-            "author": "AI Company",
+            "author": "Elders Guild",
             "parameters": {
                 "framework": {
                     "type": "str",

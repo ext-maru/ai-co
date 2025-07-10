@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Automated Test Generator for AI Company
+Automated Test Generator for Elders Guild
 Generates high-quality tests based on AST parsing and proven patterns
 """
 
@@ -848,7 +848,7 @@ class AutoTestGenerator:
 
 def main():
     """Main entry point for test generation"""
-    print("=== AI Company Automated Test Generator ===\n")
+    print("=== Elders Guild Automated Test Generator ===\n")
     
     # Initialize generator
     generator = AutoTestGenerator()

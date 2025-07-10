@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 緊急時対応手順自動化システム
-AI Company エルダーズ（4賢者）による緊急時対応システム
+Elders Guild エルダーズ（4賢者）による緊急時対応システム
 
 インシデント賢者: 緊急時対応計画・実行
 タスク賢者: 復旧手順の最適化
@@ -225,7 +225,7 @@ class EmergencyResponseSystem:
         """緊急時通知の送信"""
         try:
             notification_msg = f"""
-🚨 AI Company 緊急事態発生 🚨
+🚨 Elders Guild 緊急事態発生 🚨
 
 重要度: {severity}
 時刻: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
@@ -706,7 +706,7 @@ class EmergencyResponseSystem:
 
 def main():
     """メイン実行関数"""
-    print("🚨 AI Company Emergency Response System")
+    print("🚨 Elders Guild Emergency Response System")
     print("🧙‍♂️ 4賢者による緊急時対応システム")
     print("=" * 50)
     

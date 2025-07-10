@@ -73,7 +73,7 @@ def run_coverage_test(test_path, module_name):
 def main():
     """Main coverage measurement"""
     print("=" * 80)
-    print("AI Company - Week 3 Phase 1 Coverage Report")
+    print("Elders Guild - Week 3 Phase 1 Coverage Report")
     print("=" * 80)
     print(f"Generated at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()

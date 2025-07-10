@@ -53,7 +53,7 @@ class AIEvolveDailyCommand:
     
     async def run_daily_cycle(self):
         """日次進化サイクル実行"""
-        print("🌟 AI Company 自己進化システム - 日次サイクル開始")
+        print("🌟 Elders Guild 自己進化システム - 日次サイクル開始")
         
         # 既に今日実行済みかチェック
         status = self.evolution_system.get_system_status()
@@ -174,7 +174,7 @@ class AIEvolveDailyCommand:
 
 def main():
     """メイン関数"""
-    parser = argparse.ArgumentParser(description="AI Company 自己進化システム")
+    parser = argparse.ArgumentParser(description="Elders Guild 自己進化システム")
     
     parser.add_argument('--status', action='store_true', 
                        help='システム状況を表示')

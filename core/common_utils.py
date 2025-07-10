@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Common Utilities - AI Company 共通ユーティリティ
+Common Utilities - Elders Guild 共通ユーティリティ
 
 プロジェクト全体で使用される共通関数群。
 """
@@ -433,5 +433,5 @@ if __name__ == "__main__":
     print(f"\n生成されたタスクID: {task_id}")
     
     # ハッシュ生成テスト
-    content_hash = generate_hash("Hello, AI Company!")
+    content_hash = generate_hash("Hello, Elders Guild!")
     print(f"ハッシュ値: {content_hash}")

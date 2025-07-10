@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AI Company ログマネージャー
+Elders Guild ログマネージャー
 ログ出力を統一管理するヘルパーモジュール
 """
 
