@@ -25,7 +25,6 @@ from typing import Dict
 from typing import List
 from typing import Optional
 
-
 # Elder Tree & Four Sages統合
 from .elder_tree_hierarchy import ElderMessage
 from .elder_tree_hierarchy import ElderRank

@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { 
-  ArrowLeftIcon, 
-  FolderIcon, 
+import {
+  ArrowLeftIcon,
+  FolderIcon,
   MagnifyingGlassIcon,
   ExclamationTriangleIcon,
   CheckCircleIcon,
@@ -44,7 +44,7 @@ export default function ScanPage() {
             estimatedSize: '15.2 MB'
           },
           {
-            name: 'Example Project 2', 
+            name: 'Example Project 2',
             path: scanPath + '/project2',
             type: 'React Library',
             hasPackageJson: true,
@@ -99,7 +99,7 @@ export default function ScanPage() {
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
             ホームに戻る
           </Link>
-          
+
           <h1 className="text-3xl font-bold text-gray-900 flex items-center">
             <MagnifyingGlassIcon className="h-8 w-8 mr-3 text-elder-600" />
             新規プロジェクトスキャン
@@ -112,7 +112,7 @@ export default function ScanPage() {
         {/* スキャンフォーム */}
         <div className="card mb-8">
           <h2 className="text-xl font-semibold mb-4">スキャン設定</h2>
-          
+
           <div className="space-y-4">
             <div>
               <label htmlFor="scanPath" className="block text-sm font-medium text-gray-700 mb-2">
@@ -163,7 +163,7 @@ export default function ScanPage() {
         {scanResults && (
           <div className="card">
             <h2 className="text-xl font-semibold mb-4">スキャン結果</h2>
-            
+
             {/* サマリー */}
             <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
               <div className="flex items-center mb-2">
@@ -193,7 +193,7 @@ export default function ScanPage() {
             {/* 発見されたプロジェクト */}
             <div className="space-y-4">
               <h3 className="text-lg font-medium">発見されたプロジェクト</h3>
-              
+
               {scanResults.foundProjects.map((project: any, index: number) => (
                 <div key={index} className="border border-gray-200 rounded-lg p-4">
                   <div className="flex items-start justify-between">
@@ -205,9 +205,9 @@ export default function ScanPage() {
                           {project.type}
                         </span>
                       </div>
-                      
+
                       <p className="text-sm text-gray-600 mb-2">{project.path}</p>
-                      
+
                       <div className="flex items-center space-x-4 text-sm">
                         <div className="flex items-center">
                           {project.hasPackageJson ? (
@@ -217,7 +217,7 @@ export default function ScanPage() {
                           )}
                           <span>package.json</span>
                         </div>
-                        
+
                         <div className="flex items-center">
                           {project.hasReadme ? (
                             <CheckCircleIcon className="h-4 w-4 text-green-500 mr-1" />
@@ -226,11 +226,11 @@ export default function ScanPage() {
                           )}
                           <span>README</span>
                         </div>
-                        
+
                         <span className="text-gray-500">サイズ: {project.estimatedSize}</span>
                       </div>
                     </div>
-                    
+
                     <button
                       onClick={() => handleAddProject(project)}
                       className="btn-primary ml-4"

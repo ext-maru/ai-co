@@ -17,9 +17,9 @@ Base = declarative_base()
 class UploadStatus(str, enum.Enum):
     """アップロードステータス（3段階シンプル版）"""
 
-    NOT_UPLOADED = "not_uploaded"      # アップしてない
+    NOT_UPLOADED = "not_uploaded"  # アップしてない
     NEEDS_REUPLOAD = "needs_reupload"  # アップしたがNG出て再度アップ必要
-    APPROVED = "approved"              # アップしてOKでた
+    APPROVED = "approved"  # アップしてOKでた
 
 
 class ContractUpload(Base):

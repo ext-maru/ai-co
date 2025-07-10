@@ -30,17 +30,17 @@ export const ContractUploadFlow: React.FC<ContractUploadFlowProps> = ({ onComple
       // 契約要件取得
       const reqs = await getContractRequirements(selectedType);
       setRequirements(reqs);
-      
+
       // 契約アップロードセッション作成
       const contractUpload = await createContractUpload({
         contract_type: selectedType,
         metadata: {}
       });
-      
+
       setContractType(selectedType);
       setContractUploadId(contractUpload.id);
       setCurrentStep(FlowStep.DOCUMENT_UPLOAD);
-      
+
     } catch (error) {
       console.error('Failed to initialize contract upload:', error);
       alert('契約タイプの設定に失敗しました。もう一度お試しください。');
@@ -59,11 +59,11 @@ export const ContractUploadFlow: React.FC<ContractUploadFlowProps> = ({ onComple
   // 契約詳細読み込み
   const loadContractDetail = async () => {
     if (!contractUploadId) return;
-    
+
     try {
       const detail = await getContractUploadDetail(contractUploadId);
       setContractDetail(detail);
-      
+
       // 完了率100%なら次のステップへ
       if (detail.completion_rate >= 100) {
         setCurrentStep(FlowStep.COMPLETION);
@@ -111,8 +111,8 @@ export const ContractUploadFlow: React.FC<ContractUploadFlowProps> = ({ onComple
         <h1>契約書類アップロード</h1>
         <div className="progress-section">
           <div className="progress-bar">
-            <div 
-              className="progress-fill" 
+            <div
+              className="progress-fill"
               style={{ width: `${getProgressPercent()}%` }}
             />
           </div>
@@ -161,7 +161,7 @@ export const ContractUploadFlow: React.FC<ContractUploadFlowProps> = ({ onComple
             <div className="completion-icon">✅</div>
             <h2>書類アップロード完了</h2>
             <p>すべての必要書類のアップロードが完了しました。</p>
-            
+
             <div className="completion-summary">
               <h3>アップロード情報</h3>
               <ul>
@@ -181,13 +181,13 @@ export const ContractUploadFlow: React.FC<ContractUploadFlowProps> = ({ onComple
             </div>
 
             <div className="action-buttons">
-              <button 
+              <button
                 className="btn-primary"
                 onClick={() => window.location.href = '/dashboard'}
               >
                 ダッシュボードに戻る
               </button>
-              <button 
+              <button
                 className="btn-secondary"
                 onClick={() => {
                   setCurrentStep(FlowStep.TYPE_SELECTION);

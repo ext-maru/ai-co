@@ -214,8 +214,8 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
         <div className="progress-summary">
           <span>進捗: {contractDetail?.completion_rate || 0}%</span>
           <div className="progress-bar-mini">
-            <div 
-              className="progress-fill-mini" 
+            <div
+              className="progress-fill-mini"
               style={{ width: `${contractDetail?.completion_rate || 0}%` }}
             />
           </div>
@@ -235,8 +235,8 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
                 const canReupload = status?.status === 'REJECTED' || status?.status === 'EXPIRED';
 
                 return (
-                  <div 
-                    key={reqIndex} 
+                  <div
+                    key={reqIndex}
                     className={`document-item ${isDragOver ? 'drag-over' : ''} ${status?.uploaded ? 'uploaded' : ''}`}
                   >
                     <div className="document-info">
@@ -255,7 +255,7 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
                     </div>
 
                     {(!status?.uploaded || canReupload) && !progress?.uploading && (
-                      <div 
+                      <div
                         className="upload-zone"
                         onDragOver={(e) => handleDragOver(e, documentType)}
                         onDragLeave={handleDragLeave}
@@ -264,7 +264,7 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
                         <div className="upload-content">
                           <span className="upload-icon">📤</span>
                           <p>ファイルをドラッグ&ドロップ<br />または</p>
-                          <button 
+                          <button
                             className="btn-upload"
                             onClick={() => fileInputRefs.current[documentType]?.click()}
                           >
@@ -284,8 +284,8 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
                     {progress?.uploading && (
                       <div className="upload-progress">
                         <div className="progress-bar">
-                          <div 
-                            className="progress-fill" 
+                          <div
+                            className="progress-fill"
                             style={{ width: `${progress.progress}%` }}
                           />
                         </div>

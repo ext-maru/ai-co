@@ -130,15 +130,15 @@
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .contract-type-selector {
     padding: 1rem;
   }
-  
+
   .type-card {
     padding: 1.5rem;
   }
-  
+
   .contract-type-selector h2 {
     font-size: 1.5rem;
   }

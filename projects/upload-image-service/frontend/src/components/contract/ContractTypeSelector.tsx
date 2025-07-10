@@ -11,7 +11,7 @@ export const ContractTypeSelector: React.FC<ContractTypeSelectorProps> = ({ onSe
     <div className="contract-type-selector">
       <h2>契約タイプを選択してください</h2>
       <div className="type-cards">
-        <div 
+        <div
           className="type-card individual"
           onClick={() => onSelect(ContractType.INDIVIDUAL)}
         >
@@ -28,7 +28,7 @@ export const ContractTypeSelector: React.FC<ContractTypeSelectorProps> = ({ onSe
           <button className="select-button">個人契約で進む</button>
         </div>
 
-        <div 
+        <div
           className="type-card corporate"
           onClick={() => onSelect(ContractType.CORPORATE)}
         >

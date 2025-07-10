@@ -23,7 +23,6 @@ from flask import render_template_string
 from master_console_advanced import AdvancedMasterConsoleController
 from sages_api import sages_api
 
-
 # ロギング設定
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -12,7 +12,6 @@ from typing import Any
 from typing import Dict
 from typing import List
 
-
 # プロジェクトルートをパスに追加
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
