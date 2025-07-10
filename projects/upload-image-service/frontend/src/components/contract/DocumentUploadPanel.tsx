@@ -106,8 +106,12 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
         contractUploadId,
         documentType,
         fileData,
-        file.name,
-        file.type
+        (percent) => {
+          setUploadProgress(prev => ({
+            ...prev,
+            [documentType]: { ...prev[documentType], progress: percent }
+          }));
+        }
       );
 
       clearInterval(progressInterval);

@@ -1,1 +1,252 @@
-import React, { useState, useEffect } from 'react';\nimport './SimpleContractReview.css';\n\n// シンプルなステータス定義\nexport enum SimpleStatus {\n  NOT_UPLOADED = 'not_uploaded',     // アップしてない\n  NEEDS_REUPLOAD = 'needs_reupload', // NG出て再アップ必要\n  APPROVED = 'approved'              // OKでた\n}\n\ninterface ContractItem {\n  id: string;\n  user_name: string;\n  contract_type: 'individual' | 'corporate';\n  status: SimpleStatus;\n  created_at: string;\n  google_drive_folder_url?: string;\n  document_count: number;\n  required_document_count: number;\n}\n\ninterface SimpleContractReviewProps {\n  // 必要に応じてpropsを追加\n}\n\nexport const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {\n  const [contracts, setContracts] = useState<ContractItem[]>([]);\n  const [filterStatus, setFilterStatus] = useState<SimpleStatus | 'all'>('all');\n  const [loading, setLoading] = useState(false);\n\n  // サンプルデータ（実際はAPIから取得）\n  useEffect(() => {\n    const sampleData: ContractItem[] = [\n      {\n        id: '1',\n        user_name: '田中太郎',\n        contract_type: 'individual',\n        status: SimpleStatus.NOT_UPLOADED,\n        created_at: '2025-01-10T10:00:00Z',\n        google_drive_folder_url: 'https://drive.google.com/drive/folders/xxx',\n        document_count: 2,\n        required_document_count: 5\n      },\n      {\n        id: '2',\n        user_name: '株式会社ABC',\n        contract_type: 'corporate',\n        status: SimpleStatus.NEEDS_REUPLOAD,\n        created_at: '2025-01-09T15:30:00Z',\n        google_drive_folder_url: 'https://drive.google.com/drive/folders/yyy',\n        document_count: 8,\n        required_document_count: 8\n      },\n      {\n        id: '3',\n        user_name: '佐藤花子',\n        contract_type: 'individual',\n        status: SimpleStatus.APPROVED,\n        created_at: '2025-01-08T09:15:00Z',\n        google_drive_folder_url: 'https://drive.google.com/drive/folders/zzz',\n        document_count: 5,\n        required_document_count: 5\n      }\n    ];\n    setContracts(sampleData);\n  }, []);\n\n  const getStatusLabel = (status: SimpleStatus): string => {\n    switch (status) {\n      case SimpleStatus.NOT_UPLOADED:\n        return 'アップしてない';\n      case SimpleStatus.NEEDS_REUPLOAD:\n        return 'NG・再アップ必要';\n      case SimpleStatus.APPROVED:\n        return 'OK完了';\n      default:\n        return '不明';\n    }\n  };\n\n  const getStatusColor = (status: SimpleStatus): string => {\n    switch (status) {\n      case SimpleStatus.NOT_UPLOADED:\n        return 'status-not-uploaded';\n      case SimpleStatus.NEEDS_REUPLOAD:\n        return 'status-needs-reupload';\n      case SimpleStatus.APPROVED:\n        return 'status-approved';\n      default:\n        return '';\n    }\n  };\n\n  const getContractTypeLabel = (type: string): string => {\n    return type === 'individual' ? '個人' : '法人';\n  };\n\n  const handleStatusChange = async (contractId: string, newStatus: SimpleStatus) => {\n    setLoading(true);\n    try {\n      // TODO: APIコール実装\n      // await updateContractStatus(contractId, newStatus);\n      \n      setContracts(prev => \n        prev.map(contract => \n          contract.id === contractId \n            ? { ...contract, status: newStatus }\n            : contract\n        )\n      );\n      \n      console.log(`Contract ${contractId} status updated to ${newStatus}`);\n    } catch (error) {\n      console.error('ステータス更新エラー:', error);\n    } finally {\n      setLoading(false);\n    }\n  };\n\n  const openGoogleDrive = (url?: string) => {\n    if (url) {\n      window.open(url, '_blank', 'noopener,noreferrer');\n    }\n  };\n\n  const filteredContracts = contracts.filter(contract => {\n    if (filterStatus === 'all') return true;\n    return contract.status === filterStatus;\n  });\n\n  // 作業中案件（アップしてない、またはNG）のカウント\n  const pendingCount = contracts.filter(c => \n    c.status === SimpleStatus.NOT_UPLOADED || c.status === SimpleStatus.NEEDS_REUPLOAD\n  ).length;\n\n  return (\n    <div className=\"simple-contract-review\">\n      <div className=\"review-header\">\n        <h1>📋 契約書類チェック</h1>\n        <div className=\"quick-stats\">\n          <div className=\"stat-item pending\">\n            <span className=\"count\">{pendingCount}</span>\n            <span className=\"label\">作業中</span>\n          </div>\n          <div className=\"stat-item total\">\n            <span className=\"count\">{contracts.length}</span>\n            <span className=\"label\">総件数</span>\n          </div>\n        </div>\n      </div>\n\n      <div className=\"review-controls\">\n        <div className=\"filter-section\">\n          <label>絞り込み:</label>\n          <select \n            value={filterStatus} \n            onChange={(e) => setFilterStatus(e.target.value as SimpleStatus | 'all')}\n            className=\"status-filter\"\n          >\n            <option value=\"all\">すべて</option>\n            <option value={SimpleStatus.NOT_UPLOADED}>アップしてない</option>\n            <option value={SimpleStatus.NEEDS_REUPLOAD}>NG・再アップ必要</option>\n            <option value={SimpleStatus.APPROVED}>OK完了</option>\n          </select>\n        </div>\n        \n        <button \n          className=\"btn-quick-search\"\n          onClick={() => setFilterStatus(SimpleStatus.NOT_UPLOADED)}\n        >\n          🔍 作業中案件のみ表示\n        </button>\n      </div>\n\n      <div className=\"contracts-grid\">\n        {filteredContracts.map(contract => (\n          <div key={contract.id} className=\"contract-card\">\n            <div className=\"card-header\">\n              <div className=\"user-info\">\n                <h3>{contract.user_name}</h3>\n                <span className=\"contract-type\">\n                  {getContractTypeLabel(contract.contract_type)}\n                </span>\n              </div>\n              <div className={`status-badge ${getStatusColor(contract.status)}`}>\n                {getStatusLabel(contract.status)}\n              </div>\n            </div>\n\n            <div className=\"card-body\">\n              <div className=\"progress-info\">\n                <span>書類: {contract.document_count}/{contract.required_document_count}</span>\n                <div className=\"progress-bar\">\n                  <div \n                    className=\"progress-fill\"\n                    style={{ \n                      width: `${(contract.document_count / contract.required_document_count) * 100}%` \n                    }}\n                  />\n                </div>\n              </div>\n\n              <div className=\"created-date\">\n                作成: {new Date(contract.created_at).toLocaleDateString('ja-JP')}\n              </div>\n\n              {contract.google_drive_folder_url && (\n                <button \n                  className=\"btn-drive\"\n                  onClick={() => openGoogleDrive(contract.google_drive_folder_url)}\n                >\n                  📁 Google Driveで確認\n                </button>\n              )}\n            </div>\n\n            <div className=\"card-actions\">\n              <div className=\"status-buttons\">\n                <button \n                  className={`btn-status ok ${\n                    contract.status === SimpleStatus.APPROVED ? 'active' : ''\n                  }`}\n                  onClick={() => handleStatusChange(contract.id, SimpleStatus.APPROVED)}\n                  disabled={loading}\n                >\n                  ✅ OK\n                </button>\n                <button \n                  className={`btn-status ng ${\n                    contract.status === SimpleStatus.NEEDS_REUPLOAD ? 'active' : ''\n                  }`}\n                  onClick={() => handleStatusChange(contract.id, SimpleStatus.NEEDS_REUPLOAD)}\n                  disabled={loading}\n                >\n                  ❌ NG\n                </button>\n              </div>\n            </div>\n          </div>\n        ))}\n      </div>\n\n      {filteredContracts.length === 0 && (\n        <div className=\"empty-state\">\n          <p>条件に合う案件がありません</p>\n        </div>\n      )}\n    </div>\n  );\n};\n\nexport default SimpleContractReview;"
+import React, { useState, useEffect } from 'react';
+import './SimpleContractReview.css';
+
+// シンプルなステータス定義
+export enum SimpleStatus {
+  NOT_UPLOADED = 'not_uploaded',     // アップしてない
+  NEEDS_REUPLOAD = 'needs_reupload', // NG出て再アップ必要
+  APPROVED = 'approved'              // OKでた
+}
+
+interface ContractItem {
+  id: string;
+  user_name: string;
+  contract_type: 'individual' | 'corporate';
+  status: SimpleStatus;
+  created_at: string;
+  google_drive_folder_url?: string;
+  document_count: number;
+  required_document_count: number;
+}
+
+interface SimpleContractReviewProps {
+  // 必要に応じてpropsを追加
+}
+
+export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
+  const [contracts, setContracts] = useState<ContractItem[]>([]);
+  const [filterStatus, setFilterStatus] = useState<SimpleStatus | 'all'>('all');
+  const [loading, setLoading] = useState(false);
+
+  // サンプルデータ（実際はAPIから取得）
+  useEffect(() => {
+    const sampleData: ContractItem[] = [
+      {
+        id: '1',
+        user_name: '田中太郎',
+        contract_type: 'individual',
+        status: SimpleStatus.NOT_UPLOADED,
+        created_at: '2025-01-10T10:00:00Z',
+        google_drive_folder_url: 'https://drive.google.com/drive/folders/xxx',
+        document_count: 2,
+        required_document_count: 5
+      },
+      {
+        id: '2',
+        user_name: '株式会社ABC',
+        contract_type: 'corporate',
+        status: SimpleStatus.NEEDS_REUPLOAD,
+        created_at: '2025-01-09T15:30:00Z',
+        google_drive_folder_url: 'https://drive.google.com/drive/folders/yyy',
+        document_count: 8,
+        required_document_count: 8
+      },
+      {
+        id: '3',
+        user_name: '佐藤花子',
+        contract_type: 'individual',
+        status: SimpleStatus.APPROVED,
+        created_at: '2025-01-08T09:15:00Z',
+        google_drive_folder_url: 'https://drive.google.com/drive/folders/zzz',
+        document_count: 5,
+        required_document_count: 5
+      }
+    ];
+    setContracts(sampleData);
+  }, []);
+
+  const getStatusLabel = (status: SimpleStatus): string => {
+    switch (status) {
+      case SimpleStatus.NOT_UPLOADED:
+        return 'アップしてない';
+      case SimpleStatus.NEEDS_REUPLOAD:
+        return 'NG・再アップ必要';
+      case SimpleStatus.APPROVED:
+        return 'OK完了';
+      default:
+        return '不明';
+    }
+  };
+
+  const getStatusColor = (status: SimpleStatus): string => {
+    switch (status) {
+      case SimpleStatus.NOT_UPLOADED:
+        return 'status-not-uploaded';
+      case SimpleStatus.NEEDS_REUPLOAD:
+        return 'status-needs-reupload';
+      case SimpleStatus.APPROVED:
+        return 'status-approved';
+      default:
+        return '';
+    }
+  };
+
+  const getContractTypeLabel = (type: string): string => {
+    return type === 'individual' ? '個人' : '法人';
+  };
+
+  const handleStatusChange = async (contractId: string, newStatus: SimpleStatus) => {
+    setLoading(true);
+    try {
+      // TODO: APIコール実装
+      // await updateContractStatus(contractId, newStatus);
+      
+      setContracts(prev => 
+        prev.map(contract => 
+          contract.id === contractId 
+            ? { ...contract, status: newStatus }
+            : contract
+        )
+      );
+      
+      console.log(`Contract ${contractId} status updated to ${newStatus}`);
+    } catch (error) {
+      console.error('ステータス更新エラー:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openGoogleDrive = (url?: string) => {
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const filteredContracts = contracts.filter(contract => {
+    if (filterStatus === 'all') return true;
+    return contract.status === filterStatus;
+  });
+
+  // 作業中案件（アップしてない、またはNG）のカウント
+  const pendingCount = contracts.filter(c => 
+    c.status === SimpleStatus.NOT_UPLOADED || c.status === SimpleStatus.NEEDS_REUPLOAD
+  ).length;
+
+  return (
+    <div className="simple-contract-review">
+      <div className="review-header">
+        <h1>📋 契約書類チェック</h1>
+        <div className="quick-stats">
+          <div className="stat-item pending">
+            <span className="count">{pendingCount}</span>
+            <span className="label">作業中</span>
+          </div>
+          <div className="stat-item total">
+            <span className="count">{contracts.length}</span>
+            <span className="label">総件数</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="review-controls">
+        <div className="filter-section">
+          <label>絞り込み:</label>
+          <select 
+            value={filterStatus} 
+            onChange={(e) => setFilterStatus(e.target.value as SimpleStatus | 'all')}
+            className="status-filter"
+          >
+            <option value="all">すべて</option>
+            <option value={SimpleStatus.NOT_UPLOADED}>アップしてない</option>
+            <option value={SimpleStatus.NEEDS_REUPLOAD}>NG・再アップ必要</option>
+            <option value={SimpleStatus.APPROVED}>OK完了</option>
+          </select>
+        </div>
+        
+        <button 
+          className="btn-quick-search"
+          onClick={() => setFilterStatus(SimpleStatus.NOT_UPLOADED)}
+        >
+          🔍 作業中案件のみ表示
+        </button>
+      </div>
+
+      <div className="contracts-grid">
+        {filteredContracts.map(contract => (
+          <div key={contract.id} className="contract-card">
+            <div className="card-header">
+              <div className="user-info">
+                <h3>{contract.user_name}</h3>
+                <span className="contract-type">
+                  {getContractTypeLabel(contract.contract_type)}
+                </span>
+              </div>
+              <div className={`status-badge ${getStatusColor(contract.status)}`}>
+                {getStatusLabel(contract.status)}
+              </div>
+            </div>
+
+            <div className="card-body">
+              <div className="progress-info">
+                <span>書類: {contract.document_count}/{contract.required_document_count}</span>
+                <div className="progress-bar">
+                  <div 
+                    className="progress-fill"
+                    style={{ 
+                      width: `${(contract.document_count / contract.required_document_count) * 100}%` 
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="created-date">
+                作成: {new Date(contract.created_at).toLocaleDateString('ja-JP')}
+              </div>
+
+              {contract.google_drive_folder_url && (
+                <button 
+                  className="btn-drive"
+                  onClick={() => openGoogleDrive(contract.google_drive_folder_url)}
+                >
+                  📁 Google Driveで確認
+                </button>
+              )}
+            </div>
+
+            <div className="card-actions">
+              <div className="status-buttons">
+                <button 
+                  className={`btn-status ok ${
+                    contract.status === SimpleStatus.APPROVED ? 'active' : ''
+                  }`}
+                  onClick={() => handleStatusChange(contract.id, SimpleStatus.APPROVED)}
+                  disabled={loading}
+                >
+                  ✅ OK
+                </button>
+                <button 
+                  className={`btn-status ng ${
+                    contract.status === SimpleStatus.NEEDS_REUPLOAD ? 'active' : ''
+                  }`}
+                  onClick={() => handleStatusChange(contract.id, SimpleStatus.NEEDS_REUPLOAD)}
+                  disabled={loading}
+                >
+                  ❌ NG
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {filteredContracts.length === 0 && (
+        <div className="empty-state">
+          <p>条件に合う案件がありません</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default SimpleContractReview;

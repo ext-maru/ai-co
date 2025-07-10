@@ -1,1 +1,69 @@
-.simple-contract-review {\n  max-width: 1200px;\n  margin: 0 auto;\n  padding: 20px;\n  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;\n}\n\n.review-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 30px;\n  padding-bottom: 20px;\n  border-bottom: 2px solid #e9ecef;\n}\n\n.review-header h1 {\n  color: #2c3e50;\n  font-size: 2rem;\n  font-weight: 700;\n  margin: 0;\n}\n\n.quick-stats {\n  display: flex;\n  gap: 20px;\n}\n\n.stat-item {\n  display: flex;\n  flex-direction: column;\n  align-items: center;\n  padding: 15px 20px;\n  border-radius: 12px;\n  min-width: 80px;\n}\n\n.stat-item.pending {\n  background: linear-gradient(135deg, #ff6b6b, #ff8e8e);\n  color: white;\n}\n\n.stat-item.total {\n  background: linear-gradient(135deg, #4dabf7, #74c0fc);\n  color: white;\n}\n\n.stat-item .count {\n  font-size: 2rem;\n  font-weight: 700;\n  line-height: 1;\n}\n\n.stat-item .label {\n  font-size: 0.9rem;\n  margin-top: 5px;\n  opacity: 0.9;\n}\n\n.review-controls {\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-bottom: 30px;\n  padding: 20px;\n  background: #f8f9fa;\n  border-radius: 12px;\n}\n\n.filter-section {\n  display: flex;\n  align-items: center;\n  gap: 10px;\n}\n\n.filter-section label {\n  font-weight: 600;\n  color: #495057;\n}\n\n.status-filter {\n  padding: 8px 12px;\n  border: 1px solid #dee2e6;\n  border-radius: 6px;\n  background: white;\n  font-size: 1rem;\n}\n\n.btn-quick-search {\n  padding: 10px 20px;\n  background: linear-gradient(135deg, #28a745, #20c997);\n  color: white;\n  border: none;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.3s ease;\n}\n\n.btn-quick-search:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);\n}\n\n.contracts-grid {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));\n  gap: 20px;\n}\n\n.contract-card {\n  background: white;\n  border-radius: 16px;\n  padding: 20px;\n  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);\n  transition: all 0.3s ease;\n  border: 1px solid #e9ecef;\n}\n\n.contract-card:hover {\n  transform: translateY(-4px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);\n}\n\n.card-header {\n  display: flex;\n  justify-content: space-between;\n  align-items: flex-start;\n  margin-bottom: 15px;\n}\n\n.user-info h3 {\n  margin: 0 0 5px 0;\n  color: #2c3e50;\n  font-size: 1.2rem;\n  font-weight: 600;\n}\n\n.contract-type {\n  display: inline-block;\n  padding: 4px 8px;\n  background: #e9ecef;\n  color: #495057;\n  border-radius: 4px;\n  font-size: 0.8rem;\n  font-weight: 500;\n}\n\n.status-badge {\n  padding: 6px 12px;\n  border-radius: 20px;\n  font-size: 0.85rem;\n  font-weight: 600;\n  text-align: center;\n  min-width: 120px;\n}\n\n.status-not-uploaded {\n  background: #fff3cd;\n  color: #856404;\n  border: 1px solid #ffeaa7;\n}\n\n.status-needs-reupload {\n  background: #f8d7da;\n  color: #721c24;\n  border: 1px solid #f5c6cb;\n}\n\n.status-approved {\n  background: #d4edda;\n  color: #155724;\n  border: 1px solid #c3e6cb;\n}\n\n.card-body {\n  margin-bottom: 20px;\n}\n\n.progress-info {\n  margin-bottom: 10px;\n}\n\n.progress-info span {\n  font-size: 0.9rem;\n  color: #6c757d;\n  font-weight: 500;\n}\n\n.progress-bar {\n  width: 100%;\n  height: 8px;\n  background: #e9ecef;\n  border-radius: 4px;\n  overflow: hidden;\n  margin-top: 5px;\n}\n\n.progress-fill {\n  height: 100%;\n  background: linear-gradient(90deg, #28a745, #20c997);\n  transition: width 0.3s ease;\n}\n\n.created-date {\n  font-size: 0.85rem;\n  color: #6c757d;\n  margin-bottom: 15px;\n}\n\n.btn-drive {\n  width: 100%;\n  padding: 10px;\n  background: linear-gradient(135deg, #4285f4, #34a853);\n  color: white;\n  border: none;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  margin-bottom: 10px;\n}\n\n.btn-drive:hover {\n  transform: translateY(-1px);\n  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);\n}\n\n.card-actions {\n  border-top: 1px solid #e9ecef;\n  padding-top: 15px;\n}\n\n.status-buttons {\n  display: flex;\n  gap: 10px;\n}\n\n.btn-status {\n  flex: 1;\n  padding: 12px;\n  border: 2px solid;\n  border-radius: 8px;\n  font-weight: 600;\n  cursor: pointer;\n  transition: all 0.3s ease;\n  background: white;\n}\n\n.btn-status.ok {\n  border-color: #28a745;\n  color: #28a745;\n}\n\n.btn-status.ok:hover,\n.btn-status.ok.active {\n  background: #28a745;\n  color: white;\n  transform: translateY(-2px);\n  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);\n}\n\n.btn-status.ng {\n  border-color: #dc3545;\n  color: #dc3545;\n}\n\n.btn-status.ng:hover,\n.btn-status.ng.active {\n  background: #dc3545;\n  color: white;\n  transform: translateY(-2px);\n  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);\n}\n\n.btn-status:disabled {\n  opacity: 0.6;\n  cursor: not-allowed;\n  transform: none;\n}\n\n.empty-state {\n  text-align: center;\n  padding: 60px 20px;\n  color: #6c757d;\n}\n\n.empty-state p {\n  font-size: 1.1rem;\n  margin: 0;\n}\n\n/* レスポンシブデザイン */\n@media (max-width: 768px) {\n  .simple-contract-review {\n    padding: 15px;\n  }\n\n  .review-header {\n    flex-direction: column;\n    gap: 20px;\n    align-items: flex-start;\n  }\n\n  .review-header h1 {\n    font-size: 1.6rem;\n  }\n\n  .quick-stats {\n    align-self: stretch;\n    justify-content: space-around;\n  }\n\n  .review-controls {\n    flex-direction: column;\n    gap: 15px;\n    align-items: stretch;\n  }\n\n  .contracts-grid {\n    grid-template-columns: 1fr;\n  }\n\n  .card-header {\n    flex-direction: column;\n    gap: 10px;\n    align-items: flex-start;\n  }\n\n  .status-badge {\n    align-self: flex-start;\n  }\n}\n\n@media (max-width: 480px) {\n  .status-buttons {\n    flex-direction: column;\n  }\n\n  .btn-status {\n    text-align: center;\n  }\n\n  .quick-stats {\n    flex-direction: column;\n    gap: 10px;\n  }\n\n  .stat-item {\n    flex-direction: row;\n    justify-content: space-between;\n    padding: 10px 15px;\n  }\n\n  .stat-item .count {\n    font-size: 1.5rem;\n  }\n\n  .stat-item .label {\n    margin-top: 0;\n  }\n}\n\n/* アニメーション */\n@keyframes slideInUp {\n  from {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n.contract-card {\n  animation: slideInUp 0.3s ease-out;\n}\n\n.contract-card:nth-child(even) {\n  animation-delay: 0.1s;\n}\n\n.contract-card:nth-child(odd) {\n  animation-delay: 0.05s;\n}\n\n/* フォーカス状態 */\n.btn-status:focus,\n.btn-drive:focus,\n.btn-quick-search:focus,\n.status-filter:focus {\n  outline: 2px solid #4dabf7;\n  outline-offset: 2px;\n}\n\n/* ローディング状態 */\n.btn-status:disabled {\n  position: relative;\n}\n\n.btn-status:disabled::after {\n  content: '';\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 16px;\n  height: 16px;\n  margin: -8px 0 0 -8px;\n  border: 2px solid transparent;\n  border-top-color: currentColor;\n  border-radius: 50%;\n  animation: spin 1s linear infinite;\n}\n\n@keyframes spin {\n  to {\n    transform: rotate(360deg);\n  }\n}"
+.simple-contract-review {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.quick-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 8px;
+}
+
+.stat-item.pending {
+  background: #fed7d7;
+  color: #c53030;
+}
+
+.stat-item.total {
+  background: #e6fffa;
+  color: #0d9488;
+}
+
+.contracts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.contract-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.status-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-status {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-status.ok {
+  background: #38a169;
+  color: white;
+}
+
+.btn-status.ng {
+  background: #e53e3e;
+  color: white;
+}
