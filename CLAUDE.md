@@ -129,6 +129,23 @@ sg docker -c "docker compose up -d"
 
 **詳細**: [エルダー評議会Docker権限令](knowledge_base/ELDER_COUNCIL_DOCKER_PERMISSIONS_DECREE.md)
 
+### 🛡️ **4賢者Docker遵守体制** (2025/7/10確立)
+**エルダー評議会緊急令第25号 - Docker運用規則遵守体制確立**
+
+#### **各賢者の絶対遵守義務**
+- **📚 ナレッジ賢者**: Docker知識管理・週次更新・ベストプラクティス監視
+- **📋 タスク賢者**: Docker権限問題最優先・依存関係管理・日次進捗報告  
+- **🚨 インシデント賢者**: 5分以内検知・根本原因分析・予防策実装
+- **🔍 RAG賢者**: 月次技術調査・最適化提案・技術負債早期発見
+
+#### **違反対応**
+- **軽微**: 自動警告 + 即座修正
+- **重大**: エルダー評議会緊急招集
+- **反復**: グランドエルダーmaru直接裁定
+
+**詳細**: [Docker遵守体制令](knowledge_base/ELDER_COUNCIL_DOCKER_COMPLIANCE_DECREE.md)  
+**誓約書**: [4賢者遵守誓約](knowledge_base/ELDERS_DOCKER_COMPLIANCE_OATH.md)
+
 ### TDDサイクル
 1. 🔴 **Red**: 失敗するテストを先に書く
 2. 🟢 **Green**: 最小限の実装でテストを通す
