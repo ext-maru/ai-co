@@ -1,0 +1,60 @@
+# 画像アップロード管理システム - Test Environment Dockerfile
+# テスト実行専用環境
+
+FROM python:3.11-slim
+
+# 作業ディレクトリ設定
+WORKDIR /app
+
+# システムパッケージのインストール（テスト用）
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libjpeg-dev \
+    zlib1g-dev \
+    libfreetype6-dev \
+    liblcms2-dev \
+    libopenjp2-7-dev \
+    libtiff5-dev \
+    tk-dev \
+    tcl-dev \
+    libharfbuzz-dev \
+    libfribidi-dev \
+    libxcb1-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# テスト用Pythonの依存関係をコピー
+COPY requirements.txt .
+COPY test-requirements.txt .
+
+# Pythonパッケージのインストール（テスト用）
+RUN pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir -r test-requirements.txt
+
+# アプリケーションコードをコピー
+COPY app/ ./app/
+COPY tests/ ./tests/
+COPY pytest.ini .
+COPY conftest.py .
+
+# テスト用ディレクトリ作成
+RUN mkdir -p /app/test_uploads /app/test_config /app/test_data
+
+# 非rootユーザー作成（テスト用）
+RUN useradd -m -u 1000 testuser && \
+    chown -R testuser:testuser /app
+USER testuser
+
+# 環境変数（テスト用）
+ENV FLASK_ENV=testing
+ENV PYTHONPATH=/app
+ENV TESTING=true
+
+# テスト実行用のエントリーポイント
+COPY docker-test-entrypoint.sh /app/docker-test-entrypoint.sh
+USER root
+RUN chmod +x /app/docker-test-entrypoint.sh
+USER testuser
+
+# デフォルトコマンド
+CMD ["/app/docker-test-entrypoint.sh"]

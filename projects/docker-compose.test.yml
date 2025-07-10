@@ -1,0 +1,65 @@
+# Elders Guild Projects - Test Environment
+# プロジェクトテスト実行専用環境
+
+version: '3.8'
+
+services:
+  # Image Upload Manager テスト環境
+  image-upload-manager-test:
+    build:
+      context: ./image-upload-manager
+      dockerfile: Dockerfile.test
+    container_name: elders-guild-image-upload-manager-test
+    environment:
+      - FLASK_ENV=testing
+      - PYTHONPATH=/app
+      - TESTING=true
+      - DATABASE_URL=sqlite:///test_data/test.db
+    volumes:
+      # テスト結果とカバレッジを永続化
+      - ./image-upload-manager/test_results:/app/test_coverage
+      - ./image-upload-manager/test_data:/app/test_data
+    working_dir: /app
+    networks:
+      - test-network
+    profiles:
+      - test
+
+  # テスト用データベース（必要に応じて）
+  test-db:
+    image: postgres:15-alpine
+    container_name: elders-guild-test-db
+    environment:
+      - POSTGRES_DB=test_image_upload
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+    ports:
+      - "5434:5432"
+    volumes:
+      - test_db_data:/var/lib/postgresql/data
+    networks:
+      - test-network
+    profiles:
+      - test-db
+
+  # テスト結果ビューア
+  test-viewer:
+    image: nginx:alpine
+    container_name: elders-guild-test-viewer
+    ports:
+      - "9003:80"
+    volumes:
+      - ./image-upload-manager/test_results:/usr/share/nginx/html:ro
+      - ./test-viewer/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - test-network
+    profiles:
+      - viewer
+
+volumes:
+  test_db_data:
+    driver: local
+
+networks:
+  test-network:
+    driver: bridge

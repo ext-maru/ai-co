@@ -1,0 +1,46 @@
+# Elders Guild Projects Portfolio - Prometheus Configuration
+# プロジェクト監視設定
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+scrape_configs:
+  # Prometheus自体の監視
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Projects Gateway監視
+  - job_name: 'projects-gateway'
+    static_configs:
+      - targets: ['projects-gateway:80']
+    scrape_interval: 30s
+    metrics_path: '/health'
+    scheme: 'http'
+
+  # Image Upload Manager監視
+  - job_name: 'image-upload-manager'
+    static_configs:
+      - targets: ['image-upload-manager:5000']
+    scrape_interval: 30s
+    metrics_path: '/health'
+    scheme: 'http'
+
+  # Projects Database監視
+  - job_name: 'projects-database'
+    static_configs:
+      - targets: ['projects-db:5432']
+    scrape_interval: 60s
+
+  # Grafana Dashboard監視
+  - job_name: 'projects-dashboard'
+    static_configs:
+      - targets: ['projects-dashboard:3000']
+    scrape_interval: 60s
+    metrics_path: '/api/health'
+    scheme: 'http'

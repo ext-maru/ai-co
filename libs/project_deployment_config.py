@@ -57,11 +57,15 @@ class ProjectDeploymentManager:
     def __init__(self, config_dir: str = "deployment-configs"):
         self.config_dir = Path(config_dir)
         self.sages = FourSagesIntegration()
-        self.global_config = self._load_global_config()
         self.deployment_history = []
         
         # 設定ディレクトリ作成
-        self._ensure_config_directories()
+        try:
+            self._ensure_config_directories()
+            self.global_config = self._load_global_config()
+        except Exception as e:
+            logger.warning(f"設定ディレクトリ初期化エラー: {e}")
+            self.global_config = self._create_default_global_config()
     
     def _ensure_config_directories(self):
         """設定ディレクトリの作成"""
@@ -74,7 +78,11 @@ class ProjectDeploymentManager:
         ]
         
         for directory in directories:
-            directory.mkdir(parents=True, exist_ok=True)
+            try:
+                directory.mkdir(parents=True, exist_ok=True)
+            except Exception as e:
+                logger.error(f"ディレクトリ作成エラー {directory}: {e}")
+                raise
     
     def _load_global_config(self) -> Dict[str, Any]:
         """グローバル設定読み込み"""
@@ -170,6 +178,11 @@ class ProjectDeploymentManager:
     def get_project_config(self, project_name: str, environment: str) -> DeploymentConfig:
         """プロジェクト設定取得（設定継承付き）"""
         try:
+            # プロジェクトが存在しない場合はNoneを返す
+            if project_name not in self.list_projects():
+                logger.warning(f"プロジェクト '{project_name}' が見つかりません")
+                return None
+            
             # 設定継承: Global → Project → Environment → Override
             config = self.global_config.get('default', {}).copy()
             
@@ -288,6 +301,11 @@ class ProjectDeploymentManager:
                             project_type: str = "web-app") -> bool:
         """プロジェクト設定作成"""
         try:
+            # プロジェクトが既に存在する場合はエラー
+            if project_name in self.list_projects():
+                logger.warning(f"プロジェクト '{project_name}' は既に存在します")
+                return False
+            
             # テンプレート読み込み
             template_config = self._load_template(template)
             

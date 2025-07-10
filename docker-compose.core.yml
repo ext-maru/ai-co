@@ -1,0 +1,77 @@
+# Elders Guild - Core Infrastructure Services
+# 共通インフラストラクチャ（データベース、Redis、監視）
+
+version: '3.8'
+
+services:
+  # PostgreSQL + pgvector データベース（共通）
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: elders-guild-postgres
+    environment:
+      POSTGRES_DB: elders_guild
+      POSTGRES_USER: elder_admin
+      POSTGRES_PASSWORD: sage_wisdom_2025
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "8003:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    networks:
+      - elders-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U elder_admin -d elders_guild"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Redis（共通キャッシュ・セッション）
+  redis:
+    image: redis:7-alpine
+    container_name: elders-guild-redis
+    ports:
+      - "8004:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - elders-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # 監視・メトリクス収集
+  monitoring:
+    image: prom/prometheus:latest
+    container_name: elders-guild-monitoring
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - elders-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+
+networks:
+  elders-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+    external: false

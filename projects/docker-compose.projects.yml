@@ -1,0 +1,146 @@
+# Elders Guild - Projects Portfolio Management
+# projectsフォルダ内の全プロジェクトを管理
+
+version: '3.8'
+
+services:
+  # Projects Gateway - プロジェクトへのリバースプロキシ
+  projects-gateway:
+    image: nginx:alpine
+    container_name: elders-guild-projects-gateway
+    ports:
+      - "9000:80"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf
+      - ./gateway/projects.conf:/etc/nginx/conf.d/projects.conf
+    depends_on:
+      - image-upload-manager
+    networks:
+      - projects-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # 既存プロジェクト: Image Upload Manager
+  image-upload-manager:
+    build: 
+      context: ./image-upload-manager
+      dockerfile: Dockerfile
+    container_name: elders-guild-image-upload-manager
+    environment:
+      - FLASK_APP=app/app.py
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+      - GOOGLE_DRIVE_ENABLED=false
+      - GOOGLE_DRIVE_FOLDER_ID=""
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/config/google_credentials.json
+    volumes:
+      - ./image-upload-manager/data:/app/data
+      - ./image-upload-manager/uploads:/app/uploads
+      - ./image-upload-manager/config:/app/config
+    networks:
+      - projects-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.2'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Projects Database - 複数プロジェクト共通DB
+  projects-db:
+    image: postgres:15-alpine
+    container_name: elders-guild-projects-db
+    environment:
+      - POSTGRES_DB=projects_portfolio
+      - POSTGRES_USER=projects_admin
+      - POSTGRES_PASSWORD=projects_wisdom_2025
+    ports:
+      - "5433:5432"
+    volumes:
+      - projects_db_data:/var/lib/postgresql/data
+      - ./sql/init_projects_db.sql:/docker-entrypoint-initdb.d/init_projects_db.sql
+    networks:
+      - projects-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U projects_admin -d projects_portfolio"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Projects Dashboard - 全プロジェクト統合ダッシュボード
+  projects-dashboard:
+    image: grafana/grafana:latest
+    container_name: elders-guild-projects-dashboard
+    ports:
+      - "9001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=projects_admin_2025
+      - GF_DATABASE_TYPE=postgres
+      - GF_DATABASE_HOST=projects-db:5432
+      - GF_DATABASE_NAME=projects_portfolio
+      - GF_DATABASE_USER=projects_admin
+      - GF_DATABASE_PASSWORD=projects_wisdom_2025
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./dashboard/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - projects-db
+    networks:
+      - projects-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Projects Monitor - 全プロジェクト監視
+  projects-monitor:
+    image: prom/prometheus:latest
+    container_name: elders-guild-projects-monitor
+    ports:
+      - "9002:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    depends_on:
+      - image-upload-manager
+    networks:
+      - projects-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+volumes:
+  projects_db_data:
+    driver: local
+  grafana_data:
+    driver: local
+  prometheus_data:
+    driver: local
+
+networks:
+  projects-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16

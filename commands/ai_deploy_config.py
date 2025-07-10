@@ -32,7 +32,7 @@ class DeployConfigCommand(BaseCommand):
     """プロジェクト別デプロイメント設定管理コマンド"""
     
     def __init__(self):
-        super().__init__()
+        super().__init__(name='deploy-config', description='プロジェクト別デプロイメント設定管理')
         self.manager = ProjectDeploymentManager()
         self.sages = FourSagesIntegration()
     
