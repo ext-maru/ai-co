@@ -7,7 +7,6 @@ from typing import List
 from typing import Optional
 
 from app.core.config import settings
-from app.services.google_drive_service import create_user_contract_folder
 from app.models.contract_type import ContractType
 from app.models.contract_type import DOCUMENT_REQUIREMENTS
 from app.models.contract_type import DocumentType
@@ -20,6 +19,7 @@ from app.schemas.contract_upload import ContractUploadResponse
 from app.schemas.contract_upload import DocumentUploadStatus
 from app.schemas.contract_upload import DocumentValidationResult
 from app.schemas.contract_upload import FileUploadResponse
+from app.services.google_drive_service import create_user_contract_folder
 from sqlalchemy.orm import Session
 
 
@@ -29,32 +29,33 @@ class ContractUploadService:
     def __init__(self, db: Session):
         self.db = db
 
-    async def create_contract_upload(self, user_id: str, user_name: str, data: ContractUploadCreate) -> ContractUploadResponse:
+    async def create_contract_upload(
+        self, user_id: str, user_name: str, data: ContractUploadCreate
+    ) -> ContractUploadResponse:
         """契約書類アップロードセッション作成（Google Driveフォルダ自動作成）"""
         contract_upload_id = str(uuid.uuid4())
-        
+
         # Google Driveフォルダ自動作成
         try:
             drive_info = create_user_contract_folder(contract_upload_id, user_name)
-            
+
             # メタデータにGoogle Drive情報を追加
             metadata = data.metadata or {}
-            metadata.update({
-                'google_drive_folder_id': drive_info['folder_id'],
-                'google_drive_folder_url': drive_info['folder_url'],
-                'google_drive_documents_folder_id': drive_info['documents_folder_id']
-            })
-            
+            metadata.update(
+                {
+                    "google_drive_folder_id": drive_info["folder_id"],
+                    "google_drive_folder_url": drive_info["folder_url"],
+                    "google_drive_documents_folder_id": drive_info["documents_folder_id"],
+                }
+            )
+
         except Exception as e:
             # Google Drive連携エラーでも続行（ログに記録）
             print(f"Google Drive フォルダ作成エラー: {e}")
             metadata = data.metadata or {}
-        
+
         contract_upload = ContractUpload(
-            id=contract_upload_id,
-            user_id=user_id,
-            contract_type=data.contract_type.value,
-            metadata=metadata
+            id=contract_upload_id, user_id=user_id, contract_type=data.contract_type.value, metadata=metadata
         )
 
         self.db.add(contract_upload)
@@ -307,3 +308,41 @@ class ContractUploadService:
         uploads = query.all()
 
         return [ContractUploadResponse.from_orm(u) for u in uploads]
+
+    async def list_contract_uploads_by_statuses(
+        self, statuses: List[UploadStatus], skip: int = 0, limit: int = 100
+    ) -> List[ContractUploadResponse]:
+        """複数ステータスでの契約書類アップロード一覧取得（作業中案件用）"""
+        query = self.db.query(ContractUpload)
+        query = query.filter(ContractUpload.status.in_(statuses))
+        query = query.order_by(ContractUpload.created_at.desc())
+        query = query.offset(skip).limit(limit)
+
+        uploads = query.all()
+        return [ContractUploadResponse.from_orm(u) for u in uploads]
+
+    async def update_contract_status(
+        self, contract_upload_id: str, status: UploadStatus, admin_notes: Optional[str] = None, admin_user_id: Optional[str] = None
+    ) -> ContractUploadResponse:
+        """契約ステータス更新（管理者用）"""
+        contract_upload = (
+            self.db.query(ContractUpload)
+            .filter(ContractUpload.id == contract_upload_id)
+            .first()
+        )
+
+        if not contract_upload:
+            raise ValueError("契約書類アップロードが見つかりません")
+
+        # ステータス更新
+        contract_upload.status = status
+        contract_upload.reviewed_at = datetime.utcnow()
+        if admin_user_id:
+            contract_upload.reviewed_by = admin_user_id
+        if admin_notes:
+            contract_upload.review_notes = admin_notes
+
+        self.db.commit()
+        self.db.refresh(contract_upload)
+
+        return ContractUploadResponse.from_orm(contract_upload)

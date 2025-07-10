@@ -192,3 +192,57 @@ async def review_contract_upload(
         "contract_upload_id": contract_upload_id,
         "action": review_data.action,
     }
+
+
+@router.get("/admin/pending", response_model=ContractUploadListResponse)
+async def get_pending_contracts(
+    skip: int = 0,
+    limit: int = 100,
+    current_user=Depends(get_current_user),  # TODO: 管理者権限チェック
+    db: Session = Depends(get_db),
+):
+    """作業中案件一括取得（アップしてない + NG出て再アップ必要）"""
+    service = ContractUploadService(db)
+    
+    # 作業中ステータス: NOT_UPLOADED と NEEDS_REUPLOAD
+    pending_statuses = [UploadStatus.NOT_UPLOADED, UploadStatus.NEEDS_REUPLOAD]
+    
+    uploads = await service.list_contract_uploads_by_statuses(
+        statuses=pending_statuses,
+        skip=skip,
+        limit=limit
+    )
+    
+    total = len(uploads)  # TODO: 実際のカウントクエリ実装
+    
+    return ContractUploadListResponse(items=uploads, total=total, skip=skip, limit=limit)
+
+
+@router.patch("/admin/{contract_upload_id}/status")
+async def update_contract_status(
+    contract_upload_id: str,
+    status: UploadStatus,
+    admin_notes: Optional[str] = None,
+    current_user=Depends(get_current_user),  # TODO: 管理者権限チェック
+    db: Session = Depends(get_db),
+):
+    """契約ステータス更新（簡易版）"""
+    service = ContractUploadService(db)
+    
+    try:
+        updated_contract = await service.update_contract_status(
+            contract_upload_id=contract_upload_id,
+            status=status,
+            admin_notes=admin_notes,
+            admin_user_id=current_user["id"]
+        )
+        
+        return {
+            "success": True,
+            "message": f"ステータスを{status.value}に更新しました",
+            "contract_upload": updated_contract
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

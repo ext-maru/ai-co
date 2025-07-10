@@ -138,6 +138,28 @@ export const reviewContractUpload = async (
   return response.data;
 };
 
+// 作業中案件一括取得（管理者用）
+export const getPendingContracts = async (params?: {
+  skip?: number;
+  limit?: number;
+}) => {
+  const response = await api.get('/api/v1/contract/admin/pending', { params });
+  return response.data;
+};
+
+// 契約ステータス更新（簡易版）
+export const updateContractStatus = async (
+  contractUploadId: string,
+  status: UploadStatus,
+  adminNotes?: string
+) => {
+  const response = await api.patch(`/api/v1/contract/admin/${contractUploadId}/status`, {
+    status,
+    admin_notes: adminNotes
+  });
+  return response.data;
+};
+
 export default {
   getContractRequirements,
   createContractUpload,
@@ -147,5 +169,7 @@ export default {
   listContractUploads,
   listAllContractUploads,
   getContractUploadDetailAdmin,
-  reviewContractUpload
+  reviewContractUpload,
+  getPendingContracts,
+  updateContractStatus
 };
