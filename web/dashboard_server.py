@@ -21,6 +21,8 @@ import pika
 import psutil
 from typing import Dict, Any, List
 from libs.env_config import get_config
+import asyncio
+from libs.data_analytics_platform import DataAnalyticsPlatform
 
 class DashboardHandler(BaseHTTPRequestHandler):
     """HTTPリクエストハンドラー"""
@@ -43,6 +45,12 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self.serve_api_elder_council()
         elif parsed_path.path == '/api/metrics':
             self.serve_api_metrics()
+        elif parsed_path.path == '/api/analytics/run':
+            self.serve_api_analytics_run()
+        elif parsed_path.path == '/api/analytics/latest':
+            self.serve_api_analytics_latest()
+        elif parsed_path.path == '/api/analytics/predictions':
+            self.serve_api_analytics_predictions()
         else:
             self.send_error(404)
     
@@ -372,6 +380,80 @@ class DashboardHandler(BaseHTTPRequestHandler):
             background: #228B22;
         }
         
+        /* アナリティクスセクション */
+        .analytics-section {
+            background: linear-gradient(135deg, #E6E6FA 0%, #FFF0F5 100%);
+            border: 4px solid #2F4F4F;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 4px 4px 0px #696969;
+        }
+        
+        .analytics-controls {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn-action, .btn-info, .btn-special {
+            background: linear-gradient(135deg, #4169E1 0%, #00CED1 100%);
+            color: #FFFFFF;
+            border: 3px solid #2F4F4F;
+            padding: 10px 20px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            box-shadow: 3px 3px 0px #2F4F4F;
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #32CD32 0%, #228B22 100%);
+        }
+        
+        .btn-special {
+            background: linear-gradient(135deg, #FF69B4 0%, #DA70D6 100%);
+        }
+        
+        .btn-action:hover, .btn-info:hover, .btn-special:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px #2F4F4F;
+        }
+        
+        .analytics-results {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #2F4F4F;
+            padding: 20px;
+            margin-top: 20px;
+            min-height: 200px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .analytics-card {
+            background: linear-gradient(135deg, #F0F8FF 0%, #E6E6FA 100%);
+            border: 2px solid #4169E1;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .confidence-meter {
+            width: 100%;
+            height: 20px;
+            background: #E0E0E0;
+            border: 2px solid #2F4F4F;
+            margin: 10px 0;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6347, #FFD700, #32CD32);
+            transition: width 0.5s ease;
+        }
+        
         /* レスポンシブ対応 */
         @media (max-width: 768px) {
             .elder-council {
@@ -384,6 +466,10 @@ class DashboardHandler(BaseHTTPRequestHandler):
             
             .container {
                 padding: 10px;
+            }
+            
+            .analytics-controls {
+                flex-direction: column;
             }
         }
     </style>
@@ -401,6 +487,16 @@ class DashboardHandler(BaseHTTPRequestHandler):
         <div class="quest-log" id="questLog">
             <h3>📜 クエストログ - 最近の冒険</h3>
             <div class="loading">冒険の記録を読み込み中...</div>
+        </div>
+        
+        <div class="analytics-section">
+            <h2>📊 データアナリティクス</h2>
+            <div class="analytics-controls">
+                <button class="btn-action" onclick="runAnalytics()">🚀 分析実行</button>
+                <button class="btn-info" onclick="showLatestReport()">📋 最新レポート</button>
+                <button class="btn-special" onclick="showPredictions()">🔮 予測データ</button>
+            </div>
+            <div id="analyticsResults" class="analytics-results"></div>
         </div>
     </div>
     
@@ -546,6 +642,193 @@ class DashboardHandler(BaseHTTPRequestHandler):
             fetchData();
         }
         
+        async function runAnalytics() {
+            const resultsDiv = document.getElementById('analyticsResults');
+            resultsDiv.innerHTML = '<div class="loading">🔬 データを分析中... これには時間がかかる場合があります...</div>';
+            
+            try {
+                const response = await fetch('/api/analytics/run');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    resultsDiv.innerHTML = `
+                        <div class="analytics-card">
+                            <h3>✅ 分析完了</h3>
+                            <p>${data.message}</p>
+                            <p><strong>レポート生成:</strong></p>
+                            <ul>
+                                <li>JSONレポート: ${data.reports.json.split('/').pop()}</li>
+                                <li>HTMLレポート: ${data.reports.html.split('/').pop()}</li>
+                            </ul>
+                            <p><strong>サマリー:</strong></p>
+                            <ul>
+                                <li>分析数: ${data.summary.total_analyses}</li>
+                                <li>平均信頼度: ${(data.summary.average_confidence * 100).toFixed(1)}%</li>
+                                <li>発見された洞察: ${data.summary.key_findings}</li>
+                                <li>推奨事項: ${data.summary.recommendations}</li>
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="analytics-card" style="border-color: #DC143C;">
+                            <h3>❌ エラー</h3>
+                            <p>${data.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="analytics-card" style="border-color: #DC143C;">
+                        <h3>❌ エラー</h3>
+                        <p>分析の実行に失敗しました: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function showLatestReport() {
+            const resultsDiv = document.getElementById('analyticsResults');
+            resultsDiv.innerHTML = '<div class="loading">📋 最新レポートを取得中...</div>';
+            
+            try {
+                const response = await fetch('/api/analytics/latest');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    let html = `
+                        <div class="analytics-card">
+                            <h3>📊 最新分析レポート</h3>
+                            <p><strong>生成日時:</strong> ${new Date(data.generated_at).toLocaleString('ja-JP')}</p>
+                    `;
+                    
+                    // 各分析結果を表示
+                    if (data.report.detailed_results) {
+                        data.report.detailed_results.forEach(result => {
+                            html += `
+                                <div class="analytics-card" style="margin-top: 15px;">
+                                    <h4>${result.type.replace(/_/g, ' ').toUpperCase()}</h4>
+                                    <div class="confidence-meter">
+                                        <div class="confidence-fill" style="width: ${result.confidence * 100}%"></div>
+                                    </div>
+                                    <p>信頼度: ${(result.confidence * 100).toFixed(1)}%</p>
+                                    <p><strong>洞察:</strong></p>
+                                    <ul>
+                                        ${result.insights.slice(0, 3).map(i => `<li>${i}</li>`).join('')}
+                                    </ul>
+                                    <p><strong>推奨事項:</strong></p>
+                                    <ul>
+                                        ${result.recommendations.map(r => `<li>${r}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            `;
+                        });
+                    }
+                    
+                    html += '</div>';
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="analytics-card" style="border-color: #FFA500;">
+                            <h3>📁 データなし</h3>
+                            <p>${data.message}</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="analytics-card" style="border-color: #DC143C;">
+                        <h3>❌ エラー</h3>
+                        <p>レポートの取得に失敗しました: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
+        async function showPredictions() {
+            const resultsDiv = document.getElementById('analyticsResults');
+            resultsDiv.innerHTML = '<div class="loading">🔮 予測データを取得中...</div>';
+            
+            try {
+                const response = await fetch('/api/analytics/predictions');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    let html = `
+                        <div class="analytics-card">
+                            <h3>🔮 予測データ</h3>
+                    `;
+                    
+                    // 予測データを表示
+                    for (const [analysisType, predictions] of Object.entries(data.predictions)) {
+                        html += `
+                            <div class="analytics-card" style="margin-top: 15px;">
+                                <h4>${analysisType.replace(/_/g, ' ').toUpperCase()}</h4>
+                                <ul>
+                        `;
+                        
+                        for (const [key, value] of Object.entries(predictions)) {
+                            if (Array.isArray(value)) {
+                                html += `<li><strong>${key}:</strong> ${value.join(', ')}</li>`;
+                            } else if (typeof value === 'object') {
+                                html += `<li><strong>${key}:</strong> ${JSON.stringify(value, null, 2)}</li>`;
+                            } else {
+                                html += `<li><strong>${key}:</strong> ${value}</li>`;
+                            }
+                        }
+                        
+                        html += `
+                                </ul>
+                            </div>
+                        `;
+                    }
+                    
+                    // 可視化データ
+                    if (data.visualizations) {
+                        html += `
+                            <div class="analytics-card" style="margin-top: 15px;">
+                                <h4>📈 信頼度スコア</h4>
+                                <ul>
+                        `;
+                        
+                        for (const [type, score] of Object.entries(data.visualizations.confidence_scores)) {
+                            html += `
+                                <li>
+                                    <strong>${type}:</strong>
+                                    <div class="confidence-meter" style="display: inline-block; width: 200px; vertical-align: middle;">
+                                        <div class="confidence-fill" style="width: ${score * 100}%"></div>
+                                    </div>
+                                    ${(score * 100).toFixed(1)}%
+                                </li>
+                            `;
+                        }
+                        
+                        html += `
+                                </ul>
+                            </div>
+                        `;
+                    }
+                    
+                    html += '</div>';
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="analytics-card" style="border-color: #FFA500;">
+                            <h3>📁 データなし</h3>
+                            <p>予測データがまだありません</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="analytics-card" style="border-color: #DC143C;">
+                        <h3>❌ エラー</h3>
+                        <p>予測データの取得に失敗しました: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+        
         // 初回読み込みと定期更新
         fetchData();
         setInterval(fetchData, 5000);
@@ -681,6 +964,135 @@ class DashboardHandler(BaseHTTPRequestHandler):
             'avg_processing_time': 3.5
         }
         self._send_json_response(metrics)
+    
+    def serve_api_analytics_run(self):
+        """分析実行API"""
+        try:
+            # 分析プラットフォームを初期化
+            platform = DataAnalyticsPlatform(Path('/home/aicompany/ai_co'))
+            
+            # 非同期関数を同期的に実行
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
+            results = loop.run_until_complete(platform.run_full_analysis())
+            loop.close()
+            
+            response = {
+                'status': 'success',
+                'message': '分析が正常に完了しました',
+                'reports': {
+                    'json': str(results['json_report']),
+                    'html': str(results['html_report'])
+                },
+                'summary': results['api_data']['summary']
+            }
+            
+            self._send_json_response(response)
+            
+        except Exception as e:
+            self._send_json_response({
+                'status': 'error',
+                'message': f'分析中にエラーが発生しました: {str(e)}'
+            })
+    
+    def serve_api_analytics_latest(self):
+        """最新の分析結果API"""
+        try:
+            # 最新のレポートファイルを探す
+            reports_dir = Path('/home/aicompany/ai_co/analytics_reports')
+            
+            if not reports_dir.exists():
+                self._send_json_response({
+                    'status': 'no_data',
+                    'message': 'まだ分析レポートがありません'
+                })
+                return
+            
+            # 最新のJSONレポートを見つける
+            json_files = list(reports_dir.glob('analytics_report_*.json'))
+            
+            if not json_files:
+                self._send_json_response({
+                    'status': 'no_data',
+                    'message': 'まだ分析レポートがありません'
+                })
+                return
+            
+            latest_file = max(json_files, key=lambda p: p.stat().st_mtime)
+            
+            # レポートを読み込む
+            with open(latest_file, 'r', encoding='utf-8') as f:
+                report_data = json.load(f)
+            
+            # HTMLレポートのパスも見つける
+            html_file = latest_file.with_suffix('.html')
+            html_path = str(html_file) if html_file.exists() else None
+            
+            response = {
+                'status': 'success',
+                'report': report_data,
+                'html_report_path': html_path,
+                'generated_at': report_data.get('generated_at', 'unknown')
+            }
+            
+            self._send_json_response(response)
+            
+        except Exception as e:
+            self._send_json_response({
+                'status': 'error',
+                'message': f'レポート取得中にエラーが発生しました: {str(e)}'
+            })
+    
+    def serve_api_analytics_predictions(self):
+        """予測データAPI"""
+        try:
+            # 最新のレポートから予測データを抽出
+            reports_dir = Path('/home/aicompany/ai_co/analytics_reports')
+            
+            if not reports_dir.exists():
+                self._send_json_response({
+                    'status': 'no_data',
+                    'predictions': {}
+                })
+                return
+            
+            json_files = list(reports_dir.glob('analytics_report_*.json'))
+            
+            if not json_files:
+                self._send_json_response({
+                    'status': 'no_data',
+                    'predictions': {}
+                })
+                return
+            
+            latest_file = max(json_files, key=lambda p: p.stat().st_mtime)
+            
+            with open(latest_file, 'r', encoding='utf-8') as f:
+                report_data = json.load(f)
+            
+            # すべての予測データを集約
+            all_predictions = {}
+            for result in report_data.get('detailed_results', []):
+                if result.get('predictions'):
+                    all_predictions[result['type']] = result['predictions']
+            
+            response = {
+                'status': 'success',
+                'predictions': all_predictions,
+                'visualizations': {
+                    'confidence_scores': {r['type']: r['confidence'] for r in report_data.get('detailed_results', [])},
+                    'insights_count': {r['type']: len(r.get('insights', [])) for r in report_data.get('detailed_results', [])}
+                }
+            }
+            
+            self._send_json_response(response)
+            
+        except Exception as e:
+            self._send_json_response({
+                'status': 'error',
+                'message': f'予測データ取得中にエラーが発生しました: {str(e)}'
+            })
     
     def _send_json_response(self, data):
         """JSON応答を送信"""

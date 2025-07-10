@@ -48,9 +48,9 @@ class DataCollector:
     """データ収集エンジン"""
     
     def __init__(self, project_root: Path):
-        self.project_root = project_root
-        self.logs_dir = project_root / "logs"
-        self.db_path = project_root / "elder_dashboard.db"
+        self.project_root = Path(project_root)
+        self.logs_dir = self.project_root / "logs"
+        self.db_path = self.project_root / "elder_dashboard.db"
         
     async def collect_commit_data(self) -> pd.DataFrame:
         """コミットデータ収集"""
@@ -485,6 +485,195 @@ class AnalyticsEngine:
             confidence=0.75
         )
     
+    async def analyze_protocol_efficiency(self, commit_df: pd.DataFrame) -> AnalyticsResult:
+        """プロトコル効率分析"""
+        insights = []
+        predictions = {}
+        metrics = {}
+        
+        if commit_df.empty:
+            return self._empty_result(AnalyticsType.PROTOCOL_EFFICIENCY)
+        
+        # プロトコル別の効率メトリクス
+        protocol_efficiency = commit_df.groupby('protocol').agg({
+            'execution_time': ['mean', 'std', 'min', 'max'],
+            'approved': 'mean',
+            'files_changed': 'mean',
+            'complexity': 'mean'
+        }).round(2)
+        
+        # 効率スコアの計算（実行時間と承認率のバランス）
+        efficiency_scores = {}
+        for protocol in protocol_efficiency.index:
+            exec_time = protocol_efficiency.loc[protocol, ('execution_time', 'mean')]
+            approval_rate = protocol_efficiency.loc[protocol, ('approved', 'mean')]
+            
+            # 効率スコア = 承認率 / (1 + log(実行時間))
+            efficiency_score = approval_rate / (1 + np.log1p(exec_time))
+            efficiency_scores[protocol] = round(efficiency_score, 3)
+        
+        metrics["efficiency_scores"] = efficiency_scores
+        # Convert protocol_efficiency to a JSON-serializable format
+        protocol_stats_dict = {}
+        for protocol in protocol_efficiency.index:
+            protocol_stats_dict[protocol] = {
+                'execution_time_mean': float(protocol_efficiency.loc[protocol, ('execution_time', 'mean')]),
+                'execution_time_std': float(protocol_efficiency.loc[protocol, ('execution_time', 'std')]),
+                'execution_time_min': float(protocol_efficiency.loc[protocol, ('execution_time', 'min')]),
+                'execution_time_max': float(protocol_efficiency.loc[protocol, ('execution_time', 'max')]),
+                'approved_mean': float(protocol_efficiency.loc[protocol, ('approved', 'mean')]),
+                'files_changed_mean': float(protocol_efficiency.loc[protocol, ('files_changed', 'mean')]),
+                'complexity_mean': float(protocol_efficiency.loc[protocol, ('complexity', 'mean')])
+            }
+        metrics["protocol_stats"] = protocol_stats_dict
+        
+        # 最も効率的なプロトコル
+        best_protocol = max(efficiency_scores, key=efficiency_scores.get)
+        insights.append(f"🏆 最も効率的なプロトコル: {best_protocol} (スコア: {efficiency_scores[best_protocol]})")
+        
+        # 時系列での効率変化分析
+        await self.prediction_model.train_time_series(commit_df, 'execution_time')
+        future_exec_times = await self.prediction_model.forecast('execution_time', periods=5)
+        
+        if future_exec_times:
+            predictions["execution_time_forecast"] = future_exec_times
+            trend = "増加" if future_exec_times[-1] > future_exec_times[0] else "減少"
+            insights.append(f"📈 実行時間は今後{trend}傾向と予測")
+        
+        # 推奨事項
+        recommendations = []
+        for protocol, score in efficiency_scores.items():
+            if score < 0.5:
+                recommendations.append(f"⚡ {protocol}の効率改善が必要（現在のスコア: {score}）")
+        
+        return AnalyticsResult(
+            type=AnalyticsType.PROTOCOL_EFFICIENCY,
+            timestamp=datetime.now(),
+            metrics=metrics,
+            insights=insights,
+            predictions=predictions,
+            recommendations=recommendations,
+            confidence=0.82
+        )
+    
+    async def predict_errors(self, commit_df: pd.DataFrame, system_metrics: Dict) -> AnalyticsResult:
+        """エラー予測分析"""
+        insights = []
+        predictions = {}
+        metrics = {}
+        
+        # エラー率の計算
+        current_error_rate = system_metrics.get("error_logs", 0) / max(system_metrics.get("total_log_files", 1), 1)
+        metrics["current_error_rate"] = round(current_error_rate, 4)
+        
+        # コミット複雑度とエラーの相関分析
+        if not commit_df.empty and 'complexity' in commit_df.columns:
+            # 複雑度による異常検出
+            anomalies = await self.prediction_model.detect_anomalies(commit_df, 'complexity')
+            
+            if anomalies:
+                metrics["complexity_anomalies"] = len(anomalies)
+                insights.append(f"⚠️ {len(anomalies)}件の複雑度異常を検出")
+                
+                # 高複雑度コミットの特定
+                high_complexity_threshold = commit_df['complexity'].quantile(0.9)
+                high_complexity_commits = commit_df[commit_df['complexity'] > high_complexity_threshold]
+                
+                if not high_complexity_commits.empty:
+                    predictions["high_risk_protocols"] = high_complexity_commits['protocol'].value_counts().head(3).to_dict()
+        
+        # エラー発生予測
+        error_probability = min(current_error_rate * 2 + 0.1, 1.0)  # 簡易予測
+        predictions["error_probability_24h"] = round(error_probability, 2)
+        
+        if error_probability > 0.3:
+            insights.append(f"🚨 24時間以内のエラー発生確率: {error_probability*100:.0f}%")
+        
+        # 推奨事項
+        recommendations = []
+        if current_error_rate > 0.05:
+            recommendations.append("📋 エラーログの詳細分析を実施")
+        if metrics.get("complexity_anomalies", 0) > 5:
+            recommendations.append("🔍 高複雑度コミットのコードレビュー強化")
+        
+        return AnalyticsResult(
+            type=AnalyticsType.ERROR_PREDICTION,
+            timestamp=datetime.now(),
+            metrics=metrics,
+            insights=insights,
+            predictions=predictions,
+            recommendations=recommendations,
+            confidence=0.78
+        )
+    
+    async def detect_bottlenecks(self, commit_df: pd.DataFrame, sage_df: pd.DataFrame) -> AnalyticsResult:
+        """ボトルネック検出"""
+        insights = []
+        predictions = {}
+        metrics = {}
+        
+        bottlenecks = []
+        
+        # 実行時間のボトルネック検出
+        if not commit_df.empty:
+            # 実行時間の異常値検出
+            exec_time_anomalies = await self.prediction_model.detect_anomalies(commit_df, 'execution_time')
+            
+            if exec_time_anomalies:
+                bottlenecks.extend([{
+                    'type': 'execution_time',
+                    'severity': a['severity'],
+                    'value': a['value']
+                } for a in exec_time_anomalies])
+                
+                insights.append(f"⏱️ {len(exec_time_anomalies)}件の実行時間ボトルネックを検出")
+        
+        # 賢者承認のボトルネック検出
+        if not sage_df.empty:
+            # 賢者別の平均承認時間（リスクスコアを代理指標として使用）
+            sage_bottlenecks = sage_df.groupby('sage_name').agg({
+                'risk_score': 'mean',
+                'approval': 'count'
+            })
+            
+            # 高リスクスコアの賢者を特定
+            high_risk_sages = sage_bottlenecks[sage_bottlenecks['risk_score'] > 0.7]
+            
+            if not high_risk_sages.empty:
+                for sage in high_risk_sages.index:
+                    bottlenecks.append({
+                        'type': 'sage_approval',
+                        'sage': sage,
+                        'avg_risk_score': float(high_risk_sages.loc[sage, 'risk_score'])
+                    })
+                
+                insights.append(f"🧙‍♂️ {len(high_risk_sages)}名の賢者で承認遅延の可能性")
+        
+        metrics["total_bottlenecks"] = len(bottlenecks)
+        metrics["bottleneck_details"] = bottlenecks
+        
+        # ボトルネック解消の予測
+        if bottlenecks:
+            predictions["resolution_time_hours"] = len(bottlenecks) * 2  # 簡易推定
+            predictions["impact_reduction"] = min(len(bottlenecks) * 0.15, 0.5)
+        
+        # 推奨事項
+        recommendations = []
+        if any(b['type'] == 'execution_time' for b in bottlenecks):
+            recommendations.append("⚡ Lightning Protocolの適用範囲拡大")
+        if any(b['type'] == 'sage_approval' for b in bottlenecks):
+            recommendations.append("👥 賢者間の負荷分散を検討")
+        
+        return AnalyticsResult(
+            type=AnalyticsType.BOTTLENECK_DETECTION,
+            timestamp=datetime.now(),
+            metrics=metrics,
+            insights=insights,
+            predictions=predictions,
+            recommendations=recommendations,
+            confidence=0.85
+        )
+    
     def _empty_result(self, analytics_type: AnalyticsType) -> AnalyticsResult:
         """空の結果を返す"""
         return AnalyticsResult(
@@ -550,8 +739,8 @@ class AnalyticsReporter:
     """分析レポート生成器"""
     
     def __init__(self, project_root: Path):
-        self.project_root = project_root
-        self.reports_dir = project_root / "analytics_reports"
+        self.project_root = Path(project_root)
+        self.reports_dir = self.project_root / "analytics_reports"
         self.reports_dir.mkdir(exist_ok=True)
         
     async def generate_comprehensive_report(self, results: List[AnalyticsResult]) -> Path:
@@ -628,16 +817,270 @@ class AnalyticsReporter:
             action_items.append(f"[{item['type']}] {item['recommendation']}")
         
         return action_items
+    
+    async def generate_html_report(self, results: List[AnalyticsResult]) -> Path:
+        """インタラクティブHTMLレポート生成"""
+        timestamp = datetime.now()
+        
+        # HTML テンプレート
+        html_content = f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>エルダーズギルド アナリティクスレポート - {timestamp.strftime('%Y年%m月%d日')}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+        
+        * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+        
+        body {{
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #87CEEB 0%, #98FB98 50%, #FFB6C1 100%);
+            color: #2F4F4F;
+            line-height: 1.6;
+            padding: 20px;
+        }}
+        
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }}
+        
+        h1 {{
+            background: linear-gradient(135deg, #4169E1, #00CED1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+        }}
+        
+        .summary-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }}
+        
+        .metric-card {{
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s;
+        }}
+        
+        .metric-card:hover {{
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }}
+        
+        .metric-value {{
+            font-size: 2em;
+            font-weight: bold;
+            color: #4169E1;
+        }}
+        
+        .analysis-section {{
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            border-left: 5px solid #4169E1;
+        }}
+        
+        .insights-list {{
+            list-style: none;
+            padding: 10px 0;
+        }}
+        
+        .insights-list li {{
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }}
+        
+        .recommendations {{
+            background: #f0f8ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }}
+        
+        .chart-container {{
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }}
+        
+        .confidence-bar {{
+            width: 100%;
+            height: 20px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }}
+        
+        .confidence-fill {{
+            height: 100%;
+            background: linear-gradient(90deg, #4169E1, #00CED1);
+            transition: width 1s ease-in-out;
+        }}
+        
+        @keyframes pulse {{
+            0% {{ opacity: 1; }}
+            50% {{ opacity: 0.7; }}
+            100% {{ opacity: 1; }}
+        }}
+        
+        .live-indicator {{
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #32CD32;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            margin-right: 10px;
+        }}
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>エルダーズギルド アナリティクスレポート</h1>
+        <p style="text-align: center; color: #666;">
+            <span class="live-indicator"></span>
+            生成日時: {timestamp.strftime('%Y-%m-%d %H:%M:%S')}
+        </p>
+        
+        <div class="summary-grid">
+            <div class="metric-card">
+                <div class="metric-value">{len(results)}</div>
+                <div>実行済み分析</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{sum(len(r.insights) for r in results)}</div>
+                <div>検出された洞察</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{sum(len(r.recommendations) for r in results)}</div>
+                <div>推奨アクション</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{np.mean([r.confidence for r in results]):.1%}</div>
+                <div>平均信頼度</div>
+            </div>
+        </div>
+"""
+        
+        # 各分析結果をHTMLに追加
+        for result in results:
+            confidence_width = int(result.confidence * 100)
+            html_content += f"""
+        <div class="analysis-section">
+            <h2>{result.type.value.replace('_', ' ').title()}</h2>
+            <div class="confidence-bar">
+                <div class="confidence-fill" style="width: {confidence_width}%"></div>
+            </div>
+            <p>信頼度: {result.confidence:.1%}</p>
+            
+            <h3>主要な洞察</h3>
+            <ul class="insights-list">
+"""
+            for insight in result.insights[:5]:
+                html_content += f"                <li>{insight}</li>\n"
+            
+            html_content += """            </ul>
+            
+            <div class="recommendations">
+                <h3>推奨事項</h3>
+                <ul>
+"""
+            for rec in result.recommendations:
+                html_content += f"                    <li>{rec}</li>\n"
+            
+            html_content += """                </ul>
+            </div>
+        </div>
+"""
+        
+        # チャートセクション
+        html_content += """
+        <div class="chart-container">
+            <h2>分析結果サマリー</h2>
+            <canvas id="confidenceChart" width="400" height="200"></canvas>
+        </div>
+        
+        <script>
+            // 信頼度チャート
+            const ctx = document.getElementById('confidenceChart').getContext('2d');
+            const confidenceData = {
+                labels: [""" + ', '.join([f'"{r.type.value}"' for r in results]) + """],
+                datasets: [{
+                    label: '信頼度',
+                    data: [""" + ', '.join([str(r.confidence) for r in results]) + """],
+                    backgroundColor: 'rgba(65, 105, 225, 0.6)',
+                    borderColor: 'rgba(65, 105, 225, 1)',
+                    borderWidth: 2
+                }]
+            };
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: confidenceData,
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1
+                        }
+                    }
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>"""
+        
+        # HTMLファイル保存
+        html_file = self.reports_dir / f"analytics_report_{timestamp.strftime('%Y%m%d_%H%M%S')}.html"
+        with open(html_file, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
+        logger.info(f"📊 インタラクティブHTMLレポート生成: {html_file}")
+        return html_file
+    
+    async def generate_api_response(self, results: List[AnalyticsResult]) -> Dict[str, Any]:
+        """API用のレスポンスデータ生成"""
+        return {
+            "timestamp": datetime.now().isoformat(),
+            "summary": self._generate_summary(results),
+            "results": [self._result_to_dict(r) for r in results],
+            "executive_insights": self._generate_executive_insights(results),
+            "action_items": self._generate_action_items(results),
+            "visualizations": {
+                "confidence_scores": {r.type.value: r.confidence for r in results},
+                "insights_count": {r.type.value: len(r.insights) for r in results},
+                "recommendations_count": {r.type.value: len(r.recommendations) for r in results}
+            }
+        }
 
 class DataAnalyticsPlatform:
     """高度データアナリティクスプラットフォーム メインクラス"""
     
     def __init__(self, project_root: Path):
-        self.project_root = project_root
-        self.collector = DataCollector(project_root)
+        self.project_root = Path(project_root)
+        self.collector = DataCollector(self.project_root)
         self.analytics = AnalyticsEngine()
         self.predictive = PredictiveAnalytics()
-        self.reporter = AnalyticsReporter(project_root)
+        self.reporter = AnalyticsReporter(self.project_root)
         
         logger.info("📊 データアナリティクスプラットフォーム初期化完了")
     
@@ -671,12 +1114,29 @@ class DataAnalyticsPlatform:
             health_prediction = await self.analytics.predict_system_health(commit_df, system_metrics)
             results.append(health_prediction)
             
+            # プロトコル効率分析
+            protocol_efficiency = await self.analytics.analyze_protocol_efficiency(commit_df)
+            results.append(protocol_efficiency)
+            
+            # エラー予測
+            error_prediction = await self.analytics.predict_errors(commit_df, system_metrics)
+            results.append(error_prediction)
+            
+            # ボトルネック検出
+            bottleneck_detection = await self.analytics.detect_bottlenecks(commit_df, sage_df)
+            results.append(bottleneck_detection)
+            
             # レポート生成フェーズ
             logger.info("📋 レポート生成フェーズ")
-            report_path = await self.reporter.generate_comprehensive_report(results)
+            json_report_path = await self.reporter.generate_comprehensive_report(results)
+            html_report_path = await self.reporter.generate_html_report(results)
             
             logger.info("✅ 完全分析完了")
-            return report_path
+            return {
+                "json_report": json_report_path,
+                "html_report": html_report_path,
+                "api_data": await self.reporter.generate_api_response(results)
+            }
             
         except Exception as e:
             logger.error(f"❌ 分析中にエラー発生: {e}")
@@ -686,8 +1146,11 @@ class DataAnalyticsPlatform:
 async def main():
     """テスト実行"""
     platform = DataAnalyticsPlatform(Path("/home/aicompany/ai_co"))
-    report_path = await platform.run_full_analysis()
-    print(f"📊 分析レポート生成完了: {report_path}")
+    results = await platform.run_full_analysis()
+    print(f"📊 分析レポート生成完了:")
+    print(f"  - JSONレポート: {results['json_report']}")
+    print(f"  - HTMLレポート: {results['html_report']}")
+    print(f"  - API データ利用可能")
 
 if __name__ == "__main__":
     asyncio.run(main())

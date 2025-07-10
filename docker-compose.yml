@@ -1,6 +1,5 @@
 # Elders Guild Project Web Portal
 # RAGエルダー推奨Docker統合環境
-version: '3.8'
 
 services:
   # PostgreSQL + pgvector データベース
