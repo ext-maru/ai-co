@@ -3,20 +3,21 @@ Task Sage API Endpoints
 Manages tasks, projects, and workflow automation
 """
 
-from typing import List, Optional
-from uuid import UUID, uuid4
+from typing import List
+from typing import Optional
+from uuid import UUID
+from uuid import uuid4
 
 import structlog
-from fastapi import APIRouter, HTTPException, Query
-from fastapi.responses import JSONResponse
-
-from app.schemas.sages import (
-    Task,
-    TaskCreate,
-    TaskUpdate,
-    TaskResponse,
-)
-from app.websocket.manager import SageMessage, websocket_manager
+from app.schemas.sages import Task
+from app.schemas.sages import TaskCreate
+from app.schemas.sages import TaskResponse
+from app.schemas.sages import TaskUpdate
+from app.websocket.manager import SageMessage
+from app.websocket.manager import websocket_manager
+from fastapi import APIRouter
+from fastapi import HTTPException
+from fastapi import Query
 
 logger = structlog.get_logger()
 router = APIRouter()
@@ -40,37 +41,31 @@ async def get_tasks(
     """
     try:
         tasks = list(task_store.values())
-        
+
         # Apply filters
         if status:
             tasks = [t for t in tasks if t.status == status]
-        
+
         if priority:
             tasks = [t for t in tasks if t.priority == priority]
-        
+
         if assignee:
             tasks = [t for t in tasks if t.assignee == assignee]
-        
+
         if project:
             tasks = [t for t in tasks if t.project == project]
-        
+
         if labels:
             tasks = [t for t in tasks if any(label in t.labels for label in labels)]
-        
+
         # Sort by priority and creation date
         priority_order = {"urgent": 4, "high": 3, "medium": 2, "low": 1}
-        tasks.sort(
-            key=lambda t: (
-                -priority_order.get(t.priority, 0),
-                t.created_at or t.updated_at
-            ),
-            reverse=True
-        )
-        
+        tasks.sort(key=lambda t: (-priority_order.get(t.priority, 0), t.created_at or t.updated_at), reverse=True)
+
         # Pagination
         total_count = len(tasks)
-        tasks = tasks[offset:offset + limit]
-        
+        tasks = tasks[offset : offset + limit]
+
         # Broadcast status update
         await websocket_manager.send_sage_message(
             SageMessage(
@@ -91,13 +86,13 @@ async def get_tasks(
                 timestamp=0,
             )
         )
-        
+
         return TaskResponse(
             data=tasks,
             total_count=total_count,
             message=f"Retrieved {len(tasks)} tasks",
         )
-        
+
     except Exception as e:
         logger.error("Error retrieving tasks", error=str(e))
         raise HTTPException(status_code=500, detail="Failed to retrieve tasks")
@@ -111,16 +106,16 @@ async def create_task(task: TaskCreate):
     try:
         # Generate ID
         task_id = str(uuid4())
-        
+
         # Create task
         new_task = Task(
             id=UUID(task_id),
             **task.dict(),
         )
-        
+
         # Store task
         task_store[task_id] = new_task
-        
+
         # Broadcast creation to other sages
         await websocket_manager.send_sage_message(
             SageMessage(
@@ -138,7 +133,7 @@ async def create_task(task: TaskCreate):
                 timestamp=0,
             )
         )
-        
+
         # Notify incident sage if high priority
         if new_task.priority in ["high", "urgent"]:
             await websocket_manager.send_sage_message(
@@ -156,7 +151,7 @@ async def create_task(task: TaskCreate):
                     timestamp=0,
                 )
             )
-        
+
         logger.info(
             "Task created",
             task_id=task_id,
@@ -164,12 +159,12 @@ async def create_task(task: TaskCreate):
             priority=new_task.priority,
             assignee=new_task.assignee,
         )
-        
+
         return TaskResponse(
             data=new_task,
             message="Task created successfully",
         )
-        
+
     except Exception as e:
         logger.error("Error creating task", error=str(e))
         raise HTTPException(status_code=500, detail="Failed to create task")
@@ -183,9 +178,9 @@ async def get_task(task_id: str):
     try:
         if task_id not in task_store:
             raise HTTPException(status_code=404, detail="Task not found")
-        
+
         task = task_store[task_id]
-        
+
         # Broadcast view event
         await websocket_manager.send_sage_message(
             SageMessage(
@@ -200,12 +195,12 @@ async def get_task(task_id: str):
                 timestamp=0,
             )
         )
-        
+
         return TaskResponse(
             data=task,
             message="Task retrieved successfully",
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -221,19 +216,20 @@ async def update_task(task_id: str, update: TaskUpdate):
     try:
         if task_id not in task_store:
             raise HTTPException(status_code=404, detail="Task not found")
-        
+
         task = task_store[task_id]
         old_status = task.status
-        
+
         # Update fields
         update_data = update.dict(exclude_unset=True)
         for field, value in update_data.items():
             setattr(task, field, value)
-        
+
         # Update timestamp
         from datetime import datetime
+
         task.updated_at = datetime.utcnow()
-        
+
         # Broadcast update
         await websocket_manager.send_sage_message(
             SageMessage(
@@ -251,7 +247,7 @@ async def update_task(task_id: str, update: TaskUpdate):
                 timestamp=0,
             )
         )
-        
+
         # Special notifications for status changes
         if old_status != task.status:
             if task.status == "done":
@@ -288,7 +284,7 @@ async def update_task(task_id: str, update: TaskUpdate):
                         timestamp=0,
                     )
                 )
-        
+
         logger.info(
             "Task updated",
             task_id=task_id,
@@ -296,12 +292,12 @@ async def update_task(task_id: str, update: TaskUpdate):
             new_status=task.status,
             updated_fields=list(update_data.keys()),
         )
-        
+
         return TaskResponse(
             data=task,
             message="Task updated successfully",
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -317,10 +313,10 @@ async def delete_task(task_id: str):
     try:
         if task_id not in task_store:
             raise HTTPException(status_code=404, detail="Task not found")
-        
+
         task = task_store[task_id]
         del task_store[task_id]
-        
+
         # Broadcast deletion
         await websocket_manager.send_sage_message(
             SageMessage(
@@ -335,13 +331,13 @@ async def delete_task(task_id: str):
                 timestamp=0,
             )
         )
-        
+
         logger.info("Task deleted", task_id=task_id)
-        
+
         return TaskResponse(
             message="Task deleted successfully",
         )
-        
+
     except HTTPException:
         raise
     except Exception as e:
@@ -357,7 +353,7 @@ async def get_projects():
     try:
         projects = list(set(task.project for task in task_store.values() if task.project))
         projects.sort()
-        
+
         project_stats = {}
         for project in projects:
             project_tasks = [t for t in task_store.values() if t.project == project]
@@ -368,12 +364,12 @@ async def get_projects():
                 "done": len([t for t in project_tasks if t.status == "done"]),
                 "blocked": len([t for t in project_tasks if t.status == "blocked"]),
             }
-        
+
         return TaskResponse(
             data=project_stats,
             message=f"Retrieved {len(projects)} projects",
         )
-        
+
     except Exception as e:
         logger.error("Error retrieving projects", error=str(e))
         raise HTTPException(status_code=500, detail="Failed to retrieve projects")
@@ -387,7 +383,7 @@ async def get_assignees():
     try:
         assignees = list(set(task.assignee for task in task_store.values() if task.assignee))
         assignees.sort()
-        
+
         assignee_stats = {}
         for assignee in assignees:
             assignee_tasks = [t for t in task_store.values() if t.assignee == assignee]
@@ -398,12 +394,12 @@ async def get_assignees():
                 "done": len([t for t in assignee_tasks if t.status == "done"]),
                 "blocked": len([t for t in assignee_tasks if t.status == "blocked"]),
             }
-        
+
         return TaskResponse(
             data=assignee_stats,
             message=f"Retrieved {len(assignees)} assignees",
         )
-        
+
     except Exception as e:
         logger.error("Error retrieving assignees", error=str(e))
         raise HTTPException(status_code=500, detail="Failed to retrieve assignees")
@@ -416,7 +412,7 @@ async def get_task_stats():
     """
     try:
         total_tasks = len(task_store)
-        
+
         stats = {
             "total_tasks": total_tasks,
             "status_breakdown": {
@@ -435,15 +431,16 @@ async def get_task_stats():
             "total_assignees": len(set(t.assignee for t in task_store.values() if t.assignee)),
             "completion_rate": (
                 len([t for t in task_store.values() if t.status == "done"]) / total_tasks * 100
-                if total_tasks > 0 else 0
+                if total_tasks > 0
+                else 0
             ),
         }
-        
+
         return TaskResponse(
             data=stats,
             message="Task statistics retrieved",
         )
-        
+
     except Exception as e:
         logger.error("Error retrieving task stats", error=str(e))
         raise HTTPException(status_code=500, detail="Failed to retrieve statistics")

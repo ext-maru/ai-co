@@ -194,6 +194,6 @@ export const generateSageMessage = (sageType: SageType, messageType: string): st
       error: '探索中に予期せぬ障害が発生しました'
     }
   }
-  
+
   return messages[sageType]?.[messageType] || '賢者からのメッセージ'
 }

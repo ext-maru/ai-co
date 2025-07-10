@@ -168,7 +168,7 @@ npm run test:coverage
             <ArrowLeftIcon className="h-5 w-5 mr-2" />
             ホームに戻る
           </Link>
-          
+
           <h1 className="text-3xl font-bold text-gray-900 flex items-center">
             <DocumentTextIcon className="h-8 w-8 mr-3 text-elder-600" />
             ドキュメント

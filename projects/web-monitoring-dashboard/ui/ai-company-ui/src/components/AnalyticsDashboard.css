@@ -478,7 +478,7 @@
   .predictions-section {
     grid-template-columns: 1fr;
   }
-  
+
   .insights-grid {
     grid-template-columns: 1fr;
   }
@@ -489,24 +489,24 @@
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .controls {
     width: 100%;
     justify-content: space-between;
   }
-  
+
   .tab-navigation {
     flex-wrap: wrap;
   }
-  
+
   .tab-navigation button {
     flex: 1 1 50%;
   }
-  
+
   .stat-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .report-buttons {
     flex-direction: column;
   }

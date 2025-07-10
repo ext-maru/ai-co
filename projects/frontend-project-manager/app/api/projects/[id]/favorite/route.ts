@@ -14,11 +14,11 @@ function getFavoritesFilePath(): string {
 // お気に入りを読み込む
 function loadFavorites(): Record<string, string[]> {
   const filePath = getFavoritesFilePath()
-  
+
   if (!fs.existsSync(filePath)) {
     return {}
   }
-  
+
   try {
     const data = fs.readFileSync(filePath, 'utf8')
     return JSON.parse(data)
@@ -42,21 +42,21 @@ export async function POST(
   try {
     const body = await request.json()
     const userId = body.user_id || 'default_user'
-    
+
     console.log('Toggling favorite for project:', params.id, 'user:', userId)
-    
+
     const favorites = loadFavorites()
-    
+
     // ユーザーのお気に入りリストを取得（なければ作成）
     if (!favorites[userId]) {
       favorites[userId] = []
     }
-    
+
     const userFavorites = favorites[userId]
     const projectIndex = userFavorites.indexOf(params.id)
-    
+
     let action: string
-    
+
     if (projectIndex === -1) {
       // お気に入りに追加
       userFavorites.push(params.id)
@@ -66,10 +66,10 @@ export async function POST(
       userFavorites.splice(projectIndex, 1)
       action = 'removed'
     }
-    
+
     favorites[userId] = userFavorites
     saveFavorites(favorites)
-    
+
     console.log(`Project ${action} to/from favorites:`, params.id)
     return NextResponse.json({
       success: true,
@@ -77,7 +77,7 @@ export async function POST(
       action,
       is_favorite: action === 'added'
     })
-    
+
   } catch (error) {
     console.error('Toggle favorite error:', error)
     return NextResponse.json(
@@ -95,19 +95,19 @@ export async function GET(
   try {
     const url = new URL(request.url)
     const userId = url.searchParams.get('user_id') || 'default_user'
-    
+
     console.log('Getting favorite status for project:', params.id, 'user:', userId)
-    
+
     const favorites = loadFavorites()
     const userFavorites = favorites[userId] || []
     const isFavorite = userFavorites.includes(params.id)
-    
+
     return NextResponse.json({
       project_id: params.id,
       user_id: userId,
       is_favorite: isFavorite
     })
-    
+
   } catch (error) {
     console.error('Get favorite status error:', error)
     return NextResponse.json(

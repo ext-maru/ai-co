@@ -145,7 +145,7 @@ export function ElderCouncilMode({
   const calculateCouncilConsensus = (decision: CouncilDecision) => {
     const totalVotes = decision.votes.length
     if (totalVotes === 0) return 0
-    
+
     const approveVotes = decision.votes.filter(v => v.vote === 'approve').length
     return (approveVotes / totalVotes) * 100
   }
@@ -168,7 +168,7 @@ export function ElderCouncilMode({
               <p className="text-purple-200">4賢者統合指揮所 - 総合知能システム</p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <div className="text-right">
               <div className="text-sm opacity-80">システム統合度</div>
@@ -220,7 +220,7 @@ export function ElderCouncilMode({
               <div className="lg:col-span-2">
                 <Card className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">賢者ステータス概要</h3>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {sages.map((sage, index) => (
                       <motion.div
@@ -247,9 +247,9 @@ export function ElderCouncilMode({
                                sage.status === 'busy' ? '処理中' : '待機中'}
                             </Badge>
                           </div>
-                          
+
                           <p className="text-sm mb-3 opacity-90">{sage.activity}</p>
-                          
+
                           <div className="space-y-2">
                             <div className="flex justify-between text-xs">
                               <span>効率性</span>
@@ -257,7 +257,7 @@ export function ElderCouncilMode({
                             </div>
                             <Progress value={sage.performance.efficiency} className="h-1 bg-white bg-opacity-20" />
                           </div>
-                          
+
                           {/* Load indicator */}
                           <div className="absolute top-2 right-2">
                             <div className={cn(
@@ -277,7 +277,7 @@ export function ElderCouncilMode({
               <div className="space-y-6">
                 <Card className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">システム健全性</h3>
-                  
+
                   <div className="space-y-4">
                     <div>
                       <div className="flex justify-between text-sm mb-1">
@@ -286,7 +286,7 @@ export function ElderCouncilMode({
                       </div>
                       <Progress value={systemMetrics.overallHealth} className="h-2" />
                     </div>
-                    
+
                     <div>
                       <div className="flex justify-between text-sm mb-1">
                         <span>知識カバレッジ</span>
@@ -294,7 +294,7 @@ export function ElderCouncilMode({
                       </div>
                       <Progress value={systemMetrics.coveragePercentage} className="h-2" />
                     </div>
-                    
+
                     <div className="pt-4 border-t">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium text-gray-700">新興課題</span>
@@ -302,7 +302,7 @@ export function ElderCouncilMode({
                           {systemMetrics.emergingIssues}件
                         </Badge>
                       </div>
-                      
+
                       <div className="space-y-2">
                         <div className="flex items-center justify-between text-sm">
                           <span className="text-gray-600">要対応</span>
@@ -316,10 +316,10 @@ export function ElderCouncilMode({
                     </div>
                   </div>
                 </Card>
-                
+
                 <Card className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">アクティブ評議会決定</h3>
-                  
+
                   <div className="space-y-3">
                     {currentDecisions.slice(0, 3).map((decision) => (
                       <div
@@ -383,7 +383,7 @@ export function ElderCouncilMode({
                         </Badge>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <Users className="w-4 h-4 text-gray-400" />
@@ -406,13 +406,13 @@ export function ElderCouncilMode({
                 {selectedDecision && (
                   <Card className="p-6 sticky top-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">決定詳細</h3>
-                    
+
                     <div className="space-y-4">
                       <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-2">提案概要</h4>
                         <p className="text-sm text-gray-600">{selectedDecision.proposal.summary}</p>
                       </div>
-                      
+
                       <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-2">必要なアクション</h4>
                         <ul className="text-sm text-gray-600 space-y-1">
@@ -424,7 +424,7 @@ export function ElderCouncilMode({
                           ))}
                         </ul>
                       </div>
-                      
+
                       <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-2">投票状況</h4>
                         <div className="space-y-2">
@@ -452,7 +452,7 @@ export function ElderCouncilMode({
                           })}
                         </div>
                       </div>
-                      
+
                       <div className="pt-4">
                         <Button
                           className="w-full bg-purple-600 hover:bg-purple-700"

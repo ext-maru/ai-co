@@ -15,24 +15,24 @@ interface ProjectSummary {
 // プロジェクトメタデータを読み込む
 function loadProjectMetadata(): ProjectSummary[] {
   const projects: ProjectSummary[] = []
-  
+
   // 相対パスで../../data/project_metadataにアクセス
   const metadataPath = path.resolve(process.cwd(), '../../data/project_metadata')
-  
+
   console.log('Looking for metadata at:', metadataPath)
-  
+
   try {
     if (fs.existsSync(metadataPath)) {
       const files = fs.readdirSync(metadataPath)
       console.log('Found metadata files:', files)
-      
+
       for (const file of files) {
         if (file.endsWith('.json')) {
           try {
             const filePath = path.join(metadataPath, file)
             const content = fs.readFileSync(filePath, 'utf8')
             const metadata = JSON.parse(content)
-            
+
             const projectId = file.replace('.json', '')
             projects.push({
               project_id: projectId,
@@ -54,13 +54,13 @@ function loadProjectMetadata(): ProjectSummary[] {
   } catch (error) {
     console.error('Error loading project metadata:', error)
   }
-  
+
   // メタデータが見つからない場合のフォールバック
   if (projects.length === 0) {
     console.log('Using fallback projects data')
     return getFallbackProjects()
   }
-  
+
   return projects
 }
 
@@ -79,7 +79,7 @@ function getDescription(projectId: string, metadata: any): string {
     'web-monitoring-dashboard': 'リアルタイム監視・分析ダッシュボード',
     'test-calculator-project': 'TDD学習・テスト実装の実習プロジェクト'
   }
-  
+
   return descriptions[projectId] || metadata.description || 'プロジェクトの説明がありません'
 }
 
@@ -150,7 +150,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     console.log('Creating new project:', body)
-    
+
     // 必須フィールドの検証
     if (!body.name || !body.project_id) {
       return NextResponse.json(
@@ -158,10 +158,10 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
-    
+
     // メタデータファイルパス
     const metadataPath = path.resolve(process.cwd(), '../../data/project_metadata', `${body.project_id}.json`)
-    
+
     // 既存チェック
     if (fs.existsSync(metadataPath)) {
       return NextResponse.json(
@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
         { status: 409 }
       )
     }
-    
+
     // 新規メタデータ作成
     const newMetadata = {
       name: body.name,
@@ -184,35 +184,35 @@ export async function POST(request: NextRequest) {
       actual_completion: null,
       description: body.description || ''
     }
-    
+
     // メタデータディレクトリが存在しない場合は作成
     const metadataDir = path.dirname(metadataPath)
     if (!fs.existsSync(metadataDir)) {
       fs.mkdirSync(metadataDir, { recursive: true })
     }
-    
+
     // ファイルに保存
     fs.writeFileSync(metadataPath, JSON.stringify(newMetadata, null, 2))
-    
+
     // プロジェクトディレクトリ作成（オプション）
     if (body.create_directory) {
       const projectDir = path.resolve(process.cwd(), '..', body.project_id)
       if (!fs.existsSync(projectDir)) {
         fs.mkdirSync(projectDir, { recursive: true })
-        
+
         // README.md を作成
         const readmeContent = `# ${body.name}\n\n${body.description || 'プロジェクトの説明'}\n\n## Status: ${body.status || 'development'}\n`
         fs.writeFileSync(path.join(projectDir, 'README.md'), readmeContent)
       }
     }
-    
+
     console.log('Project created successfully:', body.project_id)
     return NextResponse.json({
       success: true,
       project_id: body.project_id,
       message: 'Project created successfully'
     }, { status: 201 })
-    
+
   } catch (error) {
     console.error('Create project error:', error)
     return NextResponse.json(

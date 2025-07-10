@@ -15,7 +15,7 @@ interface KnowledgeSageProps {
 
 export function KnowledgeSage({ sage, isSelected = false, onSelect, className }: KnowledgeSageProps) {
   const theme = getSageThemeClasses('knowledge')
-  
+
   return (
     <motion.div
       className={cn(
@@ -56,7 +56,7 @@ export function KnowledgeSage({ sage, isSelected = false, onSelect, className }:
           sage.status === 'busy' ? 'bg-yellow-100 text-yellow-800' :
           'bg-gray-100 text-gray-800'
         )}>
-          {sage.status === 'active' ? '活動中' : 
+          {sage.status === 'active' ? '活動中' :
            sage.status === 'busy' ? '修行中' : '休息中'}
         </div>
       </div>
@@ -153,7 +153,7 @@ export function KnowledgeSage({ sage, isSelected = false, onSelect, className }:
           <span className="text-xs text-gray-500">{sage.experience} XP</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
+          <div
             className={cn('h-2 rounded-full', theme.primary)}
             style={{ width: `${Math.min((sage.experience % 1000) / 10, 100)}%` }}
           />

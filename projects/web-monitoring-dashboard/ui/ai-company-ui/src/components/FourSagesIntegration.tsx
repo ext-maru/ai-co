@@ -16,10 +16,10 @@ const FourSagesIntegration: React.FC = () => {
   useEffect(() => {
     // 初期データ取得
     fetchSagesData();
-    
+
     // WebSocket接続開始
     initializeWebSocket();
-    
+
     // 定期的なデータ更新（30秒間隔）
     const interval = setInterval(() => {
       if (connectionStatus === 'connected') {
@@ -60,10 +60,10 @@ const FourSagesIntegration: React.FC = () => {
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      background: '#F3F4F6', 
-      padding: '20px' 
+    <div style={{
+      minHeight: '100vh',
+      background: '#F3F4F6',
+      padding: '20px'
     }}>
       {/* システムヘッダー */}
       <div style={{
@@ -94,7 +94,7 @@ const FourSagesIntegration: React.FC = () => {
             Knowledge • Task • Incident • RAG
           </p>
         </div>
-        
+
         <div style={{
           display: 'flex',
           gap: '24px',
@@ -123,7 +123,7 @@ const FourSagesIntegration: React.FC = () => {
               {getConnectionStatusText()}
             </span>
           </div>
-          
+
           <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -158,7 +158,7 @@ const FourSagesIntegration: React.FC = () => {
               </span>
             </div>
           </div>
-          
+
           <div style={{
             display: 'flex',
             flexDirection: 'column',

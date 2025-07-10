@@ -53,17 +53,17 @@ async function getProjectDetail(projectId: string): Promise<ProjectDetail | null
   try {
     // メタデータファイルから基本情報を読み込む
     const metadataPath = path.resolve(process.cwd(), '../../data/project_metadata', `${projectId}.json`)
-    
+
     if (!fs.existsSync(metadataPath)) {
       console.log(`Metadata not found for project: ${projectId}`)
       return null
     }
-    
+
     const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'))
-    
+
     // プロジェクトパスを決定
     const projectPath = path.resolve(process.cwd(), '..', projectId)
-    
+
     // 基本情報
     const detail: ProjectDetail = {
       project_id: projectId,
@@ -77,22 +77,22 @@ async function getProjectDetail(projectId: string): Promise<ProjectDetail | null
       updated_at: metadata.actual_completion || metadata.estimated_completion || new Date().toISOString(),
       dependencies: []
     }
-    
+
     // コード構造の分析（簡易版）
     if (fs.existsSync(projectPath)) {
       detail.code_structure = await analyzeCodeStructure(projectPath)
       detail.git_metrics = await analyzeGitMetrics(projectPath)
       detail.dependencies = await analyzeDependencies(projectPath, projectId)
     }
-    
+
     // ドキュメント情報（存在する場合）
     const docPath = path.join(projectPath, 'documentation.json')
     if (fs.existsSync(docPath)) {
       detail.documentation = JSON.parse(fs.readFileSync(docPath, 'utf8'))
     }
-    
+
     return detail
-    
+
   } catch (error) {
     console.error('Error getting project detail:', error)
     return null
@@ -109,12 +109,12 @@ async function analyzeCodeStructure(projectPath: string) {
     complexity_score: 0,
     languages: {} as Record<string, number>
   }
-  
+
   try {
     // ファイル数をカウント（簡易版）
     const files = getAllFiles(projectPath)
     structure.total_files = files.length
-    
+
     // 言語別ファイル数
     files.forEach(file => {
       const ext = path.extname(file).toLowerCase()
@@ -123,17 +123,17 @@ async function analyzeCodeStructure(projectPath: string) {
         structure.languages[lang] = (structure.languages[lang] || 0) + 1
       }
     })
-    
+
     // 行数を概算
     structure.total_lines = structure.total_files * 100 // 簡易推定
-    
+
     // 複雑度スコア（簡易計算）
     structure.complexity_score = Math.min(100, structure.total_files * 2)
-    
+
   } catch (error) {
     console.error('Error analyzing code structure:', error)
   }
-  
+
   return structure
 }
 
@@ -147,13 +147,13 @@ async function analyzeGitMetrics(projectPath: string) {
     active_branches: 1,
     commit_frequency: 0
   }
-  
+
   try {
     // Git リポジトリかチェック
     if (!fs.existsSync(path.join(projectPath, '.git'))) {
       return metrics
     }
-    
+
     // コミット数を取得（エラーハンドリング付き）
     try {
       const { stdout: commitCount } = await execAsync('git rev-list --count HEAD', { cwd: projectPath })
@@ -161,37 +161,37 @@ async function analyzeGitMetrics(projectPath: string) {
     } catch (e) {
       console.log('Git not initialized or no commits')
     }
-    
+
   } catch (error) {
     console.error('Error analyzing git metrics:', error)
   }
-  
+
   return metrics
 }
 
 // 依存関係を分析
 async function analyzeDependencies(projectPath: string, projectId: string) {
   const dependencies: Array<{ name: string; version?: string; type: string }> = []
-  
+
   try {
     // package.json (Node.js)
     const packageJsonPath = path.join(projectPath, 'package.json')
     if (fs.existsSync(packageJsonPath)) {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'))
-      
+
       if (packageJson.dependencies) {
         Object.entries(packageJson.dependencies).forEach(([name, version]) => {
           dependencies.push({ name, version: version as string, type: 'runtime' })
         })
       }
-      
+
       if (packageJson.devDependencies) {
         Object.entries(packageJson.devDependencies).forEach(([name, version]) => {
           dependencies.push({ name, version: version as string, type: 'development' })
         })
       }
     }
-    
+
     // requirements.txt (Python)
     const requirementsPath = path.join(projectPath, 'requirements.txt')
     if (fs.existsSync(requirementsPath)) {
@@ -204,11 +204,11 @@ async function analyzeDependencies(projectPath: string, projectId: string) {
         }
       })
     }
-    
+
   } catch (error) {
     console.error('Error analyzing dependencies:', error)
   }
-  
+
   return dependencies
 }
 
@@ -216,15 +216,15 @@ async function analyzeDependencies(projectPath: string, projectId: string) {
 function getAllFiles(dirPath: string, arrayOfFiles: string[] = []): string[] {
   try {
     const files = fs.readdirSync(dirPath)
-    
+
     files.forEach((file) => {
       const filePath = path.join(dirPath, file)
-      
+
       // 除外するディレクトリ
       if (['node_modules', '.git', 'dist', 'build', '.next', '__pycache__'].includes(file)) {
         return
       }
-      
+
       if (fs.statSync(filePath).isDirectory()) {
         arrayOfFiles = getAllFiles(filePath, arrayOfFiles)
       } else {
@@ -234,7 +234,7 @@ function getAllFiles(dirPath: string, arrayOfFiles: string[] = []): string[] {
   } catch (error) {
     console.error('Error getting files:', error)
   }
-  
+
   return arrayOfFiles
 }
 
@@ -264,7 +264,7 @@ function getLanguageFromExt(ext: string): string | null {
     '.yml': 'YAML',
     '.md': 'Markdown'
   }
-  
+
   return langMap[ext] || null
 }
 
@@ -283,7 +283,7 @@ function getDescription(projectId: string, metadata: any): string {
     'web-monitoring-dashboard': 'リアルタイム監視・分析ダッシュボード',
     'test-calculator-project': 'TDD学習・テスト実装の実習プロジェクト'
   }
-  
+
   return descriptions[projectId] || metadata.description || 'プロジェクトの説明がありません'
 }
 
@@ -293,19 +293,19 @@ export async function GET(
 ) {
   try {
     console.log('Project detail API called for:', params.id)
-    
+
     const projectDetail = await getProjectDetail(params.id)
-    
+
     if (!projectDetail) {
       return NextResponse.json(
         { error: 'Project not found' },
         { status: 404 }
       )
     }
-    
+
     console.log('Returning project detail for:', params.id)
     return NextResponse.json(projectDetail)
-    
+
   } catch (error) {
     console.error('Project detail API error:', error)
     return NextResponse.json(

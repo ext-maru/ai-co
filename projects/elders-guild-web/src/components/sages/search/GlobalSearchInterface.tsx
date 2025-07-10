@@ -112,7 +112,7 @@ export function GlobalSearchInterface({
       const updated = [query, ...recentSearches.filter(s => s !== query)].slice(0, 5)
       setRecentSearches(updated)
       localStorage.setItem('recentSearches', JSON.stringify(updated))
-      
+
       onSearch?.(query, filters)
     }
   }
@@ -144,13 +144,13 @@ export function GlobalSearchInterface({
 
   const highlightText = (text: string, highlights: string[]) => {
     if (!highlights.length) return text
-    
+
     let highlightedText = text
     highlights.forEach(highlight => {
       const regex = new RegExp(`(${highlight})`, 'gi')
       highlightedText = highlightedText.replace(regex, '<mark class="bg-lime-200 text-lime-900">$1</mark>')
     })
-    
+
     return <span dangerouslySetInnerHTML={{ __html: highlightedText }} />
   }
 
@@ -179,7 +179,7 @@ export function GlobalSearchInterface({
               </Button>
             )}
           </div>
-          
+
           {/* Search Suggestions */}
           <AnimatePresence>
             {(suggestions.length > 0 || recentSearches.length > 0) && query && (
@@ -207,7 +207,7 @@ export function GlobalSearchInterface({
                     ))}
                   </div>
                 )}
-                
+
                 {recentSearches.length > 0 && !suggestions.length && (
                   <div className="p-2">
                     <div className="text-xs font-medium text-gray-500 px-2 py-1">最近の検索</div>
@@ -230,7 +230,7 @@ export function GlobalSearchInterface({
             )}
           </AnimatePresence>
         </div>
-        
+
         {/* Quick Filters */}
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center space-x-2">
@@ -248,14 +248,14 @@ export function GlobalSearchInterface({
                 </Badge>
               )}
             </Button>
-            
+
             {Object.values(filters).some(f => Array.isArray(f) ? f.length > 0 : f !== 'all' && f !== 'relevance') && (
               <Button variant="ghost" size="sm" onClick={clearFilters}>
                 クリア
               </Button>
             )}
           </div>
-          
+
           <div className="flex items-center space-x-2 text-sm text-gray-500">
             <span>並び順:</span>
             <select
@@ -269,7 +269,7 @@ export function GlobalSearchInterface({
             </select>
           </div>
         </div>
-        
+
         {/* Advanced Filters */}
         <AnimatePresence>
           {showFilters && (
@@ -297,7 +297,7 @@ export function GlobalSearchInterface({
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">ソース</label>
                     <div className="space-y-1">
@@ -314,7 +314,7 @@ export function GlobalSearchInterface({
                       ))}
                     </div>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">更新日</label>
                     <select
@@ -335,7 +335,7 @@ export function GlobalSearchInterface({
           )}
         </AnimatePresence>
       </Card>
-      
+
       {/* Search Results */}
       {results.length > 0 && (
         <div>
@@ -348,7 +348,7 @@ export function GlobalSearchInterface({
               <span>検索時間: 0.234秒</span>
             </div>
           </div>
-          
+
           <div className="space-y-4">
             {results.map((result, index) => (
               <motion.div
@@ -377,7 +377,7 @@ export function GlobalSearchInterface({
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2">
                       <Badge variant="outline" className="text-xs">
                         {Math.round(result.relevanceScore * 100)}% 関連
@@ -387,14 +387,14 @@ export function GlobalSearchInterface({
                       </Button>
                     </div>
                   </div>
-                  
+
                   <p className="text-gray-600 mb-4">
                     {highlightText(
                       result.content.slice(0, 200) + (result.content.length > 200 ? '...' : ''),
                       result.highlights.find(h => h.field === 'content')?.matches || []
                     )}
                   </p>
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       {result.author && (
@@ -408,7 +408,7 @@ export function GlobalSearchInterface({
                           <span className="text-sm text-gray-600">{result.author.name}</span>
                         </div>
                       )}
-                      
+
                       {result.tags.length > 0 && (
                         <div className="flex items-center space-x-1">
                           <Tag className="w-4 h-4 text-gray-400" />
@@ -430,7 +430,7 @@ export function GlobalSearchInterface({
                         </div>
                       )}
                     </div>
-                    
+
                     <Button
                       variant="outline"
                       size="sm"
@@ -446,7 +446,7 @@ export function GlobalSearchInterface({
           </div>
         </div>
       )}
-      
+
       {/* No Results */}
       {query && results.length === 0 && !isLoading && (
         <Card className="p-12 text-center">

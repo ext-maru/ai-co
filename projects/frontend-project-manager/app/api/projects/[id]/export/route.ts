@@ -10,29 +10,29 @@ export async function GET(
   try {
     const url = new URL(request.url)
     const format = url.searchParams.get('format') || 'json'
-    
+
     console.log('Export project:', params.id, 'format:', format)
-    
+
     // メタデータを読み込む
     const metadataPath = path.resolve(process.cwd(), '../../data/project_metadata', `${params.id}.json`)
-    
+
     if (!fs.existsSync(metadataPath)) {
       return NextResponse.json(
         { error: 'Project not found' },
         { status: 404 }
       )
     }
-    
+
     const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'))
     const projectPath = path.resolve(process.cwd(), '..', params.id)
-    
+
     // プロジェクト詳細データを構築
     const projectData = {
       project_id: params.id,
       ...metadata,
       export_date: new Date().toISOString()
     }
-    
+
     // フォーマットに応じてエクスポート
     switch (format.toLowerCase()) {
       case 'json':
@@ -41,7 +41,7 @@ export async function GET(
             'Content-Disposition': `attachment; filename="${params.id}_export.json"`
           }
         })
-        
+
       case 'markdown':
         const markdown = generateProjectMarkdown(projectData)
         return new NextResponse(markdown, {
@@ -50,7 +50,7 @@ export async function GET(
             'Content-Disposition': `attachment; filename="${params.id}_export.md"`
           }
         })
-        
+
       case 'report':
         const report = generateProjectReport(projectData)
         return new NextResponse(report, {
@@ -59,14 +59,14 @@ export async function GET(
             'Content-Disposition': `attachment; filename="${params.id}_report.md"`
           }
         })
-        
+
       default:
         return NextResponse.json(
           { error: 'Unsupported format. Use json, markdown, or report' },
           { status: 400 }
         )
     }
-    
+
   } catch (error) {
     console.error('Export error:', error)
     return NextResponse.json(
@@ -80,7 +80,7 @@ export async function GET(
 function generateProjectMarkdown(project: any): string {
   return `# ${project.name}
 
-**プロジェクトID**: ${project.project_id}  
+**プロジェクトID**: ${project.project_id}
 **エクスポート日時**: ${project.export_date}
 
 ## 📋 基本情報
@@ -125,22 +125,22 @@ function generateProjectReport(project: any): string {
     'planning': '📋',
     'deleted': '🗑️'
   }
-  
+
   const priorityEmoji = {
     'high': '🔴',
     'medium': '🟡',
     'low': '🟢'
   }
-  
+
   return `# 📊 プロジェクトレポート: ${project.name}
 
-**レポート生成日時**: ${new Date().toISOString()}  
+**レポート生成日時**: ${new Date().toISOString()}
 **プロジェクトID**: \`${project.project_id}\`
 
 ## 🎯 エグゼクティブサマリー
 
-${statusEmoji[project.status] || '⚪'} **ステータス**: ${project.status}  
-${priorityEmoji[project.priority] || '⚪'} **優先度**: ${project.priority}  
+${statusEmoji[project.status] || '⚪'} **ステータス**: ${project.status}
+${priorityEmoji[project.priority] || '⚪'} **優先度**: ${project.priority}
 📈 **進捗**: ${(project.progress * 100).toFixed(0)}%
 
 ## 📋 プロジェクト概要
@@ -177,7 +177,7 @@ ${(project.tags || []).map((tag: string) => `\`${tag}\``).join(' ')}
 
 ## 🎯 今後のアクション
 
-${project.status === 'completed' ? 
+${project.status === 'completed' ?
   '✅ このプロジェクトは完了しています。' :
   project.status === 'development' ?
     `### 推奨事項
@@ -198,7 +198,7 @@ ${project.status === 'completed' ?
 
 ---
 
-**エルダーズギルド プロジェクト管理システム**  
+**エルダーズギルド プロジェクト管理システム**
 *品質第一 × 階層秩序*
 `
 }

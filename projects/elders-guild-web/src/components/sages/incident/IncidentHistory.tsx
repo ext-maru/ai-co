@@ -92,12 +92,12 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
 
   const filteredIncidents = incidents.filter(incident => {
     const matchesSeverity = filterSeverity === 'all' || incident.severity === filterSeverity
-    
+
     // Filter by time range
     const now = new Date()
     const incidentDate = new Date(incident.startTime)
     const daysDiff = (now.getTime() - incidentDate.getTime()) / (1000 * 60 * 60 * 24)
-    
+
     let matchesTimeRange = true
     switch (timeRange) {
       case '24h': matchesTimeRange = daysDiff <= 1; break
@@ -105,7 +105,7 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
       case '30d': matchesTimeRange = daysDiff <= 30; break
       case '90d': matchesTimeRange = daysDiff <= 90; break
     }
-    
+
     return matchesSeverity && matchesTimeRange
   })
 
@@ -137,7 +137,7 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
             <option value="30d">過去30日間</option>
             <option value="90d">過去90日間</option>
           </select>
-          
+
           <select
             value={filterSeverity}
             onChange={(e) => setFilterSeverity(e.target.value as any)}
@@ -150,7 +150,7 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
             <option value="low">低</option>
           </select>
         </div>
-        
+
         <Button variant="outline" size="sm">
           <FileText className="w-4 h-4 mr-2" />
           レポートをエクスポート
@@ -239,11 +239,11 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
         <div className="lg:col-span-2">
           <Card className="p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">インシデントタイムライン</h3>
-            
+
             <div className="relative">
               {/* Timeline line */}
               <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200" />
-              
+
               <div className="space-y-6">
                 {filteredIncidents.map((incident, index) => (
                   <motion.div
@@ -260,7 +260,7 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
                       incident.severity === 'high' ? 'bg-orange-500' :
                       incident.severity === 'medium' ? 'bg-yellow-500' : 'bg-blue-500'
                     )} />
-                    
+
                     {/* Incident card */}
                     <div
                       className={cn(
@@ -279,7 +279,7 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
                           {incident.severity}
                         </Badge>
                       </div>
-                      
+
                       <div className="flex items-center space-x-4 text-sm text-gray-500">
                         <span className="flex items-center">
                           <Calendar className="w-4 h-4 mr-1" />
@@ -294,7 +294,7 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
                            incident.status === 'mitigated' ? '緩和済み' : '継続中'}
                         </Badge>
                       </div>
-                      
+
                       {incident.impact && (
                         <div className="mt-3 flex items-center space-x-4 text-xs text-gray-600">
                           <span>影響: {incident.impact.users.toLocaleString()}ユーザー</span>
@@ -329,13 +329,13 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
             >
               <Card className="p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">インシデント詳細</h2>
-                
+
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-medium text-gray-900">{selectedIncident.title}</h3>
                     <p className="text-sm text-gray-600 mt-1">{selectedIncident.description}</p>
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div>
                       <span className="text-gray-600">重要度</span>
@@ -359,21 +359,21 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
                       <p className="font-medium">{selectedIncident.metrics.mtta}分</p>
                     </div>
                   </div>
-                  
+
                   {selectedIncident.rootCause && (
                     <div>
                       <h4 className="text-sm font-medium text-gray-700 mb-1">根本原因</h4>
                       <p className="text-sm text-gray-600">{selectedIncident.rootCause}</p>
                     </div>
                   )}
-                  
+
                   {selectedIncident.resolution && (
                     <div>
                       <h4 className="text-sm font-medium text-gray-700 mb-1">解決方法</h4>
                       <p className="text-sm text-gray-600">{selectedIncident.resolution}</p>
                     </div>
                   )}
-                  
+
                   <div>
                     <h4 className="text-sm font-medium text-gray-700 mb-2">アクションタイムライン</h4>
                     <div className="space-y-2">
@@ -390,7 +390,7 @@ export function IncidentHistory({ incidents, onIncidentSelect, className }: Inci
                       ))}
                     </div>
                   </div>
-                  
+
                   {selectedIncident.postmortem && (
                     <div className="pt-4 border-t">
                       <Button

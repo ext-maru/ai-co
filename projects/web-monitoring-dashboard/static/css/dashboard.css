@@ -474,11 +474,11 @@ body {
             "main";
         grid-template-columns: 1fr;
     }
-    
+
     .sidebar {
         display: none;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
     }

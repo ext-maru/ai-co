@@ -6,16 +6,13 @@ export enum ContractType {
 
 // 書類タイプ
 export enum DocumentType {
-  // 共通
-  APPLICATION_FORM = 'application_form',
-  
   // 個人契約者用
   RESIDENT_CARD = 'resident_card',
   SEAL_CERTIFICATE = 'seal_certificate',
   TAX_RETURN = 'tax_return',
   DRIVERS_LICENSE = 'drivers_license',
   BANK_BOOK = 'bank_book',
-  
+
   // 法人契約者用
   CORPORATE_REGISTRY = 'corporate_registry',
   CORPORATE_SEAL_CERT = 'corporate_seal_cert',
@@ -23,7 +20,7 @@ export enum DocumentType {
   BALANCE_SHEET = 'balance_sheet',
   INCOME_STATEMENT = 'income_statement',
   EQUITY_STATEMENT = 'equity_statement',
-  
+
   // 代表者用（法人の場合）
   REP_RESIDENT_CARD = 'rep_resident_card',
   REP_SEAL_CERTIFICATE = 'rep_seal_certificate',
@@ -31,12 +28,11 @@ export enum DocumentType {
   REP_DRIVERS_LICENSE = 'rep_drivers_license'
 }
 
-// アップロードステータス
+// アップロードステータス（3段階シンプル版）
 export enum UploadStatus {
-  PENDING = 'pending',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  EXPIRED = 'expired'
+  NOT_UPLOADED = 'not_uploaded',     // アップしてない
+  NEEDS_REUPLOAD = 'needs_reupload', // アップしたがNG出て再度アップ必要
+  APPROVED = 'approved'              // アップしてOKでた
 }
 
 // 書類要件

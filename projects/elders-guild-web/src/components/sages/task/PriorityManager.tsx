@@ -109,10 +109,10 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
 
     const priorities: PriorityItem['priority'][] = ['low', 'medium', 'high', 'urgent']
     const currentIndex = priorities.indexOf(item.priority)
-    const newIndex = direction === 'up' 
+    const newIndex = direction === 'up'
       ? Math.min(currentIndex + 1, priorities.length - 1)
       : Math.max(currentIndex - 1, 0)
-    
+
     if (currentIndex !== newIndex) {
       onPriorityChange?.(itemId, priorities[newIndex])
     }
@@ -153,7 +153,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
               <option value="completed">完了</option>
             </select>
           </div>
-          
+
           <div className="flex items-center space-x-2">
             <SortAsc className="w-4 h-4 text-gray-500" />
             <select
@@ -168,7 +168,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
             </select>
           </div>
         </div>
-        
+
         <Badge variant="secondary" className="bg-goldenrod-100 text-goldenrod-800">
           {sortedItems.filter(i => i.status !== 'completed').length} 件のアクティブタスク
         </Badge>
@@ -213,28 +213,28 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
                                item.priority === 'medium' ? '中' : '低'}
                             </Badge>
                           </div>
-                          
+
                           <Badge className={cn('text-xs', getStatusColor(item.status))}>
                             {item.status === 'pending' ? '保留' :
                              item.status === 'in_progress' ? '進行中' :
                              item.status === 'blocked' ? 'ブロック' : '完了'}
                           </Badge>
-                          
+
                           {item.dependencies.length > 0 && (
                             <Badge variant="outline" className="text-xs">
                               依存: {item.dependencies.length}
                             </Badge>
                           )}
                         </div>
-                        
+
                         <h3 className="font-medium text-gray-900 mb-1">{item.title}</h3>
-                        
+
                         {item.description && (
                           <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                             {item.description}
                           </p>
                         )}
-                        
+
                         <div className="flex items-center justify-between">
                           <div className="flex items-center space-x-4 text-sm">
                             <div className="flex items-center space-x-1">
@@ -243,14 +243,14 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
                                 影響: <span className="font-medium">{item.impact}</span>
                               </span>
                             </div>
-                            
+
                             <div className="flex items-center space-x-1">
                               <Clock className="w-4 h-4 text-gray-400" />
                               <span className="text-gray-600">
                                 作業量: <span className="font-medium">{getEffortSize(item.effort)}</span>
                               </span>
                             </div>
-                            
+
                             {item.deadline && (
                               <div className={cn(
                                 'flex items-center space-x-1',
@@ -266,7 +266,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
                               </div>
                             )}
                           </div>
-                          
+
                           {item.assignee && (
                             <Avatar
                               src={item.assignee.avatar}
@@ -277,7 +277,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
                           )}
                         </div>
                       </div>
-                      
+
                       {/* Priority Controls */}
                       <div className="flex flex-col ml-4">
                         <button
@@ -322,7 +322,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
         <div className="lg:col-span-1">
           <Card className="p-6 sticky top-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">優先度マトリクス</h3>
-            
+
             <div className="relative bg-gray-50 rounded-lg p-4 h-80">
               {/* Matrix Grid */}
               <div className="absolute inset-4 grid grid-cols-4 grid-rows-4 gap-px bg-gray-200">
@@ -330,7 +330,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
                   const row = Math.floor(i / 4)
                   const col = i % 4
                   const isHighImpactLowEffort = row < 2 && col < 2
-                  
+
                   return (
                     <div
                       key={i}
@@ -342,7 +342,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
                   )
                 })}
               </div>
-              
+
               {/* Axis Labels */}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 text-xs text-gray-500">
                 作業量 →
@@ -350,7 +350,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
               <div className="absolute left-0 top-1/2 transform -translate-y-1/2 -rotate-90 text-xs text-gray-500">
                 影響度 →
               </div>
-              
+
               {/* Items on Matrix */}
               {sortedItems.map((item) => {
                 const pos = getMatrixPosition(item)
@@ -379,7 +379,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
                   </motion.div>
                 )
               })}
-              
+
               {/* Quadrant Labels */}
               <div className="absolute top-2 left-2 text-xs font-medium text-green-700">
                 Quick Wins
@@ -394,7 +394,7 @@ export function PriorityManager({ items, onItemUpdate, onPriorityChange, classNa
                 Time Sinks
               </div>
             </div>
-            
+
             {/* Legend */}
             <div className="mt-4 space-y-2">
               <h4 className="text-sm font-medium text-gray-700">凡例</h4>

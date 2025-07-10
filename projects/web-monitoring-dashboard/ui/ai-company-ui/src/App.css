@@ -72,12 +72,12 @@
     gap: 1rem;
     padding: 1rem;
   }
-  
+
   .nav-buttons {
     width: 100%;
     justify-content: center;
   }
-  
+
   .nav-buttons button {
     flex: 1;
     max-width: 200px;

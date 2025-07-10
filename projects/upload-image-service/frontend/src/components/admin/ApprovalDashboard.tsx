@@ -37,7 +37,7 @@ export const ApprovalDashboard: React.FC = () => {
     try {
       await updateUploadStatus(uploadId, newStatus);
       // 楽観的更新
-      setUploads(prev => prev.map(upload => 
+      setUploads(prev => prev.map(upload =>
         upload.id === uploadId ? { ...upload, status: newStatus } : upload
       ));
     } catch (error) {
@@ -47,34 +47,34 @@ export const ApprovalDashboard: React.FC = () => {
     }
   };
 
-  const filteredUploads = uploads.filter(upload => 
+  const filteredUploads = uploads.filter(upload =>
     filter === 'all' || upload.status === filter
   );
 
   return (
     <div className="approval-dashboard">
       <h1>画像承認ダッシュボード</h1>
-      
+
       <div className="filter-buttons">
-        <button 
+        <button
           className={filter === 'all' ? 'active' : ''}
           onClick={() => setFilter('all')}
         >
           すべて ({uploads.length})
         </button>
-        <button 
+        <button
           className={filter === 'pending' ? 'active' : ''}
           onClick={() => setFilter('pending')}
         >
           承認待ち ({uploads.filter(u => u.status === 'pending').length})
         </button>
-        <button 
+        <button
           className={filter === 'approved' ? 'active' : ''}
           onClick={() => setFilter('approved')}
         >
           承認済み ({uploads.filter(u => u.status === 'approved').length})
         </button>
-        <button 
+        <button
           className={filter === 'rejected' ? 'active' : ''}
           onClick={() => setFilter('rejected')}
         >
@@ -97,16 +97,16 @@ export const ApprovalDashboard: React.FC = () => {
                 <p>サイズ: {(upload.size / 1024 / 1024).toFixed(2)} MB</p>
                 <p>ユーザー: {upload.userId}</p>
               </div>
-              
+
               {upload.status === 'pending' && (
                 <div className="action-buttons">
-                  <button 
+                  <button
                     className="approve-btn"
                     onClick={() => handleStatusUpdate(upload.id, 'approved')}
                   >
                     承認
                   </button>
-                  <button 
+                  <button
                     className="reject-btn"
                     onClick={() => handleStatusUpdate(upload.id, 'rejected')}
                   >
@@ -114,7 +114,7 @@ export const ApprovalDashboard: React.FC = () => {
                   </button>
                 </div>
               )}
-              
+
               <div className={`status-badge ${upload.status}`}>
                 {upload.status === 'pending' && '承認待ち'}
                 {upload.status === 'approved' && '✓ 承認済み'}

@@ -8,36 +8,28 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 import structlog
-from fastapi import FastAPI, Request, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
-from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
-
-# Import API routers
-from app.api.v1.api import api_router
 from app.api.endpoints.auth import router as auth_router
+from app.api.endpoints.elder_council import router as elder_council_router
 from app.api.endpoints.migration import router as migration_router
 from app.api.endpoints.monitoring import router as monitoring_router
-from app.api.endpoints.elder_council import router as elder_council_router
 from app.api.endpoints.sages_incidents import router as sages_incidents_router
 from app.api.endpoints.sages_knowledge import router as sages_knowledge_router
 from app.api.endpoints.sages_search import router as sages_search_router
 from app.api.endpoints.sages_tasks import router as sages_tasks_router
 from app.api.endpoints.websocket_routes import router as websocket_router
 
+# Import API routers
+from app.api.v1.api import api_router
+
 # Import core modules
 from app.core.config import settings
-from app.core.logging import (
-    logger_manager, 
-    log_startup, 
-    log_shutdown, 
-    request_logger, 
-    security_logger,
-    performance_logger
-)
-from app.core.database import db_manager, check_database_health, check_redis_health
+from app.core.database import check_database_health
+from app.core.database import check_redis_health
+from app.core.database import db_manager
+from app.core.logging import log_shutdown
+from app.core.logging import log_startup
+from app.core.logging import performance_logger
+from app.core.logging import request_logger
 from app.core.security import SecurityHeaders
 
 # Import middleware
@@ -46,6 +38,13 @@ from app.middleware.security import SecurityMiddleware
 
 # Import WebSocket manager
 from app.websocket.secure_manager import websocket_manager
+from fastapi import FastAPI
+from fastapi import Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import JSONResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 # Configure structured logging
 log_startup()
@@ -60,46 +59,46 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
     # Startup
     logger.info("🏰 Starting Elders Guild Web - Elder's Guild Phase 4")
-    
+
     try:
         # Initialize database
         if settings.DATABASE_URL:
             db_manager.create_tables()
             db_health = await check_database_health()
             logger.info("Database status", status=db_health["status"])
-        
+
         # Check Redis
         redis_health = await check_redis_health()
         logger.info("Redis status", status=redis_health["status"])
-        
+
         # Initialize WebSocket manager
         logger.info("Initializing secure WebSocket manager")
-        
+
         # Announce startup completion
         logger.info(
             "🚀 Elders Guild Web Elder's Guild System ONLINE",
             environment=settings.ENVIRONMENT,
             elder_council_enabled=settings.ELDER_COUNCIL_ENABLED,
             max_sages=settings.MAX_SAGES,
-            coverage_target=settings.COVERAGE_TARGET
+            coverage_target=settings.COVERAGE_TARGET,
         )
-        
+
     except Exception as e:
         logger.error("Startup failed", error=str(e))
         raise
-    
+
     yield
-    
+
     # Shutdown
     logger.info("🏰 Shutting down Elders Guild Web - Elder's Guild")
-    
+
     try:
         # Cleanup WebSocket connections
         logger.info("Closing WebSocket connections")
-        
+
         # Log shutdown
         log_shutdown()
-        
+
     except Exception as e:
         logger.error("Shutdown error", error=str(e))
 
@@ -121,19 +120,18 @@ def create_application() -> FastAPI:
 
     # Add Security Middleware (first in chain)
     app.add_middleware(SecurityMiddleware)
-    
+
     # Add Rate Limiting Middleware
     app.add_middleware(RateLimitMiddleware)
 
     # Security Middleware
     app.add_middleware(
         TrustedHostMiddleware,
-        allowed_hosts=["*"] if not settings.is_production else [
-            "ai-company.com",
-            "www.ai-company.com",
-            "ai-company-web.vercel.app",
-            "ai-company-api.railway.app"
-        ],
+        allowed_hosts=(
+            ["*"]
+            if not settings.is_production
+            else ["ai-company.com", "www.ai-company.com", "ai-company-web.vercel.app", "ai-company-api.railway.app"]
+        ),
     )
 
     # CORS Middleware for Next.js integration
@@ -150,38 +148,34 @@ def create_application() -> FastAPI:
     @app.middleware("http")
     async def logging_middleware(request: Request, call_next):
         start_time = time.time()
-        
+
         # Log request
         logger.info(
             "HTTP request started",
             method=request.method,
             url=str(request.url),
             client_ip=request.client.host,
-            user_agent=request.headers.get("user-agent", "")
+            user_agent=request.headers.get("user-agent", ""),
         )
-        
+
         try:
             response = await call_next(request)
-            
+
             # Calculate processing time
             process_time = time.time() - start_time
-            
+
             # Add performance headers
             response.headers["X-Process-Time"] = str(process_time)
-            
+
             # Log successful request
             await request_logger.log_request(request, response, process_time)
-            
+
             # Log performance if slow
             if process_time > 1.0:  # Slow request threshold
-                await performance_logger.log_api_performance(
-                    str(request.url.path),
-                    process_time,
-                    response.status_code
-                )
-            
+                await performance_logger.log_api_performance(str(request.url.path), process_time, response.status_code)
+
             return response
-            
+
         except Exception as e:
             # Log error
             await request_logger.log_error(request, e)
@@ -193,12 +187,8 @@ def create_application() -> FastAPI:
         headers = SecurityHeaders.get_security_headers()
         return JSONResponse(
             status_code=exc.status_code,
-            content={
-                "error": exc.detail,
-                "status_code": exc.status_code,
-                "timestamp": time.time()
-            },
-            headers=headers
+            content={"error": exc.detail, "status_code": exc.status_code, "timestamp": time.time()},
+            headers=headers,
         )
 
     @app.exception_handler(RequestValidationError)
@@ -206,17 +196,13 @@ def create_application() -> FastAPI:
         headers = SecurityHeaders.get_security_headers()
         return JSONResponse(
             status_code=422,
-            content={
-                "error": "Validation Error",
-                "details": exc.errors(),
-                "timestamp": time.time()
-            },
-            headers=headers
+            content={"error": "Validation Error", "details": exc.errors(), "timestamp": time.time()},
+            headers=headers,
         )
 
     # Include API routes
     app.include_router(api_router, prefix="/api")
-    
+
     # Include specific endpoint routers
     app.include_router(auth_router, prefix="/api/v1/auth", tags=["Authentication"])
     app.include_router(migration_router, prefix="/api/v1/migration", tags=["Migration"])
@@ -243,16 +229,15 @@ async def health_check():
     try:
         # Check database
         db_health = await check_database_health()
-        
+
         # Check Redis
         redis_health = await check_redis_health()
-        
+
         # Overall health
         overall_status = "healthy"
-        if (db_health.get("status") != "healthy" or 
-            redis_health.get("status") != "healthy"):
+        if db_health.get("status") != "healthy" or redis_health.get("status") != "healthy":
             overall_status = "degraded"
-        
+
         response_data = {
             "status": overall_status,
             "service": "ai-company-web-api",
@@ -262,38 +247,25 @@ async def health_check():
             "components": {
                 "database": db_health,
                 "redis": redis_health,
-                "elder_council": {
-                    "status": "healthy",
-                    "enabled": settings.ELDER_COUNCIL_ENABLED
-                },
+                "elder_council": {"status": "healthy", "enabled": settings.ELDER_COUNCIL_ENABLED},
                 "sages": {
                     "status": "healthy",
                     "max_count": settings.MAX_SAGES,
-                    "coverage_target": settings.COVERAGE_TARGET
-                }
-            }
+                    "coverage_target": settings.COVERAGE_TARGET,
+                },
+            },
         }
-        
+
         status_code = 200 if overall_status == "healthy" else 503
         headers = SecurityHeaders.get_security_headers()
-        
-        return JSONResponse(
-            content=response_data,
-            status_code=status_code,
-            headers=headers
-        )
-        
+
+        return JSONResponse(content=response_data, status_code=status_code, headers=headers)
+
     except Exception as e:
         logger.error("Health check failed", error=str(e))
         headers = SecurityHeaders.get_security_headers()
         return JSONResponse(
-            content={
-                "status": "unhealthy",
-                "error": str(e),
-                "timestamp": time.time()
-            },
-            status_code=503,
-            headers=headers
+            content={"status": "unhealthy", "error": str(e), "timestamp": time.time()}, status_code=503, headers=headers
         )
 
 
@@ -303,7 +275,7 @@ async def root():
     Root endpoint with Elder's Guild API information.
     """
     headers = SecurityHeaders.get_security_headers()
-    
+
     return JSONResponse(
         content={
             "message": "🏰 Elders Guild Web - Elder's Guild API",
@@ -316,7 +288,7 @@ async def root():
                 "coverage_target": f"{settings.COVERAGE_TARGET}%",
                 "security": "Enterprise-grade OWASP Top 10 compliant",
                 "websocket": "Secure real-time communication",
-                "migration": "Gradual Flask API integration"
+                "migration": "Gradual Flask API integration",
             },
             "endpoints": {
                 "health": "/health",
@@ -325,11 +297,11 @@ async def root():
                 "sages": "/api/v1/sages",
                 "auth": "/api/v1/auth",
                 "monitoring": "/api/v1/monitoring",
-                "websocket": "/api/v1/ws"
+                "websocket": "/api/v1/ws",
             },
-            "timestamp": time.time()
+            "timestamp": time.time(),
         },
-        headers=headers
+        headers=headers,
     )
 
 
@@ -341,9 +313,9 @@ async def system_info():
     try:
         # Get WebSocket connection stats
         ws_stats = websocket_manager.get_connection_stats()
-        
+
         headers = SecurityHeaders.get_security_headers()
-        
+
         return JSONResponse(
             content={
                 "system": "Elders Guild Web - Elder's Guild",
@@ -354,27 +326,27 @@ async def system_info():
                     "backend": "FastAPI on Railway",
                     "database": "PostgreSQL with Redis cache",
                     "cdn": "Cloudflare with edge optimization",
-                    "websocket": "Secure real-time communication"
+                    "websocket": "Secure real-time communication",
                 },
                 "security": {
                     "authentication": "JWT + OAuth 2.1",
                     "authorization": "Elder hierarchy (Grand Elder > Elder > Sage > Servant)",
                     "protection": "OWASP Top 10 compliant",
                     "rate_limiting": "Multi-tier with Redis backend",
-                    "headers": "Comprehensive security headers"
+                    "headers": "Comprehensive security headers",
                 },
                 "monitoring": {
                     "logging": "Structured with Sentry integration",
                     "performance": "Core Web Vitals tracking",
                     "analytics": "Real-time monitoring",
-                    "alerts": "Automated alert system"
+                    "alerts": "Automated alert system",
                 },
                 "websocket_stats": ws_stats,
-                "timestamp": time.time()
+                "timestamp": time.time(),
             },
-            headers=headers
+            headers=headers,
         )
-        
+
     except Exception as e:
         logger.error("System info failed", error=str(e))
         raise
@@ -382,12 +354,14 @@ async def system_info():
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     logger.info("🏰 Starting Elders Guild Web development server")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
-    logger.info(f"Database: {settings.DATABASE_URL.split('@')[-1] if '@' in settings.DATABASE_URL else settings.DATABASE_URL}")
+    logger.info(
+        f"Database: {settings.DATABASE_URL.split('@')[-1] if '@' in settings.DATABASE_URL else settings.DATABASE_URL}"
+    )
     logger.info(f"Redis: {settings.REDIS_URL.split('@')[-1] if '@' in settings.REDIS_URL else settings.REDIS_URL}")
-    
+
     uvicorn.run(
         "main:app",
         host=settings.HOST,

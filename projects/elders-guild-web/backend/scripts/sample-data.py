@@ -5,19 +5,12 @@ Creates test data for development and demonstration
 """
 
 import asyncio
-import sys
 import os
-from datetime import datetime, timedelta
-from uuid import uuid4
+import sys
 
 # Add the app directory to Python path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from app.schemas.sages import (
-    KnowledgeArticleCreate,
-    TaskCreate,
-    IncidentCreate,
-)
 
 # Sample data for Knowledge Sage
 SAMPLE_KNOWLEDGE_ARTICLES = [
@@ -73,7 +66,7 @@ WebSocket enables full-duplex communication between client and server.
 ## Knowledge Sage
 Manages documentation, learning materials, and institutional knowledge.
 
-## Task Sage  
+## Task Sage
 Handles project management, workflows, and task automation.
 
 ## Incident Sage
@@ -108,7 +101,7 @@ SAMPLE_TASKS = [
         "title": "Create Elder Council UI components",
         "description": "Design and implement React components for Elder Council session management",
         "status": "todo",
-        "priority": "medium", 
+        "priority": "medium",
         "assignee": "Frontend Developer",
         "project": "Four Sages System",
         "labels": ["react", "ui", "elder-council"],
@@ -169,16 +162,17 @@ SAMPLE_INCIDENTS = [
     },
 ]
 
+
 async def generate_sample_data():
     """
     Generate sample data by calling the API endpoints.
     This simulates real usage of the Four Sages system.
     """
     print("Generating sample data for Four Sages System...")
-    
+
     # In a real implementation, you would use the actual API client
     # For now, we'll just print what would be created
-    
+
     print("\n=== Knowledge Sage Sample Data ===")
     for i, article in enumerate(SAMPLE_KNOWLEDGE_ARTICLES, 1):
         print(f"{i}. {article['title']}")
@@ -186,7 +180,7 @@ async def generate_sample_data():
         print(f"   Tags: {', '.join(article['tags'])}")
         print(f"   Author: {article['author']}")
         print()
-    
+
     print("=== Task Sage Sample Data ===")
     for i, task in enumerate(SAMPLE_TASKS, 1):
         print(f"{i}. {task['title']}")
@@ -194,23 +188,24 @@ async def generate_sample_data():
         print(f"   Assignee: {task['assignee']} | Project: {task['project']}")
         print(f"   Labels: {', '.join(task['labels'])}")
         print()
-    
+
     print("=== Incident Sage Sample Data ===")
     for i, incident in enumerate(SAMPLE_INCIDENTS, 1):
         print(f"{i}. {incident['title']}")
         print(f"   Severity: {incident['severity']} | Status: {incident['status']}")
         print(f"   Assignee: {incident['assignee']} | Reporter: {incident['reporter']}")
         print(f"   Affected Systems: {', '.join(incident['affected_systems'])}")
-        if incident.get('resolution'):
+        if incident.get("resolution"):
             print(f"   Resolution: {incident['resolution']}")
         print()
-    
+
     print("Sample data generation completed!")
     print("\nTo populate the actual system:")
     print("1. Start the FastAPI backend: python start-dev.py")
     print("2. Open http://localhost:8000/api/docs")
     print("3. Use the API endpoints to create the sample data")
     print("4. Or integrate this script with the actual API client")
+
 
 if __name__ == "__main__":
     asyncio.run(generate_sample_data())

@@ -47,7 +47,7 @@ export function Header() {
                 {culturalMode ? '稼働中' : 'Active'}: {activeSages.length}/4
               </span>
             </div>
-            
+
             <Badge variant="elder" size="lg" className="gap-2">
               <Users className="h-4 w-4" />
               {hierarchy.name}
@@ -62,7 +62,7 @@ export function Header() {
               >
                 <span className="text-lg">{culturalMode ? '和' : 'EN'}</span>
               </Button>
-              
+
               <Button
                 variant="ghost"
                 size="icon"
@@ -122,7 +122,7 @@ export function Header() {
                 {hierarchy.level}
               </Badge>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <Button
                 variant="outline"
@@ -132,7 +132,7 @@ export function Header() {
               >
                 {culturalMode ? 'English Mode' : '日本語モード'}
               </Button>
-              
+
               <Button
                 variant="outline"
                 size="sm"

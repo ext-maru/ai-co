@@ -4,22 +4,22 @@ Pipeline Status Reporter
 Automated reporting system for Week 4 Strategic Infrastructure
 """
 
-import json
 import datetime
-import os
+import json
 import subprocess
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict
+
 import jinja2
 
 
 class PipelineStatusReporter:
     """Generate comprehensive pipeline status reports"""
-    
+
     def __init__(self, artifacts_dir: str = "reports"):
         self.artifacts_dir = Path(artifacts_dir)
         self.artifacts_dir.mkdir(exist_ok=True)
-        
+
     def collect_pipeline_data(self) -> Dict:
         """Collect pipeline execution data from various sources"""
         pipeline_data = {
@@ -30,41 +30,36 @@ class PipelineStatusReporter:
             "quality_metrics": self._collect_quality_metrics(),
             "elder_council_review": self._collect_elder_council_data(),
             "generated_tests": self._collect_generated_test_data(),
-            "system_status": self._assess_system_status()
+            "system_status": self._assess_system_status(),
         }
-        
+
         return pipeline_data
-    
+
     def _get_git_info(self) -> Dict:
         """Get Git repository information"""
         try:
-            commit_hash = subprocess.check_output(
-                ["git", "rev-parse", "HEAD"], 
-                universal_newlines=True
-            ).strip()
-            
+            commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], universal_newlines=True).strip()
+
             branch_name = subprocess.check_output(
-                ["git", "rev-parse", "--abbrev-ref", "HEAD"], 
-                universal_newlines=True
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"], universal_newlines=True
             ).strip()
-            
+
             commit_message = subprocess.check_output(
-                ["git", "log", "-1", "--pretty=%B"], 
-                universal_newlines=True
+                ["git", "log", "-1", "--pretty=%B"], universal_newlines=True
             ).strip()
-            
+
             return {
                 "commit_hash": commit_hash[:8],
                 "branch_name": branch_name,
-                "commit_message": commit_message.split('\n')[0][:100]
+                "commit_message": commit_message.split("\n")[0][:100],
             }
         except Exception as e:
             return {
                 "commit_hash": "unknown",
-                "branch_name": "unknown", 
-                "commit_message": f"Error getting git info: {e}"
+                "branch_name": "unknown",
+                "commit_message": f"Error getting git info: {e}",
             }
-    
+
     def _collect_coverage_metrics(self) -> Dict:
         """Collect coverage metrics from various sources"""
         coverage_data = {
@@ -72,27 +67,27 @@ class PipelineStatusReporter:
             "unit_coverage": 0.0,
             "integration_coverage": 0.0,
             "generated_coverage": 0.0,
-            "coverage_files_found": []
+            "coverage_files_found": [],
         }
-        
+
         # Look for coverage JSON files
         coverage_patterns = [
             "final_coverage.json",
-            "unit_coverage.json", 
+            "unit_coverage.json",
             "integration_coverage.json",
             "generated_coverage.json",
-            "**/coverage*.json"
+            "**/coverage*.json",
         ]
-        
+
         for pattern in coverage_patterns:
             for coverage_file in self.artifacts_dir.glob(pattern):
                 try:
                     with open(coverage_file) as f:
                         data = json.load(f)
-                    
-                    coverage_pct = data.get('totals', {}).get('percent_covered', 0)
+
+                    coverage_pct = data.get("totals", {}).get("percent_covered", 0)
                     coverage_data["coverage_files_found"].append(str(coverage_file))
-                    
+
                     if "unit" in coverage_file.name:
                         coverage_data["unit_coverage"] = coverage_pct
                     elif "integration" in coverage_file.name:
@@ -101,25 +96,25 @@ class PipelineStatusReporter:
                         coverage_data["generated_coverage"] = coverage_pct
                     elif "final" in coverage_file.name:
                         coverage_data["total_coverage"] = coverage_pct
-                    
+
                 except Exception as e:
                     print(f"Warning: Could not parse coverage file {coverage_file}: {e}")
-        
+
         # Calculate total if not found
         if coverage_data["total_coverage"] == 0.0:
             unit = coverage_data["unit_coverage"]
-            integration = coverage_data["integration_coverage"] 
+            integration = coverage_data["integration_coverage"]
             generated = coverage_data["generated_coverage"]
-            
+
             # Weighted average (unit tests typically have more weight)
             weights = [0.6, 0.3, 0.1]
             values = [unit, integration, generated]
-            
+
             if any(values):
-                coverage_data["total_coverage"] = sum(w*v for w, v in zip(weights, values) if v > 0)
-        
+                coverage_data["total_coverage"] = sum(w * v for w, v in zip(weights, values) if v > 0)
+
         return coverage_data
-    
+
     def _collect_test_results(self) -> Dict:
         """Collect test execution results"""
         test_results = {
@@ -128,48 +123,49 @@ class PipelineStatusReporter:
             "failed_tests": 0,
             "skipped_tests": 0,
             "test_suites": [],
-            "execution_time": 0.0
+            "execution_time": 0.0,
         }
-        
+
         # Look for JUnit XML files
         for junit_file in self.artifacts_dir.glob("**/junit/*.xml"):
             try:
                 import xml.etree.ElementTree as ET
+
                 tree = ET.parse(junit_file)
                 root = tree.getroot()
-                
+
                 suite_name = junit_file.stem.replace("test-results-", "").replace("_results", "")
-                
+
                 # Parse testsuite attributes
-                tests = int(root.get('tests', 0))
-                failures = int(root.get('failures', 0))
-                errors = int(root.get('errors', 0))
-                skipped = int(root.get('skipped', 0))
-                time = float(root.get('time', 0))
-                
+                tests = int(root.get("tests", 0))
+                failures = int(root.get("failures", 0))
+                errors = int(root.get("errors", 0))
+                skipped = int(root.get("skipped", 0))
+                time = float(root.get("time", 0))
+
                 passed = tests - failures - errors - skipped
-                
+
                 suite_data = {
                     "name": suite_name,
                     "tests": tests,
                     "passed": passed,
                     "failed": failures + errors,
                     "skipped": skipped,
-                    "time": time
+                    "time": time,
                 }
-                
+
                 test_results["test_suites"].append(suite_data)
                 test_results["total_tests"] += tests
                 test_results["passed_tests"] += passed
                 test_results["failed_tests"] += failures + errors
                 test_results["skipped_tests"] += skipped
                 test_results["execution_time"] += time
-                
+
             except Exception as e:
                 print(f"Warning: Could not parse test results {junit_file}: {e}")
-        
+
         return test_results
-    
+
     def _collect_quality_metrics(self) -> Dict:
         """Collect code quality metrics"""
         quality_data = {
@@ -178,75 +174,69 @@ class PipelineStatusReporter:
             "black_issues": 0,
             "isort_issues": 0,
             "security_issues": 0,
-            "quality_score": 0.0
+            "quality_score": 0.0,
         }
-        
+
         # Look for quality reports
         quality_files = [
             ("flake8.txt", "flake8_issues"),
             ("mypy.txt", "mypy_issues"),
-            ("bandit.json", "security_issues")
+            ("bandit.json", "security_issues"),
         ]
-        
+
         for filename, metric_key in quality_files:
             for quality_file in self.artifacts_dir.glob(f"**/{filename}"):
                 try:
-                    if filename.endswith('.json'):
+                    if filename.endswith(".json"):
                         with open(quality_file) as f:
                             data = json.load(f)
-                        quality_data[metric_key] = len(data.get('results', []))
+                        quality_data[metric_key] = len(data.get("results", []))
                     else:
                         with open(quality_file) as f:
                             lines = f.readlines()
                         quality_data[metric_key] = len([l for l in lines if l.strip()])
                 except Exception as e:
                     print(f"Warning: Could not parse quality file {quality_file}: {e}")
-        
+
         # Calculate overall quality score
-        total_issues = sum([
-            quality_data["flake8_issues"],
-            quality_data["mypy_issues"], 
-            quality_data["security_issues"]
-        ])
-        
+        total_issues = sum(
+            [quality_data["flake8_issues"], quality_data["mypy_issues"], quality_data["security_issues"]]
+        )
+
         # Quality score: 100 - (issues * penalty)
         quality_data["quality_score"] = max(0, 100 - (total_issues * 2))
-        
+
         return quality_data
-    
+
     def _collect_elder_council_data(self) -> Dict:
         """Collect Elder Council review data"""
         elder_data = {
             "review_completed": False,
             "quality_score": 0.0,
             "recommendations": [],
-            "approval_status": "pending"
+            "approval_status": "pending",
         }
-        
+
         # Look for Elder Council reports
         for council_file in self.artifacts_dir.glob("**/elder_council/*.json"):
             try:
                 with open(council_file) as f:
                     data = json.load(f)
-                
+
                 elder_data["review_completed"] = True
                 elder_data["quality_score"] = data.get("quality_assessment", {}).get("quality_score", 0)
                 elder_data["recommendations"] = data.get("recommendations", [])
                 elder_data["approval_status"] = data.get("status", "completed")
-                
+
             except Exception as e:
                 print(f"Warning: Could not parse Elder Council data {council_file}: {e}")
-        
+
         return elder_data
-    
+
     def _collect_generated_test_data(self) -> Dict:
         """Collect data about generated tests"""
-        generated_data = {
-            "tests_generated": 0,
-            "generation_completed": False,
-            "generated_files": []
-        }
-        
+        generated_data = {"tests_generated": 0, "generation_completed": False, "generated_files": []}
+
         # Count generated test files
         generated_dir = Path("tests/generated")
         if generated_dir.exists():
@@ -254,23 +244,23 @@ class PipelineStatusReporter:
             generated_data["tests_generated"] = len(generated_files)
             generated_data["generation_completed"] = len(generated_files) > 0
             generated_data["generated_files"] = [f.name for f in generated_files]
-        
+
         return generated_data
-    
+
     def _assess_system_status(self) -> Dict:
         """Assess overall system status"""
         return {
             "pipeline_status": "completed",
             "infrastructure_operational": True,
             "week4_target_met": True,
-            "overall_health": "good"
+            "overall_health": "good",
         }
-    
+
     def generate_html_report(self, pipeline_data: Dict, output_path: str = None) -> str:
         """Generate HTML report from pipeline data"""
         if output_path is None:
             output_path = self.artifacts_dir / "pipeline_status_report.html"
-        
+
         html_template = """
 <!DOCTYPE html>
 <html>
@@ -312,7 +302,7 @@ class PipelineStatusReporter:
             <p class="subtitle">Pipeline Status Report - {{ pipeline_data.timestamp }}</p>
             <p><strong>Commit:</strong> {{ pipeline_data.git_info.commit_hash }} on {{ pipeline_data.git_info.branch_name }}</p>
         </div>
-        
+
         <!-- Key Metrics -->
         <div class="metrics-grid">
             <div class="metric-card{% if pipeline_data.coverage_metrics.total_coverage < 66.7 %} warning{% endif %}">
@@ -332,7 +322,7 @@ class PipelineStatusReporter:
                 <div class="metric-label">Quality Score</div>
             </div>
         </div>
-        
+
         <!-- Coverage Details -->
         <div class="section">
             <h2>📊 Coverage Analysis</h2>
@@ -359,7 +349,7 @@ class PipelineStatusReporter:
                 </tr>
             </table>
         </div>
-        
+
         <!-- Test Results -->
         <div class="section">
             <h2>🧪 Test Execution Results</h2>
@@ -370,7 +360,7 @@ class PipelineStatusReporter:
             </div>
             {% endfor %}
         </div>
-        
+
         <!-- Elder Council Review -->
         <div class="section">
             <h2>👥 Elder Council Quality Review</h2>
@@ -382,7 +372,7 @@ class PipelineStatusReporter:
             <p><span class="status-badge status-warning">⚠️ Pending Review</span></p>
             {% endif %}
         </div>
-        
+
         <!-- Auto-Generated Tests -->
         <div class="section">
             <h2>🤖 Automated Test Generation</h2>
@@ -398,7 +388,7 @@ class PipelineStatusReporter:
             <p><span class="status-badge status-warning">⚠️ No tests generated</span></p>
             {% endif %}
         </div>
-        
+
         <!-- System Status -->
         <div class="section">
             <h2>🏗️ Week 4 Infrastructure Status</h2>
@@ -411,7 +401,7 @@ class PipelineStatusReporter:
                     <li>{% if pipeline_data.elder_council_review.review_completed %}✅{% else %}⚠️{% endif %} Elder Council Review: {% if pipeline_data.elder_council_review.review_completed %}Active{% else %}Pending{% endif %}</li>
                     <li>{% if pipeline_data.generated_tests.generation_completed %}✅{% else %}⚠️{% endif %} Auto Test Generation: {% if pipeline_data.generated_tests.generation_completed %}{{ pipeline_data.generated_tests.tests_generated }} generated{% else %}Inactive{% endif %}</li>
                 </ul>
-                
+
                 <h4>66.7% Coverage Achievement</h4>
                 {% if pipeline_data.coverage_metrics.total_coverage >= 66.7 %}
                 <p>🎯 <strong>TARGET ACHIEVED:</strong> Coverage at {{ "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% meets the 66.7% strategic target!</p>
@@ -420,7 +410,7 @@ class PipelineStatusReporter:
                 {% endif %}
             </div>
         </div>
-        
+
         <div class="footer">
             <p>Generated by Week 4 Strategic Infrastructure Pipeline | {{ pipeline_data.timestamp }}</p>
             <p>🚀 Elders Guild CI/CD System</p>
@@ -429,24 +419,24 @@ class PipelineStatusReporter:
 </body>
 </html>
         """
-        
+
         # Render template
         template = jinja2.Template(html_template)
         html_content = template.render(pipeline_data=pipeline_data)
-        
+
         # Write to file
         output_path = Path(output_path)
         output_path.parent.mkdir(exist_ok=True)
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             f.write(html_content)
-        
+
         return str(output_path)
-    
+
     def generate_json_report(self, pipeline_data: Dict, output_path: str = None) -> str:
         """Generate JSON report from pipeline data"""
         if output_path is None:
             output_path = self.artifacts_dir / "pipeline_status_report.json"
-        
+
         # Add summary metrics
         pipeline_data["summary"] = {
             "week4_infrastructure_operational": True,
@@ -454,66 +444,60 @@ class PipelineStatusReporter:
             "all_tests_passed": pipeline_data["test_results"]["failed_tests"] == 0,
             "quality_acceptable": pipeline_data["quality_metrics"]["quality_score"] >= 70,
             "elder_council_approved": pipeline_data["elder_council_review"]["review_completed"],
-            "auto_generation_active": pipeline_data["generated_tests"]["generation_completed"]
+            "auto_generation_active": pipeline_data["generated_tests"]["generation_completed"],
         }
-        
+
         output_path = Path(output_path)
         output_path.parent.mkdir(exist_ok=True)
-        with open(output_path, 'w') as f:
+        with open(output_path, "w") as f:
             json.dump(pipeline_data, f, indent=2)
-        
+
         return str(output_path)
-    
+
     def generate_reports(self) -> Dict[str, str]:
         """Generate all report formats"""
         pipeline_data = self.collect_pipeline_data()
-        
-        reports = {
-            "html": self.generate_html_report(pipeline_data),
-            "json": self.generate_json_report(pipeline_data)
-        }
-        
-        print(f"📋 Pipeline reports generated:")
+
+        reports = {"html": self.generate_html_report(pipeline_data), "json": self.generate_json_report(pipeline_data)}
+
+        print("📋 Pipeline reports generated:")
         for format_type, path in reports.items():
             print(f"  {format_type.upper()}: {path}")
-        
+
         return reports
 
 
 def main():
     """CLI interface for pipeline status reporting"""
     import argparse
-    
+
     parser = argparse.ArgumentParser(description="Pipeline Status Reporter")
-    parser.add_argument("--format", choices=["html", "json", "both"], default="both",
-                       help="Report format to generate")
-    parser.add_argument("--output-dir", default="reports", 
-                       help="Output directory for reports")
-    parser.add_argument("--artifacts-dir", default="reports",
-                       help="Directory containing pipeline artifacts")
-    
+    parser.add_argument("--format", choices=["html", "json", "both"], default="both", help="Report format to generate")
+    parser.add_argument("--output-dir", default="reports", help="Output directory for reports")
+    parser.add_argument("--artifacts-dir", default="reports", help="Directory containing pipeline artifacts")
+
     args = parser.parse_args()
-    
+
     reporter = PipelineStatusReporter(args.artifacts_dir)
-    
+
     if args.format in ["html", "both"]:
         pipeline_data = reporter.collect_pipeline_data()
-        html_path = reporter.generate_html_report(pipeline_data, 
-                                                 f"{args.output_dir}/pipeline_status_report.html")
+        html_path = reporter.generate_html_report(pipeline_data, f"{args.output_dir}/pipeline_status_report.html")
         print(f"📊 HTML report: {html_path}")
-    
+
     if args.format in ["json", "both"]:
         pipeline_data = reporter.collect_pipeline_data()
-        json_path = reporter.generate_json_report(pipeline_data,
-                                                 f"{args.output_dir}/pipeline_status_report.json")
+        json_path = reporter.generate_json_report(pipeline_data, f"{args.output_dir}/pipeline_status_report.json")
         print(f"📄 JSON report: {json_path}")
-    
+
     # Show summary
     coverage = pipeline_data["coverage_metrics"]["total_coverage"]
     target_met = "✅" if coverage >= 66.7 else "❌"
     print(f"\n{target_met} Week 4 Strategic Infrastructure Status:")
     print(f"   Coverage: {coverage:.1f}% (Target: 66.7%)")
-    print(f"   Tests: {pipeline_data['test_results']['passed_tests']}/{pipeline_data['test_results']['total_tests']} passed")
+    print(
+        f"   Tests: {pipeline_data['test_results']['passed_tests']}/{pipeline_data['test_results']['total_tests']} passed"
+    )
     print(f"   Quality Score: {pipeline_data['quality_metrics']['quality_score']:.1f}")
 
 

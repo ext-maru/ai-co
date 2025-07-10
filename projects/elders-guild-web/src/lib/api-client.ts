@@ -34,7 +34,7 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
-    
+
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -61,7 +61,7 @@ class ApiClient {
   async get<T>(endpoint: string, params?: Record<string, any>): Promise<ApiResponse<T>> {
     const searchParams = params ? new URLSearchParams(params).toString() : '';
     const url = searchParams ? `${endpoint}?${searchParams}` : endpoint;
-    
+
     return this.request<T>(url);
   }
 
@@ -96,7 +96,7 @@ export const knowledgeApi = {
     limit?: number;
     offset?: number;
   }) => apiClient.get('/sages/knowledge/', params),
-  
+
   createArticle: (article: {
     title: string;
     content: string;
@@ -104,9 +104,9 @@ export const knowledgeApi = {
     tags?: string[];
     author: string;
   }) => apiClient.post('/sages/knowledge/', article),
-  
+
   getArticle: (id: string) => apiClient.get(`/sages/knowledge/${id}`),
-  
+
   updateArticle: (id: string, update: {
     title?: string;
     content?: string;
@@ -114,9 +114,9 @@ export const knowledgeApi = {
     tags?: string[];
     status?: string;
   }) => apiClient.put(`/sages/knowledge/${id}`, update),
-  
+
   deleteArticle: (id: string) => apiClient.delete(`/sages/knowledge/${id}`),
-  
+
   getCategories: () => apiClient.get('/sages/knowledge/categories/'),
   getTags: () => apiClient.get('/sages/knowledge/tags/'),
   getStats: () => apiClient.get('/sages/knowledge/stats/'),
@@ -133,7 +133,7 @@ export const taskApi = {
     limit?: number;
     offset?: number;
   }) => apiClient.get('/sages/tasks/', params),
-  
+
   createTask: (task: {
     title: string;
     description?: string;
@@ -145,9 +145,9 @@ export const taskApi = {
     due_date?: string;
     estimated_hours?: number;
   }) => apiClient.post('/sages/tasks/', task),
-  
+
   getTask: (id: string) => apiClient.get(`/sages/tasks/${id}`),
-  
+
   updateTask: (id: string, update: {
     title?: string;
     description?: string;
@@ -160,9 +160,9 @@ export const taskApi = {
     estimated_hours?: number;
     actual_hours?: number;
   }) => apiClient.put(`/sages/tasks/${id}`, update),
-  
+
   deleteTask: (id: string) => apiClient.delete(`/sages/tasks/${id}`),
-  
+
   getProjects: () => apiClient.get('/sages/tasks/projects/'),
   getAssignees: () => apiClient.get('/sages/tasks/assignees/'),
   getStats: () => apiClient.get('/sages/tasks/stats/'),
@@ -178,7 +178,7 @@ export const incidentApi = {
     limit?: number;
     offset?: number;
   }) => apiClient.get('/sages/incidents/', params),
-  
+
   createIncident: (incident: {
     title: string;
     description: string;
@@ -187,9 +187,9 @@ export const incidentApi = {
     reporter: string;
     affected_systems?: string[];
   }) => apiClient.post('/sages/incidents/', incident),
-  
+
   getIncident: (id: string) => apiClient.get(`/sages/incidents/${id}`),
-  
+
   updateIncident: (id: string, update: {
     title?: string;
     description?: string;
@@ -199,9 +199,9 @@ export const incidentApi = {
     affected_systems?: string[];
     resolution?: string;
   }) => apiClient.put(`/sages/incidents/${id}`, update),
-  
+
   deleteIncident: (id: string) => apiClient.delete(`/sages/incidents/${id}`),
-  
+
   createAlert: (alert: {
     title: string;
     description: string;
@@ -209,7 +209,7 @@ export const incidentApi = {
     affected_systems: string[];
     auto_response?: boolean;
   }) => apiClient.post('/sages/incidents/alert', alert),
-  
+
   getSystems: () => apiClient.get('/sages/incidents/systems/'),
   getStats: () => apiClient.get('/sages/incidents/stats/'),
 };
@@ -223,15 +223,15 @@ export const searchApi = {
     limit?: number;
     offset?: number;
   }) => apiClient.post('/sages/search/', query),
-  
+
   getSuggestions: (params: {
     q: string;
     limit?: number;
   }) => apiClient.get('/sages/search/suggestions', params),
-  
+
   findSimilar: (contentType: string, contentId: string, limit?: number) =>
     apiClient.get(`/sages/search/similar/${contentType}/${contentId}`, { limit }),
-  
+
   getAnalytics: () => apiClient.get('/sages/search/analytics'),
   rebuildIndex: () => apiClient.post('/sages/search/index/rebuild'),
 };
@@ -243,40 +243,40 @@ export const elderCouncilApi = {
     limit?: number;
     offset?: number;
   }) => apiClient.get('/elder-council/sessions', params),
-  
+
   createSession: (session: {
     title: string;
     description?: string;
     participants?: string[];
   }) => apiClient.post('/elder-council/sessions', session),
-  
+
   getSession: (sessionId: string) => apiClient.get(`/elder-council/sessions/${sessionId}`),
-  
+
   updateSession: (sessionId: string, update: {
     status?: string;
     title?: string;
     description?: string;
   }) => apiClient.put(`/elder-council/sessions/${sessionId}`, update),
-  
+
   sendMessage: (sessionId: string, message: {
     sender: string;
     message_type?: string;
     content: string;
     metadata?: Record<string, any>;
   }) => apiClient.post(`/elder-council/sessions/${sessionId}/messages`, message),
-  
+
   getMessages: (sessionId: string, params?: {
     message_type?: string;
     limit?: number;
     offset?: number;
   }) => apiClient.get(`/elder-council/sessions/${sessionId}/messages`, params),
-  
+
   invokeCouncil: (sessionId: string, params: {
     topic: string;
     priority?: string;
     auto_invite_sages?: boolean;
   }) => apiClient.post(`/elder-council/sessions/${sessionId}/invoke`, params),
-  
+
   getStats: () => apiClient.get('/elder-council/stats'),
 };
 
@@ -301,7 +301,7 @@ export class WebSocketManager {
         if (this.sageType) params.append('sage_type', this.sageType);
         if (this.userId) params.append('user_id', this.userId);
         if (this.elderCouncilSession) params.append('elder_council_session', this.elderCouncilSession);
-        
+
         const url = `${WS_BASE_URL}/connect?${params.toString()}`;
         this.ws = new WebSocket(url);
 
@@ -386,7 +386,7 @@ export class WebSocketManager {
     if (this.reconnectAttempts < this.maxReconnectAttempts) {
       this.reconnectAttempts++;
       console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})...`);
-      
+
       setTimeout(() => {
         this.connect().catch(error => {
           console.error('Reconnect failed:', error);

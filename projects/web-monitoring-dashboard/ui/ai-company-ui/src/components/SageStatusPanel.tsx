@@ -46,7 +46,7 @@ const SageStatusPanel: React.FC<SageStatusPanelProps> = ({ sages }) => {
               <span className={styles.sageIcon}>{getSageIcon(sage.type)}</span>
               <div className={styles.sageInfo}>
                 <h4>{sage.name}</h4>
-                <span 
+                <span
                   className={styles.sageStatus}
                   style={{ color: getStatusColor(sage.status) }}
                 >
@@ -54,12 +54,12 @@ const SageStatusPanel: React.FC<SageStatusPanelProps> = ({ sages }) => {
                 </span>
               </div>
             </div>
-            
+
             <div className={styles.sageHealth}>
               <div className={styles.healthBar}>
-                <div 
+                <div
                   className={styles.healthFill}
-                  style={{ 
+                  style={{
                     width: `${sage.health}%`,
                     backgroundColor: getHealthColor(sage.health)
                   }}
@@ -67,14 +67,14 @@ const SageStatusPanel: React.FC<SageStatusPanelProps> = ({ sages }) => {
               </div>
               <span className={styles.healthText}>{sage.health}%</span>
             </div>
-            
+
             {sage.currentTask && (
               <div className={styles.currentTask}>
                 <strong>現在のタスク:</strong>
                 <p>{sage.currentTask}</p>
               </div>
             )}
-            
+
             <div className={styles.sageDetails}>
               {sage.type === 'knowledge' && (
                 <div>
@@ -82,7 +82,7 @@ const SageStatusPanel: React.FC<SageStatusPanelProps> = ({ sages }) => {
                   <p>🏷️ カテゴリ: {sage.knowledgeBase.categories.length}</p>
                 </div>
               )}
-              
+
               {sage.type === 'task' && (
                 <div>
                   <p>⏳ 待機中: {sage.taskQueue.pending}</p>
@@ -90,7 +90,7 @@ const SageStatusPanel: React.FC<SageStatusPanelProps> = ({ sages }) => {
                   <p>✅ 完了: {sage.taskQueue.completed}</p>
                 </div>
               )}
-              
+
               {sage.type === 'incident' && (
                 <div>
                   <p>🔴 重大: {sage.incidents.critical}</p>
@@ -98,7 +98,7 @@ const SageStatusPanel: React.FC<SageStatusPanelProps> = ({ sages }) => {
                   <p>✅ 解決済み: {sage.incidents.resolved}</p>
                 </div>
               )}
-              
+
               {sage.type === 'rag' && (
                 <div>
                   <p>📊 インデックス: {sage.searchEngine.indexSize}</p>
@@ -106,7 +106,7 @@ const SageStatusPanel: React.FC<SageStatusPanelProps> = ({ sages }) => {
                 </div>
               )}
             </div>
-            
+
             <div className={styles.lastActive}>
               最終更新: {new Date(sage.lastActive).toLocaleTimeString()}
             </div>

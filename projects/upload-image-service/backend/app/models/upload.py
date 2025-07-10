@@ -1,26 +1,36 @@
-from sqlalchemy import Column, String, DateTime, Integer, Boolean, Enum as SQLEnum, ForeignKey, JSON
+import enum
+from datetime import datetime
+
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import Enum as SQLEnum
+from sqlalchemy import ForeignKey
+from sqlalchemy import Integer
+from sqlalchemy import JSON
+from sqlalchemy import String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from datetime import datetime
-import enum
 
 Base = declarative_base()
 
+
 class UploadStatus(str, enum.Enum):
-    """アップロードステータス"""
-    PENDING = "pending"
-    APPROVED = "approved"
-    REJECTED = "rejected"
-    EXPIRED = "expired"  # 期限切れ
+    """アップロードステータス（3段階シンプル版）"""
+
+    NOT_UPLOADED = "not_uploaded"      # アップしてない
+    NEEDS_REUPLOAD = "needs_reupload"  # アップしたがNG出て再度アップ必要
+    APPROVED = "approved"              # アップしてOKでた
+
 
 class ContractUpload(Base):
     """契約書類アップロード"""
+
     __tablename__ = "contract_uploads"
-    
+
     id = Column(String, primary_key=True)
     user_id = Column(String, nullable=False)
     contract_type = Column(String, nullable=False)  # individual or corporate
-    status = Column(SQLEnum(UploadStatus), default=UploadStatus.PENDING)
+    status = Column(SQLEnum(UploadStatus), default=UploadStatus.NOT_UPLOADED)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     submitted_at = Column(DateTime)
@@ -28,13 +38,14 @@ class ContractUpload(Base):
     reviewed_by = Column(String)
     review_notes = Column(String)
     metadata = Column(JSON)  # 追加情報を格納
-    
+
     # リレーション
     documents = relationship("Upload", back_populates="contract_upload")
 
+
 class Upload(Base):
     __tablename__ = "uploads"
-    
+
     id = Column(String, primary_key=True)
     contract_upload_id = Column(String, ForeignKey("contract_uploads.id"))
     document_type = Column(String, nullable=False)  # DocumentTypeのvalue
@@ -42,7 +53,7 @@ class Upload(Base):
     original_filename = Column(String, nullable=False)
     content_type = Column(String, nullable=False)
     size = Column(Integer, nullable=False)
-    status = Column(SQLEnum(UploadStatus), default=UploadStatus.PENDING)
+    status = Column(SQLEnum(UploadStatus), default=UploadStatus.NOT_UPLOADED)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     storage_path = Column(String)
@@ -51,6 +62,6 @@ class Upload(Base):
     approved_by = Column(String)
     approved_at = Column(DateTime)
     expiry_date = Column(DateTime)  # 書類の有効期限
-    
+
     # リレーション
     contract_upload = relationship("ContractUpload", back_populates="documents")

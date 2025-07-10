@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { 
-  MagnifyingGlassIcon, 
-  FolderIcon, 
+import {
+  MagnifyingGlassIcon,
+  FolderIcon,
   DocumentTextIcon,
   ChartBarIcon,
   ClockIcon,
@@ -21,12 +21,12 @@ const fetcher = async (url: string) => {
   try {
     const res = await fetch(url)
     console.log('📡 Response status:', res.status, res.statusText)
-    
+
     if (!res.ok) {
       console.error('❌ Response not OK:', res.status, res.statusText)
       throw new Error(`HTTP ${res.status}: ${res.statusText}`)
     }
-    
+
     const data = await res.json()
     console.log('✅ Data received:', data)
     return data
@@ -94,12 +94,12 @@ const ProjectCard = ({ project }: { project: ProjectSummary }) => {
               {getProjectTypeIcon(project.project_type)}
             </div>
           </div>
-          
+
           <div className="flex-1 min-w-0">
             <h3 className="project-title text-lg font-semibold text-gray-900 truncate transition-colors duration-200">
               {project.name}
             </h3>
-            
+
             <div className="mt-2 flex items-center space-x-2">
               <span className={`badge ${getStatusColor(project.status)}`}>
                 {project.status}
@@ -108,11 +108,11 @@ const ProjectCard = ({ project }: { project: ProjectSummary }) => {
                 {project.project_type}
               </span>
             </div>
-            
+
             <p className="mt-2 text-sm text-gray-600 text-truncate-2">
               {project.description}
             </p>
-            
+
             <div className="mt-3 flex items-center justify-between">
               <div className="flex flex-wrap gap-1">
                 {project.tech_stack.slice(0, 3).map((tech, index) => (
@@ -126,7 +126,7 @@ const ProjectCard = ({ project }: { project: ProjectSummary }) => {
                   </span>
                 )}
               </div>
-              
+
               <div className="flex items-center text-xs text-gray-500">
                 <ClockIcon className="h-3 w-3 mr-1" />
                 {new Date(project.updated_at).toLocaleDateString('ja-JP')}
@@ -165,11 +165,11 @@ const StatsCard = ({ title, value, icon }: { title: string, value: number, icon:
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filteredProjects, setFilteredProjects] = useState<ProjectSummary[]>([])
-  
+
   // データ取得 - デバッグログ付き
   const { data: projects, error: projectsError, isLoading: projectsLoading } = useSWR<ProjectSummary[]>('/api/projects', fetcher)
   const { data: stats, error: statsError, isLoading: statsLoading } = useSWR<Stats>('/api/projects/stats', fetcher)
-  
+
   // デバッグログ
   console.log('🏠 HomePage render:', {
     projects: projects ? `${projects.length} projects` : 'no projects',
@@ -179,26 +179,26 @@ export default function HomePage() {
     projectsLoading,
     statsLoading
   })
-  
+
   // 検索フィルタリング
   useEffect(() => {
     if (!projects) return
-    
+
     if (!searchQuery.trim()) {
       setFilteredProjects(projects)
       return
     }
-    
+
     const query = searchQuery.toLowerCase()
-    const filtered = projects.filter(project => 
+    const filtered = projects.filter(project =>
       project.name.toLowerCase().includes(query) ||
       project.description.toLowerCase().includes(query) ||
       project.tech_stack.some(tech => tech.toLowerCase().includes(query))
     )
-    
+
     setFilteredProjects(filtered)
   }, [projects, searchQuery])
-  
+
   // ローディング状態
   if (projectsLoading || statsLoading || !projects || !stats) {
     console.log('🔄 Loading state:', { projectsLoading, statsLoading, projects: !!projects, stats: !!stats })
@@ -222,15 +222,15 @@ export default function HomePage() {
       </div>
     )
   }
-  
+
   // エラー状態
   if (projectsError || statsError) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">データの読み込みに失敗しました</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="btn-primary"
           >
             再読み込み
@@ -239,7 +239,7 @@ export default function HomePage() {
       </div>
     )
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ヘッダー */}
@@ -264,7 +264,7 @@ export default function HomePage() {
           </motion.div>
         </div>
       </header>
-      
+
       {/* メインコンテンツ */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 統計情報 */}
@@ -292,7 +292,7 @@ export default function HomePage() {
             />
           </div>
         </section>
-        
+
         {/* 検索・フィルタ */}
         <section className="mb-8">
           <div className="card">
@@ -309,12 +309,12 @@ export default function HomePage() {
                   />
                 </div>
               </div>
-              
+
               <Link href="/projects/scan" className="btn-primary">
                 プロジェクトスキャン
               </Link>
             </div>
-            
+
             {searchQuery && (
               <div className="mt-4 text-sm text-gray-600">
                 {filteredProjects.length}件のプロジェクトが見つかりました
@@ -322,19 +322,19 @@ export default function HomePage() {
             )}
           </div>
         </section>
-        
+
         {/* プロジェクト一覧 */}
         <section>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">
               プロジェクト一覧
             </h2>
-            
+
             <Link href="/projects" className="text-elder-600 hover:text-elder-700 font-medium">
               すべて表示 →
             </Link>
           </div>
-          
+
           {filteredProjects.length > 0 ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {filteredProjects.slice(0, 6).map((project) => (
@@ -350,25 +350,25 @@ export default function HomePage() {
             </div>
           )}
         </section>
-        
+
         {/* クイックアクション */}
         <section className="mt-12">
           <div className="card">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               クイックアクション
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link href="/projects/scan" className="btn-secondary justify-center">
                 <FolderIcon className="h-5 w-5 mr-2" />
                 新規スキャン
               </Link>
-              
+
               <Link href="/stats" className="btn-secondary justify-center">
                 <ChartBarIcon className="h-5 w-5 mr-2" />
                 統計情報
               </Link>
-              
+
               <Link href="/docs" className="btn-secondary justify-center">
                 <DocumentTextIcon className="h-5 w-5 mr-2" />
                 ドキュメント

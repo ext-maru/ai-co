@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { 
+import {
   ArrowLeftIcon,
   FolderIcon,
   DocumentTextIcon,
@@ -89,12 +89,12 @@ const getStatusColor = (status: string) => {
 // Mermaidコンポーネント
 const MermaidDiagram = ({ code }: { code: string }) => {
   const [diagramSvg, setDiagramSvg] = useState<string>('')
-  
+
   useEffect(() => {
     const renderDiagram = async () => {
       try {
         const mermaid = (await import('mermaid')).default
-        mermaid.initialize({ 
+        mermaid.initialize({
           startOnLoad: false,
           theme: 'default',
           themeVariables: {
@@ -106,7 +106,7 @@ const MermaidDiagram = ({ code }: { code: string }) => {
             tertiaryColor: '#e5e7eb'
           }
         })
-        
+
         const { svg } = await mermaid.render('mermaid-diagram', code)
         setDiagramSvg(svg)
       } catch (error) {
@@ -114,14 +114,14 @@ const MermaidDiagram = ({ code }: { code: string }) => {
         setDiagramSvg('<p class="text-red-600">図表の描画に失敗しました</p>')
       }
     }
-    
+
     if (code) {
       renderDiagram()
     }
   }, [code])
-  
+
   return (
-    <div 
+    <div
       className="mermaid-container"
       dangerouslySetInnerHTML={{ __html: diagramSvg }}
     />
@@ -191,21 +191,21 @@ const Tabs = ({ tabs, activeTab, onTabChange }: {
 export default function ProjectDetailPage() {
   const params = useParams()
   const projectId = params.id as string
-  
+
   const [activeTab, setActiveTab] = useState('overview')
   const [generatingDocs, setGeneratingDocs] = useState(false)
-  
+
   // データ取得
   const { data: project, error: projectError, mutate } = useSWR<ProjectDetail>(
     projectId ? `/api/projects/${projectId}` : null,
     fetcher
   )
-  
+
   const { data: similarProjects } = useSWR<SimilarProject[]>(
     projectId ? `/api/projects/${projectId}/similar` : null,
     fetcher
   )
-  
+
   // 資料生成
   const generateDocumentation = async () => {
     setGeneratingDocs(true)
@@ -215,7 +215,7 @@ export default function ProjectDetailPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ project_id: projectId, include_similar: true })
       })
-      
+
       if (response.ok) {
         // データ再取得
         mutate()
@@ -226,7 +226,7 @@ export default function ProjectDetailPage() {
       setGeneratingDocs(false)
     }
   }
-  
+
   // ローディング状態
   if (!project && !projectError) {
     return (
@@ -238,7 +238,7 @@ export default function ProjectDetailPage() {
       </div>
     )
   }
-  
+
   // エラー状態
   if (projectError) {
     return (
@@ -252,9 +252,9 @@ export default function ProjectDetailPage() {
       </div>
     )
   }
-  
+
   if (!project) return null
-  
+
   // タブ定義
   const tabs = [
     { id: 'overview', label: '概要', icon: <FolderIcon className="h-4 w-4" /> },
@@ -264,7 +264,7 @@ export default function ProjectDetailPage() {
       { id: 'documentation', label: '自動生成資料', icon: <DocumentTextIcon className="h-4 w-4" /> }
     ] : [])
   ]
-  
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* ヘッダー */}
@@ -272,13 +272,13 @@ export default function ProjectDetailPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <ArrowLeftIcon className="h-5 w-5" />
               </Link>
-              
+
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">
                   {project.name}
@@ -296,7 +296,7 @@ export default function ProjectDetailPage() {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               {!project.documentation && (
                 <button
@@ -317,7 +317,7 @@ export default function ProjectDetailPage() {
                   )}
                 </button>
               )}
-              
+
               <button className="btn-secondary">
                 <ClipboardDocumentIcon className="h-4 w-4 mr-2" />
                 エクスポート
@@ -326,7 +326,7 @@ export default function ProjectDetailPage() {
           </div>
         </div>
       </header>
-      
+
       {/* メインコンテンツ */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -334,7 +334,7 @@ export default function ProjectDetailPage() {
           <div className="lg:col-span-3">
             <div className="card">
               <Tabs tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
-              
+
               <div className="mt-6">
                 {/* 概要タブ */}
                 {activeTab === 'overview' && (
@@ -350,7 +350,7 @@ export default function ProjectDetailPage() {
                         {project.description || 'プロジェクトの説明がありません'}
                       </p>
                     </div>
-                    
+
                     {/* 技術スタック */}
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 mb-3">技術スタック</h3>
@@ -362,7 +362,7 @@ export default function ProjectDetailPage() {
                         ))}
                       </div>
                     </div>
-                    
+
                     {/* Git情報 */}
                     {project.git_metrics && (
                       <div>
@@ -397,7 +397,7 @@ export default function ProjectDetailPage() {
                     )}
                   </motion.div>
                 )}
-                
+
                 {/* コード構造タブ */}
                 {activeTab === 'code' && project.code_structure && (
                   <motion.div
@@ -432,7 +432,7 @@ export default function ProjectDetailPage() {
                         <div className="text-sm text-gray-500">関数数</div>
                       </div>
                     </div>
-                    
+
                     {/* 主要クラス */}
                     {project.code_structure.classes.length > 0 && (
                       <div>
@@ -455,7 +455,7 @@ export default function ProjectDetailPage() {
                     )}
                   </motion.div>
                 )}
-                
+
                 {/* 依存関係タブ */}
                 {activeTab === 'dependencies' && (
                   <motion.div
@@ -505,7 +505,7 @@ export default function ProjectDetailPage() {
                     )}
                   </motion.div>
                 )}
-                
+
                 {/* 自動生成資料タブ */}
                 {activeTab === 'documentation' && project.documentation && (
                   <motion.div
@@ -524,19 +524,19 @@ export default function ProjectDetailPage() {
                         </span>
                       </div>
                     </div>
-                    
+
                     {/* 概要 */}
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">概要</h3>
                       <MarkdownContent content={project.documentation.overview} />
                     </div>
-                    
+
                     {/* アーキテクチャ */}
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">アーキテクチャ</h3>
                       <MarkdownContent content={project.documentation.architecture} />
                     </div>
-                    
+
                     {/* 図表 */}
                     {Object.keys(project.documentation.diagrams).length > 0 && (
                       <div>
@@ -553,7 +553,7 @@ export default function ProjectDetailPage() {
                         </div>
                       </div>
                     )}
-                    
+
                     {/* セットアップガイド */}
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 mb-4">セットアップガイド</h3>
@@ -564,13 +564,13 @@ export default function ProjectDetailPage() {
               </div>
             </div>
           </div>
-          
+
           {/* サイドバー */}
           <div className="lg:col-span-1 space-y-6">
             {/* プロジェクト情報 */}
             <div className="card">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">プロジェクト情報</h3>
-              
+
               <div className="space-y-3">
                 <div className="flex items-center text-sm">
                   <CalendarIcon className="h-4 w-4 text-gray-400 mr-2" />
@@ -579,7 +579,7 @@ export default function ProjectDetailPage() {
                     {new Date(project.created_at).toLocaleDateString('ja-JP')}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center text-sm">
                   <CalendarIcon className="h-4 w-4 text-gray-400 mr-2" />
                   <span className="text-gray-500">更新日:</span>
@@ -587,7 +587,7 @@ export default function ProjectDetailPage() {
                     {new Date(project.updated_at).toLocaleDateString('ja-JP')}
                   </span>
                 </div>
-                
+
                 {project.git_metrics && (
                   <div className="flex items-center text-sm">
                     <UserGroupIcon className="h-4 w-4 text-gray-400 mr-2" />
@@ -599,12 +599,12 @@ export default function ProjectDetailPage() {
                 )}
               </div>
             </div>
-            
+
             {/* 類似プロジェクト */}
             {similarProjects && similarProjects.length > 0 && (
               <div className="card">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">類似プロジェクト</h3>
-                
+
                 <div className="space-y-3">
                   {similarProjects.slice(0, 5).map((similar) => (
                     <Link

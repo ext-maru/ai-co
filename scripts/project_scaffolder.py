@@ -6,75 +6,72 @@
 フル自動版: 全機能実装済み + テスト完備 + 即座運用可能
 """
 
-import os
 import sys
-import json
-import shutil
-import asyncio
-from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict
+from typing import List
+
 import aiofiles
-from jinja2 import Environment, FileSystemLoader
 
 # プロジェクトルート設定
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+
 class ProjectScaffolder:
     """プロジェクト自動生成エンジン"""
-    
+
     def __init__(self):
         self.project_root = PROJECT_ROOT
         self.templates_dir = self.project_root / "templates" / "project_templates"
         self.projects_dir = self.project_root / "projects"
         self.projects_dir.mkdir(exist_ok=True)
-        
+
     async def create_project(self, config: Dict) -> Path:
         """プロジェクト作成"""
-        project_name = config['name']
+        project_name = config["name"]
         project_path = self.projects_dir / project_name
-        
+
         # 既存チェック
         if project_path.exists():
             raise ValueError(f"プロジェクト '{project_name}' は既に存在します")
-        
+
         # ディレクトリ作成
         project_path.mkdir(parents=True)
-        
+
         # プロジェクトタイプに応じた生成
-        if config['type'] == 'upload-service':
+        if config["type"] == "upload-service":
             await self.create_upload_service(project_path, config)
         else:
             await self.create_generic_project(project_path, config)
-        
+
         return project_path
-    
+
     async def create_upload_service(self, project_path: Path, config: Dict):
         """アップロードサービスプロジェクト生成"""
-        
+
         # バックエンド構築
-        if config['backend'] == 'fastapi':
+        if config["backend"] == "fastapi":
             await self.create_fastapi_backend(project_path / "backend", config)
-        
+
         # フロントエンド構築
-        if config['frontend'] == 'react-ts':
+        if config["frontend"] == "react-ts":
             await self.create_react_frontend(project_path / "frontend", config)
-        
+
         # Docker設定
-        if config.get('docker', True):
+        if config.get("docker", True):
             await self.create_docker_config(project_path, config)
-        
+
         # エルダーズギルド統合
         await self.integrate_elders_guild(project_path, config)
-        
+
         # プロジェクトドキュメント
         await self.create_project_docs(project_path, config)
-    
+
     async def create_fastapi_backend(self, backend_path: Path, config: Dict):
         """FastAPIバックエンド生成"""
         backend_path.mkdir(parents=True)
-        
+
         # ディレクトリ構造
         dirs = [
             "app/api/endpoints",
@@ -85,48 +82,50 @@ class ProjectScaffolder:
             "app/utils",
             "tests/unit",
             "tests/integration",
-            "alembic/versions"
+            "alembic/versions",
         ]
-        
+
         for dir_path in dirs:
             (backend_path / dir_path).mkdir(parents=True, exist_ok=True)
-        
+
         # メインアプリケーションファイル
         await self.write_file(backend_path / "app" / "main.py", self.get_fastapi_main(config))
-        
+
         # 設定ファイル
         await self.write_file(backend_path / "app" / "core" / "config.py", self.get_config_file(config))
-        
+
         # データベースモデル
         await self.write_file(backend_path / "app" / "models" / "upload.py", self.get_upload_model(config))
-        
+
         # APIエンドポイント
-        await self.write_file(backend_path / "app" / "api" / "endpoints" / "upload.py", self.get_upload_endpoints(config))
-        
+        await self.write_file(
+            backend_path / "app" / "api" / "endpoints" / "upload.py", self.get_upload_endpoints(config)
+        )
+
         # サービス層
         await self.write_file(backend_path / "app" / "services" / "upload_service.py", self.get_upload_service(config))
-        
+
         # 画像処理サービス
-        if 'image-optimization' in config.get('features', []):
+        if "image-optimization" in config.get("features", []):
             await self.write_file(backend_path / "app" / "services" / "image_processor.py", self.get_image_processor())
-        
+
         # 認証システム
-        if 'auth' in config.get('features', []):
+        if "auth" in config.get("features", []):
             await self.write_file(backend_path / "app" / "core" / "auth.py", self.get_auth_system())
-        
+
         # requirements.txt
         await self.write_file(backend_path / "requirements.txt", self.get_requirements(config))
-        
+
         # Dockerfile
         await self.write_file(backend_path / "Dockerfile", self.get_backend_dockerfile())
-        
+
         # テストファイル
         await self.create_backend_tests(backend_path, config)
-    
+
     async def create_react_frontend(self, frontend_path: Path, config: Dict):
         """React + TypeScriptフロントエンド生成"""
         frontend_path.mkdir(parents=True)
-        
+
         # ディレクトリ構造
         dirs = [
             "src/components/upload",
@@ -138,79 +137,79 @@ class ProjectScaffolder:
             "src/utils",
             "src/types",
             "src/styles",
-            "public/images"
+            "public/images",
         ]
-        
+
         for dir_path in dirs:
             (frontend_path / dir_path).mkdir(parents=True, exist_ok=True)
-        
+
         # package.json
         await self.write_file(frontend_path / "package.json", self.get_package_json(config))
-        
+
         # TypeScript設定
         await self.write_file(frontend_path / "tsconfig.json", self.get_tsconfig())
-        
+
         # メインアプリ
         await self.write_file(frontend_path / "src" / "App.tsx", self.get_app_component(config))
-        
+
         # アップロードコンポーネント
         await self.write_file(
             frontend_path / "src" / "components" / "upload" / "FileUploader.tsx",
-            self.get_file_uploader_component(config)
+            self.get_file_uploader_component(config),
         )
-        
+
         # 管理画面
-        if 'approval-flow' in config.get('features', []):
+        if "approval-flow" in config.get("features", []):
             await self.write_file(
                 frontend_path / "src" / "components" / "admin" / "ApprovalDashboard.tsx",
-                self.get_approval_dashboard(config)
+                self.get_approval_dashboard(config),
             )
-        
+
         # APIサービス
         await self.write_file(frontend_path / "src" / "services" / "api.ts", self.get_api_service(config))
-        
+
         # 型定義
         await self.write_file(frontend_path / "src" / "types" / "index.ts", self.get_type_definitions())
-        
+
         # スタイル
         await self.write_file(frontend_path / "src" / "styles" / "globals.css", self.get_global_styles())
-    
+
     async def create_docker_config(self, project_path: Path, config: Dict):
         """Docker設定生成"""
         # docker-compose.yml
         docker_compose = self.get_docker_compose(config)
         await self.write_file(project_path / "docker-compose.yml", docker_compose)
-        
+
         # .env.example
         env_example = self.get_env_example(config)
         await self.write_file(project_path / ".env.example", env_example)
-        
+
         # nginx設定（必要な場合）
-        if config.get('frontend') != 'none':
+        if config.get("frontend") != "none":
             nginx_path = project_path / "nginx"
             nginx_path.mkdir(exist_ok=True)
             await self.write_file(nginx_path / "nginx.conf", self.get_nginx_config())
-    
+
     async def integrate_elders_guild(self, project_path: Path, config: Dict):
         """エルダーズギルド統合"""
-        integrations = config.get('elders_integration', [])
-        
+        integrations = config.get("elders_integration", [])
+
         # TDD設定
-        if 'tdd' in integrations:
+        if "tdd" in integrations:
             await self.create_tdd_config(project_path)
-        
+
         # 4賢者システム統合
-        if 'four-sages' in integrations:
+        if "four-sages" in integrations:
             await self.create_four_sages_integration(project_path)
-        
+
         # CI/CD設定
-        if 'cicd' in integrations:
+        if "cicd" in integrations:
             await self.create_cicd_config(project_path)
-        
+
         # 品質監視
-        if 'quality-dashboard' in integrations:
+        if "quality-dashboard" in integrations:
             await self.create_quality_monitoring(project_path)
-    
+
     async def create_backend_tests(self, backend_path: Path, config: Dict):
         """バックエンドテスト生成"""
         # ユニットテスト
@@ -226,20 +225,20 @@ class TestUploadEndpoints:
         \"\"\"ファイルアップロードテスト\"\"\"
         # テストファイル作成
         test_file = ("test.jpg", b"fake image data", "image/jpeg")
-        
+
         response = client.post(
             "/api/v1/upload",
             files={"file": test_file}
         )
-        
+
         assert response.status_code == 200
         assert "file_id" in response.json()
-    
+
     def test_get_upload_status(self):
         \"\"\"アップロードステータス取得テスト\"\"\"
         response = client.get("/api/v1/upload/status/test-id")
         assert response.status_code in [200, 404]
-    
+
     def test_list_uploads(self):
         \"\"\"アップロード一覧取得テスト\"\"\"
         response = client.get("/api/v1/uploads")
@@ -247,7 +246,7 @@ class TestUploadEndpoints:
         assert isinstance(response.json(), list)
 """
         await self.write_file(backend_path / "tests" / "unit" / "test_upload.py", test_upload)
-        
+
         # 統合テスト
         integration_test = """
 import pytest
@@ -258,24 +257,24 @@ from app.services.upload_service import UploadService
 async def test_full_upload_flow():
     \"\"\"完全なアップロードフローテスト\"\"\"
     service = UploadService()
-    
+
     # ファイルアップロード
     file_data = b"test image data"
     result = await service.process_upload(file_data, "test.jpg", "image/jpeg")
-    
+
     assert result["status"] == "success"
     assert "file_id" in result
-    
+
     # ステータス確認
     status = await service.get_upload_status(result["file_id"])
     assert status["status"] in ["pending", "approved", "rejected"]
 """
         await self.write_file(backend_path / "tests" / "integration" / "test_upload_flow.py", integration_test)
-    
+
     # ヘルパーメソッド群
     def get_fastapi_main(self, config: Dict) -> str:
         """FastAPIメインアプリケーション"""
-        return '''from fastapi import FastAPI
+        return """from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.endpoints import upload, admin, auth
 from app.core.config import settings
@@ -307,8 +306,8 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
-'''
-    
+"""
+
     def get_upload_endpoints(self, config: Dict) -> str:
         """アップロードエンドポイント"""
         return '''from fastapi import APIRouter, UploadFile, File, Depends, HTTPException
@@ -328,14 +327,14 @@ async def upload_file(
     """ファイルアップロード"""
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="画像ファイルのみ対応しています")
-    
+
     result = await upload_service.process_upload(
         await file.read(),
         file.filename,
         file.content_type,
         user_id=user.id
     )
-    
+
     return result
 
 @router.post("/multiple", response_model=List[UploadResponse])
@@ -354,7 +353,7 @@ async def upload_multiple_files(
                 user_id=user.id
             )
             results.append(result)
-    
+
     return results
 
 @router.get("/status/{file_id}", response_model=UploadStatus)
@@ -374,10 +373,10 @@ async def list_uploads(
     """アップロード一覧取得"""
     return await upload_service.list_user_uploads(user.id, skip, limit)
 '''
-    
+
     def get_file_uploader_component(self, config: Dict) -> str:
         """ファイルアップローダーコンポーネント"""
-        return '''import React, { useState, useCallback } from 'react';
+        return """import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { uploadFiles } from '../../services/api';
 import { FileUploadProgress } from './FileUploadProgress';
@@ -398,7 +397,7 @@ export const FileUploader: React.FC = () => {
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setUploading(true);
-    
+
     // プレビュー生成
     const newFiles = acceptedFiles.map(file => ({
       id: Math.random().toString(36),
@@ -407,26 +406,26 @@ export const FileUploader: React.FC = () => {
       progress: 0,
       preview: URL.createObjectURL(file)
     }));
-    
+
     setFiles(prev => [...prev, ...newFiles]);
-    
+
     try {
       // アップロード実行
       const results = await uploadFiles(acceptedFiles, (progress) => {
-        setFiles(prev => prev.map(f => 
-          f.id === progress.fileId 
+        setFiles(prev => prev.map(f =>
+          f.id === progress.fileId
             ? { ...f, progress: progress.percent }
             : f
         ));
       });
-      
+
       // 完了状態に更新
       setFiles(prev => prev.map(f => ({
         ...f,
         status: 'completed',
         progress: 100
       })));
-      
+
     } catch (error) {
       console.error('Upload error:', error);
       setFiles(prev => prev.map(f => ({
@@ -456,15 +455,15 @@ export const FileUploader: React.FC = () => {
           <p>ファイルをドラッグ＆ドロップ、またはクリックして選択</p>
         )}
       </div>
-      
+
       <div className="upload-list">
         {files.map(file => (
           <div key={file.id} className="upload-item">
             {file.preview && <ImagePreview src={file.preview} alt={file.name} />}
             <div className="upload-info">
               <span className="file-name">{file.name}</span>
-              <FileUploadProgress 
-                progress={file.progress} 
+              <FileUploadProgress
+                progress={file.progress}
                 status={file.status}
               />
             </div>
@@ -474,12 +473,12 @@ export const FileUploader: React.FC = () => {
     </div>
   );
 };
-'''
-    
+"""
+
     def get_docker_compose(self, config: Dict) -> str:
         """docker-compose.yml"""
         services = {
-            'backend': f'''
+            "backend": """
   backend:
     build: ./backend
     ports:
@@ -493,8 +492,8 @@ export const FileUploader: React.FC = () => {
     depends_on:
       - db
       - redis
-''',
-            'frontend': f'''
+""",
+            "frontend": """
   frontend:
     build: ./frontend
     ports:
@@ -506,8 +505,8 @@ export const FileUploader: React.FC = () => {
       - /app/node_modules
     depends_on:
       - backend
-''',
-            'db': f'''
+""",
+            "db": """
   db:
     image: postgres:15
     environment:
@@ -518,43 +517,43 @@ export const FileUploader: React.FC = () => {
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-''',
-            'redis': f'''
+""",
+            "redis": """
   redis:
     image: redis:7
     ports:
       - "6379:6379"
-'''
+""",
         }
-        
-        compose = '''version: '3.8'
 
-services:'''
-        
+        compose = """version: '3.8'
+
+services:"""
+
         # バックエンド
-        compose += services['backend']
-        
+        compose += services["backend"]
+
         # フロントエンド（必要な場合）
-        if config.get('frontend') != 'none':
-            compose += services['frontend']
-        
+        if config.get("frontend") != "none":
+            compose += services["frontend"]
+
         # データベース
-        if config.get('database') == 'postgresql':
-            compose += services['db']
-        
+        if config.get("database") == "postgresql":
+            compose += services["db"]
+
         # Redis（キャッシュ用）
-        compose += services['redis']
-        
+        compose += services["redis"]
+
         # ボリューム定義
-        compose += '''
+        compose += """
 
 volumes:
   postgres_data:
   upload_data:
-'''
-        
+"""
+
         return compose
-    
+
     def get_requirements(self, config: Dict) -> str:
         """requirements.txt"""
         deps = [
@@ -573,23 +572,23 @@ volumes:
             "pytest-asyncio==0.21.1",
             "httpx==0.25.2",
         ]
-        
+
         # 追加依存関係
-        if 'cloud-storage' in config.get('features', []):
-            if config.get('storage') == 'google-drive':
+        if "cloud-storage" in config.get("features", []):
+            if config.get("storage") == "google-drive":
                 deps.append("google-api-python-client==2.108.0")
                 deps.append("google-auth==2.25.2")
-            elif config.get('storage') == 's3':
+            elif config.get("storage") == "s3":
                 deps.append("boto3==1.34.0")
-        
-        if 'email-notification' in config.get('features', []):
+
+        if "email-notification" in config.get("features", []):
             deps.append("fastapi-mail==1.4.1")
-        
+
         return "\n".join(deps)
-    
+
     def get_package_json(self, config: Dict) -> str:
         """package.json"""
-        return '''{
+        return """{
   "name": "upload-image-frontend",
   "version": "0.1.0",
   "private": true,
@@ -634,50 +633,50 @@ volumes:
       "last 1 safari version"
     ]
   }
-}'''
-    
+}"""
+
     async def write_file(self, path: Path, content: str):
         """ファイル書き込み"""
         path.parent.mkdir(parents=True, exist_ok=True)
-        async with aiofiles.open(path, 'w', encoding='utf-8') as f:
+        async with aiofiles.open(path, "w", encoding="utf-8") as f:
             await f.write(content)
-    
+
     # その他の必要なメソッド...
     def get_config_file(self, config: Dict) -> str:
-        return '''from pydantic_settings import BaseSettings
+        return """from pydantic_settings import BaseSettings
 from typing import List
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Upload Image Manager"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
-    
+
     # Database
     DATABASE_URL: str = "postgresql://user:password@localhost/uploaddb"
-    
+
     # Redis
     REDIS_URL: str = "redis://localhost:6379"
-    
+
     # Security
     SECRET_KEY: str = "your-secret-key-here"
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    
+
     # CORS
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000"]
-    
+
     # File upload
     MAX_FILE_SIZE: int = 10 * 1024 * 1024  # 10MB
     ALLOWED_EXTENSIONS: List[str] = [".jpg", ".jpeg", ".png", ".gif", ".webp"]
-    
+
     # Storage
     UPLOAD_PATH: str = "/app/uploads"
-    
+
     class Config:
         env_file = ".env"
 
-settings = Settings()'''
-    
+settings = Settings()"""
+
     async def create_project_docs(self, project_path: Path, config: Dict):
         """プロジェクトドキュメント生成"""
         readme = f"""# {config['name']}
@@ -739,39 +738,39 @@ ai-project pdca {config['name']}
 - [デプロイガイド](./docs/deployment.md)
 """
         await self.write_file(project_path / "README.md", readme)
-    
+
     def _format_features(self, features: List[str]) -> str:
         """機能一覧フォーマット"""
         feature_names = {
-            'multi-upload': '📤 マルチファイルアップロード',
-            'image-preview': '🖼️ 画像プレビュー・サムネイル生成',
-            'progress-tracking': '📊 アップロード進捗表示',
-            'auth': '🔐 ユーザー認証・権限管理',
-            'approval-flow': '👤 管理者承認フロー',
-            'cloud-storage': '☁️ クラウドストレージ統合',
-            'image-optimization': '🔄 自動画像最適化',
-            'responsive': '📱 レスポンシブUI'
+            "multi-upload": "📤 マルチファイルアップロード",
+            "image-preview": "🖼️ 画像プレビュー・サムネイル生成",
+            "progress-tracking": "📊 アップロード進捗表示",
+            "auth": "🔐 ユーザー認証・権限管理",
+            "approval-flow": "👤 管理者承認フロー",
+            "cloud-storage": "☁️ クラウドストレージ統合",
+            "image-optimization": "🔄 自動画像最適化",
+            "responsive": "📱 レスポンシブUI",
         }
-        
-        return '\n'.join(f"- {feature_names.get(f, f)}" for f in features)
-    
+
+        return "\n".join(f"- {feature_names.get(f, f)}" for f in features)
+
     def _format_elders_integration(self, integrations: List[str]) -> str:
         """エルダーズギルド統合フォーマット"""
         integration_names = {
-            'tdd': '🧪 TDD（テスト駆動開発）',
-            'four-sages': '🧙‍♂️ 4賢者システム統合',
-            'quality-dashboard': '📊 品質監視ダッシュボード',
-            'cicd': '🔄 CI/CDパイプライン',
-            'performance': '📈 自動パフォーマンス最適化',
-            'incident': '🚨 インシデント自動対応',
-            'knowledge': '📚 ナレッジベース統合',
-            'rag': '🔍 RAG検索システム'
+            "tdd": "🧪 TDD（テスト駆動開発）",
+            "four-sages": "🧙‍♂️ 4賢者システム統合",
+            "quality-dashboard": "📊 品質監視ダッシュボード",
+            "cicd": "🔄 CI/CDパイプライン",
+            "performance": "📈 自動パフォーマンス最適化",
+            "incident": "🚨 インシデント自動対応",
+            "knowledge": "📚 ナレッジベース統合",
+            "rag": "🔍 RAG検索システム",
         }
-        
-        return '\n'.join(f"- {integration_names.get(i, i)}" for i in integrations)
-    
+
+        return "\n".join(f"- {integration_names.get(i, i)}" for i in integrations)
+
     def get_upload_model(self, config):
-        return '''from sqlalchemy import Column, String, DateTime, Integer, Boolean
+        return """from sqlalchemy import Column, String, DateTime, Integer, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
 
@@ -779,7 +778,7 @@ Base = declarative_base()
 
 class Upload(Base):
     __tablename__ = "uploads"
-    
+
     id = Column(String, primary_key=True)
     filename = Column(String, nullable=False)
     content_type = Column(String, nullable=False)
@@ -793,8 +792,8 @@ class Upload(Base):
     approval_notes = Column(String)
     approved_by = Column(String)
     approved_at = Column(DateTime)
-'''
-    
+"""
+
     def get_upload_service(self, config: Dict) -> str:
         """アップロードサービス層"""
         return '''import os
@@ -814,7 +813,7 @@ class UploadService:
         self.storage = StorageService()
         self.upload_path = settings.UPLOAD_PATH
         os.makedirs(self.upload_path, exist_ok=True)
-    
+
     async def process_upload(
         self,
         file_data: bytes,
@@ -826,17 +825,17 @@ class UploadService:
         # ファイルID生成
         file_id = str(uuid.uuid4())
         file_hash = hashlib.sha256(file_data).hexdigest()
-        
+
         # ファイル保存
         file_path = os.path.join(self.upload_path, f"{file_id}_{filename}")
         async with aiofiles.open(file_path, 'wb') as f:
             await f.write(file_data)
-        
+
         # サムネイル生成（画像の場合）
         thumbnail_path = None
         if content_type.startswith('image/'):
             thumbnail_path = await self.create_thumbnail(file_path, file_id)
-        
+
         # データベース記録
         upload_record = Upload(
             id=file_id,
@@ -848,12 +847,12 @@ class UploadService:
             thumbnail_path=thumbnail_path,
             status='pending'
         )
-        
+
         # クラウドストレージへのアップロード（設定による）
         if settings.CLOUD_STORAGE_ENABLED:
             cloud_url = await self.storage.upload_to_cloud(file_path, filename)
             upload_record.cloud_url = cloud_url
-        
+
         return {
             "file_id": file_id,
             "filename": filename,
@@ -861,26 +860,26 @@ class UploadService:
             "status": "success",
             "thumbnail_url": f"/api/v1/upload/thumbnail/{file_id}" if thumbnail_path else None
         }
-    
+
     async def create_thumbnail(self, file_path: str, file_id: str) -> Optional[str]:
         """サムネイル生成"""
         try:
             with Image.open(file_path) as img:
                 # EXIF情報に基づいて回転補正
                 img = self.correct_image_orientation(img)
-                
+
                 # サムネイルサイズ
                 img.thumbnail((300, 300), Image.Resampling.LANCZOS)
-                
+
                 # 保存
                 thumbnail_path = os.path.join(self.upload_path, f"thumb_{file_id}.jpg")
                 img.save(thumbnail_path, "JPEG", quality=85)
-                
+
                 return thumbnail_path
         except Exception as e:
             print(f"サムネイル生成エラー: {e}")
             return None
-    
+
     def correct_image_orientation(self, img):
         """画像の向き補正"""
         try:
@@ -898,7 +897,7 @@ class UploadService:
         except:
             pass
         return img
-    
+
     async def get_upload_status(self, file_id: str) -> Optional[Dict]:
         """アップロードステータス取得"""
         # TODO: データベースから取得
@@ -907,7 +906,7 @@ class UploadService:
             "status": "pending",
             "created_at": datetime.now().isoformat()
         }
-    
+
     async def list_user_uploads(self, user_id: str, skip: int = 0, limit: int = 100) -> List[Dict]:
         """ユーザーのアップロード一覧"""
         # TODO: データベースから取得
@@ -923,7 +922,7 @@ import numpy as np
 
 class ImageProcessor:
     """画像処理・最適化サービス"""
-    
+
     @staticmethod
     async def optimize_image(
         image_data: bytes,
@@ -933,13 +932,13 @@ class ImageProcessor:
         """画像最適化"""
         # バイナリデータから画像を開く
         img = Image.open(io.BytesIO(image_data))
-        
+
         # EXIF情報を保持しながら向きを修正
         img = ImageOps.exif_transpose(img)
-        
+
         # リサイズ（アスペクト比を保持）
         img.thumbnail(max_size, Image.Resampling.LANCZOS)
-        
+
         # 最適化して保存
         output = io.BytesIO()
         if img.mode == 'RGBA':
@@ -952,9 +951,9 @@ class ImageProcessor:
             if img.mode != 'RGB':
                 img = img.convert('RGB')
             img.save(output, 'JPEG', quality=quality, optimize=True)
-        
+
         return output.getvalue()
-    
+
     @staticmethod
     async def create_webp(
         image_data: bytes,
@@ -965,7 +964,7 @@ class ImageProcessor:
         output = io.BytesIO()
         img.save(output, 'WebP', quality=quality, method=6)
         return output.getvalue()
-    
+
     @staticmethod
     async def extract_dominant_colors(
         image_data: bytes,
@@ -975,21 +974,21 @@ class ImageProcessor:
         img = Image.open(io.BytesIO(image_data))
         img = img.convert('RGB')
         img = img.resize((150, 150))  # 計算速度のため縮小
-        
+
         # NumPy配列に変換
         pixels = np.array(img)
         pixels = pixels.reshape(-1, 3)
-        
+
         # K-means風の簡易クラスタリング
         from collections import Counter
         pixel_counts = Counter(map(tuple, pixels))
         most_common = pixel_counts.most_common(num_colors)
-        
+
         return [
             {"rgb": color, "hex": '#{:02x}{:02x}{:02x}'.format(*color)}
             for color, _ in most_common
         ]
-    
+
     @staticmethod
     async def add_watermark(
         image_data: bytes,
@@ -998,24 +997,24 @@ class ImageProcessor:
     ) -> bytes:
         """ウォーターマーク追加"""
         from PIL import ImageDraw, ImageFont
-        
+
         img = Image.open(io.BytesIO(image_data))
         draw = ImageDraw.Draw(img)
-        
+
         # フォントサイズを画像サイズに応じて調整
         font_size = max(20, min(img.width, img.height) // 20)
-        
+
         # デフォルトフォントを使用
         try:
             font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size)
         except:
             font = ImageFont.load_default()
-        
+
         # テキストサイズを取得
         text_bbox = draw.textbbox((0, 0), watermark_text, font=font)
         text_width = text_bbox[2] - text_bbox[0]
         text_height = text_bbox[3] - text_bbox[1]
-        
+
         # 位置計算
         margin = 10
         if position == 'bottom-right':
@@ -1030,7 +1029,7 @@ class ImageProcessor:
         else:  # top-left
             x = margin
             y = margin
-        
+
         # 半透明の背景
         overlay = Image.new('RGBA', img.size, (0, 0, 0, 0))
         overlay_draw = ImageDraw.Draw(overlay)
@@ -1039,12 +1038,12 @@ class ImageProcessor:
             fill=(0, 0, 0, 128)
         )
         overlay_draw.text((x, y), watermark_text, fill=(255, 255, 255, 255), font=font)
-        
+
         # 合成
         img = img.convert('RGBA')
         img = Image.alpha_composite(img, overlay)
         img = img.convert('RGB')
-        
+
         # 保存
         output = io.BytesIO()
         img.save(output, 'JPEG', quality=90)
@@ -1069,17 +1068,17 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
 
 class AuthService:
     """認証サービス"""
-    
+
     @staticmethod
     def verify_password(plain_password: str, hashed_password: str) -> bool:
         """パスワード検証"""
         return pwd_context.verify(plain_password, hashed_password)
-    
+
     @staticmethod
     def get_password_hash(password: str) -> str:
         """パスワードハッシュ化"""
         return pwd_context.hash(password)
-    
+
     @staticmethod
     def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
         """アクセストークン生成"""
@@ -1088,7 +1087,7 @@ class AuthService:
             expire = datetime.utcnow() + expires_delta
         else:
             expire = datetime.utcnow() + timedelta(minutes=15)
-        
+
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(
             to_encode,
@@ -1096,7 +1095,7 @@ class AuthService:
             algorithm=settings.ALGORITHM
         )
         return encoded_jwt
-    
+
     @staticmethod
     async def get_current_user(token: str = Depends(oauth2_scheme)):
         """現在のユーザー取得"""
@@ -1105,7 +1104,7 @@ class AuthService:
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-        
+
         try:
             payload = jwt.decode(
                 token,
@@ -1117,7 +1116,7 @@ class AuthService:
                 raise credentials_exception
         except JWTError:
             raise credentials_exception
-        
+
         # TODO: データベースからユーザー情報を取得
         user = {"id": "user-123", "username": username}
         return user
@@ -1135,7 +1134,7 @@ def get_current_active_user(current_user = Depends(get_current_user)):
 
     def get_backend_dockerfile(self) -> str:
         """バックエンドDockerfile"""
-        return '''FROM python:3.11-slim
+        return """FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -1163,11 +1162,11 @@ EXPOSE 8000
 
 # 起動コマンド
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
-'''
+"""
 
     def get_app_component(self, config: Dict) -> str:
         """メインAppコンポーネント"""
-        return '''import React from 'react';
+        return """import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { FileUploader } from './components/upload/FileUploader';
 import { ApprovalDashboard } from './components/admin/ApprovalDashboard';
@@ -1195,11 +1194,11 @@ function App() {
 }
 
 export default App;
-'''
+"""
 
     def get_approval_dashboard(self, config: Dict) -> str:
         """承認ダッシュボード"""
-        return '''import React, { useState, useEffect } from 'react';
+        return """import React, { useState, useEffect } from 'react';
 import { getUploads, updateUploadStatus } from '../../services/api';
 import './ApprovalDashboard.css';
 
@@ -1238,7 +1237,7 @@ export const ApprovalDashboard: React.FC = () => {
     try {
       await updateUploadStatus(uploadId, newStatus);
       // 楽観的更新
-      setUploads(prev => prev.map(upload => 
+      setUploads(prev => prev.map(upload =>
         upload.id === uploadId ? { ...upload, status: newStatus } : upload
       ));
     } catch (error) {
@@ -1248,34 +1247,34 @@ export const ApprovalDashboard: React.FC = () => {
     }
   };
 
-  const filteredUploads = uploads.filter(upload => 
+  const filteredUploads = uploads.filter(upload =>
     filter === 'all' || upload.status === filter
   );
 
   return (
     <div className="approval-dashboard">
       <h1>画像承認ダッシュボード</h1>
-      
+
       <div className="filter-buttons">
-        <button 
+        <button
           className={filter === 'all' ? 'active' : ''}
           onClick={() => setFilter('all')}
         >
           すべて ({uploads.length})
         </button>
-        <button 
+        <button
           className={filter === 'pending' ? 'active' : ''}
           onClick={() => setFilter('pending')}
         >
           承認待ち ({uploads.filter(u => u.status === 'pending').length})
         </button>
-        <button 
+        <button
           className={filter === 'approved' ? 'active' : ''}
           onClick={() => setFilter('approved')}
         >
           承認済み ({uploads.filter(u => u.status === 'approved').length})
         </button>
-        <button 
+        <button
           className={filter === 'rejected' ? 'active' : ''}
           onClick={() => setFilter('rejected')}
         >
@@ -1298,16 +1297,16 @@ export const ApprovalDashboard: React.FC = () => {
                 <p>サイズ: {(upload.size / 1024 / 1024).toFixed(2)} MB</p>
                 <p>ユーザー: {upload.userId}</p>
               </div>
-              
+
               {upload.status === 'pending' && (
                 <div className="action-buttons">
-                  <button 
+                  <button
                     className="approve-btn"
                     onClick={() => handleStatusUpdate(upload.id, 'approved')}
                   >
                     承認
                   </button>
-                  <button 
+                  <button
                     className="reject-btn"
                     onClick={() => handleStatusUpdate(upload.id, 'rejected')}
                   >
@@ -1315,7 +1314,7 @@ export const ApprovalDashboard: React.FC = () => {
                   </button>
                 </div>
               )}
-              
+
               <div className={`status-badge ${upload.status}`}>
                 {upload.status === 'pending' && '承認待ち'}
                 {upload.status === 'approved' && '✓ 承認済み'}
@@ -1328,11 +1327,11 @@ export const ApprovalDashboard: React.FC = () => {
     </div>
   );
 };
-'''
+"""
 
     def get_api_service(self, config: Dict) -> str:
         """APIサービス"""
-        return '''import axios from 'axios';
+        return """import axios from 'axios';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
@@ -1413,10 +1412,10 @@ export const login = async (username: string, password: string) => {
     username,
     password,
   });
-  
+
   const { access_token, token_type } = response.data;
   localStorage.setItem('access_token', access_token);
-  
+
   return response.data;
 };
 
@@ -1433,11 +1432,11 @@ export const getCurrentUser = async () => {
 };
 
 export default api;
-'''
+"""
 
     def get_type_definitions(self) -> str:
         """TypeScript型定義"""
-        return '''// アップロード関連の型定義
+        return """// アップロード関連の型定義
 export interface Upload {
   id: string;
   filename: string;
@@ -1506,11 +1505,11 @@ export interface ApiError {
   detail?: string;
   status: number;
 }
-'''
+"""
 
     def get_global_styles(self) -> str:
         """グローバルCSS"""
-        return '''/* リセットCSS */
+        return """/* リセットCSS */
 * {
   margin: 0;
   padding: 0;
@@ -1624,7 +1623,7 @@ input:focus, textarea:focus, select:focus {
   .container {
     padding: 0 10px;
   }
-  
+
   .card {
     padding: 15px;
   }
@@ -1668,11 +1667,11 @@ input:focus, textarea:focus, select:focus {
     transform: rotate(360deg);
   }
 }
-'''
+"""
 
     def get_tsconfig(self) -> str:
         """tsconfig.json"""
-        return '''{
+        return """{
   "compilerOptions": {
     "target": "es5",
     "lib": [
@@ -1698,11 +1697,11 @@ input:focus, textarea:focus, select:focus {
     "src"
   ]
 }
-'''
+"""
 
     def get_nginx_config(self) -> str:
         """nginx設定"""
-        return '''server {
+        return """server {
     listen 80;
     server_name localhost;
 
@@ -1723,7 +1722,7 @@ input:focus, textarea:focus, select:focus {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # アップロード設定
         client_max_body_size 100M;
     }
@@ -1736,11 +1735,11 @@ input:focus, textarea:focus, select:focus {
         proxy_set_header Connection "upgrade";
     }
 }
-'''
+"""
 
     def get_env_example(self, config: Dict) -> str:
         """環境変数サンプル"""
-        return '''# データベース設定
+        return """# データベース設定
 DATABASE_URL=postgresql://user:password@db:5432/uploaddb
 
 # Redis設定
@@ -1776,29 +1775,28 @@ MAIL_ENABLED=false
 
 # フロントエンド設定
 REACT_APP_API_URL=http://localhost:8000
-'''
+"""
 
     async def create_generic_project(self, project_path: Path, config: Dict):
         """汎用プロジェクト生成"""
         # TODO: 他のプロジェクトタイプの実装
-        pass
 
     async def create_tdd_config(self, project_path: Path):
         """TDD設定生成"""
         # pytest.ini
-        pytest_config = '''[pytest]
+        pytest_config = """[pytest]
 testpaths = tests
 python_files = test_*.py
 python_classes = Test*
 python_functions = test_*
 addopts = -v --cov=app --cov-report=html --cov-report=term-missing
-'''
+"""
         await self.write_file(project_path / "pytest.ini", pytest_config)
-        
+
         # .coveragerc
-        coverage_config = '''[run]
+        coverage_config = """[run]
 source = .
-omit = 
+omit =
     */tests/*
     */venv/*
     */__pycache__/*
@@ -1815,12 +1813,12 @@ exclude_lines =
 
 [html]
 directory = htmlcov
-'''
+"""
         await self.write_file(project_path / ".coveragerc", coverage_config)
 
     async def create_four_sages_integration(self, project_path: Path):
         """4賢者システム統合"""
-        sages_config = '''{
+        sages_config = """{
   "four_sages": {
     "task_oracle": {
       "enabled": true,
@@ -1849,7 +1847,7 @@ directory = htmlcov
     "quality_threshold": 95
   }
 }
-'''
+"""
         await self.write_file(project_path / "elders_config.json", sages_config)
 
     async def create_cicd_config(self, project_path: Path):
@@ -1857,8 +1855,8 @@ directory = htmlcov
         # GitHub Actions
         github_actions_path = project_path / ".github" / "workflows"
         github_actions_path.mkdir(parents=True, exist_ok=True)
-        
-        ci_workflow = '''name: CI/CD Pipeline
+
+        ci_workflow = """name: CI/CD Pipeline
 
 on:
   push:
@@ -1869,7 +1867,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:15
@@ -1880,33 +1878,33 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r backend/requirements.txt
-    
+
     - name: Run tests
       run: |
         cd backend
         pytest --cov=app --cov-report=xml
-    
+
     - name: Upload coverage
       uses: codecov/codecov-action@v3
       with:
         file: ./backend/coverage.xml
-    
+
     - name: Build Docker images
       run: docker-compose build
-    
+
     - name: Run integration tests
       run: |
         docker-compose up -d
@@ -1918,20 +1916,20 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Deploy to production
       run: |
         echo "Deploying to production..."
         # Add deployment steps here
-'''
+"""
         await self.write_file(github_actions_path / "ci.yml", ci_workflow)
 
     async def create_quality_monitoring(self, project_path: Path):
         """品質監視設定"""
-        monitoring_config = '''{
+        monitoring_config = """{
   "quality_metrics": {
     "test_coverage_threshold": 95,
     "code_quality_tools": ["black", "flake8", "mypy"],
@@ -1963,5 +1961,5 @@ jobs:
     "send_to_elders": true
   }
 }
-'''
+"""
         await self.write_file(project_path / "quality_monitoring.json", monitoring_config)

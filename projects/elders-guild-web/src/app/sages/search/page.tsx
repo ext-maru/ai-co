@@ -222,7 +222,7 @@ export default function SearchSagePage() {
                 Active
               </Badge>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <Button variant="outline" size="sm">
                 <Search className="w-4 h-4 mr-2" />
@@ -348,7 +348,7 @@ export default function SearchSagePage() {
               isLoading={false}
             />
           )}
-          
+
           {activeView === 'semantic' && (
             <SemanticSearch
               query={currentQuery || 'APIセキュリティ'}
@@ -359,7 +359,7 @@ export default function SearchSagePage() {
               isProcessing={false}
             />
           )}
-          
+
           {activeView === 'analytics' && (
             <SearchVisualization
               analytics={sampleAnalytics}
@@ -378,7 +378,7 @@ export default function SearchSagePage() {
               }}
             />
           )}
-          
+
           {activeView === 'suggestions' && (
             <AISuggestionSystem
               currentQuery={currentQuery || 'APIセキュリティ'}

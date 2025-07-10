@@ -25,7 +25,7 @@ services:
 
   # Image Upload Manager
   image-upload-manager:
-    build: 
+    build:
       context: ./image-upload-manager
       dockerfile: Dockerfile
     container_name: elders-guild-image-upload-manager

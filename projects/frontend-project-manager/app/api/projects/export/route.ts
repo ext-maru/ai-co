@@ -8,29 +8,29 @@ export async function GET(request: NextRequest) {
     const url = new URL(request.url)
     const format = url.searchParams.get('format') || 'json'
     const projectIds = url.searchParams.get('projects')?.split(',').filter(Boolean)
-    
+
     console.log('Export requested:', { format, projectIds })
-    
+
     // すべてのプロジェクトメタデータを読み込む
     const metadataPath = path.resolve(process.cwd(), '../../data/project_metadata')
     const files = fs.readdirSync(metadataPath)
-    
+
     const projects: any[] = []
-    
+
     for (const file of files) {
       if (!file.endsWith('.json')) continue
-      
+
       const projectId = file.replace('.json', '')
-      
+
       // 特定のプロジェクトのみエクスポートする場合
       if (projectIds && projectIds.length > 0 && !projectIds.includes(projectId)) {
         continue
       }
-      
+
       try {
         const filePath = path.join(metadataPath, file)
         const metadata = JSON.parse(fs.readFileSync(filePath, 'utf8'))
-        
+
         projects.push({
           project_id: projectId,
           ...metadata
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
         console.error(`Error loading ${file}:`, error)
       }
     }
-    
+
     // フォーマットに応じてエクスポート
     switch (format.toLowerCase()) {
       case 'json':
@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
           total_projects: projects.length,
           projects
         })
-        
+
       case 'csv':
         const csv = generateCSV(projects)
         return new NextResponse(csv, {
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
             'Content-Disposition': `attachment; filename="projects_export_${new Date().toISOString().split('T')[0]}.csv"`
           }
         })
-        
+
       case 'markdown':
         const markdown = generateMarkdown(projects)
         return new NextResponse(markdown, {
@@ -66,14 +66,14 @@ export async function GET(request: NextRequest) {
             'Content-Disposition': `attachment; filename="projects_export_${new Date().toISOString().split('T')[0]}.md"`
           }
         })
-        
+
       default:
         return NextResponse.json(
           { error: 'Unsupported format. Use json, csv, or markdown' },
           { status: 400 }
         )
     }
-    
+
   } catch (error) {
     console.error('Export error:', error)
     return NextResponse.json(
@@ -97,7 +97,7 @@ function generateCSV(projects: any[]): string {
     'Created',
     'Updated'
   ]
-  
+
   const rows = projects.map(p => [
     p.project_id,
     `"${p.name}"`,
@@ -110,7 +110,7 @@ function generateCSV(projects: any[]): string {
     p.estimated_completion || 'N/A',
     p.actual_completion || p.last_updated || 'N/A'
   ])
-  
+
   return [
     headers.join(','),
     ...rows.map(row => row.join(','))
@@ -121,7 +121,7 @@ function generateCSV(projects: any[]): string {
 function generateMarkdown(projects: any[]): string {
   let markdown = `# エルダーズギルド プロジェクトポートフォリオ
 
-**エクスポート日時**: ${new Date().toISOString()}  
+**エクスポート日時**: ${new Date().toISOString()}
 **総プロジェクト数**: ${projects.length}
 
 ## 📊 統計情報
@@ -135,13 +135,13 @@ function generateMarkdown(projects: any[]): string {
   projects.forEach(p => {
     statusCounts[p.status] = (statusCounts[p.status] || 0) + 1
   })
-  
+
   Object.entries(statusCounts).forEach(([status, count]) => {
     markdown += `| ${status} | ${count} |\n`
   })
-  
+
   markdown += `\n## 📁 プロジェクト一覧\n\n`
-  
+
   // プロジェクトリスト
   projects.forEach(p => {
     markdown += `### ${p.name}
@@ -157,6 +157,6 @@ function generateMarkdown(projects: any[]): string {
 
 `
   })
-  
+
   return markdown
 }

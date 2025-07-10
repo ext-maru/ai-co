@@ -100,13 +100,13 @@ export function SageCard({ sage, onSelect, isSelected }: SageCardProps) {
                 {sage.activity}
               </span>
               <Badge variant="secondary" size="sm" pulse={sage.status === 'active'}>
-                {sage.status === 'active' ? '稼働中' : 
+                {sage.status === 'active' ? '稼働中' :
                  sage.status === 'busy' ? '多忙' :
                  sage.status === 'meditation' ? '瞑想中' : '休止中'}
               </Badge>
             </div>
-            <Progress 
-              value={getProgressValue(sage)} 
+            <Progress
+              value={getProgressValue(sage)}
               variant={sage.type}
               showValue
             />

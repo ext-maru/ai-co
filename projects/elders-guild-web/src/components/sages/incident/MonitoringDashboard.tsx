@@ -114,13 +114,13 @@ export function MonitoringDashboard({
     const max = Math.max(...values)
     const min = Math.min(...values)
     const range = max - min || 1
-    
+
     const points = values.map((value, index) => {
       const x = (index / (values.length - 1)) * 100
       const y = 100 - ((value - min) / range) * 100
       return `${x},${y}`
     }).join(' ')
-    
+
     return `M ${points}`
   }
 
@@ -198,14 +198,14 @@ export function MonitoringDashboard({
                 </div>
                 {getTrendIcon(metric.trend)}
               </div>
-              
+
               <h3 className="font-medium text-gray-900 text-sm mb-1">{metric.name}</h3>
-              
+
               <div className="flex items-baseline space-x-1 mb-3">
                 <span className="text-2xl font-bold text-gray-900">{metric.value}</span>
                 <span className="text-sm text-gray-500">{metric.unit}</span>
               </div>
-              
+
               {/* Mini sparkline */}
               <div className="h-8 relative">
                 <svg className="w-full h-full">
@@ -220,7 +220,7 @@ export function MonitoringDashboard({
                   />
                 </svg>
               </div>
-              
+
               <div className="mt-2">
                 <div className="flex justify-between text-xs text-gray-500 mb-1">
                   <span>閾値</span>
@@ -251,7 +251,7 @@ export function MonitoringDashboard({
           <Activity className="w-5 h-5 mr-2 text-crimson-600" />
           サービスヘルスステータス
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {services.map((service) => (
             <motion.div
@@ -273,7 +273,7 @@ export function MonitoringDashboard({
                   <h4 className="font-medium text-gray-900">{service.name}</h4>
                   <span className="text-2xl">{getStatusIcon(service.status)}</span>
                 </div>
-                
+
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">稼働率</span>
@@ -285,7 +285,7 @@ export function MonitoringDashboard({
                       {service.uptime}%
                     </span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-gray-600">応答時間</span>
                     <span className={cn(
@@ -296,7 +296,7 @@ export function MonitoringDashboard({
                       {service.responseTime}ms
                     </span>
                   </div>
-                  
+
                   <div className="flex justify-between">
                     <span className="text-gray-600">エラー率</span>
                     <span className={cn(
@@ -308,7 +308,7 @@ export function MonitoringDashboard({
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="mt-3 pt-3 border-t border-gray-200">
                   <p className="text-xs text-gray-500">
                     最終チェック: {new Date(service.lastChecked).toLocaleTimeString('ja-JP')}

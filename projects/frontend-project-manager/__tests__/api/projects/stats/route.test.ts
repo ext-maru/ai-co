@@ -18,7 +18,7 @@ describe('/api/projects/stats', () => {
 
   it('should return empty stats when no projects exist', async () => {
     mockFs.existsSync.mockReturnValue(false)
-    
+
     const request = new NextRequest('http://localhost/api/projects/stats')
     const response = await GET(request)
     const data = await response.json()
@@ -50,7 +50,7 @@ describe('/api/projects/stats', () => {
 
   it('should calculate correct stats for multiple projects', async () => {
     const mockProjects = ['project-1.json', 'project-2.json', 'project-3.json']
-    
+
     const mockMetadata = [
       {
         name: 'Project 1',
@@ -119,10 +119,10 @@ describe('/api/projects/stats', () => {
 
   it('should limit recent projects to 5', async () => {
     const mockProjects = Array(10).fill(null).map((_, i) => `project-${i}.json`)
-    
+
     mockFs.existsSync.mockReturnValue(true)
     mockFs.readdirSync.mockReturnValue(mockProjects as any)
-    
+
     // Mock 10 projects
     for (let i = 0; i < 10; i++) {
       mockFs.readFileSync.mockReturnValueOnce(JSON.stringify({
@@ -145,7 +145,7 @@ describe('/api/projects/stats', () => {
 
   it('should handle various project types correctly', async () => {
     const mockProjects = ['project-1.json']
-    
+
     const mockMetadata = {
       name: 'Test Project',
       status: 'active',

@@ -12,7 +12,7 @@
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         .grimoire-card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -21,29 +21,29 @@
             border: 1px solid rgba(255, 255, 255, 0.18);
             transition: all 0.3s ease;
         }
-        
+
         .grimoire-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 45px rgba(31, 38, 135, 0.5);
         }
-        
+
         .hero-section {
             padding: 100px 0;
             text-align: center;
             color: white;
         }
-        
+
         .feature-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
             color: #667eea;
         }
-        
+
         .navbar-brand {
             font-weight: bold;
             font-size: 1.5rem;
         }
-        
+
         .btn-magic {
             background: linear-gradient(45deg, #667eea, #764ba2);
             border: none;
@@ -53,13 +53,13 @@
             font-weight: 500;
             transition: all 0.3s ease;
         }
-        
+
         .btn-magic:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
             color: white;
         }
-        
+
         .sage-badge {
             display: inline-block;
             padding: 5px 12px;
@@ -68,12 +68,12 @@
             font-weight: 500;
             margin: 2px;
         }
-        
+
         .sage-knowledge { background: #e3f2fd; color: #1976d2; }
         .sage-task { background: #f3e5f5; color: #7b1fa2; }
         .sage-crisis { background: #ffebee; color: #d32f2f; }
         .sage-search { background: #e8f5e8; color: #388e3c; }
-        
+
         .stats-number {
             font-size: 2.5rem;
             font-weight: bold;
@@ -144,7 +144,7 @@
                     <div class="grimoire-card p-4">
                         <h3 class="text-center mb-4">🔍 セマンティック検索</h3>
                         <div class="input-group input-group-lg">
-                            <input type="text" id="quickSearch" class="form-control" 
+                            <input type="text" id="quickSearch" class="form-control"
                                    placeholder="例: TDDの実装方法、PostgreSQLの設定、エラー対処法...">
                             <button class="btn btn-magic" type="button" onclick="performQuickSearch()">
                                 <i class="bi bi-search"></i> 検索
@@ -169,7 +169,7 @@
                         <a href="/library" class="btn btn-magic">図書館へ</a>
                     </div>
                 </div>
-                
+
                 <div class="col-md-6 col-lg-3">
                     <div class="grimoire-card text-center p-4 h-100">
                         <div class="feature-icon">🔍</div>
@@ -178,7 +178,7 @@
                         <a href="/search" class="btn btn-magic">検索する</a>
                     </div>
                 </div>
-                
+
                 <div class="col-md-6 col-lg-3">
                     <div class="grimoire-card text-center p-4 h-100">
                         <div class="feature-icon">🔄</div>
@@ -187,7 +187,7 @@
                         <a href="/evolution" class="btn btn-magic">昇華管理</a>
                     </div>
                 </div>
-                
+
                 <div class="col-md-6 col-lg-3">
                     <div class="grimoire-card text-center p-4 h-100">
                         <div class="feature-icon">🏛️</div>
@@ -301,7 +301,7 @@
             try {
                 const response = await fetch('/api/stats');
                 const data = await response.json();
-                
+
                 if (data.success) {
                     // 実際のAPIから取得した統計で更新
                     // デモ用の値を設定
@@ -334,7 +334,7 @@
         async function performQuickSearch() {
             const query = document.getElementById('quickSearch').value.trim();
             const resultsDiv = document.getElementById('quickSearchResults');
-            
+
             if (!query) {
                 resultsDiv.innerHTML = '<div class="alert alert-warning">検索キーワードを入力してください</div>';
                 return;
@@ -388,7 +388,7 @@
             try {
                 const response = await fetch('/api/health');
                 const data = await response.json();
-                
+
                 if (data.success) {
                     console.log('System healthy:', data.timestamp);
                 }

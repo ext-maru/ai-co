@@ -3,13 +3,17 @@
 Test Project - 簡単なWebインターフェース
 """
 
-from flask import Flask, render_template_string, request, jsonify
-import sys
 import os
+import sys
+
+from flask import Flask
+from flask import jsonify
+from flask import render_template_string
+from flask import request
 
 # 計算機モジュールをインポート
 sys.path.append(os.path.dirname(__file__))
-from calculator import add, multiply, Calculator
+from calculator import Calculator
 
 app = Flask(__name__)
 
@@ -123,7 +127,7 @@ HTML_TEMPLATE = """
 <body>
     <div class="container">
         <h1>🧮 Test Project Calculator</h1>
-        
+
         <div class="calc-section">
             <h2>🔢 基本計算</h2>
             <form id="calcForm">
@@ -146,17 +150,17 @@ HTML_TEMPLATE = """
                 </div>
                 <button type="submit">計算実行</button>
             </form>
-            
+
             <div id="result" class="result" style="display: none;"></div>
         </div>
-        
+
         <div class="history">
             <h3>📊 計算履歴</h3>
             <div id="history-list">
                 <p style="text-align: center; opacity: 0.7;">まだ計算履歴がありません</p>
             </div>
         </div>
-        
+
         <div class="project-info">
             <p>🏛️ <strong>エルダーズギルド</strong> - Test Project</p>
             <p>📍 パス: /home/aicompany/ai_co/test_project/</p>
@@ -172,14 +176,14 @@ HTML_TEMPLATE = """
 
         calcForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const formData = new FormData(calcForm);
             const data = {
                 num1: parseFloat(formData.get('num1')),
                 num2: parseFloat(formData.get('num2')),
                 operation: formData.get('operation')
             };
-            
+
             try {
                 const response = await fetch('/calculate', {
                     method: 'POST',
@@ -188,9 +192,9 @@ HTML_TEMPLATE = """
                     },
                     body: JSON.stringify(data)
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
                     resultDiv.innerHTML = `
                         <div>
@@ -217,12 +221,12 @@ HTML_TEMPLATE = """
                 resultDiv.style.display = 'block';
             }
         });
-        
+
         async function updateHistory() {
             try {
                 const response = await fetch('/history');
                 const data = await response.json();
-                
+
                 if (data.history && data.history.length > 0) {
                     historyList.innerHTML = data.history
                         .slice(-10)  // 最新10件
@@ -236,7 +240,7 @@ HTML_TEMPLATE = """
                 console.error('履歴取得エラー:', error);
             }
         }
-        
+
         // ページ読み込み時に履歴を取得
         updateHistory();
     </script>
@@ -247,55 +251,56 @@ HTML_TEMPLATE = """
 # グローバル計算機インスタンス
 calc = Calculator()
 
-@app.route('/')
+
+@app.route("/")
 def index():
     """メインページ"""
     return render_template_string(HTML_TEMPLATE)
 
-@app.route('/calculate', methods=['POST'])
+
+@app.route("/calculate", methods=["POST"])
 def calculate():
     """計算API"""
     try:
         data = request.json
-        num1 = float(data['num1'])
-        num2 = float(data['num2'])
-        operation = data['operation']
-        
-        result = calc.calculate(operation, num1, num2)
-        
-        operation_symbols = {
-            'add': '+',
-            'multiply': '×'
-        }
-        
-        return jsonify({
-            'success': True,
-            'result': result,
-            'operation_display': f"{num1} {operation_symbols.get(operation, '?')} {num2} = {result}"
-        })
-        
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 400
+        num1 = float(data["num1"])
+        num2 = float(data["num2"])
+        operation = data["operation"]
 
-@app.route('/history')
+        result = calc.calculate(operation, num1, num2)
+
+        operation_symbols = {"add": "+", "multiply": "×"}
+
+        return jsonify(
+            {
+                "success": True,
+                "result": result,
+                "operation_display": f"{num1} {operation_symbols.get(operation, '?')} {num2} = {result}",
+            }
+        )
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+
+@app.route("/history")
 def get_history():
     """計算履歴API"""
-    return jsonify({
-        'history': calc.history
-    })
+    return jsonify({"history": calc.history})
 
-@app.route('/health')
+
+@app.route("/health")
 def health():
     """ヘルスチェック"""
-    return jsonify({
-        'status': 'healthy',
-        'project': 'Test Project Calculator',
-        'path': '/home/aicompany/ai_co/test_project/',
-        'functions': ['add', 'multiply', 'Calculator class']
-    })
+    return jsonify(
+        {
+            "status": "healthy",
+            "project": "Test Project Calculator",
+            "path": "/home/aicompany/ai_co/test_project/",
+            "functions": ["add", "multiply", "Calculator class"],
+        }
+    )
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=9002, debug=True)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=9002, debug=True)

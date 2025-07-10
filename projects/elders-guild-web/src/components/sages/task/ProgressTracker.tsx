@@ -68,7 +68,7 @@ export function ProgressTracker({
   const getEventColor = (type: TimelineEvent['type'], impact?: TimelineEvent['impact']) => {
     if (impact === 'positive') return 'bg-green-100 text-green-800 border-green-200'
     if (impact === 'negative') return 'bg-red-100 text-red-800 border-red-200'
-    
+
     switch (type) {
       case 'milestone': return 'bg-purple-100 text-purple-800 border-purple-200'
       case 'task': return 'bg-blue-100 text-blue-800 border-blue-200'
@@ -81,10 +81,10 @@ export function ProgressTracker({
     const start = new Date(startDate)
     const end = new Date(endDate)
     const now = new Date()
-    
+
     const totalDays = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
     const elapsedDays = Math.ceil((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))
-    
+
     return {
       total: totalDays,
       elapsed: Math.max(0, Math.min(elapsedDays, totalDays)),
@@ -188,17 +188,17 @@ export function ProgressTracker({
                 <span className="text-sm font-medium text-gray-700">{metric.label}</span>
                 {getTrendIcon(metric.trend)}
               </div>
-              
+
               <div className="flex items-baseline space-x-2 mb-2">
                 <span className="text-2xl font-bold text-gray-900">{metric.value}</span>
                 <span className="text-sm text-gray-500">/ {metric.target} {metric.unit}</span>
               </div>
-              
+
               <Progress
                 value={(metric.value / metric.target) * 100}
                 className="h-1.5 mb-2"
               />
-              
+
               <div className="flex items-center justify-between text-xs">
                 <span className="text-gray-500">
                   達成率: {Math.round((metric.value / metric.target) * 100)}%
@@ -223,11 +223,11 @@ export function ProgressTracker({
           <Clock className="w-5 h-5 mr-2 text-goldenrod-600" />
           進捗タイムライン
         </h3>
-        
+
         <div className="relative">
           {/* Timeline line */}
           <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200" />
-          
+
           <div className="space-y-4">
             {timeline.map((event, index) => (
               <motion.div
@@ -239,7 +239,7 @@ export function ProgressTracker({
               >
                 {/* Timeline node */}
                 <div className="absolute left-6 w-3 h-3 bg-white border-2 border-goldenrod-400 rounded-full transform -translate-x-1/2" />
-                
+
                 {/* Event content */}
                 <div className="ml-12 flex-1">
                   <div className={cn(
@@ -255,11 +255,11 @@ export function ProgressTracker({
                         {new Date(event.date).toLocaleDateString('ja-JP')}
                       </span>
                     </div>
-                    
+
                     {event.description && (
                       <p className="text-sm text-gray-600 mt-1">{event.description}</p>
                     )}
-                    
+
                     {event.progress !== undefined && (
                       <div className="flex items-center mt-2 space-x-2">
                         <Progress value={event.progress} className="h-1.5 flex-1" />

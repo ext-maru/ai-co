@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeModals();
     initializeFilters();
     loadDashboardData();
-    
+
     // Auto-refresh every 5 seconds
     setInterval(loadDashboardData, 5000);
 });
@@ -29,7 +29,7 @@ function initializeNavigation() {
             e.preventDefault();
             const section = link.dataset.section;
             showSection(section);
-            
+
             // Update active state
             navLinks.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
@@ -42,7 +42,7 @@ function showSection(sectionId) {
     sections.forEach(section => {
         section.classList.remove('active');
     });
-    
+
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.classList.add('active');
@@ -84,13 +84,13 @@ async function loadOverviewData() {
     try {
         const response = await axios.get(`${API_BASE}/status`);
         const data = response.data;
-        
+
         // Update stats
         document.getElementById('active-tasks').textContent = data.active_tasks || 0;
         document.getElementById('worker-utilization').textContent = `${data.worker_utilization || 0}%`;
         document.getElementById('queue-throughput').textContent = `${data.queue_throughput || 0}/分`;
         document.getElementById('uptime').textContent = formatUptime(data.uptime || 0);
-        
+
         // Update system status
         const statusBadge = document.getElementById('system-status');
         if (data.system_healthy) {
@@ -120,7 +120,7 @@ function renderQuests() {
     const questList = document.getElementById('quest-list');
     const filterStatus = document.getElementById('quest-filter-status').value;
     const filterPriority = document.getElementById('quest-filter-priority').value;
-    
+
     // Filter quests
     let filteredQuests = state.quests;
     if (filterStatus) {
@@ -129,7 +129,7 @@ function renderQuests() {
     if (filterPriority) {
         filteredQuests = filteredQuests.filter(quest => quest.priority === filterPriority);
     }
-    
+
     // Render quests
     questList.innerHTML = filteredQuests.map(quest => `
         <div class="quest-item" data-quest-id="${quest.id}">
@@ -163,7 +163,7 @@ async function loadServants() {
 
 function renderServants() {
     const servantGrid = document.getElementById('servant-grid');
-    
+
     servantGrid.innerHTML = state.servants.map(servant => `
         <div class="servant-card">
             <div class="servant-status">
@@ -193,7 +193,7 @@ async function loadWisdomFlow() {
 
 function renderWisdomFlow() {
     const wisdomChannels = document.getElementById('wisdom-channels');
-    
+
     wisdomChannels.innerHTML = state.wisdomChannels.map(channel => `
         <div class="wisdom-channel">
             <div class="channel-header">
@@ -236,7 +236,7 @@ async function loadSagesCouncil() {
 function renderSagesCouncil() {
     // Update sage statuses
     const sages = ['knowledge-sage', 'task-oracle', 'crisis-sage', 'search-mystic'];
-    
+
     sages.forEach(sage => {
         const statusElement = document.getElementById(`${sage}-status`);
         if (statusElement && state.sagesCouncil[sage]) {
@@ -245,7 +245,7 @@ function renderSagesCouncil() {
             statusElement.style.color = sageData.healthy ? 'var(--success-color)' : 'var(--error-color)';
         }
     });
-    
+
     // Update efficiency metrics
     updateSageMetrics();
 }
@@ -256,7 +256,7 @@ function updateSageMetrics() {
         const efficiency = document.getElementById('knowledge-efficiency');
         if (efficiency) efficiency.textContent = '95%';
     }
-    
+
     // Task Oracle
     if (state.sagesCouncil['task-oracle']) {
         const efficiency = document.getElementById('task-efficiency');
@@ -264,7 +264,7 @@ function updateSageMetrics() {
         if (efficiency) efficiency.textContent = '88%';
         if (completed) completed.textContent = '12';
     }
-    
+
     // Crisis Sage
     if (state.sagesCouncil['crisis-sage']) {
         const protection = document.getElementById('crisis-protection');
@@ -272,7 +272,7 @@ function updateSageMetrics() {
         if (protection) protection.textContent = '92%';
         if (resolved) resolved.textContent = '7';
     }
-    
+
     // Search Mystic
     if (state.sagesCouncil['search-mystic']) {
         const accuracy = document.getElementById('search-accuracy');
@@ -288,25 +288,25 @@ function initializeModals() {
     const newQuestBtn = document.getElementById('new-quest-btn');
     const closeBtn = document.querySelector('.close');
     const questForm = document.getElementById('quest-form');
-    
+
     if (newQuestBtn) {
         newQuestBtn.onclick = () => {
             modal.style.display = 'block';
         };
     }
-    
+
     if (closeBtn) {
         closeBtn.onclick = () => {
             modal.style.display = 'none';
         };
     }
-    
+
     window.onclick = (event) => {
         if (event.target === modal) {
             modal.style.display = 'none';
         }
     };
-    
+
     if (questForm) {
         questForm.onsubmit = async (e) => {
             e.preventDefault();
@@ -323,7 +323,7 @@ async function createQuest() {
         priority: document.getElementById('quest-priority').value,
         assignee: document.getElementById('quest-assignee').value
     };
-    
+
     try {
         await axios.post(`${API_BASE}/tasks`, formData);
         document.getElementById('quest-modal').style.display = 'none';
@@ -353,7 +353,7 @@ async function deleteQuest(questId) {
     if (!confirm('この修行録を破棄いたしますか？')) {
         return;
     }
-    
+
     try {
         await axios.delete(`${API_BASE}/tasks/${questId}`);
         await loadQuests();
@@ -386,7 +386,7 @@ async function loadAdministrationData() {
 function renderSageMembers(members) {
     const membersList = document.getElementById('sage-members-list');
     if (!membersList) return;
-    
+
     membersList.innerHTML = members.map(member => `
         <div class="sage-member-item">
             <div>
@@ -395,7 +395,7 @@ function renderSageMembers(members) {
                 <span>${member.email}</span>
             </div>
             <div>
-                ${member.is_active ? 
+                ${member.is_active ?
                     `<button class="btn btn-sm" onclick="deactivateMember(${member.id})">退席</button>` :
                     `<button class="btn btn-sm" onclick="activateMember(${member.id})">復席</button>`
                 }
@@ -416,7 +416,7 @@ document.getElementById('clear-sessions-btn')?.addEventListener('click', async (
 
 document.getElementById('restart-servants-btn')?.addEventListener('click', async () => {
     if (!confirm('従者たちを再召喚いたしますか？')) return;
-    
+
     try {
         await axios.post(`${API_BASE}/admin/restart-workers`);
         showNotification('従者たちを再召喚いたしました', 'success');
@@ -478,7 +478,7 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.textContent = message;
-    
+
     // Style the notification
     notification.style.cssText = `
         position: fixed;
@@ -492,10 +492,10 @@ function showNotification(message, type = 'info') {
         z-index: 10000;
         animation: slideIn 0.3s ease;
     `;
-    
+
     // Add to document
     document.body.appendChild(notification);
-    
+
     // Remove after 3 seconds
     setTimeout(() => {
         notification.style.animation = 'slideOut 0.3s ease';
@@ -512,7 +512,7 @@ style.textContent = `
         from { transform: translateX(100%); opacity: 0; }
         to { transform: translateX(0); opacity: 1; }
     }
-    
+
     @keyframes slideOut {
         from { transform: translateX(0); opacity: 1; }
         to { transform: translateX(100%); opacity: 0; }

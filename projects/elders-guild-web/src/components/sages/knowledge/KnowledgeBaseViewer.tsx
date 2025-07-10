@@ -33,15 +33,15 @@ export function KnowledgeBaseViewer({ items, className }: KnowledgeBaseViewerPro
   const [viewMode, setViewMode] = useState<'grid' | 'list' | 'graph'>('grid')
 
   const categories = Array.from(new Set(items.map(item => item.category)))
-  
+
   const filteredItems = items.filter(item => {
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    
+
     const matchesCategory = !selectedCategory || item.category === selectedCategory
-    
+
     return matchesSearch && matchesCategory
   })
 
@@ -77,7 +77,7 @@ export function KnowledgeBaseViewer({ items, className }: KnowledgeBaseViewerPro
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           />
         </div>
-        
+
         <div className="flex gap-2">
           <select
             value={selectedCategory || ''}
@@ -89,7 +89,7 @@ export function KnowledgeBaseViewer({ items, className }: KnowledgeBaseViewerPro
               <option key={category} value={category}>{category}</option>
             ))}
           </select>
-          
+
           <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
             {(['grid', 'list', 'graph'] as const).map(mode => (
               <button
@@ -144,15 +144,15 @@ export function KnowledgeBaseViewer({ items, className }: KnowledgeBaseViewerPro
                           v{item.version}
                         </Badge>
                       </div>
-                      
+
                       <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
                         {item.title}
                       </h3>
-                      
+
                       <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                         {item.content}
                       </p>
-                      
+
                       <div className="flex flex-wrap gap-1 mb-3">
                         {item.tags.slice(0, 3).map((tag) => (
                           <span
@@ -168,7 +168,7 @@ export function KnowledgeBaseViewer({ items, className }: KnowledgeBaseViewerPro
                           </span>
                         )}
                       </div>
-                      
+
                       <div className="flex items-center justify-between text-xs text-gray-500">
                         <span>{item.author}</span>
                         <span>{new Date(item.lastModified).toLocaleDateString('ja-JP')}</span>

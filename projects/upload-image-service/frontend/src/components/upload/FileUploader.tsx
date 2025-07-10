@@ -19,7 +19,7 @@ export const FileUploader: React.FC = () => {
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setUploading(true);
-    
+
     // プレビュー生成
     const newFiles = acceptedFiles.map(file => ({
       id: Math.random().toString(36),
@@ -28,26 +28,26 @@ export const FileUploader: React.FC = () => {
       progress: 0,
       preview: URL.createObjectURL(file)
     }));
-    
+
     setFiles(prev => [...prev, ...newFiles]);
-    
+
     try {
       // アップロード実行
       const results = await uploadFiles(acceptedFiles, (progress) => {
-        setFiles(prev => prev.map(f => 
-          f.id === progress.fileId 
+        setFiles(prev => prev.map(f =>
+          f.id === progress.fileId
             ? { ...f, progress: progress.percent }
             : f
         ));
       });
-      
+
       // 完了状態に更新
       setFiles(prev => prev.map(f => ({
         ...f,
         status: 'completed',
         progress: 100
       })));
-      
+
     } catch (error) {
       console.error('Upload error:', error);
       setFiles(prev => prev.map(f => ({
@@ -77,15 +77,15 @@ export const FileUploader: React.FC = () => {
           <p>ファイルをドラッグ＆ドロップ、またはクリックして選択</p>
         )}
       </div>
-      
+
       <div className="upload-list">
         {files.map(file => (
           <div key={file.id} className="upload-item">
             {file.preview && <ImagePreview src={file.preview} alt={file.name} />}
             <div className="upload-info">
               <span className="file-name">{file.name}</span>
-              <FileUploadProgress 
-                progress={file.progress} 
+              <FileUploadProgress
+                progress={file.progress}
                 status={file.status}
               />
             </div>

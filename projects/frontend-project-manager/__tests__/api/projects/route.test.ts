@@ -20,7 +20,7 @@ describe('/api/projects', () => {
   describe('GET', () => {
     it('should return empty array when no projects exist', async () => {
       mockFs.existsSync.mockReturnValue(false)
-      
+
       const request = new NextRequest('http://localhost/api/projects')
       const response = await GET(request)
       const data = await response.json()
@@ -38,7 +38,7 @@ describe('/api/projects', () => {
         'project-2.json',
         'not-json.txt' // Should be filtered out
       ]
-      
+
       const mockMetadata1 = {
         name: 'Project 1',
         status: 'active',
@@ -46,7 +46,7 @@ describe('/api/projects', () => {
         dependencies: ['react', 'next.js'],
         estimated_completion: '2024-01-01'
       }
-      
+
       const mockMetadata2 = {
         name: 'Project 2',
         status: 'planning',
@@ -109,7 +109,7 @@ describe('/api/projects', () => {
         method: 'POST',
         body: JSON.stringify(newProject)
       })
-      
+
       const response = await POST(request)
       const data = await response.json()
 
@@ -130,7 +130,7 @@ describe('/api/projects', () => {
         method: 'POST',
         body: JSON.stringify(invalidProject)
       })
-      
+
       const response = await POST(request)
       const data = await response.json()
 
@@ -153,9 +153,9 @@ describe('/api/projects', () => {
         method: 'POST',
         body: JSON.stringify(newProject)
       })
-      
+
       const response = await POST(request)
-      
+
       expect(response.status).toBe(201)
       expect(mockFs.mkdirSync).toHaveBeenCalledWith(
         expect.any(String),
@@ -168,7 +168,7 @@ describe('/api/projects', () => {
         method: 'POST',
         body: 'invalid json'
       })
-      
+
       const response = await POST(request)
       const data = await response.json()
 

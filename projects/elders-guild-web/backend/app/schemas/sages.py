@@ -3,15 +3,20 @@ Pydantic schemas for Four Sages System API
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
+from pydantic import Field
 
 
 # Base Schemas
 class BaseResponse(BaseModel):
     """Base response model."""
+
     success: bool = True
     message: str = "Operation completed successfully"
     timestamp: datetime = Field(default_factory=datetime.utcnow)
@@ -19,6 +24,7 @@ class BaseResponse(BaseModel):
 
 class ErrorResponse(BaseModel):
     """Error response model."""
+
     success: bool = False
     error: str
     details: Optional[Dict[str, Any]] = None
@@ -28,6 +34,7 @@ class ErrorResponse(BaseModel):
 # Knowledge Sage Schemas
 class KnowledgeArticle(BaseModel):
     """Knowledge article model."""
+
     id: Optional[UUID] = None
     title: str = Field(..., min_length=1, max_length=200)
     content: str = Field(..., min_length=1)
@@ -42,6 +49,7 @@ class KnowledgeArticle(BaseModel):
 
 class KnowledgeArticleCreate(BaseModel):
     """Create knowledge article request."""
+
     title: str = Field(..., min_length=1, max_length=200)
     content: str = Field(..., min_length=1)
     category: str = Field(..., min_length=1, max_length=50)
@@ -51,6 +59,7 @@ class KnowledgeArticleCreate(BaseModel):
 
 class KnowledgeArticleUpdate(BaseModel):
     """Update knowledge article request."""
+
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     content: Optional[str] = Field(None, min_length=1)
     category: Optional[str] = Field(None, min_length=1, max_length=50)
@@ -60,6 +69,7 @@ class KnowledgeArticleUpdate(BaseModel):
 
 class KnowledgeResponse(BaseResponse):
     """Knowledge sage response."""
+
     data: Optional[Any] = None
     total_count: Optional[int] = None
 
@@ -67,6 +77,7 @@ class KnowledgeResponse(BaseResponse):
 # Task Sage Schemas
 class Task(BaseModel):
     """Task model."""
+
     id: Optional[UUID] = None
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = None
@@ -84,6 +95,7 @@ class Task(BaseModel):
 
 class TaskCreate(BaseModel):
     """Create task request."""
+
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = None
     status: str = Field(default="todo", pattern="^(todo|in_progress|done|blocked)$")
@@ -97,6 +109,7 @@ class TaskCreate(BaseModel):
 
 class TaskUpdate(BaseModel):
     """Update task request."""
+
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     description: Optional[str] = None
     status: Optional[str] = Field(None, pattern="^(todo|in_progress|done|blocked)$")
@@ -111,6 +124,7 @@ class TaskUpdate(BaseModel):
 
 class TaskResponse(BaseResponse):
     """Task sage response."""
+
     data: Optional[Any] = None
     total_count: Optional[int] = None
 
@@ -118,6 +132,7 @@ class TaskResponse(BaseResponse):
 # Incident Sage Schemas
 class Incident(BaseModel):
     """Incident model."""
+
     id: Optional[UUID] = None
     title: str = Field(..., min_length=1, max_length=200)
     description: str = Field(..., min_length=1)
@@ -134,6 +149,7 @@ class Incident(BaseModel):
 
 class IncidentCreate(BaseModel):
     """Create incident request."""
+
     title: str = Field(..., min_length=1, max_length=200)
     description: str = Field(..., min_length=1)
     severity: str = Field(..., pattern="^(low|medium|high|critical)$")
@@ -144,6 +160,7 @@ class IncidentCreate(BaseModel):
 
 class IncidentUpdate(BaseModel):
     """Update incident request."""
+
     title: Optional[str] = Field(None, min_length=1, max_length=200)
     description: Optional[str] = Field(None, min_length=1)
     severity: Optional[str] = Field(None, pattern="^(low|medium|high|critical)$")
@@ -155,6 +172,7 @@ class IncidentUpdate(BaseModel):
 
 class IncidentResponse(BaseResponse):
     """Incident sage response."""
+
     data: Optional[Any] = None
     total_count: Optional[int] = None
 
@@ -162,6 +180,7 @@ class IncidentResponse(BaseResponse):
 # Search Sage Schemas
 class SearchQuery(BaseModel):
     """Search query model."""
+
     query: str = Field(..., min_length=1, max_length=500)
     search_type: str = Field(default="semantic", pattern="^(semantic|keyword|hybrid)$")
     filters: Optional[Dict[str, Any]] = None
@@ -171,6 +190,7 @@ class SearchQuery(BaseModel):
 
 class SearchResult(BaseModel):
     """Search result model."""
+
     id: str
     title: str
     content: str
@@ -182,6 +202,7 @@ class SearchResult(BaseModel):
 
 class SearchResponse(BaseResponse):
     """Search sage response."""
+
     results: List[SearchResult]
     total_count: int
     query_time_ms: float
@@ -191,6 +212,7 @@ class SearchResponse(BaseResponse):
 # Elder Council Schemas
 class ElderCouncilSession(BaseModel):
     """Elder Council session model."""
+
     session_id: Optional[str] = None
     title: str = Field(..., min_length=1, max_length=200)
     description: Optional[str] = None
@@ -202,6 +224,7 @@ class ElderCouncilSession(BaseModel):
 
 class ElderCouncilMessage(BaseModel):
     """Elder Council message model."""
+
     message_id: Optional[str] = None
     session_id: str
     sender: str
@@ -213,6 +236,7 @@ class ElderCouncilMessage(BaseModel):
 
 class ElderCouncilResponse(BaseResponse):
     """Elder Council response."""
+
     data: Optional[Any] = None
     session_id: Optional[str] = None
 
@@ -220,6 +244,7 @@ class ElderCouncilResponse(BaseResponse):
 # WebSocket Schemas
 class WebSocketMessage(BaseModel):
     """WebSocket message model."""
+
     message_type: str
     content: Dict[str, Any]
     timestamp: datetime = Field(default_factory=datetime.utcnow)

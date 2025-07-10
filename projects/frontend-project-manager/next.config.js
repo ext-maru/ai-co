@@ -2,16 +2,16 @@
 const nextConfig = {
   // React strict mode for better development experience
   reactStrictMode: true,
-  
+
   // Enable SWC minification for better performance
   swcMinify: true,
-  
+
   // Experimental features
   experimental: {
     // Server Components optimization
     serverComponentsExternalPackages: ['mermaid'],
   },
-  
+
   // API configuration
   async rewrites() {
     return [
@@ -21,20 +21,20 @@ const nextConfig = {
       },
     ]
   },
-  
+
   // Environment variables
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
     NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000',
   },
-  
+
   // Image optimization
   images: {
     domains: ['localhost'],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  
+
   // Webpack configuration for Mermaid
   webpack: (config, { isServer }) => {
     if (!isServer) {
@@ -45,7 +45,7 @@ const nextConfig = {
         os: false,
       }
     }
-    
+
     return config
   },
 }

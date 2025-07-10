@@ -76,7 +76,7 @@ export function VersionHistory({
 
   const handleCompare = () => {
     if (selectedVersions.size === 2 && onCompare) {
-      const [v1, v2] = Array.from(selectedVersions).map(id => 
+      const [v1, v2] = Array.from(selectedVersions).map(id =>
         versions.find(v => v.id === id)!
       )
       onCompare(v1, v2)

@@ -34,16 +34,16 @@ class PerformanceMonitor {
     try {
       // Largest Contentful Paint (LCP)
       this.observeLCP();
-      
+
       // First Input Delay (FID)
       this.observeFID();
-      
+
       // Cumulative Layout Shift (CLS)
       this.observeCLS();
-      
+
       // First Contentful Paint (FCP)
       this.observeFCP();
-      
+
       // Time to First Byte (TTFB)
       this.observeTTFB();
 
@@ -58,7 +58,7 @@ class PerformanceMonitor {
     const observer = new PerformanceObserver((list) => {
       const entries = list.getEntries();
       const lastEntry = entries[entries.length - 1] as any;
-      
+
       if (lastEntry) {
         this.metrics.lcp = lastEntry.startTime;
         this.reportWebVital({
@@ -80,12 +80,12 @@ class PerformanceMonitor {
 
     const observer = new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      
+
       entries.forEach((entry: any) => {
         if (entry.name === 'first-input') {
           const fid = entry.processingStart - entry.startTime;
           this.metrics.fid = fid;
-          
+
           this.reportWebVital({
             name: 'FID',
             value: fid,
@@ -110,13 +110,13 @@ class PerformanceMonitor {
 
     const observer = new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      
+
       entries.forEach((entry: any) => {
         if (!entry.hadRecentInput) {
           const firstSessionEntry = sessionEntries[0];
           const lastSessionEntry = sessionEntries[sessionEntries.length - 1];
 
-          if (sessionValue && 
+          if (sessionValue &&
               entry.startTime - lastSessionEntry.startTime < 1000 &&
               entry.startTime - firstSessionEntry.startTime < 5000) {
             sessionValue += entry.value;
@@ -129,7 +129,7 @@ class PerformanceMonitor {
           if (sessionValue > clsValue) {
             clsValue = sessionValue;
             this.metrics.cls = clsValue;
-            
+
             this.reportWebVital({
               name: 'CLS',
               value: clsValue,
@@ -151,11 +151,11 @@ class PerformanceMonitor {
 
     const observer = new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      
+
       entries.forEach((entry: any) => {
         if (entry.name === 'first-contentful-paint') {
           this.metrics.fcp = entry.startTime;
-          
+
           this.reportWebVital({
             name: 'FCP',
             value: entry.startTime,
@@ -176,12 +176,12 @@ class PerformanceMonitor {
 
     const observer = new PerformanceObserver((list) => {
       const entries = list.getEntries();
-      
+
       entries.forEach((entry: any) => {
         if (entry.entryType === 'navigation') {
           const ttfb = entry.responseStart - entry.requestStart;
           this.metrics.ttfb = ttfb;
-          
+
           this.reportWebVital({
             name: 'TTFB',
             value: ttfb,
@@ -217,7 +217,7 @@ class PerformanceMonitor {
   private reportWebVital(vital: WebVital) {
     // Send to analytics
     this.sendToAnalytics(vital);
-    
+
     // Log to console in development
     if (process.env.NODE_ENV === 'development') {
       console.log(`[Performance] ${vital.name}: ${vital.value.toFixed(2)}ms (${vital.rating})`);
@@ -318,7 +318,7 @@ export class ResourceOptimizer {
 
     // Implement lazy loading for images
     const images = document.querySelectorAll('img[data-src]');
-    
+
     if ('IntersectionObserver' in window) {
       const imageObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -345,7 +345,7 @@ export class ResourceOptimizer {
 
     // Load non-critical CSS asynchronously
     const nonCriticalCSS = document.querySelectorAll('link[rel="stylesheet"][data-priority="low"]');
-    
+
     nonCriticalCSS.forEach(link => {
       const newLink = document.createElement('link');
       newLink.rel = 'stylesheet';
@@ -354,7 +354,7 @@ export class ResourceOptimizer {
       newLink.onload = function() {
         newLink.media = 'all';
       };
-      
+
       document.head.appendChild(newLink);
       link.remove();
     });
@@ -387,16 +387,16 @@ export class BundleAnalyzer {
 
     // Track component render times
     const originalCreateElement = React.createElement;
-    
+
     (React as any).createElement = function(...args: any[]) {
       const start = performance.now();
       const result = originalCreateElement.apply(this, args);
       const end = performance.now();
-      
+
       if (end - start > 16) { // More than one frame
         console.warn(`Slow component render: ${args[0]?.name || args[0]} took ${(end - start).toFixed(2)}ms`);
       }
-      
+
       return result;
     };
   }

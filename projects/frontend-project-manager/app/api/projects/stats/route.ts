@@ -13,55 +13,55 @@ interface Stats {
 // プロジェクト統計を生成
 function generateStats(): Stats {
   const projects = loadProjectsForStats()
-  
+
   const stats: Stats = {
     total_projects: projects.length,
     by_type: {},
     by_status: {},
     by_tech_stack: {}
   }
-  
+
   // 統計データを集計
   projects.forEach(project => {
     // プロジェクトタイプ別
     stats.by_type[project.project_type] = (stats.by_type[project.project_type] || 0) + 1
-    
+
     // ステータス別
     stats.by_status[project.status] = (stats.by_status[project.status] || 0) + 1
-    
+
     // 技術スタック別
     project.tech_stack.forEach(tech => {
       stats.by_tech_stack[tech] = (stats.by_tech_stack[tech] || 0) + 1
     })
   })
-  
+
   // 最も使用されている技術を特定
   if (Object.keys(stats.by_tech_stack).length > 0) {
     const sortedTech = Object.entries(stats.by_tech_stack)
       .sort(([,a], [,b]) => b - a)
     stats.most_used_tech = sortedTech[0] as [string, number]
   }
-  
+
   return stats
 }
 
 function loadProjectsForStats() {
   const metadataPath = path.resolve(process.cwd(), '../../data/project_metadata')
   const projects: any[] = []
-  
+
   console.log('Loading stats from:', metadataPath)
-  
+
   try {
     if (fs.existsSync(metadataPath)) {
       const files = fs.readdirSync(metadataPath)
-      
+
       for (const file of files) {
         if (file.endsWith('.json')) {
           try {
             const filePath = path.join(metadataPath, file)
             const content = fs.readFileSync(filePath, 'utf8')
             const metadata = JSON.parse(content)
-            
+
             const projectId = file.replace('.json', '')
             projects.push({
               project_id: projectId,
@@ -80,7 +80,7 @@ function loadProjectsForStats() {
   } catch (error) {
     console.error('Error loading project stats:', error)
   }
-  
+
   // フォールバックデータ
   if (projects.length === 0) {
     console.log('Using fallback stats data')
@@ -117,7 +117,7 @@ function loadProjectsForStats() {
       }
     ]
   }
-  
+
   return projects
 }
 

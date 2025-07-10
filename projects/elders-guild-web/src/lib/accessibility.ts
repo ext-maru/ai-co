@@ -108,7 +108,7 @@ export class AccessibilityManager {
         left: 0;
         z-index: 9999;
       }
-      
+
       .skip-link {
         position: absolute;
         top: 0;
@@ -120,7 +120,7 @@ export class AccessibilityManager {
         border-radius: 0 0 4px 0;
         transition: top 0.3s;
       }
-      
+
       .skip-link:focus {
         top: 0;
       }
@@ -143,7 +143,7 @@ export class AccessibilityManager {
     liveRegion.style.width = '1px';
     liveRegion.style.height = '1px';
     liveRegion.style.overflow = 'hidden';
-    
+
     document.body.appendChild(liveRegion);
 
     // Create assertive live region for urgent announcements
@@ -156,7 +156,7 @@ export class AccessibilityManager {
     assertiveRegion.style.width = '1px';
     assertiveRegion.style.height = '1px';
     assertiveRegion.style.overflow = 'hidden';
-    
+
     document.body.appendChild(assertiveRegion);
   }
 
@@ -165,10 +165,10 @@ export class AccessibilityManager {
 
     // Detect user motion preferences
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    
+
     if (prefersReducedMotion || this.options.enableReducedMotion) {
       document.documentElement.classList.add('reduce-motion');
-      
+
       // Add CSS for reduced motion
       const style = document.createElement('style');
       style.textContent = `
@@ -187,10 +187,10 @@ export class AccessibilityManager {
 
   private setupHighContrastMode() {
     const prefersHighContrast = window.matchMedia('(prefers-contrast: high)').matches;
-    
+
     if (prefersHighContrast || this.options.enableHighContrast) {
       document.documentElement.classList.add('high-contrast');
-      
+
       // Add high contrast CSS
       const style = document.createElement('style');
       style.textContent = `
@@ -202,22 +202,22 @@ export class AccessibilityManager {
           --success-color: #006600;
           --warning-color: #cc6600;
         }
-        
+
         .high-contrast * {
           border-color: currentColor !important;
         }
-        
+
         .high-contrast button,
         .high-contrast input,
         .high-contrast select,
         .high-contrast textarea {
           border: 2px solid currentColor !important;
         }
-        
+
         .high-contrast a {
           text-decoration: underline !important;
         }
-        
+
         .high-contrast :focus {
           outline: 3px solid #0066cc !important;
           outline-offset: 2px !important;
@@ -238,7 +238,7 @@ export class AccessibilityManager {
         outline-offset: 2px;
         border-radius: 2px;
       }
-      
+
       button:focus-visible,
       input:focus-visible,
       select:focus-visible,
@@ -286,7 +286,7 @@ export class AccessibilityManager {
 
     const trap = this.trapStack[this.trapStack.length - 1];
     const focusableElements = Array.from(trap.querySelectorAll(this.focusableElements)) as HTMLElement[];
-    
+
     if (focusableElements.length === 0) return;
 
     const firstFocusable = focusableElements[0];
@@ -310,16 +310,16 @@ export class AccessibilityManager {
   public announceToScreenReader(message: string, priority: 'polite' | 'assertive' = 'polite') {
     const regionId = priority === 'assertive' ? 'aria-live-assertive' : 'aria-live-region';
     const region = document.getElementById(regionId);
-    
+
     if (region) {
       // Clear previous message
       region.textContent = '';
-      
+
       // Add new message after a brief delay
       setTimeout(() => {
         region.textContent = message;
       }, 100);
-      
+
       // Clear message after it's been announced
       setTimeout(() => {
         region.textContent = '';
@@ -329,7 +329,7 @@ export class AccessibilityManager {
 
   public trapFocus(element: HTMLElement) {
     this.trapStack.push(element);
-    
+
     // Focus first focusable element
     const focusableElements = element.querySelectorAll(this.focusableElements);
     if (focusableElements.length > 0) {
@@ -346,7 +346,7 @@ export class AccessibilityManager {
     modal.setAttribute('role', 'dialog');
     modal.setAttribute('aria-modal', 'true');
     modal.setAttribute('aria-hidden', 'false');
-    
+
     // Store trigger element for later focus restoration
     if (triggerElement) {
       modal.dataset.triggerElement = triggerElement.id || this.generateId();
@@ -354,10 +354,10 @@ export class AccessibilityManager {
         triggerElement.id = modal.dataset.triggerElement;
       }
     }
-    
+
     // Trap focus in modal
     this.trapFocus(modal);
-    
+
     // Announce modal opening
     const modalTitle = modal.querySelector('h1, h2, h3, [role="heading"]')?.textContent || 'Modal dialog';
     this.announceToScreenReader(`${modalTitle} dialog opened`, 'assertive');
@@ -366,10 +366,10 @@ export class AccessibilityManager {
   public closeModal(modal: HTMLElement) {
     // Set modal attributes
     modal.setAttribute('aria-hidden', 'true');
-    
+
     // Release focus trap
     this.releaseFocusTrap();
-    
+
     // Restore focus to trigger element
     const triggerElementId = modal.dataset.triggerElement;
     if (triggerElementId) {
@@ -378,7 +378,7 @@ export class AccessibilityManager {
         triggerElement.focus();
       }
     }
-    
+
     // Announce modal closing
     this.announceToScreenReader('Dialog closed', 'assertive');
   }
@@ -413,7 +413,7 @@ export class AccessibilityManager {
   private closeModal(modal: HTMLElement) {
     modal.setAttribute('aria-hidden', 'true');
     this.releaseFocusTrap();
-    
+
     const triggerElementId = modal.dataset.triggerElement;
     if (triggerElementId) {
       const triggerElement = document.getElementById(triggerElementId) as HTMLElement;
@@ -426,15 +426,15 @@ export class AccessibilityManager {
   public validateForm(form: HTMLFormElement): { isValid: boolean; errors: string[] } {
     const errors: string[] = [];
     const requiredFields = form.querySelectorAll('[required]') as NodeListOf<HTMLInputElement>;
-    
+
     requiredFields.forEach(field => {
       if (!field.value.trim()) {
         const label = form.querySelector(`label[for="${field.id}"]`)?.textContent || field.name || 'Field';
         errors.push(`${label} is required`);
-        
+
         // Add aria-invalid attribute
         field.setAttribute('aria-invalid', 'true');
-        
+
         // Add or update error message
         this.setFieldError(field, `${label} is required`);
       } else {
@@ -442,12 +442,12 @@ export class AccessibilityManager {
         this.clearFieldError(field);
       }
     });
-    
+
     // Announce validation results
     if (errors.length > 0) {
       this.announceError(`Form has ${errors.length} error${errors.length > 1 ? 's' : ''}`);
     }
-    
+
     return {
       isValid: errors.length === 0,
       errors
@@ -456,18 +456,18 @@ export class AccessibilityManager {
 
   private setFieldError(field: HTMLInputElement, message: string) {
     let errorElement = document.getElementById(`${field.id}-error`);
-    
+
     if (!errorElement) {
       errorElement = document.createElement('div');
       errorElement.id = `${field.id}-error`;
       errorElement.className = 'field-error';
       errorElement.setAttribute('role', 'alert');
       field.parentNode?.insertBefore(errorElement, field.nextSibling);
-      
+
       // Link error to field
       field.setAttribute('aria-describedby', errorElement.id);
     }
-    
+
     errorElement.textContent = message;
   }
 
@@ -485,10 +485,10 @@ export class ColorContrastChecker {
   static getContrastRatio(color1: string, color2: string): number {
     const luminance1 = this.getLuminance(color1);
     const luminance2 = this.getLuminance(color2);
-    
+
     const lighter = Math.max(luminance1, luminance2);
     const darker = Math.min(luminance1, luminance2);
-    
+
     return (lighter + 0.05) / (darker + 0.05);
   }
 
@@ -505,15 +505,15 @@ export class ColorContrastChecker {
     if (!rgb) return 0;
 
     const { r, g, b } = rgb;
-    
+
     const rsRGB = r / 255;
     const gsRGB = g / 255;
     const bsRGB = b / 255;
-    
+
     const r2 = rsRGB <= 0.03928 ? rsRGB / 12.92 : Math.pow((rsRGB + 0.055) / 1.055, 2.4);
     const g2 = gsRGB <= 0.03928 ? gsRGB / 12.92 : Math.pow((gsRGB + 0.055) / 1.055, 2.4);
     const b2 = bsRGB <= 0.03928 ? bsRGB / 12.92 : Math.pow((bsRGB + 0.055) / 1.055, 2.4);
-    
+
     return 0.2126 * r2 + 0.7152 * g2 + 0.0722 * b2;
   }
 
@@ -535,14 +535,14 @@ if (typeof window !== 'undefined') {
   // Check for user preferences
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const prefersHighContrast = window.matchMedia('(prefers-contrast: high)').matches;
-  
+
   if (prefersReducedMotion || prefersHighContrast) {
     // Reinitialize with user preferences
     const options: AccessibilityOptions = {
       enableReducedMotion: prefersReducedMotion,
       enableHighContrast: prefersHighContrast
     };
-    
+
     // Note: In a real implementation, you might want to update the existing instance
     // rather than creating a new one
   }

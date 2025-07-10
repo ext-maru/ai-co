@@ -111,7 +111,7 @@ export function AutoResponseStatus({
   const handleExecute = async (responseId: string) => {
     setExecutingResponses(prev => new Set(prev).add(responseId))
     onResponseExecute?.(responseId)
-    
+
     // Simulate execution
     setTimeout(() => {
       setExecutingResponses(prev => {
@@ -181,7 +181,7 @@ export function AutoResponseStatus({
           {responses.map((response) => {
             const isExecuting = executingResponses.has(response.id)
             const currentMetric = realtimeMetrics[response.id] || 0
-            
+
             return (
               <motion.div
                 key={response.id}
@@ -208,7 +208,7 @@ export function AutoResponseStatus({
                       </div>
                       <p className="text-sm text-gray-600">{response.description}</p>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2">
                       <Button
                         variant="ghost"
@@ -244,7 +244,7 @@ export function AutoResponseStatus({
                       </Button>
                     </div>
                   </div>
-                  
+
                   {/* Trigger Info */}
                   <div className="mb-4 p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center justify-between text-sm">
@@ -266,7 +266,7 @@ export function AutoResponseStatus({
                       )}
                     </div>
                   </div>
-                  
+
                   {/* Actions */}
                   <div className="mb-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">実行アクション</h4>
@@ -298,7 +298,7 @@ export function AutoResponseStatus({
                       ))}
                     </div>
                   </div>
-                  
+
                   {/* Metrics */}
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center space-x-4">
@@ -338,7 +338,7 @@ export function AutoResponseStatus({
               >
                 <Card className="p-6">
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">実行履歴</h2>
-                  
+
                   <div className="space-y-3">
                     {selectedResponse.executionHistory.slice(0, 10).map((execution) => (
                       <div
@@ -366,7 +366,7 @@ export function AutoResponseStatus({
                       </div>
                     ))}
                   </div>
-                  
+
                   <div className="mt-4 pt-4 border-t">
                     <Button variant="outline" size="sm" className="w-full">
                       <Settings className="w-4 h-4 mr-2" />

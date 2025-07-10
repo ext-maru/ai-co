@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // Performance optimizations
   reactStrictMode: true,
-  
+
   // Image optimization
   images: {
     domains: ['localhost', 'api.ai-company.com', 'ai-company-api.railway.app'],
@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  
+
   // Experimental features for better performance
   experimental: {
     optimizeCss: true,
@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
     },
     optimizePackageImports: ['@radix-ui/react-icons'],
   },
-  
+
   // TypeScript and ESLint
   typescript: {
     ignoreBuildErrors: false,
@@ -28,10 +28,10 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: false,
   },
-  
+
   // Compression
   compress: true,
-  
+
   // Headers for security and performance
   async headers() {
     return [
@@ -75,7 +75,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  
+
   // Rewrites for API proxy
   async rewrites() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';

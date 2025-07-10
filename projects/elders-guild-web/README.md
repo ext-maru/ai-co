@@ -7,7 +7,7 @@ A comprehensive full-stack web application featuring the **Four Sages System** w
 The Four Sages System represents four specialized AI assistants working in harmony:
 
 - **Knowledge Sage** 📚 - Manages documentation, knowledge base, and learning resources
-- **Task Sage** ⚡ - Handles project management, workflows, and task automation  
+- **Task Sage** ⚡ - Handles project management, workflows, and task automation
 - **Incident Sage** 🚨 - Monitors system health, manages alerts, and automates responses
 - **Search Sage** 🔍 - Provides intelligent RAG-powered search across all domains
 
@@ -209,7 +209,7 @@ ai-company-web/
 # Terminal 1: Backend
 cd backend && python start-dev.py
 
-# Terminal 2: Frontend  
+# Terminal 2: Frontend
 npm run dev
 ```
 
@@ -250,7 +250,7 @@ docker-compose --profile production up -d
 ## Monitoring & Health
 
 - **Health Check**: GET /health
-- **WebSocket Stats**: GET /api/ws/connections  
+- **WebSocket Stats**: GET /api/ws/connections
 - **Sage Statistics**: GET /api/sages/{type}/stats
 - **Council Stats**: GET /api/elder-council/stats
 

@@ -149,7 +149,7 @@ describe('/api/projects/[id]', () => {
 
       mockFs.existsSync.mockReturnValue(true)
       mockFs.readFileSync.mockReturnValue(JSON.stringify(mockMetadata))
-      
+
       // Mock recursive file reading
       const walkSync = jest.fn().mockReturnValue(mockFiles)
       global.walkSync = walkSync

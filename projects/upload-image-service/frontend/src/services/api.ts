@@ -79,10 +79,10 @@ export const login = async (username: string, password: string) => {
     username,
     password,
   });
-  
+
   const { access_token, token_type } = response.data;
   localStorage.setItem('access_token', access_token);
-  
+
   return response.data;
 };
 

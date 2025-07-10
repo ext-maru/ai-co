@@ -85,11 +85,11 @@ export function KnowledgeGraph({ nodes, links, className, onNodeClick }: Knowled
         // Repulsion between nodes
         nodes.forEach((other) => {
           if (node.id === other.id || !selectedTypes.has(other.type)) return
-          
+
           const dx = (node.x || 0) - (other.x || 0)
           const dy = (node.y || 0) - (other.y || 0)
           const distance = Math.sqrt(dx * dx + dy * dy)
-          
+
           if (distance < 100) {
             const force = (100 - distance) / distance * 0.5
             node.vx = (node.vx || 0) + dx * force
@@ -102,17 +102,17 @@ export function KnowledgeGraph({ nodes, links, className, onNodeClick }: Knowled
       links.forEach((link) => {
         const source = nodes.find(n => n.id === link.source)
         const target = nodes.find(n => n.id === link.target)
-        
+
         if (!source || !target || !selectedTypes.has(source.type) || !selectedTypes.has(target.type)) return
-        
+
         const dx = (target.x || 0) - (source.x || 0)
         const dy = (target.y || 0) - (source.y || 0)
         const distance = Math.sqrt(dx * dx + dy * dy)
-        
+
         const force = (distance - 150) * link.strength * 0.001
         const fx = dx / distance * force
         const fy = dy / distance * force
-        
+
         source.vx = (source.vx || 0) + fx
         source.vy = (source.vy || 0) + fy
         target.vx = (target.vx || 0) - fx
@@ -138,7 +138,7 @@ export function KnowledgeGraph({ nodes, links, className, onNodeClick }: Knowled
 
       // Clear and redraw
       ctx.clearRect(0, 0, width, height)
-      
+
       // Apply transformations
       ctx.save()
       ctx.translate(offset.x, offset.y)
@@ -150,9 +150,9 @@ export function KnowledgeGraph({ nodes, links, className, onNodeClick }: Knowled
       links.forEach((link) => {
         const source = nodes.find(n => n.id === link.source)
         const target = nodes.find(n => n.id === link.target)
-        
+
         if (!source || !target || !selectedTypes.has(source.type) || !selectedTypes.has(target.type)) return
-        
+
         ctx.beginPath()
         ctx.moveTo(source.x || 0, source.y || 0)
         ctx.lineTo(target.x || 0, target.y || 0)
@@ -167,19 +167,19 @@ export function KnowledgeGraph({ nodes, links, className, onNodeClick }: Knowled
 
         const x = node.x || 0
         const y = node.y || 0
-        
+
         // Node circle
         ctx.beginPath()
         ctx.arc(x, y, node.size, 0, Math.PI * 2)
         ctx.fillStyle = node.color
         ctx.fill()
-        
+
         if (hoveredNode?.id === node.id) {
           ctx.strokeStyle = '#7c3aed'
           ctx.lineWidth = 3
           ctx.stroke()
         }
-        
+
         // Node label
         ctx.fillStyle = '#1f2937'
         ctx.font = '12px sans-serif'
@@ -315,7 +315,7 @@ export function KnowledgeGraph({ nodes, links, className, onNodeClick }: Knowled
             リセット
           </Button>
         </div>
-        
+
         <div className="bg-white rounded-lg shadow-lg p-2">
           <div className="flex items-center mb-2 text-sm font-medium text-gray-700">
             <Filter className="w-4 h-4 mr-2" />

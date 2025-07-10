@@ -50,7 +50,7 @@ case "$1" in
         cd "$PROJECT_ROOT"
         python3 scripts/project_builder_wizard.py
         ;;
-    
+
     "scaffold")
         show_logo
         if [ -z "$2" ]; then
@@ -61,14 +61,14 @@ case "$1" in
         cd "$PROJECT_ROOT"
         python3 scripts/project_scaffolder.py "$2" "${@:3}"
         ;;
-    
+
     "list")
         show_logo
         echo -e "${YELLOW}📋 既存プロジェクト一覧${NC}"
         cd "$PROJECT_ROOT"
         python3 scripts/project_lister.py
         ;;
-    
+
     "pdca")
         show_logo
         if [ -z "$2" ]; then
@@ -79,19 +79,19 @@ case "$1" in
         cd "$PROJECT_ROOT"
         python3 scripts/project_pdca_analyzer.py "$2"
         ;;
-    
+
     "report")
         show_logo
         echo -e "${BLUE}📊 プロジェクト品質レポート生成${NC}"
         cd "$PROJECT_ROOT"
         python3 scripts/project_quality_reporter.py "$2"
         ;;
-    
+
     "--help"|"-h"|"")
         show_logo
         usage
         ;;
-    
+
     *)
         echo -e "${RED}不明なコマンド: $1${NC}"
         usage

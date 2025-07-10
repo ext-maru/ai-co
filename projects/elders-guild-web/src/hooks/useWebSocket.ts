@@ -100,7 +100,7 @@ export const useWebSocket = (options: WebSocketOptions = {}) => {
   const addMessageHandler = useCallback((messageType: string, handler: Function) => {
     if (wsManager.current) {
       wsManager.current.on(messageType, handler);
-      
+
       // Store handler for cleanup
       if (!messageHandlers.current.has(messageType)) {
         messageHandlers.current.set(messageType, []);
@@ -112,7 +112,7 @@ export const useWebSocket = (options: WebSocketOptions = {}) => {
   const removeMessageHandler = useCallback((messageType: string, handler: Function) => {
     if (wsManager.current) {
       wsManager.current.off(messageType, handler);
-      
+
       // Remove from stored handlers
       const handlers = messageHandlers.current.get(messageType);
       if (handlers) {

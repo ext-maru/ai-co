@@ -4,25 +4,28 @@ Elders Guild Flask Web Application
 Apache mod_wsgi対応版
 """
 
-import json
 import logging
+import sys
 from datetime import datetime
 from pathlib import Path
-import sys
 
 # プロジェクトルートをパスに追加
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from flask import Flask, jsonify, render_template_string, request
 import sqlite3
+
 import pika
 import psutil
-from typing import Dict, Any, List
+from flask import Flask
+from flask import jsonify
+from flask import render_template_string
+from flask import request
+
 from libs.env_config import get_config
 
 # Flask アプリケーション初期化
 app = Flask(__name__)
-app.secret_key = 'ai_company_secret_key_2025'
+app.secret_key = "ai_company_secret_key_2025"
 
 # 設定読み込み
 config = get_config()
@@ -34,6 +37,7 @@ logger = logging.getLogger(__name__)
 # Docker API Blueprint登録
 try:
     from web.docker_api import docker_api
+
     app.register_blueprint(docker_api)
     logger.info("Docker API blueprint registered successfully")
 except Exception as e:
@@ -42,6 +46,7 @@ except Exception as e:
 # 4賢者 API Blueprint登録
 try:
     from web.sages_api import sages_api
+
     app.register_blueprint(sages_api)
     logger.info("Sages API blueprint registered successfully")
 except Exception as e:
@@ -57,7 +62,7 @@ DASHBOARD_TEMPLATE = """
     <title>Elders Guild Dashboard</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
+        body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: #0a0a0a;
             color: #e0e0e0;
@@ -71,8 +76,8 @@ DASHBOARD_TEMPLATE = """
             margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
         }
-        h1 { 
-            font-size: 2.5em; 
+        h1 {
+            font-size: 2.5em;
             font-weight: 700;
             text-align: center;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
@@ -127,13 +132,13 @@ DASHBOARD_TEMPLATE = """
         .status-healthy { background: #10b981; }
         .status-warning { background: #f59e0b; }
         .status-error { background: #ef4444; }
-        
+
         @keyframes pulse {
             0% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.7; transform: scale(1.1); }
             100% { opacity: 1; transform: scale(1); }
         }
-        
+
         .task-list {
             background: #1a1a1a;
             border-radius: 12px;
@@ -191,26 +196,26 @@ DASHBOARD_TEMPLATE = """
         <div class="header">
             <h1>🚀 Elders Guild Dashboard</h1>
         </div>
-        
+
         <div class="server-info">
             <h3>🌐 サーバー情報</h3>
             <p><strong>Flask/WSGI版</strong> - {{ server_info.timestamp }}</p>
             <p>ホスト: {{ server_info.host }}:{{ server_info.port }}</p>
             <p>環境: {{ server_info.environment }}</p>
         </div>
-        
+
         <div class="status-grid" id="statusGrid">
             <div class="loading">Loading system status...</div>
         </div>
-        
+
         <div class="task-list" id="recentTasks">
             <h3>📝 Recent Tasks</h3>
             <div class="loading">Loading tasks...</div>
         </div>
     </div>
-    
+
     <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
-    
+
     <script>
         async function fetchData() {
             try {
@@ -220,14 +225,14 @@ DASHBOARD_TEMPLATE = """
                     fetch('/api/queues').then(r => r.json()),
                     fetch('/api/tasks/recent').then(r => r.json())
                 ]);
-                
+
                 updateStatusGrid(status, workers, queues);
                 updateTaskList(tasks);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         }
-        
+
         function updateStatusGrid(status, workers, queues) {
             const grid = document.getElementById('statusGrid');
             grid.innerHTML = `
@@ -246,7 +251,7 @@ DASHBOARD_TEMPLATE = """
                         <span class="metric-value">${status.memory_percent}%</span>
                     </div>
                 </div>
-                
+
                 <div class="card">
                     <h3>👷 Workers</h3>
                     ${Object.entries(workers).map(([type, info]) => `
@@ -259,7 +264,7 @@ DASHBOARD_TEMPLATE = """
                         </div>
                     `).join('')}
                 </div>
-                
+
                 <div class="card">
                     <h3>📬 Queues</h3>
                     ${Object.entries(queues).map(([name, count]) => `
@@ -271,14 +276,14 @@ DASHBOARD_TEMPLATE = """
                 </div>
             `;
         }
-        
+
         function updateTaskList(tasks) {
             const list = document.getElementById('recentTasks');
             if (tasks.length === 0) {
                 list.innerHTML = '<h3>📝 Recent Tasks</h3><p>No recent tasks</p>';
                 return;
             }
-            
+
             list.innerHTML = '<h3>📝 Recent Tasks</h3>' + tasks.map(task => `
                 <div class="task-item">
                     <div><strong>${task.task_id}</strong></div>
@@ -287,11 +292,11 @@ DASHBOARD_TEMPLATE = """
                 </div>
             `).join('');
         }
-        
+
         function refreshData() {
             fetchData();
         }
-        
+
         // 初回読み込みと定期更新
         fetchData();
         setInterval(fetchData, 5000);
@@ -300,44 +305,47 @@ DASHBOARD_TEMPLATE = """
 </html>
 """
 
-@app.route('/')
+
+@app.route("/")
 def dashboard():
     """ダッシュボード表示"""
     server_info = {
-        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        'host': request.host,
-        'port': config.WEB_UI_PORT,
-        'environment': 'Flask/WSGI'
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "host": request.host,
+        "port": config.WEB_UI_PORT,
+        "environment": "Flask/WSGI",
     }
     return render_template_string(DASHBOARD_TEMPLATE, server_info=server_info)
 
-@app.route('/api/status')
+
+@app.route("/api/status")
 def api_status():
     """システムステータスAPI"""
     status = {
-        'status': 'healthy',
-        'timestamp': datetime.now().isoformat(),
-        'cpu_percent': psutil.cpu_percent(interval=0.1),
-        'memory_percent': psutil.virtual_memory().percent,
-        'disk_percent': psutil.disk_usage('/').percent,
-        'health_score': _calculate_health_score()
+        "status": "healthy",
+        "timestamp": datetime.now().isoformat(),
+        "cpu_percent": psutil.cpu_percent(interval=0.1),
+        "memory_percent": psutil.virtual_memory().percent,
+        "disk_percent": psutil.disk_usage("/").percent,
+        "health_score": _calculate_health_score(),
     }
     return jsonify(status)
 
-@app.route('/api/workers')
+
+@app.route("/api/workers")
 def api_workers():
     """ワーカー情報API"""
     workers = {}
     try:
-        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        for proc in psutil.process_iter(["pid", "name", "cmdline"]):
             try:
-                cmdline = ' '.join(proc.info.get('cmdline', []))
-                for worker_type in ['task_worker', 'pm_worker', 'result_worker', 'dialog_worker']:
+                cmdline = " ".join(proc.info.get("cmdline", []))
+                for worker_type in ["task_worker", "pm_worker", "result_worker", "dialog_worker"]:
                     if worker_type in cmdline:
                         if worker_type not in workers:
-                            workers[worker_type] = {'count': 0, 'pids': []}
-                        workers[worker_type]['count'] += 1
-                        workers[worker_type]['pids'].append(proc.info['pid'])
+                            workers[worker_type] = {"count": 0, "pids": []}
+                        workers[worker_type]["count"] += 1
+                        workers[worker_type]["pids"].append(proc.info["pid"])
             except:
                 pass
     except Exception as e:
@@ -346,81 +354,76 @@ def api_workers():
         workers = {}  # エラー時は空の辞書を返す
     return jsonify(workers)
 
-@app.route('/api/queues')
+
+@app.route("/api/queues")
 def api_queues():
     """キュー情報API"""
     queues = {}
     try:
         rabbitmq_config = config.get_rabbitmq_config()
         connection = pika.BlockingConnection(
-            pika.ConnectionParameters(
-                host=rabbitmq_config['host'],
-                port=rabbitmq_config['port']
-            )
+            pika.ConnectionParameters(host=rabbitmq_config["host"], port=rabbitmq_config["port"])
         )
         channel = connection.channel()
-        
-        for queue_name in ['ai_tasks', 'ai_pm', 'ai_results', 'ai_dialog']:
+
+        for queue_name in ["ai_tasks", "ai_pm", "ai_results", "ai_dialog"]:
             try:
                 method = channel.queue_declare(queue=queue_name, passive=True)
                 queues[queue_name] = method.method.message_count
             except:
                 queues[queue_name] = 0
-        
+
         connection.close()
     except:
         # RabbitMQ接続失敗時のデフォルト値
-        queues = {'ai_tasks': 0, 'ai_pm': 0, 'ai_results': 0, 'ai_dialog': 0}
-    
+        queues = {"ai_tasks": 0, "ai_pm": 0, "ai_results": 0, "ai_dialog": 0}
+
     return jsonify(queues)
 
-@app.route('/api/tasks/recent')
+
+@app.route("/api/tasks/recent")
 def api_recent_tasks():
     """最近のタスクAPI"""
     tasks = []
     try:
-        db_path = config.PROJECT_ROOT / 'data' / 'tasks.db'
+        db_path = config.PROJECT_ROOT / "data" / "tasks.db"
         if db_path.exists():
             conn = sqlite3.connect(str(db_path))
             cursor = conn.cursor()
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT task_id, task_type, status, created_at
                 FROM task_history
                 ORDER BY created_at DESC
                 LIMIT 10
-            """)
+            """
+            )
             for row in cursor.fetchall():
-                tasks.append({
-                    'task_id': row[0],
-                    'task_type': row[1],
-                    'status': row[2],
-                    'created_at': row[3]
-                })
+                tasks.append({"task_id": row[0], "task_type": row[1], "status": row[2], "created_at": row[3]})
             conn.close()
     except Exception as e:
         logger.warning(f"Failed to load tasks: {e}")
-    
+
     return jsonify(tasks)
 
-@app.route('/api/metrics')
+
+@app.route("/api/metrics")
 def api_metrics():
     """メトリクスAPI"""
     metrics = {
-        'throughput_history': [5, 8, 12, 10, 15, 20, 18, 22, 25, 20],
-        'error_rate': 0.02,
-        'avg_processing_time': 3.5,
-        'server_type': 'Flask/WSGI'
+        "throughput_history": [5, 8, 12, 10, 15, 20, 18, 22, 25, 20],
+        "error_rate": 0.02,
+        "avg_processing_time": 3.5,
+        "server_type": "Flask/WSGI",
     }
     return jsonify(metrics)
 
-@app.route('/health')
+
+@app.route("/health")
 def health_check():
     """ヘルスチェックエンドポイント"""
-    return jsonify({
-        'status': 'healthy',
-        'timestamp': datetime.now().isoformat(),
-        'server': 'Flask/WSGI'
-    })
+    return jsonify({"status": "healthy", "timestamp": datetime.now().isoformat(), "server": "Flask/WSGI"})
+
 
 def _calculate_health_score():
     """ヘルススコア計算"""
@@ -437,13 +440,10 @@ def _calculate_health_score():
         score -= 10
     return max(0, score)
 
+
 # WSGI アプリケーション
 application = app
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # 開発サーバーとして実行
-    app.run(
-        host=config.WEB_UI_HOST,
-        port=config.WEB_UI_PORT,
-        debug=False
-    )
+    app.run(host=config.WEB_UI_HOST, port=config.WEB_UI_PORT, debug=False)

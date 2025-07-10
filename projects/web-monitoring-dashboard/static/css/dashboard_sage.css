@@ -11,7 +11,7 @@
     --text-color: #111827;
     --text-muted: #6b7280;
     --border-color: #e5e7eb;
-    
+
     /* Sage Colors */
     --knowledge-sage: #9370DB;
     --task-oracle: #DAA520;
@@ -594,15 +594,15 @@ body {
             "main";
         grid-template-columns: 1fr;
     }
-    
+
     .sidebar {
         display: none;
     }
-    
+
     .stats-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .sages-grid {
         grid-template-columns: 1fr;
     }

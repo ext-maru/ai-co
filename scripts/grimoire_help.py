@@ -4,7 +4,7 @@
 """
 
 import sys
-from pathlib import Path
+
 
 def show_help(topic=None):
     """ヘルプ表示"""
@@ -21,7 +21,7 @@ def show_help(topic=None):
         print("- navigation: ナビゲーション方法")
         print("")
         print("例: python grimoire_help.py sages")
-    
+
     elif topic == "sages":
         print("🧙‍♂️ 4賢者の概要")
         print("=" * 30)
@@ -29,7 +29,7 @@ def show_help(topic=None):
         print("📋 タスク賢者: 進捗管理と実行順序")
         print("🚨 インシデント賢者: 問題対応と復旧")
         print("🔍 RAG賢者: 情報検索と統合")
-    
+
     elif topic == "files":
         print("📁 グリモアファイル一覧")
         print("=" * 30)
@@ -44,10 +44,11 @@ def show_help(topic=None):
         print("TOPIC_INDEX.md - トピック別索引")
         print("QUICK_REFERENCE.md - クイックリファレンス")
         print("README.md - ナビゲーションガイド")
-    
+
     else:
         print(f"❌ 不明なトピック: {topic}")
         print("利用可能なトピック: sages, files, search, index, navigation")
+
 
 if __name__ == "__main__":
     topic = sys.argv[1] if len(sys.argv) > 1 else None

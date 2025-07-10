@@ -13,9 +13,10 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.project_scaffolder import ProjectScaffolder
 
+
 async def create_upload_image_project():
     """Upload Imageプロジェクトを直接作成"""
-    
+
     # プロジェクト設定
     config = {
         "name": "upload-image-service",
@@ -32,31 +33,27 @@ async def create_upload_image_project():
             "approval-flow",
             "cloud-storage",
             "image-optimization",
-            "responsive"
+            "responsive",
         ],
         "storage": "google-drive",
-        "elders_integration": [
-            "tdd",
-            "four-sages",
-            "quality-dashboard",
-            "cicd"
-        ],
+        "elders_integration": ["tdd", "four-sages", "quality-dashboard", "cicd"],
         "docker": True,
-        "deployment": "docker-compose"
+        "deployment": "docker-compose",
     }
-    
+
     print("🚀 Upload Image Service プロジェクト生成開始...")
-    
+
     # スキャフォルダー実行
     scaffolder = ProjectScaffolder()
     project_path = await scaffolder.create_project(config)
-    
+
     print(f"✅ プロジェクト作成完了: {project_path}")
-    print(f"\n🎯 次のステップ:")
+    print("\n🎯 次のステップ:")
     print(f"  cd {project_path}")
-    print(f"  docker-compose up")
-    print(f"\n📊 PDCA分析:")
-    print(f"  ai-project pdca upload-image-service")
+    print("  docker-compose up")
+    print("\n📊 PDCA分析:")
+    print("  ai-project pdca upload-image-service")
+
 
 if __name__ == "__main__":
     asyncio.run(create_upload_image_project())

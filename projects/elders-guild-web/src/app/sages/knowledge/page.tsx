@@ -188,7 +188,7 @@ const response = await knowledgeSage.query({
                 Active
               </Badge>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <Button variant="outline" size="sm">
                 <Search className="w-4 h-4 mr-2" />
@@ -309,13 +309,13 @@ const response = await knowledgeSage.query({
           {activeView === 'base' && (
             <KnowledgeBaseViewer items={sampleKnowledgeItems} />
           )}
-          
+
           {activeView === 'markdown' && (
             <Card className="p-8">
               <MarkdownRenderer content={sampleMarkdown} />
             </Card>
           )}
-          
+
           {activeView === 'graph' && (
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">知識グラフビュー</h2>
@@ -328,7 +328,7 @@ const response = await knowledgeSage.query({
               </div>
             </Card>
           )}
-          
+
           {activeView === 'history' && (
             <Card className="p-6">
               <VersionHistory

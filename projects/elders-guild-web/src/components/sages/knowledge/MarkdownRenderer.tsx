@@ -156,7 +156,7 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
         }
 
         const displayContent = content.replace(/^\[!\w+\]\s*/, '')
-        
+
         elements.push(
           <motion.blockquote
             key={index}
@@ -182,16 +182,16 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
       else if (line.trim() !== '') {
         // Parse inline elements
         let parsedLine = line
-        
+
         // Bold
         parsedLine = parsedLine.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>')
-        
+
         // Italic
         parsedLine = parsedLine.replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-        
+
         // Code
         parsedLine = parsedLine.replace(/`(.*?)`/g, '<code class="px-1.5 py-0.5 bg-purple-100 text-purple-800 rounded text-sm font-mono">$1</code>')
-        
+
         // Links
         parsedLine = parsedLine.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-purple-600 hover:text-purple-800 underline" target="_blank" rel="noopener noreferrer">$1</a>')
 

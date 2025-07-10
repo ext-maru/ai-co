@@ -228,28 +228,28 @@ elder_tree:
       name: "maru"
       email: "maru@ai-company.com"
       permissions: ["all"]
-    
+
     claude_elder:
       name: "Claude Elder"
       email: "claude@ai-company.com"
       permissions: ["operational", "development", "worker_management"]
-    
+
     four_sages:
       knowledge:
         name: "Knowledge Sage"
         specialization: "learning_and_documentation"
         vector_db: "postgresql://localhost/ai_company"
-      
+
       task:
         name: "Task Sage"
         specialization: "workflow_optimization"
         queue_size: 10000
-      
+
       incident:
         name: "Incident Sage"
         specialization: "monitoring_and_security"
         alert_channels: ["email", "slack", "webhook"]
-      
+
       rag:
         name: "RAG Sage"
         specialization: "search_and_retrieval"
@@ -265,7 +265,7 @@ database:
     user: "${DB_USER:-elder_admin}"
     password: "${DB_PASSWORD}"
     pool_size: 20
-  
+
   vector:
     type: "pgvector"
     dimension: 1536
@@ -280,7 +280,7 @@ message_queue:
   user: "${MQ_USER:-elder_user}"
   password: "${MQ_PASSWORD}"
   vhost: "/"
-  
+
   exchanges:
     elder_tree: "elder.tree.exchange"
     four_sages: "four.sages.exchange"
@@ -293,7 +293,7 @@ workers:
     max_retries: 3
     timeout: 300
     log_level: "INFO"
-  
+
   scaling:
     auto_scale: true
     min_instances: 1
@@ -315,11 +315,11 @@ monitoring:
   prometheus:
     enabled: true
     port: 9090
-  
+
   sentry:
     enabled: true
     dsn: "${SENTRY_DSN}"
-  
+
   logging:
     level: "INFO"
     format: "json"
@@ -378,7 +378,7 @@ knowledge_sage:
     path: "./knowledge_base"
     index_refresh: "5m"
     compression: "zstd"
-  
+
   learning:
     batch_size: 100
     learning_rate: 0.001
@@ -389,7 +389,7 @@ task_sage:
     algorithm: "priority_weighted_round_robin"
     lookahead: 100
     rebalance_interval: "30s"
-  
+
   optimization:
     enable_ml: true
     history_window: 7d
@@ -400,7 +400,7 @@ incident_sage:
     health_check_interval: "10s"
     metric_retention: "30d"
     anomaly_detection: true
-  
+
   alerting:
     channels:
       email:
@@ -409,7 +409,7 @@ incident_sage:
       slack:
         webhook: "${SLACK_WEBHOOK}"
         channel: "#incidents"
-  
+
   thresholds:
     cpu_critical: 90
     memory_critical: 85
@@ -420,12 +420,12 @@ rag_sage:
     algorithm: "hnsw"
     ef_construction: 200
     m: 16
-  
+
   retrieval:
     top_k: 10
     similarity_threshold: 0.7
     rerank: true
-  
+
   caching:
     enabled: true
     ttl: "1h"
@@ -644,14 +644,14 @@ python3 scripts/run_with_debug.py
 security:
   # Enable strict mode
   strict_mode: true
-  
+
   # TLS Configuration
   tls:
     enabled: true
     cert_path: "/etc/ssl/certs/elder.crt"
     key_path: "/etc/ssl/private/elder.key"
     min_version: "1.3"
-  
+
   # Authentication
   auth:
     password_policy:
@@ -659,12 +659,12 @@ security:
       require_special: true
       require_numbers: true
       history_count: 5
-    
+
     session:
       timeout: 3600
       concurrent_limit: 3
       ip_binding: true
-  
+
   # Audit
   audit:
     log_all_access: true
@@ -683,24 +683,24 @@ performance:
       min_size: 10
       max_size: 50
       overflow: 20
-    
+
     query_optimization:
       enable_cache: true
       cache_size: "2GB"
       prepared_statements: true
-  
+
   # Message queue tuning
   rabbitmq:
     prefetch_count: 20
     heartbeat: 30
     connection_pool: 10
-  
+
   # Worker optimization
   workers:
     process_pool:
       processes: 8
       maxtasksperchild: 1000
-    
+
     async_settings:
       event_loop: "uvloop"
       max_concurrent: 100
@@ -714,16 +714,16 @@ regions:
   primary:
     name: "us-east-1"
     endpoint: "https://primary.elders-guild.com"
-    
+
   replicas:
     - name: "eu-west-1"
       endpoint: "https://eu.elders-guild.com"
       sync_delay: "5s"
-    
+
     - name: "ap-northeast-1"
       endpoint: "https://jp.elders-guild.com"
       sync_delay: "10s"
-  
+
   failover:
     strategy: "automatic"
     health_check_interval: "30s"
@@ -797,9 +797,9 @@ done
 
 ---
 
-**Setup Guide Version**: 1.0.0  
-**Last Updated**: 2025-07-10  
+**Setup Guide Version**: 1.0.0
+**Last Updated**: 2025-07-10
 **Next Update**: 2025-08-10
 
-**🏛️ Welcome to the Elders Guild**  
+**🏛️ Welcome to the Elders Guild**
 **May the wisdom of the Elders guide your path**

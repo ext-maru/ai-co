@@ -82,15 +82,15 @@ export function SearchVisualization({
 
       const width = canvas.width
       const height = canvas.height
-      
+
       // Clear canvas
       ctx.clearRect(0, 0, width, height)
-      
+
       // Draw links
       networkData.links.forEach(link => {
         const sourceNode = networkData.nodes.find(n => n.id === link.source)
         const targetNode = networkData.nodes.find(n => n.id === link.target)
-        
+
         if (sourceNode && targetNode) {
           ctx.beginPath()
           ctx.moveTo(sourceNode.x || 0, sourceNode.y || 0)
@@ -100,7 +100,7 @@ export function SearchVisualization({
           ctx.stroke()
         }
       })
-      
+
       // Draw nodes
       networkData.nodes.forEach(node => {
         ctx.beginPath()
@@ -110,7 +110,7 @@ export function SearchVisualization({
         ctx.strokeStyle = '#fff'
         ctx.lineWidth = 2
         ctx.stroke()
-        
+
         // Label
         ctx.fillStyle = '#1f2937'
         ctx.font = '12px sans-serif'
@@ -122,7 +122,7 @@ export function SearchVisualization({
 
   const renderBarChart = (data: { name: string; count: number; color: string }[]) => {
     const maxCount = Math.max(...data.map(d => d.count))
-    
+
     return (
       <div className="space-y-3">
         {data.map((item, index) => (
@@ -165,23 +165,23 @@ export function SearchVisualization({
             const sliceAngle = (slice.percentage / 100) * 360
             const startAngle = currentAngle
             const endAngle = currentAngle + sliceAngle
-            
+
             const x1 = centerX + radius * Math.cos((startAngle * Math.PI) / 180)
             const y1 = centerY + radius * Math.sin((startAngle * Math.PI) / 180)
             const x2 = centerX + radius * Math.cos((endAngle * Math.PI) / 180)
             const y2 = centerY + radius * Math.sin((endAngle * Math.PI) / 180)
-            
+
             const largeArcFlag = sliceAngle > 180 ? 1 : 0
-            
+
             const pathData = [
               `M ${centerX} ${centerY}`,
               `L ${x1} ${y1}`,
               `A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2}`,
               'Z'
             ].join(' ')
-            
+
             currentAngle += sliceAngle
-            
+
             return (
               <motion.path
                 key={index}
@@ -196,7 +196,7 @@ export function SearchVisualization({
             )
           })}
         </svg>
-        
+
         <div className="space-y-2">
           {data.map((item, index) => (
             <motion.div
@@ -224,7 +224,7 @@ export function SearchVisualization({
   const renderLineChart = (data: { period: string; searchCount: number; avgRelevance: number }[]) => {
     const maxCount = Math.max(...data.map(d => d.searchCount))
     const maxRelevance = Math.max(...data.map(d => d.avgRelevance))
-    
+
     return (
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
@@ -233,7 +233,7 @@ export function SearchVisualization({
             <div className="h-32 relative">
               <svg width="100%" height="100%" viewBox="0 0 300 120">
                 <polyline
-                  points={data.map((d, i) => 
+                  points={data.map((d, i) =>
                     `${(i / (data.length - 1)) * 280 + 10},${120 - ((d.searchCount / maxCount) * 100 + 10)}`
                   ).join(' ')}
                   fill="none"
@@ -252,13 +252,13 @@ export function SearchVisualization({
               </svg>
             </div>
           </div>
-          
+
           <div>
             <h4 className="text-sm font-medium text-gray-700 mb-2">平均関連度推移</h4>
             <div className="h-32 relative">
               <svg width="100%" height="100%" viewBox="0 0 300 120">
                 <polyline
-                  points={data.map((d, i) => 
+                  points={data.map((d, i) =>
                     `${(i / (data.length - 1)) * 280 + 10},${120 - ((d.avgRelevance / maxRelevance) * 100 + 10)}`
                   ).join(' ')}
                   fill="none"
@@ -278,7 +278,7 @@ export function SearchVisualization({
             </div>
           </div>
         </div>
-        
+
         <div className="flex justify-between text-xs text-gray-500">
           {data.map(d => d.period)}
         </div>

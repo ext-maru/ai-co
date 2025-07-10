@@ -101,7 +101,7 @@ describe('/api/projects/[id]/notes', () => {
         method: 'POST',
         body: JSON.stringify(newNote)
       })
-      
+
       const response = await POST(request, { params: { id: 'test-project' } })
       const data = await response.json()
 
@@ -124,7 +124,7 @@ describe('/api/projects/[id]/notes', () => {
         method: 'POST',
         body: JSON.stringify(invalidNote)
       })
-      
+
       const response = await POST(request, { params: { id: 'test-project' } })
       const data = await response.json()
 
@@ -146,7 +146,7 @@ describe('/api/projects/[id]/notes', () => {
         method: 'POST',
         body: JSON.stringify(newNote)
       })
-      
+
       const response = await POST(request, { params: { id: 'test-project' } })
 
       expect(response.status).toBe(201)
@@ -170,7 +170,7 @@ describe('/api/projects/[id]/notes', () => {
         method: 'PATCH',
         body: JSON.stringify(updateData)
       })
-      
+
       const response = await PATCH(request, { params: { id: 'test-project' } })
       const data = await response.json()
 
@@ -191,7 +191,7 @@ describe('/api/projects/[id]/notes', () => {
         method: 'PATCH',
         body: JSON.stringify(updateData)
       })
-      
+
       const response = await PATCH(request, { params: { id: 'test-project' } })
       const data = await response.json()
 
@@ -212,7 +212,7 @@ describe('/api/projects/[id]/notes', () => {
         method: 'PATCH',
         body: JSON.stringify(updateData)
       })
-      
+
       const response = await PATCH(request, { params: { id: 'test-project' } })
       const data = await response.json()
 
@@ -235,7 +235,7 @@ describe('/api/projects/[id]/notes', () => {
         method: 'PATCH',
         body: JSON.stringify(updateData)
       })
-      
+
       const response = await PATCH(request, { params: { id: 'test-project' } })
       const data = await response.json()
 
@@ -258,7 +258,7 @@ describe('/api/projects/[id]/notes', () => {
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
       expect(data.message).toBe('Note deleted successfully')
-      
+
       // Verify the note was removed
       const writeCall = mockFs.writeFileSync.mock.calls[0]
       const writtenData = JSON.parse(writeCall[1] as string)

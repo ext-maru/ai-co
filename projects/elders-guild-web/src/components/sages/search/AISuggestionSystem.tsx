@@ -102,17 +102,17 @@ export function AISuggestionSystem({
 
   const handleFeedback = async (suggestionId: string, feedback: 'positive' | 'negative') => {
     setProcessingFeedback(prev => new Set(prev).add(suggestionId))
-    
+
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 500))
-    
+
     setFeedbackGiven(prev => new Set(prev).add(suggestionId))
     setProcessingFeedback(prev => {
       const next = new Set(prev)
       next.delete(suggestionId)
       return next
     })
-    
+
     onFeedback?.(suggestionId, feedback)
   }
 
@@ -129,7 +129,7 @@ export function AISuggestionSystem({
             あなたの検索パターンと文脈に基づいたパーソナライズされた提案
           </p>
         </div>
-        
+
         <Badge variant="secondary" className="bg-lime-100 text-lime-800">
           {userContext.role} • {userContext.department}
         </Badge>
@@ -214,7 +214,7 @@ export function AISuggestionSystem({
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="text-right">
                         <div className={cn('text-sm font-semibold', getConfidenceColor(suggestion.confidence))}>
                           {Math.round(suggestion.confidence * 100)}%
@@ -222,14 +222,14 @@ export function AISuggestionSystem({
                         <div className="text-xs text-gray-500">信頼度</div>
                       </div>
                     </div>
-                    
+
                     <p className="text-gray-600 mb-4 flex-1">{suggestion.description}</p>
-                    
+
                     <div className="mb-4 p-3 bg-gray-50 rounded-lg">
                       <h4 className="text-sm font-medium text-gray-700 mb-1">AIの推論:</h4>
                       <p className="text-sm text-gray-600">{suggestion.reasoning}</p>
                     </div>
-                    
+
                     {suggestion.metadata.tags.length > 0 && (
                       <div className="mb-4">
                         <div className="flex flex-wrap gap-1">
@@ -244,7 +244,7 @@ export function AISuggestionSystem({
                         </div>
                       </div>
                     )}
-                    
+
                     <div className="space-y-3">
                       <div className="flex space-x-2">
                         {suggestion.actions.map((action) => (
@@ -260,7 +260,7 @@ export function AISuggestionSystem({
                           </Button>
                         ))}
                       </div>
-                      
+
                       {!feedbackGiven.has(suggestion.id) && (
                         <div className="flex items-center justify-between pt-3 border-t">
                           <span className="text-sm text-gray-600">この提案は役に立ちましたか？</span>
@@ -282,7 +282,7 @@ export function AISuggestionSystem({
                           </div>
                         </div>
                       )}
-                      
+
                       {feedbackGiven.has(suggestion.id) && (
                         <div className="text-center text-sm text-green-600 pt-3 border-t">
                           フィードバックありがとうございます！
@@ -306,7 +306,7 @@ export function AISuggestionSystem({
           >
             <Card className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">パーソナライズされたインサイト</h3>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="space-y-4">
                   <h4 className="font-medium text-gray-700">あなたの検索パターン</h4>
@@ -318,7 +318,7 @@ export function AISuggestionSystem({
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
                   <h4 className="font-medium text-gray-700">推奨される探索領域</h4>
                   <div className="space-y-2">
@@ -330,7 +330,7 @@ export function AISuggestionSystem({
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="space-y-4">
                   <h4 className="font-medium text-gray-700">チーム内トレンド</h4>
                   <div className="space-y-2">
@@ -392,7 +392,7 @@ export function AISuggestionSystem({
                          insight.trend === 'declining' ? '下降' : '安定'}
                       </Badge>
                     </div>
-                    
+
                     <div className="mb-4">
                       <h4 className="text-sm font-medium text-gray-700 mb-2">例:</h4>
                       <div className="space-y-1">
@@ -403,7 +403,7 @@ export function AISuggestionSystem({
                         ))}
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
                         <div className="w-full bg-gray-200 rounded-full h-2">

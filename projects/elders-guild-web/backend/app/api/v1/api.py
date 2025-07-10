@@ -3,16 +3,13 @@ API Router configuration for Elders Guild Web FastAPI Backend
 Four Sages System API endpoints
 """
 
+from app.api.endpoints import elder_council
+from app.api.endpoints import sages_incidents
+from app.api.endpoints import sages_knowledge
+from app.api.endpoints import sages_search
+from app.api.endpoints import sages_tasks
+from app.api.endpoints import websocket_routes
 from fastapi import APIRouter
-
-from app.api.endpoints import (
-    sages_knowledge,
-    sages_tasks,
-    sages_incidents,
-    sages_search,
-    elder_council,
-    websocket_routes,
-)
 
 # Main API router
 api_router = APIRouter()

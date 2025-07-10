@@ -20,7 +20,7 @@ describe('/api/projects/[id]/favorite', () => {
     it('should add project to favorites when not favorited', async () => {
       const projectId = 'test-project'
       const userId = 'test-user'
-      
+
       mockFs.existsSync.mockReturnValue(true)
       mockFs.readFileSync.mockReturnValue(JSON.stringify({
         'other-user': ['project-1']
@@ -31,7 +31,7 @@ describe('/api/projects/[id]/favorite', () => {
         method: 'POST',
         body: JSON.stringify({ user_id: userId })
       })
-      
+
       const response = await POST(request, { params: { id: projectId } })
       const data = await response.json()
 
@@ -40,7 +40,7 @@ describe('/api/projects/[id]/favorite', () => {
       expect(data.action).toBe('added')
       expect(data.is_favorite).toBe(true)
       expect(data.project_id).toBe(projectId)
-      
+
       // Verify file write
       expect(mockFs.writeFileSync).toHaveBeenCalledWith(
         expect.any(String),
@@ -51,7 +51,7 @@ describe('/api/projects/[id]/favorite', () => {
     it('should remove project from favorites when already favorited', async () => {
       const projectId = 'test-project'
       const userId = 'test-user'
-      
+
       mockFs.existsSync.mockReturnValue(true)
       mockFs.readFileSync.mockReturnValue(JSON.stringify({
         'test-user': ['test-project', 'other-project']
@@ -62,7 +62,7 @@ describe('/api/projects/[id]/favorite', () => {
         method: 'POST',
         body: JSON.stringify({ user_id: userId })
       })
-      
+
       const response = await POST(request, { params: { id: projectId } })
       const data = await response.json()
 
@@ -70,7 +70,7 @@ describe('/api/projects/[id]/favorite', () => {
       expect(data.success).toBe(true)
       expect(data.action).toBe('removed')
       expect(data.is_favorite).toBe(false)
-      
+
       // Verify the project was removed from favorites
       const writeCall = mockFs.writeFileSync.mock.calls[0]
       const writtenData = JSON.parse(writeCall[1] as string)
@@ -80,7 +80,7 @@ describe('/api/projects/[id]/favorite', () => {
     it('should handle new user with no existing favorites', async () => {
       const projectId = 'test-project'
       const userId = 'new-user'
-      
+
       mockFs.existsSync.mockReturnValue(false)
       mockFs.mkdirSync.mockImplementation(() => {})
       mockFs.writeFileSync.mockImplementation(() => {})
@@ -89,7 +89,7 @@ describe('/api/projects/[id]/favorite', () => {
         method: 'POST',
         body: JSON.stringify({ user_id: userId })
       })
-      
+
       const response = await POST(request, { params: { id: projectId } })
       const data = await response.json()
 
@@ -107,13 +107,13 @@ describe('/api/projects/[id]/favorite', () => {
         method: 'POST',
         body: JSON.stringify({})
       })
-      
+
       const response = await POST(request, { params: { id: 'test-project' } })
       const data = await response.json()
 
       expect(response.status).toBe(200)
       expect(data.success).toBe(true)
-      
+
       const writeCall = mockFs.writeFileSync.mock.calls[0]
       const writtenData = JSON.parse(writeCall[1] as string)
       expect(writtenData['default_user']).toContain('test-project')
@@ -129,7 +129,7 @@ describe('/api/projects/[id]/favorite', () => {
         method: 'POST',
         body: JSON.stringify({ user_id: 'test-user' })
       })
-      
+
       const response = await POST(request, { params: { id: 'test-project' } })
       const data = await response.json()
 
@@ -142,7 +142,7 @@ describe('/api/projects/[id]/favorite', () => {
     it('should return favorite status for a project', async () => {
       const projectId = 'test-project'
       const userId = 'test-user'
-      
+
       mockFs.existsSync.mockReturnValue(true)
       mockFs.readFileSync.mockReturnValue(JSON.stringify({
         'test-user': ['test-project', 'other-project']
@@ -161,7 +161,7 @@ describe('/api/projects/[id]/favorite', () => {
     it('should return false when project is not favorited', async () => {
       const projectId = 'test-project'
       const userId = 'test-user'
-      
+
       mockFs.existsSync.mockReturnValue(true)
       mockFs.readFileSync.mockReturnValue(JSON.stringify({
         'test-user': ['other-project']

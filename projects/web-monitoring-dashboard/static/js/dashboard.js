@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeModals();
     initializeFilters();
     loadDashboardData();
-    
+
     // Auto-refresh every 5 seconds
     setInterval(loadDashboardData, 5000);
 });
@@ -29,7 +29,7 @@ function initializeNavigation() {
             e.preventDefault();
             const section = link.dataset.section;
             showSection(section);
-            
+
             // Update active state
             navLinks.forEach(l => l.classList.remove('active'));
             link.classList.add('active');
@@ -42,7 +42,7 @@ function showSection(sectionId) {
     sections.forEach(section => {
         section.classList.remove('active');
     });
-    
+
     const targetSection = document.getElementById(sectionId);
     if (targetSection) {
         targetSection.classList.add('active');
@@ -84,13 +84,13 @@ async function loadOverviewData() {
     try {
         const response = await axios.get(`${API_BASE}/status`);
         const data = response.data;
-        
+
         // Update stats
         document.getElementById('active-tasks').textContent = data.active_tasks || 0;
         document.getElementById('worker-utilization').textContent = `${data.worker_utilization || 0}%`;
         document.getElementById('queue-throughput').textContent = `${data.queue_throughput || 0}/分`;
         document.getElementById('uptime').textContent = formatUptime(data.uptime || 0);
-        
+
         // Update system status
         const statusBadge = document.getElementById('system-status');
         if (data.system_healthy) {
@@ -120,7 +120,7 @@ function renderTasks() {
     const taskList = document.getElementById('task-list');
     const filterStatus = document.getElementById('task-filter-status').value;
     const filterPriority = document.getElementById('task-filter-priority').value;
-    
+
     // Filter tasks
     let filteredTasks = state.tasks;
     if (filterStatus) {
@@ -129,7 +129,7 @@ function renderTasks() {
     if (filterPriority) {
         filteredTasks = filteredTasks.filter(task => task.priority === filterPriority);
     }
-    
+
     // Render tasks
     taskList.innerHTML = filteredTasks.map(task => `
         <div class="task-item" data-task-id="${task.id}">
@@ -163,7 +163,7 @@ async function loadWorkers() {
 
 function renderWorkers() {
     const workerGrid = document.getElementById('worker-grid');
-    
+
     workerGrid.innerHTML = state.workers.map(worker => `
         <div class="worker-card">
             <div class="worker-status">
@@ -193,7 +193,7 @@ async function loadQueues() {
 
 function renderQueues() {
     const queueList = document.getElementById('queue-list');
-    
+
     queueList.innerHTML = state.queues.map(queue => `
         <div class="queue-item">
             <div class="queue-header">
@@ -236,7 +236,7 @@ async function loadElderCouncil() {
 function renderElderCouncil() {
     // Update elder statuses
     const elders = ['knowledge-sage', 'task-oracle', 'crisis-sage', 'search-mystic'];
-    
+
     elders.forEach(elder => {
         const statusElement = document.getElementById(`${elder}-status`);
         if (statusElement && state.elderCouncil[elder]) {
@@ -253,25 +253,25 @@ function initializeModals() {
     const newTaskBtn = document.getElementById('new-task-btn');
     const closeBtn = document.querySelector('.close');
     const taskForm = document.getElementById('task-form');
-    
+
     if (newTaskBtn) {
         newTaskBtn.onclick = () => {
             modal.style.display = 'block';
         };
     }
-    
+
     if (closeBtn) {
         closeBtn.onclick = () => {
             modal.style.display = 'none';
         };
     }
-    
+
     window.onclick = (event) => {
         if (event.target === modal) {
             modal.style.display = 'none';
         }
     };
-    
+
     if (taskForm) {
         taskForm.onsubmit = async (e) => {
             e.preventDefault();
@@ -288,7 +288,7 @@ async function createTask() {
         priority: document.getElementById('task-priority').value,
         assignee: document.getElementById('task-assignee').value
     };
-    
+
     try {
         await axios.post(`${API_BASE}/tasks`, formData);
         document.getElementById('task-modal').style.display = 'none';
@@ -318,7 +318,7 @@ async function deleteTask(taskId) {
     if (!confirm('このタスクを削除しますか？')) {
         return;
     }
-    
+
     try {
         await axios.delete(`${API_BASE}/tasks/${taskId}`);
         await loadTasks();
@@ -351,7 +351,7 @@ async function loadAdminData() {
 function renderUserList(users) {
     const userList = document.getElementById('user-list');
     if (!userList) return;
-    
+
     userList.innerHTML = users.map(user => `
         <div class="user-item">
             <div>
@@ -360,7 +360,7 @@ function renderUserList(users) {
                 <span>${user.email}</span>
             </div>
             <div>
-                ${user.is_active ? 
+                ${user.is_active ?
                     `<button class="btn btn-sm" onclick="deactivateUser(${user.id})">無効化</button>` :
                     `<button class="btn btn-sm" onclick="activateUser(${user.id})">有効化</button>`
                 }
@@ -381,7 +381,7 @@ document.getElementById('clear-sessions-btn')?.addEventListener('click', async (
 
 document.getElementById('restart-workers-btn')?.addEventListener('click', async () => {
     if (!confirm('ワーカーを再起動しますか？')) return;
-    
+
     try {
         await axios.post(`${API_BASE}/admin/restart-workers`);
         showNotification('ワーカーを再起動しました', 'success');

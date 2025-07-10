@@ -14,11 +14,11 @@ function getFavoritesFilePath(): string {
 // お気に入りを読み込む
 function loadFavorites(): Record<string, string[]> {
   const filePath = getFavoritesFilePath()
-  
+
   if (!fs.existsSync(filePath)) {
     return {}
   }
-  
+
   try {
     const data = fs.readFileSync(filePath, 'utf8')
     return JSON.parse(data)
@@ -33,23 +33,23 @@ export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url)
     const userId = url.searchParams.get('user_id') || 'default_user'
-    
+
     console.log('Getting favorite projects for user:', userId)
-    
+
     const favorites = loadFavorites()
     const userFavorites = favorites[userId] || []
-    
+
     // お気に入りプロジェクトの詳細情報を取得
     const metadataPath = path.resolve(process.cwd(), '../../data/project_metadata')
     const favoriteProjects: any[] = []
-    
+
     for (const projectId of userFavorites) {
       try {
         const projectMetadataPath = path.join(metadataPath, `${projectId}.json`)
-        
+
         if (fs.existsSync(projectMetadataPath)) {
           const metadata = JSON.parse(fs.readFileSync(projectMetadataPath, 'utf8'))
-          
+
           favoriteProjects.push({
             project_id: projectId,
             name: metadata.name,
@@ -65,13 +65,13 @@ export async function GET(request: NextRequest) {
         console.error(`Error loading project ${projectId}:`, error)
       }
     }
-    
+
     return NextResponse.json({
       user_id: userId,
       total_favorites: favoriteProjects.length,
       projects: favoriteProjects
     })
-    
+
   } catch (error) {
     console.error('Get favorite projects error:', error)
     return NextResponse.json(
@@ -97,6 +97,6 @@ function getDescription(projectId: string, metadata: any): string {
     'web-monitoring-dashboard': 'リアルタイム監視・分析ダッシュボード',
     'test-calculator-project': 'TDD学習・テスト実装の実習プロジェクト'
   }
-  
+
   return descriptions[projectId] || metadata.description || 'プロジェクトの説明がありません'
 }

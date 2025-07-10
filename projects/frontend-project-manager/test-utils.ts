@@ -5,15 +5,15 @@ export const mockText = jest.fn()
 // Mock the Response object
 class MockResponse {
   constructor(public body: any, public init?: ResponseInit) {}
-  
+
   json() {
     return Promise.resolve(typeof this.body === 'string' ? JSON.parse(this.body) : this.body)
   }
-  
+
   text() {
     return Promise.resolve(typeof this.body === 'string' ? this.body : JSON.stringify(this.body))
   }
-  
+
   get status() {
     return this.init?.status || 200
   }

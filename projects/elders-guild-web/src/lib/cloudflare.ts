@@ -13,7 +13,7 @@ interface CloudflareEnv {
 
 export class CloudflareCache {
   private kv: KVNamespace;
-  
+
   constructor(kv: KVNamespace) {
     this.kv = kv;
   }
@@ -34,7 +34,7 @@ export class CloudflareCache {
       if (options?.ttl) {
         putOptions.expirationTtl = options.ttl;
       }
-      
+
       await this.kv.put(key, JSON.stringify(value), putOptions);
     } catch (error) {
       console.error('Cloudflare KV set error:', error);
@@ -55,7 +55,7 @@ export class CloudflareCache {
       if (prefix) {
         options.prefix = prefix;
       }
-      
+
       const result = await this.kv.list(options);
       return result.keys.map(key => key.name);
     } catch (error) {
@@ -67,7 +67,7 @@ export class CloudflareCache {
 
 export class CloudflareAssets {
   private bucket: R2Bucket;
-  
+
   constructor(bucket: R2Bucket) {
     this.bucket = bucket;
   }
@@ -78,17 +78,17 @@ export class CloudflareAssets {
   }): Promise<void> {
     try {
       const putOptions: R2PutOptions = {};
-      
+
       if (options?.contentType) {
         putOptions.httpMetadata = {
           contentType: options.contentType
         };
       }
-      
+
       if (options?.metadata) {
         putOptions.customMetadata = options.metadata;
       }
-      
+
       await this.bucket.put(key, data, putOptions);
     } catch (error) {
       console.error('Cloudflare R2 upload error:', error);
@@ -100,7 +100,7 @@ export class CloudflareAssets {
     try {
       const object = await this.bucket.get(key);
       if (!object) return null;
-      
+
       return await object.arrayBuffer();
     } catch (error) {
       console.error('Cloudflare R2 download error:', error);
@@ -122,7 +122,7 @@ export class CloudflareAssets {
       if (prefix) {
         options.prefix = prefix;
       }
-      
+
       const result = await this.bucket.list(options);
       return result.objects.map(obj => obj.key);
     } catch (error) {
@@ -134,7 +134,7 @@ export class CloudflareAssets {
 
 export class CloudflareAnalytics {
   private analytics: AnalyticsEngineDataset;
-  
+
   constructor(analytics: AnalyticsEngineDataset) {
     this.analytics = analytics;
   }
@@ -190,7 +190,7 @@ export class CloudflareAnalytics {
 
 export class CloudflareQueue {
   private queue: Queue;
-  
+
   constructor(queue: Queue) {
     this.queue = queue;
   }
@@ -201,15 +201,15 @@ export class CloudflareQueue {
   }): Promise<void> {
     try {
       const sendOptions: any = {};
-      
+
       if (options?.contentType) {
         sendOptions.contentType = options.contentType;
       }
-      
+
       if (options?.delaySeconds) {
         sendOptions.delaySeconds = options.delaySeconds;
       }
-      
+
       await this.queue.send(message, sendOptions);
     } catch (error) {
       console.error('Cloudflare Queue send error:', error);
@@ -233,16 +233,16 @@ export class EdgeRequestHandler {
     const url = new URL(request.url);
     const cache = new CloudflareCache(env.CACHE_KV);
     const analytics = new CloudflareAnalytics(env.ANALYTICS);
-    
+
     // Track request
     const startTime = Date.now();
-    
+
     try {
       // Check cache first for GET requests
       if (request.method === 'GET') {
         const cacheKey = `page:${url.pathname}`;
         const cached = await cache.get<string>(cacheKey);
-        
+
         if (cached) {
           await analytics.trackPageView(url.pathname, request.headers.get('user-agent') || undefined);
           return new Response(cached, {
@@ -254,31 +254,31 @@ export class EdgeRequestHandler {
           });
         }
       }
-      
+
       // Handle API requests
       if (url.pathname.startsWith('/api/')) {
         return await this.handleApiRequest(request, env, analytics);
       }
-      
+
       // Handle static assets
       if (this.isStaticAsset(url.pathname)) {
         return await this.handleStaticAsset(request, env);
       }
-      
+
       // Handle page requests
       const response = await this.handlePageRequest(request, env, cache);
-      
+
       // Track analytics
       const responseTime = Date.now() - startTime;
       await analytics.trackPageView(url.pathname, request.headers.get('user-agent') || undefined);
       await analytics.trackPerformance('response_time', responseTime, url.pathname);
-      
+
       return response;
-      
+
     } catch (error) {
       // Track error
       await analytics.trackError(error.message, url.pathname, request.headers.get('user-agent') || undefined);
-      
+
       return new Response('Internal Server Error', {
         status: 500,
         headers: {
@@ -292,33 +292,33 @@ export class EdgeRequestHandler {
   private static async handleApiRequest(request: Request, env: CloudflareEnv, analytics: CloudflareAnalytics): Promise<Response> {
     const url = new URL(request.url);
     const startTime = Date.now();
-    
+
     // Proxy to backend API
     const backendUrl = `${env.API_BASE_URL}${url.pathname}${url.search}`;
-    
+
     const response = await fetch(backendUrl, {
       method: request.method,
       headers: request.headers,
       body: request.method !== 'GET' ? request.body : undefined
     });
-    
+
     // Track API call
     const responseTime = Date.now() - startTime;
     await analytics.trackApiCall(url.pathname, request.method, response.status, responseTime);
-    
+
     return response;
   }
 
   private static async handleStaticAsset(request: Request, env: CloudflareEnv): Promise<Response> {
     const url = new URL(request.url);
     const assets = new CloudflareAssets(env.ASSETS_BUCKET);
-    
+
     // Try to get from R2 bucket
     const asset = await assets.download(url.pathname.slice(1)); // Remove leading slash
-    
+
     if (asset) {
       const contentType = this.getContentType(url.pathname);
-      
+
       return new Response(asset, {
         headers: {
           'Content-Type': contentType,
@@ -327,23 +327,23 @@ export class EdgeRequestHandler {
         }
       });
     }
-    
+
     return new Response('Not Found', { status: 404 });
   }
 
   private static async handlePageRequest(request: Request, env: CloudflareEnv, cache: CloudflareCache): Promise<Response> {
     const url = new URL(request.url);
-    
+
     // Generate or fetch page content
     // This would typically render your React app
     const pageContent = await this.renderPage(url.pathname, request, env);
-    
+
     // Cache the page if it's cacheable
     if (this.isCacheable(url.pathname)) {
       const cacheKey = `page:${url.pathname}`;
       await cache.set(cacheKey, pageContent, { ttl: 3600 }); // 1 hour TTL
     }
-    
+
     return new Response(pageContent, {
       headers: {
         'Content-Type': 'text/html',
@@ -389,17 +389,17 @@ export class EdgeRequestHandler {
     if (pathname.startsWith('/api/')) {
       return 'private, no-cache, no-store, must-revalidate';
     }
-    
+
     if (this.isStaticAsset(pathname)) {
       return 'public, max-age=31536000, immutable';
     }
-    
+
     return 'public, max-age=3600';
   }
 
   private static getContentType(pathname: string): string {
     const extension = pathname.split('.').pop()?.toLowerCase();
-    
+
     const contentTypes: Record<string, string> = {
       'html': 'text/html',
       'css': 'text/css',
@@ -415,7 +415,7 @@ export class EdgeRequestHandler {
       'woff2': 'font/woff2',
       'ttf': 'font/ttf'
     };
-    
+
     return contentTypes[extension || ''] || 'application/octet-stream';
   }
 }
@@ -424,7 +424,7 @@ export class EdgeRequestHandler {
 export class CloudflareBrowser {
   static async preloadCriticalResources(): Promise<void> {
     if (typeof window === 'undefined') return;
-    
+
     // Use Cloudflare's edge to preload critical resources
     const criticalResources = [
       '/api/v1/sages/status',
@@ -432,12 +432,12 @@ export class CloudflareBrowser {
       '/styles/critical.css',
       '/scripts/main.js'
     ];
-    
+
     criticalResources.forEach(resource => {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.href = resource;
-      
+
       if (resource.endsWith('.css')) {
         link.as = 'style';
       } else if (resource.endsWith('.js')) {
@@ -446,7 +446,7 @@ export class CloudflareBrowser {
         link.as = 'fetch';
         link.crossOrigin = 'anonymous';
       }
-      
+
       document.head.appendChild(link);
     });
   }
@@ -457,37 +457,37 @@ export class CloudflareBrowser {
     region: string;
   }> {
     const startTime = performance.now();
-    
+
     try {
       // Use Cloudflare's speed test endpoint
       const response = await fetch('/cdn-cgi/trace', {
         cache: 'no-cache'
       });
-      
+
       const endTime = performance.now();
       const latency = endTime - startTime;
-      
+
       const text = await response.text();
       const lines = text.split('\n');
       const data: Record<string, string> = {};
-      
+
       lines.forEach(line => {
         const [key, value] = line.split('=');
         if (key && value) {
           data[key] = value;
         }
       });
-      
+
       // Estimate bandwidth (very rough approximation)
       const dataSize = text.length;
       const bandwidth = (dataSize * 8) / (latency / 1000); // bits per second
-      
+
       return {
         latency,
         bandwidth,
         region: data.colo || 'unknown'
       };
-      
+
     } catch (error) {
       console.error('Network performance measurement failed:', error);
       return {

@@ -11,21 +11,21 @@ function App() {
       <nav className="app-nav">
         <h1>AI Company Dashboard</h1>
         <div className="nav-buttons">
-          <button 
-            className={activeView === 'sages' ? 'active' : ''} 
+          <button
+            className={activeView === 'sages' ? 'active' : ''}
             onClick={() => setActiveView('sages')}
           >
             4賢者システム
           </button>
-          <button 
-            className={activeView === 'analytics' ? 'active' : ''} 
+          <button
+            className={activeView === 'analytics' ? 'active' : ''}
             onClick={() => setActiveView('analytics')}
           >
             高度分析
           </button>
         </div>
       </nav>
-      
+
       <main className="app-content">
         {activeView === 'sages' ? (
           <FourSagesIntegration />

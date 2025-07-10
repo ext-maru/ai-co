@@ -14,10 +14,10 @@
 <body>
     <div class="container">
         <h1>🌱 AI Company Evolution</h1>
-        
+
         <div id="componentsChart" class="chart"></div>
         <div id="linesChart" class="chart"></div>
-        
+
         <script>
             // Components Chart
             var componentsData = [
@@ -36,15 +36,15 @@
                     mode: 'lines+markers'
                 }
             ];
-            
+
             var componentsLayout = {
                 title: 'Components Growth',
                 xaxis: { title: 'Date' },
                 yaxis: { title: 'Count' }
             };
-            
+
             Plotly.newPlot('componentsChart', componentsData, componentsLayout);
-            
+
             // Lines of Code Chart
             var linesData = [{
                 x: ["2025-07-04"],
@@ -52,13 +52,13 @@
                 type: 'bar',
                 marker: { color: '#3498db' }
             }];
-            
+
             var linesLayout = {
                 title: 'Total Lines of Code',
                 xaxis: { title: 'Date' },
                 yaxis: { title: 'Lines' }
             };
-            
+
             Plotly.newPlot('linesChart', linesData, linesLayout);
         </script>
     </div>

@@ -245,7 +245,7 @@ export default function IncidentSagePage() {
                 Active
               </Badge>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <Button variant="outline" size="sm">
                 <AlertTriangle className="w-4 h-4 mr-2" />
@@ -275,8 +275,8 @@ export default function IncidentSagePage() {
             <Card className="p-6 bg-gradient-to-br from-crimson-50 to-white border-crimson-200">
               <div className="flex items-center justify-between mb-2">
                 <Shield className="w-8 h-8 text-crimson-600" />
-                <Badge 
-                  variant="secondary" 
+                <Badge
+                  variant="secondary"
                   className={cn(
                     sampleServices.some(s => s.status === 'down') ? 'bg-red-100 text-red-800' :
                     sampleServices.some(s => s.status === 'degraded') ? 'bg-yellow-100 text-yellow-800' :
@@ -387,7 +387,7 @@ export default function IncidentSagePage() {
               onServiceClick={(service) => console.log('Service clicked:', service)}
             />
           )}
-          
+
           {activeView === 'alerts' && (
             <AlertManager
               alerts={sampleAlerts}
@@ -395,14 +395,14 @@ export default function IncidentSagePage() {
               onAlertAction={(id, action) => console.log('Alert action:', id, action)}
             />
           )}
-          
+
           {activeView === 'history' && (
             <IncidentHistory
               incidents={sampleIncidents}
               onIncidentSelect={(incident) => console.log('Incident selected:', incident)}
             />
           )}
-          
+
           {activeView === 'automation' && (
             <AutoResponseStatus
               responses={sampleAutoResponses}

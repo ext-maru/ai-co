@@ -105,7 +105,7 @@ const AnalyticsDashboard: React.FC = () => {
   const [selectedMetric, setSelectedMetric] = useState('sage_response_time');
   const [timeRange, setTimeRange] = useState(7); // 日数
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // データ状態
   const [timeSeriesData, setTimeSeriesData] = useState<TimeSeriesAnalysis | null>(null);
   const [predictionData, setPredictionData] = useState<PredictionData | null>(null);
@@ -209,7 +209,7 @@ const AnalyticsDashboard: React.FC = () => {
       datasets: [
         {
           label: selectedMetric,
-          data: Array.from({ length: timeSeriesData.statistics.count }, () => 
+          data: Array.from({ length: timeSeriesData.statistics.count }, () =>
             timeSeriesData.statistics.mean + (Math.random() - 0.5) * timeSeriesData.statistics.std * 2
           ),
           borderColor: 'rgb(75, 192, 192)',
@@ -348,13 +348,13 @@ const AnalyticsDashboard: React.FC = () => {
     if (!performanceInsights) return null;
 
     const healthScore = performanceInsights.health_score || 0;
-    
+
     const chartData = {
       datasets: [{
         data: [healthScore, 100 - healthScore],
         backgroundColor: [
-          healthScore > 80 ? 'rgba(75, 192, 192, 0.8)' : 
-          healthScore > 60 ? 'rgba(255, 206, 86, 0.8)' : 
+          healthScore > 80 ? 'rgba(75, 192, 192, 0.8)' :
+          healthScore > 60 ? 'rgba(255, 206, 86, 0.8)' :
           'rgba(255, 99, 132, 0.8)',
           'rgba(200, 200, 200, 0.2)'
         ],
@@ -392,8 +392,8 @@ const AnalyticsDashboard: React.FC = () => {
       <div className="dashboard-header">
         <h2>高度分析ダッシュボード</h2>
         <div className="controls">
-          <select 
-            value={selectedMetric} 
+          <select
+            value={selectedMetric}
             onChange={(e) => setSelectedMetric(e.target.value)}
             className="metric-selector"
           >
@@ -403,9 +403,9 @@ const AnalyticsDashboard: React.FC = () => {
               </option>
             ))}
           </select>
-          
-          <select 
-            value={timeRange} 
+
+          <select
+            value={timeRange}
             onChange={(e) => setTimeRange(Number(e.target.value))}
             className="time-range-selector"
           >
@@ -417,26 +417,26 @@ const AnalyticsDashboard: React.FC = () => {
       </div>
 
       <div className="tab-navigation">
-        <button 
-          className={activeTab === 'timeseries' ? 'active' : ''} 
+        <button
+          className={activeTab === 'timeseries' ? 'active' : ''}
           onClick={() => setActiveTab('timeseries')}
         >
           時系列分析
         </button>
-        <button 
-          className={activeTab === 'predictions' ? 'active' : ''} 
+        <button
+          className={activeTab === 'predictions' ? 'active' : ''}
           onClick={() => setActiveTab('predictions')}
         >
           予測分析
         </button>
-        <button 
-          className={activeTab === 'insights' ? 'active' : ''} 
+        <button
+          className={activeTab === 'insights' ? 'active' : ''}
           onClick={() => setActiveTab('insights')}
         >
           インサイト
         </button>
-        <button 
-          className={activeTab === 'reports' ? 'active' : ''} 
+        <button
+          className={activeTab === 'reports' ? 'active' : ''}
           onClick={() => setActiveTab('reports')}
         >
           レポート
@@ -453,7 +453,7 @@ const AnalyticsDashboard: React.FC = () => {
                 <div className="chart-container">
                   {createTimeSeriesChart()}
                 </div>
-                
+
                 {timeSeriesData && (
                   <div className="statistics-panel">
                     <h3>統計情報</h3>
@@ -475,20 +475,20 @@ const AnalyticsDashboard: React.FC = () => {
                         <span className="value">{timeSeriesData.statistics.max.toFixed(2)}</span>
                       </div>
                     </div>
-                    
+
                     <h4>トレンド分析</h4>
                     <p>
                       方向: <strong>{timeSeriesData.trend.direction === 'increasing' ? '上昇' : '下降'}</strong>
                       （強度: {(timeSeriesData.trend.strength * 100).toFixed(1)}%）
                     </p>
-                    
+
                     {timeSeriesData.anomalies.length > 0 && (
                       <>
                         <h4>検出された異常</h4>
                         <ul className="anomaly-list">
                           {timeSeriesData.anomalies.slice(0, 5).map((anomaly, index) => (
                             <li key={index} className={`anomaly-${anomaly.severity}`}>
-                              {new Date(anomaly.timestamp).toLocaleString()}: 
+                              {new Date(anomaly.timestamp).toLocaleString()}:
                               値 {anomaly.value.toFixed(2)} (Z-score: {anomaly.z_score.toFixed(2)})
                             </li>
                           ))}
@@ -505,7 +505,7 @@ const AnalyticsDashboard: React.FC = () => {
                 <div className="chart-container">
                   {createPredictionChart()}
                 </div>
-                
+
                 <div className="prediction-summary">
                   <h3>予測サマリー</h3>
                   {predictionData && (
@@ -538,12 +538,12 @@ const AnalyticsDashboard: React.FC = () => {
                   <div className="health-gauge">
                     {createHealthScoreGauge()}
                   </div>
-                  
+
                   <div className="sage-performance">
                     {createSagePerformanceChart()}
                   </div>
                 </div>
-                
+
                 <div className="insights-panel">
                   <h3>検出されたインサイト</h3>
                   {performanceInsights.insights.map((insight, index) => (
@@ -559,7 +559,7 @@ const AnalyticsDashboard: React.FC = () => {
                     </div>
                   ))}
                 </div>
-                
+
                 <div className="recommendations-panel">
                   <h3>推奨アクション</h3>
                   {performanceInsights.recommendations.map((rec, index) => (
@@ -648,20 +648,20 @@ const ReportViewer: React.FC = () => {
       <div className="report-actions">
         <h3>レポート生成</h3>
         <div className="report-buttons">
-          <button 
-            onClick={() => generateReport('daily_summary')} 
+          <button
+            onClick={() => generateReport('daily_summary')}
             disabled={isGenerating}
           >
             日次サマリー生成
           </button>
-          <button 
-            onClick={() => generateReport('weekly_analysis')} 
+          <button
+            onClick={() => generateReport('weekly_analysis')}
             disabled={isGenerating}
           >
             週次分析生成
           </button>
-          <button 
-            onClick={() => generateReport('performance_report')} 
+          <button
+            onClick={() => generateReport('performance_report')}
             disabled={isGenerating}
           >
             パフォーマンスレポート生成

@@ -163,7 +163,7 @@ export function SemanticSearch({
                   <Zap className="w-5 h-5 mr-2 text-lime-600" />
                   セマンティック検索結果 ({results.length}件)
                 </h2>
-                
+
                 {results.map((result, index) => (
                   <motion.div
                     key={result.id}
@@ -193,7 +193,7 @@ export function SemanticSearch({
                             </div>
                           </div>
                         </div>
-                        
+
                         <div className="flex flex-col items-end space-y-1">
                           <Badge variant="outline" className="text-xs">
                             {Math.round(result.semanticScore * 100)}% 意味的類似度
@@ -203,7 +203,7 @@ export function SemanticSearch({
                           </Badge>
                         </div>
                       </div>
-                      
+
                       <div className="mb-4">
                         <div
                           className="text-gray-600"
@@ -215,7 +215,7 @@ export function SemanticSearch({
                           }}
                         />
                       </div>
-                      
+
                       {/* Concept Matches */}
                       {result.conceptMatch.length > 0 && (
                         <div className="mb-3">
@@ -236,7 +236,7 @@ export function SemanticSearch({
                           </div>
                         </div>
                       )}
-                      
+
                       {/* Related Concepts */}
                       {result.relatedConcepts.length > 0 && (
                         <div>
@@ -271,7 +271,7 @@ export function SemanticSearch({
                     <Brain className="w-4 h-4 mr-2" />
                     概念クラスター
                   </h3>
-                  
+
                   <div className="space-y-2">
                     {conceptClusters.map((cluster) => (
                       <button
@@ -332,7 +332,7 @@ export function SemanticSearch({
                 <Brain className="w-5 h-5 mr-2 text-lime-600" />
                 概念マップ
               </h2>
-              
+
               {/* Concept Visualization */}
               <div className="relative bg-gray-50 rounded-lg h-96 p-4">
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -341,14 +341,14 @@ export function SemanticSearch({
                     <div className="w-32 h-32 bg-lime-500 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
                       クエリ
                     </div>
-                    
+
                     {/* Concept Clusters around the center */}
                     {conceptClusters.map((cluster, index) => {
                       const angle = (index / conceptClusters.length) * 2 * Math.PI
                       const radius = 150
                       const x = Math.cos(angle) * radius
                       const y = Math.sin(angle) * radius
-                      
+
                       return (
                         <motion.div
                           key={cluster.id}
@@ -369,7 +369,7 @@ export function SemanticSearch({
                           >
                             {cluster.name}
                           </div>
-                          
+
                           {/* Connection line */}
                           <svg
                             className="absolute inset-0 pointer-events-none"
@@ -396,7 +396,7 @@ export function SemanticSearch({
                   </div>
                 </div>
               </div>
-              
+
               {/* Legend */}
               <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                 <h4 className="text-sm font-medium text-gray-700 mb-2">凡例</h4>
@@ -437,7 +437,7 @@ export function SemanticSearch({
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">検索品質分析</h3>
-                
+
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-sm mb-1">
@@ -451,7 +451,7 @@ export function SemanticSearch({
                       className="h-2"
                     />
                   </div>
-                  
+
                   <div>
                     <div className="flex justify-between text-sm mb-1">
                       <span>平均文脈適合度</span>
@@ -464,7 +464,7 @@ export function SemanticSearch({
                       className="h-2"
                     />
                   </div>
-                  
+
                   <div className="pt-4 border-t space-y-2">
                     <div className="flex justify-between text-sm">
                       <span>完全一致</span>
@@ -481,15 +481,15 @@ export function SemanticSearch({
                   </div>
                 </div>
               </Card>
-              
+
               <Card className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">コンテンツ分布</h3>
-                
+
                 <div className="space-y-3">
                   {['knowledge', 'documentation', 'code', 'discussion'].map((type) => {
                     const count = results.filter(r => r.type === type).length
                     const percentage = (count / results.length) * 100
-                    
+
                     return (
                       <div key={type}>
                         <div className="flex justify-between text-sm mb-1">
@@ -501,7 +501,7 @@ export function SemanticSearch({
                     )
                   })}
                 </div>
-                
+
                 <div className="mt-6 pt-4 border-t">
                   <h4 className="text-sm font-medium text-gray-700 mb-2">推奨アクション</h4>
                   <ul className="text-sm text-gray-600 space-y-1">

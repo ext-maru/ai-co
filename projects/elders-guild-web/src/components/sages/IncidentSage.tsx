@@ -15,7 +15,7 @@ interface IncidentSageProps {
 
 export function IncidentSage({ sage, isSelected = false, onSelect, className }: IncidentSageProps) {
   const theme = getSageThemeClasses('incident')
-  
+
   const resolutionRate = sage.resolvedIncidents / (sage.activeIncidents + sage.resolvedIncidents) * 100
 
   const getAlertLevelColor = (level: string) => {
@@ -79,7 +79,7 @@ export function IncidentSage({ sage, isSelected = false, onSelect, className }: 
           sage.status === 'busy' ? 'bg-yellow-100 text-yellow-800' :
           'bg-gray-100 text-gray-800'
         )}>
-          {sage.status === 'active' ? '監視中' : 
+          {sage.status === 'active' ? '監視中' :
            sage.status === 'busy' ? '対応中' : '休息中'}
         </div>
       </div>
@@ -152,7 +152,7 @@ export function IncidentSage({ sage, isSelected = false, onSelect, className }: 
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
+          <div
             className={cn('h-2 rounded-full', theme.primary)}
             style={{ width: `${isNaN(resolutionRate) ? 100 : resolutionRate}%` }}
           />
@@ -214,7 +214,7 @@ export function IncidentSage({ sage, isSelected = false, onSelect, className }: 
           <span className="text-xs text-gray-500">{sage.experience} XP</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
+          <div
             className={cn('h-2 rounded-full', theme.primary)}
             style={{ width: `${Math.min((sage.experience % 1000) / 10, 100)}%` }}
           />
@@ -234,10 +234,10 @@ export function IncidentSage({ sage, isSelected = false, onSelect, className }: 
               'absolute -top-1 -right-1 w-3 h-3 rounded-full opacity-60',
               sage.alertLevel === 'high' || sage.alertLevel === 'critical' ? 'bg-red-500' : 'bg-incident-400'
             )}
-            animate={{ 
-              scale: [1, 1.3, 1], 
+            animate={{
+              scale: [1, 1.3, 1],
               opacity: [0.6, 1, 0.6],
-              backgroundColor: sage.alertLevel === 'high' || sage.alertLevel === 'critical' 
+              backgroundColor: sage.alertLevel === 'high' || sage.alertLevel === 'critical'
                 ? ['#ef4444', '#dc2626', '#ef4444']
                 : ['#DC143C', '#b91c1c', '#DC143C']
             }}

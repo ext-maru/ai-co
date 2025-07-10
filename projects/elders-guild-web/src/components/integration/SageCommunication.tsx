@@ -176,7 +176,7 @@ export function SageCommunication({
         <div className="lg:col-span-1">
           <Card className="p-4">
             <h3 className="text-sm font-semibold text-gray-900 mb-3">コミュニケーションチャンネル</h3>
-            
+
             <div className="space-y-2">
               {channels.map((channel) => (
                 <button
@@ -231,7 +231,7 @@ export function SageCommunication({
                   </button>
                 ))}
               </div>
-              
+
               {selectedChannel && (
                 <div className="text-sm text-gray-600">
                   {selectedChannel.name} • {filteredMessages.length} メッセージ
@@ -284,7 +284,7 @@ export function SageCommunication({
                 {filteredMessages.map((message) => {
                   const fromSage = getSageInfo(message.from)
                   const isFromCurrentUser = message.from === 'System Admin'
-                  
+
                   return (
                     <motion.div
                       key={message.id}
@@ -330,7 +330,7 @@ export function SageCommunication({
                               {getStatusIcon(message.status)}
                             </div>
                           </div>
-                          
+
                           {/* Message Content */}
                           <div className="mb-2">
                             <h4 className={cn(
@@ -346,7 +346,7 @@ export function SageCommunication({
                               {message.content}
                             </p>
                           </div>
-                          
+
                           {/* Related Context */}
                           {message.relatedContext && (
                             <div className={cn(
@@ -363,7 +363,7 @@ export function SageCommunication({
                               </div>
                             </div>
                           )}
-                          
+
                           {/* Timestamp */}
                           <div className={cn(
                             'text-xs mt-2',
@@ -373,7 +373,7 @@ export function SageCommunication({
                           </div>
                         </div>
                       </div>
-                      
+
                       {/* Avatar */}
                       <div className={cn(
                         'flex-shrink-0 mx-3',

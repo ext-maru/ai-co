@@ -271,7 +271,7 @@ export default function IntegrationPage() {
                 66.7% 統合完了
               </Badge>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <Button variant="ghost" size="sm" className="text-white hover:bg-white hover:bg-opacity-10">
                 <Bell className="w-4 h-4 mr-2" />
@@ -392,7 +392,7 @@ export default function IntegrationPage() {
               onCouncilAction={(action, data) => console.log('Council action:', action, data)}
             />
           )}
-          
+
           {activeView === 'communication' && (
             <SageCommunication
               messages={sampleMessages}
@@ -402,7 +402,7 @@ export default function IntegrationPage() {
               onJoinChannel={(channelId) => console.log('Join channel:', channelId)}
             />
           )}
-          
+
           {activeView === 'analytics' && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="p-6">
@@ -426,7 +426,7 @@ export default function IntegrationPage() {
                   </div>
                 </div>
               </Card>
-              
+
               <Card className="p-6">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Next Steps</h3>
                 <div className="space-y-3">

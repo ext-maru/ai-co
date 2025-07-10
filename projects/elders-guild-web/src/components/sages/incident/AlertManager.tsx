@@ -91,11 +91,11 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
   const filteredAlerts = alerts.filter(alert => {
     const matchesSeverity = filterSeverity === 'all' || alert.severity === filterSeverity
     const matchesStatus = filterStatus === 'all' || alert.status === filterStatus
-    const matchesSearch = searchQuery === '' || 
+    const matchesSearch = searchQuery === '' ||
       alert.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       alert.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       alert.source.toLowerCase().includes(searchQuery.toLowerCase())
-    
+
     return matchesSeverity && matchesStatus && matchesSearch
   })
 
@@ -116,7 +116,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
     const then = new Date(timestamp)
     const diffMs = now.getTime() - then.getTime()
     const diffMins = Math.floor(diffMs / 60000)
-    
+
     if (diffMins < 1) return '今'
     if (diffMins < 60) return `${diffMins}分前`
     if (diffMins < 1440) return `${Math.floor(diffMins / 60)}時間前`
@@ -125,7 +125,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
 
   const handleAlertAction = (alert: Alert, actionId: string) => {
     onAlertAction?.(alert.id, actionId)
-    
+
     // Auto-update status based on action
     if (actionId === 'acknowledge' && alert.status === 'new') {
       onAlertUpdate?.({
@@ -156,7 +156,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-crimson-500 focus:border-transparent"
           />
         </div>
-        
+
         <div className="flex gap-2">
           <select
             value={filterSeverity}
@@ -169,7 +169,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
             <option value="medium">中</option>
             <option value="low">低</option>
           </select>
-          
+
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as any)}
@@ -246,7 +246,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2">
                       <Badge className={cn('text-xs', getStatusColor(alert.status))}>
                         {alert.status === 'new' ? '新規' :
@@ -268,11 +268,11 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                       </button>
                     </div>
                   </div>
-                  
+
                   <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                     {alert.description}
                   </p>
-                  
+
                   {alert.metrics && (
                     <div className="bg-gray-50 rounded p-2 mb-3">
                       <div className="flex items-center justify-between text-sm">
@@ -283,7 +283,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       {alert.affectedServices.slice(0, 3).map((service) => (
@@ -297,7 +297,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                         </span>
                       )}
                     </div>
-                    
+
                     {alert.assignee && (
                       <Avatar
                         src={alert.assignee.avatar}
@@ -334,7 +334,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                       <X className="w-5 h-5 text-gray-500" />
                     </button>
                   </div>
-                  
+
                   <div className="space-y-4">
                     <div>
                       <h3 className="font-medium text-gray-900 flex items-center space-x-2">
@@ -343,7 +343,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                       </h3>
                       <p className="text-sm text-gray-600 mt-2">{selectedAlert.description}</p>
                     </div>
-                    
+
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-600">重要度</span>
@@ -366,7 +366,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                         </span>
                       </div>
                     </div>
-                    
+
                     {selectedAlert.metrics && (
                       <div className="bg-gray-50 rounded-lg p-3">
                         <h4 className="text-sm font-medium text-gray-700 mb-2">メトリクス</h4>
@@ -386,7 +386,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                         </div>
                       </div>
                     )}
-                    
+
                     <div>
                       <h4 className="text-sm font-medium text-gray-700 mb-2">影響を受けるサービス</h4>
                       <div className="flex flex-wrap gap-1">
@@ -397,7 +397,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                         ))}
                       </div>
                     </div>
-                    
+
                     {selectedAlert.assignee && (
                       <div>
                         <h4 className="text-sm font-medium text-gray-700 mb-2">担当者</h4>
@@ -412,7 +412,7 @@ export function AlertManager({ alerts, onAlertUpdate, onAlertAction, className }
                         </div>
                       </div>
                     )}
-                    
+
                     <div className="pt-4 space-y-2">
                       {selectedAlert.actions.map((action) => (
                         <Button

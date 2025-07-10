@@ -1,10 +1,10 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { 
-  Sage, 
-  SageType, 
-  DashboardState, 
-  CouncilSession, 
+import {
+  Sage,
+  SageType,
+  DashboardState,
+  CouncilSession,
   SageMessage,
   KnowledgeSage,
   TaskSage,
@@ -171,7 +171,7 @@ interface SageStore extends DashboardState {
   startCouncilSession: (session: Omit<CouncilSession, 'id' | 'timestamp' | 'status'>) => void
   endCouncilSession: () => void
   refreshSagesData: () => Promise<void>
-  
+
   // Computed values
   getActiveSages: () => Sage[]
   getSageByType: (type: SageType) => Sage | undefined
@@ -258,7 +258,7 @@ export const useSageStore = create<SageStore>()(
           status: 'in_progress'
         }
         set({ activeSession: newSession })
-        
+
         // Add system message
         get().addMessage({
           from: 'knowledge',
@@ -271,11 +271,11 @@ export const useSageStore = create<SageStore>()(
 
       endCouncilSession: () => {
         set((state) => ({
-          activeSession: state.activeSession 
+          activeSession: state.activeSession
             ? { ...state.activeSession, status: 'completed' }
             : undefined
         }))
-        
+
         get().addMessage({
           from: 'knowledge',
           to: 'all',
@@ -288,7 +288,7 @@ export const useSageStore = create<SageStore>()(
       refreshSagesData: async () => {
         // Simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000))
-        
+
         // Update last active times
         set((state) => ({
           sages: state.sages.map((sage) => ({

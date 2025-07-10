@@ -15,7 +15,7 @@ interface TaskSageProps {
 
 export function TaskSage({ sage, isSelected = false, onSelect, className }: TaskSageProps) {
   const theme = getSageThemeClasses('task')
-  
+
   const completionRate = sage.completedTasks / (sage.activeTasks + sage.completedTasks) * 100
 
   return (
@@ -58,7 +58,7 @@ export function TaskSage({ sage, isSelected = false, onSelect, className }: Task
           sage.status === 'busy' ? 'bg-yellow-100 text-yellow-800' :
           'bg-gray-100 text-gray-800'
         )}>
-          {sage.status === 'active' ? '指導中' : 
+          {sage.status === 'active' ? '指導中' :
            sage.status === 'busy' ? '修行監督中' : '休息中'}
         </div>
       </div>
@@ -112,7 +112,7 @@ export function TaskSage({ sage, isSelected = false, onSelect, className }: Task
           <span className="text-sm font-bold text-task-600">{completionRate.toFixed(1)}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
+          <div
             className={cn('h-2 rounded-full', theme.primary)}
             style={{ width: `${completionRate}%` }}
           />
@@ -134,7 +134,7 @@ export function TaskSage({ sage, isSelected = false, onSelect, className }: Task
                   'px-2 py-1 rounded text-xs font-medium ml-2 flex-shrink-0',
                   getPriorityColor(task.priority)
                 )}>
-                  {task.priority === 'high' ? '緊急' : 
+                  {task.priority === 'high' ? '緊急' :
                    task.priority === 'medium' ? '通常' : '低'}
                 </span>
               </div>
@@ -174,7 +174,7 @@ export function TaskSage({ sage, isSelected = false, onSelect, className }: Task
           <span className="text-xs text-gray-500">{sage.experience} XP</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
+          <div
             className={cn('h-2 rounded-full', theme.primary)}
             style={{ width: `${Math.min((sage.experience % 1000) / 10, 100)}%` }}
           />

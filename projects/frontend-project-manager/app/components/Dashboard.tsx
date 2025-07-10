@@ -28,24 +28,24 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
   // プロジェクトのタイムライン分析
   const timelineData = useMemo(() => {
     const monthlyData: Record<string, { month: string; created: number; completed: number }> = {}
-    
+
     projects.forEach(project => {
       const date = new Date(project.updated_at)
       const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`
-      
+
       if (!monthlyData[monthKey]) {
         monthlyData[monthKey] = { month: monthKey, created: 0, completed: 0 }
       }
-      
+
       monthlyData[monthKey].created++
       if (project.status === 'completed') {
         monthlyData[monthKey].completed++
       }
     })
-    
+
     return Object.values(monthlyData).sort((a, b) => a.month.localeCompare(b.month))
   }, [projects])
-  
+
   // ステータス別データ（円グラフ用）
   const statusData = useMemo(() => {
     return Object.entries(stats.by_status || {}).map(([status, count]) => ({
@@ -53,7 +53,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
       value: count as number
     }))
   }, [stats])
-  
+
   // 技術スタックランキング（上位10件）
   const techStackData = useMemo(() => {
     return Object.entries(stats.by_tech_stack || {})
@@ -64,7 +64,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
         count: count as number
       }))
   }, [stats])
-  
+
   // 優先度別データ
   const priorityData = useMemo(() => {
     return ['high', 'medium', 'low'].map(priority => ({
@@ -72,7 +72,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
       count: stats.by_status?.[priority] || 0
     }))
   }, [stats])
-  
+
   return (
     <div className="space-y-8">
       {/* メトリクスカード */}
@@ -86,7 +86,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
           <div className="text-3xl font-bold text-gray-900">{stats.total_projects || 0}</div>
           <div className="text-xs text-gray-500 mt-2">アクティブ率 {Math.round(((stats.by_status?.development || 0) / stats.total_projects) * 100)}%</div>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -97,7 +97,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
           <div className="text-3xl font-bold text-green-600">{stats.by_status?.completed || 0}</div>
           <div className="text-xs text-gray-500 mt-2">完了率 {Math.round(((stats.by_status?.completed || 0) / stats.total_projects) * 100)}%</div>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -108,7 +108,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
           <div className="text-3xl font-bold text-blue-600">{stats.by_status?.development || 0}</div>
           <div className="text-xs text-gray-500 mt-2">アクティブプロジェクト</div>
         </motion.div>
-        
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -120,7 +120,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
           <div className="text-xs text-gray-500 mt-2">最多: {stats.most_used_tech?.[0] || 'N/A'}</div>
         </motion.div>
       </div>
-      
+
       {/* チャートセクション */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* プロジェクトタイムライン */}
@@ -143,7 +143,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
             </AreaChart>
           </ResponsiveContainer>
         </motion.div>
-        
+
         {/* ステータス分布 */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -172,7 +172,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
             </PieChart>
           </ResponsiveContainer>
         </motion.div>
-        
+
         {/* 技術スタックランキング */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -191,7 +191,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
-        
+
         {/* プロジェクト進捗分布 */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -216,7 +216,7 @@ export default function Dashboard({ projects, stats }: DashboardProps) {
           </ResponsiveContainer>
         </motion.div>
       </div>
-      
+
       {/* アクティビティフィード */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

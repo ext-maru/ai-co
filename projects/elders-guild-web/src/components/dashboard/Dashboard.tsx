@@ -10,15 +10,15 @@ import { Progress } from '@/components/ui/Progress'
 import { Users, Activity, MessageSquare, Zap } from 'lucide-react'
 
 export function Dashboard() {
-  const { 
-    sages, 
-    selectedSage, 
-    selectSage, 
+  const {
+    sages,
+    selectedSage,
+    selectSage,
     culturalMode,
     getActiveSages,
     getCouncilStatus,
     startCouncilSession,
-    messages 
+    messages
   } = useSageStore()
 
   const activeSages = getActiveSages()
@@ -83,11 +83,11 @@ export function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <Badge 
+                <Badge
                   variant={councilStatus === 'active' ? 'elder' : 'secondary'}
                   pulse={councilStatus === 'active'}
                 >
-                  {councilStatus === 'active' 
+                  {councilStatus === 'active'
                     ? (culturalMode ? '開催中' : 'In Session')
                     : (culturalMode ? '待機中' : 'Standby')
                   }
@@ -182,9 +182,9 @@ export function Dashboard() {
       </motion.div>
 
       {/* Recent Activity */}
-      <motion.div 
-        variants={containerVariants} 
-        initial="hidden" 
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
         animate="visible"
         className="mt-8"
       >
@@ -208,7 +208,7 @@ export function Dashboard() {
                       {new Date(message.timestamp).toLocaleTimeString()}
                     </p>
                   </div>
-                  <Badge 
+                  <Badge
                     variant={
                       message.priority === 'urgent' ? 'destructive' :
                       message.priority === 'high' ? 'incident' :

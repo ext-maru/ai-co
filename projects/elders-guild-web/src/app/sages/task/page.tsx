@@ -197,7 +197,7 @@ export default function TaskSagePage() {
                 Active
               </Badge>
             </div>
-            
+
             <div className="flex items-center space-x-3">
               <Button variant="outline" size="sm">
                 <Filter className="w-4 h-4 mr-2" />
@@ -320,14 +320,14 @@ export default function TaskSagePage() {
               onTaskCreate={(status) => console.log('Create task with status:', status)}
             />
           )}
-          
+
           {activeView === 'projects' && (
             <ProjectDashboard
               projects={sampleProjects}
               onProjectSelect={(project) => console.log('Selected project:', project)}
             />
           )}
-          
+
           {activeView === 'progress' && (
             <ProgressTracker
               projectId="1"
@@ -339,7 +339,7 @@ export default function TaskSagePage() {
               timeline={sampleTimeline}
             />
           )}
-          
+
           {activeView === 'priority' && (
             <PriorityManager
               items={samplePriorityItems}
