@@ -8,8 +8,8 @@ class Settings(BaseSettings):
     VERSION: str = "2.0.0"
     API_V1_STR: str = "/api/v1"
 
-    # Database - エルダーズギルド共有インフラ使用
-    DATABASE_URL: str = "postgresql://elders:elders@host.docker.internal:8003/elders_guild"
+    # Database - SQLite使用（開発用）
+    DATABASE_URL: str = "sqlite:///./upload_service.db"
 
     # Redis - エルダーズギルド共有インフラ使用
     REDIS_URL: str = "redis://host.docker.internal:8004"

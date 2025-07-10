@@ -55,14 +55,14 @@ class ContractUploadService:
             metadata = data.metadata or {}
 
         contract_upload = ContractUpload(
-            id=contract_upload_id, user_id=user_id, contract_type=data.contract_type.value, metadata=metadata
+            id=contract_upload_id, user_id=user_id, contract_type=data.contract_type.value, meta_data=metadata
         )
 
         self.db.add(contract_upload)
         self.db.commit()
         self.db.refresh(contract_upload)
 
-        return ContractUploadResponse.from_orm(contract_upload)
+        return ContractUploadResponse.model_validate(contract_upload)
 
     async def get_contract_upload_detail(
         self, contract_upload_id: str, user_id: Optional[str] = None
@@ -288,7 +288,7 @@ class ContractUploadService:
         self.db.commit()
         self.db.refresh(contract_upload)
 
-        return ContractUploadResponse.from_orm(contract_upload)
+        return ContractUploadResponse.model_validate(contract_upload)
 
     async def list_contract_uploads(
         self, user_id: Optional[str] = None, status: Optional[UploadStatus] = None, skip: int = 0, limit: int = 100
@@ -345,4 +345,4 @@ class ContractUploadService:
         self.db.commit()
         self.db.refresh(contract_upload)
 
-        return ContractUploadResponse.from_orm(contract_upload)
+        return ContractUploadResponse.model_validate(contract_upload)

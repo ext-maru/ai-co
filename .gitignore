@@ -88,3 +88,27 @@ test_*.sh
 **/.env.*.local
 **/secrets/
 **/credentials/
+
+# === 🏛️ Projects個別Git管理（根本解決） ===
+# 各プロジェクトの独立.gitリポジトリを除外
+projects/*/.git/
+projects/*/.gitignore
+
+# プロジェクト固有の成果物・環境ファイル
+projects/*/venv/
+projects/*/node_modules/
+projects/*/.next/
+projects/*/dist/
+projects/*/build/
+projects/*/__pycache__/
+projects/*/.pytest_cache/
+projects/*/.coverage
+projects/*/coverage/
+projects/*/htmlcov/
+
+# プロジェクト固有の設定ファイル
+projects/*/.env*
+projects/*/instance/
+projects/*/uploads/
+
+# エルダーズ評議会承認: 独立性確保のため各プロジェクトを分離管理

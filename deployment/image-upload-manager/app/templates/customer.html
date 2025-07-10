@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}{{ customer.name }} - 画像アップロード{% endblock %}
+
+{% block header %}{{ customer.name }}様 - 画像アップロード{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2>📸 画像アップロード</h2>
+    <p>以下の書類を順番にアップロードしてください。</p>
+    <p><strong>対応形式:</strong> JPG, PNG, GIF (最大16MB)</p>
+</div>
+
+<div class="image-type-grid">
+    {% for image_type, status in image_status.items() %}
+    <div class="image-type-card">
+        <h3>{{ status.display_name }}</h3>
+        <div class="status-symbol status-{{ status.status }}">
+            {{ status.symbol }}
+        </div>
+        <p><strong>ステータス:</strong> 
+            {% if status.status == 'pending' %}
+                未アップロード
+            {% elif status.status == 'uploaded' %}
+                アップロード済み（確認中）
+            {% elif status.status == 'approved' %}
+                承認済み
+            {% elif status.status == 'rejected' %}
+                却下
+            {% endif %}
+        </p>
+        
+        {% if status.uploaded_at %}
+            <p><small>アップロード日時: {{ status.uploaded_at }}</small></p>
+        {% endif %}
+        
+        {% if status.reviewer_notes %}
+            <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                <strong>管理者コメント:</strong><br>
+                {{ status.reviewer_notes }}
+            </div>
+        {% endif %}
+        
+        {% if status.status in ['pending', 'rejected'] %}
+            <div class="file-upload" data-image-type="{{ image_type }}">
+                <input type="file" id="file-{{ image_type }}" accept="image/*" onchange="uploadFile('{{ image_type }}')">
+                <label for="file-{{ image_type }}" class="upload-btn">
+                    📁 ファイルを選択
+                </label>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">
+                    クリックして画像を選択してください
+                </p>
+            </div>
+        {% endif %}
+        
+        <div id="progress-{{ image_type }}" style="display: none;">
+            <div style="background: #e0e0e0; border-radius: 10px; overflow: hidden; margin: 10px 0;">
+                <div id="progress-bar-{{ image_type }}" style="background: #3498db; height: 20px; width: 0%; transition: width 0.3s;"></div>
+            </div>
+            <p id="progress-text-{{ image_type }}">アップロード中...</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="card" style="overflow-x: auto;">
+    <h3>📋 アップロード状況</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>書類種類</th>
+                <th>ステータス</th>
+                <th>アップロード日時</th>
+                <th>管理者コメント</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for image_type, status in image_status.items() %}
+            <tr>
+                <td>{{ status.display_name }}</td>
+                <td>
+                    <span class="status-symbol status-{{ status.status }}">
+                        {{ status.symbol }}
+                    </span>
+                    {% if status.status == 'pending' %}
+                        未アップロード
+                    {% elif status.status == 'uploaded' %}
+                        アップロード済み
+                    {% elif status.status == 'approved' %}
+                        承認済み
+                    {% elif status.status == 'rejected' %}
+                        却下
+                    {% endif %}
+                </td>
+                <td>{{ status.uploaded_at or '-' }}</td>
+                <td>{{ status.reviewer_notes or '-' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>ℹ️ 注意事項</h3>
+    <ul style="padding-left: 20px;">
+        <li>画像は自動的にリサイズされ、容量が最適化されます</li>
+        <li>アップロード後は管理者による確認が行われます</li>
+        <li>却下された場合は、再度アップロードしてください</li>
+        <li>承認済みの画像は自動的にGoogleDriveに保存されます</li>
+    </ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function uploadFile(imageType) {
+    const fileInput = document.getElementById(`file-${imageType}`);
+    const file = fileInput.files[0];
+    
+    if (!file) {
+        return;
+    }
+    
+    // ファイルサイズチェック
+    if (file.size > 16 * 1024 * 1024) {
+        showAlert('ファイルサイズが大きすぎます（最大16MB）', 'error');
+        return;
+    }
+    
+    // 進捗表示
+    const progressDiv = document.getElementById(`progress-${imageType}`);
+    const progressBar = document.getElementById(`progress-bar-${imageType}`);
+    const progressText = document.getElementById(`progress-text-${imageType}`);
+    
+    progressDiv.style.display = 'block';
+    progressBar.style.width = '0%';
+    progressText.textContent = 'アップロード中...';
+    
+    // FormData作成
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('image_type', imageType);
+    
+    // アップロード実行
+    fetch(`/customer/{{ customer.id }}/upload`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        progressDiv.style.display = 'none';
+        
+        if (data.success) {
+            showAlert(data.message, 'success');
+            
+            // 画面更新
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        } else {
+            showAlert(data.error || 'アップロードに失敗しました', 'error');
+        }
+    })
+    .catch(error => {
+        progressDiv.style.display = 'none';
+        console.error('アップロードエラー:', error);
+        showAlert('アップロードに失敗しました', 'error');
+    });
+    
+    // 進捗バー更新（デモ用）
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+        progress += 10;
+        progressBar.style.width = `${progress}%`;
+        
+        if (progress >= 90) {
+            clearInterval(progressInterval);
+            progressText.textContent = '処理中...';
+        }
+    }, 100);
+}
+
+// ドラッグ&ドロップ対応
+document.querySelectorAll('.file-upload').forEach(uploadArea => {
+    const imageType = uploadArea.dataset.imageType;
+    
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.style.background = '#ecf0f1';
+    });
+    
+    uploadArea.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        uploadArea.style.background = '';
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.style.background = '';
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const fileInput = document.getElementById(`file-${imageType}`);
+            fileInput.files = files;
+            uploadFile(imageType);
+        }
+    });
+});
+
+// 自動更新（30秒ごと）
+setInterval(() => {
+    // 現在アップロード中でない場合のみ更新
+    const progressDivs = document.querySelectorAll('[id^="progress-"]');
+    const isUploading = Array.from(progressDivs).some(div => div.style.display !== 'none');
+    
+    if (!isUploading) {
+        fetch(window.location.href)
+            .then(response => response.text())
+            .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newTable = doc.querySelector('table');
+                if (newTable) {
+                    document.querySelector('table').innerHTML = newTable.innerHTML;
+                }
+            })
+            .catch(error => console.error('自動更新エラー:', error));
+    }
+}, 30000);
+</script>
+{% endblock %}

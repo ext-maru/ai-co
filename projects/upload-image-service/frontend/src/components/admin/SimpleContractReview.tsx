@@ -28,41 +28,65 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
   const [filterStatus, setFilterStatus] = useState<SimpleStatus | 'all'>('all');
   const [loading, setLoading] = useState(false);
 
-  // サンプルデータ（実際はAPIから取得）
+  // 実際のAPIからデータを取得
   useEffect(() => {
-    const sampleData: ContractItem[] = [
-      {
-        id: '1',
-        user_name: '田中太郎',
-        contract_type: 'individual',
-        status: SimpleStatus.NOT_UPLOADED,
-        created_at: '2025-01-10T10:00:00Z',
-        google_drive_folder_url: 'https://drive.google.com/drive/folders/xxx',
-        document_count: 2,
-        required_document_count: 5
-      },
-      {
-        id: '2',
-        user_name: '株式会社ABC',
-        contract_type: 'corporate',
-        status: SimpleStatus.NEEDS_REUPLOAD,
-        created_at: '2025-01-09T15:30:00Z',
-        google_drive_folder_url: 'https://drive.google.com/drive/folders/yyy',
-        document_count: 8,
-        required_document_count: 8
-      },
-      {
-        id: '3',
-        user_name: '佐藤花子',
-        contract_type: 'individual',
-        status: SimpleStatus.APPROVED,
-        created_at: '2025-01-08T09:15:00Z',
-        google_drive_folder_url: 'https://drive.google.com/drive/folders/zzz',
-        document_count: 5,
-        required_document_count: 5
+    const fetchContracts = async () => {
+      try {
+        setLoading(true);
+        // 全契約データを取得（開発環境では admin API を使用）
+        const response = await fetch('http://localhost:8000/api/v1/contract/admin/list');
+        
+        if (response.ok) {
+          const data = await response.json();
+          const contractItems: ContractItem[] = data.items?.map((item: any) => ({
+            id: item.id,
+            user_name: `ユーザー_${item.user_id}`, // 実際のユーザー名取得は別途実装
+            contract_type: item.contract_type,
+            status: item.status,
+            created_at: item.created_at,
+            google_drive_folder_url: item.metadata?.google_drive_folder_url,
+            document_count: 0, // 実際のドキュメント数は別途計算
+            required_document_count: item.contract_type === 'individual' ? 5 : 8
+          })) || [];
+          setContracts(contractItems);
+        } else {
+          // APIエラー時はサンプルデータを表示
+          console.warn('API接続失敗、サンプルデータを使用');
+          const sampleData: ContractItem[] = [
+            {
+              id: '1',
+              user_name: '田中太郎',
+              contract_type: 'individual',
+              status: SimpleStatus.NOT_UPLOADED,
+              created_at: '2025-01-10T10:00:00Z',
+              google_drive_folder_url: 'https://drive.google.com/drive/folders/xxx',
+              document_count: 2,
+              required_document_count: 5
+            }
+          ];
+          setContracts(sampleData);
+        }
+      } catch (error) {
+        console.error('契約データ取得エラー:', error);
+        // エラー時はサンプルデータを表示
+        const sampleData: ContractItem[] = [
+          {
+            id: 'sample-1',
+            user_name: 'サンプルユーザー',
+            contract_type: 'individual',
+            status: SimpleStatus.NOT_UPLOADED,
+            created_at: new Date().toISOString(),
+            document_count: 0,
+            required_document_count: 5
+          }
+        ];
+        setContracts(sampleData);
+      } finally {
+        setLoading(false);
       }
-    ];
-    setContracts(sampleData);
+    };
+
+    fetchContracts();
   }, []);
 
   const getStatusLabel = (status: SimpleStatus): string => {

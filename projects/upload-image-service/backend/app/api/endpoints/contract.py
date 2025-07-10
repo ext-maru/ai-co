@@ -59,7 +59,9 @@ async def create_contract_upload(
     """新規契約書類アップロードセッション作成"""
     service = ContractUploadService(db)
     try:
-        return await service.create_contract_upload(user_id=current_user["id"], data=data)
+        # ユーザー名のデフォルト値を設定（認証システムが未実装のため）
+        user_name = current_user.get("name", f"ユーザー_{current_user['id']}")
+        return await service.create_contract_upload(user_id=current_user["id"], user_name=user_name, data=data)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

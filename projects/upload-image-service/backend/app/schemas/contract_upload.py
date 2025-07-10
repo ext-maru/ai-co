@@ -48,10 +48,10 @@ class ContractUploadResponse(BaseModel):
     reviewed_at: Optional[datetime] = None
     reviewed_by: Optional[str] = None
     review_notes: Optional[str] = None
-    metadata: Dict[str, Any] = {}
+    metadata: Optional[Dict[str, Any]] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ContractUploadDetail(ContractUploadResponse):
@@ -84,7 +84,7 @@ class FileUploadResponse(BaseModel):
     thumbnail_url: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ContractUploadListResponse(BaseModel):

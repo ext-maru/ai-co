@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}内部エラー - 画像アップロード管理システム{% endblock %}
+
+{% block header %}⚠️ 内部エラー{% endblock %}
+
+{% block content %}
+<div class="card" style="text-align: center;">
+    <h2>500 - 内部サーバーエラー</h2>
+    <p style="font-size: 18px; margin: 20px 0;">申し訳ございません。システムでエラーが発生しました。</p>
+    
+    <div style="font-size: 64px; margin: 30px 0;">
+        ⚠️
+    </div>
+    
+    <p>一時的な問題の可能性があります。<br>
+    しばらくお待ちいただいてから、再度お試しください。</p>
+    
+    <div style="margin-top: 30px;">
+        <button onclick="location.reload()" class="btn">🔄 ページを更新</button>
+        <a href="/" class="btn btn-secondary">🏠 トップページ</a>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🔧 トラブルシューティング</h3>
+    
+    <h4>🔁 まず試してください</h4>
+    <ol style="padding-left: 20px;">
+        <li><strong>ページを更新</strong> - ブラウザの更新ボタンを押してください</li>
+        <li><strong>しばらく待つ</strong> - 5-10分後に再度アクセスしてください</li>
+        <li><strong>別のブラウザ</strong> - 異なるブラウザで試してください</li>
+        <li><strong>キャッシュクリア</strong> - ブラウザのキャッシュを削除してください</li>
+    </ol>
+    
+    <h4>📱 それでも解決しない場合</h4>
+    <ul style="padding-left: 20px;">
+        <li>システム管理者に連絡してください</li>
+        <li>エラーが発生した操作を詳しく教えてください</li>
+        <li>可能であれば、エラーのスクリーンショットを送ってください</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>📞 管理者向け情報</h3>
+    <p>このエラーは以下の原因が考えられます：</p>
+    <ul style="padding-left: 20px;">
+        <li><strong>データベース接続エラー</strong> - SQLiteファイルの確認</li>
+        <li><strong>ファイルシステムエラー</strong> - アップロードディレクトリの権限確認</li>
+        <li><strong>メモリ不足</strong> - サーバーリソースの確認</li>
+        <li><strong>GoogleDrive API エラー</strong> - API設定の確認</li>
+        <li><strong>画像処理エラー</strong> - Pillowライブラリの確認</li>
+    </ul>
+    
+    <p><strong>ログ確認：</strong></p>
+    <ul style="padding-left: 20px;">
+        <li>アプリケーションログを確認してください</li>
+        <li>システムログ（/var/log/）を確認してください</li>
+        <li>Dockerログ（docker logs container_name）を確認してください</li>
+    </ul>
+</div>
+
+<div class="card">
+    <h3>🚀 緊急対応手順</h3>
+    <ol style="padding-left: 20px;">
+        <li><strong>サービス再起動</strong>
+            <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">docker-compose restart</pre>
+        </li>
+        <li><strong>ログ確認</strong>
+            <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">docker-compose logs -f</pre>
+        </li>
+        <li><strong>データベース確認</strong>
+            <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">sqlite3 app/image_upload.db ".tables"</pre>
+        </li>
+        <li><strong>ディスク容量確認</strong>
+            <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">df -h</pre>
+        </li>
+    </ol>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 自動的にページを更新（60秒後）
+setTimeout(() => {
+    if (confirm('ページを自動更新しますか？')) {
+        location.reload();
+    }
+}, 60000);
+
+// エラー情報の収集
+const errorInfo = {
+    timestamp: new Date().toISOString(),
+    userAgent: navigator.userAgent,
+    url: window.location.href,
+    referrer: document.referrer
+};
+
+console.error('500エラー情報:', errorInfo);
+</script>
+{% endblock %}

@@ -80,10 +80,6 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
     }));
 
     try {
-      // ファイル読み込み
-      const fileBuffer = await file.arrayBuffer();
-      const fileData = new Uint8Array(fileBuffer);
-
       // プログレス更新（シミュレーション）
       const progressInterval = setInterval(() => {
         setUploadProgress(prev => {
@@ -105,7 +101,7 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
       const response = await uploadContractDocument(
         contractUploadId,
         documentType as any,
-        fileData,
+        file,
         (percent) => {
           setUploadProgress(prev => ({
             ...prev,

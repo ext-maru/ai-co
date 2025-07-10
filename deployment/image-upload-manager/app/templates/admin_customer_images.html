@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}{{ customer.name }} - 画像管理{% endblock %}
+
+{% block header %}{{ customer.name }}様 - 画像管理{% endblock %}
+
+{% block content %}
+<div class="nav-links">
+    <a href="/admin">👈 管理者ページ</a>
+    <a href="/customer/{{ customer.id }}" target="_blank">🔗 顧客ページ</a>
+</div>
+
+<div class="card">
+    <h2>👤 顧客情報</h2>
+    <table style="margin-top: 0;">
+        <tr>
+            <td><strong>顧客名</strong></td>
+            <td>{{ customer.name }}</td>
+        </tr>
+        <tr>
+            <td><strong>顧客ID</strong></td>
+            <td><code>{{ customer.id }}</code></td>
+        </tr>
+        <tr>
+            <td><strong>メールアドレス</strong></td>
+            <td>{{ customer.email or '-' }}</td>
+        </tr>
+        <tr>
+            <td><strong>電話番号</strong></td>
+            <td>{{ customer.phone or '-' }}</td>
+        </tr>
+        <tr>
+            <td><strong>登録日</strong></td>
+            <td>{{ customer.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="card">
+    <h2>📸 アップロード画像</h2>
+    
+    {% if images %}
+    <div class="image-type-grid">
+        {% for image in images %}
+        <div class="image-type-card">
+            <h3>{{ image.image_type.value|replace('_', ' ')|title }}</h3>
+            
+            <div class="status-symbol status-{{ image.status.value }}">
+                {{ image.status.value }}
+            </div>
+            
+            {% if image.filename %}
+            <div style="margin: 15px 0;">
+                <img src="/admin/image/{{ image.id }}/view" alt="アップロード画像" 
+                     style="max-width: 100%; max-height: 200px; border: 1px solid #ddd; border-radius: 5px;"
+                     onclick="openImageModal({{ image.id }})">
+            </div>
+            
+            <p><strong>ファイル名:</strong> {{ image.original_filename }}</p>
+            <p><strong>サイズ:</strong> {{ "%.1f"|format(image.file_size / 1024 / 1024) }}MB</p>
+            {% endif %}
+            
+            <p><strong>アップロード日時:</strong> 
+                {{ image.uploaded_at.strftime('%Y-%m-%d %H:%M') if image.uploaded_at else '-' }}
+            </p>
+            
+            {% if image.reviewed_at %}
+            <p><strong>確認日時:</strong> {{ image.reviewed_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            {% endif %}
+            
+            {% if image.reviewer_notes %}
+            <div style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                <strong>管理者コメント:</strong><br>
+                {{ image.reviewer_notes }}
+            </div>
+            {% endif %}
+            
+            {% if image.status.value == 'uploaded' %}
+            <div style="margin-top: 15px;">
+                <button onclick="reviewImage({{ image.id }}, 'approve')" class="btn btn-success">
+                    ✅ 承認
+                </button>
+                <button onclick="reviewImage({{ image.id }}, 'reject')" class="btn btn-danger">
+                    ❌ 却下
+                </button>
+            </div>
+            {% endif %}
+            
+            {% if image.status.value in ['approved', 'rejected'] %}
+            <div style="margin-top: 15px;">
+                <button onclick="reviewImage({{ image.id }}, 'reject')" class="btn btn-danger">
+                    ❌ 却下に変更
+                </button>
+                <button onclick="reviewImage({{ image.id }}, 'approve')" class="btn btn-success">
+                    ✅ 承認に変更
+                </button>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>アップロードされた画像はありません。</p>
+    {% endif %}
+</div>
+
+<!-- 画像モーダル -->
+<div id="imageModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000;" onclick="closeImageModal()">
+    <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+        <img id="modalImage" style="max-width: 90%; max-height: 90%; border-radius: 5px;">
+    </div>
+</div>
+
+<!-- レビューモーダル -->
+<div id="reviewModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1001;">
+    <div style="display: flex; justify-content: center; align-items: center; height: 100%;">
+        <div style="background: white; padding: 20px; border-radius: 8px; max-width: 500px; width: 90%;">
+            <h3 id="reviewModalTitle">画像レビュー</h3>
+            <div class="form-group">
+                <label for="reviewNotes">管理者コメント</label>
+                <textarea id="reviewNotes" rows="4" placeholder="コメントを入力してください..."></textarea>
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button onclick="closeReviewModal()" class="btn btn-secondary">キャンセル</button>
+                <button onclick="submitReview()" class="btn btn-success" id="submitReviewBtn">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentImageId = null;
+let currentAction = null;
+
+function openImageModal(imageId) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    
+    modalImage.src = `/admin/image/${imageId}/view`;
+    modal.style.display = 'block';
+}
+
+function closeImageModal() {
+    document.getElementById('imageModal').style.display = 'none';
+}
+
+function reviewImage(imageId, action) {
+    currentImageId = imageId;
+    currentAction = action;
+    
+    const modal = document.getElementById('reviewModal');
+    const title = document.getElementById('reviewModalTitle');
+    const submitBtn = document.getElementById('submitReviewBtn');
+    
+    if (action === 'approve') {
+        title.textContent = '画像を承認';
+        submitBtn.textContent = '承認';
+        submitBtn.className = 'btn btn-success';
+    } else {
+        title.textContent = '画像を却下';
+        submitBtn.textContent = '却下';
+        submitBtn.className = 'btn btn-danger';
+    }
+    
+    document.getElementById('reviewNotes').value = '';
+    modal.style.display = 'block';
+}
+
+function closeReviewModal() {
+    document.getElementById('reviewModal').style.display = 'none';
+    currentImageId = null;
+    currentAction = null;
+}
+
+function submitReview() {
+    if (!currentImageId || !currentAction) {
+        return;
+    }
+    
+    const notes = document.getElementById('reviewNotes').value;
+    
+    showLoading();
+    
+    const formData = new FormData();
+    formData.append('action', currentAction);
+    formData.append('notes', notes);
+    
+    fetch(`/admin/image/${currentImageId}/review`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        hideLoading();
+        
+        if (data.success) {
+            showAlert(data.message, 'success');
+            closeReviewModal();
+            
+            // 画面更新
+            setTimeout(() => {
+                location.reload();
+            }, 1500);
+        } else {
+            showAlert(data.error || 'レビューに失敗しました', 'error');
+        }
+    })
+    .catch(error => {
+        hideLoading();
+        console.error('レビューエラー:', error);
+        showAlert('レビューに失敗しました', 'error');
+    });
+}
+
+// ESCキーでモーダルを閉じる
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeImageModal();
+        closeReviewModal();
+    }
+});
+
+// 自動更新（60秒ごと）
+setInterval(() => {
+    // モーダルが開いていない場合のみ更新
+    const imageModal = document.getElementById('imageModal');
+    const reviewModal = document.getElementById('reviewModal');
+    
+    if (imageModal.style.display === 'none' && reviewModal.style.display === 'none') {
+        location.reload();
+    }
+}, 60000);
+</script>
+{% endblock %}

@@ -69,7 +69,7 @@ class AuthService:
 # 開発用簡易認証
 def get_current_user():
     """開発用簡易認証 - 固定ユーザーを返す"""
-    return {"id": "dev-user-001", "username": "developer", "role": "admin"}
+    return {"id": "dev-user-001", "username": "developer", "name": "開発太郎", "role": "admin"}
 
 
 def get_current_active_user(current_user=Depends(get_current_user)):

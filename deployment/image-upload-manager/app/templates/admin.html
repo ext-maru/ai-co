@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}管理者ページ - 画像アップロード管理システム{% endblock %}
+
+{% block header %}🛠️ 管理者ページ{% endblock %}
+
+{% block content %}
+<div class="nav-links">
+    <a href="/">🏠 トップページ</a>
+    <a href="/admin/customer/create">👤 顧客作成</a>
+    <a href="/admin/settings">⚙️ 設定</a>
+    <a href="/admin">🔄 更新</a>
+</div>
+
+<div class="card">
+    <h2>📊 顧客一覧</h2>
+    <p>全顧客のアップロード状況を確認できます。</p>
+</div>
+
+{% if customer_data %}
+<div class="card" style="overflow-x: auto;">
+    <table>
+        <thead>
+            <tr>
+                <th>顧客名</th>
+                <th class="mobile-hide">顧客ID</th>
+                <th class="mobile-hide">連絡先</th>
+                {% for image_type in image_types %}
+                <th class="mobile-hide">{{ image_type.value|replace('_', ' ')|title }}</th>
+                {% endfor %}
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in customer_data %}
+            <tr>
+                <td>
+                    <strong>{{ data.customer.name }}</strong><br>
+                    <small style="color: #666;">{{ data.customer.email or '-' }}</small>
+                    <!-- モバイル用ステータス表示 -->
+                    <div class="mobile-only" style="margin-top: 10px;">
+                        {% for image_type in image_types %}
+                        {% set status = data.upload_status[image_type.value] %}
+                        <span class="status-symbol status-{{ status.status }}">{{ status.symbol }}</span>
+                        {% endfor %}
+                    </div>
+                </td>
+                <td class="mobile-hide">
+                    <code>{{ data.customer.id }}</code><br>
+                    <small style="color: #666;">{{ data.customer.created_at.strftime('%Y-%m-%d') }}</small>
+                </td>
+                <td class="mobile-hide">{{ data.customer.phone or '-' }}</td>
+                {% for image_type in image_types %}
+                <td class="mobile-hide" style="text-align: center;">
+                    {% set status = data.upload_status[image_type.value] %}
+                    <span class="status-symbol status-{{ status.status }}">
+                        {{ status.symbol }}
+                    </span>
+                    {% if status.uploaded_at %}
+                    <br><small style="color: #666;">{{ status.uploaded_at }}</small>
+                    {% endif %}
+                </td>
+                {% endfor %}
+                <td>
+                    <a href="/admin/customer/{{ data.customer.id }}/images" class="btn btn-secondary" style="font-size: 12px;">
+                        📁 詳細
+                    </a>
+                    <br>
+                    <button onclick="copyCustomerUrl('{{ data.customer.id }}')" class="btn" style="font-size: 12px; margin-top: 5px;">
+                        📋 URL取得
+                    </button>
+                    <br>
+                    <a href="/customer/{{ data.customer.id }}" class="btn btn-secondary" style="font-size: 12px; margin-top: 5px;" target="_blank">
+                        🔗 開く
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <p>顧客が登録されていません。</p>
+    <a href="/admin/customer/create" class="btn">👤 顧客を作成</a>
+</div>
+{% endif %}
+
+<div class="card">
+    <h3>📋 ステータス説明</h3>
+    <table style="margin-top: 0;">
+        <tr>
+            <td><span class="status-symbol status-pending">×</span></td>
+            <td>未アップロード</td>
+        </tr>
+        <tr>
+            <td><span class="status-symbol status-uploaded">📤</span></td>
+            <td>アップロード済み（確認待ち）</td>
+        </tr>
+        <tr>
+            <td><span class="status-symbol status-approved">○</span></td>
+            <td>承認済み</td>
+        </tr>
+        <tr>
+            <td><span class="status-symbol status-rejected">×</span></td>
+            <td>却下</td>
+        </tr>
+    </table>
+</div>
+
+<div class="card">
+    <h3>📈 システム統計</h3>
+    <table style="margin-top: 0;">
+        <tr>
+            <td><strong>総顧客数</strong></td>
+            <td>{{ customer_data|length }}件</td>
+        </tr>
+        <tr>
+            <td><strong>画像種類</strong></td>
+            <td>{{ image_types|length }}種類</td>
+        </tr>
+        <tr>
+            <td><strong>最大ファイルサイズ</strong></td>
+            <td>16MB</td>
+        </tr>
+        <tr>
+            <td><strong>対応形式</strong></td>
+            <td>JPG, PNG, GIF</td>
+        </tr>
+    </table>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// 自動更新（60秒ごと）
+setInterval(() => {
+    location.reload();
+}, 60000);
+
+// 顧客URLのコピー機能
+function copyCustomerUrl(customerId) {
+    const url = `${window.location.origin}/customer/${customerId}`;
+    
+    // モダンブラウザのクリップボードAPI
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            showAlert(`顧客URLをコピーしました:\n${url}`, 'success');
+        }).catch(err => {
+            // フォールバック
+            fallbackCopyTextToClipboard(url);
+        });
+    } else {
+        // 古いブラウザ用フォールバック
+        fallbackCopyTextToClipboard(url);
+    }
+}
+
+// フォールバック用のコピー機能
+function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showAlert(`顧客URLをコピーしました:\n${text}`, 'success');
+        } else {
+            showAlert('URLのコピーに失敗しました', 'error');
+        }
+    } catch (err) {
+        console.error('コピーエラー:', err);
+        showAlert('URLのコピーに失敗しました', 'error');
+    }
+    
+    document.body.removeChild(textArea);
+}
+
+// テーブル行のホバー効果
+document.querySelectorAll('tbody tr').forEach(row => {
+    row.addEventListener('mouseenter', () => {
+        row.style.backgroundColor = '#f8f9fa';
+    });
+    
+    row.addEventListener('mouseleave', () => {
+        row.style.backgroundColor = '';
+    });
+});
+</script>
+{% endblock %}

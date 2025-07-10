@@ -10,7 +10,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://elders:elders@host.docker.internal:8003/elders_guild
+      - DATABASE_URL=sqlite:///./upload_service.db
       - REDIS_URL=redis://host.docker.internal:8004
       - PYTHONPATH=/app
     volumes:
