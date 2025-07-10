@@ -66,10 +66,10 @@ class AuthService:
         return user
 
 
-# 依存性注入用
-def get_current_user(token: str = Depends(oauth2_scheme)):
-    """現在のユーザー取得（依存性注入用）"""
-    return AuthService.get_current_user(token)
+# 開発用簡易認証
+def get_current_user():
+    """開発用簡易認証 - 固定ユーザーを返す"""
+    return {"id": "dev-user-001", "username": "developer", "role": "admin"}
 
 
 def get_current_active_user(current_user=Depends(get_current_user)):

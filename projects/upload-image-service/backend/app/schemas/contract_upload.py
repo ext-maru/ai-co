@@ -22,7 +22,7 @@ class DocumentUploadStatus(BaseModel):
     file_count: int = 0
     max_files: int = 1
     files: List[Dict[str, Any]] = []
-    status: UploadStatus = UploadStatus.PENDING
+    status: UploadStatus = UploadStatus.NOT_UPLOADED
     expiry_date: Optional[datetime] = None
     allowed_formats: List[str] = [".pdf", ".jpg", ".jpeg", ".png"]
     max_size_mb: int = 10

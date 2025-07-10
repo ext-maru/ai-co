@@ -37,7 +37,7 @@ class ContractUpload(Base):
     reviewed_at = Column(DateTime)
     reviewed_by = Column(String)
     review_notes = Column(String)
-    metadata = Column(JSON)  # 追加情報を格納
+    meta_data = Column(JSON)  # 追加情報を格納
 
     # リレーション
     documents = relationship("Upload", back_populates="contract_upload")

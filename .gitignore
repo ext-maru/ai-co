@@ -46,3 +46,5 @@ test_*.sh
 
 # Session files
 *.session
+projects/frontend-project-manager/node_modules/
+projects/frontend-project-manager/.next/

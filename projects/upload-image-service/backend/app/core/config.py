@@ -4,15 +4,15 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Upload Image Manager"
-    VERSION: str = "1.0.0"
+    PROJECT_NAME: str = "契約書類アップロードシステム"
+    VERSION: str = "2.0.0"
     API_V1_STR: str = "/api/v1"
 
-    # Database
-    DATABASE_URL: str = "postgresql://user:password@localhost/uploaddb"
+    # Database - エルダーズギルド共有インフラ使用
+    DATABASE_URL: str = "postgresql://elders:elders@host.docker.internal:8003/elders_guild"
 
-    # Redis
-    REDIS_URL: str = "redis://localhost:6379"
+    # Redis - エルダーズギルド共有インフラ使用
+    REDIS_URL: str = "redis://host.docker.internal:8004"
 
     # Security
     SECRET_KEY: str = "your-secret-key-here"

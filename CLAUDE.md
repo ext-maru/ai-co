@@ -99,6 +99,36 @@ git push origin main
 
 ⚠️ **これを忘れた場合、インシデント賢者に自動報告されます**
 
+## 🐳 **Docker権限管理規程** (2025/7/10制定)
+
+**エルダー評議会令第24号 - Docker権限問題根本解決規程**
+
+### 🏛️ **基本原則**
+- **Tier 1**: 根本解決優先 (権限設計・自動化・systemd統合)
+- **Tier 2**: 即座対応 (`sg docker -c` コマンド活用)  
+- **Tier 3**: 場当たり的手法 **❌ 禁止**
+
+### ⚡ **緊急時対応**
+```bash
+# 権限確認
+/home/aicompany/ai_co/scripts/fix_docker_permissions.sh
+
+# Docker実行 (推奨)
+sg docker -c "docker ps"
+sg docker -c "docker compose up -d"
+
+# プロジェクトサービス一括起動
+/home/aicompany/ai_co/scripts/start_project_services.sh
+```
+
+### 📋 **クロードエルダー必須義務**
+1. **問題発見時**: 即座にエルダー評議会報告
+2. **解決実装時**: 根本解決の優先実施
+3. **ルール化時**: CLAUDE.md明記 + 知識ベース更新
+4. **忘却防止**: TodoWrite必須 + 公式記録
+
+**詳細**: [エルダー評議会Docker権限令](knowledge_base/ELDER_COUNCIL_DOCKER_PERMISSIONS_DECREE.md)
+
 ### TDDサイクル
 1. 🔴 **Red**: 失敗するテストを先に書く
 2. 🟢 **Green**: 最小限の実装でテストを通す
