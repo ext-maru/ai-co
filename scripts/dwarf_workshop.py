@@ -1,4 +1,3 @@
-    from workers.{worker_info['name']} import *
 #!/usr/bin/env python3
 """
 DWARF WORKSHOP - Mass Production of Worker Mock Tests

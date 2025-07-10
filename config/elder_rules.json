@@ -1,0 +1,204 @@
+{
+  "rule_enforcement_config": {
+    "monitoring_enabled": true,
+    "auto_fix_enabled": true,
+    "notification_enabled": true,
+    "four_sages_integration": true,
+    "elder_council_emergency_threshold": "CRITICAL",
+    "monitoring_interval_seconds": 60,
+    "violation_history_retention_days": 30
+  },
+  "rules": {
+    "GITHUB_FLOW_001": {
+      "enabled": true,
+      "name": "機能実装後の即座コミット",
+      "description": "機能実装完了後、5分以内にコミットを実行する",
+      "category": "GITHUB_FLOW",
+      "severity": "HIGH",
+      "monitoring_interval_seconds": 300,
+      "auto_fix_enabled": true,
+      "grace_period_seconds": 60,
+      "notifications": {
+        "violation_warning": true,
+        "auto_fix_notification": true,
+        "escalation_notification": true
+      }
+    },
+    "GITHUB_FLOW_002": {
+      "enabled": true,
+      "name": "コミット後の即座プッシュ",
+      "description": "コミット後、2分以内にプッシュを実行する",
+      "category": "GITHUB_FLOW",
+      "severity": "HIGH",
+      "monitoring_interval_seconds": 120,
+      "auto_fix_enabled": true,
+      "grace_period_seconds": 30,
+      "notifications": {
+        "violation_warning": true,
+        "auto_fix_notification": true,
+        "escalation_notification": true
+      }
+    },
+    "INCIDENT_001": {
+      "enabled": true,
+      "name": "インシデント賢者への事前相談",
+      "description": "コード変更前にインシデント賢者への相談を必須とする",
+      "category": "INCIDENT_RESPONSE",
+      "severity": "CRITICAL",
+      "monitoring_interval_seconds": 60,
+      "auto_fix_enabled": true,
+      "grace_period_seconds": 0,
+      "notifications": {
+        "violation_warning": true,
+        "auto_fix_notification": true,
+        "escalation_notification": true,
+        "elder_council_notification": true
+      }
+    },
+    "INCIDENT_002": {
+      "enabled": true,
+      "name": "失敗時の4賢者会議招集",
+      "description": "エラー発生時、5分以内に4賢者会議を招集する",
+      "category": "INCIDENT_RESPONSE",
+      "severity": "CRITICAL",
+      "monitoring_interval_seconds": 300,
+      "auto_fix_enabled": true,
+      "grace_period_seconds": 0,
+      "notifications": {
+        "violation_warning": true,
+        "auto_fix_notification": true,
+        "escalation_notification": true,
+        "elder_council_notification": true
+      }
+    },
+    "TASK_001": {
+      "enabled": true,
+      "name": "タスクエルダーとの定期連携",
+      "description": "30分毎にタスクエルダーとの連携確認を実行する",
+      "category": "TASK_MANAGEMENT",
+      "severity": "MEDIUM",
+      "monitoring_interval_seconds": 1800,
+      "auto_fix_enabled": true,
+      "grace_period_seconds": 300,
+      "notifications": {
+        "violation_warning": true,
+        "auto_fix_notification": false,
+        "escalation_notification": false
+      }
+    },
+    "GENERAL_001": {
+      "enabled": true,
+      "name": "CO-STARフレームワーク遵守",
+      "description": "すべての開発でCO-STAR構造を使用する",
+      "category": "GENERAL",
+      "severity": "MEDIUM",
+      "monitoring_interval_seconds": 600,
+      "auto_fix_enabled": false,
+      "grace_period_seconds": 0,
+      "notifications": {
+        "violation_warning": true,
+        "auto_fix_notification": false,
+        "escalation_notification": false
+      }
+    },
+    "GENERAL_002": {
+      "enabled": true,
+      "name": "TDD必須遵守",
+      "description": "コードを書く前に必ずテストを書く",
+      "category": "GENERAL",
+      "severity": "HIGH",
+      "monitoring_interval_seconds": 300,
+      "auto_fix_enabled": false,
+      "grace_period_seconds": 0,
+      "notifications": {
+        "violation_warning": true,
+        "auto_fix_notification": false,
+        "escalation_notification": true
+      }
+    }
+  },
+  "four_sages_integration": {
+    "knowledge_sage": {
+      "enabled": true,
+      "violation_learning": true,
+      "pattern_detection": true,
+      "knowledge_base_update": true
+    },
+    "task_sage": {
+      "enabled": true,
+      "priority_adjustment": true,
+      "workflow_optimization": true,
+      "progress_tracking": true
+    },
+    "incident_sage": {
+      "enabled": true,
+      "emergency_response": true,
+      "auto_escalation": true,
+      "recovery_coordination": true
+    },
+    "rag_sage": {
+      "enabled": true,
+      "best_practice_search": true,
+      "solution_recommendation": true,
+      "trend_analysis": true
+    }
+  },
+  "notification_settings": {
+    "slack_notifications": {
+      "enabled": true,
+      "channel": "#elders-guild-incidents",
+      "severity_threshold": "HIGH"
+    },
+    "email_notifications": {
+      "enabled": false,
+      "recipients": [],
+      "severity_threshold": "CRITICAL"
+    },
+    "log_notifications": {
+      "enabled": true,
+      "log_level": "INFO",
+      "detailed_logging": true
+    }
+  },
+  "auto_fix_settings": {
+    "max_attempts": 3,
+    "attempt_interval_seconds": 30,
+    "rollback_on_failure": true,
+    "confirmation_required": {
+      "CRITICAL": true,
+      "HIGH": false,
+      "MEDIUM": false,
+      "LOW": false
+    }
+  },
+  "violation_tracking": {
+    "database_storage": true,
+    "file_backup": true,
+    "anonymized_reporting": true,
+    "performance_analytics": true
+  },
+  "emergency_procedures": {
+    "elder_council_auto_summon": {
+      "enabled": true,
+      "threshold": "CRITICAL",
+      "max_summons_per_hour": 5
+    },
+    "grand_elder_notification": {
+      "enabled": true,
+      "threshold": "CRITICAL",
+      "conditions": [
+        "multiple_critical_violations",
+        "auto_fix_failures",
+        "system_degradation"
+      ]
+    },
+    "system_lockdown": {
+      "enabled": false,
+      "threshold": "CRITICAL",
+      "conditions": [
+        "security_violations",
+        "data_integrity_issues"
+      ]
+    }
+  }
+}
