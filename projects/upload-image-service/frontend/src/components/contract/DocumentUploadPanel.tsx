@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from 'react';
-import { ContractType, ContractRequirementsResponse, ContractUploadDetail, DocumentStatus, DocumentRequirement } from '../../types/contract';
+import { ContractType, ContractRequirementsResponse, ContractUploadDetail, DocumentStatus, DocumentRequirement, UploadStatus } from '../../types/contract';
 import { uploadContractDocument, getContractUploadDetail } from '../../services/contractApi';
 import './DocumentUploadPanel.css';
 
@@ -175,9 +175,9 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
     if (progress?.error) return '❌';
     if (status?.uploaded) {
       switch (status.status) {
-        case 'approved': return '✅';
-        case 'needs_reupload': return '🔴';
-        case 'not_uploaded': return '🟡';
+        case UploadStatus.APPROVED: return '✅';
+        case UploadStatus.NEEDS_REUPLOAD: return '🔴';
+        case UploadStatus.NOT_UPLOADED: return '🟡';
         default: return '📄';
       }
     }
@@ -193,9 +193,9 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
     if (progress?.error) return progress.error;
     if (status?.uploaded) {
       switch (status.status) {
-        case 'approved': return '承認済み';
-        case 'needs_reupload': return '差し戻し - 再アップロードが必要';
-        case 'not_uploaded': return '審査中';
+        case UploadStatus.APPROVED: return '承認済み';
+        case UploadStatus.NEEDS_REUPLOAD: return '差し戻し - 再アップロードが必要';
+        case UploadStatus.NOT_UPLOADED: return '審査中';
         default: return 'アップロード済み';
       }
     }
@@ -230,7 +230,7 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
                 const status = getDocumentStatus(documentType);
                 const progress = uploadProgress[documentType];
                 const isDragOver = dragOverDocument === documentType;
-                const canReupload = status?.status === 'needs_reupload';
+                const canReupload = status?.status === UploadStatus.NEEDS_REUPLOAD;
 
                 return (
                   <div
