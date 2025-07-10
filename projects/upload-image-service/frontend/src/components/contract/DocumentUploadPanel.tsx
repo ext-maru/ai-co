@@ -104,7 +104,7 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
       // API呼び出し
       const response = await uploadContractDocument(
         contractUploadId,
-        documentType,
+        documentType as any,
         fileData,
         (percent) => {
           setUploadProgress(prev => ({
