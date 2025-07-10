@@ -7,6 +7,7 @@ from typing import List
 from typing import Optional
 
 from app.core.config import settings
+from app.services.google_drive_service import create_user_contract_folder
 from app.models.contract_type import ContractType
 from app.models.contract_type import DOCUMENT_REQUIREMENTS
 from app.models.contract_type import DocumentType
@@ -28,10 +29,32 @@ class ContractUploadService:
     def __init__(self, db: Session):
         self.db = db
 
-    async def create_contract_upload(self, user_id: str, data: ContractUploadCreate) -> ContractUploadResponse:
-        """契約書類アップロードセッション作成"""
+    async def create_contract_upload(self, user_id: str, user_name: str, data: ContractUploadCreate) -> ContractUploadResponse:
+        """契約書類アップロードセッション作成（Google Driveフォルダ自動作成）"""
+        contract_upload_id = str(uuid.uuid4())
+        
+        # Google Driveフォルダ自動作成
+        try:
+            drive_info = create_user_contract_folder(contract_upload_id, user_name)
+            
+            # メタデータにGoogle Drive情報を追加
+            metadata = data.metadata or {}
+            metadata.update({
+                'google_drive_folder_id': drive_info['folder_id'],
+                'google_drive_folder_url': drive_info['folder_url'],
+                'google_drive_documents_folder_id': drive_info['documents_folder_id']
+            })
+            
+        except Exception as e:
+            # Google Drive連携エラーでも続行（ログに記録）
+            print(f"Google Drive フォルダ作成エラー: {e}")
+            metadata = data.metadata or {}
+        
         contract_upload = ContractUpload(
-            id=str(uuid.uuid4()), user_id=user_id, contract_type=data.contract_type.value, metadata=data.metadata or {}
+            id=contract_upload_id,
+            user_id=user_id,
+            contract_type=data.contract_type.value,
+            metadata=metadata
         )
 
         self.db.add(contract_upload)
