@@ -1,0 +1,27 @@
+# 🏗️ 開発環境Docker構成（根本解決）
+version: '3.8'
+
+services:
+  frontend-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      # ソースコードのみマウント（成果物除外）
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      # === 🚫 重要: 以下は絶対にマウントしない ===
+      # - ./node_modules （Docker内のみ）
+      # - ./.next （Docker内のみ）
+    environment:
+      - NODE_ENV=development
+    command: npm run dev
+
+# === 🎯 使用方法 ===
+# 開発開始: docker-compose -f docker-compose.dev.yml up
+# 依存関係更新: docker-compose -f docker-compose.dev.yml build --no-cache
+# クリーンアップ: docker-compose -f docker-compose.dev.yml down -v

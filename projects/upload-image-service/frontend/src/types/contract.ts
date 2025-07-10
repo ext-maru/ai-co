@@ -75,6 +75,9 @@ export interface DocumentUploadStatus {
   max_size_mb: number;
 }
 
+// DocumentStatus type alias
+export type DocumentStatus = DocumentUploadStatus;
+
 // アップロード済みファイル
 export interface UploadedFile {
   id: string;

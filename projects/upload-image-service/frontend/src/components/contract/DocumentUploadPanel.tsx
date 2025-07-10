@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { ContractType, ContractRequirementsResponse, ContractUploadDetail, DocumentStatus, DocumentRequirement } from '../../types/contract';
-import { uploadDocument, getContractUploadDetail } from '../../services/contractApi';
+import { uploadContractDocument, getContractUploadDetail } from '../../services/contractApi';
 import './DocumentUploadPanel.css';
 
 interface DocumentUploadPanelProps {
@@ -102,7 +102,7 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
       }, 200);
 
       // API呼び出し
-      const response = await uploadDocument(
+      const response = await uploadContractDocument(
         contractUploadId,
         documentType,
         fileData,
@@ -175,10 +175,9 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
     if (progress?.error) return '❌';
     if (status?.uploaded) {
       switch (status.status) {
-        case 'APPROVED': return '✅';
-        case 'REJECTED': return '🔴';
-        case 'PENDING': return '🟡';
-        case 'EXPIRED': return '⏰';
+        case 'approved': return '✅';
+        case 'needs_reupload': return '🔴';
+        case 'not_uploaded': return '🟡';
         default: return '📄';
       }
     }
@@ -194,10 +193,9 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
     if (progress?.error) return progress.error;
     if (status?.uploaded) {
       switch (status.status) {
-        case 'APPROVED': return '承認済み';
-        case 'REJECTED': return '差し戻し - 再アップロードが必要';
-        case 'PENDING': return '審査中';
-        case 'EXPIRED': return '期限切れ - 再アップロードが必要';
+        case 'approved': return '承認済み';
+        case 'needs_reupload': return '差し戻し - 再アップロードが必要';
+        case 'not_uploaded': return '審査中';
         default: return 'アップロード済み';
       }
     }
@@ -225,14 +223,14 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
       <div className="document-categories">
         {requirements.categories.map((category, categoryIndex) => (
           <div key={categoryIndex} className="document-category">
-            <h3 className="category-title">{category.category_name}</h3>
+            <h3 className="category-title">{category.name}</h3>
             <div className="category-documents">
-              {category.requirements.map((requirement, reqIndex) => {
+              {category.documents.map((requirement, reqIndex: number) => {
                 const documentType = requirement.document_type;
                 const status = getDocumentStatus(documentType);
                 const progress = uploadProgress[documentType];
                 const isDragOver = dragOverDocument === documentType;
-                const canReupload = status?.status === 'REJECTED' || status?.status === 'EXPIRED';
+                const canReupload = status?.status === 'needs_reupload';
 
                 return (
                   <div
@@ -293,14 +291,14 @@ export const DocumentUploadPanel: React.FC<DocumentUploadPanelProps> = ({
                       </div>
                     )}
 
-                    {status?.uploaded && (
+                    {status?.uploaded && status.files.length > 0 && (
                       <div className="uploaded-info">
-                        <p>📄 {status.filename}</p>
-                        <p>アップロード日時: {new Date(status.uploaded_at).toLocaleString()}</p>
-                        {status.admin_comment && (
+                        <p>📄 {status.files[0].filename}</p>
+                        <p>アップロード日時: {new Date(status.files[0].uploaded_at).toLocaleString()}</p>
+                        {(status as any).admin_comment && (
                           <div className="admin-comment">
                             <strong>管理者コメント:</strong>
-                            <p>{status.admin_comment}</p>
+                            <p>{(status as any).admin_comment}</p>
                           </div>
                         )}
                       </div>
