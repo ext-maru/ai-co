@@ -1,0 +1,261 @@
+---
+# Elder Tree 階層監視設定
+# Grand Elder maru統治下の完璧な監視体制
+
+monitoring:
+  name: "Elder Tree Hierarchical Monitoring System"
+  version: "1.0.0"
+  refresh_interval: 5  # 5秒ごとに更新
+
+# Elder Tree階層構造の監視定義
+hierarchies:
+  grand_elder:
+    name: "Grand Elder maru"
+    level: 0
+    monitor:
+      - status: active
+      - connections: elder_council
+      - decisions: real_time
+      - authority: supreme
+    
+  elder_council:
+    name: "Elder Council"
+    level: 1
+    members: 8
+    monitor:
+      - status: active
+      - consensus: percentage
+      - decisions: log_all
+      - communication: health
+      
+  four_sages:
+    name: "Four Sages"
+    level: 2
+    members:
+      - incident_sage:
+          role: "異常検知・対処"
+          monitor:
+            - active_incidents: count
+            - resolution_rate: percentage
+            - response_time: milliseconds
+            - auto_recovery: status
+            
+      - knowledge_sage:
+          role: "知識蓄積・学習"
+          monitor:
+            - knowledge_base_size: bytes
+            - learning_rate: events_per_hour
+            - embeddings_count: total
+            - query_performance: milliseconds
+            
+      - task_sage:
+          role: "タスク管理・分配"
+          monitor:
+            - active_tasks: count
+            - completion_rate: percentage
+            - queue_length: count
+            - worker_utilization: percentage
+            
+      - rag_sage:
+          role: "検索・情報取得"
+          monitor:
+            - query_rate: per_second
+            - retrieval_accuracy: percentage
+            - index_size: documents
+            - response_time: milliseconds
+
+  workers:
+    name: "Worker Pool"
+    level: 3
+    total_count: 32
+    monitor:
+      - active_workers: count
+      - idle_workers: count
+      - failed_workers: count
+      - cpu_usage: percentage
+      - memory_usage: percentage
+      - task_completion_rate: percentage
+
+# リアルタイム監視メトリクス
+metrics:
+  system_health:
+    - name: "Elder Tree Connection Health"
+      type: gauge
+      unit: percentage
+      threshold:
+        critical: 50
+        warning: 80
+        
+    - name: "Worker Pool Availability"
+      type: gauge
+      unit: count
+      threshold:
+        critical: 16  # 50%以下
+        warning: 24   # 75%以下
+        
+    - name: "Four Sages Response Time"
+      type: histogram
+      unit: milliseconds
+      threshold:
+        critical: 5000
+        warning: 2000
+        
+    - name: "Elder Council Consensus Rate"
+      type: gauge
+      unit: percentage
+      threshold:
+        critical: 60
+        warning: 80
+
+  performance:
+    - name: "Task Processing Rate"
+      type: counter
+      unit: tasks_per_minute
+      
+    - name: "Knowledge Base Growth"
+      type: counter
+      unit: entries_per_hour
+      
+    - name: "Incident Resolution Time"
+      type: histogram
+      unit: seconds
+      
+    - name: "RAG Query Performance"
+      type: histogram
+      unit: milliseconds
+
+# ダッシュボード表示設定
+dashboards:
+  main:
+    title: "Elder Tree System Overview"
+    layout:
+      - row1:
+          - widget: "hierarchy_tree"
+            width: 12
+            height: 4
+            data: "elder_tree_status"
+            
+      - row2:
+          - widget: "worker_pool_status"
+            width: 6
+            height: 3
+            data: "worker_metrics"
+            
+          - widget: "four_sages_status"
+            width: 6
+            height: 3
+            data: "sage_metrics"
+            
+      - row3:
+          - widget: "system_resources"
+            width: 4
+            height: 2
+            data: "resource_usage"
+            
+          - widget: "task_throughput"
+            width: 4
+            height: 2
+            data: "task_metrics"
+            
+          - widget: "alert_summary"
+            width: 4
+            height: 2
+            data: "active_alerts"
+
+  elder_detail:
+    title: "Elder Council Activities"
+    layout:
+      - row1:
+          - widget: "council_decisions"
+            width: 8
+            height: 4
+            data: "decision_log"
+            
+          - widget: "council_members"
+            width: 4
+            height: 4
+            data: "member_status"
+
+  worker_detail:
+    title: "Worker Pool Details"
+    layout:
+      - row1:
+          - widget: "worker_grid"
+            width: 12
+            height: 6
+            data: "individual_workers"
+            show_health: true
+            show_tasks: true
+
+# 可視化設定
+visualization:
+  hierarchy_tree:
+    type: "tree"
+    animation: true
+    node_colors:
+      healthy: "#00ff00"
+      warning: "#ffff00"
+      critical: "#ff0000"
+      unknown: "#808080"
+      
+  worker_grid:
+    type: "grid"
+    columns: 8
+    rows: 4
+    cell_size: 50
+    show_labels: true
+    
+  metrics_chart:
+    type: "time_series"
+    duration: "1h"
+    resolution: "1m"
+    auto_scale: true
+
+# データ収集設定
+data_collection:
+  sources:
+    - type: "prometheus"
+      endpoint: "http://localhost:9090"
+      interval: 5
+      
+    - type: "elasticsearch"
+      endpoint: "http://localhost:9200"
+      index: "elder-tree-*"
+      
+    - type: "rabbitmq"
+      endpoint: "http://localhost:15672"
+      vhost: "/"
+      
+    - type: "custom"
+      script: "/home/aicompany/ai_co/monitoring/collectors/elder_tree_collector.py"
+      interval: 10
+
+# リアルタイム更新設定
+realtime:
+  websocket:
+    enabled: true
+    port: 8765
+    path: "/monitoring/ws"
+    
+  server_sent_events:
+    enabled: true
+    path: "/monitoring/sse"
+    
+  polling:
+    enabled: true
+    interval: 5000  # milliseconds
+
+# ログ記録設定
+logging:
+  level: "INFO"
+  destinations:
+    - type: "file"
+      path: "/home/aicompany/ai_co/monitoring/logs/dashboard.log"
+      rotation: "daily"
+      retention: 30
+      
+    - type: "elasticsearch"
+      index: "monitoring-logs"
+      
+  format: "json"
+  include_metadata: true

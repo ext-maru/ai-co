@@ -154,11 +154,125 @@ class DataCollector:
             logger.error(f"❌ システムメトリクス収集エラー: {e}")
             return metrics
 
+class PredictionModel:
+    """高度な予測モデル"""
+    
+    def __init__(self):
+        self.time_series_models = {}
+        self.anomaly_detectors = {}
+        self.trained = False
+        
+    async def train_time_series(self, df: pd.DataFrame, target_column: str, time_column: str = 'timestamp'):
+        """時系列予測モデルの訓練"""
+        if df.empty or target_column not in df.columns:
+            logger.warning(f"⚠️ 時系列訓練用のデータが不足: {target_column}")
+            return
+            
+        # データを時系列順にソート
+        df_sorted = df.sort_values(time_column)
+        
+        # 移動平均モデル（簡易版）
+        self.time_series_models[target_column] = {
+            'type': 'moving_average',
+            'window_sizes': [3, 7, 14],
+            'data': {}
+        }
+        
+        # 各ウィンドウサイズで移動平均を計算
+        for window in self.time_series_models[target_column]['window_sizes']:
+            if len(df_sorted) >= window:
+                ma = df_sorted[target_column].rolling(window=window).mean()
+                self.time_series_models[target_column]['data'][f'ma_{window}'] = ma.iloc[-1]
+        
+        # トレンド分析
+        if len(df_sorted) > 10:
+            # 線形トレンドの計算
+            x = np.arange(len(df_sorted))
+            y = df_sorted[target_column].values
+            if np.issubdtype(y.dtype, np.number):
+                coeffs = np.polyfit(x, y, 1)
+                self.time_series_models[target_column]['trend'] = {
+                    'slope': coeffs[0],
+                    'intercept': coeffs[1],
+                    'direction': 'increasing' if coeffs[0] > 0 else 'decreasing'
+                }
+        
+        logger.info(f"📈 時系列モデル訓練完了: {target_column}")
+    
+    async def detect_anomalies(self, df: pd.DataFrame, column: str, threshold: float = 2.0):
+        """異常検出"""
+        if df.empty or column not in df.columns:
+            return []
+            
+        anomalies = []
+        values = df[column].dropna()
+        
+        if len(values) > 3:
+            # 統計的異常検出（Zスコア法）
+            mean = values.mean()
+            std = values.std()
+            
+            if std > 0:
+                z_scores = np.abs((values - mean) / std)
+                anomaly_indices = z_scores[z_scores > threshold].index
+                
+                for idx in anomaly_indices:
+                    anomalies.append({
+                        'index': idx,
+                        'value': values[idx],
+                        'z_score': z_scores[idx],
+                        'severity': 'high' if z_scores[idx] > 3 else 'medium'
+                    })
+                
+                # 異常検出モデルを保存
+                self.anomaly_detectors[column] = {
+                    'mean': mean,
+                    'std': std,
+                    'threshold': threshold,
+                    'anomaly_count': len(anomalies)
+                }
+        
+        return anomalies
+    
+    async def forecast(self, column: str, periods: int = 5) -> List[float]:
+        """将来値の予測"""
+        predictions = []
+        
+        if column in self.time_series_models:
+            model = self.time_series_models[column]
+            
+            # 移動平均ベースの予測
+            if 'data' in model and model['data']:
+                # 最新の移動平均値を使用
+                latest_ma = list(model['data'].values())[-1]
+                
+                # トレンドを考慮
+                if 'trend' in model:
+                    slope = model['trend']['slope']
+                    for i in range(periods):
+                        prediction = latest_ma + (slope * (i + 1))
+                        predictions.append(prediction)
+                else:
+                    # トレンドがない場合は最新値を繰り返す
+                    predictions = [latest_ma] * periods
+        
+        return predictions
+    
+    def get_model_summary(self) -> Dict[str, Any]:
+        """モデルの概要を取得"""
+        return {
+            'time_series_models': list(self.time_series_models.keys()),
+            'anomaly_detectors': list(self.anomaly_detectors.keys()),
+            'total_models': len(self.time_series_models) + len(self.anomaly_detectors),
+            'trained': self.trained
+        }
+
 class AnalyticsEngine:
     """分析エンジン"""
     
     def __init__(self):
         self.ml_models = {}  # 機械学習モデル格納用
+        self.prediction_model = PredictionModel()  # 予測モデル
         
     async def analyze_commit_patterns(self, df: pd.DataFrame) -> AnalyticsResult:
         """コミットパターン分析"""

@@ -1,0 +1,53 @@
+apiVersion: v1
+default:
+  deployment_method: github_actions
+  environments:
+    development:
+      approval_required: false
+      auto_deploy: true
+      rollback_enabled: true
+    production:
+      approval_required: true
+      auto_deploy: false
+      rollback_enabled: true
+    staging:
+      approval_required: true
+      auto_deploy: true
+      rollback_enabled: true
+  four_sages:
+    incident_sage:
+      enabled: true
+      monitoring: true
+    knowledge_sage:
+      enabled: true
+      history_tracking: true
+    rag_sage:
+      enabled: true
+      optimization: true
+    task_sage:
+      dependency_check: true
+      enabled: true
+  four_sages_integration: true
+  github_actions:
+    retry_count: 3
+    runner: ubuntu-latest
+    timeout: 30
+    trigger_on:
+    - push
+    - pull_request
+  knights:
+    permission_audit: true
+    real_time_monitoring: true
+    security_scan: true
+    vulnerability_check: true
+  knights_protection: true
+  ssh:
+    backup_before_deploy: true
+    connection_timeout: 30
+    health_check_wait: 30
+    retry_count: 3
+kind: DeploymentConfig
+metadata:
+  created_by: elders-guild
+  name: global-default
+  version: 1.0.0

@@ -1,0 +1,4 @@
+approval_required: false
+auto_deploy: true
+deployment_method: ssh
+environment: development
