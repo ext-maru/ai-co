@@ -16,14 +16,8 @@ async def mega_implementation():
     print('🌊 Elder Flow MEGA Implementation - 全機能並列実装')
     print('=' * 80)
 
-    # メガタスクリクエスト
-    mega_request = '''Elder Flow完全システムを実装:
-1. CLI インターフェース (elder-flow コマンド群)
-2. 4賢者システム統合 (ナレッジ・タスク・インシデント・RAG賢者連携)
-3. Git自動化とCI/CD統合 (自動コミット・プッシュ・GitHub Actions)
-4. Web UI ダッシュボード (リアルタイム監視・タスクグラフ可視化)
-5. 拡張タスクテンプレート (React・FastAPI・Docker・Kubernetes)
-6. 監視・ログシステム (パフォーマンス監視・エラー集約・統計レポート)'''
+    # メガタスクリクエスト - より具体的な実装指示
+    mega_request = '''OAuth2.0認証システムとユーザー管理機能とAPI認証ミドルウェアを実装してください'''
 
     print(f'📝 Mega Request:')
     print(mega_request)

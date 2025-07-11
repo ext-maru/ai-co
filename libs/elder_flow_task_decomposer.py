@@ -377,7 +377,7 @@ class TaskDecomposer:
         """ファイル作成の引数生成"""
         file_templates = {
             "oauth_models": {
-                "file_path": "src/auth/models.py",
+                "file_path": "output/src/auth/models.py",
                 "content": '''from dataclasses import dataclass
 from datetime import datetime
 from typing import List, Optional
@@ -415,7 +415,7 @@ class AuthorizationCode:
 '''
             },
             "oauth_provider": {
-                "file_path": "src/auth/oauth_provider.py",
+                "file_path": "output/src/auth/oauth_provider.py",
                 "content": '''import secrets
 import hashlib
 from datetime import datetime, timedelta
