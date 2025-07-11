@@ -1,0 +1,145 @@
+.contract-type-selector {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.contract-type-selector h2 {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.type-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.type-card {
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.type-card:hover {
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 123, 255, 0.15);
+}
+
+.type-card.individual:hover {
+  border-color: #28a745;
+  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.15);
+}
+
+.type-card.corporate:hover {
+  border-color: #6f42c1;
+  box-shadow: 0 4px 16px rgba(111, 66, 193, 0.15);
+}
+
+.type-icon {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.type-card h3 {
+  text-align: center;
+  color: #495057;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.document-sections {
+  margin-bottom: 1.5rem;
+}
+
+.section {
+  margin-bottom: 1rem;
+}
+
+.section h4 {
+  color: #6c757d;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.25rem;
+}
+
+.document-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.document-list li {
+  padding: 0.4rem 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+  position: relative;
+  padding-left: 1.2rem;
+}
+
+.document-list li::before {
+  content: "📄";
+  position: absolute;
+  left: 0;
+  font-size: 0.8rem;
+}
+
+.select-button {
+  width: 100%;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.individual .select-button {
+  background: #28a745;
+  color: white;
+}
+
+.individual .select-button:hover {
+  background: #218838;
+}
+
+.corporate .select-button {
+  background: #6f42c1;
+  color: white;
+}
+
+.corporate .select-button:hover {
+  background: #5a34a3;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .type-cards {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .contract-type-selector {
+    padding: 1rem;
+  }
+
+  .type-card {
+    padding: 1.5rem;
+  }
+
+  .contract-type-selector h2 {
+    font-size: 1.5rem;
+  }
+}

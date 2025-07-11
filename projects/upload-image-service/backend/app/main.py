@@ -1,4 +1,4 @@
-from app.api.endpoints import contract
+from app.api.endpoints import contract, submission
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -15,6 +15,7 @@ app.add_middleware(
 
 # ルーター登録
 app.include_router(contract.router, prefix="/api/v1/contract", tags=["contract"])
+app.include_router(submission.router, prefix="/api/v1/submission", tags=["submission"])
 
 
 @app.get("/")

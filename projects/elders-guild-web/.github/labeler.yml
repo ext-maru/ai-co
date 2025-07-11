@@ -1,0 +1,107 @@
+# 🏛️ エルダーズギルド PRラベリング設定
+
+# 4賢者関連
+'sage: knowledge':
+  - src/components/sages/knowledge/**/*
+  - src/components/sages/KnowledgeSage.tsx
+  - knowledge_base/**/*
+  - '**/*.md'
+
+'sage: task':
+  - src/components/sages/task/**/*
+  - src/components/sages/TaskSage.tsx
+  - .github/workflows/**/*
+  - scripts/**/*
+
+'sage: incident':
+  - src/components/sages/incident/**/*
+  - src/components/sages/IncidentSage.tsx
+  - '**/*.test.{ts,tsx}'
+  - '**/*.spec.{ts,tsx}'
+  - e2e/**/*
+
+'sage: rag':
+  - src/components/sages/search/**/*
+  - src/components/sages/rag/**/*
+  - libs/rag_*.py
+  - libs/search_*.py
+
+# コンポーネント関連
+'component: ui':
+  - src/components/ui/**/*
+  - src/components/layout/**/*
+
+'component: dashboard':
+  - src/components/dashboard/**/*
+  - src/pages/dashboard/**/*
+
+'component: integration':
+  - src/components/integration/**/*
+  - src/stores/**/*
+
+# テスト関連
+'test: unit':
+  - '**/__tests__/**/*'
+  - '**/*.test.{ts,tsx,js,jsx}'
+
+'test: e2e':
+  - e2e/**/*
+  - playwright.config.ts
+
+'test: visual':
+  - '**/*.stories.{ts,tsx}'
+  - .storybook/**/*
+
+# 設定関連
+'config: ci/cd':
+  - .github/**/*
+  - .circleci/**/*
+  - .gitlab-ci.yml
+
+'config: build':
+  - webpack.*.js
+  - next.config.js
+  - tsconfig.json
+  - package.json
+
+'config: lint':
+  - .eslintrc.*
+  - .prettierrc.*
+  - .stylelintrc.*
+
+# ドキュメント
+'documentation':
+  - '**/*.md'
+  - docs/**/*
+  - README.md
+
+# 依存関係
+'dependencies':
+  - package.json
+  - package-lock.json
+  - yarn.lock
+
+# エルダーズギルド特有
+'elders-guild':
+  - src/components/providers/ThemeProvider.tsx
+  - src/styles/elders-guild.css
+  - public/elders-guild-logo.*
+
+'elder-council':
+  - src/components/integration/ElderCouncilMode.tsx
+  - libs/elder_council_*.py
+
+# 優先度
+'priority: high':
+  - src/components/dashboard/**/*
+  - src/components/sages/SageCard.tsx
+  - '**/*Critical*'
+  - '**/*Emergency*'
+
+'priority: medium':
+  - src/components/ui/**/*
+  - src/components/layout/**/*
+
+'priority: low':
+  - '**/*.md'
+  - '**/*.stories.tsx'
