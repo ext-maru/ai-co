@@ -42,7 +42,11 @@ class IntelligentPMWorkerSimple:
                 pika.ConnectionParameters('localhost')
             )
             self.channel = self.connection.channel()
-            self.channel.queue_declare(queue=self.queue_name, durable=True)
+            self.channel.queue_declare(
+                queue=self.queue_name,
+                durable=True,
+                arguments={'x-max-priority': 10}
+            )
             logger.info(f"✅ RabbitMQ connected: {self.queue_name}")
             return True
         except Exception as e:
