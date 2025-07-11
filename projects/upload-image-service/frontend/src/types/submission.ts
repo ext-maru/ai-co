@@ -2,8 +2,7 @@
 
 export enum SubmissionType {
   INDIVIDUAL = 'individual',
-  CORPORATE = 'corporate',
-  CUSTOM = 'custom'
+  CORPORATE = 'corporate'
 }
 
 export enum SessionStatus {

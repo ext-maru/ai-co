@@ -123,7 +123,7 @@ export const SessionDetailModal: React.FC<SessionDetailModalProps> = ({
               )}
               <div className="info-item">
                 <label>提出タイプ</label>
-                <span>{session.submission_type === 'individual' ? '個人' : session.submission_type === 'corporate' ? '法人' : 'カスタム'}</span>
+                <span>{session.submission_type === 'individual' ? '個人' : '法人'}</span>
               </div>
               <div className="info-item">
                 <label>ステータス</label>

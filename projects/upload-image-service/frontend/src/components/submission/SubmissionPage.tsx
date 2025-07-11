@@ -85,14 +85,7 @@ export const SubmissionPage: React.FC = () => {
   const getDocumentCategory = () => {
     if (!session) return '';
     
-    switch (session.submission_type) {
-      case SubmissionType.INDIVIDUAL:
-        return '個人書類';
-      case SubmissionType.CORPORATE:
-        return '法人書類';
-      default:
-        return 'カスタム書類';
-    }
+    return session.submission_type === SubmissionType.INDIVIDUAL ? '個人書類' : '法人書類';
   };
 
   if (loading) {

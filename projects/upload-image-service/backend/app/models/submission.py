@@ -12,7 +12,6 @@ class SubmissionType(str, enum.Enum):
     """提出タイプ"""
     INDIVIDUAL = "individual"  # 個人契約者用
     CORPORATE = "corporate"    # 法人契約者用
-    CUSTOM = "custom"          # カスタム（管理者が自由設定）
 
 
 class SessionStatus(str, enum.Enum):

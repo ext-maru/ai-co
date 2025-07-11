@@ -30,21 +30,34 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({ onClose,
     setError('');
 
     try {
+      // due_dateをISO形式に変換
+      const submitData = {
+        ...formData,
+        due_date: formData.due_date ? new Date(formData.due_date).toISOString() : null
+      };
+      
+      console.log('送信データ:', submitData);
+      
       const response = await fetch('http://localhost:8000/api/v1/submission/sessions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(submitData),
       });
 
       if (response.ok) {
+        const result = await response.json();
+        console.log('セッション作成成功:', result);
         onSessionCreated();
+        onClose();
       } else {
         const data = await response.json();
+        console.error('セッション作成エラー:', data);
         setError(data.detail || 'セッション作成に失敗しました');
       }
     } catch (error) {
+      console.error('ネットワークエラー:', error);
       setError('セッション作成中にエラーが発生しました');
     } finally {
       setLoading(false);
@@ -118,7 +131,6 @@ export const CreateSessionModal: React.FC<CreateSessionModalProps> = ({ onClose,
               >
                 <option value={SubmissionType.INDIVIDUAL}>個人契約者用</option>
                 <option value={SubmissionType.CORPORATE}>法人契約者用</option>
-                <option value={SubmissionType.CUSTOM}>カスタム</option>
               </select>
             </div>
 
