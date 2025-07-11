@@ -456,7 +456,7 @@ def main():
     knights = KnightsGitHubAction()
 
     if args.command == 'analyze':
-        report = knights.analyze(args.fix_type)
+        report = knights.analyze(args.fix_type, getattr(args, 'quick', False))
 
         if args.output_format == 'json':
             print(json.dumps(report, indent=2))
