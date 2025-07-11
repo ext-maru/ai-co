@@ -10,7 +10,7 @@ from pathlib import Path
 def elder_flow_execute(task_description, priority="medium"):
     """Elder Flowタスク実行"""
     print(f"🌊 Elder Flow実行: {task_description}")
-    
+
     # タスク分解
     tasks = {
         "analyze": f"タスク分析: {task_description}",
@@ -19,13 +19,13 @@ def elder_flow_execute(task_description, priority="medium"):
         "test": "品質確認",
         "deploy": "デプロイ"
     }
-    
+
     results = {}
     for step, description in tasks.items():
         print(f"  📋 {step}: {description}")
         # 実際の処理（デモ版）
         results[step] = {"status": "completed", "duration": "0.1s"}
-    
+
     print("✅ Elder Flow実行完了")
     return results
 
@@ -48,9 +48,9 @@ def main():
         print("  elder-flow execute <description> [--priority high|medium|low]")
         print("  elder-flow status")
         return
-    
+
     command = sys.argv[1]
-    
+
     if command == "execute":
         if len(sys.argv) < 3:
             print("タスク説明が必要です")

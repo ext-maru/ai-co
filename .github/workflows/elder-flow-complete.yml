@@ -21,7 +21,7 @@ jobs:
           pip install -r requirements.txt
       - name: Run Quality Gate
         run: python3 scripts/quality_gate.py
-      
+
   auto-deploy:
     needs: quality-gate
     runs-on: ubuntu-latest

@@ -11,10 +11,10 @@ logger = logging.getLogger(__name__)
 
 class AioPika:
     """Auto-generated placeholder class"""
-    
+
     def __init__(self, *args, **kwargs):
         logger.warning(f"Using auto-generated placeholder for {self.__class__.__name__}")
-        
+
     def __getattr__(self, name):
         logger.warning(f"Accessing placeholder attribute: {name}")
         return lambda *args, **kwargs: None
@@ -47,15 +47,15 @@ class Message:
         self.headers = headers or {}
         self.content_type = content_type
         self.delivery_tag = None
-        
+
     def ack(self):
         """Acknowledge message"""
         pass
-        
+
     def nack(self, requeue=True):
         """Negative acknowledge message"""
         pass
-        
+
     def reject(self, requeue=False):
         """Reject message"""
         pass

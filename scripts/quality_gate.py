@@ -5,7 +5,7 @@ import json
 
 def run_quality_checks():
     results = {"passed": True, "checks": []}
-    
+
     # テスト実行
     try:
         result = subprocess.run(["pytest", "--tb=short"], capture_output=True, text=True)
@@ -13,7 +13,7 @@ def run_quality_checks():
         results["checks"].append({"test": "pytest", "passed": test_passed})
     except:
         results["checks"].append({"test": "pytest", "passed": False})
-    
+
     # カバレッジチェック
     try:
         result = subprocess.run(["pytest", "--cov=.", "--cov-report=json"], capture_output=True, text=True)
@@ -21,7 +21,7 @@ def run_quality_checks():
         results["checks"].append({"test": "coverage", "passed": coverage_passed})
     except:
         results["checks"].append({"test": "coverage", "passed": False})
-    
+
     # Lintチェック
     try:
         result = subprocess.run(["flake8", "."], capture_output=True, text=True)
@@ -29,7 +29,7 @@ def run_quality_checks():
         results["checks"].append({"test": "lint", "passed": lint_passed})
     except:
         results["checks"].append({"test": "lint", "passed": False})
-    
+
     results["passed"] = all(check["passed"] for check in results["checks"])
     return results
 

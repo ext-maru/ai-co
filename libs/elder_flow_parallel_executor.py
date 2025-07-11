@@ -261,7 +261,7 @@ class ParallelServantExecutor:
         # ファイルパスの検証と修正
         if not file_path or file_path == "":
             file_path = f"output/generated_file_{int(time.time())}.py"
-        
+
         # 出力ディレクトリの作成
         output_dir = os.path.dirname(file_path)
         if output_dir:
@@ -541,7 +541,7 @@ class Test{target_module.capitalize()}:
     async def _run_security_scan(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """セキュリティスキャン実行"""
         file_path = args.get("file_path", ".")
-        
+
         # bandit実行（Pythonセキュリティスキャナー）
         try:
             result = subprocess.run(
@@ -549,7 +549,7 @@ class Test{target_module.capitalize()}:
                 capture_output=True,
                 text=True
             )
-            
+
             issues_found = 0
             if result.stdout:
                 try:
@@ -558,7 +558,7 @@ class Test{target_module.capitalize()}:
                     issues_found = len(scan_result.get("results", []))
                 except:
                     pass
-            
+
             return {
                 "action": "security_scan",
                 "file_path": file_path,

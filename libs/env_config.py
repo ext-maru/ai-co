@@ -19,7 +19,7 @@ class DatabaseConfig:
     database: str = "elders_guild"
     username: str = "postgres"
     password: str = ""
-    
+
     @property
     def connection_string(self) -> str:
         return f"postgresql://{self.username}:{self.password}@{self.host}:{self.port}/{self.database}"
@@ -32,7 +32,7 @@ class MessageQueueConfig:
     username: str = "guest"
     password: str = "guest"
     virtual_host: str = "/"
-    
+
     @property
     def connection_string(self) -> str:
         return f"amqp://{self.username}:{self.password}@{self.host}:{self.port}/{self.virtual_host}"
@@ -42,7 +42,7 @@ class SecurityConfig:
     """セキュリティ設定"""
     jwt_secret: str = "elders-guild-secret-key"
     encryption_key: Optional[str] = None
-    
+
     def __post_init__(self):
         if not self.encryption_key:
             # Fernetキーを生成（本番では環境変数から取得）
@@ -57,7 +57,7 @@ class EldersGuildConfig:
     security: SecurityConfig
     debug: bool = True
     log_level: str = "INFO"
-    
+
     @classmethod
     def from_env(cls) -> "EldersGuildConfig":
         """環境変数から設定を読み込み"""
