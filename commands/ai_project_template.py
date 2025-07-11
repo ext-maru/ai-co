@@ -15,14 +15,19 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from commands.base_command import BaseCommand
 from libs.project_template_system import ProjectTemplateSystem, ProjectTemplateCLI
+from libs.project_automation_engine import ProjectAutomationEngine
 
 
 class ProjectTemplateCommand(BaseCommand):
     """プロジェクトテンプレート管理コマンド"""
 
     def __init__(self):
-        super().__init__()
+        super().__init__(
+            name="ai-project-template",
+            description="🏛️ エルダーズギルド プロジェクトテンプレートシステム"
+        )
         self.cli = ProjectTemplateCLI()
+        self.automation_engine = ProjectAutomationEngine()
 
     def setup_parser(self):
         """パーサーのセットアップ"""
@@ -82,6 +87,12 @@ class ProjectTemplateCommand(BaseCommand):
         checklist_parser.add_argument("--check", type=int, help="チェック項目番号")
         checklist_parser.add_argument("--uncheck", type=int, help="チェック解除項目番号")
 
+        # auto - 自動化実行
+        auto_parser = subparsers.add_parser("auto", help="フェーズ自動化実行")
+        auto_parser.add_argument("project_id", help="プロジェクトID")
+        auto_parser.add_argument("--execute", action="store_true", help="コマンドを実際に実行")
+        auto_parser.add_argument("--plan", action="store_true", help="自動化計画を表示")
+
         return parser
 
     def run(self, args):
@@ -110,6 +121,8 @@ class ProjectTemplateCommand(BaseCommand):
             return self.consult_sages(parsed_args)
         elif parsed_args.subcommand == "checklist":
             return self.manage_checklist(parsed_args)
+        elif parsed_args.subcommand == "auto":
+            return self.execute_automation(parsed_args)
 
     def list_templates(self):
         """テンプレート一覧表示"""
@@ -297,6 +310,76 @@ class ProjectTemplateCommand(BaseCommand):
             self.success(f"✅ 項目 {args.check} をチェックしました")
         elif args.uncheck:
             self.info(f"☐ 項目 {args.uncheck} のチェックを解除しました")
+
+        return 0
+
+    def execute_automation(self, args):
+        """自動化実行"""
+        if args.plan:
+            # 自動化計画を表示
+            self.info("🤖 プロジェクト自動化計画")
+            self.info("=" * 50)
+
+            plan = self.automation_engine.generate_automation_plan(args.project_id)
+
+            if not plan.get("automation_available"):
+                self.warning("このプロジェクトテンプレートには自動化が利用できません")
+                return 0
+
+            self.info(f"📋 プロジェクト: {args.project_id}")
+            self.info(f"📄 テンプレート: {plan['template_name']}")
+            self.info(f"🤖 自動化: {'利用可能' if plan['automation_available'] else '利用不可'}")
+
+            for phase in plan['phases']:
+                self.info(f"\n🎯 {phase['phase']}:")
+                self.info(f"  📄 作成ファイル: {len(phase['files_to_create'])}個")
+                self.info(f"  ⚙️  実行コマンド: {len(phase['commands_to_execute'])}個")
+                self.info(f"  ⏱️  推定時間: {phase['estimated_time']}")
+
+                if phase['files_to_create']:
+                    self.info("  📄 作成ファイル:")
+                    for file_path in phase['files_to_create']:
+                        self.info(f"    - {file_path}")
+
+                if phase['commands_to_execute']:
+                    self.info("  ⚙️  実行コマンド:")
+                    for command in phase['commands_to_execute']:
+                        self.info(f"    - {command}")
+
+        else:
+            # 自動化を実行
+            self.info("🤖 プロジェクト自動化実行中...")
+            self.info("=" * 50)
+
+            result = self.automation_engine.auto_execute_phase(args.project_id, args.execute)
+
+            if result['success']:
+                self.success("✅ 自動化実行完了！")
+                self.info(f"📋 プロジェクト: {result['project_id']}")
+                self.info(f"🎯 フェーズ: {result['phase']}")
+
+                if result['files_created']:
+                    self.info(f"\n📄 作成ファイル ({len(result['files_created'])}個):")
+                    for file_path in result['files_created']:
+                        self.info(f"  ✅ {file_path}")
+
+                if result['commands_executed']:
+                    self.info(f"\n⚙️  実行コマンド ({len(result['commands_executed'])}個):")
+                    for cmd_result in result['commands_executed']:
+                        if cmd_result['success']:
+                            self.success(f"  ✅ {cmd_result['command']}")
+                        else:
+                            self.error(f"  ❌ {cmd_result['command']}")
+                            if 'error' in cmd_result:
+                                self.error(f"     エラー: {cmd_result['error']}")
+
+                if not args.execute:
+                    self.info("\n💡 コマンドを実際に実行するには --execute フラグを使用してください")
+                    self.info("   例: ai-project-template auto project_id --execute")
+
+            else:
+                self.error(f"❌ 自動化実行に失敗しました: {result.get('error', '不明なエラー')}")
+                return 1
 
         return 0
 
