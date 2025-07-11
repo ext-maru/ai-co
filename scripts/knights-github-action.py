@@ -31,7 +31,7 @@ class KnightsGitHubAction:
     def analyze(self, fix_type: str = 'all', quick: bool = False) -> Dict[str, Any]:
         """コードベースを分析して問題を検出"""
         if quick:
-            print("⚡ Knights quick health check...")
+            # Quick mode: no print statements, just return data
             return {
                 "timestamp": datetime.now().isoformat(),
                 "fix_type": "quick",
