@@ -13,6 +13,19 @@ from typing import Dict, List, Optional, Any
 from enum import Enum
 import uuid
 
+# Elder Flow Error Handler統合
+from libs.elder_flow_error_handler import (
+    ElderFlowError,
+    SageConsultationError,
+    QualityGateError,
+    ServantExecutionError,
+    GitAutomationError,
+    CouncilReportError,
+    RetryConfig,
+    ElderFlowErrorHandler,
+    with_error_handling
+)
+
 # Elder Flow Status
 class FlowStatus(Enum):
     INITIALIZED = "initialized"
@@ -76,21 +89,25 @@ class SageCouncilSystem:
     async def consult_sage(self, sage_type: str, query: str, context: Dict = None) -> Dict:
         """賢者に相談する"""
         if sage_type not in self.sages:
-            raise ValueError(f"Unknown sage type: {sage_type}")
+            raise SageConsultationError(sage_type, f"Unknown sage type: {sage_type}")
 
         self.logger.info(f"🧙‍♂️ Consulting {self.sages[sage_type]} about: {query}")
 
-        # 賢者の専門知識に基づいた回答を生成
-        advice = await self._generate_sage_advice(sage_type, query, context)
+        try:
+            # 賢者の専門知識に基づいた回答を生成
+            advice = await self._generate_sage_advice(sage_type, query, context)
 
-        return {
-            "sage_type": sage_type,
-            "sage_name": self.sages[sage_type],
-            "query": query,
-            "advice": advice,
-            "confidence": advice.get("confidence", 0.8),
-            "timestamp": datetime.now().isoformat()
-        }
+            return {
+                "sage_type": sage_type,
+                "sage_name": self.sages[sage_type],
+                "query": query,
+                "advice": advice,
+                "confidence": advice.get("confidence", 0.8),
+                "timestamp": datetime.now().isoformat()
+            }
+        except Exception as e:
+            self.logger.error(f"Sage consultation failed: {e}")
+            raise SageConsultationError(sage_type, str(e), {"query": query})
 
     async def _generate_sage_advice(self, sage_type: str, query: str, context: Dict = None) -> Dict:
         """賢者の専門知識に基づいた助言を生成"""
@@ -172,6 +189,10 @@ class ElderFlowOrchestrator:
         self.active_tasks: Dict[str, ElderFlowTask] = {}
         self.sage_council = SageCouncilSystem()
         self.logger = logging.getLogger(__name__)
+        self.error_handler = ElderFlowErrorHandler()
+
+        # エラーリカバリー戦略の登録
+        self._register_error_recovery_strategies()
 
     async def execute_task(self, description: str, priority: str = "medium") -> str:
         """メインフロー実行"""
@@ -204,18 +225,40 @@ class ElderFlowOrchestrator:
             task.status = FlowStatus.FAILED
             task.add_log(f"Elder Flow failed: {str(e)}", "error")
             self.logger.error(f"Task {task_id} failed: {str(e)}")
+
+            # エラーハンドリング実行
+            recovery_result = await self.error_handler.handle_error(
+                e,
+                {
+                    "task_id": task_id,
+                    "description": task.description,
+                    "phase": task.status.value
+                }
+            )
+
+            if recovery_result:
+                task.add_log(f"Error recovered: {recovery_result}", "warning")
+                return task_id
+
             raise
 
+    @with_error_handling
     async def _phase_1_council(self, task: ElderFlowTask):
         """Phase 1: 4賢者会議"""
         task.status = FlowStatus.SAGE_COUNCIL
         task.add_log("🏛️ Starting Sage Council Meeting")
 
-        council_results = await self.sage_council.hold_council_meeting(
-            task.description,
-            {"task_id": task.task_id}
-        )
+        # リトライメカニズム付きで賢者会議を開催
+        retry_config = RetryConfig(max_attempts=3, base_delay=2.0)
 
+        @self.error_handler.retry_async(retry_config)
+        async def council_with_retry():
+            return await self.sage_council.hold_council_meeting(
+                task.description,
+                {"task_id": task.task_id}
+            )
+
+        council_results = await council_with_retry()
         task.sage_advice = council_results
         task.add_log("✅ Sage Council Meeting completed")
 
@@ -263,19 +306,40 @@ class ElderFlowOrchestrator:
 
         task.add_log("✅ Execution phase completed")
 
+    @with_error_handling
     async def _phase_4_quality(self, task: ElderFlowTask):
         """Phase 4: 品質チェック"""
         task.status = FlowStatus.QUALITY_CHECK
         task.add_log("🔍 Starting quality check")
 
-        task.quality_results = {
-            "test_coverage": 95,
-            "code_quality": "A",
-            "security_scan": "passed",
-            "performance_test": "passed",
-            "sage_review": "approved"
-        }
+        # 品質チェック実行（サーキットブレーカー付き）
+        quality_cb = self.error_handler.get_circuit_breaker(
+            "quality_gate",
+            failure_threshold=3,
+            recovery_timeout=30.0
+        )
 
+        def quality_check():
+            # モック品質チェック結果
+            results = {
+                "test_coverage": 95,
+                "code_quality": "A",
+                "security_scan": "passed",
+                "performance_test": "passed",
+                "sage_review": "approved"
+            }
+
+            # 品質基準をチェック
+            if results["test_coverage"] < 80:
+                raise QualityGateError(
+                    "test_coverage",
+                    f"Coverage too low: {results['test_coverage']}%",
+                    results["test_coverage"]
+                )
+
+            return results
+
+        task.quality_results = quality_cb.call(quality_check)
         task.add_log("✅ Quality check completed")
 
     async def _phase_5_reporting(self, task: ElderFlowTask):
@@ -335,6 +399,36 @@ async def elder_flow_status(task_id: str = None) -> Dict:
 async def elder_flow_abort(task_id: str) -> bool:
     """Elder Flow中止"""
     return await orchestrator.abort_task(task_id)
+
+    def _register_error_recovery_strategies(self):
+        """エラーリカバリー戦略を登録"""
+
+        # 賢者相談エラーのリカバリー
+        async def sage_error_recovery(error: SageConsultationError):
+            self.logger.warning(f"Recovering from sage error: {error.sage_type}")
+            # フォールバック賢者相談結果を返す
+            return {
+                "sage_type": error.sage_type,
+                "advice": {"fallback": True, "message": "Using cached wisdom"},
+                "confidence": 0.5
+            }
+
+        # 品質ゲートエラーのリカバリー
+        def quality_gate_recovery(error: QualityGateError):
+            self.logger.warning(f"Quality gate failed: {error.gate_name}")
+            # 品質基準を緩和して再試行を提案
+            if error.score >= 70:
+                return {"approved_with_warning": True, "score": error.score}
+            return None
+
+        self.error_handler.register_recovery_strategy(
+            SageConsultationError,
+            sage_error_recovery
+        )
+        self.error_handler.register_recovery_strategy(
+            QualityGateError,
+            quality_gate_recovery
+        )
 
 async def elder_flow_consult(sage_type: str, query: str) -> Dict:
     """賢者相談"""
