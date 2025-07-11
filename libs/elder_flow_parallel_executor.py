@@ -261,12 +261,18 @@ class ParallelServantExecutor:
         # ディレクトリ作成
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
-        # コードフォーマット
-        try:
-            formatted_content = black.format_str(content, mode=black.Mode())
-            formatted_content = isort.code(formatted_content)
-        except:
-            formatted_content = content
+        # コードフォーマット（オプション）
+        formatted_content = content
+        if black:
+            try:
+                formatted_content = black.format_str(content, mode=black.Mode())
+            except:
+                pass
+        if isort:
+            try:
+                formatted_content = isort.code(formatted_content)
+            except:
+                pass
 
         # ファイル書き込み
         with open(file_path, 'w') as f:
@@ -351,12 +357,18 @@ def {function_name}({param_str}) -> {return_type}:
 
         # フォーマット
         if refactor_type in ["format", "all"]:
-            try:
-                refactored_code = black.format_str(refactored_code, mode=black.Mode())
-                refactored_code = isort.code(refactored_code)
-                changes.append("Formatted with black and isort")
-            except:
-                pass
+            if black:
+                try:
+                    refactored_code = black.format_str(refactored_code, mode=black.Mode())
+                    changes.append("Formatted with black")
+                except:
+                    pass
+            if isort:
+                try:
+                    refactored_code = isort.code(refactored_code)
+                    changes.append("Formatted imports with isort")
+                except:
+                    pass
 
         # ファイル書き込み
         with open(file_path, 'w') as f:
