@@ -226,6 +226,123 @@ class nWoVisionExtension(BaseCommand):
 
         return focus_areas
 
+    async def _generate_today_actions(self, progress_analysis: Dict) -> List[Dict[str, str]]:
+        """今日の具体的なアクションアイテム生成"""
+        actions = []
+
+        # 最も遅れている柱を特定
+        min_progress = float('inf')
+        focus_pillar = None
+
+        for pillar, data in progress_analysis["pillar_progress"].items():
+            if data["current_level"] < min_progress:
+                min_progress = data["current_level"]
+                focus_pillar = pillar
+
+        # 優先度と時間を考慮したアクション生成
+        if focus_pillar == "mind_reading":
+            actions = [
+                {
+                    "time": "09:00-10:00",
+                    "action": "🧠 maru様の過去1ヶ月の指示分析",
+                    "detail": "GitログとCLAUDE.md履歴から思考パターン抽出",
+                    "deliverable": "思考パターン分析レポート作成"
+                },
+                {
+                    "time": "10:00-12:00",
+                    "action": "💭 意図推論AI v0.1実装",
+                    "detail": "基本的な自然言語理解から意図抽出のプロトタイプ",
+                    "deliverable": "libs/mind_reading_prototype.py作成"
+                },
+                {
+                    "time": "14:00-16:00",
+                    "action": "🎯 意図予測精度テスト",
+                    "detail": "過去データで精度測定、改善点洗い出し",
+                    "deliverable": "精度レポートと改善計画"
+                }
+            ]
+        elif focus_pillar == "instant_reality":
+            actions = [
+                {
+                    "time": "09:00-11:00",
+                    "action": "⚡ Elder Flow高速化",
+                    "detail": "現在0.70秒を0.30秒に短縮する最適化",
+                    "deliverable": "libs/elder_flow_turbo.py実装"
+                },
+                {
+                    "time": "11:00-12:00",
+                    "action": "🔧 並列コード生成検証",
+                    "detail": "複数ファイル同時生成のPoC開発",
+                    "deliverable": "並列生成デモ実装"
+                },
+                {
+                    "time": "14:00-17:00",
+                    "action": "🚀 瞬間実装パイプライン設計",
+                    "detail": "アイデア→実装10分を実現するアーキテクチャ",
+                    "deliverable": "技術設計書作成"
+                }
+            ]
+        elif focus_pillar == "prophetic_dev":
+            actions = [
+                {
+                    "time": "09:00-10:30",
+                    "action": "🔮 技術トレンド自動収集",
+                    "detail": "GitHub Trending、HN、Reddit自動スクレイピング",
+                    "deliverable": "libs/trend_collector.py実装"
+                },
+                {
+                    "time": "10:30-12:00",
+                    "action": "📊 maru様パターンDB構築",
+                    "detail": "過去の開発要求から未来予測モデル構築",
+                    "deliverable": "パターンDB初期版作成"
+                },
+                {
+                    "time": "14:00-16:00",
+                    "action": "🎲 予測的開発候補生成",
+                    "detail": "次の1週間で必要になりそうな機能リスト",
+                    "deliverable": "予測開発候補リスト10件"
+                }
+            ]
+        else:  # global_domination
+            actions = [
+                {
+                    "time": "09:00-11:00",
+                    "action": "🌍 SaaS化アーキテクチャ設計",
+                    "detail": "エルダーズギルドのマルチテナント化設計",
+                    "deliverable": "SaaS技術設計書v1.0"
+                },
+                {
+                    "time": "11:00-12:00",
+                    "action": "💰 価格戦略モデル作成",
+                    "detail": "フリーミアム/サブスク/エンタープライズ価格設計",
+                    "deliverable": "価格モデル提案書"
+                },
+                {
+                    "time": "14:00-17:00",
+                    "action": "🏢 競合分析と差別化",
+                    "detail": "GitHub Copilot、Cursor、Replit等の分析",
+                    "deliverable": "競合分析レポート＋差別化戦略"
+                }
+            ]
+
+        # 共通タスク追加
+        actions.extend([
+            {
+                "time": "17:00-17:30",
+                "action": "📝 デイリーnWo進捗記録",
+                "detail": "本日の成果とKPIをナレッジベースに記録",
+                "deliverable": "knowledge_base/nwo_progress/に日次レポート"
+            },
+            {
+                "time": "17:30-18:00",
+                "action": "🤖 4賢者協調会議",
+                "detail": "本日の学習内容を4賢者間で共有・統合",
+                "deliverable": "賢者間知識同期完了"
+            }
+        ])
+
+        return actions
+
     async def _display_integrated_vision(self, rag_vision: Dict, nwo_vision: Dict):
         """統合ビジョン表示"""
 
@@ -278,6 +395,17 @@ class nWoVisionExtension(BaseCommand):
         print(f"\n💪 競合優位性:")
         for advantage in nwo_vision["competitive_advantages"][:2]:
             print(f"  {advantage}")
+
+        # 今日の具体的アクション表示
+        print("\n" + "=" * 60)
+        print("⏰ 今日の具体的アクションプラン:")
+        print("-" * 40)
+
+        for action in nwo_vision["today_actions"]:
+            print(f"\n⏱️ {action['time']}")
+            print(f"📋 {action['action']}")
+            print(f"   詳細: {action['detail']}")
+            print(f"   成果物: {action['deliverable']}")
 
         print("\n" + "=" * 60)
         print("🌌 「Think it, Rule it, Own it」- nWo Daily Vision 完了")
