@@ -20,8 +20,16 @@ from dataclasses import dataclass, field
 from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import subprocess
 import ast
-import black
-import isort
+# Optional imports - フォーマッタが無くても動作する
+try:
+    import black
+except ImportError:
+    black = None
+
+try:
+    import isort
+except ImportError:
+    isort = None
 
 # Servant Types
 class ServantType(Enum):
