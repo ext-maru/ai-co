@@ -1,0 +1,35 @@
+# 🏛️ エルダーズギルド Pre-commit 設定（簡易版）
+# 段階的品質改善のため、必要最小限のチェックのみ実行
+
+repos:
+  # Python基本チェック（必須）
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-ast  # Pythonシンタックスチェック（必須）
+      - id: debug-statements
+
+  # 🏛️ エルダーズギルド開発標準チェック（簡易版）
+  - repo: local
+    hooks:
+      - id: syntax-check-only
+        name: 🔍 Basic Python Syntax Check
+        entry: python3 -m py_compile
+        language: system
+        types: [python]
+        pass_filenames: true
+
+# 設定オプション
+fail_fast: true  # 最初のエラーで停止
+default_stages: [pre-commit]
+
+# エルダーズギルド品質基準（段階的実装）
+# Phase 1: シンタックスチェックのみ ✅
+# Phase 2: コードフォーマット追加
+# Phase 3: 品質チェック追加
+# Phase 4: TDD強制

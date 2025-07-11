@@ -112,3 +112,9 @@ projects/*/instance/
 projects/*/uploads/
 
 # エルダーズ評議会承認: 独立性確保のため各プロジェクトを分離管理
+
+
+# Pre-commit
+.pre-commit-config.yaml.lock
+.pdca/
+COSTAR_*.md
