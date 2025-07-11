@@ -12,6 +12,7 @@ from datetime import datetime
 from typing import Dict, List, Optional, Any, Tuple
 from enum import Enum
 from dataclasses import dataclass, field
+from libs.elder_flow_quality_gate_optimizer import ElderFlowQualityGateOptimizer
 
 # Quality Gate Status
 class QualityGateStatus(Enum):
@@ -379,6 +380,10 @@ class QualityGateSystem:
         self.checkers: Dict[QualityCheckType, BaseQualityChecker] = {}
         self.logger = logging.getLogger(__name__)
 
+        # 品質ゲート最適化システム初期化
+        self.optimizer = ElderFlowQualityGateOptimizer()
+        self.failure_count = 0
+
         # チェッカー初期化
         self._initialize_checkers()
 
@@ -391,11 +396,23 @@ class QualityGateSystem:
         self.checkers[QualityCheckType.SAGE_REVIEW] = SageReviewChecker()
 
     async def execute_quality_gate(self, context: Dict,
-                                  check_types: List[QualityCheckType] = None) -> Dict:
-        """品質ゲート実行"""
+                                  check_types: List[QualityCheckType] = None,
+                                  priority: str = "medium",
+                                  phase: str = "development") -> Dict:
+        """品質ゲート実行（動的閾値調整付き）"""
         check_types = check_types or list(self.checkers.keys())
 
-        self.logger.info(f"Starting quality gate with {len(check_types)} checks")
+        # 優先度とフェーズに基づいて品質基準を調整
+        adjusted_metrics = self.optimizer.get_adjusted_metrics(
+            priority=priority,
+            phase=phase,
+            failure_count=self.failure_count
+        )
+
+        # コンテキストに調整済みメトリクスを追加
+        context["adjusted_metrics"] = adjusted_metrics
+
+        self.logger.info(f"Starting quality gate with {len(check_types)} checks (priority: {priority}, phase: {phase})")
 
         # 全チェック並列実行
         tasks = []
@@ -417,6 +434,12 @@ class QualityGateSystem:
         # 総合評価
         overall_status = self._calculate_overall_status(check_results)
 
+        # 失敗した場合は失敗回数をカウント
+        if overall_status in [QualityGateStatus.FAILED, QualityGateStatus.BLOCKED]:
+            self.failure_count += 1
+        else:
+            self.failure_count = 0  # 成功したらリセット
+
         summary = {
             "overall_status": overall_status.value,
             "total_checks": len(check_results),
@@ -431,7 +454,9 @@ class QualityGateSystem:
         return {
             "summary": summary,
             "check_results": [self._result_to_dict(r) for r in check_results],
-            "recommendations": self._generate_recommendations(check_results)
+            "recommendations": self._generate_recommendations(check_results),
+            "adjusted_metrics": adjusted_metrics,
+            "optimization_stats": self.optimizer.get_statistics()
         }
 
     def _calculate_overall_status(self, results: List[QualityCheckResult]) -> QualityGateStatus:

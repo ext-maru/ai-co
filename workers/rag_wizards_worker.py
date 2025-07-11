@@ -53,14 +53,14 @@ except ImportError as e:
 
 class RAGWizardsWorker(BaseWorker):
     """RAG Elder Wizards Worker"""
-    
+
     def __init__(self, worker_id="rag_wizards"):
         """初期化"""
         super().__init__(
             worker_type="rag_wizards",
             worker_id=worker_id
         )
-        
+
         # RAGシステムの初期化
         self.rag_manager = RAGManager()
         try:
@@ -68,7 +68,7 @@ class RAGWizardsWorker(BaseWorker):
         except Exception as e:
             self.logger.warning(f"Enhanced RAG initialization failed: {e}")
             self.enhanced_rag = None
-        
+
         # RAG Grimoire Integration setup
         self.rag_config = RagGrimoireConfig(
             database_url="postgresql://localhost/grimoire",
@@ -76,15 +76,15 @@ class RAGWizardsWorker(BaseWorker):
             max_search_results=10
         )
         self.rag_integration = None
-            
+
         # ウィザードオーケストレータの初期化
         self.wizards_orchestrator = None
         self.background_tasks = []
-        
+
     async def start(self):
         """ワーカー開始"""
         self.logger.info("🧙 RAG Elder Wizards Worker starting...")
-        
+
         # Initialize RAG Grimoire Integration
         try:
             self.rag_integration = RagGrimoireIntegration(self.rag_config)
@@ -93,18 +93,18 @@ class RAGWizardsWorker(BaseWorker):
         except Exception as e:
             self.logger.error(f"Failed to initialize RAG Grimoire Integration: {e}")
             self.rag_integration = None
-        
+
         # ウィザードオーケストレータを初期化
         self.wizards_orchestrator = RAGElderWizardsOrchestrator()
         await self.wizards_orchestrator.start()
-        
+
         # 通常のワーカー処理を開始
         await super().start()
-        
+
     async def stop(self):
         """ワーカー停止"""
         self.logger.info("🛑 Stopping RAG Elder Wizards Worker...")
-        
+
         # RAG Grimoire Integration cleanup
         if self.rag_integration:
             try:
@@ -112,39 +112,39 @@ class RAGWizardsWorker(BaseWorker):
                 self.logger.info("🧙 RAG Grimoire Integration cleaned up")
             except Exception as e:
                 self.logger.error(f"Error cleaning up RAG integration: {e}")
-        
+
         # ウィザードオーケストレータを停止
         if self.wizards_orchestrator:
             await self.wizards_orchestrator.stop()
-            
+
         # バックグラウンドタスクをキャンセル
         for task in self.background_tasks:
             if not task.done():
                 task.cancel()
-                
+
         await super().stop()
-        
+
     async def process_message(self, message: Dict) -> Dict:
         """メッセージ処理"""
         task_type = message.get('task_type', 'knowledge_gap')
-        
+
         try:
             if task_type == 'knowledge_gap':
                 # 特定の知識ギャップの処理
                 result = await self._process_knowledge_gap(message)
-                
+
             elif task_type == 'manual_learning':
                 # 手動学習トリガー
                 result = await self._trigger_manual_learning(message)
-                
+
             elif task_type == 'status_report':
                 # ステータスレポート生成
                 result = await self._generate_status_report()
-                
+
             else:
                 # 通常のRAGクエリ処理
                 result = await self._process_rag_query(message)
-                
+
             # 結果を送信
             await self.send_result({
                 'task_id': message.get('task_id'),
@@ -152,11 +152,11 @@ class RAGWizardsWorker(BaseWorker):
                 'status': 'completed',
                 'worker': self.worker_id
             })
-            
+
             # アクティビティを報告（アイドルタイマーリセット）
             if self.wizards_orchestrator:
                 self.wizards_orchestrator.learning_engine.report_activity()
-                
+
         except Exception as e:
             self.logger.error(f"Error processing message: {e}")
             await self.send_result({
@@ -165,13 +165,13 @@ class RAGWizardsWorker(BaseWorker):
                 'status': 'failed',
                 'worker': self.worker_id
             })
-            
+
         return result
-        
+
     async def _process_knowledge_gap(self, message: Dict) -> Dict:
         """知識ギャップの処理"""
         gap_data = message.get('gap', {})
-        
+
         # KnowledgeGapオブジェクトを作成
         gap = KnowledgeGap(
             gap_id=gap_data.get('gap_id', f"manual_{datetime.now().timestamp()}"),
@@ -182,32 +182,32 @@ class RAGWizardsWorker(BaseWorker):
             detected_at=datetime.now(),
             context=gap_data.get('context', {})
         )
-        
+
         # ウィザードで処理
         enrichment_result = await self.wizards_orchestrator.manual_trigger_learning(gap.topic)
-        
+
         return {
             'gap_id': gap.gap_id,
             'enrichment_result': enrichment_result.__dict__ if enrichment_result else None,
             'status': 'processed'
         }
-        
+
     async def _trigger_manual_learning(self, message: Dict) -> Dict:
         """手動学習のトリガー"""
         topic = message.get('topic')
-        
+
         self.logger.info(f"🎯 Manual learning triggered for topic: {topic}")
-        
+
         # ウィザードオーケストレータで学習を実行
         result = await self.wizards_orchestrator.manual_trigger_learning(topic)
-        
+
         # Store the learning result in unified RAG system
         if result and self.rag_integration:
             try:
                 knowledge_content = f"Manual learning completed for topic: {topic}\n"
                 knowledge_content += f"Result: {str(result)}\n"
                 knowledge_content += f"Timestamp: {datetime.now().isoformat()}"
-                
+
                 await self._store_wizard_knowledge(
                     topic=topic,
                     content=knowledge_content,
@@ -219,13 +219,13 @@ class RAGWizardsWorker(BaseWorker):
                 )
             except Exception as e:
                 self.logger.warning(f"Failed to store learning result: {e}")
-        
+
         return {
             'topic': topic,
             'learning_result': result.__dict__ if result else None,
             'timestamp': datetime.now().isoformat()
         }
-        
+
     async def _generate_status_report(self) -> Dict:
         """ステータスレポート生成"""
         report = {
@@ -233,12 +233,12 @@ class RAGWizardsWorker(BaseWorker):
             'wizards_status': 'active' if self.wizards_orchestrator else 'inactive',
             'statistics': {}
         }
-        
+
         if self.wizards_orchestrator:
             # 検出されたギャップの統計
             detector = self.wizards_orchestrator.gap_detector
             report['statistics']['detected_gaps'] = len(detector.detected_gaps)
-            
+
             # ウィザードの状態
             wizard_states = []
             for wizard in self.wizards_orchestrator.hunter_wizards:
@@ -247,7 +247,7 @@ class RAGWizardsWorker(BaseWorker):
                     'state': wizard.state.value
                 })
             report['wizard_states'] = wizard_states
-            
+
             # 学習エンジンの状態
             learning_engine = self.wizards_orchestrator.learning_engine
             report['learning_engine'] = {
@@ -255,13 +255,13 @@ class RAGWizardsWorker(BaseWorker):
                 'last_activity': learning_engine.last_activity.isoformat(),
                 'queue_size': len(learning_engine.learning_queue)
             }
-            
+
         return report
-        
+
     async def _process_rag_query(self, message: Dict) -> Dict:
         """通常のRAGクエリ処理 with unified grimoire integration"""
         query = message.get('query', '')
-        
+
         # Unified RAG search using grimoire integration
         unified_results = None
         if self.rag_integration:
@@ -273,25 +273,25 @@ class RAGWizardsWorker(BaseWorker):
                 )
             except Exception as e:
                 self.logger.warning(f"Unified RAG search failed: {e}")
-        
+
         # Fallback to legacy systems if unified search fails
         basic_rag_results = None
         enhanced_results = None
-        
+
         if not unified_results:
             # 基本RAGで検索
             basic_rag_results = self.rag_manager.get_related_history(query)
-            
+
             # Enhanced RAGが利用可能な場合は追加検索
             if self.enhanced_rag:
                 try:
                     enhanced_results = await self._search_with_enhanced_rag(query)
                 except Exception as e:
                     self.logger.warning(f"Enhanced RAG search failed: {e}")
-                
+
         # ウィザードシステムにも問い合わせ
         wizard_insights = await self._get_wizard_insights(query)
-        
+
         return {
             'query': query,
             'unified_rag_results': unified_results,
@@ -300,19 +300,19 @@ class RAGWizardsWorker(BaseWorker):
             'wizard_insights': wizard_insights,
             'timestamp': datetime.now().isoformat()
         }
-        
+
     async def _search_with_enhanced_rag(self, query: str) -> List[Dict]:
         """Enhanced RAGでの検索"""
         if not self.enhanced_rag:
             return []
-            
+
         try:
             # ベクトル検索
             vector_results = self.enhanced_rag.vector_search(query, k=5)
-            
+
             # 意味的検索
             semantic_results = self.enhanced_rag.semantic_search(query, k=5)
-            
+
             # 結果を統合
             combined_results = []
             for result in vector_results + semantic_results:
@@ -322,23 +322,23 @@ class RAGWizardsWorker(BaseWorker):
                     'source': result.source,
                     'metadata': result.metadata
                 })
-                
+
             return combined_results
-            
+
         except Exception as e:
             self.logger.error(f"Enhanced RAG search error: {e}")
             return []
-            
+
     async def _get_wizard_insights(self, query: str) -> Dict:
         """ウィザードシステムから洞察を取得"""
         if not self.wizards_orchestrator:
             return {}
-            
+
         try:
             # クエリに関連する知識ギャップがあるかチェック
             detector = self.wizards_orchestrator.gap_detector
             related_gaps = []
-            
+
             for gap_id, gap in detector.detected_gaps.items():
                 if query.lower() in gap.topic.lower() or query.lower() in gap.description.lower():
                     related_gaps.append({
@@ -347,22 +347,22 @@ class RAGWizardsWorker(BaseWorker):
                         'priority': gap.priority,
                         'type': gap.gap_type.value
                     })
-                    
+
             return {
                 'related_gaps': related_gaps,
                 'total_gaps': len(detector.detected_gaps),
                 'recommendation': 'Consider triggering manual learning' if related_gaps else 'No immediate gaps detected'
             }
-            
+
         except Exception as e:
             self.logger.error(f"Wizard insights error: {e}")
             return {}
-    
+
     async def _store_wizard_knowledge(self, topic: str, content: str, metadata: Dict = None):
         """Store wizard-generated knowledge in the unified RAG system"""
         if not self.rag_integration:
             return
-        
+
         try:
             spell_id = await self.rag_integration.add_knowledge_unified(
                 spell_name=f"wizard_knowledge_{topic}",
@@ -371,45 +371,178 @@ class RAGWizardsWorker(BaseWorker):
                 category='wizard_learning',
                 tags=['wizard', 'automated_learning', topic]
             )
-            
+
             self.logger.info(f"🧙 Wizard knowledge stored: {spell_id}")
             return spell_id
-            
+
         except Exception as e:
             self.logger.error(f"Failed to store wizard knowledge: {e}")
             return None
+
+    def validate_config(self, config: Dict[str, Any]) -> bool:
+        """設定検証"""
+        try:
+            # 必須フィールドチェック
+            required_fields = getattr(self, 'REQUIRED_CONFIG_FIELDS', [])
+            for field in required_fields:
+                if field not in config:
+                    self.logger.warning(f"必須フィールド不足: {field}")
+                    return False
+            return True
+        except Exception as e:
+            self.logger.error(f"設定検証エラー: {e}")
+            return False
+
+    async def handle_error(self, error: Exception, context: Optional[Dict[str, Any]] = None) -> None:
+        """エラーハンドリング"""
+        error_info = {
+            "worker": self.__class__.__name__,
+            "error_type": type(error).__name__,
+            "error_message": str(error),
+            "timestamp": datetime.now().isoformat(),
+            "context": context or {}
+        }
+
+        self.logger.error(f"エラー発生: {error_info}")
+
+        # エラー記録
+        if hasattr(self, 'error_history'):
+            self.error_history.append(error_info)
+
+        # インシデント報告
+        if hasattr(self, 'incident_reporter'):
+            await self.incident_reporter.report(error_info)
+
+    async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """メッセージ処理"""
+        try:
+            message_type = message.get("type", "unknown")
+
+            # メッセージタイプ別処理
+            if hasattr(self, f"_handle_{message_type}"):
+                handler = getattr(self, f"_handle_{message_type}")
+                return await handler(message)
+
+            # デフォルト処理
+            return {
+                "status": "processed",
+                "worker": self.__class__.__name__,
+                "message_id": message.get("id"),
+                "timestamp": datetime.now().isoformat()
+            }
+
+        except Exception as e:
+            await self.handle_error(e, {"message": message})
+            return None
+
+    def get_status(self) -> Dict[str, Any]:
+        """ステータス取得"""
+        return {
+            "worker": self.__class__.__name__,
+            "status": "running" if getattr(self, 'running', False) else "stopped",
+            "uptime": self._calculate_uptime() if hasattr(self, '_calculate_uptime') else 0,
+            "processed_count": getattr(self, 'processed_count', 0),
+            "error_count": len(getattr(self, 'error_history', [])),
+            "last_activity": getattr(self, 'last_activity', None),
+            "health": self._check_health() if hasattr(self, '_check_health') else "unknown"
+        }
+
+    async def cleanup(self) -> None:
+        """クリーンアップ処理"""
+        self.logger.info(f"{self.__class__.__name__} クリーンアップ開始")
+
+        try:
+            # 実行中タスクのキャンセル
+            if hasattr(self, 'active_tasks'):
+                for task in self.active_tasks:
+                    if not task.done():
+                        task.cancel()
+                await asyncio.gather(*self.active_tasks, return_exceptions=True)
+
+            # リソース解放
+            if hasattr(self, 'connection') and self.connection:
+                await self.connection.close()
+
+            # 一時ファイル削除
+            if hasattr(self, 'temp_dir') and self.temp_dir.exists():
+                import shutil
+                shutil.rmtree(self.temp_dir)
+
+        except Exception as e:
+            self.logger.error(f"クリーンアップエラー: {e}")
+
+        self.logger.info(f"{self.__class__.__name__} クリーンアップ完了")
+
+    async def initialize(self) -> None:
+        """初期化処理"""
+        self.logger.info(f"{self.__class__.__name__} 初期化開始")
+
+        try:
+            # 基本属性初期化
+            self.running = False
+            self.processed_count = 0
+            self.error_history = []
+            self.start_time = datetime.now()
+            self.last_activity = None
+            self.active_tasks = set()
+
+            # 設定検証
+            if hasattr(self, 'config'):
+                if not self.validate_config(self.config):
+                    raise ValueError("設定検証失敗")
+
+            # 必要なディレクトリ作成
+            if hasattr(self, 'work_dir'):
+                self.work_dir.mkdir(parents=True, exist_ok=True)
+
+        except Exception as e:
+            self.logger.error(f"初期化エラー: {e}")
+            raise
+
+        self.logger.info(f"{self.__class__.__name__} 初期化完了")
+
+    async def stop(self) -> None:
+        """停止処理"""
+        self.logger.info(f"{self.__class__.__name__} 停止処理開始")
+
+        self.running = False
+
+        # クリーンアップ実行
+        await self.cleanup()
+
+        self.logger.info(f"{self.__class__.__name__} 停止完了")
 
 
 async def main():
     """テスト実行"""
     worker = RAGWizardsWorker()
-    
+
     try:
         # ワーカーを開始
         await worker.start()
-        
+
         # テストメッセージを処理
         test_message = {
             'task_id': 'test_001',
             'task_type': 'manual_learning',
             'topic': 'worker_health_monitoring'
         }
-        
+
         result = await worker.process_message(test_message)
         print(f"Result: {json.dumps(result, indent=2, default=str)}")
-        
+
         # ステータスレポートを生成
         status_message = {
             'task_id': 'test_002',
             'task_type': 'status_report'
         }
-        
+
         status = await worker.process_message(status_message)
         print(f"Status: {json.dumps(status, indent=2, default=str)}")
-        
+
         # 少し待機
         await asyncio.sleep(5)
-        
+
     finally:
         await worker.stop()
 

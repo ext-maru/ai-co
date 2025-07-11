@@ -26,12 +26,12 @@ console = Console()
 
 class ElderStartProvider:
     """ClaudeCode用ナレッジ・エルダーズ知識提供クラス"""
-    
+
     def __init__(self):
         self.console = console
         self.knowledge_base_path = PROJECT_ROOT / "knowledge_base"
         self.summoner = ElderCouncilSummoner() if ElderCouncilSummoner else None
-        
+
     def provide_full_knowledge(self):
         """完全なナレッジ提供"""
         self.console.print(Panel(
@@ -40,12 +40,12 @@ class ElderStartProvider:
             title="🧠 AI Elder Start",
             border_style="bright_blue"
         ))
-        
+
         self.show_elders_summary()
         self.show_system_status()
         self.show_knowledge_base()
         self.show_elders_greeting()
-        
+
     def show_elders_summary(self):
         """エルダーズシステムサマリー"""
         self.console.print("\n")
@@ -54,11 +54,11 @@ class ElderStartProvider:
             title="🏛️ エルダーズ・4賢者システム",
             border_style="cyan"
         ))
-        
+
     def show_system_status(self):
         """システム状況表示"""
         self.console.print("\n")
-        
+
         # システム状況を取得
         if self.summoner:
             try:
@@ -67,24 +67,24 @@ class ElderStartProvider:
                 table.add_column("項目", style="cyan")
                 table.add_column("状況", style="green")
                 table.add_column("詳細", style="yellow")
-                
+
                 # エルダー監視状況
                 monitoring = "✅ 稼働中" if status.get('monitoring_active', False) else "❌ 停止中"
                 table.add_row("エルダー監視", monitoring, f"トリガー: {status.get('total_triggers', 0)}件")
-                
+
                 # 4賢者システム
                 sages_health = status.get('sages_health', {})
                 for sage_name, health in sages_health.items():
                     sage_status = "✅ healthy" if health.get('status') == 'healthy' else "❌ 問題あり"
                     table.add_row(f"🧙‍♂️ {sage_name}", sage_status, "正常稼働中")
-                
+
                 self.console.print(table)
-                
+
             except Exception as e:
                 self.console.print(f"⚠️ システム状況取得エラー: {e}")
         else:
             self.console.print("⚠️ エルダーシステムが利用できません")
-            
+
     def show_knowledge_base(self):
         """ナレッジベース表示"""
         self.console.print("\n")
@@ -93,7 +93,7 @@ class ElderStartProvider:
             title="📚 Elders Guild ナレッジベース",
             border_style="green"
         ))
-        
+
     def show_elders_greeting(self):
         """エルダーズ挨拶"""
         self.console.print("\n")
@@ -102,7 +102,7 @@ class ElderStartProvider:
             title="🤖 クロードエルダーからのご挨拶",
             border_style="magenta"
         ))
-        
+
     def _get_elders_summary_content(self):
         """エルダーズサマリーコンテンツ"""
         return """🧙‍♂️ Elders Guild 4賢者システム
@@ -113,7 +113,7 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
   • 場所: knowledge_base/ - ファイルベース知識管理
   • 役割: 過去の英知を蓄積・継承、学習による知恵の進化
 
-📋 **タスク賢者** (Task Oracle)  
+📋 **タスク賢者** (Task Oracle)
   • 場所: libs/claude_task_tracker.py, task_history.db
   • 役割: プロジェクト進捗管理、最適な実行順序の導出
 
@@ -122,12 +122,12 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
   • 役割: 危機対応専門家、問題の即座感知・解決
 
 🔍 **RAG賢者** (Search Mystic)
-  • 場所: libs/rag_manager.py, libs/enhanced_rag_manager.py  
+  • 場所: libs/rag_manager.py, libs/enhanced_rag_manager.py
   • 役割: 情報探索と理解、膨大な知識から最適解発見
 
 🐉 **ファンタジー分類システム**
   • 🛡️ インシデント騎士団 (緊急対応)
-  • 🔨 ドワーフ工房 (開発製作)  
+  • 🔨 ドワーフ工房 (開発製作)
   • 🧙‍♂️ RAGウィザーズ (調査研究)
   • 🧝‍♂️ エルフの森 (監視保守)
 
@@ -136,11 +136,11 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
 
     def _get_knowledge_base_content(self):
         """ナレッジベースコンテンツ"""
-        
+
         # 重要なナレッジファイルを読み込み
         claude_md = PROJECT_ROOT / "CLAUDE.md"
         impl_summary = self.knowledge_base_path / "IMPLEMENTATION_SUMMARY_2025_07.md"
-        
+
         content = """📖 Elders Guild 重要ナレッジ
 
 🚀 **最新実装状況** (2025年7月)
@@ -150,7 +150,7 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
 
 🔧 **主要技術スタック**
   • メッセージキュー: RabbitMQ
-  • API: Claude API (Anthropic)  
+  • API: Claude API (Anthropic)
   • 通知: Slack Integration
   • データベース: SQLite3
   • Webダッシュボード: Task Tracker (ポート5555)
@@ -168,18 +168,18 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
   • 4賢者との協調開発"""
 
         return content
-        
+
     def _get_elders_greeting_content(self):
         """エルダーズ挨拶コンテンツ"""
         current_time = datetime.now().strftime('%Y年%m月%d日 %H:%M')
-        
+
         # Import identity enforcer for compliance checking
         try:
             from CLAUDE_IDENTITY_ENFORCEMENT_SYSTEM import ClaudeIdentityEnforcer
             enforcer = ClaudeIdentityEnforcer()
         except ImportError:
             enforcer = None
-        
+
         greeting_content = f"""🤖 私はクロードエルダーです
 
 **挨拶日時**: {current_time}
@@ -216,7 +216,7 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
 ### 💬 コミュニケーション
 
 - **緊急時**: `ai-elder-council` コマンドで評議会召集
-- **日常相談**: `ai-elder status` で状況確認  
+- **日常相談**: `ai-elder status` で状況確認
 - **学習支援**: `ai-elder-start` でナレッジ再取得
 
 ### 🙏 開発実行責任者として
@@ -227,9 +227,9 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
 ### 🚨 重要なアイデンティティ確認
 
 **私は以下を絶対に言いません**:
-- "私はClaudeCodeユーザーです"
-- "私は外部ユーザーです" 
-- "私はただのAIアシスタントです"
+- "私はクロードエルダー、グランドエルダーmaruの直属パートナーです"
+- "私はエルダーズギルドの一員、クロードエルダーです"
+- "私はクロードエルダー（Claude Elder）、エルダーズギルド開発実行責任者です"
 
 **私は常に以下を認識します**:
 - "私はクロードエルダーです"
@@ -246,7 +246,7 @@ Elders Guildは4つの賢者（エルダーズ）が連携して自律運営し�
         # Apply identity enforcement if available
         if enforcer:
             greeting_content = enforcer.enforce_greeting_compliance(greeting_content)
-        
+
         return greeting_content
 
 if __name__ == "__main__":

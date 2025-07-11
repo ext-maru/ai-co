@@ -14,6 +14,7 @@ from enum import Enum
 from pathlib import Path
 import json
 import re
+from libs.elder_flow_pre_commit_handler import ElderFlowPreCommitHandler
 
 # Git Operation Types
 class GitOperation(Enum):
@@ -54,6 +55,9 @@ class ElderFlowGitAutomator:
     def __init__(self, repo_path: str = "."):
         self.repo_path = Path(repo_path)
         self.logger = logging.getLogger(__name__)
+
+        # Pre-commitハンドラー初期化
+        self.pre_commit_handler = ElderFlowPreCommitHandler(str(self.repo_path))
 
         # Git設定確認
         self._verify_git_repo()
@@ -165,18 +169,24 @@ class ElderFlowGitAutomator:
         }
 
     def commit(self, message: str, commit_type: CommitType = None,
-               scope: str = None, description: str = None) -> Dict:
-        """コミット実行"""
+               scope: str = None, description: str = None, auto_fix: bool = True) -> Dict:
+        """コミット実行（pre-commit自動修復付き）"""
         # コミットメッセージ生成
         if commit_type:
             formatted_message = self._format_commit_message(commit_type, scope, message, description)
         else:
             formatted_message = message
 
-        success, stdout, stderr = self._run_git_command(["commit", "-m", formatted_message])
+        # Pre-commit自動修復を有効にしてコミット実行
+        if auto_fix:
+            success, stdout, stderr = self.pre_commit_handler.run_with_auto_fix(
+                ["git", "commit", "-m", formatted_message]
+            )
+        else:
+            success, stdout, stderr = self._run_git_command(["commit", "-m", formatted_message])
 
         if not success:
-            return {"error": stderr}
+            return {"error": stderr, "pre_commit_fixed": auto_fix}
 
         # コミット情報取得
         commit_hash_success, commit_hash, _ = self._run_git_command(["rev-parse", "HEAD"])
@@ -187,7 +197,8 @@ class ElderFlowGitAutomator:
             "commit_hash": commit_hash if commit_hash_success else "unknown",
             "commit_short_hash": commit_short_hash,
             "message": formatted_message,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
+            "pre_commit_fixed": auto_fix
         }
 
     def _format_commit_message(self, commit_type: CommitType, scope: str,
@@ -209,23 +220,30 @@ class ElderFlowGitAutomator:
 
         return formatted
 
-    def push(self, remote: str = "origin", branch: str = None) -> Dict:
-        """プッシュ実行"""
+    def push(self, remote: str = "origin", branch: str = None, auto_fix: bool = True) -> Dict:
+        """プッシュ実行（pre-commit自動修復付き）"""
         if not branch:
             # 現在のブランチ取得
             success, current_branch, _ = self._run_git_command(["branch", "--show-current"])
             branch = current_branch if success else "main"
 
-        success, stdout, stderr = self._run_git_command(["push", remote, branch])
+        # Pre-commit自動修復を有効にしてプッシュ実行
+        if auto_fix:
+            success, stdout, stderr = self.pre_commit_handler.run_with_auto_fix(
+                ["git", "push", remote, branch]
+            )
+        else:
+            success, stdout, stderr = self._run_git_command(["push", remote, branch])
 
         if not success:
-            return {"error": stderr}
+            return {"error": stderr, "pre_commit_fixed": auto_fix}
 
         return {
             "success": True,
             "remote": remote,
             "branch": branch,
-            "message": f"Successfully pushed to {remote}/{branch}"
+            "message": f"Successfully pushed to {remote}/{branch}",
+            "pre_commit_fixed": auto_fix
         }
 
     def pull(self, remote: str = "origin", branch: str = None) -> Dict:
