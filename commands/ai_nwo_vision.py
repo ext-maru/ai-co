@@ -186,42 +186,51 @@ class nWoVisionExtension(BaseCommand):
             return "👑 Phase 4: Domination (支配期)"
 
     def _determine_today_nwo_focus(self, progress_analysis: Dict) -> List[str]:
-        """今日のnWo戦略フォーカス決定"""
-        focus_areas = []
+        """今日のnWo戦略フォーカス決定（機能開発優先）"""
+        # 機能開発を優先する新しいロジック
+        # Global Dominationより、実際の機能実装を重視
 
-        # 最も遅れている柱を特定
-        min_progress = float('inf')
-        focus_pillar = None
+        # 優先順位を機能実装に基づいて判定
+        priority_order = ["instant_reality", "mind_reading", "prophetic_dev", "global_domination"]
 
-        for pillar, data in progress_analysis["pillar_progress"].items():
-            if data["current_level"] < min_progress:
-                min_progress = data["current_level"]
-                focus_pillar = pillar
+        # 各柱の進捗を確認
+        pillar_scores = {}
+        for pillar in priority_order:
+            progress = progress_analysis["pillar_progress"][pillar]["current_level"]
+            # 機能系は進捗が低いほど優先度高い
+            # 商用系（global_domination）は重み付けを下げる
+            if pillar == "global_domination":
+                pillar_scores[pillar] = progress + 50  # ペナルティ追加
+            else:
+                pillar_scores[pillar] = progress
 
-        # フォーカス決定
+        # 最も優先すべき柱を選択
+        focus_pillar = min(pillar_scores, key=pillar_scores.get)
+
+        # フォーカス決定（機能実装重視）
         if focus_pillar == "mind_reading":
             focus_areas = [
-                "🧠 maru様の過去指示パターン分析強化",
-                "💭 思考理解AIの学習データ収集",
-                "🎯 意図予測精度向上のための試行"
+                "🧠 意図推論AI v0.1の実装開始",
+                "💭 自然言語理解エンジン開発",
+                "🎯 maru様思考パターン学習システム構築"
             ]
         elif focus_pillar == "instant_reality":
             focus_areas = [
-                "⚡ AI並列コード生成システム開発",
-                "🔧 自動テスト・デプロイパイプライン強化",
-                "🚀 瞬間実装のボトルネック解消"
+                "⚡ Elder Flow 0.30秒高速化実装",
+                "🔧 AI並列コード生成システム開発",
+                "🚀 リアルタイム実装パイプライン構築"
             ]
         elif focus_pillar == "prophetic_dev":
             focus_areas = [
-                "🔮 市場トレンド分析AI構築",
-                "📊 予測モデルの精度向上",
-                "🎲 先行開発候補の自動生成"
+                "🔮 技術トレンド自動収集Bot開発",
+                "📊 AIベース需要予測エンジン実装",
+                "🎲 自動機能提案システム構築"
             ]
-        else:  # global_domination
+        else:  # global_domination（優先度低）
             focus_areas = [
-                "🌍 商用プラットフォーム設計",
-                "💰 収益モデル戦略策定",
-                "🏢 競合分析と差別化戦略"
+                "🛠️ 内部ツール最適化（商用化は後回し）",
+                "📝 技術ドキュメント整備",
+                "🔧 開発環境の改善"
             ]
 
         return focus_areas
@@ -230,14 +239,22 @@ class nWoVisionExtension(BaseCommand):
         """今日の具体的なアクションアイテム生成"""
         actions = []
 
-        # 最も遅れている柱を特定
-        min_progress = float('inf')
-        focus_pillar = None
+        # 機能開発を優先する新しいロジック
+        priority_order = ["instant_reality", "mind_reading", "prophetic_dev", "global_domination"]
 
-        for pillar, data in progress_analysis["pillar_progress"].items():
-            if data["current_level"] < min_progress:
-                min_progress = data["current_level"]
-                focus_pillar = pillar
+        # 各柱の進捗を確認
+        pillar_scores = {}
+        for pillar in priority_order:
+            progress = progress_analysis["pillar_progress"][pillar]["current_level"]
+            # 機能系は進捗が低いほど優先度高い
+            # 商用系（global_domination）は重み付けを下げる
+            if pillar == "global_domination":
+                pillar_scores[pillar] = progress + 50  # ペナルティ追加
+            else:
+                pillar_scores[pillar] = progress
+
+        # 最も優先すべき柱を選択
+        focus_pillar = min(pillar_scores, key=pillar_scores.get)
 
         # 優先度と時間を考慮したアクション生成
         if focus_pillar == "mind_reading":
