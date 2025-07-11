@@ -1,0 +1,1 @@
+"elder_admin" "SCRAM-SHA-256$4096:salt$hash:hash"

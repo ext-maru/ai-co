@@ -1,0 +1,207 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # PostgreSQL Master (Primary Database)
+  # ============================================================================
+  postgres-master:
+    image: pgvector/pgvector:pg16
+    container_name: elders_guild_postgres_master
+    environment:
+      POSTGRES_DB: elders_guild
+      POSTGRES_USER: elder_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-elders_guild_2025}
+      POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:-replication_2025}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    command: |
+      postgres
+      -c wal_level=replica
+      -c max_wal_senders=10
+      -c max_replication_slots=10
+      -c hot_standby=on
+      -c shared_buffers=512MB
+      -c effective_cache_size=1GB
+      -c maintenance_work_mem=256MB
+      -c work_mem=32MB
+      -c max_connections=200
+      -c logging_collector=on
+      -c log_directory=/var/log/postgresql
+      -c log_filename=postgresql-%Y-%m-%d_%H%M%S.log
+      -c log_min_duration_statement=1000
+      -c log_statement=ddl
+      -c log_checkpoints=on
+      -c log_connections=on
+      -c log_disconnections=on
+      -c shared_preload_libraries=pg_stat_statements
+      -c track_activities=on
+      -c track_counts=on
+      -c track_io_timing=on
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_master_data:/var/lib/postgresql/data
+      - ./postgres-logs:/var/log/postgresql
+      - ./elders_guild_unified_schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+      - ./postgresql.conf:/etc/postgresql/postgresql.conf
+    networks:
+      - elders_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U elder_admin -d elders_guild"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # PostgreSQL Slave (Read Replica)
+  # ============================================================================
+  postgres-slave:
+    image: pgvector/pgvector:pg16
+    container_name: elders_guild_postgres_slave
+    environment:
+      POSTGRES_USER: elder_admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-elders_guild_2025}
+      POSTGRES_REPLICATION_USER: replicator
+      POSTGRES_REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:-replication_2025}
+      PGUSER: elder_admin
+      PGPASSWORD: ${POSTGRES_PASSWORD:-elders_guild_2025}
+    command: |
+      bash -c "
+      if [ ! -f /var/lib/postgresql/data/PG_VERSION ]; then
+        echo 'Setting up replica...'
+        pg_basebackup -h postgres-master -D /var/lib/postgresql/data -U replicator -v -P -W
+        echo 'standby_mode = on' >> /var/lib/postgresql/data/postgresql.conf
+        echo 'primary_conninfo = \"host=postgres-master port=5432 user=replicator password=${REPLICATION_PASSWORD:-replication_2025}\"' >> /var/lib/postgresql/data/postgresql.conf
+        echo 'hot_standby = on' >> /var/lib/postgresql/data/postgresql.conf
+      fi
+      postgres
+      "
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_slave_data:/var/lib/postgresql/data
+      - ./postgres-logs-slave:/var/log/postgresql
+    networks:
+      - elders_network
+    depends_on:
+      postgres-master:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U elder_admin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # PgBouncer (Connection Pooling)
+  # ============================================================================
+  pgbouncer:
+    image: pgbouncer/pgbouncer:latest
+    container_name: elders_guild_pgbouncer
+    environment:
+      DATABASES_HOST: postgres-master
+      DATABASES_PORT: 5432
+      DATABASES_USER: elder_admin
+      DATABASES_PASSWORD: ${POSTGRES_PASSWORD:-elders_guild_2025}
+      DATABASES_DBNAME: elders_guild
+      POOL_MODE: transaction
+      SERVER_RESET_QUERY: DISCARD ALL
+      MAX_CLIENT_CONN: 1000
+      DEFAULT_POOL_SIZE: 100
+      RESERVE_POOL_SIZE: 25
+      ADMIN_USERS: elder_admin
+      STATS_USERS: elder_admin
+    ports:
+      - "6432:5432"
+    volumes:
+      - ./pgbouncer.ini:/etc/pgbouncer/pgbouncer.ini
+      - ./userlist.txt:/etc/pgbouncer/userlist.txt
+    networks:
+      - elders_network
+    depends_on:
+      postgres-master:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "psql", "-h", "127.0.0.1", "-p", "5432", "-U", "elder_admin", "-d", "pgbouncer", "-c", "SHOW POOLS;"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # Redis (Caching & Session Store)
+  # ============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: elders_guild_redis
+    command: redis-server --appendonly yes --maxmemory 1gb --maxmemory-policy allkeys-lru
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - elders_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================================
+  # PostgreSQL Monitoring
+  # ============================================================================
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:latest
+    container_name: elders_guild_postgres_exporter
+    environment:
+      DATA_SOURCE_NAME: "postgresql://elder_admin:${POSTGRES_PASSWORD:-elders_guild_2025}@postgres-master:5432/elders_guild?sslmode=disable"
+    ports:
+      - "9187:9187"
+    networks:
+      - elders_network
+    depends_on:
+      postgres-master:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ============================================================================
+  # pgAdmin (Database Management UI)
+  # ============================================================================
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: elders_guild_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@eldersguild.com
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin_2025}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - elders_network
+    depends_on:
+      postgres-master:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_master_data:
+    driver: local
+  postgres_slave_data:
+    driver: local
+  redis_data:
+    driver: local
+  pgadmin_data:
+    driver: local
+
+networks:
+  elders_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16

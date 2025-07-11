@@ -10,7 +10,7 @@ const SubmissionPage = () => {
   const [files, setFiles] = useState([]);
   const [dragOver, setDragOver] = useState(false);
 
-  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:8001';
+  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:8002';
 
   useEffect(() => {
     fetchSession();
@@ -18,7 +18,7 @@ const SubmissionPage = () => {
 
   const fetchSession = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/v1/submission/sessions/${sessionId}`);
+      const response = await fetch(`${API_BASE}/api/v1/sessions/${sessionId}`);
       if (!response.ok) {
         throw new Error('セッション情報の取得に失敗しました');
       }
@@ -79,7 +79,7 @@ const SubmissionPage = () => {
         formData.append('files', file);
       });
 
-      const response = await fetch(`${API_BASE}/api/v1/submission/sessions/${sessionId}/upload`, {
+      const response = await fetch(`${API_BASE}/api/v1/sessions/${sessionId}/upload`, {
         method: 'POST',
         body: formData,
       });

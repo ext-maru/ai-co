@@ -1,0 +1,22 @@
+# PgBouncer User List
+# Format: "username" "password_hash"
+# Use md5 or scram-sha-256 hashing
+
+# Admin user
+"elder_admin" "SCRAM-SHA-256$4096:salt$hash:hash"
+
+# Replication user
+"replicator" "SCRAM-SHA-256$4096:salt$hash:hash"
+
+# Sage-specific users
+"knowledge_sage_user" "SCRAM-SHA-256$4096:salt$hash:hash"
+"task_sage_user" "SCRAM-SHA-256$4096:salt$hash:hash"
+"incident_sage_user" "SCRAM-SHA-256$4096:salt$hash:hash"
+"rag_sage_user" "SCRAM-SHA-256$4096:salt$hash:hash"
+
+# Application users
+"app_read_user" "SCRAM-SHA-256$4096:salt$hash:hash"
+"app_write_user" "SCRAM-SHA-256$4096:salt$hash:hash"
+
+# Monitoring user
+"monitoring_user" "SCRAM-SHA-256$4096:salt$hash:hash"

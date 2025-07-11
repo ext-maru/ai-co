@@ -1,5 +1,5 @@
-# Elders Guild Project Web Portal
-# RAGエルダー推奨Docker統合環境
+# Elders Guild CI/CD Enhanced Docker Environment
+# 統合開発・本番環境対応
 
 services:
   # PostgreSQL + pgvector データベース
@@ -11,11 +11,13 @@ services:
       POSTGRES_USER: elder_admin
       POSTGRES_PASSWORD: sage_wisdom_2025
       POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
     ports:
       - "8003:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - ./database/elders_guild_unified_schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./scripts/init_db.sql:/docker-entrypoint-initdb.d/02-init.sql
     networks:
       - elders-network
     healthcheck:
@@ -30,7 +32,7 @@ services:
     container_name: elders-guild-redis
     ports:
       - "8004:6379"
-    command: redis-server --appendonly yes
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
     volumes:
       - redis_data:/data
     networks:
@@ -41,19 +43,81 @@ services:
       timeout: 10s
       retries: 5
 
-  # FastAPI バックエンド
+  # Unified API Server
+  api-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: elders-guild-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://elder_admin:sage_wisdom_2025@postgres:5432/elders_guild
+      REDIS_URL: redis://redis:6379/0
+      ENV: development
+      LOG_LEVEL: INFO
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      PYTHONPATH: /app
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./libs:/app/libs
+      - ./knowledge_base:/app/knowledge_base
+      - ./logs:/app/logs
+    networks:
+      - elders-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v2/system/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    restart: unless-stopped
+
+  # Event Bus Worker
+  event-worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: elders-guild-event-worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://elder_admin:sage_wisdom_2025@postgres:5432/elders_guild
+      REDIS_URL: redis://redis:6379/0
+      ENV: development
+      LOG_LEVEL: INFO
+      WORKER_TYPE: event_bus
+    volumes:
+      - ./libs:/app/libs
+      - ./knowledge_base:/app/knowledge_base
+      - ./logs:/app/logs
+    networks:
+      - elders-network
+    command: ["python", "-m", "libs.elders_guild_event_bus"]
+    restart: unless-stopped
+
+  # Legacy Backend (for transition)
   backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: elders-guild-backend
+    container_name: elders-guild-backend-legacy
     environment:
       - DATABASE_URL=postgresql://elder_admin:sage_wisdom_2025@postgres:5432/elders_guild
       - REDIS_URL=redis://redis:6379/0
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - PYTHONPATH=/app
     ports:
-      - "8001:8000"
+      - "8005:8000"
     volumes:
       - .:/app
       - /app/venv
@@ -80,6 +144,7 @@ services:
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:8001
       - NEXT_PUBLIC_WS_URL=ws://localhost:8001
+      - NEXT_PUBLIC_LEGACY_API_URL=http://localhost:8005
     ports:
       - "8002:3000"
     volumes:
@@ -87,7 +152,7 @@ services:
       - /app/node_modules
       - /app/.next
     depends_on:
-      backend:
+      api-server:
         condition: service_healthy
     networks:
       - elders-network
@@ -97,6 +162,41 @@ services:
       timeout: 10s
       retries: 5
       start_period: 60s
+
+  # Monitoring - Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: elders-guild-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    networks:
+      - elders-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+
+  # Monitoring - Grafana
+  grafana:
+    image: grafana/grafana:latest
+    container_name: elders-guild-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: grafana_admin_password
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - elders-network
+    depends_on:
+      - prometheus
 
   # Nginx リバースプロキシ
   nginx:
@@ -110,7 +210,7 @@ services:
       - ./nginx/sites-available:/etc/nginx/sites-available
       - ./nginx/ssl:/etc/nginx/ssl
     depends_on:
-      - backend
+      - api-server
       - frontend
     networks:
       - elders-network
@@ -119,11 +219,16 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
+    restart: unless-stopped
 
 volumes:
   postgres_data:
     driver: local
   redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
     driver: local
 
 networks:

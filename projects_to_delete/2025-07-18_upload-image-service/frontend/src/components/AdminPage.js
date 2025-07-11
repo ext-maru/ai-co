@@ -21,7 +21,7 @@ const AdminPage = () => {
 
   const fetchSessions = async () => {
     try {
-      const response = await fetch(`${API_BASE}/api/v1/submission/admin/sessions`);
+      const response = await fetch(`${API_BASE}/api/v1/admin/sessions`);
       if (!response.ok) {
         throw new Error('セッション一覧の取得に失敗しました');
       }
@@ -40,7 +40,7 @@ const AdminPage = () => {
     setError(null);
 
     try {
-      const response = await fetch(`${API_BASE}/api/v1/submission/sessions`, {
+      const response = await fetch(`${API_BASE}/api/v1/sessions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

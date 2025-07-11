@@ -12,7 +12,6 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "  ai-elder status            システム状況確認"
     echo "  ai-elder knowledge         CLAUDE.md知識確認"
     echo "  ai-elder test              起動フック単体テスト"
-    echo "  ai-elder old [args]        旧ai-elderコマンド実行"
     echo ""
     echo "🧙‍♂️ Elders Guild Features:"
     echo "  • CLAUDE.md自動読み込み"
@@ -24,7 +23,6 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
     echo "例:"
     echo "  ai-elder cast                    # 対話式で起動"
     echo "  ai-elder cast 'TDDで新機能作成'   # プロンプト指定"
-    echo "  ai-elder old council status      # 旧機能使用"
     exit 0
 fi
 
@@ -74,11 +72,6 @@ case "$1" in
         echo "Environment Variables Set:"
         env | grep CLAUDE_ || echo "No CLAUDE_* environment variables found"
         ;;
-    "old")
-        echo "🔄 Executing legacy ai-elder command..."
-        shift  # 'old'を引数から除去
-        exec /home/aicompany/ai_co/ai-elder-old "$@"
-        ;;
     *)
         echo "🏛️  AI Elder - Elders Guild Enhanced Claude CLI"
         echo ""
@@ -89,7 +82,6 @@ case "$1" in
         echo "  status     📊 システム状況確認"
         echo "  knowledge  📚 CLAUDE.md知識確認"
         echo "  test       🧪 起動フック単体テスト"
-        echo "  old        🔄 旧ai-elderコマンド実行"
         echo ""
         echo "詳細: ai-elder --help"
         echo ""

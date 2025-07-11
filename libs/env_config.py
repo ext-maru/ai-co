@@ -32,5 +32,11 @@ def main(*args, **kwargs):
     logger.warning("Using placeholder main function")
 
 
+def get_config(*args, **kwargs):
+    """Placeholder get_config function"""
+    logger.warning("Using placeholder get_config function")
+    return {}
+
+
 # Export
-__all__ = ["EnvConfig", "setup", "main"]
+__all__ = ["EnvConfig", "setup", "main", "get_config"]

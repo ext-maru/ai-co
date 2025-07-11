@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import GoogleDriveGuide from './GoogleDriveGuide';
 
 const SettingsPage = () => {
   const [settings, setSettings] = useState({
@@ -18,7 +19,7 @@ const SettingsPage = () => {
   const [connectionStatus, setConnectionStatus] = useState(null);
   const [credentialsFile, setCredentialsFile] = useState(null);
 
-  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:8001';
+  const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:8002';
 
   useEffect(() => {
     fetchSettings();
@@ -333,32 +334,8 @@ const SettingsPage = () => {
         </div>
 
         <div className="settings-section">
-          <h3>使用方法</h3>
-          <div style={{ background: '#f8f9fa', padding: '15px', borderRadius: '6px', fontSize: '14px' }}>
-            <h4>セットアップ手順:</h4>
-            <ol>
-              <li>Google Cloud Consoleでプロジェクトを作成</li>
-              <li>Google Drive APIを有効化</li>
-              <li>サービスアカウントを作成し、JSONキーをダウンロード</li>
-              <li>上記の「認証ファイル」からJSONファイルをアップロード</li>
-              <li>Google Driveで親フォルダを作成</li>
-              <li>親フォルダをサービスアカウントと共有（編集権限）</li>
-              <li>親フォルダのIDを上記「親フォルダID」に入力</li>
-              <li>「接続テスト」で動作を確認</li>
-            </ol>
-
-            <h4>詳細なセットアップガイド:</h4>
-            <p>
-              <a
-                href="https://docs.google.com/document/d/1example-setup-guide"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#007bff' }}
-              >
-                Google Drive連携セットアップガイド
-              </a>
-            </p>
-          </div>
+          <h3>📋 セットアップガイド</h3>
+          <GoogleDriveGuide />
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '30px' }}>

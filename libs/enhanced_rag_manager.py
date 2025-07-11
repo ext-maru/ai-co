@@ -21,6 +21,17 @@ class EnhancedRagManager:
         return lambda *args, **kwargs: None
 
 
+class VectorEmbedding:
+    """Auto-generated placeholder class"""
+
+    def __init__(self, *args, **kwargs):
+        logger.warning(f"Using auto-generated placeholder for {self.__class__.__name__}")
+
+    def __getattr__(self, name):
+        logger.warning(f"Accessing placeholder attribute: {name}")
+        return lambda *args, **kwargs: None
+
+
 # Common function placeholders
 def setup(*args, **kwargs):
     """Placeholder setup function"""
@@ -33,4 +44,4 @@ def main(*args, **kwargs):
 
 
 # Export
-__all__ = ["EnhancedRagManager", "setup", "main"]
+__all__ = ["EnhancedRagManager", "VectorEmbedding", "setup", "main"]
