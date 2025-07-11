@@ -381,25 +381,6 @@ class ElderFlowOrchestrator:
 
         return True
 
-# Global orchestrator instance
-orchestrator = ElderFlowOrchestrator()
-
-# CLI Interface Functions
-async def elder_flow_execute(description: str, priority: str = "medium") -> str:
-    """Elder Flow実行"""
-    return await orchestrator.execute_task(description, priority)
-
-async def elder_flow_status(task_id: str = None) -> Dict:
-    """Elder Flow状態確認"""
-    if task_id:
-        return orchestrator.get_task_status(task_id)
-    else:
-        return {"active_tasks": orchestrator.list_active_tasks()}
-
-async def elder_flow_abort(task_id: str) -> bool:
-    """Elder Flow中止"""
-    return await orchestrator.abort_task(task_id)
-
     def _register_error_recovery_strategies(self):
         """エラーリカバリー戦略を登録"""
 
@@ -429,6 +410,25 @@ async def elder_flow_abort(task_id: str) -> bool:
             QualityGateError,
             quality_gate_recovery
         )
+
+# Global orchestrator instance
+orchestrator = ElderFlowOrchestrator()
+
+# CLI Interface Functions
+async def elder_flow_execute(description: str, priority: str = "medium") -> str:
+    """Elder Flow実行"""
+    return await orchestrator.execute_task(description, priority)
+
+async def elder_flow_status(task_id: str = None) -> Dict:
+    """Elder Flow状態確認"""
+    if task_id:
+        return orchestrator.get_task_status(task_id)
+    else:
+        return {"active_tasks": orchestrator.list_active_tasks()}
+
+async def elder_flow_abort(task_id: str) -> bool:
+    """Elder Flow中止"""
+    return await orchestrator.abort_task(task_id)
 
 async def elder_flow_consult(sage_type: str, query: str) -> Dict:
     """賢者相談"""
