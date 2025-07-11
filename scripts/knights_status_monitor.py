@@ -77,11 +77,11 @@ class KnightsStatusMonitor:
     def check_local_knights_script(self):
         """ローカル騎士団スクリプトの動作確認"""
         try:
-            # 騎士団スクリプトのドライラン実行
+            # 騎士団スクリプトのクイックヘルスチェック実行
             result = subprocess.run([
                 sys.executable, 'scripts/knights-github-action.py',
-                'analyze', '--output-format', 'json', '--fix-type', 'syntax'
-            ], capture_output=True, text=True, timeout=30)
+                'analyze', '--output-format', 'json', '--quick'
+            ], capture_output=True, text=True, timeout=10)
 
             if result.returncode == 0:
                 try:
