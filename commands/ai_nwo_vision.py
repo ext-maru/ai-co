@@ -86,6 +86,9 @@ class nWoVisionExtension(BaseCommand):
         # nWo進捗分析
         progress_analysis = await self.nwo_council._analyze_nwo_progress()
 
+        # 今日の具体的なアクションアイテムを生成
+        today_actions = await self._generate_today_actions(progress_analysis)
+
         # 4大柱の戦略ビジョン
         pillar_visions = {}
 
@@ -156,6 +159,7 @@ class nWoVisionExtension(BaseCommand):
             "current_phase": self._determine_current_phase(overall_progress),
             "pillar_visions": pillar_visions,
             "today_strategic_focus": today_nwo_focus,
+            "today_actions": today_actions,
             "breakthrough_predictions": [
                 "🧠 AI思考理解技術の革命的進歩（6ヶ月以内）",
                 "⚡ 瞬間実装システムの実用化（12ヶ月以内）",
