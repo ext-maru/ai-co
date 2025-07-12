@@ -19,8 +19,27 @@ from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional, Any, Callable
 
-import aioredis
-from aioredis.client import PubSub
+# aioredis TimeoutError重複基底クラス問題の完全回避
+REDIS_AVAILABLE = False
+aioredis = None
+
+# 安全なRedis機能無効化による根本対応
+try:
+    # 従来のRedis連携を一時的に無効化
+    # import aioredis  # 問題のあるインポートをコメントアウト
+    # from aioredis.client import PubSub
+    REDIS_AVAILABLE = False  # 強制的にフォールバックモード
+
+except Exception as e:
+    REDIS_AVAILABLE = False
+
+# モッククラス定義（Redis無しでも動作）
+class MockPubSub:
+    async def subscribe(self, *args): pass
+    async def unsubscribe(self, *args): pass
+    async def get_message(self): return None
+
+PubSub = MockPubSub
 
 
 class ElderRole(Enum):

@@ -1,0 +1,58 @@
+# Elder Flow準拠 - 本番環境依存関係
+
+# 基本フレームワーク
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# データベース
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9  # PostgreSQL用
+alembic==1.12.1
+
+# 認証・セキュリティ
+pyjwt==2.8.0
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.3.0
+
+# Google Drive統合
+google-api-python-client==2.108.0
+google-auth-httplib2==0.1.1
+google-auth-oauthlib==1.1.0
+
+# 監視・メトリクス
+psutil==5.9.6
+prometheus-client==0.18.0
+
+# ログ・構造化出力
+structlog==23.2.0
+python-json-logger==2.0.7
+
+# HTTP・CORS
+starlette==0.27.0
+httpx==0.25.2
+
+# バリデーション
+pydantic==2.5.0
+email-validator==2.1.0
+
+# 設定管理
+python-dotenv==1.0.0
+
+# テスト（開発時）
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-mock==3.12.0
+httpx==0.25.2  # テスト用HTTP客戶端
+
+# 開発ツール（開発時のみ）
+black==23.11.0
+flake8==6.1.0
+mypy==1.7.1
+
+# セキュリティスキャン
+bandit==1.7.5
+safety==2.3.5
+
+# パフォーマンス
+aiofiles==23.2.1
