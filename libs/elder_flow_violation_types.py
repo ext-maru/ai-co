@@ -16,6 +16,17 @@ class ViolationSeverity(Enum):
     WARNING = "警告"       # 注意喚起
 
 
+class ViolationCategory(Enum):
+    """違反のカテゴリ"""
+    IMPLEMENTATION = "実装"
+    TESTING = "テスト"
+    PERFORMANCE = "パフォーマンス"
+    SECURITY = "セキュリティ"
+    DOCUMENTATION = "ドキュメント"
+    OPERATIONS = "運用"
+    PROCESS = "プロセス"
+
+
 class ViolationType(Enum):
     """違反の種類"""
     # 実装の不完全性

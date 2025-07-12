@@ -30,12 +30,12 @@ CREATE TABLE IF NOT EXISTS elder_flow_violations (
 );
 
 -- インデックス
-CREATE INDEX idx_violations_type ON elder_flow_violations(violation_type);
-CREATE INDEX idx_violations_category ON elder_flow_violations(category);
-CREATE INDEX idx_violations_severity ON elder_flow_violations(severity);
-CREATE INDEX idx_violations_detected_at ON elder_flow_violations(detected_at);
-CREATE INDEX idx_violations_resolved_at ON elder_flow_violations(resolved_at);
-CREATE INDEX idx_violations_active ON elder_flow_violations(resolved_at) WHERE resolved_at IS NULL;
+CREATE INDEX IF NOT EXISTS idx_violations_type ON elder_flow_violations(violation_type);
+CREATE INDEX IF NOT EXISTS idx_violations_category ON elder_flow_violations(category);
+CREATE INDEX IF NOT EXISTS idx_violations_severity ON elder_flow_violations(severity);
+CREATE INDEX IF NOT EXISTS idx_violations_detected_at ON elder_flow_violations(detected_at);
+CREATE INDEX IF NOT EXISTS idx_violations_resolved_at ON elder_flow_violations(resolved_at);
+CREATE INDEX IF NOT EXISTS idx_violations_active ON elder_flow_violations(resolved_at) WHERE resolved_at IS NULL;
 
 -- 違反修正提案テーブル
 CREATE TABLE IF NOT EXISTS violation_fix_suggestions (

@@ -17,6 +17,7 @@ from typing import Dict, List, Optional, Any
 import json
 import os
 from pathlib import Path
+import uuid
 
 
 class TaskCompletionStatus(Enum):
@@ -77,6 +78,95 @@ class CompletionCriteria:
                 missing.append(criterion)
 
         return missing
+
+
+class ViolationDetectionContext:
+    """違反検知のコンテキスト情報"""
+
+    def __init__(self,
+                 task_id: str,
+                 task_type: str,
+                 developer_id: str,
+                 timestamp: datetime,
+                 source_files: List[str],
+                 test_results: Optional[Dict[str, Any]] = None,
+                 production_metrics: Optional[Dict[str, Any]] = None,
+                 metadata: Optional[Dict[str, Any]] = None):
+        """コンテキストの初期化"""
+        self.task_id = task_id
+        self.task_type = task_type
+        self.developer_id = developer_id
+        self.timestamp = timestamp
+        self.source_files = source_files
+        self.test_results = test_results or {}
+        self.production_metrics = production_metrics or {}
+        self.metadata = metadata or {}
+
+    def to_dict(self) -> Dict[str, Any]:
+        """辞書形式に変換"""
+        return {
+            'task_id': self.task_id,
+            'task_type': self.task_type,
+            'developer_id': self.developer_id,
+            'timestamp': self.timestamp.isoformat(),
+            'source_files': self.source_files,
+            'test_results': self.test_results,
+            'production_metrics': self.production_metrics,
+            'metadata': self.metadata
+        }
+
+
+class ViolationRecord:
+    """違反記録を表すデータクラス"""
+
+    def __init__(self,
+                 violation_id: str,
+                 timestamp: datetime,
+                 violation_type: str,
+                 severity: str,
+                 category: str,
+                 description: str,
+                 context: Dict[str, Any],
+                 task_id: Optional[str] = None,
+                 developer_id: Optional[str] = None,
+                 auto_fixed: bool = False,
+                 fix_description: Optional[str] = None):
+        """違反記録の初期化"""
+        self.violation_id = violation_id
+        self.timestamp = timestamp
+        self.violation_type = violation_type
+        self.severity = severity
+        self.category = category
+        self.description = description
+        self.context = context
+        self.task_id = task_id
+        self.developer_id = developer_id
+        self.auto_fixed = auto_fixed
+        self.fix_description = fix_description
+
+    def to_dict(self) -> Dict[str, Any]:
+        """辞書形式に変換"""
+        return {
+            'violation_id': self.violation_id,
+            'timestamp': self.timestamp.isoformat(),
+            'violation_type': self.violation_type,
+            'severity': self.severity,
+            'category': self.category,
+            'description': self.description,
+            'context': self.context,
+            'task_id': self.task_id,
+            'developer_id': self.developer_id,
+            'auto_fixed': self.auto_fixed,
+            'fix_description': self.fix_description
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> 'ViolationRecord':
+        """辞書形式から生成"""
+        data = data.copy()
+        if isinstance(data.get('timestamp'), str):
+            data['timestamp'] = datetime.fromisoformat(data['timestamp'])
+        return cls(**data)
 
 
 class ElderFlowViolationDetector:
