@@ -39,8 +39,16 @@ from libs.enhanced_rag_manager import EnhancedRAGManager
 try:
     from libs.four_sages_integration import FourSagesIntegration
     from libs.elder_council_summoner import ElderCouncilSummoner
-    from libs.elder_tree_hierarchy import get_elder_tree, ElderMessage, ElderRank
+    from libs.elder_tree_hierarchy import (
+        get_elder_tree, ElderMessage, ElderRank, SageType,
+        ElderTreeHierarchy, ElderNode, MessagePriority, ElderNodeType
+    )
+    from libs.elder_tree_soul_binding import (
+        get_soul_binding_system, ElderSoulBindingSystem,
+        SoulConnectionType, SoulBindingState
+    )
     ELDER_TREE_AVAILABLE = True
+    logging.info("🌳 Elder Tree integration fully available for RAG Wizards Worker")
 except ImportError as e:
     logging.warning(f"Elder Tree integration not available: {e}")
     FourSagesIntegration = None
@@ -48,6 +56,15 @@ except ImportError as e:
     get_elder_tree = None
     ElderMessage = None
     ElderRank = None
+    SageType = None
+    ElderTreeHierarchy = None
+    ElderNode = None
+    MessagePriority = None
+    ElderNodeType = None
+    get_soul_binding_system = None
+    ElderSoulBindingSystem = None
+    SoulConnectionType = None
+    SoulBindingState = None
     ELDER_TREE_AVAILABLE = False
 
 
@@ -80,6 +97,144 @@ class RAGWizardsWorker(BaseWorker):
         # ウィザードオーケストレータの初期化
         self.wizards_orchestrator = None
         self.background_tasks = []
+
+        # Elder Tree統合
+        self.elder_tree = None
+        self.soul_binding_system = None
+        self.wizard_node = None
+        self.four_sages_integration = None
+
+        if ELDER_TREE_AVAILABLE:
+            self._initialize_elder_tree_integration()
+
+    def _initialize_elder_tree_integration(self):
+        """Elder Tree統合初期化"""
+        try:
+            self.elder_tree = get_elder_tree()
+            self.soul_binding_system = get_soul_binding_system()
+
+            # RAG Wizards WorkerをElder Treeに追加
+            self._add_wizard_to_elder_tree()
+
+            # Four Sages統合
+            self.four_sages_integration = FourSagesIntegration()
+
+            self.logger.info("🌳 RAG Wizards Worker Elder Tree integration complete")
+
+        except Exception as e:
+            self.logger.error(f"Elder Tree integration error: {e}")
+
+    def _add_wizard_to_elder_tree(self):
+        """ウィザードノードをElder Treeに追加"""
+        try:
+            if not self.elder_tree:
+                return
+
+            # RAG Wizards WorkerノードをElder Treeに追加
+            wizard_node = ElderNode(
+                id=f"rag_wizard_{self.worker_id}",
+                name=f"RAG Wizard {self.worker_id}",
+                rank=ElderRank.WIZARDS,
+                node_type=ElderNodeType.PROCESS,
+                parent_id="rag_sage",  # RAG賢者の下に配置
+                capabilities=[
+                    "knowledge_retrieval", "context_analysis", "wisdom_search",
+                    "automated_learning", "gap_detection", "content_enrichment"
+                ],
+                metadata={
+                    "worker_type": "rag_wizards",
+                    "worker_id": self.worker_id,
+                    "specialization": "elder_wizards_orchestration"
+                }
+            )
+
+            # Elder Treeに追加
+            success = self.elder_tree.add_elder_node(wizard_node)
+            if success:
+                self.wizard_node = wizard_node
+
+                # 魂の紐づけ
+                bound = self.elder_tree.bind_soul_to_elder(wizard_node.id)
+                if bound:
+                    self.logger.info(f"✨ RAG Wizard soul bound to Elder Tree: {wizard_node.id}")
+
+                # RAG賢者との協調接続確立
+                asyncio.create_task(self._establish_rag_sage_connection())
+            else:
+                self.logger.warning("Failed to add RAG Wizard to Elder Tree")
+
+        except Exception as e:
+            self.logger.error(f"Wizard node addition error: {e}")
+
+    async def _establish_rag_sage_connection(self):
+        """RAG賢者との協調接続確立"""
+        if not self.soul_binding_system or not self.wizard_node:
+            return
+
+        try:
+            # RAG賢者との協調紐づけ
+            binding = await self.soul_binding_system.create_soul_binding(
+                self.wizard_node.id,
+                "rag_sage",
+                SoulConnectionType.HIERARCHICAL
+            )
+
+            if binding:
+                self.logger.info("🔗 RAG Sage collaboration established")
+
+        except Exception as e:
+            self.logger.error(f"RAG Sage connection error: {e}")
+
+    async def send_message_to_rag_sage(self, message_content: Dict[str, Any]) -> bool:
+        """RAG賢者にメッセージ送信"""
+        if not self.elder_tree or not self.wizard_node:
+            return False
+
+        try:
+            elder_message = ElderMessage(
+                sender_id=self.wizard_node.id,
+                sender_rank=ElderRank.WIZARDS,
+                receiver_id="rag_sage",
+                receiver_rank=ElderRank.FOUR_SAGES,
+                message_type="wizard_report",
+                content=message_content,
+                priority=MessagePriority.NORMAL
+            )
+
+            success = self.elder_tree.send_elder_message(elder_message)
+            if success:
+                processed = self.elder_tree.process_message_queue()
+                self.logger.info(f"📨 Message sent to RAG Sage: {processed} processed")
+
+            return success
+
+        except Exception as e:
+            self.logger.error(f"RAG Sage message error: {e}")
+            return False
+
+    async def report_to_four_sages(self, report_data: Dict[str, Any]) -> Dict[str, bool]:
+        """4賢者への報告"""
+        if not self.four_sages_integration:
+            return {}
+
+        try:
+            # レポート内容に追加情報を含める
+            enhanced_report = {
+                "wizard_worker_id": self.worker_id,
+                "report_type": "rag_wizard_activity",
+                "elder_tree_node_id": self.wizard_node.id if self.wizard_node else None,
+                **report_data
+            }
+
+            # 全賢者にブロードキャスト
+            results = await self.four_sages_integration.broadcast_to_all_sages(enhanced_report)
+
+            self.logger.info(f"📡 Four Sages report completed: {sum(results.values())}/{len(results)} successful")
+            return results
+
+        except Exception as e:
+            self.logger.error(f"Four Sages report error: {e}")
+            return {}
 
     async def start(self):
         """ワーカー開始"""
@@ -157,6 +312,10 @@ class RAGWizardsWorker(BaseWorker):
             if self.wizards_orchestrator:
                 self.wizards_orchestrator.learning_engine.report_activity()
 
+            # Elder Tree統合の場合、賢者への報告
+            if ELDER_TREE_AVAILABLE and self.wizard_node:
+                await self._report_activity_to_elder_tree(message, result)
+
         except Exception as e:
             self.logger.error(f"Error processing message: {e}")
             await self.send_result({
@@ -167,6 +326,27 @@ class RAGWizardsWorker(BaseWorker):
             })
 
         return result
+
+    async def _report_activity_to_elder_tree(self, message: Dict, result: Dict):
+        """Elder Treeへのアクティビティ報告"""
+        try:
+            report_data = {
+                "activity_type": "message_processed",
+                "task_type": message.get('task_type', 'unknown'),
+                "result_status": result.get('status', 'unknown'),
+                "timestamp": datetime.now().isoformat(),
+                "wizard_health": "active"
+            }
+
+            # RAG賢者への直接報告
+            await self.send_message_to_rag_sage(report_data)
+
+            # 重要なアクティビティの場合は4賢者全体に報告
+            if message.get('task_type') in ['manual_learning', 'status_report']:
+                await self.report_to_four_sages(report_data)
+
+        except Exception as e:
+            self.logger.error(f"Elder Tree activity report error: {e}")
 
     async def _process_knowledge_gap(self, message: Dict) -> Dict:
         """知識ギャップの処理"""
@@ -511,6 +691,31 @@ class RAGWizardsWorker(BaseWorker):
         await self.cleanup()
 
         self.logger.info(f"{self.__class__.__name__} 停止完了")
+
+    def get_elder_tree_status(self) -> Dict[str, Any]:
+        """Elder Tree統合状態取得"""
+        if not ELDER_TREE_AVAILABLE:
+            return {"elder_tree_available": False}
+
+        status = {
+            "elder_tree_available": True,
+            "wizard_node_id": self.wizard_node.id if self.wizard_node else None,
+            "soul_bound": self.wizard_node.soul_bound if self.wizard_node else False,
+            "rag_sage_connected": False,
+            "four_sages_integration": self.four_sages_integration is not None
+        }
+
+        # RAG賢者との接続状況確認
+        if self.soul_binding_system and self.wizard_node:
+            binding_status = self.soul_binding_system.get_soul_binding_status()
+            status["active_bindings"] = binding_status.get("active_bindings", 0)
+
+        # Four Sages統合状況
+        if self.four_sages_integration:
+            sage_status = self.four_sages_integration.get_sage_elder_tree_status()
+            status["sage_tree_health"] = sage_status.get("tree_health", 0.0)
+
+        return status
 
 
 async def main():

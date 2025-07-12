@@ -1,17 +1,41 @@
+# Elder Flow準拠 - 開発環境Docker Compose
+version: '3.8'
+
 services:
   backend:
-    build: ./backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/uploaddb
+      - ENVIRONMENT=development
+      - DATABASE_URL=postgresql://elder_user:elder_pass@db:5432/elder_contracts
+      - SECRET_KEY=elder-development-secret-key-change-in-production
+      - JWT_SECRET_KEY=elder-jwt-development-secret
+      - FRONTEND_URL=http://localhost:3000
+      - ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
       - REDIS_URL=redis://redis:6379
+      - ENABLE_SECURITY_HEADERS=true
+      - RATE_LIMIT_ENABLED=true
+      - CORS_ENABLED=true
+      - LOG_LEVEL=INFO
     volumes:
       - ./backend:/app
-      - upload_data:/app/uploads
+      - elder_uploads:/app/uploads
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - elder_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   frontend:
     build: ./frontend
@@ -19,29 +43,82 @@ services:
       - "3000:3000"
     environment:
       - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_ELDER_GUILD=true
+      - NODE_ENV=development
     volumes:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
       - backend
+    networks:
+      - elder_network
 
   db:
-    image: postgres:15
+    image: postgres:15-alpine
     environment:
-      - POSTGRES_USER=user
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=uploaddb
+      - POSTGRES_USER=elder_user
+      - POSTGRES_PASSWORD=elder_pass
+      - POSTGRES_DB=elder_contracts
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --lc-collate=C --lc-ctype=C
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - elder_postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     ports:
       - "5432:5432"
+    networks:
+      - elder_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U elder_user -d elder_contracts"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   redis:
-    image: redis:7
+    image: redis:7-alpine
     ports:
       - "6379:6379"
+    volumes:
+      - elder_redis_data:/data
+    networks:
+      - elder_network
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # Elder Flow監視システム
+  monitoring:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - elder_prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - elder_network
+    depends_on:
+      - backend
 
 volumes:
-  postgres_data:
-  upload_data:
+  elder_postgres_data:
+    driver: local
+  elder_redis_data:
+    driver: local
+  elder_uploads:
+    driver: local
+  elder_prometheus_data:
+    driver: local
+
+networks:
+  elder_network:
+    driver: bridge
+    name: elder_guild_network
