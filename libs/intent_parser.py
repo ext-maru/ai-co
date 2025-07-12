@@ -17,7 +17,14 @@ from enum import Enum
 from pathlib import Path
 import logging
 
-from libs.mind_reading_core import IntentResult, IntentType
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+try:
+    from libs.mind_reading_core import IntentResult, IntentType
+except ImportError:
+    from mind_reading_core import IntentResult, IntentType
 
 
 class CommandType(Enum):
@@ -584,7 +591,10 @@ async def demo_intent_parser():
     print("💭 Intent Parser v0.1 Demo")
     print("=" * 50)
 
-    from libs.mind_reading_core import MindReadingCore
+    try:
+        from libs.mind_reading_core import MindReadingCore
+    except ImportError:
+        from mind_reading_core import MindReadingCore
 
     # 初期化
     mind_reader = MindReadingCore()

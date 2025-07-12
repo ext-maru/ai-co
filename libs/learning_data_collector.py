@@ -18,8 +18,12 @@ from pathlib import Path
 import logging
 import hashlib
 
-from libs.mind_reading_core import IntentResult, IntentType
-from libs.intent_parser import ParsedCommand, CommandType
+try:
+    from libs.mind_reading_core import IntentResult, IntentType
+    from libs.intent_parser import ParsedCommand, CommandType
+except ImportError:
+    from mind_reading_core import IntentResult, IntentType
+    from intent_parser import ParsedCommand, CommandType
 
 
 class ExecutionStatus(Enum):
@@ -730,8 +734,12 @@ async def demo_learning_collector():
     print("🎯 Learning Data Collector v0.1 Demo")
     print("=" * 50)
 
-    from libs.mind_reading_core import MindReadingCore
-    from libs.intent_parser import IntentParser
+    try:
+        from libs.mind_reading_core import MindReadingCore
+        from libs.intent_parser import IntentParser
+    except ImportError:
+        from mind_reading_core import MindReadingCore
+        from intent_parser import IntentParser
 
     # 初期化
     mind_reader = MindReadingCore()
