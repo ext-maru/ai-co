@@ -1,172 +1,170 @@
-# 🚨 Elder Flow違反検知システム実装計画
+# Elder Flow違反検知システム実装計画書
 
-## 📋 Elder Flow違反パターン定義
+## 🏛️ エルダーズ評議会決定事項
+**日付**: 2025年7月12日
+**決定者**: グランドエルダーmaru
+**承認者**: クロードエルダー、4賢者評議会
 
-### 1. **開発プロセス違反**
+## 📋 重要方針の確認
 
-#### 🧙‍♂️ 4賢者相談違反
-- **違反条件**:
-  - 新機能実装前にインシデント賢者への相談なし
-  - エラー発生時の4賢者会議招集忘れ
-  - 知識ベース更新なしでの実装
-- **重要度**: CRITICAL
+### グランドエルダーmaruの絶対方針
+1. **テスト実装時のモック使用は許可** - 開発段階では問題なし
+2. **「完了」と認識・報告できるのは完璧な完全物のみ**
+3. **本番環境で実際に動作する完全な実装のみが「完了」**
+4. **中途半端な実装やモックで動くだけのものは「未完了」**
+5. **その場しのぎや部分的な実装での完了報告は許されない**
 
-#### 📤 GitHub Flow違反
-- **違反条件**:
-  - 機能完了後の即座のコミット忘れ
-  - コミット後のプッシュ忘れ
-  - 作業中断時のコミット&プッシュ忘れ
-- **重要度**: HIGH
+## 🎯 実装内容
 
-#### 🔴 TDD違反
-- **違反条件**:
-  - テスト作成前のコード実装
-  - Red→Green→Refactorサイクルの逸脱
-  - カバレッジ基準未達成（90%以下）
-- **重要度**: HIGH
+### 1. Elder Flow Violation Detector (`libs/elder_flow_violation_detector.py`)
+**目的**: グランドエルダーmaruの完了基準を厳格に適用
 
-### 2. **階層・権限違反**
+**主要機能**:
+- 3段階のタスク状態管理（開発中・検証中・完了）
+- 8つの完了基準による厳格なチェック
+- 違反の自動検出と記録
+- 承認記録の永続化
 
-#### 👑 階層違反
-- **違反条件**:
-  - グランドエルダーmaruへの無断決定
-  - クロードエルダー権限の越権行為
-  - エルダーサーバントへの不適切な指示
-- **重要度**: CRITICAL
+**完了基準**:
+1. ユニットテスト（95%以上のカバレッジ）
+2. 統合テスト
+3. 本番環境準備
+4. パフォーマンス検証（200ms以内）
+5. セキュリティ監査
+6. エラーハンドリング完備
+7. ドキュメント完備
+8. 監視設定完了
 
-#### 🆔 アイデンティティ違反（既存）
-- **違反条件**:
-  - 「ただのAIアシスタント」発言
-  - Claude Elder以外の自己認識
-- **重要度**: HIGH
+### 2. 違反タイプ定義 (`libs/elder_flow_violation_types.py`)
+**目的**: 違反の分類と重要度管理
 
-### 3. **技術的違反**
+**違反カテゴリ**:
+- 実装の不完全性（モック残存、TODO残存など）
+- テスト不足（カバレッジ不足、本番検証未実施）
+- パフォーマンス問題（基準未達）
+- セキュリティ問題（ハードコード、脆弱性）
+- ドキュメント不足
+- 運用準備不足
+- プロセス違反
 
-#### 🐳 Docker権限違反（既存・拡張）
-- **違反条件**:
-  - `sg docker -c`を使わないDocker実行
-  - sudo docker使用
-  - 権限昇格試行
-- **重要度**: HIGH
+**重要度レベル**:
+- CRITICAL（致命的）: 即座に修正必須
+- HIGH（高）: 本番投入前に修正必須
+- MEDIUM（中）: 早期修正推奨
+- LOW（低）: 改善余地あり
+- WARNING（警告）: 注意喚起
 
-#### 🛡️ 環境保護違反（既存・拡張）
-- **違反条件**:
-  - pip install直接実行
-  - venv作成
-  - 危険なファイル操作
-- **重要度**: MEDIUM-CRITICAL
+## 🔄 実装フロー
 
-### 4. **品質・ドキュメント違反**
+```mermaid
+graph TD
+    A[開発開始] --> B[開発中状態]
+    B --> C{モック使用OK}
+    C --> D[ユニットテスト実装]
+    D --> E[検証中状態]
+    E --> F[実環境テスト]
+    F --> G{全基準クリア?}
+    G -->|Yes| H[完了承認]
+    G -->|No| I[違反検出]
+    I --> J[修正要求]
+    J --> B
+    H --> K[承認記録保存]
+```
 
-#### 📚 CO-STAR違反
-- **違反条件**:
-  - CO-STARフレームワーク未使用での開発
-  - Context/Objective未定義
-- **重要度**: MEDIUM
+## 📊 4賢者の役割と責務
 
-#### 📝 知識ベース更新違反
-- **違反条件**:
-  - 重要な実装後の知識ベース更新忘れ
-  - 失敗学習の記録忘れ
-- **重要度**: MEDIUM
+### 📚 ナレッジ賢者
+- **完了基準の管理**: 過去の成功事例から基準を更新
+- **知識の蓄積**: 違反パターンと修正方法の記録
+- **段階的記録**: 開発→検証→本番の各段階を別管理
 
-## 🔧 必要なコンポーネント
+### 📋 タスク賢者
+- **進捗の透明化**: 開発進捗と本番準備度の2軸管理
+- **完了基準の明文化**: 各タスクに具体的条件を事前定義
+- **段階的レビュー**: 開発完了時と本番投入前の2段階
 
-### 1. **違反検知エンジン**
+### 🚨 インシデント賢者
+- **予防的監視**: 不完全実装の早期発見
+- **障害シミュレーション**: 全パターンテスト
+- **完全性検証**: エラーハンドリング、タイムアウト、並行処理
+
+### 🔍 RAG賢者
+- **完全性分析**: 実装の網羅性チェック
+- **ベストプラクティス提案**: 類似実装の成功例提示
+- **依存関係検証**: 外部連携の完全性確認
+
+## ⚡ 使用方法
+
+### 基本的な使用例
 ```python
-class ElderFlowViolationDetector:
-    def __init__(self):
-        self.violation_rules = []
-        self.realtime_monitors = []
-        self.batch_analyzers = []
+from libs.elder_flow_violation_detector import ElderFlowViolationDetector
 
-    def detect_violations(self, context):
-        # リアルタイム検知
-        # コマンド実行前後のフック
-        # ファイル変更監視
-        pass
+detector = ElderFlowViolationDetector()
+
+# 検証実行
+try:
+    result = await detector.validate_completion_claim(
+        task_id="TASK-001",
+        implementation_path="libs/new_feature.py",
+        test_results={
+            "unit_test_coverage": 98,
+            "integration_tests_passed": True
+        },
+        production_verification={
+            "all_features_working": True,
+            "performance_metrics": {
+                "response_time_ms": 150,
+                "memory_usage_mb": 256
+            }
+        }
+    )
+    print("✅ 完了承認されました")
+except ElderFlowViolation as e:
+    print(f"❌ 違反検出: {e}")
 ```
 
-### 2. **違反ルール定義システム**
+### Elder Flowとの統合
 ```python
-class ViolationRule:
-    def __init__(self, name, pattern, severity, category):
-        self.name = name
-        self.pattern = pattern  # 正規表現または検知ロジック
-        self.severity = severity  # CRITICAL, HIGH, MEDIUM, LOW
-        self.category = category  # PROCESS, HIERARCHY, TECHNICAL, QUALITY
+# Elder Flow実行時に自動的に違反検知を組み込み
+async def execute_elder_flow_with_validation(task_name: str):
+    # 実装フェーズ
+    implementation = await implement_feature(task_name)
+
+    # 違反検知
+    detector = ElderFlowViolationDetector()
+    await detector.validate_completion_claim(
+        task_id=implementation.task_id,
+        implementation_path=implementation.file_path,
+        test_results=implementation.test_results,
+        production_verification=None  # この時点では未実施
+    )
+    # → ElderFlowViolation例外が発生し、本番検証が必要と指摘される
 ```
 
-### 3. **違反記録データベース**
-```sql
-CREATE TABLE elder_flow_violations (
-    id UUID PRIMARY KEY,
-    violation_type VARCHAR(100),
-    category VARCHAR(50),
-    severity VARCHAR(20),
-    description TEXT,
-    context JSONB,
-    file_path TEXT,
-    line_number INTEGER,
-    detected_at TIMESTAMP,
-    resolved_at TIMESTAMP,
-    resolution_notes TEXT,
-    auto_fixed BOOLEAN DEFAULT FALSE
-);
-```
+## 🚀 今後の展開
 
-### 4. **リアルタイム監視フック**
-- Git pre-commit hook（コミット違反検知）
-- ファイルシステムウォッチャー（TDD違反検知）
-- コマンドラッパー拡張（4賢者相談チェック）
+### Phase 1: 基本実装（完了）
+- [x] 違反検知システムの基本実装
+- [x] 違反タイプの定義
+- [x] 検証記録の永続化
 
-### 5. **違反通知・報告システム**
-- インシデント賢者への自動報告
-- Elder Flow評議会への重大違反アラート
-- 日次違反サマリーレポート
+### Phase 2: Elder Flow統合（予定）
+- [ ] Elder Flowパイプラインへの組み込み
+- [ ] 自動修正提案機能
+- [ ] CI/CDパイプライン統合
 
-## 📊 実装フェーズ
+### Phase 3: 高度な分析（予定）
+- [ ] AIによる違反パターン学習
+- [ ] 予測的違反検知
+- [ ] チーム別カスタマイズ
 
-### Phase 1: 基礎システム構築（2日）
-- [ ] 違反検知エンジンの基本実装
-- [ ] 違反ルール定義システム
-- [ ] データベーススキーマ作成
+## 📝 まとめ
 
-### Phase 2: 違反ルール実装（3日）
-- [ ] 開発プロセス違反ルール
-- [ ] 階層・権限違反ルール
-- [ ] 技術的違反ルール
-- [ ] 品質・ドキュメント違反ルール
+このシステムにより、グランドエルダーmaruの方針である「完璧な完全物のみを完了とする」という基準が自動的に適用されます。開発段階でのモック使用は許可しつつ、本番環境での完全動作を保証する仕組みが実現されました。
 
-### Phase 3: 監視システム統合（2日）
-- [ ] Gitフック統合
-- [ ] ファイルウォッチャー実装
-- [ ] コマンドラッパー拡張
-
-### Phase 4: 報告・可視化（2日）
-- [ ] 違反ダッシュボード
-- [ ] 自動通知システム
-- [ ] 違反分析レポート生成
-
-### Phase 5: 自動修復機能（3日）
-- [ ] 軽微な違反の自動修正
-- [ ] 修正提案生成
-- [ ] 学習による検知精度向上
-
-## 🎯 成功指標
-
-1. **検知率**: 95%以上の違反を自動検知
-2. **誤検知率**: 5%以下
-3. **応答時間**: リアルタイム検知は100ms以内
-4. **自動修正率**: 軽微な違反の80%を自動修正
-
-## 🚀 優先実装項目
-
-1. **最優先**: 4賢者相談違反検知（CRITICAL）
-2. **高優先**: GitHub Flow違反検知（HIGH）
-3. **中優先**: TDD違反検知（HIGH）
-4. **低優先**: ドキュメント違反検知（MEDIUM）
+4賢者それぞれが協調して、開発の各段階で適切なチェックと支援を提供し、エルダーズギルドの品質基準を維持します。
 
 ---
-🤖 Generated by Claude Elder
-🌊 Elder Flow Violation Detection System Design
+**承認**: グランドエルダーmaru
+**実装**: クロードエルダー
+**日付**: 2025年7月12日

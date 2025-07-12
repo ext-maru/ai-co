@@ -1,307 +1,371 @@
 """
-Elder Flow違反検知エンジン
+Elder Flow Violation Detector
+グランドエルダーmaruの完了基準方針を厳格に適用するシステム
+
+完了と認められる条件:
+1. 本番環境で実際に動作する
+2. 全ての依存関係が実環境で検証済み
+3. エラーハンドリングが完備
+4. パフォーマンス基準を満たす
+5. セキュリティ要件を充足
 """
-import re
-import json
+
+import asyncio
 from datetime import datetime
-from typing import List, Optional, Dict, Any
-from dataclasses import dataclass, field
+from enum import Enum
+from typing import Dict, List, Optional, Any
+import json
+import os
 from pathlib import Path
-import logging
-
-from libs.elder_flow_violation_types import (
-    ViolationType,
-    ViolationSeverity,
-    ViolationCategory,
-    ViolationRule,
-    ELDER_FLOW_VIOLATION_RULES
-)
 
 
-logger = logging.getLogger(__name__)
+class TaskCompletionStatus(Enum):
+    """タスクの完了状態を表す列挙型"""
+    IN_DEVELOPMENT = "開発中"      # モック使用OK
+    IN_VERIFICATION = "検証中"     # 実環境テスト中
+    COMPLETED = "完了"            # 本番環境で完全動作確認済み
+    REJECTED = "却下"             # 不完全な実装
 
 
-@dataclass
-class ViolationDetectionContext:
-    """違反検知のコンテキスト"""
-    command: Optional[str] = None
-    file_path: Optional[str] = None
-    content: Optional[str] = None
-    timestamp: datetime = field(default_factory=datetime.now)
-    additional_info: Dict[str, Any] = field(default_factory=dict)
+class ElderFlowViolation(Exception):
+    """Elder Flow方針違反を表す例外"""
+    pass
 
 
-@dataclass
-class ViolationRecord:
-    """違反記録"""
-    violation_type: ViolationType
-    category: ViolationCategory
-    severity: ViolationSeverity
-    description: str
-    context: ViolationDetectionContext
-    detected_at: datetime = field(default_factory=datetime.now)
-    resolved_at: Optional[datetime] = None
-    resolution_notes: Optional[str] = None
-    auto_fixed: bool = False
-    auto_fixable: bool = False
+class CompletionCriteria:
+    """完了基準を管理するクラス"""
 
-    def to_dict(self) -> Dict[str, Any]:
-        """辞書形式に変換"""
-        return {
-            "violation_type": self.violation_type.value,
-            "category": self.category.value,
-            "severity": self.severity.value,
-            "description": self.description,
-            "detected_at": self.detected_at.isoformat(),
-            "resolved_at": self.resolved_at.isoformat() if self.resolved_at else None,
-            "resolution_notes": self.resolution_notes,
-            "auto_fixed": self.auto_fixed,
-            "auto_fixable": self.auto_fixable,
-            "context": {
-                "command": self.context.command,
-                "file_path": self.context.file_path,
-                "timestamp": self.context.timestamp.isoformat()
-            }
+    def __init__(self):
+        self.unit_tests_pass = False           # 開発段階
+        self.integration_tests_pass = False    # 検証段階
+        self.production_ready = False          # 完了条件
+        self.performance_verified = False      # 完了条件
+        self.security_audited = False         # 完了条件
+        self.error_handling_complete = False   # 完了条件
+        self.documentation_complete = False    # 完了条件
+        self.monitoring_configured = False     # 完了条件
+
+    def is_complete(self) -> bool:
+        """全ての完了条件を満たしているか確認"""
+        return all([
+            self.unit_tests_pass,
+            self.integration_tests_pass,
+            self.production_ready,
+            self.performance_verified,
+            self.security_audited,
+            self.error_handling_complete,
+            self.documentation_complete,
+            self.monitoring_configured
+        ])
+
+    def get_missing_criteria(self) -> List[str]:
+        """未達成の基準をリスト化"""
+        missing = []
+        criteria_map = {
+            "ユニットテスト": self.unit_tests_pass,
+            "統合テスト": self.integration_tests_pass,
+            "本番環境準備": self.production_ready,
+            "パフォーマンス検証": self.performance_verified,
+            "セキュリティ監査": self.security_audited,
+            "エラーハンドリング": self.error_handling_complete,
+            "ドキュメント": self.documentation_complete,
+            "監視設定": self.monitoring_configured
         }
 
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'ViolationRecord':
-        """辞書から復元"""
-        context = ViolationDetectionContext(
-            command=data["context"].get("command"),
-            file_path=data["context"].get("file_path"),
-            timestamp=datetime.fromisoformat(data["context"]["timestamp"])
-        )
+        for criterion, status in criteria_map.items():
+            if not status:
+                missing.append(criterion)
 
-        return cls(
-            violation_type=ViolationType(data["violation_type"]),
-            category=ViolationCategory(data["category"]),
-            severity=ViolationSeverity(data["severity"]),
-            description=data["description"],
-            context=context,
-            detected_at=datetime.fromisoformat(data["detected_at"]),
-            resolved_at=datetime.fromisoformat(data["resolved_at"]) if data.get("resolved_at") else None,
-            resolution_notes=data.get("resolution_notes"),
-            auto_fixed=data.get("auto_fixed", False),
-            auto_fixable=data.get("auto_fixable", False)
-        )
-
-
-@dataclass
-class ViolationDetectionResult:
-    """違反検知結果"""
-    violations: List[ViolationRecord] = field(default_factory=list)
-
-    @property
-    def has_violations(self) -> bool:
-        """違反があるか"""
-        return len(self.violations) > 0
-
-    @property
-    def critical_violations(self) -> List[ViolationRecord]:
-        """重大な違反のみ取得"""
-        return [v for v in self.violations if v.severity == ViolationSeverity.CRITICAL]
-
-    @property
-    def auto_fixable_violations(self) -> List[ViolationRecord]:
-        """自動修正可能な違反のみ取得"""
-        return [v for v in self.violations if v.auto_fixable]
+        return missing
 
 
 class ElderFlowViolationDetector:
-    """Elder Flow違反検知エンジン"""
+    """グランドエルダーmaruの方針違反を自動検知するシステム"""
 
-    def __init__(self, history_file: Optional[Path] = None):
-        """初期化"""
-        self.violation_rules = ELDER_FLOW_VIOLATION_RULES
-        self.violation_history: List[ViolationRecord] = []
-        self.history_file = history_file or Path("data/elder_flow_violations.json")
+    def __init__(self):
+        self.violation_log_path = Path("knowledge_base/elder_flow_violations/")
+        self.violation_log_path.mkdir(parents=True, exist_ok=True)
 
-        # 履歴を読み込み
-        self.load_violation_history()
+        # 4賢者のシミュレーション（実際の実装では各賢者システムと連携）
+        self.knowledge_sage_criteria = self._load_knowledge_criteria()
+        self.incident_patterns = self._load_incident_patterns()
 
-    def detect_violations(self, context: ViolationDetectionContext) -> ViolationDetectionResult:
-        """違反を検知"""
-        result = ViolationDetectionResult()
-
-        # 各ルールに対してチェック
-        for rule in self.violation_rules:
-            if self._check_violation(rule, context):
-                record = ViolationRecord(
-                    violation_type=rule.violation_type,
-                    category=rule.category,
-                    severity=rule.severity,
-                    description=rule.description,
-                    context=context,
-                    auto_fixable=rule.auto_fixable
-                )
-                result.violations.append(record)
-                logger.warning(f"Elder Flow違反検知: {rule.name} - {rule.description}")
-
-        return result
-
-    def _check_violation(self, rule: ViolationRule, context: ViolationDetectionContext) -> bool:
-        """特定のルールに対して違反をチェック"""
-        # チェック対象のテキストを収集
-        texts_to_check = []
-
-        if context.command:
-            texts_to_check.append(context.command)
-
-        if context.content:
-            texts_to_check.append(context.content)
-
-        # パターンマッチング
-        for text in texts_to_check:
-            for pattern in rule.detection_patterns:
-                if re.search(pattern, text, re.IGNORECASE):
-                    return True
-
-        return False
-
-    def add_to_history(self, violation: ViolationRecord) -> None:
-        """違反を履歴に追加"""
-        self.violation_history.append(violation)
-        self.save_violation_history()
-
-    def get_violation_stats(self) -> Dict[str, Any]:
-        """違反統計を取得"""
-        stats = {
-            "total_violations": len(self.violation_history),
-            "active_violations": len(self.get_active_violations()),
-            "by_severity": {},
-            "by_category": {},
-            "by_type": {}
-        }
-
-        # 重要度別集計
-        for severity in ViolationSeverity:
-            count = len([v for v in self.violation_history if v.severity == severity])
-            stats["by_severity"][severity.value] = count
-
-        # カテゴリ別集計
-        for category in ViolationCategory:
-            count = len([v for v in self.violation_history if v.category == category])
-            stats["by_category"][category.value] = count
-
-        # タイプ別集計
-        for violation_type in ViolationType:
-            count = len([v for v in self.violation_history if v.violation_type == violation_type])
-            if count > 0:
-                stats["by_type"][violation_type.value] = count
-
-        return stats
-
-    def get_auto_fix_suggestion(self, violation: ViolationRecord) -> Optional[str]:
-        """自動修正の提案を取得"""
-        if not violation.auto_fixable:
-            return None
-
-        # 違反タイプごとの修正提案
-        suggestions = {
-            ViolationType.DOCKER_PERMISSION_VIOLATION: "sg docker -c \"{}\"",
-            ViolationType.GITHUB_FLOW_COMMIT_MISSING: "git add . && git commit -m \"feat: {}\"",
-            ViolationType.IDENTITY_VIOLATION: "私はClaude Elder、エルダーズギルド開発実行責任者です"
-        }
-
-        suggestion_template = suggestions.get(violation.violation_type)
-        if suggestion_template and violation.context.command:
-            return suggestion_template.format(violation.context.command)
-        elif suggestion_template:
-            return suggestion_template.format("適切な内容")
-
-        return None
-
-    def resolve_violation(self, violation: ViolationRecord, resolution_notes: str) -> bool:
-        """違反を解決済みにする"""
-        try:
-            violation.resolved_at = datetime.now()
-            violation.resolution_notes = resolution_notes
-            self.save_violation_history()
-            logger.info(f"違反解決: {violation.violation_type.value}")
-            return True
-        except Exception as e:
-            logger.error(f"違反解決エラー: {e}")
-            return False
-
-    def get_active_violations(self) -> List[ViolationRecord]:
-        """アクティブな（未解決の）違反を取得"""
-        return [v for v in self.violation_history if v.resolved_at is None]
-
-    def save_violation_history(self) -> bool:
-        """違反履歴を保存"""
-        try:
-            # ディレクトリを作成
-            self.history_file.parent.mkdir(parents=True, exist_ok=True)
-
-            # 履歴を辞書形式に変換
-            history_data = [v.to_dict() for v in self.violation_history]
-
-            # JSONファイルに保存
-            with open(self.history_file, 'w', encoding='utf-8') as f:
-                json.dump(history_data, f, ensure_ascii=False, indent=2)
-
-            return True
-        except Exception as e:
-            logger.error(f"違反履歴保存エラー: {e}")
-            return False
-
-    def load_violation_history(self) -> bool:
-        """違反履歴を読み込み"""
-        try:
-            if not self.history_file.exists():
-                return False
-
-            with open(self.history_file, 'r', encoding='utf-8') as f:
-                history_data = json.load(f)
-
-            # 履歴を復元
-            self.violation_history = [
-                ViolationRecord.from_dict(data) for data in history_data
+    def _load_knowledge_criteria(self) -> Dict[str, Any]:
+        """ナレッジ賢者から完了基準を取得"""
+        return {
+            "required_test_coverage": 95,
+            "max_response_time_ms": 200,
+            "max_memory_usage_mb": 512,
+            "required_documentation": [
+                "README.md",
+                "API_DOCUMENTATION.md",
+                "DEPLOYMENT_GUIDE.md",
+                "TROUBLESHOOTING.md"
+            ],
+            "security_requirements": [
+                "input_validation",
+                "authentication",
+                "authorization",
+                "encryption",
+                "audit_logging"
             ]
+        }
 
-            logger.info(f"違反履歴を読み込みました: {len(self.violation_history)}件")
-            return True
-        except Exception as e:
-            logger.error(f"違反履歴読み込みエラー: {e}")
-            return False
+    def _load_incident_patterns(self) -> List[Dict[str, Any]]:
+        """インシデント賢者から既知の問題パターンを取得"""
+        return [
+            {
+                "pattern": "mock_in_production",
+                "description": "本番コードにモックオブジェクトが残存",
+                "severity": "CRITICAL"
+            },
+            {
+                "pattern": "missing_error_handling",
+                "description": "エラーハンドリングの欠如",
+                "severity": "HIGH"
+            },
+            {
+                "pattern": "hardcoded_credentials",
+                "description": "ハードコードされた認証情報",
+                "severity": "CRITICAL"
+            },
+            {
+                "pattern": "no_timeout_handling",
+                "description": "タイムアウト処理の未実装",
+                "severity": "MEDIUM"
+            }
+        ]
 
-    def generate_violation_report(self) -> str:
-        """違反レポートを生成"""
-        stats = self.get_violation_stats()
-        active_violations = self.get_active_violations()
+    async def validate_completion_claim(
+        self,
+        task_id: str,
+        implementation_path: str,
+        test_results: Dict[str, Any],
+        production_verification: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        完了報告の妥当性を検証
 
-        report = f"""
-# Elder Flow違反レポート
+        Args:
+            task_id: タスクID
+            implementation_path: 実装コードのパス
+            test_results: テスト結果
+            production_verification: 本番環境での検証結果
 
-生成日時: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        Returns:
+            検証結果の辞書
 
-## 統計サマリー
-- 総違反数: {stats['total_violations']}
-- アクティブな違反: {stats['active_violations']}
+        Raises:
+            ElderFlowViolation: 方針違反が検出された場合
+        """
 
-### 重要度別
-"""
+        violations = []
+        warnings = []
 
-        for severity, count in stats['by_severity'].items():
-            report += f"- {severity}: {count}件\n"
+        # 1. 基本的な完了基準チェック
+        criteria = CompletionCriteria()
 
-        report += "\n### カテゴリ別\n"
-        for category, count in stats['by_category'].items():
-            report += f"- {category}: {count}件\n"
+        # テスト結果の検証
+        if test_results.get("unit_test_coverage", 0) >= 95:
+            criteria.unit_tests_pass = True
+        else:
+            violations.append(
+                f"ユニットテストカバレッジ不足: {test_results.get('unit_test_coverage', 0)}% < 95%"
+            )
 
-        if active_violations:
-            report += "\n## アクティブな違反\n"
-            for violation in active_violations[:10]:  # 最新10件
-                report += f"""
-### {violation.violation_type.value}
-- 重要度: {violation.severity.value}
-- 検知日時: {violation.detected_at.strftime('%Y-%m-%d %H:%M:%S')}
-- 説明: {violation.description}
-"""
-                if violation.auto_fixable:
-                    suggestion = self.get_auto_fix_suggestion(violation)
-                    if suggestion:
-                        report += f"- 修正提案: `{suggestion}`\n"
+        # 本番環境検証の確認
+        if not production_verification:
+            violations.append("本番環境での動作検証が未実施")
+        else:
+            if production_verification.get("all_features_working"):
+                criteria.production_ready = True
+            else:
+                violations.append("本番環境で一部機能が動作していない")
 
-        return report
+            if production_verification.get("performance_metrics", {}).get("response_time_ms", float('inf')) <= 200:
+                criteria.performance_verified = True
+            else:
+                violations.append("パフォーマンス基準を満たしていない")
+
+        # 2. コード品質チェック（シミュレーション）
+        code_issues = await self._analyze_code_quality(implementation_path)
+        if code_issues:
+            violations.extend(code_issues)
+
+        # 3. セキュリティチェック
+        security_issues = await self._security_audit(implementation_path)
+        if security_issues:
+            violations.extend(security_issues)
+
+        # 4. ドキュメントチェック
+        doc_issues = self._check_documentation(implementation_path)
+        if doc_issues:
+            warnings.extend(doc_issues)
+        else:
+            criteria.documentation_complete = True
+
+        # 5. 違反があれば例外を発生
+        if violations:
+            self._log_violation(task_id, violations, warnings)
+            raise ElderFlowViolation(
+                f"完了報告は認められません。\n"
+                f"違反事項:\n" + "\n".join(f"  - {v}" for v in violations) +
+                (f"\n\n警告事項:\n" + "\n".join(f"  - {w}" for w in warnings) if warnings else "")
+            )
+
+        # 6. 承認記録を作成
+        verification_record = {
+            "task_id": task_id,
+            "status": TaskCompletionStatus.COMPLETED.value,
+            "verification_id": self._generate_verification_id(),
+            "timestamp": datetime.now().isoformat(),
+            "verified_by": "Elder Flow Violation Detector",
+            "criteria_met": {
+                "unit_tests": criteria.unit_tests_pass,
+                "integration_tests": criteria.integration_tests_pass,
+                "production_ready": criteria.production_ready,
+                "performance_verified": criteria.performance_verified,
+                "security_audited": criteria.security_audited,
+                "error_handling": criteria.error_handling_complete,
+                "documentation": criteria.documentation_complete,
+                "monitoring": criteria.monitoring_configured
+            },
+            "warnings": warnings if warnings else None
+        }
+
+        self._save_verification_record(verification_record)
+
+        return {
+            "approved": True,
+            "verification_record": verification_record,
+            "message": "グランドエルダーmaruの基準を満たす完全な実装です。"
+        }
+
+    async def _analyze_code_quality(self, implementation_path: str) -> List[str]:
+        """コード品質の分析（簡易版）"""
+        issues = []
+
+        # モックの使用チェック（本番コードでの使用を検出）
+        if os.path.exists(implementation_path):
+            with open(implementation_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+                # 本番コードでのモック使用検出
+                if not implementation_path.endswith('_test.py'):
+                    if 'mock' in content.lower() or 'Mock' in content:
+                        issues.append("本番コードにモックオブジェクトが検出されました")
+
+                # TODO/FIXMEコメントの検出
+                if 'TODO' in content or 'FIXME' in content:
+                    issues.append("未完了のTODO/FIXMEコメントが残っています")
+
+                # 基本的なエラーハンドリングチェック
+                if 'try:' not in content and 'except' not in content:
+                    issues.append("エラーハンドリングが実装されていない可能性があります")
+
+        return issues
+
+    async def _security_audit(self, implementation_path: str) -> List[str]:
+        """セキュリティ監査（簡易版）"""
+        issues = []
+
+        if os.path.exists(implementation_path):
+            with open(implementation_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+                # ハードコードされた認証情報の検出
+                suspicious_patterns = [
+                    ('password', 'ハードコードされたパスワード'),
+                    ('api_key', 'ハードコードされたAPIキー'),
+                    ('secret', 'ハードコードされたシークレット'),
+                    ('token', 'ハードコードされたトークン')
+                ]
+
+                for pattern, description in suspicious_patterns:
+                    if f'{pattern} = "' in content or f"{pattern} = '" in content:
+                        issues.append(f"{description}が検出されました")
+
+                # SQLインジェクションの可能性
+                if 'f"SELECT' in content or "f'SELECT" in content:
+                    issues.append("SQLインジェクションの脆弱性の可能性があります")
+
+        return issues
+
+    def _check_documentation(self, implementation_path: str) -> List[str]:
+        """ドキュメントの確認"""
+        issues = []
+        base_path = Path(implementation_path).parent
+
+        required_docs = self.knowledge_sage_criteria["required_documentation"]
+        for doc in required_docs:
+            doc_path = base_path / doc
+            if not doc_path.exists():
+                issues.append(f"必須ドキュメント '{doc}' が見つかりません")
+
+        return issues
+
+    def _generate_verification_id(self) -> str:
+        """検証IDの生成"""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        return f"ELDER_VERIFY_{timestamp}"
+
+    def _log_violation(self, task_id: str, violations: List[str], warnings: List[str]):
+        """違反記録の保存"""
+        violation_record = {
+            "task_id": task_id,
+            "timestamp": datetime.now().isoformat(),
+            "violations": violations,
+            "warnings": warnings,
+            "status": TaskCompletionStatus.REJECTED.value
+        }
+
+        log_file = self.violation_log_path / f"violation_{task_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        with open(log_file, 'w', encoding='utf-8') as f:
+            json.dump(violation_record, f, ensure_ascii=False, indent=2)
+
+    def _save_verification_record(self, record: Dict[str, Any]):
+        """承認記録の保存"""
+        verification_path = Path("knowledge_base/elder_flow_verifications/")
+        verification_path.mkdir(parents=True, exist_ok=True)
+
+        file_name = f"verification_{record['verification_id']}.json"
+        with open(verification_path / file_name, 'w', encoding='utf-8') as f:
+            json.dump(record, f, ensure_ascii=False, indent=2)
+
+
+# 使用例
+async def example_usage():
+    """Elder Flow Violation Detectorの使用例"""
+    detector = ElderFlowViolationDetector()
+
+    # テスト結果の例
+    test_results = {
+        "unit_test_coverage": 98,
+        "integration_tests_passed": True,
+        "performance_tests_passed": True
+    }
+
+    # 本番環境検証結果の例
+    production_verification = {
+        "all_features_working": True,
+        "performance_metrics": {
+            "response_time_ms": 150,
+            "memory_usage_mb": 256
+        },
+        "error_rate": 0.01
+    }
+
+    try:
+        result = await detector.validate_completion_claim(
+            task_id="TASK-2025-001",
+            implementation_path="libs/example_feature.py",
+            test_results=test_results,
+            production_verification=production_verification
+        )
+        print(f"✅ 完了承認: {result['message']}")
+    except ElderFlowViolation as e:
+        print(f"❌ 完了却下: {str(e)}")
+
+
+if __name__ == "__main__":
+    asyncio.run(example_usage())

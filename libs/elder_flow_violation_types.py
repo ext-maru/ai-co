@@ -1,186 +1,139 @@
 """
-Elder Flow違反タイプ定義
+Elder Flow Violation Types
+違反タイプの定義と分類
 """
+
 from enum import Enum
-from dataclasses import dataclass
-from typing import List, Optional, Dict, Any
+from typing import Dict, List, Optional
 
 
 class ViolationSeverity(Enum):
     """違反の重要度"""
-    CRITICAL = "critical"  # 即座の対応が必要
-    HIGH = "high"          # 重要な違反
-    MEDIUM = "medium"      # 中程度の違反
-    LOW = "low"            # 軽微な違反
-
-
-class ViolationCategory(Enum):
-    """違反カテゴリ"""
-    PROCESS = "process"        # 開発プロセス違反
-    HIERARCHY = "hierarchy"    # 階層・権限違反
-    TECHNICAL = "technical"    # 技術的違反
-    QUALITY = "quality"        # 品質・ドキュメント違反
+    CRITICAL = "致命的"     # 即座に修正が必要
+    HIGH = "高"            # 本番投入前に修正必須
+    MEDIUM = "中"          # 早期の修正を推奨
+    LOW = "低"             # 改善の余地あり
+    WARNING = "警告"       # 注意喚起
 
 
 class ViolationType(Enum):
-    """Elder Flow違反タイプ"""
-    # 開発プロセス違反
-    FOUR_SAGES_CONSULTATION_MISSING = "four_sages_consultation_missing"
-    FOUR_SAGES_MEETING_MISSING = "four_sages_meeting_missing"
-    GITHUB_FLOW_COMMIT_MISSING = "github_flow_commit_missing"
-    GITHUB_FLOW_PUSH_MISSING = "github_flow_push_missing"
-    TDD_TEST_FIRST_VIOLATION = "tdd_test_first_violation"
-    TDD_CYCLE_VIOLATION = "tdd_cycle_violation"
-    COVERAGE_THRESHOLD_VIOLATION = "coverage_threshold_violation"
+    """違反の種類"""
+    # 実装の不完全性
+    MOCK_IN_PRODUCTION = "本番コードにモック残存"
+    INCOMPLETE_IMPLEMENTATION = "実装が不完全"
+    MISSING_ERROR_HANDLING = "エラーハンドリング欠如"
+    NO_TIMEOUT_HANDLING = "タイムアウト処理未実装"
 
-    # 階層・権限違反
-    HIERARCHY_VIOLATION = "hierarchy_violation"
-    IDENTITY_VIOLATION = "identity_violation"
-    UNAUTHORIZED_DECISION = "unauthorized_decision"
+    # テスト不足
+    INSUFFICIENT_TEST_COVERAGE = "テストカバレッジ不足"
+    NO_INTEGRATION_TESTS = "統合テスト未実施"
+    NO_PRODUCTION_VERIFICATION = "本番環境検証未実施"
 
-    # 技術的違反
-    DOCKER_PERMISSION_VIOLATION = "docker_permission_violation"
-    ENVIRONMENT_PROTECTION_VIOLATION = "environment_protection_violation"
-    DANGEROUS_COMMAND_ATTEMPT = "dangerous_command_attempt"
+    # パフォーマンス問題
+    PERFORMANCE_BELOW_THRESHOLD = "パフォーマンス基準未達"
+    EXCESSIVE_MEMORY_USAGE = "メモリ使用量超過"
+    SLOW_RESPONSE_TIME = "レスポンスタイム遅延"
 
-    # 品質・ドキュメント違反
-    COSTAR_FRAMEWORK_MISSING = "costar_framework_missing"
-    KNOWLEDGE_BASE_UPDATE_MISSING = "knowledge_base_update_missing"
-    FAILURE_LEARNING_MISSING = "failure_learning_missing"
-    TODO_LIST_UPDATE_MISSING = "todo_list_update_missing"
+    # セキュリティ問題
+    HARDCODED_CREDENTIALS = "認証情報のハードコード"
+    SQL_INJECTION_RISK = "SQLインジェクションリスク"
+    MISSING_INPUT_VALIDATION = "入力検証の欠如"
+    NO_AUTHENTICATION = "認証機能未実装"
+    NO_AUTHORIZATION = "認可機能未実装"
+
+    # ドキュメント不足
+    MISSING_DOCUMENTATION = "必須ドキュメント欠如"
+    INCOMPLETE_API_DOCS = "API仕様書不完全"
+    NO_DEPLOYMENT_GUIDE = "デプロイガイド未作成"
+
+    # 運用準備不足
+    NO_MONITORING_SETUP = "監視設定未実施"
+    NO_LOGGING_CONFIGURED = "ログ設定未実施"
+    NO_ALERTING_RULES = "アラートルール未設定"
+
+    # プロセス違反
+    PREMATURE_COMPLETION_CLAIM = "早すぎる完了宣言"
+    SKIPPED_REVIEW_PROCESS = "レビュープロセススキップ"
+    NO_ELDER_COUNCIL_APPROVAL = "エルダー評議会未承認"
 
 
-@dataclass
-class ViolationRule:
-    """違反ルール定義"""
-    violation_type: ViolationType
-    name: str
-    description: str
-    category: ViolationCategory
-    severity: ViolationSeverity
-    detection_patterns: List[str]  # 検知パターン（正規表現など）
-    auto_fixable: bool = False     # 自動修正可能か
+class ViolationDefinition:
+    """違反の詳細定義"""
 
-    def to_dict(self) -> Dict[str, Any]:
-        """辞書形式に変換"""
-        return {
-            "violation_type": self.violation_type.value,
-            "name": self.name,
-            "description": self.description,
-            "category": self.category.value,
-            "severity": self.severity.value,
-            "detection_patterns": self.detection_patterns,
-            "auto_fixable": self.auto_fixable
+    DEFINITIONS: Dict[ViolationType, Dict] = {
+        ViolationType.MOCK_IN_PRODUCTION: {
+            "severity": ViolationSeverity.CRITICAL,
+            "description": "本番環境で動作するコードにモックオブジェクトが含まれている",
+            "detection_patterns": ["Mock", "mock", "@mock", "MagicMock"],
+            "remediation": "全てのモックを実際の実装に置き換える"
+        },
+
+        ViolationType.INCOMPLETE_IMPLEMENTATION: {
+            "severity": ViolationSeverity.HIGH,
+            "description": "機能の一部が未実装またはTODOコメントが残っている",
+            "detection_patterns": ["TODO", "FIXME", "NotImplementedError", "pass # TODO"],
+            "remediation": "全ての機能を完全に実装する"
+        },
+
+        ViolationType.MISSING_ERROR_HANDLING: {
+            "severity": ViolationSeverity.HIGH,
+            "description": "適切なエラーハンドリングが実装されていない",
+            "detection_patterns": ["bare except:", "except Exception:", "no try-except blocks"],
+            "remediation": "具体的な例外タイプを捕捉し、適切に処理する"
+        },
+
+        ViolationType.INSUFFICIENT_TEST_COVERAGE: {
+            "severity": ViolationSeverity.HIGH,
+            "description": "テストカバレッジが95%未満",
+            "detection_patterns": ["coverage < 95%"],
+            "remediation": "テストを追加してカバレッジを95%以上にする"
+        },
+
+        ViolationType.NO_PRODUCTION_VERIFICATION: {
+            "severity": ViolationSeverity.CRITICAL,
+            "description": "本番環境での動作検証が実施されていない",
+            "detection_patterns": ["no production test results"],
+            "remediation": "本番環境で全機能の動作を検証する"
+        },
+
+        ViolationType.HARDCODED_CREDENTIALS: {
+            "severity": ViolationSeverity.CRITICAL,
+            "description": "パスワードやAPIキーがコードに直接記述されている",
+            "detection_patterns": ["password =", "api_key =", "secret =", "token ="],
+            "remediation": "環境変数や設定ファイルから読み込むように変更"
+        },
+
+        ViolationType.PERFORMANCE_BELOW_THRESHOLD: {
+            "severity": ViolationSeverity.HIGH,
+            "description": "レスポンスタイムやリソース使用量が基準を超えている",
+            "detection_patterns": ["response_time > 200ms", "memory > 512MB"],
+            "remediation": "パフォーマンスを最適化して基準内に収める"
         }
+    }
 
+    @classmethod
+    def get_severity(cls, violation_type: ViolationType) -> ViolationSeverity:
+        """違反タイプの重要度を取得"""
+        return cls.DEFINITIONS.get(violation_type, {}).get(
+            "severity", ViolationSeverity.MEDIUM
+        )
 
-# Elder Flow違反ルール定義
-ELDER_FLOW_VIOLATION_RULES = [
-    # 4賢者相談違反
-    ViolationRule(
-        violation_type=ViolationType.FOUR_SAGES_CONSULTATION_MISSING,
-        name="4賢者相談忘れ",
-        description="新機能実装前にインシデント賢者への相談がありません",
-        category=ViolationCategory.PROCESS,
-        severity=ViolationSeverity.CRITICAL,
-        detection_patterns=[
-            r"新機能.*実装",
-            r"implement.*feature",
-            r"add.*functionality"
-        ],
-        auto_fixable=False
-    ),
+    @classmethod
+    def get_description(cls, violation_type: ViolationType) -> str:
+        """違反タイプの説明を取得"""
+        return cls.DEFINITIONS.get(violation_type, {}).get(
+            "description", "詳細な説明がありません"
+        )
 
-    # GitHub Flow違反
-    ViolationRule(
-        violation_type=ViolationType.GITHUB_FLOW_COMMIT_MISSING,
-        name="即座のコミット忘れ",
-        description="機能完了後に即座のコミットが行われていません",
-        category=ViolationCategory.PROCESS,
-        severity=ViolationSeverity.HIGH,
-        detection_patterns=[
-            r"機能.*完了",
-            r"implementation.*complete",
-            r"feature.*done"
-        ],
-        auto_fixable=True
-    ),
+    @classmethod
+    def get_remediation(cls, violation_type: ViolationType) -> str:
+        """修正方法を取得"""
+        return cls.DEFINITIONS.get(violation_type, {}).get(
+            "remediation", "適切な修正を実施してください"
+        )
 
-    # TDD違反
-    ViolationRule(
-        violation_type=ViolationType.TDD_TEST_FIRST_VIOLATION,
-        name="テストファースト違反",
-        description="テスト作成前にコードが実装されています",
-        category=ViolationCategory.PROCESS,
-        severity=ViolationSeverity.HIGH,
-        detection_patterns=[
-            r"実装.*テスト.*前",
-            r"code.*before.*test",
-            r"implementation.*without.*test"
-        ],
-        auto_fixable=False
-    ),
-
-    # Docker権限違反
-    ViolationRule(
-        violation_type=ViolationType.DOCKER_PERMISSION_VIOLATION,
-        name="Docker権限違反",
-        description="sg docker -cを使用せずにDockerコマンドを実行しています",
-        category=ViolationCategory.TECHNICAL,
-        severity=ViolationSeverity.HIGH,
-        detection_patterns=[
-            r"^docker\s+(?!.*sg\s+docker\s+-c)",
-            r"sudo\s+docker"
-        ],
-        auto_fixable=True
-    ),
-
-    # アイデンティティ違反
-    ViolationRule(
-        violation_type=ViolationType.IDENTITY_VIOLATION,
-        name="アイデンティティ違反",
-        description="Claude Elderとしての正しいアイデンティティが保たれていません",
-        category=ViolationCategory.HIERARCHY,
-        severity=ViolationSeverity.HIGH,
-        detection_patterns=[
-            r"ただのAI",
-            r"just.*AI.*assistant",
-            r"私はClaude(?!.*Elder)",
-            r"I am Claude(?!.*Elder)"
-        ],
-        auto_fixable=True
-    ),
-
-    # CO-STAR違反
-    ViolationRule(
-        violation_type=ViolationType.COSTAR_FRAMEWORK_MISSING,
-        name="CO-STARフレームワーク未使用",
-        description="開発時にCO-STARフレームワークが使用されていません",
-        category=ViolationCategory.QUALITY,
-        severity=ViolationSeverity.MEDIUM,
-        detection_patterns=[
-            r"開発.*CO-STAR.*なし",
-            r"implement.*without.*COSTAR",
-            r"missing.*context.*objective"
-        ],
-        auto_fixable=False
-    )
-]
-
-
-def get_violation_rule(violation_type: ViolationType) -> Optional[ViolationRule]:
-    """指定された違反タイプのルールを取得"""
-    for rule in ELDER_FLOW_VIOLATION_RULES:
-        if rule.violation_type == violation_type:
-            return rule
-    return None
-
-
-def get_rules_by_category(category: ViolationCategory) -> List[ViolationRule]:
-    """指定されたカテゴリのルールを取得"""
-    return [rule for rule in ELDER_FLOW_VIOLATION_RULES if rule.category == category]
-
-
-def get_rules_by_severity(severity: ViolationSeverity) -> List[ViolationRule]:
-    """指定された重要度のルールを取得"""
-    return [rule for rule in ELDER_FLOW_VIOLATION_RULES if rule.severity == severity]
+    @classmethod
+    def is_blocking(cls, violation_type: ViolationType) -> bool:
+        """完了をブロックする違反かどうか"""
+        severity = cls.get_severity(violation_type)
+        return severity in [ViolationSeverity.CRITICAL, ViolationSeverity.HIGH]
