@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 RAG賢者プロセス - 情報検索と理解の専門家
-Elder Tree Soul - A2A Architecture
+Elder Soul - A2A Architecture
 """
 
 import asyncio

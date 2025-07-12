@@ -642,7 +642,7 @@ class AgentTemplateManager:
         return '''#!/usr/bin/env python3
 """
 {agent_name} Process - Auto-generated agent
-Elder Tree Soul - A2A Architecture
+Elder Soul - A2A Architecture
 """
 
 import asyncio

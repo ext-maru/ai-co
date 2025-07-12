@@ -22,6 +22,13 @@ from libs.elder_flow_integration import (
     ElderFlowWorkflow
 )
 
+# Elder Soul Integration imports
+from libs.elder_flow_soul_integration import (
+    execute_soul_enhanced_elder_flow,
+    get_soul_enhanced_flow_status,
+    ElderFlowSoulMode
+)
+
 def print_elder_banner():
     """Elder Flow バナー表示"""
     print("🌊 Elder Flow - Claude Elder Automation System")
@@ -36,31 +43,62 @@ async def cmd_execute(args):
     priority = args.priority
     auto_commit = not args.no_commit
     commit_message = args.commit_message
+    soul_mode = getattr(args, 'soul_mode', None)
 
     print(f"📋 Task: {description}")
     print(f"⚡ Priority: {priority}")
     print(f"📤 Auto-commit: {'Yes' if auto_commit else 'No'}")
+
+    if soul_mode:
+        print(f"🌟 Soul Mode: {soul_mode}")
+        print("🧙‍♂️ Using Elder Soul integration")
+    else:
+        print("🏛️ Using traditional Elder Flow")
     print()
 
     try:
-        print("🚀 Starting Elder Flow execution...")
-        task_id = await execute_elder_flow(description, priority, auto_commit, commit_message)
+        if soul_mode:
+            # Elder Soul統合実行
+            print("🌊 Starting Soul Enhanced Elder Flow...")
+            task_id = await execute_soul_enhanced_elder_flow(
+                description, priority, auto_commit, commit_message, soul_mode
+            )
 
-        print(f"✅ Elder Flow completed successfully!")
-        print(f"🆔 Task ID: {task_id}")
+            print(f"✅ Soul Enhanced Elder Flow completed!")
+            print(f"🆔 Task ID: {task_id}")
 
-        # 結果表示
-        status = get_elder_flow_status(task_id)
-        if status:
-            print(f"⏱️  Duration: {status['total_duration']:.2f}s")
-            print(f"📊 Status: {status['status']}")
+            # Soul統合結果表示
+            status = await get_soul_enhanced_flow_status(task_id)
+            if status:
+                print(f"⏱️  Duration: {status['total_duration']:.2f}s")
+                print(f"📊 Status: {status['soul_mode']}")
 
-            if status.get('quality_result'):
-                quality = status['quality_result']
-                print(f"🔍 Quality: {quality['overall_status']} (Score: {quality['overall_score']:.2f}/10)")
+                summary = status.get('soul_results_summary', {})
+                completion_rate = summary.get('completion_rate', 0)
+                print(f"🌟 Soul Completion: {completion_rate:.1%} ({summary.get('phases_completed', 0)}/5 phases)")
 
-            if status.get('git_result') and status['git_result']['commit_success']:
-                print(f"📤 Git: {status['git_result']['commit_hash'][:8]}")
+                if status.get('error_message'):
+                    print(f"⚠️  Error: {status['error_message']}")
+        else:
+            # 従来のElder Flow実行
+            print("🚀 Starting Elder Flow execution...")
+            task_id = await execute_elder_flow(description, priority, auto_commit, commit_message)
+
+            print(f"✅ Elder Flow completed successfully!")
+            print(f"🆔 Task ID: {task_id}")
+
+            # 結果表示
+            status = get_elder_flow_status(task_id)
+            if status:
+                print(f"⏱️  Duration: {status['total_duration']:.2f}s")
+                print(f"📊 Status: {status['status']}")
+
+                if status.get('quality_result'):
+                    quality = status['quality_result']
+                    print(f"🔍 Quality: {quality['overall_status']} (Score: {quality['overall_score']:.2f}/10)")
+
+                if status.get('git_result') and status['git_result']['commit_success']:
+                    print(f"📤 Git: {status['git_result']['commit_hash'][:8]}")
 
     except Exception as e:
         print(f"❌ Elder Flow failed: {str(e)}")
@@ -142,6 +180,67 @@ async def cmd_workflow(args):
 
     return 0
 
+async def cmd_souls(args):
+    """Elder Soul管理"""
+    print_elder_banner()
+
+    if args.action == "status":
+        print("🌟 Elder Soul System Status")
+        print("=" * 30)
+
+        try:
+            from libs.elder_flow_soul_connector import get_elder_flow_soul_connector
+            connector = await get_elder_flow_soul_connector()
+
+            # アクティブセッション表示
+            sessions = await connector.list_active_soul_sessions()
+
+            if sessions:
+                print(f"🔥 Active Soul Sessions: {len(sessions)}")
+                for session in sessions:
+                    print(f"  🌊 {session['session_id']}: {session['phase']} ({session['soul_count']} souls)")
+            else:
+                print("💤 No active soul sessions")
+
+        except Exception as e:
+            print(f"❌ Failed to get soul status: {e}")
+
+    elif args.action == "summon":
+        phase = args.phase
+        description = args.description or "Elder Flow test task"
+
+        print(f"🌟 Summoning souls for {phase}...")
+
+        try:
+            from libs.elder_flow_soul_connector import summon_souls_for_elder_flow
+            result = await summon_souls_for_elder_flow(phase, description, "medium")
+
+            print(f"✅ Summoned {result['summoned_count']}/{result['total_souls']} souls")
+            print(f"🆔 Session ID: {result['session_id']}")
+
+            for soul_id, soul_info in result['souls'].items():
+                status_icon = "✅" if soul_info.get('status') == 'active' else "❌"
+                print(f"  {status_icon} {soul_id}: {soul_info.get('purpose', 'Unknown purpose')}")
+
+        except Exception as e:
+            print(f"❌ Failed to summon souls: {e}")
+
+    elif args.action == "dismiss":
+        session_id = args.session_id
+
+        print(f"🌅 Dismissing soul session: {session_id}")
+
+        try:
+            from libs.elder_flow_soul_connector import dismiss_elder_flow_souls
+            result = await dismiss_elder_flow_souls(session_id)
+
+            print(f"✅ Dismissed {result['dismissed_souls']} souls")
+
+        except Exception as e:
+            print(f"❌ Failed to dismiss souls: {e}")
+
+    return 0
+
 def cmd_help(args):
     """Elder Flow ヘルプ"""
     print_elder_banner()
@@ -149,11 +248,17 @@ def cmd_help(args):
     print()
     print("  execute <description>    - Elder Flow実行")
     print("    --priority <level>     - 優先度 (low/medium/high)")
+    print("    --soul-mode <mode>     - Soul統合モード (soul_enhanced/full_soul)")
     print("    --no-commit            - 自動コミット無効")
     print("    --commit-message <msg> - カスタムコミットメッセージ")
     print()
     print("  status [task_id]         - 状態確認")
     print("    --verbose              - 詳細表示")
+    print()
+    print("  souls <action>           - Elder Soul管理")
+    print("    status                 - アクティブ魂セッション確認")
+    print("    summon <phase>         - 指定フェーズの魂召喚")
+    print("    dismiss <session_id>   - 魂セッション解散")
     print()
     print("  workflow create <name>   - ワークフロー作成")
     print("    --execute              - 作成後すぐ実行")
@@ -161,10 +266,23 @@ def cmd_help(args):
     print()
     print("  help                     - このヘルプ")
     print()
-    print("🌊 Examples:")
+    print("🌊 Traditional Examples:")
     print("  elder-flow execute 'OAuth2.0認証システム実装' --priority high")
     print("  elder-flow status")
     print("  elder-flow workflow create oauth_system --execute")
+    print()
+    print("🌟 Soul Enhanced Examples:")
+    print("  elder-flow execute 'OAuth2.0実装' --soul-mode soul_enhanced")
+    print("  elder-flow execute 'バグ修正' --soul-mode full_soul --priority high")
+    print("  elder-flow souls status")
+    print("  elder-flow souls summon phase1_analysis")
+    print()
+    print("📋 Available Soul Phases:")
+    print("  phase1_analysis  - 4賢者会議 (knowledge_sage, task_sage, rag_sage, incident_sage)")
+    print("  phase2_execution - サーバント実行 (code_servant, test_guardian, quality_inspector)")
+    print("  phase3_quality   - 品質ゲート (security_auditor, performance_monitor, documentation_keeper)")
+    print("  phase4_reporting - 評議会報告 (council_secretary, report_generator, approval_manager)")
+    print("  phase5_git       - Git自動化 (git_master, version_guardian, deploy_manager)")
     print()
 
 def main():
@@ -180,6 +298,7 @@ def main():
     parser_execute = subparsers.add_parser('execute', help='Execute Elder Flow')
     parser_execute.add_argument('description', help='Task description')
     parser_execute.add_argument('--priority', choices=['low', 'medium', 'high'], default='medium', help='Task priority')
+    parser_execute.add_argument('--soul-mode', choices=['soul_enhanced', 'full_soul'], help='Elder Soul integration mode')
     parser_execute.add_argument('--no-commit', action='store_true', help='Disable auto-commit')
     parser_execute.add_argument('--commit-message', help='Custom commit message')
     parser_execute.set_defaults(func=cmd_execute)
@@ -189,6 +308,14 @@ def main():
     parser_status.add_argument('task_id', nargs='?', help='Specific task ID')
     parser_status.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
     parser_status.set_defaults(func=cmd_status)
+
+    # souls コマンド
+    parser_souls = subparsers.add_parser('souls', help='Elder Soul management')
+    parser_souls.add_argument('action', choices=['status', 'summon', 'dismiss'], help='Soul action')
+    parser_souls.add_argument('phase', nargs='?', help='Phase for summon action')
+    parser_souls.add_argument('session_id', nargs='?', help='Session ID for dismiss action')
+    parser_souls.add_argument('--description', help='Task description for summon')
+    parser_souls.set_defaults(func=cmd_souls)
 
     # workflow コマンド
     parser_workflow = subparsers.add_parser('workflow', help='Elder Flow workflow management')

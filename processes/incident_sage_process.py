@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 インシデント賢者プロセス - 危機対応専門家
-Elder Tree Soul - A2A Architecture
+Elder Soul - A2A Architecture
 """
 
 import asyncio

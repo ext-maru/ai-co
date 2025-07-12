@@ -1,0 +1,308 @@
+#!/usr/bin/env python3
+"""
+エルダーの魂 - 新エージェント追加ツール
+Elder Soul - New Agent Addition Tool
+"""
+
+import sys
+import json
+import argparse
+from pathlib import Path
+from typing import Dict, Any
+
+# プロジェクトルートをパスに追加
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from libs.elder_registry import ElderRegistry, AgentType
+
+
+class AgentAdditionWizard:
+    """新エージェント追加ウィザード"""
+
+    def __init__(self):
+        self.registry = ElderRegistry()
+
+    async def interactive_add_agent(self):
+        """対話式エージェント追加"""
+        print("🌲 Elder Soul - New Agent Addition Wizard")
+        print("=" * 60)
+
+        # 基本情報の収集
+        agent_info = await self._collect_basic_info()
+
+        # 高度な設定
+        advanced_info = await self._collect_advanced_info()
+        agent_info.update(advanced_info)
+
+        # 確認
+        if await self._confirm_addition(agent_info):
+            # 登録実行
+            success = await self._register_agent(agent_info)
+
+            if success:
+                await self._show_success_message(agent_info)
+            else:
+                await self._show_failure_message(agent_info)
+        else:
+            print("❌ Agent addition cancelled")
+
+    async def batch_add_agents(self, config_file: str):
+        """バッチエージェント追加"""
+        print(f"📦 Batch adding agents from {config_file}")
+
+        try:
+            with open(config_file, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+
+            agents = config.get('agents', [])
+
+            for agent_info in agents:
+                print(f"\n📋 Processing: {agent_info.get('name', 'Unknown')}")
+
+                success = await self._register_agent(agent_info)
+
+                if success:
+                    print(f"✅ Successfully added: {agent_info['name']}")
+                else:
+                    print(f"❌ Failed to add: {agent_info.get('name', 'Unknown')}")
+
+            print(f"\n🎉 Batch processing completed for {len(agents)} agents")
+
+        except Exception as e:
+            print(f"❌ Batch addition failed: {e}")
+
+    async def _collect_basic_info(self) -> Dict[str, Any]:
+        """基本情報収集"""
+        print("\n📋 Basic Information")
+        print("-" * 30)
+
+        # エージェント名
+        name = input("Agent Name: ").strip()
+        if not name:
+            raise ValueError("Agent name is required")
+
+        # エージェントID（自動生成または手動）
+        suggested_id = name.lower().replace(" ", "_")
+        agent_id = input(f"Agent ID [{suggested_id}]: ").strip() or suggested_id
+
+        # 説明
+        description = input("Description: ").strip()
+        if not description:
+            description = f"Auto-generated agent: {name}"
+
+        # エージェントタイプ
+        print("\nAvailable Agent Types:")
+        for i, agent_type in enumerate(AgentType, 1):
+            print(f"  {i}. {agent_type.value}")
+
+        while True:
+            try:
+                type_choice = input("Select Agent Type (1-7): ").strip()
+                if type_choice:
+                    agent_type = list(AgentType)[int(type_choice) - 1]
+                    break
+                else:
+                    agent_type = AgentType.SERVANT  # デフォルト
+                    break
+            except (ValueError, IndexError):
+                print("❌ Invalid choice. Please try again.")
+
+        return {
+            "id": agent_id,
+            "name": name,
+            "description": description,
+            "type": agent_type.value
+        }
+
+    async def _collect_advanced_info(self) -> Dict[str, Any]:
+        """高度な設定収集"""
+        print("\n⚙️ Advanced Configuration")
+        print("-" * 30)
+
+        # 機能リスト
+        print("Capabilities (comma-separated):")
+        capabilities_input = input("Enter capabilities: ").strip()
+        capabilities = [cap.strip() for cap in capabilities_input.split(",") if cap.strip()]
+
+        if not capabilities:
+            capabilities = ["basic_functionality"]
+
+        # 依存関係
+        print("\nDependencies (comma-separated agent IDs):")
+        dependencies_input = input("Enter dependencies: ").strip()
+        dependencies = [dep.strip() for dep in dependencies_input.split(",") if dep.strip()]
+
+        # ポート（自動割り当てまたは手動）
+        port_input = input("Port (leave empty for auto-assignment): ").strip()
+        port = int(port_input) if port_input.isdigit() else None
+
+        # 自動起動
+        auto_start_input = input("Auto-start? [y/N]: ").strip().lower()
+        auto_start = auto_start_input in ['y', 'yes']
+
+        return {
+            "capabilities": capabilities,
+            "dependencies": dependencies,
+            "port": port,
+            "auto_start": auto_start
+        }
+
+    async def _confirm_addition(self, agent_info: Dict[str, Any]) -> bool:
+        """追加確認"""
+        print("\n📋 Agent Configuration Summary")
+        print("=" * 40)
+        print(f"Name: {agent_info['name']}")
+        print(f"ID: {agent_info['id']}")
+        print(f"Type: {agent_info['type']}")
+        print(f"Description: {agent_info['description']}")
+        print(f"Capabilities: {', '.join(agent_info['capabilities'])}")
+        print(f"Dependencies: {', '.join(agent_info['dependencies']) if agent_info['dependencies'] else 'None'}")
+        print(f"Port: {agent_info['port'] if agent_info['port'] else 'Auto-assign'}")
+        print(f"Auto-start: {'Yes' if agent_info['auto_start'] else 'No'}")
+        print("=" * 40)
+
+        confirm = input("\n❓ Add this agent? [Y/n]: ").strip().lower()
+        return confirm in ['', 'y', 'yes']
+
+    async def _register_agent(self, agent_info: Dict[str, Any]) -> bool:
+        """エージェント登録"""
+        try:
+            await self.registry.initialize()
+
+            agent = await self.registry.register_agent(
+                agent_id=agent_info["id"],
+                name=agent_info["name"],
+                description=agent_info["description"],
+                agent_type=AgentType(agent_info["type"]),
+                capabilities=agent_info["capabilities"],
+                dependencies=agent_info.get("dependencies", []),
+                port=agent_info.get("port"),
+                auto_start=agent_info.get("auto_start", True)
+            )
+
+            return True
+
+        except Exception as e:
+            print(f"❌ Registration failed: {e}")
+            return False
+
+    async def _show_success_message(self, agent_info: Dict[str, Any]):
+        """成功メッセージ表示"""
+        print("\n🎉 Agent Successfully Added!")
+        print("=" * 40)
+        print(f"✅ {agent_info['name']} has been registered with Elder Soul")
+        print("\n🚀 Next steps:")
+        print(f"   1. Check status: elder-tree-soul status")
+        print(f"   2. Start agent: elder-tree-soul start")
+        print(f"   3. View logs: elder-tree-soul logs {agent_info['id']}")
+        print(f"   4. Agent script: processes/{agent_info['id']}_process.py")
+        print("\n🌲 Welcome to the Elder Soul ecosystem!")
+
+    async def _show_failure_message(self, agent_info: Dict[str, Any]):
+        """失敗メッセージ表示"""
+        print("\n❌ Agent Addition Failed")
+        print("=" * 40)
+        print(f"Failed to register: {agent_info.get('name', 'Unknown')}")
+        print("\n🔧 Troubleshooting:")
+        print("   1. Check if the agent ID is unique")
+        print("   2. Verify all required fields are provided")
+        print("   3. Ensure Elder Soul is properly installed")
+        print("   4. Check logs: logs/elder_enforcement.log")
+
+    def create_batch_template(self, output_file: str):
+        """バッチ追加テンプレート作成"""
+        template = {
+            "description": "Elder Soul - Batch Agent Configuration",
+            "version": "1.0",
+            "agents": [
+                {
+                    "id": "example_servant",
+                    "name": "Example Servant",
+                    "description": "Example servant agent",
+                    "type": "servant",
+                    "capabilities": ["example_capability", "another_capability"],
+                    "dependencies": [],
+                    "port": null,
+                    "auto_start": True
+                },
+                {
+                    "id": "another_agent",
+                    "name": "Another Agent",
+                    "description": "Another example agent",
+                    "type": "elf",
+                    "capabilities": ["monitoring", "optimization"],
+                    "dependencies": ["example_servant"],
+                    "port": 8001,
+                    "auto_start": False
+                }
+            ]
+        }
+
+        try:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(template, f, ensure_ascii=False, indent=2)
+
+            print(f"✅ Batch template created: {output_file}")
+            print("📝 Edit this file and use: elder-tree-soul-add-agent --batch")
+
+        except Exception as e:
+            print(f"❌ Failed to create template: {e}")
+
+
+async def main():
+    """メイン関数"""
+    parser = argparse.ArgumentParser(
+        description="Elder Soul - New Agent Addition Tool",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  %(prog)s                          # Interactive wizard
+  %(prog)s --batch config.json      # Batch addition
+  %(prog)s --create-template out.json  # Create template
+        """
+    )
+
+    parser.add_argument(
+        '--batch',
+        metavar='CONFIG_FILE',
+        help='Batch add agents from JSON configuration file'
+    )
+
+    parser.add_argument(
+        '--create-template',
+        metavar='OUTPUT_FILE',
+        help='Create a batch configuration template'
+    )
+
+    parser.add_argument(
+        '--interactive',
+        action='store_true',
+        help='Run interactive wizard (default)'
+    )
+
+    args = parser.parse_args()
+
+    wizard = AgentAdditionWizard()
+
+    try:
+        if args.create_template:
+            wizard.create_batch_template(args.create_template)
+        elif args.batch:
+            await wizard.batch_add_agents(args.batch)
+        else:
+            # デフォルトは対話式
+            await wizard.interactive_add_agent()
+
+    except KeyboardInterrupt:
+        print("\n👋 Goodbye!")
+    except Exception as e:
+        print(f"\n❌ Error: {e}")
+        return 1
+
+    return 0
+
+
+if __name__ == "__main__":
+    import asyncio
+    sys.exit(asyncio.run(main()))

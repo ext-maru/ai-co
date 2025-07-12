@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-エルダーツリーの魂 - メインコマンド
-Elder Tree Soul - Main Command Interface
+エルダーの魂 - メインコマンド
+Elder Soul - Main Command Interface
 """
 
 import sys
@@ -18,7 +18,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 
 class ElderTreeSoul:
-    """エルダーツリーの魂 - コマンドライン界面"""
+    """エルダーの魂 - コマンドライン界面"""
 
     def __init__(self):
         self.project_root = PROJECT_ROOT
@@ -69,7 +69,7 @@ class ElderTreeSoul:
     def show_banner(self):
         """バナー表示"""
         print("🌲" + "=" * 60 + "🌲")
-        print("🌟         エルダーツリーの魂 (Elder Tree Soul)         🌟")
+        print("🌟         エルダーの魂 (Elder Soul)         🌟")
         print("🏛️              A2A分散AIシステム                     🏛️")
         print("⚡           1役割 = 1プロセス = 1エージェント          ⚡")
         print("🌲" + "=" * 60 + "🌲")
@@ -77,7 +77,7 @@ class ElderTreeSoul:
 
     def cmd_start(self, args):
         """エルダーツリー起動"""
-        print("🚀 Starting Elder Tree Soul...")
+        print("🚀 Starting Elder Soul...")
 
         # 依存関係チェック
         if not self._check_dependencies():
@@ -96,21 +96,21 @@ class ElderTreeSoul:
         try:
             if args.daemon:
                 subprocess.run(cmd, check=True)
-                print("✅ Elder Tree Soul started in daemon mode")
+                print("✅ Elder Soul started in daemon mode")
                 print("Use 'elder-tree-soul status' to check status")
             else:
                 # インタラクティブモードは直接実行
                 subprocess.run(cmd)
 
         except subprocess.CalledProcessError as e:
-            print(f"❌ Failed to start Elder Tree Soul: {e}")
+            print(f"❌ Failed to start Elder Soul: {e}")
             return 1
 
         return 0
 
     def cmd_stop(self, args):
         """エルダーツリー停止"""
-        print("🛑 Stopping Elder Tree Soul...")
+        print("🛑 Stopping Elder Soul...")
 
         # プロセス検索と停止
         try:
@@ -133,7 +133,7 @@ class ElderTreeSoul:
                         except subprocess.CalledProcessError:
                             print(f"⚠️  Could not stop process {pid}")
 
-                print("✅ Elder Tree Soul stopped")
+                print("✅ Elder Soul stopped")
             else:
                 print("ℹ️  No elder processes found")
 
@@ -145,7 +145,7 @@ class ElderTreeSoul:
 
     def cmd_status(self, args):
         """エルダーツリー状態確認"""
-        print("📊 Elder Tree Soul Status")
+        print("📊 Elder Soul Status")
         print("-" * 40)
 
         # プロセス状態確認
@@ -188,7 +188,7 @@ class ElderTreeSoul:
             # 特定エルダーの再起動
             return self._restart_specific_elder(args.elder)
         else:
-            print("🔄 Restarting Elder Tree Soul...")
+            print("🔄 Restarting Elder Soul...")
             # 全体再起動
             self.cmd_stop(args)
             time.sleep(2)
@@ -209,7 +209,7 @@ class ElderTreeSoul:
                 return 1
         else:
             # 全ログの概要表示
-            print("📋 Elder Tree Soul Logs Overview")
+            print("📋 Elder Soul Logs Overview")
             print("-" * 40)
 
             for elder_id in self.elders.keys():
@@ -230,7 +230,7 @@ class ElderTreeSoul:
 
     def cmd_health(self, args):
         """ヘルスチェック"""
-        print("🏥 Elder Tree Soul Health Check")
+        print("🏥 Elder Soul Health Check")
         print("-" * 40)
 
         health_score = 0
@@ -292,7 +292,7 @@ class ElderTreeSoul:
 
     def cmd_config(self, args):
         """設定表示・変更"""
-        print("⚙️  Elder Tree Soul Configuration")
+        print("⚙️  Elder Soul Configuration")
         print("-" * 40)
 
         for elder_id, config in self.elders.items():
@@ -470,19 +470,19 @@ class ElderTreeSoul:
 def main():
     """メイン関数"""
     parser = argparse.ArgumentParser(
-        description="エルダーツリーの魂 - Elder Tree Soul Command Interface",
+        description="エルダーの魂 - Elder Soul Command Interface",
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
 
     # start コマンド
-    start_parser = subparsers.add_parser('start', help='Start Elder Tree Soul')
+    start_parser = subparsers.add_parser('start', help='Start Elder Soul')
     start_parser.add_argument('-d', '--daemon', action='store_true',
                              help='Start in daemon mode')
 
     # stop コマンド
-    stop_parser = subparsers.add_parser('stop', help='Stop Elder Tree Soul')
+    stop_parser = subparsers.add_parser('stop', help='Stop Elder Soul')
 
     # status コマンド
     status_parser = subparsers.add_parser('status', help='Show status')

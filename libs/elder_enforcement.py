@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-エルダーツリーの魂強制実行システム
-Elder Tree Soul Enforcement System
+エルダーの魂強制実行システム
+Elder Soul Enforcement System
 
-すべての新役割とプロセスが必ずエルダーツリーの魂を使用するようにする強制機構
+すべての新役割とプロセスが必ずエルダーの魂を使用するようにする強制機構
 """
 
 import os
@@ -31,11 +31,11 @@ class EnforcementError(Exception):
 
 class ElderTreeEnforcement:
     """
-    エルダーツリーの魂 強制実行システム
+    エルダーの魂 強制実行システム
 
     機能:
     - 新しいプロセス/役割の自動検出
-    - エルダーツリーの魂への強制登録
+    - エルダーの魂への強制登録
     - 非準拠プロセスの警告・停止
     - 開発者への教育メッセージ
     """
@@ -99,7 +99,7 @@ class ElderTreeEnforcement:
         self.logger.info("🛡️ Elder Tree Enforcement System initialized")
 
     async def enforce_elder_tree_usage(self):
-        """エルダーツリーの魂使用を強制"""
+        """エルダーの魂使用を強制"""
         self.logger.info("🔍 Scanning for non-compliant processes...")
 
         # 新しいプロセス/役割の検出
@@ -135,7 +135,7 @@ class ElderTreeEnforcement:
         if missing_fields:
             raise EnforcementError(f"Missing required fields: {missing_fields}")
 
-        # エルダーツリーの魂への自動登録
+        # エルダーの魂への自動登録
         try:
             agent = await self.registry.register_agent(
                 agent_id=role_info.get("id", role_info["name"].lower().replace(" ", "_")),
@@ -209,7 +209,7 @@ class ElderTreeEnforcement:
                 if self.enforcement_config["strict_mode"]:
                     if not await self._verify_function_compliance(func_info):
                         raise EnforcementError(
-                            f"Function {func.__name__} is not registered with Elder Tree Soul. "
+                            f"Function {func.__name__} is not registered with Elder Soul. "
                             f"Please register using: elder-tree-soul register {func.__name__}"
                         )
 
@@ -405,16 +405,16 @@ PID: {process_info.get('pid')}
 Command: {' '.join(process_info.get('cmdline', []))}
 
 ⚠️ This process appears to be an Elder-like service but is not registered
-   with the Elder Tree Soul system.
+   with the Elder Soul system.
 
 🔧 To fix this violation:
-   1. Register with Elder Tree Soul: elder-tree-soul register {process_name}
-   2. Or modify your code to use the Elder Tree Soul framework
+   1. Register with Elder Soul: elder-tree-soul register {process_name}
+   2. Or modify your code to use the Elder Soul framework
 
 ⏰ Grace period: {self.enforcement_config['grace_period']} seconds
    After this period, the process will be automatically terminated.
 
-📚 Documentation: {PROJECT_ROOT}/docs/elder_tree_soul_plan.md
+📚 Documentation: {PROJECT_ROOT}/docs/elder_soul_plan.md
 """
 
         print(warning_msg)
@@ -428,22 +428,22 @@ Command: {' '.join(process_info.get('cmdline', []))}
         education_msg = f"""
 🌲 ELDER TREE SOUL EDUCATION 🌲
 
-Your process has been terminated because it violated Elder Tree Soul policies.
+Your process has been terminated because it violated Elder Soul policies.
 
 📋 What happened:
    Your process appeared to be an Elder-like service but was not properly
-   registered with the Elder Tree Soul system.
+   registered with the Elder Soul system.
 
 🎯 Why this matters:
-   - Elder Tree Soul ensures proper A2A communication
+   - Elder Soul ensures proper A2A communication
    - Maintains system hierarchy and order
    - Provides automatic monitoring and management
    - Enables dynamic scaling and fault tolerance
 
 🔧 How to fix:
-   1. Use the Elder Tree Soul framework for all new roles
+   1. Use the Elder Soul framework for all new roles
    2. Register existing processes: elder-tree-soul register <name>
-   3. Follow the Elder Tree Soul development guidelines
+   3. Follow the Elder Soul development guidelines
 
 💡 Example:
    # Register a new agent
@@ -682,7 +682,7 @@ Your process has been terminated because it violated Elder Tree Soul policies.
 
         # 既知のエルダーパターン
         elder_patterns = [
-            "elder_tree_soul", "elder-tree-soul",
+            "elder_soul", "elder-tree-soul",
             "elder_process_base", "run_elder_process"
         ]
 
@@ -754,13 +754,13 @@ Your process has been terminated because it violated Elder Tree Soul policies.
             return
 
         education_msg = f"""
-🎉 SUCCESS: Role registered with Elder Tree Soul!
+🎉 SUCCESS: Role registered with Elder Soul!
 
 Role: {agent.name}
 Type: {agent.agent_type.value}
 Port: {agent.port}
 
-✅ Your role is now part of the Elder Tree Soul system and will benefit from:
+✅ Your role is now part of the Elder Soul system and will benefit from:
    - Automatic A2A communication
    - Built-in monitoring and health checks
    - Dynamic scaling capabilities
@@ -771,7 +771,7 @@ Port: {agent.port}
    2. Check status: elder-tree-soul status
    3. Monitor logs: elder-tree-soul logs {agent.agent_id}
 
-🌲 Welcome to the Elder Tree Soul ecosystem!
+🌲 Welcome to the Elder Soul ecosystem!
 """
 
         print(education_msg)

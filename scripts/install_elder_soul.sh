@@ -1,15 +1,15 @@
 #!/bin/bash
 """
-エルダーツリーの魂 - インストールスクリプト
-Elder Tree Soul - Installation Script
+エルダーの魂 - インストールスクリプト
+Elder Soul - Installation Script
 """
 
 set -e
 
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SCRIPT_PATH="$PROJECT_ROOT/scripts/elder_tree_soul"
+SCRIPT_PATH="$PROJECT_ROOT/scripts/elder_soul"
 
-echo "🌲 Installing Elder Tree Soul..."
+echo "🌲 Installing Elder Soul..."
 echo "Project Root: $PROJECT_ROOT"
 
 # 1. スクリプトの実行権限設定
@@ -112,14 +112,14 @@ echo "✅ Configuration created: .elder_tree_config.json"
 # 8. 動作テスト
 echo "🧪 Testing installation..."
 if "$SCRIPT_PATH" config >/dev/null 2>&1; then
-    echo "✅ Elder Tree Soul command working"
+    echo "✅ Elder Soul command working"
 else
     echo "❌ Command test failed"
     exit 1
 fi
 
 echo ""
-echo "🎉 Elder Tree Soul installation completed!"
+echo "🎉 Elder Soul installation completed!"
 echo ""
 echo "📋 Usage:"
 echo "  elder-tree-soul start    # Start all elders"
@@ -132,4 +132,4 @@ echo "  1. Start Redis: redis-server"
 echo "  2. Start Elder Tree: elder-tree-soul start"
 echo ""
 echo "📚 Documentation: $PROJECT_ROOT/docs/"
-echo "🌲 May the Elder Tree Soul guide your development!"
+echo "🌲 May the Elder Soul guide your development!"

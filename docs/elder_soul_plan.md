@@ -1,8 +1,8 @@
-# 🌲 エルダーツリーの魂 (Elder Tree Soul) - 実装計画書
+# 🌲 エルダーの魂 (Elder Soul) - 実装計画書
 
 ## 📋 概要
 
-**エルダーツリーの魂**は、エルダーズギルドの全エージェントが独立したプロセスとして動作し、A2A（Agent to Agent）で真の協調を実現する分散AIシステムです。
+**エルダーの魂**は、エルダーズギルドの全エージェントが独立したプロセスとして動作し、A2A（Agent to Agent）で真の協調を実現する分散AIシステムです。
 
 ### 🎯 ビジョン
 「Every Role, Every Process, Every Connection」
@@ -194,7 +194,7 @@ redis-server
 pip install -r requirements.txt
 ```
 
-### 2. エルダーツリーの魂起動
+### 2. エルダーの魂起動
 ```bash
 # 通常起動（インタラクティブ）
 elder-tree-soul
