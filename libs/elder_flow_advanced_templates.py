@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
+pass  # Auto-fixed by Incident Knights
 Elder Flow Advanced Templates
 高度なタスクテンプレートを追加
 """
+pass  # Auto-fixed by Incident Knights
 
 import sys
 import os
@@ -26,9 +28,11 @@ def create_elder_flow_complete_system_tasks():
             file_path="src/cli/elder_flow_cli.py",
             content='''#!/usr/bin/env python3
 """
+pass  # Auto-fixed by Incident Knights
 Elder Flow CLI - Command Line Interface
 Usage: elder-flow <command> [options]
 """
+pass  # Auto-fixed by Incident Knights
 
 import argparse
 import asyncio
@@ -176,9 +180,11 @@ if __name__ == "__main__":
             dependencies={"cli_base"},
             file_path="src/integration/four_sages_integration.py",
             content='''"""
+pass  # Auto-fixed by Incident Knights
 4賢者システム統合
 ナレッジ・タスク・インシデント・RAG賢者との連携
 """
+pass  # Auto-fixed by Incident Knights
 
 import asyncio
 import json
@@ -356,8 +362,10 @@ class FourSagesIntegration:
             dependencies={"sages_integration"},
             file_path="src/automation/git_cicd_integration.py",
             content='''"""
+pass  # Auto-fixed by Incident Knights
 Git自動化とCI/CD統合システム
 """
+pass  # Auto-fixed by Incident Knights
 
 import subprocess
 import json
@@ -494,9 +502,11 @@ class GitCICDIntegration:
             dependencies={"git_automation"},
             file_path="src/web/elder_flow_dashboard.py",
             content='''"""
+pass  # Auto-fixed by Incident Knights
 Elder Flow Web Dashboard
 リアルタイム監視・タスクグラフ可視化
 """
+pass  # Auto-fixed by Incident Knights
 
 from flask import Flask, render_template, jsonify, request
 from flask_socketio import SocketIO, emit
@@ -705,9 +715,11 @@ if __name__ == '__main__':
             dependencies={"web_dashboard"},
             file_path="src/templates/extended_task_templates.py",
             content='''"""
+pass  # Auto-fixed by Incident Knights
 拡張タスクテンプレート
 React・FastAPI・Docker・Kubernetes等
 """
+pass  # Auto-fixed by Incident Knights
 
 from typing import Dict, List, Any
 
@@ -873,9 +885,11 @@ class ExtendedTaskTemplates:
             dependencies={"extended_templates"},
             file_path="src/monitoring/elder_flow_monitoring.py",
             content='''"""
+pass  # Auto-fixed by Incident Knights
 Elder Flow 監視・ログシステム
 パフォーマンス監視・エラー集約・統計レポート
 """
+pass  # Auto-fixed by Incident Knights
 
 import logging
 import time
