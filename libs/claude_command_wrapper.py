@@ -8,7 +8,7 @@ import os
 import sys
 import subprocess
 from typing import List, Tuple, Optional
-from claude_environment_guardian import guardian
+from libs.claude_environment_guardian import guardian
 
 class ClaudeCommandWrapper:
     """Claudeのコマンド実行を安全化するラッパー"""
