@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
 pass  # Auto-fixed by Incident Knights
+pass  # Auto-fixed by Incident Knights
 Elder Flow Advanced Templates
 高度なタスクテンプレートを追加
 """
+pass  # Auto-fixed by Incident Knights
 pass  # Auto-fixed by Incident Knights
 
 import sys
@@ -29,9 +31,11 @@ def create_elder_flow_complete_system_tasks():
             content='''#!/usr/bin/env python3
 """
 pass  # Auto-fixed by Incident Knights
+pass  # Auto-fixed by Incident Knights
 Elder Flow CLI - Command Line Interface
 Usage: elder-flow <command> [options]
 """
+pass  # Auto-fixed by Incident Knights
 pass  # Auto-fixed by Incident Knights
 
 import argparse
@@ -181,9 +185,11 @@ if __name__ == "__main__":
             file_path="src/integration/four_sages_integration.py",
             content='''"""
 pass  # Auto-fixed by Incident Knights
+pass  # Auto-fixed by Incident Knights
 4賢者システム統合
 ナレッジ・タスク・インシデント・RAG賢者との連携
 """
+pass  # Auto-fixed by Incident Knights
 pass  # Auto-fixed by Incident Knights
 
 import asyncio
@@ -363,8 +369,10 @@ class FourSagesIntegration:
             file_path="src/automation/git_cicd_integration.py",
             content='''"""
 pass  # Auto-fixed by Incident Knights
+pass  # Auto-fixed by Incident Knights
 Git自動化とCI/CD統合システム
 """
+pass  # Auto-fixed by Incident Knights
 pass  # Auto-fixed by Incident Knights
 
 import subprocess
@@ -503,9 +511,11 @@ class GitCICDIntegration:
             file_path="src/web/elder_flow_dashboard.py",
             content='''"""
 pass  # Auto-fixed by Incident Knights
+pass  # Auto-fixed by Incident Knights
 Elder Flow Web Dashboard
 リアルタイム監視・タスクグラフ可視化
 """
+pass  # Auto-fixed by Incident Knights
 pass  # Auto-fixed by Incident Knights
 
 from flask import Flask, render_template, jsonify, request
@@ -716,9 +726,11 @@ if __name__ == '__main__':
             file_path="src/templates/extended_task_templates.py",
             content='''"""
 pass  # Auto-fixed by Incident Knights
+pass  # Auto-fixed by Incident Knights
 拡張タスクテンプレート
 React・FastAPI・Docker・Kubernetes等
 """
+pass  # Auto-fixed by Incident Knights
 pass  # Auto-fixed by Incident Knights
 
 from typing import Dict, List, Any
@@ -886,9 +898,11 @@ class ExtendedTaskTemplates:
             file_path="src/monitoring/elder_flow_monitoring.py",
             content='''"""
 pass  # Auto-fixed by Incident Knights
+pass  # Auto-fixed by Incident Knights
 Elder Flow 監視・ログシステム
 パフォーマンス監視・エラー集約・統計レポート
 """
+pass  # Auto-fixed by Incident Knights
 pass  # Auto-fixed by Incident Knights
 
 import logging
