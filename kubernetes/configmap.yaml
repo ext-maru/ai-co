@@ -1,0 +1,138 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elder-flow-config
+  namespace: elder-flow
+data:
+  # Elder Flow Configuration
+  ELDER_FLOW_ENV: "production"
+  POSTGRES_HOST: "postgres-service"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "elderflow"
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  PGVECTOR_HOST: "pgvector-service"
+  PGVECTOR_PORT: "5432"
+
+  # API Configuration
+  API_HOST: "0.0.0.0"
+  API_PORT: "8000"
+  WORKERS_COUNT: "4"
+
+  # 4 Sages Configuration
+  KNOWLEDGE_SAGE_ENABLED: "true"
+  TASK_SAGE_ENABLED: "true"
+  INCIDENT_SAGE_ENABLED: "true"
+  RAG_SAGE_ENABLED: "true"
+
+  # Performance Settings
+  MAX_PARALLEL_TASKS: "10"
+  CACHE_TTL: "3600"
+  BATCH_SIZE: "50"
+
+  # Security Settings
+  JWT_ALGORITHM: "HS256"
+  TOKEN_EXPIRE_HOURS: "24"
+
+  # Monitoring
+  METRICS_ENABLED: "true"
+  METRICS_PORT: "9090"
+  LOG_LEVEL: "INFO"
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elder-flow-nginx-config
+  namespace: elder-flow
+data:
+  nginx.conf: |
+    user nginx;
+    worker_processes auto;
+    error_log /var/log/nginx/error.log warn;
+    pid /var/run/nginx.pid;
+
+    events {
+        worker_connections 4096;
+        use epoll;
+        multi_accept on;
+    }
+
+    http {
+        include /etc/nginx/mime.types;
+        default_type application/octet-stream;
+
+        # Logging
+        log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                        '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+        access_log /var/log/nginx/access.log main;
+
+        # Performance
+        sendfile on;
+        tcp_nopush on;
+        tcp_nodelay on;
+        keepalive_timeout 65;
+        types_hash_max_size 2048;
+        client_max_body_size 100M;
+
+        # Gzip
+        gzip on;
+        gzip_vary on;
+        gzip_proxied any;
+        gzip_comp_level 6;
+        gzip_types text/plain text/css text/xml text/javascript application/javascript application/json application/xml+rss;
+
+        # Upstream
+        upstream elder_flow_api {
+            least_conn;
+            server elder-flow-api-service:8000;
+            keepalive 32;
+        }
+
+        server {
+            listen 80;
+            server_name _;
+
+            # Security headers
+            add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Content-Type-Options "nosniff" always;
+            add_header X-XSS-Protection "1; mode=block" always;
+
+            # Static files
+            location / {
+                root /usr/share/nginx/html;
+                try_files $uri $uri/ /index.html;
+            }
+
+            # API
+            location /api/ {
+                proxy_pass http://elder_flow_api;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+
+            # WebSocket
+            location /ws/ {
+                proxy_pass http://elder_flow_api;
+                proxy_http_version 1.1;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+                proxy_set_header Host $host;
+                proxy_buffering off;
+                proxy_read_timeout 86400;
+            }
+
+            # Health check
+            location /health {
+                access_log off;
+                return 200 "healthy\n";
+                add_header Content-Type text/plain;
+            }
+        }
+    }

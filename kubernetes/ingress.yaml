@@ -1,0 +1,195 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: elder-flow-ingress
+  namespace: elder-flow
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/affinity-mode: "persistent"
+    nginx.ingress.kubernetes.io/session-cookie-name: "elder-flow-session"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "86400"
+spec:
+  tls:
+  - hosts:
+    - elderflow.ai
+    - api.elderflow.ai
+    - admin.elderflow.ai
+    secretName: elder-flow-tls
+  rules:
+  # Main application
+  - host: elderflow.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: elder-flow-frontend-service
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: elder-flow-api-service
+            port:
+              number: 8000
+      - path: /ws
+        pathType: Prefix
+        backend:
+          service:
+            name: elder-flow-api-service
+            port:
+              number: 8000
+
+  # API subdomain
+  - host: api.elderflow.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: elder-flow-api-service
+            port:
+              number: 8000
+
+  # Admin subdomain
+  - host: admin.elderflow.ai
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: elder-flow-admin-service
+            port:
+              number: 80
+
+---
+# Frontend service
+apiVersion: v1
+kind: Service
+metadata:
+  name: elder-flow-frontend-service
+  namespace: elder-flow
+spec:
+  selector:
+    app: elder-flow
+    component: frontend
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  type: ClusterIP
+
+---
+# Admin service
+apiVersion: v1
+kind: Service
+metadata:
+  name: elder-flow-admin-service
+  namespace: elder-flow
+spec:
+  selector:
+    app: elder-flow
+    component: admin
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+  type: ClusterIP
+
+---
+# Frontend deployment with nginx
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elder-flow-frontend
+  namespace: elder-flow
+  labels:
+    app: elder-flow
+    component: frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: elder-flow
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: elder-flow
+        component: frontend
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: frontend-files
+          mountPath: /usr/share/nginx/html
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: frontend-files
+        emptyDir: {}
+      - name: nginx-config
+        configMap:
+          name: elder-flow-nginx-config
+
+---
+# Admin deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elder-flow-admin
+  namespace: elder-flow
+  labels:
+    app: elder-flow
+    component: admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elder-flow
+      component: admin
+  template:
+    metadata:
+      labels:
+        app: elder-flow
+        component: admin
+    spec:
+      containers:
+      - name: admin
+        image: elderflow/elder-flow-admin:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: API_URL
+          value: "https://api.elderflow.ai"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

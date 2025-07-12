@@ -1,0 +1,315 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elder-servant-workers
+  namespace: elder-flow
+  labels:
+    app: elder-flow
+    component: elder-servant-worker
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: elder-flow
+      component: elder-servant-worker
+  template:
+    metadata:
+      labels:
+        app: elder-flow
+        component: elder-servant-worker
+    spec:
+      containers:
+      - name: elder-servant-worker
+        image: elderflow/elder-flow:latest
+        imagePullPolicy: Always
+        command: ["python", "-m", "workers.elder_servant_worker"]
+        env:
+        - name: ELDER_FLOW_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: ELDER_FLOW_ENV
+        - name: WORKER_TYPE
+          value: "elder-servant"
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: POSTGRES_HOST
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: REDIS_HOST
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elder-flow-secrets
+              key: POSTGRES_PASSWORD
+        volumeMounts:
+        - name: knowledge-base
+          mountPath: /app/knowledge_base
+          readOnly: true
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1"
+      volumes:
+      - name: knowledge-base
+        persistentVolumeClaim:
+          claimName: knowledge-base-pvc
+
+---
+# Knowledge Sage Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: knowledge-sage
+  namespace: elder-flow
+  labels:
+    app: elder-flow
+    component: knowledge-sage
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: elder-flow
+      component: knowledge-sage
+  template:
+    metadata:
+      labels:
+        app: elder-flow
+        component: knowledge-sage
+    spec:
+      containers:
+      - name: knowledge-sage
+        image: elderflow/elder-flow:latest
+        imagePullPolicy: Always
+        command: ["python", "-m", "workers.knowledge_sage_worker"]
+        env:
+        - name: ELDER_FLOW_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: ELDER_FLOW_ENV
+        - name: SAGE_TYPE
+          value: "knowledge"
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: POSTGRES_HOST
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: REDIS_HOST
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elder-flow-secrets
+              key: POSTGRES_PASSWORD
+        volumeMounts:
+        - name: knowledge-base
+          mountPath: /app/knowledge_base
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1"
+          limits:
+            memory: "4Gi"
+            cpu: "2"
+      volumes:
+      - name: knowledge-base
+        persistentVolumeClaim:
+          claimName: knowledge-base-pvc
+
+---
+# Task Sage Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-sage
+  namespace: elder-flow
+  labels:
+    app: elder-flow
+    component: task-sage
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: elder-flow
+      component: task-sage
+  template:
+    metadata:
+      labels:
+        app: elder-flow
+        component: task-sage
+    spec:
+      containers:
+      - name: task-sage
+        image: elderflow/elder-flow:latest
+        imagePullPolicy: Always
+        command: ["python", "-m", "workers.task_sage_worker"]
+        env:
+        - name: ELDER_FLOW_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: ELDER_FLOW_ENV
+        - name: SAGE_TYPE
+          value: "task"
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: POSTGRES_HOST
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: REDIS_HOST
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elder-flow-secrets
+              key: POSTGRES_PASSWORD
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1"
+
+---
+# Incident Sage Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: incident-sage
+  namespace: elder-flow
+  labels:
+    app: elder-flow
+    component: incident-sage
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: elder-flow
+      component: incident-sage
+  template:
+    metadata:
+      labels:
+        app: elder-flow
+        component: incident-sage
+    spec:
+      containers:
+      - name: incident-sage
+        image: elderflow/elder-flow:latest
+        imagePullPolicy: Always
+        command: ["python", "-m", "workers.incident_sage_worker"]
+        env:
+        - name: ELDER_FLOW_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: ELDER_FLOW_ENV
+        - name: SAGE_TYPE
+          value: "incident"
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: POSTGRES_HOST
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: REDIS_HOST
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elder-flow-secrets
+              key: POSTGRES_PASSWORD
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1"
+
+---
+# RAG Sage Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-sage
+  namespace: elder-flow
+  labels:
+    app: elder-flow
+    component: rag-sage
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: elder-flow
+      component: rag-sage
+  template:
+    metadata:
+      labels:
+        app: elder-flow
+        component: rag-sage
+    spec:
+      containers:
+      - name: rag-sage
+        image: elderflow/elder-flow:latest
+        imagePullPolicy: Always
+        command: ["python", "-m", "workers.rag_sage_worker"]
+        env:
+        - name: ELDER_FLOW_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: ELDER_FLOW_ENV
+        - name: SAGE_TYPE
+          value: "rag"
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: POSTGRES_HOST
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: REDIS_HOST
+        - name: PGVECTOR_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: elder-flow-config
+              key: PGVECTOR_HOST
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elder-flow-secrets
+              key: POSTGRES_PASSWORD
+        volumeMounts:
+        - name: knowledge-base
+          mountPath: /app/knowledge_base
+          readOnly: true
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1"
+          limits:
+            memory: "4Gi"
+            cpu: "2"
+      volumes:
+      - name: knowledge-base
+        persistentVolumeClaim:
+          claimName: knowledge-base-pvc

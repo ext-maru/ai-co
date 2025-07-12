@@ -1,0 +1,230 @@
+version: '3.8'
+
+services:
+  # Elder Flow Core Service
+  elder-flow-core:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.elder-flow
+    container_name: elder-flow-core
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+      - "9090:9090"
+    environment:
+      - ELDER_FLOW_ENV=development
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=elderflow
+      - POSTGRES_USER=elderflow
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ../knowledge_base:/app/knowledge_base
+      - ../logs:/app/logs
+      - elder-flow-data:/app/data
+    depends_on:
+      - postgres
+      - redis
+      - pgvector
+    networks:
+      - elder-flow-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL with pgvector for Grimoire
+  postgres:
+    image: ankane/pgvector:latest
+    container_name: elder-flow-postgres
+    environment:
+      - POSTGRES_DB=elderflow
+      - POSTGRES_USER=elderflow
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - elder-flow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U elderflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and queue
+  redis:
+    image: redis:7-alpine
+    container_name: elder-flow-redis
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - elder-flow-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgvector extension setup
+  pgvector:
+    image: ankane/pgvector:latest
+    container_name: elder-flow-pgvector
+    environment:
+      - POSTGRES_DB=grimoire
+      - POSTGRES_USER=grimoire
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgvector-data:/var/lib/postgresql/data
+    networks:
+      - elder-flow-network
+
+  # Elder Flow Workers
+  elder-flow-worker-1:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.elder-flow
+    container_name: elder-flow-worker-1
+    command: ["python", "-m", "workers.elder_servant_worker"]
+    environment:
+      - ELDER_FLOW_ENV=development
+      - WORKER_ID=worker-1
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+    volumes:
+      - ../knowledge_base:/app/knowledge_base
+      - ../logs:/app/logs
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - elder-flow-network
+
+  elder-flow-worker-2:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.elder-flow
+    container_name: elder-flow-worker-2
+    command: ["python", "-m", "workers.elder_servant_worker"]
+    environment:
+      - ELDER_FLOW_ENV=development
+      - WORKER_ID=worker-2
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+    volumes:
+      - ../knowledge_base:/app/knowledge_base
+      - ../logs:/app/logs
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - elder-flow-network
+
+  # 4 Sages Services
+  knowledge-sage:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.elder-flow
+    container_name: knowledge-sage
+    command: ["python", "-m", "workers.knowledge_sage_worker"]
+    environment:
+      - ELDER_FLOW_ENV=development
+      - SAGE_TYPE=knowledge
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+    volumes:
+      - ../knowledge_base:/app/knowledge_base
+    networks:
+      - elder-flow-network
+
+  task-sage:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.elder-flow
+    container_name: task-sage
+    command: ["python", "-m", "workers.task_sage_worker"]
+    environment:
+      - ELDER_FLOW_ENV=development
+      - SAGE_TYPE=task
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+    networks:
+      - elder-flow-network
+
+  incident-sage:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.elder-flow
+    container_name: incident-sage
+    command: ["python", "-m", "workers.incident_sage_worker"]
+    environment:
+      - ELDER_FLOW_ENV=development
+      - SAGE_TYPE=incident
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+    networks:
+      - elder-flow-network
+
+  rag-sage:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.elder-flow
+    container_name: rag-sage
+    command: ["python", "-m", "workers.rag_sage_worker"]
+    environment:
+      - ELDER_FLOW_ENV=development
+      - SAGE_TYPE=rag
+      - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
+      - PGVECTOR_HOST=pgvector
+    networks:
+      - elder-flow-network
+
+  # Monitoring and Dashboard
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: elder-flow-prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    ports:
+      - "9091:9090"
+    networks:
+      - elder-flow-network
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: elder-flow-grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - elder-flow-network
+
+volumes:
+  postgres-data:
+  pgvector-data:
+  redis-data:
+  elder-flow-data:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  elder-flow-network:
+    driver: bridge

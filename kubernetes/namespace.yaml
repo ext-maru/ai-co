@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: elder-flow
+  labels:
+    name: elder-flow
+    app.kubernetes.io/name: elder-flow
+    app.kubernetes.io/part-of: elders-guild
