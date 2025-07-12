@@ -43,7 +43,7 @@ class ElderNode:
     knowledge_vector: Optional[List[float]] = None
     activity_score: float = 0.0
     connection_strength: Dict[str, float] = None
-    
+
     def __post_init__(self):
         if self.connection_strength is None:
             self.connection_strength = {}
@@ -61,7 +61,7 @@ class KnowledgeFlow:
 
 class ElderTreeVectorNetwork:
     """エルダーツリーベクトルネットワーク管理システム"""
-    
+
     def __init__(self, db_config: Dict[str, str] = None):
         self.logger = logging.getLogger(__name__)
         self.db_config = db_config or {
@@ -70,7 +70,7 @@ class ElderTreeVectorNetwork:
             'user': 'aicompany',
             'password': 'your_password'
         }
-        
+
         # エルダー階層定義
         self.elder_hierarchy = {
             'grand_elder': {'level': 0, 'color': '#FFD700', 'size': 50},
@@ -79,27 +79,27 @@ class ElderTreeVectorNetwork:
             'council': {'level': 3, 'color': '#45B7D1', 'size': 25},
             'servant': {'level': 4, 'color': '#96CEB4', 'size': 20}
         }
-        
+
         # ノード管理
         self.nodes: Dict[str, ElderNode] = {}
         self.knowledge_flows: List[KnowledgeFlow] = []
-        
+
         # 3D可視化設定
         self.visualization_cache = {}
         self.network_graph = nx.DiGraph()
-        
+
         # データベース初期化
         self._init_database()
         self._load_elder_nodes()
-        
+
         self.logger.info("🌳 Elder Tree Vector Network initialized")
-    
+
     def _init_database(self):
         """エルダーツリー用データベース初期化"""
         try:
             conn = psycopg2.connect(**self.db_config)
             cursor = conn.cursor()
-            
+
             # エルダーノードテーブル
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS elder_nodes (
@@ -117,7 +117,7 @@ class ElderTreeVectorNetwork:
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
-            
+
             # 知識フローテーブル
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS knowledge_flows (
@@ -132,7 +132,7 @@ class ElderTreeVectorNetwork:
                     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             """)
-            
+
             # インデックス作成
             cursor.execute("""
                 CREATE INDEX IF NOT EXISTS idx_elder_nodes_rank ON elder_nodes(rank);
@@ -141,17 +141,17 @@ class ElderTreeVectorNetwork:
                 CREATE INDEX IF NOT EXISTS idx_knowledge_flows_target ON knowledge_flows(target_id);
                 CREATE INDEX IF NOT EXISTS idx_knowledge_flows_vector ON knowledge_flows USING hnsw (flow_vector vector_cosine_ops);
             """)
-            
+
             conn.commit()
             cursor.close()
             conn.close()
-            
+
             self.logger.info("🗄️ Elder Tree database initialized")
-            
+
         except Exception as e:
             self.logger.error(f"Database initialization failed: {e}")
             raise
-    
+
     def _load_elder_nodes(self):
         """エルダーノードの初期化"""
         # デフォルトエルダー構成
@@ -169,53 +169,53 @@ class ElderTreeVectorNetwork:
             ElderNode("elder_servant_2", "Elder Servant Monitor", "servant", position=(10, 10, 20)),
             ElderNode("elder_servant_3", "Elder Servant Support", "servant", position=(0, -10, 20)),
         ]
-        
+
         for elder in default_elders:
             self.nodes[elder.id] = elder
             self.network_graph.add_node(elder.id, **asdict(elder))
-        
+
         # 階層関係の定義
         self._define_hierarchy_connections()
-        
+
         self.logger.info(f"📋 Loaded {len(self.nodes)} elder nodes")
-    
+
     def _define_hierarchy_connections(self):
         """階層関係の定義"""
         connections = [
             # Grand Elder → Claude Elder
             ("grand_elder_maru", "claude_elder", "hierarchical", 1.0),
-            
+
             # Claude Elder → 4 Sages
             ("claude_elder", "knowledge_sage", "hierarchical", 0.9),
             ("claude_elder", "task_sage", "hierarchical", 0.9),
             ("claude_elder", "incident_sage", "hierarchical", 0.9),
             ("claude_elder", "rag_sage", "hierarchical", 0.9),
-            
+
             # Sages → Council
             ("knowledge_sage", "council_member_1", "advisory", 0.7),
             ("task_sage", "council_member_2", "advisory", 0.7),
             ("incident_sage", "council_member_3", "advisory", 0.7),
             ("rag_sage", "council_member_1", "advisory", 0.6),
-            
+
             # Council → Servants
             ("council_member_1", "elder_servant_1", "delegation", 0.8),
             ("council_member_2", "elder_servant_2", "delegation", 0.8),
             ("council_member_3", "elder_servant_3", "delegation", 0.8),
-            
+
             # Sage間の協調
             ("knowledge_sage", "rag_sage", "collaboration", 0.8),
             ("task_sage", "incident_sage", "collaboration", 0.7),
             ("knowledge_sage", "task_sage", "collaboration", 0.6),
             ("incident_sage", "rag_sage", "collaboration", 0.6),
         ]
-        
+
         for source, target, relation_type, strength in connections:
             if source in self.nodes and target in self.nodes:
                 self.nodes[source].connection_strength[target] = strength
-                self.network_graph.add_edge(source, target, 
-                                          relation_type=relation_type, 
+                self.network_graph.add_edge(source, target,
+                                          relation_type=relation_type,
                                           strength=strength)
-    
+
     async def visualize_knowledge_flow(self, output_path: str = None) -> Dict[str, Any]:
         """知識フローの3D可視化"""
         try:
@@ -226,7 +226,7 @@ class ElderTreeVectorNetwork:
             colors = []
             sizes = []
             texts = []
-            
+
             for node in self.nodes.values():
                 x_coords.append(node.position[0])
                 y_coords.append(node.position[1])
@@ -234,7 +234,7 @@ class ElderTreeVectorNetwork:
                 colors.append(self.elder_hierarchy[node.rank]['color'])
                 sizes.append(self.elder_hierarchy[node.rank]['size'])
                 texts.append(f"{node.name}<br>Rank: {node.rank}<br>Activity: {node.activity_score:.2f}")
-            
+
             # 3D散布図作成
             fig = go.Figure(data=[go.Scatter3d(
                 x=x_coords,
@@ -252,20 +252,20 @@ class ElderTreeVectorNetwork:
                 hovertext=texts,
                 hoverinfo="text"
             )])
-            
+
             # エッジ（接続）の描画
             edge_x = []
             edge_y = []
             edge_z = []
-            
+
             for edge in self.network_graph.edges(data=True):
                 source_node = self.nodes[edge[0]]
                 target_node = self.nodes[edge[1]]
-                
+
                 edge_x.extend([source_node.position[0], target_node.position[0], None])
                 edge_y.extend([source_node.position[1], target_node.position[1], None])
                 edge_z.extend([source_node.position[2], target_node.position[2], None])
-            
+
             fig.add_trace(go.Scatter3d(
                 x=edge_x,
                 y=edge_y,
@@ -275,7 +275,7 @@ class ElderTreeVectorNetwork:
                 hoverinfo='none',
                 showlegend=False
             ))
-            
+
             # レイアウト設定
             fig.update_layout(
                 title="🌳 Elder Tree Knowledge Network",
@@ -289,7 +289,7 @@ class ElderTreeVectorNetwork:
                 width=1000,
                 height=800
             )
-            
+
             # 保存
             if output_path:
                 fig.write_html(output_path)
@@ -297,30 +297,30 @@ class ElderTreeVectorNetwork:
                 output_path = PROJECT_ROOT / "output" / "elder_tree_network.html"
                 output_path.parent.mkdir(exist_ok=True)
                 fig.write_html(str(output_path))
-            
+
             self.logger.info(f"🎨 3D visualization saved to {output_path}")
-            
+
             return {
                 'success': True,
                 'output_path': str(output_path),
                 'nodes_count': len(self.nodes),
                 'edges_count': self.network_graph.number_of_edges()
             }
-            
+
         except Exception as e:
             self.logger.error(f"Visualization failed: {e}")
             return {'success': False, 'error': str(e)}
-    
+
     async def detect_knowledge_gaps(self) -> Dict[str, Any]:
         """知識伝達の穴を検出"""
         try:
             gaps = []
-            
+
             # 階層間の接続チェック
             for node_id, node in self.nodes.items():
                 expected_connections = self._get_expected_connections(node)
                 actual_connections = set(node.connection_strength.keys())
-                
+
                 missing_connections = expected_connections - actual_connections
                 if missing_connections:
                     gaps.append({
@@ -330,7 +330,7 @@ class ElderTreeVectorNetwork:
                         'missing_connections': list(missing_connections),
                         'severity': len(missing_connections) / len(expected_connections)
                     })
-            
+
             # 知識フローの強度チェック
             weak_flows = []
             for node_id, node in self.nodes.items():
@@ -342,7 +342,7 @@ class ElderTreeVectorNetwork:
                             'strength': strength,
                             'recommended_strength': self._calculate_recommended_strength(node_id, target_id)
                         })
-            
+
             # 孤立ノードの検出
             isolated_nodes = []
             for node_id, node in self.nodes.items():
@@ -352,7 +352,7 @@ class ElderTreeVectorNetwork:
                         'name': node.name,
                         'rank': node.rank
                     })
-            
+
             result = {
                 'gaps_detected': len(gaps),
                 'missing_connections': gaps,
@@ -362,19 +362,19 @@ class ElderTreeVectorNetwork:
                 'isolated_nodes': isolated_nodes,
                 'overall_health': self._calculate_network_health()
             }
-            
+
             self.logger.info(f"🔍 Knowledge gaps detected: {len(gaps)} gaps, {len(weak_flows)} weak flows")
             return result
-            
+
         except Exception as e:
             self.logger.error(f"Gap detection failed: {e}")
             return {'success': False, 'error': str(e)}
-    
+
     async def optimize_knowledge_distribution(self) -> Dict[str, Any]:
         """知識配布の最適化"""
         try:
             optimizations = []
-            
+
             # 1. 階層間の知識流通最適化
             for node_id, node in self.nodes.items():
                 if node.rank in ['sage', 'council']:
@@ -383,7 +383,7 @@ class ElderTreeVectorNetwork:
                     for subordinate_id in subordinates:
                         current_strength = node.connection_strength.get(subordinate_id, 0)
                         optimal_strength = self._calculate_optimal_strength(node_id, subordinate_id)
-                        
+
                         if optimal_strength > current_strength:
                             optimizations.append({
                                 'type': 'strengthen_connection',
@@ -393,7 +393,7 @@ class ElderTreeVectorNetwork:
                                 'optimal_strength': optimal_strength,
                                 'improvement': optimal_strength - current_strength
                             })
-            
+
             # 2. 知識の重複除去
             duplicate_paths = self._find_duplicate_knowledge_paths()
             for path in duplicate_paths:
@@ -403,7 +403,7 @@ class ElderTreeVectorNetwork:
                     'redundancy_score': path['redundancy_score'],
                     'recommended_action': 'consolidate'
                 })
-            
+
             # 3. 知識ハブの最適化
             knowledge_hubs = self._identify_knowledge_hubs()
             for hub in knowledge_hubs:
@@ -414,13 +414,13 @@ class ElderTreeVectorNetwork:
                         'load_score': hub['load_score'],
                         'recommended_distribution': hub['recommended_distribution']
                     })
-            
+
             # 4. 最適化実行
             applied_optimizations = []
             for opt in optimizations:
                 if await self._apply_optimization(opt):
                     applied_optimizations.append(opt)
-            
+
             result = {
                 'total_optimizations': len(optimizations),
                 'applied_optimizations': len(applied_optimizations),
@@ -428,27 +428,27 @@ class ElderTreeVectorNetwork:
                 'estimated_improvement': self._calculate_improvement_estimate(applied_optimizations),
                 'new_network_health': self._calculate_network_health()
             }
-            
+
             self.logger.info(f"⚡ Knowledge distribution optimized: {len(applied_optimizations)} optimizations applied")
             return result
-            
+
         except Exception as e:
             self.logger.error(f"Optimization failed: {e}")
             return {'success': False, 'error': str(e)}
-    
+
     async def track_knowledge_evolution(self, time_range: int = 24) -> Dict[str, Any]:
         """知識進化の追跡"""
         try:
             # 時系列データ取得
             end_time = datetime.now()
             start_time = end_time - timedelta(hours=time_range)
-            
+
             evolution_data = []
-            
+
             # 各ノードの知識活動追跡
             for node_id, node in self.nodes.items():
                 activity_history = await self._get_node_activity_history(node_id, start_time, end_time)
-                
+
                 evolution_data.append({
                     'node_id': node_id,
                     'node_name': node.name,
@@ -458,7 +458,7 @@ class ElderTreeVectorNetwork:
                     'interaction_patterns': self._analyze_interaction_patterns(activity_history),
                     'efficiency_score': self._calculate_efficiency_score(activity_history)
                 })
-            
+
             # 全体的な進化トレンド
             overall_trends = {
                 'total_knowledge_volume': sum(data['knowledge_growth'] for data in evolution_data),
@@ -467,10 +467,10 @@ class ElderTreeVectorNetwork:
                 'most_active_nodes': sorted(evolution_data, key=lambda x: x['activity_trend'], reverse=True)[:3],
                 'fastest_growing_nodes': sorted(evolution_data, key=lambda x: x['knowledge_growth'], reverse=True)[:3]
             }
-            
+
             # 予測分析
             predictions = await self._predict_future_evolution(evolution_data)
-            
+
             result = {
                 'time_range_hours': time_range,
                 'nodes_analyzed': len(evolution_data),
@@ -479,20 +479,20 @@ class ElderTreeVectorNetwork:
                 'predictions': predictions,
                 'recommendations': self._generate_evolution_recommendations(evolution_data, overall_trends)
             }
-            
+
             self.logger.info(f"📈 Knowledge evolution tracked: {len(evolution_data)} nodes analyzed")
             return result
-            
+
         except Exception as e:
             self.logger.error(f"Evolution tracking failed: {e}")
             return {'success': False, 'error': str(e)}
-    
+
     # ヘルパーメソッド
-    
+
     def _get_expected_connections(self, node: ElderNode) -> set:
         """期待される接続の取得"""
         expected = set()
-        
+
         if node.rank == 'grand_elder':
             expected.update([n.id for n in self.nodes.values() if n.rank == 'claude_elder'])
         elif node.rank == 'claude_elder':
@@ -501,92 +501,92 @@ class ElderTreeVectorNetwork:
             expected.update([n.id for n in self.nodes.values() if n.rank == 'council'])
         elif node.rank == 'council':
             expected.update([n.id for n in self.nodes.values() if n.rank == 'servant'])
-        
+
         return expected
-    
+
     def _calculate_recommended_strength(self, source_id: str, target_id: str) -> float:
         """推奨接続強度の計算"""
         source_node = self.nodes[source_id]
         target_node = self.nodes[target_id]
-        
+
         # 階層レベルの差による基本強度
         source_level = self.elder_hierarchy[source_node.rank]['level']
         target_level = self.elder_hierarchy[target_node.rank]['level']
         level_diff = abs(source_level - target_level)
-        
+
         base_strength = max(0.5, 1.0 - (level_diff * 0.1))
-        
+
         # 専門性の一致による調整
         if source_node.sage_type == target_node.sage_type:
             base_strength += 0.2
-        
+
         return min(1.0, base_strength)
-    
+
     def _calculate_network_health(self) -> float:
         """ネットワーク健全性の計算"""
         if not self.nodes:
             return 0.0
-        
+
         # 接続率
         total_possible_connections = len(self.nodes) * (len(self.nodes) - 1)
         actual_connections = sum(len(node.connection_strength) for node in self.nodes.values())
         connection_ratio = actual_connections / total_possible_connections if total_possible_connections > 0 else 0
-        
+
         # 平均接続強度
         all_strengths = []
         for node in self.nodes.values():
             all_strengths.extend(node.connection_strength.values())
         avg_strength = np.mean(all_strengths) if all_strengths else 0
-        
+
         # 階層バランス
         rank_counts = {}
         for node in self.nodes.values():
             rank_counts[node.rank] = rank_counts.get(node.rank, 0) + 1
-        
+
         balance_score = 1.0 - np.std(list(rank_counts.values())) / np.mean(list(rank_counts.values())) if rank_counts else 0
-        
+
         return (connection_ratio * 0.4 + avg_strength * 0.4 + balance_score * 0.2)
-    
+
     def _get_subordinates(self, node_id: str) -> List[str]:
         """下位階層のノードを取得"""
         node = self.nodes[node_id]
         node_level = self.elder_hierarchy[node.rank]['level']
-        
+
         subordinates = []
         for other_id, other_node in self.nodes.items():
             other_level = self.elder_hierarchy[other_node.rank]['level']
             if other_level > node_level:
                 subordinates.append(other_id)
-        
+
         return subordinates
-    
+
     def _calculate_optimal_strength(self, source_id: str, target_id: str) -> float:
         """最適接続強度の計算"""
         # 基本的な推奨強度をベースに、活動レベルなどを考慮
         base_strength = self._calculate_recommended_strength(source_id, target_id)
-        
+
         # 活動スコアによる調整
         source_activity = self.nodes[source_id].activity_score
         target_activity = self.nodes[target_id].activity_score
-        
+
         activity_factor = (source_activity + target_activity) / 2
-        
+
         return min(1.0, base_strength * (1 + activity_factor * 0.2))
-    
+
     def _find_duplicate_knowledge_paths(self) -> List[Dict]:
         """重複知識パスの発見"""
         # 簡略化実装
         return []
-    
+
     def _identify_knowledge_hubs(self) -> List[Dict]:
         """知識ハブの特定"""
         hubs = []
-        
+
         for node_id, node in self.nodes.items():
             # 接続数による負荷スコア
             connection_count = len(node.connection_strength)
             load_score = connection_count / 10.0  # 正規化
-            
+
             if load_score > 0.3:  # 閾値以上
                 hubs.append({
                     'node_id': node_id,
@@ -594,68 +594,137 @@ class ElderTreeVectorNetwork:
                     'connection_count': connection_count,
                     'recommended_distribution': self._calculate_load_distribution(node_id)
                 })
-        
+
         return hubs
-    
+
     def _calculate_load_distribution(self, node_id: str) -> Dict:
         """負荷分散の計算"""
         return {
             'distribute_to': [],
             'reduction_factor': 0.2
         }
-    
+
     async def _apply_optimization(self, optimization: Dict) -> bool:
         """最適化の適用"""
         try:
             opt_type = optimization['type']
-            
+
             if opt_type == 'strengthen_connection':
                 source_id = optimization['source']
                 target_id = optimization['target']
                 new_strength = optimization['optimal_strength']
-                
+
                 self.nodes[source_id].connection_strength[target_id] = new_strength
                 self.network_graph.add_edge(source_id, target_id, strength=new_strength)
-                
+
                 return True
-            
+
             # 他の最適化タイプの実装
             return False
-            
+
         except Exception as e:
             self.logger.error(f"Optimization application failed: {e}")
             return False
-    
+
     def _calculate_improvement_estimate(self, optimizations: List[Dict]) -> float:
         """改善推定値の計算"""
         if not optimizations:
             return 0.0
-        
+
         # 最適化の効果を合計
         total_improvement = 0.0
         for opt in optimizations:
             if opt['type'] == 'strengthen_connection':
                 total_improvement += opt['improvement']
-        
+
         return total_improvement
-    
+
     async def _get_node_activity_history(self, node_id: str, start_time: datetime, end_time: datetime) -> List[Dict]:
         """ノードの活動履歴取得"""
         # 簡略化実装
         return []
-    
+
     def _calculate_activity_trend(self, activity_history: List[Dict]) -> float:
         """活動トレンドの計算"""
         if not activity_history:
             return 0.0
-        return np.random.random()  # 仮実装
-    
+
+        # 実際のトレンド計算
+        # 時系列データから活動の増減トレンドを算出
+        activities = []
+        for entry in activity_history:
+            if 'activity_level' in entry:
+                activities.append(entry['activity_level'])
+            elif 'message_count' in entry:
+                activities.append(entry['message_count'])
+            elif 'interaction_count' in entry:
+                activities.append(entry['interaction_count'])
+
+        if len(activities) < 2:
+            return 0.0
+
+        # 線形回帰でトレンドを計算
+        x = np.arange(len(activities))
+        y = np.array(activities)
+
+        # 正規化
+        if y.max() > 0:
+            y = y / y.max()
+
+        # 傾きを計算
+        coefficients = np.polyfit(x, y, 1)
+        slope = coefficients[0]
+
+        # -1から1の範囲に正規化
+        return np.tanh(slope * 10)
+
     def _calculate_knowledge_growth(self, activity_history: List[Dict]) -> float:
         """知識成長の計算"""
         if not activity_history:
             return 0.0
-        return np.random.random()  # 仮実装
-    
+
+        # 実際の知識成長率を計算
+        knowledge_indicators = []
+
+        for entry in activity_history:
+            score = 0.0
+
+            # 新規知識の追加
+            if 'new_knowledge_added' in entry:
+                score += entry['new_knowledge_added'] * 0.3
+
+            # 知識の参照回数
+            if 'knowledge_accessed' in entry:
+                score += entry['knowledge_accessed'] * 0.2
+
+            # 知識の共有
+            if 'knowledge_shared' in entry:
+                score += entry['knowledge_shared'] * 0.25
+
+            # 知識の応用
+            if 'knowledge_applied' in entry:
+                score += entry['knowledge_applied'] * 0.25
+
+            # ドキュメント作成
+            if 'docs_created' in entry:
+                score += entry['docs_created'] * 0.15
+
+            knowledge_indicators.append(score)
+
+        if not knowledge_indicators:
+            return 0.0
+
+        # 成長率を計算
+        avg_growth = np.mean(knowledge_indicators)
+        max_growth = np.max(knowledge_indicators)
+        recent_growth = np.mean(knowledge_indicators[-5:]) if len(knowledge_indicators) > 5 else avg_growth
+
+        # 重み付け平均
+        growth_rate = (avg_growth * 0.3 + max_growth * 0.2 + recent_growth * 0.5)
+
+        # 0-1の範囲に正規化
+        return min(1.0, growth_rate / 10.0)
+
     def _analyze_interaction_patterns(self, activity_history: List[Dict]) -> Dict:
         """相互作用パターンの分析"""
         return {
@@ -663,13 +732,56 @@ class ElderTreeVectorNetwork:
             'secondary_interactions': [],
             'interaction_frequency': 0.0
         }
-    
+
     def _calculate_efficiency_score(self, activity_history: List[Dict]) -> float:
         """効率スコアの計算"""
         if not activity_history:
             return 0.0
-        return np.random.random()  # 仮実装
-    
+
+        # 実際の効率スコアを計算
+        efficiency_metrics = []
+
+        for entry in activity_history:
+            # タスク完了率
+            if 'tasks_completed' in entry and 'tasks_assigned' in entry:
+                completion_rate = entry['tasks_completed'] / max(entry['tasks_assigned'], 1)
+                efficiency_metrics.append(completion_rate)
+
+            # 応答時間効率
+            if 'avg_response_time' in entry and 'target_response_time' in entry:
+                if entry['target_response_time'] > 0:
+                    response_efficiency = min(1.0, entry['target_response_time'] / entry['avg_response_time'])
+                    efficiency_metrics.append(response_efficiency)
+
+            # リソース利用効率
+            if 'resource_utilization' in entry:
+                # 50-80%が最適とする
+                util = entry['resource_utilization']
+                if util <= 0.5:
+                    resource_efficiency = util * 2
+                elif util <= 0.8:
+                    resource_efficiency = 1.0
+                else:
+                    resource_efficiency = 1.0 - (util - 0.8) * 2
+                efficiency_metrics.append(max(0, resource_efficiency))
+
+            # エラー率（逆指標）
+            if 'error_rate' in entry:
+                error_efficiency = 1.0 - min(1.0, entry['error_rate'])
+                efficiency_metrics.append(error_efficiency)
+
+        if not efficiency_metrics:
+            return 0.5  # デフォルト中間値
+
+        # 重み付け平均と最近のパフォーマンス重視
+        avg_efficiency = np.mean(efficiency_metrics)
+        recent_efficiency = np.mean(efficiency_metrics[-10:]) if len(efficiency_metrics) > 10 else avg_efficiency
+
+        # 最終スコア（最近のパフォーマンスを重視）
+        final_score = avg_efficiency * 0.3 + recent_efficiency * 0.7
+
+        return round(final_score, 3)
+
     async def _predict_future_evolution(self, evolution_data: List[Dict]) -> Dict:
         """未来の進化予測"""
         return {
@@ -684,11 +796,11 @@ class ElderTreeVectorNetwork:
                 'potential_bottlenecks': []
             }
         }
-    
+
     def _generate_evolution_recommendations(self, evolution_data: List[Dict], trends: Dict) -> List[Dict]:
         """進化推奨事項の生成"""
         recommendations = []
-        
+
         # 低効率ノードの改善
         for data in evolution_data:
             if data['efficiency_score'] < 0.5:
@@ -698,7 +810,7 @@ class ElderTreeVectorNetwork:
                     'current_score': data['efficiency_score'],
                     'recommended_actions': ['increase_connections', 'optimize_knowledge_flow']
                 })
-        
+
         return recommendations
 
 # 使用例
@@ -707,29 +819,29 @@ async def main():
     try:
         # Elder Tree Vector Network初期化
         elder_tree = ElderTreeVectorNetwork()
-        
+
         # 知識フロー可視化
         print("🌳 Generating Elder Tree 3D visualization...")
         viz_result = await elder_tree.visualize_knowledge_flow()
         print(f"✅ Visualization: {viz_result}")
-        
+
         # 知識ギャップ検出
         print("\n🔍 Detecting knowledge gaps...")
         gaps_result = await elder_tree.detect_knowledge_gaps()
         print(f"📊 Gaps detected: {gaps_result['gaps_detected']}")
-        
+
         # 知識配布最適化
         print("\n⚡ Optimizing knowledge distribution...")
         opt_result = await elder_tree.optimize_knowledge_distribution()
         print(f"🎯 Optimizations applied: {opt_result['applied_optimizations']}")
-        
+
         # 知識進化追跡
         print("\n📈 Tracking knowledge evolution...")
         evolution_result = await elder_tree.track_knowledge_evolution()
         print(f"📈 Evolution analyzed: {evolution_result['nodes_analyzed']} nodes")
-        
+
         print("\n🎉 Elder Tree Vector Network Phase 1 implementation completed!")
-        
+
     except Exception as e:
         print(f"❌ Error: {e}")
         import traceback

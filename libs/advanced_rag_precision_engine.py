@@ -458,6 +458,12 @@ class AdvancedRAGPrecisionEngine:
         if not contexts or not answer:
             return 0.0
 
+        # answerが文字列でない場合の対応
+        if isinstance(answer, (list, tuple)):
+            answer = " ".join(str(item) for item in answer)
+        elif not isinstance(answer, str):
+            answer = str(answer)
+
         # 回答の各文について、コンテキストで支持されているかチェック
         answer_sentences = re.split(r'[.!?]+', answer)
         supported_count = 0
@@ -483,6 +489,12 @@ class AdvancedRAGPrecisionEngine:
         """回答関連性計算"""
         if not answer or not query:
             return 0.0
+
+        # answerが文字列でない場合の対応
+        if isinstance(answer, (list, tuple)):
+            answer = " ".join(str(item) for item in answer)
+        elif not isinstance(answer, str):
+            answer = str(answer)
 
         # クエリと回答の語彙重複度
         query_words = set(query.lower().split())
@@ -533,6 +545,12 @@ class AdvancedRAGPrecisionEngine:
         """応答根拠性計算（新指標）"""
         if not answer or not contexts:
             return 0.0
+
+        # answerが文字列でない場合の対応
+        if isinstance(answer, (list, tuple)):
+            answer = " ".join(str(item) for item in answer)
+        elif not isinstance(answer, str):
+            answer = str(answer)
 
         # 回答の各重要語について、コンテキストでの根拠を確認
         answer_words = [word for word in answer.lower().split() if len(word) > 3]
