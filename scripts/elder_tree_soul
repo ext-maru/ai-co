@@ -1,0 +1,549 @@
+#!/usr/bin/env python3
+"""
+エルダーツリーの魂 - メインコマンド
+Elder Tree Soul - Main Command Interface
+"""
+
+import sys
+import subprocess
+import argparse
+import json
+import time
+from pathlib import Path
+from typing import Dict, List, Optional
+
+# プロジェクトルートをパスに追加
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+
+class ElderTreeSoul:
+    """エルダーツリーの魂 - コマンドライン界面"""
+
+    def __init__(self):
+        self.project_root = PROJECT_ROOT
+        self.scripts_dir = self.project_root / "scripts"
+        self.logs_dir = self.project_root / "logs" / "elders"
+        self.data_dir = self.project_root / "data"
+
+        # エルダー定義
+        self.elders = {
+            "grand_elder": {
+                "name": "Grand Elder maru",
+                "description": "最高指揮官 - 全体戦略と緊急時指揮",
+                "port": 5000,
+                "script": "processes/grand_elder_process.py"
+            },
+            "claude_elder": {
+                "name": "Claude Elder",
+                "description": "開発実行責任者 - 4賢者統括管理",
+                "port": 5001,
+                "script": "processes/claude_elder_process.py"
+            },
+            "knowledge_sage": {
+                "name": "Knowledge Sage",
+                "description": "知識賢者 - 知識管理・学習専門",
+                "port": 5002,
+                "script": "processes/knowledge_sage_process.py"
+            },
+            "task_sage": {
+                "name": "Task Sage",
+                "description": "タスク賢者 - プロジェクト管理専門",
+                "port": 5003,
+                "script": "processes/task_sage_process.py"
+            },
+            "rag_sage": {
+                "name": "RAG Sage",
+                "description": "RAG賢者 - 情報検索・理解専門",
+                "port": 5004,
+                "script": "processes/rag_sage_process.py"
+            },
+            "incident_sage": {
+                "name": "Incident Sage",
+                "description": "インシデント賢者 - 危機対応専門",
+                "port": 5005,
+                "script": "processes/incident_sage_process.py"
+            }
+        }
+
+    def show_banner(self):
+        """バナー表示"""
+        print("🌲" + "=" * 60 + "🌲")
+        print("🌟         エルダーツリーの魂 (Elder Tree Soul)         🌟")
+        print("🏛️              A2A分散AIシステム                     🏛️")
+        print("⚡           1役割 = 1プロセス = 1エージェント          ⚡")
+        print("🌲" + "=" * 60 + "🌲")
+        print()
+
+    def cmd_start(self, args):
+        """エルダーツリー起動"""
+        print("🚀 Starting Elder Tree Soul...")
+
+        # 依存関係チェック
+        if not self._check_dependencies():
+            return 1
+
+        # 起動スクリプトを実行
+        launcher_script = self.scripts_dir / "start_elder_processes.py"
+
+        if args.daemon:
+            # デーモンモード
+            cmd = [sys.executable, str(launcher_script), "start"]
+        else:
+            # インタラクティブモード
+            cmd = [sys.executable, str(launcher_script)]
+
+        try:
+            if args.daemon:
+                subprocess.run(cmd, check=True)
+                print("✅ Elder Tree Soul started in daemon mode")
+                print("Use 'elder-tree-soul status' to check status")
+            else:
+                # インタラクティブモードは直接実行
+                subprocess.run(cmd)
+
+        except subprocess.CalledProcessError as e:
+            print(f"❌ Failed to start Elder Tree Soul: {e}")
+            return 1
+
+        return 0
+
+    def cmd_stop(self, args):
+        """エルダーツリー停止"""
+        print("🛑 Stopping Elder Tree Soul...")
+
+        # プロセス検索と停止
+        try:
+            # elder プロセスを検索
+            result = subprocess.run(
+                ["pgrep", "-f", "elder.*process"],
+                capture_output=True,
+                text=True
+            )
+
+            if result.returncode == 0:
+                pids = result.stdout.strip().split('\n')
+                print(f"Found {len(pids)} elder processes")
+
+                for pid in pids:
+                    if pid:
+                        try:
+                            subprocess.run(["kill", "-TERM", pid], check=True)
+                            print(f"✅ Stopped process {pid}")
+                        except subprocess.CalledProcessError:
+                            print(f"⚠️  Could not stop process {pid}")
+
+                print("✅ Elder Tree Soul stopped")
+            else:
+                print("ℹ️  No elder processes found")
+
+        except Exception as e:
+            print(f"❌ Error stopping processes: {e}")
+            return 1
+
+        return 0
+
+    def cmd_status(self, args):
+        """エルダーツリー状態確認"""
+        print("📊 Elder Tree Soul Status")
+        print("-" * 40)
+
+        # プロセス状態確認
+        try:
+            result = subprocess.run(
+                ["pgrep", "-f", "elder.*process"],
+                capture_output=True,
+                text=True
+            )
+
+            if result.returncode == 0:
+                pids = result.stdout.strip().split('\n')
+                print(f"🟢 Running: {len(pids)} elder processes")
+
+                # 詳細情報
+                if args.verbose:
+                    for pid in pids:
+                        if pid:
+                            self._show_process_info(pid)
+            else:
+                print("🔴 Stopped: No elder processes running")
+
+        except Exception as e:
+            print(f"❌ Error checking status: {e}")
+            return 1
+
+        # Redis状態確認
+        self._check_redis_status()
+
+        # ポート状態確認
+        if args.verbose:
+            self._check_port_status()
+
+        return 0
+
+    def cmd_restart(self, args):
+        """エルダー再起動"""
+        if args.elder:
+            print(f"🔄 Restarting {args.elder}...")
+            # 特定エルダーの再起動
+            return self._restart_specific_elder(args.elder)
+        else:
+            print("🔄 Restarting Elder Tree Soul...")
+            # 全体再起動
+            self.cmd_stop(args)
+            time.sleep(2)
+            return self.cmd_start(args)
+
+    def cmd_logs(self, args):
+        """ログ確認"""
+        if args.elder:
+            log_file = self.logs_dir / f"{args.elder}.log"
+            if log_file.exists():
+                if args.follow:
+                    subprocess.run(["tail", "-f", str(log_file)])
+                else:
+                    lines = args.lines if args.lines else 50
+                    subprocess.run(["tail", f"-{lines}", str(log_file)])
+            else:
+                print(f"❌ Log file not found: {log_file}")
+                return 1
+        else:
+            # 全ログの概要表示
+            print("📋 Elder Tree Soul Logs Overview")
+            print("-" * 40)
+
+            for elder_id in self.elders.keys():
+                log_file = self.logs_dir / f"{elder_id}.log"
+                if log_file.exists():
+                    # 最新行を表示
+                    result = subprocess.run(
+                        ["tail", "-1", str(log_file)],
+                        capture_output=True,
+                        text=True
+                    )
+                    if result.returncode == 0:
+                        print(f"{elder_id:15}: {result.stdout.strip()}")
+                else:
+                    print(f"{elder_id:15}: No log file")
+
+        return 0
+
+    def cmd_health(self, args):
+        """ヘルスチェック"""
+        print("🏥 Elder Tree Soul Health Check")
+        print("-" * 40)
+
+        health_score = 0
+        total_checks = 0
+
+        # 1. プロセス確認
+        total_checks += 1
+        if self._check_processes():
+            print("✅ Processes: All elders running")
+            health_score += 1
+        else:
+            print("❌ Processes: Some elders not running")
+
+        # 2. Redis確認
+        total_checks += 1
+        if self._check_redis():
+            print("✅ Redis: Running and accessible")
+            health_score += 1
+        else:
+            print("❌ Redis: Not running or inaccessible")
+
+        # 3. ポート確認
+        total_checks += 1
+        if self._check_ports():
+            print("✅ Ports: All elder ports responding")
+            health_score += 1
+        else:
+            print("❌ Ports: Some ports not responding")
+
+        # 4. データディレクトリ確認
+        total_checks += 1
+        if self._check_data_directories():
+            print("✅ Data: All directories accessible")
+            health_score += 1
+        else:
+            print("❌ Data: Some directories missing")
+
+        # 5. ログファイル確認
+        total_checks += 1
+        if self._check_log_files():
+            print("✅ Logs: Recent activity detected")
+            health_score += 1
+        else:
+            print("❌ Logs: No recent activity")
+
+        # 総合評価
+        health_percentage = (health_score / total_checks) * 100
+        print("-" * 40)
+        print(f"🏥 Overall Health: {health_percentage:.1f}% ({health_score}/{total_checks})")
+
+        if health_percentage >= 80:
+            print("🟢 Status: Healthy")
+        elif health_percentage >= 60:
+            print("🟡 Status: Warning")
+        else:
+            print("🔴 Status: Critical")
+
+        return 0 if health_percentage >= 60 else 1
+
+    def cmd_config(self, args):
+        """設定表示・変更"""
+        print("⚙️  Elder Tree Soul Configuration")
+        print("-" * 40)
+
+        for elder_id, config in self.elders.items():
+            print(f"{config['name']:20} (Port: {config['port']})")
+            print(f"{'':20} {config['description']}")
+            print()
+
+        print("Configuration Files:")
+        print(f"  Project Root: {self.project_root}")
+        print(f"  Scripts Dir:  {self.scripts_dir}")
+        print(f"  Logs Dir:     {self.logs_dir}")
+        print(f"  Data Dir:     {self.data_dir}")
+
+        return 0
+
+    def _check_dependencies(self) -> bool:
+        """依存関係チェック"""
+        # Redis確認
+        if not self._check_redis():
+            print("❌ Redis is not running. Please start Redis first:")
+            print("   redis-server")
+            return False
+
+        # Pythonスクリプト確認
+        for elder_id, config in self.elders.items():
+            script_path = self.project_root / config['script']
+            if not script_path.exists():
+                print(f"❌ Script not found: {script_path}")
+                return False
+
+        return True
+
+    def _check_redis(self) -> bool:
+        """Redis接続確認"""
+        try:
+            import redis
+            r = redis.Redis(host='localhost', port=6379, socket_timeout=1)
+            r.ping()
+            return True
+        except:
+            return False
+
+    def _check_redis_status(self):
+        """Redis状態表示"""
+        if self._check_redis():
+            print("🟢 Redis: Running")
+        else:
+            print("🔴 Redis: Not running")
+
+    def _check_port_status(self):
+        """ポート状態確認"""
+        print("\nPort Status:")
+        for elder_id, config in self.elders.items():
+            port = config['port']
+            if self._is_port_open(port):
+                print(f"  {port}: 🟢 {elder_id}")
+            else:
+                print(f"  {port}: 🔴 {elder_id}")
+
+    def _is_port_open(self, port: int) -> bool:
+        """ポート開放確認"""
+        import socket
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                sock.settimeout(1)
+                result = sock.connect_ex(('localhost', port))
+                return result == 0
+        except:
+            return False
+
+    def _show_process_info(self, pid: str):
+        """プロセス情報表示"""
+        try:
+            result = subprocess.run(
+                ["ps", "-p", pid, "-o", "pid,ppid,cmd"],
+                capture_output=True,
+                text=True
+            )
+            if result.returncode == 0:
+                lines = result.stdout.strip().split('\n')
+                if len(lines) > 1:
+                    print(f"  PID {pid}: {lines[1]}")
+        except:
+            pass
+
+    def _restart_specific_elder(self, elder_id: str) -> int:
+        """特定エルダーの再起動"""
+        if elder_id not in self.elders:
+            print(f"❌ Unknown elder: {elder_id}")
+            print(f"Available elders: {', '.join(self.elders.keys())}")
+            return 1
+
+        config = self.elders[elder_id]
+        script_path = self.project_root / config['script']
+
+        # 既存プロセス停止
+        try:
+            result = subprocess.run(
+                ["pgrep", "-f", f"{elder_id}_process"],
+                capture_output=True,
+                text=True
+            )
+
+            if result.returncode == 0:
+                pid = result.stdout.strip()
+                subprocess.run(["kill", "-TERM", pid])
+                time.sleep(1)
+                print(f"✅ Stopped {elder_id} (PID: {pid})")
+        except:
+            pass
+
+        # 新プロセス起動
+        try:
+            log_file = self.logs_dir / f"{elder_id}.log"
+            with open(log_file, 'a') as log:
+                process = subprocess.Popen(
+                    [sys.executable, str(script_path)],
+                    stdout=log,
+                    stderr=subprocess.STDOUT,
+                    cwd=str(self.project_root)
+                )
+            print(f"✅ Started {elder_id} (PID: {process.pid})")
+            return 0
+        except Exception as e:
+            print(f"❌ Failed to start {elder_id}: {e}")
+            return 1
+
+    def _check_processes(self) -> bool:
+        """プロセス確認"""
+        try:
+            result = subprocess.run(
+                ["pgrep", "-f", "elder.*process"],
+                capture_output=True,
+                text=True
+            )
+            return result.returncode == 0
+        except:
+            return False
+
+    def _check_ports(self) -> bool:
+        """ポート確認"""
+        open_count = 0
+        for config in self.elders.values():
+            if self._is_port_open(config['port']):
+                open_count += 1
+        return open_count >= len(self.elders) * 0.8  # 80%以上
+
+    def _check_data_directories(self) -> bool:
+        """データディレクトリ確認"""
+        required_dirs = [
+            self.data_dir,
+            self.logs_dir,
+            self.project_root / "knowledge_base"
+        ]
+
+        for dir_path in required_dirs:
+            if not dir_path.exists():
+                return False
+        return True
+
+    def _check_log_files(self) -> bool:
+        """ログファイル確認"""
+        recent_logs = 0
+        cutoff_time = time.time() - 300  # 5分前
+
+        for elder_id in self.elders.keys():
+            log_file = self.logs_dir / f"{elder_id}.log"
+            if log_file.exists():
+                if log_file.stat().st_mtime > cutoff_time:
+                    recent_logs += 1
+
+        return recent_logs >= len(self.elders) * 0.5  # 50%以上
+
+
+def main():
+    """メイン関数"""
+    parser = argparse.ArgumentParser(
+        description="エルダーツリーの魂 - Elder Tree Soul Command Interface",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+
+    # start コマンド
+    start_parser = subparsers.add_parser('start', help='Start Elder Tree Soul')
+    start_parser.add_argument('-d', '--daemon', action='store_true',
+                             help='Start in daemon mode')
+
+    # stop コマンド
+    stop_parser = subparsers.add_parser('stop', help='Stop Elder Tree Soul')
+
+    # status コマンド
+    status_parser = subparsers.add_parser('status', help='Show status')
+    status_parser.add_argument('-v', '--verbose', action='store_true',
+                              help='Show detailed information')
+
+    # restart コマンド
+    restart_parser = subparsers.add_parser('restart', help='Restart elders')
+    restart_parser.add_argument('elder', nargs='?',
+                               help='Specific elder to restart')
+    restart_parser.add_argument('-d', '--daemon', action='store_true',
+                               help='Start in daemon mode')
+
+    # logs コマンド
+    logs_parser = subparsers.add_parser('logs', help='Show logs')
+    logs_parser.add_argument('elder', nargs='?',
+                            help='Specific elder logs to show')
+    logs_parser.add_argument('-f', '--follow', action='store_true',
+                            help='Follow log output')
+    logs_parser.add_argument('-n', '--lines', type=int,
+                            help='Number of lines to show')
+
+    # health コマンド
+    health_parser = subparsers.add_parser('health', help='Health check')
+
+    # config コマンド
+    config_parser = subparsers.add_parser('config', help='Show configuration')
+
+    args = parser.parse_args()
+
+    soul = ElderTreeSoul()
+
+    # コマンドなしの場合はバナー表示
+    if not args.command:
+        soul.show_banner()
+        parser.print_help()
+        return 0
+
+    # バナー表示（ヘルプ以外）
+    if args.command not in ['help']:
+        soul.show_banner()
+
+    # コマンド実行
+    if args.command == 'start':
+        return soul.cmd_start(args)
+    elif args.command == 'stop':
+        return soul.cmd_stop(args)
+    elif args.command == 'status':
+        return soul.cmd_status(args)
+    elif args.command == 'restart':
+        return soul.cmd_restart(args)
+    elif args.command == 'logs':
+        return soul.cmd_logs(args)
+    elif args.command == 'health':
+        return soul.cmd_health(args)
+    elif args.command == 'config':
+        return soul.cmd_config(args)
+    else:
+        parser.print_help()
+        return 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
