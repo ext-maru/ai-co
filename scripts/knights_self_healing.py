@@ -31,12 +31,16 @@ from typing import Set
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+# ログディレクトリを作成
+log_dir = PROJECT_ROOT / "logs"
+log_dir.mkdir(exist_ok=True)
+
 # ロギング設定
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.FileHandler(PROJECT_ROOT / "logs" / "knights_self_healing.log"),
+        logging.FileHandler(log_dir / "knights_self_healing.log"),
         logging.StreamHandler(sys.stdout),
     ],
 )
