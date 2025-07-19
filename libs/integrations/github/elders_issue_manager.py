@@ -13,12 +13,14 @@ from github import Github
 from github.Issue import Issue
 from github.PullRequest import PullRequest
 
-# エルダーズギルドシステムのインポート
-from libs.four_sages.knowledge.knowledge_sage import KnowledgeSage
-from libs.four_sages.task.task_sage import TaskSage
-from libs.four_sages.incident.incident_sage import IncidentSage
-from libs.four_sages.rag.rag_sage import RAGSage
-from libs.elder_system.flow.elder_flow_executor import ElderFlowExecutor
+# エルダーズギルドシステムのインポート（プレースホルダー版を使用）
+from libs.knowledge_sage import KnowledgeSage
+from libs.task_sage import TaskSage
+from libs.incident_sage import IncidentSage
+from libs.rag_sage import RAGSage
+
+# Elder Flowはコメントアウト（未実装のため）
+# from libs.elder_system.flow.elder_flow_executor import ElderFlowExecutor
 
 logger = logging.getLogger(__name__)
 
@@ -45,8 +47,9 @@ class EldersIssueManager:
         self.incident_sage = IncidentSage()
         self.rag_sage = RAGSage()
         
-        # Elder Flowエグゼキューター
-        self.elder_flow = ElderFlowExecutor()
+        # Elder Flowエグゼキューター（未実装のためコメントアウト）
+        # self.elder_flow = ElderFlowExecutor()
+        self.elder_flow = None
         
         # 設定
         self.config = {
@@ -198,8 +201,9 @@ class EldersIssueManager:
                     f"🤖 Automated by Elders Guild Issue Management System"
                 )
                 
-                # Elder Flowに通知
-                await self.elder_flow.notify_completion(f"Issue #{issue_number}")
+                # Elder Flowに通知（未実装のためスキップ）
+                # await self.elder_flow.notify_completion(f"Issue #{issue_number}")
+                logger.info(f"Elder Flow notification skipped (not implemented)")
                 
                 logger.info(f"Auto-closed Issue #{issue_number} due to PR #{pr.number} merge")
                 

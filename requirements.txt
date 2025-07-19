@@ -68,6 +68,9 @@ passlib[bcrypt]==1.7.4
 python-jose[cryptography]==3.3.0
 cryptography==41.0.8
 
+# GitHub Integration
+PyGithub==2.6.1
+
 # Utilities
 python-multipart==0.0.6
 python-dateutil==2.8.2

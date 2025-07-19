@@ -1,19 +1,21 @@
 """
-rag_sage - Auto-generated module by Incident Knights
-Created to prevent import errors
+rag_sage - Placeholder implementation
 """
 
 import logging
 
 logger = logging.getLogger(__name__)
 
-# Placeholder implementations
-
-class RagSage:
-    """Auto-generated placeholder class"""
+class RAGSage:
+    """Placeholder class for RAG Sage"""
 
     def __init__(self, *args, **kwargs):
-        logger.warning(f"Using auto-generated placeholder for {self.__class__.__name__}")
+        logger.warning(f"Using placeholder for {self.__class__.__name__}")
+
+    async def process_request(self, request):
+        """Placeholder process_request method"""
+        logger.warning(f"RAGSage.process_request called with: {request.get('type', 'unknown')}")
+        return {"status": "placeholder", "message": "RAG Sage not implemented", "results": []}
 
     def __getattr__(self, name):
         logger.warning(f"Accessing placeholder attribute: {name}")
