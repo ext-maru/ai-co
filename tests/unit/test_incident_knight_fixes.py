@@ -215,6 +215,46 @@ print statement
                     break
         
         self.assertFalse(modified, "関数呼び出し内の文字列が誤って修正対象になっています")
+    
+    def test_idempotency_no_double_fix(self):
+        """冪等性：既に修正済みの場合は再修正しないことを確認"""
+        content = '''
+def incomplete_function():
+    """
+    pass  # Placeholder for implementation
+'''
+        self.test_file.write_text(content)
+        
+        lines = content.split("\n")
+        modified = False
+        
+        for i, line in enumerate(lines):
+            stripped = line.strip()
+            
+            if len(stripped) < 3:
+                continue
+            
+            if '=' in line or '(' in line or '{' in line:
+                continue
+                
+            if stripped == '"""' and i > 0:
+                # 既に修正済みかチェック
+                if i + 1 < len(lines) and 'Placeholder for implementation' in lines[i + 1]:
+                    continue
+                    
+                prev_lines = []
+                for j in range(max(0, i-5), i):
+                    prev_lines.append(lines[j])
+                
+                prev_text = '\n'.join(prev_lines)
+                if any(pattern in prev_text for pattern in ['f"""', 'r"""', 'b"""', '=', 'return', 'yield']):
+                    continue
+                    
+                if '"""' in prev_text and prev_text.count('"""') % 2 == 1:
+                    modified = True
+                    break
+        
+        self.assertFalse(modified, "既に修正済みのdocstringが再度修正対象になっています")
 
 
 if __name__ == "__main__":
