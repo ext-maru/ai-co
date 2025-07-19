@@ -72,27 +72,46 @@ RAG: 「最適解を発見しました」
 → 自動的に最良の解決策を実行
 ```
 
-## 🌟 CO-STARフレームワーク（2025/7/10採用）
+## ⚡ XP (Extreme Programming) 開発手法（2025/7/19採用）
 
-すべての開発でCO-STAR構造を使用してください：
+**個人開発・実験プロジェクトに最適化されたXP手法を採用**
 
-### 📋 CO-STAR要素
-- **C (Context)**: 背景情報・現状分析
-- **O (Objective)**: 明確な目的・成功指標
-- **S (Style)**: 開発スタイル・技術選定
-- **T (Tone)**: チーム文化・品質基準
-- **A (Audience)**: 対象ユーザー・ステークホルダー
-- **R (Response)**: 期待される成果物・形式
+### 🔧 XP 5つの価値
+- **🗣️ Communication**: 直接対話重視
+- **🔄 Simplicity**: シンプル設計・実装
+- **📝 Feedback**: 素早いフィードバックループ
+- **💪 Courage**: 大胆なリファクタリング
+- **🤝 Respect**: コードとユーザーへの敬意
 
-### 使用例
-```yaml
-機能開発:
-  Context: "現在の課題と背景"
-  Objective: "測定可能な目標"
-  Style: "TDD、エルダーズギルド階層"
-  Tone: "品質第一、透明性"
-  Audience: "エンドユーザー、開発者"
-  Response: "テスト済みコード、ドキュメント"
+### 🎯 XP 12のプラクティス（個人開発版）
+1. **🔴🟢🔵 TDD**: Red→Green→Refactor サイクル必須
+2. **🚀 Small Releases**: 小さく頻繁なリリース
+3. **🔧 Simple Design**: 必要最小限の設計
+4. **♻️ Refactoring**: 継続的コード改善
+5. **⚡ Continuous Integration**: 即座統合・テスト
+6. **👥 Collective Code Ownership**: コード共有責任
+7. **📏 Coding Standards**: 一貫したコーディング規約
+8. **🗣️ On-site Customer**: ユーザー視点常時保持
+9. **⏰ 40-hour Week**: 持続可能ペース維持
+10. **🎯 Planning Game**: 優先順位ベース計画
+11. **📊 Whole Team**: チーム全体責任
+12. **🔀 Pair Programming**: → **🤖 AI Pair Programming**
+
+### 🤖 Claude Code XP サイクル
+```
+💭 User Story → 🔴 Test First → 🟢 Minimal Code → 🔵 Refactor → 🚀 Commit & Push
+```
+
+### 📋 実装例
+```bash
+# 1. ユーザーストーリー
+"ユーザーとして、ログイン機能が欲しい"
+
+# 2. TDD実装
+test_login_success()  # 🔴 Red
+login(user, pass)     # 🟢 Green  
+clean_up_code()       # 🔵 Refactor
+git commit -m "feat: ログイン機能実装"  # 🚀 Ship
 ```
 
 ## 🌊 **重要: Elder Flow自動適用** (2025/7/12実装)
@@ -418,8 +437,8 @@ ai-tdd new FeatureName "機能要件"
 │   └── ai-tdd                # TDD専用コマンド
 └── knowledge_base/           # ナレッジベース
     ├── CLAUDE_TDD_GUIDE.md
-    ├── COSTAR_DEVELOPMENT_FRAMEWORK.md  # NEW!
-    └── ELDERS_GUILD_LLM_WEB_DESIGN_GUIDE.md  # NEW!
+    ├── XP_DEVELOPMENT_GUIDE.md  # XP個人開発ガイド
+    └── ELDERS_GUILD_LLM_WEB_DESIGN_GUIDE.md
 ```
 
 ## 📊 カバレッジ基準
@@ -533,7 +552,7 @@ def my_claude_function():
 
 ### 知識ベース
 - [CLAUDE_TDD_GUIDE.md](knowledge_base/CLAUDE_TDD_GUIDE.md) - Claude CLI TDD完全ガイド
-- [COSTAR_DEVELOPMENT_FRAMEWORK.md](knowledge_base/COSTAR_DEVELOPMENT_FRAMEWORK.md) - CO-STAR開発フレームワーク
+- [XP_DEVELOPMENT_GUIDE.md](knowledge_base/XP_DEVELOPMENT_GUIDE.md) - XP個人開発ガイド
 - [ELDERS_GUILD_LLM_WEB_DESIGN_GUIDE.md](knowledge_base/ELDERS_GUILD_LLM_WEB_DESIGN_GUIDE.md) - LLMウェブデザインガイド
 
 ### ワークフロー
@@ -585,11 +604,11 @@ Elders Guildは4つのエルダーズ配下組織が協力する世界：
 - 🌱 新芽育成 (テスト・品質向上)
 - 🍃 風の便り (進捗報告)
 
-### 📊 規模別ランク
-- 🏆 EPIC (史詩級) - 1ヶ月以上
-- ⭐ HIGH (英雄級) - 1～4週間
-- 🌟 MEDIUM (冒険者級) - 3～7日
-- ✨ LOW (見習い級) - 1～2日
+### 📊 規模別ランク（Claude Code 実時間）
+- 🏆 EPIC (史詩級) - 30分以上
+- ⭐ HIGH (英雄級) - 10～30分
+- 🌟 MEDIUM (冒険者級) - 3～10分
+- ✨ LOW (見習い級) - 1～3分
 
 ### 🐲 障害クリーチャー分類
 - 🧚‍♀️ 妖精の悪戯 (軽微バグ)
@@ -637,4 +656,4 @@ ai-task-status coverage_boost_20250707_232321
 
 ---
 **Remember: No Code Without Test! 🧪**
-**最新更新: 2025年7月10日 - CO-STARフレームワーク採用**
+**最新更新: 2025年7月19日 - XP (Extreme Programming) 採用**

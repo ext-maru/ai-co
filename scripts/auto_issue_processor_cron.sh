@@ -20,11 +20,25 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
+# 環境変数の読み込み（~/.bashrcから）
+if [ -f ~/.bashrc ]; then
+    source ~/.bashrc
+fi
+
 # 環境変数のチェック
 if [ -z "$GITHUB_TOKEN" ]; then
     log "❌ エラー: GITHUB_TOKEN環境変数が設定されていません"
     exit 1
 fi
+
+# GitHub関連環境変数の明示的設定（バックアップ）
+export GITHUB_REPO_OWNER="${GITHUB_REPO_OWNER:-ext-maru}"
+export GITHUB_REPO_NAME="${GITHUB_REPO_NAME:-ai-co}"
+
+log "🔧 環境変数設定:"
+log "   GITHUB_TOKEN: ${GITHUB_TOKEN:0:10}..."
+log "   GITHUB_REPO_OWNER: $GITHUB_REPO_OWNER"
+log "   GITHUB_REPO_NAME: $GITHUB_REPO_NAME"
 
 log "🤖 イシュー自動処理システム起動"
 log "📁 プロジェクトルート: $PROJECT_ROOT"

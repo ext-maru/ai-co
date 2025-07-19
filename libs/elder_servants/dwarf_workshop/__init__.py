@@ -3,5 +3,6 @@
 """
 
 from .code_crafter import CodeCrafter
+from .git_operations import GitOperations
 
-__all__ = ["CodeCrafter"]
+__all__ = ["CodeCrafter", "GitOperations"]
