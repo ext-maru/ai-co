@@ -1,0 +1,145 @@
+name: 🏗️ 親Issue（大機能）
+description: 複数のサブタスクで構成される大きな機能の親Issue
+title: "[親Issue] "
+labels: ["epic", "parent-issue"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎯 親Issue作成
+        このテンプレートは複数のサブタスクで構成される大きな機能の管理用です。
+        
+        **重要**: 実際の開発作業はサブタスク（子Issue）で行い、このIssueは進捗管理のみに使用してください。
+
+  - type: input
+    id: feature_name
+    attributes:
+      label: 🏷️ 機能名
+      description: 実装する機能の名前
+      placeholder: "例: OAuth2.0認証システム"
+    validations:
+      required: true
+
+  - type: textarea
+    id: overview
+    attributes:
+      label: 📋 概要
+      description: この機能の目的と概要を説明
+      placeholder: |
+        この機能の目的と背景、解決したい問題を記述してください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: objectives
+    attributes:
+      label: 🎯 目標・成功指標
+      description: 明確な成功指標を設定
+      placeholder: |
+        - [ ] パフォーマンス向上: 応答時間50%短縮
+        - [ ] セキュリティ強化: OAuth2.0準拠
+        - [ ] ユーザビリティ改善: ログイン時間短縮
+    validations:
+      required: true
+
+  - type: textarea
+    id: subtasks
+    attributes:
+      label: 📊 サブタスク進捗管理
+      description: 子Issueのリスト（後で更新）
+      placeholder: |
+        - [ ] #XX [機能名] - データベース設計
+        - [ ] #XX [機能名] - API実装
+        - [ ] #XX [機能名] - フロントエンド統合
+        - [ ] #XX [機能名] - テスト・検証
+        
+        **注意**: 実際の子Issue作成後に番号を更新してください
+    validations:
+      required: true
+
+  - type: textarea
+    id: completion_criteria
+    attributes:
+      label: ✅ 完了条件
+      description: この親Issueをクローズする条件
+      placeholder: |
+        - [ ] すべてのサブタスクが完了
+        - [ ] 統合テストが成功
+        - [ ] ドキュメント更新完了
+        - [ ] プロダクション環境での動作確認
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🚨 優先度
+      description: この機能の優先度
+      options:
+        - 🔴 緊急 (1週間以内)
+        - 🟡 高 (1ヶ月以内)
+        - 🟢 中 (3ヶ月以内)
+        - 🔵 低 (時期未定)
+    validations:
+      required: true
+
+  - type: input
+    id: estimated_duration
+    attributes:
+      label: ⏱️ 予想期間
+      description: 全体の完了予想期間
+      placeholder: "例: 2-3週間"
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical_requirements
+    attributes:
+      label: 🔧 技術要件
+      description: 技術的な要件や制約
+      placeholder: |
+        - 使用技術: Python, FastAPI, PostgreSQL
+        - パフォーマンス要件: レスポンス時間 < 200ms
+        - セキュリティ要件: OAuth2.0, HTTPS必須
+        - 互換性: 既存API維持
+
+  - type: textarea
+    id: resources
+    attributes:
+      label: 📚 関連リソース
+      description: 設計書、参考資料、関連Issues
+      placeholder: |
+        - 設計書: [リンク]
+        - API仕様: [リンク]
+        - 参考実装: [リンク]
+        - 関連Issue: #XX
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 📋 作成者チェックリスト
+      description: 親Issue作成前の確認事項
+      options:
+        - label: 機能が適切に分割されている（1つのサブタスクは1週間以内）
+          required: true
+        - label: 各サブタスクが独立して実装・テスト可能
+          required: true
+        - label: 明確な完了条件が設定されている
+          required: true
+        - label: 優先度と期間が適切に設定されている
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        
+        ## 📝 次のステップ
+        
+        1. この親Issueを作成後、各サブタスクを個別のIssueとして作成
+        2. 子Issue作成後、上記「サブタスク進捗管理」セクションを更新
+        3. 各子Issueは `./scripts/git-feature` を使用して個別開発
+        4. すべてのサブタスクが完了したら、この親Issueを手動でクローズ
+        
+        **エルダー評議会令第35号**: Issue分割戦略に従って適切に管理してください。

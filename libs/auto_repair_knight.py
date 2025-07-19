@@ -466,13 +466,46 @@ __all__ = ['{module_name.split('.')[-1].title().replace('_', '')}', 'get_config'
             lines = fixed_content.split('\n')
             fixed_lines = []
             
-            for line in lines:
+            for i, line in enumerate(lines):
                 # 簡単な修正のみ実行
-                if line.strip().endswith('"""') and line.count('"""') == 1:
-                    # 未完了の docstring を修正
+                stripped = line.strip()
+                
+                # 空行または極めて短い行をスキップ
+                if len(stripped) < 3:
                     fixed_lines.append(line)
-                    fixed_lines.append('    pass  # Placeholder for implementation')
-                    fixes_applied.append("Fixed incomplete docstring")
+                    continue
+                
+                # 変数代入や式の一部の場合は除外
+                if '=' in line or '(' in line or '{' in line:
+                    fixed_lines.append(line)
+                    continue
+                    
+                # 単独の閉じ括弧 """ のみを対象とする
+                if stripped == '"""' and i > 0:
+                    # 既に修正済みかチェック（冪等性確保）
+                    if i + 1 < len(lines) and 'Placeholder for implementation' in lines[i + 1]:
+                        fixed_lines.append(line)
+                        continue
+                        
+                    # 前の行を確認して、f-string等の終端でないか確認
+                    prev_lines = []
+                    for j in range(max(0, i-5), i):  # 最大5行前まで確認
+                        prev_lines.append(lines[j])
+                    
+                    # 前の行にf"""、r"""、変数代入などがある場合はスキップ
+                    prev_text = '\n'.join(prev_lines)
+                    if any(pattern in prev_text for pattern in ['f"""', 'r"""', 'b"""', '=', 'return', 'yield']):
+                        fixed_lines.append(line)
+                        continue
+                        
+                    # docstringの開始があるか確認
+                    if '"""' in prev_text and prev_text.count('"""') % 2 == 1:
+                        # 未完了のdocstringと判断
+                        fixed_lines.append(line)
+                        fixed_lines.append('    pass  # Placeholder for implementation')
+                        fixes_applied.append("Fixed incomplete docstring")
+                    else:
+                        fixed_lines.append(line)
                 else:
                     fixed_lines.append(line)
                     
