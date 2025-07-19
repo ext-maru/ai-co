@@ -140,6 +140,16 @@ git push origin main
 
 ⚠️ **これを忘れた場合、インシデント賢者に自動報告されます**
 
+## 🚨 GitHub Actions無効化ポリシー (2025/1/19制定)
+
+**重要: GitHub Actionsはグランドエルダーmaruの明示的許可があるまで完全無効化を維持**
+
+- 現在の状態: **完全無効化**
+- ワークフロー保存場所: `.github/workflows.disabled/`
+- 詳細: [GITHUB_ACTIONS_POLICY.md](GITHUB_ACTIONS_POLICY.md)
+
+**クロードエルダーは GitHub Actions の有効化を提案してはならない**
+
 ## 🐳 **Docker権限管理規程** (2025/7/10制定)
 
 **エルダー評議会令第24号 - Docker権限問題根本解決規程**
