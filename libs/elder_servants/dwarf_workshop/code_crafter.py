@@ -24,12 +24,13 @@ except ImportError:
     HAS_AUTOPEP8 = False
 
 from libs.elder_servants.base.elder_servant import (
-    ElderServant, ServantCategory, ServantCapability, 
+    ServantCategory, ServantCapability, 
     TaskResult, TaskStatus
 )
+from libs.elder_servants.base.specialized_servants import DwarfServant
 
 
-class CodeCrafter(ElderServant):
+class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
     D01: CodeCrafter - Python実装専門サーバント
     関数・クラス・モジュール生成のエキスパート
@@ -84,7 +85,6 @@ class CodeCrafter(ElderServant):
         super().__init__(
             servant_id="D01",
             servant_name="CodeCrafter",
-            category=ServantCategory.DWARF,
             specialization="Python実装",
             capabilities=capabilities
         )
@@ -95,6 +95,31 @@ class CodeCrafter(ElderServant):
             "class": self._get_class_template(),
             "module": self._get_module_template()
         }
+    
+    async def craft_artifact(self, specification: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        DwarfServant実装: 製作品作成
+        
+        Args:
+            specification: 製作仕様
+            
+        Returns:
+            Dict[str, Any]: 製作品
+        """
+        artifact_type = specification.get("type", "function")
+        
+        if artifact_type == "function":
+            return await self._generate_function(specification)
+        elif artifact_type == "class":
+            return await self._generate_class(specification)
+        elif artifact_type == "module":
+            return await self._generate_module(specification)
+        else:
+            return {
+                "code": "",
+                "type": "error",
+                "error": f"Unknown artifact type: {artifact_type}"
+            }
     
     def get_specialized_capabilities(self) -> List[ServantCapability]:
         """専門能力の取得"""
@@ -133,28 +158,31 @@ class CodeCrafter(ElderServant):
             
             result_data = {}
             
+            # ペイロードから仕様を取得
+            payload = task.get("payload", {})
+            
             if task_type == "generate_function":
-                result_data = await self._generate_function(task.get("spec", {}))
+                result_data = await self._generate_function(payload.get("spec", {}))
             elif task_type == "generate_class":
-                result_data = await self._generate_class(task.get("spec", {}))
+                result_data = await self._generate_class(payload.get("spec", {}))
             elif task_type == "generate_module":
-                result_data = await self._generate_module(task.get("spec", {}))
+                result_data = await self._generate_module(payload.get("spec", {}))
             elif task_type == "refactor_code":
                 result_data = await self._refactor_code(
-                    task.get("code", ""),
-                    task.get("refactor_spec", {})
+                    payload.get("code", ""),
+                    payload.get("refactor_spec", {})
                 )
             elif task_type == "add_type_hints":
-                result_data = await self._add_type_hints(task.get("code", ""))
+                result_data = await self._add_type_hints(payload.get("code", ""))
             elif task_type == "optimize_code":
                 result_data = await self._optimize_code(
-                    task.get("code", ""),
-                    task.get("optimization_target", "performance")
+                    payload.get("code", ""),
+                    payload.get("optimization_target", "performance")
                 )
             elif task_type == "generate_test_code":
-                result_data = await self._generate_test_code(task.get("code", ""))
+                result_data = await self._generate_test_code(payload.get("code", ""))
             elif task_type == "code_analysis":
-                result_data = await self._analyze_code(task.get("code", ""))
+                result_data = await self._analyze_code(payload.get("code", ""))
             else:
                 raise ValueError(f"Unknown task type: {task_type}")
             

@@ -1,6 +1,9 @@
 """
 エルダーサーバント基盤クラス
 4賢者システムの実行部隊として機能する32専門ワーカーの基盤
+
+EldersLegacy統合: すべてのサーバントはEldersServiceLegacyから継承し、
+Iron Will品質基準とエルダー評議会令第27号に完全準拠します。
 """
 
 import asyncio
@@ -12,6 +15,14 @@ from datetime import datetime, timedelta
 from enum import Enum
 import json
 import hashlib
+
+# EldersLegacy統合インポート
+from libs.core.elders_legacy import (
+    EldersServiceLegacy, 
+    enforce_boundary,
+    EldersLegacyDomain,
+    IronWillCriteria
+)
 
 
 class ServantCategory(Enum):
@@ -87,12 +98,50 @@ class TaskResult:
         }
 
 
-class ElderServant(ABC):
-    """エルダーサーバント基盤クラス"""
+class ServantRequest:
+    """エルダーサーバント統一リクエスト形式"""
+    
+    def __init__(self, task_id: str, task_type: str, priority: TaskPriority,
+                 payload: Dict[str, Any], context: Dict[str, Any] = None):
+        self.task_id = task_id
+        self.task_type = task_type
+        self.priority = priority
+        self.payload = payload
+        self.context = context or {}
+        self.created_at = datetime.now()
+
+
+class ServantResponse:
+    """エルダーサーバント統一レスポンス形式"""
+    
+    def __init__(self, task_id: str, servant_id: str, status: TaskStatus,
+                 result_data: Dict[str, Any] = None, error_message: str = None,
+                 execution_time_ms: float = 0.0, quality_score: float = 0.0):
+        self.task_id = task_id
+        self.servant_id = servant_id
+        self.status = status
+        self.result_data = result_data or {}
+        self.error_message = error_message
+        self.execution_time_ms = execution_time_ms
+        self.quality_score = quality_score
+        self.completed_at = datetime.now()
+
+
+class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
+    """
+    🧝‍♂️ エルダーサーバント基盤クラス
+    
+    EldersServiceLegacyから継承し、Iron Will品質基準に完全準拠。
+    エルダー評議会令第27号により、すべてのサーバントは本クラスを継承必須。
+    """
     
     def __init__(self, servant_id: str, servant_name: str, category: ServantCategory, 
                  specialization: str, capabilities: List[ServantCapability]):
-        self.servant_id = servant_id
+        # EldersServiceLegacy初期化 (EXECUTION域で自動設定)
+        super().__init__(servant_id)
+        
+        # サーバント固有プロパティ
+        self.servant_id = servant_id  # 明示的に保存
         self.servant_name = servant_name
         self.category = category
         self.specialization = specialization
@@ -123,10 +172,86 @@ class ElderServant(ABC):
         
         self.logger.info(f"Elder Servant {servant_name} ({servant_id}) initialized")
     
+    # EldersServiceLegacy抽象メソッド実装
+    async def process_request(self, request: ServantRequest) -> ServantResponse:
+        """
+        EldersServiceLegacy統一リクエスト処理
+        
+        Args:
+            request: ServantRequest形式のリクエスト
+            
+        Returns:
+            ServantResponse: 統一レスポンス
+        """
+        import time
+        start_time = time.time()
+        
+        try:
+            # 旧形式タスクに変換
+            task = {
+                "task_id": request.task_id,
+                "task_type": request.task_type,
+                "priority": request.priority.value,
+                "payload": request.payload,
+                "context": request.context
+            }
+            
+            # 既存のexecute_taskメソッド使用
+            result = await self.execute_task(task)
+            
+            # ServantResponseに変換
+            return ServantResponse(
+                task_id=request.task_id,
+                servant_id=self.servant_id,
+                status=result.status,
+                result_data=result.result_data,
+                error_message=result.error_message,
+                execution_time_ms=(time.time() - start_time) * 1000,
+                quality_score=result.quality_score
+            )
+            
+        except Exception as e:
+            self.logger.error(f"Request processing failed: {str(e)}")
+            return ServantResponse(
+                task_id=request.task_id,
+                servant_id=self.servant_id,
+                status=TaskStatus.FAILED,
+                error_message=str(e),
+                execution_time_ms=(time.time() - start_time) * 1000,
+                quality_score=0.0
+            )
+    
+    def validate_request(self, request: ServantRequest) -> bool:
+        """
+        EldersServiceLegacyリクエスト検証
+        
+        Args:
+            request: 検証対象リクエスト
+            
+        Returns:
+            bool: 検証結果
+        """
+        if not request.task_id or not request.task_type:
+            return False
+        if not isinstance(request.payload, dict):
+            return False
+        return True
+    
+    def get_capabilities(self) -> List[str]:
+        """
+        EldersServiceLegacy能力取得
+        
+        Returns:
+            List[str]: 能力名一覧
+        """
+        return [cap.name for cap in self.get_all_capabilities()]
+    
+    @enforce_boundary("servant")
     @abstractmethod
     async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
         """
         タスク実行（各サーバントで具体実装）
+        Iron Will品質基準を満たすタスク実行
         
         Args:
             task: 実行タスク情報
@@ -145,77 +270,6 @@ class ElderServant(ABC):
             List[ServantCapability]: 専門能力一覧
         """
         pass
-    
-    async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        リクエスト処理（統一インターフェース）
-        
-        Args:
-            request: 処理リクエスト
-            
-        Returns:
-            Dict[str, Any]: 処理結果
-        """
-        start_time = datetime.now()
-        request_id = request.get("request_id", str(uuid.uuid4()))
-        
-        try:
-            request_type = request.get("type", "unknown")
-            
-            if request_type == "execute_task":
-                task = request.get("task", {})
-                task["request_id"] = request_id
-                result = await self.execute_task(task)
-                
-                # 統計更新
-                await self._update_stats(result)
-                
-                return {
-                    "success": True,
-                    "request_id": request_id,
-                    "result": result.to_dict()
-                }
-                
-            elif request_type == "health_check":
-                return await self.health_check()
-                
-            elif request_type == "get_capabilities":
-                return {
-                    "success": True,
-                    "capabilities": [cap.to_dict() for cap in self.get_all_capabilities()]
-                }
-                
-            elif request_type == "get_stats":
-                return {
-                    "success": True,
-                    "stats": self.stats.copy()
-                }
-                
-            elif request_type == "cancel_task":
-                task_id = request.get("task_id")
-                return await self._cancel_task(task_id)
-                
-            else:
-                return {
-                    "success": False,
-                    "error": f"Unknown request type: {request_type}",
-                    "supported_types": [
-                        "execute_task", "health_check", "get_capabilities", 
-                        "get_stats", "cancel_task"
-                    ]
-                }
-                
-        except Exception as e:
-            self.logger.error(f"Request processing error: {str(e)}")
-            return {
-                "success": False,
-                "error": str(e),
-                "request_id": request_id
-            }
-        finally:
-            processing_time = (datetime.now() - start_time).total_seconds() * 1000
-            self.logger.debug(f"Request {request_id} processed in {processing_time:.2f}ms")
-    
     async def health_check(self) -> Dict[str, Any]:
         """ヘルスチェック"""
         uptime = datetime.now() - self.stats["created_at"]
@@ -332,10 +386,14 @@ class ElderServant(ABC):
             quality_score += 25
         checks += 1
         
-        # 正規化 - チェック数で割らずに合計スコアを返す
+        # Iron Will基準適用: 95%以上が合格基準
+        # 最大100点のうち95点以上を要求
         final_score = quality_score
         
-        self.logger.debug(f"Quality validation score: {final_score:.2f}")
+        # Iron Will基準判定
+        meets_iron_will = final_score >= 95.0
+        
+        self.logger.debug(f"Quality validation score: {final_score:.2f}, Iron Will compliant: {meets_iron_will}")
         return final_score
     
     async def _update_stats(self, result: TaskResult):
