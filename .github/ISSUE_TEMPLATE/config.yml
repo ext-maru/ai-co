@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 エルダーズギルド ドキュメント
+    url: https://github.com/ext-maru/ai-co/blob/main/CLAUDE.md
+    about: エルダーズギルドの開発ガイドとルール
+  - name: 🌿 Git ワークフローガイド
+    url: https://github.com/ext-maru/ai-co/blob/main/docs/GIT_WORKFLOW_GUIDE.md
+    about: Feature Branch戦略とIssue分割方針
+  - name: 🎯 Issue分割戦略ガイド
+    url: https://github.com/ext-maru/ai-co/blob/main/docs/ISSUE_SPLITTING_STRATEGY.md
+    about: Issue分割の詳細ガイド

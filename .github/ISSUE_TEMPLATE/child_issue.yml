@@ -1,0 +1,220 @@
+name: 🔧 子Issue（個別タスク）
+description: 親Issueから分割された個別の実装タスク
+title: "[子Issue] "
+labels: ["task", "child-issue"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🎯 子Issue作成
+        このテンプレートは親Issueから分割された個別の実装タスク用です。
+        
+        **原則**: 1つの子Issueは1週間以内に完了可能な粒度で作成してください。
+
+  - type: input
+    id: parent_issue
+    attributes:
+      label: 🔗 親Issue
+      description: この子Issueの親となるIssue番号
+      placeholder: "例: #50"
+    validations:
+      required: true
+
+  - type: input
+    id: task_name
+    attributes:
+      label: 🏷️ タスク名
+      description: この子Issueで実装する具体的なタスク
+      placeholder: "例: データベース設計、API実装、フロントエンド統合"
+    validations:
+      required: true
+
+  - type: textarea
+    id: overview
+    attributes:
+      label: 📋 概要
+      description: このタスクの詳細な説明
+      placeholder: |
+        このタスクで実装する内容を具体的に説明してください。
+        - 何を作るのか
+        - どのような技術を使うのか
+        - 既存システムとの関係性
+    validations:
+      required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: 🎯 実装内容
+      description: 具体的な作業項目のチェックリスト
+      placeholder: |
+        - [ ] データモデルの設計
+        - [ ] マイグレーションファイルの作成
+        - [ ] SQLAlchemyモデルの実装
+        - [ ] バリデーションルールの実装
+        - [ ] ユニットテストの作成
+        - [ ] ドキュメントの更新
+    validations:
+      required: true
+
+  - type: textarea
+    id: completion_criteria
+    attributes:
+      label: ✅ 完了条件（Definition of Done）
+      description: このIssueをクローズする明確な条件
+      placeholder: |
+        - [ ] 実装が要件を満たしている
+        - [ ] ユニットテストが追加され、カバレッジ95%以上
+        - [ ] 既存テストが全て成功
+        - [ ] コードレビューが完了
+        - [ ] ドキュメントが更新されている
+    validations:
+      required: true
+
+  - type: dropdown
+    id: task_type
+    attributes:
+      label: 🔖 タスクタイプ
+      description: このタスクの種類
+      options:
+        - 🆕 新機能実装 (feature)
+        - 🐛 バグ修正 (fix)
+        - 📚 ドキュメント (docs)
+        - 🔧 リファクタリング (refactor)
+        - 🧪 テスト追加 (test)
+        - ⚡ パフォーマンス改善 (perf)
+        - 🏗️ 雑務 (chore)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🚨 優先度
+      description: 親Issue内でのこのタスクの優先度
+      options:
+        - 🔴 高 (最優先)
+        - 🟡 中 (通常)
+        - 🟢 低 (後回し可)
+    validations:
+      required: true
+
+  - type: input
+    id: estimated_duration
+    attributes:
+      label: ⏱️ 予想作業時間
+      description: このタスクの完了予想時間
+      placeholder: "例: 2-3日、半日、1週間"
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical_details
+    attributes:
+      label: 🔧 技術仕様
+      description: 実装に必要な技術的詳細
+      placeholder: |
+        ### 使用技術
+        - Python 3.11+
+        - FastAPI
+        - SQLAlchemy
+        
+        ### 設計方針
+        - DDDアーキテクチャに準拠
+        - Elders Legacy基盤クラスを使用
+        
+        ### API仕様
+        ```
+        POST /api/users
+        GET /api/users/{id}
+        ```
+        
+        ### データベース設計
+        - テーブル名: users
+        - 主キー: id (UUID)
+
+  - type: textarea
+    id: test_plan
+    attributes:
+      label: 🧪 テスト計画
+      description: このタスクのテスト方針
+      placeholder: |
+        ### ユニットテスト
+        - [ ] 正常系のテスト
+        - [ ] 異常系のテスト（バリデーションエラー等）
+        - [ ] 境界値テスト
+        
+        ### 統合テスト
+        - [ ] API エンドポイントのテスト
+        - [ ] データベース連携のテスト
+        
+        ### 手動テスト
+        - [ ] ブラウザでの動作確認
+        - [ ] エラーハンドリングの確認
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: 🔗 依存関係
+      description: このタスクの前提条件や依存する他のタスク
+      placeholder: |
+        ### 事前条件
+        - [ ] Issue #XX の完了が必要
+        
+        ### 並行可能
+        - Issue #YY と並行実装可能
+        
+        ### ブロック要因
+        - 外部APIの仕様確定待ち
+
+  - type: textarea
+    id: resources
+    attributes:
+      label: 📚 参考資料
+      description: 実装に参考となる資料やリンク
+      placeholder: |
+        - 設計書: [リンク]
+        - API仕様書: [リンク]
+        - 参考実装: [リンク]
+        - StackOverflow: [リンク]
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 📋 作成者チェックリスト
+      description: 子Issue作成前の確認事項
+      options:
+        - label: 1週間以内に完了可能な粒度である
+          required: true
+        - label: 明確な完了条件が設定されている
+          required: true
+        - label: 独立して実装・テスト可能である
+          required: true
+        - label: 親Issueが正しく設定されている
+          required: true
+        - label: TDD（テスト駆動開発）で実装予定
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        
+        ## 🚀 実装開始手順
+        
+        1. **Feature Branch作成**
+           ```bash
+           ./scripts/git-feature <issue-number> <description>
+           ```
+        
+        2. **TDD開発サイクル**
+           - 🔴 Red: テストを先に書く
+           - 🟢 Green: 最小実装でテストを通す
+           - 🔵 Refactor: コードを改善
+        
+        3. **PR作成時**
+           - タイトル: `<type>: <説明> (#<issue-number>)`
+           - 本文に `Closes #<issue-number>` を含める
+        
+        **エルダー評議会令第35号**: Issue分割戦略に従って適切に実装してください。

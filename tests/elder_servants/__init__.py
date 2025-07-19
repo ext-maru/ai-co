@@ -1,3 +1,1 @@
-"""
-エルダーサーバントテストスイート
-"""
+# Elder Servants Tests
