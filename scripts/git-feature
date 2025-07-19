@@ -1,103 +1,107 @@
-#!/bin/bash
-
-# エルダーズギルド Feature Branch作成ヘルパースクリプト
-# Usage: git-feature <issue-number> [description]
-# Example: git-feature 17 data-model
+#\!/bin/bash
+# 🌳 Feature Branch自動化ツール
+# エルダー評議会令第32号準拠
 
 set -e
 
-# 色定義
-RED='\033[0;31m'
+# カラー定義
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# 使用方法を表示
-usage() {
-    echo -e "${BLUE}エルダーズギルド Feature Branch作成ツール${NC}"
-    echo ""
-    echo "使用方法:"
-    echo "  git-feature <issue-number> [description]"
-    echo ""
-    echo "例:"
-    echo "  git-feature 17 data-model"
-    echo "  git-feature 23 fix-api-error"
-    echo ""
-    echo "オプション:"
-    echo "  -h, --help    このヘルプを表示"
-    echo "  -t, --type    ブランチタイプを指定 (default: feature)"
-    echo "                使用可能: feature, fix, docs, chore, test"
-    exit 1
+# ヘルプ表示
+show_help() {
+    cat << EOF
+🌳 Feature Branch自動化ツール
+
+使用方法:
+    ./scripts/git-feature <issue-number> <description> [branch-type]
+
+引数:
+    issue-number : Issue番号 (必須)
+    description  : ブランチ説明 (必須、ハイフンで区切られる)
+    branch-type  : ブランチタイプ (省略時: feature)
+                   - feature : 新機能
+                   - fix     : バグ修正  
+                   - docs    : ドキュメント
+                   - chore   : 雑務
+
+例:
+    ./scripts/git-feature 31 feature-branch-tools
+    ./scripts/git-feature 32 bug-fix fix
+    ./scripts/git-feature 33 update-readme docs
+
+エルダー評議会令第32号:
+    1. 1 Issue = 1 Branch = 1 PR の原則
+    2. mainブランチへの直接プッシュ禁止
+    3. すべての変更はFeature Branch経由
+EOF
 }
 
-# エラー表示
+# エラー処理
 error() {
     echo -e "${RED}❌ エラー: $1${NC}" >&2
     exit 1
 }
 
-# 成功表示
+# 成功メッセージ
 success() {
     echo -e "${GREEN}✅ $1${NC}"
 }
 
-# 情報表示
+# 情報メッセージ
 info() {
     echo -e "${BLUE}ℹ️  $1${NC}"
 }
 
-# 警告表示
+# 警告メッセージ
 warning() {
     echo -e "${YELLOW}⚠️  $1${NC}"
 }
 
-# デフォルトのブランチタイプ
-BRANCH_TYPE="feature"
-
-# 引数解析
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        -h|--help)
-            usage
-            ;;
-        -t|--type)
-            BRANCH_TYPE="$2"
-            shift 2
-            ;;
-        *)
-            if [[ -z "$ISSUE_NUMBER" ]]; then
-                ISSUE_NUMBER="$1"
-            elif [[ -z "$DESCRIPTION" ]]; then
-                DESCRIPTION="$1"
-            fi
-            shift
-            ;;
-    esac
-done
-
-# Issue番号の確認
-if [[ -z "$ISSUE_NUMBER" ]]; then
-    error "Issue番号を指定してください"
+# 引数チェック
+if [ $# -lt 2 ]; then
+    show_help
+    exit 1
 fi
 
-# Issue番号が数字かチェック
-if ! [[ "$ISSUE_NUMBER" =~ ^[0-9]+$ ]]; then
-    error "Issue番号は数字で指定してください"
+ISSUE_NUMBER=$1
+DESCRIPTION=$2
+BRANCH_TYPE=${3:-feature}
+
+# Issue番号の検証
+if \! [[ "$ISSUE_NUMBER" =~ ^[0-9]+$ ]]; then
+    error "Issue番号は数値である必要があります: $ISSUE_NUMBER"
 fi
 
-# ブランチタイプの妥当性チェック
+# ブランチタイプの検証
 case $BRANCH_TYPE in
-    feature|fix|docs|chore|test|refactor|perf)
+    feature < /dev/null | fix|docs|chore)
         ;;
     *)
-        error "不正なブランチタイプ: $BRANCH_TYPE"
+        error "無効なブランチタイプ: $BRANCH_TYPE (feature/fix/docs/chore のいずれかを指定)"
         ;;
 esac
 
-# Gitリポジトリかチェック
-if ! git rev-parse --git-dir > /dev/null 2>&1; then
+# ブランチ名の生成
+BRANCH_NAME="${BRANCH_TYPE}/issue-${ISSUE_NUMBER}-${DESCRIPTION}"
+
+# Git状態確認
+if \! git rev-parse --git-dir > /dev/null 2>&1; then
     error "Gitリポジトリではありません"
+fi
+
+# 変更確認
+if \! git diff-index --quiet HEAD --; then
+    warning "コミットされていない変更があります"
+    echo -n "続行しますか？ (y/N): "
+    read -r response
+    if [[ \! "$response" =~ ^[Yy]$ ]]; then
+        info "中止しました"
+        exit 0
+    fi
 fi
 
 # 現在のブランチ確認
@@ -105,98 +109,66 @@ CURRENT_BRANCH=$(git branch --show-current)
 info "現在のブランチ: $CURRENT_BRANCH"
 
 # mainブランチに切り替え
-if [[ "$CURRENT_BRANCH" != "main" ]]; then
-    warning "mainブランチに切り替えます..."
-    
-    # 未コミットの変更があるかチェック
-    if ! git diff --quiet || ! git diff --staged --quiet; then
-        warning "未コミットの変更があります"
-        echo "1) stashして続行"
-        echo "2) 中止"
-        read -p "選択してください (1/2): " choice
-        
-        case $choice in
-            1)
-                git stash push -m "auto-stash before creating feature branch"
-                success "変更をstashしました"
-                ;;
-            2)
-                error "操作を中止しました"
-                ;;
-            *)
-                error "無効な選択です"
-                ;;
-        esac
-    fi
-    
-    git checkout main
+if [ "$CURRENT_BRANCH" \!= "main" ]; then
+    info "mainブランチに切り替えます..."
+    git checkout main || error "mainブランチへの切り替えに失敗しました"
 fi
 
-# mainブランチを最新に更新
-info "mainブランチを最新に更新しています..."
-git pull origin main
+# 最新の状態を取得
+info "リモートから最新の状態を取得します..."
+git pull origin main || warning "リモートからの取得に失敗しました（続行します）"
 
-# ブランチ名の生成
-if [[ -n "$DESCRIPTION" ]]; then
-    BRANCH_NAME="${BRANCH_TYPE}/issue-${ISSUE_NUMBER}-${DESCRIPTION}"
-else
-    BRANCH_NAME="${BRANCH_TYPE}/issue-${ISSUE_NUMBER}"
-fi
+# ブランチ作成
+info "Feature Branchを作成します: $BRANCH_NAME"
+git checkout -b "$BRANCH_NAME" || error "ブランチの作成に失敗しました"
 
-# ブランチ名の確認
-echo ""
-info "作成するブランチ: $BRANCH_NAME"
-read -p "このブランチ名でよろしいですか？ (y/n): " confirm
+# リモートにプッシュ
+info "リモートにブランチをプッシュします..."
+git push -u origin "$BRANCH_NAME" || error "リモートへのプッシュに失敗しました"
 
-if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
-    read -p "ブランチ名を入力してください: " CUSTOM_BRANCH_NAME
-    if [[ -n "$CUSTOM_BRANCH_NAME" ]]; then
-        BRANCH_NAME="$CUSTOM_BRANCH_NAME"
-    else
-        error "ブランチ名が入力されませんでした"
-    fi
-fi
+# PR作成用のテンプレート生成
+PR_TEMPLATE=$(cat << EOF
+## 📋 概要
+Issue #${ISSUE_NUMBER} の実装
 
-# ブランチが既に存在するかチェック
-if git show-ref --verify --quiet "refs/heads/$BRANCH_NAME"; then
-    error "ブランチ '$BRANCH_NAME' は既に存在します"
-fi
+## 🔧 変更内容
+- [ ] 実装内容1
+- [ ] 実装内容2
+- [ ] 実装内容3
 
-# Feature Branch作成
-info "Feature Branchを作成しています..."
-git checkout -b "$BRANCH_NAME"
-success "Feature Branch '$BRANCH_NAME' を作成しました"
+## 🧪 テスト
+- [ ] ユニットテスト追加
+- [ ] 既存テストの確認
+- [ ] 手動テスト完了
 
-# 初回コミット用のテンプレート表示
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "🎯 次のステップ:"
-echo ""
-echo "1. 開発を開始してください"
-echo "2. コミット時は以下のフォーマットを使用:"
-echo ""
-echo "   git commit -m \"${BRANCH_TYPE}: 変更内容の説明 (#${ISSUE_NUMBER})\""
-echo ""
-echo "3. 初回プッシュ:"
-echo ""
-echo "   git push -u origin $BRANCH_NAME"
-echo ""
-echo "4. PR作成時は本文に以下を含める:"
-echo ""
-echo "   Closes #${ISSUE_NUMBER}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+## 📸 スクリーンショット
+<\!-- 必要に応じて -->
 
-# GitHub Issue URLを表示（オプション）
-if command -v gh &> /dev/null; then
-    REPO=$(gh repo view --json nameWithOwner -q .nameWithOwner 2>/dev/null || echo "")
-    if [[ -n "$REPO" ]]; then
-        echo ""
-        info "📋 Issue URL: https://github.com/$REPO/issues/$ISSUE_NUMBER"
-    fi
-fi
+## 📝 注意事項
+<\!-- レビュアーへの注意事項 -->
 
-# VS Codeが起動している場合は通知
-if command -v code &> /dev/null && [[ -n "$VSCODE_IPC_HOOK_CLI" ]]; then
-    echo ""
-    info "💡 VS Codeでブランチが切り替わりました"
-fi
+Closes #${ISSUE_NUMBER}
+EOF
+)
+
+# PR作成コマンドの表示
+echo ""
+success "Feature Branch '$BRANCH_NAME' を作成しました！"
+echo ""
+info "次のステップ:"
+echo "1. 開発を進めてください"
+echo "2. コミット時はIssue番号を含めてください:"
+echo "   git commit -m \"feat: 機能の説明 (#${ISSUE_NUMBER})\""
+echo ""
+echo "3. PR作成時は以下のコマンドを使用:"
+echo -e "${YELLOW}gh pr create --title \"${BRANCH_TYPE}: Issue #${ISSUE_NUMBER} の実装\" --body \"\$(cat << 'EOF'${NC}"
+echo "$PR_TEMPLATE"
+echo -e "${YELLOW}EOF${NC}"
+echo -e "${YELLOW})\"${NC}"
+echo ""
+info "または、GitHub WebUIから作成して上記のテンプレートを使用してください"
+
+# 現在の状態を表示
+echo ""
+info "現在の状態:"
+git status --short --branch
