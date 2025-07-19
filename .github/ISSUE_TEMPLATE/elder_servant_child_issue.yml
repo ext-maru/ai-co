@@ -1,0 +1,201 @@
+name: 🧝‍♂️ エルダーサーバント子Issue
+description: エルダーサーバント32体制実装のための子Issue作成用テンプレート（ロードマップv2.0準拠）
+title: "[Elder Servant] "
+labels: ["enhancement", "elder-servant"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🧝‍♂️ エルダーサーバント子Issue
+        
+        このテンプレートは、Issue #34「エルダーサーバント32体制実装」の子Issueを作成するために使用します。
+        参照: [実装ロードマップv2.0](docs/ELDER_SERVANTS_IMPLEMENTATION_ROADMAP.md)
+        
+        ### 📋 チェックリスト
+        - [ ] 親Issue #34を確認済み
+        - [ ] 実装ロードマップv2.0を参照済み
+        - [ ] EldersLegacy基準を理解済み
+
+  - type: dropdown
+    id: issue_category
+    attributes:
+      label: 📂 子Issueカテゴリ
+      description: どの子Issueを作成しますか？
+      options:
+        - "🔧 子Issue #1: 基盤修正 - EldersLegacy対応"
+        - "🔨 子Issue #2: ドワーフ工房前半 (D01-D08)"
+        - "🔨 子Issue #3: ドワーフ工房後半 (D09-D16)"
+        - "🧙‍♂️ 子Issue #4: RAGウィザーズ (W01-W08)"
+        - "🧝‍♂️ 子Issue #5: エルフの森 (E01-E08)"
+        - "🧪 子Issue #6: 統合テスト"
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation_scope
+    attributes:
+      label: 📋 実装範囲
+      description: この子Issueで実装するサーバントまたは機能を明記してください
+      placeholder: |
+        例（子Issue #2の場合）：
+        - D01: CodeCrafter - コード実装職人
+        - D02: TestForge - テスト鍛造師
+        - D03: RefactorSmith - リファクタリング匠
+        - D04: PerformanceTuner - パフォーマンス調整師
+        - D05: BugHunter - バグ退治専門家
+        - D06: SecurityGuard - セキュリティ守護者
+        - D07: APIArchitect - API設計建築家
+        - D08: DatabaseShaper - データベース形成師
+        
+        各サーバントの能力と責任範囲を含めてください。
+    validations:
+      required: true
+
+  - type: textarea
+    id: technical_requirements
+    attributes:
+      label: 🔧 技術要件
+      description: 実装に必要な技術的要件を記載してください
+      placeholder: |
+        - [ ] EldersServiceLegacyからの継承
+        - [ ] Iron Will品質基準（95%以上）の実装
+        - [ ] 4賢者システムとの連携インターフェース
+        - [ ] テストカバレッジ95%以上
+        - [ ] Elder Flowとの統合
+        - [ ] 並列実行対応（async/await）
+        - [ ] エラーハンドリングとロギング
+        - [ ] パフォーマンス最適化
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: ✅ 受け入れ基準
+      description: この子Issueが完了したと判断するための基準
+      placeholder: |
+        - [ ] 各サーバントのユニットテスト実装（カバレッジ95%以上）
+        - [ ] Iron Will品質基準クリア（6大基準すべて）
+        - [ ] 4賢者との統合テスト成功
+        - [ ] Elder Flowでの動作確認
+        - [ ] ServantRegistryへの登録完了
+        - [ ] ドキュメント更新完了
+        - [ ] コードレビュー承認
+        - [ ] パフォーマンスベンチマーク達成
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: 🔗 依存関係
+      description: この子Issueが依存する他のIssueや前提条件
+      placeholder: |
+        - 子Issue #1（基盤修正）の完了が前提
+        - 4賢者システムが稼働していること
+        - Elder Flowが利用可能であること
+    validations:
+      required: false
+
+  - type: input
+    id: estimated_days
+    attributes:
+      label: ⏱️ 見積もり工数（営業日）
+      description: 実装に必要な日数の見積もり
+      placeholder: "例: 5-7"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 🎯 優先度
+      description: 実装の優先度を選択してください
+      options:
+        - "🔴 最高（ブロッカー）"
+        - "🔴 高"
+        - "🟡 中"
+        - "🟢 低"
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation_plan
+    attributes:
+      label: 📅 実装計画
+      description: 日次の実装計画を記載してください
+      placeholder: |
+        Day 1: 基底クラスの実装とテストケース作成
+        Day 2: サーバント個別機能の実装（D01-D02）
+        Day 3: サーバント個別機能の実装（D03-D04）
+        Day 4: 4賢者との統合実装
+        Day 5: 統合テストとリファクタリング
+        Day 6: ドキュメント作成とレビュー対応
+    validations:
+      required: true
+
+  - type: textarea
+    id: test_strategy
+    attributes:
+      label: 🧪 テスト戦略
+      description: TDDに基づくテスト計画
+      placeholder: |
+        1. ユニットテスト:
+           - 各サーバントの基本機能テスト
+           - エラーハンドリングテスト
+           - 境界値テスト
+           - モックを使用した依存関係テスト
+        
+        2. 統合テスト:
+           - 4賢者連携テスト
+           - Elder Flow統合テスト
+           - パフォーマンステスト
+           - 負荷テスト
+    validations:
+      required: true
+
+  - type: textarea
+    id: risk_mitigation
+    attributes:
+      label: ⚠️ リスクと対策
+      description: 想定されるリスクとその対策
+      placeholder: |
+        リスク1: 実装の複雑性による遅延
+        対策: ペアプログラミングとコードレビューの強化
+        
+        リスク2: 統合時の不具合
+        対策: 早期の統合テストと段階的デプロイ
+        
+        リスク3: パフォーマンス基準未達
+        対策: 初期段階からのプロファイリング実施
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: 📝 事前チェックリスト
+      description: 実装開始前に確認すべき項目
+      options:
+        - label: 親Issue #34の最新状態を確認した
+          required: true
+        - label: 実装ロードマップ（v2.0）を読んだ
+          required: true
+        - label: EldersLegacy実装ガイドを理解した
+          required: true
+        - label: Iron Will品質基準を理解した
+          required: true
+        - label: TDD開発フローを理解した
+          required: true
+        - label: 他の子Issueと重複していないことを確認した
+          required: true
+
+  - type: textarea
+    id: additional_notes
+    attributes:
+      label: 📌 追加情報
+      description: その他の関連情報や注意事項
+      placeholder: 必要に応じて追加情報を記載してください
+    validations:
+      required: false
