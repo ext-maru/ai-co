@@ -1,14 +1,15 @@
 name: 🛡️ Incident Knights Auto-Fix
 
+# 一時的に無効化 - プレースホルダー無限製造問題のため
 on:
-  push:
-    branches: [ main, develop ]
-  pull_request:
-    branches: [ main ]
-  schedule:
-    # Run every hour
-    - cron: '0 * * * *'
-  workflow_dispatch:
+  workflow_dispatch:  # 手動実行のみ有効
+  # push:
+  #   branches: [ main, develop ]
+  # pull_request:
+  #   branches: [ main ]
+  # schedule:
+  #   # Run every hour
+  #   - cron: '0 * * * *'
     inputs:
       fix_type:
         description: 'Type of fix to apply'
