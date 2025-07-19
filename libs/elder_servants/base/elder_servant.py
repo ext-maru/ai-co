@@ -354,12 +354,12 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
             "request_id": request.get("request_id", str(uuid.uuid4()))
         }
     
-    async def validate_iron_will_quality(self, result_data: Dict[str, Any]) -> float:
+    async def validate_iron_will_quality(self, result_data) -> float:
         """
         Iron Will品質基準検証
         
         Args:
-            result_data: 検証対象データ
+            result_data: 検証対象データ (TaskResult or Dict)
             
         Returns:
             float: 品質スコア (0-100)
@@ -367,24 +367,35 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         quality_score = 0.0
         checks = 0
         
+        # TaskResultオブジェクトの場合は辞書形式に変換
+        if hasattr(result_data, 'to_dict'):
+            data = result_data.to_dict()
+            # TaskResultの品質スコアを直接使用
+            if hasattr(result_data, 'quality_score'):
+                return result_data.quality_score
+        elif isinstance(result_data, dict):
+            data = result_data
+        else:
+            return 0.0
+        
         # 基本品質チェック
-        if result_data.get("success", False):
+        if data.get("success", False) or data.get("status") == "completed":
             quality_score += 30
         checks += 1
         
         # エラーハンドリング確認
-        if "error" not in result_data or result_data.get("error") is None:
+        if "error_message" not in data or data.get("error_message") is None:
             quality_score += 20
         checks += 1
         
         # 完全性確認
-        required_fields = ["status", "data"]
-        if all(field in result_data for field in required_fields):
+        required_fields = ["task_id", "result_data"]
+        if all(field in data for field in required_fields):
             quality_score += 25
         checks += 1
         
         # パフォーマンス確認
-        execution_time = result_data.get("execution_time_ms", 0)
+        execution_time = data.get("execution_time_ms", 0)
         if execution_time > 0 and execution_time < 5000:  # 5秒未満
             quality_score += 25
         checks += 1

@@ -53,7 +53,7 @@ class PIDLockManager:
             
     def acquire_lock(self, task_id: str, task_info: Dict[str, Any] = None) -> bool:
         """
-        タスクのロックを取得
+        タスクのロックを取得（レースコンディション対策版）
         
         Args:
             task_id: タスクの一意識別子
@@ -64,48 +64,65 @@ class PIDLockManager:
         """
         lock_file = self._get_lock_file_path(task_id)
         
+        # 新しいロックデータを準備
+        lock_data = {
+            'pid': self.current_pid,
+            'task_id': task_id,
+            'started_at': datetime.now().isoformat(),
+            'task_info': task_info or {}
+        }
+        
         try:
-            # ロックファイルが存在する場合
-            if lock_file.exists():
-                with open(lock_file, 'r') as f:
-                    try:
-                        lock_data = json.load(f)
-                        locked_pid = lock_data.get('pid')
-                        
-                        # PIDが生きているかチェック
-                        if locked_pid and self._is_process_alive(locked_pid):
-                            logger.warning(
-                                f"Task '{task_id}' is already running "
-                                f"(PID: {locked_pid}, started: {lock_data.get('started_at')})"
-                            )
-                            return False
-                        else:
-                            # 古いロックファイルをクリーンアップ
-                            logger.info(f"Cleaning up stale lock for task '{task_id}' (PID: {locked_pid})")
-                            lock_file.unlink()
-                    except json.JSONDecodeError:
-                        # 破損したロックファイルを削除
-                        logger.warning(f"Corrupted lock file for task '{task_id}', removing...")
-                        lock_file.unlink()
-            
-            # 新しいロックファイルを作成
-            lock_data = {
-                'pid': self.current_pid,
-                'task_id': task_id,
-                'started_at': datetime.now().isoformat(),
-                'task_info': task_info or {}
-            }
-            
-            # アトミックな書き込みを保証
-            with open(lock_file, 'w') as f:
-                fcntl.flock(f.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+            # アトミックな排他制御でファイル作成を試みる
+            with open(lock_file, 'x') as f:  # 'x'モードで排他的作成
+                fcntl.flock(f.fileno(), fcntl.LOCK_EX)
                 json.dump(lock_data, f, indent=2)
                 fcntl.flock(f.fileno(), fcntl.LOCK_UN)
                 
             logger.info(f"Successfully acquired lock for task '{task_id}' (PID: {self.current_pid})")
             return True
             
-        except IOError as e:
+        except FileExistsError:
+            # ファイルが既に存在する場合、既存ロックをチェック
+            try:
+                with open(lock_file, 'r') as f:
+                    fcntl.flock(f.fileno(), fcntl.LOCK_EX)
+                    try:
+                        existing_lock_data = json.load(f)
+                        locked_pid = existing_lock_data.get('pid')
+                        
+                        # PIDが生きているかチェック
+                        if locked_pid and self._is_process_alive(locked_pid):
+                            logger.warning(
+                                f"Task '{task_id}' is already running "
+                                f"(PID: {locked_pid}, started: {existing_lock_data.get('started_at')})"
+                            )
+                            fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                            return False
+                        else:
+                            # 古いロックをクリーンアップして再試行
+                            logger.info(f"Cleaning up stale lock for task '{task_id}' (PID: {locked_pid})")
+                            fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                            
+                    except json.JSONDecodeError:
+                        # 破損したファイルをクリーンアップ
+                        logger.warning(f"Corrupted lock file for task '{task_id}', removing...")
+                        fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+                        
+                # 古いファイルを削除して再作成を試みる
+                try:
+                    lock_file.unlink()
+                    # 再帰的に呼び出して再試行
+                    return self.acquire_lock(task_id, task_info)
+                except FileNotFoundError:
+                    # 既に削除されている場合は再試行
+                    return self.acquire_lock(task_id, task_info)
+                    
+            except (IOError, OSError) as e:
+                logger.error(f"Failed to check existing lock for task '{task_id}': {e}")
+                return False
+                
+        except (IOError, OSError) as e:
             logger.error(f"Failed to acquire lock for task '{task_id}': {e}")
             return False
             
