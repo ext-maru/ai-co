@@ -2,6 +2,7 @@
 Elder Flowリアルタイム監視システム
 24時間365日、あらゆる違反を即座に検知し、自動修正を試みる
 """
+
 import os
 import re
 import json
@@ -19,11 +20,14 @@ from watchdog.events import FileSystemEventHandler
 
 # 元の違反タイプ定義を使用
 from libs.elder_flow_violation_types_original import (
-    ViolationType, ViolationSeverity, ViolationCategory, ELDER_FLOW_VIOLATION_RULES
+    ViolationType,
+    ViolationSeverity,
+    ViolationCategory,
+    ELDER_FLOW_VIOLATION_RULES,
 )
 from libs.elder_flow_violation_detector import (
     ElderFlowViolationDetector as OriginalDetector,
-    ViolationDetectionContext
+    ViolationDetectionContext,
 )
 from libs.elder_flow_violation_db import ElderFlowViolationDB
 
@@ -33,6 +37,7 @@ logger = logging.getLogger(__name__)
 
 class MonitoringEventType(Enum):
     """監視イベントの種類"""
+
     GIT_HOOK = "git_hook"
     FILE_CHANGE = "file_change"
     COMMAND_EXECUTION = "command_execution"
@@ -43,6 +48,7 @@ class MonitoringEventType(Enum):
 @dataclass
 class MonitoringEvent:
     """監視イベント"""
+
     event_type: MonitoringEventType
     timestamp: datetime = field(default_factory=datetime.now)
     details: Dict[str, Any] = field(default_factory=dict)
@@ -52,6 +58,7 @@ class MonitoringEvent:
 @dataclass
 class CommandInterceptionResult:
     """コマンドインターセプト結果"""
+
     intercepted: bool
     violation_type: Optional[ViolationType] = None
     suggestion: Optional[str] = None
@@ -61,6 +68,7 @@ class CommandInterceptionResult:
 @dataclass
 class AutoFixResult:
     """自動修正結果"""
+
     attempted: bool
     success: bool
     fix_applied: Optional[str] = None
@@ -180,23 +188,22 @@ echo "✅ プッシュ前チェック完了"
                 ["git", "diff", "--cached", "--name-only"],
                 cwd=repo_path,
                 capture_output=True,
-                text=True
+                text=True,
             )
-            staged_files = result.stdout.strip().split('\n') if result.stdout else []
+            staged_files = result.stdout.strip().split("\n") if result.stdout else []
 
             violations_found = False
 
             for file_path in staged_files:
-                if file_path.endswith('.py'):
+                if file_path.endswith(".py"):
                     # ファイル内容をチェック
                     full_path = os.path.join(repo_path, file_path)
                     if os.path.exists(full_path):
-                        with open(full_path, 'r') as f:
+                        with open(full_path, "r") as f:
                             content = f.read()
 
                         context = ViolationDetectionContext(
-                            file_path=file_path,
-                            content=content
+                            file_path=file_path, content=content
                         )
 
                         result = self.detector.detect_violations(context)
@@ -219,14 +226,13 @@ echo "✅ プッシュ前チェック完了"
                 ["git", "log", "-1", "--pretty=%B"],
                 cwd=repo_path,
                 capture_output=True,
-                text=True
+                text=True,
             )
             commit_message = result.stdout.strip()
 
             # GitHub Flow違反チェック
             context = ViolationDetectionContext(
-                command=f"git commit -m '{commit_message}'",
-                content=commit_message
+                command=f"git commit -m '{commit_message}'", content=commit_message
             )
 
             result = self.detector.detect_violations(context)
@@ -252,15 +258,17 @@ echo "✅ プッシュ前チェック完了"
 
         return True
 
-    def log_hook_event(self, hook_type: str, repo_path: str, violations_found: bool) -> MonitoringEvent:
+    def log_hook_event(
+        self, hook_type: str, repo_path: str, violations_found: bool
+    ) -> MonitoringEvent:
         """フックイベントをログ"""
         return MonitoringEvent(
             event_type=MonitoringEventType.GIT_HOOK,
             details={
-                'hook_type': hook_type,
-                'repo_path': repo_path,
-                'violations_found': violations_found
-            }
+                "hook_type": hook_type,
+                "repo_path": repo_path,
+                "violations_found": violations_found,
+            },
         )
 
 
@@ -316,14 +324,13 @@ class FileWatchGuardian(FileSystemEventHandler):
         """ファイルの違反をチェック"""
         violations = []
 
-        if file_path.endswith('.py'):
+        if file_path.endswith(".py"):
             try:
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     content = f.read()
 
                 context = ViolationDetectionContext(
-                    file_path=file_path,
-                    content=content
+                    file_path=file_path, content=content
                 )
 
                 result = self.detector.detect_violations(context)
@@ -359,8 +366,8 @@ class CommandInterceptor:
         self.db = ElderFlowViolationDB()
         self.command_patterns = {
             ViolationType.DOCKER_PERMISSION_VIOLATION: [
-                (r'^docker\s+', 'sg docker -c "{}"'),
-                (r'^sudo\s+docker\s+', 'sg docker -c "{}"')
+                (r"^docker\s+", 'sg docker -c "{}"'),
+                (r"^sudo\s+docker\s+", 'sg docker -c "{}"'),
             ]
         }
 
@@ -374,13 +381,15 @@ class CommandInterceptor:
 
             # 修正提案を取得
             suggestion = self.detector.get_auto_fix_suggestion(violation)
-            corrected = self.get_corrected_command(command) if violation.auto_fixable else None
+            corrected = (
+                self.get_corrected_command(command) if violation.auto_fixable else None
+            )
 
             return CommandInterceptionResult(
                 intercepted=True,
                 violation_type=violation.violation_type,
                 suggestion=suggestion,
-                corrected_command=corrected
+                corrected_command=corrected,
             )
 
         return CommandInterceptionResult(intercepted=False)
@@ -391,29 +400,25 @@ class CommandInterceptor:
             for pattern, replacement in patterns:
                 if re.match(pattern, command):
                     # コマンドから元のdockerコマンドを抽出
-                    docker_cmd = re.sub(pattern, '', command)
+                    docker_cmd = re.sub(pattern, "", command)
                     return replacement.format(docker_cmd.strip())
         return None
 
     def check_four_sages_consultation(self, command: str) -> Any:
         """4賢者相談が必要かチェック"""
-        patterns = [
-            r"新機能.*実装",
-            r"implement.*feature",
-            r"add.*functionality"
-        ]
+        patterns = [r"新機能.*実装", r"implement.*feature", r"add.*functionality"]
 
         for pattern in patterns:
             if re.search(pattern, command, re.IGNORECASE):
-                return type('obj', (object,), {
-                    'needs_consultation': True,
-                    'sage_type': 'incident'
-                })()
+                return type(
+                    "obj",
+                    (object,),
+                    {"needs_consultation": True, "sage_type": "incident"},
+                )()
 
-        return type('obj', (object,), {
-            'needs_consultation': False,
-            'sage_type': None
-        })()
+        return type(
+            "obj", (object,), {"needs_consultation": False, "sage_type": None}
+        )()
 
     def execute_with_monitoring(self, command: str) -> Any:
         """監視付きでコマンドを実行"""
@@ -429,25 +434,21 @@ class CommandInterceptor:
 
         # コマンドを実行
         try:
-            result = subprocess.run(
-                command,
-                shell=True,
-                capture_output=True,
-                text=True
-            )
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
 
-            return type('obj', (object,), {
-                'success': result.returncode == 0,
-                'stdout': result.stdout,
-                'stderr': result.stderr
-            })()
+            return type(
+                "obj",
+                (object,),
+                {
+                    "success": result.returncode == 0,
+                    "stdout": result.stdout,
+                    "stderr": result.stderr,
+                },
+            )()
 
         except Exception as e:
             logger.error(f"コマンド実行エラー: {e}")
-            return type('obj', (object,), {
-                'success': False,
-                'error': str(e)
-            })()
+            return type("obj", (object,), {"success": False, "error": str(e)})()
 
 
 class RealtimeMonitoringSystem:
@@ -469,10 +470,17 @@ class RealtimeMonitoringSystem:
             self.git_monitor.install_hooks(repo_path)
 
             # ファイル監視を開始
-            self.file_guardian.set_ignore_patterns([
-                '.git', '__pycache__', '*.pyc', '.pytest_cache',
-                'node_modules', 'venv', '.env'
-            ])
+            self.file_guardian.set_ignore_patterns(
+                [
+                    ".git",
+                    "__pycache__",
+                    "*.pyc",
+                    ".pytest_cache",
+                    "node_modules",
+                    "venv",
+                    ".env",
+                ]
+            )
             self.file_guardian.start_watching(repo_path)
 
             # 定期チェックを開始
@@ -503,19 +511,19 @@ class RealtimeMonitoringSystem:
     def get_monitoring_stats(self) -> Dict[str, Any]:
         """監視統計を取得"""
         stats = {
-            'total_events': len(self.events),
-            'by_type': {},
-            'recent_violations': []
+            "total_events": len(self.events),
+            "by_type": {},
+            "recent_violations": [],
         }
 
         # イベントタイプ別集計
         for event in self.events:
             event_type = event.event_type.value
-            stats['by_type'][event_type] = stats['by_type'].get(event_type, 0) + 1
+            stats["by_type"][event_type] = stats["by_type"].get(event_type, 0) + 1
 
         # 最近の違反
         recent_violations = self.db.get_recent_violations(10)
-        stats['recent_violations'] = recent_violations
+        stats["recent_violations"] = recent_violations
 
         return stats
 
@@ -530,23 +538,18 @@ class RealtimeMonitoringSystem:
                 # ここに実際の自動修正ロジックを実装
                 logger.info(f"自動修正を適用: {suggestion}")
                 return AutoFixResult(
-                    attempted=True,
-                    success=True,
-                    fix_applied=suggestion
+                    attempted=True, success=True, fix_applied=suggestion
                 )
 
         except Exception as e:
             logger.error(f"自動修正エラー: {e}")
-            return AutoFixResult(
-                attempted=True,
-                success=False,
-                error_message=str(e)
-            )
+            return AutoFixResult(attempted=True, success=False, error_message=str(e))
 
         return AutoFixResult(attempted=True, success=False)
 
     def schedule_periodic_checks(self, interval: int = 300) -> None:
         """定期チェックをスケジュール（デフォルト5分）"""
+
         def run_check():
             self._run_periodic_check()
             # 次回のチェックをスケジュール
@@ -567,16 +570,16 @@ class RealtimeMonitoringSystem:
         event = MonitoringEvent(
             event_type=MonitoringEventType.PERIODIC_CHECK,
             details={
-                'active_violations_count': len(active_violations),
-                'timestamp': datetime.now().isoformat()
-            }
+                "active_violations_count": len(active_violations),
+                "timestamp": datetime.now().isoformat(),
+            },
         )
 
         self.add_event(event)
 
         # 自動修正可能な違反を処理
         for violation_data in active_violations:
-            if violation_data.get('auto_fixable'):
+            if violation_data.get("auto_fixable"):
                 # 違反オブジェクトを再構築して自動修正を試みる
                 logger.info(f"自動修正を試みます: {violation_data['violation_type']}")
 
@@ -599,16 +602,18 @@ class RealtimeMonitoringSystem:
 ### イベントタイプ別
 """
 
-        for event_type, count in stats['by_type'].items():
+        for event_type, count in stats["by_type"].items():
             report += f"- {event_type}: {count}件\n"
 
         report += "\n### 最近の違反\n"
-        for violation in stats['recent_violations'][:5]:
+        for violation in stats["recent_violations"][:5]:
             report += f"- {violation['violation_type']} ({violation['severity']}) - {violation['detected_at']}\n"
 
         report += "\n## イベント履歴（最新10件）\n"
         for event in self.events[-10:]:
-            report += f"- [{event.timestamp.strftime('%H:%M:%S')}] {event.event_type.value}"
+            report += (
+                f"- [{event.timestamp.strftime('%H:%M:%S')}] {event.event_type.value}"
+            )
             if event.violations_found:
                 report += f" - {len(event.violations_found)}件の違反"
             report += "\n"

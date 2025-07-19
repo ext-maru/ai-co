@@ -584,9 +584,11 @@ class ResourceIsolationManager:
                     alert_id=uuid.uuid4().hex[:8],
                     context_id=context_id,
                     resource_type=ResourceType.CPU,
-                    alert_level="critical"
-                    if usage.cpu_percent > quota.cpu_percent * 1.5
-                    else "warning",
+                    alert_level=(
+                        "critical"
+                        if usage.cpu_percent > quota.cpu_percent * 1.5
+                        else "warning"
+                    ),
                     threshold_exceeded=usage.cpu_percent / quota.cpu_percent,
                     current_usage=usage.cpu_percent,
                     message=f"CPU usage exceeded: {usage.cpu_percent:.1%} > {quota.cpu_percent:.1%}",
@@ -601,9 +603,11 @@ class ResourceIsolationManager:
                     alert_id=uuid.uuid4().hex[:8],
                     context_id=context_id,
                     resource_type=ResourceType.MEMORY,
-                    alert_level="critical"
-                    if usage.memory_mb > quota.memory_mb * 1.2
-                    else "warning",
+                    alert_level=(
+                        "critical"
+                        if usage.memory_mb > quota.memory_mb * 1.2
+                        else "warning"
+                    ),
                     threshold_exceeded=usage.memory_mb / quota.memory_mb,
                     current_usage=usage.memory_mb,
                     message=f"Memory usage exceeded: {usage.memory_mb:.0f}MB > {quota.memory_mb}MB",

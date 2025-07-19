@@ -664,9 +664,7 @@ class DocumentationGenerator:
         # プロジェクト基本情報
         overview += f"**プロジェクトタイプ**: {metadata.project_type.value}\n"
         overview += f"**ステータス**: {metadata.status.value}\n"
-        overview += (
-            f"**技術スタック**: {', '.join([tech.value for tech in metadata.tech_stack])}\n\n"
-        )
+        overview += f"**技術スタック**: {', '.join([tech.value for tech in metadata.tech_stack])}\n\n"
 
         # 説明
         if metadata.description:
@@ -689,7 +687,9 @@ class DocumentationGenerator:
             overview += f"- **コミット数**: {gm.total_commits}\n"
             overview += f"- **貢献者数**: {len(gm.contributors)}\n"
             overview += f"- **最終更新**: {gm.last_commit.strftime('%Y-%m-%d')}\n"
-            overview += f"- **開発期間**: {(gm.last_commit - gm.creation_date).days}日\n\n"
+            overview += (
+                f"- **開発期間**: {(gm.last_commit - gm.creation_date).days}日\n\n"
+            )
 
         return overview
 

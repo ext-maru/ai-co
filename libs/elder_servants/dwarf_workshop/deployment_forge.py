@@ -882,9 +882,11 @@ class DeploymentForge(DwarfServant):
             "namespace": namespace,
             "service_type": service_type,
             "service_url": f"http://{config.get('service_name')}.{namespace}.svc.cluster.local",
-            "ingress_url": f"https://{config.get('service_name')}.example.com"
-            if platform_specific.get("ingress_enabled")
-            else None,
+            "ingress_url": (
+                f"https://{config.get('service_name')}.example.com"
+                if platform_specific.get("ingress_enabled")
+                else None
+            ),
             "pods_created": config.get("replicas", 1),
             "deployment_id": deployment_id,
         }

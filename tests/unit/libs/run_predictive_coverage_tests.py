@@ -963,7 +963,9 @@ async def main():
 
     # 結果サマリー
     print("\n" + "=" * 70)
-    print(f"📊 予測インシデント管理システム カバレッジテスト結果: {total_passed}/{total_tests} 成功")
+    print(
+        f"📊 予測インシデント管理システム カバレッジテスト結果: {total_passed}/{total_tests} 成功"
+    )
     success_rate = (total_passed / total_tests * 100) if total_tests > 0 else 0
 
     if total_passed == total_tests:

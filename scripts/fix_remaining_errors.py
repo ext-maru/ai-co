@@ -20,9 +20,12 @@ class RemainingErrorFixer:
                 content = f.read()
 
             # Fix the Flask imports
-            content = content.replace("request = Flask.request, jsonify", "from flask import request, jsonify")
             content = content.replace(
-                "render_template_string = Flask.render_template_string", "from flask import render_template_string"
+                "request = Flask.request, jsonify", "from flask import request, jsonify"
+            )
+            content = content.replace(
+                "render_template_string = Flask.render_template_string",
+                "from flask import render_template_string",
             )
 
             with open(auth_manager, "w") as f:
@@ -32,13 +35,22 @@ class RemainingErrorFixer:
 
     def fix_dialog_task_worker_error(self):
         """Fix DialogTaskWorker NameError"""
-        test_file = self.project_root / "tests" / "unit" / "test_workers" / "test_dialog_task_worker.py"
+        test_file = (
+            self.project_root
+            / "tests"
+            / "unit"
+            / "test_workers"
+            / "test_dialog_task_worker.py"
+        )
         if test_file.exists():
             with open(test_file, "r") as f:
                 content = f.read()
 
             # Add the missing class definition
-            if "class DialogTaskWorker:" not in content and "NameError: name 'D" in content:
+            if (
+                "class DialogTaskWorker:" not in content
+                and "NameError: name 'D" in content
+            ):
                 # Add mock at the beginning
                 mock_definition = """
 # Mock DialogTaskWorker if not available
@@ -68,7 +80,9 @@ except ImportError:
 
     def fix_aio_pika_attribute_error(self):
         """Fix aio_pika attribute error"""
-        test_file = self.project_root / "tests" / "unit" / "test_workers_comprehensive.py"
+        test_file = (
+            self.project_root / "tests" / "unit" / "test_workers_comprehensive.py"
+        )
         if test_file.exists():
             with open(test_file, "r") as f:
                 content = f.read()
@@ -100,13 +114,22 @@ except ImportError:
                 original = content
 
                 # Fix patterns like: with patch(...): \n patch(...)
-                content = re.sub(r"with\s+patch\([^)]+\)\s*:\s*\n\s+patch", r"with patch\g<0>, \\\n     patch", content)
+                content = re.sub(
+                    r"with\s+patch\([^)]+\)\s*:\s*\n\s+patch",
+                    r"with patch\g<0>, \\\n     patch",
+                    content,
+                )
 
                 # Fix patterns where patches are separated by commas but need backslashes
                 # This is more complex, handled by the first pattern
 
                 # Remove "pass" after with statements that shouldn't have it
-                content = re.sub(r"(with\s+.*?:)\s*\n\s*pass\s*\n(\s+\w)", r"\1\n\2", content, flags=re.DOTALL)
+                content = re.sub(
+                    r"(with\s+.*?:)\s*\n\s*pass\s*\n(\s+\w)",
+                    r"\1\n\2",
+                    content,
+                    flags=re.DOTALL,
+                )
 
                 if content != original:
                     with open(full_path, "w") as f:

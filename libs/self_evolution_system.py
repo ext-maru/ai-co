@@ -378,7 +378,12 @@ class EvolutionPlanner:
             phase=EvolutionPhase.PLANNING,
             description="最新のAI技術トレンドを統合し、Elders Guildの知能レベルを向上させる",
             background=f"発見された{len(trends)}件のAI関連トレンドが示す技術進歩への対応",
-            objectives=["AI応答精度の20%向上", "新しい自動化タスクの追加", "学習効率の改善", "ユーザー体験の向上"],
+            objectives=[
+                "AI応答精度の20%向上",
+                "新しい自動化タスクの追加",
+                "学習効率の改善",
+                "ユーザー体験の向上",
+            ],
             technical_approach="段階的な機能統合とA/Bテストによる効果検証",
             business_value=0.9,
             technical_complexity=0.7,
@@ -406,7 +411,12 @@ class EvolutionPlanner:
                 "testing": "1 week",
                 "deployment": "1 week",
             },
-            success_criteria=["応答精度20%向上", "新機能100%動作", "既存機能の品質維持", "ユーザー満足度向上"],
+            success_criteria=[
+                "応答精度20%向上",
+                "新機能100%動作",
+                "既存機能の品質維持",
+                "ユーザー満足度向上",
+            ],
             created_at=datetime.now(),
             related_trends=[t.trend_id for t in trends],
             four_sages_analysis=four_sages_analysis,
@@ -480,7 +490,9 @@ class ElderCouncilReviewer:
                 proposal.phase = EvolutionPhase.GRAND_ELDER_REVIEW
                 logger.info(f"✅ 評議会承認: {proposal.title}")
             else:
-                logger.info(f"❌ 評議会否決: {proposal.title} - {review_result['reason']}")
+                logger.info(
+                    f"❌ 評議会否決: {proposal.title} - {review_result['reason']}"
+                )
 
             reviewed_proposals.append(proposal)
 
@@ -791,12 +803,12 @@ class ImplementationEngine:
         return {
             "implemented_count": len(implementation_results),
             "results": implementation_results,
-            "overall_success_rate": sum(
-                1 for r in implementation_results if r["success"]
-            )
-            / len(implementation_results)
-            if implementation_results
-            else 0,
+            "overall_success_rate": (
+                sum(1 for r in implementation_results if r["success"])
+                / len(implementation_results)
+                if implementation_results
+                else 0
+            ),
         }
 
     async def _implement_single_proposal(
@@ -1309,12 +1321,16 @@ class SelfEvolutionSystem:
 
         if proposals_summary["high_priority"]:
             formatted += (
-                "🎯 **高優先度**: " + ", ".join(proposals_summary["high_priority"]) + "\n"
+                "🎯 **高優先度**: "
+                + ", ".join(proposals_summary["high_priority"])
+                + "\n"
             )
 
         if proposals_summary["quick_wins"]:
             formatted += (
-                "⚡ **クイックウィン**: " + ", ".join(proposals_summary["quick_wins"]) + "\n"
+                "⚡ **クイックウィン**: "
+                + ", ".join(proposals_summary["quick_wins"])
+                + "\n"
             )
 
         if proposals_summary["resource_intensive"]:
@@ -1333,9 +1349,9 @@ class SelfEvolutionSystem:
             "pending_consultations": len(self.pending_consultations),
             "evolution_history_count": len(self.evolution_history),
             "statistics": self.stats.copy(),
-            "last_cycle_date": self.evolution_history[-1]["date"]
-            if self.evolution_history
-            else None,
+            "last_cycle_date": (
+                self.evolution_history[-1]["date"] if self.evolution_history else None
+            ),
             "components_status": {
                 "trend_collector": "active",
                 "evolution_planner": "active",

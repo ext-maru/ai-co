@@ -38,7 +38,9 @@ class WorkerIssue:
     """ワーカー問題データクラス"""
 
     worker_name: str
-    issue_type: str  # "not_running", "config_error", "dependency_missing", "error_rate_high"
+    issue_type: (
+        str  # "not_running", "config_error", "dependency_missing", "error_rate_high"
+    )
     error_details: str
     affected_files: List[str]
     recovery_priority: str  # "critical", "high", "medium", "low"
@@ -164,9 +166,11 @@ class WorkerStabilizationKnight(IncidentKnight):
                         Issue(
                             id=f"worker_process_{worker['name']}",
                             category=IssueCategory.RESOURCE_EXHAUSTION,
-                            severity=IssueSeverity.CRITICAL
-                            if worker["priority"] == "critical"
-                            else IssueSeverity.HIGH,
+                            severity=(
+                                IssueSeverity.CRITICAL
+                                if worker["priority"] == "critical"
+                                else IssueSeverity.HIGH
+                            ),
                             title=f"ワーカー停止: {worker['name']}",
                             description=f"{worker['name']} プロセスが実行されていません",
                             affected_component=worker["file"],

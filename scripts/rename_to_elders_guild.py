@@ -9,7 +9,9 @@ from typing import List
 from typing import Tuple
 
 
-def find_files_with_pattern(root_dir: Path, pattern: str, extensions: List[str]) -> List[Tuple[Path, List[int]]]:
+def find_files_with_pattern(
+    root_dir: Path, pattern: str, extensions: List[str]
+) -> List[Tuple[Path, List[int]]]:
     """パターンを含むファイルを検索"""
     results = []
 
@@ -96,7 +98,9 @@ def main():
         print(f"  ... 他 {len(files) - 10} ファイル")
 
     # 実行確認
-    response = input("\n🤔 これらのファイルで 'Elders Guild' を 'Elders Guild' に置換しますか? (y/N): ")
+    response = input(
+        "\n🤔 これらのファイルで 'Elders Guild' を 'Elders Guild' に置換しますか? (y/N): "
+    )
 
     if response.lower() != "y":
         print("❌ キャンセルしました")

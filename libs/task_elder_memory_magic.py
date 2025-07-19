@@ -256,10 +256,18 @@ if __name__ == "__main__":
     session_id = save_current_session(
         project_name="プロジェクトA2A",
         todos=[
-            {"id": "memory-magic-impl-4", "content": "記憶魔法実装", "status": "in_progress"},
+            {
+                "id": "memory-magic-impl-4",
+                "content": "記憶魔法実装",
+                "status": "in_progress",
+            },
             {"id": "project-a2a-1", "content": "A2A計画立案", "status": "pending"},
         ],
-        key_decisions=["タスクエルダーが記憶魔法を担当", "2日間（48時間）の保持期間", "ミニマム保持レベルを採用"],
+        key_decisions=[
+            "タスクエルダーが記憶魔法を担当",
+            "2日間（48時間）の保持期間",
+            "ミニマム保持レベルを採用",
+        ],
         context="グランドエルダーmaruとプロジェクトA2Aについて議論中",
         messages=["記憶魔法を先に実装することに決定", "保持期間を2日間に設定"],
     )

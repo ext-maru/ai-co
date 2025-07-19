@@ -19,7 +19,12 @@ def run_command(command, cwd=None):
     """コマンド実行"""
     try:
         result = subprocess.run(
-            command, shell=True, cwd=cwd or PROJECT_ROOT, capture_output=True, text=True, timeout=30
+            command,
+            shell=True,
+            cwd=cwd or PROJECT_ROOT,
+            capture_output=True,
+            text=True,
+            timeout=30,
         )
         return result.returncode == 0, result.stdout, result.stderr
     except subprocess.TimeoutExpired:

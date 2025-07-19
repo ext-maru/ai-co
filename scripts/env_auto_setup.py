@@ -107,15 +107,40 @@ class EnvAutoSetup:
 
         # カテゴリごとに環境変数を追加
         categories = {
-            "基本設定": ["WORKER_DEV_MODE", "INCIDENT_KNIGHTS_ENABLED", "AUTO_FIX_ENABLED", "SLACK_NOTIFICATIONS"],
-            "RabbitMQ設定": ["RABBITMQ_HOST", "RABBITMQ_PORT", "RABBITMQ_USER", "RABBITMQ_PASS", "RABBITMQ_VHOST"],
+            "基本設定": [
+                "WORKER_DEV_MODE",
+                "INCIDENT_KNIGHTS_ENABLED",
+                "AUTO_FIX_ENABLED",
+                "SLACK_NOTIFICATIONS",
+            ],
+            "RabbitMQ設定": [
+                "RABBITMQ_HOST",
+                "RABBITMQ_PORT",
+                "RABBITMQ_USER",
+                "RABBITMQ_PASS",
+                "RABBITMQ_VHOST",
+            ],
             "Redis設定": ["REDIS_HOST", "REDIS_PORT", "REDIS_DB"],
             "ログ設定": ["LOG_LEVEL", "LOG_FORMAT", "LOG_DIR"],
-            "エルダーズギルド設定": ["ELDERS_GUILD_MODE", "FOUR_SAGES_ENABLED", "KNIGHTS_AUTO_DEPLOY"],
-            "API設定": ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "SLACK_WEBHOOK_URL", "GITHUB_TOKEN"],
+            "エルダーズギルド設定": [
+                "ELDERS_GUILD_MODE",
+                "FOUR_SAGES_ENABLED",
+                "KNIGHTS_AUTO_DEPLOY",
+            ],
+            "API設定": [
+                "ANTHROPIC_API_KEY",
+                "OPENAI_API_KEY",
+                "SLACK_WEBHOOK_URL",
+                "GITHUB_TOKEN",
+            ],
             "データベース設定": ["DATABASE_URL", "TASK_DB_PATH"],
             "セキュリティ設定": ["SECRET_KEY", "JWT_SECRET", "ENCRYPTION_KEY"],
-            "パフォーマンス設定": ["MAX_WORKERS", "WORKER_TIMEOUT", "BATCH_SIZE", "CACHE_TTL"],
+            "パフォーマンス設定": [
+                "MAX_WORKERS",
+                "WORKER_TIMEOUT",
+                "BATCH_SIZE",
+                "CACHE_TTL",
+            ],
             "開発設定": ["DEBUG", "TESTING", "PROFILE", "COVERAGE"],
         }
 
@@ -154,7 +179,9 @@ class EnvAutoSetup:
         # 不足している変数を追加
         if missing_vars:
             # 追加内容を作成
-            additions = "\n\n# 自動追加された環境変数 ({})\n".format(os.popen("date").read().strip())
+            additions = "\n\n# 自動追加された環境変数 ({})\n".format(
+                os.popen("date").read().strip()
+            )
 
             for var, value in missing_vars:
                 additions += f"{var}={value}\n"

@@ -404,9 +404,9 @@ def another_function() -> None:
             "baseline_total_ms": baseline_total,
             "integrated_total_ms": combined_total,
             "improvement_percentage": performance_improvement,
-            "speed_multiplier": baseline_total / combined_total
-            if combined_total > 0
-            else 0,
+            "speed_multiplier": (
+                baseline_total / combined_total if combined_total > 0 else 0
+            ),
         }
 
         # Quality improvements
@@ -454,10 +454,12 @@ def another_function() -> None:
 
         # Summary
         analysis["summary"] = {
-            "overall_verdict": "✅ POSITIVE"
-            if performance_improvement > 0
-            and quality["overall"]["iron_will_compliance_rate"] >= 80
-            else "⚠️ MIXED",
+            "overall_verdict": (
+                "✅ POSITIVE"
+                if performance_improvement > 0
+                and quality["overall"]["iron_will_compliance_rate"] >= 80
+                else "⚠️ MIXED"
+            ),
             "key_benefits": [
                 "IDE integration improves developer experience",
                 "Iron Will quality standards maintained",

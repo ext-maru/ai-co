@@ -208,12 +208,14 @@ class APIKeyManager:
                     "last_used": key.last_used.isoformat() if key.last_used else None,
                     "requests_count": key.requests_count,
                     "error_count": key.error_count,
-                    "rate_limit_reset": key.rate_limit_reset.isoformat()
-                    if key.rate_limit_reset
-                    else None,
-                    "cooldown_until": key.cooldown_until.isoformat()
-                    if key.cooldown_until
-                    else None,
+                    "rate_limit_reset": (
+                        key.rate_limit_reset.isoformat()
+                        if key.rate_limit_reset
+                        else None
+                    ),
+                    "cooldown_until": (
+                        key.cooldown_until.isoformat() if key.cooldown_until else None
+                    ),
                 }
                 for key in self.api_keys
             ],

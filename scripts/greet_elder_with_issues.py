@@ -166,7 +166,9 @@ class ElderGreetingWithIssues:
     def generate_greeting_with_issues(self, greeting_message: str = None) -> str:
         """課題収集付き挨拶文書を生成"""
         if not greeting_message:
-            greeting_message = "こんにちは、エルダー評議会の皆様。システムの現状を報告いたします。"
+            greeting_message = (
+                "こんにちは、エルダー評議会の皆様。システムの現状を報告いたします。"
+            )
 
         # 課題を収集
         issues = self.collect_current_issues()

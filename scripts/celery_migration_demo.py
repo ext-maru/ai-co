@@ -86,7 +86,9 @@ async def demo_celery_optimizer():
     except Exception as e:
         print(f"❌ エラー: {e}")
         print("  注: Celeryワーカーが起動していない可能性があります")
-        print("  起動コマンド: celery -A libs.celery_migration_poc worker --loglevel=info")
+        print(
+            "  起動コマンド: celery -A libs.celery_migration_poc worker --loglevel=info"
+        )
 
 
 async def demo_hybrid_optimizer():

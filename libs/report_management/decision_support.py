@@ -462,9 +462,9 @@ class DecisionSupportSystem:
             "type": action_type.value,
             "title": template["title"],
             "description": template["description"],
-            "priority": "high"
-            if situation["urgency"] in ["critical", "high"]
-            else "medium",
+            "priority": (
+                "high" if situation["urgency"] in ["critical", "high"] else "medium"
+            ),
             "prerequisites": template["prerequisites"],
             "estimated_effort": template["estimated_effort"],
             "rationale": self._generate_action_rationale(

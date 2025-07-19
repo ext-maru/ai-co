@@ -125,9 +125,9 @@ class GitHubPullRequestMerger:
             return {
                 "mergeable": response.get("mergeable", False)
                 and response.get("state") == "open",
-                "reason": "PR is not mergeable"
-                if not response.get("mergeable")
-                else None,
+                "reason": (
+                    "PR is not mergeable" if not response.get("mergeable") else None
+                ),
             }
 
         except Exception as e:

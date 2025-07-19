@@ -66,7 +66,9 @@ class AnalyticsScheduler:
             # アクションアイテムがある場合はログに記録
             action_items = report.get("action_items", [])
             if action_items:
-                logger.warning(f"⚠️ {len(action_items)}個のアクションアイテムが検出されました")
+                logger.warning(
+                    f"⚠️ {len(action_items)}個のアクションアイテムが検出されました"
+                )
                 for item in action_items:
                     logger.warning(f"  • {item}")
 
@@ -75,7 +77,9 @@ class AnalyticsScheduler:
                 if result["type"] == "system_health":
                     health_score = result["metrics"].get("current_health_score", 100)
                     if health_score < 80:
-                        logger.warning(f"🚨 システムヘルススコアが低下: {health_score}点")
+                        logger.warning(
+                            f"🚨 システムヘルススコアが低下: {health_score}点"
+                        )
 
         except Exception as e:
             logger.error(f"洞察チェックエラー: {e}")

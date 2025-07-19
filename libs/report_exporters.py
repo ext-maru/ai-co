@@ -223,9 +223,9 @@ class ExcelExporter:
         # タイトル
         ws["A1"] = data.get("title", "Report")
         ws["A1"].font = Font(size=16, bold=True)
-        ws[
-            "A2"
-        ] = f"生成日時: {data.get('generated_at', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}"
+        ws["A2"] = (
+            f"生成日時: {data.get('generated_at', datetime.now().strftime('%Y-%m-%d %H:%M:%S'))}"
+        )
 
         # ヘルススコア
         if "health_score" in data:
@@ -340,7 +340,9 @@ class ExcelExporter:
                 writer.writerow(["タスク完了状況"])
                 writer.writerow(["完了", data["tasks"].get("completed", 0)])
                 writer.writerow(["進行中", data["tasks"].get("in_progress", 0)])
-                writer.writerow(["完了率", f"{data['tasks'].get('completion_rate', 0)}%"])
+                writer.writerow(
+                    ["完了率", f"{data['tasks'].get('completion_rate', 0)}%"]
+                )
 
         logger.warning("OpenPyXL not available. Generated CSV file.")
         return csv_path
@@ -420,14 +422,14 @@ class MarkdownExporter:
                     icon = (
                         "🔴"
                         if severity == "critical"
-                        else "🟡"
-                        if severity == "warning"
-                        else "🟢"
+                        else "🟡" if severity == "warning" else "🟢"
                     )
 
                     lines.append(f"### {icon} {incident.get('title', 'Unknown')}")
                     lines.append(f"- **発生時刻:** {incident.get('time', 'Unknown')}")
-                    lines.append(f"- **ステータス:** {incident.get('status', 'Unknown')}")
+                    lines.append(
+                        f"- **ステータス:** {incident.get('status', 'Unknown')}"
+                    )
                     lines.append("")
             else:
                 lines.append("インシデントはありません。")
@@ -465,11 +467,7 @@ class MarkdownExporter:
             for i, rec in enumerate(data["recommendations"], 1):
                 priority = rec.get("priority", "medium")
                 icon = (
-                    "‼️"
-                    if priority == "high"
-                    else "⚠️"
-                    if priority == "medium"
-                    else "ℹ️"
+                    "‼️" if priority == "high" else "⚠️" if priority == "medium" else "ℹ️"
                 )
 
                 lines.append(f"{i}. {icon} **{rec.get('action', '')}**")

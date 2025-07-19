@@ -183,7 +183,9 @@ class ElderCouncilAutoDecision:
                     decision = self._create_decision(decision_data, context)
                     self.pending_decisions[decision.decision_id] = decision
 
-                    print(f"📋 新規決定事項: {decision.title} (緊急度: {decision.urgency.name})")
+                    print(
+                        f"📋 新規決定事項: {decision.title} (緊急度: {decision.urgency.name})"
+                    )
 
                 time.sleep(30)  # 30秒間隔で新規決定事項をチェック
 
@@ -406,7 +408,9 @@ class ElderCouncilAutoDecision:
 
             confidence_scores.append(vote_confidence)
 
-            print(f"     {member.name}: {vote_decision} (信頼度: {vote_confidence:.2f})")
+            print(
+                f"     {member.name}: {vote_decision} (信頼度: {vote_confidence:.2f})"
+            )
 
         # 投票結果の集計
         decision.voting_results = votes
@@ -539,7 +543,8 @@ class ElderCouncilAutoDecision:
         }
 
         return plan_templates.get(
-            decision.decision_type, ["要件の詳細分析", "実装計画の策定", "段階的な実行", "結果の評価"]
+            decision.decision_type,
+            ["要件の詳細分析", "実装計画の策定", "段階的な実行", "結果の評価"],
         )
 
     def get_council_status(self) -> Dict[str, Any]:

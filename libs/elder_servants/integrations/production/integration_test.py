@@ -225,14 +225,18 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                     ),
                     "timestamp": datetime.now().isoformat(),
                 },
-                "performance_comparison": self.performance_comparison.__dict__
-                if self.performance_comparison
-                else {},
+                "performance_comparison": (
+                    self.performance_comparison.__dict__
+                    if self.performance_comparison
+                    else {}
+                ),
                 "detailed_results": [r.__dict__ for r in self.test_results],
                 "final_assessment": final_assessment,
-                "meets_target": self.performance_comparison.meets_target
-                if self.performance_comparison
-                else False,
+                "meets_target": (
+                    self.performance_comparison.meets_target
+                    if self.performance_comparison
+                    else False
+                ),
                 "iron_will_compliance": await self._check_iron_will_compliance(),
             }
 
@@ -330,12 +334,12 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             success_rate=success_rate,
             throughput_ops_sec=throughput,
             latency_p50_ms=statistics.median(latencies) if latencies else 0,
-            latency_p95_ms=statistics.quantiles(latencies, n=20)[18]
-            if latencies
-            else 0,
-            latency_p99_ms=statistics.quantiles(latencies, n=100)[98]
-            if latencies
-            else 0,
+            latency_p95_ms=(
+                statistics.quantiles(latencies, n=20)[18] if latencies else 0
+            ),
+            latency_p99_ms=(
+                statistics.quantiles(latencies, n=100)[98] if latencies else 0
+            ),
             timestamp=datetime.now(),
             metadata={"sample_size": self.test_config["sample_size"]},
             errors=[f"Baseline errors: {errors}"] if errors > 0 else [],
@@ -413,12 +417,12 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             success_rate=success_rate,
             throughput_ops_sec=throughput,
             latency_p50_ms=statistics.median(latencies) if latencies else 0,
-            latency_p95_ms=statistics.quantiles(latencies, n=20)[18]
-            if latencies
-            else 0,
-            latency_p99_ms=statistics.quantiles(latencies, n=100)[98]
-            if latencies
-            else 0,
+            latency_p95_ms=(
+                statistics.quantiles(latencies, n=20)[18] if latencies else 0
+            ),
+            latency_p99_ms=(
+                statistics.quantiles(latencies, n=100)[98] if latencies else 0
+            ),
             timestamp=datetime.now(),
             metadata={"cache_hit_rate": cache_hit_rate, "cache_strategy": "BALANCED"},
             errors=[f"Cache test errors: {errors}"] if errors > 0 else [],
@@ -484,12 +488,12 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             success_rate=success_rate,
             throughput_ops_sec=throughput,
             latency_p50_ms=statistics.median(latencies) if latencies else 0,
-            latency_p95_ms=statistics.quantiles(latencies, n=20)[18]
-            if latencies
-            else 0,
-            latency_p99_ms=statistics.quantiles(latencies, n=100)[98]
-            if latencies
-            else 0,
+            latency_p95_ms=(
+                statistics.quantiles(latencies, n=20)[18] if latencies else 0
+            ),
+            latency_p99_ms=(
+                statistics.quantiles(latencies, n=100)[98] if latencies else 0
+            ),
             timestamp=datetime.now(),
             metadata={"parallel_tasks": 100, "execution_mode": "PARALLEL"},
             errors=[f"Async test errors: {errors}"] if errors > 0 else [],
@@ -543,12 +547,12 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             success_rate=success_rate,
             throughput_ops_sec=throughput,
             latency_p50_ms=statistics.median(latencies) if latencies else 0,
-            latency_p95_ms=statistics.quantiles(latencies, n=20)[18]
-            if latencies
-            else 0,
-            latency_p99_ms=statistics.quantiles(latencies, n=100)[98]
-            if latencies
-            else 0,
+            latency_p95_ms=(
+                statistics.quantiles(latencies, n=20)[18] if latencies else 0
+            ),
+            latency_p99_ms=(
+                statistics.quantiles(latencies, n=100)[98] if latencies else 0
+            ),
             timestamp=datetime.now(),
             metadata={"proxy_mode": "OPTIMIZED", "overhead_measurement": True},
             errors=[f"Proxy test errors: {errors}"] if errors > 0 else [],
@@ -616,9 +620,9 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             cpu_usage_percent=0,
             success_rate=recovery_rate,
             throughput_ops_sec=recovery_attempts / (execution_time / 1000),
-            latency_p50_ms=execution_time / recovery_attempts
-            if recovery_attempts > 0
-            else 0,
+            latency_p50_ms=(
+                execution_time / recovery_attempts if recovery_attempts > 0 else 0
+            ),
             latency_p95_ms=0,
             latency_p99_ms=0,
             timestamp=datetime.now(),
@@ -771,12 +775,12 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             success_rate=success_rate,
             throughput_ops_sec=throughput,
             latency_p50_ms=statistics.median(latencies) if latencies else 0,
-            latency_p95_ms=statistics.quantiles(latencies, n=20)[18]
-            if latencies
-            else 0,
-            latency_p99_ms=statistics.quantiles(latencies, n=100)[98]
-            if latencies
-            else 0,
+            latency_p95_ms=(
+                statistics.quantiles(latencies, n=20)[18] if latencies else 0
+            ),
+            latency_p99_ms=(
+                statistics.quantiles(latencies, n=100)[98] if latencies else 0
+            ),
             timestamp=datetime.now(),
             metadata={
                 "integrated_components": ["proxy", "cache", "async_optimizer"],
@@ -867,12 +871,12 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             success_rate=success_rate,
             throughput_ops_sec=throughput,
             latency_p50_ms=statistics.median(all_latencies) if all_latencies else 0,
-            latency_p95_ms=statistics.quantiles(all_latencies, n=20)[18]
-            if all_latencies
-            else 0,
-            latency_p99_ms=statistics.quantiles(all_latencies, n=100)[98]
-            if all_latencies
-            else 0,
+            latency_p95_ms=(
+                statistics.quantiles(all_latencies, n=20)[18] if all_latencies else 0
+            ),
+            latency_p99_ms=(
+                statistics.quantiles(all_latencies, n=100)[98] if all_latencies else 0
+            ),
             timestamp=datetime.now(),
             metadata={
                 "concurrent_users": concurrent_users,
@@ -940,19 +944,21 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             "performance_target": {
                 "target": f"{self.test_config['target_improvement']}% improvement",
                 "achieved": f"{self.performance_comparison.improvement_percentage:.1f}% improvement",
-                "status": "PASS"
-                if self.performance_comparison.meets_target
-                else "PARTIAL",
+                "status": (
+                    "PASS" if self.performance_comparison.meets_target else "PARTIAL"
+                ),
             },
             "reliability_assessment": {
                 "average_success_rate": statistics.mean(
                     [r.success_rate for r in self.test_results]
                 ),
                 "target_success_rate": self.test_config["min_success_rate"],
-                "status": "PASS"
-                if statistics.mean([r.success_rate for r in self.test_results])
-                >= self.test_config["min_success_rate"]
-                else "FAIL",
+                "status": (
+                    "PASS"
+                    if statistics.mean([r.success_rate for r in self.test_results])
+                    >= self.test_config["min_success_rate"]
+                    else "FAIL"
+                ),
             },
             "quality_metrics": {
                 "total_tests_executed": len(self.test_results),
@@ -961,9 +967,11 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                 "iron_will_compliance": await self._check_iron_will_compliance(),
             },
             "recommendations": await self._generate_recommendations(),
-            "overall_status": "PASS"
-            if self.performance_comparison.meets_target
-            else "REVIEW_REQUIRED",
+            "overall_status": (
+                "PASS"
+                if self.performance_comparison.meets_target
+                else "REVIEW_REQUIRED"
+            ),
         }
 
         return assessment

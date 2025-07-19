@@ -313,9 +313,9 @@ class MockWebClient:
             "mimetype": "text/plain",
             "size": len(content) if content else 0,
             "url_private": f"https://files.slack.com/files-pri/{file_id}/{filename}",
-            "channels": channels.split(",")
-            if isinstance(channels, str)
-            else (channels or []),
+            "channels": (
+                channels.split(",") if isinstance(channels, str) else (channels or [])
+            ),
         }
 
         self.files[file_id] = file_obj

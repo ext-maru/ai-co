@@ -15,7 +15,10 @@ class IndentationFixer:
             # Pattern for empty try blocks
             (r"(\s*)try:\s*\n(?=\s*except)", r"\1try:\n\1    pass\n"),
             # Pattern for empty with blocks
-            (r"(\s*)with\s+[^:]+:\s*\n(?=\s*(?:except|finally|else|\S))", r"\g<0>\1    pass\n"),
+            (
+                r"(\s*)with\s+[^:]+:\s*\n(?=\s*(?:except|finally|else|\S))",
+                r"\g<0>\1    pass\n",
+            ),
             # Pattern for empty if blocks
             (r"(\s*)if\s+[^:]+:\s*\n(?=\s*(?:elif|else|\S))", r"\g<0>\1    pass\n"),
             # Pattern for empty for blocks
@@ -23,7 +26,10 @@ class IndentationFixer:
             # Pattern for empty while blocks
             (r"(\s*)while\s+[^:]+:\s*\n(?=\s*\S)", r"\g<0>\1    pass\n"),
             # Pattern for empty except blocks
-            (r"(\s*)except[^:]*:\s*\n(?=\s*(?:except|finally|else|\S))", r"\g<0>\1    pass\n"),
+            (
+                r"(\s*)except[^:]*:\s*\n(?=\s*(?:except|finally|else|\S))",
+                r"\g<0>\1    pass\n",
+            ),
             # Pattern for empty finally blocks
             (r"(\s*)finally:\s*\n(?=\s*\S)", r"\g<0>\1    pass\n"),
             # Pattern for empty else blocks
@@ -31,7 +37,10 @@ class IndentationFixer:
             # Pattern for empty class definitions
             (r"(\s*)class\s+[^:]+:\s*\n(?=\s*(?:class|def|\S))", r"\g<0>\1    pass\n"),
             # Pattern for empty function definitions
-            (r"(\s*)def\s+[^:]+:\s*\n(?=\s*(?:def|class|\S))", r'\g<0>\1    """TODO: Implement"""\n\1    pass\n'),
+            (
+                r"(\s*)def\s+[^:]+:\s*\n(?=\s*(?:def|class|\S))",
+                r'\g<0>\1    """TODO: Implement"""\n\1    pass\n',
+            ),
         ]
 
     def fix_file(self, filepath):
@@ -128,7 +137,9 @@ class IndentationFixer:
         # Also scan for all Python files with potential issues
         for root, dirs, files in os.walk(self.project_root):
             # Skip venv and other non-project directories
-            if any(skip in root for skip in ["venv", "__pycache__", ".git", "node_modules"]):
+            if any(
+                skip in root for skip in ["venv", "__pycache__", ".git", "node_modules"]
+            ):
                 continue
 
             for file in files:

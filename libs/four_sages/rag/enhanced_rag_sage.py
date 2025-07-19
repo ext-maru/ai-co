@@ -114,7 +114,9 @@ class EnhancedRAGSage(EldersServiceLegacy):
         # 7. 統合メトリクス記録
         await self._record_integrated_metrics(integrated_result)
 
-        logger.info(f"✅ Enhanced RAG検索完了: スコア={integrated_result['overall_score']:.2f}")
+        logger.info(
+            f"✅ Enhanced RAG検索完了: スコア={integrated_result['overall_score']:.2f}"
+        )
 
         return integrated_result
 
@@ -154,9 +156,9 @@ class EnhancedRAGSage(EldersServiceLegacy):
         analysis_results = {}
 
         # パフォーマンス追跡分析
-        analysis_results[
-            "performance"
-        ] = await self.performance_tracker.process_request({"action": "analyze"})
+        analysis_results["performance"] = (
+            await self.performance_tracker.process_request({"action": "analyze"})
+        )
 
         # 検索品質分析
         analysis_results["quality"] = await self.quality_enhancer.process_request(
@@ -219,7 +221,11 @@ class EnhancedRAGSage(EldersServiceLegacy):
         return {
             "overall_health": "良好",
             "performance_trend": "改善中",
-            "optimization_opportunities": ["キャッシュヒット率向上", "インデックスサイズ最適化", "検索品質の継続改善"],
+            "optimization_opportunities": [
+                "キャッシュヒット率向上",
+                "インデックスサイズ最適化",
+                "検索品質の継続改善",
+            ],
         }
 
     def _generate_recommendations(self, analysis_results: Dict) -> List[str]:

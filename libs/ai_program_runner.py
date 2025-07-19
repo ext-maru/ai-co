@@ -278,7 +278,9 @@ print("Test completed successfully!")
 """
 
     result = runner.run_python_program(
-        code=test_code, task_name="test_runner", description="AI Program Runnerの動作テスト"
+        code=test_code,
+        task_name="test_runner",
+        description="AI Program Runnerの動作テスト",
     )
 
     print(f"\nテスト実行:")

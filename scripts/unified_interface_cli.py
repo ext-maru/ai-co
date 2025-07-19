@@ -24,6 +24,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from libs.unified_interface_system import UnifiedInterfaceSystem
 
+
 class UnifiedInterfaceCLI:
     """統合インターフェースCLI"""
 
@@ -35,7 +36,7 @@ class UnifiedInterfaceCLI:
         """初期化"""
         if not self.initialized:
             init_result = await self.interface_system.initialize_system()
-            if init_result['success']:
+            if init_result["success"]:
                 self.initialized = True
                 print("✅ 統合インターフェースシステム初期化完了")
             else:
@@ -78,7 +79,7 @@ class UnifiedInterfaceCLI:
             status = await self.interface_system.get_system_status()
 
             # インターフェース統計
-            interface_stats = status['interface_stats']
+            interface_stats = status["interface_stats"]
             print(f"📈 インターフェース統計:")
             print(f"   総リクエスト数: {interface_stats['total_requests']}")
             print(f"   アクティブセッション: {interface_stats['active_sessions']}")
@@ -87,28 +88,38 @@ class UnifiedInterfaceCLI:
             print(f"   Web UI訪問: {interface_stats['web_ui_visits']}")
 
             # 4賢者状況
-            if status.get('four_sages_status'):
-                sages_status = status['four_sages_status']
+            if status.get("four_sages_status"):
+                sages_status = status["four_sages_status"]
                 print(f"\n🧙‍♂️ 4賢者システム状況:")
-                if sages_status.get('integration_status'):
-                    integration = sages_status['integration_status']
-                    print(f"   MCP接続: {'✅' if integration.get('mcp_connected') else '❌'}")
-                    print(f"   賢者統合: {'✅' if integration.get('sages_integrated') else '❌'}")
-                    print(f"   保存知識: {integration.get('total_knowledge_stored', 0)}件")
-                    print(f"   実行検索: {integration.get('total_searches_performed', 0)}回")
+                if sages_status.get("integration_status"):
+                    integration = sages_status["integration_status"]
+                    print(
+                        f"   MCP接続: {'✅' if integration.get('mcp_connected') else '❌'}"
+                    )
+                    print(
+                        f"   賢者統合: {'✅' if integration.get('sages_integrated') else '❌'}"
+                    )
+                    print(
+                        f"   保存知識: {integration.get('total_knowledge_stored', 0)}件"
+                    )
+                    print(
+                        f"   実行検索: {integration.get('total_searches_performed', 0)}回"
+                    )
 
             # 学習システム状況
-            if status.get('learning_status'):
-                learning_status = status['learning_status']
+            if status.get("learning_status"):
+                learning_status = status["learning_status"]
                 print(f"\n🤖 学習システム状況:")
-                print(f"   継続学習: {'✅' if learning_status.get('continuous_learning_active') else '❌'}")
+                print(
+                    f"   継続学習: {'✅' if learning_status.get('continuous_learning_active') else '❌'}"
+                )
                 print(f"   総タスク: {learning_status.get('total_tasks', 0)}")
                 print(f"   アクティブタスク: {learning_status.get('active_tasks', 0)}")
                 print(f"   完了タスク: {learning_status.get('completed_tasks', 0)}")
                 print(f"   成功率: {learning_status.get('success_rate', 0):.2%}")
 
             # システム稼働時間
-            uptime_start = interface_stats.get('uptime_start')
+            uptime_start = interface_stats.get("uptime_start")
             if uptime_start:
                 print(f"\n⏰ システム稼働時間:")
                 print(f"   開始時刻: {uptime_start}")
@@ -128,29 +139,31 @@ class UnifiedInterfaceCLI:
         try:
             # 検索APIテスト
             print("1. 検索APIテスト...")
-            search_result = await self.interface_system.handle_search_request({
-                'query': '4賢者システム',
-                'search_type': 'hybrid',
-                'limit': 3
-            })
+            search_result = await self.interface_system.handle_search_request(
+                {"query": "4賢者システム", "search_type": "hybrid", "limit": 3}
+            )
             print(f"   検索結果: {search_result.get('total_found', 0)}件")
 
             # 4賢者分析APIテスト
             print("\n2. 4賢者分析APIテスト...")
-            analysis_result = await self.interface_system.handle_sages_analysis({
-                'title': 'APIテスト分析',
-                'query': '統合システム',
-                'context': 'CLI API テスト'
-            })
+            analysis_result = await self.interface_system.handle_sages_analysis(
+                {
+                    "title": "APIテスト分析",
+                    "query": "統合システム",
+                    "context": "CLI API テスト",
+                }
+            )
             print(f"   分析結果: {analysis_result.get('status', 'unknown')}")
 
             # 学習タスクAPIテスト
             print("\n3. 学習タスクAPIテスト...")
-            learning_result = await self.interface_system.handle_learning_task({
-                'task_type': 'supervised',
-                'data_source': 'api_test',
-                'target_metric': 'accuracy'
-            })
+            learning_result = await self.interface_system.handle_learning_task(
+                {
+                    "task_type": "supervised",
+                    "data_source": "api_test",
+                    "target_metric": "accuracy",
+                }
+            )
             print(f"   学習タスク: {learning_result.get('task_id', 'unknown')}")
 
             # システム状況APIテスト
@@ -243,7 +256,9 @@ class UnifiedInterfaceCLI:
 
             # 4賢者システム
             try:
-                sages_status = await self.interface_system.four_sages.get_integration_status()
+                sages_status = (
+                    await self.interface_system.four_sages.get_integration_status()
+                )
                 print(f"   4賢者システム: {'✅' if sages_status else '❌'}")
             except Exception as e:
                 print(f"   4賢者システム: ❌ ({e})")
@@ -257,7 +272,9 @@ class UnifiedInterfaceCLI:
 
             # 学習システム
             try:
-                learning_status = await self.interface_system.learning_system.get_learning_status()
+                learning_status = (
+                    await self.interface_system.learning_system.get_learning_status()
+                )
                 print(f"   学習システム: {'✅' if learning_status else '❌'}")
             except Exception as e:
                 print(f"   学習システム: ❌ ({e})")
@@ -274,17 +291,20 @@ class UnifiedInterfaceCLI:
         except Exception as e:
             print(f"❌ ヘルスチェックエラー: {e}")
 
+
 def main():
     """メイン関数"""
-    parser = argparse.ArgumentParser(description='統合インターフェースCLI管理ツール')
+    parser = argparse.ArgumentParser(description="統合インターフェースCLI管理ツール")
 
     # 基本コマンド
-    parser.add_argument('--start-server', action='store_true', help='サーバー開始')
-    parser.add_argument('--status', action='store_true', help='システム状況表示')
-    parser.add_argument('--test-api', action='store_true', help='API機能テスト')
-    parser.add_argument('--create-templates', action='store_true', help='テンプレート作成')
-    parser.add_argument('--demo', action='store_true', help='デモ実行')
-    parser.add_argument('--health-check', action='store_true', help='ヘルスチェック')
+    parser.add_argument("--start-server", action="store_true", help="サーバー開始")
+    parser.add_argument("--status", action="store_true", help="システム状況表示")
+    parser.add_argument("--test-api", action="store_true", help="API機能テスト")
+    parser.add_argument(
+        "--create-templates", action="store_true", help="テンプレート作成"
+    )
+    parser.add_argument("--demo", action="store_true", help="デモ実行")
+    parser.add_argument("--health-check", action="store_true", help="ヘルスチェック")
 
     args = parser.parse_args()
 
@@ -322,6 +342,7 @@ def main():
 
     # 非同期実行
     asyncio.run(run_cli())
+
 
 if __name__ == "__main__":
     main()

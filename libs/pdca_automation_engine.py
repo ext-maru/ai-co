@@ -150,7 +150,9 @@ class PDCAAutomationEngine:
 
         return improvements
 
-    async def execute_improvements(self, improvements: List[Improvement]) -> List[Improvement]:
+    async def execute_improvements(
+        self, improvements: List[Improvement]
+    ) -> List[Improvement]:
         """
         Do: 改善の実装
         """
@@ -190,7 +192,9 @@ class PDCAAutomationEngine:
         for improvement in improvements:
             if improvement.status == "implemented":
                 # 効果測定
-                metrics_after = await self._capture_current_metrics_for_improvement(improvement)
+                metrics_after = await self._capture_current_metrics_for_improvement(
+                    improvement
+                )
                 improvement.metrics_after = metrics_after
 
                 # 成功判定
@@ -272,7 +276,11 @@ class PDCAAutomationEngine:
 
             except Exception as e:
                 self.four_sages.incident_sage.report_critical_error(
-                    e, {"component": "pdca_automation_engine", "phase": "continuous_cycle"}
+                    e,
+                    {
+                        "component": "pdca_automation_engine",
+                        "phase": "continuous_cycle",
+                    },
                 )
                 await asyncio.sleep(60)  # エラー時は1分後にリトライ
 
@@ -439,7 +447,11 @@ def pdca_aware(func):
                     severity=min(execution_time / 10.0, 1.0),
                     detected_at=datetime.now(),
                     context=context,
-                    suggested_actions=[f"{func.__name__}の最適化", "非同期処理への変更を検討", "キャッシュの導入を検討"],
+                    suggested_actions=[
+                        f"{func.__name__}の最適化",
+                        "非同期処理への変更を検討",
+                        "キャッシュの導入を検討",
+                    ],
                 )
                 # PDCAエンジンに送信（非同期）
                 # asyncio.create_task(pdca_engine.insights_buffer.append(insight))
@@ -456,7 +468,11 @@ def pdca_aware(func):
                 severity=0.8,
                 detected_at=datetime.now(),
                 context={**context, "error": str(e), "type": type(e).__name__},
-                suggested_actions=["エラーハンドリングの追加", "入力検証の強化", "単体テストの追加"],
+                suggested_actions=[
+                    "エラーハンドリングの追加",
+                    "入力検証の強化",
+                    "単体テストの追加",
+                ],
             )
             # PDCAエンジンに送信
             raise
@@ -488,9 +504,13 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="PDCA Automation Engine")
     parser.add_argument(
-        "--update-tracking", action="store_true", help="Update PDCA tracking for current commit"
+        "--update-tracking",
+        action="store_true",
+        help="Update PDCA tracking for current commit",
     )
-    parser.add_argument("--run-cycle", action="store_true", help="Run continuous PDCA cycle")
+    parser.add_argument(
+        "--run-cycle", action="store_true", help="Run continuous PDCA cycle"
+    )
 
     args = parser.parse_args()
 

@@ -15,13 +15,15 @@ from typing import Dict, List, Optional, Any, Callable
 from enum import Enum
 from dataclasses import dataclass, field
 
+
 # Servant Types
 class ServantType(Enum):
     CODE_CRAFTSMAN = "code_craftsman"  # コード職人
-    TEST_GUARDIAN = "test_guardian"    # テスト守護者
+    TEST_GUARDIAN = "test_guardian"  # テスト守護者
     QUALITY_INSPECTOR = "quality_inspector"  # 品質検査官
-    GIT_KEEPER = "git_keeper"          # Git管理者
+    GIT_KEEPER = "git_keeper"  # Git管理者
     DOCUMENTATION_SCRIBE = "documentation_scribe"  # 文書記録者
+
 
 # Servant Status
 class ServantStatus(Enum):
@@ -30,6 +32,7 @@ class ServantStatus(Enum):
     COMPLETED = "completed"
     FAILED = "failed"
     PAUSED = "paused"
+
 
 # Task Definition
 @dataclass
@@ -51,6 +54,7 @@ class ServantTask:
 
     def add_log(self, message: str):
         self.logs.append(f"[{datetime.now().isoformat()}] {message}")
+
 
 # Base Servant
 class BaseServant:
@@ -102,8 +106,9 @@ class BaseServant:
             "name": self.name,
             "status": self.status.value,
             "current_task": self.current_task.task_id if self.current_task else None,
-            "capabilities": self.capabilities
+            "capabilities": self.capabilities,
         }
+
 
 # Code Craftsman Servant
 class CodeCraftsmanServant(BaseServant):
@@ -114,7 +119,7 @@ class CodeCraftsmanServant(BaseServant):
             "edit_file",
             "refactor_code",
             "generate_code",
-            "analyze_code"
+            "analyze_code",
         ]
 
     async def _execute_specific_task(self, task: ServantTask) -> Dict:
@@ -154,7 +159,7 @@ class CodeCraftsmanServant(BaseServant):
             "action": "create_file",
             "file_path": file_path,
             "lines_written": len(content.splitlines()),
-            "success": True
+            "success": True,
         }
 
     async def _edit_file(self, args: Dict) -> Dict:
@@ -184,7 +189,7 @@ class CodeCraftsmanServant(BaseServant):
             "action": "edit_file",
             "file_path": file_path,
             "changes_made": 1,
-            "success": True
+            "success": True,
         }
 
     async def _refactor_code(self, args: Dict) -> Dict:
@@ -204,7 +209,7 @@ class CodeCraftsmanServant(BaseServant):
 
         if refactor_type == "extract_method":
             # 長いメソッドを抽出
-            if len(original_code.split('\n')) > 50:
+            if len(original_code.split("\n")) > 50:
                 improvements.append("Long method detected - recommend extraction")
 
         elif refactor_type == "add_type_hints":
@@ -223,7 +228,7 @@ class CodeCraftsmanServant(BaseServant):
             "refactor_type": refactor_type,
             "improvements": improvements,
             "backup_created": backup_path,
-            "success": True
+            "success": True,
         }
 
     async def _generate_code(self, args: Dict) -> Dict:
@@ -304,7 +309,7 @@ class {class_name}:
         """Process single item"""
         await asyncio.sleep(0.01)  # Simulate processing
         return {{"processed": True, "item": item, "timestamp": datetime.now().isoformat()}}
-'''
+''',
         }
 
         generated_code = templates.get(template, templates["basic_class"])
@@ -322,7 +327,7 @@ class {class_name}:
             "generated_code": generated_code,
             "output_path": output_path,
             "lines_generated": len(generated_code.splitlines()),
-            "success": True
+            "success": True,
         }
 
     async def _analyze_code(self, args: Dict) -> Dict:
@@ -336,26 +341,42 @@ class {class_name}:
         with open(file_path, "r", encoding="utf-8") as f:
             code_content = f.read()
 
-        lines = code_content.split('\n')
+        lines = code_content.split("\n")
 
         # メトリクス計算
         total_lines = len(lines)
-        code_lines = len([line for line in lines if line.strip() and not line.strip().startswith('#')])
-        comment_lines = len([line for line in lines if line.strip().startswith('#')])
+        code_lines = len(
+            [
+                line
+                for line in lines
+                if line.strip() and not line.strip().startswith("#")
+            ]
+        )
+        comment_lines = len([line for line in lines if line.strip().startswith("#")])
 
         # 複雑度分析（簡易版）
-        complexity_indicators = ['if ', 'elif ', 'for ', 'while ', 'try:', 'except:', 'with ']
-        complexity = sum(code_content.count(indicator) for indicator in complexity_indicators)
+        complexity_indicators = [
+            "if ",
+            "elif ",
+            "for ",
+            "while ",
+            "try:",
+            "except:",
+            "with ",
+        ]
+        complexity = sum(
+            code_content.count(indicator) for indicator in complexity_indicators
+        )
 
         # 関数・クラス数
-        function_count = code_content.count('def ')
-        class_count = code_content.count('class ')
+        function_count = code_content.count("def ")
+        class_count = code_content.count("class ")
 
         # 問題検出
         issues = []
-        if 'TODO' in code_content:
+        if "TODO" in code_content:
             issues.append("TODO comments found")
-        if code_content.count('print(') > 5:
+        if code_content.count("print(") > 5:
             issues.append("Too many print statements")
         if total_lines > 500:
             issues.append("File too large")
@@ -382,14 +403,16 @@ class {class_name}:
                 "complexity_score": complexity,
                 "function_count": function_count,
                 "class_count": class_count,
-                "code_quality_grade": quality_grade
+                "code_quality_grade": quality_grade,
             },
             "issues": issues,
             "recommendations": self._generate_recommendations(complexity, issues),
-            "success": True
+            "success": True,
         }
 
-    def _generate_recommendations(self, complexity: int, issues: List[str]) -> List[str]:
+    def _generate_recommendations(
+        self, complexity: int, issues: List[str]
+    ) -> List[str]:
         """推奨事項生成"""
         recommendations = []
 
@@ -404,6 +427,7 @@ class {class_name}:
 
         return recommendations
 
+
 # Test Guardian Servant
 class TestGuardianServant(BaseServant):
     def __init__(self, name: str = "TestGuardian"):
@@ -413,7 +437,7 @@ class TestGuardianServant(BaseServant):
             "run_test",
             "generate_test_data",
             "coverage_analysis",
-            "test_optimization"
+            "test_optimization",
         ]
 
     async def _execute_specific_task(self, task: ServantTask) -> Dict:
@@ -463,7 +487,7 @@ class TestGenerated:
             "target_module": target_module,
             "test_content": test_content,
             "test_count": 3,
-            "success": True
+            "success": True,
         }
 
     async def _run_test(self, args: Dict) -> Dict:
@@ -480,19 +504,21 @@ class TestGenerated:
             import json
 
             cmd = [
-                "python", "-m", "pytest",
+                "python",
+                "-m",
+                "pytest",
                 test_path,
                 "-v",
                 "--json-report",
                 "--json-report-file=test_results.json",
-                "--tb=short"
+                "--tb=short",
             ]
 
             process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=os.getcwd()
+                cwd=os.getcwd(),
             )
 
             stdout, stderr = await process.communicate()
@@ -506,7 +532,7 @@ class TestGenerated:
                 "coverage": 0,
                 "duration": 0,
                 "output": stdout.decode() if stdout else "",
-                "errors": stderr.decode() if stderr else ""
+                "errors": stderr.decode() if stderr else "",
             }
 
             # JSON結果ファイルから詳細取得
@@ -516,22 +542,28 @@ class TestGenerated:
                         test_data = json.load(f)
 
                     summary = test_data.get("summary", {})
-                    results.update({
-                        "passed": summary.get("passed", 0),
-                        "failed": summary.get("failed", 0),
-                        "skipped": summary.get("skipped", 0),
-                        "total": summary.get("total", 0),
-                        "duration": test_data.get("duration", 0)
-                    })
+                    results.update(
+                        {
+                            "passed": summary.get("passed", 0),
+                            "failed": summary.get("failed", 0),
+                            "skipped": summary.get("skipped", 0),
+                            "total": summary.get("total", 0),
+                            "duration": test_data.get("duration", 0),
+                        }
+                    )
 
                     # 失敗したテストの詳細
                     failed_tests = []
                     for test in test_data.get("tests", []):
                         if test.get("outcome") == "failed":
-                            failed_tests.append({
-                                "name": test.get("nodeid", ""),
-                                "error": test.get("call", {}).get("longrepr", "")[:200]
-                            })
+                            failed_tests.append(
+                                {
+                                    "name": test.get("nodeid", ""),
+                                    "error": test.get("call", {}).get("longrepr", "")[
+                                        :200
+                                    ],
+                                }
+                            )
                     results["failed_tests"] = failed_tests
 
                     # クリーンアップ
@@ -544,7 +576,7 @@ class TestGenerated:
                 "action": "run_test",
                 "test_path": test_path,
                 "results": results,
-                "success": process.returncode == 0
+                "success": process.returncode == 0,
             }
 
         except Exception as e:
@@ -552,7 +584,7 @@ class TestGenerated:
                 "action": "run_test",
                 "test_path": test_path,
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     async def _generate_test_data(self, args: Dict) -> Dict:
@@ -565,7 +597,7 @@ class TestGenerated:
             "data_type": data_type,
             "count": count,
             "generated_data": [f"test_data_{i}" for i in range(count)],
-            "success": True
+            "success": True,
         }
 
     async def _coverage_analysis(self, args: Dict) -> Dict:
@@ -579,9 +611,9 @@ class TestGenerated:
                 "total_lines": 500,
                 "covered_lines": 475,
                 "coverage_percentage": 95.0,
-                "uncovered_lines": [25, 67, 89, 234, 456]
+                "uncovered_lines": [25, 67, 89, 234, 456],
             },
-            "success": True
+            "success": True,
         }
 
     async def _test_optimization(self, args: Dict) -> Dict:
@@ -594,11 +626,12 @@ class TestGenerated:
             "optimizations": [
                 "Removed duplicate tests",
                 "Optimized setup/teardown",
-                "Parallelized test execution"
+                "Parallelized test execution",
             ],
             "performance_improvement": "35% faster execution",
-            "success": True
+            "success": True,
         }
+
 
 # Quality Inspector Servant
 class QualityInspectorServant(BaseServant):
@@ -609,7 +642,7 @@ class QualityInspectorServant(BaseServant):
             "security_scan",
             "performance_analysis",
             "dependency_check",
-            "compliance_check"
+            "compliance_check",
         ]
 
     async def _execute_specific_task(self, task: ServantTask) -> Dict:
@@ -643,11 +676,18 @@ class QualityInspectorServant(BaseServant):
             import json
 
             # pylintを実行
-            pylint_cmd = ["python", "-m", "pylint", file_path, "--output-format=json", "--exit-zero"]
+            pylint_cmd = [
+                "python",
+                "-m",
+                "pylint",
+                file_path,
+                "--output-format=json",
+                "--exit-zero",
+            ]
             pylint_process = await asyncio.create_subprocess_exec(
                 *pylint_cmd,
                 stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
+                stderr=asyncio.subprocess.PIPE,
             )
             pylint_stdout, _ = await pylint_process.communicate()
 
@@ -659,12 +699,14 @@ class QualityInspectorServant(BaseServant):
                 try:
                     pylint_results = json.loads(pylint_stdout.decode())
                     for result in pylint_results[:10]:  # 最初の10件
-                        issues.append({
-                            "type": result.get("type", "unknown"),
-                            "severity": result.get("type", "medium"),
-                            "line": result.get("line", 0),
-                            "message": result.get("message", "")
-                        })
+                        issues.append(
+                            {
+                                "type": result.get("type", "unknown"),
+                                "severity": result.get("type", "medium"),
+                                "line": result.get("line", 0),
+                                "message": result.get("message", ""),
+                            }
+                        )
 
                     # スコア計算（問題数に基づく）
                     quality_score = max(0, 10 - len(pylint_results) * 0.1)
@@ -677,19 +719,24 @@ class QualityInspectorServant(BaseServant):
                 code_content = f.read()
 
             # 複雑度分析
-            lines = code_content.split('\n')
+            lines = code_content.split("\n")
             complexity_score = 0
             for line in lines:
-                if any(keyword in line for keyword in ['if ', 'for ', 'while ', 'try:', 'except:']):
+                if any(
+                    keyword in line
+                    for keyword in ["if ", "for ", "while ", "try:", "except:"]
+                ):
                     complexity_score += 1
 
             if complexity_score > 20:
-                issues.append({
-                    "type": "complexity",
-                    "severity": "high",
-                    "line": 0,
-                    "message": f"High complexity score: {complexity_score}"
-                })
+                issues.append(
+                    {
+                        "type": "complexity",
+                        "severity": "high",
+                        "line": 0,
+                        "message": f"High complexity score: {complexity_score}",
+                    }
+                )
                 quality_score -= 1
 
             recommendations = []
@@ -707,7 +754,7 @@ class QualityInspectorServant(BaseServant):
                 "issues": issues,
                 "complexity_score": complexity_score,
                 "recommendations": recommendations,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -715,7 +762,7 @@ class QualityInspectorServant(BaseServant):
                 "action": "code_quality_check",
                 "file_path": file_path,
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     async def _security_scan(self, args: Dict) -> Dict:
@@ -740,7 +787,7 @@ class QualityInspectorServant(BaseServant):
                 bandit_process = await asyncio.create_subprocess_exec(
                     *bandit_cmd,
                     stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE
+                    stderr=asyncio.subprocess.PIPE,
                 )
                 bandit_stdout, _ = await bandit_process.communicate()
 
@@ -748,13 +795,15 @@ class QualityInspectorServant(BaseServant):
                     bandit_results = json.loads(bandit_stdout.decode())
                     for result in bandit_results.get("results", [])[:10]:
                         severity = result.get("issue_severity", "MEDIUM").lower()
-                        vulnerabilities.append({
-                            "type": result.get("test_name", "UNKNOWN"),
-                            "severity": severity,
-                            "file": result.get("filename", ""),
-                            "line": result.get("line_number", 0),
-                            "message": result.get("issue_text", "")
-                        })
+                        vulnerabilities.append(
+                            {
+                                "type": result.get("test_name", "UNKNOWN"),
+                                "severity": severity,
+                                "file": result.get("filename", ""),
+                                "line": result.get("line_number", 0),
+                                "message": result.get("issue_text", ""),
+                            }
+                        )
 
                         # セキュリティスコア減点
                         if severity == "high":
@@ -772,7 +821,7 @@ class QualityInspectorServant(BaseServant):
                     files_to_check = []
                     for root, dirs, files in os.walk(target_path):
                         for file in files:
-                            if file.endswith('.py'):
+                            if file.endswith(".py"):
                                 files_to_check.append(os.path.join(root, file))
 
                 # 簡易セキュリティチェック
@@ -782,7 +831,7 @@ class QualityInspectorServant(BaseServant):
                     ("os.system(", "Command injection risk"),
                     ("subprocess.call(", "Command injection risk"),
                     ("input(", "Input validation needed"),
-                    ("raw_input(", "Input validation needed")
+                    ("raw_input(", "Input validation needed"),
                 ]
 
                 for file_path in files_to_check[:20]:  # 最大20ファイル
@@ -790,16 +839,18 @@ class QualityInspectorServant(BaseServant):
                         with open(file_path, "r", encoding="utf-8") as f:
                             content = f.read()
 
-                        for i, line in enumerate(content.split('\n'), 1):
+                        for i, line in enumerate(content.split("\n"), 1):
                             for pattern, message in dangerous_patterns:
                                 if pattern in line:
-                                    vulnerabilities.append({
-                                        "type": "POTENTIAL_SECURITY_ISSUE",
-                                        "severity": "medium",
-                                        "file": file_path,
-                                        "line": i,
-                                        "message": f"{message}: {pattern}"
-                                    })
+                                    vulnerabilities.append(
+                                        {
+                                            "type": "POTENTIAL_SECURITY_ISSUE",
+                                            "severity": "medium",
+                                            "file": file_path,
+                                            "line": i,
+                                            "message": f"{message}: {pattern}",
+                                        }
+                                    )
                                     security_score -= 0.5
                     except Exception:
                         continue
@@ -809,7 +860,9 @@ class QualityInspectorServant(BaseServant):
             # 推奨事項生成
             recommendations = []
             if any(v["severity"] == "high" for v in vulnerabilities):
-                recommendations.append("Address high severity vulnerabilities immediately")
+                recommendations.append(
+                    "Address high severity vulnerabilities immediately"
+                )
             if len(vulnerabilities) > 5:
                 recommendations.append("Review and fix multiple security issues")
             if any("injection" in v["message"].lower() for v in vulnerabilities):
@@ -821,7 +874,7 @@ class QualityInspectorServant(BaseServant):
                 "vulnerabilities": vulnerabilities,
                 "security_score": security_score,
                 "recommendations": recommendations,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -829,7 +882,7 @@ class QualityInspectorServant(BaseServant):
                 "action": "security_scan",
                 "target_path": target_path,
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     async def _performance_analysis(self, args: Dict) -> Dict:
@@ -858,7 +911,7 @@ class QualityInspectorServant(BaseServant):
             metrics = {
                 "cpu_usage": round(cpu_percent, 2),
                 "memory_usage": round(memory_usage_mb, 2),
-                "execution_time": 0.0
+                "execution_time": 0.0,
             }
 
             # モジュール分析
@@ -868,31 +921,38 @@ class QualityInspectorServant(BaseServant):
                     code_content = f.read()
 
                 # パフォーマンス問題の検出
-                lines = code_content.split('\n')
+                lines = code_content.split("\n")
 
                 # ループ内のI/O操作検出
                 in_loop = False
                 for i, line in enumerate(lines, 1):
                     stripped = line.strip()
 
-                    if any(loop_start in stripped for loop_start in ['for ', 'while ']):
+                    if any(loop_start in stripped for loop_start in ["for ", "while "]):
                         in_loop = True
-                    elif stripped.startswith(('def ', 'class ', 'if __name__')):
+                    elif stripped.startswith(("def ", "class ", "if __name__")):
                         in_loop = False
-                    elif in_loop and any(io_op in stripped for io_op in ['open(', 'read(', 'write(', 'requests.']):
+                    elif in_loop and any(
+                        io_op in stripped
+                        for io_op in ["open(", "read(", "write(", "requests."]
+                    ):
                         bottlenecks.append(f"I/O operation in loop at line {i}")
-                        optimizations.append("Move I/O operations outside loops or batch them")
+                        optimizations.append(
+                            "Move I/O operations outside loops or batch them"
+                        )
 
                 # 非効率なパターン検出
-                if '.append(' in code_content and 'for ' in code_content:
+                if ".append(" in code_content and "for " in code_content:
                     bottlenecks.append("List appending in loop detected")
-                    optimizations.append("Consider list comprehension or pre-allocation")
+                    optimizations.append(
+                        "Consider list comprehension or pre-allocation"
+                    )
 
-                if code_content.count('import ') > 20:
+                if code_content.count("import ") > 20:
                     bottlenecks.append("Too many imports")
                     optimizations.append("Organize imports and remove unused ones")
 
-                if 'time.sleep(' in code_content:
+                if "time.sleep(" in code_content:
                     bottlenecks.append("Blocking sleep operations found")
                     optimizations.append("Use asyncio.sleep for async operations")
 
@@ -900,7 +960,7 @@ class QualityInspectorServant(BaseServant):
                 start_time = time.time()
                 try:
                     # 構文チェックのみ（実際の実行はリスクがあるため）
-                    compile(code_content, target_module, 'exec')
+                    compile(code_content, target_module, "exec")
                     execution_time = time.time() - start_time
                     metrics["execution_time"] = round(execution_time * 1000, 2)  # ms
                 except SyntaxError as e:
@@ -912,11 +972,13 @@ class QualityInspectorServant(BaseServant):
                 python_files = []
                 for root, dirs, files in os.walk(target_module):
                     for file in files:
-                        if file.endswith('.py'):
+                        if file.endswith(".py"):
                             python_files.append(os.path.join(root, file))
 
                 if len(python_files) > 50:
-                    bottlenecks.append(f"Large codebase: {len(python_files)} Python files")
+                    bottlenecks.append(
+                        f"Large codebase: {len(python_files)} Python files"
+                    )
                     optimizations.append("Consider modularization and lazy imports")
 
                 # 大きなファイルの検出
@@ -937,6 +999,7 @@ class QualityInspectorServant(BaseServant):
                 # モジュール名として扱う
                 try:
                     import importlib
+
                     start_time = time.time()
                     module = importlib.import_module(target_module)
                     import_time = time.time() - start_time
@@ -952,7 +1015,10 @@ class QualityInspectorServant(BaseServant):
 
             # デフォルト推奨事項
             if not optimizations:
-                optimizations = ["Code appears to be optimized", "Consider profiling for detailed analysis"]
+                optimizations = [
+                    "Code appears to be optimized",
+                    "Consider profiling for detailed analysis",
+                ]
 
             return {
                 "action": "performance_analysis",
@@ -961,7 +1027,7 @@ class QualityInspectorServant(BaseServant):
                 "bottlenecks": bottlenecks,
                 "optimizations": optimizations,
                 "analysis_timestamp": time.time(),
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -969,7 +1035,7 @@ class QualityInspectorServant(BaseServant):
                 "action": "performance_analysis",
                 "target_module": target_module,
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     async def _dependency_check(self, args: Dict) -> Dict:
@@ -984,12 +1050,7 @@ class QualityInspectorServant(BaseServant):
             import subprocess
             import json
 
-            dependencies = {
-                "total": 0,
-                "outdated": 0,
-                "vulnerable": 0,
-                "licenses": {}
-            }
+            dependencies = {"total": 0, "outdated": 0, "vulnerable": 0, "licenses": {}}
             recommendations = []
 
             # requirements.txtの確認
@@ -999,7 +1060,11 @@ class QualityInspectorServant(BaseServant):
                     req_lines = f.readlines()
 
                 # 基本的な依存関係カウント
-                package_lines = [line.strip() for line in req_lines if line.strip() and not line.strip().startswith("#")]
+                package_lines = [
+                    line.strip()
+                    for line in req_lines
+                    if line.strip() and not line.strip().startswith("#")
+                ]
                 dependencies["total"] = len(package_lines)
 
                 # 古いパッケージパターンの検出
@@ -1017,7 +1082,7 @@ class QualityInspectorServant(BaseServant):
                     *list_cmd,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
-                    cwd=project_path
+                    cwd=project_path,
                 )
                 list_stdout, _ = await list_process.communicate()
 
@@ -1036,7 +1101,7 @@ class QualityInspectorServant(BaseServant):
                     *audit_cmd,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
-                    cwd=project_path
+                    cwd=project_path,
                 )
                 audit_stdout, _ = await audit_process.communicate()
 
@@ -1046,7 +1111,9 @@ class QualityInspectorServant(BaseServant):
                     dependencies["vulnerable"] = len(vulnerabilities)
 
                     if vulnerabilities:
-                        recommendations.append(f"Fix {len(vulnerabilities)} vulnerable dependencies")
+                        recommendations.append(
+                            f"Fix {len(vulnerabilities)} vulnerable dependencies"
+                        )
 
             except (subprocess.SubprocessError, json.JSONDecodeError):
                 # pip-auditが利用できない場合の簡易チェック
@@ -1066,7 +1133,7 @@ class QualityInspectorServant(BaseServant):
                     *outdated_cmd,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
-                    cwd=project_path
+                    cwd=project_path,
                 )
                 outdated_stdout, _ = await outdated_process.communicate()
 
@@ -1075,7 +1142,9 @@ class QualityInspectorServant(BaseServant):
                     dependencies["outdated"] = len(outdated_packages)
 
                     if outdated_packages:
-                        recommendations.append(f"Update {len(outdated_packages)} outdated packages")
+                        recommendations.append(
+                            f"Update {len(outdated_packages)} outdated packages"
+                        )
 
             except (subprocess.SubprocessError, json.JSONDecodeError):
                 pass
@@ -1085,7 +1154,7 @@ class QualityInspectorServant(BaseServant):
                 "MIT": ["mit", "bsd"],
                 "Apache": ["apache"],
                 "GPL": ["gpl"],
-                "Other": []
+                "Other": [],
             }
 
             # setup.pyまたはpyproject.tomlからライセンス情報を取得
@@ -1105,26 +1174,34 @@ class QualityInspectorServant(BaseServant):
                 except Exception:
                     pass
 
-            dependencies["licenses"] = license_info or {"Unknown": dependencies["total"]}
+            dependencies["licenses"] = license_info or {
+                "Unknown": dependencies["total"]
+            }
 
             # 推奨事項の生成
             if dependencies["total"] == 0:
-                recommendations.append("No dependencies found - consider adding requirements.txt")
+                recommendations.append(
+                    "No dependencies found - consider adding requirements.txt"
+                )
             elif dependencies["total"] > 100:
-                recommendations.append("Large number of dependencies - consider reducing")
+                recommendations.append(
+                    "Large number of dependencies - consider reducing"
+                )
 
             if dependencies["outdated"] > 5:
                 recommendations.append("Many outdated packages detected")
 
             if dependencies["vulnerable"] > 0:
-                recommendations.append("Security vulnerabilities found - update immediately")
+                recommendations.append(
+                    "Security vulnerabilities found - update immediately"
+                )
 
             return {
                 "action": "dependency_check",
                 "project_path": project_path,
                 "dependencies": dependencies,
                 "recommendations": recommendations,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -1132,7 +1209,7 @@ class QualityInspectorServant(BaseServant):
                 "action": "dependency_check",
                 "project_path": project_path,
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     async def _compliance_check(self, args: Dict) -> Dict:
@@ -1154,47 +1231,58 @@ class QualityInspectorServant(BaseServant):
             if standard.upper() == "PEP8":
                 # flake8でPEP8チェック
                 try:
-                    flake8_cmd = ["python", "-m", "flake8", target_path, "--format=json"]
+                    flake8_cmd = [
+                        "python",
+                        "-m",
+                        "flake8",
+                        target_path,
+                        "--format=json",
+                    ]
                     flake8_process = await asyncio.create_subprocess_exec(
                         *flake8_cmd,
                         stdout=asyncio.subprocess.PIPE,
-                        stderr=asyncio.subprocess.PIPE
+                        stderr=asyncio.subprocess.PIPE,
                     )
                     flake8_stdout, _ = await flake8_process.communicate()
 
                     if flake8_stdout:
-                        for line in flake8_stdout.decode().split('\n'):
+                        for line in flake8_stdout.decode().split("\n"):
                             if line.strip():
                                 try:
                                     violation = json.loads(line)
-                                    violations.append({
-                                        "rule": violation.get("code", "Unknown"),
-                                        "file": violation.get("filename", ""),
-                                        "line": violation.get("line_number", 0),
-                                        "column": violation.get("column_number", 0),
-                                        "message": violation.get("text", "")
-                                    })
+                                    violations.append(
+                                        {
+                                            "rule": violation.get("code", "Unknown"),
+                                            "file": violation.get("filename", ""),
+                                            "line": violation.get("line_number", 0),
+                                            "column": violation.get("column_number", 0),
+                                            "message": violation.get("text", ""),
+                                        }
+                                    )
                                 except json.JSONDecodeError:
                                     continue
 
                 except subprocess.SubprocessError:
                     # flake8が利用できない場合の簡易PEP8チェック
                     python_files = []
-                    if os.path.isfile(target_path) and target_path.endswith('.py'):
+                    if os.path.isfile(target_path) and target_path.endswith(".py"):
                         python_files = [target_path]
                     elif os.path.isdir(target_path):
                         for root, dirs, files in os.walk(target_path):
                             for file in files:
-                                if file.endswith('.py'):
+                                if file.endswith(".py"):
                                     python_files.append(os.path.join(root, file))
 
                     # 簡易PEP8チェック
                     pep8_rules = [
-                        (r'    ', "E111: indentation is not a multiple of four"),
-                        (r'  ', "E101: indentation contains mixed spaces and tabs"),
-                        (r'\t', "W191: indentation contains tabs"),
-                        (r' +$', "W291: trailing whitespace"),
-                        (r'[^#].*\s+#', "E261: at least two spaces before inline comment")
+                        (r"    ", "E111: indentation is not a multiple of four"),
+                        (r"  ", "E101: indentation contains mixed spaces and tabs"),
+                        (r"\t", "W191: indentation contains tabs"),
+                        (r" +$", "W291: trailing whitespace"),
+                        (
+                            r"[^#].*\s+#",
+                            "E261: at least two spaces before inline comment",
+                        ),
                     ]
 
                     for file_path in python_files[:10]:  # 最初の10ファイル
@@ -1205,30 +1293,40 @@ class QualityInspectorServant(BaseServant):
                             for i, line in enumerate(lines, 1):
                                 # 行長チェック
                                 if len(line.rstrip()) > 79:
-                                    violations.append({
-                                        "rule": "E501",
-                                        "file": file_path,
-                                        "line": i,
-                                        "message": f"line too long ({len(line.rstrip())} > 79 characters)"
-                                    })
+                                    violations.append(
+                                        {
+                                            "rule": "E501",
+                                            "file": file_path,
+                                            "line": i,
+                                            "message": f"line too long ({len(line.rstrip())} > 79 characters)",
+                                        }
+                                    )
 
                                 # 末尾空白チェック
-                                if line.rstrip() != line.rstrip(' \t'):
-                                    violations.append({
-                                        "rule": "W291",
-                                        "file": file_path,
-                                        "line": i,
-                                        "message": "trailing whitespace"
-                                    })
+                                if line.rstrip() != line.rstrip(" \t"):
+                                    violations.append(
+                                        {
+                                            "rule": "W291",
+                                            "file": file_path,
+                                            "line": i,
+                                            "message": "trailing whitespace",
+                                        }
+                                    )
 
                                 # 複数行の空行チェック
-                                if i > 1 and not line.strip() and not lines[i-2].strip():
-                                    violations.append({
-                                        "rule": "E303",
-                                        "file": file_path,
-                                        "line": i,
-                                        "message": "too many blank lines"
-                                    })
+                                if (
+                                    i > 1
+                                    and not line.strip()
+                                    and not lines[i - 2].strip()
+                                ):
+                                    violations.append(
+                                        {
+                                            "rule": "E303",
+                                            "file": file_path,
+                                            "line": i,
+                                            "message": "too many blank lines",
+                                        }
+                                    )
 
                         except Exception:
                             continue
@@ -1236,29 +1334,40 @@ class QualityInspectorServant(BaseServant):
             elif standard.upper() == "BLACK":
                 # blackでフォーマットチェック
                 try:
-                    black_cmd = ["python", "-m", "black", "--check", "--diff", target_path]
+                    black_cmd = [
+                        "python",
+                        "-m",
+                        "black",
+                        "--check",
+                        "--diff",
+                        target_path,
+                    ]
                     black_process = await asyncio.create_subprocess_exec(
                         *black_cmd,
                         stdout=asyncio.subprocess.PIPE,
-                        stderr=asyncio.subprocess.PIPE
+                        stderr=asyncio.subprocess.PIPE,
                     )
                     black_stdout, _ = await black_process.communicate()
 
                     if black_process.returncode != 0:
-                        violations.append({
-                            "rule": "BLACK_FORMAT",
-                            "file": target_path,
-                            "line": 0,
-                            "message": "Code would be reformatted by black"
-                        })
+                        violations.append(
+                            {
+                                "rule": "BLACK_FORMAT",
+                                "file": target_path,
+                                "line": 0,
+                                "message": "Code would be reformatted by black",
+                            }
+                        )
 
                 except subprocess.SubprocessError:
-                    violations.append({
-                        "rule": "BLACK_UNAVAILABLE",
-                        "file": target_path,
-                        "line": 0,
-                        "message": "Black formatter not available"
-                    })
+                    violations.append(
+                        {
+                            "rule": "BLACK_UNAVAILABLE",
+                            "file": target_path,
+                            "line": 0,
+                            "message": "Black formatter not available",
+                        }
+                    )
 
             # コンプライアンススコア計算
             if len(violations) == 0:
@@ -1269,9 +1378,17 @@ class QualityInspectorServant(BaseServant):
                 compliance_score = max(50, 100 - score_reduction)
 
             # 重要度による分類
-            critical_violations = [v for v in violations if v.get("rule", "").startswith(("E9", "F"))]
-            warning_violations = [v for v in violations if v.get("rule", "").startswith("W")]
-            style_violations = [v for v in violations if not v.get("rule", "").startswith(("E9", "F", "W"))]
+            critical_violations = [
+                v for v in violations if v.get("rule", "").startswith(("E9", "F"))
+            ]
+            warning_violations = [
+                v for v in violations if v.get("rule", "").startswith("W")
+            ]
+            style_violations = [
+                v
+                for v in violations
+                if not v.get("rule", "").startswith(("E9", "F", "W"))
+            ]
 
             return {
                 "action": "compliance_check",
@@ -1283,10 +1400,12 @@ class QualityInspectorServant(BaseServant):
                 "violation_summary": {
                     "critical": len(critical_violations),
                     "warnings": len(warning_violations),
-                    "style": len(style_violations)
+                    "style": len(style_violations),
                 },
-                "recommendations": self._generate_compliance_recommendations(violations, standard),
-                "success": True
+                "recommendations": self._generate_compliance_recommendations(
+                    violations, standard
+                ),
+                "success": True,
             }
 
         except Exception as e:
@@ -1295,10 +1414,12 @@ class QualityInspectorServant(BaseServant):
                 "standard": standard,
                 "target_path": target_path,
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
-    def _generate_compliance_recommendations(self, violations: List[Dict], standard: str) -> List[str]:
+    def _generate_compliance_recommendations(
+        self, violations: List[Dict], standard: str
+    ) -> List[str]:
         """コンプライアンス推奨事項生成"""
         recommendations = []
 
@@ -1312,11 +1433,15 @@ class QualityInspectorServant(BaseServant):
             violation_types[rule] = violation_types.get(rule, 0) + 1
 
         # 最も多い違反タイプに対する推奨事項
-        most_common = sorted(violation_types.items(), key=lambda x: x[1], reverse=True)[:3]
+        most_common = sorted(violation_types.items(), key=lambda x: x[1], reverse=True)[
+            :3
+        ]
 
         for rule, count in most_common:
             if rule.startswith("E5"):
-                recommendations.append(f"Fix {count} line length violations - consider breaking long lines")
+                recommendations.append(
+                    f"Fix {count} line length violations - consider breaking long lines"
+                )
             elif rule.startswith("W2"):
                 recommendations.append(f"Remove {count} trailing whitespace violations")
             elif rule.startswith("E3"):
@@ -1327,9 +1452,12 @@ class QualityInspectorServant(BaseServant):
                 recommendations.append(f"Fix {count} {rule} violations")
 
         if len(violations) > 20:
-            recommendations.append("Consider using auto-formatters like black or autopep8")
+            recommendations.append(
+                "Consider using auto-formatters like black or autopep8"
+            )
 
         return recommendations
+
 
 # Servant Executor
 class ServantExecutor:
@@ -1387,7 +1515,7 @@ class ServantExecutor:
             "total_tasks": len(results),
             "completed": len(self.completed_tasks),
             "failed": len(self.failed_tasks),
-            "results": results
+            "results": results,
         }
 
     def get_servant_status(self, servant_type: ServantType = None) -> Dict:
@@ -1408,8 +1536,9 @@ class ServantExecutor:
             "queued": len(self.task_queue),
             "completed": len(self.completed_tasks),
             "failed": len(self.failed_tasks),
-            "total_processed": len(self.completed_tasks) + len(self.failed_tasks)
+            "total_processed": len(self.completed_tasks) + len(self.failed_tasks),
         }
+
 
 # Helper Functions
 def create_code_task(task_id: str, command: str, **kwargs) -> ServantTask:
@@ -1419,8 +1548,9 @@ def create_code_task(task_id: str, command: str, **kwargs) -> ServantTask:
         servant_type=ServantType.CODE_CRAFTSMAN,
         description=f"Code task: {command}",
         command=command,
-        arguments=kwargs
+        arguments=kwargs,
     )
+
 
 def create_test_task(task_id: str, command: str, **kwargs) -> ServantTask:
     """テストタスク作成"""
@@ -1429,8 +1559,9 @@ def create_test_task(task_id: str, command: str, **kwargs) -> ServantTask:
         servant_type=ServantType.TEST_GUARDIAN,
         description=f"Test task: {command}",
         command=command,
-        arguments=kwargs
+        arguments=kwargs,
     )
+
 
 def create_quality_task(task_id: str, command: str, **kwargs) -> ServantTask:
     """品質タスク作成"""
@@ -1439,22 +1570,29 @@ def create_quality_task(task_id: str, command: str, **kwargs) -> ServantTask:
         servant_type=ServantType.QUALITY_INSPECTOR,
         description=f"Quality task: {command}",
         command=command,
-        arguments=kwargs
+        arguments=kwargs,
     )
+
 
 # Example Usage
 if __name__ == "__main__":
+
     async def main():
         print("🤖 Elder Flow Servant Executor Test")
 
         executor = ServantExecutor()
 
         # タスク作成
-        code_task = create_code_task("create_file_001", "create_file",
-                                   file_path="test.py", content="print('Hello World')")
+        code_task = create_code_task(
+            "create_file_001",
+            "create_file",
+            file_path="test.py",
+            content="print('Hello World')",
+        )
         test_task = create_test_task("run_test_001", "run_test", test_path="tests/")
-        quality_task = create_quality_task("quality_check_001", "code_quality_check",
-                                         file_path="test.py")
+        quality_task = create_quality_task(
+            "quality_check_001", "code_quality_check", file_path="test.py"
+        )
 
         # タスク実行
         executor.add_task(code_task)

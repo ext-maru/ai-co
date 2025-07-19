@@ -67,7 +67,9 @@ class RAGElderVisionSystem(DailyFeatureProposal):
 
         print(f"🏆 重要度: {self.translate_priority(proposal['priority'])}")
         print(f"⏳ 実現期間: {proposal['estimated_time']}")
-        print(f"🎓 挑戦レベル: {self.translate_complexity(proposal['technical_complexity'])}")
+        print(
+            f"🎓 挑戦レベル: {self.translate_complexity(proposal['technical_complexity'])}"
+        )
         print()
 
         print("📊 エルダーズギルドの現状:")
@@ -97,11 +99,17 @@ class RAGElderVisionSystem(DailyFeatureProposal):
             "データ分析": "リアルタイムストリーミング分析とエッジコンピューティングの融合が加速しています。",
             "統合機能": "API統合からイベント駆動アーキテクチャへの移行が進んでいます。",
         }
-        return insights.get(category, "技術トレンドは日々進化しています。最新情報を継続的に調査中です。")
+        return insights.get(
+            category, "技術トレンドは日々進化しています。最新情報を継続的に調査中です。"
+        )
 
     def translate_priority(self, priority: str) -> str:
         """優先度の日本語化"""
-        translations = {"HIGH": "🔥 最重要・緊急", "MEDIUM": "⚡ 重要", "LOW": "🌱 育成案件"}
+        translations = {
+            "HIGH": "🔥 最重要・緊急",
+            "MEDIUM": "⚡ 重要",
+            "LOW": "🌱 育成案件",
+        }
         return translations.get(priority, priority)
 
     def translate_complexity(self, complexity: str) -> str:

@@ -362,7 +362,9 @@ class WorkerWisdomElf:
                 new_patterns = self._analyze_patterns(performance_data)
                 if new_patterns:
                     self.patterns.extend(new_patterns)
-                    logger.info(f"🎓 {self.name}: {len(new_patterns)}個の新パターン発見")
+                    logger.info(
+                        f"🎓 {self.name}: {len(new_patterns)}個の新パターン発見"
+                    )
 
                 # 最適化提案
                 suggestions = self._generate_suggestions()

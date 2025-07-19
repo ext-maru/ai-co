@@ -420,12 +420,14 @@ class TaskFlowTracker:
                         "worker_type": stage.get("worker_type"),
                         "processing_time": stage.get("processing_time", 0),
                         "percentage_of_total": (
-                            stage.get("processing_time", 0)
-                            / total_processing_time
-                            * 100
-                        )
-                        if total_processing_time > 0
-                        else 0,
+                            (
+                                stage.get("processing_time", 0)
+                                / total_processing_time
+                                * 100
+                            )
+                            if total_processing_time > 0
+                            else 0
+                        ),
                     }
                 )
 
@@ -434,9 +436,9 @@ class TaskFlowTracker:
                 "total_stages": total_stages,
                 "average_stage_time": average_stage_time,
                 "flow_efficiency": efficiency,
-                "bottleneck_stage": bottleneck_stage.get("worker_type")
-                if bottleneck_stage
-                else None,
+                "bottleneck_stage": (
+                    bottleneck_stage.get("worker_type") if bottleneck_stage else None
+                ),
                 "stage_breakdown": stage_breakdown,
             }
 
@@ -534,7 +536,9 @@ class TaskFlowTracker:
                 suggestions.append(
                     f"{primary_bottleneck.get('worker_type')} の処理時間が全体の{bottleneck_severity*100:.1f}%を占めています"
                 )
-                suggestions.append("このWorkerのスケーリングまたは最適化を検討してください")
+                suggestions.append(
+                    "このWorkerのスケーリングまたは最適化を検討してください"
+                )
 
             if bottleneck_severity > 0.3:
                 suggestions.append("処理の並列化を検討してください")
@@ -578,18 +582,22 @@ class TaskFlowTracker:
             stage = WorkflowStage(
                 worker_type=task_info["worker_type"],
                 worker_id=task_info["worker_id"],
-                status="processing"
-                if task_tracker_data.get("status") == "in_progress"
-                else "pending",
+                status=(
+                    "processing"
+                    if task_tracker_data.get("status") == "in_progress"
+                    else "pending"
+                ),
                 started_at=task_info["started_at"],
             )
 
             flow = TaskFlow(
                 task_id=task_id,
                 task_type=task_info["task_type"],
-                status="in_progress"
-                if task_tracker_data.get("status") == "in_progress"
-                else "pending",
+                status=(
+                    "in_progress"
+                    if task_tracker_data.get("status") == "in_progress"
+                    else "pending"
+                ),
                 workflow_stages=[stage],
                 source="task_tracker",
             )
@@ -676,9 +684,11 @@ class TaskFlowTracker:
                     task_id,
                     error_record["worker_id"],
                     error_record["worker_type"],
-                    error_record["error_at"].isoformat()
-                    if isinstance(error_record["error_at"], datetime)
-                    else error_record["error_at"],
+                    (
+                        error_record["error_at"].isoformat()
+                        if isinstance(error_record["error_at"], datetime)
+                        else error_record["error_at"]
+                    ),
                     error_record["error_type"],
                     error_record["error_message"],
                     error_record["retry_count"],

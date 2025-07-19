@@ -109,7 +109,9 @@ class AutoFixExecutor(BaseManager):
             result["execution_time"] = execution_time
             self.stats["execution_times"].append(execution_time)
 
-            self.logger.info(f"自動修正完了: {result['success']} " f"({execution_time:.2f}秒)")
+            self.logger.info(
+                f"自動修正完了: {result['success']} " f"({execution_time:.2f}秒)"
+            )
 
         except Exception as e:
             result["error"] = str(e)

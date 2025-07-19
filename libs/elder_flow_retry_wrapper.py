@@ -83,7 +83,9 @@ class ElderFlowRetryWrapper:
                     if attempt >= max_retries:
                         print(f"\n❌ 最大リトライ回数（{max_retries}回）に達しました。")
                         print("   以下のいずれかの方法で対処してください：")
-                        print(f'   1. しばらく待ってから再実行: elder-flow execute "{task_name}"')
+                        print(
+                            f'   1. しばらく待ってから再実行: elder-flow execute "{task_name}"'
+                        )
                         print(f"   2. 実行中のタスクの完了を確認: elder-flow status")
                         print(f"   3. 古いロックをクリーンアップ: elder-flow cleanup")
                         return result

@@ -115,7 +115,10 @@ class TaskSageMonitor:
         """GitHub Flow遵守状況チェック"""
         try:
             result = subprocess.run(
-                ["git", "branch", "--show-current"], cwd=self.project_dir, capture_output=True, text=True
+                ["git", "branch", "--show-current"],
+                cwd=self.project_dir,
+                capture_output=True,
+                text=True,
             )
 
             current_branch = result.stdout.strip()
@@ -132,10 +135,18 @@ class TaskSageMonitor:
             ):
                 issues.append("不正なブランチ命名")
 
-            return {"compliant": len(issues) == 0, "current_branch": current_branch, "issues": issues}
+            return {
+                "compliant": len(issues) == 0,
+                "current_branch": current_branch,
+                "issues": issues,
+            }
 
         except Exception as e:
-            return {"compliant": False, "current_branch": "unknown", "issues": [f"チェックエラー: {e}"]}
+            return {
+                "compliant": False,
+                "current_branch": "unknown",
+                "issues": [f"チェックエラー: {e}"],
+            }
 
     def check_task_progress(self) -> Dict:
         """タスク進捗チェック"""
@@ -150,7 +161,12 @@ class TaskSageMonitor:
     def check_quality_metrics(self) -> Dict:
         """品質メトリクスチェック"""
         # 簡易実装（実際はコード品質ツールと連携）
-        return {"quality_score": 0.92, "test_coverage": 0.85, "code_complexity": 0.75, "documentation_coverage": 0.88}
+        return {
+            "quality_score": 0.92,
+            "test_coverage": 0.85,
+            "code_complexity": 0.75,
+            "documentation_coverage": 0.88,
+        }
 
 
 class IncidentSageMonitor:
@@ -159,7 +175,12 @@ class IncidentSageMonitor:
     def __init__(self, project_dir: Path):
         self.project_dir = project_dir
         self.logger = logging.getLogger("IncidentSage")
-        self.risk_thresholds = {"error_rate": 0.05, "response_time": 5.0, "system_load": 0.8, "disk_usage": 0.9}
+        self.risk_thresholds = {
+            "error_rate": 0.05,
+            "response_time": 5.0,
+            "system_load": 0.8,
+            "disk_usage": 0.9,
+        }
 
     def monitor_system_health(self) -> List[MonitoringAlert]:
         """システム健全性の監視"""
@@ -226,7 +247,12 @@ class IncidentSageMonitor:
         """リポジトリ健全性チェック"""
         try:
             # Git fsck実行
-            result = subprocess.run(["git", "fsck", "--full"], cwd=self.project_dir, capture_output=True, text=True)
+            result = subprocess.run(
+                ["git", "fsck", "--full"],
+                cwd=self.project_dir,
+                capture_output=True,
+                text=True,
+            )
 
             issues = []
             if result.returncode != 0:
@@ -243,16 +269,26 @@ class IncidentSageMonitor:
             if branch_result.returncode != 0:
                 issues.append("mainブランチが存在しない")
 
-            return {"healthy": len(issues) == 0, "issues": issues, "fsck_output": result.stderr}
+            return {
+                "healthy": len(issues) == 0,
+                "issues": issues,
+                "fsck_output": result.stderr,
+            }
 
         except Exception as e:
-            return {"healthy": False, "issues": [f"チェックエラー: {e}"], "fsck_output": ""}
+            return {
+                "healthy": False,
+                "issues": [f"チェックエラー: {e}"],
+                "fsck_output": "",
+            }
 
     def check_system_resources(self) -> Dict:
         """システムリソースチェック"""
         try:
             # ディスク使用量
-            disk_result = subprocess.run(["df", "-h", str(self.project_dir)], capture_output=True, text=True)
+            disk_result = subprocess.run(
+                ["df", "-h", str(self.project_dir)], capture_output=True, text=True
+            )
 
             disk_usage = 0.0
             if disk_result.returncode == 0:
@@ -263,10 +299,19 @@ class IncidentSageMonitor:
                         usage_str = parts[4].rstrip("%")
                         disk_usage = float(usage_str) / 100.0
 
-            return {"disk_usage": disk_usage, "memory_usage": 0.5, "cpu_usage": 0.3}  # 簡易実装  # 簡易実装
+            return {
+                "disk_usage": disk_usage,
+                "memory_usage": 0.5,
+                "cpu_usage": 0.3,
+            }  # 簡易実装  # 簡易実装
 
         except Exception as e:
-            return {"disk_usage": 0.0, "memory_usage": 0.0, "cpu_usage": 0.0, "error": str(e)}
+            return {
+                "disk_usage": 0.0,
+                "memory_usage": 0.0,
+                "cpu_usage": 0.0,
+                "error": str(e),
+            }
 
     def check_security_risks(self) -> Dict:
         """セキュリティリスクチェック"""
@@ -375,10 +420,18 @@ class KnowledgeSageMonitor:
             total_files = len(md_files)
 
             if total_files == 0:
-                return {"quality_score": 0.0, "issues": ["ドキュメントファイルが存在しない"]}
+                return {
+                    "quality_score": 0.0,
+                    "issues": ["ドキュメントファイルが存在しない"],
+                }
 
             # 品質指標の計算
-            quality_metrics = {"file_count": total_files, "average_length": 0, "has_headers": 0, "has_examples": 0}
+            quality_metrics = {
+                "file_count": total_files,
+                "average_length": 0,
+                "has_headers": 0,
+                "has_examples": 0,
+            }
 
             for md_file in md_files:
                 try:
@@ -401,10 +454,16 @@ class KnowledgeSageMonitor:
 
                 # 品質スコア計算
                 quality_score = (
-                    header_ratio * 0.4 + example_ratio * 0.3 + min(quality_metrics["average_length"] / 1000, 1.0) * 0.3
+                    header_ratio * 0.4
+                    + example_ratio * 0.3
+                    + min(quality_metrics["average_length"] / 1000, 1.0) * 0.3
                 )
 
-                return {"quality_score": quality_score, "metrics": quality_metrics, "issues": []}
+                return {
+                    "quality_score": quality_score,
+                    "metrics": quality_metrics,
+                    "issues": [],
+                }
 
             return {"quality_score": 0.0, "issues": ["計算エラー"]}
 
@@ -510,7 +569,12 @@ class RAGSageMonitor:
     def check_search_accuracy(self) -> Dict:
         """検索精度チェック"""
         # 簡易実装（実際は検索システムと連携）
-        return {"accuracy": 0.85, "total_queries": 100, "successful_queries": 85, "failed_queries": 15}
+        return {
+            "accuracy": 0.85,
+            "total_queries": 100,
+            "successful_queries": 85,
+            "failed_queries": 15,
+        }
 
     def check_integration_quality(self) -> Dict:
         """情報統合品質チェック"""
@@ -525,7 +589,12 @@ class RAGSageMonitor:
     def check_optimization_status(self) -> Dict:
         """最適化状況チェック"""
         # 簡易実装（実際は最適化システムと連携）
-        return {"optimized": True, "performance_score": 0.88, "bottlenecks": [], "improvement_suggestions": []}
+        return {
+            "optimized": True,
+            "performance_score": 0.88,
+            "bottlenecks": [],
+            "improvement_suggestions": [],
+        }
 
 
 class FourSagesMonitoringSystem:
@@ -576,7 +645,11 @@ class FourSagesMonitoringSystem:
                 "batch_notify": ["MEDIUM", "LOW"],
                 "batch_interval": 3600,  # 1時間
             },
-            "escalation_rules": {"auto_escalate": True, "escalation_timeout": 1800, "max_escalation_level": 3},  # 30分
+            "escalation_rules": {
+                "auto_escalate": True,
+                "escalation_timeout": 1800,
+                "max_escalation_level": 3,
+            },  # 30分
         }
 
         if self.config_file.exists():
@@ -671,13 +744,23 @@ class FourSagesMonitoringSystem:
             for alert in alerts:
                 sage = alert.sage
                 if sage not in sage_alerts:
-                    sage_alerts[sage] = {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}
+                    sage_alerts[sage] = {
+                        "CRITICAL": 0,
+                        "HIGH": 0,
+                        "MEDIUM": 0,
+                        "LOW": 0,
+                    }
                 sage_alerts[sage][alert.severity] += 1
 
             # 各賢者の懸念レベルを計算
             concern_levels = {}
             for sage, counts in sage_alerts.items():
-                concern_level = counts["CRITICAL"] * 4 + counts["HIGH"] * 3 + counts["MEDIUM"] * 2 + counts["LOW"] * 1
+                concern_level = (
+                    counts["CRITICAL"] * 4
+                    + counts["HIGH"] * 3
+                    + counts["MEDIUM"] * 2
+                    + counts["LOW"] * 1
+                )
                 concern_levels[sage] = concern_level
 
             # 統合判定
@@ -707,7 +790,11 @@ class FourSagesMonitoringSystem:
 
         except Exception as e:
             self.logger.error(f"4賢者合意判定エラー: {e}")
-            return {"action_required": True, "action_type": "emergency_response", "error": str(e)}
+            return {
+                "action_required": True,
+                "action_type": "emergency_response",
+                "error": str(e),
+            }
 
     def execute_consensus_action(self, consensus: Dict):
         """合意されたアクションの実行"""
@@ -733,7 +820,9 @@ class FourSagesMonitoringSystem:
         """緊急対応の実行"""
         try:
             # 緊急対応システムの呼び出し
-            emergency_script = self.project_dir / "scripts" / "emergency_response_system.py"
+            emergency_script = (
+                self.project_dir / "scripts" / "emergency_response_system.py"
+            )
             if emergency_script.exists():
                 subprocess.run(["python3", str(emergency_script)], cwd=self.project_dir)
 
@@ -744,9 +833,13 @@ class FourSagesMonitoringSystem:
         """協調対応の実行"""
         try:
             # GitHub Flow保護システムの実行
-            protection_script = self.project_dir / "scripts" / "github_flow_protection.py"
+            protection_script = (
+                self.project_dir / "scripts" / "github_flow_protection.py"
+            )
             if protection_script.exists():
-                subprocess.run(["python3", str(protection_script)], cwd=self.project_dir)
+                subprocess.run(
+                    ["python3", str(protection_script)], cwd=self.project_dir
+                )
 
         except Exception as e:
             self.logger.error(f"協調対応実行エラー: {e}")
@@ -864,7 +957,9 @@ class FourSagesMonitoringSystem:
                     # 過去24時間のアラート
                     cutoff_time = datetime.now() - timedelta(hours=24)
                     recent_alerts = [
-                        alert for alert in all_alerts if datetime.fromisoformat(alert["timestamp"]) > cutoff_time
+                        alert
+                        for alert in all_alerts
+                        if datetime.fromisoformat(alert["timestamp"]) > cutoff_time
                     ]
 
             return {

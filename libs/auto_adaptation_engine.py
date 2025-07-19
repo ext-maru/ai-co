@@ -150,9 +150,9 @@ class AutoAdaptationEngine:
                                         "type": self._identify_bottleneck_type(
                                             metric_name
                                         ),
-                                        "severity": "high"
-                                        if degradation > 0.3
-                                        else "medium",
+                                        "severity": (
+                                            "high" if degradation > 0.3 else "medium"
+                                        ),
                                     }
                                 )
 
@@ -834,11 +834,9 @@ class AutoAdaptationEngine:
 
         return {
             "risk_score": risk_score,
-            "risk_level": "high"
-            if risk_score > 0.5
-            else "medium"
-            if risk_score > 0.3
-            else "low",
+            "risk_level": (
+                "high" if risk_score > 0.5 else "medium" if risk_score > 0.3 else "low"
+            ),
             "risk_factors": risk_factors,
         }
 

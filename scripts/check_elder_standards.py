@@ -25,13 +25,17 @@ class Colors:
 
 def print_header():
     """ヘッダー表示"""
-    print(f"\n{Colors.PURPLE}{Colors.BOLD}🏛️ エルダーズギルド開発標準チェック{Colors.ENDC}")
+    print(
+        f"\n{Colors.PURPLE}{Colors.BOLD}🏛️ エルダーズギルド開発標準チェック{Colors.ENDC}"
+    )
     print("=" * 50)
 
 
 def check_costar_documentation() -> Tuple[bool, str]:
     """CO-STAR文書の確認"""
-    costar_files = list(Path(".").glob("**/COSTAR*.md")) + list(Path(".").glob("**/costar*.md"))
+    costar_files = list(Path(".").glob("**/COSTAR*.md")) + list(
+        Path(".").glob("**/costar*.md")
+    )
 
     if not costar_files:
         return False, "CO-STAR定義文書が見つかりません"
@@ -40,7 +44,14 @@ def check_costar_documentation() -> Tuple[bool, str]:
     latest_file = max(costar_files, key=lambda p: p.stat().st_mtime)
     content = latest_file.read_text(encoding="utf-8")
 
-    required_sections = ["Context", "Objective", "Style", "Tone", "Audience", "Response"]
+    required_sections = [
+        "Context",
+        "Objective",
+        "Style",
+        "Tone",
+        "Audience",
+        "Response",
+    ]
     missing = [s for s in required_sections if s not in content]
 
     if missing:
@@ -75,7 +86,10 @@ def check_tdd_compliance() -> Tuple[bool, str]:
                 issues.append(f"テストなし: {py_file}")
 
     if issues:
-        return False, f"TDD違反: {', '.join(issues[:3])}{'...' if len(issues) > 3 else ''}"
+        return (
+            False,
+            f"TDD違反: {', '.join(issues[:3])}{'...' if len(issues) > 3 else ''}",
+        )
 
     return True, "全ファイルにテスト確認"
 
@@ -220,7 +234,9 @@ def main():
         print(f"\n{Colors.YELLOW}🔧 自動修正を試みています...{Colors.ENDC}")
         fixed_count = auto_fix_issues(results)
         if fixed_count > 0:
-            print(f"{Colors.GREEN}✅ {fixed_count}件の問題を自動修正しました{Colors.ENDC}")
+            print(
+                f"{Colors.GREEN}✅ {fixed_count}件の問題を自動修正しました{Colors.ENDC}"
+            )
 
     # 結果サマリ
     print("\n" + "=" * 50)
@@ -231,7 +247,9 @@ def main():
     else:
         print(f"{Colors.RED}{Colors.BOLD}❌ エルダーズ開発標準: 不合格{Colors.ENDC}")
         print(f"{Colors.YELLOW}上記の問題を修正してください{Colors.ENDC}")
-        print(f"\n{Colors.PURPLE}ヒント: 'ai-dev-fix' コマンドで自動修正を試みることができます{Colors.ENDC}")
+        print(
+            f"\n{Colors.PURPLE}ヒント: 'ai-dev-fix' コマンドで自動修正を試みることができます{Colors.ENDC}"
+        )
         return 1
 
 

@@ -332,27 +332,37 @@ class LogCleanupSystem:
         total_size = sum(f.size_mb for f in log_files)
 
         if total_size > 500:
-            recommendations.append("ログディレクトリが500MBを超過。クリーンアップを推奨")
+            recommendations.append(
+                "ログディレクトリが500MBを超過。クリーンアップを推奨"
+            )
 
         large_files = [f for f in log_files if f.size_mb > 50]
         if large_files:
-            recommendations.append(f"{len(large_files)}個の大型ログファイル(50MB+)を圧縮推奨")
+            recommendations.append(
+                f"{len(large_files)}個の大型ログファイル(50MB+)を圧縮推奨"
+            )
 
         old_files = [f for f in log_files if f.age_days > 14]
         if old_files:
-            recommendations.append(f"{len(old_files)}個の古いログファイル(14日+)をアーカイブ推奨")
+            recommendations.append(
+                f"{len(old_files)}個の古いログファイル(14日+)をアーカイブ推奨"
+            )
 
         return {
             "timestamp": datetime.now().isoformat(),
             "summary": {
                 "total_files": len(log_files),
                 "total_size_mb": total_size,
-                "largest_file": max(log_files, key=lambda x: x.size_mb).path.name
-                if log_files
-                else None,
-                "oldest_file": max(log_files, key=lambda x: x.age_days).path.name
-                if log_files
-                else None,
+                "largest_file": (
+                    max(log_files, key=lambda x: x.size_mb).path.name
+                    if log_files
+                    else None
+                ),
+                "oldest_file": (
+                    max(log_files, key=lambda x: x.age_days).path.name
+                    if log_files
+                    else None
+                ),
             },
             "type_statistics": dict(type_stats),
             "recommendations": recommendations,

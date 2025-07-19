@@ -15,13 +15,15 @@ import re
 from typing import List, Dict, Tuple
 
 # OpenAI設定
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     print("❌ OPENAI_API_KEY が設定されていません")
     sys.exit(1)
 
 from openai import OpenAI
+
 client = OpenAI(api_key=OPENAI_API_KEY)
+
 
 class AdvancedVectorOptimizer:
     """高度ベクトル検索最適化システム"""
@@ -32,11 +34,11 @@ class AdvancedVectorOptimizer:
     async def connect(self):
         """データベース接続"""
         self.conn = await asyncpg.connect(
-            host='localhost',
+            host="localhost",
             port=5432,
-            database='elders_knowledge',
-            user='elders_guild',
-            password='elders_2025'
+            database="elders_knowledge",
+            user="elders_guild",
+            password="elders_2025",
         )
 
     async def setup_advanced_tables(self):
@@ -44,7 +46,8 @@ class AdvancedVectorOptimizer:
         print("🏗️ 高度検索用テーブル作成中...")
 
         # 拡張ドキュメントテーブル
-        await self.conn.execute("""
+        await self.conn.execute(
+            """
             CREATE TABLE IF NOT EXISTS knowledge_base.advanced_documents (
                 id SERIAL PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
@@ -67,7 +70,8 @@ class AdvancedVectorOptimizer:
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         # インデックス作成
         indexes = [
@@ -75,7 +79,7 @@ class AdvancedVectorOptimizer:
             "CREATE INDEX IF NOT EXISTS idx_adv_content_embedding ON knowledge_base.advanced_documents USING ivfflat (content_embedding vector_cosine_ops) WITH (lists = 100)",
             "CREATE INDEX IF NOT EXISTS idx_adv_summary_embedding ON knowledge_base.advanced_documents USING ivfflat (summary_embedding vector_cosine_ops) WITH (lists = 100)",
             "CREATE INDEX IF NOT EXISTS idx_adv_hybrid_embedding ON knowledge_base.advanced_documents USING ivfflat (hybrid_embedding vector_cosine_ops) WITH (lists = 100)",
-            "CREATE INDEX IF NOT EXISTS idx_adv_search_vector ON knowledge_base.advanced_documents USING gin(search_vector)"
+            "CREATE INDEX IF NOT EXISTS idx_adv_search_vector ON knowledge_base.advanced_documents USING gin(search_vector)",
         ]
 
         for idx in indexes:
@@ -89,7 +93,15 @@ class AdvancedVectorOptimizer:
             return text
 
         # シンプルな要約（先頭100文字 + キーワード抽出）
-        keywords = ["4賢者", "エルダーズギルド", "ナレッジ", "タスク", "インシデント", "RAG", "pgvector"]
+        keywords = [
+            "4賢者",
+            "エルダーズギルド",
+            "ナレッジ",
+            "タスク",
+            "インシデント",
+            "RAG",
+            "pgvector",
+        ]
         found_keywords = [kw for kw in keywords if kw in text]
 
         summary = text[:100]
@@ -101,14 +113,27 @@ class AdvancedVectorOptimizer:
     def expand_query(self, query: str) -> str:
         """クエリ拡張"""
         expansions = {
-            "4賢者": ["4賢者", "四賢者", "賢者システム", "Knowledge Sage", "Task Oracle", "Crisis Sage", "Search Mystic"],
-            "エルダーズギルド": ["エルダーズギルド", "Elders Guild", "エルダー", "開発組織"],
+            "4賢者": [
+                "4賢者",
+                "四賢者",
+                "賢者システム",
+                "Knowledge Sage",
+                "Task Oracle",
+                "Crisis Sage",
+                "Search Mystic",
+            ],
+            "エルダーズギルド": [
+                "エルダーズギルド",
+                "Elders Guild",
+                "エルダー",
+                "開発組織",
+            ],
             "ナレッジ": ["ナレッジ", "知識", "Knowledge", "知識管理"],
             "タスク": ["タスク", "Task", "プロジェクト", "進捗"],
             "インシデント": ["インシデント", "Incident", "危機", "問題", "エラー"],
             "RAG": ["RAG", "検索", "情報", "Search"],
             "TDD": ["TDD", "テスト駆動", "テスト駆動開発", "Test Driven Development"],
-            "pgvector": ["pgvector", "ベクトル検索", "vector search", "PostgreSQL"]
+            "pgvector": ["pgvector", "ベクトル検索", "vector search", "PostgreSQL"],
         }
 
         expanded = query
@@ -118,7 +143,9 @@ class AdvancedVectorOptimizer:
 
         return expanded
 
-    async def create_multiple_embeddings(self, title: str, content: str, summary: str) -> Dict[str, List[float]]:
+    async def create_multiple_embeddings(
+        self, title: str, content: str, summary: str
+    ) -> Dict[str, List[float]]:
         """複数の埋め込み生成"""
 
         # コンテキスト付きテキスト準備
@@ -126,21 +153,22 @@ class AdvancedVectorOptimizer:
             "title": f"タイトル: {title}",
             "content": f"内容: {content}",
             "summary": f"要約: {summary}",
-            "hybrid": f"タイトル: {title}. 要約: {summary}. 内容: {content[:200]}"
+            "hybrid": f"タイトル: {title}. 要約: {summary}. 内容: {content[:200]}",
         }
 
         embeddings = {}
 
         for key, text in contexts.items():
             response = client.embeddings.create(
-                model="text-embedding-ada-002",
-                input=text
+                model="text-embedding-ada-002", input=text
             )
             embeddings[key] = response.data[0].embedding
 
         return embeddings
 
-    async def insert_advanced_document(self, title: str, content: str, category: str = None, tags: List[str] = None):
+    async def insert_advanced_document(
+        self, title: str, content: str, category: str = None, tags: List[str] = None
+    ):
         """高度ドキュメントの挿入"""
 
         # 要約生成
@@ -153,7 +181,8 @@ class AdvancedVectorOptimizer:
         search_text = f"{title} {content} {summary}"
 
         # データベースに挿入
-        await self.conn.execute("""
+        await self.conn.execute(
+            """
             INSERT INTO knowledge_base.advanced_documents
             (title, content, summary, category, tags,
              title_embedding, content_embedding, summary_embedding, hybrid_embedding,
@@ -161,11 +190,17 @@ class AdvancedVectorOptimizer:
             VALUES ($1, $2, $3, $4, $5, $6::vector, $7::vector, $8::vector, $9::vector,
                     to_tsvector('english', $10), $11)
         """,
-            title, content, summary, category, tags or [],
-            str(embeddings["title"]), str(embeddings["content"]),
-            str(embeddings["summary"]), str(embeddings["hybrid"]),
+            title,
+            content,
+            summary,
+            category,
+            tags or [],
+            str(embeddings["title"]),
+            str(embeddings["content"]),
+            str(embeddings["summary"]),
+            str(embeddings["hybrid"]),
             search_text,
-            json.dumps({"created_by": "advanced_optimizer"})
+            json.dumps({"created_by": "advanced_optimizer"}),
         )
 
     async def advanced_search(self, query: str, limit: int = 5) -> List[Dict]:
@@ -176,13 +211,13 @@ class AdvancedVectorOptimizer:
 
         # クエリの埋め込み生成
         response = client.embeddings.create(
-            model="text-embedding-ada-002",
-            input=expanded_query
+            model="text-embedding-ada-002", input=expanded_query
         )
         query_embedding = response.data[0].embedding
 
         # ハイブリッド検索実行
-        results = await self.conn.fetch("""
+        results = await self.conn.fetch(
+            """
             WITH vector_scores AS (
                 SELECT
                     id, title, content, summary,
@@ -212,9 +247,14 @@ class AdvancedVectorOptimizer:
             SELECT * FROM combined_scores
             ORDER BY final_score DESC
             LIMIT $3
-        """, str(query_embedding), expanded_query, limit)
+        """,
+            str(query_embedding),
+            expanded_query,
+            limit,
+        )
 
         return [dict(row) for row in results]
+
 
 async def test_advanced_optimization():
     """高度最適化のテスト"""
@@ -245,7 +285,7 @@ async def test_advanced_optimization():
                 ナレッジ賢者は知識管理、タスク賢者はプロジェクト管理、インシデント賢者は危機対応、
                 RAG賢者は情報検索をそれぞれ担当し、全体として自律的な開発システムを構築しています。""",
                 "category": "システム概要",
-                "tags": ["4賢者", "エルダーズギルド", "開発組織"]
+                "tags": ["4賢者", "エルダーズギルド", "開発組織"],
             },
             {
                 "title": "ナレッジ賢者の役割と機能",
@@ -255,7 +295,7 @@ async def test_advanced_optimization():
                 チーム間の知識共有促進、新人エンジニアの学習支援なども行います。
                 知識の品質評価、更新頻度の管理、関連性の分析なども重要な機能です。""",
                 "category": "賢者詳細",
-                "tags": ["ナレッジ賢者", "知識管理", "4賢者"]
+                "tags": ["ナレッジ賢者", "知識管理", "4賢者"],
             },
             {
                 "title": "pgvectorによる高速ベクトル検索",
@@ -265,8 +305,8 @@ async def test_advanced_optimization():
                 大規模なデータセットでも高速な検索性能を維持できます。
                 エルダーズギルドでは知識検索の中核技術として活用されています。""",
                 "category": "技術詳細",
-                "tags": ["pgvector", "ベクトル検索", "PostgreSQL", "OpenAI"]
-            }
+                "tags": ["pgvector", "ベクトル検索", "PostgreSQL", "OpenAI"],
+            },
         ]
 
         for doc in test_documents:
@@ -282,7 +322,7 @@ async def test_advanced_optimization():
             "ナレッジ賢者の機能は何ですか",
             "pgvectorの特徴を教えて",
             "エルダーズギルドとは",
-            "ベクトル検索の仕組み"
+            "ベクトル検索の仕組み",
         ]
 
         all_scores = []
@@ -292,13 +332,17 @@ async def test_advanced_optimization():
             results = await optimizer.advanced_search(query, limit=3)
 
             if results:
-                top_score = results[0]['final_score']
+                top_score = results[0]["final_score"]
                 all_scores.append(top_score)
                 print(f"  🎯 最高スコア: {top_score:.4f}")
 
                 for i, result in enumerate(results):
-                    print(f"  {i+1}. {result['title']} (スコア: {result['final_score']:.4f})")
-                    print(f"     ベクトル: {result['vector_total']:.4f}, テキスト: {result['text_total']:.4f}")
+                    print(
+                        f"  {i+1}. {result['title']} (スコア: {result['final_score']:.4f})"
+                    )
+                    print(
+                        f"     ベクトル: {result['vector_total']:.4f}, テキスト: {result['text_total']:.4f}"
+                    )
 
         # 4. 結果分析
         if all_scores:
@@ -333,12 +377,14 @@ async def test_advanced_optimization():
     except Exception as e:
         print(f"\n❌ エラー発生: {e}")
         import traceback
+
         traceback.print_exc()
         return 0
 
     finally:
         if optimizer.conn:
             await optimizer.conn.close()
+
 
 if __name__ == "__main__":
     max_similarity = asyncio.run(test_advanced_optimization())

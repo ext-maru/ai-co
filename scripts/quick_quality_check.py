@@ -6,6 +6,7 @@
 import sys
 from pathlib import Path
 
+
 def quick_check():
     """現在の状態をクイックチェック"""
 
@@ -64,6 +65,7 @@ def quick_check():
         return 1
 
     print("\n" + "=" * 50)
+
 
 if __name__ == "__main__":
     sys.exit(quick_check())

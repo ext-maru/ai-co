@@ -560,9 +560,11 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 / max(metrics["lines_of_code"], 1),
                 "function_complexity_avg": metrics["complexity"]
                 / max(metrics["functions"], 1),
-                "class_size_avg": metrics["logical_lines"] / max(metrics["classes"], 1)
-                if metrics["classes"] > 0
-                else 0,
+                "class_size_avg": (
+                    metrics["logical_lines"] / max(metrics["classes"], 1)
+                    if metrics["classes"] > 0
+                    else 0
+                ),
             }
 
             # 総合品質スコア

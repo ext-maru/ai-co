@@ -13,13 +13,15 @@ from datetime import datetime
 import json
 
 # OpenAI設定
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     print("❌ OPENAI_API_KEY が設定されていません")
     sys.exit(1)
 
 from openai import OpenAI
+
 client = OpenAI(api_key=OPENAI_API_KEY)
+
 
 async def ultimate_precision_test():
     """究極の精度テスト"""
@@ -29,17 +31,18 @@ async def ultimate_precision_test():
 
     # データベース接続
     conn = await asyncpg.connect(
-        host='localhost',
+        host="localhost",
         port=5432,
-        database='elders_knowledge',
-        user='elders_guild',
-        password='elders_2025'
+        database="elders_knowledge",
+        user="elders_guild",
+        password="elders_2025",
     )
 
     try:
         # 究極テーブル作成
         await conn.execute("DROP TABLE IF EXISTS knowledge_base.ultimate_docs")
-        await conn.execute("""
+        await conn.execute(
+            """
             CREATE TABLE knowledge_base.ultimate_docs (
                 id SERIAL PRIMARY KEY,
                 exact_query TEXT,
@@ -47,13 +50,16 @@ async def ultimate_precision_test():
                 embedding vector(1536),
                 created_at TIMESTAMP DEFAULT NOW()
             )
-        """)
+        """
+        )
 
-        await conn.execute("""
+        await conn.execute(
+            """
             CREATE INDEX idx_ultimate_embedding
             ON knowledge_base.ultimate_docs
             USING ivfflat (embedding vector_cosine_ops) WITH (lists = 10)
-        """)
+        """
+        )
 
         print("📋 究極テーブル作成完了")
 
@@ -62,12 +68,30 @@ async def ultimate_precision_test():
 
         exact_pairs = [
             # 完全に一致するクエリ-回答ペア
-            ("4賢者について教えてください", "4賢者とは、ナレッジ賢者、タスク賢者、インシデント賢者、RAG賢者のことです"),
-            ("4賢者システムとは何ですか", "4賢者システムとは、ナレッジ賢者、タスク賢者、インシデント賢者、RAG賢者で構成されるエルダーズギルドのシステムです"),
-            ("エルダーズギルドの4賢者について", "エルダーズギルドの4賢者は、ナレッジ賢者、タスク賢者、インシデント賢者、RAG賢者です"),
-            ("4賢者の構成を教えて", "4賢者の構成は、ナレッジ賢者、タスク賢者、インシデント賢者、RAG賢者の4つです"),
-            ("ナレッジ賢者とは何ですか", "ナレッジ賢者とは、エルダーズギルドの4賢者の一つで、知識管理を担当する賢者です"),
-            ("pgvectorについて教えて", "pgvectorとは、PostgreSQLでベクトル検索を可能にする拡張機能です"),
+            (
+                "4賢者について教えてください",
+                "4賢者とは、ナレッジ賢者、タスク賢者、インシデント賢者、RAG賢者のことです",
+            ),
+            (
+                "4賢者システムとは何ですか",
+                "4賢者システムとは、ナレッジ賢者、タスク賢者、インシデント賢者、RAG賢者で構成されるエルダーズギルドのシステムです",
+            ),
+            (
+                "エルダーズギルドの4賢者について",
+                "エルダーズギルドの4賢者は、ナレッジ賢者、タスク賢者、インシデント賢者、RAG賢者です",
+            ),
+            (
+                "4賢者の構成を教えて",
+                "4賢者の構成は、ナレッジ賢者、タスク賢者、インシデント賢者、RAG賢者の4つです",
+            ),
+            (
+                "ナレッジ賢者とは何ですか",
+                "ナレッジ賢者とは、エルダーズギルドの4賢者の一つで、知識管理を担当する賢者です",
+            ),
+            (
+                "pgvectorについて教えて",
+                "pgvectorとは、PostgreSQLでベクトル検索を可能にする拡張機能です",
+            ),
         ]
 
         # 各ペアのembeddingを生成
@@ -76,16 +100,20 @@ async def ultimate_precision_test():
             combined_text = f"質問: {query}. 回答: {answer}"
 
             response = client.embeddings.create(
-                model="text-embedding-ada-002",
-                input=combined_text
+                model="text-embedding-ada-002", input=combined_text
             )
             embedding = response.data[0].embedding
 
-            await conn.execute("""
+            await conn.execute(
+                """
                 INSERT INTO knowledge_base.ultimate_docs
                 (exact_query, exact_answer, embedding)
                 VALUES ($1, $2, $3::vector)
-            """, query, answer, str(embedding))
+            """,
+                query,
+                answer,
+                str(embedding),
+            )
 
         print(f"✅ {len(exact_pairs)}件の完全一致データを作成")
 
@@ -98,7 +126,7 @@ async def ultimate_precision_test():
             "エルダーズギルドの4賢者について",
             "4賢者の構成を教えて",
             "ナレッジ賢者とは何ですか",
-            "pgvectorについて教えて"
+            "pgvectorについて教えて",
         ]
 
         scores = []
@@ -110,13 +138,13 @@ async def ultimate_precision_test():
             query_text = f"質問: {query}. 回答:"
 
             response = client.embeddings.create(
-                model="text-embedding-ada-002",
-                input=query_text
+                model="text-embedding-ada-002", input=query_text
             )
             query_embedding = response.data[0].embedding
 
             # 検索実行
-            results = await conn.fetch("""
+            results = await conn.fetch(
+                """
                 SELECT
                     exact_query,
                     exact_answer,
@@ -124,10 +152,12 @@ async def ultimate_precision_test():
                 FROM knowledge_base.ultimate_docs
                 ORDER BY embedding <=> $1::vector
                 LIMIT 3
-            """, str(query_embedding))
+            """,
+                str(query_embedding),
+            )
 
             if results:
-                top_similarity = results[0]['similarity']
+                top_similarity = results[0]["similarity"]
                 scores.append(top_similarity)
 
                 print(f"  🎯 類似度: {top_similarity:.4f} ({top_similarity*100:.1f}%)")
@@ -159,11 +189,13 @@ async def ultimate_precision_test():
     except Exception as e:
         print(f"\n❌ エラー発生: {e}")
         import traceback
+
         traceback.print_exc()
         return 0
 
     finally:
         await conn.close()
+
 
 async def training_data_approach():
     """学習データアプローチ"""
@@ -172,45 +204,49 @@ async def training_data_approach():
     print("=" * 50)
 
     conn = await asyncpg.connect(
-        host='localhost',
+        host="localhost",
         port=5432,
-        database='elders_knowledge',
-        user='elders_guild',
-        password='elders_2025'
+        database="elders_knowledge",
+        user="elders_guild",
+        password="elders_2025",
     )
 
     try:
         # 学習用テーブル
         await conn.execute("DROP TABLE IF EXISTS knowledge_base.training_docs")
-        await conn.execute("""
+        await conn.execute(
+            """
             CREATE TABLE knowledge_base.training_docs (
                 id SERIAL PRIMARY KEY,
                 context TEXT,
                 content TEXT,
                 embedding vector(1536)
             )
-        """)
+        """
+        )
 
-        await conn.execute("""
+        await conn.execute(
+            """
             CREATE INDEX idx_training_embedding
             ON knowledge_base.training_docs
             USING ivfflat (embedding vector_cosine_ops) WITH (lists = 10)
-        """)
+        """
+        )
 
         # 文脈を大量に含む学習データ
         training_data = [
             {
                 "context": "エルダーズギルド 4賢者 ナレッジ賢者 タスク賢者 インシデント賢者 RAG賢者",
-                "content": "エルダーズギルドの4賢者システムは、ナレッジ賢者（Knowledge Sage）、タスク賢者（Task Oracle）、インシデント賢者（Crisis Sage）、RAG賢者（Search Mystic）で構成される高度な開発組織システムです。4賢者 4賢者 4賢者"
+                "content": "エルダーズギルドの4賢者システムは、ナレッジ賢者（Knowledge Sage）、タスク賢者（Task Oracle）、インシデント賢者（Crisis Sage）、RAG賢者（Search Mystic）で構成される高度な開発組織システムです。4賢者 4賢者 4賢者",
             },
             {
                 "context": "ナレッジ賢者 知識管理 Knowledge Sage 4賢者 エルダーズギルド",
-                "content": "ナレッジ賢者（Knowledge Sage）は4賢者の一員として、エルダーズギルドの知識管理を専門に担当する重要な役割を持つ賢者システムです。ナレッジ賢者 ナレッジ賢者 Knowledge Sage"
+                "content": "ナレッジ賢者（Knowledge Sage）は4賢者の一員として、エルダーズギルドの知識管理を専門に担当する重要な役割を持つ賢者システムです。ナレッジ賢者 ナレッジ賢者 Knowledge Sage",
             },
             {
                 "context": "pgvector ベクトル検索 PostgreSQL 埋め込み エルダーズギルド",
-                "content": "pgvectorは、PostgreSQLにベクトル検索機能を追加する革新的な拡張機能で、エルダーズギルドの知識検索システムの中核を担っています。pgvector pgvector ベクトル検索"
-            }
+                "content": "pgvectorは、PostgreSQLにベクトル検索機能を追加する革新的な拡張機能で、エルダーズギルドの知識検索システムの中核を担っています。pgvector pgvector ベクトル検索",
+            },
         ]
 
         # 学習データの投入
@@ -219,28 +255,32 @@ async def training_data_approach():
             full_text = f"{data['context']} {data['content']} {data['context']}"
 
             response = client.embeddings.create(
-                model="text-embedding-ada-002",
-                input=full_text
+                model="text-embedding-ada-002", input=full_text
             )
             embedding = response.data[0].embedding
 
-            await conn.execute("""
+            await conn.execute(
+                """
                 INSERT INTO knowledge_base.training_docs
                 (context, content, embedding)
                 VALUES ($1, $2, $3::vector)
-            """, data['context'], data['content'], str(embedding))
+            """,
+                data["context"],
+                data["content"],
+                str(embedding),
+            )
 
         # テスト
         test_query = "4賢者について教えてください"
         enhanced_query = f"エルダーズギルド 4賢者 ナレッジ賢者 タスク賢者 インシデント賢者 RAG賢者 {test_query}"
 
         response = client.embeddings.create(
-            model="text-embedding-ada-002",
-            input=enhanced_query
+            model="text-embedding-ada-002", input=enhanced_query
         )
         query_embedding = response.data[0].embedding
 
-        results = await conn.fetch("""
+        results = await conn.fetch(
+            """
             SELECT
                 context,
                 content,
@@ -248,10 +288,12 @@ async def training_data_approach():
             FROM knowledge_base.training_docs
             ORDER BY embedding <=> $1::vector
             LIMIT 1
-        """, str(query_embedding))
+        """,
+            str(query_embedding),
+        )
 
         if results:
-            similarity = results[0]['similarity']
+            similarity = results[0]["similarity"]
             print(f"学習データアプローチ結果: {similarity*100:.1f}%")
             return similarity * 100
 
@@ -259,6 +301,7 @@ async def training_data_approach():
 
     finally:
         await conn.close()
+
 
 if __name__ == "__main__":
     max_score1 = asyncio.run(ultimate_precision_test())

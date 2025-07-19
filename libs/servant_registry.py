@@ -84,9 +84,9 @@ class ServantRegistry:
             for servant_id, servant_info in self.servants.items():
                 servant_dict = asdict(servant_info)
                 servant_dict["last_activity"] = servant_info.last_activity.isoformat()
-                servant_dict[
-                    "registration_date"
-                ] = servant_info.registration_date.isoformat()
+                servant_dict["registration_date"] = (
+                    servant_info.registration_date.isoformat()
+                )
                 registry_data[servant_id] = servant_dict
 
             self.registry_file.write_text(json.dumps(registry_data, indent=2))
@@ -362,9 +362,9 @@ class ServantRegistry:
             "description": servant_info.description,
             "status": servant_info.status,
             "specialties": servant_info.specialties,
-            "current_task": servant_info.current_tasks[-1]
-            if servant_info.current_tasks
-            else None,
+            "current_task": (
+                servant_info.current_tasks[-1] if servant_info.current_tasks else None
+            ),
             "current_tasks_count": len(servant_info.current_tasks),
             "max_concurrent_tasks": servant_info.max_concurrent_tasks,
             "completed_tasks": servant_info.completed_tasks,

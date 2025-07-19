@@ -26,6 +26,7 @@ from libs.elder_registry import ElderRegistry, AgentType
 
 class EnforcementError(Exception):
     """強制実行違反エラー"""
+
     pass
 
 
@@ -46,18 +47,18 @@ class ElderTreeEnforcement:
 
         # 強制実行設定
         self.enforcement_config = {
-            "auto_register": True,      # 自動登録
-            "strict_mode": True,        # 厳格モード
-            "education_mode": True,     # 教育モード
-            "grace_period": 300,        # 猶予期間（秒）
-            "violations_log": "data/violations.json"
+            "auto_register": True,  # 自動登録
+            "strict_mode": True,  # 厳格モード
+            "education_mode": True,  # 教育モード
+            "grace_period": 300,  # 猶予期間（秒）
+            "violations_log": "data/violations.json",
         }
 
         # 除外パターン
         self.exclusions = {
             "system_processes": ["systemd", "init", "kernel"],
             "development_tools": ["python", "node", "npm", "git"],
-            "existing_legacy": ["old_workers", "legacy_scripts"]
+            "existing_legacy": ["old_workers", "legacy_scripts"],
         }
 
         # 違反記録
@@ -113,9 +114,9 @@ class ElderTreeEnforcement:
         else:
             self.logger.info("✅ All processes are Elder Tree compliant")
 
-    async def register_new_role(self,
-                              role_info: Dict[str, Any],
-                              auto_approve: bool = False) -> bool:
+    async def register_new_role(
+        self, role_info: Dict[str, Any], auto_approve: bool = False
+    ) -> bool:
         """
         新役割の登録
 
@@ -138,13 +139,15 @@ class ElderTreeEnforcement:
         # エルダーの魂への自動登録
         try:
             agent = await self.registry.register_agent(
-                agent_id=role_info.get("id", role_info["name"].lower().replace(" ", "_")),
+                agent_id=role_info.get(
+                    "id", role_info["name"].lower().replace(" ", "_")
+                ),
                 name=role_info["name"],
                 description=role_info["description"],
                 agent_type=AgentType(role_info["type"]),
                 capabilities=role_info["capabilities"],
                 dependencies=role_info.get("dependencies", []),
-                auto_start=role_info.get("auto_start", True)
+                auto_start=role_info.get("auto_start", True),
             )
 
             self.logger.info(f"✅ Successfully registered: {agent.name}")
@@ -190,6 +193,7 @@ class ElderTreeEnforcement:
         def my_new_function():
             pass
         """
+
         def decorator(func: Callable) -> Callable:
             @wraps(func)
             async def wrapper(*args, **kwargs):
@@ -198,7 +202,7 @@ class ElderTreeEnforcement:
                     "name": func.__name__,
                     "module": func.__module__,
                     "file": inspect.getfile(func),
-                    "type": agent_type.value
+                    "type": agent_type.value,
                 }
 
                 # 自動登録
@@ -213,9 +217,14 @@ class ElderTreeEnforcement:
                             f"Please register using: elder-tree-soul register {func.__name__}"
                         )
 
-                return await func(*args, **kwargs) if asyncio.iscoroutinefunction(func) else func(*args, **kwargs)
+                return (
+                    await func(*args, **kwargs)
+                    if asyncio.iscoroutinefunction(func)
+                    else func(*args, **kwargs)
+                )
 
             return wrapper
+
         return decorator
 
     # プライベートメソッド
@@ -245,18 +254,20 @@ class ElderTreeEnforcement:
         try:
             import psutil
 
-            for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            for proc in psutil.process_iter(["pid", "name", "cmdline"]):
                 try:
                     process_info = proc.info
 
                     # エルダー関連プロセスかチェック
                     if await self._is_potential_elder_process(process_info):
                         if not await self.validate_process_compliance(process_info):
-                            violations.append({
-                                "type": "process",
-                                "process": process_info,
-                                "reason": "Unregistered elder-like process"
-                            })
+                            violations.append(
+                                {
+                                    "type": "process",
+                                    "process": process_info,
+                                    "reason": "Unregistered elder-like process",
+                                }
+                            )
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     continue
 
@@ -275,12 +286,14 @@ class ElderTreeEnforcement:
                 file_info = await self._analyze_file(py_file)
 
                 if not await self._is_file_compliant(file_info):
-                    violations.append({
-                        "type": "file",
-                        "file": str(py_file),
-                        "info": file_info,
-                        "reason": "Non-compliant elder file"
-                    })
+                    violations.append(
+                        {
+                            "type": "file",
+                            "file": str(py_file),
+                            "info": file_info,
+                            "reason": "Non-compliant elder file",
+                        }
+                    )
 
         return violations
 
@@ -299,11 +312,13 @@ class ElderTreeEnforcement:
         for start_port, end_port in elder_port_ranges:
             for port in range(start_port, end_port + 1):
                 if await self._is_port_used_by_unregistered_process(port):
-                    violations.append({
-                        "type": "port",
-                        "port": port,
-                        "reason": "Port used by unregistered process"
-                    })
+                    violations.append(
+                        {
+                            "type": "port",
+                            "port": port,
+                            "reason": "Port used by unregistered process",
+                        }
+                    )
 
         return violations
 
@@ -338,7 +353,9 @@ class ElderTreeEnforcement:
                 await self._force_process_compliance(process_info)
             else:
                 # 猶予期間内 - 再警告
-                self.logger.warning(f"⏰ Grace period remaining for {process_name}: {self.enforcement_config['grace_period'] - elapsed:.0f}s")
+                self.logger.warning(
+                    f"⏰ Grace period remaining for {process_name}: {self.enforcement_config['grace_period'] - elapsed:.0f}s"
+                )
         else:
             # 初回警告
             await self._warn_process(process_info)
@@ -362,14 +379,18 @@ class ElderTreeEnforcement:
         using_process = await self._identify_port_user(port)
 
         if using_process:
-            self.logger.warning(f"🔌 Port {port} used by unregistered process: {using_process}")
+            self.logger.warning(
+                f"🔌 Port {port} used by unregistered process: {using_process}"
+            )
 
             # プロセス情報として処理
-            await self._handle_process_violation({
-                "type": "process",
-                "process": using_process,
-                "reason": f"Using elder port {port} without registration"
-            })
+            await self._handle_process_violation(
+                {
+                    "type": "process",
+                    "process": using_process,
+                    "reason": f"Using elder port {port} without registration",
+                }
+            )
 
     async def _force_process_compliance(self, process_info: Dict[str, Any]):
         """プロセス準拠の強制"""
@@ -377,11 +398,14 @@ class ElderTreeEnforcement:
         pid = process_info.get("pid")
 
         if self.enforcement_config["strict_mode"]:
-            self.logger.error(f"🛑 FORCE STOPPING non-compliant process: {process_name} (PID: {pid})")
+            self.logger.error(
+                f"🛑 FORCE STOPPING non-compliant process: {process_name} (PID: {pid})"
+            )
 
             # プロセス終了
             try:
                 import psutil
+
                 proc = psutil.Process(pid)
                 proc.terminate()
 
@@ -391,7 +415,9 @@ class ElderTreeEnforcement:
             except Exception as e:
                 self.logger.error(f"Failed to terminate process {pid}: {e}")
         else:
-            self.logger.warning(f"⚠️ Would terminate {process_name} (strict mode disabled)")
+            self.logger.warning(
+                f"⚠️ Would terminate {process_name} (strict mode disabled)"
+            )
 
     async def _warn_process(self, process_info: Dict[str, Any]):
         """プロセス警告"""
@@ -462,7 +488,9 @@ Your process has been terminated because it violated Elder Soul policies.
 
         print(education_msg)
 
-    async def _auto_register_function(self, func_info: Dict[str, Any], agent_type: AgentType):
+    async def _auto_register_function(
+        self, func_info: Dict[str, Any], agent_type: AgentType
+    ):
         """関数の自動登録"""
         # 関数情報からエージェント情報を生成
         agent_info = {
@@ -472,14 +500,16 @@ Your process has been terminated because it violated Elder Soul policies.
             "type": agent_type.value,
             "capabilities": ["auto_generated"],
             "dependencies": [],
-            "auto_start": False
+            "auto_start": False,
         }
 
         try:
             await self.register_new_role(agent_info, auto_approve=True)
             self.logger.info(f"✅ Auto-registered function: {func_info['name']}")
         except Exception as e:
-            self.logger.error(f"❌ Failed to auto-register function {func_info['name']}: {e}")
+            self.logger.error(
+                f"❌ Failed to auto-register function {func_info['name']}: {e}"
+            )
 
     async def _verify_function_compliance(self, func_info: Dict[str, Any]) -> bool:
         """関数の準拠性検証"""
@@ -489,7 +519,7 @@ Your process has been terminated because it violated Elder Soul policies.
     async def _is_excluded_process(self, process_info: Dict[str, Any]) -> bool:
         """除外プロセスチェック"""
         process_name = process_info.get("name", "").lower()
-        cmdline = ' '.join(process_info.get("cmdline", [])).lower()
+        cmdline = " ".join(process_info.get("cmdline", [])).lower()
 
         # システムプロセス除外
         for pattern in self.exclusions["system_processes"]:
@@ -510,13 +540,21 @@ Your process has been terminated because it violated Elder Soul policies.
 
     async def _is_potential_elder_process(self, process_info: Dict[str, Any]) -> bool:
         """エルダープロセス候補チェック"""
-        cmdline = ' '.join(process_info.get("cmdline", [])).lower()
+        cmdline = " ".join(process_info.get("cmdline", [])).lower()
 
         # エルダー関連キーワード
         elder_keywords = [
-            "elder", "sage", "servant", "elf", "knight",
-            "agent", "worker", "process", "daemon",
-            "a2a", "soul"
+            "elder",
+            "sage",
+            "servant",
+            "elf",
+            "knight",
+            "agent",
+            "worker",
+            "process",
+            "daemon",
+            "a2a",
+            "soul",
         ]
 
         for keyword in elder_keywords:
@@ -536,8 +574,12 @@ Your process has been terminated because it violated Elder Soul policies.
         # ファイル名チェック
         filename = file_path.name.lower()
         elder_patterns = [
-            "_process.py", "_agent.py", "_worker.py",
-            "_servant.py", "_sage.py", "_elder.py"
+            "_process.py",
+            "_agent.py",
+            "_worker.py",
+            "_servant.py",
+            "_sage.py",
+            "_elder.py",
         ]
 
         for pattern in elder_patterns:
@@ -553,22 +595,29 @@ Your process has been terminated because it violated Elder Soul policies.
     async def _analyze_file(self, file_path: Path) -> Dict[str, Any]:
         """ファイル分析"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
             # クラス・関数抽出
             import ast
+
             tree = ast.parse(content)
 
-            classes = [node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)]
-            functions = [node.name for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)]
+            classes = [
+                node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)
+            ]
+            functions = [
+                node.name
+                for node in ast.walk(tree)
+                if isinstance(node, ast.FunctionDef)
+            ]
 
             return {
                 "path": str(file_path),
                 "classes": classes,
                 "functions": functions,
                 "size": len(content),
-                "elder_indicators": self._find_elder_indicators(content)
+                "elder_indicators": self._find_elder_indicators(content),
             }
 
         except Exception as e:
@@ -579,8 +628,13 @@ Your process has been terminated because it violated Elder Soul policies.
         indicators = []
 
         elder_patterns = [
-            "ElderProcessBase", "AgentType", "ElderMessage",
-            "elder_name", "elder_role", "A2A", "elder_tree"
+            "ElderProcessBase",
+            "AgentType",
+            "ElderMessage",
+            "elder_name",
+            "elder_role",
+            "A2A",
+            "elder_tree",
         ]
 
         for pattern in elder_patterns:
@@ -618,7 +672,7 @@ Your process has been terminated because it violated Elder Soul policies.
             "type": "servant",  # デフォルト
             "capabilities": ["auto_discovered"],
             "dependencies": [],
-            "auto_start": False
+            "auto_start": False,
         }
 
         await self.register_new_role(agent_info, auto_approve=True)
@@ -636,9 +690,10 @@ Your process has been terminated because it violated Elder Soul policies.
 
         # ポートが使用されているかチェック
         import socket
+
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                result = sock.connect_ex(('localhost', port))
+                result = sock.connect_ex(("localhost", port))
                 return result == 0  # 使用されている
         except:
             return False
@@ -655,7 +710,7 @@ Your process has been terminated because it violated Elder Soul policies.
                         return {
                             "pid": conn.pid,
                             "name": proc.name(),
-                            "cmdline": proc.cmdline()
+                            "cmdline": proc.cmdline(),
                         }
                     except psutil.NoSuchProcess:
                         continue
@@ -666,11 +721,12 @@ Your process has been terminated because it violated Elder Soul policies.
 
     def _extract_agent_id(self, process_info: Dict[str, Any]) -> Optional[str]:
         """プロセス情報からエージェントID抽出"""
-        cmdline = ' '.join(process_info.get("cmdline", []))
+        cmdline = " ".join(process_info.get("cmdline", []))
 
         # _process.py パターン
         import re
-        match = re.search(r'(\w+)_process\.py', cmdline)
+
+        match = re.search(r"(\w+)_process\.py", cmdline)
         if match:
             return match.group(1)
 
@@ -678,12 +734,14 @@ Your process has been terminated because it violated Elder Soul policies.
 
     async def _matches_elder_pattern(self, process_info: Dict[str, Any]) -> bool:
         """エルダーパターンマッチング"""
-        cmdline = ' '.join(process_info.get("cmdline", [])).lower()
+        cmdline = " ".join(process_info.get("cmdline", [])).lower()
 
         # 既知のエルダーパターン
         elder_patterns = [
-            "elder_soul", "elder-tree-soul",
-            "elder_process_base", "run_elder_process"
+            "elder_soul",
+            "elder-tree-soul",
+            "elder_process_base",
+            "run_elder_process",
         ]
 
         for pattern in elder_patterns:
@@ -698,7 +756,7 @@ Your process has been terminated because it violated Elder Soul policies.
             "timestamp": datetime.now().isoformat(),
             "violation": violation,
             "action_taken": "warned",
-            "resolved": False
+            "resolved": False,
         }
 
         self.violations.append(violation_record)
@@ -709,7 +767,7 @@ Your process has been terminated because it violated Elder Soul policies.
         violations_file = Path(self.enforcement_config["violations_log"])
         if violations_file.exists():
             try:
-                with open(violations_file, 'r', encoding='utf-8') as f:
+                with open(violations_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     self.violations = data.get("violations", [])
             except Exception as e:
@@ -721,11 +779,16 @@ Your process has been terminated because it violated Elder Soul policies.
         violations_file.parent.mkdir(parents=True, exist_ok=True)
 
         try:
-            with open(violations_file, 'w', encoding='utf-8') as f:
-                json.dump({
-                    "violations": self.violations,
-                    "last_updated": datetime.now().isoformat()
-                }, f, ensure_ascii=False, indent=2)
+            with open(violations_file, "w", encoding="utf-8") as f:
+                json.dump(
+                    {
+                        "violations": self.violations,
+                        "last_updated": datetime.now().isoformat(),
+                    },
+                    f,
+                    ensure_ascii=False,
+                    indent=2,
+                )
         except Exception as e:
             self.logger.error(f"Failed to save violations: {e}")
 
@@ -742,7 +805,7 @@ Your process has been terminated because it violated Elder Soul policies.
         config_file = Path("elder_tree_enforcement.json")
         if config_file.exists():
             try:
-                with open(config_file, 'r') as f:
+                with open(config_file, "r") as f:
                     config_override = json.load(f)
                     self.enforcement_config.update(config_override)
             except Exception as e:
@@ -801,6 +864,7 @@ async def enforce_elder_tree():
 
 def require_elder_registration(agent_type: AgentType = AgentType.SERVANT):
     """エルダー登録必須デコレーター"""
+
     async def async_decorator(func):
         enforcement = await get_enforcement()
         return enforcement.require_elder_registration(agent_type)(func)
@@ -811,6 +875,7 @@ def require_elder_registration(agent_type: AgentType = AgentType.SERVANT):
         def wrapper(*args, **kwargs):
             # 非同期での登録チェックを同期的に実行
             import asyncio
+
             loop = asyncio.new_event_loop()
             asyncio.set_event_loop(loop)
             try:
@@ -819,6 +884,7 @@ def require_elder_registration(agent_type: AgentType = AgentType.SERVANT):
                 return decorated(*args, **kwargs)
             finally:
                 loop.close()
+
         return wrapper
 
     return sync_decorator

@@ -101,7 +101,11 @@ class SimpleA2ATest:
 
             # 接続パラメータ
             connection_params = pika.ConnectionParameters(
-                host="localhost", port=5672, virtual_host="/", connection_attempts=3, retry_delay=1
+                host="localhost",
+                port=5672,
+                virtual_host="/",
+                connection_attempts=3,
+                retry_delay=1,
             )
 
             # 接続テスト
@@ -113,9 +117,16 @@ class SimpleA2ATest:
             channel.queue_declare(queue=queue_name, durable=False)
 
             # テストメッセージの送信
-            test_message = json.dumps({"test": "A2A communication test", "timestamp": datetime.now().isoformat()})
+            test_message = json.dumps(
+                {
+                    "test": "A2A communication test",
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
-            channel.basic_publish(exchange="", routing_key=queue_name, body=test_message)
+            channel.basic_publish(
+                exchange="", routing_key=queue_name, body=test_message
+            )
 
             print("  ✅ RabbitMQ接続成功")
             print("  ✅ テストキュー作成成功")
@@ -164,7 +175,12 @@ class SimpleA2ATest:
                     "message": "過去のパターンに基づいて3つの選択肢があります",
                     "type": "query_response",
                 },
-                {"from": "task_sage", "to": "rag_sage", "message": "関連する実装例を検索して", "type": "query_request"},
+                {
+                    "from": "task_sage",
+                    "to": "rag_sage",
+                    "message": "関連する実装例を検索して",
+                    "type": "query_request",
+                },
                 {
                     "from": "rag_sage",
                     "to": "incident_sage",
@@ -249,13 +265,17 @@ class SimpleA2ATest:
         print("🧪 A2A通信テストレポート")
         print("=" * 60)
 
-        print(f"実行時間: {self.test_results['start_time']} - {self.test_results['end_time']}")
+        print(
+            f"実行時間: {self.test_results['start_time']} - {self.test_results['end_time']}"
+        )
         print(f"総テスト数: {self.test_results['tests_run']}")
         print(f"成功: {self.test_results['tests_passed']}")
         print(f"失敗: {self.test_results['tests_failed']}")
 
         if self.test_results["tests_run"] > 0:
-            success_rate = (self.test_results["tests_passed"] / self.test_results["tests_run"]) * 100
+            success_rate = (
+                self.test_results["tests_passed"] / self.test_results["tests_run"]
+            ) * 100
             print(f"成功率: {success_rate:.1f}%")
 
         print(f"\n📡 通信記録: {len(self.test_results['communications'])}件")

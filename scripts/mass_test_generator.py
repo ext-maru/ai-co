@@ -240,7 +240,9 @@ def main():
 
     print("=" * 60)
     print(f"✨ 完了: {generated_count}個の新規テストファイルを生成")
-    print(f"📊 推定カバレッジ向上: +{generated_count * 0.5}% (約{11.1 + generated_count * 0.5}%)")
+    print(
+        f"📊 推定カバレッジ向上: +{generated_count * 0.5}% (約{11.1 + generated_count * 0.5}%)"
+    )
 
     if generated_count > 0:
         print("\n次のステップ:")

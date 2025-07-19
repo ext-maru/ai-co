@@ -241,7 +241,11 @@ class TaskElderFlowAdapter:
                     "依存関係の競合リスク",
                     "品質基準不適合の可能性",
                 ],
-                "mitigation_strategies": ["段階的実装によるリスク軽減", "包括的テストの実施", "継続的な品質監視"],
+                "mitigation_strategies": [
+                    "段階的実装によるリスク軽減",
+                    "包括的テストの実施",
+                    "継続的な品質監視",
+                ],
                 "risk_score": 0.3,
             },
             "rag_sage": {
@@ -376,9 +380,11 @@ class TaskElderFlowAdapter:
             "failed_integrations": failed,
             "success_rate": (successful / len(self.integration_history)) * 100,
             "average_quality_score": avg_quality,
-            "last_integration": self.integration_history[-1]["timestamp"]
-            if self.integration_history
-            else None,
+            "last_integration": (
+                self.integration_history[-1]["timestamp"]
+                if self.integration_history
+                else None
+            ),
         }
 
     async def get_integration_report(self) -> Dict:
@@ -418,13 +424,19 @@ class TaskElderFlowAdapter:
         avg_quality = status.get("average_quality_score", 0)
 
         if success_rate < 80:
-            recommendations.append("統合成功率が低いため、Elder Flowの設定を見直してください")
+            recommendations.append(
+                "統合成功率が低いため、Elder Flowの設定を見直してください"
+            )
 
         if avg_quality < 85:
-            recommendations.append("品質スコアが低いため、4賢者会議の設定を強化してください")
+            recommendations.append(
+                "品質スコアが低いため、4賢者会議の設定を強化してください"
+            )
 
         if status.get("total_integrations", 0) < 5:
-            recommendations.append("統合データが少ないため、継続的な使用で精度を向上させてください")
+            recommendations.append(
+                "統合データが少ないため、継続的な使用で精度を向上させてください"
+            )
 
         if not recommendations:
             recommendations.append("統合システムは良好に動作しています")

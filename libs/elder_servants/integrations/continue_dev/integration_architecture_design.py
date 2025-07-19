@@ -284,7 +284,11 @@ class IntegrationArchitectureDesign:
                     "duration": "2週間",
                     "scope": "Continue.dev 統合のみ",
                     "targets": ["Code Craftsman Servant", "基本的なAPI endpoints"],
-                    "success_criteria": ["API稼働率95%以上", "応答時間<2秒", "Iron Will基準維持"],
+                    "success_criteria": [
+                        "API稼働率95%以上",
+                        "応答時間<2秒",
+                        "Iron Will基準維持",
+                    ],
                 },
                 "phase_2_expansion": {
                     "duration": "4週間",
@@ -296,12 +300,24 @@ class IntegrationArchitectureDesign:
                     "duration": "6週間",
                     "scope": "全OSS統合完了",
                     "targets": ["全Hybrid Servants", "統合監視システム"],
-                    "success_criteria": ["総合パフォーマンス20%向上", "セキュリティインシデント0件"],
+                    "success_criteria": [
+                        "総合パフォーマンス20%向上",
+                        "セキュリティインシデント0件",
+                    ],
                 },
             },
             "rollback_strategy": {
-                "triggers": ["品質スコア90%以下", "セキュリティ脆弱性発見", "パフォーマンス20%以上劣化"],
-                "procedure": ["OSS統合無効化", "Elder native システム復旧", "原因分析・改善", "再統合計画策定"],
+                "triggers": [
+                    "品質スコア90%以下",
+                    "セキュリティ脆弱性発見",
+                    "パフォーマンス20%以上劣化",
+                ],
+                "procedure": [
+                    "OSS統合無効化",
+                    "Elder native システム復旧",
+                    "原因分析・改善",
+                    "再統合計画策定",
+                ],
             },
             "monitoring_requirements": [
                 "API endpoint monitoring",
@@ -354,7 +370,12 @@ class IntegrationArchitectureDesign:
             },
             "week_9_10": {
                 "title": "Deployment & Optimization",
-                "tasks": ["段階的デプロイメント実施", "パフォーマンス最適化", "セキュリティ強化", "ドキュメント・運用手順整備"],
+                "tasks": [
+                    "段階的デプロイメント実施",
+                    "パフォーマンス最適化",
+                    "セキュリティ強化",
+                    "ドキュメント・運用手順整備",
+                ],
             },
         }
 

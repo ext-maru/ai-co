@@ -1,6 +1,7 @@
 """
 Elder Flow違反タイプ定義
 """
+
 from enum import Enum
 from dataclasses import dataclass
 from typing import List, Optional, Dict, Any
@@ -8,22 +9,25 @@ from typing import List, Optional, Dict, Any
 
 class ViolationSeverity(Enum):
     """違反の重要度"""
+
     CRITICAL = "critical"  # 即座の対応が必要
-    HIGH = "high"          # 重要な違反
-    MEDIUM = "medium"      # 中程度の違反
-    LOW = "low"            # 軽微な違反
+    HIGH = "high"  # 重要な違反
+    MEDIUM = "medium"  # 中程度の違反
+    LOW = "low"  # 軽微な違反
 
 
 class ViolationCategory(Enum):
     """違反カテゴリ"""
-    PROCESS = "process"        # 開発プロセス違反
-    HIERARCHY = "hierarchy"    # 階層・権限違反
-    TECHNICAL = "technical"    # 技術的違反
-    QUALITY = "quality"        # 品質・ドキュメント違反
+
+    PROCESS = "process"  # 開発プロセス違反
+    HIERARCHY = "hierarchy"  # 階層・権限違反
+    TECHNICAL = "technical"  # 技術的違反
+    QUALITY = "quality"  # 品質・ドキュメント違反
 
 
 class ViolationType(Enum):
     """Elder Flow違反タイプ"""
+
     # 開発プロセス違反
     FOUR_SAGES_CONSULTATION_MISSING = "four_sages_consultation_missing"
     FOUR_SAGES_MEETING_MISSING = "four_sages_meeting_missing"
@@ -53,13 +57,14 @@ class ViolationType(Enum):
 @dataclass
 class ViolationRule:
     """違反ルール定義"""
+
     violation_type: ViolationType
     name: str
     description: str
     category: ViolationCategory
     severity: ViolationSeverity
     detection_patterns: List[str]  # 検知パターン（正規表現など）
-    auto_fixable: bool = False     # 自動修正可能か
+    auto_fixable: bool = False  # 自動修正可能か
 
     def to_dict(self) -> Dict[str, Any]:
         """辞書形式に変換"""
@@ -70,7 +75,7 @@ class ViolationRule:
             "category": self.category.value,
             "severity": self.severity.value,
             "detection_patterns": self.detection_patterns,
-            "auto_fixable": self.auto_fixable
+            "auto_fixable": self.auto_fixable,
         }
 
 
@@ -86,11 +91,10 @@ ELDER_FLOW_VIOLATION_RULES = [
         detection_patterns=[
             r"新機能.*実装",
             r"implement.*feature",
-            r"add.*functionality"
+            r"add.*functionality",
         ],
-        auto_fixable=False
+        auto_fixable=False,
     ),
-
     # GitHub Flow違反
     ViolationRule(
         violation_type=ViolationType.GITHUB_FLOW_COMMIT_MISSING,
@@ -101,11 +105,10 @@ ELDER_FLOW_VIOLATION_RULES = [
         detection_patterns=[
             r"機能.*完了",
             r"implementation.*complete",
-            r"feature.*done"
+            r"feature.*done",
         ],
-        auto_fixable=True
+        auto_fixable=True,
     ),
-
     # TDD違反
     ViolationRule(
         violation_type=ViolationType.TDD_TEST_FIRST_VIOLATION,
@@ -116,11 +119,10 @@ ELDER_FLOW_VIOLATION_RULES = [
         detection_patterns=[
             r"実装.*テスト.*前",
             r"code.*before.*test",
-            r"implementation.*without.*test"
+            r"implementation.*without.*test",
         ],
-        auto_fixable=False
+        auto_fixable=False,
     ),
-
     # Docker権限違反
     ViolationRule(
         violation_type=ViolationType.DOCKER_PERMISSION_VIOLATION,
@@ -128,13 +130,9 @@ ELDER_FLOW_VIOLATION_RULES = [
         description="sg docker -cを使用せずにDockerコマンドを実行しています",
         category=ViolationCategory.TECHNICAL,
         severity=ViolationSeverity.HIGH,
-        detection_patterns=[
-            r"^docker\s+(?!.*sg\s+docker\s+-c)",
-            r"sudo\s+docker"
-        ],
-        auto_fixable=True
+        detection_patterns=[r"^docker\s+(?!.*sg\s+docker\s+-c)", r"sudo\s+docker"],
+        auto_fixable=True,
     ),
-
     # アイデンティティ違反
     ViolationRule(
         violation_type=ViolationType.IDENTITY_VIOLATION,
@@ -146,11 +144,10 @@ ELDER_FLOW_VIOLATION_RULES = [
             r"ただのAI",
             r"just.*AI.*assistant",
             r"私はClaude(?!.*Elder)",
-            r"I am Claude(?!.*Elder)"
+            r"I am Claude(?!.*Elder)",
         ],
-        auto_fixable=True
+        auto_fixable=True,
     ),
-
     # CO-STAR違反
     ViolationRule(
         violation_type=ViolationType.COSTAR_FRAMEWORK_MISSING,
@@ -161,10 +158,10 @@ ELDER_FLOW_VIOLATION_RULES = [
         detection_patterns=[
             r"開発.*CO-STAR.*なし",
             r"implement.*without.*COSTAR",
-            r"missing.*context.*objective"
+            r"missing.*context.*objective",
         ],
-        auto_fixable=False
-    )
+        auto_fixable=False,
+    ),
 ]
 
 

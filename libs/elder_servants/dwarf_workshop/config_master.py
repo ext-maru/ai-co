@@ -1255,9 +1255,9 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             return ServantResponse(
                 task_id=request.task_id,
                 servant_id=self.servant_id,
-                status=TaskStatus.COMPLETED
-                if status == "success"
-                else TaskStatus.FAILED,
+                status=(
+                    TaskStatus.COMPLETED if status == "success" else TaskStatus.FAILED
+                ),
                 result_data=task_result.result_data,
                 error_message=task_result.error_message or "",
                 execution_time_ms=task_result.execution_time_ms,

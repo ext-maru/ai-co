@@ -42,7 +42,13 @@ class A2AMonitoringSystem:
         self.db_path.parent.mkdir(exist_ok=True)
 
         # 監視対象
-        self.monitored_processes = ["ai_a2a", "elder_council", "four_sages", "elder_servant", "rabbitmq"]
+        self.monitored_processes = [
+            "ai_a2a",
+            "elder_council",
+            "four_sages",
+            "elder_servant",
+            "rabbitmq",
+        ]
 
         # 通信統計
         self.communication_stats = {
@@ -123,7 +129,9 @@ class A2AMonitoringSystem:
     def _setup_logging(self):
         """ログ設定の初期化"""
         log_handler = logging.FileHandler(self.log_path)
-        log_handler.setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+        log_handler.setFormatter(
+            logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        )
         logger.addHandler(log_handler)
 
     def check_a2a_system_status(self) -> Dict[str, Any]:
@@ -139,7 +147,11 @@ class A2AMonitoringSystem:
 
         # RabbitMQ状態確認
         try:
-            result = subprocess.run(["systemctl", "is-active", "rabbitmq-server"], capture_output=True, text=True)
+            result = subprocess.run(
+                ["systemctl", "is-active", "rabbitmq-server"],
+                capture_output=True,
+                text=True,
+            )
             status["rabbitmq_status"] = result.stdout.strip()
         except Exception as e:
             status["rabbitmq_status"] = f"error: {e}"
@@ -176,7 +188,11 @@ class A2AMonitoringSystem:
         }
 
         # 最近のログからA2A通信を検出
-        log_files = ["logs/elder_monitoring.log", "logs/elder_watchdog.log", "logs/a2a_communication.log"]
+        log_files = [
+            "logs/elder_monitoring.log",
+            "logs/elder_watchdog.log",
+            "logs/a2a_communication.log",
+        ]
 
         for log_file in log_files:
             log_path = self.project_root / log_file
@@ -188,17 +204,31 @@ class A2AMonitoringSystem:
                         for line in lines[-50:]:
                             if any(
                                 keyword in line.lower()
-                                for keyword in ["a2a", "council", "sage", "agent", "communication"]
+                                for keyword in [
+                                    "a2a",
+                                    "council",
+                                    "sage",
+                                    "agent",
+                                    "communication",
+                                ]
                             ):
                                 activity["recent_logs"].append(
-                                    {"file": log_file, "line": line.strip(), "timestamp": self._extract_timestamp(line)}
+                                    {
+                                        "file": log_file,
+                                        "line": line.strip(),
+                                        "timestamp": self._extract_timestamp(line),
+                                    }
                                 )
                 except Exception as e:
                     logger.warning(f"ログ読み込みエラー {log_file}: {e}")
 
         # RabbitMQキューの状態確認（利用可能な場合）
         try:
-            result = subprocess.run(["rabbitmqctl", "list_queues", "name", "messages"], capture_output=True, text=True)
+            result = subprocess.run(
+                ["rabbitmqctl", "list_queues", "name", "messages"],
+                capture_output=True,
+                text=True,
+            )
             if result.returncode == 0:
                 for line in result.stdout.strip().split("\n")[1:]:  # ヘッダーをスキップ
                     if line.strip():
@@ -268,7 +298,9 @@ class A2AMonitoringSystem:
             # 統計更新
             self.communication_stats["total_messages"] += 1
             self.communication_stats["message_types"][message_type] += 1
-            self.communication_stats["agent_communications"][f"{source_agent}->{target_agent}"] += 1
+            self.communication_stats["agent_communications"][
+                f"{source_agent}->{target_agent}"
+            ] += 1
 
             if status == "error":
                 self.communication_stats["error_count"] += 1
@@ -276,7 +308,8 @@ class A2AMonitoringSystem:
             # 成功率計算
             if self.communication_stats["total_messages"] > 0:
                 self.communication_stats["success_rate"] = 1.0 - (
-                    self.communication_stats["error_count"] / self.communication_stats["total_messages"]
+                    self.communication_stats["error_count"]
+                    / self.communication_stats["total_messages"]
                 )
 
             # 履歴に追加
@@ -291,7 +324,9 @@ class A2AMonitoringSystem:
                 }
             )
 
-            logger.info(f"A2A通信記録: {source_agent} -> {target_agent} ({message_type}): {status}")
+            logger.info(
+                f"A2A通信記録: {source_agent} -> {target_agent} ({message_type}): {status}"
+            )
 
         except Exception as e:
             logger.error(f"通信記録エラー: {e}")
@@ -334,7 +369,9 @@ class A2AMonitoringSystem:
 
         # 推奨事項の生成
         if report["system_status"]["rabbitmq_status"] != "active":
-            report["recommendations"].append("RabbitMQが停止しています。A2A通信のためにRabbitMQを起動してください。")
+            report["recommendations"].append(
+                "RabbitMQが停止しています。A2A通信のためにRabbitMQを起動してください。"
+            )
 
         if report["system_status"]["active_agents"] == 0:
             report["recommendations"].append(
@@ -342,7 +379,9 @@ class A2AMonitoringSystem:
             )
 
         if self.communication_stats["error_count"] > 0:
-            error_rate = self.communication_stats["error_count"] / max(self.communication_stats["total_messages"], 1)
+            error_rate = self.communication_stats["error_count"] / max(
+                self.communication_stats["total_messages"], 1
+            )
             if error_rate > 0.1:  # 10%以上のエラー率
                 report["recommendations"].append(
                     f"エラー率が高い状態です（{error_rate:.1%}）。A2A通信の設定を確認してください。"
@@ -382,7 +421,9 @@ class A2AMonitoringSystem:
                     # 定期レポートの生成
                     if datetime.now().minute % 15 == 0:  # 15分毎
                         report = self.generate_monitoring_report()
-                        logger.info(f"A2A監視レポート: {report['system_status']['active_agents']}エージェント稼働中")
+                        logger.info(
+                            f"A2A監視レポート: {report['system_status']['active_agents']}エージェント稼働中"
+                        )
 
                     time.sleep(interval)
 
@@ -476,7 +517,9 @@ def main():
         while True:
             time.sleep(10)
             current_time = datetime.now().strftime("%H:%M:%S")
-            print(f"[{current_time}] 監視中... (エージェント: {status['active_agents']})")
+            print(
+                f"[{current_time}] 監視中... (エージェント: {status['active_agents']})"
+            )
     except KeyboardInterrupt:
         print("\n停止中...")
         monitor.stop_monitoring()

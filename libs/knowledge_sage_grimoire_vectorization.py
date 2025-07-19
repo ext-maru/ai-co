@@ -276,7 +276,9 @@ class KnowledgeSageGrimoireVectorization:
     async def vectorize_knowledge(self, knowledge_data: Dict[str, Any]) -> str:
         """知識のベクトル化"""
         try:
-            self.logger.info(f"📚 知識分析開始: {knowledge_data.get('title', 'Unknown')}")
+            self.logger.info(
+                f"📚 知識分析開始: {knowledge_data.get('title', 'Unknown')}"
+            )
 
             # 知識メタデータ分析
             knowledge_metadata = await self._analyze_knowledge_metadata(knowledge_data)
@@ -518,41 +520,41 @@ class KnowledgeSageGrimoireVectorization:
         content_vector = await self._generate_content_semantic_vector(
             knowledge_data.get("content", "")
         )
-        vector[
-            current_idx : current_idx + self.dimensions.content_semantic
-        ] = content_vector
+        vector[current_idx : current_idx + self.dimensions.content_semantic] = (
+            content_vector
+        )
         current_idx += self.dimensions.content_semantic
 
         # 2. 概念間関係性
         concept_vector = await self._generate_concept_relations_vector(
             metadata.related_concepts
         )
-        vector[
-            current_idx : current_idx + self.dimensions.concept_relations
-        ] = concept_vector
+        vector[current_idx : current_idx + self.dimensions.concept_relations] = (
+            concept_vector
+        )
         current_idx += self.dimensions.concept_relations
 
         # 3. 手順・プロセス情報
         procedural_vector = await self._generate_procedural_vector(knowledge_data)
-        vector[
-            current_idx : current_idx + self.dimensions.procedural_steps
-        ] = procedural_vector
+        vector[current_idx : current_idx + self.dimensions.procedural_steps] = (
+            procedural_vector
+        )
         current_idx += self.dimensions.procedural_steps
 
         # 4. コンテキスト埋め込み
         contextual_vector = await self._generate_contextual_vector(
             knowledge_data, metadata
         )
-        vector[
-            current_idx : current_idx + self.dimensions.contextual_embedding
-        ] = contextual_vector
+        vector[current_idx : current_idx + self.dimensions.contextual_embedding] = (
+            contextual_vector
+        )
         current_idx += self.dimensions.contextual_embedding
 
         # 5. 知恵の進化履歴
         wisdom_vector = await self._generate_wisdom_evolution_vector(metadata)
-        vector[
-            current_idx : current_idx + self.dimensions.wisdom_evolution
-        ] = wisdom_vector
+        vector[current_idx : current_idx + self.dimensions.wisdom_evolution] = (
+            wisdom_vector
+        )
 
         return vector
 

@@ -444,9 +444,11 @@ class ElderServantDispatcher:
             "task_id": assignment.task_id,
             "servant_type": assignment.servant_type,
             "servant_id": assignment.servant_id,
-            "task_description": assignment.task_description[:100] + "..."
-            if len(assignment.task_description) > 100
-            else assignment.task_description,
+            "task_description": (
+                assignment.task_description[:100] + "..."
+                if len(assignment.task_description) > 100
+                else assignment.task_description
+            ),
             "priority": assignment.priority,
             "result": result,
             "estimated_completion": assignment.estimated_completion.isoformat(),
@@ -487,9 +489,11 @@ class ElderServantDispatcher:
                         "task_id": task_id,
                         "servant_type": assignment.servant_type,
                         "servant_id": assignment.servant_id,
-                        "description": assignment.task_description[:50] + "..."
-                        if len(assignment.task_description) > 50
-                        else assignment.task_description,
+                        "description": (
+                            assignment.task_description[:50] + "..."
+                            if len(assignment.task_description) > 50
+                            else assignment.task_description
+                        ),
                         "status": assignment.status,
                         "priority": assignment.priority,
                         "created_at": assignment.created_at.isoformat(),

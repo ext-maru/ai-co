@@ -48,7 +48,10 @@ class LogMaintenanceSystem:
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[logging.FileHandler(self.logs_dir / "log_maintenance.log"), logging.StreamHandler()],
+            handlers=[
+                logging.FileHandler(self.logs_dir / "log_maintenance.log"),
+                logging.StreamHandler(),
+            ],
         )
         self.logger = logging.getLogger(__name__)
 
@@ -81,13 +84,21 @@ class LogMaintenanceSystem:
             # 大容量ファイル
             if size_mb > self.max_file_size_mb:
                 analysis["large_files"].append(
-                    {"file": str(log_file.name), "size_mb": round(size_mb, 2), "age_days": age_days}
+                    {
+                        "file": str(log_file.name),
+                        "size_mb": round(size_mb, 2),
+                        "age_days": age_days,
+                    }
                 )
 
             # 古いファイル
             if age_days > self.max_age_days:
                 analysis["old_files"].append(
-                    {"file": str(log_file.name), "size_mb": round(size_mb, 2), "age_days": age_days}
+                    {
+                        "file": str(log_file.name),
+                        "size_mb": round(size_mb, 2),
+                        "age_days": age_days,
+                    }
                 )
 
             # 空ファイル
@@ -110,7 +121,9 @@ class LogMaintenanceSystem:
 
         analysis["total_size_mb"] = round(analysis["total_size_mb"], 2)
 
-        self.logger.info(f"📊 分析完了: {analysis['total_files']}ファイル, {analysis['total_size_mb']}MB")
+        self.logger.info(
+            f"📊 分析完了: {analysis['total_files']}ファイル, {analysis['total_size_mb']}MB"
+        )
         return analysis
 
     def rotate_large_files(self) -> List[str]:
@@ -126,7 +139,9 @@ class LogMaintenanceSystem:
             size_mb = log_file.stat().st_size / (1024 * 1024)
 
             if size_mb > self.max_file_size_mb:
-                self.logger.info(f"📦 ローテーション: {log_file.name} ({size_mb:.1f}MB)")
+                self.logger.info(
+                    f"📦 ローテーション: {log_file.name} ({size_mb:.1f}MB)"
+                )
 
                 # タイムスタンプ付きファイル名
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -290,12 +305,19 @@ class LogMaintenanceSystem:
         report = {
             "timestamp": datetime.now().isoformat(),
             "analysis": analysis,
-            "actions": {"rotated_files": rotated, "compressed_files": compressed, "deleted_files": deleted},
+            "actions": {
+                "rotated_files": rotated,
+                "compressed_files": compressed,
+                "deleted_files": deleted,
+            },
             "configs": {"logrotate_config": logrotate_config, "cron_file": cron_file},
         }
 
         # レポート保存
-        report_file = self.logs_dir / f"maintenance_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_file = (
+            self.logs_dir
+            / f"maintenance_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
         with open(report_file, "w") as f:
             json.dump(report, f, indent=2)
 
@@ -312,7 +334,9 @@ def main():
     parser = argparse.ArgumentParser(description="Log Maintenance System")
     parser.add_argument("--analyze", action="store_true", help="ログ分析のみ実行")
     parser.add_argument("--rotate", action="store_true", help="ローテーションのみ実行")
-    parser.add_argument("--maintenance", action="store_true", help="フルメンテナンス実行")
+    parser.add_argument(
+        "--maintenance", action="store_true", help="フルメンテナンス実行"
+    )
     parser.add_argument("--config", action="store_true", help="設定ファイル生成のみ")
 
     args = parser.parse_args()

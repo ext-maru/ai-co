@@ -21,11 +21,29 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 # Elder Flow components
-from libs.elder_flow_orchestrator import ElderFlowOrchestrator, elder_flow_execute, elder_flow_status
-from libs.elder_flow_servant_executor import ServantExecutor, create_code_task, create_test_task, create_quality_task
+from libs.elder_flow_orchestrator import (
+    ElderFlowOrchestrator,
+    elder_flow_execute,
+    elder_flow_status,
+)
+from libs.elder_flow_servant_executor import (
+    ServantExecutor,
+    create_code_task,
+    create_test_task,
+    create_quality_task,
+)
 from libs.elder_flow_quality_gate import QualityGateSystem, run_quality_gate
-from libs.elder_flow_council_reporter import create_task_completion_report, create_quality_assessment_report, submit_report_for_approval, save_report
-from libs.elder_flow_git_automator import auto_commit_and_push, get_git_status, CommitType
+from libs.elder_flow_council_reporter import (
+    create_task_completion_report,
+    create_quality_assessment_report,
+    submit_report_for_approval,
+    save_report,
+)
+from libs.elder_flow_git_automator import (
+    auto_commit_and_push,
+    get_git_status,
+    CommitType,
+)
 
 # Elder Soul integration
 from libs.elder_flow_soul_connector import (
@@ -33,12 +51,13 @@ from libs.elder_flow_soul_connector import (
     SoulSummonMode,
     summon_souls_for_elder_flow,
     execute_elder_flow_phase,
-    dismiss_elder_flow_souls
+    dismiss_elder_flow_souls,
 )
 
 
 class ElderFlowSoulMode(Enum):
     """Elder Flow Soul 実行モード"""
+
     TRADITIONAL = "traditional"  # 従来のElder Flow
     SOUL_ENHANCED = "soul_enhanced"  # Elder Soul強化版
     FULL_SOUL = "full_soul"  # 完全Elder Soul統合
@@ -47,6 +66,7 @@ class ElderFlowSoulMode(Enum):
 @dataclass
 class SoulEnhancedTask:
     """Soul強化Elder Flowタスク"""
+
     task_id: str
     description: str
     priority: str = "medium"
@@ -102,7 +122,9 @@ class ElderFlowSoulIntegration:
             # ファイルハンドラー
             log_dir = Path("logs")
             log_dir.mkdir(exist_ok=True)
-            file_handler = logging.FileHandler(log_dir / "elder_flow_soul_integration.log")
+            file_handler = logging.FileHandler(
+                log_dir / "elder_flow_soul_integration.log"
+            )
 
             # コンソールハンドラー
             console_handler = logging.StreamHandler()
@@ -123,13 +145,19 @@ class ElderFlowSoulIntegration:
         """システム初期化"""
         if self.soul_connector is None:
             from libs.elder_flow_soul_connector import get_elder_flow_soul_connector
+
             self.soul_connector = await get_elder_flow_soul_connector()
 
         self.logger.info("✅ Elder Flow Soul Integration fully initialized")
 
-    async def execute_soul_enhanced_flow(self, description: str, priority: str = "medium",
-                                       auto_commit: bool = True, commit_message: str = None,
-                                       soul_mode: ElderFlowSoulMode = ElderFlowSoulMode.SOUL_ENHANCED) -> str:
+    async def execute_soul_enhanced_flow(
+        self,
+        description: str,
+        priority: str = "medium",
+        auto_commit: bool = True,
+        commit_message: str = None,
+        soul_mode: ElderFlowSoulMode = ElderFlowSoulMode.SOUL_ENHANCED,
+    ) -> str:
         """
         Soul強化Elder Flow実行
 
@@ -159,7 +187,9 @@ class ElderFlowSoulIntegration:
 
             if soul_mode == ElderFlowSoulMode.TRADITIONAL:
                 # 従来のElder Flow実行
-                task.traditional_results = await self._execute_traditional_flow(description, priority, auto_commit, commit_message)
+                task.traditional_results = await self._execute_traditional_flow(
+                    description, priority, auto_commit, commit_message
+                )
 
             elif soul_mode == ElderFlowSoulMode.SOUL_ENHANCED:
                 # Soul強化版実行
@@ -173,7 +203,9 @@ class ElderFlowSoulIntegration:
             task.completed_at = datetime.now()
             task.total_duration = (task.completed_at - start_time).total_seconds()
 
-            self.logger.info(f"✅ Soul Enhanced Elder Flow completed: {task_id} in {task.total_duration:.2f}s")
+            self.logger.info(
+                f"✅ Soul Enhanced Elder Flow completed: {task_id} in {task.total_duration:.2f}s"
+            )
 
             return task_id
 
@@ -208,13 +240,13 @@ class ElderFlowSoulIntegration:
         self.logger.info("📤 Phase 5: Git Automation with Soul Management")
         task.soul_results["phase5"] = await self._execute_phase5_with_souls(task)
 
-    async def _execute_phase1_with_souls(self, task: SoulEnhancedTask) -> Dict[str, Any]:
+    async def _execute_phase1_with_souls(
+        self, task: SoulEnhancedTask
+    ) -> Dict[str, Any]:
         """Phase 1: 4賢者会議をSoulで実行"""
         # 魂召喚
         summon_result = await summon_souls_for_elder_flow(
-            "phase1_analysis",
-            task.description,
-            task.priority
+            "phase1_analysis", task.description, task.priority
         )
         task.phase1_session_id = summon_result["session_id"]
 
@@ -224,9 +256,9 @@ class ElderFlowSoulIntegration:
             {
                 "description": task.description,
                 "priority": task.priority,
-                "analysis_type": "comprehensive_technical_analysis"
+                "analysis_type": "comprehensive_technical_analysis",
             },
-            "council"  # 評議会モード
+            "council",  # 評議会モード
         )
 
         # 従来の4賢者会議も並行実行（比較・補完）
@@ -236,16 +268,16 @@ class ElderFlowSoulIntegration:
             "soul_execution": execution_result,
             "traditional_execution": traditional_result,
             "session_id": task.phase1_session_id,
-            "hybrid_analysis": self._merge_analysis_results(execution_result, traditional_result)
+            "hybrid_analysis": self._merge_analysis_results(
+                execution_result, traditional_result
+            ),
         }
 
     async def _execute_phase2_hybrid(self, task: SoulEnhancedTask) -> Dict[str, Any]:
         """Phase 2: ハイブリッド実行（Soul + Traditional）"""
         # Soul実行: サーバント召喚
         summon_result = await summon_souls_for_elder_flow(
-            "phase2_execution",
-            task.description,
-            task.priority
+            "phase2_execution", task.description, task.priority
         )
         task.phase2_session_id = summon_result["session_id"]
 
@@ -254,10 +286,12 @@ class ElderFlowSoulIntegration:
             task.phase2_session_id,
             {
                 "description": task.description,
-                "implementation_requirements": task.soul_results["phase1"]["hybrid_analysis"],
-                "code_specifications": "high_quality_implementation"
+                "implementation_requirements": task.soul_results["phase1"][
+                    "hybrid_analysis"
+                ],
+                "code_specifications": "high_quality_implementation",
             },
-            "parallel"  # 並列モード
+            "parallel",  # 並列モード
         )
 
         # 従来のサーバント実行
@@ -265,22 +299,26 @@ class ElderFlowSoulIntegration:
         test_task = create_test_task(task.description, task.priority)
         quality_task = create_quality_task(task.description, task.priority)
 
-        traditional_execution = await self.executor.execute_tasks([code_task, test_task, quality_task])
+        traditional_execution = await self.executor.execute_tasks(
+            [code_task, test_task, quality_task]
+        )
 
         return {
             "soul_execution": soul_execution,
             "traditional_execution": traditional_execution,
             "session_id": task.phase2_session_id,
-            "hybrid_implementation": self._merge_implementation_results(soul_execution, traditional_execution)
+            "hybrid_implementation": self._merge_implementation_results(
+                soul_execution, traditional_execution
+            ),
         }
 
-    async def _execute_phase3_with_souls(self, task: SoulEnhancedTask) -> Dict[str, Any]:
+    async def _execute_phase3_with_souls(
+        self, task: SoulEnhancedTask
+    ) -> Dict[str, Any]:
         """Phase 3: 品質ゲートをSoulで実行"""
         # Soul召喚: 品質チーム
         summon_result = await summon_souls_for_elder_flow(
-            "phase3_quality",
-            task.description,
-            task.priority
+            "phase3_quality", task.description, task.priority
         )
         task.phase3_session_id = summon_result["session_id"]
 
@@ -289,10 +327,12 @@ class ElderFlowSoulIntegration:
             task.phase3_session_id,
             {
                 "description": task.description,
-                "implementation_result": task.soul_results["phase2"]["hybrid_implementation"],
-                "quality_standards": "enterprise_grade"
+                "implementation_result": task.soul_results["phase2"][
+                    "hybrid_implementation"
+                ],
+                "quality_standards": "enterprise_grade",
             },
-            "team"  # チームモード
+            "team",  # チームモード
         )
 
         # 従来の品質ゲート
@@ -302,16 +342,18 @@ class ElderFlowSoulIntegration:
             "soul_quality": soul_quality,
             "traditional_quality": traditional_quality,
             "session_id": task.phase3_session_id,
-            "comprehensive_quality_report": self._merge_quality_results(soul_quality, traditional_quality)
+            "comprehensive_quality_report": self._merge_quality_results(
+                soul_quality, traditional_quality
+            ),
         }
 
-    async def _execute_phase4_with_souls(self, task: SoulEnhancedTask) -> Dict[str, Any]:
+    async def _execute_phase4_with_souls(
+        self, task: SoulEnhancedTask
+    ) -> Dict[str, Any]:
         """Phase 4: 評議会報告をSoulで実行"""
         # Soul召喚: 報告チーム
         summon_result = await summon_souls_for_elder_flow(
-            "phase4_reporting",
-            task.description,
-            task.priority
+            "phase4_reporting", task.description, task.priority
         )
         task.phase4_session_id = summon_result["session_id"]
 
@@ -320,36 +362,44 @@ class ElderFlowSoulIntegration:
             task.phase4_session_id,
             {
                 "description": task.description,
-                "quality_result": task.soul_results["phase3"]["comprehensive_quality_report"],
-                "report_type": "comprehensive_development_report"
+                "quality_result": task.soul_results["phase3"][
+                    "comprehensive_quality_report"
+                ],
+                "report_type": "comprehensive_development_report",
             },
-            "sequential"  # 逐次モード
+            "sequential",  # 逐次モード
         )
 
         # 従来の報告生成
-        completion_report = create_task_completion_report(task.description, {"status": "completed"})
-        quality_report = create_quality_assessment_report(task.soul_results["phase3"]["comprehensive_quality_report"])
+        completion_report = create_task_completion_report(
+            task.description, {"status": "completed"}
+        )
+        quality_report = create_quality_assessment_report(
+            task.soul_results["phase3"]["comprehensive_quality_report"]
+        )
 
         traditional_reporting = {
             "completion_report": completion_report,
             "quality_report": quality_report,
-            "approval_status": submit_report_for_approval(completion_report)
+            "approval_status": submit_report_for_approval(completion_report),
         }
 
         return {
             "soul_reporting": soul_reporting,
             "traditional_reporting": traditional_reporting,
             "session_id": task.phase4_session_id,
-            "comprehensive_documentation": self._merge_reporting_results(soul_reporting, traditional_reporting)
+            "comprehensive_documentation": self._merge_reporting_results(
+                soul_reporting, traditional_reporting
+            ),
         }
 
-    async def _execute_phase5_with_souls(self, task: SoulEnhancedTask) -> Dict[str, Any]:
+    async def _execute_phase5_with_souls(
+        self, task: SoulEnhancedTask
+    ) -> Dict[str, Any]:
         """Phase 5: Git自動化をSoulで実行"""
         # Soul召喚: Gitチーム
         summon_result = await summon_souls_for_elder_flow(
-            "phase5_git",
-            task.description,
-            task.priority
+            "phase5_git", task.description, task.priority
         )
         task.phase5_session_id = summon_result["session_id"]
 
@@ -359,28 +409,26 @@ class ElderFlowSoulIntegration:
             {
                 "description": task.description,
                 "reports": task.soul_results["phase4"]["comprehensive_documentation"],
-                "commit_strategy": "conventional_commits_with_soul_tracking"
+                "commit_strategy": "conventional_commits_with_soul_tracking",
             },
-            "team"  # チームモード
+            "team",  # チームモード
         )
 
         # 従来のGit自動化
         git_status = get_git_status()
         commit_result = await auto_commit_and_push(
-            f"feat: {task.description}",
-            CommitType.FEATURE
+            f"feat: {task.description}", CommitType.FEATURE
         )
 
-        traditional_git = {
-            "git_status": git_status,
-            "commit_result": commit_result
-        }
+        traditional_git = {"git_status": git_status, "commit_result": commit_result}
 
         return {
             "soul_git": soul_git,
             "traditional_git": traditional_git,
             "session_id": task.phase5_session_id,
-            "enhanced_version_control": self._merge_git_results(soul_git, traditional_git)
+            "enhanced_version_control": self._merge_git_results(
+                soul_git, traditional_git
+            ),
         }
 
     async def _execute_full_soul_flow(self, task: SoulEnhancedTask):
@@ -394,11 +442,12 @@ class ElderFlowSoulIntegration:
         # 実装は今後の拡張で詳細化
         task.soul_results["full_soul_mode"] = {
             "status": "implemented_with_souls_only",
-            "message": "Full Soul integration mode - implemented entirely with Elder Soul agents"
+            "message": "Full Soul integration mode - implemented entirely with Elder Soul agents",
         }
 
-    async def _execute_traditional_flow(self, description: str, priority: str,
-                                      auto_commit: bool, commit_message: str) -> Dict[str, Any]:
+    async def _execute_traditional_flow(
+        self, description: str, priority: str, auto_commit: bool, commit_message: str
+    ) -> Dict[str, Any]:
         """従来のElder Flow実行"""
         # 既存のElder Flow統合システムを使用
         from libs.elder_flow_integration import ElderFlowIntegration
@@ -408,56 +457,63 @@ class ElderFlowSoulIntegration:
             description, priority, auto_commit, commit_message
         )
 
-        return {
-            "task_id": result_task_id,
-            "mode": "traditional_elder_flow"
-        }
+        return {"task_id": result_task_id, "mode": "traditional_elder_flow"}
 
     # 結果マージ・分析メソッド
 
-    def _merge_analysis_results(self, soul_result: Dict, traditional_result: Dict) -> Dict[str, Any]:
+    def _merge_analysis_results(
+        self, soul_result: Dict, traditional_result: Dict
+    ) -> Dict[str, Any]:
         """分析結果のマージ"""
         return {
             "soul_insights": soul_result.get("results", {}),
             "traditional_insights": traditional_result,
             "confidence_score": 0.9,
-            "recommendation": "Hybrid analysis provides comprehensive coverage"
+            "recommendation": "Hybrid analysis provides comprehensive coverage",
         }
 
-    def _merge_implementation_results(self, soul_result: Dict, traditional_result: Dict) -> Dict[str, Any]:
+    def _merge_implementation_results(
+        self, soul_result: Dict, traditional_result: Dict
+    ) -> Dict[str, Any]:
         """実装結果のマージ"""
         return {
             "soul_implementation": soul_result.get("results", {}),
             "traditional_implementation": traditional_result,
             "quality_score": 0.95,
-            "hybrid_advantages": ["Soul A2A coordination", "Traditional reliability"]
+            "hybrid_advantages": ["Soul A2A coordination", "Traditional reliability"],
         }
 
-    def _merge_quality_results(self, soul_result: Dict, traditional_result: Dict) -> Dict[str, Any]:
+    def _merge_quality_results(
+        self, soul_result: Dict, traditional_result: Dict
+    ) -> Dict[str, Any]:
         """品質結果のマージ"""
         return {
             "soul_quality_analysis": soul_result.get("results", {}),
             "traditional_quality_analysis": traditional_result,
             "overall_quality_score": 0.92,
-            "comprehensive_checks": "Both Soul agents and traditional systems validated"
+            "comprehensive_checks": "Both Soul agents and traditional systems validated",
         }
 
-    def _merge_reporting_results(self, soul_result: Dict, traditional_result: Dict) -> Dict[str, Any]:
+    def _merge_reporting_results(
+        self, soul_result: Dict, traditional_result: Dict
+    ) -> Dict[str, Any]:
         """報告結果のマージ"""
         return {
             "soul_generated_reports": soul_result.get("results", {}),
             "traditional_reports": traditional_result,
             "documentation_completeness": 0.98,
-            "stakeholder_ready": True
+            "stakeholder_ready": True,
         }
 
-    def _merge_git_results(self, soul_result: Dict, traditional_result: Dict) -> Dict[str, Any]:
+    def _merge_git_results(
+        self, soul_result: Dict, traditional_result: Dict
+    ) -> Dict[str, Any]:
         """Git結果のマージ"""
         return {
             "soul_version_control": soul_result.get("results", {}),
             "traditional_git": traditional_result,
             "commit_quality": "excellent",
-            "version_tracking": "comprehensive"
+            "version_tracking": "comprehensive",
         }
 
     # セッション管理メソッド
@@ -474,7 +530,7 @@ class ElderFlowSoulIntegration:
             task.phase2_session_id,
             task.phase3_session_id,
             task.phase4_session_id,
-            task.phase5_session_id
+            task.phase5_session_id,
         ]
 
         for session_id in sessions_to_dismiss:
@@ -498,7 +554,9 @@ class ElderFlowSoulIntegration:
             "priority": task.priority,
             "soul_mode": task.soul_mode.value,
             "created_at": task.created_at.isoformat(),
-            "completed_at": task.completed_at.isoformat() if task.completed_at else None,
+            "completed_at": (
+                task.completed_at.isoformat() if task.completed_at else None
+            ),
             "total_duration": task.total_duration,
             "error_message": task.error_message,
             "soul_sessions": {
@@ -506,13 +564,13 @@ class ElderFlowSoulIntegration:
                 "phase2": task.phase2_session_id,
                 "phase3": task.phase3_session_id,
                 "phase4": task.phase4_session_id,
-                "phase5": task.phase5_session_id
+                "phase5": task.phase5_session_id,
             },
             "soul_results_summary": {
                 "phases_completed": len(task.soul_results),
                 "total_phases": 5,
-                "completion_rate": len(task.soul_results) / 5
-            }
+                "completion_rate": len(task.soul_results) / 5,
+            },
         }
 
 
@@ -533,13 +591,20 @@ async def get_elder_flow_soul_integration() -> ElderFlowSoulIntegration:
 
 # 便利な関数
 
-async def execute_soul_enhanced_elder_flow(description: str, priority: str = "medium",
-                                         auto_commit: bool = True, commit_message: str = None,
-                                         soul_mode: str = "soul_enhanced") -> str:
+
+async def execute_soul_enhanced_elder_flow(
+    description: str,
+    priority: str = "medium",
+    auto_commit: bool = True,
+    commit_message: str = None,
+    soul_mode: str = "soul_enhanced",
+) -> str:
     """Soul強化Elder Flow実行（便利関数）"""
     integration = await get_elder_flow_soul_integration()
     mode = ElderFlowSoulMode(soul_mode)
-    return await integration.execute_soul_enhanced_flow(description, priority, auto_commit, commit_message, mode)
+    return await integration.execute_soul_enhanced_flow(
+        description, priority, auto_commit, commit_message, mode
+    )
 
 
 async def get_soul_enhanced_flow_status(task_id: str) -> Optional[Dict[str, Any]]:
@@ -556,11 +621,7 @@ async def demo_soul_enhanced_elder_flow():
 
     # Soul強化実行
     task_id = await execute_soul_enhanced_elder_flow(
-        "OAuth2.0認証システム実装",
-        "high",
-        True,
-        None,
-        "soul_enhanced"
+        "OAuth2.0認証システム実装", "high", True, None, "soul_enhanced"
     )
 
     print(f"✅ Soul Enhanced Elder Flow completed: {task_id}")
@@ -568,7 +629,9 @@ async def demo_soul_enhanced_elder_flow():
     # 状態確認
     status = await get_soul_enhanced_flow_status(task_id)
     if status:
-        print(f"📊 Completion Rate: {status['soul_results_summary']['completion_rate']:.1%}")
+        print(
+            f"📊 Completion Rate: {status['soul_results_summary']['completion_rate']:.1%}"
+        )
         print(f"⏱️  Duration: {status['total_duration']:.2f}s")
 
     # セッション解散

@@ -143,9 +143,11 @@ class WorkerOrganizer:
             "summary": {
                 "total_workers_before": len(list(self.workers_dir.glob("*.py"))),
                 "active_workers": [v["primary"] for v in self.worker_mapping.values()],
-                "archived_count": len(list(self.archive_dir.glob("*.py")))
-                if self.archive_dir.exists()
-                else 0,
+                "archived_count": (
+                    len(list(self.archive_dir.glob("*.py")))
+                    if self.archive_dir.exists()
+                    else 0
+                ),
             },
         }
 

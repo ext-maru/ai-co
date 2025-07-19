@@ -242,9 +242,9 @@ class FourSagesReviewer:
             recommendation=recommendation,
             confidence_score=confidence,
             reviewed_at=datetime.now(timezone.utc),
-            additional_notes=f"リスク要因: {', '.join(risk_factors)}"
-            if risk_factors
-            else None,
+            additional_notes=(
+                f"リスク要因: {', '.join(risk_factors)}" if risk_factors else None
+            ),
         )
 
     async def _task_oracle_review(
@@ -289,9 +289,9 @@ class FourSagesReviewer:
             recommendation=recommendation,
             confidence_score=0.85,
             reviewed_at=datetime.now(timezone.utc),
-            additional_notes=f"影響要因: {', '.join(risk_factors)}"
-            if risk_factors
-            else None,
+            additional_notes=(
+                f"影響要因: {', '.join(risk_factors)}" if risk_factors else None
+            ),
         )
 
     async def _crisis_sage_review(
@@ -341,9 +341,9 @@ class FourSagesReviewer:
             recommendation=recommendation,
             confidence_score=0.9,
             reviewed_at=datetime.now(timezone.utc),
-            additional_notes=f"懸念事項: {', '.join(risk_factors)}"
-            if risk_factors
-            else None,
+            additional_notes=(
+                f"懸念事項: {', '.join(risk_factors)}" if risk_factors else None
+            ),
         )
 
     async def _search_mystic_review(
@@ -394,9 +394,9 @@ class FourSagesReviewer:
             recommendation=recommendation,
             confidence_score=0.87,
             reviewed_at=datetime.now(timezone.utc),
-            additional_notes=f"影響要因: {', '.join(risk_factors)}"
-            if risk_factors
-            else None,
+            additional_notes=(
+                f"影響要因: {', '.join(risk_factors)}" if risk_factors else None
+            ),
         )
 
 
@@ -736,7 +736,9 @@ class GrandElderApprovalSystem:
                 request.status = ApprovalStatus.APPROVED
                 request.approved_by = "auto_sage_consensus"
                 request.approved_at = datetime.now(timezone.utc)
-                request.elder_notes = f"4賢者コンセンサス率{consensus_rate:.1%}による自動承認"
+                request.elder_notes = (
+                    f"4賢者コンセンサス率{consensus_rate:.1%}による自動承認"
+                )
             else:
                 # グランドエルダー審査へ
                 request.status = ApprovalStatus.ELDER_REVIEW
@@ -801,7 +803,9 @@ class GrandElderApprovalSystem:
 
             await self._update_approval_request(request)
 
-            logger.info(f"🏛️ グランドエルダー決定: {request_id} - {'承認' if approved else '却下'}")
+            logger.info(
+                f"🏛️ グランドエルダー決定: {request_id} - {'承認' if approved else '却下'}"
+            )
             return True
 
         except Exception as e:

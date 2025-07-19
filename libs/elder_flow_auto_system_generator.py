@@ -15,12 +15,16 @@ import uuid
 from consciousness_interface import ConsciousnessInterface
 from causality_control_system import CausalityControlSystem
 from infinite_parallel_universe_processor import (
-    InfiniteParallelUniverseProcessor, UniverseType, ProcessingMode
+    InfiniteParallelUniverseProcessor,
+    UniverseType,
+    ProcessingMode,
 )
+
 
 @dataclass
 class SystemRequirement:
     """システム要件"""
+
     requirement_id: str
     description: str
     priority: int  # 1-10
@@ -29,9 +33,11 @@ class SystemRequirement:
     technical_category: str  # "backend", "frontend", "database", "api"
     estimated_effort: float  # hours
 
+
 @dataclass
 class GeneratedComponent:
     """生成されたシステムコンポーネント"""
+
     component_id: str
     name: str
     type: str  # "service", "database", "api", "ui"
@@ -40,6 +46,7 @@ class GeneratedComponent:
     deployment_config: Dict[str, Any]
     dependencies: List[str]
     estimated_resources: Dict[str, float]
+
 
 class AutoSystemGenerator:
     """Elder Flow理論による自動システム生成器"""
@@ -56,35 +63,38 @@ class AutoSystemGenerator:
                 "frontend": ["React", "Vue.js", "Angular"],
                 "backend": ["Node.js", "Python Flask", "Django", "FastAPI"],
                 "database": ["PostgreSQL", "MongoDB", "Redis"],
-                "deployment": ["Docker", "Kubernetes", "AWS", "GCP"]
+                "deployment": ["Docker", "Kubernetes", "AWS", "GCP"],
             },
             "api_service": {
                 "framework": ["FastAPI", "Express.js", "Spring Boot"],
                 "database": ["PostgreSQL", "MySQL", "MongoDB"],
                 "cache": ["Redis", "Memcached"],
-                "messaging": ["RabbitMQ", "Apache Kafka"]
+                "messaging": ["RabbitMQ", "Apache Kafka"],
             },
             "data_pipeline": {
                 "processing": ["Apache Spark", "Pandas", "Dask"],
                 "storage": ["Apache Kafka", "AWS S3", "HDFS"],
-                "scheduling": ["Apache Airflow", "Cron", "Kubernetes Jobs"]
-            }
+                "scheduling": ["Apache Airflow", "Cron", "Kubernetes Jobs"],
+            },
         }
 
         self.generated_systems = {}
         self.generation_history = []
 
-    async def analyze_requirements(self, user_description: str) -> List[SystemRequirement]:
+    async def analyze_requirements(
+        self, user_description: str
+    ) -> List[SystemRequirement]:
         """要件分析 - 意識統合システム使用"""
 
         # 意識統合による高度な要件理解
         analysis_result = await self.consciousness.process_input(
-            user_description,
-            emotional_context=0.7  # 重要なタスクとして認識
+            user_description, emotional_context=0.7  # 重要なタスクとして認識
         )
 
         # 関連する技術パターンを検索
-        related_thoughts = self.consciousness.neural_network.focus_attention(user_description)
+        related_thoughts = self.consciousness.neural_network.focus_attention(
+            user_description
+        )
 
         # 要件を自動分解
         requirements = []
@@ -93,62 +103,74 @@ class AutoSystemGenerator:
         keywords = user_description.lower().split()
 
         if any(word in keywords for word in ["web", "website", "app", "application"]):
-            requirements.append(SystemRequirement(
-                requirement_id=f"req_{uuid.uuid4().hex[:8]}",
-                description="Web application frontend",
-                priority=8,
-                complexity=0.6,
-                dependencies=[],
-                technical_category="frontend",
-                estimated_effort=40.0
-            ))
+            requirements.append(
+                SystemRequirement(
+                    requirement_id=f"req_{uuid.uuid4().hex[:8]}",
+                    description="Web application frontend",
+                    priority=8,
+                    complexity=0.6,
+                    dependencies=[],
+                    technical_category="frontend",
+                    estimated_effort=40.0,
+                )
+            )
 
-            requirements.append(SystemRequirement(
-                requirement_id=f"req_{uuid.uuid4().hex[:8]}",
-                description="Backend API service",
-                priority=9,
-                complexity=0.7,
-                dependencies=["frontend"],
-                technical_category="backend",
-                estimated_effort=60.0
-            ))
+            requirements.append(
+                SystemRequirement(
+                    requirement_id=f"req_{uuid.uuid4().hex[:8]}",
+                    description="Backend API service",
+                    priority=9,
+                    complexity=0.7,
+                    dependencies=["frontend"],
+                    technical_category="backend",
+                    estimated_effort=60.0,
+                )
+            )
 
         if any(word in keywords for word in ["database", "data", "store", "save"]):
-            requirements.append(SystemRequirement(
-                requirement_id=f"req_{uuid.uuid4().hex[:8]}",
-                description="Database system",
-                priority=9,
-                complexity=0.5,
-                dependencies=[],
-                technical_category="database",
-                estimated_effort=20.0
-            ))
+            requirements.append(
+                SystemRequirement(
+                    requirement_id=f"req_{uuid.uuid4().hex[:8]}",
+                    description="Database system",
+                    priority=9,
+                    complexity=0.5,
+                    dependencies=[],
+                    technical_category="database",
+                    estimated_effort=20.0,
+                )
+            )
 
         if any(word in keywords for word in ["api", "service", "microservice"]):
-            requirements.append(SystemRequirement(
-                requirement_id=f"req_{uuid.uuid4().hex[:8]}",
-                description="API service layer",
-                priority=8,
-                complexity=0.6,
-                dependencies=["database"],
-                technical_category="api",
-                estimated_effort=30.0
-            ))
+            requirements.append(
+                SystemRequirement(
+                    requirement_id=f"req_{uuid.uuid4().hex[:8]}",
+                    description="API service layer",
+                    priority=8,
+                    complexity=0.6,
+                    dependencies=["database"],
+                    technical_category="api",
+                    estimated_effort=30.0,
+                )
+            )
 
         return requirements
 
-    async def establish_dependency_causality(self, requirements: List[SystemRequirement]):
+    async def establish_dependency_causality(
+        self, requirements: List[SystemRequirement]
+    ):
         """依存関係の因果律確立"""
 
         # 各要件を因果イベントとして登録
         requirement_events = {}
         for req in requirements:
-            event_id = await self.causality_system.create_causal_event({
-                "requirement_id": req.requirement_id,
-                "description": req.description,
-                "priority": req.priority,
-                "complexity": req.complexity
-            })
+            event_id = await self.causality_system.create_causal_event(
+                {
+                    "requirement_id": req.requirement_id,
+                    "description": req.description,
+                    "priority": req.priority,
+                    "complexity": req.complexity,
+                }
+            )
             requirement_events[req.requirement_id] = event_id
 
         # 依存関係を因果リンクとして確立
@@ -158,7 +180,7 @@ class AutoSystemGenerator:
                     await self.causality_system.establish_causality(
                         requirement_events[dep_id],  # 原因
                         requirement_events[req.requirement_id],  # 結果
-                        strength=0.9
+                        strength=0.9,
                     )
 
         # 因果律ネットワーク分析
@@ -167,11 +189,12 @@ class AutoSystemGenerator:
         return {
             "dependency_analysis": analysis,
             "requirement_events": requirement_events,
-            "build_order": self._calculate_optimal_build_order(requirements, analysis)
+            "build_order": self._calculate_optimal_build_order(requirements, analysis),
         }
 
-    def _calculate_optimal_build_order(self, requirements: List[SystemRequirement],
-                                     causality_analysis: Dict) -> List[str]:
+    def _calculate_optimal_build_order(
+        self, requirements: List[SystemRequirement], causality_analysis: Dict
+    ) -> List[str]:
         """最適なビルド順序計算"""
 
         # 依存関係の深さによるソート
@@ -182,7 +205,9 @@ class AutoSystemGenerator:
             # 依存関係のない要件を探す
             ready_reqs = []
             for req_id, req in remaining_reqs.items():
-                dependencies_met = all(dep not in remaining_reqs for dep in req.dependencies)
+                dependencies_met = all(
+                    dep not in remaining_reqs for dep in req.dependencies
+                )
                 if dependencies_met:
                     ready_reqs.append(req_id)
 
@@ -196,7 +221,9 @@ class AutoSystemGenerator:
 
         return build_order
 
-    async def generate_system_components(self, requirements: List[SystemRequirement]) -> List[GeneratedComponent]:
+    async def generate_system_components(
+        self, requirements: List[SystemRequirement]
+    ) -> List[GeneratedComponent]:
         """並列宇宙処理による並列コンポーネント生成"""
 
         # 宇宙クラスター作成（各要件カテゴリごと）
@@ -209,19 +236,22 @@ class AutoSystemGenerator:
         generation_tasks = []
 
         for i, category in enumerate(categories):
-            category_requirements = [req for req in requirements if req.technical_category == category]
+            category_requirements = [
+                req for req in requirements if req.technical_category == category
+            ]
 
             # 宇宙タスクとして並列実行
             from infinite_parallel_universe_processor import UniverseTask
+
             task = UniverseTask(
                 task_id=f"generate_{category}",
                 task_type="component_generation",
                 data={
                     "category": category,
-                    "requirements": [req.__dict__ for req in category_requirements]
+                    "requirements": [req.__dict__ for req in category_requirements],
                 },
                 target_universe_ids=[universe_cluster[i]],
-                processing_mode=ProcessingMode.PARALLEL
+                processing_mode=ProcessingMode.PARALLEL,
             )
 
             generation_tasks.append(task)
@@ -229,7 +259,9 @@ class AutoSystemGenerator:
         # 並列実行
         results = []
         for task in generation_tasks:
-            task_results = await self.universe_processor.execute_infinite_parallel_task(task)
+            task_results = await self.universe_processor.execute_infinite_parallel_task(
+                task
+            )
             results.extend(task_results)
 
         # 結果からコンポーネント生成
@@ -244,7 +276,9 @@ class AutoSystemGenerator:
 
         return components
 
-    def _generate_component_for_requirement(self, category: str, req_data: Dict) -> GeneratedComponent:
+    def _generate_component_for_requirement(
+        self, category: str, req_data: Dict
+    ) -> GeneratedComponent:
         """要件に基づくコンポーネント生成"""
 
         component_id = f"comp_{uuid.uuid4().hex[:8]}"
@@ -283,11 +317,11 @@ class AutoSystemGenerator:
             configuration={
                 "environment": "production",
                 "scaling": "auto",
-                "monitoring": True
+                "monitoring": True,
             },
             deployment_config=deployment,
             dependencies=req_data.get("dependencies", []),
-            estimated_resources=resources
+            estimated_resources=resources,
         )
 
     async def auto_generate_system(self, user_description: str) -> Dict[str, Any]:
@@ -320,7 +354,7 @@ class AutoSystemGenerator:
             "build_order": causality_result["build_order"],
             "estimated_total_resources": self._calculate_total_resources(components),
             "deployment_strategy": self._generate_deployment_strategy(components),
-            "generated_at": datetime.now().isoformat()
+            "generated_at": datetime.now().isoformat(),
         }
 
         # 5. 生成履歴に保存
@@ -329,7 +363,9 @@ class AutoSystemGenerator:
 
         return system_architecture
 
-    def _calculate_total_resources(self, components: List[GeneratedComponent]) -> Dict[str, float]:
+    def _calculate_total_resources(
+        self, components: List[GeneratedComponent]
+    ) -> Dict[str, float]:
         """総リソース計算"""
         total = {"cpu": 0, "memory": 0, "storage": 0}
 
@@ -339,7 +375,9 @@ class AutoSystemGenerator:
 
         return total
 
-    def _generate_deployment_strategy(self, components: List[GeneratedComponent]) -> Dict[str, Any]:
+    def _generate_deployment_strategy(
+        self, components: List[GeneratedComponent]
+    ) -> Dict[str, Any]:
         """デプロイ戦略生成"""
 
         platforms = {}
@@ -356,8 +394,9 @@ class AutoSystemGenerator:
             "scaling": "horizontal",
             "monitoring": ["Prometheus", "Grafana"],
             "logging": ["ELK Stack"],
-            "security": ["HTTPS", "JWT", "Rate Limiting"]
+            "security": ["HTTPS", "JWT", "Rate Limiting"],
         }
+
 
 # デモ実行
 async def auto_system_demo():
@@ -371,7 +410,7 @@ async def auto_system_demo():
     test_cases = [
         "Create a todo app with user authentication and real-time updates",
         "Build an e-commerce API with payment processing and inventory management",
-        "Develop a data analytics dashboard with real-time charts"
+        "Develop a data analytics dashboard with real-time charts",
     ]
 
     for i, description in enumerate(test_cases, 1):
@@ -389,11 +428,14 @@ async def auto_system_demo():
 
         # 詳細表示
         print("\nComponents:")
-        for comp_data in result['components']:
+        for comp_data in result["components"]:
             comp = comp_data
-            print(f"  - {comp['name']}: {comp['type']} ({', '.join(comp['technology_stack'])})")
+            print(
+                f"  - {comp['name']}: {comp['type']} ({', '.join(comp['technology_stack'])})"
+            )
 
     print(f"\n📊 Total systems generated: {len(generator.generation_history)}")
+
 
 if __name__ == "__main__":
     asyncio.run(auto_system_demo())

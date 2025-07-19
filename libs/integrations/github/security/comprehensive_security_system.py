@@ -428,9 +428,11 @@ class GitHubSecurityManager:
                         {
                             "type": secret_type,
                             "location": match.start(),
-                            "preview": match.group()[:20] + "..."
-                            if len(match.group()) > 20
-                            else match.group(),
+                            "preview": (
+                                match.group()[:20] + "..."
+                                if len(match.group()) > 20
+                                else match.group()
+                            ),
                         }
                     )
 

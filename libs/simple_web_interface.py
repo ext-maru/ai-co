@@ -16,6 +16,7 @@ HTTPサーバー、WebSocket、JSON APIを提供
 
 import sys
 from pathlib import Path
+
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -37,6 +38,7 @@ from libs.automated_learning_system import AutomatedLearningSystem
 
 logger = logging.getLogger(__name__)
 
+
 class SimpleWebHandler(BaseHTTPRequestHandler):
     """シンプルWebハンドラー"""
 
@@ -50,11 +52,11 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
             parsed_path = urlparse(self.path)
             path = parsed_path.path
 
-            if path == '/':
+            if path == "/":
                 self._serve_dashboard()
-            elif path == '/api/status':
+            elif path == "/api/status":
                 self._serve_api_status()
-            elif path.startswith('/static/'):
+            elif path.startswith("/static/"):
                 self._serve_static(path)
             else:
                 self._serve_404()
@@ -70,14 +72,14 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
             path = parsed_path.path
 
             # リクエストボディ取得
-            content_length = int(self.headers.get('Content-Length', 0))
+            content_length = int(self.headers.get("Content-Length", 0))
             post_data = self.rfile.read(content_length)
 
-            if path == '/api/search':
+            if path == "/api/search":
                 self._handle_api_search(post_data)
-            elif path == '/api/sages':
+            elif path == "/api/sages":
                 self._handle_api_sages(post_data)
-            elif path == '/api/learning':
+            elif path == "/api/learning":
                 self._handle_api_learning(post_data)
             else:
                 self._serve_404()
@@ -88,7 +90,7 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
 
     def _serve_dashboard(self):
         """ダッシュボード配信"""
-        html_content = '''
+        html_content = """
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -469,12 +471,12 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
     </script>
 </body>
 </html>
-'''
+"""
 
         self.send_response(200)
-        self.send_header('Content-Type', 'text/html; charset=utf-8')
+        self.send_header("Content-Type", "text/html; charset=utf-8")
         self.end_headers()
-        self.wfile.write(html_content.encode('utf-8'))
+        self.wfile.write(html_content.encode("utf-8"))
 
     def _serve_api_status(self):
         """API状況配信"""
@@ -482,16 +484,19 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
             try:
                 # 非同期メソッドを同期的に実行
                 import asyncio
+
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
-                status = loop.run_until_complete(self.interface_system.get_system_status())
+                status = loop.run_until_complete(
+                    self.interface_system.get_system_status()
+                )
                 loop.close()
 
                 self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
                 self.end_headers()
-                self.wfile.write(json.dumps(status).encode('utf-8'))
+                self.wfile.write(json.dumps(status).encode("utf-8"))
             except Exception as e:
                 self._serve_error_json(str(e))
         else:
@@ -501,20 +506,23 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
         """検索API処理"""
         if self.interface_system:
             try:
-                data = json.loads(post_data.decode('utf-8'))
+                data = json.loads(post_data.decode("utf-8"))
 
                 # 非同期メソッドを同期的に実行
                 import asyncio
+
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
-                result = loop.run_until_complete(self.interface_system.handle_search_request(data))
+                result = loop.run_until_complete(
+                    self.interface_system.handle_search_request(data)
+                )
                 loop.close()
 
                 self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
                 self.end_headers()
-                self.wfile.write(json.dumps(result).encode('utf-8'))
+                self.wfile.write(json.dumps(result).encode("utf-8"))
             except Exception as e:
                 self._serve_error_json(str(e))
         else:
@@ -524,20 +532,23 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
         """4賢者API処理"""
         if self.interface_system:
             try:
-                data = json.loads(post_data.decode('utf-8'))
+                data = json.loads(post_data.decode("utf-8"))
 
                 # 非同期メソッドを同期的に実行
                 import asyncio
+
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
-                result = loop.run_until_complete(self.interface_system.handle_sages_analysis(data))
+                result = loop.run_until_complete(
+                    self.interface_system.handle_sages_analysis(data)
+                )
                 loop.close()
 
                 self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
                 self.end_headers()
-                self.wfile.write(json.dumps(result).encode('utf-8'))
+                self.wfile.write(json.dumps(result).encode("utf-8"))
             except Exception as e:
                 self._serve_error_json(str(e))
         else:
@@ -547,20 +558,23 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
         """学習API処理"""
         if self.interface_system:
             try:
-                data = json.loads(post_data.decode('utf-8'))
+                data = json.loads(post_data.decode("utf-8"))
 
                 # 非同期メソッドを同期的に実行
                 import asyncio
+
                 loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(loop)
-                result = loop.run_until_complete(self.interface_system.handle_learning_task(data))
+                result = loop.run_until_complete(
+                    self.interface_system.handle_learning_task(data)
+                )
                 loop.close()
 
                 self.send_response(200)
-                self.send_header('Content-Type', 'application/json')
-                self.send_header('Access-Control-Allow-Origin', '*')
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Access-Control-Allow-Origin", "*")
                 self.end_headers()
-                self.wfile.write(json.dumps(result).encode('utf-8'))
+                self.wfile.write(json.dumps(result).encode("utf-8"))
             except Exception as e:
                 self._serve_error_json(str(e))
         else:
@@ -569,35 +583,36 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
     def _serve_static(self, path):
         """静的ファイル配信"""
         self.send_response(200)
-        self.send_header('Content-Type', 'text/css')
+        self.send_header("Content-Type", "text/css")
         self.end_headers()
-        self.wfile.write(b'/* Static file placeholder */')
+        self.wfile.write(b"/* Static file placeholder */")
 
     def _serve_404(self):
         """404エラー"""
         self.send_response(404)
-        self.send_header('Content-Type', 'text/html')
+        self.send_header("Content-Type", "text/html")
         self.end_headers()
-        self.wfile.write(b'<h1>404 Not Found</h1>')
+        self.wfile.write(b"<h1>404 Not Found</h1>")
 
     def _serve_500(self):
         """500エラー"""
         self.send_response(500)
-        self.send_header('Content-Type', 'text/html')
+        self.send_header("Content-Type", "text/html")
         self.end_headers()
-        self.wfile.write(b'<h1>500 Internal Server Error</h1>')
+        self.wfile.write(b"<h1>500 Internal Server Error</h1>")
 
     def _serve_error_json(self, error_message):
         """JSON エラー"""
         self.send_response(500)
-        self.send_header('Content-Type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.end_headers()
-        self.wfile.write(json.dumps({'error': error_message}).encode('utf-8'))
+        self.wfile.write(json.dumps({"error": error_message}).encode("utf-8"))
 
     def log_message(self, format, *args):
         """ログメッセージ（サイレント）"""
         pass
+
 
 class SimpleWebInterface:
     """シンプルWebインターフェース"""
@@ -612,15 +627,15 @@ class SimpleWebInterface:
         self.learning_system = AutomatedLearningSystem()
 
         # サーバー設定
-        self.host = 'localhost'
+        self.host = "localhost"
         self.port = 8000
         self.server = None
 
         # 統計情報
         self.stats = {
-            'requests_handled': 0,
-            'start_time': datetime.now(),
-            'last_request': None
+            "requests_handled": 0,
+            "start_time": datetime.now(),
+            "last_request": None,
         }
 
         logger.info("🌐 シンプルWebインターフェース初期化完了")
@@ -637,57 +652,56 @@ class SimpleWebInterface:
 
             self.logger.info("✅ シンプルWebインターフェース初期化完了")
             return {
-                'success': True,
-                'four_sages': four_sages_init,
-                'search_platform': search_init,
-                'learning_system': learning_init
+                "success": True,
+                "four_sages": four_sages_init,
+                "search_platform": search_init,
+                "learning_system": learning_init,
             }
 
         except Exception as e:
             self.logger.error(f"❌ システム初期化失敗: {e}")
-            return {
-                'success': False,
-                'error': str(e)
-            }
+            return {"success": False, "error": str(e)}
 
     async def handle_search_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """検索リクエスト処理"""
         try:
             from libs.advanced_search_analytics_platform import SearchQuery, SearchType
 
-            query = request.get('query', '')
-            search_type = request.get('search_type', 'hybrid')
-            limit = request.get('limit', 10)
+            query = request.get("query", "")
+            search_type = request.get("search_type", "hybrid")
+            limit = request.get("limit", 10)
 
             search_query = SearchQuery(
                 query=query,
                 search_type=SearchType(search_type),
-                filters=request.get('filters', {}),
-                limit=limit
+                filters=request.get("filters", {}),
+                limit=limit,
             )
 
             result = await self.search_platform.hybrid_search(search_query)
             return result
 
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     async def handle_sages_analysis(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """4賢者分析処理"""
         try:
             analysis_request = {
-                'title': request.get('title', 'Web UI Analysis'),
-                'query': request.get('query', ''),
-                'context': request.get('context', 'Web UI request'),
-                'task_data': request.get('task_data', {}),
-                'incident_data': request.get('incident_data', {})
+                "title": request.get("title", "Web UI Analysis"),
+                "query": request.get("query", ""),
+                "context": request.get("context", "Web UI request"),
+                "task_data": request.get("task_data", {}),
+                "incident_data": request.get("incident_data", {}),
             }
 
-            result = await self.four_sages.four_sages_collaborative_analysis(analysis_request)
+            result = await self.four_sages.four_sages_collaborative_analysis(
+                analysis_request
+            )
             return result
 
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     async def handle_learning_task(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """学習タスク処理"""
@@ -695,17 +709,19 @@ class SimpleWebInterface:
             from libs.automated_learning_system import LearningType, AutomationLevel
 
             task_id = await self.learning_system.create_learning_task(
-                task_type=LearningType(request.get('task_type', 'supervised')),
-                data_source=request.get('data_source', 'web_ui'),
-                target_metric=request.get('target_metric', 'accuracy'),
-                automation_level=AutomationLevel(request.get('automation_level', 'fully_automatic')),
-                priority=request.get('priority', 5)
+                task_type=LearningType(request.get("task_type", "supervised")),
+                data_source=request.get("data_source", "web_ui"),
+                target_metric=request.get("target_metric", "accuracy"),
+                automation_level=AutomationLevel(
+                    request.get("automation_level", "fully_automatic")
+                ),
+                priority=request.get("priority", 5),
             )
 
-            return {'task_id': task_id, 'status': 'created'}
+            return {"task_id": task_id, "status": "created"}
 
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     async def get_system_status(self) -> Dict[str, Any]:
         """システム状況取得"""
@@ -715,14 +731,14 @@ class SimpleWebInterface:
             learning_status = await self.learning_system.get_learning_status()
 
             return {
-                'stats': self.stats,
-                'four_sages_status': four_sages_status,
-                'learning_status': learning_status,
-                'timestamp': datetime.now().isoformat()
+                "stats": self.stats,
+                "four_sages_status": four_sages_status,
+                "learning_status": learning_status,
+                "timestamp": datetime.now().isoformat(),
             }
 
         except Exception as e:
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     def start_server(self):
         """サーバー開始"""
@@ -747,6 +763,7 @@ class SimpleWebInterface:
         except Exception as e:
             print(f"❌ サーバーエラー: {e}")
 
+
 async def demo_simple_web_interface():
     """シンプルWebインターフェースデモ"""
     print("🌐 シンプルWebインターフェースデモ開始")
@@ -765,27 +782,25 @@ async def demo_simple_web_interface():
         print("\n2. 機能テスト...")
 
         # 検索機能テスト
-        search_result = await web_interface.handle_search_request({
-            'query': '4賢者システム',
-            'search_type': 'hybrid',
-            'limit': 3
-        })
+        search_result = await web_interface.handle_search_request(
+            {"query": "4賢者システム", "search_type": "hybrid", "limit": 3}
+        )
         print(f"   検索機能: {search_result.get('total_found', 0)}件")
 
         # 4賢者分析テスト
-        analysis_result = await web_interface.handle_sages_analysis({
-            'title': 'デモ分析',
-            'query': '統合システム',
-            'context': 'デモ実行'
-        })
+        analysis_result = await web_interface.handle_sages_analysis(
+            {"title": "デモ分析", "query": "統合システム", "context": "デモ実行"}
+        )
         print(f"   4賢者分析: {analysis_result.get('status', 'unknown')}")
 
         # 学習タスクテスト
-        learning_result = await web_interface.handle_learning_task({
-            'task_type': 'supervised',
-            'data_source': 'demo_data',
-            'target_metric': 'accuracy'
-        })
+        learning_result = await web_interface.handle_learning_task(
+            {
+                "task_type": "supervised",
+                "data_source": "demo_data",
+                "target_metric": "accuracy",
+            }
+        )
         print(f"   学習タスク: {learning_result.get('task_id', 'unknown')}")
 
         # システム状況テスト
@@ -797,12 +812,16 @@ async def demo_simple_web_interface():
 
         # サーバー起動可能性確認
         print("\n🚀 サーバー起動準備完了")
-        print("   コマンド: python3 -c \"import asyncio; from libs.simple_web_interface import SimpleWebInterface; web = SimpleWebInterface(); asyncio.run(web.initialize_system()); web.start_server()\"")
+        print(
+            '   コマンド: python3 -c "import asyncio; from libs.simple_web_interface import SimpleWebInterface; web = SimpleWebInterface(); asyncio.run(web.initialize_system()); web.start_server()"'
+        )
 
     except Exception as e:
         print(f"\n❌ デモ中にエラーが発生: {e}")
         import traceback
+
         traceback.print_exc()
+
 
 if __name__ == "__main__":
     # デモ実行

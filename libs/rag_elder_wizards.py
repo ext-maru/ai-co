@@ -121,7 +121,9 @@ class KnowledgeGapDetector:
                 content = doc_path.read_text(encoding="utf-8")
 
                 # TODO, FIXME, 未実装などのマーカーを検索
-                if any(marker in content for marker in ["TODO", "FIXME", "未実装", "WIP"]):
+                if any(
+                    marker in content for marker in ["TODO", "FIXME", "未実装", "WIP"]
+                ):
                     gap = KnowledgeGap(
                         gap_id=f"doc_incomplete_{doc_path.stem}",
                         gap_type=KnowledgeGapType.INCOMPLETE_DOCUMENTATION,

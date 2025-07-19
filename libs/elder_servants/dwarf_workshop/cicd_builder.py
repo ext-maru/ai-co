@@ -330,9 +330,9 @@ class CICDBuilder(DwarfServant):
                 servant_id=self.servant_id,
                 status=status,
                 result_data=result,
-                error_message=result.get("error")
-                if status == TaskStatus.FAILED
-                else None,
+                error_message=(
+                    result.get("error") if status == TaskStatus.FAILED else None
+                ),
                 execution_time_ms=execution_time,
                 quality_score=quality_score,
             )

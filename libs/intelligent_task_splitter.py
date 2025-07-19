@@ -373,7 +373,9 @@ class IntelligentTaskSplitter(BaseManager):
             )
             task_type = self.determine_task_type(task_description)
 
-            logger.info(f"📊 分析結果 - 複雑度: {complexity.value}, タイプ: {task_type.value}")
+            logger.info(
+                f"📊 分析結果 - 複雑度: {complexity.value}, タイプ: {task_type.value}"
+            )
 
             # 複雑度に応じて分割戦略を決定
             if complexity in [TaskComplexity.SIMPLE, TaskComplexity.MODERATE]:

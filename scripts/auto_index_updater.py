@@ -13,7 +13,9 @@ sys.path.insert(0, str(PROJECT_ROOT))
 def update_indices():
     """索引を更新"""
     try:
-        from scripts.grimoire_accessibility_enhancer_fixed import GrimoireAccessibilityEnhancer
+        from scripts.grimoire_accessibility_enhancer_fixed import (
+            GrimoireAccessibilityEnhancer,
+        )
 
         enhancer = GrimoireAccessibilityEnhancer()
 

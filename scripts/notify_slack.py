@@ -20,7 +20,9 @@ if webhook_url:
     }
 
     req = urllib.request.Request(
-        webhook_url, data=json.dumps(message).encode("utf-8"), headers={"Content-Type": "application/json"}
+        webhook_url,
+        data=json.dumps(message).encode("utf-8"),
+        headers={"Content-Type": "application/json"},
     )
 
     try:

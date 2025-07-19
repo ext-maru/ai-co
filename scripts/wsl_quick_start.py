@@ -20,7 +20,11 @@ def quick_start():
 
     print("1️⃣ RabbitMQ 状態確認...")
     try:
-        result = subprocess.run(["systemctl", "is-active", "rabbitmq-server"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["systemctl", "is-active", "rabbitmq-server"],
+            capture_output=True,
+            text=True,
+        )
         if result.stdout.strip() == "active":
             print("   ✅ RabbitMQ 正常稼働中")
         else:
@@ -49,7 +53,9 @@ def quick_start():
     print("\n3️⃣ エルダー監視起動...")
     try:
         # 既存の監視を停止
-        subprocess.run(["pkill", "-f", "start_elder_monitoring.py"], capture_output=True)
+        subprocess.run(
+            ["pkill", "-f", "start_elder_monitoring.py"], capture_output=True
+        )
 
         # 新しい監視を起動
         subprocess.Popen(
@@ -83,7 +89,10 @@ def quick_start():
 
     print("\n5️⃣ システム状態保存...")
     try:
-        subprocess.run([sys.executable, "scripts/wsl_sleep_recovery_system.py"], capture_output=True)
+        subprocess.run(
+            [sys.executable, "scripts/wsl_sleep_recovery_system.py"],
+            capture_output=True,
+        )
         print("   ✅ システム状態保存完了")
     except Exception as e:
         print(f"   ❌ 状態保存エラー: {e}")

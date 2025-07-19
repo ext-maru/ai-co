@@ -9,6 +9,7 @@ import signal
 import sys
 from postgres_mcp_integration_implementation import PostgreSQLMCPServer
 
+
 class MCPService:
     def __init__(self):
         self.server = None
@@ -38,6 +39,7 @@ class MCPService:
 
         print("✅ PostgreSQL MCP Service stopped")
 
+
 async def main():
     service = MCPService()
 
@@ -56,6 +58,7 @@ async def main():
     except Exception as e:
         print(f"❌ Service error: {e}")
         await service.stop()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

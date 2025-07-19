@@ -68,7 +68,9 @@ class ImplementationValidator:
         # 結果判定
         if results["implementation_errors"]:
             results["success"] = False
-            logger.error(f"❌ 実装エラー {len(results['implementation_errors'])} 件発見")
+            logger.error(
+                f"❌ 実装エラー {len(results['implementation_errors'])} 件発見"
+            )
         else:
             logger.info("✅ 全ての実装検証完了")
 
@@ -105,12 +107,12 @@ class ImplementationValidator:
                                 unimplemented.append(abstract_method)
 
                         if unimplemented:
-                            error_msg = (
-                                f"{module_name}.{name}: 未実装抽象メソッド {unimplemented}"
-                            )
+                            error_msg = f"{module_name}.{name}: 未実装抽象メソッド {unimplemented}"
                             results["errors"].append(error_msg)
                         else:
-                            logger.info(f"✅ {module_name}.{name}: 抽象メソッド実装完了")
+                            logger.info(
+                                f"✅ {module_name}.{name}: 抽象メソッド実装完了"
+                            )
 
                 # BaseWorker/BaseManagerの継承チェック
                 if any(

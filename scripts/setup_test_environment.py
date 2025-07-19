@@ -88,12 +88,19 @@ class TestEnvironmentSetup:
     def install_dependencies(self):
         """Install required Python packages"""
         # Upgrade pip first
-        subprocess.run([sys.executable, "-m", "pip", "install", "--upgrade", "pip"], capture_output=True)
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "--upgrade", "pip"],
+            capture_output=True,
+        )
 
         # Install packages
         for package in self.required_packages:
             print(f"  Installing {package}...")
-            result = subprocess.run([sys.executable, "-m", "pip", "install", package], capture_output=True, text=True)
+            result = subprocess.run(
+                [sys.executable, "-m", "pip", "install", package],
+                capture_output=True,
+                text=True,
+            )
             if result.returncode != 0:
                 print(f"    Warning: Failed to install {package}")
 

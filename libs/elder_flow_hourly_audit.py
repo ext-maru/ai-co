@@ -2,6 +2,7 @@
 Elder Flow毎時間自動監査システム
 24時間365日、違反を見逃さない「Hourly Inquisition」
 """
+
 import threading
 import time
 import json
@@ -18,10 +19,12 @@ import statistics
 from libs.elder_flow_violation_db import ElderFlowViolationDB
 from libs.elder_flow_violation_detector import (
     ElderFlowViolationDetector as OriginalDetector,
-    ViolationDetectionContext
+    ViolationDetectionContext,
 )
 from libs.elder_flow_violation_types_original import (
-    ViolationType, ViolationSeverity, ViolationCategory
+    ViolationType,
+    ViolationSeverity,
+    ViolationCategory,
 )
 
 
@@ -30,18 +33,20 @@ logger = logging.getLogger(__name__)
 
 class AuditType(Enum):
     """監査タイプ"""
+
     COMPREHENSIVE_SCAN = "comprehensive_scan"  # 包括的スキャン
-    ACTIVE_VIOLATIONS = "active_violations"    # アクティブ違反チェック
-    STATISTICS_ANALYSIS = "statistics_analysis" # 統計分析
-    REPORT_GENERATION = "report_generation"    # レポート生成
-    CODE_QUALITY = "code_quality"              # コード品質監査
+    ACTIVE_VIOLATIONS = "active_violations"  # アクティブ違反チェック
+    STATISTICS_ANALYSIS = "statistics_analysis"  # 統計分析
+    REPORT_GENERATION = "report_generation"  # レポート生成
+    CODE_QUALITY = "code_quality"  # コード品質監査
     PROCESS_COMPLIANCE = "process_compliance"  # プロセス遵守監査
-    SECURITY = "security"                      # セキュリティ監査
+    SECURITY = "security"  # セキュリティ監査
 
 
 @dataclass
 class AuditResult:
     """監査結果"""
+
     audit_type: AuditType
     passed: bool
     findings: List[Dict[str, Any]]
@@ -50,9 +55,9 @@ class AuditResult:
 
     def get_severity_summary(self) -> Dict[str, int]:
         """重要度別のサマリーを取得"""
-        summary = {'critical': 0, 'high': 0, 'medium': 0, 'low': 0}
+        summary = {"critical": 0, "high": 0, "medium": 0, "low": 0}
         for finding in self.findings:
-            severity = finding.get('severity', 'low')
+            severity = finding.get("severity", "low")
             if severity in summary:
                 summary[severity] += 1
         return summary
@@ -61,6 +66,7 @@ class AuditResult:
 @dataclass
 class AuditTask:
     """監査タスク"""
+
     task_id: str
     audit_type: AuditType
     description: str
@@ -98,6 +104,7 @@ class AuditTask:
 @dataclass
 class ComplianceMetrics:
     """コンプライアンスメトリクス"""
+
     test_coverage: float = 0.0
     tdd_compliance_rate: float = 0.0
     github_flow_compliance_rate: float = 0.0
@@ -113,9 +120,7 @@ class ComplianceMetrics:
     def calculate(self):
         """コンプライアンス率を計算"""
         if self.total_checks > 0:
-            self.overall_compliance_rate = (
-                self.passed_checks / self.total_checks * 100
-            )
+            self.overall_compliance_rate = self.passed_checks / self.total_checks * 100
             # 90%以上でコンプライアント
             self.is_compliant = self.overall_compliance_rate >= 90.0
 
@@ -123,11 +128,11 @@ class ComplianceMetrics:
         """問題のある領域を特定"""
         problems = []
         thresholds = {
-            'test_coverage': (self.test_coverage, 90.0),
-            'tdd_compliance': (self.tdd_compliance_rate, 90.0),
-            'github_flow_compliance': (self.github_flow_compliance_rate, 90.0),
-            'four_sages_consultation': (self.four_sages_consultation_rate, 80.0),
-            'documentation': (self.documentation_completeness, 80.0)
+            "test_coverage": (self.test_coverage, 90.0),
+            "tdd_compliance": (self.tdd_compliance_rate, 90.0),
+            "github_flow_compliance": (self.github_flow_compliance_rate, 90.0),
+            "four_sages_consultation": (self.four_sages_consultation_rate, 80.0),
+            "documentation": (self.documentation_completeness, 80.0),
         }
 
         for area, (value, threshold) in thresholds.items():
@@ -140,6 +145,7 @@ class ComplianceMetrics:
 @dataclass
 class AuditReport:
     """監査レポート"""
+
     report_id: str
     timestamp: datetime
     summary: str
@@ -152,22 +158,22 @@ class AuditReport:
     def to_dict(self) -> Dict[str, Any]:
         """辞書形式に変換"""
         return {
-            'report_id': self.report_id,
-            'timestamp': self.timestamp.isoformat(),
-            'summary': self.summary,
-            'audit_results': [
+            "report_id": self.report_id,
+            "timestamp": self.timestamp.isoformat(),
+            "summary": self.summary,
+            "audit_results": [
                 {
-                    'audit_type': r.audit_type.value,
-                    'passed': r.passed,
-                    'findings_count': len(r.findings),
-                    'severity_summary': r.get_severity_summary()
+                    "audit_type": r.audit_type.value,
+                    "passed": r.passed,
+                    "findings_count": len(r.findings),
+                    "severity_summary": r.get_severity_summary(),
                 }
                 for r in self.audit_results
             ],
-            'compliance_metrics': self.compliance_metrics.__dict__,
-            'recommendations': self.recommendations,
-            'escalation_required': self.escalation_required,
-            'escalation_reason': self.escalation_reason
+            "compliance_metrics": self.compliance_metrics.__dict__,
+            "recommendations": self.recommendations,
+            "escalation_required": self.escalation_required,
+            "escalation_reason": self.escalation_reason,
         }
 
 
@@ -176,10 +182,10 @@ class AuditSchedule:
 
     def __init__(self):
         # デフォルトのスケジュール（分）
-        self.comprehensive_scan_minute = 0   # 00分: 包括的スキャン
-        self.active_check_minute = 15       # 15分: アクティブ違反チェック
-        self.statistics_minute = 30         # 30分: 統計分析
-        self.report_minute = 45            # 45分: レポート生成
+        self.comprehensive_scan_minute = 0  # 00分: 包括的スキャン
+        self.active_check_minute = 15  # 15分: アクティブ違反チェック
+        self.statistics_minute = 30  # 30分: 統計分析
+        self.report_minute = 45  # 45分: レポート生成
 
     def get_current_task(self, current_time: datetime) -> Optional[AuditType]:
         """現在実行すべきタスクを取得"""
@@ -205,18 +211,22 @@ class AuditSchedule:
             (self.comprehensive_scan_minute, AuditType.COMPREHENSIVE_SCAN),
             (self.active_check_minute, AuditType.ACTIVE_VIOLATIONS),
             (self.statistics_minute, AuditType.STATISTICS_ANALYSIS),
-            (self.report_minute, AuditType.REPORT_GENERATION)
+            (self.report_minute, AuditType.REPORT_GENERATION),
         ]
 
         # 現在時刻より後の最初のスケジュールを探す
         for sched_minute, audit_type in sorted(schedule_times):
             if sched_minute > minute:
-                next_time = current_time.replace(minute=sched_minute, second=0, microsecond=0)
+                next_time = current_time.replace(
+                    minute=sched_minute, second=0, microsecond=0
+                )
                 return next_time, audit_type
 
         # 次の時間の最初のスケジュール
         next_hour = current_time + timedelta(hours=1)
-        next_time = next_hour.replace(minute=self.comprehensive_scan_minute, second=0, microsecond=0)
+        next_time = next_hour.replace(
+            minute=self.comprehensive_scan_minute, second=0, microsecond=0
+        )
         return next_time, AuditType.COMPREHENSIVE_SCAN
 
 
@@ -283,7 +293,7 @@ class HourlyAuditSystem:
         task = AuditTask(
             task_id=f"AUDIT-{datetime.now().strftime('%Y%m%d-%H%M%S')}",
             audit_type=audit_type,
-            description=f"{audit_type.value}の実行"
+            description=f"{audit_type.value}の実行",
         )
 
         self.current_task = task
@@ -301,11 +311,7 @@ class HourlyAuditSystem:
                 report = self._generate_report()
                 result = self._convert_report_to_result(report)
             else:
-                result = AuditResult(
-                    audit_type=audit_type,
-                    passed=True,
-                    findings=[]
-                )
+                result = AuditResult(audit_type=audit_type, passed=True, findings=[])
 
             task.complete(result)
 
@@ -332,45 +338,49 @@ class HourlyAuditSystem:
 
         findings = []
         metrics = {
-            'scan_started': datetime.now().isoformat(),
-            'total_files_scanned': 0,
-            'violations_found': 0,
-            'coverage_metrics': {}
+            "scan_started": datetime.now().isoformat(),
+            "total_files_scanned": 0,
+            "violations_found": 0,
+            "coverage_metrics": {},
         }
 
         # 1. コードベースをスキャン
         codebase_results = self._scan_codebase()
-        metrics['total_files_scanned'] = codebase_results['files_scanned']
-        metrics['violations_found'] = codebase_results['violations_found']
-        findings.extend(codebase_results.get('findings', []))
+        metrics["total_files_scanned"] = codebase_results["files_scanned"]
+        metrics["violations_found"] = codebase_results["violations_found"]
+        findings.extend(codebase_results.get("findings", []))
 
         # 2. テストカバレッジをチェック
         coverage_results = self._check_test_coverage()
-        metrics['coverage_metrics'] = coverage_results
+        metrics["coverage_metrics"] = coverage_results
 
-        if coverage_results.get('coverage', 0) < 90:
-            findings.append({
-                'type': 'test_coverage',
-                'severity': 'high',
-                'description': f"テストカバレッジが基準以下: {coverage_results.get('coverage', 0)}%"
-            })
+        if coverage_results.get("coverage", 0) < 90:
+            findings.append(
+                {
+                    "type": "test_coverage",
+                    "severity": "high",
+                    "description": f"テストカバレッジが基準以下: {coverage_results.get('coverage', 0)}%",
+                }
+            )
 
         # 3. 依存関係をチェック
         dependency_results = self._check_dependencies()
-        findings.extend(dependency_results.get('vulnerabilities', []))
+        findings.extend(dependency_results.get("vulnerabilities", []))
 
         # 4. プロセス遵守をチェック
         process_results = self._check_process_compliance()
-        findings.extend(process_results.get('violations', []))
+        findings.extend(process_results.get("violations", []))
 
         # 結果を保存
-        passed = len([f for f in findings if f.get('severity') in ['critical', 'high']]) == 0
+        passed = (
+            len([f for f in findings if f.get("severity") in ["critical", "high"]]) == 0
+        )
 
         result = AuditResult(
             audit_type=AuditType.COMPREHENSIVE_SCAN,
             passed=passed,
             findings=findings,
-            metrics=metrics
+            metrics=metrics,
         )
 
         self.last_comprehensive_result = result
@@ -388,43 +398,54 @@ class HourlyAuditSystem:
         # 長期間未解決の違反を特定
         now = datetime.now()
         for violation in active_violations:
-            detected_at = datetime.fromisoformat(violation['detected_at'])
+            detected_at = datetime.fromisoformat(violation["detected_at"])
             age_hours = (now - detected_at).total_seconds() / 3600
 
             if age_hours > 24:  # 24時間以上
-                findings.append({
-                    'type': 'long_standing_violation',
-                    'severity': 'high',
-                    'description': f"{violation['violation_type']}が{age_hours:.0f}時間未解決",
-                    'violation_id': violation['id']
-                })
+                findings.append(
+                    {
+                        "type": "long_standing_violation",
+                        "severity": "high",
+                        "description": f"{violation['violation_type']}が{age_hours:.0f}時間未解決",
+                        "violation_id": violation["id"],
+                    }
+                )
             elif age_hours > 8:  # 8時間以上
-                findings.append({
-                    'type': 'aging_violation',
-                    'severity': 'medium',
-                    'description': f"{violation['violation_type']}が{age_hours:.0f}時間経過",
-                    'violation_id': violation['id']
-                })
+                findings.append(
+                    {
+                        "type": "aging_violation",
+                        "severity": "medium",
+                        "description": f"{violation['violation_type']}が{age_hours:.0f}時間経過",
+                        "violation_id": violation["id"],
+                    }
+                )
 
         metrics = {
-            'active_violations': len(active_violations),
-            'long_standing': len([f for f in findings if f['type'] == 'long_standing_violation']),
-            'aging': len([f for f in findings if f['type'] == 'aging_violation']),
-            'oldest_violation_hours': max(
-                [(now - datetime.fromisoformat(v['detected_at'])).total_seconds() / 3600
-                 for v in active_violations],
-                default=0
-            )
+            "active_violations": len(active_violations),
+            "long_standing": len(
+                [f for f in findings if f["type"] == "long_standing_violation"]
+            ),
+            "aging": len([f for f in findings if f["type"] == "aging_violation"]),
+            "oldest_violation_hours": max(
+                [
+                    (now - datetime.fromisoformat(v["detected_at"])).total_seconds()
+                    / 3600
+                    for v in active_violations
+                ],
+                default=0,
+            ),
         }
 
         result = AuditResult(
             audit_type=AuditType.ACTIVE_VIOLATIONS,
             passed=len(findings) == 0,
             findings=findings,
-            metrics=metrics
+            metrics=metrics,
         )
 
-        logger.info(f"アクティブ違反確認完了: {len(active_violations)}件中{len(findings)}件要注意")
+        logger.info(
+            f"アクティブ違反確認完了: {len(active_violations)}件中{len(findings)}件要注意"
+        )
         return result
 
     def _analyze_statistics(self) -> AuditResult:
@@ -432,35 +453,36 @@ class HourlyAuditSystem:
         logger.info("統計分析を開始")
 
         findings = []
-        metrics = {
-            'analysis_period': '24hours',
-            'trends': {}
-        }
+        metrics = {"analysis_period": "24hours", "trends": {}}
 
         # 過去24時間のデータを分析
         trends = self._calculate_trends()
-        metrics['trends'] = trends
+        metrics["trends"] = trends
 
         # 悪化トレンドを検出
-        if trends.get('violation_trend') == 'increasing':
-            findings.append({
-                'type': 'negative_trend',
-                'severity': 'medium',
-                'description': '違反発生率が増加傾向にあります'
-            })
+        if trends.get("violation_trend") == "increasing":
+            findings.append(
+                {
+                    "type": "negative_trend",
+                    "severity": "medium",
+                    "description": "違反発生率が増加傾向にあります",
+                }
+            )
 
-        if trends.get('resolution_time_trend') == 'increasing':
-            findings.append({
-                'type': 'negative_trend',
-                'severity': 'medium',
-                'description': '違反解決時間が長期化しています'
-            })
+        if trends.get("resolution_time_trend") == "increasing":
+            findings.append(
+                {
+                    "type": "negative_trend",
+                    "severity": "medium",
+                    "description": "違反解決時間が長期化しています",
+                }
+            )
 
         result = AuditResult(
             audit_type=AuditType.STATISTICS_ANALYSIS,
             passed=len(findings) == 0,
             findings=findings,
-            metrics=metrics
+            metrics=metrics,
         )
 
         self.last_statistics_result = result
@@ -474,8 +496,7 @@ class HourlyAuditSystem:
 
         # 過去1時間の監査結果を収集
         recent_audits = [
-            task for task in self.audit_history[-10:]
-            if task.result is not None
+            task for task in self.audit_history[-10:] if task.result is not None
         ]
 
         # コンプライアンスメトリクスを計算
@@ -486,7 +507,7 @@ class HourlyAuditSystem:
 
         # エスカレーションが必要か判定
         critical_findings = sum(
-            len([f for f in audit.result.findings if f.get('severity') == 'critical'])
+            len([f for f in audit.result.findings if f.get("severity") == "critical"])
             for audit in recent_audits
         )
 
@@ -498,7 +519,9 @@ class HourlyAuditSystem:
             compliance_metrics=compliance,
             recommendations=recommendations,
             escalation_required=critical_findings > 0,
-            escalation_reason="重大な違反が検出されました" if critical_findings > 0 else None
+            escalation_reason=(
+                "重大な違反が検出されました" if critical_findings > 0 else None
+            ),
         )
 
         # レポートを保存
@@ -509,33 +532,31 @@ class HourlyAuditSystem:
 
     def _scan_codebase(self) -> Dict[str, Any]:
         """コードベースをスキャン"""
-        results = {
-            'files_scanned': 0,
-            'violations_found': 0,
-            'findings': []
-        }
+        results = {"files_scanned": 0, "violations_found": 0, "findings": []}
 
         # Pythonファイルをスキャン（シミュレーション）
         # 実際の実装では、プロジェクト内の全ファイルをスキャン
         try:
             # ファイル数をカウント
-            py_files = list(Path('.').rglob('*.py'))
-            results['files_scanned'] = len(py_files)
+            py_files = list(Path(".").rglob("*.py"))
+            results["files_scanned"] = len(py_files)
 
             # 各ファイルをチェック（簡易版）
             for file_path in py_files[:10]:  # デモ用に10ファイルまで
-                with open(file_path, 'r') as f:
+                with open(file_path, "r") as f:
                     content = f.read()
 
                     # 簡易的な違反チェック
-                    if 'TODO' in content or 'FIXME' in content:
-                        results['findings'].append({
-                            'type': 'incomplete_implementation',
-                            'severity': 'low',
-                            'description': f"未完了のTODO/FIXMEが{file_path}に存在",
-                            'file': str(file_path)
-                        })
-                        results['violations_found'] += 1
+                    if "TODO" in content or "FIXME" in content:
+                        results["findings"].append(
+                            {
+                                "type": "incomplete_implementation",
+                                "severity": "low",
+                                "description": f"未完了のTODO/FIXMEが{file_path}に存在",
+                                "file": str(file_path),
+                            }
+                        )
+                        results["violations_found"] += 1
 
         except Exception as e:
             logger.error(f"コードベーススキャンエラー: {e}")
@@ -547,17 +568,17 @@ class HourlyAuditSystem:
         # 実際の実装では、pytest-covなどを使用してカバレッジを取得
         # ここではシミュレーション
         return {
-            'coverage': 92.5,  # シミュレーション値
-            'uncovered_files': [],
-            'branch_coverage': 88.0
+            "coverage": 92.5,  # シミュレーション値
+            "uncovered_files": [],
+            "branch_coverage": 88.0,
         }
 
     def _check_dependencies(self) -> Dict[str, Any]:
         """依存関係の脆弱性をチェック"""
         # 実際の実装では、safety checkなどを使用
         return {
-            'total_dependencies': 25,
-            'vulnerabilities': []  # シミュレーションでは脆弱性なし
+            "total_dependencies": 25,
+            "vulnerabilities": [],  # シミュレーションでは脆弱性なし
         }
 
     def _check_process_compliance(self) -> Dict[str, Any]:
@@ -567,19 +588,16 @@ class HourlyAuditSystem:
         # GitHubフロー遵守チェック（シミュレーション）
         # 実際の実装では、git logを解析
 
-        return {
-            'compliance_rate': 95.0,
-            'violations': violations
-        }
+        return {"compliance_rate": 95.0, "violations": violations}
 
     def _calculate_trends(self) -> Dict[str, Any]:
         """トレンドを計算"""
         # 過去のデータから傾向を分析
         # ここではシミュレーション
         return {
-            'violation_trend': 'stable',
-            'resolution_time_trend': 'improving',
-            'compliance_trend': 'stable'
+            "violation_trend": "stable",
+            "resolution_time_trend": "improving",
+            "compliance_trend": "stable",
         }
 
     def _calculate_compliance_metrics(self) -> ComplianceMetrics:
@@ -600,28 +618,27 @@ class HourlyAuditSystem:
         return metrics
 
     def _generate_recommendations(
-        self,
-        recent_audits: List[AuditTask],
-        compliance: ComplianceMetrics
+        self, recent_audits: List[AuditTask], compliance: ComplianceMetrics
     ) -> List[str]:
         """推奨事項を生成"""
         recommendations = []
 
         # コンプライアンスに基づく推奨
         problem_areas = compliance.get_problem_areas()
-        if 'test_coverage' in problem_areas:
+        if "test_coverage" in problem_areas:
             recommendations.append("テストカバレッジを90%以上に向上させてください")
 
-        if 'tdd_compliance' in problem_areas:
+        if "tdd_compliance" in problem_areas:
             recommendations.append("TDD（テスト駆動開発）の実践を強化してください")
 
-        if 'four_sages_consultation' in problem_areas:
+        if "four_sages_consultation" in problem_areas:
             recommendations.append("新機能実装前の4賢者相談を徹底してください")
 
         # 違反傾向に基づく推奨
         critical_count = sum(
-            len([f for f in audit.result.findings if f.get('severity') == 'critical'])
-            for audit in recent_audits if audit.result
+            len([f for f in audit.result.findings if f.get("severity") == "critical"])
+            for audit in recent_audits
+            if audit.result
         )
 
         if critical_count > 0:
@@ -630,19 +647,15 @@ class HourlyAuditSystem:
         return recommendations
 
     def _generate_summary(
-        self,
-        recent_audits: List[AuditTask],
-        compliance: ComplianceMetrics
+        self, recent_audits: List[AuditTask], compliance: ComplianceMetrics
     ) -> str:
         """サマリーを生成"""
         total_findings = sum(
-            len(audit.result.findings)
-            for audit in recent_audits if audit.result
+            len(audit.result.findings) for audit in recent_audits if audit.result
         )
 
         passed_audits = sum(
-            1 for audit in recent_audits
-            if audit.result and audit.result.passed
+            1 for audit in recent_audits if audit.result and audit.result.passed
         )
 
         summary = f"""
@@ -659,8 +672,7 @@ class HourlyAuditSystem:
         """エスカレーションが必要か判定"""
         # 重大な違反がある場合
         critical_findings = [
-            f for f in result.findings
-            if f.get('severity') == 'critical'
+            f for f in result.findings if f.get("severity") == "critical"
         ]
 
         return len(critical_findings) > 0 or not result.passed
@@ -673,11 +685,12 @@ class HourlyAuditSystem:
         # ここではログ出力のみ
         try:
             from libs.notification_system import NotificationSystem
+
             notifier = NotificationSystem()
             notifier.send_critical_alert(
                 title="Elder Flow監査エスカレーション",
                 message=reason,
-                details=result.findings
+                details=result.findings,
             )
         except ImportError:
             logger.info("通知システムは未実装です")
@@ -688,7 +701,7 @@ class HourlyAuditSystem:
         report_dir.mkdir(parents=True, exist_ok=True)
 
         report_file = report_dir / f"{report.report_id}.json"
-        with open(report_file, 'w') as f:
+        with open(report_file, "w") as f:
             json.dump(report.to_dict(), f, indent=2, ensure_ascii=False)
 
     def _convert_report_to_result(self, report: AuditReport) -> AuditResult:
@@ -698,58 +711,58 @@ class HourlyAuditSystem:
             passed=not report.escalation_required,
             findings=[],
             metrics={
-                'report_id': report.report_id,
-                'compliance_rate': report.compliance_metrics.overall_compliance_rate
-            }
+                "report_id": report.report_id,
+                "compliance_rate": report.compliance_metrics.overall_compliance_rate,
+            },
         )
 
     def get_audit_summary(self) -> Dict[str, Any]:
         """監査サマリーを取得"""
         if not self.audit_history:
-            return {
-                'total_audits': 0,
-                'status': 'no_data'
-            }
+            return {"total_audits": 0, "status": "no_data"}
 
         completed_audits = [
-            task for task in self.audit_history
-            if task.status == 'completed'
+            task for task in self.audit_history if task.status == "completed"
         ]
 
         passed_audits = [
-            task for task in completed_audits
-            if task.result and task.result.passed
+            task for task in completed_audits if task.result and task.result.passed
         ]
 
         summary = {
-            'total_audits': len(self.audit_history),
-            'completed_audits': len(completed_audits),
-            'passed_audits': len(passed_audits),
-            'failed_audits': len(completed_audits) - len(passed_audits),
-            'success_rate': (len(passed_audits) / len(completed_audits) * 100) if completed_audits else 0,
-            'by_type': {}
+            "total_audits": len(self.audit_history),
+            "completed_audits": len(completed_audits),
+            "passed_audits": len(passed_audits),
+            "failed_audits": len(completed_audits) - len(passed_audits),
+            "success_rate": (
+                (len(passed_audits) / len(completed_audits) * 100)
+                if completed_audits
+                else 0
+            ),
+            "by_type": {},
         }
 
         # タイプ別集計
         for audit_type in AuditType:
             type_audits = [
-                task for task in completed_audits
-                if task.audit_type == audit_type
+                task for task in completed_audits if task.audit_type == audit_type
             ]
             if type_audits:
-                summary['by_type'][audit_type.value] = {
-                    'total': len(type_audits),
-                    'passed': len([t for t in type_audits if t.result and t.result.passed])
+                summary["by_type"][audit_type.value] = {
+                    "total": len(type_audits),
+                    "passed": len(
+                        [t for t in type_audits if t.result and t.result.passed]
+                    ),
                 }
 
         return summary
 
-    def export_report(self, report: AuditReport, format: str = 'json') -> str:
+    def export_report(self, report: AuditReport, format: str = "json") -> str:
         """レポートをエクスポート"""
-        if format == 'json':
+        if format == "json":
             return json.dumps(report.to_dict(), indent=2, ensure_ascii=False)
 
-        elif format == 'html':
+        elif format == "html":
             # HTML形式でエクスポート
             html = f"""
 <html>

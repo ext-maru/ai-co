@@ -65,7 +65,9 @@ class GitHubIssueMonitor:
                     self.last_check_time = datetime.fromisoformat(self.last_check_time)
 
                 self.processed_comments = set(state.get("processed_comments", []))
-                self.logger.info(f"監視状態を読み込み: {len(self.processed_comments)}件のコメント処理済み")
+                self.logger.info(
+                    f"監視状態を読み込み: {len(self.processed_comments)}件のコメント処理済み"
+                )
 
             except Exception as e:
                 self.logger.error(f"状態読み込みエラー: {e}")
@@ -80,9 +82,9 @@ class GitHubIssueMonitor:
             self.state_file.parent.mkdir(exist_ok=True)
 
             state = {
-                "last_check_time": self.last_check_time.isoformat()
-                if self.last_check_time
-                else None,
+                "last_check_time": (
+                    self.last_check_time.isoformat() if self.last_check_time else None
+                ),
                 "processed_comments": list(self.processed_comments),
                 "repo_owner": self.repo_owner,
                 "repo_name": self.repo_name,
@@ -208,7 +210,9 @@ class GitHubIssueMonitor:
         comment_author = comment["user"]["login"]
         issue_number = issue["number"]
 
-        self.logger.info(f"新しいコメントを処理: Issue #{issue_number}, コメント#{comment_id}")
+        self.logger.info(
+            f"新しいコメントを処理: Issue #{issue_number}, コメント#{comment_id}"
+        )
 
         # コメントを解析
         command = self._parse_comment(comment_body)
@@ -324,7 +328,9 @@ class GitHubIssueMonitor:
 
     async def _handle_document(self, text: str) -> str:
         """ドキュメント作成コマンドを処理"""
-        return f"ドキュメントを作成します: {text}\n\n（ドキュメント作成をここに追加予定）"
+        return (
+            f"ドキュメントを作成します: {text}\n\n（ドキュメント作成をここに追加予定）"
+        )
 
     async def _handle_question(self, text: str) -> str:
         """質問コマンドを処理"""
@@ -336,7 +342,9 @@ class GitHubIssueMonitor:
 
     async def _handle_rejection(self, issue: Dict[str, Any], text: str) -> str:
         """拒否コマンドを処理"""
-        return f"拒否を確認しました。タスクを見直します。\n\n（拒否処理をここに追加予定）"
+        return (
+            f"拒否を確認しました。タスクを見直します。\n\n（拒否処理をここに追加予定）"
+        )
 
     async def _post_comment(self, issue_number: int, comment_body: str):
         """Issueにコメントを投稿"""

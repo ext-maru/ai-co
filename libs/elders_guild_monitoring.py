@@ -20,10 +20,20 @@ import time
 
 import asyncpg
 import redis.asyncio as redis
-from prometheus_client import Counter, Histogram, Gauge, start_http_server, CollectorRegistry
+from prometheus_client import (
+    Counter,
+    Histogram,
+    Gauge,
+    start_http_server,
+    CollectorRegistry,
+)
 
 from .elders_guild_db_manager import EldersGuildDatabaseManager, DatabaseConfig
-from .elders_guild_connection_manager import ConnectionManager, ConnectionPoolConfig, DatabaseNode
+from .elders_guild_connection_manager import (
+    ConnectionManager,
+    ConnectionPoolConfig,
+    DatabaseNode,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -31,23 +41,29 @@ logger = logging.getLogger(__name__)
 # Configuration
 # ============================================================================
 
+
 class AlertLevel(Enum):
     """アラートレベル"""
+
     INFO = "info"
     WARNING = "warning"
     ERROR = "error"
     CRITICAL = "critical"
 
+
 class NotificationChannel(Enum):
     """通知チャネル"""
+
     EMAIL = "email"
     SLACK = "slack"
     WEBHOOK = "webhook"
     LOG = "log"
 
+
 @dataclass
 class AlertRule:
     """アラートルール"""
+
     name: str
     description: str
     metric_name: str
@@ -66,9 +82,11 @@ class AlertRule:
     is_active: bool = False
     trigger_count: int = 0
 
+
 @dataclass
 class NotificationConfig:
     """通知設定"""
+
     # メール設定
     smtp_server: str = "localhost"
     smtp_port: int = 587
@@ -85,9 +103,11 @@ class NotificationConfig:
     webhook_url: str = ""
     webhook_headers: Dict[str, str] = field(default_factory=dict)
 
+
 @dataclass
 class MonitoringConfig:
     """監視設定"""
+
     # 基本設定
     collection_interval: int = 30  # 30秒間隔
     retention_days: int = 30
@@ -108,9 +128,11 @@ class MonitoringConfig:
     monitor_replication: bool = True
     monitor_slow_queries: bool = True
 
+
 # ============================================================================
 # Metrics Collector
 # ============================================================================
+
 
 class DatabaseMetrics:
     """データベースメトリクス"""
@@ -121,104 +143,108 @@ class DatabaseMetrics:
 
         # 接続メトリクス
         self.active_connections = Gauge(
-            'elders_guild_active_connections',
-            'Active database connections',
-            ['node', 'database'],
-            registry=self.registry
+            "elders_guild_active_connections",
+            "Active database connections",
+            ["node", "database"],
+            registry=self.registry,
         )
 
         self.max_connections = Gauge(
-            'elders_guild_max_connections',
-            'Maximum database connections',
-            ['node', 'database'],
-            registry=self.registry
+            "elders_guild_max_connections",
+            "Maximum database connections",
+            ["node", "database"],
+            registry=self.registry,
         )
 
         self.connection_usage = Gauge(
-            'elders_guild_connection_usage_percent',
-            'Database connection usage percentage',
-            ['node', 'database'],
-            registry=self.registry
+            "elders_guild_connection_usage_percent",
+            "Database connection usage percentage",
+            ["node", "database"],
+            registry=self.registry,
         )
 
         # パフォーマンスメトリクス
         self.query_duration = Histogram(
-            'elders_guild_query_duration_seconds',
-            'Query execution time',
-            ['node', 'database', 'query_type'],
-            registry=self.registry
+            "elders_guild_query_duration_seconds",
+            "Query execution time",
+            ["node", "database", "query_type"],
+            registry=self.registry,
         )
 
         self.transactions_total = Counter(
-            'elders_guild_transactions_total',
-            'Total database transactions',
-            ['node', 'database', 'result'],
-            registry=self.registry
+            "elders_guild_transactions_total",
+            "Total database transactions",
+            ["node", "database", "result"],
+            registry=self.registry,
         )
 
         # システムメトリクス
         self.disk_usage = Gauge(
-            'elders_guild_disk_usage_percent',
-            'Disk usage percentage',
-            ['node', 'mount_point'],
-            registry=self.registry
+            "elders_guild_disk_usage_percent",
+            "Disk usage percentage",
+            ["node", "mount_point"],
+            registry=self.registry,
         )
 
         self.memory_usage = Gauge(
-            'elders_guild_memory_usage_percent',
-            'Memory usage percentage',
-            ['node'],
-            registry=self.registry
+            "elders_guild_memory_usage_percent",
+            "Memory usage percentage",
+            ["node"],
+            registry=self.registry,
         )
 
         self.cpu_usage = Gauge(
-            'elders_guild_cpu_usage_percent',
-            'CPU usage percentage',
-            ['node'],
-            registry=self.registry
+            "elders_guild_cpu_usage_percent",
+            "CPU usage percentage",
+            ["node"],
+            registry=self.registry,
         )
 
         # レプリケーションメトリクス
         self.replication_lag = Gauge(
-            'elders_guild_replication_lag_seconds',
-            'Replication lag in seconds',
-            ['master', 'slave'],
-            registry=self.registry
+            "elders_guild_replication_lag_seconds",
+            "Replication lag in seconds",
+            ["master", "slave"],
+            registry=self.registry,
         )
 
         # 4賢者メトリクス
         self.knowledge_entities_count = Gauge(
-            'elders_guild_knowledge_entities_total',
-            'Total knowledge entities',
-            registry=self.registry
+            "elders_guild_knowledge_entities_total",
+            "Total knowledge entities",
+            registry=self.registry,
         )
 
         self.tasks_by_status = Gauge(
-            'elders_guild_tasks_by_status',
-            'Tasks by status',
-            ['status'],
-            registry=self.registry
+            "elders_guild_tasks_by_status",
+            "Tasks by status",
+            ["status"],
+            registry=self.registry,
         )
 
         self.incidents_by_severity = Gauge(
-            'elders_guild_incidents_by_severity',
-            'Incidents by severity',
-            ['severity'],
-            registry=self.registry
+            "elders_guild_incidents_by_severity",
+            "Incidents by severity",
+            ["severity"],
+            registry=self.registry,
         )
 
         self.rag_queries_total = Counter(
-            'elders_guild_rag_queries_total',
-            'Total RAG queries',
-            ['status'],
-            registry=self.registry
+            "elders_guild_rag_queries_total",
+            "Total RAG queries",
+            ["status"],
+            registry=self.registry,
         )
+
 
 class MetricsCollector:
     """メトリクス収集器"""
 
-    def __init__(self, db_manager: EldersGuildDatabaseManager,
-                 connection_manager: ConnectionManager):
+    def __init__(
+        self,
+        db_manager: EldersGuildDatabaseManager,
+        connection_manager: ConnectionManager,
+    ):
         self.db_manager = db_manager
         self.connection_manager = connection_manager
         self.metrics = DatabaseMetrics()
@@ -227,10 +253,7 @@ class MetricsCollector:
     async def initialize(self):
         """メトリクス収集器の初期化"""
         self.redis_client = redis.Redis(
-            host="localhost",
-            port=6379,
-            db=0,
-            decode_responses=True
+            host="localhost", port=6379, db=0, decode_responses=True
         )
 
         logger.info("Metrics collector initialized")
@@ -252,31 +275,32 @@ class MetricsCollector:
 
                 # 接続数の取得
                 async with self.connection_manager.get_connection() as conn:
-                    result = await conn.fetchrow("""
+                    result = await conn.fetchrow(
+                        """
                         SELECT
                             count(*) as active_connections,
                             current_setting('max_connections')::int as max_connections
                         FROM pg_stat_activity
                         WHERE state = 'active'
-                    """)
+                    """
+                    )
 
-                    active_conn = result['active_connections']
-                    max_conn = result['max_connections']
+                    active_conn = result["active_connections"]
+                    max_conn = result["max_connections"]
 
                     self.metrics.active_connections.labels(
-                        node=node.host,
-                        database=node.database
+                        node=node.host, database=node.database
                     ).set(active_conn)
 
                     self.metrics.max_connections.labels(
-                        node=node.host,
-                        database=node.database
+                        node=node.host, database=node.database
                     ).set(max_conn)
 
-                    usage_percent = (active_conn / max_conn) * 100 if max_conn > 0 else 0
+                    usage_percent = (
+                        (active_conn / max_conn) * 100 if max_conn > 0 else 0
+                    )
                     self.metrics.connection_usage.labels(
-                        node=node.host,
-                        database=node.database
+                        node=node.host, database=node.database
                     ).set(usage_percent)
 
         except Exception as e:
@@ -287,7 +311,8 @@ class MetricsCollector:
         try:
             async with self.connection_manager.get_connection() as conn:
                 # スロークエリの取得
-                slow_queries = await conn.fetch("""
+                slow_queries = await conn.fetch(
+                    """
                     SELECT
                         query,
                         calls,
@@ -298,30 +323,33 @@ class MetricsCollector:
                     WHERE mean_time > 1000  -- 1秒以上
                     ORDER BY total_time DESC
                     LIMIT 10
-                """)
+                """
+                )
 
                 # トランザクション統計
-                tx_stats = await conn.fetchrow("""
+                tx_stats = await conn.fetchrow(
+                    """
                     SELECT
                         xact_commit + xact_rollback as total_transactions,
                         xact_commit,
                         xact_rollback
                     FROM pg_stat_database
                     WHERE datname = current_database()
-                """)
+                """
+                )
 
                 if tx_stats:
                     self.metrics.transactions_total.labels(
                         node="master",
                         database=self.db_manager.config.database,
-                        result="commit"
-                    ).inc(tx_stats['xact_commit'])
+                        result="commit",
+                    ).inc(tx_stats["xact_commit"])
 
                     self.metrics.transactions_total.labels(
                         node="master",
                         database=self.db_manager.config.database,
-                        result="rollback"
-                    ).inc(tx_stats['xact_rollback'])
+                        result="rollback",
+                    ).inc(tx_stats["xact_rollback"])
 
         except Exception as e:
             logger.error(f"Error collecting performance metrics: {e}")
@@ -338,9 +366,11 @@ class MetricsCollector:
             self.metrics.memory_usage.labels(node="localhost").set(memory.percent)
 
             # ディスク使用率
-            disk_usage = psutil.disk_usage('/')
+            disk_usage = psutil.disk_usage("/")
             disk_percent = (disk_usage.used / disk_usage.total) * 100
-            self.metrics.disk_usage.labels(node="localhost", mount_point="/").set(disk_percent)
+            self.metrics.disk_usage.labels(node="localhost", mount_point="/").set(
+                disk_percent
+            )
 
         except Exception as e:
             logger.error(f"Error collecting system metrics: {e}")
@@ -350,7 +380,8 @@ class MetricsCollector:
         try:
             async with self.connection_manager.get_connection() as conn:
                 # レプリケーション状態の確認
-                replication_stats = await conn.fetch("""
+                replication_stats = await conn.fetch(
+                    """
                     SELECT
                         client_addr,
                         state,
@@ -360,15 +391,15 @@ class MetricsCollector:
                         replay_lsn,
                         sync_state
                     FROM pg_stat_replication
-                """)
+                """
+                )
 
                 for stat in replication_stats:
                     # レプリケーション遅延の計算
-                    if stat['sent_lsn'] and stat['replay_lsn']:
+                    if stat["sent_lsn"] and stat["replay_lsn"]:
                         lag = 0  # 実際の計算はより複雑
                         self.metrics.replication_lag.labels(
-                            master="master",
-                            slave=stat['client_addr']
+                            master="master", slave=stat["client_addr"]
                         ).set(lag)
 
         except Exception as e:
@@ -385,29 +416,33 @@ class MetricsCollector:
                 self.metrics.knowledge_entities_count.set(knowledge_count)
 
                 # Task Sage
-                task_stats = await conn.fetch("""
+                task_stats = await conn.fetch(
+                    """
                     SELECT status, COUNT(*) as count
                     FROM task_sage.tasks
                     GROUP BY status
-                """)
+                """
+                )
 
                 for stat in task_stats:
-                    self.metrics.tasks_by_status.labels(
-                        status=stat['status']
-                    ).set(stat['count'])
+                    self.metrics.tasks_by_status.labels(status=stat["status"]).set(
+                        stat["count"]
+                    )
 
                 # Incident Sage
-                incident_stats = await conn.fetch("""
+                incident_stats = await conn.fetch(
+                    """
                     SELECT severity, COUNT(*) as count
                     FROM incident_sage.incidents
                     WHERE status != 'closed'
                     GROUP BY severity
-                """)
+                """
+                )
 
                 for stat in incident_stats:
                     self.metrics.incidents_by_severity.labels(
-                        severity=stat['severity']
-                    ).set(stat['count'])
+                        severity=stat["severity"]
+                    ).set(stat["count"])
 
         except Exception as e:
             logger.error(f"Error collecting sage metrics: {e}")
@@ -423,14 +458,11 @@ class MetricsCollector:
         await self.redis_client.setex(
             f"elders_guild:metrics:{timestamp}",
             86400,  # 24時間保持
-            json.dumps(metrics)
+            json.dumps(metrics),
         )
 
         # 最新メトリクスの更新
-        await self.redis_client.set(
-            "elders_guild:metrics:latest",
-            json.dumps(metrics)
-        )
+        await self.redis_client.set("elders_guild:metrics:latest", json.dumps(metrics))
 
     async def get_metrics_history(self, hours: int = 24) -> List[Dict[str, Any]]:
         """メトリクス履歴の取得"""
@@ -451,9 +483,11 @@ class MetricsCollector:
 
         return metrics_history
 
+
 # ============================================================================
 # Alert Manager
 # ============================================================================
+
 
 class AlertManager:
     """アラートマネージャー"""
@@ -477,7 +511,10 @@ class AlertManager:
                 threshold=80.0,
                 comparison=">=",
                 alert_level=AlertLevel.WARNING,
-                notification_channels=[NotificationChannel.EMAIL, NotificationChannel.LOG]
+                notification_channels=[
+                    NotificationChannel.EMAIL,
+                    NotificationChannel.LOG,
+                ],
             ),
             AlertRule(
                 name="critical_connection_usage",
@@ -486,7 +523,10 @@ class AlertManager:
                 threshold=95.0,
                 comparison=">=",
                 alert_level=AlertLevel.CRITICAL,
-                notification_channels=[NotificationChannel.EMAIL, NotificationChannel.SLACK]
+                notification_channels=[
+                    NotificationChannel.EMAIL,
+                    NotificationChannel.SLACK,
+                ],
             ),
             AlertRule(
                 name="high_memory_usage",
@@ -495,7 +535,7 @@ class AlertManager:
                 threshold=85.0,
                 comparison=">=",
                 alert_level=AlertLevel.WARNING,
-                notification_channels=[NotificationChannel.EMAIL]
+                notification_channels=[NotificationChannel.EMAIL],
             ),
             AlertRule(
                 name="high_disk_usage",
@@ -504,7 +544,10 @@ class AlertManager:
                 threshold=90.0,
                 comparison=">=",
                 alert_level=AlertLevel.ERROR,
-                notification_channels=[NotificationChannel.EMAIL, NotificationChannel.SLACK]
+                notification_channels=[
+                    NotificationChannel.EMAIL,
+                    NotificationChannel.SLACK,
+                ],
             ),
             AlertRule(
                 name="replication_lag",
@@ -513,7 +556,7 @@ class AlertManager:
                 threshold=60.0,
                 comparison=">=",
                 alert_level=AlertLevel.WARNING,
-                notification_channels=[NotificationChannel.EMAIL]
+                notification_channels=[NotificationChannel.EMAIL],
             ),
             AlertRule(
                 name="slow_queries",
@@ -522,8 +565,8 @@ class AlertManager:
                 threshold=10.0,
                 comparison=">=",
                 alert_level=AlertLevel.WARNING,
-                notification_channels=[NotificationChannel.LOG]
-            )
+                notification_channels=[NotificationChannel.LOG],
+            ),
         ]
 
         for rule in default_rules:
@@ -543,12 +586,16 @@ class AlertManager:
                 continue
 
             # 閾値の評価
-            should_trigger = self._evaluate_threshold(metric_value, rule.threshold, rule.comparison)
+            should_trigger = self._evaluate_threshold(
+                metric_value, rule.threshold, rule.comparison
+            )
 
             if should_trigger:
                 # クールダウン期間のチェック
                 if rule.last_triggered:
-                    time_since_last = (current_time - rule.last_triggered).total_seconds()
+                    time_since_last = (
+                        current_time - rule.last_triggered
+                    ).total_seconds()
                     if time_since_last < rule.cooldown:
                         continue
 
@@ -560,11 +607,13 @@ class AlertManager:
                 if rule.is_active:
                     await self._resolve_alert(rule, current_time)
 
-    def _get_metric_value(self, metrics: Dict[str, Any], metric_name: str) -> Optional[float]:
+    def _get_metric_value(
+        self, metrics: Dict[str, Any], metric_name: str
+    ) -> Optional[float]:
         """メトリクス値の取得"""
         try:
             # ネストした辞書から値を取得
-            keys = metric_name.split('.')
+            keys = metric_name.split(".")
             value = metrics
             for key in keys:
                 value = value[key]
@@ -572,7 +621,9 @@ class AlertManager:
         except (KeyError, ValueError, TypeError):
             return None
 
-    def _evaluate_threshold(self, value: float, threshold: float, comparison: str) -> bool:
+    def _evaluate_threshold(
+        self, value: float, threshold: float, comparison: str
+    ) -> bool:
         """閾値の評価"""
         if comparison == ">":
             return value > threshold
@@ -600,7 +651,9 @@ class AlertManager:
         # 通知の送信
         await self._send_notifications(rule, value, "TRIGGERED")
 
-        logger.warning(f"Alert triggered: {rule.name} - {rule.description} (value: {value})")
+        logger.warning(
+            f"Alert triggered: {rule.name} - {rule.description} (value: {value})"
+        )
 
     async def _resolve_alert(self, rule: AlertRule, timestamp: datetime):
         """アラートの解除"""
@@ -614,7 +667,9 @@ class AlertManager:
 
         logger.info(f"Alert resolved: {rule.name}")
 
-    async def _send_notifications(self, rule: AlertRule, value: Optional[float], status: str):
+    async def _send_notifications(
+        self, rule: AlertRule, value: Optional[float], status: str
+    ):
         """通知の送信"""
         for channel in rule.notification_channels:
             try:
@@ -629,7 +684,9 @@ class AlertManager:
             except Exception as e:
                 logger.error(f"Failed to send notification via {channel.value}: {e}")
 
-    async def _send_email_notification(self, rule: AlertRule, value: Optional[float], status: str):
+    async def _send_email_notification(
+        self, rule: AlertRule, value: Optional[float], status: str
+    ):
         """メール通知の送信"""
         if not self.config.admin_email:
             return
@@ -653,11 +710,11 @@ class AlertManager:
         # メール送信の実装（実際の環境に合わせて調整）
         try:
             msg = MIMEMultipart()
-            msg['From'] = self.config.smtp_username
-            msg['To'] = self.config.admin_email
-            msg['Subject'] = subject
+            msg["From"] = self.config.smtp_username
+            msg["To"] = self.config.admin_email
+            msg["Subject"] = subject
 
-            msg.attach(MIMEText(body, 'plain'))
+            msg.attach(MIMEText(body, "plain"))
 
             server = smtplib.SMTP(self.config.smtp_server, self.config.smtp_port)
             if self.config.smtp_use_tls:
@@ -669,17 +726,23 @@ class AlertManager:
         except Exception as e:
             logger.error(f"Failed to send email: {e}")
 
-    async def _send_slack_notification(self, rule: AlertRule, value: Optional[float], status: str):
+    async def _send_slack_notification(
+        self, rule: AlertRule, value: Optional[float], status: str
+    ):
         """Slack通知の送信"""
         # Slack webhook実装（実際の環境に合わせて調整）
         pass
 
-    async def _send_webhook_notification(self, rule: AlertRule, value: Optional[float], status: str):
+    async def _send_webhook_notification(
+        self, rule: AlertRule, value: Optional[float], status: str
+    ):
         """Webhook通知の送信"""
         # Webhook実装（実際の環境に合わせて調整）
         pass
 
-    async def _send_log_notification(self, rule: AlertRule, value: Optional[float], status: str):
+    async def _send_log_notification(
+        self, rule: AlertRule, value: Optional[float], status: str
+    ):
         """ログ通知の送信"""
         log_level = getattr(logging, rule.alert_level.value.upper(), logging.INFO)
 
@@ -704,22 +767,27 @@ class AlertManager:
             level_counts[level] = level_counts.get(level, 0) + 1
 
         return {
-            'total_rules': total_rules,
-            'active_alerts': active_alerts,
-            'level_distribution': level_counts,
-            'total_triggers': sum(rule.trigger_count for rule in self.alert_rules)
+            "total_rules": total_rules,
+            "active_alerts": active_alerts,
+            "level_distribution": level_counts,
+            "total_triggers": sum(rule.trigger_count for rule in self.alert_rules),
         }
+
 
 # ============================================================================
 # Main Monitoring System
 # ============================================================================
 
+
 class ElderGuildMonitoring:
     """エルダーズギルド監視システム"""
 
-    def __init__(self, config: MonitoringConfig,
-                 db_manager: EldersGuildDatabaseManager,
-                 connection_manager: ConnectionManager):
+    def __init__(
+        self,
+        config: MonitoringConfig,
+        db_manager: EldersGuildDatabaseManager,
+        connection_manager: ConnectionManager,
+    ):
         self.config = config
         self.db_manager = db_manager
         self.connection_manager = connection_manager
@@ -739,7 +807,10 @@ class ElderGuildMonitoring:
 
         # Prometheus サーバーの開始
         if self.config.prometheus_enabled:
-            start_http_server(self.config.prometheus_port, registry=self.metrics_collector.metrics.registry)
+            start_http_server(
+                self.config.prometheus_port,
+                registry=self.metrics_collector.metrics.registry,
+            )
 
         logger.info("Monitoring system initialized")
 
@@ -800,7 +871,9 @@ class ElderGuildMonitoring:
             if not self.metrics_collector.redis_client:
                 return None
 
-            data = await self.metrics_collector.redis_client.get("elders_guild:metrics:latest")
+            data = await self.metrics_collector.redis_client.get(
+                "elders_guild:metrics:latest"
+            )
             if data:
                 return json.loads(data)
 
@@ -825,43 +898,49 @@ class ElderGuildMonitoring:
             metrics_history = await self.metrics_collector.get_metrics_history(24)
 
             dashboard = {
-                'timestamp': datetime.now().isoformat(),
-                'connection_stats': connection_stats,
-                'alert_stats': alert_stats,
-                'active_alerts': [
+                "timestamp": datetime.now().isoformat(),
+                "connection_stats": connection_stats,
+                "alert_stats": alert_stats,
+                "active_alerts": [
                     {
-                        'name': alert.name,
-                        'description': alert.description,
-                        'level': alert.alert_level.value,
-                        'triggered_at': alert.last_triggered.isoformat() if alert.last_triggered else None
+                        "name": alert.name,
+                        "description": alert.description,
+                        "level": alert.alert_level.value,
+                        "triggered_at": (
+                            alert.last_triggered.isoformat()
+                            if alert.last_triggered
+                            else None
+                        ),
                     }
                     for alert in active_alerts
                 ],
-                'metrics_history': metrics_history[-100:],  # 最新100件
-                'system_health': {
-                    'database_nodes': len([n for n in self.connection_manager.nodes if n.is_active]),
-                    'total_nodes': len(self.connection_manager.nodes),
-                    'monitoring_active': self.is_running
-                }
+                "metrics_history": metrics_history[-100:],  # 最新100件
+                "system_health": {
+                    "database_nodes": len(
+                        [n for n in self.connection_manager.nodes if n.is_active]
+                    ),
+                    "total_nodes": len(self.connection_manager.nodes),
+                    "monitoring_active": self.is_running,
+                },
             }
 
             return dashboard
 
         except Exception as e:
             logger.error(f"Error generating monitoring dashboard: {e}")
-            return {'error': str(e)}
+            return {"error": str(e)}
+
 
 # ============================================================================
 # Usage Example
 # ============================================================================
 
+
 async def main():
     """使用例"""
     # 設定
     monitoring_config = MonitoringConfig(
-        collection_interval=30,
-        prometheus_enabled=True,
-        prometheus_port=9090
+        collection_interval=30, prometheus_enabled=True, prometheus_port=9090
     )
 
     # データベース管理
@@ -890,6 +969,7 @@ async def main():
         logger.error(f"Error: {e}")
     finally:
         await monitoring.stop()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

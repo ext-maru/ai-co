@@ -340,17 +340,17 @@ class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 if path not in openapi_spec["paths"]:
                     openapi_spec["paths"][path] = {}
 
-                openapi_spec["paths"][path][
-                    method
-                ] = self.openapi_generator.convert_endpoint(endpoint)
+                openapi_spec["paths"][path][method] = (
+                    self.openapi_generator.convert_endpoint(endpoint)
+                )
 
             # スキーマ定義生成
             models = api_design.get("models", [])
             for model in models:
                 schema_name = model.get("name", "Model")
-                openapi_spec["components"]["schemas"][
-                    schema_name
-                ] = self.openapi_generator.convert_model(model)
+                openapi_spec["components"]["schemas"][schema_name] = (
+                    self.openapi_generator.convert_model(model)
+                )
 
             # セキュリティスキーム追加
             auth_schemes = self._generate_security_schemes()

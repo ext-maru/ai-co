@@ -41,7 +41,8 @@ class ProjectIntelligenceSystem:
         cursor = conn.cursor()
 
         # 学習データテーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS learning_data (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 date DATE NOT NULL,
@@ -55,10 +56,12 @@ class ProjectIntelligenceSystem:
                 applied BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         # 改善履歴テーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS improvement_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 improvement_type TEXT NOT NULL,
@@ -69,10 +72,12 @@ class ProjectIntelligenceSystem:
                 validated_at TIMESTAMP,
                 elder_approval TEXT
             )
-        """)
+        """
+        )
 
         # エルダー評議会報告テーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS elder_council_reports (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 report_date DATE NOT NULL,
@@ -82,7 +87,8 @@ class ProjectIntelligenceSystem:
                 approved BOOLEAN DEFAULT FALSE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -119,7 +125,7 @@ class ProjectIntelligenceSystem:
             "projects_analyzed": len(project_data),
             "patterns_found": len(patterns),
             "improvements_suggested": len(improvements),
-            "elder_council_report": report["id"] if report else None
+            "elder_council_report": report["id"] if report else None,
         }
 
     async def _collect_project_data(self) -> List[Dict[str, Any]]:
@@ -132,17 +138,21 @@ class ProjectIntelligenceSystem:
             for project_dir in projects_dir.iterdir():
                 if project_dir.is_dir() and project_dir.name.startswith("project_"):
                     try:
-                        context = self.template_system.get_project_context(project_dir.name)
+                        context = self.template_system.get_project_context(
+                            project_dir.name
+                        )
                         if context:
                             # プロジェクトメトリクス収集
                             metrics = await self._collect_project_metrics(project_dir)
 
-                            project_data.append({
-                                "project_id": project_dir.name,
-                                "context": context,
-                                "metrics": metrics,
-                                "files": self._analyze_project_files(project_dir)
-                            })
+                            project_data.append(
+                                {
+                                    "project_id": project_dir.name,
+                                    "context": context,
+                                    "metrics": metrics,
+                                    "files": self._analyze_project_files(project_dir),
+                                }
+                            )
                     except Exception as e:
                         logger.error(f"プロジェクト分析エラー {project_dir.name}: {e}")
 
@@ -156,7 +166,7 @@ class ProjectIntelligenceSystem:
             "test_coverage": 0.0,
             "completion_rate": 0.0,
             "quality_score": 0.0,
-            "automation_efficiency": 0.0
+            "automation_efficiency": 0.0,
         }
 
         # ファイル数カウント
@@ -165,9 +175,9 @@ class ProjectIntelligenceSystem:
                 metrics["file_count"] += 1
 
                 # コード行数カウント
-                if file_path.suffix in ['.py', '.js', '.ts', '.sql']:
+                if file_path.suffix in [".py", ".js", ".ts", ".sql"]:
                     try:
-                        with open(file_path, 'r', encoding='utf-8') as f:
+                        with open(file_path, "r", encoding="utf-8") as f:
                             metrics["code_lines"] += len(f.readlines())
                     except:
                         pass
@@ -175,7 +185,9 @@ class ProjectIntelligenceSystem:
         # テストカバレッジ推定
         test_files = list(project_dir.glob("**/test_*.py"))
         if test_files:
-            metrics["test_coverage"] = min(len(test_files) / max(1, metrics["file_count"] * 0.3), 1.0)
+            metrics["test_coverage"] = min(
+                len(test_files) / max(1, metrics["file_count"] * 0.3), 1.0
+            )
 
         # 完成度推定
         required_files = ["requirements.md", "architecture.md"]
@@ -193,20 +205,20 @@ class ProjectIntelligenceSystem:
             "test_files": 0,
             "config_files": 0,
             "missing_files": [],
-            "quality_issues": []
+            "quality_issues": [],
         }
 
         for file_path in project_dir.rglob("*"):
             if file_path.is_file():
                 file_analysis["total_files"] += 1
 
-                if file_path.suffix in ['.md', '.txt', '.rst']:
+                if file_path.suffix in [".md", ".txt", ".rst"]:
                     file_analysis["documentation_files"] += 1
-                elif file_path.suffix in ['.py', '.js', '.ts', '.java', '.cpp']:
+                elif file_path.suffix in [".py", ".js", ".ts", ".java", ".cpp"]:
                     file_analysis["code_files"] += 1
-                elif file_path.name.startswith('test_'):
+                elif file_path.name.startswith("test_"):
                     file_analysis["test_files"] += 1
-                elif file_path.suffix in ['.json', '.yaml', '.yml', '.ini']:
+                elif file_path.suffix in [".json", ".yaml", ".yml", ".ini"]:
                     file_analysis["config_files"] += 1
 
         # 欠落ファイル検出
@@ -217,54 +229,68 @@ class ProjectIntelligenceSystem:
 
         return file_analysis
 
-    async def _analyze_patterns(self, project_data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def _analyze_patterns(
+        self, project_data: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """パターン分析"""
         patterns = []
 
         # 成功パターン分析
-        successful_projects = [p for p in project_data if p["metrics"]["completion_rate"] > 0.7]
+        successful_projects = [
+            p for p in project_data if p["metrics"]["completion_rate"] > 0.7
+        ]
         if successful_projects:
-            patterns.append({
-                "type": "success_pattern",
-                "description": "高完成度プロジェクトの共通点",
-                "data": self._extract_common_patterns(successful_projects),
-                "confidence": 0.8
-            })
+            patterns.append(
+                {
+                    "type": "success_pattern",
+                    "description": "高完成度プロジェクトの共通点",
+                    "data": self._extract_common_patterns(successful_projects),
+                    "confidence": 0.8,
+                }
+            )
 
         # 効率性パターン分析
-        efficient_projects = [p for p in project_data if p["metrics"]["automation_efficiency"] > 0.6]
+        efficient_projects = [
+            p for p in project_data if p["metrics"]["automation_efficiency"] > 0.6
+        ]
         if efficient_projects:
-            patterns.append({
-                "type": "efficiency_pattern",
-                "description": "高効率プロジェクトの特徴",
-                "data": self._extract_efficiency_patterns(efficient_projects),
-                "confidence": 0.7
-            })
+            patterns.append(
+                {
+                    "type": "efficiency_pattern",
+                    "description": "高効率プロジェクトの特徴",
+                    "data": self._extract_efficiency_patterns(efficient_projects),
+                    "confidence": 0.7,
+                }
+            )
 
         # 問題パターン分析
-        problematic_projects = [p for p in project_data if p["metrics"]["quality_score"] < 0.5]
+        problematic_projects = [
+            p for p in project_data if p["metrics"]["quality_score"] < 0.5
+        ]
         if problematic_projects:
-            patterns.append({
-                "type": "problem_pattern",
-                "description": "品質問題の共通要因",
-                "data": self._extract_problem_patterns(problematic_projects),
-                "confidence": 0.6
-            })
+            patterns.append(
+                {
+                    "type": "problem_pattern",
+                    "description": "品質問題の共通要因",
+                    "data": self._extract_problem_patterns(problematic_projects),
+                    "confidence": 0.6,
+                }
+            )
 
         return patterns
 
-    def _extract_common_patterns(self, projects: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _extract_common_patterns(
+        self, projects: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """共通パターンの抽出"""
-        patterns = {
-            "common_templates": {},
-            "common_files": {},
-            "average_metrics": {}
-        }
+        patterns = {"common_templates": {}, "common_files": {}, "average_metrics": {}}
 
         # テンプレート使用頻度
         for project in projects:
             template = project["context"]["project_info"]["template_name"]
-            patterns["common_templates"][template] = patterns["common_templates"].get(template, 0) + 1
+            patterns["common_templates"][template] = (
+                patterns["common_templates"].get(template, 0) + 1
+            )
 
         # 共通ファイル
         all_files = set()
@@ -279,23 +305,30 @@ class ProjectIntelligenceSystem:
 
         return patterns
 
-    def _extract_efficiency_patterns(self, projects: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _extract_efficiency_patterns(
+        self, projects: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """効率性パターンの抽出"""
         return {
-            "average_file_count": sum(p["metrics"]["file_count"] for p in projects) / len(projects),
+            "average_file_count": sum(p["metrics"]["file_count"] for p in projects)
+            / len(projects),
             "average_completion_time": "推定値",  # 実際の完成時間データがあれば使用
-            "common_automation_rules": "分析結果"
+            "common_automation_rules": "分析結果",
         }
 
-    def _extract_problem_patterns(self, projects: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _extract_problem_patterns(
+        self, projects: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """問題パターンの抽出"""
         return {
             "common_missing_files": {},
             "quality_issues": [],
-            "completion_bottlenecks": []
+            "completion_bottlenecks": [],
         }
 
-    async def _generate_improvements(self, patterns: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def _generate_improvements(
+        self, patterns: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """改善提案生成"""
         improvements = []
 
@@ -312,7 +345,9 @@ class ProjectIntelligenceSystem:
 
         return improvements
 
-    def _generate_success_improvements(self, pattern: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _generate_success_improvements(
+        self, pattern: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """成功パターンに基づく改善提案"""
         improvements = []
 
@@ -320,47 +355,59 @@ class ProjectIntelligenceSystem:
         common_files = pattern["data"].get("common_files", {})
         for file_type, frequency in common_files.items():
             if frequency > 0.8:  # 80%以上で共通
-                improvements.append({
-                    "type": "template_enhancement",
-                    "description": f"テンプレートに{file_type}を追加",
-                    "action": f"add_template_file:{file_type}",
-                    "confidence": frequency,
-                    "priority": "medium"
-                })
+                improvements.append(
+                    {
+                        "type": "template_enhancement",
+                        "description": f"テンプレートに{file_type}を追加",
+                        "action": f"add_template_file:{file_type}",
+                        "confidence": frequency,
+                        "priority": "medium",
+                    }
+                )
 
         return improvements
 
-    def _generate_efficiency_improvements(self, pattern: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _generate_efficiency_improvements(
+        self, pattern: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """効率性改善提案"""
         improvements = []
 
         # 自動化ルールの改善
-        improvements.append({
-            "type": "automation_rule",
-            "description": "自動化ルールの最適化",
-            "action": "optimize_automation_rules",
-            "confidence": 0.7,
-            "priority": "high"
-        })
+        improvements.append(
+            {
+                "type": "automation_rule",
+                "description": "自動化ルールの最適化",
+                "action": "optimize_automation_rules",
+                "confidence": 0.7,
+                "priority": "high",
+            }
+        )
 
         return improvements
 
-    def _generate_problem_solutions(self, pattern: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _generate_problem_solutions(
+        self, pattern: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """問題解決提案"""
         improvements = []
 
         # 品質チェック強化
-        improvements.append({
-            "type": "quality_check",
-            "description": "品質チェック項目の追加",
-            "action": "add_quality_checks",
-            "confidence": 0.6,
-            "priority": "medium"
-        })
+        improvements.append(
+            {
+                "type": "quality_check",
+                "description": "品質チェック項目の追加",
+                "action": "add_quality_checks",
+                "confidence": 0.6,
+                "priority": "medium",
+            }
+        )
 
         return improvements
 
-    async def _generate_elder_council_report(self, improvements: List[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
+    async def _generate_elder_council_report(
+        self, improvements: List[Dict[str, Any]]
+    ) -> Optional[Dict[str, Any]]:
         """エルダー評議会レポート生成"""
         if not improvements:
             return None
@@ -372,39 +419,52 @@ class ProjectIntelligenceSystem:
             "date": datetime.now().date().isoformat(),
             "summary": {
                 "total_improvements": len(improvements),
-                "high_priority": len([i for i in improvements if i["priority"] == "high"]),
-                "medium_priority": len([i for i in improvements if i["priority"] == "medium"]),
-                "low_priority": len([i for i in improvements if i["priority"] == "low"])
+                "high_priority": len(
+                    [i for i in improvements if i["priority"] == "high"]
+                ),
+                "medium_priority": len(
+                    [i for i in improvements if i["priority"] == "medium"]
+                ),
+                "low_priority": len(
+                    [i for i in improvements if i["priority"] == "low"]
+                ),
             },
             "improvements": improvements,
             "recommendations": [
                 "高優先度の改善を優先実装",
                 "テンプレートの継続的改善",
-                "自動化ルールの最適化"
+                "自動化ルールの最適化",
             ],
             "elder_consultation": {
                 "knowledge_sage": "過去の成功事例との比較分析",
                 "task_sage": "実装優先順位の決定",
                 "incident_sage": "リスク評価と予防策",
-                "rag_sage": "最新技術動向の調査"
-            }
+                "rag_sage": "最新技術動向の調査",
+            },
         }
 
         # データベースに保存
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO elder_council_reports (report_date, report_type, content)
             VALUES (?, ?, ?)
-        """, (datetime.now().date(), "daily_intelligence", json.dumps(report_content, ensure_ascii=False)))
+        """,
+            (
+                datetime.now().date(),
+                "daily_intelligence",
+                json.dumps(report_content, ensure_ascii=False),
+            ),
+        )
 
         conn.commit()
         conn.close()
 
         # エルダー評議会レポートファイル作成
         report_file = self.reports_dir / f"{report_id}.json"
-        with open(report_file, 'w', encoding='utf-8') as f:
+        with open(report_file, "w", encoding="utf-8") as f:
             json.dump(report_content, f, indent=2, ensure_ascii=False)
 
         return {"id": report_id, "file": str(report_file)}
@@ -415,11 +475,13 @@ class ProjectIntelligenceSystem:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM elder_council_reports
             WHERE approved = TRUE AND report_type = 'daily_intelligence'
             ORDER BY created_at DESC LIMIT 5
-        """)
+        """
+        )
 
         approved_reports = cursor.fetchall()
         conn.close()
@@ -446,11 +508,14 @@ class ProjectIntelligenceSystem:
                 conn = sqlite3.connect(self.db_path)
                 cursor = conn.cursor()
 
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO improvement_history
                     (improvement_type, old_value, new_value, applied_at)
                     VALUES (?, ?, ?, ?)
-                """, (improvement["type"], "旧値", "新値", datetime.now()))
+                """,
+                    (improvement["type"], "旧値", "新値", datetime.now()),
+                )
 
                 conn.commit()
                 conn.close()
@@ -481,23 +546,23 @@ class ProjectIntelligenceSystem:
                 "projects_analyzed": len(project_data),
                 "patterns_identified": len(patterns),
                 "improvements_suggested": len(improvements),
-                "overall_health": self._calculate_overall_health(project_data)
+                "overall_health": self._calculate_overall_health(project_data),
             },
             "projects": [
                 {
                     "id": p["project_id"],
                     "completion_rate": p["metrics"]["completion_rate"],
-                    "quality_score": p["metrics"]["quality_score"]
+                    "quality_score": p["metrics"]["quality_score"],
                 }
                 for p in project_data
             ],
             "patterns": patterns,
-            "improvements": improvements
+            "improvements": improvements,
         }
 
         # レポートファイル作成
         report_file = self.reports_dir / f"daily_report_{date.strftime('%Y%m%d')}.json"
-        with open(report_file, 'w', encoding='utf-8') as f:
+        with open(report_file, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
         return report_file
@@ -508,9 +573,9 @@ class ProjectIntelligenceSystem:
             return 0.0
 
         total_health = sum(
-            p["metrics"]["completion_rate"] * 0.4 +
-            p["metrics"]["quality_score"] * 0.3 +
-            p["metrics"]["test_coverage"] * 0.3
+            p["metrics"]["completion_rate"] * 0.4
+            + p["metrics"]["quality_score"] * 0.3
+            + p["metrics"]["test_coverage"] * 0.3
             for p in project_data
         )
 
@@ -552,10 +617,10 @@ class DailyIntelligenceScheduler:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description='プロジェクト知能システム')
-    parser.add_argument('--daily', action='store_true', help='日次サイクル実行')
-    parser.add_argument('--schedule', action='store_true', help='スケジューラー開始')
-    parser.add_argument('--report', help='レポート生成 (日付: YYYY-MM-DD)')
+    parser = argparse.ArgumentParser(description="プロジェクト知能システム")
+    parser.add_argument("--daily", action="store_true", help="日次サイクル実行")
+    parser.add_argument("--schedule", action="store_true", help="スケジューラー開始")
+    parser.add_argument("--report", help="レポート生成 (日付: YYYY-MM-DD)")
 
     args = parser.parse_args()
 

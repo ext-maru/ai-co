@@ -412,9 +412,9 @@ class ABTestingFramework:
                                 ),
                                 "rag_integration": {
                                     "retrieval_confidence": similarity,
-                                    "search_quality": "high"
-                                    if similarity > 0.8
-                                    else "medium",
+                                    "search_quality": (
+                                        "high" if similarity > 0.8 else "medium"
+                                    ),
                                 },
                             }
                         )
@@ -581,9 +581,9 @@ class ABTestingFramework:
                     )
 
                     # リソース割り当て
-                    resource_allocation[
-                        exp["experiment_id"]
-                    ] = self._allocate_resources(exp)
+                    resource_allocation[exp["experiment_id"]] = (
+                        self._allocate_resources(exp)
+                    )
 
             return {
                 "scheduled_experiments": scheduled,
@@ -783,12 +783,14 @@ class ABTestingFramework:
                     metrics_data[variant_name] = {
                         "response_time": {
                             "samples": response_times[:8],  # サンプル
-                            "mean": statistics.mean(response_times)
-                            if response_times
-                            else 0,
-                            "std": statistics.stdev(response_times)
-                            if len(response_times) > 1
-                            else 0,
+                            "mean": (
+                                statistics.mean(response_times) if response_times else 0
+                            ),
+                            "std": (
+                                statistics.stdev(response_times)
+                                if len(response_times) > 1
+                                else 0
+                            ),
                             "count": len(response_times),
                         }
                     }
@@ -1288,13 +1290,15 @@ class ABTestingFramework:
         return {
             "level": level,
             "potential_impact": impact,
-            "mitigation_actions": [
-                "Monitor closely",
-                "Prepare rollback",
-                "Alert on-call team",
-            ]
-            if level != "low"
-            else [],
+            "mitigation_actions": (
+                [
+                    "Monitor closely",
+                    "Prepare rollback",
+                    "Alert on-call team",
+                ]
+                if level != "low"
+                else []
+            ),
         }
 
     def _calculate_experiment_priority(self, experiment: Dict[str, Any]) -> float:

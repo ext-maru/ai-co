@@ -196,9 +196,9 @@ class TechScout(WizardServant):
                 "GitHub repositories",
                 "Stack Overflow",
             ],
-            "quality_score": 95
-            if task.get("quality_requirements") == "iron_will"
-            else 90,
+            "quality_score": (
+                95 if task.get("quality_requirements") == "iron_will" else 90
+            ),
         }
 
     async def _evaluate_library(self, task: Dict[str, Any]) -> Dict[str, Any]:
@@ -247,9 +247,11 @@ class TechScout(WizardServant):
         recommendation = (
             "Highly recommended"
             if overall_score >= 85
-            else "Recommended with considerations"
-            if overall_score >= 70
-            else "Evaluate alternatives"
+            else (
+                "Recommended with considerations"
+                if overall_score >= 70
+                else "Evaluate alternatives"
+            )
         )
 
         return {
@@ -646,9 +648,11 @@ class TechScout(WizardServant):
             "from_technology": from_technology,
             "to_technology": to_technology,
             "migration_complexity": migration_complexity,
-            "migration_steps": migration_steps[:5]
-            if migration_complexity == "low"
-            else migration_steps,
+            "migration_steps": (
+                migration_steps[:5]
+                if migration_complexity == "low"
+                else migration_steps
+            ),
             "risks": risks,
             "timeline_estimate": f"{timeline_weeks[migration_complexity]} weeks",
             "cost_benefit_analysis": cost_benefit_analysis,
@@ -721,10 +725,12 @@ class TechScout(WizardServant):
             "research_topics": dict(self.metrics["research_topics"]),
             "average_confidence_score": self.metrics["average_confidence_score"],
             "research_performance": {
-                "avg_time": sum(self.metrics["research_times"])
-                / len(self.metrics["research_times"])
-                if self.metrics["research_times"]
-                else 0.0,
+                "avg_time": (
+                    sum(self.metrics["research_times"])
+                    / len(self.metrics["research_times"])
+                    if self.metrics["research_times"]
+                    else 0.0
+                ),
                 "cache_hits": self.metrics["cache_hits"],
             },
         }
@@ -739,11 +745,11 @@ class TechScout(WizardServant):
             task_id=request.task_id,
             status=result.get("status", "failed"),
             data=result,
-            errors=result.get("errors", [])
-            if isinstance(result.get("errors"), list)
-            else [result.get("error", "")]
-            if result.get("error")
-            else [],
+            errors=(
+                result.get("errors", [])
+                if isinstance(result.get("errors"), list)
+                else [result.get("error", "")] if result.get("error") else []
+            ),
             warnings=result.get("warnings", []),
             metrics=result.get("metrics", {}),
         )

@@ -33,7 +33,9 @@ def check_current_permissions():
         return False
 
     if euid == 0:
-        logger.error("Script is running as root! This will cause issues with Claude CLI.")
+        logger.error(
+            "Script is running as root! This will cause issues with Claude CLI."
+        )
         return False
 
     return True
@@ -51,7 +53,9 @@ def fix_ai_start_permissions():
     content = ai_start_path.read_text()
 
     # sudo systemctl start rabbitmq-serverの部分を修正
-    original_line = "self.run_command(['sudo', 'systemctl', 'start', 'rabbitmq-server'])"
+    original_line = (
+        "self.run_command(['sudo', 'systemctl', 'start', 'rabbitmq-server'])"
+    )
 
     if original_line in content:
         # RabbitMQが既に起動しているかチェックする処理を追加
@@ -111,7 +115,9 @@ def fix_claude_startup_permissions():
 
         # 既存のチェックがない場合のみ追加
         if "os.geteuid() == 0" not in content:
-            content = content.replace("def _start_claude_cli_dangerous(self):", check_code)
+            content = content.replace(
+                "def _start_claude_cli_dangerous(self):", check_code
+            )
 
             # importも追加
             if "import os" not in content:
@@ -124,7 +130,9 @@ def fix_claude_startup_permissions():
 
             # 修正版を保存
             claude_startup_path.write_text(content)
-            logger.info("Added root permission check to claude_auto_startup_workflow.py")
+            logger.info(
+                "Added root permission check to claude_auto_startup_workflow.py"
+            )
             return True
         else:
             logger.info("Root permission check already exists")

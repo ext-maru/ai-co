@@ -92,13 +92,19 @@ class SyntaxErrorFixer:
                 if stripped.startswith(("def ", "class ", "async def ")):
                     in_function = True
                     indent_level = len(line) - len(line.lstrip())
-                elif in_function and line.strip() and len(line) - len(line.lstrip()) <= indent_level:
+                elif (
+                    in_function
+                    and line.strip()
+                    and len(line) - len(line.lstrip()) <= indent_level
+                ):
                     in_function = False
 
                 # Check for import *
                 if "import *" in line and in_function:
                     # Comment it out
-                    other_lines.append(line.replace("from", "# from").replace("import", "import"))
+                    other_lines.append(
+                        line.replace("from", "# from").replace("import", "import")
+                    )
                 elif "import *" in line and not in_function:
                     module_imports.append(line)
                 else:
@@ -142,7 +148,9 @@ class SyntaxErrorFixer:
 
         # Also scan for files with syntax errors
         for root, dirs, files in os.walk(self.project_root):
-            if any(skip in root for skip in ["venv", "__pycache__", ".git", "node_modules"]):
+            if any(
+                skip in root for skip in ["venv", "__pycache__", ".git", "node_modules"]
+            ):
                 continue
 
             for file in files:

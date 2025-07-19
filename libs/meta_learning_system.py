@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+
 class MetaLearningSystem:
     def __init__(self):
         self.learning_history = []
@@ -18,7 +19,7 @@ class MetaLearningSystem:
             "timestamp": datetime.now().isoformat(),
             "task_type": task_type,
             "execution_time": execution_time,
-            "success_rate": success_rate
+            "success_rate": success_rate,
         }
 
         self.learning_history.append(learning_data)
@@ -28,12 +29,16 @@ class MetaLearningSystem:
             self.performance_patterns[task_type] = {
                 "avg_time": execution_time,
                 "avg_success": success_rate,
-                "count": 1
+                "count": 1,
             }
         else:
             pattern = self.performance_patterns[task_type]
-            pattern["avg_time"] = (pattern["avg_time"] * pattern["count"] + execution_time) / (pattern["count"] + 1)
-            pattern["avg_success"] = (pattern["avg_success"] * pattern["count"] + success_rate) / (pattern["count"] + 1)
+            pattern["avg_time"] = (
+                pattern["avg_time"] * pattern["count"] + execution_time
+            ) / (pattern["count"] + 1)
+            pattern["avg_success"] = (
+                pattern["avg_success"] * pattern["count"] + success_rate
+            ) / (pattern["count"] + 1)
             pattern["count"] += 1
 
         return self.generate_optimization_suggestions(task_type)
@@ -62,8 +67,9 @@ class MetaLearningSystem:
 
         return {
             "predicted_time": f"{pattern['avg_time']:.2f}s",
-            "predicted_success": f"{pattern['avg_success']*100:.1f}%"
+            "predicted_success": f"{pattern['avg_success']*100:.1f}%",
         }
+
 
 # デモ実行
 if __name__ == "__main__":
@@ -75,7 +81,7 @@ if __name__ == "__main__":
         ("testing", 1.8, 0.95),
         ("deployment", 4.2, 0.99),
         ("ci_cd", 2.1, 0.97),
-        ("testing", 2.0, 0.96)
+        ("testing", 2.0, 0.96),
     ]
 
     for task_type, exec_time, success in sample_tasks:

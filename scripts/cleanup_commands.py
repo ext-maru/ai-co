@@ -274,7 +274,9 @@ echo "  - 削除されたファイル数: $(find "$BACKUP_DIR" -type f | wc -l)"
 
     def run_cleanup(self):
         """クリーンアップ実行"""
-        print(f"🔧 Elders Guild コマンドクリーンアップ {'(DRY-RUN)' if self.dry_run else ''}")
+        print(
+            f"🔧 Elders Guild コマンドクリーンアップ {'(DRY-RUN)' if self.dry_run else ''}"
+        )
         print("=" * 60)
 
         # 各種クリーンアップ実行
@@ -292,7 +294,9 @@ echo "  - 削除されたファイル数: $(find "$BACKUP_DIR" -type f | wc -l)"
         print(f"  - エラー: {len(self.cleanup_summary['errors'])}個")
 
         if self.dry_run:
-            print("\n💡 実際にクリーンアップを実行するには --execute オプションを使用してください")
+            print(
+                "\n💡 実際にクリーンアップを実行するには --execute オプションを使用してください"
+            )
 
             # 実行スクリプト生成
             script_path = self.project_root / "execute_cleanup.sh"
@@ -315,7 +319,9 @@ def main():
 
     parser = argparse.ArgumentParser(description="Elders Guild コマンドクリーンアップ")
     parser.add_argument(
-        "--execute", action="store_true", help="実際にクリーンアップを実行（デフォルトはdry-run）"
+        "--execute",
+        action="store_true",
+        help="実際にクリーンアップを実行（デフォルトはdry-run）",
     )
     args = parser.parse_args()
 

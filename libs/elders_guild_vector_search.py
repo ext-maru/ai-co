@@ -19,7 +19,11 @@ from sentence_transformers import SentenceTransformer
 import asyncpg
 from pgvector.asyncpg import register_vector
 
-from .elders_guild_db_manager import EldersGuildDatabaseManager, KnowledgeEntity, DatabaseConfig
+from .elders_guild_db_manager import (
+    EldersGuildDatabaseManager,
+    KnowledgeEntity,
+    DatabaseConfig,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -27,15 +31,19 @@ logger = logging.getLogger(__name__)
 # Configuration
 # ============================================================================
 
+
 class EmbeddingProvider(Enum):
     """埋め込みプロバイダー"""
+
     OPENAI = "openai"
     SENTENCE_TRANSFORMERS = "sentence_transformers"
     HUGGING_FACE = "hugging_face"
 
+
 @dataclass
 class VectorSearchConfig:
     """ベクター検索設定"""
+
     embedding_provider: EmbeddingProvider = EmbeddingProvider.OPENAI
     embedding_model: str = "text-embedding-ada-002"
     embedding_dimension: int = 1536
@@ -61,9 +69,11 @@ class VectorSearchConfig:
     sentence_transformer_model: str = "all-MiniLM-L6-v2"
     sentence_transformer_device: str = "cpu"
 
+
 # ============================================================================
 # Embedding Generators
 # ============================================================================
+
 
 class EmbeddingGenerator:
     """埋め込みベクター生成基底クラス"""
@@ -83,6 +93,7 @@ class EmbeddingGenerator:
             embeddings.append(embedding)
         return embeddings
 
+
 class OpenAIEmbeddingGenerator(EmbeddingGenerator):
     """OpenAI埋め込み生成器"""
 
@@ -97,10 +108,9 @@ class OpenAIEmbeddingGenerator(EmbeddingGenerator):
         """OpenAI APIを使用した埋め込み生成"""
         try:
             response = await openai.Embedding.acreate(
-                model=self.config.embedding_model,
-                input=text
+                model=self.config.embedding_model, input=text
             )
-            embedding = np.array(response['data'][0]['embedding'])
+            embedding = np.array(response["data"][0]["embedding"])
             return embedding
         except Exception as e:
             logger.error(f"OpenAI embedding generation failed: {e}")
@@ -110,17 +120,17 @@ class OpenAIEmbeddingGenerator(EmbeddingGenerator):
         """OpenAI APIを使用したバッチ埋め込み生成"""
         try:
             response = await openai.Embedding.acreate(
-                model=self.config.embedding_model,
-                input=texts
+                model=self.config.embedding_model, input=texts
             )
             embeddings = []
-            for item in response['data']:
-                embedding = np.array(item['embedding'])
+            for item in response["data"]:
+                embedding = np.array(item["embedding"])
                 embeddings.append(embedding)
             return embeddings
         except Exception as e:
             logger.error(f"OpenAI batch embedding generation failed: {e}")
             raise
+
 
 class SentenceTransformerEmbeddingGenerator(EmbeddingGenerator):
     """Sentence Transformers埋め込み生成器"""
@@ -128,8 +138,7 @@ class SentenceTransformerEmbeddingGenerator(EmbeddingGenerator):
     def __init__(self, config: VectorSearchConfig):
         super().__init__(config)
         self.model = SentenceTransformer(
-            config.sentence_transformer_model,
-            device=config.sentence_transformer_device
+            config.sentence_transformer_model, device=config.sentence_transformer_device
         )
 
     async def generate_embedding(self, text: str) -> np.ndarray:
@@ -150,22 +159,28 @@ class SentenceTransformerEmbeddingGenerator(EmbeddingGenerator):
             logger.error(f"Sentence Transformer batch embedding generation failed: {e}")
             raise
 
+
 # ============================================================================
 # Vector Search Engine
 # ============================================================================
 
+
 @dataclass
 class SearchResult:
     """検索結果データクラス"""
+
     knowledge: KnowledgeEntity
     similarity_score: float
     search_method: str
     metadata: Dict[str, Any] = field(default_factory=dict)
 
+
 class VectorSearchEngine:
     """ベクター検索エンジン"""
 
-    def __init__(self, config: VectorSearchConfig, db_manager: EldersGuildDatabaseManager):
+    def __init__(
+        self, config: VectorSearchConfig, db_manager: EldersGuildDatabaseManager
+    ):
         self.config = config
         self.db_manager = db_manager
         self.embedding_generator = self._create_embedding_generator()
@@ -178,7 +193,9 @@ class VectorSearchEngine:
         elif self.config.embedding_provider == EmbeddingProvider.SENTENCE_TRANSFORMERS:
             return SentenceTransformerEmbeddingGenerator(self.config)
         else:
-            raise ValueError(f"Unsupported embedding provider: {self.config.embedding_provider}")
+            raise ValueError(
+                f"Unsupported embedding provider: {self.config.embedding_provider}"
+            )
 
     async def initialize(self):
         """検索エンジンの初期化"""
@@ -190,37 +207,51 @@ class VectorSearchEngine:
         """ベクターインデックスの作成・最適化"""
         async with self.db_manager.db_manager.get_connection() as conn:
             # HNSW インデックスの作成（より高速）
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_knowledge_embedding_hnsw
                 ON knowledge_sage.knowledge_entities
                 USING hnsw (embedding vector_cosine_ops)
                 WITH (m = $1, ef_construction = $2)
-            """, self.config.hnsw_m, self.config.hnsw_ef_construction)
+            """,
+                self.config.hnsw_m,
+                self.config.hnsw_ef_construction,
+            )
 
             # IVFFlat インデックスの作成（メモリ効率）
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_knowledge_embedding_ivfflat
                 ON knowledge_sage.knowledge_entities
                 USING ivfflat (embedding vector_cosine_ops)
                 WITH (lists = $1)
-            """, self.config.ivfflat_lists)
+            """,
+                self.config.ivfflat_lists,
+            )
 
             # RAG文書用インデックス
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS idx_documents_embedding_hnsw
                 ON rag_sage.documents
                 USING hnsw (embedding vector_cosine_ops)
                 WITH (m = $1, ef_construction = $2)
-            """, self.config.hnsw_m, self.config.hnsw_ef_construction)
+            """,
+                self.config.hnsw_m,
+                self.config.hnsw_ef_construction,
+            )
 
             logger.info("Vector indexes created/updated")
 
-    async def semantic_search(self, query: str,
-                            similarity_threshold: Optional[float] = None,
-                            max_results: Optional[int] = None,
-                            category: Optional[str] = None,
-                            tags: Optional[List[str]] = None,
-                            metadata_filter: Optional[Dict[str, Any]] = None) -> List[SearchResult]:
+    async def semantic_search(
+        self,
+        query: str,
+        similarity_threshold: Optional[float] = None,
+        max_results: Optional[int] = None,
+        category: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        metadata_filter: Optional[Dict[str, Any]] = None,
+    ) -> List[SearchResult]:
         """セマンティック検索"""
         similarity_threshold = similarity_threshold or self.config.similarity_threshold
         max_results = max_results or self.config.max_results
@@ -235,7 +266,7 @@ class VectorSearchEngine:
             max_results,
             category,
             tags,
-            metadata_filter
+            metadata_filter,
         )
 
         return results
@@ -254,9 +285,13 @@ class VectorSearchEngine:
 
         # Redisキャッシュから取得
         if self.db_manager.db_manager.redis_client:
-            cached_embedding = await self.db_manager.db_manager.redis_client.get(f"embedding:{cache_key}")
+            cached_embedding = await self.db_manager.db_manager.redis_client.get(
+                f"embedding:{cache_key}"
+            )
             if cached_embedding:
-                embedding = np.frombuffer(bytes.fromhex(cached_embedding), dtype=np.float32)
+                embedding = np.frombuffer(
+                    bytes.fromhex(cached_embedding), dtype=np.float32
+                )
                 self.embedding_cache[cache_key] = embedding
                 return embedding
 
@@ -269,19 +304,20 @@ class VectorSearchEngine:
         if self.db_manager.db_manager.redis_client:
             embedding_hex = embedding.astype(np.float32).tobytes().hex()
             await self.db_manager.db_manager.redis_client.setex(
-                f"embedding:{cache_key}",
-                3600,  # 1 hour TTL
-                embedding_hex
+                f"embedding:{cache_key}", 3600, embedding_hex  # 1 hour TTL
             )
 
         return embedding
 
-    async def _search_database(self, query_embedding: np.ndarray,
-                             similarity_threshold: float,
-                             max_results: int,
-                             category: Optional[str] = None,
-                             tags: Optional[List[str]] = None,
-                             metadata_filter: Optional[Dict[str, Any]] = None) -> List[SearchResult]:
+    async def _search_database(
+        self,
+        query_embedding: np.ndarray,
+        similarity_threshold: float,
+        max_results: int,
+        category: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        metadata_filter: Optional[Dict[str, Any]] = None,
+    ) -> List[SearchResult]:
         """データベースでのベクター検索"""
         async with self.db_manager.db_manager.get_connection() as conn:
             # 基本クエリ
@@ -331,75 +367,80 @@ class VectorSearchEngine:
             search_results = []
             for result in results:
                 knowledge = KnowledgeEntity(
-                    id=str(result['id']),
-                    title=result['title'],
-                    content=result['content'],
-                    content_type=result['content_type'],
-                    embedding=np.array(result['embedding']) if result['embedding'] else None,
-                    metadata=json.loads(result['metadata']) if result['metadata'] else {},
-                    category=result['category'],
-                    tags=result['tags'] or [],
-                    quality_score=result['quality_score'],
-                    parent_id=str(result['parent_id']) if result['parent_id'] else None,
-                    created_at=result['created_at'],
-                    updated_at=result['updated_at'],
-                    created_by=result['created_by'],
-                    updated_by=result['updated_by'],
-                    version=result['version'],
-                    access_count=result['access_count'],
-                    last_accessed=result['last_accessed']
+                    id=str(result["id"]),
+                    title=result["title"],
+                    content=result["content"],
+                    content_type=result["content_type"],
+                    embedding=(
+                        np.array(result["embedding"]) if result["embedding"] else None
+                    ),
+                    metadata=(
+                        json.loads(result["metadata"]) if result["metadata"] else {}
+                    ),
+                    category=result["category"],
+                    tags=result["tags"] or [],
+                    quality_score=result["quality_score"],
+                    parent_id=str(result["parent_id"]) if result["parent_id"] else None,
+                    created_at=result["created_at"],
+                    updated_at=result["updated_at"],
+                    created_by=result["created_by"],
+                    updated_by=result["updated_by"],
+                    version=result["version"],
+                    access_count=result["access_count"],
+                    last_accessed=result["last_accessed"],
                 )
 
                 search_result = SearchResult(
                     knowledge=knowledge,
-                    similarity_score=float(result['similarity_score']),
+                    similarity_score=float(result["similarity_score"]),
                     search_method="vector_cosine",
                     metadata={
                         "query_embedding_size": len(query_embedding),
                         "similarity_threshold": similarity_threshold,
                         "category_filter": category,
                         "tags_filter": tags,
-                        "metadata_filter": metadata_filter
-                    }
+                        "metadata_filter": metadata_filter,
+                    },
                 )
                 search_results.append(search_result)
 
             return search_results
 
-    async def hybrid_search(self, query: str,
-                          semantic_weight: float = 0.7,
-                          fulltext_weight: float = 0.3,
-                          max_results: Optional[int] = None) -> List[SearchResult]:
+    async def hybrid_search(
+        self,
+        query: str,
+        semantic_weight: float = 0.7,
+        fulltext_weight: float = 0.3,
+        max_results: Optional[int] = None,
+    ) -> List[SearchResult]:
         """ハイブリッド検索（セマンティック + 全文検索）"""
         max_results = max_results or self.config.max_results
 
         # セマンティック検索
         semantic_results = await self.semantic_search(
-            query,
-            max_results=max_results * 2  # より多くの結果を取得
+            query, max_results=max_results * 2  # より多くの結果を取得
         )
 
         # 全文検索
         fulltext_results = await self.db_manager.knowledge_sage.fulltext_search(
-            query,
-            max_results=max_results * 2
+            query, max_results=max_results * 2
         )
 
         # 結果の統合とスコア計算
         combined_results = await self._combine_search_results(
-            semantic_results,
-            fulltext_results,
-            semantic_weight,
-            fulltext_weight
+            semantic_results, fulltext_results, semantic_weight, fulltext_weight
         )
 
         # 結果を制限
         return combined_results[:max_results]
 
-    async def _combine_search_results(self, semantic_results: List[SearchResult],
-                                    fulltext_results: List[KnowledgeEntity],
-                                    semantic_weight: float,
-                                    fulltext_weight: float) -> List[SearchResult]:
+    async def _combine_search_results(
+        self,
+        semantic_results: List[SearchResult],
+        fulltext_results: List[KnowledgeEntity],
+        semantic_weight: float,
+        fulltext_weight: float,
+    ) -> List[SearchResult]:
         """検索結果の統合"""
         # セマンティック検索結果をIDでマップ
         semantic_map = {result.knowledge.id: result for result in semantic_results}
@@ -424,8 +465,9 @@ class VectorSearchEngine:
                 fulltext_score = 1.0
 
             # 統合スコア計算
-            combined_score = (semantic_score * semantic_weight +
-                            fulltext_score * fulltext_weight)
+            combined_score = (
+                semantic_score * semantic_weight + fulltext_score * fulltext_weight
+            )
 
             combined_result = SearchResult(
                 knowledge=result.knowledge,
@@ -435,8 +477,8 @@ class VectorSearchEngine:
                     "semantic_score": semantic_score,
                     "fulltext_score": fulltext_score,
                     "semantic_weight": semantic_weight,
-                    "fulltext_weight": fulltext_weight
-                }
+                    "fulltext_weight": fulltext_weight,
+                },
             )
             combined_results.append(combined_result)
             processed_ids.add(result.knowledge.id)
@@ -449,8 +491,9 @@ class VectorSearchEngine:
             semantic_score = 0.0  # セマンティックスコアなし
             fulltext_score = 1.0
 
-            combined_score = (semantic_score * semantic_weight +
-                            fulltext_score * fulltext_weight)
+            combined_score = (
+                semantic_score * semantic_weight + fulltext_score * fulltext_weight
+            )
 
             combined_result = SearchResult(
                 knowledge=entity,
@@ -460,8 +503,8 @@ class VectorSearchEngine:
                     "semantic_score": semantic_score,
                     "fulltext_score": fulltext_score,
                     "semantic_weight": semantic_weight,
-                    "fulltext_weight": fulltext_weight
-                }
+                    "fulltext_weight": fulltext_weight,
+                },
             )
             combined_results.append(combined_result)
             processed_ids.add(entity.id)
@@ -484,7 +527,9 @@ class VectorSearchEngine:
         logger.info(f"Added knowledge with embedding: {knowledge_id}")
         return knowledge_id
 
-    async def batch_add_knowledge(self, knowledge_list: List[KnowledgeEntity]) -> List[str]:
+    async def batch_add_knowledge(
+        self, knowledge_list: List[KnowledgeEntity]
+    ) -> List[str]:
         """バッチで知識を追加"""
         # 埋め込み生成するテキストを収集
         texts_to_embed = []
@@ -510,7 +555,9 @@ class VectorSearchEngine:
         # バッチで知識を追加
         knowledge_ids = []
         for knowledge in knowledge_list:
-            knowledge_id = await self.db_manager.knowledge_sage.create_knowledge(knowledge)
+            knowledge_id = await self.db_manager.knowledge_sage.create_knowledge(
+                knowledge
+            )
             knowledge_ids.append(knowledge_id)
 
         logger.info(f"Added {len(knowledge_ids)} knowledge items with embeddings")
@@ -534,13 +581,15 @@ class VectorSearchEngine:
             # バッチで埋め込み生成
             batch_size = self.config.batch_size
             for i in range(0, len(results), batch_size):
-                batch = results[i:i + batch_size]
+                batch = results[i : i + batch_size]
 
                 # テキストの準備
                 texts = [f"{row['title']}\n{row['content']}" for row in batch]
 
                 # 埋め込み生成
-                embeddings = await self.embedding_generator.generate_embeddings_batch(texts)
+                embeddings = await self.embedding_generator.generate_embeddings_batch(
+                    texts
+                )
 
                 # データベース更新
                 for j, row in enumerate(batch):
@@ -549,13 +598,17 @@ class VectorSearchEngine:
                         SET embedding = $1
                         WHERE id = $2
                     """
-                    await conn.execute(update_query, embeddings[j].tolist(), row['id'])
+                    await conn.execute(update_query, embeddings[j].tolist(), row["id"])
 
-                logger.info(f"Updated embeddings for batch {i//batch_size + 1}/{(len(results) + batch_size - 1)//batch_size}")
+                logger.info(
+                    f"Updated embeddings for batch {i//batch_size + 1}/{(len(results) + batch_size - 1)//batch_size}"
+                )
 
         logger.info("Embedding reindexing completed")
 
-    async def get_similar_knowledge(self, knowledge_id: str, max_results: int = 5) -> List[SearchResult]:
+    async def get_similar_knowledge(
+        self, knowledge_id: str, max_results: int = 5
+    ) -> List[SearchResult]:
         """類似知識の取得"""
         # 対象知識の取得
         knowledge = await self.db_manager.knowledge_sage.get_knowledge(knowledge_id)
@@ -567,11 +620,13 @@ class VectorSearchEngine:
             knowledge.embedding,
             self.config.similarity_threshold,
             max_results + 1,  # 自分自身を除外するため+1
-            knowledge.category
+            knowledge.category,
         )
 
         # 自分自身を除外
-        filtered_results = [result for result in results if result.knowledge.id != knowledge_id]
+        filtered_results = [
+            result for result in results if result.knowledge.id != knowledge_id
+        ]
 
         return filtered_results[:max_results]
 
@@ -580,9 +635,11 @@ class VectorSearchEngine:
         await self.db_manager.close()
         logger.info("Vector search engine closed")
 
+
 # ============================================================================
 # Usage Example
 # ============================================================================
+
 
 async def main():
     """使用例"""
@@ -591,7 +648,7 @@ async def main():
         embedding_provider=EmbeddingProvider.SENTENCE_TRANSFORMERS,
         sentence_transformer_model="all-MiniLM-L6-v2",
         similarity_threshold=0.7,
-        max_results=10
+        max_results=10,
     )
 
     db_config = DatabaseConfig()
@@ -610,7 +667,7 @@ async def main():
             category="database",
             tags=["postgresql", "optimization", "performance"],
             quality_score=0.9,
-            created_by="Claude Elder"
+            created_by="Claude Elder",
         )
 
         knowledge_id = await search_engine.add_knowledge_with_embedding(knowledge)
@@ -621,7 +678,9 @@ async def main():
         print(f"Semantic search found {len(results)} results")
 
         for result in results:
-            print(f"- {result.knowledge.title} (similarity: {result.similarity_score:.3f})")
+            print(
+                f"- {result.knowledge.title} (similarity: {result.similarity_score:.3f})"
+            )
 
         # ハイブリッド検索
         hybrid_results = await search_engine.hybrid_search("PostgreSQL パフォーマンス")
@@ -631,6 +690,7 @@ async def main():
         logger.error(f"Error: {e}")
     finally:
         await search_engine.close()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

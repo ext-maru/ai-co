@@ -560,9 +560,11 @@ class ProactiveGuidanceEngine:
                 insight = ProactiveInsight(
                     insight_id=f"preventive_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{prediction.metric_name}",
                     guidance_type=ProactiveGuidanceType.PREVENTIVE_ACTION,
-                    urgency=UrgencyLevel.HIGH
-                    if prediction.anomaly_score > 2.5
-                    else UrgencyLevel.MEDIUM,
+                    urgency=(
+                        UrgencyLevel.HIGH
+                        if prediction.anomaly_score > 2.5
+                        else UrgencyLevel.MEDIUM
+                    ),
                     title=f"Preventive Action Required: {prediction.metric_name}",
                     description=f"{prediction.metric_name}で異常パターン検出。予防的対応が必要",
                     detected_patterns=[f"anomaly_score_{prediction.anomaly_score:.2f}"],
@@ -610,8 +612,16 @@ class ProactiveGuidanceEngine:
                 predicted_impact=0.6,
                 confidence_score=0.8,
                 time_to_action=timedelta(days=7),
-                recommended_actions=["優先機能の開発フォーカス", "テクニカルデプト解消", "パフォーマンス最適化継続"],
-                expected_benefits=["開発効率向上", "コード品質改善", "システム安定性強化"],
+                recommended_actions=[
+                    "優先機能の開発フォーカス",
+                    "テクニカルデプト解消",
+                    "パフォーマンス最適化継続",
+                ],
+                expected_benefits=[
+                    "開発効率向上",
+                    "コード品質改善",
+                    "システム安定性強化",
+                ],
                 resource_requirements={"time": "継続的", "complexity": "中"},
                 implementation_steps=[
                     "1. 週次目標設定",

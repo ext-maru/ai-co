@@ -14,6 +14,7 @@ from enum import Enum
 from dataclasses import dataclass, field
 from libs.elder_flow_quality_gate_optimizer import ElderFlowQualityGateOptimizer
 
+
 # Quality Gate Status
 class QualityGateStatus(Enum):
     PENDING = "pending"
@@ -22,6 +23,7 @@ class QualityGateStatus(Enum):
     FAILED = "failed"
     WARNING = "warning"
     BLOCKED = "blocked"
+
 
 # Quality Check Types
 class QualityCheckType(Enum):
@@ -36,6 +38,7 @@ class QualityCheckType(Enum):
     DEPENDENCY = "dependency"
     SAGE_REVIEW = "sage_review"
 
+
 # Quality Metrics
 @dataclass
 class QualityMetric:
@@ -48,6 +51,7 @@ class QualityMetric:
 
     def __post_init__(self):
         self.passed = self.value >= self.threshold
+
 
 # Quality Check Result
 @dataclass
@@ -74,6 +78,7 @@ class QualityCheckResult:
     @property
     def failed_count(self) -> int:
         return sum(1 for m in self.metrics if not m.passed)
+
 
 # Quality Gate Configuration
 @dataclass
@@ -110,6 +115,7 @@ class QualityGateConfig:
     # Sage review
     sage_approval_required: bool = True
 
+
 # Base Quality Checker
 class BaseQualityChecker:
     def __init__(self, check_type: QualityCheckType):
@@ -126,7 +132,9 @@ class BaseQualityChecker:
             result = await self._perform_check(context)
             result.execution_time = (datetime.now() - start_time).total_seconds()
 
-            self.logger.info(f"Completed {self.check_type.value} check: {result.status.value}")
+            self.logger.info(
+                f"Completed {self.check_type.value} check: {result.status.value}"
+            )
 
             return result
 
@@ -136,12 +144,13 @@ class BaseQualityChecker:
                 check_type=self.check_type,
                 status=QualityGateStatus.FAILED,
                 execution_time=(datetime.now() - start_time).total_seconds(),
-                details={"error": str(e)}
+                details={"error": str(e)},
             )
 
     async def _perform_check(self, context: Dict) -> QualityCheckResult:
         """具体的なチェック実装（サブクラスで実装）"""
         raise NotImplementedError("Subclasses must implement _perform_check")
+
 
 # Unit Test Checker
 class UnitTestChecker(BaseQualityChecker):
@@ -156,31 +165,36 @@ class UnitTestChecker(BaseQualityChecker):
             "failed": 2,
             "skipped": 3,
             "total": 50,
-            "coverage": 85.5
+            "coverage": 85.5,
         }
 
         metrics = [
-            QualityMetric("Test Pass Rate",
-                         (test_results["passed"] / test_results["total"]) * 100,
-                         100.0, "%"),
-            QualityMetric("Test Coverage",
-                         test_results["coverage"],
-                         80.0, "%"),
-            QualityMetric("Test Count",
-                         test_results["total"],
-                         30.0, "tests")
+            QualityMetric(
+                "Test Pass Rate",
+                (test_results["passed"] / test_results["total"]) * 100,
+                100.0,
+                "%",
+            ),
+            QualityMetric("Test Coverage", test_results["coverage"], 80.0, "%"),
+            QualityMetric("Test Count", test_results["total"], 30.0, "tests"),
         ]
 
         issues = []
         if test_results["failed"] > 0:
-            issues.append({
-                "type": "failed_tests",
-                "severity": "high",
-                "count": test_results["failed"],
-                "message": f"{test_results['failed']} tests failed"
-            })
+            issues.append(
+                {
+                    "type": "failed_tests",
+                    "severity": "high",
+                    "count": test_results["failed"],
+                    "message": f"{test_results['failed']} tests failed",
+                }
+            )
 
-        status = QualityGateStatus.PASSED if all(m.passed for m in metrics) else QualityGateStatus.FAILED
+        status = (
+            QualityGateStatus.PASSED
+            if all(m.passed for m in metrics)
+            else QualityGateStatus.FAILED
+        )
 
         return QualityCheckResult(
             check_type=self.check_type,
@@ -188,8 +202,9 @@ class UnitTestChecker(BaseQualityChecker):
             metrics=metrics,
             issues=issues,
             recommendations=["Fix failing tests", "Improve test coverage"],
-            details=test_results
+            details=test_results,
         )
+
 
 # Code Quality Checker
 class CodeQualityChecker(BaseQualityChecker):
@@ -205,16 +220,18 @@ class CodeQualityChecker(BaseQualityChecker):
             "duplication": 3.1,
             "maintainability": 8.8,
             "reliability": 9.0,
-            "security": 8.3
+            "security": 8.3,
         }
 
         metrics = [
             QualityMetric("Overall Score", quality_data["overall_score"], 8.0, "/10"),
             QualityMetric("Complexity", quality_data["complexity"], 10.0, "/10"),
             QualityMetric("Duplication", quality_data["duplication"], 5.0, "%"),
-            QualityMetric("Maintainability", quality_data["maintainability"], 8.0, "/10"),
+            QualityMetric(
+                "Maintainability", quality_data["maintainability"], 8.0, "/10"
+            ),
             QualityMetric("Reliability", quality_data["reliability"], 8.0, "/10"),
-            QualityMetric("Security", quality_data["security"], 8.0, "/10")
+            QualityMetric("Security", quality_data["security"], 8.0, "/10"),
         ]
 
         issues = [
@@ -223,18 +240,22 @@ class CodeQualityChecker(BaseQualityChecker):
                 "severity": "medium",
                 "file": "main.py",
                 "line": 45,
-                "message": "Method too complex"
+                "message": "Method too complex",
             },
             {
                 "type": "duplication",
                 "severity": "low",
                 "file": "utils.py",
                 "line": 23,
-                "message": "Duplicate code detected"
-            }
+                "message": "Duplicate code detected",
+            },
         ]
 
-        status = QualityGateStatus.PASSED if all(m.passed for m in metrics) else QualityGateStatus.WARNING
+        status = (
+            QualityGateStatus.PASSED
+            if all(m.passed for m in metrics)
+            else QualityGateStatus.WARNING
+        )
 
         return QualityCheckResult(
             check_type=self.check_type,
@@ -242,8 +263,9 @@ class CodeQualityChecker(BaseQualityChecker):
             metrics=metrics,
             issues=issues,
             recommendations=["Refactor complex methods", "Remove duplicate code"],
-            details=quality_data
+            details=quality_data,
         )
+
 
 # Security Checker
 class SecurityChecker(BaseQualityChecker):
@@ -255,26 +277,55 @@ class SecurityChecker(BaseQualityChecker):
         # モック実装
         security_data = {
             "vulnerabilities": [
-                {"type": "SQL_INJECTION", "severity": "high", "file": "db.py", "line": 123},
-                {"type": "XSS", "severity": "medium", "file": "web.py", "line": 56}
+                {
+                    "type": "SQL_INJECTION",
+                    "severity": "high",
+                    "file": "db.py",
+                    "line": 123,
+                },
+                {"type": "XSS", "severity": "medium", "file": "web.py", "line": 56},
             ],
             "security_score": 7.5,
-            "risk_level": "medium"
+            "risk_level": "medium",
         }
 
         metrics = [
-            QualityMetric("Security Score", security_data["security_score"], 8.5, "/10"),
-            QualityMetric("High Vulnerabilities",
-                         len([v for v in security_data["vulnerabilities"] if v["severity"] == "high"]),
-                         0, "issues"),
-            QualityMetric("Medium Vulnerabilities",
-                         len([v for v in security_data["vulnerabilities"] if v["severity"] == "medium"]),
-                         2, "issues")
+            QualityMetric(
+                "Security Score", security_data["security_score"], 8.5, "/10"
+            ),
+            QualityMetric(
+                "High Vulnerabilities",
+                len(
+                    [
+                        v
+                        for v in security_data["vulnerabilities"]
+                        if v["severity"] == "high"
+                    ]
+                ),
+                0,
+                "issues",
+            ),
+            QualityMetric(
+                "Medium Vulnerabilities",
+                len(
+                    [
+                        v
+                        for v in security_data["vulnerabilities"]
+                        if v["severity"] == "medium"
+                    ]
+                ),
+                2,
+                "issues",
+            ),
         ]
 
         issues = security_data["vulnerabilities"]
 
-        status = QualityGateStatus.FAILED if any(v["severity"] == "high" for v in security_data["vulnerabilities"]) else QualityGateStatus.WARNING
+        status = (
+            QualityGateStatus.FAILED
+            if any(v["severity"] == "high" for v in security_data["vulnerabilities"])
+            else QualityGateStatus.WARNING
+        )
 
         return QualityCheckResult(
             check_type=self.check_type,
@@ -282,8 +333,9 @@ class SecurityChecker(BaseQualityChecker):
             metrics=metrics,
             issues=issues,
             recommendations=["Fix SQL injection vulnerability", "Sanitize user input"],
-            details=security_data
+            details=security_data,
         )
+
 
 # Performance Checker
 class PerformanceChecker(BaseQualityChecker):
@@ -298,26 +350,34 @@ class PerformanceChecker(BaseQualityChecker):
             "memory_usage": 75.5,
             "cpu_usage": 45.2,
             "throughput": 850.0,
-            "performance_score": 8.8
+            "performance_score": 8.8,
         }
 
         metrics = [
-            QualityMetric("Performance Score", perf_data["performance_score"], 8.0, "/10"),
+            QualityMetric(
+                "Performance Score", perf_data["performance_score"], 8.0, "/10"
+            ),
             QualityMetric("Response Time", perf_data["response_time"], 2.0, "s"),
             QualityMetric("Memory Usage", perf_data["memory_usage"], 100.0, "MB"),
             QualityMetric("CPU Usage", perf_data["cpu_usage"], 80.0, "%"),
-            QualityMetric("Throughput", perf_data["throughput"], 500.0, "req/s")
+            QualityMetric("Throughput", perf_data["throughput"], 500.0, "req/s"),
         ]
 
         issues = []
         if perf_data["response_time"] > 1.5:
-            issues.append({
-                "type": "slow_response",
-                "severity": "medium",
-                "message": f"Response time {perf_data['response_time']}s exceeds 1.5s"
-            })
+            issues.append(
+                {
+                    "type": "slow_response",
+                    "severity": "medium",
+                    "message": f"Response time {perf_data['response_time']}s exceeds 1.5s",
+                }
+            )
 
-        status = QualityGateStatus.PASSED if all(m.passed for m in metrics) else QualityGateStatus.WARNING
+        status = (
+            QualityGateStatus.PASSED
+            if all(m.passed for m in metrics)
+            else QualityGateStatus.WARNING
+        )
 
         return QualityCheckResult(
             check_type=self.check_type,
@@ -325,8 +385,9 @@ class PerformanceChecker(BaseQualityChecker):
             metrics=metrics,
             issues=issues,
             recommendations=["Optimize database queries", "Add caching"],
-            details=perf_data
+            details=perf_data,
         )
+
 
 # Sage Review Checker
 class SageReviewChecker(BaseQualityChecker):
@@ -337,41 +398,76 @@ class SageReviewChecker(BaseQualityChecker):
         """4賢者レビューチェック"""
         # モック実装
         sage_reviews = {
-            "knowledge_sage": {"approved": True, "score": 9.0, "comments": "Good implementation"},
-            "task_sage": {"approved": True, "score": 8.5, "comments": "Well structured"},
-            "incident_sage": {"approved": False, "score": 7.0, "comments": "Security concerns"},
-            "rag_sage": {"approved": True, "score": 8.8, "comments": "Excellent documentation"}
+            "knowledge_sage": {
+                "approved": True,
+                "score": 9.0,
+                "comments": "Good implementation",
+            },
+            "task_sage": {
+                "approved": True,
+                "score": 8.5,
+                "comments": "Well structured",
+            },
+            "incident_sage": {
+                "approved": False,
+                "score": 7.0,
+                "comments": "Security concerns",
+            },
+            "rag_sage": {
+                "approved": True,
+                "score": 8.8,
+                "comments": "Excellent documentation",
+            },
         }
 
-        approved_count = sum(1 for review in sage_reviews.values() if review["approved"])
-        avg_score = sum(review["score"] for review in sage_reviews.values()) / len(sage_reviews)
+        approved_count = sum(
+            1 for review in sage_reviews.values() if review["approved"]
+        )
+        avg_score = sum(review["score"] for review in sage_reviews.values()) / len(
+            sage_reviews
+        )
 
         metrics = [
-            QualityMetric("Sage Approval Rate", (approved_count / len(sage_reviews)) * 100, 100.0, "%"),
+            QualityMetric(
+                "Sage Approval Rate",
+                (approved_count / len(sage_reviews)) * 100,
+                100.0,
+                "%",
+            ),
             QualityMetric("Average Score", avg_score, 8.0, "/10"),
-            QualityMetric("Approved Reviews", approved_count, 4, "reviews")
+            QualityMetric("Approved Reviews", approved_count, 4, "reviews"),
         ]
 
         issues = []
         for sage, review in sage_reviews.items():
             if not review["approved"]:
-                issues.append({
-                    "type": "sage_disapproval",
-                    "severity": "high",
-                    "sage": sage,
-                    "message": review["comments"]
-                })
+                issues.append(
+                    {
+                        "type": "sage_disapproval",
+                        "severity": "high",
+                        "sage": sage,
+                        "message": review["comments"],
+                    }
+                )
 
-        status = QualityGateStatus.PASSED if approved_count == len(sage_reviews) else QualityGateStatus.FAILED
+        status = (
+            QualityGateStatus.PASSED
+            if approved_count == len(sage_reviews)
+            else QualityGateStatus.FAILED
+        )
 
         return QualityCheckResult(
             check_type=self.check_type,
             status=status,
             metrics=metrics,
             issues=issues,
-            recommendations=["Address incident sage concerns", "Improve security measures"],
-            details=sage_reviews
+            recommendations=[
+                "Address incident sage concerns",
+                "Improve security measures",
+            ],
+            details=sage_reviews,
         )
+
 
 # Quality Gate System
 class QualityGateSystem:
@@ -395,24 +491,27 @@ class QualityGateSystem:
         self.checkers[QualityCheckType.PERFORMANCE] = PerformanceChecker()
         self.checkers[QualityCheckType.SAGE_REVIEW] = SageReviewChecker()
 
-    async def execute_quality_gate(self, context: Dict,
-                                  check_types: List[QualityCheckType] = None,
-                                  priority: str = "medium",
-                                  phase: str = "development") -> Dict:
+    async def execute_quality_gate(
+        self,
+        context: Dict,
+        check_types: List[QualityCheckType] = None,
+        priority: str = "medium",
+        phase: str = "development",
+    ) -> Dict:
         """品質ゲート実行（動的閾値調整付き）"""
         check_types = check_types or list(self.checkers.keys())
 
         # 優先度とフェーズに基づいて品質基準を調整
         adjusted_metrics = self.optimizer.get_adjusted_metrics(
-            priority=priority,
-            phase=phase,
-            failure_count=self.failure_count
+            priority=priority, phase=phase, failure_count=self.failure_count
         )
 
         # コンテキストに調整済みメトリクスを追加
         context["adjusted_metrics"] = adjusted_metrics
 
-        self.logger.info(f"Starting quality gate with {len(check_types)} checks (priority: {priority}, phase: {phase})")
+        self.logger.info(
+            f"Starting quality gate with {len(check_types)} checks (priority: {priority}, phase: {phase})"
+        )
 
         # 全チェック並列実行
         tasks = []
@@ -443,12 +542,18 @@ class QualityGateSystem:
         summary = {
             "overall_status": overall_status.value,
             "total_checks": len(check_results),
-            "passed_checks": len([r for r in check_results if r.status == QualityGateStatus.PASSED]),
-            "failed_checks": len([r for r in check_results if r.status == QualityGateStatus.FAILED]),
-            "warning_checks": len([r for r in check_results if r.status == QualityGateStatus.WARNING]),
+            "passed_checks": len(
+                [r for r in check_results if r.status == QualityGateStatus.PASSED]
+            ),
+            "failed_checks": len(
+                [r for r in check_results if r.status == QualityGateStatus.FAILED]
+            ),
+            "warning_checks": len(
+                [r for r in check_results if r.status == QualityGateStatus.WARNING]
+            ),
             "overall_score": self._calculate_overall_score(check_results),
             "execution_time": sum(r.execution_time for r in check_results),
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
         return {
@@ -456,16 +561,20 @@ class QualityGateSystem:
             "check_results": [self._result_to_dict(r) for r in check_results],
             "recommendations": self._generate_recommendations(check_results),
             "adjusted_metrics": adjusted_metrics,
-            "optimization_stats": self.optimizer.get_statistics()
+            "optimization_stats": self.optimizer.get_statistics(),
         }
 
-    def _calculate_overall_status(self, results: List[QualityCheckResult]) -> QualityGateStatus:
+    def _calculate_overall_status(
+        self, results: List[QualityCheckResult]
+    ) -> QualityGateStatus:
         """総合状態計算"""
         if not results:
             return QualityGateStatus.FAILED
 
         failed_count = len([r for r in results if r.status == QualityGateStatus.FAILED])
-        warning_count = len([r for r in results if r.status == QualityGateStatus.WARNING])
+        warning_count = len(
+            [r for r in results if r.status == QualityGateStatus.WARNING]
+        )
 
         if failed_count > 0:
             return QualityGateStatus.FAILED
@@ -510,14 +619,15 @@ class QualityGateSystem:
                     "threshold": m.threshold,
                     "unit": m.unit,
                     "passed": m.passed,
-                    "message": m.message
+                    "message": m.message,
                 }
                 for m in result.metrics
             ],
             "issues": result.issues,
             "recommendations": result.recommendations,
-            "details": result.details
+            "details": result.details,
         }
+
 
 # Helper Functions
 async def run_quality_gate(context: Dict, config: QualityGateConfig = None) -> Dict:
@@ -525,12 +635,15 @@ async def run_quality_gate(context: Dict, config: QualityGateConfig = None) -> D
     gate = QualityGateSystem(config)
     return await gate.execute_quality_gate(context)
 
+
 def create_quality_config(**kwargs) -> QualityGateConfig:
     """品質設定作成"""
     return QualityGateConfig(**kwargs)
 
+
 # Example Usage
 if __name__ == "__main__":
+
     async def main():
         print("🔍 Elder Flow Quality Gate Test")
 
@@ -538,7 +651,7 @@ if __name__ == "__main__":
         context = {
             "project_path": "/home/aicompany/ai_co",
             "target_files": ["libs/elder_flow_orchestrator.py"],
-            "task_id": "quality_gate_test"
+            "task_id": "quality_gate_test",
         }
 
         # 品質ゲート実行

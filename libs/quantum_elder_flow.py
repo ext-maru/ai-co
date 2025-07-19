@@ -6,11 +6,13 @@ import numpy as np
 import cmath
 from typing import List, Dict, Tuple
 
+
 class QuantumBit:
     """量子ビット実装"""
+
     def __init__(self):
         self.alpha = 1.0  # |0⟩の振幅
-        self.beta = 0.0   # |1⟩の振幅
+        self.beta = 0.0  # |1⟩の振幅
 
     def superposition(self, alpha: float, beta: float):
         """重ね合わせ状態設定"""
@@ -20,12 +22,13 @@ class QuantumBit:
 
     def measure(self) -> int:
         """測定（状態の崩壊）"""
-        probability_0 = abs(self.alpha)**2
+        probability_0 = abs(self.alpha) ** 2
         return 0 if np.random.random() < probability_0 else 1
 
     def get_state(self) -> Tuple[complex, complex]:
         """現在の状態取得"""
         return (self.alpha, self.beta)
+
 
 class QuantumGate:
     """量子ゲート操作"""
@@ -49,35 +52,38 @@ class QuantumGate:
         """パウリZゲート（位相反転）"""
         qubit.beta = -qubit.beta
 
+
 class QuantumCircuit:
     """量子回路"""
+
     def __init__(self, num_qubits: int):
         self.qubits = [QuantumBit() for _ in range(num_qubits)]
         self.operations = []
 
     def add_hadamard(self, qubit_index: int):
         """アダマールゲート追加"""
-        self.operations.append(('H', qubit_index))
+        self.operations.append(("H", qubit_index))
 
     def add_cnot(self, control: int, target: int):
         """CNOTゲート追加"""
-        self.operations.append(('CNOT', control, target))
+        self.operations.append(("CNOT", control, target))
 
     def execute(self):
         """回路実行"""
         for operation in self.operations:
-            if operation[0] == 'H':
+            if operation[0] == "H":
                 QuantumGate.hadamard(self.qubits[operation[1]])
-            elif operation[0] == 'CNOT':
+            elif operation[0] == "CNOT":
                 control_qubit = self.qubits[operation[1]]
                 target_qubit = self.qubits[operation[2]]
                 # CNOT実装（簡略版）
-                if abs(control_qubit.beta)**2 > 0.5:  # コントロールが|1⟩の確率が高い
+                if abs(control_qubit.beta) ** 2 > 0.5:  # コントロールが|1⟩の確率が高い
                     QuantumGate.pauli_x(target_qubit)
 
     def measure_all(self) -> List[int]:
         """全量子ビット測定"""
         return [qubit.measure() for qubit in self.qubits]
+
 
 class QuantumElderFlowProcessor:
     """量子Elder Flow処理器"""
@@ -108,7 +114,7 @@ class QuantumElderFlowProcessor:
             "quantum_schedule": schedule,
             "task_mapping": {i: tasks[i] for i in range(num_tasks)},
             "optimization_achieved": "quantum_superposition",
-            "entanglement_pairs": [(i, i+1) for i in range(num_tasks-1)]
+            "entanglement_pairs": [(i, i + 1) for i in range(num_tasks - 1)],
         }
 
     def quantum_error_correction(self, error_data: str) -> Dict[str, Any]:
@@ -117,7 +123,7 @@ class QuantumElderFlowProcessor:
         circuit = QuantumCircuit(3)
 
         # エラーデータを量子状態にエンコード
-        if '1' in error_data:
+        if "1" in error_data:
             QuantumGate.pauli_x(circuit.qubits[0])
 
         # エラー訂正回路
@@ -139,8 +145,9 @@ class QuantumElderFlowProcessor:
             "original_error": error_data,
             "quantum_correction": corrected,
             "error_detected": sum(results) != 0 and sum(results) != 3,
-            "correction_success": True
+            "correction_success": True,
         }
+
 
 # デモ実行
 if __name__ == "__main__":

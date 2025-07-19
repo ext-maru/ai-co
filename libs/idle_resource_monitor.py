@@ -340,9 +340,9 @@ class IdleResourceMonitor:
         state = {
             "metrics_history": [asdict(m) for m in self.metrics_history],
             "idle_periods": [asdict(p) for p in self.idle_periods],
-            "current_idle_period": asdict(self.current_idle_period)
-            if self.current_idle_period
-            else None,
+            "current_idle_period": (
+                asdict(self.current_idle_period) if self.current_idle_period else None
+            ),
             "idle_thresholds": self.idle_thresholds,
             "last_updated": datetime.now().isoformat(),
         }

@@ -159,9 +159,7 @@ class CoverageReporter:
                     emoji = (
                         "✅"
                         if coverage_percent >= 80
-                        else "⚠️"
-                        if coverage_percent >= 60
-                        else "❌"
+                        else "⚠️" if coverage_percent >= 60 else "❌"
                     )
                     report += f"| {emoji} {module} | {coverage_percent:.1f}% | {data['covered_lines']} | {data['missing_lines']} |\n"
 

@@ -259,9 +259,11 @@ class AISelfEvolutionEngine:
                         creation_time=datetime.fromisoformat(
                             gene_data["creation_time"]
                         ),
-                        last_mutation=datetime.fromisoformat(gene_data["last_mutation"])
-                        if gene_data.get("last_mutation")
-                        else None,
+                        last_mutation=(
+                            datetime.fromisoformat(gene_data["last_mutation"])
+                            if gene_data.get("last_mutation")
+                            else None
+                        ),
                     )
 
     def _initialize_base_genes(self):
@@ -496,7 +498,9 @@ class AISelfEvolutionEngine:
             )
 
             self.genetic_pool_data[new_gene_id] = new_gene
-            print(f"🧬 新遺伝子生成: {new_gene_id} (適応度: {new_gene.fitness_score:.3f})")
+            print(
+                f"🧬 新遺伝子生成: {new_gene_id} (適応度: {new_gene.fitness_score:.3f})"
+            )
 
     def _perform_natural_selection(self):
         """自然淘汰を実行"""
@@ -636,12 +640,12 @@ class AISelfEvolutionEngine:
             "current_metrics": asdict(self.current_metrics),
             "genetic_pool_size": len(self.genetic_pool_data),
             "modification_count": len(self.modification_history),
-            "average_gene_fitness": sum(
-                g.fitness_score for g in self.genetic_pool_data.values()
-            )
-            / len(self.genetic_pool_data)
-            if self.genetic_pool_data
-            else 0,
+            "average_gene_fitness": (
+                sum(g.fitness_score for g in self.genetic_pool_data.values())
+                / len(self.genetic_pool_data)
+                if self.genetic_pool_data
+                else 0
+            ),
             "recent_modifications": [
                 asdict(mod) for mod in self.modification_history[-5:]
             ],
@@ -678,9 +682,9 @@ class AISelfEvolutionEngine:
                     "mutation_rate": gene.mutation_rate,
                     "fitness_score": gene.fitness_score,
                     "creation_time": gene.creation_time.isoformat(),
-                    "last_mutation": gene.last_mutation.isoformat()
-                    if gene.last_mutation
-                    else None,
+                    "last_mutation": (
+                        gene.last_mutation.isoformat() if gene.last_mutation else None
+                    ),
                 }
 
             # 一時ファイルに保存してから原子的に移動
@@ -831,15 +835,19 @@ class AISelfEvolutionEngine:
                         creation_time=datetime.fromisoformat(
                             gene_data["creation_time"]
                         ),
-                        last_mutation=datetime.fromisoformat(gene_data["last_mutation"])
-                        if gene_data.get("last_mutation")
-                        else None,
+                        last_mutation=(
+                            datetime.fromisoformat(gene_data["last_mutation"])
+                            if gene_data.get("last_mutation")
+                            else None
+                        ),
                     )
 
                 # 復元されたプールを保存
                 self._save_genetic_pool()
 
-                logger.info(f"遺伝子プール復元完了: {len(self.genetic_pool_data)}個の遺伝子")
+                logger.info(
+                    f"遺伝子プール復元完了: {len(self.genetic_pool_data)}個の遺伝子"
+                )
 
         except Exception as e:
             logger.error(f"プール復元エラー: {e}")
@@ -1356,13 +1364,17 @@ class AISelfEvolutionEngine:
 
             # 既存知識との重複チェック
             if self._is_duplicate_knowledge(knowledge_data):
-                logger.info(f"重複知識をスキップ: {knowledge_data.get('summary', 'unknown')}")
+                logger.info(
+                    f"重複知識をスキップ: {knowledge_data.get('summary', 'unknown')}"
+                )
                 return
 
             # 知識の品質評価
             quality_score = self._evaluate_knowledge_quality(knowledge_data)
             if quality_score < 0.3:  # 低品質の知識は統合しない
-                logger.info(f"低品質知識をスキップ: {knowledge_data.get('summary', 'unknown')}")
+                logger.info(
+                    f"低品質知識をスキップ: {knowledge_data.get('summary', 'unknown')}"
+                )
                 return
 
             # 知識を遺伝子プールに統合
@@ -1419,9 +1431,9 @@ class AISelfEvolutionEngine:
                 "content": knowledge,
                 "type": "unknown",
                 "keywords": [],
-                "summary": knowledge[:100] + "..."
-                if len(knowledge) > 100
-                else knowledge,
+                "summary": (
+                    knowledge[:100] + "..." if len(knowledge) > 100 else knowledge
+                ),
                 "complexity": 0.5,
                 "related_gene_types": [],
                 "timestamp": datetime.now().isoformat(),
@@ -2654,9 +2666,7 @@ class PerformanceTracker:
                         trend_direction = (
                             "increasing"
                             if slope > 0
-                            else "decreasing"
-                            if slope < 0
-                            else "stable"
+                            else "decreasing" if slope < 0 else "stable"
                         )
                         trend_strength = abs(slope)
 
@@ -2748,11 +2758,11 @@ class PerformanceTracker:
             "increasing_metrics": increasing_trends,
             "decreasing_metrics": decreasing_trends,
             "stable_metrics": stable_trends,
-            "overall_trend": "positive"
-            if increasing_trends > decreasing_trends
-            else "negative"
-            if decreasing_trends > increasing_trends
-            else "stable",
+            "overall_trend": (
+                "positive"
+                if increasing_trends > decreasing_trends
+                else "negative" if decreasing_trends > increasing_trends else "stable"
+            ),
         }
 
 
@@ -2792,16 +2802,16 @@ class KnowledgeSynthesizer:
                 synthesized_knowledge["confidence_score"] = total_confidence / len(
                     synthesized_knowledge["knowledge_fragments"]
                 )
-                synthesized_knowledge[
-                    "synthesis_insights"
-                ] = self._generate_synthesis_insights(
-                    synthesized_knowledge["knowledge_fragments"]
+                synthesized_knowledge["synthesis_insights"] = (
+                    self._generate_synthesis_insights(
+                        synthesized_knowledge["knowledge_fragments"]
+                    )
                 )
 
             # キャッシュに保存
-            self.synthesis_cache[
-                synthesized_knowledge["synthesis_id"]
-            ] = synthesized_knowledge
+            self.synthesis_cache[synthesized_knowledge["synthesis_id"]] = (
+                synthesized_knowledge
+            )
 
             return synthesized_knowledge
 
@@ -3257,9 +3267,9 @@ class SafetyMonitor:
 
             # 推奨事項生成
             if safety_results["violations"] or safety_results["warnings"]:
-                safety_results[
-                    "recommendations"
-                ] = self._generate_safety_recommendations(safety_results)
+                safety_results["recommendations"] = (
+                    self._generate_safety_recommendations(safety_results)
+                )
 
             return safety_results
 
@@ -3426,7 +3436,9 @@ def main():
 
         # パフォーマンス追跡テスト
         metrics_result = evolution_engine.performance_tracker.collect_metrics()
-        print(f"📊 パフォーマンス指標収集: {metrics_result.get('metrics_collected', 0)}個")
+        print(
+            f"📊 パフォーマンス指標収集: {metrics_result.get('metrics_collected', 0)}個"
+        )
 
         # 学習パターン分析テスト
         sample_patterns = [
@@ -3447,7 +3459,9 @@ def main():
                 sample_patterns
             )
         )
-        print(f"🧠 学習パターン分析: {pattern_analysis.get('patterns_analyzed', 0)}個のパターン")
+        print(
+            f"🧠 学習パターン分析: {pattern_analysis.get('patterns_analyzed', 0)}個のパターン"
+        )
 
         # 安全性チェックテスト
         safety_check = evolution_engine.evolution_controller.check_safety_constraints(

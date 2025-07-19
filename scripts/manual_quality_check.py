@@ -13,6 +13,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from scripts.quality_daemon import QualityEvolutionDaemon
 
+
 async def main():
     """メイン関数"""
     daemon = QualityEvolutionDaemon()
@@ -20,6 +21,7 @@ async def main():
     print("🔍 品質チェックを実行中...")
     await daemon.run_monitoring_cycle()
     print("✅ 品質チェック完了")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

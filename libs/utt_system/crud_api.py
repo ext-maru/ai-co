@@ -420,9 +420,11 @@ class UTTCRUDManager(EldersServiceLegacy):
             return CRUDResult(
                 success=False,
                 error={
-                    "type": "internal_error"
-                    if not isinstance(e, SQLAlchemyError)
-                    else "database_error",
+                    "type": (
+                        "internal_error"
+                        if not isinstance(e, SQLAlchemyError)
+                        else "database_error"
+                    ),
                     "message": str(e),
                 },
             )
@@ -478,9 +480,11 @@ class UTTCRUDManager(EldersServiceLegacy):
                 metadata={
                     "include_deleted": include_deleted,
                     "include_history": include_history,
-                    "history": history_data["data"]
-                    if history_data and history_data["success"]
-                    else None,
+                    "history": (
+                        history_data["data"]
+                        if history_data and history_data["success"]
+                        else None
+                    ),
                     "response_time": response_time,
                 },
             )
@@ -492,9 +496,11 @@ class UTTCRUDManager(EldersServiceLegacy):
             return CRUDResult(
                 success=False,
                 error={
-                    "type": "internal_error"
-                    if not isinstance(e, SQLAlchemyError)
-                    else "database_error",
+                    "type": (
+                        "internal_error"
+                        if not isinstance(e, SQLAlchemyError)
+                        else "database_error"
+                    ),
                     "message": str(e),
                 },
             )
@@ -643,9 +649,11 @@ class UTTCRUDManager(EldersServiceLegacy):
             return CRUDResult(
                 success=False,
                 error={
-                    "type": "internal_error"
-                    if not isinstance(e, SQLAlchemyError)
-                    else "database_error",
+                    "type": (
+                        "internal_error"
+                        if not isinstance(e, SQLAlchemyError)
+                        else "database_error"
+                    ),
                     "message": str(e),
                 },
             )
@@ -751,9 +759,11 @@ class UTTCRUDManager(EldersServiceLegacy):
             return CRUDResult(
                 success=False,
                 error={
-                    "type": "internal_error"
-                    if not isinstance(e, SQLAlchemyError)
-                    else "database_error",
+                    "type": (
+                        "internal_error"
+                        if not isinstance(e, SQLAlchemyError)
+                        else "database_error"
+                    ),
                     "message": str(e),
                 },
             )
@@ -864,9 +874,11 @@ class UTTCRUDManager(EldersServiceLegacy):
             return CRUDResult(
                 success=False,
                 error={
-                    "type": "internal_error"
-                    if not isinstance(e, SQLAlchemyError)
-                    else "database_error",
+                    "type": (
+                        "internal_error"
+                        if not isinstance(e, SQLAlchemyError)
+                        else "database_error"
+                    ),
                     "message": str(e),
                 },
             )

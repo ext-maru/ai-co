@@ -186,7 +186,12 @@ class ElfForestDashboard:
             }
 
         except Exception as e:
-            return {"name": "ドワーフ工房", "status": "error", "progress": 0, "error": str(e)}
+            return {
+                "name": "ドワーフ工房",
+                "status": "error",
+                "progress": 0,
+                "error": str(e),
+            }
 
     def check_rag_wizards_status(self) -> Dict[str, Any]:
         """RAGウィザーズの状況確認"""
@@ -228,7 +233,12 @@ class ElfForestDashboard:
             }
 
         except Exception as e:
-            return {"name": "エルフの森", "status": "error", "progress": 0, "error": str(e)}
+            return {
+                "name": "エルフの森",
+                "status": "error",
+                "progress": 0,
+                "error": str(e),
+            }
 
     def get_system_metrics(self) -> Dict[str, Any]:
         """システムメトリクス取得"""
@@ -278,11 +288,11 @@ class ElfForestDashboard:
 
             return {
                 "overall_health": health_score,
-                "status": "healthy"
-                if health_score >= 80
-                else "warning"
-                if health_score >= 60
-                else "critical",
+                "status": (
+                    "healthy"
+                    if health_score >= 80
+                    else "warning" if health_score >= 60 else "critical"
+                ),
                 "checks": health_checks,
                 "healthy_systems": healthy_systems,
                 "total_systems": total_systems,
@@ -319,9 +329,7 @@ class ElfForestDashboard:
             status_emoji = (
                 "✅"
                 if team_data.get("status") == "completed"
-                else "🔄"
-                if team_data.get("status") == "in_progress"
-                else "❌"
+                else "🔄" if team_data.get("status") == "in_progress" else "❌"
             )
             report += f"  {status_emoji} {team_data.get('name', team_id)}: {team_data.get('progress', 0):.1f}%\n"
 

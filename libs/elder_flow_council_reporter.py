@@ -13,6 +13,7 @@ from enum import Enum
 from dataclasses import dataclass, field
 from pathlib import Path
 
+
 # Report Types
 class ReportType(Enum):
     TASK_COMPLETION = "task_completion"
@@ -23,12 +24,14 @@ class ReportType(Enum):
     PROGRESS_UPDATE = "progress_update"
     FINAL_SUMMARY = "final_summary"
 
+
 # Report Priority
 class ReportPriority(Enum):
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
+
 
 # Report Status
 class ReportStatus(Enum):
@@ -37,6 +40,7 @@ class ReportStatus(Enum):
     APPROVED = "approved"
     REJECTED = "rejected"
     ARCHIVED = "archived"
+
 
 # Council Member
 @dataclass
@@ -47,6 +51,7 @@ class CouncilMember:
     email: str = ""
     approval_required: bool = True
 
+
 # Report Section
 @dataclass
 class ReportSection:
@@ -55,6 +60,7 @@ class ReportSection:
     priority: ReportPriority = ReportPriority.MEDIUM
     attachments: List[str] = field(default_factory=list)
     metadata: Dict = field(default_factory=dict)
+
 
 # Elder Council Report
 @dataclass
@@ -88,7 +94,9 @@ class ElderCouncilReport:
     related_tasks: List[str] = field(default_factory=list)
     attachments: List[str] = field(default_factory=list)
 
-    def add_section(self, title: str, content: str, priority: ReportPriority = ReportPriority.MEDIUM):
+    def add_section(
+        self, title: str, content: str, priority: ReportPriority = ReportPriority.MEDIUM
+    ):
         """セクション追加"""
         section = ReportSection(title=title, content=content, priority=priority)
         self.sections.append(section)
@@ -97,7 +105,13 @@ class ElderCouncilReport:
         """推奨事項追加"""
         self.recommendations.append(recommendation)
 
-    def add_action_item(self, title: str, assignee: str, due_date: datetime, priority: ReportPriority = ReportPriority.MEDIUM):
+    def add_action_item(
+        self,
+        title: str,
+        assignee: str,
+        due_date: datetime,
+        priority: ReportPriority = ReportPriority.MEDIUM,
+    ):
         """アクションアイテム追加"""
         action_item = {
             "title": title,
@@ -105,7 +119,7 @@ class ElderCouncilReport:
             "due_date": due_date.isoformat(),
             "priority": priority.value,
             "status": "pending",
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         self.action_items.append(action_item)
 
@@ -147,7 +161,7 @@ class ElderCouncilReport:
                     "content": s.content,
                     "priority": s.priority.value,
                     "attachments": s.attachments,
-                    "metadata": s.metadata
+                    "metadata": s.metadata,
                 }
                 for s in self.sections
             ],
@@ -163,15 +177,18 @@ class ElderCouncilReport:
                     "title": a.title,
                     "role": a.role,
                     "email": a.email,
-                    "approval_required": a.approval_required
+                    "approval_required": a.approval_required,
                 }
                 for a in self.approvers
             ],
-            "approval_deadline": self.approval_deadline.isoformat() if self.approval_deadline else None,
+            "approval_deadline": (
+                self.approval_deadline.isoformat() if self.approval_deadline else None
+            ),
             "tags": self.tags,
             "related_tasks": self.related_tasks,
-            "attachments": self.attachments
+            "attachments": self.attachments,
         }
+
 
 # Council Reporter System
 class ElderCouncilReporter:
@@ -193,40 +210,45 @@ class ElderCouncilReporter:
                 title="Grand Elder",
                 role="Supreme Commander",
                 email="grand.elder@elders-guild.ai",
-                approval_required=True
+                approval_required=True,
             ),
             CouncilMember(
                 name="Knowledge Sage",
                 title="Knowledge Sage",
                 role="Wisdom Keeper",
                 email="knowledge.sage@elders-guild.ai",
-                approval_required=True
+                approval_required=True,
             ),
             CouncilMember(
                 name="Task Sage",
                 title="Task Sage",
                 role="Project Manager",
                 email="task.sage@elders-guild.ai",
-                approval_required=True
+                approval_required=True,
             ),
             CouncilMember(
                 name="Incident Sage",
                 title="Incident Sage",
                 role="Crisis Manager",
                 email="incident.sage@elders-guild.ai",
-                approval_required=True
+                approval_required=True,
             ),
             CouncilMember(
                 name="RAG Sage",
                 title="RAG Sage",
                 role="Information Specialist",
                 email="rag.sage@elders-guild.ai",
-                approval_required=True
-            )
+                approval_required=True,
+            ),
         ]
 
-    def create_report(self, report_type: ReportType, title: str, author: str = "Claude Elder",
-                     priority: ReportPriority = ReportPriority.MEDIUM) -> str:
+    def create_report(
+        self,
+        report_type: ReportType,
+        title: str,
+        author: str = "Claude Elder",
+        priority: ReportPriority = ReportPriority.MEDIUM,
+    ) -> str:
         """報告作成"""
         report_id = f"{report_type.value}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
@@ -235,7 +257,7 @@ class ElderCouncilReporter:
             report_type=report_type,
             title=title,
             author=author,
-            priority=priority
+            priority=priority,
         )
 
         self.reports[report_id] = report
@@ -243,10 +265,17 @@ class ElderCouncilReporter:
 
         return report_id
 
-    def add_task_completion_report(self, task_id: str, task_description: str,
-                                  execution_results: Dict, quality_results: Dict) -> str:
+    def add_task_completion_report(
+        self,
+        task_id: str,
+        task_description: str,
+        execution_results: Dict,
+        quality_results: Dict,
+    ) -> str:
         """タスク完了報告作成"""
-        report_id = self.create_report(ReportType.TASK_COMPLETION, f"Task Completion: {task_description}")
+        report_id = self.create_report(
+            ReportType.TASK_COMPLETION, f"Task Completion: {task_description}"
+        )
         report = self.reports[report_id]
 
         # サマリー
@@ -259,7 +288,7 @@ class ElderCouncilReporter:
             f"Status: {execution_results.get('status', 'completed')}\n"
             f"Execution Time: {execution_results.get('execution_time', 'N/A')}\n"
             f"Success Rate: {execution_results.get('success_rate', 100)}%",
-            ReportPriority.HIGH
+            ReportPriority.HIGH,
         )
 
         # 品質結果セクション
@@ -269,43 +298,49 @@ class ElderCouncilReporter:
             f"Test Coverage: {quality_results.get('test_coverage', 0)}%\n"
             f"Code Quality: {quality_results.get('code_quality', 'N/A')}\n"
             f"Security Score: {quality_results.get('security_score', 0)}/10",
-            ReportPriority.HIGH
+            ReportPriority.HIGH,
         )
 
         # メトリクス
         report.metrics = {
             "task_id": task_id,
-            "execution_time": execution_results.get('execution_time', 0),
-            "success_rate": execution_results.get('success_rate', 100),
-            "quality_score": quality_results.get('overall_score', 0)
+            "execution_time": execution_results.get("execution_time", 0),
+            "success_rate": execution_results.get("success_rate", 100),
+            "quality_score": quality_results.get("overall_score", 0),
         }
 
-        report.quality_score = quality_results.get('overall_score', 0)
+        report.quality_score = quality_results.get("overall_score", 0)
         report.completion_rate = 100.0
 
         # 関連タスク
         report.related_tasks = [task_id]
 
         # 推奨事項
-        if quality_results.get('recommendations'):
-            for rec in quality_results['recommendations']:
+        if quality_results.get("recommendations"):
+            for rec in quality_results["recommendations"]:
                 report.add_recommendation(rec)
 
         return report_id
 
-    def add_quality_assessment_report(self, quality_results: Dict, target_files: List[str]) -> str:
+    def add_quality_assessment_report(
+        self, quality_results: Dict, target_files: List[str]
+    ) -> str:
         """品質評価報告作成"""
-        report_id = self.create_report(ReportType.QUALITY_ASSESSMENT, "Quality Assessment Report")
+        report_id = self.create_report(
+            ReportType.QUALITY_ASSESSMENT, "Quality Assessment Report"
+        )
         report = self.reports[report_id]
 
         # サマリー
-        overall_status = quality_results.get('summary', {}).get('overall_status', 'unknown')
-        overall_score = quality_results.get('summary', {}).get('overall_score', 0)
+        overall_status = quality_results.get("summary", {}).get(
+            "overall_status", "unknown"
+        )
+        overall_score = quality_results.get("summary", {}).get("overall_score", 0)
 
         report.summary = f"Quality assessment completed with status: {overall_status} (Score: {overall_score:.2f}/10)"
 
         # 概要セクション
-        summary_data = quality_results.get('summary', {})
+        summary_data = quality_results.get("summary", {})
         report.add_section(
             "Assessment Summary",
             f"Overall Status: {overall_status}\n"
@@ -314,14 +349,14 @@ class ElderCouncilReporter:
             f"Passed Checks: {summary_data.get('passed_checks', 0)}\n"
             f"Failed Checks: {summary_data.get('failed_checks', 0)}\n"
             f"Warning Checks: {summary_data.get('warning_checks', 0)}",
-            ReportPriority.HIGH
+            ReportPriority.HIGH,
         )
 
         # 各品質チェック結果
-        for check_result in quality_results.get('check_results', []):
-            check_type = check_result.get('check_type', 'unknown')
-            status = check_result.get('status', 'unknown')
-            score = check_result.get('overall_score', 0)
+        for check_result in quality_results.get("check_results", []):
+            check_type = check_result.get("check_type", "unknown")
+            status = check_result.get("status", "unknown")
+            score = check_result.get("overall_score", 0)
 
             report.add_section(
                 f"{check_type.replace('_', ' ').title()} Check",
@@ -330,34 +365,40 @@ class ElderCouncilReporter:
                 f"Passed Metrics: {check_result.get('passed_count', 0)}\n"
                 f"Failed Metrics: {check_result.get('failed_count', 0)}\n"
                 f"Issues: {len(check_result.get('issues', []))}",
-                ReportPriority.MEDIUM
+                ReportPriority.MEDIUM,
             )
 
         # メトリクス
         report.metrics = {
             "overall_score": overall_score,
-            "total_checks": summary_data.get('total_checks', 0),
-            "passed_checks": summary_data.get('passed_checks', 0),
-            "failed_checks": summary_data.get('failed_checks', 0),
-            "target_files": target_files
+            "total_checks": summary_data.get("total_checks", 0),
+            "passed_checks": summary_data.get("passed_checks", 0),
+            "failed_checks": summary_data.get("failed_checks", 0),
+            "target_files": target_files,
         }
 
         report.quality_score = overall_score
 
         # 推奨事項
-        for rec in quality_results.get('recommendations', []):
+        for rec in quality_results.get("recommendations", []):
             report.add_recommendation(rec)
 
         return report_id
 
-    def add_security_audit_report(self, security_results: Dict, target_path: str) -> str:
+    def add_security_audit_report(
+        self, security_results: Dict, target_path: str
+    ) -> str:
         """セキュリティ監査報告作成"""
-        report_id = self.create_report(ReportType.SECURITY_AUDIT, "Security Audit Report", priority=ReportPriority.HIGH)
+        report_id = self.create_report(
+            ReportType.SECURITY_AUDIT,
+            "Security Audit Report",
+            priority=ReportPriority.HIGH,
+        )
         report = self.reports[report_id]
 
         # サマリー
-        vulnerabilities = security_results.get('vulnerabilities', [])
-        high_vuln = len([v for v in vulnerabilities if v.get('severity') == 'high'])
+        vulnerabilities = security_results.get("vulnerabilities", [])
+        high_vuln = len([v for v in vulnerabilities if v.get("severity") == "high"])
 
         report.summary = f"Security audit completed. Found {len(vulnerabilities)} vulnerabilities ({high_vuln} high severity)."
 
@@ -371,14 +412,14 @@ class ElderCouncilReporter:
             report.add_section("Vulnerabilities", vuln_content, ReportPriority.HIGH)
 
         # セキュリティスコア
-        security_score = security_results.get('security_score', 0)
+        security_score = security_results.get("security_score", 0)
         report.add_section(
             "Security Metrics",
             f"Security Score: {security_score}/10\n"
             f"Risk Level: {security_results.get('risk_level', 'unknown')}\n"
             f"High Vulnerabilities: {high_vuln}\n"
             f"Total Vulnerabilities: {len(vulnerabilities)}",
-            ReportPriority.HIGH
+            ReportPriority.HIGH,
         )
 
         # メトリクス
@@ -386,7 +427,7 @@ class ElderCouncilReporter:
             "security_score": security_score,
             "total_vulnerabilities": len(vulnerabilities),
             "high_vulnerabilities": high_vuln,
-            "target_path": target_path
+            "target_path": target_path,
         }
 
         report.quality_score = security_score
@@ -399,12 +440,17 @@ class ElderCouncilReporter:
 
     def add_incident_report(self, incident_data: Dict) -> str:
         """インシデント報告作成"""
-        report_id = self.create_report(ReportType.INCIDENT_REPORT, f"Incident Report: {incident_data.get('title', 'Unknown')}",
-                                     priority=ReportPriority.CRITICAL)
+        report_id = self.create_report(
+            ReportType.INCIDENT_REPORT,
+            f"Incident Report: {incident_data.get('title', 'Unknown')}",
+            priority=ReportPriority.CRITICAL,
+        )
         report = self.reports[report_id]
 
         # サマリー
-        report.summary = f"Incident occurred: {incident_data.get('description', 'No description')}"
+        report.summary = (
+            f"Incident occurred: {incident_data.get('description', 'No description')}"
+        )
 
         # インシデント詳細
         report.add_section(
@@ -414,28 +460,30 @@ class ElderCouncilReporter:
             f"Status: {incident_data.get('status', 'unknown')}\n"
             f"Affected Systems: {', '.join(incident_data.get('affected_systems', []))}\n"
             f"Impact: {incident_data.get('impact', 'unknown')}",
-            ReportPriority.CRITICAL
+            ReportPriority.CRITICAL,
         )
 
         # 対応履歴
-        if incident_data.get('response_history'):
+        if incident_data.get("response_history"):
             history_content = "Response History:\n"
-            for entry in incident_data['response_history']:
+            for entry in incident_data["response_history"]:
                 history_content += f"- {entry.get('timestamp', 'unknown')}: {entry.get('action', 'unknown')}\n"
 
             report.add_section("Response History", history_content, ReportPriority.HIGH)
 
         # メトリクス
         report.metrics = {
-            "incident_type": incident_data.get('type', 'unknown'),
-            "severity": incident_data.get('severity', 'unknown'),
-            "response_time": incident_data.get('response_time', 0),
-            "resolution_time": incident_data.get('resolution_time', 0)
+            "incident_type": incident_data.get("type", "unknown"),
+            "severity": incident_data.get("severity", "unknown"),
+            "response_time": incident_data.get("response_time", 0),
+            "resolution_time": incident_data.get("resolution_time", 0),
         }
 
         return report_id
 
-    def submit_report_for_approval(self, report_id: str, approvers: List[str] = None) -> bool:
+    def submit_report_for_approval(
+        self, report_id: str, approvers: List[str] = None
+    ) -> bool:
         """報告承認提出"""
         if report_id not in self.reports:
             return False
@@ -444,7 +492,9 @@ class ElderCouncilReporter:
 
         # 承認者決定
         if approvers:
-            selected_approvers = [m for m in self.council_members if m.name in approvers]
+            selected_approvers = [
+                m for m in self.council_members if m.name in approvers
+            ]
         else:
             # 報告タイプに応じた承認者選択
             selected_approvers = self._get_default_approvers(report.report_type)
@@ -453,17 +503,31 @@ class ElderCouncilReporter:
         for approver in selected_approvers:
             report.request_approval(approver)
 
-        self.logger.info(f"Report {report_id} submitted for approval to {len(selected_approvers)} approvers")
+        self.logger.info(
+            f"Report {report_id} submitted for approval to {len(selected_approvers)} approvers"
+        )
         return True
 
     def _get_default_approvers(self, report_type: ReportType) -> List[CouncilMember]:
         """デフォルト承認者取得"""
         if report_type == ReportType.TASK_COMPLETION:
-            return [m for m in self.council_members if m.name in ["Grand Elder Maru", "Task Sage"]]
+            return [
+                m
+                for m in self.council_members
+                if m.name in ["Grand Elder Maru", "Task Sage"]
+            ]
         elif report_type == ReportType.QUALITY_ASSESSMENT:
-            return [m for m in self.council_members if m.name in ["Grand Elder Maru", "Knowledge Sage"]]
+            return [
+                m
+                for m in self.council_members
+                if m.name in ["Grand Elder Maru", "Knowledge Sage"]
+            ]
         elif report_type == ReportType.SECURITY_AUDIT:
-            return [m for m in self.council_members if m.name in ["Grand Elder Maru", "Incident Sage"]]
+            return [
+                m
+                for m in self.council_members
+                if m.name in ["Grand Elder Maru", "Incident Sage"]
+            ]
         elif report_type == ReportType.INCIDENT_REPORT:
             return self.council_members  # 全員承認が必要
         else:
@@ -480,7 +544,9 @@ class ElderCouncilReporter:
         self.logger.info(f"Report {report_id} approved by {approver_name}")
         return True
 
-    def reject_report(self, report_id: str, approver_name: str, reason: str = "") -> bool:
+    def reject_report(
+        self, report_id: str, approver_name: str, reason: str = ""
+    ) -> bool:
         """報告拒否"""
         if report_id not in self.reports:
             return False
@@ -500,7 +566,7 @@ class ElderCouncilReporter:
         report_file = self.reports_dir / f"{report_id}.json"
 
         try:
-            with open(report_file, 'w', encoding='utf-8') as f:
+            with open(report_file, "w", encoding="utf-8") as f:
                 json.dump(report.to_dict(), f, indent=2, ensure_ascii=False)
 
             self.logger.info(f"Report {report_id} saved to {report_file}")
@@ -517,24 +583,24 @@ class ElderCouncilReporter:
             return None
 
         try:
-            with open(report_file, 'r', encoding='utf-8') as f:
+            with open(report_file, "r", encoding="utf-8") as f:
                 data = json.load(f)
 
             # 辞書からオブジェクトに変換（簡略化）
             report = ElderCouncilReport(
-                report_id=data['report_id'],
-                report_type=ReportType(data['report_type']),
-                title=data['title'],
-                author=data['author'],
-                priority=ReportPriority(data['priority'])
+                report_id=data["report_id"],
+                report_type=ReportType(data["report_type"]),
+                title=data["title"],
+                author=data["author"],
+                priority=ReportPriority(data["priority"]),
             )
 
             # 基本情報復元
-            report.summary = data.get('summary', '')
-            report.metrics = data.get('metrics', {})
-            report.quality_score = data.get('quality_score', 0.0)
-            report.completion_rate = data.get('completion_rate', 0.0)
-            report.recommendations = data.get('recommendations', [])
+            report.summary = data.get("summary", "")
+            report.metrics = data.get("metrics", {})
+            report.quality_score = data.get("quality_score", 0.0)
+            report.completion_rate = data.get("completion_rate", 0.0)
+            report.recommendations = data.get("recommendations", [])
 
             self.reports[report_id] = report
             return report
@@ -568,39 +634,54 @@ class ElderCouncilReporter:
                     "title": r.title,
                     "type": r.report_type.value,
                     "status": r.status.value,
-                    "created_at": r.created_at.isoformat()
+                    "created_at": r.created_at.isoformat(),
                 }
-                for r in sorted(self.reports.values(), key=lambda x: x.created_at, reverse=True)[:10]
-            ]
+                for r in sorted(
+                    self.reports.values(), key=lambda x: x.created_at, reverse=True
+                )[:10]
+            ],
         }
+
 
 # Global reporter instance
 reporter = ElderCouncilReporter()
 
-# Helper functions
-def create_task_completion_report(task_id: str, task_description: str,
-                                execution_results: Dict, quality_results: Dict) -> str:
-    """タスク完了報告作成"""
-    return reporter.add_task_completion_report(task_id, task_description, execution_results, quality_results)
 
-def create_quality_assessment_report(quality_results: Dict, target_files: List[str]) -> str:
+# Helper functions
+def create_task_completion_report(
+    task_id: str, task_description: str, execution_results: Dict, quality_results: Dict
+) -> str:
+    """タスク完了報告作成"""
+    return reporter.add_task_completion_report(
+        task_id, task_description, execution_results, quality_results
+    )
+
+
+def create_quality_assessment_report(
+    quality_results: Dict, target_files: List[str]
+) -> str:
     """品質評価報告作成"""
     return reporter.add_quality_assessment_report(quality_results, target_files)
+
 
 def create_security_audit_report(security_results: Dict, target_path: str) -> str:
     """セキュリティ監査報告作成"""
     return reporter.add_security_audit_report(security_results, target_path)
 
+
 def submit_report_for_approval(report_id: str, approvers: List[str] = None) -> bool:
     """報告承認提出"""
     return reporter.submit_report_for_approval(report_id, approvers)
+
 
 def save_report(report_id: str) -> bool:
     """報告保存"""
     return reporter.save_report(report_id)
 
+
 # Example usage
 if __name__ == "__main__":
+
     def main():
         print("📊 Elder Council Reporter Test")
 
@@ -608,7 +689,7 @@ if __name__ == "__main__":
         task_results = {
             "status": "completed",
             "execution_time": "2.5 hours",
-            "success_rate": 100
+            "success_rate": 100,
         }
 
         quality_results = {
@@ -616,10 +697,12 @@ if __name__ == "__main__":
             "test_coverage": 92,
             "code_quality": "A",
             "security_score": 8.8,
-            "recommendations": ["Improve documentation", "Add more edge case tests"]
+            "recommendations": ["Improve documentation", "Add more edge case tests"],
         }
 
-        report_id = create_task_completion_report("task_001", "OAuth2.0 Implementation", task_results, quality_results)
+        report_id = create_task_completion_report(
+            "task_001", "OAuth2.0 Implementation", task_results, quality_results
+        )
         print(f"Created report: {report_id}")
 
         # 承認提出

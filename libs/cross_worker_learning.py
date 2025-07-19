@@ -126,9 +126,11 @@ class WorkerDiscoveryService:
                     worker_info["specializations"]
                 ),
                 "skill_diversity": len(worker_info["specializations"]),
-                "expertise_level": max(worker_info["specializations"].values())
-                if worker_info["specializations"]
-                else 0,
+                "expertise_level": (
+                    max(worker_info["specializations"].values())
+                    if worker_info["specializations"]
+                    else 0
+                ),
             },
             "collaboration_potential": {
                 "knowledge_sharing_capacity": min(
@@ -435,9 +437,9 @@ class LearningSync:
         return {
             "merged_patterns": list(all_patterns),
             "consensus_method": "simple_union",
-            "overall_confidence": statistics.mean(all_accuracies)
-            if all_accuracies
-            else 0.5,
+            "overall_confidence": (
+                statistics.mean(all_accuracies) if all_accuracies else 0.5
+            ),
             "participant_count": len(learning_states),
         }
 
@@ -967,15 +969,17 @@ class SkillSpecializationTracker:
             ),
             "beginner_level_skills": len([p for p in proficiency_levels if p < 0.5]),
             "average_proficiency": statistics.mean(proficiency_levels),
-            "proficiency_std": statistics.stdev(proficiency_levels)
-            if len(proficiency_levels) > 1
-            else 0,
+            "proficiency_std": (
+                statistics.stdev(proficiency_levels)
+                if len(proficiency_levels) > 1
+                else 0
+            ),
             "expertise_balance": {
                 "depth": max(proficiency_levels),
                 "breadth": len(skills),
-                "balance_score": len(skills) * max(proficiency_levels)
-                if proficiency_levels
-                else 0,
+                "balance_score": (
+                    len(skills) * max(proficiency_levels) if proficiency_levels else 0
+                ),
             },
         }
 
@@ -1067,9 +1071,9 @@ class CollaborationOptimizer:
                 "skills": specializations,
                 "availability": 1.0 - load,
                 "capacity_score": (1.0 - load) * len(specializations),
-                "expertise_level": max(specializations.values())
-                if specializations
-                else 0.0,
+                "expertise_level": (
+                    max(specializations.values()) if specializations else 0.0
+                ),
                 "versatility": len(specializations),
             }
 
@@ -1717,11 +1721,11 @@ class SecurityGuard:
             "audit_timestamp": audit_timestamp,
             "audit_results": audit_results,
             "audit_score": audit_score,
-            "compliance_level": "high"
-            if audit_score >= 0.9
-            else "medium"
-            if audit_score >= 0.7
-            else "low",
+            "compliance_level": (
+                "high"
+                if audit_score >= 0.9
+                else "medium" if audit_score >= 0.7 else "low"
+            ),
             "recommendations": recommendations,
             "next_audit_due": audit_timestamp + timedelta(days=30),
         }
@@ -1749,9 +1753,9 @@ class SecurityGuard:
         return {
             "overall_compliance": overall_compliance,
             "framework_results": compliance_results,
-            "compliance_certification": "valid"
-            if overall_compliance
-            else "requires_attention",
+            "compliance_certification": (
+                "valid" if overall_compliance else "requires_attention"
+            ),
             "next_review_date": datetime.now() + timedelta(days=90),
         }
 
@@ -1855,22 +1859,26 @@ class PerformanceMonitor:
 
         # 集約メトリクス
         aggregated_metrics = {
-            "average_accuracy": statistics.mean(
-                [metrics["model_accuracy"] for metrics in worker_metrics.values()]
-            )
-            if worker_metrics
-            else 0,
+            "average_accuracy": (
+                statistics.mean(
+                    [metrics["model_accuracy"] for metrics in worker_metrics.values()]
+                )
+                if worker_metrics
+                else 0
+            ),
             "total_communication_latency": sum(
                 [
                     metrics["communication_latency"]
                     for metrics in worker_metrics.values()
                 ]
             ),
-            "overall_error_rate": statistics.mean(
-                [metrics["error_rate"] for metrics in worker_metrics.values()]
-            )
-            if worker_metrics
-            else 0,
+            "overall_error_rate": (
+                statistics.mean(
+                    [metrics["error_rate"] for metrics in worker_metrics.values()]
+                )
+                if worker_metrics
+                else 0
+            ),
         }
 
         return {
@@ -1960,13 +1968,15 @@ class PerformanceMonitor:
         return {
             "trend_direction": trend,
             "trend_magnitude": trend_magnitude,
-            "historical_best": max([0.7])
-            if not self.performance_history.get(session_id)
-            else max(
-                [
-                    record["learning_efficiency"]["overall_efficiency_score"]
-                    for record in self.performance_history[session_id]
-                ]
+            "historical_best": (
+                max([0.7])
+                if not self.performance_history.get(session_id)
+                else max(
+                    [
+                        record["learning_efficiency"]["overall_efficiency_score"]
+                        for record in self.performance_history[session_id]
+                    ]
+                )
             ),
             "volatility": random.uniform(0.05, 0.2),  # 効率性の変動性
         }
@@ -1985,9 +1995,9 @@ class PerformanceMonitor:
             bottlenecks.append(
                 {
                     "type": "cpu_bottleneck",
-                    "severity": "high"
-                    if system_metrics["cpu_utilization"] > 0.9
-                    else "medium",
+                    "severity": (
+                        "high" if system_metrics["cpu_utilization"] > 0.9 else "medium"
+                    ),
                     "metric_value": system_metrics["cpu_utilization"],
                     "impact": "Slowing down learning convergence",
                 }
@@ -1998,9 +2008,9 @@ class PerformanceMonitor:
             bottlenecks.append(
                 {
                     "type": "memory_bottleneck",
-                    "severity": "high"
-                    if system_metrics["memory_usage"] > 0.9
-                    else "medium",
+                    "severity": (
+                        "high" if system_metrics["memory_usage"] > 0.9 else "medium"
+                    ),
                     "metric_value": system_metrics["memory_usage"],
                     "impact": "Limiting model complexity and batch sizes",
                 }
@@ -2042,9 +2052,9 @@ class PerformanceMonitor:
             worker_resources[worker] = {
                 "cpu_cores_used": random.randint(2, 8),
                 "memory_gb_used": random.uniform(4, 32),
-                "gpu_utilization": random.uniform(0.5, 0.95)
-                if random.random() > 0.3
-                else 0,
+                "gpu_utilization": (
+                    random.uniform(0.5, 0.95) if random.random() > 0.3 else 0
+                ),
                 "network_bandwidth_used": random.uniform(10, 100),  # Mbps
                 "storage_io_rate": random.uniform(50, 500),  # MB/s
             }
@@ -2057,20 +2067,22 @@ class PerformanceMonitor:
             "total_memory_gb": sum(
                 res["memory_gb_used"] for res in worker_resources.values()
             ),
-            "average_gpu_utilization": statistics.mean(
-                [
-                    res["gpu_utilization"]
-                    for res in worker_resources.values()
-                    if res["gpu_utilization"] > 0
-                ]
-            )
-            if any(res["gpu_utilization"] > 0 for res in worker_resources.values())
-            else 0,
-            "peak_network_usage": max(
-                res["network_bandwidth_used"] for res in worker_resources.values()
-            )
-            if worker_resources
-            else 0,
+            "average_gpu_utilization": (
+                statistics.mean(
+                    [
+                        res["gpu_utilization"]
+                        for res in worker_resources.values()
+                        if res["gpu_utilization"] > 0
+                    ]
+                )
+                if any(res["gpu_utilization"] > 0 for res in worker_resources.values())
+                else 0
+            ),
+            "peak_network_usage": (
+                max(res["network_bandwidth_used"] for res in worker_resources.values())
+                if worker_resources
+                else 0
+            ),
         }
 
         # リソース効率性の評価
@@ -2235,9 +2247,9 @@ class PerformanceMonitor:
             "vs_industry_benchmark": quality_score - industry_benchmark,
             "vs_internal_benchmark": quality_score - internal_benchmark,
             "performance_percentile": min(100, max(0, (quality_score - 0.5) * 200)),
-            "benchmark_status": "above"
-            if quality_score > industry_benchmark
-            else "below",
+            "benchmark_status": (
+                "above" if quality_score > industry_benchmark else "below"
+            ),
         }
 
     def _detect_performance_anomalies(
@@ -2564,14 +2576,16 @@ class CrossWorkerLearningSystem:
                 "total_capabilities": sum(
                     len(w.get("capabilities", [])) for w in discovered_workers
                 ),
-                "average_specialization_level": statistics.mean(
-                    [
-                        max(w.get("specializations", {}).values() or [0])
-                        for w in discovered_workers
-                    ]
-                )
-                if discovered_workers
-                else 0,
+                "average_specialization_level": (
+                    statistics.mean(
+                        [
+                            max(w.get("specializations", {}).values() or [0])
+                            for w in discovered_workers
+                        ]
+                    )
+                    if discovered_workers
+                    else 0
+                ),
             },
         }
 

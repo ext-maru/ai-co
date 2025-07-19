@@ -78,10 +78,13 @@ class A2APerformanceBenchmark:
         start_resources = self.measure_system_resources()
 
         results = []
-        with concurrent.futures.ThreadPoolExecutor(max_workers=num_concurrent) as executor:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=num_concurrent
+        ) as executor:
             # 並行テスト実行
             futures = [
-                executor.submit(self.single_communication_test, f"concurrent_{i}") for i in range(num_concurrent)
+                executor.submit(self.single_communication_test, f"concurrent_{i}")
+                for i in range(num_concurrent)
             ]
 
             # 結果収集
@@ -201,7 +204,10 @@ class A2APerformanceBenchmark:
                     message_type="stress_test",
                     status="success",
                     response_time=0.001,
-                    metadata={"benchmark_id": self.benchmark_id, "request_num": request_count},
+                    metadata={
+                        "benchmark_id": self.benchmark_id,
+                        "request_num": request_count,
+                    },
                 )
                 comm_end = time.time()
 
@@ -225,7 +231,9 @@ class A2APerformanceBenchmark:
             "total_requests": request_count,
             "successful_requests": successful_count,
             "error_count": error_count,
-            "success_rate": (successful_count / request_count * 100) if request_count > 0 else 0,
+            "success_rate": (
+                (successful_count / request_count * 100) if request_count > 0 else 0
+            ),
             "requests_per_second": request_count / actual_duration,
             "successful_per_second": successful_count / actual_duration,
             "response_times": {
@@ -233,7 +241,11 @@ class A2APerformanceBenchmark:
                 "max": max(response_times) if response_times else 0,
                 "avg": statistics.mean(response_times) if response_times else 0,
                 "median": statistics.median(response_times) if response_times else 0,
-                "p95": statistics.quantiles(response_times, n=20)[18] if len(response_times) > 20 else 0,
+                "p95": (
+                    statistics.quantiles(response_times, n=20)[18]
+                    if len(response_times) > 20
+                    else 0
+                ),
             },
             "resource_usage": resource_monitor,
             "start_resources": start_resources,
@@ -278,7 +290,9 @@ class A2APerformanceBenchmark:
             "total_duration": benchmark_end - benchmark_start,
             "single_communication": {
                 "tests": single_tests,
-                "avg_time": statistics.mean([t["communication_time"] for t in single_tests]),
+                "avg_time": statistics.mean(
+                    [t["communication_time"] for t in single_tests]
+                ),
                 "min_time": min([t["communication_time"] for t in single_tests]),
                 "max_time": max([t["communication_time"] for t in single_tests]),
             },
@@ -286,8 +300,12 @@ class A2APerformanceBenchmark:
             "four_sages_collaboration": four_sages_result,
             "stress_test": stress_result,
             "summary": {
-                "peak_throughput": max([r["throughput_per_second"] for r in concurrent_results]),
-                "best_response_time": min([t["communication_time"] for t in single_tests]),
+                "peak_throughput": max(
+                    [r["throughput_per_second"] for r in concurrent_results]
+                ),
+                "best_response_time": min(
+                    [t["communication_time"] for t in single_tests]
+                ),
                 "collaboration_efficiency": four_sages_result["avg_communication_time"],
                 "stress_performance": stress_result["successful_per_second"],
             },
@@ -310,7 +328,9 @@ class A2APerformanceBenchmark:
         print(f"⏱️ 実行時間: {report['total_duration']:.2f}秒")
 
         print("\n📡 単一通信:")
-        print(f"  平均応答時間: {report['single_communication']['avg_time']*1000:.2f}ms")
+        print(
+            f"  平均応答時間: {report['single_communication']['avg_time']*1000:.2f}ms"
+        )
         print(f"  最速応答: {report['single_communication']['min_time']*1000:.2f}ms")
         print(f"  最遅応答: {report['single_communication']['max_time']*1000:.2f}ms")
 

@@ -567,7 +567,9 @@ class LoadBalancer:
         elif strategy == LoadBalancingStrategy.LEAST_CONNECTIONS:
             reasons.append(f"最少接続数 ({selected_node.current_requests} 接続)")
         elif strategy == LoadBalancingStrategy.LEAST_RESPONSE_TIME:
-            reasons.append(f"最短応答時間 ({selected_node.load_metrics.response_time:.2f}ms)")
+            reasons.append(
+                f"最短応答時間 ({selected_node.load_metrics.response_time:.2f}ms)"
+            )
         elif strategy == LoadBalancingStrategy.ADAPTIVE:
             reasons.append("適応型アルゴリズムによる最適選択")
         elif strategy == LoadBalancingStrategy.INTELLIGENT:
@@ -795,9 +797,11 @@ class LoadBalancer:
                     "health_status": node.health_status.value,
                     "current_requests": node.current_requests,
                     "total_requests": node.total_requests,
-                    "success_rate": node.successful_requests / node.total_requests
-                    if node.total_requests > 0
-                    else 0,
+                    "success_rate": (
+                        node.successful_requests / node.total_requests
+                        if node.total_requests > 0
+                        else 0
+                    ),
                     "load_metrics": {
                         "cpu_usage": node.load_metrics.cpu_usage,
                         "memory_usage": node.load_metrics.memory_usage,
@@ -819,9 +823,9 @@ class LoadBalancer:
         """サーバントメンテナンスモード設定"""
         if servant_name in self.servant_nodes:
             if maintenance:
-                self.servant_nodes[
-                    servant_name
-                ].health_status = HealthStatus.MAINTENANCE
+                self.servant_nodes[servant_name].health_status = (
+                    HealthStatus.MAINTENANCE
+                )
             else:
                 self.servant_nodes[servant_name].health_status = HealthStatus.HEALTHY
 

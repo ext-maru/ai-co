@@ -52,7 +52,9 @@ class KnowledgeGrimoireAdapter:
 
                     self.mock_database = MockGrimoireDatabase()
                     self.mock_search = MockGrimoireVectorSearch(self.mock_database)
-                    self.logger.info("🎭 モックGrimoireデータベースを使用（PostgreSQL未接続）")
+                    self.logger.info(
+                        "🎭 モックGrimoireデータベースを使用（PostgreSQL未接続）"
+                    )
                     self.grimoire_enabled = True
                     self.use_mock_grimoire = True
                 except Exception as mock_e:
@@ -208,9 +210,11 @@ class KnowledgeGrimoireAdapter:
                         "file": result.get("spell_name", result.get("id", "unknown")),
                         "line": 1,
                         "context": result.get("content", "")[:200] + "...",
-                        "match": result.get("content", "").split("\n")[0]
-                        if result.get("content")
-                        else "",
+                        "match": (
+                            result.get("content", "").split("\n")[0]
+                            if result.get("content")
+                            else ""
+                        ),
                         "similarity_score": result.get("similarity_score", 0.5),
                         "source_system": "grimoire",
                         "spell_id": result.get("id", "unknown"),
@@ -414,7 +418,9 @@ class KnowledgeSageGrimoireIntegration(KnowledgeGrimoireAdapter):
         self.collaboration_mode = True
         self.knowledge_evolution_active = True
 
-        self.logger.info(f"📚🔮 {self.sage_type} 初期化完了 - 統合知識システムアクティブ")
+        self.logger.info(
+            f"📚🔮 {self.sage_type} 初期化完了 - 統合知識システムアクティブ"
+        )
 
     def consult_unified_wisdom(self, topic: str) -> Optional[str]:
         """統合知恵の相談 - 魔法書と従来システムの統合検索"""
@@ -505,7 +511,9 @@ if __name__ == "__main__":
         print(f"取得した知識: {len(knowledge) if knowledge else 0}文字")
 
         # 追加テスト
-        result = adapter.add_knowledge("test_spell", "これはテスト用の魔法です", {"test": True})
+        result = adapter.add_knowledge(
+            "test_spell", "これはテスト用の魔法です", {"test": True}
+        )
         print(f"追加結果: {result}")
 
         # 状態確認
@@ -525,7 +533,9 @@ if __name__ == "__main__":
 
         # 知識の進化
         evolution_result = sage.evolve_knowledge(
-            "advanced_test_spell", "これは進化したテスト魔法です", "Testing knowledge evolution"
+            "advanced_test_spell",
+            "これは進化したテスト魔法です",
+            "Testing knowledge evolution",
         )
         print(f"進化結果: {evolution_result}")
 

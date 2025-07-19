@@ -38,7 +38,9 @@ class PipelineStatusReporter:
     def _get_git_info(self) -> Dict:
         """Get Git repository information"""
         try:
-            commit_hash = subprocess.check_output(["git", "rev-parse", "HEAD"], universal_newlines=True).strip()
+            commit_hash = subprocess.check_output(
+                ["git", "rev-parse", "HEAD"], universal_newlines=True
+            ).strip()
 
             branch_name = subprocess.check_output(
                 ["git", "rev-parse", "--abbrev-ref", "HEAD"], universal_newlines=True
@@ -98,7 +100,9 @@ class PipelineStatusReporter:
                         coverage_data["total_coverage"] = coverage_pct
 
                 except Exception as e:
-                    print(f"Warning: Could not parse coverage file {coverage_file}: {e}")
+                    print(
+                        f"Warning: Could not parse coverage file {coverage_file}: {e}"
+                    )
 
         # Calculate total if not found
         if coverage_data["total_coverage"] == 0.0:
@@ -111,7 +115,9 @@ class PipelineStatusReporter:
             values = [unit, integration, generated]
 
             if any(values):
-                coverage_data["total_coverage"] = sum(w * v for w, v in zip(weights, values) if v > 0)
+                coverage_data["total_coverage"] = sum(
+                    w * v for w, v in zip(weights, values) if v > 0
+                )
 
         return coverage_data
 
@@ -134,7 +140,9 @@ class PipelineStatusReporter:
                 tree = ET.parse(junit_file)
                 root = tree.getroot()
 
-                suite_name = junit_file.stem.replace("test-results-", "").replace("_results", "")
+                suite_name = junit_file.stem.replace("test-results-", "").replace(
+                    "_results", ""
+                )
 
                 # Parse testsuite attributes
                 tests = int(root.get("tests", 0))
@@ -200,7 +208,11 @@ class PipelineStatusReporter:
 
         # Calculate overall quality score
         total_issues = sum(
-            [quality_data["flake8_issues"], quality_data["mypy_issues"], quality_data["security_issues"]]
+            [
+                quality_data["flake8_issues"],
+                quality_data["mypy_issues"],
+                quality_data["security_issues"],
+            ]
         )
 
         # Quality score: 100 - (issues * penalty)
@@ -224,18 +236,26 @@ class PipelineStatusReporter:
                     data = json.load(f)
 
                 elder_data["review_completed"] = True
-                elder_data["quality_score"] = data.get("quality_assessment", {}).get("quality_score", 0)
+                elder_data["quality_score"] = data.get("quality_assessment", {}).get(
+                    "quality_score", 0
+                )
                 elder_data["recommendations"] = data.get("recommendations", [])
                 elder_data["approval_status"] = data.get("status", "completed")
 
             except Exception as e:
-                print(f"Warning: Could not parse Elder Council data {council_file}: {e}")
+                print(
+                    f"Warning: Could not parse Elder Council data {council_file}: {e}"
+                )
 
         return elder_data
 
     def _collect_generated_test_data(self) -> Dict:
         """Collect data about generated tests"""
-        generated_data = {"tests_generated": 0, "generation_completed": False, "generated_files": []}
+        generated_data = {
+            "tests_generated": 0,
+            "generation_completed": False,
+            "generated_files": [],
+        }
 
         # Count generated test files
         generated_dir = Path("tests/generated")
@@ -440,11 +460,17 @@ class PipelineStatusReporter:
         # Add summary metrics
         pipeline_data["summary"] = {
             "week4_infrastructure_operational": True,
-            "coverage_target_met": pipeline_data["coverage_metrics"]["total_coverage"] >= 66.7,
+            "coverage_target_met": pipeline_data["coverage_metrics"]["total_coverage"]
+            >= 66.7,
             "all_tests_passed": pipeline_data["test_results"]["failed_tests"] == 0,
-            "quality_acceptable": pipeline_data["quality_metrics"]["quality_score"] >= 70,
-            "elder_council_approved": pipeline_data["elder_council_review"]["review_completed"],
-            "auto_generation_active": pipeline_data["generated_tests"]["generation_completed"],
+            "quality_acceptable": pipeline_data["quality_metrics"]["quality_score"]
+            >= 70,
+            "elder_council_approved": pipeline_data["elder_council_review"][
+                "review_completed"
+            ],
+            "auto_generation_active": pipeline_data["generated_tests"][
+                "generation_completed"
+            ],
         }
 
         output_path = Path(output_path)
@@ -458,7 +484,10 @@ class PipelineStatusReporter:
         """Generate all report formats"""
         pipeline_data = self.collect_pipeline_data()
 
-        reports = {"html": self.generate_html_report(pipeline_data), "json": self.generate_json_report(pipeline_data)}
+        reports = {
+            "html": self.generate_html_report(pipeline_data),
+            "json": self.generate_json_report(pipeline_data),
+        }
 
         print("📋 Pipeline reports generated:")
         for format_type, path in reports.items():
@@ -472,9 +501,20 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Pipeline Status Reporter")
-    parser.add_argument("--format", choices=["html", "json", "both"], default="both", help="Report format to generate")
-    parser.add_argument("--output-dir", default="reports", help="Output directory for reports")
-    parser.add_argument("--artifacts-dir", default="reports", help="Directory containing pipeline artifacts")
+    parser.add_argument(
+        "--format",
+        choices=["html", "json", "both"],
+        default="both",
+        help="Report format to generate",
+    )
+    parser.add_argument(
+        "--output-dir", default="reports", help="Output directory for reports"
+    )
+    parser.add_argument(
+        "--artifacts-dir",
+        default="reports",
+        help="Directory containing pipeline artifacts",
+    )
 
     args = parser.parse_args()
 
@@ -482,12 +522,16 @@ def main():
 
     if args.format in ["html", "both"]:
         pipeline_data = reporter.collect_pipeline_data()
-        html_path = reporter.generate_html_report(pipeline_data, f"{args.output_dir}/pipeline_status_report.html")
+        html_path = reporter.generate_html_report(
+            pipeline_data, f"{args.output_dir}/pipeline_status_report.html"
+        )
         print(f"📊 HTML report: {html_path}")
 
     if args.format in ["json", "both"]:
         pipeline_data = reporter.collect_pipeline_data()
-        json_path = reporter.generate_json_report(pipeline_data, f"{args.output_dir}/pipeline_status_report.json")
+        json_path = reporter.generate_json_report(
+            pipeline_data, f"{args.output_dir}/pipeline_status_report.json"
+        )
         print(f"📄 JSON report: {json_path}")
 
     # Show summary

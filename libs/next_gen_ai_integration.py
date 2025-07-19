@@ -372,7 +372,9 @@ class NextGenAIIntegration:
         # データベースに記録
         self._record_collaboration(task, success_rate, innovation_score)
 
-        print(f"   ✅ タスク完了 - 成功率: {success_rate*100:.1f}%, 革新度: {innovation_score:.2f}")
+        print(
+            f"   ✅ タスク完了 - 成功率: {success_rate*100:.1f}%, 革新度: {innovation_score:.2f}"
+        )
         return True
 
     def _calculate_collective_intelligence(self) -> float:
@@ -763,7 +765,9 @@ class NextGenAIIntegration:
             return 0.0
 
         # 最近の協調成功率からボーナス計算
-        recent_collaborations = list(self.collaboration_results.values())[-5:]  # 最新5件
+        recent_collaborations = list(self.collaboration_results.values())[
+            -5:
+        ]  # 最新5件
         success_rates = [result["success_rate"] for result in recent_collaborations]
 
         if success_rates:

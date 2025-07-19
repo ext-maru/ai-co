@@ -253,11 +253,9 @@ class SecurityRiskAssessment:
                 "medium": total_medium,
                 "low": total_low,
             },
-            "overall_risk": "HIGH"
-            if total_high > 0
-            else "MEDIUM"
-            if total_medium > 5
-            else "LOW",
+            "overall_risk": (
+                "HIGH" if total_high > 0 else "MEDIUM" if total_medium > 5 else "LOW"
+            ),
         }
 
     def scan_directory_for_patterns(
@@ -340,9 +338,7 @@ class SecurityRiskAssessment:
         overall_network_risk = (
             "HIGH"
             if "HIGH" in risk_indicators
-            else "MEDIUM"
-            if len(risk_indicators) > 1
-            else "LOW"
+            else "MEDIUM" if len(risk_indicators) > 1 else "LOW"
         )
 
         return {
@@ -371,9 +367,9 @@ class SecurityRiskAssessment:
 
         return {
             "findings": findings,
-            "risk_level": "MEDIUM"
-            if any(f["risk"] == "MEDIUM" for f in findings)
-            else "LOW",
+            "risk_level": (
+                "MEDIUM" if any(f["risk"] == "MEDIUM" for f in findings) else "LOW"
+            ),
         }
 
     def check_ssl_verification(self) -> Dict[str, Any]:

@@ -132,14 +132,18 @@ class A2AAnomalyAnalyzer:
                 pass
 
             # 追加統計特徴
-            feature_vector[18] = np.log1p(response_time) if response_time and response_time > 0 else 0
+            feature_vector[18] = (
+                np.log1p(response_time) if response_time and response_time > 0 else 0
+            )
             feature_vector[19] = 1 if payload_size and payload_size > 10000 else 0
 
             features.append(feature_vector)
 
         return np.array(features)
 
-    def _detect_anomalies_detailed(self, features: np.ndarray, communications: List[tuple]) -> List[Dict]:
+    def _detect_anomalies_detailed(
+        self, features: np.ndarray, communications: List[tuple]
+    ) -> List[Dict]:
         """詳細な異常検知"""
         if len(features) < 10:
             return []
@@ -189,7 +193,9 @@ class A2AAnomalyAnalyzer:
             print("⚠️ sklearn未インストール - 簡単な統計的異常検知を使用")
             return self._simple_anomaly_detection(features, communications)
 
-    def _simple_anomaly_detection(self, features: np.ndarray, communications: List[tuple]) -> List[Dict]:
+    def _simple_anomaly_detection(
+        self, features: np.ndarray, communications: List[tuple]
+    ) -> List[Dict]:
         """簡単な統計的異常検知"""
         anomalies = []
 
@@ -218,7 +224,9 @@ class A2AAnomalyAnalyzer:
                     "error_message": comm[9],
                     "metadata": comm[10],
                     "max_z_score": float(max_z_score),
-                    "anomalous_features": [j for j, z in enumerate(z_scores) if z > 3.0],
+                    "anomalous_features": [
+                        j for j, z in enumerate(z_scores) if z > 3.0
+                    ],
                 }
                 anomalies.append(anomaly)
 
@@ -305,7 +313,9 @@ class A2AAnomalyAnalyzer:
             "status_distribution": Counter(error_statuses),
             "common_error_keywords": self._extract_error_keywords(error_messages),
             "error_rate": (
-                len([s for s in error_statuses if s == "error"]) / len(error_statuses) if error_statuses else 0
+                len([s for s in error_statuses if s == "error"]) / len(error_statuses)
+                if error_statuses
+                else 0
             ),
         }
 
@@ -356,25 +366,36 @@ class A2AAnomalyAnalyzer:
         if not anomalies:
             return {"level": "none", "score": 0}
 
-        severity_factors = {"error_rate": 0, "response_time_issues": 0, "agent_concentration": 0, "time_clustering": 0}
+        severity_factors = {
+            "error_rate": 0,
+            "response_time_issues": 0,
+            "agent_concentration": 0,
+            "time_clustering": 0,
+        }
 
         # エラー率
         error_count = len([a for a in anomalies if a["status"] == "error"])
         severity_factors["error_rate"] = error_count / len(anomalies)
 
         # 応答時間問題
-        slow_responses = len([a for a in anomalies if a["response_time"] and a["response_time"] > 1.0])
+        slow_responses = len(
+            [a for a in anomalies if a["response_time"] and a["response_time"] > 1.0]
+        )
         severity_factors["response_time_issues"] = slow_responses / len(anomalies)
 
         # エージェント集中度
         sources = [a["source_agent"] for a in anomalies if a["source_agent"]]
         if sources:
             most_common_source_count = Counter(sources).most_common(1)[0][1]
-            severity_factors["agent_concentration"] = most_common_source_count / len(anomalies)
+            severity_factors["agent_concentration"] = most_common_source_count / len(
+                anomalies
+            )
 
         # 時間クラスタリング
         timestamps = [datetime.fromisoformat(a["timestamp"]) for a in anomalies]
-        severity_factors["time_clustering"] = 1.0 if self._check_time_clustering(timestamps) else 0.0
+        severity_factors["time_clustering"] = (
+            1.0 if self._check_time_clustering(timestamps) else 0.0
+        )
 
         # 総合スコア
         total_score = sum(severity_factors.values()) / len(severity_factors)
@@ -400,7 +421,9 @@ class A2AAnomalyAnalyzer:
         # 時間的パターンに基づく推奨
         temporal = analysis.get("temporal_patterns", {})
         if temporal.get("time_clustering"):
-            recommendations.append("🕐 短時間での異常集中が検出されました。システム負荷の分散を検討してください。")
+            recommendations.append(
+                "🕐 短時間での異常集中が検出されました。システム負荷の分散を検討してください。"
+            )
 
         # エージェントパターンに基づく推奨
         agent = analysis.get("agent_patterns", {})
@@ -413,12 +436,16 @@ class A2AAnomalyAnalyzer:
         # パフォーマンスパターンに基づく推奨
         performance = analysis.get("performance_patterns", {})
         if performance.get("slow_responses", 0) > 5:
-            recommendations.append("⏱️ 応答時間の遅延が多発しています。パフォーマンスチューニングを実施してください。")
+            recommendations.append(
+                "⏱️ 応答時間の遅延が多発しています。パフォーマンスチューニングを実施してください。"
+            )
 
         # エラーパターンに基づく推奨
         error = analysis.get("error_patterns", {})
         if error.get("error_rate", 0) > 0.5:
-            recommendations.append("🚨 エラー率が50%を超えています。緊急の対応が必要です。")
+            recommendations.append(
+                "🚨 エラー率が50%を超えています。緊急の対応が必要です。"
+            )
 
         if not recommendations:
             recommendations.append(
@@ -469,7 +496,11 @@ def main():
         print(f"{i}. {rec}")
 
     # 詳細レポート保存
-    report_file = PROJECT_ROOT / "logs" / f"a2a_anomaly_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    report_file = (
+        PROJECT_ROOT
+        / "logs"
+        / f"a2a_anomaly_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
     with open(report_file, "w", encoding="utf-8") as f:
         json.dump(analysis_result, f, indent=2, ensure_ascii=False, default=str)
 

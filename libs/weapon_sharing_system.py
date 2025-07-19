@@ -398,7 +398,9 @@ class WeaponSharingCoordinator:
 
         delivery.weapon_specs = weapon_specs
         delivery.status = DeliveryStatus.IN_TRANSIT
-        delivery.estimated_delivery = datetime.now() + timedelta(seconds=30)  # 30秒配送時間
+        delivery.estimated_delivery = datetime.now() + timedelta(
+            seconds=30
+        )  # 30秒配送時間
 
         logger.info(f"✅ Crafting completed for delivery {delivery.delivery_id}")
 

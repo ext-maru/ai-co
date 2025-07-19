@@ -21,12 +21,14 @@ def get_violations():
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
 
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT DISTINCT file_path, class_name, missing_method
         FROM violations
         WHERE status = 'open'
         ORDER BY file_path, class_name
-    """)
+    """
+    )
 
     results = cursor.fetchall()
     conn.close()
@@ -49,7 +51,6 @@ def generate_method_implementation(method_name):
                 raise ValueError(f"Missing required config key: {key}")
 
         return True''',
-
         "handle_error": '''
     async def handle_error(self, error, context=None):
         """エラーハンドリング"""
@@ -71,7 +72,6 @@ def generate_method_implementation(method_name):
         # インシデントマネージャーへの報告（存在する場合）
         if hasattr(self, 'incident_manager'):
             await self.incident_manager.report(error, context)''',
-
         "get_status": '''
     def get_status(self):
         """ステータス取得"""
@@ -83,7 +83,6 @@ def generate_method_implementation(method_name):
             "last_activity": getattr(self, 'last_activity', None),
             "health": self._check_health() if hasattr(self, '_check_health') else "unknown"
         }''',
-
         "cleanup": '''
     async def cleanup(self):
         """クリーンアップ処理"""
@@ -113,7 +112,6 @@ def generate_method_implementation(method_name):
 
         if hasattr(self, 'logger'):
             self.logger.info(f"{self.__class__.__name__} cleanup completed")''',
-
         "initialize": '''
     async def initialize(self):
         """初期化処理"""
@@ -146,7 +144,6 @@ def generate_method_implementation(method_name):
 
         if hasattr(self, 'logger'):
             self.logger.info(f"{self.__class__.__name__} initialization completed")''',
-
         "stop": '''
     async def stop(self):
         """停止処理"""
@@ -161,7 +158,6 @@ def generate_method_implementation(method_name):
 
         if hasattr(self, 'logger'):
             self.logger.info(f"{self.__class__.__name__} stopped")''',
-
         "process_message": '''
     async def process_message(self, message):
         """メッセージ処理"""
@@ -185,7 +181,7 @@ def generate_method_implementation(method_name):
         except Exception as e:
             if hasattr(self, 'handle_error'):
                 await self.handle_error(e, {'message': message})
-            raise'''
+            raise''',
     }
 
     # デフォルト実装
@@ -214,14 +210,14 @@ def add_imports_if_needed(content):
         return content
 
     # インポート文を適切な位置に挿入
-    lines = content.split('\n')
+    lines = content.split("\n")
     import_index = 0
 
     # 既存のインポートの最後を探す
     for i, line in enumerate(lines):
-        if line.startswith('import ') or line.startswith('from '):
+        if line.startswith("import ") or line.startswith("from "):
             import_index = i + 1
-        elif import_index > 0 and line and not line.startswith(' '):
+        elif import_index > 0 and line and not line.startswith(" "):
             break
 
     # インポートを挿入
@@ -229,7 +225,7 @@ def add_imports_if_needed(content):
         lines.insert(import_index, imp)
         import_index += 1
 
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 def fix_file(file_path, violations):
@@ -240,7 +236,7 @@ def fix_file(file_path, violations):
 
     print(f"\n🔧 修正中: {file_path}")
 
-    with open(file_path, 'r') as f:
+    with open(file_path, "r") as f:
         content = f.read()
 
     original_content = content
@@ -278,7 +274,10 @@ def fix_file(file_path, violations):
         # 各メソッドを追加
         for method in methods:
             # メソッドが既に存在するかチェック
-            if f"def {method}" in class_content or f"async def {method}" in class_content:
+            if (
+                f"def {method}" in class_content
+                or f"async def {method}" in class_content
+            ):
                 print(f"    ⚠️  {method} は既に存在します")
                 continue
 
@@ -288,14 +287,19 @@ def fix_file(file_path, violations):
             implementation = generate_method_implementation(method)
 
             # インデントを調整（クラス内なので4スペース）
-            implementation = '\n'.join(line if not line else '    ' + line for line in implementation.split('\n'))
+            implementation = "\n".join(
+                line if not line else "    " + line
+                for line in implementation.split("\n")
+            )
 
             # クラスの最後に追加
             if next_class_index == -1:
-                content = content + '\n' + implementation
+                content = content + "\n" + implementation
             else:
                 insert_pos = class_index + len(class_content)
-                content = content[:insert_pos] + '\n' + implementation + content[insert_pos:]
+                content = (
+                    content[:insert_pos] + "\n" + implementation + content[insert_pos:]
+                )
 
             fixed_count += 1
 
@@ -304,7 +308,7 @@ def fix_file(file_path, violations):
 
     # ファイルを保存
     if content != original_content:
-        with open(file_path, 'w') as f:
+        with open(file_path, "w") as f:
             f.write(content)
         print(f"  💾 保存完了")
 
@@ -318,11 +322,14 @@ def update_database(violations):
     cursor = conn.cursor()
 
     for file_path, class_name, method in violations:
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE violations
             SET status = 'resolved', fixed_at = ?
             WHERE file_path = ? AND class_name = ? AND missing_method = ?
-        """, (datetime.now().isoformat(), file_path, class_name, method))
+        """,
+            (datetime.now().isoformat(), file_path, class_name, method),
+        )
 
     conn.commit()
     conn.close()

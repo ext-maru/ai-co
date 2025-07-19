@@ -109,12 +109,20 @@ class ClaudeElderChatSimple:
         ):
             return await self._handle_status_command(message)
         elif any(
-            keyword in message_lower for keyword in ["タスク", "task", "実行", "execute"]
+            keyword in message_lower
+            for keyword in ["タスク", "task", "実行", "execute"]
         ):
             return await self._handle_task_command(message)
         elif any(
             keyword in message_lower
-            for keyword in ["サーベント", "servant", "騎士", "knight", "ドワーフ", "dwarf"]
+            for keyword in [
+                "サーベント",
+                "servant",
+                "騎士",
+                "knight",
+                "ドワーフ",
+                "dwarf",
+            ]
         ):
             return await self._handle_servant_command(message)
 
@@ -391,15 +399,15 @@ class ClaudeElderChatSimple:
             response += f"💻 システム状態:\n"
             response += f"  CPU: {system_status.get('cpu_percent', 0):.1f}% ({system_status.get('cpu_count', 0)}コア)\n"
             response += f"  メモリ: {system_status.get('memory_percent', 0):.1f}% "
-            response += (
-                f"({system_status.get('memory_available', 0) / (1024**3):.1f}GB利用可能)\n"
-            )
+            response += f"({system_status.get('memory_available', 0) / (1024**3):.1f}GB利用可能)\n"
             response += f"  ディスク: {system_status.get('disk_percent', 0):.1f}%\n\n"
             response += f"🏛️ エルダーシステム:\n"
             for elder_name, status in elder_status.items():
                 response += f"  {elder_name}: {status}\n"
         else:
-            response = f"🧾 クロードエルダー: ステータス取得中にエラーが発生しました。\n"
+            response = (
+                f"🧾 クロードエルダー: ステータス取得中にエラーが発生しました。\n"
+            )
             response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
 
         return {
@@ -418,11 +426,15 @@ class ClaudeElderChatSimple:
             result = command_result.get("result", {})
             servant_id = result.get("servant_id", "unknown")
 
-            response = f"🧾 クロードエルダー: {servant_type}サーベントを配備しました。\n"
+            response = (
+                f"🧾 クロードエルダー: {servant_type}サーベントを配備しました。\n"
+            )
             response += f"🤖 サーベントID: {servant_id}\n"
             response += f"📊 配備状況は監視中です。"
         else:
-            response = f"🧾 クロードエルダー: サーベント配備中にエラーが発生しました。\n"
+            response = (
+                f"🧾 クロードエルダー: サーベント配備中にエラーが発生しました。\n"
+            )
             response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
 
         return {
@@ -465,7 +477,9 @@ class ClaudeElderChatSimple:
             response += f"📜 決定事項: {council_result.get('decision', '協議中')}\n"
             response += f"⏰ 次回会議: {council_result.get('next_meeting', 'TBD')}"
         else:
-            response = f"🧾 クロードエルダー: エルダー評議会召集中にエラーが発生しました。\n"
+            response = (
+                f"🧾 クロードエルダー: エルダー評議会召集中にエラーが発生しました。\n"
+            )
             response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
 
         return {
@@ -487,7 +501,9 @@ class ClaudeElderChatSimple:
                 for servant_name, status in servants.items():
                     response += f"  {servant_name}: {status.get('status', 'unknown')}\n"
         else:
-            response = f"🧾 クロードエルダー: サーベント状態取得中にエラーが発生しました。\n"
+            response = (
+                f"🧾 クロードエルダー: サーベント状態取得中にエラーが発生しました。\n"
+            )
             response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
 
         return {
@@ -508,7 +524,9 @@ class ClaudeElderChatSimple:
             response += f"📜 エルダー知恵: {wisdom_result.get('wisdom', '知恵なし')}\n"
             response += f"🎯 適用案: {wisdom_result.get('application', 'なし')}"
         else:
-            response = f"🧾 クロードエルダー: エルダー知恵検索中にエラーが発生しました。\n"
+            response = (
+                f"🧾 クロードエルダー: エルダー知恵検索中にエラーが発生しました。\n"
+            )
             response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
 
         return {

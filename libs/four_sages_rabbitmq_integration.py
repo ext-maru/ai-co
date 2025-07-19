@@ -19,11 +19,15 @@ project_root = current_dir.parent
 sys.path.insert(0, str(project_root))
 
 from libs.rabbitmq_a2a_communication import (
-    RabbitMQA2AClient, MessageType, MessagePriority,
-    RabbitMQA2AMessage, rabbitmq_four_sages_a2a
+    RabbitMQA2AClient,
+    MessageType,
+    MessagePriority,
+    RabbitMQA2AMessage,
+    rabbitmq_four_sages_a2a,
 )
 
 logger = logging.getLogger(__name__)
+
 
 class RabbitMQKnowledgeSage:
     """RabbitMQ ナレッジ賢者"""
@@ -35,7 +39,9 @@ class RabbitMQKnowledgeSage:
 
     def _setup_handlers(self):
         """メッセージハンドラー設定"""
-        self.client.register_handler(MessageType.SAGE_CONSULTATION, self.handle_consultation)
+        self.client.register_handler(
+            MessageType.SAGE_CONSULTATION, self.handle_consultation
+        )
         self.client.register_handler(MessageType.QUERY, self.handle_query)
 
     async def handle_consultation(self, message: RabbitMQA2AMessage):
@@ -45,13 +51,16 @@ class RabbitMQKnowledgeSage:
         # 知識ベースから検索（高度実装）
         result = await self._search_knowledge(query)
 
-        await self.client.send_response(message, {
-            "sage": "knowledge_sage",
-            "result": result,
-            "confidence": 0.9,
-            "timestamp": datetime.now().isoformat(),
-            "source": "rabbitmq_knowledge_base"
-        })
+        await self.client.send_response(
+            message,
+            {
+                "sage": "knowledge_sage",
+                "result": result,
+                "confidence": 0.9,
+                "timestamp": datetime.now().isoformat(),
+                "source": "rabbitmq_knowledge_base",
+            },
+        )
 
     async def handle_query(self, message: RabbitMQA2AMessage):
         """クエリ処理"""
@@ -68,7 +77,7 @@ class RabbitMQKnowledgeSage:
             "knowledge": f"RabbitMQ Enhanced Knowledge about: {query}",
             "source": "rabbitmq_knowledge_base",
             "relevance_score": 0.92,
-            "related_topics": ["Elder Flow", "A2A Communication", "RabbitMQ"]
+            "related_topics": ["Elder Flow", "A2A Communication", "RabbitMQ"],
         }
 
     async def start(self):
@@ -83,6 +92,7 @@ class RabbitMQKnowledgeSage:
         await self.client.disconnect()
         logger.info("RabbitMQ Knowledge Sage stopped")
 
+
 class RabbitMQTaskSage:
     """RabbitMQ タスク賢者"""
 
@@ -93,8 +103,12 @@ class RabbitMQTaskSage:
 
     def _setup_handlers(self):
         """メッセージハンドラー設定"""
-        self.client.register_handler(MessageType.SAGE_CONSULTATION, self.handle_consultation)
-        self.client.register_handler(MessageType.TASK_ASSIGNMENT, self.handle_task_assignment)
+        self.client.register_handler(
+            MessageType.SAGE_CONSULTATION, self.handle_consultation
+        )
+        self.client.register_handler(
+            MessageType.TASK_ASSIGNMENT, self.handle_task_assignment
+        )
 
     async def handle_consultation(self, message: RabbitMQA2AMessage):
         """相談への対応"""
@@ -103,13 +117,16 @@ class RabbitMQTaskSage:
         # 高度なタスク分析
         result = await self._analyze_task(query)
 
-        await self.client.send_response(message, {
-            "sage": "task_sage",
-            "result": result,
-            "confidence": 0.95,
-            "timestamp": datetime.now().isoformat(),
-            "processing_time_ms": 100
-        })
+        await self.client.send_response(
+            message,
+            {
+                "sage": "task_sage",
+                "result": result,
+                "confidence": 0.95,
+                "timestamp": datetime.now().isoformat(),
+                "processing_time_ms": 100,
+            },
+        )
 
     async def handle_task_assignment(self, message: RabbitMQA2AMessage):
         """タスク割り当て処理"""
@@ -120,15 +137,18 @@ class RabbitMQTaskSage:
             "task": task,
             "status": "assigned",
             "assigned_at": datetime.now().isoformat(),
-            "via": "rabbitmq"
+            "via": "rabbitmq",
         }
 
-        await self.client.send_response(message, {
-            "task_id": task_id,
-            "status": "accepted",
-            "estimated_completion": "20min",
-            "queue_position": len(self.tasks)
-        })
+        await self.client.send_response(
+            message,
+            {
+                "task_id": task_id,
+                "status": "accepted",
+                "estimated_completion": "20min",
+                "queue_position": len(self.tasks),
+            },
+        )
 
     async def _analyze_task(self, query: str) -> Dict[str, Any]:
         """高度なタスク分析"""
@@ -141,7 +161,7 @@ class RabbitMQTaskSage:
             "priority": "high",
             "dependencies": [],
             "parallel_execution": True,
-            "resource_requirements": {"cpu": "low", "memory": "medium"}
+            "resource_requirements": {"cpu": "low", "memory": "medium"},
         }
 
     async def start(self):
@@ -156,6 +176,7 @@ class RabbitMQTaskSage:
         await self.client.disconnect()
         logger.info("RabbitMQ Task Sage stopped")
 
+
 class RabbitMQIncidentSage:
     """RabbitMQ インシデント賢者"""
 
@@ -166,7 +187,9 @@ class RabbitMQIncidentSage:
 
     def _setup_handlers(self):
         """メッセージハンドラー設定"""
-        self.client.register_handler(MessageType.SAGE_CONSULTATION, self.handle_consultation)
+        self.client.register_handler(
+            MessageType.SAGE_CONSULTATION, self.handle_consultation
+        )
         self.client.register_handler(MessageType.ALERT, self.handle_alert)
         self.client.register_handler(MessageType.EMERGENCY, self.handle_emergency)
 
@@ -177,13 +200,16 @@ class RabbitMQIncidentSage:
         # 高度なインシデント分析
         result = await self._analyze_incident(query)
 
-        await self.client.send_response(message, {
-            "sage": "incident_sage",
-            "result": result,
-            "confidence": 0.98,
-            "timestamp": datetime.now().isoformat(),
-            "response_time_ms": 50
-        })
+        await self.client.send_response(
+            message,
+            {
+                "sage": "incident_sage",
+                "result": result,
+                "confidence": 0.98,
+                "timestamp": datetime.now().isoformat(),
+                "response_time_ms": 50,
+            },
+        )
 
     async def handle_alert(self, message: RabbitMQA2AMessage):
         """アラート処理"""
@@ -195,7 +221,7 @@ class RabbitMQIncidentSage:
             "status": "investigating",
             "created_at": datetime.now().isoformat(),
             "transport": "rabbitmq",
-            "priority": message.priority.value
+            "priority": message.priority.value,
         }
 
         escalation_level = self._determine_escalation_level(alert)
@@ -208,18 +234,23 @@ class RabbitMQIncidentSage:
                 payload={
                     "incident_id": incident_id,
                     "escalation": "immediate",
-                    "alert": alert
+                    "alert": alert,
                 },
                 exclude=["incident_sage"],
-                priority=MessagePriority.URGENT
+                priority=MessagePriority.URGENT,
             )
 
-        await self.client.send_response(message, {
-            "incident_id": incident_id,
-            "status": "acknowledged",
-            "escalation_level": escalation_level,
-            "eta_resolution": "15min" if escalation_level == "immediate" else "30min"
-        })
+        await self.client.send_response(
+            message,
+            {
+                "incident_id": incident_id,
+                "status": "acknowledged",
+                "escalation_level": escalation_level,
+                "eta_resolution": (
+                    "15min" if escalation_level == "immediate" else "30min"
+                ),
+            },
+        )
 
     async def handle_emergency(self, message: RabbitMQA2AMessage):
         """緊急事態処理"""
@@ -234,10 +265,10 @@ class RabbitMQIncidentSage:
                 "emergency": emergency,
                 "action_required": True,
                 "severity": "critical",
-                "transport": "rabbitmq"
+                "transport": "rabbitmq",
             },
             exclude=["incident_sage"],
-            priority=MessagePriority.EMERGENCY
+            priority=MessagePriority.EMERGENCY,
         )
 
         logger.critical(f"Emergency broadcasted via RabbitMQ: {emergency}")
@@ -252,7 +283,7 @@ class RabbitMQIncidentSage:
             "resolution_time": "25min",
             "similar_incidents": 3,
             "auto_remediation": "possible",
-            "affected_systems": ["a2a_communication", "message_queue"]
+            "affected_systems": ["a2a_communication", "message_queue"],
         }
 
     def _determine_escalation_level(self, alert: Dict[str, Any]) -> str:
@@ -277,6 +308,7 @@ class RabbitMQIncidentSage:
         await self.client.disconnect()
         logger.info("RabbitMQ Incident Sage stopped")
 
+
 class RabbitMQRAGSage:
     """RabbitMQ RAG賢者"""
 
@@ -286,7 +318,9 @@ class RabbitMQRAGSage:
 
     def _setup_handlers(self):
         """メッセージハンドラー設定"""
-        self.client.register_handler(MessageType.SAGE_CONSULTATION, self.handle_consultation)
+        self.client.register_handler(
+            MessageType.SAGE_CONSULTATION, self.handle_consultation
+        )
         self.client.register_handler(MessageType.QUERY, self.handle_query)
 
     async def handle_consultation(self, message: RabbitMQA2AMessage):
@@ -296,13 +330,16 @@ class RabbitMQRAGSage:
         # 高度なRAG検索実行
         result = await self._enhanced_rag_search(query)
 
-        await self.client.send_response(message, {
-            "sage": "rag_sage",
-            "result": result,
-            "confidence": 0.88,
-            "timestamp": datetime.now().isoformat(),
-            "search_method": "rabbitmq_enhanced_rag"
-        })
+        await self.client.send_response(
+            message,
+            {
+                "sage": "rag_sage",
+                "result": result,
+                "confidence": 0.88,
+                "timestamp": datetime.now().isoformat(),
+                "search_method": "rabbitmq_enhanced_rag",
+            },
+        )
 
     async def handle_query(self, message: RabbitMQA2AMessage):
         """クエリ処理"""
@@ -319,18 +356,18 @@ class RabbitMQRAGSage:
                     "content": f"RabbitMQ Enhanced RAG result for: {query}",
                     "score": 0.94,
                     "source": "rabbitmq_knowledge_base",
-                    "metadata": {"type": "technical_doc", "relevance": "high"}
+                    "metadata": {"type": "technical_doc", "relevance": "high"},
                 },
                 {
                     "content": f"Secondary result via RabbitMQ for: {query}",
                     "score": 0.87,
                     "source": "rabbitmq_secondary_index",
-                    "metadata": {"type": "implementation", "relevance": "medium"}
-                }
+                    "metadata": {"type": "implementation", "relevance": "medium"},
+                },
             ],
             "total_results": 2,
             "search_time_ms": 200,
-            "index_version": "rabbitmq_v2.1"
+            "index_version": "rabbitmq_v2.1",
         }
 
     async def start(self):
@@ -344,6 +381,7 @@ class RabbitMQRAGSage:
         await self.client.stop_consuming()
         await self.client.disconnect()
         logger.info("RabbitMQ RAG Sage stopped")
+
 
 class RabbitMQFourSagesController:
     """RabbitMQ 4賢者統制システム"""
@@ -365,9 +403,7 @@ class RabbitMQFourSagesController:
         tasks = []
         for sage_id in ["knowledge_sage", "task_sage", "incident_sage", "rag_sage"]:
             task = rabbitmq_four_sages_a2a.consult_sage(
-                sage_id=sage_id,
-                query={"query": query},
-                requester_id="claude_elder_rmq"
+                sage_id=sage_id, query={"query": query}, requester_id="claude_elder_rmq"
             )
             tasks.append((sage_id, task))
 
@@ -394,9 +430,9 @@ class RabbitMQFourSagesController:
                 "emergency_type": "council_required",
                 "info": emergency_info,
                 "summoned_by": "claude_elder_rmq",
-                "transport": "rabbitmq"
+                "transport": "rabbitmq",
             },
-            priority=MessagePriority.EMERGENCY
+            priority=MessagePriority.EMERGENCY,
         )
 
         return {
@@ -404,7 +440,7 @@ class RabbitMQFourSagesController:
             "message_ids": message_ids,
             "timestamp": datetime.now().isoformat(),
             "transport": "rabbitmq",
-            "encryption": "enabled"
+            "encryption": "enabled",
         }
 
     async def start_all_sages(self):
@@ -416,7 +452,7 @@ class RabbitMQFourSagesController:
             self.knowledge_sage.start(),
             self.task_sage.start(),
             self.incident_sage.start(),
-            self.rag_sage.start()
+            self.rag_sage.start(),
         )
 
         # RabbitMQ 4賢者システム接続
@@ -430,7 +466,7 @@ class RabbitMQFourSagesController:
             self.knowledge_sage.stop(),
             self.task_sage.stop(),
             self.incident_sage.stop(),
-            self.rag_sage.stop()
+            self.rag_sage.stop(),
         )
 
         await rabbitmq_four_sages_a2a.disconnect_all()
@@ -438,10 +474,12 @@ class RabbitMQFourSagesController:
 
         logger.info("All RabbitMQ Four Sages stopped")
 
+
 # グローバルインスタンス
 rabbitmq_four_sages_controller = RabbitMQFourSagesController()
 
 if __name__ == "__main__":
+
     async def test_rabbitmq_four_sages():
         # RabbitMQ 4賢者システムテスト
         print("🐰🧙‍♂️ Testing RabbitMQ Four Sages System")
@@ -457,7 +495,9 @@ if __name__ == "__main__":
 
             # 全賢者に相談
             print("\n🧙‍♂️ Consulting all sages via RabbitMQ...")
-            results = await controller.consult_all_sages("RabbitMQ Elder Flow optimization")
+            results = await controller.consult_all_sages(
+                "RabbitMQ Elder Flow optimization"
+            )
 
             print("📊 RabbitMQ Four Sages Consultation Results:")
             for sage, result in results.items():
@@ -465,10 +505,12 @@ if __name__ == "__main__":
 
             # 緊急評議会テスト
             print("\n🚨 Testing emergency council via RabbitMQ...")
-            emergency_result = await controller.emergency_council({
-                "issue": "RabbitMQ A2A performance optimization needed",
-                "severity": "high"
-            })
+            emergency_result = await controller.emergency_council(
+                {
+                    "issue": "RabbitMQ A2A performance optimization needed",
+                    "severity": "high",
+                }
+            )
             print(f"🏛️ Emergency Council: {emergency_result}")
 
         finally:

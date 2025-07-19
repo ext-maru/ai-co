@@ -256,12 +256,16 @@ class ElderProjectManager:
             "tags": project_info.tags,
             "dependencies": project_info.dependencies,
             "progress": project_info.progress,
-            "estimated_completion": project_info.estimated_completion.isoformat()
-            if project_info.estimated_completion
-            else None,
-            "actual_completion": project_info.actual_completion.isoformat()
-            if project_info.actual_completion
-            else None,
+            "estimated_completion": (
+                project_info.estimated_completion.isoformat()
+                if project_info.estimated_completion
+                else None
+            ),
+            "actual_completion": (
+                project_info.actual_completion.isoformat()
+                if project_info.actual_completion
+                else None
+            ),
         }
 
         with open(metadata_file, "w", encoding="utf-8") as f:
@@ -445,7 +449,12 @@ class ElderProjectCLI:
             }
 
             # 優先度絵文字
-            priority_emoji = {"critical": "🚨", "high": "⚠️", "medium": "📊", "low": "📋"}
+            priority_emoji = {
+                "critical": "🚨",
+                "high": "⚠️",
+                "medium": "📊",
+                "low": "📋",
+            }
 
             # Elder権限絵文字
             elder_emoji = {

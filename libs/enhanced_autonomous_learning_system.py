@@ -60,9 +60,9 @@ class EnhancedLearningPattern:
 
         # 成功率更新（指数移動平均）
         old_success_rate = self.success_rate
-        self.success_rate = (1 - effective_learning_rate) * self.success_rate + effective_learning_rate * (
-            1.0 if success else 0.0
-        )
+        self.success_rate = (
+            1 - effective_learning_rate
+        ) * self.success_rate + effective_learning_rate * (1.0 if success else 0.0)
 
         # 使用回数と最終パフォーマンス更新
         self.usage_count += 1
@@ -99,7 +99,10 @@ class EnhancedLearningPattern:
 
             # 信頼区間（正規近似）
             margin = 1.96 * std_dev
-            self.confidence_interval = (max(0.0, mean - margin), min(1.0, mean + margin))
+            self.confidence_interval = (
+                max(0.0, mean - margin),
+                min(1.0, mean + margin),
+            )
 
     def _update_importance_score(self):
         """重要度スコアの動的更新"""
@@ -110,14 +113,20 @@ class EnhancedLearningPattern:
         frequency_bonus = min(0.2, self.usage_count / 100.0)
 
         # トレンドボーナス/ペナルティ
-        trend_modifier = {"improving": 0.1, "stable": 0.0, "declining": -0.1}.get(self.trend_direction, 0.0)
+        trend_modifier = {"improving": 0.1, "stable": 0.0, "declining": -0.1}.get(
+            self.trend_direction, 0.0
+        )
 
         # 信頼度ボーナス（信頼区間の狭さ）
         interval_width = self.confidence_interval[1] - self.confidence_interval[0]
         confidence_bonus = max(0.0, 0.1 * (1.0 - interval_width))
 
         self.importance_score = min(
-            1.0, max(0.0, base_importance + frequency_bonus + trend_modifier + confidence_bonus)
+            1.0,
+            max(
+                0.0,
+                base_importance + frequency_bonus + trend_modifier + confidence_bonus,
+            ),
         )
 
     def predict_success_probability(self, context_features: Dict[str, Any]) -> float:
@@ -152,7 +161,9 @@ class EnhancedLearningPattern:
         for key in common_keys:
             if self.context[key] == new_context[key]:
                 value_similarities.append(1.0)
-            elif isinstance(self.context[key], (int, float)) and isinstance(new_context[key], (int, float)):
+            elif isinstance(self.context[key], (int, float)) and isinstance(
+                new_context[key], (int, float)
+            ):
                 # 数値の場合は相対差で計算
                 diff = abs(self.context[key] - new_context[key])
                 max_val = max(abs(self.context[key]), abs(new_context[key]), 1)
@@ -160,7 +171,9 @@ class EnhancedLearningPattern:
             else:
                 value_similarities.append(0.0)
 
-        value_similarity = statistics.mean(value_similarities) if value_similarities else 0.5
+        value_similarity = (
+            statistics.mean(value_similarities) if value_similarities else 0.5
+        )
 
         # 総合類似度
         return 0.6 * key_similarity + 0.4 * value_similarity
@@ -359,7 +372,9 @@ class EnhancedAutonomousLearningSystem:
                 current_performance = self._collect_current_performance()
 
                 # 最適化機会の特定
-                optimization_opportunities = self._identify_optimization_opportunities(current_performance)
+                optimization_opportunities = self._identify_optimization_opportunities(
+                    current_performance
+                )
 
                 # リアルタイム調整実行
                 for opportunity in optimization_opportunities:
@@ -390,7 +405,9 @@ class EnhancedAutonomousLearningSystem:
                     self._apply_meta_learning_insights(optimal_params)
 
                 # メタ学習履歴の記録
-                await self._record_meta_learning_session(learning_analysis, optimal_params)
+                await self._record_meta_learning_session(
+                    learning_analysis, optimal_params
+                )
 
                 await asyncio.sleep(300)  # 5分間隔
 
@@ -410,7 +427,9 @@ class EnhancedAutonomousLearningSystem:
                 performance_predictions = self._predict_future_performance()
 
                 # 潜在的問題の早期発見
-                potential_issues = self._detect_potential_issues(performance_predictions)
+                potential_issues = self._detect_potential_issues(
+                    performance_predictions
+                )
 
                 # 予防的対策の提案・実行
                 for issue in potential_issues:
@@ -544,20 +563,52 @@ class EnhancedAutonomousLearningSystem:
         # 賢者別のデータパターン
         sage_patterns = {
             "knowledge_sage": [
-                {"type": "knowledge_pattern", "context": {"domain": "api_optimization"}, "initial_success_rate": 0.8},
-                {"type": "learning_pattern", "context": {"method": "incremental"}, "initial_success_rate": 0.75},
+                {
+                    "type": "knowledge_pattern",
+                    "context": {"domain": "api_optimization"},
+                    "initial_success_rate": 0.8,
+                },
+                {
+                    "type": "learning_pattern",
+                    "context": {"method": "incremental"},
+                    "initial_success_rate": 0.75,
+                },
             ],
             "task_sage": [
-                {"type": "task_optimization", "context": {"priority": "high"}, "initial_success_rate": 0.85},
-                {"type": "workflow_pattern", "context": {"parallel": True}, "initial_success_rate": 0.7},
+                {
+                    "type": "task_optimization",
+                    "context": {"priority": "high"},
+                    "initial_success_rate": 0.85,
+                },
+                {
+                    "type": "workflow_pattern",
+                    "context": {"parallel": True},
+                    "initial_success_rate": 0.7,
+                },
             ],
             "incident_sage": [
-                {"type": "error_prevention", "context": {"severity": "medium"}, "initial_success_rate": 0.9},
-                {"type": "recovery_pattern", "context": {"auto_heal": True}, "initial_success_rate": 0.65},
+                {
+                    "type": "error_prevention",
+                    "context": {"severity": "medium"},
+                    "initial_success_rate": 0.9,
+                },
+                {
+                    "type": "recovery_pattern",
+                    "context": {"auto_heal": True},
+                    "initial_success_rate": 0.65,
+                },
             ],
             "rag_sage": [
-                {"type": "search_optimization", "context": {"semantic": True}, "initial_success_rate": 0.8},
-                {"type": "context_enhancement", "context": {"relevance": 0.9}, "initial_success_rate": 0.75},
+                {
+                    "type": "search_optimization",
+                    "context": {"semantic": True},
+                    "initial_success_rate": 0.8,
+                },
+                {
+                    "type": "context_enhancement",
+                    "context": {"relevance": 0.9},
+                    "initial_success_rate": 0.75,
+                },
             ],
         }
 
@@ -580,7 +631,9 @@ class EnhancedAutonomousLearningSystem:
 
         # 基本特徴量
         features["complexity"] = len(str(context))
-        features["has_numeric_values"] = any(isinstance(v, (int, float)) for v in context.values())
+        features["has_numeric_values"] = any(
+            isinstance(v, (int, float)) for v in context.values()
+        )
         features["context_size"] = len(context)
 
         # ドメイン固有特徴量
@@ -598,7 +651,10 @@ class EnhancedAutonomousLearningSystem:
 
         for pattern in self.learning_patterns.values():
             existing_hash = hash(str(sorted(pattern.context.items())))
-            if existing_hash == candidate_hash and pattern.pattern_type == candidate_type:
+            if (
+                existing_hash == candidate_hash
+                and pattern.pattern_type == candidate_type
+            ):
                 return True
 
         return False
@@ -614,9 +670,14 @@ class EnhancedAutonomousLearningSystem:
 
             # フィードバックに基づく調整
             if sage_feedback:
-                pattern.importance_score = 0.7 * pattern.importance_score + 0.3 * sage_feedback.get("importance", 0.5)
+                pattern.importance_score = (
+                    0.7 * pattern.importance_score
+                    + 0.3 * sage_feedback.get("importance", 0.5)
+                )
 
-    async def _get_sage_feedback_for_pattern(self, pattern: EnhancedLearningPattern) -> Optional[Dict[str, Any]]:
+    async def _get_sage_feedback_for_pattern(
+        self, pattern: EnhancedLearningPattern
+    ) -> Optional[Dict[str, Any]]:
         """パターンに対する賢者フィードバック取得"""
         # 実装簡略化：モックフィードバック
         import random
@@ -648,7 +709,9 @@ class EnhancedAutonomousLearningSystem:
                 detailed_clusters = self._detailed_similarity_clustering(pattern_ids)
                 self.pattern_clusters[cluster_type] = detailed_clusters
 
-    def _detailed_similarity_clustering(self, pattern_ids: List[str]) -> List[List[str]]:
+    def _detailed_similarity_clustering(
+        self, pattern_ids: List[str]
+    ) -> List[List[str]]:
         """詳細類似度クラスタリング"""
         clusters = []
         remaining_patterns = pattern_ids.copy()
@@ -660,7 +723,9 @@ class EnhancedAutonomousLearningSystem:
             # 類似パターンを同じクラスタに追加
             for pattern_id in remaining_patterns.copy():
                 pattern = self.learning_patterns[pattern_id]
-                similarity = current_pattern._calculate_context_similarity(pattern.context)
+                similarity = current_pattern._calculate_context_similarity(
+                    pattern.context
+                )
 
                 if similarity > 0.7:  # 70%以上の類似度
                     current_cluster.append(pattern_id)
@@ -690,19 +755,27 @@ class EnhancedAutonomousLearningSystem:
     def _collect_current_performance(self) -> Dict[str, Any]:
         """現在のパフォーマンス収集"""
         active_patterns = len(
-            [p for p in self.learning_patterns.values() if p.importance_score >= self.config["importance_threshold"]]
+            [
+                p
+                for p in self.learning_patterns.values()
+                if p.importance_score >= self.config["importance_threshold"]
+            ]
         )
 
         return {
             "total_patterns": len(self.learning_patterns),
             "active_patterns": active_patterns,
             "average_success_rate": (
-                statistics.mean([p.success_rate for p in self.learning_patterns.values()])
+                statistics.mean(
+                    [p.success_rate for p in self.learning_patterns.values()]
+                )
                 if self.learning_patterns
                 else 0.0
             ),
             "average_importance": (
-                statistics.mean([p.importance_score for p in self.learning_patterns.values()])
+                statistics.mean(
+                    [p.importance_score for p in self.learning_patterns.values()]
+                )
                 if self.learning_patterns
                 else 0.0
             ),
@@ -710,7 +783,10 @@ class EnhancedAutonomousLearningSystem:
                 len(self.learning_patterns)
                 / max(
                     1,
-                    (datetime.now() - min(p.created_at for p in self.learning_patterns.values())).total_seconds()
+                    (
+                        datetime.now()
+                        - min(p.created_at for p in self.learning_patterns.values())
+                    ).total_seconds()
                     / 3600,
                 )
                 if self.learning_patterns
@@ -718,7 +794,9 @@ class EnhancedAutonomousLearningSystem:
             ),
         }
 
-    def _identify_optimization_opportunities(self, performance: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _identify_optimization_opportunities(
+        self, performance: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """最適化機会の特定"""
         opportunities = []
 
@@ -781,12 +859,18 @@ class EnhancedAutonomousLearningSystem:
         recent_history = list(self.performance_history)[-20:]
 
         return {
-            "performance_trend": self._calculate_trend([h["accuracy"] for h in recent_history]),
+            "performance_trend": self._calculate_trend(
+                [h["accuracy"] for h in recent_history]
+            ),
             "learning_stability": (
-                statistics.stdev([h["accuracy"] for h in recent_history]) if len(recent_history) > 1 else 0.0
+                statistics.stdev([h["accuracy"] for h in recent_history])
+                if len(recent_history) > 1
+                else 0.0
             ),
             "pattern_growth_rate": (
-                len(recent_history[-1]["metrics"]) / max(1, len(recent_history)) if recent_history else 0.0
+                len(recent_history[-1]["metrics"]) / max(1, len(recent_history))
+                if recent_history
+                else 0.0
             ),
             "adaptation_effectiveness": self._calculate_adaptation_effectiveness(),
         }
@@ -797,7 +881,11 @@ class EnhancedAutonomousLearningSystem:
             return 0.0
 
         # 最近更新されたパターンの改善度
-        recent_patterns = [p for p in self.learning_patterns.values() if (datetime.now() - p.last_updated).hours < 24]
+        recent_patterns = [
+            p
+            for p in self.learning_patterns.values()
+            if (datetime.now() - p.last_updated).hours < 24
+        ]
 
         if not recent_patterns:
             return 0.5
@@ -823,20 +911,32 @@ class EnhancedAutonomousLearningSystem:
         # 学習率の最適化
         if current_performance > 0.05 and stability < 0.1:
             # パフォーマンス向上且つ安定
-            optimal_params["adaptation_learning_rate"] = min(0.2, self.config["adaptation_learning_rate"] * 1.1)
+            optimal_params["adaptation_learning_rate"] = min(
+                0.2, self.config["adaptation_learning_rate"] * 1.1
+            )
         elif current_performance < -0.05 or stability > 0.2:
             # パフォーマンス低下または不安定
-            optimal_params["adaptation_learning_rate"] = max(0.05, self.config["adaptation_learning_rate"] * 0.9)
+            optimal_params["adaptation_learning_rate"] = max(
+                0.05, self.config["adaptation_learning_rate"] * 0.9
+            )
 
         # 重要度閾値の最適化
         active_ratio = len(
-            [p for p in self.learning_patterns.values() if p.importance_score >= self.config["importance_threshold"]]
+            [
+                p
+                for p in self.learning_patterns.values()
+                if p.importance_score >= self.config["importance_threshold"]
+            ]
         ) / max(1, len(self.learning_patterns))
 
         if active_ratio < 0.3:  # アクティブパターンが少なすぎる
-            optimal_params["importance_threshold"] = max(0.1, self.config["importance_threshold"] - 0.05)
+            optimal_params["importance_threshold"] = max(
+                0.1, self.config["importance_threshold"] - 0.05
+            )
         elif active_ratio > 0.8:  # アクティブパターンが多すぎる
-            optimal_params["importance_threshold"] = min(0.8, self.config["importance_threshold"] + 0.05)
+            optimal_params["importance_threshold"] = min(
+                0.8, self.config["importance_threshold"] + 0.05
+            )
 
         return optimal_params
 
@@ -860,7 +960,9 @@ class EnhancedAutonomousLearningSystem:
                 self.config[key] = value
                 logger.info(f"Meta-learning update: {key} {old_value} -> {value}")
 
-    async def _record_meta_learning_session(self, analysis: Dict[str, Any], optimal_params: Dict[str, Any]):
+    async def _record_meta_learning_session(
+        self, analysis: Dict[str, Any], optimal_params: Dict[str, Any]
+    ):
         """メタ学習セッションの記録"""
         conn = sqlite3.connect(str(self.db_path))
         cursor = conn.cursor()
@@ -890,17 +992,30 @@ class EnhancedAutonomousLearningSystem:
     def _predict_future_performance(self) -> Dict[str, Any]:
         """将来パフォーマンス予測"""
         if len(self.performance_history) < 5:
-            return {"predicted_accuracy": 0.5, "trend": 0.0, "confidence": 0.3, "prediction_horizon": 5}
+            return {
+                "predicted_accuracy": 0.5,
+                "trend": 0.0,
+                "confidence": 0.3,
+                "prediction_horizon": 5,
+            }
 
-        recent_accuracies = [h["accuracy"] for h in list(self.performance_history)[-10:]]
+        recent_accuracies = [
+            h["accuracy"] for h in list(self.performance_history)[-10:]
+        ]
         trend = self._calculate_trend(recent_accuracies)
 
         # 線形予測（簡単な実装）
         current_accuracy = recent_accuracies[-1]
-        predicted_accuracy = max(0.0, min(1.0, current_accuracy + trend * 5))  # 5期間先予測
+        predicted_accuracy = max(
+            0.0, min(1.0, current_accuracy + trend * 5)
+        )  # 5期間先予測
 
         # 予測信頼度（トレンドの安定性に基づく）
-        accuracy_variance = statistics.variance(recent_accuracies) if len(recent_accuracies) > 1 else 0.5
+        accuracy_variance = (
+            statistics.variance(recent_accuracies)
+            if len(recent_accuracies) > 1
+            else 0.5
+        )
         confidence = max(0.1, 1.0 - accuracy_variance)
 
         return {
@@ -910,7 +1025,9 @@ class EnhancedAutonomousLearningSystem:
             "prediction_horizon": 5,
         }
 
-    def _detect_potential_issues(self, predictions: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _detect_potential_issues(
+        self, predictions: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """潜在的問題の検出"""
         issues = []
 
@@ -919,7 +1036,9 @@ class EnhancedAutonomousLearningSystem:
             issues.append(
                 {
                     "type": "performance_degradation",
-                    "severity": "high" if predictions["predicted_accuracy"] < 0.4 else "medium",
+                    "severity": (
+                        "high" if predictions["predicted_accuracy"] < 0.4 else "medium"
+                    ),
                     "predicted_impact": predictions["predicted_accuracy"],
                     "confidence": predictions["confidence"],
                 }
@@ -952,7 +1071,9 @@ class EnhancedAutonomousLearningSystem:
 
         elif issue_type == "learning_stagnation":
             # 新しいパターン発見の促進
-            self.config["importance_threshold"] = max(0.1, self.config["importance_threshold"] - 0.1)
+            self.config["importance_threshold"] = max(
+                0.1, self.config["importance_threshold"] - 0.1
+            )
 
             logger.info(f"Applied preventive measures for {issue_type}")
 
@@ -970,29 +1091,42 @@ class EnhancedAutonomousLearningSystem:
                 len(self.learning_patterns)
                 / max(
                     1,
-                    (datetime.now() - min(p.created_at for p in self.learning_patterns.values())).total_seconds() / 60,
+                    (
+                        datetime.now()
+                        - min(p.created_at for p in self.learning_patterns.values())
+                    ).total_seconds()
+                    / 60,
                 )
                 if self.learning_patterns
                 else 0.0
             ),
             "average_adaptation_rate": (
-                statistics.mean([p.adaptation_rate for p in self.learning_patterns.values()])
+                statistics.mean(
+                    [p.adaptation_rate for p in self.learning_patterns.values()]
+                )
                 if self.learning_patterns
                 else 0.1
             ),
             "success_rate_variance": (
-                statistics.variance([p.success_rate for p in self.learning_patterns.values()])
+                statistics.variance(
+                    [p.success_rate for p in self.learning_patterns.values()]
+                )
                 if len(self.learning_patterns) > 1
                 else 0.0
             ),
-            "system_efficiency": len(self.learning_patterns) / max(1, len(self.optimization_queue)),
+            "system_efficiency": len(self.learning_patterns)
+            / max(1, len(self.optimization_queue)),
         }
 
     def _update_learning_metrics(self, system_metrics: Dict[str, Any]):
         """学習メトリクス更新"""
         self.metrics.total_patterns = len(self.learning_patterns)
         self.metrics.active_patterns = len(
-            [p for p in self.learning_patterns.values() if p.importance_score >= self.config["importance_threshold"]]
+            [
+                p
+                for p in self.learning_patterns.values()
+                if p.importance_score >= self.config["importance_threshold"]
+            ]
         )
         self.metrics.learning_velocity = system_metrics.get("patterns_per_minute", 0.0)
         self.metrics.adaptation_efficiency = self._calculate_adaptation_effectiveness()
@@ -1023,7 +1157,10 @@ class EnhancedAutonomousLearningSystem:
                     await self.four_sages.report_to_claude_elder(
                         sage_type="meta_learning_system",
                         report_type="performance_alert",
-                        content={"alert": alert, "timestamp": datetime.now().isoformat()},
+                        content={
+                            "alert": alert,
+                            "timestamp": datetime.now().isoformat(),
+                        },
                     )
                 except Exception as e:
                     logger.error(f"Failed to report alert to Claude Elder: {e}")
@@ -1041,7 +1178,9 @@ class EnhancedAutonomousLearningSystem:
                 "adaptation_efficiency": self.metrics.adaptation_efficiency,
             },
             "pattern_analytics": {
-                "pattern_types": list(set(p.pattern_type for p in self.learning_patterns.values())),
+                "pattern_types": list(
+                    set(p.pattern_type for p in self.learning_patterns.values())
+                ),
                 "success_rate_distribution": self._calculate_success_rate_distribution(),
                 "importance_distribution": self._calculate_importance_distribution(),
                 "trend_analysis": self._analyze_pattern_trends(),
@@ -1049,11 +1188,15 @@ class EnhancedAutonomousLearningSystem:
             "meta_learning_insights": {
                 "optimal_learning_rate": self._get_optimal_learning_rate(),
                 "performance_stability": self._calculate_performance_stability(),
-                "adaptation_success_rate": self.meta_learning_state["adaptation_success_rate"],
+                "adaptation_success_rate": self.meta_learning_state[
+                    "adaptation_success_rate"
+                ],
             },
             "predictive_analysis": {
                 "future_performance": self._predict_future_performance(),
-                "potential_issues": len(self._detect_potential_issues(self._predict_future_performance())),
+                "potential_issues": len(
+                    self._detect_potential_issues(self._predict_future_performance())
+                ),
                 "system_health": self._assess_system_health(),
             },
             "recommendations": self._generate_improvement_recommendations(),
@@ -1061,7 +1204,13 @@ class EnhancedAutonomousLearningSystem:
 
     def _calculate_success_rate_distribution(self) -> Dict[str, int]:
         """成功率分布計算"""
-        distribution = {"0.0-0.2": 0, "0.2-0.4": 0, "0.4-0.6": 0, "0.6-0.8": 0, "0.8-1.0": 0}
+        distribution = {
+            "0.0-0.2": 0,
+            "0.2-0.4": 0,
+            "0.4-0.6": 0,
+            "0.6-0.8": 0,
+            "0.8-1.0": 0,
+        }
 
         for pattern in self.learning_patterns.values():
             rate = pattern.success_rate
@@ -1106,7 +1255,9 @@ class EnhancedAutonomousLearningSystem:
         """最適学習率取得"""
         if self.learning_patterns:
             # 高パフォーマンスパターンの平均学習率
-            high_performers = [p for p in self.learning_patterns.values() if p.success_rate > 0.8]
+            high_performers = [
+                p for p in self.learning_patterns.values() if p.success_rate > 0.8
+            ]
             if high_performers:
                 return statistics.mean([p.adaptation_rate for p in high_performers])
 
@@ -1117,8 +1268,14 @@ class EnhancedAutonomousLearningSystem:
         if len(self.performance_history) < 5:
             return 0.5
 
-        recent_accuracies = [h["accuracy"] for h in list(self.performance_history)[-10:]]
-        variance = statistics.variance(recent_accuracies) if len(recent_accuracies) > 1 else 0.0
+        recent_accuracies = [
+            h["accuracy"] for h in list(self.performance_history)[-10:]
+        ]
+        variance = (
+            statistics.variance(recent_accuracies)
+            if len(recent_accuracies) > 1
+            else 0.0
+        )
 
         # 安定性は分散の逆数（正規化）
         return max(0.0, min(1.0, 1.0 - variance))
@@ -1146,7 +1303,9 @@ class EnhancedAutonomousLearningSystem:
 
         accuracy = self.metrics.calculate_accuracy()
         if accuracy < 0.7:
-            recommendations.append("Increase adaptation rates for low-performing patterns")
+            recommendations.append(
+                "Increase adaptation rates for low-performing patterns"
+            )
 
         if self.metrics.learning_velocity < 0.1:
             recommendations.append("Enhance pattern discovery mechanisms")
@@ -1154,11 +1313,17 @@ class EnhancedAutonomousLearningSystem:
         if self._calculate_performance_stability() < 0.6:
             recommendations.append("Implement stability improvement measures")
 
-        active_ratio = self.metrics.active_patterns / max(1, self.metrics.total_patterns)
+        active_ratio = self.metrics.active_patterns / max(
+            1, self.metrics.total_patterns
+        )
         if active_ratio < 0.3:
-            recommendations.append("Lower importance threshold to activate more patterns")
+            recommendations.append(
+                "Lower importance threshold to activate more patterns"
+            )
         elif active_ratio > 0.8:
-            recommendations.append("Raise importance threshold to focus on high-value patterns")
+            recommendations.append(
+                "Raise importance threshold to focus on high-value patterns"
+            )
 
         return recommendations
 
@@ -1182,8 +1347,12 @@ if __name__ == "__main__":
 
         print("\n📊 Enhanced Learning Report:")
         print(f"  🧠 Total Patterns: {report['learning_metrics']['total_patterns']}")
-        print(f"  ⚡ Learning Velocity: {report['learning_metrics']['learning_velocity']:.3f}")
-        print(f"  🎯 Adaptation Efficiency: {report['learning_metrics']['adaptation_efficiency']:.3f}")
+        print(
+            f"  ⚡ Learning Velocity: {report['learning_metrics']['learning_velocity']:.3f}"
+        )
+        print(
+            f"  🎯 Adaptation Efficiency: {report['learning_metrics']['adaptation_efficiency']:.3f}"
+        )
         print(f"  🏥 System Health: {report['predictive_analysis']['system_health']}")
 
         print("\n🔮 Predictive Analysis:")

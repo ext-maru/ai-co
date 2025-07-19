@@ -852,7 +852,9 @@ class TaskSageGrimoireVectorization:
 
         # 推定時間との比較
         task_info = await self._get_task_info(task_id)
-        estimated_duration = task_info.get("estimated_duration", 0) * 3600  # 時間を秒に変換
+        estimated_duration = (
+            task_info.get("estimated_duration", 0) * 3600
+        )  # 時間を秒に変換
 
         duration_variance = (
             (actual_duration - estimated_duration) / estimated_duration
@@ -865,9 +867,9 @@ class TaskSageGrimoireVectorization:
             "estimated_duration": estimated_duration,
             "duration_variance": duration_variance,
             "success": execution_data.get("success", True),
-            "performance_score": 1.0 - abs(duration_variance)
-            if abs(duration_variance) < 1
-            else 0,
+            "performance_score": (
+                1.0 - abs(duration_variance) if abs(duration_variance) < 1 else 0
+            ),
             "optimization_opportunities": await self._identify_optimization_opportunities(
                 duration_variance, execution_data
             ),

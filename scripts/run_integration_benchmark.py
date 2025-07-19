@@ -86,9 +86,11 @@ class ElderServantsBenchmark:
             "total_time_sec": total_time,
             "memory_used_mb": end_memory - start_memory,
             "avg_latency_ms": statistics.mean(latencies),
-            "p95_latency_ms": statistics.quantiles(latencies, n=20)[18]
-            if len(latencies) >= 20
-            else max(latencies),
+            "p95_latency_ms": (
+                statistics.quantiles(latencies, n=20)[18]
+                if len(latencies) >= 20
+                else max(latencies)
+            ),
             "operations": operations,
         }
 
@@ -133,9 +135,11 @@ class ElderServantsBenchmark:
             "total_time_sec": total_time,
             "memory_used_mb": end_memory - start_memory,
             "avg_latency_ms": statistics.mean(latencies),
-            "p95_latency_ms": statistics.quantiles(latencies, n=20)[18]
-            if len(latencies) >= 20
-            else max(latencies),
+            "p95_latency_ms": (
+                statistics.quantiles(latencies, n=20)[18]
+                if len(latencies) >= 20
+                else max(latencies)
+            ),
             "operations": operations,
             "batch_size": batch_size,
             "optimization_features": [
@@ -250,7 +254,9 @@ async def main():
         print(f"📊 Performance Target: {results['performance_target']}")
         print(f"🎯 Target Achieved: {results['status']}")
         print(f"📈 Overall Improvement: {results['overall_improvement']}")
-        print(f"⚡ Baseline Throughput: {results['baseline_performance']['throughput']}")
+        print(
+            f"⚡ Baseline Throughput: {results['baseline_performance']['throughput']}"
+        )
         print(
             f"🚀 Optimized Throughput: {results['optimized_performance']['throughput']}"
         )

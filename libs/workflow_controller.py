@@ -368,7 +368,9 @@ class WorkflowController(BaseManager):
                     project_id, phase
                 )
                 if not can_execute:
-                    logger.warning(f"⚠️ フェーズ開始不可 ({phase}): 依存関係未解決 {unmet_deps}")
+                    logger.warning(
+                        f"⚠️ フェーズ開始不可 ({phase}): 依存関係未解決 {unmet_deps}"
+                    )
                     return False
 
             # フェーズ状態を更新
@@ -447,8 +449,19 @@ class WorkflowController(BaseManager):
 
             # フェーズに応じたタスクテンプレート
             phase_templates = {
-                "planning": ["要件定義の詳細化", "プロジェクトスコープの確定", "リソース計画の策定", "リスク分析とリスク管理計画"],
-                "design": ["システムアーキテクチャ設計", "データベース設計", "API設計", "UI/UX設計", "詳細設計書作成"],
+                "planning": [
+                    "要件定義の詳細化",
+                    "プロジェクトスコープの確定",
+                    "リソース計画の策定",
+                    "リスク分析とリスク管理計画",
+                ],
+                "design": [
+                    "システムアーキテクチャ設計",
+                    "データベース設計",
+                    "API設計",
+                    "UI/UX設計",
+                    "詳細設計書作成",
+                ],
                 "development": [
                     "開発環境のセットアップ",
                     "コアモジュールの実装",
@@ -591,7 +604,9 @@ class WorkflowController(BaseManager):
                     return False
             else:
                 # 品質ゲートで停止
-                self._set_phase_blocked(project_id, target_phase, "品質ゲートチェック失敗")
+                self._set_phase_blocked(
+                    project_id, target_phase, "品質ゲートチェック失敗"
+                )
                 logger.warning(f"⚠️ 自動進行停止: 品質ゲートチェック失敗")
                 return False
 
@@ -714,7 +729,9 @@ class WorkflowController(BaseManager):
     ):
         """遅延自動進行をスケジュール"""
         # 実際の実装では非同期タスクキューやスケジューラーを使用
-        logger.info(f"⏰ 遅延自動進行スケジュール: {project_id} -> {phase} (遅延: {delay_minutes}分)")
+        logger.info(
+            f"⏰ 遅延自動進行スケジュール: {project_id} -> {phase} (遅延: {delay_minutes}分)"
+        )
 
         # 簡易実装：即座に実行（実際は遅延実行）
         self.auto_advance_phase(project_id, phase)

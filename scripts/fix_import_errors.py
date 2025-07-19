@@ -1356,7 +1356,10 @@ class ImportErrorFixer:
             try:
                 print(f"  📦 Installing: pip install {package_name}")
                 subprocess.run(
-                    [sys.executable, "-m", "pip", "install", package_name], check=True, capture_output=True, text=True
+                    [sys.executable, "-m", "pip", "install", package_name],
+                    check=True,
+                    capture_output=True,
+                    text=True,
                 )
 
                 print(f"  ✅ Installed: {package_name}")

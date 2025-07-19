@@ -76,9 +76,9 @@ class AutoScalingManager:
         return {
             "cpu_percent": psutil.cpu_percent(interval=1),
             "memory_percent": psutil.virtual_memory().percent,
-            "load_average": psutil.getloadavg()[0]
-            if hasattr(psutil, "getloadavg")
-            else 0,
+            "load_average": (
+                psutil.getloadavg()[0] if hasattr(psutil, "getloadavg") else 0
+            ),
         }
 
     def count_running_workers(self, worker_type: str) -> int:

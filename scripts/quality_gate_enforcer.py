@@ -59,7 +59,13 @@ class QualityGateEnforcer:
 
     def check_coverage_gate(self, coverage_file: str = None) -> Tuple[bool, Dict]:
         """Check coverage quality gate"""
-        gate_result = {"name": "coverage", "status": "failed", "score": 0.0, "details": {}, "message": ""}
+        gate_result = {
+            "name": "coverage",
+            "status": "failed",
+            "score": 0.0,
+            "details": {},
+            "message": "",
+        }
 
         try:
             # Find coverage file
@@ -79,16 +85,22 @@ class QualityGateEnforcer:
                 gate_result["details"] = {
                     "coverage_percentage": coverage_pct,
                     "threshold": threshold,
-                    "lines_covered": coverage_data.get("totals", {}).get("covered_lines", 0),
+                    "lines_covered": coverage_data.get("totals", {}).get(
+                        "covered_lines", 0
+                    ),
                     "lines_total": coverage_data.get("totals", {}).get("num_lines", 0),
                 }
 
                 if coverage_pct >= threshold:
                     gate_result["status"] = "passed"
                     gate_result["score"] = min(100, coverage_pct)
-                    gate_result["message"] = f"Coverage {coverage_pct:.1f}% meets threshold {threshold}%"
+                    gate_result["message"] = (
+                        f"Coverage {coverage_pct:.1f}% meets threshold {threshold}%"
+                    )
                 else:
-                    gate_result["message"] = f"Coverage {coverage_pct:.1f}% below threshold {threshold}%"
+                    gate_result["message"] = (
+                        f"Coverage {coverage_pct:.1f}% below threshold {threshold}%"
+                    )
                     gate_result["score"] = (coverage_pct / threshold) * 100
             else:
                 gate_result["message"] = "No coverage data found"
@@ -100,11 +112,22 @@ class QualityGateEnforcer:
 
     def check_test_gate(self, test_results_dir: str = "reports") -> Tuple[bool, Dict]:
         """Check test execution quality gate"""
-        gate_result = {"name": "tests", "status": "failed", "score": 0.0, "details": {}, "message": ""}
+        gate_result = {
+            "name": "tests",
+            "status": "failed",
+            "score": 0.0,
+            "details": {},
+            "message": "",
+        }
 
         try:
             # Find JUnit XML files
-            test_results = {"total_tests": 0, "passed_tests": 0, "failed_tests": 0, "test_files": []}
+            test_results = {
+                "total_tests": 0,
+                "passed_tests": 0,
+                "failed_tests": 0,
+                "test_files": [],
+            }
 
             for junit_file in Path(test_results_dir).glob("**/junit/*.xml"):
                 try:
@@ -124,17 +147,23 @@ class QualityGateEnforcer:
                 except Exception as e:
                     print(f"Warning: Could not parse {junit_file}: {e}")
 
-            test_results["passed_tests"] = test_results["total_tests"] - test_results["failed_tests"]
+            test_results["passed_tests"] = (
+                test_results["total_tests"] - test_results["failed_tests"]
+            )
 
             gate_result["details"] = test_results
 
             if test_results["total_tests"] > 0:
-                pass_rate = (test_results["passed_tests"] / test_results["total_tests"]) * 100
+                pass_rate = (
+                    test_results["passed_tests"] / test_results["total_tests"]
+                ) * 100
                 gate_result["score"] = pass_rate
 
                 if test_results["failed_tests"] == 0:
                     gate_result["status"] = "passed"
-                    gate_result["message"] = f"All {test_results['total_tests']} tests passed"
+                    gate_result["message"] = (
+                        f"All {test_results['total_tests']} tests passed"
+                    )
                 else:
                     gate_result["message"] = (
                         f"{test_results['failed_tests']} of {test_results['total_tests']} tests failed"
@@ -147,12 +176,25 @@ class QualityGateEnforcer:
 
         return gate_result["status"] == "passed", gate_result
 
-    def check_code_quality_gate(self, quality_dir: str = "reports/quality") -> Tuple[bool, Dict]:
+    def check_code_quality_gate(
+        self, quality_dir: str = "reports/quality"
+    ) -> Tuple[bool, Dict]:
         """Check code quality gate"""
-        gate_result = {"name": "code_quality", "status": "failed", "score": 0.0, "details": {}, "message": ""}
+        gate_result = {
+            "name": "code_quality",
+            "status": "failed",
+            "score": 0.0,
+            "details": {},
+            "message": "",
+        }
 
         try:
-            quality_issues = {"flake8_issues": 0, "mypy_issues": 0, "black_issues": 0, "isort_issues": 0}
+            quality_issues = {
+                "flake8_issues": 0,
+                "mypy_issues": 0,
+                "black_issues": 0,
+                "isort_issues": 0,
+            }
 
             quality_dir = Path(quality_dir)
 
@@ -172,15 +214,21 @@ class QualityGateEnforcer:
 
             # Calculate quality score
             total_issues = sum(quality_issues.values())
-            max_allowed = self.config["max_flake8_issues"] + self.config["max_mypy_issues"]
+            max_allowed = (
+                self.config["max_flake8_issues"] + self.config["max_mypy_issues"]
+            )
 
             if total_issues <= max_allowed:
                 gate_result["status"] = "passed"
                 gate_result["score"] = max(0, 100 - (total_issues * 2))
-                gate_result["message"] = f"Code quality acceptable ({total_issues} issues)"
+                gate_result["message"] = (
+                    f"Code quality acceptable ({total_issues} issues)"
+                )
             else:
                 gate_result["score"] = max(0, 100 - (total_issues * 2))
-                gate_result["message"] = f"Too many code quality issues ({total_issues})"
+                gate_result["message"] = (
+                    f"Too many code quality issues ({total_issues})"
+                )
 
         except Exception as e:
             gate_result["message"] = f"Code quality check failed: {e}"
@@ -189,7 +237,13 @@ class QualityGateEnforcer:
 
     def check_security_gate(self, security_dir: str = "reports") -> Tuple[bool, Dict]:
         """Check security quality gate"""
-        gate_result = {"name": "security", "status": "failed", "score": 0.0, "details": {}, "message": ""}
+        gate_result = {
+            "name": "security",
+            "status": "failed",
+            "score": 0.0,
+            "details": {},
+            "message": "",
+        }
 
         try:
             security_issues = {"bandit_issues": 0, "safety_issues": 0}
@@ -206,7 +260,9 @@ class QualityGateEnforcer:
             if safety_file.exists():
                 with open(safety_file) as f:
                     safety_data = json.load(f)
-                security_issues["safety_issues"] = len(safety_data) if isinstance(safety_data, list) else 0
+                security_issues["safety_issues"] = (
+                    len(safety_data) if isinstance(safety_data, list) else 0
+                )
 
             gate_result["details"] = security_issues
 
@@ -218,7 +274,9 @@ class QualityGateEnforcer:
                 gate_result["message"] = "No critical security issues found"
             else:
                 gate_result["score"] = max(0, 100 - (total_security_issues * 20))
-                gate_result["message"] = f"{total_security_issues} security issues found"
+                gate_result["message"] = (
+                    f"{total_security_issues} security issues found"
+                )
 
         except Exception as e:
             gate_result["message"] = f"Security check failed: {e}"
@@ -227,7 +285,13 @@ class QualityGateEnforcer:
 
     def check_elder_council_gate(self) -> Tuple[bool, Dict]:
         """Check Elder Council review gate"""
-        gate_result = {"name": "elder_council", "status": "failed", "score": 0.0, "details": {}, "message": ""}
+        gate_result = {
+            "name": "elder_council",
+            "status": "failed",
+            "score": 0.0,
+            "details": {},
+            "message": "",
+        }
 
         if not self.config["elder_council_enabled"]:
             gate_result["status"] = "skipped"
@@ -237,7 +301,10 @@ class QualityGateEnforcer:
 
         try:
             # Check if Elder Council system exists
-            elder_council_files = ["libs/elder_council_review_system.py", "commands/ai_elder_council.py"]
+            elder_council_files = [
+                "libs/elder_council_review_system.py",
+                "commands/ai_elder_council.py",
+            ]
 
             elder_system_available = any(Path(f).exists() for f in elder_council_files)
 
@@ -274,11 +341,18 @@ except Exception as e:
                                 gate_result["score"] = score
                                 gate_result["details"]["quality_score"] = score
 
-                        if gate_result["score"] >= self.config["quality_score_threshold"]:
+                        if (
+                            gate_result["score"]
+                            >= self.config["quality_score_threshold"]
+                        ):
                             gate_result["status"] = "passed"
-                            gate_result["message"] = f"Elder Council approved (score: {gate_result['score']:.1f})"
+                            gate_result["message"] = (
+                                f"Elder Council approved (score: {gate_result['score']:.1f})"
+                            )
                         else:
-                            gate_result["message"] = f"Elder Council score {gate_result['score']:.1f} below threshold"
+                            gate_result["message"] = (
+                                f"Elder Council score {gate_result['score']:.1f} below threshold"
+                            )
                     else:
                         gate_result["message"] = "Elder Council review failed"
                         gate_result["score"] = 50  # Partial credit for attempt
@@ -361,7 +435,9 @@ except Exception as e:
             "gates_passed": passed_gates,
             "gates_total": enabled_gates,
             "overall_score": overall_score,
-            "pass_rate": (passed_gates / enabled_gates * 100) if enabled_gates > 0 else 0,
+            "pass_rate": (
+                (passed_gates / enabled_gates * 100) if enabled_gates > 0 else 0
+            ),
         }
 
         # Generate recommendations
@@ -386,14 +462,20 @@ except Exception as e:
                 elif gate_name == "security":
                     recommendations.append("Resolve security vulnerabilities")
                 elif gate_name == "elder_council":
-                    recommendations.append("Improve code quality to pass Elder Council review")
+                    recommendations.append(
+                        "Improve code quality to pass Elder Council review"
+                    )
 
         if self.results["overall_status"] == "passed":
             recommendations.append("All quality gates passed - ready for deployment")
         elif self.results["overall_status"] == "warning":
-            recommendations.append("Most quality gates passed - review warnings before deployment")
+            recommendations.append(
+                "Most quality gates passed - review warnings before deployment"
+            )
         else:
-            recommendations.append("Quality gates failed - address issues before proceeding")
+            recommendations.append(
+                "Quality gates failed - address issues before proceeding"
+            )
 
         self.results["recommendations"] = recommendations
 
@@ -414,7 +496,9 @@ except Exception as e:
         print("\n📊 Quality Gates Summary:")
         print(f"   Status: {results['overall_status'].upper()}")
         print(f"   Score: {results['summary']['overall_score']:.1f}")
-        print(f"   Gates: {results['summary']['gates_passed']}/{results['summary']['gates_total']} passed")
+        print(
+            f"   Gates: {results['summary']['gates_passed']}/{results['summary']['gates_total']} passed"
+        )
 
         if results["recommendations"]:
             print("\n💡 Recommendations:")
@@ -431,7 +515,9 @@ except Exception as e:
                 print("\n❌ Quality gates FAILED - blocking pipeline")
                 return False
             elif results["overall_status"] == "warning":
-                print("\n⚠️ Quality gates passed with WARNINGS - proceeding with caution")
+                print(
+                    "\n⚠️ Quality gates passed with WARNINGS - proceeding with caution"
+                )
                 return True
             else:
                 print("\n✅ Quality gates PASSED - pipeline approved")
@@ -447,9 +533,20 @@ def main():
 
     parser = argparse.ArgumentParser(description="Quality Gate Enforcer")
     parser.add_argument("--config", help="Path to quality gates config file")
-    parser.add_argument("--enforce", action="store_true", default=True, help="Enforce gates (exit on failure)")
-    parser.add_argument("--report-only", action="store_true", help="Report only (don't enforce)")
-    parser.add_argument("--output", default="reports/quality_gates_results.json", help="Output path for results")
+    parser.add_argument(
+        "--enforce",
+        action="store_true",
+        default=True,
+        help="Enforce gates (exit on failure)",
+    )
+    parser.add_argument(
+        "--report-only", action="store_true", help="Report only (don't enforce)"
+    )
+    parser.add_argument(
+        "--output",
+        default="reports/quality_gates_results.json",
+        help="Output path for results",
+    )
 
     args = parser.parse_args()
 

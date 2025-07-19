@@ -191,9 +191,9 @@ class PredictionModel:
         for window in self.time_series_models[target_column]["window_sizes"]:
             if len(df_sorted) >= window:
                 ma = df_sorted[target_column].rolling(window=window).mean()
-                self.time_series_models[target_column]["data"][
-                    f"ma_{window}"
-                ] = ma.iloc[-1]
+                self.time_series_models[target_column]["data"][f"ma_{window}"] = (
+                    ma.iloc[-1]
+                )
 
         # トレンド分析
         if len(df_sorted) > 10:
@@ -356,7 +356,9 @@ class AnalyticsEngine:
         # 推奨事項
         recommendations = []
         if metrics["avg_execution_time"] > 10:
-            recommendations.append("🚀 実行時間が長いため、Lightning Protocol の活用を推奨")
+            recommendations.append(
+                "🚀 実行時間が長いため、Lightning Protocol の活用を推奨"
+            )
         if metrics["approval_rate"] < 90:
             recommendations.append("⚠️ 承認率が低下傾向。品質チェックの強化を推奨")
 
@@ -604,7 +606,9 @@ class AnalyticsEngine:
         recommendations = []
         for protocol, score in efficiency_scores.items():
             if score < 0.5:
-                recommendations.append(f"⚡ {protocol}の効率改善が必要（現在のスコア: {score}）")
+                recommendations.append(
+                    f"⚡ {protocol}の効率改善が必要（現在のスコア: {score}）"
+                )
 
         return AnalyticsResult(
             type=AnalyticsType.PROTOCOL_EFFICIENCY,
@@ -660,7 +664,9 @@ class AnalyticsEngine:
         predictions["error_probability_24h"] = round(error_probability, 2)
 
         if error_probability > 0.3:
-            insights.append(f"🚨 24時間以内のエラー発生確率: {error_probability*100:.0f}%")
+            insights.append(
+                f"🚨 24時間以内のエラー発生確率: {error_probability*100:.0f}%"
+            )
 
         # 推奨事項
         recommendations = []
@@ -708,7 +714,9 @@ class AnalyticsEngine:
                     ]
                 )
 
-                insights.append(f"⏱️ {len(exec_time_anomalies)}件の実行時間ボトルネックを検出")
+                insights.append(
+                    f"⏱️ {len(exec_time_anomalies)}件の実行時間ボトルネックを検出"
+                )
 
         # 賢者承認のボトルネック検出
         if not sage_df.empty:

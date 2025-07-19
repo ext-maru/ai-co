@@ -20,12 +20,15 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from libs.simple_web_interface import SimpleWebInterface
 
+
 async def main():
     """メイン関数"""
-    parser = argparse.ArgumentParser(description='Webインターフェース起動スクリプト')
-    parser.add_argument('--host', default='localhost', help='ホストアドレス')
-    parser.add_argument('--port', type=int, default=8000, help='ポート番号')
-    parser.add_argument('--no-init', action='store_true', help='システム初期化をスキップ')
+    parser = argparse.ArgumentParser(description="Webインターフェース起動スクリプト")
+    parser.add_argument("--host", default="localhost", help="ホストアドレス")
+    parser.add_argument("--port", type=int, default=8000, help="ポート番号")
+    parser.add_argument(
+        "--no-init", action="store_true", help="システム初期化をスキップ"
+    )
 
     args = parser.parse_args()
 
@@ -42,7 +45,7 @@ async def main():
         if not args.no_init:
             print("🔧 システム初期化中...")
             init_result = await web_interface.initialize_system()
-            if init_result['success']:
+            if init_result["success"]:
                 print("✅ システム初期化完了")
             else:
                 print(f"❌ システム初期化失敗: {init_result.get('error')}")
@@ -64,7 +67,9 @@ async def main():
     except Exception as e:
         print(f"\n❌ エラーが発生しました: {e}")
         import traceback
+
         traceback.print_exc()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

@@ -664,7 +664,9 @@ class SelfEvolutionManager:
                     count += 1
 
             if count > 0:
-                confidence = (total_score / count) * min(1.0, count / 5.0)  # 履歴数による重み
+                confidence = (total_score / count) * min(
+                    1.0, count / 5.0
+                )  # 履歴数による重み
                 predictions.append((target_dir, confidence))
 
         predictions.sort(key=lambda x: x[1], reverse=True)
@@ -1545,9 +1547,11 @@ class SelfEvolutionManager:
                     for d in dir_stats
                 ],
                 "recent_activity": [{"dir": d[0], "count": d[1]} for d in recent_stats],
-                "learning_db_size": self.learning_db_path.stat().st_size
-                if self.learning_db_path.exists()
-                else 0,
+                "learning_db_size": (
+                    self.learning_db_path.stat().st_size
+                    if self.learning_db_path.exists()
+                    else 0
+                ),
             }
         except Exception as e:
             logger.error(f"Failed to get placement analytics: {e}")

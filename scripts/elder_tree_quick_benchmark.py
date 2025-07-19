@@ -69,11 +69,15 @@ class QuickBenchmark:
             print(f"  Run {i+1}: {duration:.1f}ms")
 
         avg_time = statistics.mean(times)
-        self.results['initialization'] = {
-            'average_ms': avg_time,
-            'min_ms': min(times),
-            'max_ms': max(times),
-            'rating': 'Excellent' if avg_time < 100 else 'Good' if avg_time < 500 else 'Needs Improvement'
+        self.results["initialization"] = {
+            "average_ms": avg_time,
+            "min_ms": min(times),
+            "max_ms": max(times),
+            "rating": (
+                "Excellent"
+                if avg_time < 100
+                else "Good" if avg_time < 500 else "Needs Improvement"
+            ),
         }
 
     async def _test_agent_registration_speed(self):
@@ -93,7 +97,7 @@ class QuickBenchmark:
                 description="Quick benchmark test agent",
                 agent_type=AgentType.SERVANT,
                 capabilities=["testing"],
-                auto_start=False
+                auto_start=False,
             )
 
         end_time = time.time()
@@ -110,11 +114,15 @@ class QuickBenchmark:
             except:
                 pass
 
-        self.results['agent_registration'] = {
-            'total_time_ms': total_time,
-            'avg_per_agent_ms': avg_per_agent,
-            'agents_per_second': 10000 / total_time,
-            'rating': 'Excellent' if avg_per_agent < 50 else 'Good' if avg_per_agent < 200 else 'Needs Improvement'
+        self.results["agent_registration"] = {
+            "total_time_ms": total_time,
+            "avg_per_agent_ms": avg_per_agent,
+            "agents_per_second": 10000 / total_time,
+            "rating": (
+                "Excellent"
+                if avg_per_agent < 50
+                else "Good" if avg_per_agent < 200 else "Needs Improvement"
+            ),
         }
 
     async def _test_memory_efficiency(self):
@@ -135,7 +143,7 @@ class QuickBenchmark:
                 description="Memory efficiency test",
                 agent_type=AgentType.SERVANT,
                 capabilities=["memory_test"],
-                auto_start=False
+                auto_start=False,
             )
 
         # メモリ使用量測定
@@ -154,12 +162,16 @@ class QuickBenchmark:
             except:
                 pass
 
-        self.results['memory_efficiency'] = {
-            'baseline_mb': baseline_memory,
-            'with_agents_mb': current_memory,
-            'memory_per_agent_mb': memory_per_agent,
-            'total_overhead_mb': memory_delta,
-            'rating': 'Excellent' if memory_per_agent < 0.5 else 'Good' if memory_per_agent < 2.0 else 'Needs Improvement'
+        self.results["memory_efficiency"] = {
+            "baseline_mb": baseline_memory,
+            "with_agents_mb": current_memory,
+            "memory_per_agent_mb": memory_per_agent,
+            "total_overhead_mb": memory_delta,
+            "rating": (
+                "Excellent"
+                if memory_per_agent < 0.5
+                else "Good" if memory_per_agent < 2.0 else "Needs Improvement"
+            ),
         }
 
     async def _test_communication_performance(self):
@@ -172,7 +184,7 @@ class QuickBenchmark:
             "source": "test_agent",
             "target": "target_agent",
             "payload": {"data": "x" * 1000},  # 1KB データ
-            "timestamp": time.time()
+            "timestamp": time.time(),
         }
 
         times = []
@@ -196,11 +208,15 @@ class QuickBenchmark:
         print(f"  Average latency: {avg_latency:.1f}μs")
         print(f"  Throughput: {throughput:.0f} msgs/sec")
 
-        self.results['communication'] = {
-            'avg_latency_us': avg_latency,
-            'throughput_msg_per_sec': throughput,
-            'message_size_bytes': len(json.dumps(test_message)),
-            'rating': 'Excellent' if avg_latency < 100 else 'Good' if avg_latency < 500 else 'Needs Improvement'
+        self.results["communication"] = {
+            "avg_latency_us": avg_latency,
+            "throughput_msg_per_sec": throughput,
+            "message_size_bytes": len(json.dumps(test_message)),
+            "rating": (
+                "Excellent"
+                if avg_latency < 100
+                else "Good" if avg_latency < 500 else "Needs Improvement"
+            ),
         }
 
     async def _test_enforcement_performance(self):
@@ -219,16 +235,20 @@ class QuickBenchmark:
         scan_end = time.time()
 
         total_time = (scan_end - start_time) * 1000  # ms
-        scan_time = (scan_end - scan_start) * 1000   # ms
+        scan_time = (scan_end - scan_start) * 1000  # ms
 
         print(f"  Total initialization + scan: {total_time:.1f}ms")
         print(f"  Scan only: {scan_time:.1f}ms")
 
-        self.results['enforcement'] = {
-            'total_time_ms': total_time,
-            'scan_time_ms': scan_time,
-            'initialization_time_ms': total_time - scan_time,
-            'rating': 'Excellent' if scan_time < 1000 else 'Good' if scan_time < 5000 else 'Needs Improvement'
+        self.results["enforcement"] = {
+            "total_time_ms": total_time,
+            "scan_time_ms": scan_time,
+            "initialization_time_ms": total_time - scan_time,
+            "rating": (
+                "Excellent"
+                if scan_time < 1000
+                else "Good" if scan_time < 5000 else "Needs Improvement"
+            ),
         }
 
     def _display_results(self):
@@ -237,39 +257,39 @@ class QuickBenchmark:
         print("=" * 40)
 
         # 初期化性能
-        init = self.results['initialization']
+        init = self.results["initialization"]
         print(f"\n🔧 System Initialization: {init['rating']}")
         print(f"   Average: {init['average_ms']:.1f}ms")
         print(f"   Range: {init['min_ms']:.1f}-{init['max_ms']:.1f}ms")
 
         # エージェント登録性能
-        reg = self.results['agent_registration']
+        reg = self.results["agent_registration"]
         print(f"\n👥 Agent Registration: {reg['rating']}")
         print(f"   Per agent: {reg['avg_per_agent_ms']:.1f}ms")
         print(f"   Throughput: {reg['agents_per_second']:.1f} agents/sec")
 
         # メモリ効率
-        mem = self.results['memory_efficiency']
+        mem = self.results["memory_efficiency"]
         print(f"\n💾 Memory Efficiency: {mem['rating']}")
         print(f"   Per agent: {mem['memory_per_agent_mb']:.2f}MB")
         print(f"   Total overhead: {mem['total_overhead_mb']:.1f}MB")
 
         # 通信性能
-        comm = self.results['communication']
+        comm = self.results["communication"]
         print(f"\n📡 Communication: {comm['rating']}")
         print(f"   Latency: {comm['avg_latency_us']:.1f}μs")
         print(f"   Throughput: {comm['throughput_msg_per_sec']:.0f} msgs/sec")
 
         # 強制実行性能
-        enf = self.results['enforcement']
+        enf = self.results["enforcement"]
         print(f"\n🛡️ Enforcement System: {enf['rating']}")
         print(f"   Scan time: {enf['scan_time_ms']:.1f}ms")
         print(f"   Total time: {enf['total_time_ms']:.1f}ms")
 
         # 総合評価
-        ratings = [r['rating'] for r in self.results.values()]
-        excellent_count = ratings.count('Excellent')
-        good_count = ratings.count('Good')
+        ratings = [r["rating"] for r in self.results.values()]
+        excellent_count = ratings.count("Excellent")
+        good_count = ratings.count("Good")
 
         print(f"\n🎯 Overall Assessment")
         print(f"   Excellent: {excellent_count}/5 components")
@@ -297,11 +317,13 @@ class QuickBenchmark:
 
         # JSON保存
         json_file = results_dir / f"quick_benchmark_{timestamp}.json"
-        with open(json_file, 'w', encoding='utf-8') as f:
-            json.dump({
-                'timestamp': datetime.now().isoformat(),
-                'results': self.results
-            }, f, indent=2, ensure_ascii=False)
+        with open(json_file, "w", encoding="utf-8") as f:
+            json.dump(
+                {"timestamp": datetime.now().isoformat(), "results": self.results},
+                f,
+                indent=2,
+                ensure_ascii=False,
+            )
 
         print(f"\n📊 Results saved to: {json_file}")
 

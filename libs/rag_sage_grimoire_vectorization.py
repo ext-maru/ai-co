@@ -529,37 +529,37 @@ class RAGSageGrimoireVectorization:
         query_vector = await self._generate_query_semantic_vector(
             query_data.get("query", "")
         )
-        vector[
-            current_idx : current_idx + self.dimensions.query_semantic
-        ] = query_vector
+        vector[current_idx : current_idx + self.dimensions.query_semantic] = (
+            query_vector
+        )
         current_idx += self.dimensions.query_semantic
 
         # 2. コンテキスト埋め込み
         context_vector = await self._generate_context_embeddings(query_data, metadata)
-        vector[
-            current_idx : current_idx + self.dimensions.context_embeddings
-        ] = context_vector
+        vector[current_idx : current_idx + self.dimensions.context_embeddings] = (
+            context_vector
+        )
         current_idx += self.dimensions.context_embeddings
 
         # 3. 知識統合情報
         synthesis_vector = await self._generate_knowledge_synthesis_vector(metadata)
-        vector[
-            current_idx : current_idx + self.dimensions.knowledge_synthesis
-        ] = synthesis_vector
+        vector[current_idx : current_idx + self.dimensions.knowledge_synthesis] = (
+            synthesis_vector
+        )
         current_idx += self.dimensions.knowledge_synthesis
 
         # 4. 推論パターン
         reasoning_vector = await self._generate_reasoning_patterns_vector(query_data)
-        vector[
-            current_idx : current_idx + self.dimensions.reasoning_patterns
-        ] = reasoning_vector
+        vector[current_idx : current_idx + self.dimensions.reasoning_patterns] = (
+            reasoning_vector
+        )
         current_idx += self.dimensions.reasoning_patterns
 
         # 5. 検索メタデータ
         retrieval_vector = await self._generate_retrieval_metadata_vector(metadata)
-        vector[
-            current_idx : current_idx + self.dimensions.retrieval_metadata
-        ] = retrieval_vector
+        vector[current_idx : current_idx + self.dimensions.retrieval_metadata] = (
+            retrieval_vector
+        )
 
         return vector
 
@@ -687,7 +687,9 @@ class RAGSageGrimoireVectorization:
 
             self.stats["context_generations"] += 1
 
-            self.logger.info(f"🔍 拡張コンテキスト検索完了: {len(results)}件の文脈を発見")
+            self.logger.info(
+                f"🔍 拡張コンテキスト検索完了: {len(results)}件の文脈を発見"
+            )
             return results
 
         except Exception as e:

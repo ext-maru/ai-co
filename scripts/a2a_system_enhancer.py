@@ -67,22 +67,30 @@ class A2ASystemEnhancer:
         # 1. システムエージェント負荷分散
         if self._apply_load_balancing():
             enhancement_results["enhancements"]["load_balancing"] = "success"
-            enhancement_results["recommendations_implemented"].append("🤖 systemエージェントの負荷分散実装")
+            enhancement_results["recommendations_implemented"].append(
+                "🤖 systemエージェントの負荷分散実装"
+            )
 
         # 2. 監視システム強化
         if self._apply_enhanced_monitoring():
             enhancement_results["enhancements"]["enhanced_monitoring"] = "success"
-            enhancement_results["recommendations_implemented"].append("🕐 短時間集中監視の強化")
+            enhancement_results["recommendations_implemented"].append(
+                "🕐 短時間集中監視の強化"
+            )
 
         # 3. エラー回復機能
         if self._apply_error_recovery():
             enhancement_results["enhancements"]["error_recovery"] = "success"
-            enhancement_results["recommendations_implemented"].append("🔄 自動エラー回復機能の実装")
+            enhancement_results["recommendations_implemented"].append(
+                "🔄 自動エラー回復機能の実装"
+            )
 
         # 4. パフォーマンス最適化
         if self._apply_performance_optimization():
             enhancement_results["enhancements"]["performance_optimization"] = "success"
-            enhancement_results["recommendations_implemented"].append("⚡ パフォーマンス最適化の実装")
+            enhancement_results["recommendations_implemented"].append(
+                "⚡ パフォーマンス最適化の実装"
+            )
 
         # 改良後のパフォーマンス測定
         time.sleep(2)  # 改良の効果を反映させる
@@ -90,7 +98,8 @@ class A2ASystemEnhancer:
 
         # 改良効果の評価
         enhancement_results["improvement_assessment"] = self._assess_improvements(
-            enhancement_results["performance_before"], enhancement_results["performance_after"]
+            enhancement_results["performance_before"],
+            enhancement_results["performance_after"],
         )
 
         return enhancement_results
@@ -363,7 +372,9 @@ class A2ASystemEnhancer:
                 # 応答時間
                 response_times = [c[0] for c in recent_comms if c[0]]
                 if response_times:
-                    self.metrics["response_times"].append(sum(response_times) / len(response_times))
+                    self.metrics["response_times"].append(
+                        sum(response_times) / len(response_times)
+                    )
 
                 # エラー率
                 error_comms = [c for c in recent_comms if c[1] == "error"]
@@ -377,11 +388,17 @@ class A2ASystemEnhancer:
         """しきい値チェック"""
         try:
             # システムエージェント負荷チェック
-            if self.metrics["system_agent_load"] and self.metrics["system_agent_load"][-1] > 20:
+            if (
+                self.metrics["system_agent_load"]
+                and self.metrics["system_agent_load"][-1] > 20
+            ):
                 self._trigger_load_balancing()
 
             # 応答時間チェック
-            if self.metrics["response_times"] and self.metrics["response_times"][-1] > 1.0:
+            if (
+                self.metrics["response_times"]
+                and self.metrics["response_times"][-1] > 1.0
+            ):
                 self._trigger_performance_optimization()
 
             # エラー率チェック
@@ -399,7 +416,9 @@ class A2ASystemEnhancer:
     def _trigger_performance_optimization(self):
         """パフォーマンス最適化の発動"""
         logger.info("⚡ Performance optimization triggered")
-        self._log_enhancement("Performance optimization triggered due to slow response times")
+        self._log_enhancement(
+            "Performance optimization triggered due to slow response times"
+        )
 
     def _trigger_error_recovery(self):
         """エラー回復の発動"""
@@ -432,7 +451,12 @@ class A2ASystemEnhancer:
                     "error_rate": result[2] / result[1] if result[1] > 0 else 0,
                 }
             else:
-                return {"avg_response_time": 0, "total_communications": 0, "error_count": 0, "error_rate": 0}
+                return {
+                    "avg_response_time": 0,
+                    "total_communications": 0,
+                    "error_count": 0,
+                    "error_rate": 0,
+                }
 
         except Exception as e:
             logger.error(f"Performance measurement error: {e}")
@@ -448,23 +472,33 @@ class A2ASystemEnhancer:
         # 応答時間の改善
         if before["avg_response_time"] > 0:
             rt_improvement = (
-                (before["avg_response_time"] - after["avg_response_time"]) / before["avg_response_time"] * 100
+                (before["avg_response_time"] - after["avg_response_time"])
+                / before["avg_response_time"]
+                * 100
             )
             improvements["response_time_improvement"] = rt_improvement
 
         # エラー率の改善
         if before["error_rate"] > 0:
-            er_improvement = (before["error_rate"] - after["error_rate"]) / before["error_rate"] * 100
+            er_improvement = (
+                (before["error_rate"] - after["error_rate"])
+                / before["error_rate"]
+                * 100
+            )
             improvements["error_rate_improvement"] = er_improvement
 
         # 総合評価
-        total_improvement = sum(improvements.values()) / len(improvements) if improvements else 0
+        total_improvement = (
+            sum(improvements.values()) / len(improvements) if improvements else 0
+        )
 
         return {
             "individual_improvements": improvements,
             "overall_improvement": total_improvement,
             "assessment": (
-                "significant" if total_improvement > 10 else "moderate" if total_improvement > 5 else "minimal"
+                "significant"
+                if total_improvement > 10
+                else "moderate" if total_improvement > 5 else "minimal"
             ),
         }
 
@@ -534,7 +568,11 @@ def main():
                 print(f"  {metric}: {value:.1f}%改善")
 
         # レポート保存
-        report_file = PROJECT_ROOT / "logs" / f"a2a_enhancement_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_file = (
+            PROJECT_ROOT
+            / "logs"
+            / f"a2a_enhancement_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
         with open(report_file, "w", encoding="utf-8") as f:
             json.dump(enhancement_results, f, indent=2, ensure_ascii=False, default=str)
 

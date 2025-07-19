@@ -956,7 +956,9 @@ class DynamicKnowledgeGraph:
         time_span = (
             sorted_events[-1]["timestamp"] - sorted_events[0]["timestamp"]
         ).total_seconds()
-        evolution_rate = len(evolution_events) / max(1, time_span / 3600)  # 時間あたりのイベント数
+        evolution_rate = len(evolution_events) / max(
+            1, time_span / 3600
+        )  # 時間あたりのイベント数
 
         # タイプ別統計
         event_types = defaultdict(int)
@@ -993,7 +995,9 @@ class DynamicKnowledgeGraph:
                     and rel1.relation_type == rel2.relation_type == "causes"
                 ):
                     # A -> B -> C から A -> C を推論
-                    confidence = rel1.confidence * rel2.confidence * 0.8  # 推移による減衰
+                    confidence = (
+                        rel1.confidence * rel2.confidence * 0.8
+                    )  # 推移による減衰
 
                     # 推移的推論の闾値を下げて発見しやすくする
                     if confidence > 0.4:  # 0.5→0.4に変更

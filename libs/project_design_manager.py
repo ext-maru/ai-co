@@ -408,9 +408,7 @@ class ProjectDesignManager(BaseManager):
             status_icon = (
                 "✅"
                 if phase["status"] == "completed"
-                else "🔄"
-                if phase["status"] == "in_progress"
-                else "⏳"
+                else "🔄" if phase["status"] == "in_progress" else "⏳"
             )
             report += f"- **{phase['phase'].title()}**: {status_icon} {phase['status']}"
             if phase["started_at"]:
@@ -424,9 +422,7 @@ class ProjectDesignManager(BaseManager):
             status_icon = (
                 "✅"
                 if task["status"] == "completed"
-                else "❌"
-                if task["status"] == "failed"
-                else "🔄"
+                else "❌" if task["status"] == "failed" else "🔄"
             )
             report += f"- {status_icon} **{task['name']}** ({task['status']})\n"
 
@@ -447,7 +443,9 @@ if __name__ == "__main__":
 
     # プロジェクト作成例
     project_id = manager.create_project(
-        task_id="code_20250102_123456", name="新規API開発", description="ユーザー管理APIの開発"
+        task_id="code_20250102_123456",
+        name="新規API開発",
+        description="ユーザー管理APIの開発",
     )
 
     # 要件定義

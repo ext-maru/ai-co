@@ -228,7 +228,14 @@ def cleanup_singletons():
         self.issues_fixed += 1
 
         # Create conftest for each test subdirectory
-        test_dirs = ["unit", "integration", "unit/workers", "unit/libs", "unit/commands", "unit/core"]
+        test_dirs = [
+            "unit",
+            "integration",
+            "unit/workers",
+            "unit/libs",
+            "unit/commands",
+            "unit/core",
+        ]
 
         for test_dir in test_dirs:
             dir_path = self.project_root / "tests" / test_dir

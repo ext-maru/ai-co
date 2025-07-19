@@ -13,7 +13,12 @@ from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 from enum import Enum
 
-from libs.elder_flow_quality_gate import QualityGateSystem, QualityCheckType, QualityGateConfig
+from libs.elder_flow_quality_gate import (
+    QualityGateSystem,
+    QualityCheckType,
+    QualityGateConfig,
+)
+
 
 # Quality Enhancement Areas
 class QualityArea(Enum):
@@ -25,6 +30,7 @@ class QualityArea(Enum):
     COMPLIANCE = "compliance"
     ARCHITECTURE = "architecture"
 
+
 # Quality Enhancement Actions
 class EnhancementAction(Enum):
     INCREASE_THRESHOLDS = "increase_thresholds"
@@ -33,6 +39,7 @@ class EnhancementAction(Enum):
     OPTIMIZE_ALGORITHMS = "optimize_algorithms"
     ENHANCE_TESTING = "enhance_testing"
     STRENGTHEN_SECURITY = "strengthen_security"
+
 
 # Quality Enhancement Configuration
 @dataclass
@@ -58,7 +65,7 @@ class QualityEnhancementConfig:
                 QualityArea.PERFORMANCE: 0.15,
                 QualityArea.DOCUMENTATION: 0.10,
                 QualityArea.COMPLIANCE: 0.05,
-                QualityArea.ARCHITECTURE: 0.05
+                QualityArea.ARCHITECTURE: 0.05,
             }
 
         if self.priority_areas is None:
@@ -66,28 +73,29 @@ class QualityEnhancementConfig:
                 QualityArea.TEST_COVERAGE,
                 QualityArea.CODE_QUALITY,
                 QualityArea.SECURITY,
-                QualityArea.PERFORMANCE
+                QualityArea.PERFORMANCE,
             ]
 
         if self.enhancement_actions is None:
             self.enhancement_actions = {
                 QualityArea.TEST_COVERAGE: [
                     EnhancementAction.ENHANCE_TESTING,
-                    EnhancementAction.INCREASE_THRESHOLDS
+                    EnhancementAction.INCREASE_THRESHOLDS,
                 ],
                 QualityArea.CODE_QUALITY: [
                     EnhancementAction.IMPROVE_METRICS,
-                    EnhancementAction.OPTIMIZE_ALGORITHMS
+                    EnhancementAction.OPTIMIZE_ALGORITHMS,
                 ],
                 QualityArea.SECURITY: [
                     EnhancementAction.STRENGTHEN_SECURITY,
-                    EnhancementAction.ADD_CHECKS
+                    EnhancementAction.ADD_CHECKS,
                 ],
                 QualityArea.PERFORMANCE: [
                     EnhancementAction.OPTIMIZE_ALGORITHMS,
-                    EnhancementAction.IMPROVE_METRICS
-                ]
+                    EnhancementAction.IMPROVE_METRICS,
+                ],
             }
+
 
 # Enhanced Quality Gate Configuration
 class EnhancedQualityGateConfig(QualityGateConfig):
@@ -123,6 +131,7 @@ class EnhancedQualityGateConfig(QualityGateConfig):
         self.outdated_dependencies = 2  # 5 -> 2
         self.vulnerable_dependencies = 0  # 変更なし
 
+
 # Quality Enhancer System
 class ElderFlowQualityEnhancer:
     def __init__(self, config: QualityEnhancementConfig = None):
@@ -152,7 +161,9 @@ class ElderFlowQualityEnhancer:
             "standard_quality": standard_result,
             "enhanced_quality": enhanced_result,
             "gap_analysis": gap_analysis,
-            "improvement_recommendations": self._generate_improvement_recommendations(gap_analysis)
+            "improvement_recommendations": self._generate_improvement_recommendations(
+                gap_analysis
+            ),
         }
 
     def _analyze_quality_gap(self, standard: Dict, enhanced: Dict) -> Dict:
@@ -164,12 +175,16 @@ class ElderFlowQualityEnhancer:
             "overall_gap": enhanced_score - standard_score,
             "area_gaps": {},
             "critical_areas": [],
-            "improvement_potential": {}
+            "improvement_potential": {},
         }
 
         # エリア別ギャップ分析
-        standard_checks = {check["check_type"]: check for check in standard.get("check_results", [])}
-        enhanced_checks = {check["check_type"]: check for check in enhanced.get("check_results", [])}
+        standard_checks = {
+            check["check_type"]: check for check in standard.get("check_results", [])
+        }
+        enhanced_checks = {
+            check["check_type"]: check for check in enhanced.get("check_results", [])
+        }
 
         for check_type in standard_checks:
             if check_type in enhanced_checks:
@@ -181,7 +196,7 @@ class ElderFlowQualityEnhancer:
                     "standard_score": std_score,
                     "enhanced_score": enh_score,
                     "gap": gap_score,
-                    "improvement_needed": gap_score > 5.0
+                    "improvement_needed": gap_score > 5.0,
                 }
 
                 if gap_score > 10.0:
@@ -202,19 +217,22 @@ class ElderFlowQualityEnhancer:
                 "priority": "high",
                 "gap_score": area_gap["gap"],
                 "actions": self._get_area_improvement_actions(area),
-                "expected_improvement": area_gap["gap"] * 0.8
+                "expected_improvement": area_gap["gap"] * 0.8,
             }
             recommendations.append(rec)
 
         # 通常改善エリア
         for area, gap_info in gap_analysis["area_gaps"].items():
-            if area not in gap_analysis["critical_areas"] and gap_info["improvement_needed"]:
+            if (
+                area not in gap_analysis["critical_areas"]
+                and gap_info["improvement_needed"]
+            ):
                 rec = {
                     "area": area,
                     "priority": "medium",
                     "gap_score": gap_info["gap"],
                     "actions": self._get_area_improvement_actions(area),
-                    "expected_improvement": gap_info["gap"] * 0.6
+                    "expected_improvement": gap_info["gap"] * 0.6,
                 }
                 recommendations.append(rec)
 
@@ -227,26 +245,26 @@ class ElderFlowQualityEnhancer:
                 "テストカバレッジを90%以上に向上",
                 "エッジケーステストを追加",
                 "モックテストを強化",
-                "パラメータ化テストを実装"
+                "パラメータ化テストを実装",
             ],
             "code_quality": [
                 "コード複雑度を8以下に削減",
                 "コード重複を3%以下に削減",
                 "命名規則を統一",
-                "コードスメルを除去"
+                "コードスメルを除去",
             ],
             "security_scan": [
                 "セキュリティスコアを9.0以上に向上",
                 "脆弱性を完全に除去",
                 "入力検証を強化",
-                "認証・認可を強化"
+                "認証・認可を強化",
             ],
             "performance": [
                 "応答時間を1秒以下に短縮",
                 "メモリ使用量を50MB以下に削減",
                 "アルゴリズムを最適化",
-                "キャッシュ機能を実装"
-            ]
+                "キャッシュ機能を実装",
+            ],
         }
 
         return action_mapping.get(area, ["一般的な品質向上"])
@@ -268,7 +286,9 @@ class ElderFlowQualityEnhancer:
         return {
             "applied_improvements": applied_improvements,
             "total_improvements": len(applied_improvements),
-            "expected_score_increase": sum(imp.get("score_increase", 0) for imp in applied_improvements)
+            "expected_score_increase": sum(
+                imp.get("score_increase", 0) for imp in applied_improvements
+            ),
         }
 
     async def _apply_high_priority_improvement(self, recommendation: Dict) -> Dict:
@@ -281,7 +301,7 @@ class ElderFlowQualityEnhancer:
             "unit_tests": self._improve_test_coverage,
             "code_quality": self._improve_code_quality,
             "security_scan": self._improve_security,
-            "performance": self._improve_performance
+            "performance": self._improve_performance,
         }
 
         if area in improvement_actions:
@@ -294,7 +314,7 @@ class ElderFlowQualityEnhancer:
             "gap_score": gap_score,
             "improvement_applied": True,
             "score_increase": result.get("score_increase", gap_score * 0.8),
-            "actions_taken": result.get("actions_taken", [])
+            "actions_taken": result.get("actions_taken", []),
         }
 
     async def _apply_medium_priority_improvement(self, recommendation: Dict) -> Dict:
@@ -310,13 +330,13 @@ class ElderFlowQualityEnhancer:
             "ユニットテストを50個追加",
             "統合テストを20個追加",
             "エッジケーステストを30個追加",
-            "モックテストを15個追加"
+            "モックテストを15個追加",
         ]
 
         return {
             "score_increase": 15.0,
             "actions_taken": actions_taken,
-            "new_coverage": 92.0
+            "new_coverage": 92.0,
         }
 
     async def _improve_code_quality(self, recommendation: Dict) -> Dict:
@@ -325,13 +345,13 @@ class ElderFlowQualityEnhancer:
             "複雑なメソッドを10個リファクタリング",
             "コード重複を5箇所除去",
             "命名規則を統一",
-            "型ヒントを追加"
+            "型ヒントを追加",
         ]
 
         return {
             "score_increase": 12.0,
             "actions_taken": actions_taken,
-            "new_quality_score": 9.2
+            "new_quality_score": 9.2,
         }
 
     async def _improve_security(self, recommendation: Dict) -> Dict:
@@ -340,13 +360,13 @@ class ElderFlowQualityEnhancer:
             "入力検証を強化",
             "SQLインジェクション対策を実装",
             "XSS対策を追加",
-            "認証機能を強化"
+            "認証機能を強化",
         ]
 
         return {
             "score_increase": 18.0,
             "actions_taken": actions_taken,
-            "vulnerabilities_fixed": 3
+            "vulnerabilities_fixed": 3,
         }
 
     async def _improve_performance(self, recommendation: Dict) -> Dict:
@@ -355,13 +375,13 @@ class ElderFlowQualityEnhancer:
             "データベースクエリを最適化",
             "キャッシュ機能を実装",
             "メモリ使用量を削減",
-            "レスポンス時間を短縮"
+            "レスポンス時間を短縮",
         ]
 
         return {
             "score_increase": 10.0,
             "actions_taken": actions_taken,
-            "performance_improvement": "45% faster"
+            "performance_improvement": "45% faster",
         }
 
     async def _apply_generic_improvement(self, recommendation: Dict) -> Dict:
@@ -369,7 +389,7 @@ class ElderFlowQualityEnhancer:
         return {
             "score_increase": recommendation["expected_improvement"],
             "actions_taken": recommendation["actions"],
-            "generic_improvement": True
+            "generic_improvement": True,
         }
 
     async def execute_quality_enhancement(self, context: Dict) -> Dict:
@@ -387,17 +407,19 @@ class ElderFlowQualityEnhancer:
 
         # 改善後の品質予測
         predicted_score = (
-            quality_analysis["standard_quality"]["summary"]["overall_score"] +
-            improvement_result["expected_score_increase"]
+            quality_analysis["standard_quality"]["summary"]["overall_score"]
+            + improvement_result["expected_score_increase"]
         )
 
         # 履歴記録
         enhancement_record = {
             "timestamp": asyncio.get_event_loop().time(),
-            "original_score": quality_analysis["standard_quality"]["summary"]["overall_score"],
+            "original_score": quality_analysis["standard_quality"]["summary"][
+                "overall_score"
+            ],
             "predicted_score": predicted_score,
             "improvements_applied": improvement_result["total_improvements"],
-            "recommendations": recommendations
+            "recommendations": recommendations,
         }
 
         self.enhancement_history.append(enhancement_record)
@@ -409,23 +431,28 @@ class ElderFlowQualityEnhancer:
             "improvement_result": improvement_result,
             "predicted_score": predicted_score,
             "enhancement_record": enhancement_record,
-            "target_achieved": predicted_score >= self.config.target_score
+            "target_achieved": predicted_score >= self.config.target_score,
         }
+
 
 # Global quality enhancer instance
 quality_enhancer = ElderFlowQualityEnhancer()
+
 
 # Helper functions
 async def enhance_quality(context: Dict) -> Dict:
     """品質強化実行"""
     return await quality_enhancer.execute_quality_enhancement(context)
 
+
 async def analyze_quality_gaps(context: Dict) -> Dict:
     """品質ギャップ分析"""
     return await quality_enhancer.analyze_current_quality(context)
 
+
 # Example usage
 if __name__ == "__main__":
+
     async def main():
         print("🔍 Elder Flow Quality Enhancer Test")
 
@@ -433,16 +460,20 @@ if __name__ == "__main__":
         context = {
             "project_path": "/home/aicompany/ai_co",
             "target_files": ["libs/elder_flow_orchestrator.py"],
-            "task_id": "quality_enhancement_test"
+            "task_id": "quality_enhancement_test",
         }
 
         # 品質強化実行
         result = await enhance_quality(context)
 
-        print(f"📊 Original Score: {result['quality_analysis']['standard_quality']['summary']['overall_score']:.2f}")
+        print(
+            f"📊 Original Score: {result['quality_analysis']['standard_quality']['summary']['overall_score']:.2f}"
+        )
         print(f"🎯 Predicted Score: {result['predicted_score']:.2f}")
         print(f"✅ Target Achieved: {result['target_achieved']}")
-        print(f"🔧 Improvements Applied: {result['improvement_result']['total_improvements']}")
+        print(
+            f"🔧 Improvements Applied: {result['improvement_result']['total_improvements']}"
+        )
 
         print("🎉 Quality enhancement completed!")
 

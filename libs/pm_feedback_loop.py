@@ -216,7 +216,9 @@ class PMFeedbackLoop(BaseManager):
                     task_id, evaluation_result, improvement_suggestions
                 )
 
-            logger.info(f"🔄 再試行キュー送信: {task_id} (試行回数: {attempt_count + 1})")
+            logger.info(
+                f"🔄 再試行キュー送信: {task_id} (試行回数: {attempt_count + 1})"
+            )
 
         except Exception as e:
             logger.error(f"再試行処理エラー: {e}")
@@ -246,27 +248,39 @@ class PMFeedbackLoop(BaseManager):
         # 各評価項目に基づく提案
         test_success_rate = evaluation_result.get("test_success_rate", 0.0)
         if test_success_rate < 95.0:
-            suggestions.append(f"テストカバレッジを改善してください (現在: {test_success_rate:.1f}%)")
+            suggestions.append(
+                f"テストカバレッジを改善してください (現在: {test_success_rate:.1f}%)"
+            )
 
         code_quality_score = evaluation_result.get("code_quality_score", 0.0)
         if code_quality_score < 80.0:
-            suggestions.append(f"コード品質を向上させてください (現在: {code_quality_score:.1f}%)")
+            suggestions.append(
+                f"コード品質を向上させてください (現在: {code_quality_score:.1f}%)"
+            )
 
         requirement_compliance = evaluation_result.get("requirement_compliance", 0.0)
         if requirement_compliance < 90.0:
-            suggestions.append(f"要件適合度を向上させてください (現在: {requirement_compliance:.1f}%)")
+            suggestions.append(
+                f"要件適合度を向上させてください (現在: {requirement_compliance:.1f}%)"
+            )
 
         error_rate = evaluation_result.get("error_rate", 0.0)
         if error_rate < 95.0:  # エラー率は逆転
-            suggestions.append(f"エラーハンドリングを改善してください (エラー率: {100-error_rate:.1f}%)")
+            suggestions.append(
+                f"エラーハンドリングを改善してください (エラー率: {100-error_rate:.1f}%)"
+            )
 
         performance_score = evaluation_result.get("performance_score", 0.0)
         if performance_score < 75.0:
-            suggestions.append(f"パフォーマンスを最適化してください (現在: {performance_score:.1f}%)")
+            suggestions.append(
+                f"パフォーマンスを最適化してください (現在: {performance_score:.1f}%)"
+            )
 
         security_score = evaluation_result.get("security_score", 0.0)
         if security_score < 85.0:
-            suggestions.append(f"セキュリティを強化してください (現在: {security_score:.1f}%)")
+            suggestions.append(
+                f"セキュリティを強化してください (現在: {security_score:.1f}%)"
+            )
 
         return suggestions
 
@@ -279,7 +293,9 @@ class PMFeedbackLoop(BaseManager):
                     exchange="",
                     routing_key=f"{self.retry_queue}_delayed",
                     body=json.dumps(retry_task_data, ensure_ascii=False),
-                    properties=pika.BasicProperties(delivery_mode=2, priority=5),  # 永続化
+                    properties=pika.BasicProperties(
+                        delivery_mode=2, priority=5
+                    ),  # 永続化
                 )
                 logger.info(f"📤 再試行キュー送信: {task_id}")
         except Exception as e:

@@ -17,7 +17,10 @@ from dataclasses import dataclass, field
 from libs.grimoire_database import GrimoireDatabase, SpellMetadata
 from libs.grimoire_vector_search import GrimoireVectorSearch, SearchQuery, SearchResult
 from libs.grimoire_spell_evolution import EvolutionEngine, EvolutionType
-from libs.enhanced_rag_manager import EnhancedRagManager as EnhancedRAGManager, VectorEmbedding
+from libs.enhanced_rag_manager import (
+    EnhancedRagManager as EnhancedRAGManager,
+    VectorEmbedding,
+)
 from libs.rag_manager import RagManager as RAGManager
 from libs.knowledge_base_manager import KnowledgeBaseManager
 
@@ -25,6 +28,7 @@ from libs.knowledge_base_manager import KnowledgeBaseManager
 @dataclass
 class RagGrimoireConfig:
     """RAG Grimoire統合設定"""
+
     database_url: str = "postgresql://aicompany@localhost:5432/ai_company_grimoire"
     vector_dimensions: int = 1536
     search_threshold: float = 0.7
@@ -58,7 +62,7 @@ class RagGrimoireIntegration:
             "total_entries": 0,
             "migrated_entries": 0,
             "failed_entries": 0,
-            "evolution_applied": 0
+            "evolution_applied": 0,
         }
 
     async def initialize(self):
@@ -100,16 +104,12 @@ class RagGrimoireIntegration:
             await self.grimoire_db.initialize()
 
             # ベクトル検索エンジン
-            self.grimoire_search = GrimoireVectorSearch(
-                database=self.grimoire_db
-            )
+            self.grimoire_search = GrimoireVectorSearch(database=self.grimoire_db)
             await self.grimoire_search.initialize()
 
             # 進化エンジン
             if self.config.enable_spell_evolution:
-                self.evolution_engine = EvolutionEngine(
-                    database=self.grimoire_db
-                )
+                self.evolution_engine = EvolutionEngine(database=self.grimoire_db)
                 await self.evolution_engine.initialize()
 
             self.logger.info("魔法書システムが初期化されました")
@@ -133,8 +133,8 @@ class RagGrimoireIntegration:
         if not self.integration_active:
             raise RuntimeError("統合システムが初期化されていません")
 
-        limit = kwargs.get('limit', self.config.max_search_results)
-        threshold = kwargs.get('threshold', self.config.search_threshold)
+        limit = kwargs.get("limit", self.config.max_search_results)
+        threshold = kwargs.get("threshold", self.config.search_threshold)
 
         # 結果を統合
         unified_results = []
@@ -145,53 +145,59 @@ class RagGrimoireIntegration:
                 query_text=query,
                 limit=limit,
                 similarity_threshold=threshold,
-                filters=kwargs.get('filters', {})
+                filters=kwargs.get("filters", {}),
             )
 
             grimoire_results = await self.grimoire_search.search(grimoire_query)
 
             for result in grimoire_results:
-                unified_results.append({
-                    "id": result.spell_id,
-                    "content": result.content,
-                    "similarity_score": result.similarity_score,
-                    "metadata": result.metadata,
-                    "source": "grimoire_system",
-                    "spell_name": result.spell_name,
-                    "evolution_level": result.metadata.get('evolution_level', 0)
-                })
+                unified_results.append(
+                    {
+                        "id": result.spell_id,
+                        "content": result.content,
+                        "similarity_score": result.similarity_score,
+                        "metadata": result.metadata,
+                        "source": "grimoire_system",
+                        "spell_name": result.spell_name,
+                        "evolution_level": result.metadata.get("evolution_level", 0),
+                    }
+                )
 
         # 既存RAGシステムでの検索（フォールバック）
         if self.enhanced_rag and len(unified_results) < limit:
             try:
                 legacy_results = self.enhanced_rag.search_similar_contexts(
-                    query,
-                    limit=limit - len(unified_results),
-                    threshold=threshold
+                    query, limit=limit - len(unified_results), threshold=threshold
                 )
 
                 for result in legacy_results:
-                    unified_results.append({
-                        "id": result.get('id', 'legacy_' + str(hash(result.get('content', '')))),
-                        "content": result.get('content', ''),
-                        "similarity_score": result.get('score', 0.0),
-                        "metadata": result.get('metadata', {}),
-                        "source": "legacy_rag",
-                        "category": result.get('category', 'unknown')
-                    })
+                    unified_results.append(
+                        {
+                            "id": result.get(
+                                "id", "legacy_" + str(hash(result.get("content", "")))
+                            ),
+                            "content": result.get("content", ""),
+                            "similarity_score": result.get("score", 0.0),
+                            "metadata": result.get("metadata", {}),
+                            "source": "legacy_rag",
+                            "category": result.get("category", "unknown"),
+                        }
+                    )
             except Exception as e:
                 self.logger.warning(f"既存RAG検索エラー: {e}")
 
         # 結果の統合とソート
-        unified_results.sort(key=lambda x: x['similarity_score'], reverse=True)
+        unified_results.sort(key=lambda x: x["similarity_score"], reverse=True)
 
         return unified_results[:limit]
 
-    async def add_knowledge_unified(self,
-                                  spell_name: str,
-                                  content: str,
-                                  metadata: Optional[Dict[str, Any]] = None,
-                                  **kwargs) -> str:
+    async def add_knowledge_unified(
+        self,
+        spell_name: str,
+        content: str,
+        metadata: Optional[Dict[str, Any]] = None,
+        **kwargs,
+    ) -> str:
         """統合知識追加 - 魔法書システムと既存RAGに同期追加"""
         if not self.integration_active:
             raise RuntimeError("統合システムが初期化されていません")
@@ -205,26 +211,26 @@ class RagGrimoireIntegration:
             content=content,
             spell_type=SpellType.KNOWLEDGE,
             magic_school=MagicSchool.KNOWLEDGE_SAGE,
-            tags=kwargs.get('tags', []),
+            tags=kwargs.get("tags", []),
             power_level=1,
             casting_frequency=0,
             last_cast_at=None,
-            is_eternal=kwargs.get('is_eternal', False),
+            is_eternal=kwargs.get("is_eternal", False),
             evolution_history=[],
             created_at=datetime.now(),
             updated_at=datetime.now(),
-            version=1
+            version=1,
         )
 
         # 魔法書システムに追加（辞書形式に変換）
         spell_data = {
-            'spell_name': spell_name,
-            'content': content,
-            'spell_type': SpellType.KNOWLEDGE.value,
-            'magic_school': MagicSchool.KNOWLEDGE_SAGE.value,
-            'tags': kwargs.get('tags', []),
-            'power_level': 1,
-            'is_eternal': kwargs.get('is_eternal', False)
+            "spell_name": spell_name,
+            "content": content,
+            "spell_type": SpellType.KNOWLEDGE.value,
+            "magic_school": MagicSchool.KNOWLEDGE_SAGE.value,
+            "tags": kwargs.get("tags", []),
+            "power_level": 1,
+            "is_eternal": kwargs.get("is_eternal", False),
         }
         spell_id = await self.grimoire_db.create_spell(spell_data)
 
@@ -239,7 +245,7 @@ class RagGrimoireIntegration:
                     id=spell_id,
                     content=content,
                     embedding=await self._generate_embedding(content),
-                    metadata=metadata or {}
+                    metadata=metadata or {},
                 )
                 self.enhanced_rag.add_embedding(embedding)
             except Exception as e:
@@ -248,9 +254,9 @@ class RagGrimoireIntegration:
         self.logger.info(f"統合知識追加完了: {spell_name} (ID: {spell_id})")
         return spell_id
 
-    async def migrate_legacy_knowledge(self,
-                                     force: bool = False,
-                                     dry_run: bool = False) -> Dict[str, Any]:
+    async def migrate_legacy_knowledge(
+        self, force: bool = False, dry_run: bool = False
+    ) -> Dict[str, Any]:
         """既存RAGシステムから魔法書システムへの移行"""
         if not self.integration_active:
             raise RuntimeError("統合システムが初期化されていません")
@@ -262,7 +268,7 @@ class RagGrimoireIntegration:
             "failed_migrations": 0,
             "duplicates_found": 0,
             "evolution_applied": 0,
-            "errors": []
+            "errors": [],
         }
 
         try:
@@ -275,10 +281,12 @@ class RagGrimoireIntegration:
 
             # バッチ処理で移行
             for i in range(0, len(knowledge_files), self.config.batch_size):
-                batch = knowledge_files[i:i + self.config.batch_size]
+                batch = knowledge_files[i : i + self.config.batch_size]
                 batch_result = await self._migrate_knowledge_batch(batch, dry_run)
 
-                migration_report["successfully_migrated"] += batch_result["success_count"]
+                migration_report["successfully_migrated"] += batch_result[
+                    "success_count"
+                ]
                 migration_report["failed_migrations"] += batch_result["error_count"]
                 migration_report["duplicates_found"] += batch_result["duplicate_count"]
                 migration_report["evolution_applied"] += batch_result["evolution_count"]
@@ -286,7 +294,9 @@ class RagGrimoireIntegration:
 
                 # 進捗ログ
                 progress = (i + len(batch)) / len(knowledge_files) * 100
-                self.logger.info(f"移行進捗: {progress:.1f}% ({i + len(batch)}/{len(knowledge_files)})")
+                self.logger.info(
+                    f"移行進捗: {progress:.1f}% ({i + len(batch)}/{len(knowledge_files)})"
+                )
 
         except Exception as e:
             migration_report["errors"].append(str(e))
@@ -299,16 +309,16 @@ class RagGrimoireIntegration:
 
         return migration_report
 
-    async def _migrate_knowledge_batch(self,
-                                     batch: List[Dict[str, Any]],
-                                     dry_run: bool = False) -> Dict[str, int]:
+    async def _migrate_knowledge_batch(
+        self, batch: List[Dict[str, Any]], dry_run: bool = False
+    ) -> Dict[str, int]:
         """知識ベースバッチ移行"""
         result = {
             "success_count": 0,
             "error_count": 0,
             "duplicate_count": 0,
             "evolution_count": 0,
-            "errors": []
+            "errors": [],
         }
 
         for file_info in batch:
@@ -318,7 +328,7 @@ class RagGrimoireIntegration:
                 if not file_path.exists():
                     continue
 
-                content = file_path.read_text(encoding='utf-8')
+                content = file_path.read_text(encoding="utf-8")
                 spell_name = file_path.stem
 
                 # 重複チェック
@@ -333,14 +343,14 @@ class RagGrimoireIntegration:
                         "file_size": file_info["size"],
                         "modified_date": file_info["modified"],
                         "migration_date": datetime.now().isoformat(),
-                        "source": "legacy_migration"
+                        "source": "legacy_migration",
                     }
 
                     spell_id = await self.add_knowledge_unified(
                         spell_name=spell_name,
                         content=content,
                         metadata=metadata,
-                        category="migrated_knowledge"
+                        category="migrated_knowledge",
                     )
 
                     # 進化の適用（類似スペルとのマージ可能性チェック）
@@ -355,7 +365,9 @@ class RagGrimoireIntegration:
 
             except Exception as e:
                 result["error_count"] += 1
-                result["errors"].append(f"ファイル {file_info.get('filename', 'unknown')}: {str(e)}")
+                result["errors"].append(
+                    f"ファイル {file_info.get('filename', 'unknown')}: {str(e)}"
+                )
                 self.logger.error(f"バッチ移行エラー: {e}")
 
         return result
@@ -364,18 +376,15 @@ class RagGrimoireIntegration:
         """スペルの存在チェック"""
         try:
             existing_spells = await self.grimoire_db.search_spells(
-                query=spell_name,
-                limit=1,
-                exact_match=True
+                query=spell_name, limit=1, exact_match=True
             )
             return len(existing_spells) > 0
         except Exception:
             return False
 
-    async def _check_and_apply_evolution(self,
-                                       spell_id: str,
-                                       spell_name: str,
-                                       content: str) -> bool:
+    async def _check_and_apply_evolution(
+        self, spell_id: str, spell_name: str, content: str
+    ) -> bool:
         """進化の適用可能性チェックと実行"""
         try:
             if not self.evolution_engine:
@@ -386,7 +395,7 @@ class RagGrimoireIntegration:
                 SearchQuery(
                     query_text=content[:500],  # 最初の500文字で類似検索
                     limit=5,
-                    threshold=0.85  # 高い類似度
+                    threshold=0.85,  # 高い類似度
                 )
             )
 
@@ -399,7 +408,7 @@ class RagGrimoireIntegration:
                             original_id=similar.spell_id,
                             evolved_data={"content": content, "spell_name": spell_name},
                             evolution_type=EvolutionType.MERGE,
-                            reason="Legacy migration: similar content detected"
+                            reason="Legacy migration: similar content detected",
                         )
                         return True
 
@@ -446,6 +455,7 @@ class RagGrimoireIntegration:
         # 実際の実装では、OpenAI APIやその他の埋め込みサービスを使用
         # ここではプレースホルダー
         import numpy as np
+
         return np.random.random(self.config.vector_dimensions).tolist()
 
     async def _save_migration_report(self, report: Dict[str, Any]):
@@ -456,7 +466,7 @@ class RagGrimoireIntegration:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         report_file = reports_dir / f"rag_migration_{timestamp}.json"
 
-        with open(report_file, 'w', encoding='utf-8') as f:
+        with open(report_file, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 
         self.logger.info(f"移行レポートを保存: {report_file}")
@@ -483,8 +493,8 @@ class RagGrimoireIntegration:
                 "database_url": self.config.database_url,
                 "vector_dimensions": self.config.vector_dimensions,
                 "search_threshold": self.config.search_threshold,
-                "max_search_results": self.config.max_search_results
-            }
+                "max_search_results": self.config.max_search_results,
+            },
         }
 
         if self.grimoire_db:
@@ -532,7 +542,7 @@ async def test_integration():
         spell_id = await integration.add_knowledge_unified(
             spell_name="test_spell",
             content="これはテスト用のスペルです",
-            metadata={"test": True}
+            metadata={"test": True},
         )
         print(f"スペル追加: {spell_id}")
 

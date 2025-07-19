@@ -187,9 +187,11 @@ class ModelTrainer:
             "rmse": float(np.sqrt(mean_squared_error(y_true, y_pred))),
             "mae": float(mean_absolute_error(y_true, y_pred)),
             "r2": float(r2_score(y_true, y_pred)),
-            "mape": float(np.mean(np.abs((y_true - y_pred) / y_true)) * 100)
-            if np.all(y_true != 0)
-            else 0,
+            "mape": (
+                float(np.mean(np.abs((y_true - y_pred) / y_true)) * 100)
+                if np.all(y_true != 0)
+                else 0
+            ),
         }
 
     # モデル作成メソッド
@@ -464,9 +466,11 @@ class ModelEvaluator:
             "rmse": float(np.sqrt(mean_squared_error(y_true, y_pred))),
             "mae": float(mean_absolute_error(y_true, y_pred)),
             "r2": float(r2_score(y_true, y_pred)),
-            "mape": float(np.mean(np.abs((y_true - y_pred) / y_true)) * 100)
-            if np.all(y_true != 0)
-            else 0,
+            "mape": (
+                float(np.mean(np.abs((y_true - y_pred) / y_true)) * 100)
+                if np.all(y_true != 0)
+                else 0
+            ),
             "max_error": float(np.max(np.abs(y_true - y_pred))),
             "explained_variance": float(1 - np.var(y_true - y_pred) / np.var(y_true)),
         }
@@ -552,7 +556,9 @@ class ModelEvaluator:
 
             score = np.sqrt(mean_squared_error(y_subset, pred))
             train_scores.append(score)
-            val_scores.append(score * (1 + np.random.random() * 0.2))  # 検証スコアは少し悪い
+            val_scores.append(
+                score * (1 + np.random.random() * 0.2)
+            )  # 検証スコアは少し悪い
 
         return {
             "train_sizes": train_sizes[: len(train_scores)],
@@ -629,9 +635,9 @@ class TrainedModel:
             "model_type": self.model_type,
             "validation_metrics": self.validation_metrics,
             "prediction_count": self.prediction_count,
-            "last_prediction": self.last_prediction.isoformat()
-            if self.last_prediction
-            else None,
+            "last_prediction": (
+                self.last_prediction.isoformat() if self.last_prediction else None
+            ),
         }
 
 

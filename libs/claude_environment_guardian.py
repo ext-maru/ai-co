@@ -12,6 +12,7 @@ from typing import Dict, List, Optional, Tuple
 from datetime import datetime
 from pathlib import Path
 
+
 class EnvironmentGuardian:
     """Claudeの環境破壊を防ぐ守護者"""
 
@@ -23,24 +24,29 @@ class EnvironmentGuardian:
         self.DANGEROUS_PATTERNS = [
             # Python環境汚染
             (r"python.*-m\s+venv", "❌ venv作成は環境汚染！Dockerを使用してください"),
-            (r"pip\s+install(?!.*requirements\.txt)", "❌ pip installは禁止！Dockerコンテナ内で実行"),
+            (
+                r"pip\s+install(?!.*requirements\.txt)",
+                "❌ pip installは禁止！Dockerコンテナ内で実行",
+            ),
             (r"pip3\s+install", "❌ pip3 installは禁止！既存環境を破壊します"),
             (r"python.*setup\.py", "❌ setup.py実行は環境変更！禁止"),
-
             # Docker違反
-            (r"^docker\s+(?!.*sg\s+docker\s+-c)", "❌ docker直接実行は禁止！sg docker -c を使用"),
-            (r"^docker-compose", "❌ docker-compose直接実行は禁止！sg docker -c を使用"),
+            (
+                r"^docker\s+(?!.*sg\s+docker\s+-c)",
+                "❌ docker直接実行は禁止！sg docker -c を使用",
+            ),
+            (
+                r"^docker-compose",
+                "❌ docker-compose直接実行は禁止！sg docker -c を使用",
+            ),
             (r"sudo\s+docker", "❌ sudo dockerは絶対禁止！環境破壊の危険"),
-
             # プロセス汚染
             (r"nohup.*python", "⚠️ nohupでのPython実行は管理外プロセス！禁止"),
             (r".*&\s*$", "⚠️ バックグラウンド実行は要確認"),
             (r"systemctl|service", "❌ サービス操作は禁止！"),
-
             # 権限昇格
             (r"^sudo\s+", "❌ sudo使用は禁止！権限昇格は危険"),
             (r"chmod\s+777", "❌ chmod 777は超危険！絶対禁止"),
-
             # ファイルシステム破壊
             (r"rm\s+-rf\s+/", "💀 システム全体削除！！絶対禁止"),
             (r"rm\s+-rf\s+~", "💀 ホームディレクトリ削除！禁止"),
@@ -49,17 +55,21 @@ class EnvironmentGuardian:
 
         # 安全な代替コマンド
         self.SAFE_ALTERNATIVES = {
-            "docker": "sg docker -c \"docker {args}\"",
-            "docker-compose": "sg docker -c \"docker compose {args}\"",
-            "pip install": "sg docker -c \"docker run -v $(pwd):/app python:3.12 pip install {args}\"",
+            "docker": 'sg docker -c "docker {args}"',
+            "docker-compose": 'sg docker -c "docker compose {args}"',
+            "pip install": 'sg docker -c "docker run -v $(pwd):/app python:3.12 pip install {args}"',
             "python -m venv": "# Dockerコンテナを使用してください",
             "nohup": "# systemdサービスまたはDockerで実行",
         }
 
         # ログ設定
         self.logger = logging.getLogger("EnvironmentGuardian")
-        handler = logging.FileHandler("/home/aicompany/ai_co/logs/environment_guardian.log")
-        handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+        handler = logging.FileHandler(
+            "/home/aicompany/ai_co/logs/environment_guardian.log"
+        )
+        handler.setFormatter(
+            logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        )
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.WARNING)
 
@@ -106,7 +116,7 @@ class EnvironmentGuardian:
             "command": command,
             "pattern": pattern,
             "message": message,
-            "severity": self.assess_severity(pattern)
+            "severity": self.assess_severity(pattern),
         }
 
         self.violation_log.append(violation)
@@ -130,7 +140,8 @@ class EnvironmentGuardian:
         """重大な違反に対するアラート"""
         alert_file = Path("/home/aicompany/ai_co/CRITICAL_ENVIRONMENT_ALERT.txt")
         with open(alert_file, "w") as f:
-            f.write(f"""
+            f.write(
+                f"""
 🚨🚨🚨 重大な環境違反検出 🚨🚨🚨
 
 時刻: {violation['timestamp']}
@@ -144,7 +155,8 @@ class EnvironmentGuardian:
 1. このアラートをグランドエルダーmaruに報告
 2. インシデント賢者による原因分析
 3. 再発防止策の実装
-""")
+"""
+            )
 
     def get_violation_report(self) -> str:
         """違反レポートを生成"""
@@ -175,28 +187,33 @@ class EnvironmentGuardian:
 
         return command
 
+
 # グローバルガーディアンインスタンス
 guardian = EnvironmentGuardian()
+
 
 def safe_execute(command: str) -> str:
     """安全なコマンド実行ラッパー"""
     return guardian.enforce_command(command)
 
+
 # Claudeのコマンド実行をフック
 def hook_claude_commands():
     """Claudeの全コマンドをフック（実装例）"""
     import subprocess
+
     original_run = subprocess.run
 
     def safe_run(cmd, *args, **kwargs):
         if isinstance(cmd, str):
             cmd = safe_execute(cmd)
         elif isinstance(cmd, list):
-            cmd[0] = safe_execute(' '.join(cmd)).split()[0]
+            cmd[0] = safe_execute(" ".join(cmd)).split()[0]
 
         return original_run(cmd, *args, **kwargs)
 
     subprocess.run = safe_run
+
 
 if __name__ == "__main__":
     # テスト実行

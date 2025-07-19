@@ -269,12 +269,18 @@ class ConversationSearchEngine:
         recommendations = []
 
         if patterns["completion_rate"] < 80:
-            recommendations.append("完了率が低いため、ユーザー要求の理解を改善する必要があります")
+            recommendations.append(
+                "完了率が低いため、ユーザー要求の理解を改善する必要があります"
+            )
 
         if patterns["average_messages"] > 15:
-            recommendations.append("平均メッセージ数が多いため、初回の要件確認を強化すべきです")
+            recommendations.append(
+                "平均メッセージ数が多いため、初回の要件確認を強化すべきです"
+            )
 
         if task_types.get("creation", 0) > task_types.get("modification", 0) * 2:
-            recommendations.append("作成タスクが多いため、テンプレート機能を強化すると効率的です")
+            recommendations.append(
+                "作成タスクが多いため、テンプレート機能を強化すると効率的です"
+            )
 
         return recommendations

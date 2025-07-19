@@ -2,6 +2,7 @@
 Incident Sage A2Aプロキシ
 エルダー評議会令第30号に基づく実装
 """
+
 from typing import Any, Dict, List, Optional
 
 from .base_sage_proxy import BaseSageProxy

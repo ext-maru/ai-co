@@ -186,7 +186,9 @@ class SecureGitHubClient:
 
                 return issue
             else:
-                error_msg = f"Issueクローズ失敗: {response.status_code} - {response.text}"
+                error_msg = (
+                    f"Issueクローズ失敗: {response.status_code} - {response.text}"
+                )
                 self.logger.error(error_msg)
                 raise Exception(error_msg)
 
@@ -246,7 +248,9 @@ class SecureGitHubClient:
 
                 return comment_info
             else:
-                error_msg = f"コメント追加失敗: {response.status_code} - {response.text}"
+                error_msg = (
+                    f"コメント追加失敗: {response.status_code} - {response.text}"
+                )
                 self.logger.error(error_msg)
                 raise Exception(error_msg)
 
@@ -312,7 +316,9 @@ class SecureGitHubClient:
 
                 return issues
             else:
-                error_msg = f"Issue一覧取得失敗: {response.status_code} - {response.text}"
+                error_msg = (
+                    f"Issue一覧取得失敗: {response.status_code} - {response.text}"
+                )
                 self.logger.error(error_msg)
                 raise Exception(error_msg)
 
@@ -365,7 +371,9 @@ class SecureGitHubClient:
 
                 return repository
             else:
-                error_msg = f"リポジトリ情報取得失敗: {response.status_code} - {response.text}"
+                error_msg = (
+                    f"リポジトリ情報取得失敗: {response.status_code} - {response.text}"
+                )
                 self.logger.error(error_msg)
                 raise Exception(error_msg)
 

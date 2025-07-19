@@ -121,12 +121,14 @@ class AILogViewer:
     def get_execution_summary(self):
         """実行サマリーを取得"""
         summary = {
-            "command_logs": len(list(self.cmd_logs.glob("*.log")))
-            if self.cmd_logs.exists()
-            else 0,
-            "program_logs": len(list(self.program_logs.glob("*.log")))
-            if self.program_logs.exists()
-            else 0,
+            "command_logs": (
+                len(list(self.cmd_logs.glob("*.log"))) if self.cmd_logs.exists() else 0
+            ),
+            "program_logs": (
+                len(list(self.program_logs.glob("*.log")))
+                if self.program_logs.exists()
+                else 0
+            ),
             "failed_programs": len(self.get_failed_programs()),
             "latest_activity": None,
         }

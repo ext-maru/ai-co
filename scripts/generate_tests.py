@@ -87,7 +87,9 @@ class TestGenerator:
     def _get_test_file_path(self, source_file_path: Path, test_type: str) -> Path:
         """テストファイルのパスを生成"""
         relative_path = source_file_path.relative_to(self.project_root)
-        test_dir = self.unit_tests_dir if test_type == "unit" else self.integration_tests_dir
+        test_dir = (
+            self.unit_tests_dir if test_type == "unit" else self.integration_tests_dir
+        )
 
         # ディレクトリ構造を保持
         if "workers" in relative_path.parts:
@@ -261,7 +263,9 @@ if __name__ == "__main__":
             self._create_integration_test_file(integration_file)
 
         # TODO: 既存の統合テストに新しいワーカーのテストを追加
-        print(f"{EMOJI['info']} 統合テストへの追加は手動で行ってください: {integration_file}")
+        print(
+            f"{EMOJI['info']} 統合テストへの追加は手動で行ってください: {integration_file}"
+        )
 
     def _create_integration_test_file(self, file_path: Path):
         """統合テストファイルを作成"""

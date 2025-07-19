@@ -107,17 +107,23 @@ class PgVectorIntegrationPrep:
             if env_check["postgresql_available"]:
                 try:
                     # PostgreSQL接続テスト
-                    test_result = subprocess.run(["psql", "--version"], capture_output=True, text=True)
+                    test_result = subprocess.run(
+                        ["psql", "--version"], capture_output=True, text=True
+                    )
 
                     if test_result.returncode == 0:
                         env_check["postgresql_version"] = test_result.stdout.strip()
 
                     # pgvector拡張の確認は後で実装
                     env_check["pgvector_available"] = False
-                    env_check["issues"].append("pgvector extension check requires database connection")
+                    env_check["issues"].append(
+                        "pgvector extension check requires database connection"
+                    )
 
                 except Exception as e:
-                    env_check["issues"].append(f"PostgreSQL connection test failed: {e}")
+                    env_check["issues"].append(
+                        f"PostgreSQL connection test failed: {e}"
+                    )
 
             # システムリソース確認
             try:
@@ -130,7 +136,9 @@ class PgVectorIntegrationPrep:
                     "disk_free": psutil.disk_usage("/").free,
                 }
             except ImportError:
-                env_check["issues"].append("psutil not available for system resource check")
+                env_check["issues"].append(
+                    "psutil not available for system resource check"
+                )
 
             env_check["status"] = "completed"
             self.preparation_stages["environment_check"] = True
@@ -146,7 +154,12 @@ class PgVectorIntegrationPrep:
         """依存関係チェック"""
         print("  📦 依存関係チェックを実行中...")
 
-        dep_check = {"status": "checking", "required_packages": {}, "missing_packages": [], "installation_commands": []}
+        dep_check = {
+            "status": "checking",
+            "required_packages": {},
+            "missing_packages": [],
+            "installation_commands": [],
+        }
 
         # 必要なパッケージリスト
         required_packages = {
@@ -160,9 +173,15 @@ class PgVectorIntegrationPrep:
         for package, description in required_packages.items():
             try:
                 __import__(package.replace("-", "_"))
-                dep_check["required_packages"][package] = {"status": "available", "description": description}
+                dep_check["required_packages"][package] = {
+                    "status": "available",
+                    "description": description,
+                }
             except ImportError:
-                dep_check["required_packages"][package] = {"status": "missing", "description": description}
+                dep_check["required_packages"][package] = {
+                    "status": "missing",
+                    "description": description,
+                }
                 dep_check["missing_packages"].append(package)
                 dep_check["installation_commands"].append(f"pip install {package}")
 
@@ -173,7 +192,9 @@ class PgVectorIntegrationPrep:
             dep_check["status"] = "incomplete"
             dep_check["installation_commands"].insert(0, "# Install missing packages:")
 
-        self._log_stage("Dependency check", dep_check["status"], dep_check["missing_packages"])
+        self._log_stage(
+            "Dependency check", dep_check["status"], dep_check["missing_packages"]
+        )
         return dep_check
 
     def _create_migration_plan(self) -> Dict[str, Any]:
@@ -447,14 +468,18 @@ def main():
     print("\n📊 準備状況サマリー")
     print("-" * 40)
     print(f"総合状況: {preparation_results['overall_status'].upper()}")
-    print(f"完了段階: {sum(prep_system.preparation_stages.values())}/{len(prep_system.preparation_stages)}")
+    print(
+        f"完了段階: {sum(prep_system.preparation_stages.values())}/{len(prep_system.preparation_stages)}"
+    )
 
     # 各段階の詳細
     print("\n🔍 段階別状況")
     print("-" * 40)
     for stage, result in preparation_results["stages"].items():
         status_icon = (
-            "✅" if result["status"] in ["completed", "prepared"] else "⚠️" if result["status"] == "incomplete" else "❌"
+            "✅"
+            if result["status"] in ["completed", "prepared"]
+            else "⚠️" if result["status"] == "incomplete" else "❌"
         )
         print(f"{status_icon} {stage}: {result['status'].upper()}")
 
@@ -478,7 +503,11 @@ def main():
     prep_system.save_configuration(preparation_results)
 
     # 詳細レポート保存
-    report_file = PROJECT_ROOT / "logs" / f"pgvector_prep_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    report_file = (
+        PROJECT_ROOT
+        / "logs"
+        / f"pgvector_prep_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
     with open(report_file, "w", encoding="utf-8") as f:
         json.dump(preparation_results, f, indent=2, ensure_ascii=False, default=str)
 

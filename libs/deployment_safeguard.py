@@ -123,7 +123,9 @@ class DeploymentSafeguard:
                     if len(line) > 3:
                         file_path = line[3:]
                         if file_path in self.critical_files:
-                            checks.append(f"🚨 重要ファイルに未コミット変更: {file_path}")
+                            checks.append(
+                                f"🚨 重要ファイルに未コミット変更: {file_path}"
+                            )
             else:
                 checks.append("✅ Git作業ディレクトリクリーン")
 
@@ -389,9 +391,11 @@ class DeploymentSafeguard:
             status["critical_files_status"][rel_path] = {
                 "exists": file_path.exists(),
                 "size": file_path.stat().st_size if file_path.exists() else 0,
-                "writable": file_path.is_file() and os.access(file_path, os.W_OK)
-                if file_path.exists()
-                else False,
+                "writable": (
+                    file_path.is_file() and os.access(file_path, os.W_OK)
+                    if file_path.exists()
+                    else False
+                ),
             }
 
         return status

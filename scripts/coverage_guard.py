@@ -54,7 +54,10 @@ class CoverageGuard:
             print("\n📁 ファイル別カバレッジ（低い順）:")
 
             # カバレッジでソート
-            sorted_files = sorted(files_data.items(), key=lambda x: x[1].get("summary", {}).get("percent_covered", 0))
+            sorted_files = sorted(
+                files_data.items(),
+                key=lambda x: x[1].get("summary", {}).get("percent_covered", 0),
+            )
 
             # 下位10ファイルを表示
             for file_path, file_data in sorted_files[:10]:
@@ -79,10 +82,20 @@ class CoverageGuard:
 
         try:
             # カバレッジ測定コマンド
-            cmd = [sys.executable, "-m", "pytest", "--cov=.", "--cov-report=json", "--cov-report=term", "-q"]
+            cmd = [
+                sys.executable,
+                "-m",
+                "pytest",
+                "--cov=.",
+                "--cov-report=json",
+                "--cov-report=term",
+                "-q",
+            ]
 
             # テスト実行
-            result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True)
+            result = subprocess.run(
+                cmd, cwd=PROJECT_ROOT, capture_output=True, text=True
+            )
 
             # 結果確認（テストが失敗してもカバレッジは測定される）
             if result.returncode not in [0, 1]:
@@ -131,7 +144,12 @@ class CoverageGuard:
             color = "red"
 
         # バッジデータ
-        badge_data = {"schemaVersion": 1, "label": "coverage", "message": f"{coverage:.1f}%", "color": color}
+        badge_data = {
+            "schemaVersion": 1,
+            "label": "coverage",
+            "message": f"{coverage:.1f}%",
+            "color": color,
+        }
 
         badge_file = PROJECT_ROOT / "coverage_badge.json"
         with open(badge_file, "w") as f:
@@ -152,7 +170,11 @@ class CoverageGuard:
             if file_coverage < self.min_coverage:
                 missing_lines = file_data.get("missing_lines", [])
                 low_coverage_files.append(
-                    {"path": file_path, "coverage": file_coverage, "missing_lines": len(missing_lines)}
+                    {
+                        "path": file_path,
+                        "coverage": file_coverage,
+                        "missing_lines": len(missing_lines),
+                    }
                 )
 
         # カバレッジが低い順にソート
@@ -170,8 +192,15 @@ class CoverageGuard:
 def main():
     """メイン実行関数"""
     parser = argparse.ArgumentParser(description="📊 テストカバレッジ監視騎士")
-    parser.add_argument("--min-coverage", type=float, default=80.0, help="最小カバレッジ閾値（デフォルト: 80.0%）")
-    parser.add_argument("--generate-badge", action="store_true", help="カバレッジバッジを生成")
+    parser.add_argument(
+        "--min-coverage",
+        type=float,
+        default=80.0,
+        help="最小カバレッジ閾値（デフォルト: 80.0%）",
+    )
+    parser.add_argument(
+        "--generate-badge", action="store_true", help="カバレッジバッジを生成"
+    )
     parser.add_argument("--suggest", action="store_true", help="改善提案を表示")
 
     args = parser.parse_args()

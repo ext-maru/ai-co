@@ -23,8 +23,9 @@ from libs.elder_flow_error_handler import (
     CouncilReportError,
     RetryConfig,
     ElderFlowErrorHandler,
-    with_error_handling
+    with_error_handling,
 )
+
 
 # Elder Flow Status
 class FlowStatus(Enum):
@@ -37,6 +38,7 @@ class FlowStatus(Enum):
     COMPLETED = "completed"
     FAILED = "failed"
     ABORTED = "aborted"
+
 
 # Elder Flow Task
 class ElderFlowTask:
@@ -55,11 +57,13 @@ class ElderFlowTask:
         self.logs = []
 
     def add_log(self, message: str, level: str = "info"):
-        self.logs.append({
-            "timestamp": datetime.now().isoformat(),
-            "level": level,
-            "message": message
-        })
+        self.logs.append(
+            {
+                "timestamp": datetime.now().isoformat(),
+                "level": level,
+                "message": message,
+            }
+        )
 
     def to_dict(self) -> Dict:
         return {
@@ -73,8 +77,9 @@ class ElderFlowTask:
             "quality_results": self.quality_results,
             "council_report": self.council_report,
             "git_commit_id": self.git_commit_id,
-            "logs": self.logs
+            "logs": self.logs,
         }
+
 
 # Sage Council Interface
 class SageCouncilSystem:
@@ -83,11 +88,13 @@ class SageCouncilSystem:
             "knowledge": "Knowledge Sage - 知識の賢者",
             "task": "Task Sage - タスクの賢者",
             "incident": "Incident Sage - インシデントの賢者",
-            "rag": "RAG Sage - 検索の賢者"
+            "rag": "RAG Sage - 検索の賢者",
         }
         self.logger = logging.getLogger(__name__)
 
-    async def consult_sage(self, sage_type: str, query: str, context: Dict = None) -> Dict:
+    async def consult_sage(
+        self, sage_type: str, query: str, context: Dict = None
+    ) -> Dict:
         """賢者に相談する"""
         if sage_type not in self.sages:
             raise SageConsultationError(sage_type, f"Unknown sage type: {sage_type}")
@@ -104,13 +111,15 @@ class SageCouncilSystem:
                 "query": query,
                 "advice": advice,
                 "confidence": advice.get("confidence", 0.8),
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
             }
         except Exception as e:
             self.logger.error(f"Sage consultation failed: {e}")
             raise SageConsultationError(sage_type, str(e), {"query": query})
 
-    async def _generate_sage_advice(self, sage_type: str, query: str, context: Dict = None) -> Dict:
+    async def _generate_sage_advice(
+        self, sage_type: str, query: str, context: Dict = None
+    ) -> Dict:
         """賢者の専門知識に基づいた助言を生成"""
         # 実際の4賢者システムを使用
         from libs.elder_flow_four_sages_complete import ElderFlowFourSagesComplete
@@ -123,7 +132,7 @@ class SageCouncilSystem:
             "task_description": query,
             "task_type": context.get("task_type", "general"),
             "priority": context.get("priority", "medium"),
-            "context": context
+            "context": context,
         }
 
         # 4賢者に相談
@@ -139,12 +148,11 @@ class SageCouncilSystem:
             return sage_response
         else:
             # フォールバック（何らかの理由で賢者が応答しなかった場合）
-            return {
-                "error": f"{sage_type} sage not available",
-                "confidence": 0.0
-            }
+            return {"error": f"{sage_type} sage not available", "confidence": 0.0}
 
-    async def hold_council_meeting(self, task_description: str, context: Dict = None) -> Dict:
+    async def hold_council_meeting(
+        self, task_description: str, context: Dict = None
+    ) -> Dict:
         """4賢者会議を開催"""
         self.logger.info("🏛️ Holding Elder Council Meeting")
 
@@ -165,7 +173,7 @@ class SageCouncilSystem:
             "individual_advice": council_results,
             "integrated_advice": integrated_advice,
             "meeting_time": datetime.now().isoformat(),
-            "consensus_reached": True
+            "consensus_reached": True,
         }
 
     def _integrate_sage_advice(self, council_results: Dict) -> Dict:
@@ -177,9 +185,10 @@ class SageCouncilSystem:
             "key_considerations": [
                 "Security validation at each step",
                 "Performance monitoring",
-                "Comprehensive testing"
-            ]
+                "Comprehensive testing",
+            ],
         }
+
 
 # Elder Flow Orchestrator
 class ElderFlowOrchestrator:
@@ -197,9 +206,11 @@ class ElderFlowOrchestrator:
             "principle": "NO MOCKS, ONLY REAL IMPLEMENTATIONS",
             "philosophy": "根本解決のみ、場当たり的対応禁止",
             "enforcement": "すべての実装は実際に動作する本物でなければならない",
-            "exceptions": "なし - モックは一切許可されない"
+            "exceptions": "なし - モックは一切許可されない",
         }
-        self.logger.info("🚫 MOCK PROHIBITION POLICY ACTIVE - Only real implementations allowed")
+        self.logger.info(
+            "🚫 MOCK PROHIBITION POLICY ACTIVE - Only real implementations allowed"
+        )
 
     async def execute_task(self, description: str, priority: str = "medium") -> str:
         """メインフロー実行"""
@@ -239,8 +250,8 @@ class ElderFlowOrchestrator:
                 {
                     "task_id": task_id,
                     "description": task.description,
-                    "phase": task.status.value
-                }
+                    "phase": task.status.value,
+                },
             )
 
             if recovery_result:
@@ -261,8 +272,7 @@ class ElderFlowOrchestrator:
         @self.error_handler.retry_async(retry_config)
         async def council_with_retry():
             return await self.sage_council.hold_council_meeting(
-                task.description,
-                {"task_id": task.task_id}
+                task.description, {"task_id": task.task_id}
             )
 
         council_results = await council_with_retry()
@@ -284,18 +294,18 @@ class ElderFlowOrchestrator:
             {
                 "phase": "setup",
                 "description": "Test environment setup",
-                "estimated_time": "30 minutes"
+                "estimated_time": "30 minutes",
             },
             {
                 "phase": "implementation",
                 "description": "Core feature implementation",
-                "estimated_time": "2 hours"
+                "estimated_time": "2 hours",
             },
             {
                 "phase": "testing",
                 "description": "Comprehensive testing",
-                "estimated_time": "1 hour"
-            }
+                "estimated_time": "1 hour",
+            },
         ]
 
         task.add_log("✅ Execution plan created")
@@ -335,7 +345,9 @@ class ElderFlowOrchestrator:
                 if result.get("success"):
                     task.add_log(f"✅ Completed: {servant_task.description}")
                 else:
-                    task.add_log(f"⚠️ Failed: {servant_task.description} - {result.get('error', 'Unknown error')}")
+                    task.add_log(
+                        f"⚠️ Failed: {servant_task.description} - {result.get('error', 'Unknown error')}"
+                    )
 
                 # 結果を保存
                 task.execution_results = task.execution_results or []
@@ -366,22 +378,22 @@ class ElderFlowOrchestrator:
                 servant_type=ServantType.QUALITY_INSPECTOR,
                 description="Code quality check",
                 command="code_quality_check",
-                arguments={"file_path": ".", "check_all": True}
+                arguments={"file_path": ".", "check_all": True},
             ),
             ServantTask(
                 task_id=str(uuid.uuid4()),
                 servant_type=ServantType.QUALITY_INSPECTOR,
                 description="Security scan",
                 command="security_scan",
-                arguments={"target_path": "."}
+                arguments={"target_path": "."},
             ),
             ServantTask(
                 task_id=str(uuid.uuid4()),
                 servant_type=ServantType.QUALITY_INSPECTOR,
                 description="Lint check",
                 command="lint_check",
-                arguments={"target_path": "."}
-            )
+                arguments={"target_path": "."},
+            ),
         ]
 
         # テスト実行も追加
@@ -392,7 +404,7 @@ class ElderFlowOrchestrator:
                 servant_type=ServantType.TEST_GUARDIAN,
                 description="Run tests with coverage",
                 command="run_test",
-                arguments={"test_path": "tests/", "coverage": True}
+                arguments={"test_path": "tests/", "coverage": True},
             )
         )
 
@@ -402,7 +414,7 @@ class ElderFlowOrchestrator:
             "code_quality": "F",
             "security_scan": "failed",
             "lint_status": "failed",
-            "overall_score": 0
+            "overall_score": 0,
         }
 
         # 各品質チェックを実行
@@ -419,14 +431,20 @@ class ElderFlowOrchestrator:
                 if quality_task.command == "run_test" and result.get("success"):
                     test_results = result.get("results", {})
                     quality_results["test_coverage"] = test_results.get("coverage", 0)
-                    quality_results["test_status"] = "passed" if test_results.get("failed", 1) == 0 else "failed"
+                    quality_results["test_status"] = (
+                        "passed" if test_results.get("failed", 1) == 0 else "failed"
+                    )
 
-                elif quality_task.command == "code_quality_check" and result.get("success"):
+                elif quality_task.command == "code_quality_check" and result.get(
+                    "success"
+                ):
                     quality_results["code_quality"] = result.get("grade", "F")
                     quality_results["quality_score"] = result.get("score", 0)
 
                 elif quality_task.command == "security_scan" and result.get("success"):
-                    quality_results["security_scan"] = result.get("scan_status", "failed")
+                    quality_results["security_scan"] = result.get(
+                        "scan_status", "failed"
+                    )
                     vulnerabilities = result.get("vulnerabilities", {})
                     quality_results["security_issues"] = vulnerabilities.get("total", 0)
 
@@ -437,7 +455,9 @@ class ElderFlowOrchestrator:
                 if result.get("success"):
                     task.add_log(f"✅ {quality_task.description} completed")
                 else:
-                    task.add_log(f"⚠️ {quality_task.description} failed: {result.get('error', 'Unknown error')}")
+                    task.add_log(
+                        f"⚠️ {quality_task.description} failed: {result.get('error', 'Unknown error')}"
+                    )
 
             except Exception as e:
                 task.add_log(f"❌ Error in {quality_task.description}: {str(e)}")
@@ -447,7 +467,9 @@ class ElderFlowOrchestrator:
         if quality_results["test_coverage"] > 0:
             scores.append(min(100, quality_results["test_coverage"]))
         if quality_results["code_quality"] != "F":
-            quality_grade_score = {"A": 100, "B": 85, "C": 70, "D": 55}.get(quality_results["code_quality"], 40)
+            quality_grade_score = {"A": 100, "B": 85, "C": 70, "D": 55}.get(
+                quality_results["code_quality"], 40
+            )
             scores.append(quality_grade_score)
         if quality_results["security_scan"] == "passed":
             scores.append(100)
@@ -459,15 +481,29 @@ class ElderFlowOrchestrator:
         quality_results["overall_score"] = sum(scores) / len(scores) if scores else 0
 
         # 品質基準をチェック
-        if quality_results["test_coverage"] < 80 and quality_results["test_coverage"] > 0:
-            task.add_log(f"⚠️ Warning: Test coverage is low: {quality_results['test_coverage']}%", "warning")
+        if (
+            quality_results["test_coverage"] < 80
+            and quality_results["test_coverage"] > 0
+        ):
+            task.add_log(
+                f"⚠️ Warning: Test coverage is low: {quality_results['test_coverage']}%",
+                "warning",
+            )
 
-        if quality_results["security_scan"] == "failed" and quality_results.get("security_issues", 0) > 0:
-            task.add_log(f"⚠️ Warning: Security issues detected: {quality_results['security_issues']}", "warning")
+        if (
+            quality_results["security_scan"] == "failed"
+            and quality_results.get("security_issues", 0) > 0
+        ):
+            task.add_log(
+                f"⚠️ Warning: Security issues detected: {quality_results['security_issues']}",
+                "warning",
+            )
 
         # 結果を保存
         task.quality_results = quality_results
-        task.add_log(f"✅ Quality check completed - Overall score: {quality_results['overall_score']:.1f}")
+        task.add_log(
+            f"✅ Quality check completed - Overall score: {quality_results['overall_score']:.1f}"
+        )
 
     async def _phase_5_reporting(self, task: ElderFlowTask):
         """Phase 5: 報告（実装版）"""
@@ -487,7 +523,7 @@ class ElderFlowOrchestrator:
             servant_type=ServantType.GIT_KEEPER,
             description="Check Git status",
             command="git_status",
-            arguments={}
+            arguments={},
         )
 
         status_result = await git_servant.execute_task(status_task)
@@ -500,13 +536,15 @@ class ElderFlowOrchestrator:
                 servant_type=ServantType.GIT_KEEPER,
                 description="Stage all changes",
                 command="git_add",
-                arguments={"add_all": True}
+                arguments={"add_all": True},
             )
 
             add_result = await git_servant.execute_task(add_task)
 
             if add_result.get("success"):
-                task.add_log(f"📝 Staged {len(add_result.get('staged_files', []))} files")
+                task.add_log(
+                    f"📝 Staged {len(add_result.get('staged_files', []))} files"
+                )
 
                 # コミットメッセージを生成
                 commit_message = self._generate_commit_message(task)
@@ -517,7 +555,7 @@ class ElderFlowOrchestrator:
                     servant_type=ServantType.GIT_KEEPER,
                     description="Commit changes",
                     command="git_commit",
-                    arguments={"message": commit_message}
+                    arguments={"message": commit_message},
                 )
 
                 commit_result = await git_servant.execute_task(commit_task)
@@ -526,7 +564,10 @@ class ElderFlowOrchestrator:
                     task.git_commit_id = commit_result.get("commit_id")
                     task.add_log(f"📤 Git commit completed: {task.git_commit_id[:8]}")
                 else:
-                    task.add_log(f"⚠️ Git commit failed: {commit_result.get('error', 'Unknown error')}", "warning")
+                    task.add_log(
+                        f"⚠️ Git commit failed: {commit_result.get('error', 'Unknown error')}",
+                        "warning",
+                    )
         else:
             task.add_log("ℹ️ No changes to commit")
 
@@ -547,7 +588,7 @@ class ElderFlowOrchestrator:
             "git_commit_id": task.git_commit_id,
             "recommendations": self._generate_recommendations(task),
             "next_steps": self._generate_next_steps(task),
-            "generated_at": datetime.now().isoformat()
+            "generated_at": datetime.now().isoformat(),
         }
 
         task.add_log("✅ Council report completed")
@@ -583,7 +624,7 @@ class ElderFlowOrchestrator:
             return {
                 "sage_type": error.sage_type,
                 "advice": {"fallback": True, "message": "Using cached wisdom"},
-                "confidence": 0.5
+                "confidence": 0.5,
             }
 
         # 品質ゲートエラーのリカバリー
@@ -611,7 +652,9 @@ class ElderFlowOrchestrator:
                 command = "create_test" if "create" in description else "run_test"
             elif "implement" in description or "code" in description:
                 servant_type = ServantType.CODE_CRAFTSMAN
-                command = "generate_code" if "generate" in description else "create_file"
+                command = (
+                    "generate_code" if "generate" in description else "create_file"
+                )
             elif "quality" in description or "check" in description:
                 servant_type = ServantType.QUALITY_INSPECTOR
                 command = "code_quality_check"
@@ -627,9 +670,9 @@ class ElderFlowOrchestrator:
                 arguments={
                     "file_path": f"generated/{subtask.get('id', 'file')}.py",
                     "content": "# Generated by Elder Flow\n",
-                    "target_module": "generated.module"
+                    "target_module": "generated.module",
                 },
-                priority=5 if subtask.get("priority") == "high" else 3
+                priority=5 if subtask.get("priority") == "high" else 3,
             )
 
             servant_tasks.append(servant_task)
@@ -645,8 +688,8 @@ class ElderFlowOrchestrator:
                     arguments={
                         "code_type": "class",
                         "name": "GeneratedImplementation",
-                        "docstring": "Generated by Elder Flow"
-                    }
+                        "docstring": "Generated by Elder Flow",
+                    },
                 ),
                 ServantTask(
                     task_id=str(uuid.uuid4()),
@@ -656,9 +699,9 @@ class ElderFlowOrchestrator:
                     arguments={
                         "test_file": "tests/test_generated.py",
                         "target_module": "generated",
-                        "target_class": "GeneratedImplementation"
-                    }
-                )
+                        "target_class": "GeneratedImplementation",
+                    },
+                ),
             ]
 
         return servant_tasks
@@ -670,7 +713,11 @@ class ElderFlowOrchestrator:
 
         if "fix" in description_lower or "bug" in description_lower:
             prefix = "fix"
-        elif "feat" in description_lower or "add" in description_lower or "implement" in description_lower:
+        elif (
+            "feat" in description_lower
+            or "add" in description_lower
+            or "implement" in description_lower
+        ):
             prefix = "feat"
         elif "refactor" in description_lower:
             prefix = "refactor"
@@ -690,7 +737,7 @@ class ElderFlowOrchestrator:
 
     def _summarize_execution_results(self, task: ElderFlowTask) -> Dict:
         """実行結果をサマリー"""
-        if not hasattr(task, 'execution_results') or not task.execution_results:
+        if not hasattr(task, "execution_results") or not task.execution_results:
             return {"status": "no_execution", "tasks_completed": 0}
 
         successful_tasks = sum(1 for r in task.execution_results if r.get("success"))
@@ -700,7 +747,11 @@ class ElderFlowOrchestrator:
             "total_tasks": len(task.execution_results),
             "successful_tasks": successful_tasks,
             "failed_tasks": failed_tasks,
-            "success_rate": successful_tasks / len(task.execution_results) if task.execution_results else 0
+            "success_rate": (
+                successful_tasks / len(task.execution_results)
+                if task.execution_results
+                else 0
+            ),
         }
 
     def _summarize_quality_results(self, task: ElderFlowTask) -> Dict:
@@ -713,7 +764,7 @@ class ElderFlowOrchestrator:
             "test_coverage": task.quality_results.get("test_coverage", 0),
             "code_quality": task.quality_results.get("code_quality", "N/A"),
             "security_status": task.quality_results.get("security_scan", "unknown"),
-            "lint_status": task.quality_results.get("lint_status", "unknown")
+            "lint_status": task.quality_results.get("lint_status", "unknown"),
         }
 
     def _generate_recommendations(self, task: ElderFlowTask) -> List[str]:
@@ -724,7 +775,9 @@ class ElderFlowOrchestrator:
         if task.quality_results:
             score = task.quality_results.get("overall_score", 0)
             if score < 60:
-                recommendations.append("品質改善が必要です。コードレビューを実施してください。")
+                recommendations.append(
+                    "品質改善が必要です。コードレビューを実施してください。"
+                )
             elif score < 80:
                 recommendations.append("品質は許容範囲ですが、改善の余地があります。")
 
@@ -735,10 +788,12 @@ class ElderFlowOrchestrator:
                 recommendations.append("セキュリティ問題を解決してください。")
 
         # 実行結果に基づく推奨
-        if hasattr(task, 'execution_results'):
+        if hasattr(task, "execution_results"):
             summary = self._summarize_execution_results(task)
             if summary.get("failed_tasks", 0) > 0:
-                recommendations.append("失敗したタスクを確認し、再実行を検討してください。")
+                recommendations.append(
+                    "失敗したタスクを確認し、再実行を検討してください。"
+                )
 
         if not recommendations:
             recommendations.append("正常に完了しました。次のステップに進めます。")
@@ -751,11 +806,15 @@ class ElderFlowOrchestrator:
 
         # Git操作の結果に基づく
         if task.git_commit_id:
-            next_steps.append("変更がコミットされました。必要に応じてプッシュしてください。")
+            next_steps.append(
+                "変更がコミットされました。必要に応じてプッシュしてください。"
+            )
 
         # 品質スコアに基づく
         if task.quality_results and task.quality_results.get("overall_score", 0) >= 80:
-            next_steps.append("品質基準を満たしています。デプロイの準備ができています。")
+            next_steps.append(
+                "品質基準を満たしています。デプロイの準備ができています。"
+            )
         else:
             next_steps.append("品質改善後、再度品質チェックを実行してください。")
 
@@ -767,17 +826,21 @@ class ElderFlowOrchestrator:
 
         return next_steps
 
-    async def _recover_from_sage_error(self, error: SageConsultationError) -> Optional[Dict]:
+    async def _recover_from_sage_error(
+        self, error: SageConsultationError
+    ) -> Optional[Dict]:
         """賢者相談エラーからの回復"""
         self.logger.warning(f"Recovering from sage error: {error.sage_type}")
         # フォールバック賢者相談結果を返す
         return {
             "sage_type": error.sage_type,
             "advice": {"fallback": True, "message": "Using cached wisdom"},
-            "confidence": 0.5
+            "confidence": 0.5,
         }
 
-    async def _recover_from_quality_error(self, error: QualityGateError) -> Optional[Dict]:
+    async def _recover_from_quality_error(
+        self, error: QualityGateError
+    ) -> Optional[Dict]:
         """品質ゲートエラーからの回復"""
         self.logger.warning(f"Quality gate failed: {error.gate_name}")
         # 品質基準を緩和して再試行を提案
@@ -786,21 +849,22 @@ class ElderFlowOrchestrator:
         return None
 
         self.error_handler.register_recovery_strategy(
-            SageConsultationError,
-            sage_error_recovery
+            SageConsultationError, sage_error_recovery
         )
         self.error_handler.register_recovery_strategy(
-            QualityGateError,
-            quality_gate_recovery
+            QualityGateError, quality_gate_recovery
         )
+
 
 # Global orchestrator instance
 orchestrator = ElderFlowOrchestrator()
+
 
 # CLI Interface Functions
 async def elder_flow_execute(description: str, priority: str = "medium") -> str:
     """Elder Flow実行"""
     return await orchestrator.execute_task(description, priority)
+
 
 async def elder_flow_status(task_id: str = None) -> Dict:
     """Elder Flow状態確認"""
@@ -809,16 +873,20 @@ async def elder_flow_status(task_id: str = None) -> Dict:
     else:
         return {"active_tasks": orchestrator.list_active_tasks()}
 
+
 async def elder_flow_abort(task_id: str) -> bool:
     """Elder Flow中止"""
     return await orchestrator.abort_task(task_id)
+
 
 async def elder_flow_consult(sage_type: str, query: str) -> Dict:
     """賢者相談"""
     return await orchestrator.sage_council.consult_sage(sage_type, query)
 
+
 # Example usage
 if __name__ == "__main__":
+
     async def main():
         # Example execution
         print("🏛️ Elder Flow Orchestrator Test")

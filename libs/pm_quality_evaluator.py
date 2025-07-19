@@ -156,9 +156,9 @@ class PMQualityEvaluator(BaseManager):
             )
 
             # 3. 要件適合度評価
-            evaluation_results[
-                "requirement_compliance"
-            ] = self._evaluate_requirement_compliance(task_data)
+            evaluation_results["requirement_compliance"] = (
+                self._evaluate_requirement_compliance(task_data)
+            )
 
             # 4. エラー率評価
             evaluation_results["error_rate"] = self._evaluate_error_rate(task_data)
@@ -391,7 +391,9 @@ class PMQualityEvaluator(BaseManager):
         pm_approved = evaluation_results.get("pm_approved", False)
 
         if pm_approved:
-            return f"✅ PM承認: 総合スコア {overall_score:.1f}% - 品質基準を満たしています"
+            return (
+                f"✅ PM承認: 総合スコア {overall_score:.1f}% - 品質基準を満たしています"
+            )
 
         # 改善点を特定
         improvements = []
@@ -401,7 +403,9 @@ class PMQualityEvaluator(BaseManager):
 
             if criterion == "error_rate":
                 if current_score < 100 - threshold:  # エラー率は逆転
-                    improvements.append(f"エラー率改善 (現在: {100-current_score:.1f}%)")
+                    improvements.append(
+                        f"エラー率改善 (現在: {100-current_score:.1f}%)"
+                    )
             else:
                 if current_score < threshold:
                     improvements.append(f"{criterion}改善 (現在: {current_score:.1f}%)")

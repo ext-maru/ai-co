@@ -18,7 +18,7 @@ class AITestSuggestionsGenerator:
 
     def __init__(self, coverage_reports_dir: str):
         self.coverage_reports_dir = Path(coverage_reports_dir)
-        self.claude_api_key = os.environ.get('CLAUDE_API_KEY', '')
+        self.claude_api_key = os.environ.get("CLAUDE_API_KEY", "")
 
     def parse_coverage_xml(self, xml_path: Path) -> Dict[str, Any]:
         """カバレッジXMLファイルを解析"""
@@ -27,44 +27,48 @@ class AITestSuggestionsGenerator:
             root = tree.getroot()
 
             # Extract overall coverage
-            line_rate = float(root.attrib.get('line-rate', 0))
-            branch_rate = float(root.attrib.get('branch-rate', 0))
+            line_rate = float(root.attrib.get("line-rate", 0))
+            branch_rate = float(root.attrib.get("branch-rate", 0))
 
             # Extract file-level coverage
             files_coverage = []
-            for package in root.findall('.//package'):
-                for class_elem in package.findall('.//class'):
-                    filename = class_elem.attrib.get('filename', '')
-                    file_line_rate = float(class_elem.attrib.get('line-rate', 0))
+            for package in root.findall(".//package"):
+                for class_elem in package.findall(".//class"):
+                    filename = class_elem.attrib.get("filename", "")
+                    file_line_rate = float(class_elem.attrib.get("line-rate", 0))
 
                     # Find uncovered lines
                     uncovered_lines = []
-                    for line in class_elem.findall('.//line'):
-                        if line.attrib.get('hits', '0') == '0':
-                            uncovered_lines.append(int(line.attrib.get('number', 0)))
+                    for line in class_elem.findall(".//line"):
+                        if line.attrib.get("hits", "0") == "0":
+                            uncovered_lines.append(int(line.attrib.get("number", 0)))
 
-                    files_coverage.append({
-                        'filename': filename,
-                        'line_rate': file_line_rate,
-                        'uncovered_lines': uncovered_lines
-                    })
+                    files_coverage.append(
+                        {
+                            "filename": filename,
+                            "line_rate": file_line_rate,
+                            "uncovered_lines": uncovered_lines,
+                        }
+                    )
 
             return {
-                'overall_line_rate': line_rate,
-                'overall_branch_rate': branch_rate,
-                'files': files_coverage
+                "overall_line_rate": line_rate,
+                "overall_branch_rate": branch_rate,
+                "files": files_coverage,
             }
 
         except Exception as e:
             print(f"Error parsing coverage XML: {e}")
             return {}
 
-    def analyze_uncovered_code(self, filename: str, uncovered_lines: List[int]) -> Dict[str, Any]:
+    def analyze_uncovered_code(
+        self, filename: str, uncovered_lines: List[int]
+    ) -> Dict[str, Any]:
         """カバーされていないコードを分析"""
         suggestions = []
 
         try:
-            with open(filename, 'r') as f:
+            with open(filename, "r") as f:
                 lines = f.readlines()
 
             # Group consecutive uncovered lines
@@ -89,46 +93,55 @@ class AITestSuggestionsGenerator:
                 # Extract code snippet
                 snippet_start = max(0, start_line - 3)
                 snippet_end = min(len(lines), end_line + 2)
-                code_snippet = ''.join(lines[snippet_start:snippet_end])
+                code_snippet = "".join(lines[snippet_start:snippet_end])
 
                 # Determine what kind of test is needed
-                if any('def ' in lines[i-1] for i in group if i > 0):
-                    suggestions.append({
-                        'type': 'function',
-                        'lines': f"{start_line}-{end_line}",
-                        'suggestion': 'Add unit test for this function'
-                    })
-                elif any('if ' in lines[i-1] or 'elif ' in lines[i-1] for i in group if i > 0):
-                    suggestions.append({
-                        'type': 'branch',
-                        'lines': f"{start_line}-{end_line}",
-                        'suggestion': 'Add test case for this conditional branch'
-                    })
-                elif any('except' in lines[i-1] for i in group if i > 0):
-                    suggestions.append({
-                        'type': 'exception',
-                        'lines': f"{start_line}-{end_line}",
-                        'suggestion': 'Add test for exception handling'
-                    })
+                if any("def " in lines[i - 1] for i in group if i > 0):
+                    suggestions.append(
+                        {
+                            "type": "function",
+                            "lines": f"{start_line}-{end_line}",
+                            "suggestion": "Add unit test for this function",
+                        }
+                    )
+                elif any(
+                    "if " in lines[i - 1] or "elif " in lines[i - 1]
+                    for i in group
+                    if i > 0
+                ):
+                    suggestions.append(
+                        {
+                            "type": "branch",
+                            "lines": f"{start_line}-{end_line}",
+                            "suggestion": "Add test case for this conditional branch",
+                        }
+                    )
+                elif any("except" in lines[i - 1] for i in group if i > 0):
+                    suggestions.append(
+                        {
+                            "type": "exception",
+                            "lines": f"{start_line}-{end_line}",
+                            "suggestion": "Add test for exception handling",
+                        }
+                    )
                 else:
-                    suggestions.append({
-                        'type': 'general',
-                        'lines': f"{start_line}-{end_line}",
-                        'suggestion': 'Add test coverage for this code block'
-                    })
+                    suggestions.append(
+                        {
+                            "type": "general",
+                            "lines": f"{start_line}-{end_line}",
+                            "suggestion": "Add test coverage for this code block",
+                        }
+                    )
 
-            return {
-                'filename': filename,
-                'suggestions': suggestions
-            }
+            return {"filename": filename, "suggestions": suggestions}
 
         except Exception as e:
             print(f"Error analyzing file {filename}: {e}")
-            return {'filename': filename, 'suggestions': []}
+            return {"filename": filename, "suggestions": []}
 
     def generate_test_template(self, file_analysis: Dict[str, Any]) -> str:
         """テストテンプレートを生成"""
-        filename = Path(file_analysis['filename']).stem
+        filename = Path(file_analysis["filename"]).stem
         test_filename = f"test_{filename}.py"
 
         template = f"""# Test suggestions for {file_analysis['filename']}
@@ -142,22 +155,22 @@ class Test{filename.title().replace('_', '')}:
 
 """
 
-        for i, suggestion in enumerate(file_analysis['suggestions'], 1):
-            if suggestion['type'] == 'function':
+        for i, suggestion in enumerate(file_analysis["suggestions"], 1):
+            if suggestion["type"] == "function":
                 template += f"""    def test_function_{i}(self):
         \"\"\"Test for function at lines {suggestion['lines']}\"\"\"
         # TODO: Implement test for the function
         pass
 
 """
-            elif suggestion['type'] == 'branch':
+            elif suggestion["type"] == "branch":
                 template += f"""    def test_branch_condition_{i}(self):
         \"\"\"Test for conditional branch at lines {suggestion['lines']}\"\"\"
         # TODO: Test both True and False conditions
         pass
 
 """
-            elif suggestion['type'] == 'exception':
+            elif suggestion["type"] == "exception":
                 template += f"""    def test_exception_handling_{i}(self):
         \"\"\"Test for exception handling at lines {suggestion['lines']}\"\"\"
         # TODO: Test that exceptions are properly handled
@@ -183,8 +196,8 @@ class Test{filename.title().replace('_', '')}:
 """
 
         # Overall coverage
-        line_coverage = coverage_data.get('overall_line_rate', 0) * 100
-        branch_coverage = coverage_data.get('overall_branch_rate', 0) * 100
+        line_coverage = coverage_data.get("overall_line_rate", 0) * 100
+        branch_coverage = coverage_data.get("overall_branch_rate", 0) * 100
 
         report += f"- **Line Coverage**: {line_coverage:.1f}%\n"
         report += f"- **Branch Coverage**: {branch_coverage:.1f}%\n\n"
@@ -198,32 +211,32 @@ class Test{filename.title().replace('_', '')}:
 
         # Files needing attention
         files_below_target = [
-            f for f in coverage_data.get('files', [])
-            if f['line_rate'] * 100 < target_coverage and f['uncovered_lines']
+            f
+            for f in coverage_data.get("files", [])
+            if f["line_rate"] * 100 < target_coverage and f["uncovered_lines"]
         ]
 
         if files_below_target:
             report += "## 📝 Files Needing Test Coverage\n\n"
 
             # Sort by coverage (lowest first)
-            files_below_target.sort(key=lambda x: x['line_rate'])
+            files_below_target.sort(key=lambda x: x["line_rate"])
 
             for file_data in files_below_target[:10]:  # Top 10 files
-                coverage_percent = file_data['line_rate'] * 100
-                uncovered_count = len(file_data['uncovered_lines'])
+                coverage_percent = file_data["line_rate"] * 100
+                uncovered_count = len(file_data["uncovered_lines"])
 
                 report += f"### `{file_data['filename']}` ({coverage_percent:.1f}% coverage)\n"
                 report += f"- **Uncovered lines**: {uncovered_count}\n"
 
                 # Analyze the file
                 analysis = self.analyze_uncovered_code(
-                    file_data['filename'],
-                    file_data['uncovered_lines']
+                    file_data["filename"], file_data["uncovered_lines"]
                 )
 
-                if analysis['suggestions']:
+                if analysis["suggestions"]:
                     report += "- **Suggestions**:\n"
-                    for suggestion in analysis['suggestions'][:5]:  # Top 5 suggestions
+                    for suggestion in analysis["suggestions"][:5]:  # Top 5 suggestions
                         report += f"  - Lines {suggestion['lines']}: {suggestion['suggestion']}\n"
 
                 report += "\n"
@@ -288,7 +301,7 @@ class Test{filename.title().replace('_', '')}:
         report = self.generate_suggestions_report(coverage_data)
 
         # Save report
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             f.write(report)
 
         print(f"✅ Test suggestions saved to {output_file}")
@@ -298,10 +311,12 @@ class Test{filename.title().replace('_', '')}:
 
 def main():
     parser = argparse.ArgumentParser(description="Generate AI-powered test suggestions")
-    parser.add_argument("--coverage-reports", required=True,
-                       help="Directory containing coverage reports")
-    parser.add_argument("--output", required=True,
-                       help="Output file for suggestions")
+    parser.add_argument(
+        "--coverage-reports",
+        required=True,
+        help="Directory containing coverage reports",
+    )
+    parser.add_argument("--output", required=True, help="Output file for suggestions")
 
     args = parser.parse_args()
 

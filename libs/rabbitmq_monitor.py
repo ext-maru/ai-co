@@ -228,7 +228,9 @@ class RabbitMQMonitor:
 
             if result.fixed_issues:
                 self.logger.info("設定の自動修正を実行しました")
-                self._trigger_alerts("auto_fix", f"設定を自動修正: {result.fixed_issues}")
+                self._trigger_alerts(
+                    "auto_fix", f"設定を自動修正: {result.fixed_issues}"
+                )
 
             # RabbitMQサービス再起動（権限があれば）
             self._restart_rabbitmq_service()
@@ -249,7 +251,9 @@ class RabbitMQMonitor:
             )
             if result.returncode == 0:
                 self.logger.info("RabbitMQサービスを再起動しました")
-                self._trigger_alerts("service_restart", "RabbitMQサービスを再起動しました")
+                self._trigger_alerts(
+                    "service_restart", "RabbitMQサービスを再起動しました"
+                )
             else:
                 self.logger.error(f"RabbitMQ再起動に失敗: {result.stderr}")
         except Exception as e:

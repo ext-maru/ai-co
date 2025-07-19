@@ -1,0 +1,220 @@
+#!/usr/bin/env python3
+"""
+AI Elder Cast - エルダー魔法詠唱システム
+Elder Flowベースの高度な自動化コマンド
+"""
+
+import argparse
+import asyncio
+import json
+import os
+import sys
+from datetime import datetime
+from typing import Dict, Any
+
+# プロジェクトのルートパスを追加
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, project_root)
+
+try:
+    from libs.four_sages.knowledge.knowledge_sage import KnowledgeSage
+    from libs.four_sages.task.task_sage import TaskSage
+    from libs.four_sages.incident.incident_sage import IncidentSage
+except ImportError as e:
+    print(f"❌ Elder Systems import error: {e}")
+    print("プロジェクトディレクトリで実行してください")
+    exit(1)
+
+
+class ElderCast:
+    """エルダー魔法詠唱システム"""
+    
+    def __init__(self):
+        self.knowledge_sage = KnowledgeSage()
+        self.task_sage = TaskSage()
+        self.incident_sage = IncidentSage()
+        
+        # 詠唱パターン
+        self.spell_patterns = {
+            "知識召喚": "knowledge_summon",
+            "タスク編成": "task_formation", 
+            "問題解決": "problem_solving",
+            "4賢者会議": "four_sages_council",
+        }
+    
+    async def cast_spell(self, spell_name: str, target: str = "", power: str = "medium") -> Dict[str, Any]:
+        """魔法詠唱実行"""
+        print(f"🔮 詠唱開始: {spell_name}")
+        print(f"🎯 対象: {target or '汎用'}")
+        print(f"⚡ 魔力: {power}")
+        print()
+        
+        spell_type = self.spell_patterns.get(spell_name, "unknown")
+        
+        if spell_type == "knowledge_summon":
+            return await self._cast_knowledge_summon(target)
+        elif spell_type == "task_formation":
+            return await self._cast_task_formation(target, power)
+        elif spell_type == "problem_solving":
+            return await self._cast_problem_solving(target, power)
+        elif spell_type == "four_sages_council":
+            return await self._cast_four_sages_council(target)
+        else:
+            return await self._cast_custom_spell(spell_name, target, power)
+    
+    async def _cast_knowledge_summon(self, query: str) -> Dict[str, Any]:
+        """知識召喚の術"""
+        print("📚 Knowledge Sage召喚中...")
+        result = await self.knowledge_sage.process_request({
+            "type": "search",
+            "query": query,
+            "limit": 5
+        })
+        
+        print("✨ 知識召喚完了:")
+        if result.get("entries"):
+            for i, entry in enumerate(result["entries"][:3], 1):
+                print(f"  {i}. {entry.get('title', 'Untitled')}")
+                print(f"     {entry.get('content', '')[:100]}...")
+        else:
+            print(f"  結果: {result.get('status', 'Unknown')}")
+        
+        return result
+    
+    async def _cast_task_formation(self, task_desc: str, power: str) -> Dict[str, Any]:
+        """タスク編成の術"""
+        print("📋 Task Sage召喚中...")
+        result = await self.task_sage.process_request({
+            "type": "create_plan", 
+            "title": task_desc,
+            "priority": power
+        })
+        
+        print("✨ タスク編成完了:")
+        print(f"  状態: {result.get('status', 'Unknown')}")
+        if result.get('plan_id'):
+            print(f"  計画ID: {result['plan_id']}")
+        
+        return result
+    
+    async def _cast_problem_solving(self, problem: str, power: str) -> Dict[str, Any]:
+        """問題解決の術"""
+        print("🚨 Incident Sage召喚中...")
+        result = await self.incident_sage.process_request({
+            "type": "analyze_problem",
+            "problem": problem,
+            "severity": power
+        })
+        
+        print("✨ 問題分析完了:")
+        print(f"  状態: {result.get('status', 'Unknown')}")
+        if result.get('analysis'):
+            print(f"  分析結果: {result['analysis'][:100]}...")
+        
+        return result
+    
+    async def _cast_four_sages_council(self, topic: str) -> Dict[str, Any]:
+        """4賢者会議の術"""
+        print("🧙‍♂️ 4賢者評議会招集中...")
+        
+        # 各賢者からの意見収集
+        sages = [
+            ("ナレッジ賢者", self.knowledge_sage),
+            ("タスク賢者", self.task_sage), 
+            ("インシデント賢者", self.incident_sage)
+        ]
+        
+        council_result = {
+            "topic": topic,
+            "timestamp": datetime.now().isoformat(),
+            "participants": [name for name, _ in sages],
+            "opinions": []
+        }
+        
+        for sage_name, sage in sages:
+            try:
+                result = await sage.process_request({
+                    "type": "health_check"
+                })
+                status = result.get("status", "unknown")
+                opinion = f"{sage_name}: {status} - {topic}について対応可能"
+            except Exception as e:
+                opinion = f"{sage_name}: 応答なし ({str(e)[:30]})"
+            
+            council_result["opinions"].append(opinion)
+        
+        print("✨ 4賢者評議会完了:")
+        for opinion in council_result["opinions"]:
+            print(f"  {opinion}")
+        
+        return council_result
+    
+    async def _cast_custom_spell(self, spell_name: str, target: str, power: str) -> Dict[str, Any]:
+        """カスタム魔法"""
+        print(f"🔮 カスタム魔法: {spell_name}")
+        
+        # 4賢者会議でカスタム魔法を検討
+        result = await self._cast_four_sages_council(f"カスタム魔法: {spell_name} - {target}")
+        
+        print("✨ カスタム魔法完了")
+        return {
+            "spell_name": spell_name,
+            "target": target,
+            "power": power,
+            "result": result,
+            "status": "completed"
+        }
+
+
+async def main():
+    parser = argparse.ArgumentParser(
+        description="AI Elder Cast - エルダー魔法詠唱システム",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+🔮 利用可能な魔法:
+  知識召喚       - 知識ベースからの情報召喚
+  タスク編成     - タスクの自動計画・実行
+  問題解決       - 問題分析と解決策提案
+  4賢者会議      - 4賢者による合議制判断
+
+📖 使用例:
+  # 知識召喚
+  ai-elder-cast 知識召喚 "Docker設定" --power high
+  
+  # 4賢者会議
+  ai-elder-cast 4賢者会議 "プロジェクト方針検討"
+  
+  # 問題解決
+  ai-elder-cast 問題解決 "システム障害" --power critical
+""")
+    
+    parser.add_argument("spell", help="詠唱する魔法名")
+    parser.add_argument("target", nargs="?", default="", help="魔法の対象")
+    parser.add_argument("--power", choices=["low", "medium", "high", "critical"], 
+                       default="medium", help="魔力レベル")
+    parser.add_argument("--json", action="store_true", help="JSON形式で結果出力")
+    
+    args = parser.parse_args()
+    
+    elder_cast = ElderCast()
+    
+    try:
+        result = await elder_cast.cast_spell(args.spell, args.target, args.power)
+        
+        if args.json:
+            print(json.dumps(result, indent=2, ensure_ascii=False))
+        else:
+            print(f"\n🎉 魔法詠唱結果:")
+            print(f"  状態: {result.get('status', 'completed')}")
+            if result.get('message'):
+                print(f"  メッセージ: {result['message']}")
+    
+    except Exception as e:
+        print(f"❌ 魔法詠唱失敗: {str(e)}")
+        if args.json:
+            print(json.dumps({"status": "error", "error": str(e)}, indent=2))
+        exit(1)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

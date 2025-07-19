@@ -626,7 +626,8 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
 
             system_healthy = (
                 recovery_rate >= 95.0
-                and recent_errors <= 10  # 95%以上の復旧率  # 1時間以内のエラーが10件以下
+                and recent_errors
+                <= 10  # 95%以上の復旧率  # 1時間以内のエラーが10件以下
             )
 
             return {

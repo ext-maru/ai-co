@@ -13,7 +13,8 @@ import json
 
 # Elder Flow関連のインポート
 import sys
-sys.path.append('/home/aicompany/ai_co')
+
+sys.path.append("/home/aicompany/ai_co")
 from libs.elder_flow_violation_resolver import ElderFlowViolationResolver
 from libs.elder_flow_core_enhancement import ElderFlowCoreEnhancement
 from libs.claude_task_tracker import ClaudeTaskTracker
@@ -40,28 +41,30 @@ class BatchAbstractMethodFixer:
         cursor = conn.cursor()
 
         # ファイルごとに違反を取得
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT file_path, class_name, missing_method, severity
             FROM violations
             WHERE status = 'open'
             ORDER BY file_path, class_name, missing_method
-        """)
+        """
+        )
 
         violations_by_file = {}
         for row in cursor.fetchall():
             file_path, class_name, method, severity = row
             if file_path not in violations_by_file:
                 violations_by_file[file_path] = []
-            violations_by_file[file_path].append({
-                "class": class_name,
-                "method": method,
-                "severity": severity
-            })
+            violations_by_file[file_path].append(
+                {"class": class_name, "method": method, "severity": severity}
+            )
 
         conn.close()
         return violations_by_file
 
-    async def create_batch_tasks(self, violations_by_file: Dict[str, List[Dict]]) -> List[str]:
+    async def create_batch_tasks(
+        self, violations_by_file: Dict[str, List[Dict]]
+    ) -> List[str]:
         """バッチタスクを作成"""
         task_ids = []
 
@@ -78,13 +81,15 @@ class BatchAbstractMethodFixer:
             details += "実装が必要なメソッド:\n"
 
             for v in violations:
-                details += f"  - {v['class']}.{v['method']} (severity: {v['severity']})\n"
+                details += (
+                    f"  - {v['class']}.{v['method']} (severity: {v['severity']})\n"
+                )
 
             task_id = await self.task_tracker.create_task(
                 title=task_description,
                 description=details,
                 priority="high",
-                tags=["abstract_method", "elder_flow", "batch_fix"]
+                tags=["abstract_method", "elder_flow", "batch_fix"],
             )
 
             task_ids.append(task_id)
@@ -99,16 +104,16 @@ class BatchAbstractMethodFixer:
 
         try:
             # ファイルを読み込み
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 content = f.read()
 
             # クラスごとに違反をグループ化
             violations_by_class = {}
             for v in violations:
-                class_name = v['class']
+                class_name = v["class"]
                 if class_name not in violations_by_class:
                     violations_by_class[class_name] = []
-                violations_by_class[class_name].append(v['method'])
+                violations_by_class[class_name].append(v["method"])
 
             # 各クラスの修正を実行
             modified = False
@@ -147,16 +152,14 @@ class BatchAbstractMethodFixer:
         cursor = conn.cursor()
 
         for v in violations:
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE violations
                 SET status = 'resolved', fixed_at = ?
                 WHERE file_path = ? AND class_name = ? AND missing_method = ?
-            """, (
-                datetime.now().isoformat(),
-                file_path,
-                v['class'],
-                v['method']
-            ))
+            """,
+                (datetime.now().isoformat(), file_path, v["class"], v["method"]),
+            )
 
         conn.commit()
         conn.close()
@@ -190,10 +193,13 @@ class BatchAbstractMethodFixer:
 **承認**: エルダーズギルド評議会
 """
 
-        report_path = Path("knowledge_base/elder_flow_reports") / f"batch_fix_{end_time.strftime('%Y%m%d_%H%M%S')}.md"
+        report_path = (
+            Path("knowledge_base/elder_flow_reports")
+            / f"batch_fix_{end_time.strftime('%Y%m%d_%H%M%S')}.md"
+        )
         report_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(report_path, 'w') as f:
+        with open(report_path, "w") as f:
             f.write(report)
 
         print(f"\n📄 レポート生成: {report_path}")

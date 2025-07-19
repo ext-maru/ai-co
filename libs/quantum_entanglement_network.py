@@ -7,8 +7,10 @@ import json
 from datetime import datetime
 from typing import Dict, List, Any
 
+
 class QuantumEntangledPair:
     """量子もつれペア"""
+
     def __init__(self, pair_id: str):
         self.pair_id = pair_id
         self.state_a = None
@@ -19,6 +21,7 @@ class QuantumEntangledPair:
         """粒子Aの測定"""
         if self.state_a is None:
             import random
+
             self.state_a = random.choice([0, 1])
             self.state_b = 1 - self.state_a  # 反対の状態
         return self.state_a
@@ -27,9 +30,11 @@ class QuantumEntangledPair:
         """粒子Bの測定"""
         if self.state_b is None:
             import random
+
             self.state_b = random.choice([0, 1])
             self.state_a = 1 - self.state_b  # 反対の状態
         return self.state_b
+
 
 class QuantumCommunicationNetwork:
     """量子通信ネットワーク"""
@@ -45,11 +50,13 @@ class QuantumCommunicationNetwork:
             "pair": QuantumEntangledPair(pair_id),
             "node_a": node_a,
             "node_b": node_b,
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
         return pair_id
 
-    async def quantum_teleport_message(self, pair_id: str, message: str) -> Dict[str, Any]:
+    async def quantum_teleport_message(
+        self, pair_id: str, message: str
+    ) -> Dict[str, Any]:
         """量子テレポーテーション通信"""
         if pair_id not in self.entangled_pairs:
             return {"error": "Entangled pair not found"}
@@ -85,7 +92,8 @@ class QuantumCommunicationNetwork:
             "teleported_data": teleported_data,
             "decoded_bits": decoded_bits,
             "transmission_time": datetime.now().isoformat(),
-            "fidelity": sum(a == b for a, b in zip(encoded_bits, decoded_bits)) / len(encoded_bits)
+            "fidelity": sum(a == b for a, b in zip(encoded_bits, decoded_bits))
+            / len(encoded_bits),
         }
 
         self.communication_log.append(communication_record)
@@ -96,10 +104,18 @@ class QuantumCommunicationNetwork:
         return {
             "active_pairs": len(self.entangled_pairs),
             "total_communications": len(self.communication_log),
-            "average_fidelity": sum(log.get("fidelity", 0) for log in self.communication_log) / max(len(self.communication_log), 1),
-            "network_nodes": list(set([pair["node_a"] for pair in self.entangled_pairs.values()] +
-                                   [pair["node_b"] for pair in self.entangled_pairs.values()]))
+            "average_fidelity": sum(
+                log.get("fidelity", 0) for log in self.communication_log
+            )
+            / max(len(self.communication_log), 1),
+            "network_nodes": list(
+                set(
+                    [pair["node_a"] for pair in self.entangled_pairs.values()]
+                    + [pair["node_b"] for pair in self.entangled_pairs.values()]
+                )
+            ),
         }
+
 
 # デモ実行
 async def quantum_communication_demo():
@@ -114,12 +130,17 @@ async def quantum_communication_demo():
     result = await network.quantum_teleport_message(pair_id, message)
 
     print("\n📡 Quantum Communication Result:")
-    print(json.dumps({k: v for k, v in result.items() if k not in ["teleported_data"]}, indent=2))
+    print(
+        json.dumps(
+            {k: v for k, v in result.items() if k not in ["teleported_data"]}, indent=2
+        )
+    )
 
     # ネットワーク状態
     status = network.get_network_status()
     print("\n🌐 Network Status:")
     print(json.dumps(status, indent=2))
+
 
 if __name__ == "__main__":
     asyncio.run(quantum_communication_demo())

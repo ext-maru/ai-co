@@ -97,13 +97,20 @@ class PgVectorA2AAnalyzer:
                 "model": "text-embedding-3-small",
                 "dimension": 1536,
             },
-            "analysis": {"default_limit": 20, "similarity_threshold": 0.7, "anomaly_threshold": 0.3, "batch_size": 100},
+            "analysis": {
+                "default_limit": 20,
+                "similarity_threshold": 0.7,
+                "anomaly_threshold": 0.3,
+                "batch_size": 100,
+            },
         }
 
     def connect(self):
         """データベース接続"""
         try:
-            self.connection = psycopg2.connect(**self.config["database"], cursor_factory=RealDictCursor)
+            self.connection = psycopg2.connect(
+                **self.config["database"], cursor_factory=RealDictCursor
+            )
             self.cursor = self.connection.cursor()
 
             # pgvector拡張の確認
@@ -143,7 +150,9 @@ class PgVectorA2AAnalyzer:
 
         try:
             response = self.openai_client.embeddings.create(
-                model=self.config["openai"]["model"], input=text, dimensions=self.config["openai"]["dimension"]
+                model=self.config["openai"]["model"],
+                input=text,
+                dimensions=self.config["openai"]["dimension"],
             )
             return response.data[0].embedding
         except Exception as e:
@@ -248,7 +257,9 @@ class PgVectorA2AAnalyzer:
         """
 
         try:
-            self.cursor.execute(sql, [datetime.now() - recent_window, query.threshold, query.limit])
+            self.cursor.execute(
+                sql, [datetime.now() - recent_window, query.threshold, query.limit]
+            )
 
             anomalies = self.cursor.fetchall()
 
@@ -266,7 +277,9 @@ class PgVectorA2AAnalyzer:
             logger.error(f"Anomaly detection failed: {e}")
             return []
 
-    def analyze_agent_behavior(self, agent_name: str, time_window: Optional[timedelta] = None) -> Dict[str, Any]:
+    def analyze_agent_behavior(
+        self, agent_name: str, time_window: Optional[timedelta] = None
+    ) -> Dict[str, Any]:
         """エージェント行動分析"""
         time_window = time_window or timedelta(days=1)
 
@@ -295,7 +308,15 @@ class PgVectorA2AAnalyzer:
             """
 
             self.cursor.execute(
-                stats_sql, [agent_name, agent_name, agent_name, agent_name, agent_name, datetime.now() - time_window]
+                stats_sql,
+                [
+                    agent_name,
+                    agent_name,
+                    agent_name,
+                    agent_name,
+                    agent_name,
+                    datetime.now() - time_window,
+                ],
             )
 
             stats = self.cursor.fetchone()
@@ -320,7 +341,10 @@ class PgVectorA2AAnalyzer:
                 LIMIT 20
             """
 
-            self.cursor.execute(pattern_sql, [agent_name, agent_name, agent_name, datetime.now() - time_window])
+            self.cursor.execute(
+                pattern_sql,
+                [agent_name, agent_name, agent_name, datetime.now() - time_window],
+            )
 
             patterns = self.cursor.fetchall()
             analysis["interaction_patterns"] = [dict(p) for p in patterns]
@@ -342,7 +366,9 @@ class PgVectorA2AAnalyzer:
             logger.error(f"Agent behavior analysis failed: {e}")
             return analysis
 
-    def find_communication_patterns(self, pattern_description: str, limit: int = 10) -> List[Dict[str, Any]]:
+    def find_communication_patterns(
+        self, pattern_description: str, limit: int = 10
+    ) -> List[Dict[str, Any]]:
         """通信パターンの検索"""
         # パターン説明から埋め込みを生成
         pattern_embedding = self.generate_embedding(pattern_description)
@@ -378,7 +404,13 @@ class PgVectorA2AAnalyzer:
 
         try:
             self.cursor.execute(
-                sql, [pattern_embedding, pattern_embedding, self.config["analysis"]["similarity_threshold"], limit]
+                sql,
+                [
+                    pattern_embedding,
+                    pattern_embedding,
+                    self.config["analysis"]["similarity_threshold"],
+                    limit,
+                ],
             )
 
             patterns = self.cursor.fetchall()
@@ -425,7 +457,8 @@ class PgVectorA2AAnalyzer:
                             {
                                 "time": row["time_bucket"],
                                 "count": row["message_count"],
-                                "deviation": (row["message_count"] - mean_count) / std_count,
+                                "deviation": (row["message_count"] - mean_count)
+                                / std_count,
                             }
                         )
 
@@ -457,7 +490,9 @@ class PgVectorA2AAnalyzer:
             if query.query_type == AnalysisType.SIMILARITY_SEARCH:
                 results = self.semantic_search(query)
                 insights["similar_count"] = len(results)
-                insights["avg_similarity"] = np.mean([r["similarity"] for r in results]) if results else 0
+                insights["avg_similarity"] = (
+                    np.mean([r["similarity"] for r in results]) if results else 0
+                )
 
             elif query.query_type == AnalysisType.ANOMALY_DETECTION:
                 results = self.detect_anomalies(query)
@@ -465,17 +500,25 @@ class PgVectorA2AAnalyzer:
                 insights["severity_distribution"] = {}
                 for r in results:
                     severity = r.get("severity", "unknown")
-                    insights["severity_distribution"][severity] = insights["severity_distribution"].get(severity, 0) + 1
+                    insights["severity_distribution"][severity] = (
+                        insights["severity_distribution"].get(severity, 0) + 1
+                    )
 
             elif query.query_type == AnalysisType.PATTERN_MATCHING:
-                results = self.find_communication_patterns(query.query_text, query.limit)
+                results = self.find_communication_patterns(
+                    query.query_text, query.limit
+                )
                 insights["pattern_count"] = len(results)
-                insights["total_occurrences"] = sum(r["occurrence_count"] for r in results)
+                insights["total_occurrences"] = sum(
+                    r["occurrence_count"] for r in results
+                )
 
             elif query.query_type == AnalysisType.AGENT_BEHAVIOR:
                 agent_name = query.filters.get("agent") if query.filters else None
                 if agent_name:
-                    agent_analysis = self.analyze_agent_behavior(agent_name, query.time_window)
+                    agent_analysis = self.analyze_agent_behavior(
+                        agent_name, query.time_window
+                    )
                     results = [agent_analysis]
                     insights = agent_analysis.get("communication_stats", {})
 
@@ -491,7 +534,9 @@ class PgVectorA2AAnalyzer:
             performance_metrics = {
                 "query_time_ms": (end_time - start_time).total_seconds() * 1000,
                 "result_count": len(results),
-                "cache_hit": cache_key in self.cache if "cache_key" in locals() else False,
+                "cache_hit": (
+                    cache_key in self.cache if "cache_key" in locals() else False
+                ),
             }
 
             return AnalysisResult(
@@ -561,7 +606,9 @@ def demo_analysis():
 
         result = analyzer.execute_analysis(anomaly_query)
         print(f"Detected {result.insights.get('anomaly_count', 0)} anomalies")
-        print(f"Severity distribution: {result.insights.get('severity_distribution', {})}")
+        print(
+            f"Severity distribution: {result.insights.get('severity_distribution', {})}"
+        )
 
         # 3. エージェント行動分析
         print("\n3. Agent Behavior Analysis Demo")
@@ -573,7 +620,9 @@ def demo_analysis():
 
         if agent:
             agent_query = SemanticQuery(
-                query_text="", query_type=AnalysisType.AGENT_BEHAVIOR, filters={"agent": agent["agent_name"]}
+                query_text="",
+                query_type=AnalysisType.AGENT_BEHAVIOR,
+                filters={"agent": agent["agent_name"]},
             )
 
             result = analyzer.execute_analysis(agent_query)
@@ -587,12 +636,16 @@ def demo_analysis():
         print("\n4. Temporal Analysis Demo")
         print("-" * 40)
 
-        temporal_query = SemanticQuery(query_text="", query_type=AnalysisType.TEMPORAL_ANALYSIS)
+        temporal_query = SemanticQuery(
+            query_text="", query_type=AnalysisType.TEMPORAL_ANALYSIS
+        )
 
         result = analyzer.execute_analysis(temporal_query)
         print(f"Trend: {result.insights.get('trend', 'unknown')}")
         print(f"Spike count: {result.insights.get('spike_count', 0)}")
-        print(f"Mean messages per period: {result.insights.get('mean_messages', 0):.2f}")
+        print(
+            f"Mean messages per period: {result.insights.get('mean_messages', 0):.2f}"
+        )
 
     except Exception as e:
         print(f"\n❌ Demo failed: {e}")
@@ -609,7 +662,10 @@ def main():
     parser.add_argument("--demo", action="store_true", help="Run demo analysis")
     parser.add_argument("--query", type=str, help="Semantic search query")
     parser.add_argument(
-        "--type", choices=[t.value for t in AnalysisType], default="similarity_search", help="Analysis type"
+        "--type",
+        choices=[t.value for t in AnalysisType],
+        default="similarity_search",
+        help="Analysis type",
     )
     parser.add_argument("--limit", type=int, default=10, help="Result limit")
     parser.add_argument("--agent", type=str, help="Agent name for behavior analysis")
@@ -626,7 +682,11 @@ def main():
             analyzer.setup_openai()
 
             # クエリ実行
-            query = SemanticQuery(query_text=args.query or "", query_type=AnalysisType(args.type), limit=args.limit)
+            query = SemanticQuery(
+                query_text=args.query or "",
+                query_type=AnalysisType(args.type),
+                limit=args.limit,
+            )
 
             if args.agent:
                 query.filters = {"agent": args.agent}

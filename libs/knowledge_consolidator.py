@@ -301,7 +301,9 @@ class KnowledgeConsolidator(BaseManager):
             # エグゼクティブサマリー
             f.write("## 📊 エグゼクティブサマリー\n\n")
             f.write(f"- **プロジェクトバージョン**: {project_structure['version']}\n")
-            f.write(f"- **総ファイル数**: {project_structure['statistics']['total_files']}\n")
+            f.write(
+                f"- **総ファイル数**: {project_structure['statistics']['total_files']}\n"
+            )
             f.write(f"- **総行数**: {project_structure['statistics']['total_lines']}\n")
             f.write(f"- **ワーカー数**: {len(implementations['workers'])}\n")
             f.write(f"- **マネージャー数**: {len(implementations['managers'])}\n")

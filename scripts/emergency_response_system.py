@@ -77,7 +77,12 @@ class EmergencyResponseSystem:
                 "force_push": "rollback_and_notify",
                 "repository_corruption": "full_restoration",
             },
-            "notification_channels": {"email": True, "slack": True, "log": True, "sms": False},
+            "notification_channels": {
+                "email": True,
+                "slack": True,
+                "log": True,
+                "sms": False,
+            },
             "monitoring": {"enabled": True, "check_interval": 60, "alert_threshold": 5},
         }
 
@@ -109,7 +114,11 @@ class EmergencyResponseSystem:
         """Git コマンドの実行（タイムアウト付き）"""
         try:
             result = subprocess.run(
-                f"git {command}".split(), cwd=self.project_dir, capture_output=True, text=True, timeout=timeout
+                f"git {command}".split(),
+                cwd=self.project_dir,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
             )
             return result
         except subprocess.TimeoutExpired:
@@ -126,9 +135,15 @@ class EmergencyResponseSystem:
             result = self.run_git("branch -a")
             if result.returncode == 0:
                 branches = result.stdout
-                for protected_branch in self.config["git_settings"]["protected_branches"]:
+                for protected_branch in self.config["git_settings"][
+                    "protected_branches"
+                ]:
                     if protected_branch not in branches:
-                        return True, "CRITICAL", f"保護ブランチ '{protected_branch}' が削除されました"
+                        return (
+                            True,
+                            "CRITICAL",
+                            f"保護ブランチ '{protected_branch}' が削除されました",
+                        )
 
             # 2. 強制プッシュの検出
             result = self.run_git("log --oneline -n 10")
@@ -167,7 +182,9 @@ class EmergencyResponseSystem:
             shutil.copytree(
                 self.project_dir,
                 backup_path,
-                ignore=shutil.ignore_patterns("venv", "__pycache__", "*.pyc", ".DS_Store"),
+                ignore=shutil.ignore_patterns(
+                    "venv", "__pycache__", "*.pyc", ".DS_Store"
+                ),
             )
 
             # バックアップの検証
@@ -183,7 +200,12 @@ class EmergencyResponseSystem:
                     backup_list = []
 
                 backup_list.append(
-                    {"name": backup_name, "path": str(backup_path), "timestamp": timestamp, "type": "emergency"}
+                    {
+                        "name": backup_name,
+                        "path": str(backup_path),
+                        "timestamp": timestamp,
+                        "type": "emergency",
+                    }
                 )
 
                 with open(backup_list_file, "w") as f:
@@ -377,7 +399,9 @@ class EmergencyResponseSystem:
                     # ブランチを復旧
                     result = self.run_git(f"checkout -b {protected_branch}")
                     if result.returncode == 0:
-                        self.logger.info(f"✅ ブランチ '{protected_branch}' を復旧しました")
+                        self.logger.info(
+                            f"✅ ブランチ '{protected_branch}' を復旧しました"
+                        )
                     else:
                         self.logger.error(f"ブランチ '{protected_branch}' の復旧に失敗")
                         return False
@@ -408,7 +432,9 @@ class EmergencyResponseSystem:
                         # 該当コミットにリセット
                         reset_result = self.run_git(f"reset --hard {commit_hash}")
                         if reset_result.returncode == 0:
-                            self.logger.info(f"✅ 強制プッシュをロールバックしました: {commit_hash}")
+                            self.logger.info(
+                                f"✅ 強制プッシュをロールバックしました: {commit_hash}"
+                            )
                             return True
 
             self.logger.error("ロールバック対象のコミットが見つかりません")
@@ -426,7 +452,9 @@ class EmergencyResponseSystem:
             if result.returncode != 0:
                 return True  # 競合がない場合は成功
 
-            conflict_files = result.stdout.strip().split("\n") if result.stdout.strip() else []
+            conflict_files = (
+                result.stdout.strip().split("\n") if result.stdout.strip() else []
+            )
 
             if not conflict_files:
                 return True  # 競合がない場合は成功
@@ -512,7 +540,10 @@ class EmergencyResponseSystem:
                 return False
 
             # 現在のリポジトリを一時的にバックアップ
-            temp_backup = self.project_dir.parent / f"temp_corrupted_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            temp_backup = (
+                self.project_dir.parent
+                / f"temp_corrupted_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            )
             shutil.move(str(self.project_dir), str(temp_backup))
 
             # バックアップから復旧
@@ -549,7 +580,9 @@ class EmergencyResponseSystem:
             # 4賢者中3賢者以上の承認が必要
             is_approved = validation_score >= 3
 
-            self.logger.info(f"4賢者緊急検証結果: {validation_score}/4 - {'承認' if is_approved else '拒否'}")
+            self.logger.info(
+                f"4賢者緊急検証結果: {validation_score}/4 - {'承認' if is_approved else '拒否'}"
+            )
 
             return is_approved
 

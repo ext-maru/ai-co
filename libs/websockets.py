@@ -14,7 +14,9 @@ class Websockets:
     """Auto-generated placeholder class"""
 
     def __init__(self, *args, **kwargs):
-        logger.warning(f"Using auto-generated placeholder for {self.__class__.__name__}")
+        logger.warning(
+            f"Using auto-generated placeholder for {self.__class__.__name__}"
+        )
 
     def __getattr__(self, name):
         logger.warning(f"Accessing placeholder attribute: {name}")

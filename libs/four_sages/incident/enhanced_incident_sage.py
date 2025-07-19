@@ -275,9 +275,9 @@ class EnhancedIncidentSage(IncidentSage):
                     "description": f"Risk score: {prediction.risk_score:.2f}, "
                     f"Top factors: {prediction.contributing_factors[:3]}",
                     "category": "system_failure",  # 予測から最も可能性の高いカテゴリ
-                    "severity": "high"
-                    if prediction.risk_level == "critical"
-                    else "medium",
+                    "severity": (
+                        "high" if prediction.risk_level == "critical" else "medium"
+                    ),
                     "tags": ["predicted", "preventive"],
                     "metadata": {
                         "prediction": prediction.to_dict(),

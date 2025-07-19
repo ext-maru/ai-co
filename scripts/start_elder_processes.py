@@ -33,45 +33,46 @@ class ElderProcessManager:
                 "name": "grand_elder",
                 "script": "processes/grand_elder_process.py",
                 "port": 5000,
-                "delay": 0
+                "delay": 0,
             },
             {
                 "name": "claude_elder",
                 "script": "processes/claude_elder_process.py",
                 "port": 5001,
-                "delay": 2  # グランドエルダー起動後2秒待機
+                "delay": 2,  # グランドエルダー起動後2秒待機
             },
             {
                 "name": "knowledge_sage",
                 "script": "processes/knowledge_sage_process.py",
                 "port": 5002,
-                "delay": 1
+                "delay": 1,
             },
             {
                 "name": "task_sage",
                 "script": "processes/task_sage_process.py",
                 "port": 5003,
-                "delay": 1
+                "delay": 1,
             },
             {
                 "name": "incident_sage",
                 "script": "processes/incident_sage_process.py",
                 "port": 5004,
-                "delay": 1
+                "delay": 1,
             },
             {
                 "name": "rag_sage",
                 "script": "processes/rag_sage_process.py",
                 "port": 5005,
-                "delay": 1
-            }
+                "delay": 1,
+            },
         ]
 
     def check_redis(self) -> bool:
         """Redis接続確認"""
         try:
             import redis
-            r = redis.Redis(host='localhost', port=6379)
+
+            r = redis.Redis(host="localhost", port=6379)
             r.ping()
             print("✅ Redis is running")
             return True
@@ -101,13 +102,13 @@ class ElderProcessManager:
             log_file = self.log_dir / f"{name}_launcher.log"
 
             # プロセス起動
-            with open(log_file, 'w') as log:
+            with open(log_file, "w") as log:
                 process = subprocess.Popen(
                     [sys.executable, str(script_path)],
                     stdout=log,
                     stderr=subprocess.STDOUT,
                     cwd=str(PROJECT_ROOT),
-                    env={**os.environ, 'PYTHONPATH': str(PROJECT_ROOT)}
+                    env={**os.environ, "PYTHONPATH": str(PROJECT_ROOT)},
                 )
 
             self.processes[name] = process

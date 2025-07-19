@@ -109,7 +109,7 @@ RAG: 「最適解を発見しました」
 
 # 2. TDD実装
 test_login_success()  # 🔴 Red
-login(user, pass)     # 🟢 Green  
+login(user, pass)     # 🟢 Green
 clean_up_code()       # 🔵 Refactor
 git commit -m "feat: ログイン機能実装"  # 🚀 Ship
 ```
@@ -654,6 +654,97 @@ ai-elf-optimize coverage_boost_batch
 ai-task-status coverage_boost_20250707_232321
 ```
 
+## 📁 プロジェクト構造ルール (2025/7/19制定)
+
+**エルダー評議会令第34号 - プロジェクト構造標準化令**
+
+### 🗂️ ディレクトリ構造
+```
+ai_co/
+├── README.md, CLAUDE.md         # ルートに残す
+├── docs/                        # すべてのドキュメント
+│   ├── reports/                # レポート・分析結果
+│   ├── guides/                 # ガイド・ベストプラクティス
+│   ├── policies/               # ポリシー・プロトコル
+│   └── technical/              # 技術文書
+├── scripts/                    # すべての実行スクリプト
+│   ├── ai-commands/           # AIコマンドツール
+│   ├── monitoring/            # モニタリングスクリプト
+│   ├── analysis/              # 分析ツール
+│   ├── utilities/             # ユーティリティ
+│   ├── deployment/            # デプロイメント
+│   └── testing/               # テスト実行
+├── tests/                      # すべてのテストファイル
+├── libs/                       # ライブラリコード
+├── configs/                    # 設定ファイル
+├── data/                       # データファイル
+├── daily_reports/              # 日次レポート
+├── knowledge_base/             # ナレッジベース
+└── generated_reports/          # 自動生成レポート
+```
+
+### 📋 ファイル配置ルール
+1. **ルートディレクトリ最小化**
+   - 必須ファイルのみ（README.md, CLAUDE.md, Dockerfile等）
+   - その他はすべて適切なサブディレクトリへ
+
+2. **ドキュメント配置**
+   - レポート系 → `docs/reports/`
+   - ガイド系 → `docs/guides/`
+   - ポリシー系 → `docs/policies/`
+   - 技術文書 → `docs/technical/`
+
+3. **スクリプト配置**
+   - 実行可能ファイルは必ず `scripts/` 配下
+   - 用途別にサブディレクトリ分類
+
+4. **テストファイル**
+   - すべての `test_*.py` は `tests/` へ
+   - テストユーティリティも同ディレクトリ
+
+### 🚨 違反時対応
+- インシデント賢者が自動検知
+- クロードエルダーが即座に修正
+- 知識ベースに記録
+
+## 📋 Issue文書管理規則 (2025/7/19制定)
+
+**エルダー評議会令第35号 - Issue文書管理標準化令**
+
+### 🎯 基本原則
+1. **Issue化 = 専用ディレクトリ移動**
+   - GitHub Issue登録時に `/docs/issues/` へ移動
+   - 計画書の分散防止
+
+2. **命名規則**
+   - ディレクトリ: `issue-{番号}-{説明}`
+   - 単独文書: `issue-{番号}-{説明}.md`
+   - 例: `issue-93-oss-migration/`
+
+3. **文書整理タイミング**
+   - Issue作成時: 即座に移動
+   - 週次レビュー: 整理状況確認
+   - Issue完了時: `/docs/completed/` へアーカイブ
+
+### 📁 ディレクトリ構造
+```
+docs/issues/
+├── issue-93-oss-migration/     # 大規模プロジェクト
+│   ├── README.md              # 概要
+│   ├── progress.md            # 進捗
+│   └── *.md                   # 関連文書
+└── issue-5-subissues.md       # 単独文書
+```
+
+### ⚡ クロードエルダー必須対応
+1. Issue化確認時に自動で文書移動
+2. 重複文書の統合
+3. 定期的な整理状況レポート
+
+**詳細**: [Issue文書整理ガイド](docs/guides/ISSUE_DOCUMENT_ORGANIZATION_GUIDE.md)
+
 ---
 **Remember: No Code Without Test! 🧪**
-**最新更新: 2025年7月19日 - XP (Extreme Programming) 採用**
+**Iron Will: No Workarounds! 🗡️**
+**Elders Legacy: Think it, Rule it, Own it! 🏛️**
+**最新更新: 2025年7月19日 - Issue文書管理規則追加**

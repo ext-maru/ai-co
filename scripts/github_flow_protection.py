@@ -87,7 +87,11 @@ class GitHubFlowProtectionSystem:
         """Gitコマンドの実行"""
         try:
             result = subprocess.run(
-                f"git {command}".split(), cwd=self.project_dir, capture_output=True, text=True, timeout=30
+                f"git {command}".split(),
+                cwd=self.project_dir,
+                capture_output=True,
+                text=True,
+                timeout=30,
             )
             return result
         except subprocess.TimeoutExpired:
@@ -112,7 +116,9 @@ class GitHubFlowProtectionSystem:
 
             # 2. 保護されるべきブランチの存在チェック
             for protected_branch in self.config["protected_branches"]:
-                result = self.run_git(f"show-ref --verify --quiet refs/heads/{protected_branch}")
+                result = self.run_git(
+                    f"show-ref --verify --quiet refs/heads/{protected_branch}"
+                )
                 if result.returncode != 0:
                     issues.append(f"保護ブランチ '{protected_branch}' が存在しません")
 
@@ -128,9 +134,13 @@ class GitHubFlowProtectionSystem:
                         unstaged_files.append(line[3:])
 
                 if staged_files:
-                    issues.append(f"ステージングされた変更があります: {', '.join(staged_files)}")
+                    issues.append(
+                        f"ステージングされた変更があります: {', '.join(staged_files)}"
+                    )
                 if unstaged_files:
-                    issues.append(f"未ステージングの変更があります: {', '.join(unstaged_files)}")
+                    issues.append(
+                        f"未ステージングの変更があります: {', '.join(unstaged_files)}"
+                    )
 
             # 4. リモートとの同期状態チェック
             result = self.run_git("fetch --dry-run")
@@ -146,12 +156,19 @@ class GitHubFlowProtectionSystem:
     def create_backup(self) -> bool:
         """🛡️ リポジトリのバックアップ作成"""
         try:
-            backup_dir = self.project_dir.parent / f"ai_co_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            backup_dir = (
+                self.project_dir.parent
+                / f"ai_co_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            )
             self.logger.info(f"バックアップを作成中: {backup_dir}")
 
             # .gitディレクトリを含む完全なバックアップ
             shutil.copytree(
-                self.project_dir, backup_dir, ignore=shutil.ignore_patterns("venv", "__pycache__", "*.pyc", ".DS_Store")
+                self.project_dir,
+                backup_dir,
+                ignore=shutil.ignore_patterns(
+                    "venv", "__pycache__", "*.pyc", ".DS_Store"
+                ),
             )
 
             # バックアップの検証
@@ -181,8 +198,14 @@ class GitHubFlowProtectionSystem:
             self.logger.info(f"現在のブランチ: {current_branch}")
 
             # 2. mainブランチの存在確認
-            main_exists = self.run_git("show-ref --verify --quiet refs/heads/main").returncode == 0
-            master_exists = self.run_git("show-ref --verify --quiet refs/heads/master").returncode == 0
+            main_exists = (
+                self.run_git("show-ref --verify --quiet refs/heads/main").returncode
+                == 0
+            )
+            master_exists = (
+                self.run_git("show-ref --verify --quiet refs/heads/master").returncode
+                == 0
+            )
 
             if not main_exists and not master_exists:
                 self.logger.error("mainもmasterも存在しません")
@@ -219,7 +242,9 @@ class GitHubFlowProtectionSystem:
                     if delete_result.returncode == 0:
                         self.logger.info("✅ masterブランチを削除しました")
                     else:
-                        self.logger.error(f"masterブランチの削除に失敗: {delete_result.stderr}")
+                        self.logger.error(
+                            f"masterブランチの削除に失敗: {delete_result.stderr}"
+                        )
                         return False
                 else:
                     # masterのみ存在する場合: masterをmainに改名
@@ -324,10 +349,14 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
             validation_result["rag_sage"] = self._rag_sage_validation()
 
             # 総合判定
-            total_confidence = sum(sage["confidence"] for sage in validation_result.values()) / 4
+            total_confidence = (
+                sum(sage["confidence"] for sage in validation_result.values()) / 4
+            )
             all_approved = all(sage["approved"] for sage in validation_result.values())
 
-            self.logger.info(f"4賢者検証結果: 承認={all_approved}, 信頼度={total_confidence:.2f}")
+            self.logger.info(
+                f"4賢者検証結果: 承認={all_approved}, 信頼度={total_confidence:.2f}"
+            )
 
             return all_approved and total_confidence >= 0.8, validation_result
 
@@ -365,7 +394,11 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
             return {"approved": approved, "confidence": confidence, "issues": issues}
 
         except Exception as e:
-            return {"approved": False, "confidence": 0.0, "issues": [f"タスク賢者検証エラー: {e}"]}
+            return {
+                "approved": False,
+                "confidence": 0.0,
+                "issues": [f"タスク賢者検証エラー: {e}"],
+            }
 
     def _incident_sage_validation(self) -> Dict:
         """🚨 インシデント賢者による検証"""
@@ -395,7 +428,11 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
             return {"approved": approved, "confidence": confidence, "issues": issues}
 
         except Exception as e:
-            return {"approved": False, "confidence": 0.0, "issues": [f"インシデント賢者検証エラー: {e}"]}
+            return {
+                "approved": False,
+                "confidence": 0.0,
+                "issues": [f"インシデント賢者検証エラー: {e}"],
+            }
 
     def _knowledge_sage_validation(self) -> Dict:
         """📚 ナレッジ賢者による検証"""
@@ -424,7 +461,11 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
             return {"approved": approved, "confidence": confidence, "issues": issues}
 
         except Exception as e:
-            return {"approved": False, "confidence": 0.0, "issues": [f"ナレッジ賢者検証エラー: {e}"]}
+            return {
+                "approved": False,
+                "confidence": 0.0,
+                "issues": [f"ナレッジ賢者検証エラー: {e}"],
+            }
 
     def _rag_sage_validation(self) -> Dict:
         """🔍 RAG賢者による検証"""
@@ -453,7 +494,11 @@ echo "✅ ブランチ '$current_branch' からのプッシュを許可"
             return {"approved": approved, "confidence": confidence, "issues": issues}
 
         except Exception as e:
-            return {"approved": False, "confidence": 0.0, "issues": [f"RAG賢者検証エラー: {e}"]}
+            return {
+                "approved": False,
+                "confidence": 0.0,
+                "issues": [f"RAG賢者検証エラー: {e}"],
+            }
 
     def emergency_recovery(self) -> bool:
         """🚨 緊急時の自動復旧"""

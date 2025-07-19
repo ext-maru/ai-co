@@ -700,7 +700,11 @@ class WisdomElf:
             # 最適化推奨事項生成
             if strategy_analysis["overall_performance"] < 80:
                 strategy_analysis["optimization_recommendations"].extend(
-                    ["リソース再配分によるパフォーマンス向上", "自動修復システムの強化", "並列処理の最適化"]
+                    [
+                        "リソース再配分によるパフォーマンス向上",
+                        "自動修復システムの強化",
+                        "並列処理の最適化",
+                    ]
                 )
 
             if strategy_analysis["coordination_efficiency"] < 70:
@@ -738,7 +742,11 @@ class WisdomElf:
             # パフォーマンス改善アクション
             if strategy_analysis["overall_performance"] < 85:
                 optimization_results["optimization_actions"].extend(
-                    ["エルフ間負荷分散の再調整", "自動修復パターンの更新", "監視間隔の最適化"]
+                    [
+                        "エルフ間負荷分散の再調整",
+                        "自動修復パターンの更新",
+                        "監視間隔の最適化",
+                    ]
                 )
 
             # 学習アップデート
@@ -821,30 +829,30 @@ class ElfForestCoordinator:
 
             # 結果統合
             coordination_results["elves_reports"] = {
-                "flow_elf": elf_results[0]
-                if not isinstance(elf_results[0], Exception)
-                else {},
-                "time_elf": elf_results[1]
-                if not isinstance(elf_results[1], Exception)
-                else {},
-                "balance_elf": elf_results[2]
-                if not isinstance(elf_results[2], Exception)
-                else {},
-                "healing_elf": elf_results[3]
-                if not isinstance(elf_results[3], Exception)
-                else {},
-                "wisdom_elf": elf_results[4]
-                if not isinstance(elf_results[4], Exception)
-                else {},
+                "flow_elf": (
+                    elf_results[0] if not isinstance(elf_results[0], Exception) else {}
+                ),
+                "time_elf": (
+                    elf_results[1] if not isinstance(elf_results[1], Exception) else {}
+                ),
+                "balance_elf": (
+                    elf_results[2] if not isinstance(elf_results[2], Exception) else {}
+                ),
+                "healing_elf": (
+                    elf_results[3] if not isinstance(elf_results[3], Exception) else {}
+                ),
+                "wisdom_elf": (
+                    elf_results[4] if not isinstance(elf_results[4], Exception) else {}
+                ),
             }
 
             # 全体進捗計算
-            coordination_results[
-                "overall_progress"
-            ] = await self._calculate_overall_progress()
-            coordination_results[
-                "coverage_current"
-            ] = await self._calculate_current_coverage()
+            coordination_results["overall_progress"] = (
+                await self._calculate_overall_progress()
+            )
+            coordination_results["coverage_current"] = (
+                await self._calculate_current_coverage()
+            )
 
             # エルダー評議会報告
             elder_update = await self._generate_elder_council_update(

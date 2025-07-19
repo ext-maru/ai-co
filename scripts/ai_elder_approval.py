@@ -148,7 +148,9 @@ def list_pending_approvals():
 
 
 def main():
-    parser = argparse.ArgumentParser(description="グランドエルダーmaruへの承認申請システム")
+    parser = argparse.ArgumentParser(
+        description="グランドエルダーmaruへの承認申請システム"
+    )
 
     subparsers = parser.add_subparsers(dest="command", help="サブコマンド")
 
@@ -178,7 +180,9 @@ def main():
         choices=["critical", "high", "normal", "low"],
         help="緊急度",
     )
-    new_parser.add_argument("--details", "-D", nargs="*", help="追加詳細 (key=value形式)")
+    new_parser.add_argument(
+        "--details", "-D", nargs="*", help="追加詳細 (key=value形式)"
+    )
 
     # 一覧表示
     list_parser = subparsers.add_parser("list", help="保留中の承認申請一覧")
@@ -186,7 +190,9 @@ def main():
     # クイック申請（よく使うパターン）
     quick_parser = subparsers.add_parser("quick", help="クイック承認申請")
     quick_parser.add_argument(
-        "pattern", choices=["eternal", "system", "emergency", "rule"], help="クイックパターン"
+        "pattern",
+        choices=["eternal", "system", "emergency", "rule"],
+        help="クイックパターン",
     )
     quick_parser.add_argument("title", help="タイトル")
     quick_parser.add_argument("description", help="説明")
@@ -239,7 +245,11 @@ def main():
                 "urgency": "critical",
                 "template": "緊急対応申請",
             },
-            "rule": {"type": "rule_change", "urgency": "normal", "template": "ルール変更申請"},
+            "rule": {
+                "type": "rule_change",
+                "urgency": "normal",
+                "template": "ルール変更申請",
+            },
         }
 
         pattern = patterns[args.pattern]

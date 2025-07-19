@@ -244,9 +244,11 @@ class BaselineMetrics:
             "total_classes": total_classes,
             "total_functions": total_functions,
             "total_tests": total_tests,
-            "test_coverage_estimate": f"{(total_tests / (total_classes + total_functions) * 100):.1f}%"
-            if (total_classes + total_functions) > 0
-            else "0%",
+            "test_coverage_estimate": (
+                f"{(total_tests / (total_classes + total_functions) * 100):.1f}%"
+                if (total_classes + total_functions) > 0
+                else "0%"
+            ),
         }
 
         return self.metrics

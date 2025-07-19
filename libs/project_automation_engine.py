@@ -37,99 +37,98 @@ class ProjectAutomationEngine:
                         "requirements.md",
                         "architecture.md",
                         "database_schema.sql",
-                        "tech_stack.md"
+                        "tech_stack.md",
                     ],
                     "auto_commands": [
                         "mkdir -p docs/design",
                         "mkdir -p src",
                         "mkdir -p tests",
-                        "touch .gitignore"
+                        "touch .gitignore",
                     ],
                     "auto_templates": {
                         "requirements.md": "requirement_template",
-                        "architecture.md": "architecture_template"
-                    }
+                        "architecture.md": "architecture_template",
+                    },
                 },
                 "phase_2": {
                     "auto_create_files": [
                         "src/auth/auth.py",
                         "src/database/models.py",
                         "src/api/main.py",
-                        "frontend/package.json"
+                        "frontend/package.json",
                     ],
                     "auto_commands": [
                         "python -m venv venv",
                         "pip install -r requirements.txt",
-                        "npm init -y"
-                    ]
+                        "npm init -y",
+                    ],
                 },
                 "phase_3": {
                     "auto_create_files": [
                         "tests/test_auth.py",
                         "tests/test_api.py",
-                        "src/core/business_logic.py"
+                        "src/core/business_logic.py",
                     ],
-                    "auto_commands": [
-                        "pytest --cov=src tests/",
-                        "npm test"
-                    ]
+                    "auto_commands": ["pytest --cov=src tests/", "npm test"],
                 },
                 "phase_4": {
                     "auto_create_files": [
                         "Dockerfile",
                         "docker-compose.yml",
-                        "deploy.sh"
+                        "deploy.sh",
                     ],
-                    "auto_commands": [
-                        "docker build -t app .",
-                        "docker-compose up -d"
-                    ]
-                }
+                    "auto_commands": ["docker build -t app .", "docker-compose up -d"],
+                },
             },
             "ai_development": {
                 "phase_1": {
                     "auto_create_files": [
                         "data_analysis.ipynb",
                         "problem_definition.md",
-                        "dataset_info.md"
+                        "dataset_info.md",
                     ],
                     "auto_commands": [
                         "mkdir -p data/raw",
                         "mkdir -p data/processed",
                         "mkdir -p notebooks",
-                        "mkdir -p models"
-                    ]
+                        "mkdir -p models",
+                    ],
                 },
                 "phase_2": {
                     "auto_create_files": [
                         "src/model.py",
                         "src/preprocessing.py",
                         "src/training.py",
-                        "requirements.txt"
+                        "requirements.txt",
                     ],
                     "auto_commands": [
                         "pip install pandas numpy scikit-learn",
-                        "jupyter notebook --generate-config"
-                    ]
-                }
-            }
+                        "jupyter notebook --generate-config",
+                    ],
+                },
+            },
         }
 
-    def auto_execute_phase(self, project_id: str, execute_commands: bool = False) -> Dict[str, Any]:
+    def auto_execute_phase(
+        self, project_id: str, execute_commands: bool = False
+    ) -> Dict[str, Any]:
         """フェーズを自動実行"""
         context = self.template_system.get_project_context(project_id)
 
         if not context:
             return {"success": False, "error": "プロジェクトが見つかりません"}
 
-        template_name = context['project_info']['template_name']
-        phase_index = context['project_info']['phase_index']
+        template_name = context["project_info"]["template_name"]
+        phase_index = context["project_info"]["phase_index"]
 
         # フェーズ名を取得
         phase_key = f"phase_{phase_index + 1}"
 
         if template_name not in self.automation_rules:
-            return {"success": False, "error": f"テンプレート {template_name} の自動化ルールが見つかりません"}
+            return {
+                "success": False,
+                "error": f"テンプレート {template_name} の自動化ルールが見つかりません",
+            }
 
         phase_rules = self.automation_rules[template_name].get(phase_key, {})
 
@@ -139,13 +138,15 @@ class ProjectAutomationEngine:
             "phase": phase_key,
             "actions_taken": [],
             "files_created": [],
-            "commands_executed": []
+            "commands_executed": [],
         }
 
         # 1. ファイル自動作成
         if "auto_create_files" in phase_rules:
             for file_path in phase_rules["auto_create_files"]:
-                self._create_project_file(project_id, file_path, phase_rules.get("auto_templates", {}))
+                self._create_project_file(
+                    project_id, file_path, phase_rules.get("auto_templates", {})
+                )
                 results["files_created"].append(file_path)
 
         # 2. コマンド自動実行
@@ -153,17 +154,17 @@ class ProjectAutomationEngine:
             for command in phase_rules["auto_commands"]:
                 try:
                     result = self._execute_command(project_id, command)
-                    results["commands_executed"].append({
-                        "command": command,
-                        "success": result["success"],
-                        "output": result.get("output", "")
-                    })
+                    results["commands_executed"].append(
+                        {
+                            "command": command,
+                            "success": result["success"],
+                            "output": result.get("output", ""),
+                        }
+                    )
                 except Exception as e:
-                    results["commands_executed"].append({
-                        "command": command,
-                        "success": False,
-                        "error": str(e)
-                    })
+                    results["commands_executed"].append(
+                        {"command": command, "success": False, "error": str(e)}
+                    )
 
         # 3. チェックリスト自動生成
         checklist_updates = self._generate_checklist_updates(template_name, phase_key)
@@ -172,7 +173,9 @@ class ProjectAutomationEngine:
 
         return results
 
-    def _create_project_file(self, project_id: str, file_path: str, templates: Dict[str, str]):
+    def _create_project_file(
+        self, project_id: str, file_path: str, templates: Dict[str, str]
+    ):
         """プロジェクトファイルを自動作成"""
         project_dir = Path(f"projects/{project_id}")
         project_dir.mkdir(parents=True, exist_ok=True)
@@ -187,7 +190,7 @@ class ProjectAutomationEngine:
         else:
             content = self._get_default_content(file_path)
 
-        with open(full_path, 'w', encoding='utf-8') as f:
+        with open(full_path, "w", encoding="utf-8") as f:
             f.write(content)
 
     def _execute_command(self, project_id: str, command: str) -> Dict[str, Any]:
@@ -201,25 +204,19 @@ class ProjectAutomationEngine:
                 cwd=project_dir,
                 capture_output=True,
                 text=True,
-                timeout=60
+                timeout=60,
             )
 
             return {
                 "success": result.returncode == 0,
                 "output": result.stdout,
                 "error": result.stderr,
-                "return_code": result.returncode
+                "return_code": result.returncode,
             }
         except subprocess.TimeoutExpired:
-            return {
-                "success": False,
-                "error": "コマンドがタイムアウトしました"
-            }
+            return {"success": False, "error": "コマンドがタイムアウトしました"}
         except Exception as e:
-            return {
-                "success": False,
-                "error": str(e)
-            }
+            return {"success": False, "error": str(e)}
 
     def _get_file_template(self, template_name: str) -> str:
         """ファイルテンプレートを取得"""
@@ -278,16 +275,18 @@ class ProjectAutomationEngine:
 ## 4. デプロイメント
 - インフラ:
 - CI/CD:
-"""
+""",
         }
 
-        return templates.get(template_name, f"# {template_name}\n\n# TODO: 内容を記述してください\n")
+        return templates.get(
+            template_name, f"# {template_name}\n\n# TODO: 内容を記述してください\n"
+        )
 
     def _get_default_content(self, file_path: str) -> str:
         """デフォルトファイル内容を生成"""
         file_ext = Path(file_path).suffix.lower()
 
-        if file_ext == '.py':
+        if file_ext == ".py":
             return f'''#!/usr/bin/env python3
 """
 {Path(file_path).stem}
@@ -295,8 +294,8 @@ class ProjectAutomationEngine:
 
 # TODO: 実装してください
 '''
-        elif file_ext == '.md':
-            return f'''# {Path(file_path).stem}
+        elif file_ext == ".md":
+            return f"""# {Path(file_path).stem}
 
 ## 概要
 
@@ -304,39 +303,48 @@ TODO: 内容を記述してください
 
 ## 詳細
 
-'''
-        elif file_ext == '.sql':
-            return f'''-- {Path(file_path).stem}
+"""
+        elif file_ext == ".sql":
+            return f"""-- {Path(file_path).stem}
 -- Created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 -- TODO: SQLを記述してください
-'''
-        elif file_ext == '.json':
-            return json.dumps({
-                "name": Path(file_path).stem,
-                "created": datetime.now().isoformat(),
-                "description": "TODO: 設定を記述してください"
-            }, indent=2)
+"""
+        elif file_ext == ".json":
+            return json.dumps(
+                {
+                    "name": Path(file_path).stem,
+                    "created": datetime.now().isoformat(),
+                    "description": "TODO: 設定を記述してください",
+                },
+                indent=2,
+            )
         else:
             return f"# {Path(file_path).name}\n# Created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n# TODO: 内容を記述してください\n"
 
-    def _generate_checklist_updates(self, template_name: str, phase_key: str) -> List[str]:
+    def _generate_checklist_updates(
+        self, template_name: str, phase_key: str
+    ) -> List[str]:
         """チェックリスト更新を生成"""
         updates = []
 
         if template_name == "web_development":
             if phase_key == "phase_2":
-                updates.extend([
-                    "認証システムの基本実装完了",
-                    "データベースマイグレーション実行",
-                    "API基盤の動作確認"
-                ])
+                updates.extend(
+                    [
+                        "認証システムの基本実装完了",
+                        "データベースマイグレーション実行",
+                        "API基盤の動作確認",
+                    ]
+                )
             elif phase_key == "phase_3":
-                updates.extend([
-                    "ユニットテストの実装",
-                    "統合テストの実行",
-                    "コードカバレッジ80%以上"
-                ])
+                updates.extend(
+                    [
+                        "ユニットテストの実装",
+                        "統合テストの実行",
+                        "コードカバレッジ80%以上",
+                    ]
+                )
 
         return updates
 
@@ -347,14 +355,14 @@ TODO: 内容を記述してください
         if not context:
             return {"success": False, "error": "プロジェクトが見つかりません"}
 
-        template_name = context['project_info']['template_name']
-        current_phase = context['project_info']['phase_index']
+        template_name = context["project_info"]["template_name"]
+        current_phase = context["project_info"]["phase_index"]
 
         plan = {
             "project_id": project_id,
             "template_name": template_name,
             "automation_available": template_name in self.automation_rules,
-            "phases": []
+            "phases": [],
         }
 
         if template_name in self.automation_rules:
@@ -365,7 +373,7 @@ TODO: 内容を記述してください
                     "phase": phase_key,
                     "files_to_create": phase_rules.get("auto_create_files", []),
                     "commands_to_execute": phase_rules.get("auto_commands", []),
-                    "estimated_time": _estimate_phase_time(phase_rules)
+                    "estimated_time": _estimate_phase_time(phase_rules),
                 }
                 plan["phases"].append(phase_plan)
 
@@ -393,10 +401,10 @@ def _estimate_phase_time(phase_rules: Dict[str, Any]) -> str:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description='プロジェクト自動化エンジン')
-    parser.add_argument('project_id', help='プロジェクトID')
-    parser.add_argument('--execute', action='store_true', help='コマンドを実際に実行')
-    parser.add_argument('--plan', action='store_true', help='自動化計画を表示')
+    parser = argparse.ArgumentParser(description="プロジェクト自動化エンジン")
+    parser.add_argument("project_id", help="プロジェクトID")
+    parser.add_argument("--execute", action="store_true", help="コマンドを実際に実行")
+    parser.add_argument("--plan", action="store_true", help="自動化計画を表示")
 
     args = parser.parse_args()
 

@@ -842,7 +842,9 @@ def process_data():
     # 統計サマリー
     print("\n" + "=" * 60)
     print("📊 Quality Gate Integration Summary:")
-    print(f"  🎯 High Quality Test: {result.overall_score:.1f}% ({result.status.value})")
+    print(
+        f"  🎯 High Quality Test: {result.overall_score:.1f}% ({result.status.value})"
+    )
     print(
         f"  ⚠️  Low Quality Test: {result2.overall_score:.1f}% ({result2.status.value})"
     )

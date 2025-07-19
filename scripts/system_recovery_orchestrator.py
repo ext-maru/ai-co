@@ -180,7 +180,9 @@ class SystemRecoveryOrchestrator:
             ] = "completed"
             self.recovery_session["total_fixed"] += fixed_count
 
-            logger.info(f"🎯 ワーカー安定化フェーズ完了: {fixed_count}/{len(worker_issues)} 修復")
+            logger.info(
+                f"🎯 ワーカー安定化フェーズ完了: {fixed_count}/{len(worker_issues)} 修復"
+            )
 
         except Exception as e:
             logger.error(f"ワーカー安定化フェーズエラー: {e}")
@@ -336,9 +338,11 @@ class SystemRecoveryOrchestrator:
                 "total_issues_found": self.recovery_session["total_issues"],
                 "total_issues_fixed": self.recovery_session["total_fixed"],
                 "success_rate": self.recovery_session["success_rate"],
-                "overall_status": "success"
-                if self.recovery_session["success_rate"] > 0.7
-                else "partial",
+                "overall_status": (
+                    "success"
+                    if self.recovery_session["success_rate"] > 0.7
+                    else "partial"
+                ),
             },
             "phase_results": self.recovery_session["phases"],
             "recommendations": await self._generate_recommendations(),
@@ -418,11 +422,29 @@ class SystemRecoveryOrchestrator:
 
         # 成功率に応じたステップ
         if self.recovery_session["success_rate"] >= 0.9:
-            next_steps.extend(["継続的監視システムの有効化", "パフォーマンス最適化の実行", "自動バックアップの設定"])
+            next_steps.extend(
+                [
+                    "継続的監視システムの有効化",
+                    "パフォーマンス最適化の実行",
+                    "自動バックアップの設定",
+                ]
+            )
         elif self.recovery_session["success_rate"] >= 0.7:
-            next_steps.extend(["残存問題の手動確認", "システム安定性の24時間監視", "ログ分析による根本原因調査"])
+            next_steps.extend(
+                [
+                    "残存問題の手動確認",
+                    "システム安定性の24時間監視",
+                    "ログ分析による根本原因調査",
+                ]
+            )
         else:
-            next_steps.extend(["緊急：手動システム診断の実行", "専門技術者による詳細調査", "システム設定の全面見直し"])
+            next_steps.extend(
+                [
+                    "緊急：手動システム診断の実行",
+                    "専門技術者による詳細調査",
+                    "システム設定の全面見直し",
+                ]
+            )
 
         return next_steps
 
@@ -440,9 +462,7 @@ class SystemRecoveryOrchestrator:
             status_icon = (
                 "✅"
                 if phase_data["status"] == "completed"
-                else "❌"
-                if phase_data["status"] == "failed"
-                else "⏳"
+                else "❌" if phase_data["status"] == "failed" else "⏳"
             )
             print(f"  {status_icon} {phase_name}: {phase_data['status']}")
 

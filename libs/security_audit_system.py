@@ -197,10 +197,10 @@ class SecurityAuditor:
             )
 
             # 推奨事項生成
-            standard_results[
-                "recommendations"
-            ] = self._generate_compliance_recommendations(
-                standard_name, standard_results["failed_checks"]
+            standard_results["recommendations"] = (
+                self._generate_compliance_recommendations(
+                    standard_name, standard_results["failed_checks"]
+                )
             )
 
             results[standard_name] = standard_results
@@ -291,9 +291,11 @@ class SecurityAuditor:
                                     vulnerabilities.append(
                                         {
                                             "type": vuln_type,
-                                            "severity": "high"
-                                            if vuln_type == "sql_injection"
-                                            else "medium",
+                                            "severity": (
+                                                "high"
+                                                if vuln_type == "sql_injection"
+                                                else "medium"
+                                            ),
                                             "file": str(py_file),
                                             "line": line_no,
                                             "description": f"{vuln_type} vulnerability detected",
@@ -690,12 +692,12 @@ class SecurityAuditor:
         """コンプライアンス分析"""
         return {
             "standards_assessed": list(compliance_data.keys()),
-            "overall_compliance_score": sum(
-                std.get("score", 0) for std in compliance_data.values()
-            )
-            / len(compliance_data)
-            if compliance_data
-            else 0,
+            "overall_compliance_score": (
+                sum(std.get("score", 0) for std in compliance_data.values())
+                / len(compliance_data)
+                if compliance_data
+                else 0
+            ),
             "non_compliant_standards": [
                 name
                 for name, data in compliance_data.items()
@@ -1101,9 +1103,11 @@ class ComplianceManager:
         risk_summary = {
             "critical_violations": critical_violations,
             "high_violations": high_violations,
-            "overall_risk": "high"
-            if critical_violations > 0
-            else ("medium" if high_violations > 0 else "low"),
+            "overall_risk": (
+                "high"
+                if critical_violations > 0
+                else ("medium" if high_violations > 0 else "low")
+            ),
         }
 
         return {

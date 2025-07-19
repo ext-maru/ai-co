@@ -64,7 +64,10 @@ class SystemCleanup:
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[logging.FileHandler(self.logs_dir / "system_cleanup.log"), logging.StreamHandler()],
+            handlers=[
+                logging.FileHandler(self.logs_dir / "system_cleanup.log"),
+                logging.StreamHandler(),
+            ],
         )
         self.logger = logging.getLogger(__name__)
 
@@ -81,7 +84,9 @@ class SystemCleanup:
             if pycache_dir.is_dir():
                 try:
                     # サイズ計算
-                    dir_size = sum(f.stat().st_size for f in pycache_dir.rglob("*") if f.is_file())
+                    dir_size = sum(
+                        f.stat().st_size for f in pycache_dir.rglob("*") if f.is_file()
+                    )
                     total_size += dir_size
 
                     # ディレクトリ削除
@@ -164,7 +169,9 @@ class SystemCleanup:
 
         # 下位ディレクトリから上位に向かって処理
         all_dirs = sorted(
-            [d for d in self.project_dir.rglob("*") if d.is_dir()], key=lambda x: len(x.parts), reverse=True
+            [d for d in self.project_dir.rglob("*") if d.is_dir()],
+            key=lambda x: len(x.parts),
+            reverse=True,
         )
 
         for dir_path in all_dirs:
@@ -173,7 +180,9 @@ class SystemCleanup:
                 continue
 
             # 重要ディレクトリをスキップ
-            if any(important in str(dir_path) for important in [".git", "node_modules"]):
+            if any(
+                important in str(dir_path) for important in [".git", "node_modules"]
+            ):
                 continue
 
             try:
@@ -185,7 +194,9 @@ class SystemCleanup:
             except Exception as e:
                 self.logger.debug(f"ディレクトリ削除失敗 {dir_path}: {e}")
 
-        self.logger.info(f"📁 空ディレクトリクリーンアップ完了: {removed_dirs}ディレクトリ削除")
+        self.logger.info(
+            f"📁 空ディレクトリクリーンアップ完了: {removed_dirs}ディレクトリ削除"
+        )
         return removed_dirs
 
     def find_duplicate_files(self) -> Dict[str, List[Path]]:
@@ -218,16 +229,22 @@ class SystemCleanup:
                 self.logger.debug(f"ハッシュ計算失敗 {file_path}: {e}")
 
         # 重複ファイルのみ抽出
-        duplicates = {hash_val: paths for hash_val, paths in file_hashes.items() if len(paths) > 1}
+        duplicates = {
+            hash_val: paths for hash_val, paths in file_hashes.items() if len(paths) > 1
+        }
 
         total_duplicates = sum(len(paths) - 1 for paths in duplicates.values())
-        self.logger.info(f"🔍 重複ファイル検出完了: {len(duplicates)}グループ, {total_duplicates}個の重複")
+        self.logger.info(
+            f"🔍 重複ファイル検出完了: {len(duplicates)}グループ, {total_duplicates}個の重複"
+        )
 
         return duplicates
 
     def clean_old_logs(self, days_to_keep: int = 30) -> Dict[str, int]:
         """古いログファイルのクリーンアップ"""
-        self.logger.info(f"📋 古いログファイルクリーンアップ開始 ({days_to_keep}日より古い)")
+        self.logger.info(
+            f"📋 古いログファイルクリーンアップ開始 ({days_to_keep}日より古い)"
+        )
 
         stats = {"old_logs": 0, "size_freed_mb": 0}
 
@@ -263,7 +280,12 @@ class SystemCleanup:
         """Git リポジトリの最適化"""
         self.logger.info("📦 Git リポジトリ最適化開始")
 
-        stats = {"git_gc_run": False, "size_before_mb": 0, "size_after_mb": 0, "error": None}
+        stats = {
+            "git_gc_run": False,
+            "size_before_mb": 0,
+            "size_after_mb": 0,
+            "error": None,
+        }
 
         git_dir = self.project_dir / ".git"
         if not git_dir.exists():
@@ -272,25 +294,33 @@ class SystemCleanup:
 
         try:
             # .git ディレクトリサイズ（前）
-            size_before = sum(f.stat().st_size for f in git_dir.rglob("*") if f.is_file())
+            size_before = sum(
+                f.stat().st_size for f in git_dir.rglob("*") if f.is_file()
+            )
             stats["size_before_mb"] = size_before / (1024 * 1024)
 
             # Git ガベージコレクション実行
             import subprocess
 
             result = subprocess.run(
-                ["git", "gc", "--aggressive", "--prune=now"], cwd=self.project_dir, capture_output=True, text=True
+                ["git", "gc", "--aggressive", "--prune=now"],
+                cwd=self.project_dir,
+                capture_output=True,
+                text=True,
             )
 
             if result.returncode == 0:
                 stats["git_gc_run"] = True
 
                 # .git ディレクトリサイズ（後）
-                size_after = sum(f.stat().st_size for f in git_dir.rglob("*") if f.is_file())
+                size_after = sum(
+                    f.stat().st_size for f in git_dir.rglob("*") if f.is_file()
+                )
                 stats["size_after_mb"] = size_after / (1024 * 1024)
 
                 self.logger.info(
-                    f"📦 Git リポジトリ最適化完了: " f"{stats['size_before_mb']:.1f}MB → {stats['size_after_mb']:.1f}MB"
+                    f"📦 Git リポジトリ最適化完了: "
+                    f"{stats['size_before_mb']:.1f}MB → {stats['size_after_mb']:.1f}MB"
                 )
             else:
                 stats["error"] = result.stderr
@@ -302,7 +332,9 @@ class SystemCleanup:
 
         return stats
 
-    def run_full_cleanup(self, include_duplicates: bool = False, include_old_logs: bool = True) -> Dict[str, any]:
+    def run_full_cleanup(
+        self, include_duplicates: bool = False, include_old_logs: bool = True
+    ) -> Dict[str, any]:
         """フルクリーンアップ実行"""
         self.logger.info("🚀 フルシステムクリーンアップ開始")
 
@@ -409,13 +441,29 @@ def main():
 
     parser = argparse.ArgumentParser(description="System Cleanup Tool")
     parser.add_argument("--full", action="store_true", help="フルクリーンアップ実行")
-    parser.add_argument("--python-cache", action="store_true", help="Python キャッシュのみクリーンアップ")
-    parser.add_argument("--temp-files", action="store_true", help="一時ファイルのみクリーンアップ")
-    parser.add_argument("--empty-dirs", action="store_true", help="空ディレクトリのみクリーンアップ")
-    parser.add_argument("--find-duplicates", action="store_true", help="重複ファイル検出のみ")
-    parser.add_argument("--git-optimize", action="store_true", help="Git リポジトリ最適化のみ")
-    parser.add_argument("--include-duplicates", action="store_true", help="重複ファイル検出を含める")
-    parser.add_argument("--skip-old-logs", action="store_true", help="古いログ削除をスキップ")
+    parser.add_argument(
+        "--python-cache",
+        action="store_true",
+        help="Python キャッシュのみクリーンアップ",
+    )
+    parser.add_argument(
+        "--temp-files", action="store_true", help="一時ファイルのみクリーンアップ"
+    )
+    parser.add_argument(
+        "--empty-dirs", action="store_true", help="空ディレクトリのみクリーンアップ"
+    )
+    parser.add_argument(
+        "--find-duplicates", action="store_true", help="重複ファイル検出のみ"
+    )
+    parser.add_argument(
+        "--git-optimize", action="store_true", help="Git リポジトリ最適化のみ"
+    )
+    parser.add_argument(
+        "--include-duplicates", action="store_true", help="重複ファイル検出を含める"
+    )
+    parser.add_argument(
+        "--skip-old-logs", action="store_true", help="古いログ削除をスキップ"
+    )
     parser.add_argument("--save", action="store_true", help="結果をファイルに保存")
 
     args = parser.parse_args()
@@ -443,7 +491,8 @@ def main():
         print(f"Git リポジトリ最適化完了: {results}")
     elif args.full:
         results = cleanup.run_full_cleanup(
-            include_duplicates=args.include_duplicates, include_old_logs=not args.skip_old_logs
+            include_duplicates=args.include_duplicates,
+            include_old_logs=not args.skip_old_logs,
         )
         cleanup.print_summary(results)
 

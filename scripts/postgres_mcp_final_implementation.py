@@ -15,8 +15,10 @@ from typing import Dict, List, Any, Optional, Union
 from dataclasses import dataclass, asdict
 from enum import Enum
 
+
 class MCPMessageType(Enum):
     """MCP メッセージタイプ"""
+
     SEARCH = "search"
     STORE = "store"
     UPDATE = "update"
@@ -24,9 +26,11 @@ class MCPMessageType(Enum):
     STATS = "stats"
     HEALTH = "health"
 
+
 @dataclass
 class MCPRequest:
     """MCP リクエスト"""
+
     message_type: MCPMessageType
     query: Optional[str] = None
     content: Optional[str] = None
@@ -34,24 +38,29 @@ class MCPRequest:
     limit: Optional[int] = 10
     filters: Optional[Dict] = None
 
+
 @dataclass
 class MCPResponse:
     """MCP レスポンス"""
+
     success: bool
     message: str
     data: Optional[Any] = None
     metadata: Optional[Dict] = None
     timestamp: Optional[str] = None
 
+
 class PostgreSQLMCPServer:
     """PostgreSQL MCP サーバー（最終版）"""
 
-    def __init__(self,
-                 host: str = "localhost",
-                 port: int = 5432,
-                 database: str = "elders_knowledge",
-                 user: str = "elders_guild",
-                 password: str = "elders_2025"):
+    def __init__(
+        self,
+        host: str = "localhost",
+        port: int = 5432,
+        database: str = "elders_knowledge",
+        user: str = "elders_guild",
+        password: str = "elders_2025",
+    ):
         self.host = host
         self.port = port
         self.database = database
@@ -67,7 +76,7 @@ class PostgreSQLMCPServer:
                 port=self.port,
                 database=self.database,
                 user=self.user,
-                password=self.password
+                password=self.password,
             )
             self.is_connected = True
             print(f"✅ PostgreSQL MCP サーバー接続成功: {self.database}")
@@ -79,7 +88,7 @@ class PostgreSQLMCPServer:
 
     async def disconnect(self):
         """データベース切断"""
-        if hasattr(self, 'conn') and self.conn:
+        if hasattr(self, "conn") and self.conn:
             await self.conn.close()
             self.is_connected = False
             print("✅ PostgreSQL MCP サーバー切断完了")
@@ -93,38 +102,40 @@ class PostgreSQLMCPServer:
                 port=self.port,
                 database=self.database,
                 user=self.user,
-                password=self.password
+                password=self.password,
             )
 
             # 基本的な接続確認
             result = await conn.fetchval("SELECT 1")
 
             # データベース統計
-            stats = await conn.fetchrow("""
+            stats = await conn.fetchrow(
+                """
                 SELECT
                     COUNT(*) as total_documents,
                     COUNT(DISTINCT section_type) as unique_types,
                     pg_database_size(current_database()) as db_size
                 FROM knowledge_base.core_documents
-            """)
+            """
+            )
 
             return MCPResponse(
                 success=True,
                 message="Health check passed",
                 data={
                     "connection": "OK",
-                    "total_documents": stats['total_documents'],
-                    "unique_types": stats['unique_types'],
-                    "database_size": stats['db_size']
+                    "total_documents": stats["total_documents"],
+                    "unique_types": stats["unique_types"],
+                    "database_size": stats["db_size"],
                 },
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
             )
 
         except Exception as e:
             return MCPResponse(
                 success=False,
                 message=f"Health check failed: {str(e)}",
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
             )
         finally:
             if conn:
@@ -139,7 +150,7 @@ class PostgreSQLMCPServer:
                 port=self.port,
                 database=self.database,
                 user=self.user,
-                password=self.password
+                password=self.password,
             )
 
             query = request.query or ""
@@ -147,8 +158,8 @@ class PostgreSQLMCPServer:
             filters = request.filters or {}
 
             # embedding による検索
-            if 'embedding' in filters and filters['embedding']:
-                embedding = filters['embedding']
+            if "embedding" in filters and filters["embedding"]:
+                embedding = filters["embedding"]
 
                 sql = """
                     SELECT
@@ -212,35 +223,47 @@ class PostgreSQLMCPServer:
             # 結果を整形
             formatted_results = []
             for row in results:
-                formatted_results.append({
-                    'id': row['id'],
-                    'title': row['section_title'],
-                    'content': row['section_content'][:500] + '...' if len(row['section_content']) > 500 else row['section_content'],
-                    'type': row['section_type'],
-                    'file_path': row['file_path'],
-                    'tags': row['tags'] if row['tags'] else [],
-                    'similarity': float(row.get('similarity', 0.0)) if 'similarity' in row else None,
-                    'rank': float(row.get('rank', 0.0)) if 'rank' in row else None,
-                    'created_at': row['created_at'].isoformat() if row['created_at'] else None
-                })
+                formatted_results.append(
+                    {
+                        "id": row["id"],
+                        "title": row["section_title"],
+                        "content": (
+                            row["section_content"][:500] + "..."
+                            if len(row["section_content"]) > 500
+                            else row["section_content"]
+                        ),
+                        "type": row["section_type"],
+                        "file_path": row["file_path"],
+                        "tags": row["tags"] if row["tags"] else [],
+                        "similarity": (
+                            float(row.get("similarity", 0.0))
+                            if "similarity" in row
+                            else None
+                        ),
+                        "rank": float(row.get("rank", 0.0)) if "rank" in row else None,
+                        "created_at": (
+                            row["created_at"].isoformat() if row["created_at"] else None
+                        ),
+                    }
+                )
 
             return MCPResponse(
                 success=True,
                 message=f"Search completed, found {len(formatted_results)} results",
                 data=formatted_results,
                 metadata={
-                    'query': query,
-                    'limit': limit,
-                    'search_type': 'vector' if 'embedding' in filters else 'fulltext'
+                    "query": query,
+                    "limit": limit,
+                    "search_type": "vector" if "embedding" in filters else "fulltext",
                 },
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
             )
 
         except Exception as e:
             return MCPResponse(
                 success=False,
                 message=f"Search failed: {str(e)}",
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
             )
         finally:
             if conn:
@@ -255,24 +278,25 @@ class PostgreSQLMCPServer:
                 port=self.port,
                 database=self.database,
                 user=self.user,
-                password=self.password
+                password=self.password,
             )
 
             content = request.content
             metadata = request.metadata or {}
 
             # 必須フィールドの確認
-            required_fields = ['section_title', 'section_content', 'section_type']
+            required_fields = ["section_title", "section_content", "section_type"]
             for field in required_fields:
                 if field not in metadata:
                     return MCPResponse(
                         success=False,
                         message=f"Missing required field: {field}",
-                        timestamp=datetime.now().isoformat()
+                        timestamp=datetime.now().isoformat(),
                     )
 
             # テストテーブルに保存（本番テーブルを汚染しないため）
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS knowledge_base.mcp_documents (
                     id SERIAL PRIMARY KEY,
                     file_path VARCHAR(500),
@@ -286,7 +310,8 @@ class PostgreSQLMCPServer:
                     created_at TIMESTAMP DEFAULT NOW(),
                     updated_at TIMESTAMP DEFAULT NOW()
                 )
-            """)
+            """
+            )
 
             # データベースに保存
             sql = """
@@ -300,27 +325,27 @@ class PostgreSQLMCPServer:
 
             result = await conn.fetchval(
                 sql,
-                metadata.get('file_path', 'mcp_import'),
-                metadata['section_title'],
-                metadata['section_content'],
-                metadata['section_type'],
-                metadata.get('priority', 5),
-                metadata.get('tags', []),
-                json.dumps(metadata)
+                metadata.get("file_path", "mcp_import"),
+                metadata["section_title"],
+                metadata["section_content"],
+                metadata["section_type"],
+                metadata.get("priority", 5),
+                metadata.get("tags", []),
+                json.dumps(metadata),
             )
 
             return MCPResponse(
                 success=True,
                 message=f"Knowledge stored successfully with ID: {result}",
-                data={'id': result},
-                timestamp=datetime.now().isoformat()
+                data={"id": result},
+                timestamp=datetime.now().isoformat(),
             )
 
         except Exception as e:
             return MCPResponse(
                 success=False,
                 message=f"Store failed: {str(e)}",
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
             )
         finally:
             if conn:
@@ -335,11 +360,12 @@ class PostgreSQLMCPServer:
                 port=self.port,
                 database=self.database,
                 user=self.user,
-                password=self.password
+                password=self.password,
             )
 
             # 基本統計
-            basic_stats = await conn.fetchrow("""
+            basic_stats = await conn.fetchrow(
+                """
                 SELECT
                     COUNT(*) as total_documents,
                     COUNT(DISTINCT section_type) as unique_types,
@@ -348,10 +374,12 @@ class PostgreSQLMCPServer:
                     MIN(created_at) as oldest_document,
                     MAX(created_at) as newest_document
                 FROM knowledge_base.core_documents
-            """)
+            """
+            )
 
             # タイプ別統計
-            type_stats = await conn.fetch("""
+            type_stats = await conn.fetch(
+                """
                 SELECT
                     section_type,
                     COUNT(*) as count,
@@ -359,15 +387,18 @@ class PostgreSQLMCPServer:
                 FROM knowledge_base.core_documents
                 GROUP BY section_type
                 ORDER BY count DESC
-            """)
+            """
+            )
 
             # MCPテーブルの統計も取得
             mcp_stats = None
             try:
-                mcp_stats = await conn.fetchrow("""
+                mcp_stats = await conn.fetchrow(
+                    """
                     SELECT COUNT(*) as mcp_documents
                     FROM knowledge_base.mcp_documents
-                """)
+                """
+                )
             except:
                 pass  # テーブルが存在しない場合
 
@@ -375,34 +406,44 @@ class PostgreSQLMCPServer:
                 success=True,
                 message="Statistics retrieved successfully",
                 data={
-                    'basic_stats': {
-                        'total_documents': basic_stats['total_documents'],
-                        'unique_types': basic_stats['unique_types'],
-                        'unique_files': basic_stats['unique_files'],
-                        'avg_content_length': float(basic_stats['avg_content_length'] or 0),
-                        'oldest_document': basic_stats['oldest_document'].isoformat() if basic_stats['oldest_document'] else None,
-                        'newest_document': basic_stats['newest_document'].isoformat() if basic_stats['newest_document'] else None
+                    "basic_stats": {
+                        "total_documents": basic_stats["total_documents"],
+                        "unique_types": basic_stats["unique_types"],
+                        "unique_files": basic_stats["unique_files"],
+                        "avg_content_length": float(
+                            basic_stats["avg_content_length"] or 0
+                        ),
+                        "oldest_document": (
+                            basic_stats["oldest_document"].isoformat()
+                            if basic_stats["oldest_document"]
+                            else None
+                        ),
+                        "newest_document": (
+                            basic_stats["newest_document"].isoformat()
+                            if basic_stats["newest_document"]
+                            else None
+                        ),
                     },
-                    'type_stats': [
+                    "type_stats": [
                         {
-                            'type': row['section_type'],
-                            'count': row['count'],
-                            'avg_length': float(row['avg_length'] or 0)
+                            "type": row["section_type"],
+                            "count": row["count"],
+                            "avg_length": float(row["avg_length"] or 0),
                         }
                         for row in type_stats
                     ],
-                    'mcp_stats': {
-                        'mcp_documents': mcp_stats['mcp_documents'] if mcp_stats else 0
-                    }
+                    "mcp_stats": {
+                        "mcp_documents": mcp_stats["mcp_documents"] if mcp_stats else 0
+                    },
                 },
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
             )
 
         except Exception as e:
             return MCPResponse(
                 success=False,
                 message=f"Statistics failed: {str(e)}",
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
             )
         finally:
             if conn:
@@ -427,15 +468,16 @@ class PostgreSQLMCPServer:
                 return MCPResponse(
                     success=False,
                     message=f"Unsupported message type: {request.message_type}",
-                    timestamp=datetime.now().isoformat()
+                    timestamp=datetime.now().isoformat(),
                 )
 
         except Exception as e:
             return MCPResponse(
                 success=False,
                 message=f"Request handling failed: {str(e)}",
-                timestamp=datetime.now().isoformat()
+                timestamp=datetime.now().isoformat(),
             )
+
 
 class PostgreSQLMCPClient:
     """PostgreSQL MCP クライアント"""
@@ -443,22 +485,22 @@ class PostgreSQLMCPClient:
     def __init__(self, server: PostgreSQLMCPServer):
         self.server = server
 
-    async def search(self, query: str, limit: int = 10, filters: Dict = None) -> MCPResponse:
+    async def search(
+        self, query: str, limit: int = 10, filters: Dict = None
+    ) -> MCPResponse:
         """検索"""
         request = MCPRequest(
             message_type=MCPMessageType.SEARCH,
             query=query,
             limit=limit,
-            filters=filters or {}
+            filters=filters or {},
         )
         return await self.server.handle_request(request)
 
     async def store(self, content: str, metadata: Dict) -> MCPResponse:
         """保存"""
         request = MCPRequest(
-            message_type=MCPMessageType.STORE,
-            content=content,
-            metadata=metadata
+            message_type=MCPMessageType.STORE, content=content, metadata=metadata
         )
         return await self.server.handle_request(request)
 
@@ -471,6 +513,7 @@ class PostgreSQLMCPClient:
         """ヘルスチェック"""
         request = MCPRequest(message_type=MCPMessageType.HEALTH)
         return await self.server.handle_request(request)
+
 
 # 4賢者システムとの統合
 class FourSagesIntegration:
@@ -485,17 +528,13 @@ class FourSagesIntegration:
 
         if response.success:
             return {
-                'sage': 'knowledge',
-                'status': 'success',
-                'results': response.data,
-                'summary': f"Found {len(response.data)} knowledge items"
+                "sage": "knowledge",
+                "status": "success",
+                "results": response.data,
+                "summary": f"Found {len(response.data)} knowledge items",
             }
         else:
-            return {
-                'sage': 'knowledge',
-                'status': 'error',
-                'message': response.message
-            }
+            return {"sage": "knowledge", "status": "error", "message": response.message}
 
     async def task_sage_status(self) -> Dict:
         """タスク賢者による状態確認"""
@@ -503,11 +542,11 @@ class FourSagesIntegration:
         health_response = await self.mcp_client.health_check()
 
         return {
-            'sage': 'task',
-            'status': 'success',
-            'health': health_response.data if health_response.success else None,
-            'stats': stats_response.data if stats_response.success else None,
-            'summary': 'MCP system operational'
+            "sage": "task",
+            "status": "success",
+            "health": health_response.data if health_response.success else None,
+            "stats": stats_response.data if stats_response.success else None,
+            "summary": "MCP system operational",
         }
 
     async def incident_sage_check(self) -> Dict:
@@ -516,16 +555,16 @@ class FourSagesIntegration:
 
         if health_response.success:
             return {
-                'sage': 'incident',
-                'status': 'normal',
-                'message': 'No incidents detected',
-                'health_data': health_response.data
+                "sage": "incident",
+                "status": "normal",
+                "message": "No incidents detected",
+                "health_data": health_response.data,
             }
         else:
             return {
-                'sage': 'incident',
-                'status': 'alert',
-                'message': f'Health check failed: {health_response.message}'
+                "sage": "incident",
+                "status": "alert",
+                "message": f"Health check failed: {health_response.message}",
             }
 
     async def rag_sage_enhance(self, query: str) -> Dict:
@@ -535,7 +574,7 @@ class FourSagesIntegration:
             query,
             f"{query} システム",
             f"{query} 開発",
-            f"{query} 実装"
+            f"{query} 実装",
         ]
 
         all_results = []
@@ -548,16 +587,17 @@ class FourSagesIntegration:
         unique_results = []
         seen_ids = set()
         for result in all_results:
-            if result['id'] not in seen_ids:
+            if result["id"] not in seen_ids:
                 unique_results.append(result)
-                seen_ids.add(result['id'])
+                seen_ids.add(result["id"])
 
         return {
-            'sage': 'rag',
-            'status': 'success',
-            'results': unique_results[:10],  # 最大10件
-            'summary': f"Enhanced search found {len(unique_results)} unique results"
+            "sage": "rag",
+            "status": "success",
+            "results": unique_results[:10],  # 最大10件
+            "summary": f"Enhanced search found {len(unique_results)} unique results",
         }
+
 
 async def comprehensive_demo():
     """総合デモ"""
@@ -578,7 +618,9 @@ async def comprehensive_demo():
         print(f"   結果: {health_response.message}")
         if health_response.success:
             print(f"   総文書数: {health_response.data['total_documents']}")
-            print(f"   データベースサイズ: {health_response.data['database_size']:,} bytes")
+            print(
+                f"   データベースサイズ: {health_response.data['database_size']:,} bytes"
+            )
 
         # 2. 基本検索テスト
         print("\n2. 基本検索テスト...")
@@ -591,12 +633,12 @@ async def comprehensive_demo():
         # 3. 新規データ保存テスト
         print("\n3. 新規データ保存テスト...")
         test_metadata = {
-            'section_title': 'PostgreSQL MCP統合完成',
-            'section_content': 'PostgreSQL MCP統合が正常に動作しています。4賢者システムとの連携も成功しました。',
-            'section_type': 'implementation',
-            'file_path': 'mcp_integration.md',
-            'tags': ['MCP', 'PostgreSQL', '4賢者', '統合完成'],
-            'priority': 1
+            "section_title": "PostgreSQL MCP統合完成",
+            "section_content": "PostgreSQL MCP統合が正常に動作しています。4賢者システムとの連携も成功しました。",
+            "section_type": "implementation",
+            "file_path": "mcp_integration.md",
+            "tags": ["MCP", "PostgreSQL", "4賢者", "統合完成"],
+            "priority": 1,
         }
 
         store_response = await client.store("テストコンテンツ", test_metadata)
@@ -607,7 +649,7 @@ async def comprehensive_demo():
         stats_response = await client.get_stats()
         print(f"   結果: {stats_response.message}")
         if stats_response.success:
-            basic = stats_response.data['basic_stats']
+            basic = stats_response.data["basic_stats"]
             print(f"   総文書数: {basic['total_documents']}")
             print(f"   平均文字数: {basic['avg_content_length']:.0f}")
             print(f"   MCP文書数: {stats_response.data['mcp_stats']['mcp_documents']}")
@@ -637,7 +679,9 @@ async def comprehensive_demo():
     except Exception as e:
         print(f"\n❌ デモ中にエラーが発生: {e}")
         import traceback
+
         traceback.print_exc()
+
 
 if __name__ == "__main__":
     # 総合デモ実行

@@ -12,9 +12,11 @@ from datetime import datetime
 import uuid
 import re
 
+
 @dataclass
 class SystemRequirement:
     """システム要件"""
+
     requirement_id: str
     description: str
     priority: int  # 1-10
@@ -23,9 +25,11 @@ class SystemRequirement:
     technical_category: str
     estimated_effort: float
 
+
 @dataclass
 class GeneratedComponent:
     """生成されたシステムコンポーネント"""
+
     component_id: str
     name: str
     type: str
@@ -35,6 +39,7 @@ class GeneratedComponent:
     dependencies: List[str]
     estimated_resources: Dict[str, float]
     code_template: str
+
 
 class PracticalAutoSystemGenerator:
     """実用的な自動システム生成器"""
@@ -46,26 +51,26 @@ class PracticalAutoSystemGenerator:
                 "backend": ["FastAPI", "Python", "SQLAlchemy"],
                 "database": ["PostgreSQL", "Redis"],
                 "auth": ["JWT", "bcrypt"],
-                "realtime": ["WebSocket", "Socket.IO"]
+                "realtime": ["WebSocket", "Socket.IO"],
             },
             "e_commerce": {
                 "frontend": ["Next.js", "TypeScript", "Stripe"],
                 "backend": ["Node.js", "Express", "Prisma"],
                 "database": ["PostgreSQL", "Redis"],
                 "payment": ["Stripe", "PayPal"],
-                "inventory": ["Redis", "PostgreSQL"]
+                "inventory": ["Redis", "PostgreSQL"],
             },
             "dashboard": {
                 "frontend": ["React", "D3.js", "Chart.js"],
                 "backend": ["Python", "FastAPI", "Pandas"],
                 "database": ["PostgreSQL", "InfluxDB"],
                 "analytics": ["Pandas", "NumPy"],
-                "realtime": ["WebSocket", "Server-Sent Events"]
-            }
+                "realtime": ["WebSocket", "Server-Sent Events"],
+            },
         }
 
         self.code_templates = {
-            "fastapi_backend": '''
+            "fastapi_backend": """
 from fastapi import FastAPI, HTTPException, Depends
 from sqlalchemy.orm import Session
 from database import get_db
@@ -90,8 +95,8 @@ async def create_item(item: {schema_name}, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(db_item)
     return db_item
-''',
-            "react_frontend": '''
+""",
+            "react_frontend": """
 import React, {{ useState, useEffect }} from 'react';
 import axios from 'axios';
 
@@ -133,8 +138,8 @@ const {component_name} = () => {{
 }};
 
 export default {component_name};
-''',
-            "docker_compose": '''
+""",
+            "docker_compose": """
 version: '3.8'
 
 services:
@@ -167,7 +172,7 @@ services:
 
 volumes:
   postgres_data:
-'''
+""",
         }
 
         self.generated_systems = {}
@@ -180,72 +185,86 @@ volumes:
 
         # パターン認識
         system_type = None
-        if any(word in desc_lower for word in ['todo', 'task', 'list']):
+        if any(word in desc_lower for word in ["todo", "task", "list"]):
             system_type = "todo_app"
-        elif any(word in desc_lower for word in ['ecommerce', 'e-commerce', 'shop', 'store']):
+        elif any(
+            word in desc_lower for word in ["ecommerce", "e-commerce", "shop", "store"]
+        ):
             system_type = "e_commerce"
-        elif any(word in desc_lower for word in ['dashboard', 'analytics', 'chart']):
+        elif any(word in desc_lower for word in ["dashboard", "analytics", "chart"]):
             system_type = "dashboard"
 
         # 基本要件生成
-        if 'app' in desc_lower or 'web' in desc_lower:
-            requirements.append(SystemRequirement(
-                requirement_id=f"req_{uuid.uuid4().hex[:8]}",
-                description="Frontend application",
-                priority=8,
-                complexity=0.6,
-                dependencies=[],
-                technical_category="frontend",
-                estimated_effort=40.0
-            ))
+        if "app" in desc_lower or "web" in desc_lower:
+            requirements.append(
+                SystemRequirement(
+                    requirement_id=f"req_{uuid.uuid4().hex[:8]}",
+                    description="Frontend application",
+                    priority=8,
+                    complexity=0.6,
+                    dependencies=[],
+                    technical_category="frontend",
+                    estimated_effort=40.0,
+                )
+            )
 
-        if any(word in desc_lower for word in ['api', 'backend', 'server']):
-            requirements.append(SystemRequirement(
-                requirement_id=f"req_{uuid.uuid4().hex[:8]}",
-                description="Backend API service",
-                priority=9,
-                complexity=0.7,
-                dependencies=[],
-                technical_category="backend",
-                estimated_effort=60.0
-            ))
+        if any(word in desc_lower for word in ["api", "backend", "server"]):
+            requirements.append(
+                SystemRequirement(
+                    requirement_id=f"req_{uuid.uuid4().hex[:8]}",
+                    description="Backend API service",
+                    priority=9,
+                    complexity=0.7,
+                    dependencies=[],
+                    technical_category="backend",
+                    estimated_effort=60.0,
+                )
+            )
 
-        if any(word in desc_lower for word in ['database', 'data', 'store']):
-            requirements.append(SystemRequirement(
-                requirement_id=f"req_{uuid.uuid4().hex[:8]}",
-                description="Database system",
-                priority=9,
-                complexity=0.5,
-                dependencies=[],
-                technical_category="database",
-                estimated_effort=20.0
-            ))
+        if any(word in desc_lower for word in ["database", "data", "store"]):
+            requirements.append(
+                SystemRequirement(
+                    requirement_id=f"req_{uuid.uuid4().hex[:8]}",
+                    description="Database system",
+                    priority=9,
+                    complexity=0.5,
+                    dependencies=[],
+                    technical_category="database",
+                    estimated_effort=20.0,
+                )
+            )
 
-        if any(word in desc_lower for word in ['auth', 'login', 'user']):
-            requirements.append(SystemRequirement(
-                requirement_id=f"req_{uuid.uuid4().hex[:8]}",
-                description="Authentication system",
-                priority=8,
-                complexity=0.8,
-                dependencies=[],
-                technical_category="auth",
-                estimated_effort=35.0
-            ))
+        if any(word in desc_lower for word in ["auth", "login", "user"]):
+            requirements.append(
+                SystemRequirement(
+                    requirement_id=f"req_{uuid.uuid4().hex[:8]}",
+                    description="Authentication system",
+                    priority=8,
+                    complexity=0.8,
+                    dependencies=[],
+                    technical_category="auth",
+                    estimated_effort=35.0,
+                )
+            )
 
-        if any(word in desc_lower for word in ['realtime', 'real-time', 'live']):
-            requirements.append(SystemRequirement(
-                requirement_id=f"req_{uuid.uuid4().hex[:8]}",
-                description="Real-time communication",
-                priority=7,
-                complexity=0.9,
-                dependencies=[],
-                technical_category="realtime",
-                estimated_effort=45.0
-            ))
+        if any(word in desc_lower for word in ["realtime", "real-time", "live"]):
+            requirements.append(
+                SystemRequirement(
+                    requirement_id=f"req_{uuid.uuid4().hex[:8]}",
+                    description="Real-time communication",
+                    priority=7,
+                    complexity=0.9,
+                    dependencies=[],
+                    technical_category="realtime",
+                    estimated_effort=45.0,
+                )
+            )
 
         return requirements
 
-    def establish_dependency_order(self, requirements: List[SystemRequirement]) -> List[str]:
+    def establish_dependency_order(
+        self, requirements: List[SystemRequirement]
+    ) -> List[str]:
         """依存関係に基づく最適なビルド順序"""
 
         # 依存関係の優先順位
@@ -254,18 +273,23 @@ volumes:
             "backend": 2,
             "auth": 3,
             "realtime": 4,
-            "frontend": 5
+            "frontend": 5,
         }
 
         # 優先度とカテゴリ優先度でソート
-        sorted_reqs = sorted(requirements,
-                           key=lambda x: (category_priority.get(x.technical_category, 10),
-                                        -x.priority))
+        sorted_reqs = sorted(
+            requirements,
+            key=lambda x: (
+                category_priority.get(x.technical_category, 10),
+                -x.priority,
+            ),
+        )
 
         return [req.requirement_id for req in sorted_reqs]
 
-    def generate_system_components(self, requirements: List[SystemRequirement],
-                                 description: str) -> List[GeneratedComponent]:
+    def generate_system_components(
+        self, requirements: List[SystemRequirement], description: str
+    ) -> List[GeneratedComponent]:
         """並列的にシステムコンポーネントを生成"""
 
         components = []
@@ -275,7 +299,9 @@ volumes:
         tech_stack = self.tech_patterns.get(system_type, self.tech_patterns["todo_app"])
 
         for req in requirements:
-            component = self._generate_component_for_requirement(req, tech_stack, description)
+            component = self._generate_component_for_requirement(
+                req, tech_stack, description
+            )
             components.append(component)
 
         return components
@@ -284,17 +310,18 @@ volumes:
         """システムタイプ検出"""
         desc_lower = description.lower()
 
-        if any(word in desc_lower for word in ['todo', 'task']):
+        if any(word in desc_lower for word in ["todo", "task"]):
             return "todo_app"
-        elif any(word in desc_lower for word in ['shop', 'store', 'ecommerce']):
+        elif any(word in desc_lower for word in ["shop", "store", "ecommerce"]):
             return "e_commerce"
-        elif any(word in desc_lower for word in ['dashboard', 'analytics']):
+        elif any(word in desc_lower for word in ["dashboard", "analytics"]):
             return "dashboard"
         else:
             return "todo_app"  # デフォルト
 
-    def _generate_component_for_requirement(self, req: SystemRequirement,
-                                          tech_stack: Dict, description: str) -> GeneratedComponent:
+    def _generate_component_for_requirement(
+        self, req: SystemRequirement, tech_stack: Dict, description: str
+    ) -> GeneratedComponent:
         """要件に基づくコンポーネント生成"""
 
         component_id = f"comp_{uuid.uuid4().hex[:8]}"
@@ -345,19 +372,18 @@ volumes:
             configuration={
                 "environment": "production",
                 "scaling": "auto",
-                "monitoring": True
+                "monitoring": True,
             },
             deployment_config=deployment,
             dependencies=req.dependencies,
             estimated_resources=resources,
-            code_template=code
+            code_template=code,
         )
 
     def _generate_frontend_code(self, description: str) -> str:
         """フロントエンドコード生成"""
         return self.code_templates["react_frontend"].format(
-            component_name="MainApp",
-            endpoint="items"
+            component_name="MainApp", endpoint="items"
         )
 
     def _generate_backend_code(self, description: str) -> str:
@@ -366,12 +392,12 @@ volumes:
             app_name="Auto Generated API",
             model_name="Item",
             schema_name="ItemCreate",
-            endpoint="items"
+            endpoint="items",
         )
 
     def _generate_database_code(self) -> str:
         """データベースコード生成"""
-        return '''
+        return """
 -- Auto-generated database schema
 CREATE TABLE items (
     id SERIAL PRIMARY KEY,
@@ -382,11 +408,11 @@ CREATE TABLE items (
 );
 
 CREATE INDEX idx_items_completed ON items(completed);
-'''
+"""
 
     def _generate_auth_code(self) -> str:
         """認証コード生成"""
-        return '''
+        return """
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
@@ -405,11 +431,11 @@ def create_access_token(data: dict):
     to_encode = data.copy()
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
-'''
+"""
 
     def _generate_realtime_code(self) -> str:
         """リアルタイムコード生成"""
-        return '''
+        return """
 from fastapi import WebSocket, WebSocketDisconnect
 from typing import List
 
@@ -439,7 +465,7 @@ async def websocket_endpoint(websocket: WebSocket):
             await manager.broadcast(f"Message: {data}")
     except WebSocketDisconnect:
         manager.disconnect(websocket)
-'''
+"""
 
     async def auto_generate_system(self, user_description: str) -> Dict[str, Any]:
         """自動システム生成のメインフロー"""
@@ -454,7 +480,9 @@ async def websocket_endpoint(websocket: WebSocket):
         # 2. 依存関係確立
         print("🔗 Establishing build order...")
         build_order = self.establish_dependency_order(requirements)
-        print(f"✅ Build order: {' → '.join([req.technical_category for req in requirements])}")
+        print(
+            f"✅ Build order: {' → '.join([req.technical_category for req in requirements])}"
+        )
 
         # 3. 並列コンポーネント生成
         print("⚡ Generating components...")
@@ -475,7 +503,9 @@ async def websocket_endpoint(websocket: WebSocket):
             "estimated_total_resources": self._calculate_total_resources(components),
             "deployment_config": docker_compose,
             "generated_at": datetime.now().isoformat(),
-            "estimated_completion_time": sum(req.estimated_effort for req in requirements)
+            "estimated_completion_time": sum(
+                req.estimated_effort for req in requirements
+            ),
         }
 
         self.generated_systems[system_architecture["system_id"]] = system_architecture
@@ -485,7 +515,9 @@ async def websocket_endpoint(websocket: WebSocket):
         """Docker Compose設定生成"""
         return self.code_templates["docker_compose"]
 
-    def _calculate_total_resources(self, components: List[GeneratedComponent]) -> Dict[str, float]:
+    def _calculate_total_resources(
+        self, components: List[GeneratedComponent]
+    ) -> Dict[str, float]:
         """総リソース計算"""
         total = {"cpu": 0, "memory": 0, "storage": 0}
 
@@ -530,7 +562,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     def _generate_readme(self, system: Dict) -> str:
         """README生成"""
-        return f'''
+        return f"""
 # {system["description"]}
 
 Auto-generated system with Elder Flow technology.
@@ -561,7 +593,8 @@ Backend API: http://localhost:8000
 {system["estimated_completion_time"]} hours
 
 Generated at: {system["generated_at"]}
-'''
+"""
+
 
 # デモ実行
 async def practical_demo():
@@ -575,7 +608,7 @@ async def practical_demo():
     test_cases = [
         "Create a todo app with user authentication and real-time updates",
         "Build an e-commerce API with payment processing",
-        "Develop a data analytics dashboard with real-time charts"
+        "Develop a data analytics dashboard with real-time charts",
     ]
 
     for i, description in enumerate(test_cases, 1):
@@ -589,15 +622,18 @@ async def practical_demo():
         print(f"System ID: {result['system_id']}")
         print(f"Components: {len(result['components'])}")
         print(f"Total Development Time: {result['estimated_completion_time']} hours")
-        print(f"Total Resources: CPU={result['estimated_total_resources']['cpu']}, Memory={result['estimated_total_resources']['memory']}GB")
+        print(
+            f"Total Resources: CPU={result['estimated_total_resources']['cpu']}, Memory={result['estimated_total_resources']['memory']}GB"
+        )
 
         # プロジェクトファイル生成
-        files = generator.generate_project_files(result['system_id'])
+        files = generator.generate_project_files(result["system_id"])
         print(f"Generated {len(files)} project files:")
         for filename in sorted(files.keys()):
             print(f"  📄 {filename}")
 
     print(f"\n🎉 Demo completed! Generated {len(generator.generated_systems)} systems.")
+
 
 if __name__ == "__main__":
     asyncio.run(practical_demo())

@@ -27,6 +27,7 @@ import cmath
 
 class QuantumState(Enum):
     """量子状態"""
+
     SUPERPOSITION = "superposition"
     ENTANGLED = "entangled"
     COLLAPSED = "collapsed"
@@ -35,6 +36,7 @@ class QuantumState(Enum):
 
 class ParallelStrategy(Enum):
     """並列戦略"""
+
     CLASSICAL = "classical"
     QUANTUM = "quantum"
     HYBRID = "hybrid"
@@ -44,6 +46,7 @@ class ParallelStrategy(Enum):
 @dataclass
 class QuantumTask:
     """量子タスク"""
+
     task_id: str
     qubits: int
     computation: str
@@ -57,6 +60,7 @@ class QuantumTask:
 @dataclass
 class QuantumResult:
     """量子計算結果"""
+
     task_id: str
     result: Any
     probability: float
@@ -69,6 +73,7 @@ class QuantumResult:
 @dataclass
 class EntanglementPair:
     """量子もつれペア"""
+
     qubit_a: int
     qubit_b: int
     fidelity: float
@@ -98,19 +103,23 @@ class QuantumCircuit:
         self.gate_history.append(f"CNOT({control},{target})")
 
         # エンタングルメント追跡
-        self.entanglements.append(EntanglementPair(
-            qubit_a=control,
-            qubit_b=target,
-            fidelity=0.95 + np.random.uniform(0, 0.05),
-            measurement_correlation=0.9 + np.random.uniform(0, 0.1)
-        ))
+        self.entanglements.append(
+            EntanglementPair(
+                qubit_a=control,
+                qubit_b=target,
+                fidelity=0.95 + np.random.uniform(0, 0.05),
+                measurement_correlation=0.9 + np.random.uniform(0, 0.1),
+            )
+        )
 
     def rotation_y(self, qubit: int, theta: float):
         """Y軸回転ゲート"""
-        ry_matrix = np.array([
-            [np.cos(theta/2), -np.sin(theta/2)],
-            [np.sin(theta/2), np.cos(theta/2)]
-        ])
+        ry_matrix = np.array(
+            [
+                [np.cos(theta / 2), -np.sin(theta / 2)],
+                [np.sin(theta / 2), np.cos(theta / 2)],
+            ]
+        )
         self._apply_single_qubit_gate(ry_matrix, qubit)
         self.gate_history.append(f"RY({qubit},{theta:.3f})")
 
@@ -145,11 +154,14 @@ class QuantumCircuit:
 
     def measure(self, qubit: int) -> int:
         """量子測定"""
-        probabilities = np.abs(self.qubits)**2
+        probabilities = np.abs(self.qubits) ** 2
 
         # 指定された量子ビットの測定確率計算
-        prob_0 = sum(probabilities[i] for i in range(2**self.num_qubits)
-                    if not (i >> (self.num_qubits - 1 - qubit)) & 1)
+        prob_0 = sum(
+            probabilities[i]
+            for i in range(2**self.num_qubits)
+            if not (i >> (self.num_qubits - 1 - qubit)) & 1
+        )
 
         # 測定結果決定
         result = 0 if np.random.random() < prob_0 else 1
@@ -167,7 +179,7 @@ class QuantumCircuit:
         for i in range(2**self.num_qubits):
             if ((i >> (self.num_qubits - 1 - qubit)) & 1) == result:
                 new_qubits[i] = self.qubits[i]
-                norm += np.abs(self.qubits[i])**2
+                norm += np.abs(self.qubits[i]) ** 2
 
         if norm > 0:
             self.qubits = new_qubits / np.sqrt(norm)
@@ -178,7 +190,7 @@ class QuantumCircuit:
 
     def get_probabilities(self) -> np.ndarray:
         """確率分布取得"""
-        return np.abs(self.qubits)**2
+        return np.abs(self.qubits) ** 2
 
 
 class QuantumProcessor:
@@ -210,7 +222,9 @@ class QuantumProcessor:
 
         return logger
 
-    async def execute_quantum_algorithm(self, algorithm: str, input_data: Any) -> QuantumResult:
+    async def execute_quantum_algorithm(
+        self, algorithm: str, input_data: Any
+    ) -> QuantumResult:
         """量子アルゴリズム実行"""
         start_time = time.time()
 
@@ -230,10 +244,16 @@ class QuantumProcessor:
         execution_time = time.time() - start_time
 
         # 量子優位性の計算
-        quantum_advantage = self._calculate_quantum_advantage(algorithm, len(input_data) if hasattr(input_data, '__len__') else 1)
+        quantum_advantage = self._calculate_quantum_advantage(
+            algorithm, len(input_data) if hasattr(input_data, "__len__") else 1
+        )
 
         # エンタングルメント忠実度
-        entanglement_fidelity = np.mean([e.fidelity for e in self.circuit.entanglements]) if self.circuit.entanglements else 0.0
+        entanglement_fidelity = (
+            np.mean([e.fidelity for e in self.circuit.entanglements])
+            if self.circuit.entanglements
+            else 0.0
+        )
 
         return QuantumResult(
             task_id=f"quantum_{int(time.time())}",
@@ -242,7 +262,7 @@ class QuantumProcessor:
             measurement_count=len(self.circuit.gate_history),
             execution_time=execution_time,
             quantum_advantage=quantum_advantage,
-            entanglement_fidelity=entanglement_fidelity
+            entanglement_fidelity=entanglement_fidelity,
         )
 
     async def _quantum_search(self, data: List[Any]) -> Any:
@@ -288,8 +308,8 @@ class QuantumProcessor:
         for i in range(num_qubits):
             self.circuit.hadamard(i)
 
-            for j in range(i+1, num_qubits):
-                theta = 2 * np.pi / (2**(j-i+1))
+            for j in range(i + 1, num_qubits):
+                theta = 2 * np.pi / (2 ** (j - i + 1))
                 self.circuit.rotation_y(j, theta)
 
         # 測定と結果構築
@@ -312,15 +332,15 @@ class QuantumProcessor:
 
         # コスト関数エンコーディング
         for i in range(num_vars - 1):
-            self.circuit.cnot(i, i+1)
+            self.circuit.cnot(i, i + 1)
 
         # 変分パラメータ最適化（模擬）
-        best_cost = float('inf')
+        best_cost = float("inf")
         best_solution = None
 
         for iteration in range(10):  # 最適化反復
             # パラメータ更新
-            theta = np.random.uniform(0, 2*np.pi)
+            theta = np.random.uniform(0, 2 * np.pi)
             for i in range(num_vars):
                 self.circuit.rotation_y(i, theta)
 
@@ -335,14 +355,18 @@ class QuantumProcessor:
         return {
             "optimal_solution": best_solution,
             "optimal_cost": -best_cost,
-            "convergence_iterations": 10
+            "convergence_iterations": 10,
         }
 
     async def _quantum_machine_learning(self, training_data: List) -> Dict:
         """量子機械学習"""
         self.logger.info("🧠 Executing quantum machine learning")
 
-        n_features = len(training_data[0]) if training_data and hasattr(training_data[0], '__len__') else 4
+        n_features = (
+            len(training_data[0])
+            if training_data and hasattr(training_data[0], "__len__")
+            else 4
+        )
 
         # 量子特徴マップ
         for i in range(min(n_features, self.num_qubits)):
@@ -350,12 +374,12 @@ class QuantumProcessor:
             self.circuit.rotation_y(i, angle)
 
         # 量子エンタングルメント層
-        for i in range(min(n_features-1, self.num_qubits-1)):
-            self.circuit.cnot(i, i+1)
+        for i in range(min(n_features - 1, self.num_qubits - 1)):
+            self.circuit.cnot(i, i + 1)
 
         # 変分層
         for i in range(min(n_features, self.num_qubits)):
-            theta = np.random.uniform(0, 2*np.pi)
+            theta = np.random.uniform(0, 2 * np.pi)
             self.circuit.rotation_y(i, theta)
 
         # 予測結果生成
@@ -366,14 +390,14 @@ class QuantumProcessor:
         return {
             "prediction": prediction,
             "confidence": confidence,
-            "quantum_features": len(self.circuit.entanglements)
+            "quantum_features": len(self.circuit.entanglements),
         }
 
     async def _quantum_cryptography(self, message: str) -> Dict:
         """量子暗号"""
         self.logger.info("🔐 Executing quantum cryptography")
 
-        message_bits = [int(b) for b in format(hash(message) % (2**8), '08b')]
+        message_bits = [int(b) for b in format(hash(message) % (2**8), "08b")]
 
         # BB84プロトコル風
         alice_bits = message_bits
@@ -407,7 +431,7 @@ class QuantumProcessor:
         return {
             "shared_key": shared_key,
             "key_length": len(shared_key),
-            "security_level": 0.95 + np.random.uniform(0, 0.05)
+            "security_level": 0.95 + np.random.uniform(0, 0.05),
         }
 
     async def _generic_quantum_computation(self, data: Any) -> Any:
@@ -419,7 +443,7 @@ class QuantumProcessor:
             self.circuit.hadamard(i)
 
         for i in range(min(3, self.num_qubits - 1)):
-            self.circuit.cnot(i, i+1)
+            self.circuit.cnot(i, i + 1)
 
         # 測定
         results = []
@@ -433,8 +457,12 @@ class QuantumProcessor:
         """量子優位性計算"""
         # アルゴリズム別の理論的スピードアップ
         advantages = {
-            "quantum_search": np.sqrt(problem_size) / problem_size if problem_size > 1 else 1.0,
-            "quantum_fourier_transform": np.log2(problem_size) / problem_size if problem_size > 1 else 1.0,
+            "quantum_search": (
+                np.sqrt(problem_size) / problem_size if problem_size > 1 else 1.0
+            ),
+            "quantum_fourier_transform": (
+                np.log2(problem_size) / problem_size if problem_size > 1 else 1.0
+            ),
             "quantum_optimization": 0.8,  # QAOA
             "quantum_ml": 0.7,  # VQC
             "quantum_cryptography": 0.95,  # 高いセキュリティ
@@ -453,18 +481,26 @@ class ParallelExecutionEngine:
         self.logger = self._setup_logger()
 
         # 実行プール
-        self.classical_executor = concurrent.futures.ThreadPoolExecutor(max_workers=max_classical_workers)
-        self.process_executor = concurrent.futures.ProcessPoolExecutor(max_workers=max_classical_workers//2)
+        self.classical_executor = concurrent.futures.ThreadPoolExecutor(
+            max_workers=max_classical_workers
+        )
+        self.process_executor = concurrent.futures.ProcessPoolExecutor(
+            max_workers=max_classical_workers // 2
+        )
 
         # 量子プロセッサプール
-        self.quantum_processors = [QuantumProcessor() for _ in range(max_quantum_workers)]
+        self.quantum_processors = [
+            QuantumProcessor() for _ in range(max_quantum_workers)
+        ]
         self.quantum_semaphore = asyncio.Semaphore(max_quantum_workers)
 
         # タスクキュー
         self.task_queue = asyncio.Queue()
         self.results = {}
 
-        self.logger.info(f"⚡ Parallel Engine initialized: {max_classical_workers} classical + {max_quantum_workers} quantum workers")
+        self.logger.info(
+            f"⚡ Parallel Engine initialized: {max_classical_workers} classical + {max_quantum_workers} quantum workers"
+        )
 
     def _setup_logger(self) -> logging.Logger:
         """ロガー設定"""
@@ -481,9 +517,13 @@ class ParallelExecutionEngine:
 
         return logger
 
-    async def execute_parallel_tasks(self, tasks: List[Dict], strategy: ParallelStrategy = ParallelStrategy.HYBRID) -> Dict[str, Any]:
+    async def execute_parallel_tasks(
+        self, tasks: List[Dict], strategy: ParallelStrategy = ParallelStrategy.HYBRID
+    ) -> Dict[str, Any]:
         """並列タスク実行"""
-        self.logger.info(f"⚡ Executing {len(tasks)} tasks with {strategy.value} strategy")
+        self.logger.info(
+            f"⚡ Executing {len(tasks)} tasks with {strategy.value} strategy"
+        )
 
         start_time = time.time()
 
@@ -505,7 +545,9 @@ class ParallelExecutionEngine:
             "execution_time": execution_time,
             "strategy": strategy.value,
             "total_tasks": len(tasks),
-            "successful_tasks": len([r for r in results.values() if r.get("success", False)])
+            "successful_tasks": len(
+                [r for r in results.values() if r.get("success", False)]
+            ),
         }
 
     async def _execute_classical_parallel(self, tasks: List[Dict]) -> Dict[str, Any]:
@@ -518,16 +560,12 @@ class ParallelExecutionEngine:
             if task.get("cpu_intensive", False):
                 # CPU集約的タスクはプロセスプールで実行
                 result = await loop.run_in_executor(
-                    self.process_executor,
-                    self._cpu_intensive_task,
-                    task
+                    self.process_executor, self._cpu_intensive_task, task
                 )
             else:
                 # I/O集約的タスクはスレッドプールで実行
                 result = await loop.run_in_executor(
-                    self.classical_executor,
-                    self._io_intensive_task,
-                    task
+                    self.classical_executor, self._io_intensive_task, task
                 )
 
             return task["id"], result
@@ -544,7 +582,10 @@ class ParallelExecutionEngine:
                 result_dict[task_id] = task_result
             else:
                 # 例外が発生した場合
-                result_dict[f"error_{len(result_dict)}"] = {"error": str(result), "success": False}
+                result_dict[f"error_{len(result_dict)}"] = {
+                    "error": str(result),
+                    "success": False,
+                }
 
         return result_dict
 
@@ -557,14 +598,16 @@ class ParallelExecutionEngine:
                 algorithm = task.get("algorithm", "generic_quantum_computation")
                 input_data = task.get("input_data", [])
 
-                result = await processor.execute_quantum_algorithm(algorithm, input_data)
+                result = await processor.execute_quantum_algorithm(
+                    algorithm, input_data
+                )
 
                 return task["id"], {
                     "result": result.result,
                     "quantum_advantage": result.quantum_advantage,
                     "entanglement_fidelity": result.entanglement_fidelity,
                     "execution_time": result.execution_time,
-                    "success": True
+                    "success": True,
                 }
 
         # 量子タスクを並列実行
@@ -582,7 +625,10 @@ class ParallelExecutionEngine:
                 task_id, task_result = result
                 result_dict[task_id] = task_result
             else:
-                result_dict[f"quantum_error_{len(result_dict)}"] = {"error": str(result), "success": False}
+                result_dict[f"quantum_error_{len(result_dict)}"] = {
+                    "error": str(result),
+                    "success": False,
+                }
 
         return result_dict
 
@@ -595,8 +641,16 @@ class ParallelExecutionEngine:
         classical_tasks = [task for task in tasks if task.get("type") != "quantum"]
 
         # 並列実行
-        quantum_coroutine = self._execute_quantum_parallel(quantum_tasks) if quantum_tasks else asyncio.create_task(asyncio.sleep(0))
-        classical_coroutine = self._execute_classical_parallel(classical_tasks) if classical_tasks else asyncio.create_task(asyncio.sleep(0))
+        quantum_coroutine = (
+            self._execute_quantum_parallel(quantum_tasks)
+            if quantum_tasks
+            else asyncio.create_task(asyncio.sleep(0))
+        )
+        classical_coroutine = (
+            self._execute_classical_parallel(classical_tasks)
+            if classical_tasks
+            else asyncio.create_task(asyncio.sleep(0))
+        )
 
         quantum_results, classical_results = await asyncio.gather(
             quantum_coroutine, classical_coroutine, return_exceptions=True
@@ -631,32 +685,37 @@ class ParallelExecutionEngine:
             # 同期実行
             result1_coroutine = processor1.execute_quantum_algorithm(
                 task1.get("algorithm", "generic_quantum_computation"),
-                task1.get("input_data", [])
+                task1.get("input_data", []),
             )
 
             result2_coroutine = processor2.execute_quantum_algorithm(
                 task2.get("algorithm", "generic_quantum_computation"),
-                task2.get("input_data", [])
+                task2.get("input_data", []),
             )
 
-            result1, result2 = await asyncio.gather(result1_coroutine, result2_coroutine)
+            result1, result2 = await asyncio.gather(
+                result1_coroutine, result2_coroutine
+            )
 
             # エンタングルメント相関の計算
-            correlation = np.abs(result1.entanglement_fidelity + result2.entanglement_fidelity) / 2
+            correlation = (
+                np.abs(result1.entanglement_fidelity + result2.entanglement_fidelity)
+                / 2
+            )
 
             return {
                 task1["id"]: {
                     "result": result1.result,
                     "quantum_advantage": result1.quantum_advantage,
                     "entanglement_correlation": correlation,
-                    "success": True
+                    "success": True,
                 },
                 task2["id"]: {
                     "result": result2.result,
                     "quantum_advantage": result2.quantum_advantage,
                     "entanglement_correlation": correlation,
-                    "success": True
-                }
+                    "success": True,
+                },
             }
 
         # エンタングルペアの並列実行
@@ -706,7 +765,7 @@ class ParallelExecutionEngine:
             "computation_size": n,
             "execution_time": execution_time,
             "type": "cpu_intensive",
-            "success": True
+            "success": True,
         }
 
     def _io_intensive_task(self, task: Dict) -> Dict:
@@ -726,7 +785,7 @@ class ParallelExecutionEngine:
             "io_delay": delay,
             "execution_time": execution_time,
             "type": "io_intensive",
-            "success": True
+            "success": True,
         }
 
 
@@ -734,7 +793,9 @@ class QuantumParallelEngine:
     """量子並列エンジン統合システム"""
 
     def __init__(self, max_classical_workers: int = 8, max_quantum_workers: int = 4):
-        self.execution_engine = ParallelExecutionEngine(max_classical_workers, max_quantum_workers)
+        self.execution_engine = ParallelExecutionEngine(
+            max_classical_workers, max_quantum_workers
+        )
         self.logger = self._setup_logger()
 
         # 性能メトリクス
@@ -744,7 +805,7 @@ class QuantumParallelEngine:
             "classical_executions": 0,
             "hybrid_executions": 0,
             "average_quantum_advantage": 0.0,
-            "average_execution_time": 0.0
+            "average_execution_time": 0.0,
         }
 
         self.logger.info("⚛️ Quantum Parallel Engine initialized")
@@ -764,7 +825,9 @@ class QuantumParallelEngine:
 
         return logger
 
-    async def process_workload(self, workload: List[Dict], strategy: ParallelStrategy = ParallelStrategy.HYBRID) -> Dict[str, Any]:
+    async def process_workload(
+        self, workload: List[Dict], strategy: ParallelStrategy = ParallelStrategy.HYBRID
+    ) -> Dict[str, Any]:
         """ワークロード処理"""
         self.logger.info(f"⚛️ Processing workload: {len(workload)} tasks")
 
@@ -792,8 +855,8 @@ class QuantumParallelEngine:
         new_time = result.get("execution_time", 0)
 
         self.performance_metrics["average_execution_time"] = (
-            (current_avg * (total_execs - 1) + new_time) / total_execs
-        )
+            current_avg * (total_execs - 1) + new_time
+        ) / total_execs
 
         # 量子優位性更新
         quantum_advantages = []
@@ -804,22 +867,31 @@ class QuantumParallelEngine:
         if quantum_advantages:
             avg_advantage = np.mean(quantum_advantages)
             current_q_avg = self.performance_metrics["average_quantum_advantage"]
-            q_execs = self.performance_metrics["quantum_executions"] + self.performance_metrics["hybrid_executions"]
+            q_execs = (
+                self.performance_metrics["quantum_executions"]
+                + self.performance_metrics["hybrid_executions"]
+            )
 
             if q_execs > 0:
                 self.performance_metrics["average_quantum_advantage"] = (
-                    (current_q_avg * (q_execs - 1) + avg_advantage) / q_execs
-                )
+                    current_q_avg * (q_execs - 1) + avg_advantage
+                ) / q_execs
 
     def get_performance_metrics(self) -> Dict[str, Any]:
         """性能メトリクス取得"""
         return self.performance_metrics.copy()
 
-    async def benchmark_quantum_advantage(self, problem_sizes: List[int]) -> Dict[str, List[float]]:
+    async def benchmark_quantum_advantage(
+        self, problem_sizes: List[int]
+    ) -> Dict[str, List[float]]:
         """量子優位性ベンチマーク"""
         self.logger.info("📊 Running quantum advantage benchmark")
 
-        algorithms = ["quantum_search", "quantum_fourier_transform", "quantum_optimization"]
+        algorithms = [
+            "quantum_search",
+            "quantum_fourier_transform",
+            "quantum_optimization",
+        ]
         benchmark_results = {alg: [] for alg in algorithms}
 
         for size in problem_sizes:
@@ -828,23 +900,31 @@ class QuantumParallelEngine:
                 test_data = list(range(size))
 
                 # 量子実行
-                quantum_tasks = [{
-                    "id": f"quantum_{algorithm}_{size}",
-                    "type": "quantum",
-                    "algorithm": algorithm,
-                    "input_data": test_data
-                }]
+                quantum_tasks = [
+                    {
+                        "id": f"quantum_{algorithm}_{size}",
+                        "type": "quantum",
+                        "algorithm": algorithm,
+                        "input_data": test_data,
+                    }
+                ]
 
-                quantum_result = await self.process_workload(quantum_tasks, ParallelStrategy.QUANTUM)
+                quantum_result = await self.process_workload(
+                    quantum_tasks, ParallelStrategy.QUANTUM
+                )
 
                 # クラシカル実行
-                classical_tasks = [{
-                    "id": f"classical_{algorithm}_{size}",
-                    "type": "classical",
-                    "computation_size": size * 1000
-                }]
+                classical_tasks = [
+                    {
+                        "id": f"classical_{algorithm}_{size}",
+                        "type": "classical",
+                        "computation_size": size * 1000,
+                    }
+                ]
 
-                classical_result = await self.process_workload(classical_tasks, ParallelStrategy.CLASSICAL)
+                classical_result = await self.process_workload(
+                    classical_tasks, ParallelStrategy.CLASSICAL
+                )
 
                 # スピードアップ計算
                 quantum_time = quantum_result.get("execution_time", 1.0)
@@ -871,34 +951,33 @@ async def demo_quantum_parallel_engine():
             "id": "quantum_search_1",
             "type": "quantum",
             "algorithm": "quantum_search",
-            "input_data": list(range(100))
+            "input_data": list(range(100)),
         },
         {
             "id": "quantum_optimization_1",
             "type": "quantum",
             "algorithm": "quantum_optimization",
-            "input_data": {"variables": 6}
+            "input_data": {"variables": 6},
         },
         {
             "id": "quantum_ml_1",
             "type": "quantum",
             "algorithm": "quantum_ml",
-            "input_data": [[1, 2, 3, 4], [5, 6, 7, 8]]
+            "input_data": [[1, 2, 3, 4], [5, 6, 7, 8]],
         },
-
         # クラシカルタスク
         {
             "id": "cpu_task_1",
             "type": "classical",
             "cpu_intensive": True,
-            "computation_size": 500000
+            "computation_size": 500000,
         },
         {
             "id": "io_task_1",
             "type": "classical",
             "cpu_intensive": False,
-            "io_delay": 0.2
-        }
+            "io_delay": 0.2,
+        },
     ]
 
     # 各戦略でのテスト
@@ -906,7 +985,7 @@ async def demo_quantum_parallel_engine():
         ParallelStrategy.CLASSICAL,
         ParallelStrategy.QUANTUM,
         ParallelStrategy.HYBRID,
-        ParallelStrategy.ENTANGLED
+        ParallelStrategy.ENTANGLED,
     ]
 
     for strategy in strategies:
@@ -915,7 +994,9 @@ async def demo_quantum_parallel_engine():
         result = await engine.process_workload(workload, strategy)
 
         print(f"  ⏱️ Execution time: {result['execution_time']:.3f}s")
-        print(f"  ✅ Successful tasks: {result['successful_tasks']}/{result['total_tasks']}")
+        print(
+            f"  ✅ Successful tasks: {result['successful_tasks']}/{result['total_tasks']}"
+        )
 
         # 量子優位性があるタスクの表示
         for task_id, task_result in result["results"].items():

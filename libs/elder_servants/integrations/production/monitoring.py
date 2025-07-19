@@ -174,9 +174,9 @@ class StructuredLogger:
             service_name=self.service_name,
             logger_name=logger_name,
             message=message,
-            correlation_id=self.correlation_id_stack[-1]
-            if self.correlation_id_stack
-            else None,
+            correlation_id=(
+                self.correlation_id_stack[-1] if self.correlation_id_stack else None
+            ),
             **context,
         )
 
@@ -399,11 +399,11 @@ class PrometheusMetricsCollector:
                         if m.metric_type == MetricType.HISTOGRAM
                     ]
                 ),
-                "last_update": max(
-                    [m.timestamp for m in self.metrics.values()]
-                ).isoformat()
-                if self.metrics
-                else None,
+                "last_update": (
+                    max([m.timestamp for m in self.metrics.values()]).isoformat()
+                    if self.metrics
+                    else None
+                ),
             }
 
             # 最近のメトリクス（上位10件）
@@ -971,9 +971,11 @@ class PerformanceTracker:
                         "avg_ms": sum(times) / len(times),
                         "min_ms": min(times),
                         "max_ms": max(times),
-                        "p95_ms": sorted(times)[int(len(times) * 0.95)]
-                        if len(times) > 20
-                        else max(times),
+                        "p95_ms": (
+                            sorted(times)[int(len(times) * 0.95)]
+                            if len(times) > 20
+                            else max(times)
+                        ),
                     }
             return summary
 

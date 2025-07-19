@@ -89,35 +89,54 @@ class ProjectScaffolder:
             (backend_path / dir_path).mkdir(parents=True, exist_ok=True)
 
         # メインアプリケーションファイル
-        await self.write_file(backend_path / "app" / "main.py", self.get_fastapi_main(config))
+        await self.write_file(
+            backend_path / "app" / "main.py", self.get_fastapi_main(config)
+        )
 
         # 設定ファイル
-        await self.write_file(backend_path / "app" / "core" / "config.py", self.get_config_file(config))
+        await self.write_file(
+            backend_path / "app" / "core" / "config.py", self.get_config_file(config)
+        )
 
         # データベースモデル
-        await self.write_file(backend_path / "app" / "models" / "upload.py", self.get_upload_model(config))
+        await self.write_file(
+            backend_path / "app" / "models" / "upload.py", self.get_upload_model(config)
+        )
 
         # APIエンドポイント
         await self.write_file(
-            backend_path / "app" / "api" / "endpoints" / "upload.py", self.get_upload_endpoints(config)
+            backend_path / "app" / "api" / "endpoints" / "upload.py",
+            self.get_upload_endpoints(config),
         )
 
         # サービス層
-        await self.write_file(backend_path / "app" / "services" / "upload_service.py", self.get_upload_service(config))
+        await self.write_file(
+            backend_path / "app" / "services" / "upload_service.py",
+            self.get_upload_service(config),
+        )
 
         # 画像処理サービス
         if "image-optimization" in config.get("features", []):
-            await self.write_file(backend_path / "app" / "services" / "image_processor.py", self.get_image_processor())
+            await self.write_file(
+                backend_path / "app" / "services" / "image_processor.py",
+                self.get_image_processor(),
+            )
 
         # 認証システム
         if "auth" in config.get("features", []):
-            await self.write_file(backend_path / "app" / "core" / "auth.py", self.get_auth_system())
+            await self.write_file(
+                backend_path / "app" / "core" / "auth.py", self.get_auth_system()
+            )
 
         # requirements.txt
-        await self.write_file(backend_path / "requirements.txt", self.get_requirements(config))
+        await self.write_file(
+            backend_path / "requirements.txt", self.get_requirements(config)
+        )
 
         # Dockerfile
-        await self.write_file(backend_path / "Dockerfile", self.get_backend_dockerfile())
+        await self.write_file(
+            backend_path / "Dockerfile", self.get_backend_dockerfile()
+        )
 
         # テストファイル
         await self.create_backend_tests(backend_path, config)
@@ -144,13 +163,17 @@ class ProjectScaffolder:
             (frontend_path / dir_path).mkdir(parents=True, exist_ok=True)
 
         # package.json
-        await self.write_file(frontend_path / "package.json", self.get_package_json(config))
+        await self.write_file(
+            frontend_path / "package.json", self.get_package_json(config)
+        )
 
         # TypeScript設定
         await self.write_file(frontend_path / "tsconfig.json", self.get_tsconfig())
 
         # メインアプリ
-        await self.write_file(frontend_path / "src" / "App.tsx", self.get_app_component(config))
+        await self.write_file(
+            frontend_path / "src" / "App.tsx", self.get_app_component(config)
+        )
 
         # アップロードコンポーネント
         await self.write_file(
@@ -161,18 +184,28 @@ class ProjectScaffolder:
         # 管理画面
         if "approval-flow" in config.get("features", []):
             await self.write_file(
-                frontend_path / "src" / "components" / "admin" / "ApprovalDashboard.tsx",
+                frontend_path
+                / "src"
+                / "components"
+                / "admin"
+                / "ApprovalDashboard.tsx",
                 self.get_approval_dashboard(config),
             )
 
         # APIサービス
-        await self.write_file(frontend_path / "src" / "services" / "api.ts", self.get_api_service(config))
+        await self.write_file(
+            frontend_path / "src" / "services" / "api.ts", self.get_api_service(config)
+        )
 
         # 型定義
-        await self.write_file(frontend_path / "src" / "types" / "index.ts", self.get_type_definitions())
+        await self.write_file(
+            frontend_path / "src" / "types" / "index.ts", self.get_type_definitions()
+        )
 
         # スタイル
-        await self.write_file(frontend_path / "src" / "styles" / "globals.css", self.get_global_styles())
+        await self.write_file(
+            frontend_path / "src" / "styles" / "globals.css", self.get_global_styles()
+        )
 
     async def create_docker_config(self, project_path: Path, config: Dict):
         """Docker設定生成"""
@@ -245,7 +278,9 @@ class TestUploadEndpoints:
         assert response.status_code == 200
         assert isinstance(response.json(), list)
 """
-        await self.write_file(backend_path / "tests" / "unit" / "test_upload.py", test_upload)
+        await self.write_file(
+            backend_path / "tests" / "unit" / "test_upload.py", test_upload
+        )
 
         # 統合テスト
         integration_test = """
@@ -269,7 +304,10 @@ async def test_full_upload_flow():
     status = await service.get_upload_status(result["file_id"])
     assert status["status"] in ["pending", "approved", "rejected"]
 """
-        await self.write_file(backend_path / "tests" / "integration" / "test_upload_flow.py", integration_test)
+        await self.write_file(
+            backend_path / "tests" / "integration" / "test_upload_flow.py",
+            integration_test,
+        )
 
     # ヘルパーメソッド群
     def get_fastapi_main(self, config: Dict) -> str:
@@ -1962,4 +2000,6 @@ jobs:
   }
 }
 """
-        await self.write_file(project_path / "quality_monitoring.json", monitoring_config)
+        await self.write_file(
+            project_path / "quality_monitoring.json", monitoring_config
+        )

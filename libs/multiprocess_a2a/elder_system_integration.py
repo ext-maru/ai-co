@@ -292,9 +292,9 @@ class ElderSystemIntegration(EldersFlowLegacy):
                     ],
                 )
 
-                self.elder_components[
-                    council_component.component_id
-                ] = council_component
+                self.elder_components[council_component.component_id] = (
+                    council_component
+                )
                 self.component_instances["elder_council"] = council_instance
 
                 logger.info("✅ Elder Council integrated")
@@ -340,12 +340,12 @@ class ElderSystemIntegration(EldersFlowLegacy):
                             ],
                         )
 
-                        self.elder_components[
-                            servant_component.component_id
-                        ] = servant_component
-                        self.component_instances[
-                            f"servant_{servant_type}"
-                        ] = servant_instance
+                        self.elder_components[servant_component.component_id] = (
+                            servant_component
+                        )
+                        self.component_instances[f"servant_{servant_type}"] = (
+                            servant_instance
+                        )
 
                         logger.info(f"✅ Elder Servant integrated: {servant_type}")
 
@@ -435,9 +435,9 @@ class ElderSystemIntegration(EldersFlowLegacy):
                     capabilities=["quality_auditing", "ancient_wisdom", "oversight"],
                 )
 
-                self.elder_components[
-                    ancient_component.component_id
-                ] = ancient_component
+                self.elder_components[ancient_component.component_id] = (
+                    ancient_component
+                )
                 self.component_instances["ancient_elder"] = ancient_instance
 
                 logger.info("✅ Ancient Elder integrated")
@@ -697,9 +697,9 @@ class ElderSystemIntegration(EldersFlowLegacy):
                 "current_node": target_node,
                 "tree_structure": tree_structure,
                 "navigation_path": [],
-                "available_nodes": list(tree_structure.keys())
-                if tree_structure
-                else [],
+                "available_nodes": (
+                    list(tree_structure.keys()) if tree_structure else []
+                ),
             }
 
             return {
@@ -820,9 +820,11 @@ class ElderSystemIntegration(EldersFlowLegacy):
             for comp_id, comp in self.elder_components.items():
                 if comp_id not in health_results:
                     health_results[comp_id] = {
-                        "status": "healthy"
-                        if comp.status == ElderSystemStatus.ACTIVE
-                        else "warning",
+                        "status": (
+                            "healthy"
+                            if comp.status == ElderSystemStatus.ACTIVE
+                            else "warning"
+                        ),
                         "component_type": comp.elder_type.value,
                         "last_check": datetime.now().isoformat(),
                     }

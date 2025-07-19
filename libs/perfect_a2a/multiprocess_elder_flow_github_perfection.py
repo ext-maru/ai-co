@@ -349,9 +349,9 @@ class MultiProcessA2AElderFlow:
         # 実際のコード生成（ここで実際のファイルに書き込む）
         self._generate_api_implementation(method_name, requirements)
 
-        implementation[
-            "file_path"
-        ] = f"libs/integrations/github/api_implementations/{method_name}.py"
+        implementation["file_path"] = (
+            f"libs/integrations/github/api_implementations/{method_name}.py"
+        )
 
         return implementation
 
@@ -374,9 +374,9 @@ class MultiProcessA2AElderFlow:
         # 実際のコード生成
         self._generate_system_implementation(component_name, requirements)
 
-        implementation[
-            "file_path"
-        ] = f"libs/integrations/github/systems/{component_name}.py"
+        implementation["file_path"] = (
+            f"libs/integrations/github/systems/{component_name}.py"
+        )
 
         return implementation
 
@@ -394,9 +394,9 @@ class MultiProcessA2AElderFlow:
         # 統合アーキテクチャの実装
         self._generate_unified_architecture(requirements)
 
-        implementation[
-            "file_path"
-        ] = "libs/integrations/github/unified_github_manager.py"
+        implementation["file_path"] = (
+            "libs/integrations/github/unified_github_manager.py"
+        )
         implementation["documentation_path"] = "docs/GITHUB_UNIFIED_ARCHITECTURE.md"
 
         return implementation
@@ -491,9 +491,9 @@ class MultiProcessA2AElderFlow:
         for check_name, check_result in checks:
             quality_results["checks_performed"].append(check_name)
             quality_results["metrics"][check_name] = check_result
-            quality_results["compliance"][
-                check_name
-            ] = check_result >= self._get_iron_will_threshold(check_name)
+            quality_results["compliance"][check_name] = (
+                check_result >= self._get_iron_will_threshold(check_name)
+            )
 
         # 総合スコア計算
         quality_results["overall_score"] = sum(

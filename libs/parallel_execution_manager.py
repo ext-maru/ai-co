@@ -317,7 +317,9 @@ class ParallelExecutionManager(BaseManager):
 
             self.execution_groups[group_id] = execution_group
 
-            logger.info(f"📦 実行グループ作成: {group_id} ({len(tasks)}タスク, 並列度{max_parallel})")
+            logger.info(
+                f"📦 実行グループ作成: {group_id} ({len(tasks)}タスク, 並列度{max_parallel})"
+            )
             return group_id
 
         except Exception as e:
@@ -400,7 +402,9 @@ class ParallelExecutionManager(BaseManager):
             else:
                 dependent_tasks.append(task)
 
-        logger.info(f"📊 タスク分離: 独立{len(independent_tasks)}, 依存{len(dependent_tasks)}")
+        logger.info(
+            f"📊 タスク分離: 独立{len(independent_tasks)}, 依存{len(dependent_tasks)}"
+        )
         return independent_tasks, dependent_tasks
 
     def _execute_tasks_parallel(
@@ -424,7 +428,9 @@ class ParallelExecutionManager(BaseManager):
                     future_to_task[future] = task
 
                 # 結果を収集
-                for future in as_completed(future_to_task, timeout=300):  # 5分タイムアウト
+                for future in as_completed(
+                    future_to_task, timeout=300
+                ):  # 5分タイムアウト
                     task = future_to_task[future]
                     try:
                         result = future.result()
@@ -896,9 +902,11 @@ class ParallelExecutionManager(BaseManager):
             "current_usage": {k.value: v for k, v in self.resource_usage.items()},
             "limits": {k.value: v for k, v in self.resource_limits.items()},
             "utilization": {
-                k.value: (v / self.resource_limits[k] * 100)
-                if self.resource_limits[k] > 0
-                else 0
+                k.value: (
+                    (v / self.resource_limits[k] * 100)
+                    if self.resource_limits[k] > 0
+                    else 0
+                )
                 for k, v in self.resource_usage.items()
             },
         }

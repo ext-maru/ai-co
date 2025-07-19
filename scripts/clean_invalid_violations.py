@@ -14,10 +14,7 @@ def clean_invalid_violations():
     """存在しないファイルの違反を削除"""
 
     # 削除対象のファイル
-    invalid_files = [
-        "intelligent_pm_worker_simple.py",
-        "simple_task_worker.py"
-    ]
+    invalid_files = ["intelligent_pm_worker_simple.py", "simple_task_worker.py"]
 
     # データベース接続
     db_path = Path("data/abstract_violations.db")
@@ -37,8 +34,7 @@ def clean_invalid_violations():
     deleted_count = 0
     for invalid_file in invalid_files:
         cursor.execute(
-            "DELETE FROM violations WHERE file_path LIKE ?",
-            (f"%{invalid_file}%",)
+            "DELETE FROM violations WHERE file_path LIKE ?", (f"%{invalid_file}%",)
         )
         deleted = cursor.rowcount
         deleted_count += deleted
@@ -54,14 +50,16 @@ def clean_invalid_violations():
     print(f"🔧 削除した違反数: {deleted_count}")
 
     # 残っている違反を表示
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT DISTINCT
             file_path,
             COUNT(*) as count
         FROM violations
         GROUP BY file_path
         ORDER BY count DESC
-    """)
+    """
+    )
 
     remaining = cursor.fetchall()
     if remaining:
@@ -74,13 +72,14 @@ def clean_invalid_violations():
     # ログファイルも更新
     log_path = Path("logs/identity_violations.json")
     if log_path.exists():
-        with open(log_path, 'r') as f:
+        with open(log_path, "r") as f:
             data = json.load(f)
 
         # greeting_systemの違反を除外
         original_count = len(data.get("violations", []))
         filtered_violations = [
-            v for v in data.get("violations", [])
+            v
+            for v in data.get("violations", [])
             if not any(invalid in v.get("file", "") for invalid in invalid_files)
         ]
 
@@ -88,7 +87,7 @@ def clean_invalid_violations():
         data["total_violations"] = len(filtered_violations)
         data["last_updated"] = datetime.now().isoformat()
 
-        with open(log_path, 'w') as f:
+        with open(log_path, "w") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
         print(f"\n📝 identity_violations.json更新:")

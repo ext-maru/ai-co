@@ -218,9 +218,15 @@ class AIAutomationPerformanceMonitor:
         )
 
         # インデックス作成
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON performance_metrics(timestamp)")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_metrics_source ON performance_metrics(source_system)")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_alerts_triggered ON alert_history(triggered_at)")
+        cursor.execute(
+            "CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON performance_metrics(timestamp)"
+        )
+        cursor.execute(
+            "CREATE INDEX IF NOT EXISTS idx_metrics_source ON performance_metrics(source_system)"
+        )
+        cursor.execute(
+            "CREATE INDEX IF NOT EXISTS idx_alerts_triggered ON alert_history(triggered_at)"
+        )
 
         conn.commit()
         conn.close()
@@ -567,7 +573,9 @@ class AIAutomationPerformanceMonitor:
                 continue
 
             # 最近のメトリクス値を取得
-            recent_values = self._get_recent_metric_values(rule.metric_name, rule.duration_seconds)
+            recent_values = self._get_recent_metric_values(
+                rule.metric_name, rule.duration_seconds
+            )
 
             if not recent_values:
                 continue
@@ -581,9 +589,13 @@ class AIAutomationPerformanceMonitor:
                 alert_id = f"{rule.rule_id}_{int(current_time.timestamp())}"
 
                 if alert_id not in self.active_alerts:
-                    await self._trigger_alert(alert_id, rule, latest_value, current_time)
+                    await self._trigger_alert(
+                        alert_id, rule, latest_value, current_time
+                    )
 
-    def _get_recent_metric_values(self, metric_name: str, duration_seconds: int) -> List[Tuple[datetime, float]]:
+    def _get_recent_metric_values(
+        self, metric_name: str, duration_seconds: int
+    ) -> List[Tuple[datetime, float]]:
         """最近のメトリクス値取得"""
         cutoff_time = datetime.now() - timedelta(seconds=duration_seconds)
 
@@ -595,7 +607,9 @@ class AIAutomationPerformanceMonitor:
 
         return sorted(recent_values, key=lambda x: x[0])
 
-    async def _trigger_alert(self, alert_id: str, rule: AlertRule, trigger_value: float, timestamp: datetime):
+    async def _trigger_alert(
+        self, alert_id: str, rule: AlertRule, trigger_value: float, timestamp: datetime
+    ):
         """アラートトリガー"""
         alert_data = {
             "alert_id": alert_id,
@@ -618,7 +632,9 @@ class AIAutomationPerformanceMonitor:
         self.performance_stats["alerts_triggered"] += 1
 
         # ログ出力
-        logger.warning(f"🚨 ALERT TRIGGERED: {rule.description} (Value: {trigger_value}, Threshold: {rule.threshold})")
+        logger.warning(
+            f"🚨 ALERT TRIGGERED: {rule.description} (Value: {trigger_value}, Threshold: {rule.threshold})"
+        )
 
         # 自動対応実行
         await self._handle_alert_auto_response(alert_data)
@@ -685,12 +701,17 @@ class AIAutomationPerformanceMonitor:
                 continue
 
             # 対応するルールを取得
-            rule = next((r for r in self.alert_rules if r.rule_id == alert_data["rule_id"]), None)
+            rule = next(
+                (r for r in self.alert_rules if r.rule_id == alert_data["rule_id"]),
+                None,
+            )
             if not rule:
                 continue
 
             # 最新のメトリクス値をチェック
-            recent_values = self._get_recent_metric_values(rule.metric_name, 60)  # 1分間
+            recent_values = self._get_recent_metric_values(
+                rule.metric_name, 60
+            )  # 1分間
 
             if recent_values:
                 latest_value = recent_values[-1][1]
@@ -730,7 +751,9 @@ class AIAutomationPerformanceMonitor:
         except Exception as e:
             logger.error(f"Failed to update alert resolution: {e}")
 
-        logger.info(f"✅ ALERT RESOLVED: {alert_data['description']} (Duration: {int(duration)}s)")
+        logger.info(
+            f"✅ ALERT RESOLVED: {alert_data['description']} (Duration: {int(duration)}s)"
+        )
 
     async def _performance_analysis_loop(self):
         """パフォーマンス分析ループ"""
@@ -765,11 +788,17 @@ class AIAutomationPerformanceMonitor:
         metrics_count = len(today_metrics)
 
         # 応答時間の平均（Four Sagesから）
-        response_times = [m.value for m in today_metrics if m.metric_name == "four_sages.response_time"]
+        response_times = [
+            m.value
+            for m in today_metrics
+            if m.metric_name == "four_sages.response_time"
+        ]
         avg_response_time = statistics.mean(response_times) if response_times else 0.0
 
         # 成功率の平均
-        success_rates = [m.value for m in today_metrics if "success_rate" in m.metric_name]
+        success_rates = [
+            m.value for m in today_metrics if "success_rate" in m.metric_name
+        ]
         avg_success_rate = statistics.mean(success_rates) if success_rates else 0.0
 
         # システムヘルススコア計算
@@ -813,21 +842,29 @@ class AIAutomationPerformanceMonitor:
         scores = []
 
         # Four Sagesコンセンサス率
-        consensus_metrics = [m for m in self.metrics_buffer if m.metric_name == "four_sages.consensus_rate"]
+        consensus_metrics = [
+            m
+            for m in self.metrics_buffer
+            if m.metric_name == "four_sages.consensus_rate"
+        ]
         if consensus_metrics:
             latest_consensus = consensus_metrics[-1].value
             scores.append(min(1.0, latest_consensus / 0.8))  # 80%を基準
 
         # 自律学習精度
         accuracy_metrics = [
-            m for m in self.metrics_buffer if m.metric_name == "autonomous_learning.prediction_accuracy"
+            m
+            for m in self.metrics_buffer
+            if m.metric_name == "autonomous_learning.prediction_accuracy"
         ]
         if accuracy_metrics:
             latest_accuracy = accuracy_metrics[-1].value
             scores.append(min(1.0, latest_accuracy / 0.7))  # 70%を基準
 
         # システムリソース使用率（逆相関）
-        cpu_metrics = [m for m in self.metrics_buffer if m.metric_name == "system.cpu_usage"]
+        cpu_metrics = [
+            m for m in self.metrics_buffer if m.metric_name == "system.cpu_usage"
+        ]
         if cpu_metrics:
             latest_cpu = cpu_metrics[-1].value
             scores.append(max(0.0, 1.0 - latest_cpu / 100.0))
@@ -841,8 +878,12 @@ class AIAutomationPerformanceMonitor:
     def _calculate_automation_efficiency(self) -> float:
         """自動化効率計算"""
         # 成功率と応答時間から効率を計算
-        success_rates = [m.value for m in self.metrics_buffer if "success_rate" in m.metric_name]
-        response_times = [m.value for m in self.metrics_buffer if "response_time" in m.metric_name]
+        success_rates = [
+            m.value for m in self.metrics_buffer if "success_rate" in m.metric_name
+        ]
+        response_times = [
+            m.value for m in self.metrics_buffer if "response_time" in m.metric_name
+        ]
 
         if not success_rates or not response_times:
             return 0.5
@@ -886,7 +927,9 @@ class AIAutomationPerformanceMonitor:
                 health_trend = self._calculate_trend_slope(health_scores)
                 efficiency_trend = self._calculate_trend_slope(efficiency_scores)
 
-                logger.info(f"📈 Performance Trends: Health={health_trend:.3f}, Efficiency={efficiency_trend:.3f}")
+                logger.info(
+                    f"📈 Performance Trends: Health={health_trend:.3f}, Efficiency={efficiency_trend:.3f}"
+                )
 
         except Exception as e:
             logger.error(f"Failed to analyze performance trends: {e}")
@@ -914,19 +957,31 @@ class AIAutomationPerformanceMonitor:
         # システムヘルススコアが低い場合
         current_health = self._calculate_system_health_score()
         if current_health < 0.7:
-            recommendations.append("System health score is low - consider system optimization")
+            recommendations.append(
+                "System health score is low - consider system optimization"
+            )
 
         # アクティブアラートが多い場合
         if len(self.active_alerts) > 3:
-            recommendations.append("Multiple active alerts - review system configuration")
+            recommendations.append(
+                "Multiple active alerts - review system configuration"
+            )
 
         # 応答時間が高い場合
-        recent_response_times = [m.value for m in list(self.metrics_buffer)[-50:] if "response_time" in m.metric_name]
+        recent_response_times = [
+            m.value
+            for m in list(self.metrics_buffer)[-50:]
+            if "response_time" in m.metric_name
+        ]
         if recent_response_times and statistics.mean(recent_response_times) > 3.0:
-            recommendations.append("High response times detected - consider performance tuning")
+            recommendations.append(
+                "High response times detected - consider performance tuning"
+            )
 
         if recommendations:
-            logger.info(f"💡 Optimization Recommendations: {'; '.join(recommendations)}")
+            logger.info(
+                f"💡 Optimization Recommendations: {'; '.join(recommendations)}"
+            )
 
     async def _dashboard_update_loop(self):
         """ダッシュボード更新ループ"""
@@ -970,7 +1025,9 @@ class AIAutomationPerformanceMonitor:
                     "severity": alert_data["severity"],
                     "description": alert_data["description"],
                     "triggered_at": alert_data["triggered_at"].isoformat(),
-                    "duration": int((current_time - alert_data["triggered_at"]).total_seconds()),
+                    "duration": int(
+                        (current_time - alert_data["triggered_at"]).total_seconds()
+                    ),
                 }
             )
 
@@ -983,8 +1040,14 @@ class AIAutomationPerformanceMonitor:
             "system_overview": {
                 "health_score": system_health,
                 "automation_efficiency": automation_efficiency,
-                "uptime_seconds": int((current_time - self.performance_stats["system_uptime_start"]).total_seconds()),
-                "total_metrics_collected": self.performance_stats["total_metrics_collected"],
+                "uptime_seconds": int(
+                    (
+                        current_time - self.performance_stats["system_uptime_start"]
+                    ).total_seconds()
+                ),
+                "total_metrics_collected": self.performance_stats[
+                    "total_metrics_collected"
+                ],
                 "alerts_triggered": self.performance_stats["alerts_triggered"],
             },
             "latest_metrics": latest_metrics,
@@ -1034,13 +1097,18 @@ class AIAutomationPerformanceMonitor:
             recent_metrics = [
                 m
                 for m in self.metrics_buffer
-                if m.source_system == "four_sages_integration" and (datetime.now() - m.timestamp).total_seconds() < 300
+                if m.source_system == "four_sages_integration"
+                and (datetime.now() - m.timestamp).total_seconds() < 300
             ]
 
             if not recent_metrics:
                 return "unknown"
 
-            consensus_rates = [m.value for m in recent_metrics if m.metric_name == "four_sages.consensus_rate"]
+            consensus_rates = [
+                m.value
+                for m in recent_metrics
+                if m.metric_name == "four_sages.consensus_rate"
+            ]
             if consensus_rates and statistics.mean(consensus_rates) > 0.8:
                 return "healthy"
             elif consensus_rates and statistics.mean(consensus_rates) > 0.6:
@@ -1057,13 +1125,16 @@ class AIAutomationPerformanceMonitor:
             recent_metrics = [
                 m
                 for m in self.metrics_buffer
-                if m.source_system == "autonomous_learning" and (datetime.now() - m.timestamp).total_seconds() < 300
+                if m.source_system == "autonomous_learning"
+                and (datetime.now() - m.timestamp).total_seconds() < 300
             ]
 
             if not recent_metrics:
                 return "unknown"
 
-            accuracy_values = [m.value for m in recent_metrics if "accuracy" in m.metric_name]
+            accuracy_values = [
+                m.value for m in recent_metrics if "accuracy" in m.metric_name
+            ]
             if accuracy_values and statistics.mean(accuracy_values) > 0.7:
                 return "healthy"
             elif accuracy_values and statistics.mean(accuracy_values) > 0.5:
@@ -1112,7 +1183,12 @@ class AIAutomationPerformanceMonitor:
 
             metrics_stats = {}
             for row in cursor.fetchall():
-                metrics_stats[row[0]] = {"count": row[1], "average": row[2], "minimum": row[3], "maximum": row[4]}
+                metrics_stats[row[0]] = {
+                    "count": row[1],
+                    "average": row[2],
+                    "minimum": row[3],
+                    "maximum": row[4],
+                }
 
             # アラート統計
             cursor.execute(
@@ -1133,7 +1209,11 @@ class AIAutomationPerformanceMonitor:
             report = {
                 "report_id": report_id,
                 "generated_at": datetime.now().isoformat(),
-                "time_range": {"start": start_time.isoformat(), "end": datetime.now().isoformat(), "hours": hours},
+                "time_range": {
+                    "start": start_time.isoformat(),
+                    "end": datetime.now().isoformat(),
+                    "hours": hours,
+                },
                 "metrics_statistics": metrics_stats,
                 "alerts_statistics": alerts_stats,
                 "system_health": {
@@ -1142,9 +1222,13 @@ class AIAutomationPerformanceMonitor:
                     "active_alerts_count": len(self.active_alerts),
                 },
                 "performance_summary": {
-                    "total_metrics_collected": len([m for m in self.metrics_buffer if m.timestamp >= start_time]),
+                    "total_metrics_collected": len(
+                        [m for m in self.metrics_buffer if m.timestamp >= start_time]
+                    ),
                     "system_status": self.system_status.copy(),
-                    "uptime_hours": (datetime.now() - self.performance_stats["system_uptime_start"]).total_seconds()
+                    "uptime_hours": (
+                        datetime.now() - self.performance_stats["system_uptime_start"]
+                    ).total_seconds()
                     / 3600,
                 },
             }
@@ -1155,7 +1239,9 @@ class AIAutomationPerformanceMonitor:
                 json.dump(report, f, indent=2, default=str)
 
             # レポート履歴に記録
-            await self._save_report_history(report_id, "performance", report_file, len(metrics_stats), hours)
+            await self._save_report_history(
+                report_id, "performance", report_file, len(metrics_stats), hours
+            )
 
             self.performance_stats["reports_generated"] += 1
 
@@ -1167,7 +1253,12 @@ class AIAutomationPerformanceMonitor:
             return {"error": str(e)}
 
     async def _save_report_history(
-        self, report_id: str, report_type: str, file_path: Path, metrics_count: int, time_range_hours: int
+        self,
+        report_id: str,
+        report_type: str,
+        file_path: Path,
+        metrics_count: int,
+        time_range_hours: int,
     ):
         """レポート履歴保存"""
         try:
@@ -1180,7 +1271,14 @@ class AIAutomationPerformanceMonitor:
                 (report_id, report_type, generated_at, file_path, metrics_count, time_range_hours)
                 VALUES (?, ?, ?, ?, ?, ?)
             """,
-                (report_id, report_type, datetime.now(), str(file_path), metrics_count, time_range_hours),
+                (
+                    report_id,
+                    report_type,
+                    datetime.now(),
+                    str(file_path),
+                    metrics_count,
+                    time_range_hours,
+                ),
             )
 
             conn.commit()
@@ -1210,19 +1308,35 @@ if __name__ == "__main__":
         print("=" * 50)
 
         # 監視システム初期化
-        monitor = AIAutomationPerformanceMonitor({"collection_interval": 5, "alert_check_interval": 10})  # デモ用に短縮
+        monitor = AIAutomationPerformanceMonitor(
+            {"collection_interval": 5, "alert_check_interval": 10}
+        )  # デモ用に短縮
 
         print("✅ Performance monitor initialized")
 
         # テストメトリクス追加
         print("\n1. Adding test metrics...")
         test_metrics = [
-            PerformanceMetric("four_sages.consensus_rate", 0.85, datetime.now(), "four_sages_integration", "gauge"),
             PerformanceMetric(
-                "autonomous_learning.prediction_accuracy", 0.72, datetime.now(), "autonomous_learning", "gauge"
+                "four_sages.consensus_rate",
+                0.85,
+                datetime.now(),
+                "four_sages_integration",
+                "gauge",
             ),
-            PerformanceMetric("system.response_time", 2.1, datetime.now(), "system", "timer"),
-            PerformanceMetric("automation.success_rate", 0.91, datetime.now(), "automation", "gauge"),
+            PerformanceMetric(
+                "autonomous_learning.prediction_accuracy",
+                0.72,
+                datetime.now(),
+                "autonomous_learning",
+                "gauge",
+            ),
+            PerformanceMetric(
+                "system.response_time", 2.1, datetime.now(), "system", "timer"
+            ),
+            PerformanceMetric(
+                "automation.success_rate", 0.91, datetime.now(), "automation", "gauge"
+            ),
         ]
 
         for metric in test_metrics:
@@ -1240,14 +1354,18 @@ if __name__ == "__main__":
         print("\n3. Generating performance report...")
         report = await monitor.generate_performance_report(hours=1)
         print(f"  📊 Report ID: {report['report_id']}")
-        print(f"  📈 Metrics Statistics: {len(report['metrics_statistics'])} metric types")
+        print(
+            f"  📈 Metrics Statistics: {len(report['metrics_statistics'])} metric types"
+        )
         print(f"  🎯 System Health: {report['system_health']['current_score']:.3f}")
 
         # ダッシュボードデータ生成
         print("\n4. Generating dashboard data...")
         dashboard = await monitor._generate_dashboard_data()
         print(f"  📊 Dashboard updated at: {dashboard['timestamp']}")
-        print(f"  📈 Total metrics: {dashboard['system_overview']['total_metrics_collected']}")
+        print(
+            f"  📈 Total metrics: {dashboard['system_overview']['total_metrics_collected']}"
+        )
         print(f"  🚨 Active alerts: {len(dashboard['active_alerts'])}")
 
         print("\n✨ AI Automation Performance Monitor Features:")

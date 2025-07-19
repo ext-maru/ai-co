@@ -335,7 +335,9 @@ class TaskSage(BaseSage):
                         params.append(value)
 
                     # ログ用の古い値を記録
-                    old_value = existing_task[allowed_fields.index(field) + 1]  # id以外から
+                    old_value = existing_task[
+                        allowed_fields.index(field) + 1
+                    ]  # id以外から
                     logs.append((field, old_value, value))
 
             if not update_fields:
@@ -653,9 +655,11 @@ class TaskSage(BaseSage):
             "progress_percentage": round(progress, 2),
             "total_estimated_hours": total_estimated,
             "total_actual_hours": total_actual,
-            "efficiency": round((total_estimated / total_actual * 100), 2)
-            if total_actual > 0
-            else 0,
+            "efficiency": (
+                round((total_estimated / total_actual * 100), 2)
+                if total_actual > 0
+                else 0
+            ),
         }
 
     async def _add_dependency(self, request: Dict[str, Any]) -> Dict[str, Any]:
@@ -868,9 +872,9 @@ class TaskSage(BaseSage):
                     "assignee": assignee,
                     "total_tasks": total,
                     "completed_tasks": completed,
-                    "completion_rate": round((completed / total * 100), 2)
-                    if total > 0
-                    else 0,
+                    "completion_rate": (
+                        round((completed / total * 100), 2) if total > 0 else 0
+                    ),
                 }
                 for assignee, total, completed in assignee_stats
             ],

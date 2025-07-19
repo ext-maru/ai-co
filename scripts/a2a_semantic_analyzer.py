@@ -178,7 +178,10 @@ class A2ASemanticAnalyzer:
         flow_counts = Counter(p["flow"] for p in patterns)
         type_counts = Counter(p["type"] for p in patterns)
 
-        return {"top_flows": flow_counts.most_common(top_n), "top_types": type_counts.most_common(top_n)}
+        return {
+            "top_flows": flow_counts.most_common(top_n),
+            "top_types": type_counts.most_common(top_n),
+        }
 
     def _detect_anomalies(self, vectors: List[np.ndarray]) -> List[Dict]:
         """異常パターンを検出"""
@@ -194,7 +197,9 @@ class A2ASemanticAnalyzer:
         anomalies = []
         for i, pred in enumerate(predictions):
             if pred == -1:  # 異常
-                anomalies.append({"index": i, "anomaly_score": clf.score_samples([vectors[i]])[0]})
+                anomalies.append(
+                    {"index": i, "anomaly_score": clf.score_samples([vectors[i]])[0]}
+                )
 
         return sorted(anomalies, key=lambda x: x["anomaly_score"])[:10]
 
@@ -298,7 +303,9 @@ class A2ASemanticAnalyzer:
 
         for pattern in patterns:
             # パターンをベクトル化
-            pattern_desc = f"{pattern['flow']} {pattern['type']} {pattern.get('context', '')}"
+            pattern_desc = (
+                f"{pattern['flow']} {pattern['type']} {pattern.get('context', '')}"
+            )
             if self.grimoire_enabled:
                 try:
                     pattern_vector = self.vector_search.generate_embedding(pattern_desc)
@@ -322,7 +329,9 @@ class A2ASemanticAnalyzer:
                         best_category = cat_id
 
                 if best_category and best_similarity > 0.6:
-                    categorized[best_category].append({"pattern": pattern, "similarity": float(best_similarity)})
+                    categorized[best_category].append(
+                        {"pattern": pattern, "similarity": float(best_similarity)}
+                    )
 
         # 統計情報を追加
         stats = {}
@@ -359,7 +368,13 @@ class A2ASemanticAnalyzer:
             except:
                 meta = {}
 
-            patterns.append({"flow": f"{source} -> {target}", "type": msg_type, "context": meta.get("message", "")})
+            patterns.append(
+                {
+                    "flow": f"{source} -> {target}",
+                    "type": msg_type,
+                    "context": meta.get("message", ""),
+                }
+            )
 
         return patterns
 
@@ -429,18 +444,24 @@ class A2ASemanticAnalyzer:
             "pattern_analysis": pattern_analysis,
             "categorization": categories["statistics"],
             "top_error_patterns": error_patterns[:5],
-            "recommendations": self._generate_recommendations(pattern_analysis, categories, error_patterns),
+            "recommendations": self._generate_recommendations(
+                pattern_analysis, categories, error_patterns
+            ),
         }
 
         return report
 
-    def _generate_recommendations(self, patterns: Dict, categories: Dict, errors: List) -> List[str]:
+    def _generate_recommendations(
+        self, patterns: Dict, categories: Dict, errors: List
+    ) -> List[str]:
         """分析結果から推奨事項を生成"""
         recommendations = []
 
         # 異常パターンが多い場合
         if len(patterns["anomalies"]) > 5:
-            recommendations.append("⚠️ 異常な通信パターンが検出されました。システム監視を強化してください。")
+            recommendations.append(
+                "⚠️ 異常な通信パターンが検出されました。システム監視を強化してください。"
+            )
 
         # 特定カテゴリに偏りがある場合
         stats = categories["statistics"]
@@ -453,7 +474,9 @@ class A2ASemanticAnalyzer:
 
         # エラーパターンが多い場合
         if len(errors) > 10:
-            recommendations.append("🔧 類似エラーパターンが多数検出されました。根本原因の分析が必要です。")
+            recommendations.append(
+                "🔧 類似エラーパターンが多数検出されました。根本原因の分析が必要です。"
+            )
 
         return recommendations
 
@@ -487,7 +510,11 @@ def main():
         print(f"{i}. {rec}")
 
     # レポート保存
-    report_file = PROJECT_ROOT / "logs" / f"a2a_semantic_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    report_file = (
+        PROJECT_ROOT
+        / "logs"
+        / f"a2a_semantic_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
     with open(report_file, "w", encoding="utf-8") as f:
         json.dump(report, f, indent=2, ensure_ascii=False, default=str)
 
@@ -504,7 +531,9 @@ def main():
         if results:
             print(f"\n見つかった類似パターン: {len(results)}件")
             for i, result in enumerate(results[:5], 1):
-                print(f"{i}. {result['flow']} - {result['error_type']} (類似度: {result['similarity']:.2f})")
+                print(
+                    f"{i}. {result['flow']} - {result['error_type']} (類似度: {result['similarity']:.2f})"
+                )
         else:
             print("類似パターンが見つかりませんでした。")
 

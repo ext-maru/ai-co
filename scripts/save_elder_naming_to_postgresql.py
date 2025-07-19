@@ -25,7 +25,9 @@ def save_elder_naming_conventions():
     adapter = KnowledgeGrimoireAdapter(grimoire_enabled=True)
 
     # 命名規約文書を読み込み
-    naming_doc_path = project_root / "knowledge_base" / "ELDER_ORGANIZATION_NAMING_CONVENTIONS.md"
+    naming_doc_path = (
+        project_root / "knowledge_base" / "ELDER_ORGANIZATION_NAMING_CONVENTIONS.md"
+    )
 
     if not naming_doc_path.exists():
         print(f"❌ 命名規約文書が見つかりません: {naming_doc_path}")
@@ -62,7 +64,10 @@ def save_elder_naming_conventions():
 
         # 直接PostgreSQLで確認
         try:
-            db_url = os.getenv("GRIMOIRE_DATABASE_URL", "postgresql://aicompany@localhost:5432/ai_company_grimoire")
+            db_url = os.getenv(
+                "GRIMOIRE_DATABASE_URL",
+                "postgresql://aicompany@localhost:5432/ai_company_grimoire",
+            )
 
             # psqlコマンドで確認
             sql_query = """
@@ -75,7 +80,9 @@ def save_elder_naming_conventions():
             """
 
             result = subprocess.run(
-                ["psql", db_url, "-t", "-A", "-F", "|||", "-c", sql_query], capture_output=True, text=True
+                ["psql", db_url, "-t", "-A", "-F", "|||", "-c", sql_query],
+                capture_output=True,
+                text=True,
             )
 
             if result.returncode == 0 and result.stdout.strip():
@@ -170,8 +177,12 @@ Elders Guildの開発・運営に関わるすべてのエルダー系組織の�
     # システム状態を確認
     status = adapter.get_system_status()
     print("\n📊 システム状態:")
-    print(f"   魔法書システム: {'有効' if status['grimoire_system']['enabled'] else '無効'}")
-    print(f"   利用可能: {'はい' if status['grimoire_system']['available'] else 'いいえ'}")
+    print(
+        f"   魔法書システム: {'有効' if status['grimoire_system']['enabled'] else '無効'}"
+    )
+    print(
+        f"   利用可能: {'はい' if status['grimoire_system']['available'] else 'いいえ'}"
+    )
     print(f"   タイプ: {status['grimoire_system'].get('type', 'unknown')}")
 
     return True

@@ -80,7 +80,11 @@ class CouncilReviewCriteria:
 
     # 報告品質基準
     QUALITY_CRITERIA = {
-        "clarity": {"min_score": 0.8, "checks": ["具体性", "明確性", "構造化"], "weight": 0.3},
+        "clarity": {
+            "min_score": 0.8,
+            "checks": ["具体性", "明確性", "構造化"],
+            "weight": 0.3,
+        },
         "completeness": {
             "min_score": 0.9,
             "checks": ["5W1H", "根拠", "影響範囲"],
@@ -96,19 +100,35 @@ class CouncilReviewCriteria:
     # 4賢者反映基準
     PROPAGATION_CRITERIA = {
         PropagationTarget.INCIDENT_SAGE: {
-            "required_conditions": ["エラー・障害の明確な記載", "影響範囲の特定", "緊急度の判定"],
+            "required_conditions": [
+                "エラー・障害の明確な記載",
+                "影響範囲の特定",
+                "緊急度の判定",
+            ],
             "keywords": ["error", "エラー", "障害", "failure", "exception", "incident"],
         },
         PropagationTarget.TASK_SAGE: {
-            "required_conditions": ["具体的なアクション", "実行可能な粒度", "優先順位の明確化"],
+            "required_conditions": [
+                "具体的なアクション",
+                "実行可能な粒度",
+                "優先順位の明確化",
+            ],
             "keywords": ["task", "タスク", "TODO", "実装", "修正", "改善", "必要"],
         },
         PropagationTarget.KNOWLEDGE_SAGE: {
-            "required_conditions": ["再利用可能な知見", "一般化された学習", "将来への適用可能性"],
+            "required_conditions": [
+                "再利用可能な知見",
+                "一般化された学習",
+                "将来への適用可能性",
+            ],
             "keywords": ["学習", "知見", "ナレッジ", "ノウハウ", "解決策", "方法"],
         },
         PropagationTarget.RAG_SAGE: {
-            "required_conditions": ["検索可能なキーワード", "関連文書との紐付け", "コンテキスト情報"],
+            "required_conditions": [
+                "検索可能なキーワード",
+                "関連文書との紐付け",
+                "コンテキスト情報",
+            ],
             "keywords": [],  # RAGは全ての承認済み報告を対象
         },
     }
@@ -177,7 +197,11 @@ class CouncilReviewCriteria:
         score = 1.0
 
         # 曖昧な表現のチェック
-        ambiguous_patterns = [r"多分|おそらく|かもしれない|思われる", r"など|等|その他", r"いくつか|複数|様々な"]
+        ambiguous_patterns = [
+            r"多分|おそらく|かもしれない|思われる",
+            r"など|等|その他",
+            r"いくつか|複数|様々な",
+        ]
 
         for pattern in ambiguous_patterns:
             if re.search(pattern, content, re.IGNORECASE):
@@ -282,9 +306,13 @@ class CouncilReviewCriteria:
 
         for issue in issues:
             if "曖昧" in issue:
-                suggestions.append("具体的な数値、日時、エラーメッセージを記載してください")
+                suggestions.append(
+                    "具体的な数値、日時、エラーメッセージを記載してください"
+                )
             elif "5W1H" in issue:
-                suggestions.append("いつ・どこで・何が・なぜ・どのように発生したかを明記してください")
+                suggestions.append(
+                    "いつ・どこで・何が・なぜ・どのように発生したかを明記してください"
+                )
             elif "アクション" in issue:
                 suggestions.append("具体的な対応策と実行者、期限を設定してください")
             elif "必須フィールド" in issue:

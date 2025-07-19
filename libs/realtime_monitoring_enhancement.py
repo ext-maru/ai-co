@@ -922,9 +922,9 @@ class RealtimeMonitoringEnhancement:
         notification = {
             "type": "anomaly_resolved",
             "event_id": anomaly.event_id,
-            "resolved_at": anomaly.resolved_at.isoformat()
-            if anomaly.resolved_at
-            else None,
+            "resolved_at": (
+                anomaly.resolved_at.isoformat() if anomaly.resolved_at else None
+            ),
             "auto_resolved": anomaly.auto_resolved,
         }
 

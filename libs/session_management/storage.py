@@ -209,22 +209,26 @@ class SQLiteAdapter:
                     session_id=row["session_id"],
                     user_id=row["user_id"],
                     project_path=row["project_path"],
-                    created_at=datetime.fromisoformat(row["created_at"])
-                    if isinstance(row["created_at"], str)
-                    else row["created_at"],
-                    updated_at=datetime.fromisoformat(row["updated_at"])
-                    if isinstance(row["updated_at"], str)
-                    else row["updated_at"],
+                    created_at=(
+                        datetime.fromisoformat(row["created_at"])
+                        if isinstance(row["created_at"], str)
+                        else row["created_at"]
+                    ),
+                    updated_at=(
+                        datetime.fromisoformat(row["updated_at"])
+                        if isinstance(row["updated_at"], str)
+                        else row["updated_at"]
+                    ),
                     status=SessionStatus(row["status"]),
                     total_tokens_saved=row["total_tokens_saved"],
                     compression_ratio=row["compression_ratio"],
                     response_time_improvement=row["response_time_improvement"],
                     sage_interactions_count=json.loads(row["sage_interactions_count"]),
-                    last_sage_consultation=datetime.fromisoformat(
-                        row["last_sage_consultation"]
-                    )
-                    if row["last_sage_consultation"]
-                    else None,
+                    last_sage_consultation=(
+                        datetime.fromisoformat(row["last_sage_consultation"])
+                        if row["last_sage_consultation"]
+                        else None
+                    ),
                     knowledge_retention_score=row["knowledge_retention_score"],
                     context_accuracy_score=row["context_accuracy_score"],
                     user_satisfaction_score=row["user_satisfaction_score"],
@@ -301,9 +305,11 @@ class SQLiteAdapter:
                     interaction = SageInteraction(
                         sage_type=SageType(row["sage_type"]),
                         interaction_type=row["interaction_type"],
-                        timestamp=datetime.fromisoformat(row["timestamp"])
-                        if isinstance(row["timestamp"], str)
-                        else row["timestamp"],
+                        timestamp=(
+                            datetime.fromisoformat(row["timestamp"])
+                            if isinstance(row["timestamp"], str)
+                            else row["timestamp"]
+                        ),
                         input_data=json.loads(row["input_data"]),
                         output_data=json.loads(row["output_data"]),
                         confidence_score=row["confidence_score"],

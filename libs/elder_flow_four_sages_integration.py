@@ -10,6 +10,7 @@ Elder Flow の並列実行エンジンと4賢者の知恵を統合し、
 
 import sys
 import os
+
 sys.path.append(os.path.dirname(__file__))
 
 import asyncio
@@ -22,7 +23,11 @@ from enum import Enum
 
 # Elder Flow統合
 from elder_flow_parallel_executor import (
-    ParallelServantExecutor, ServantTask, ServantType, TaskPriority, TaskStatus
+    ParallelServantExecutor,
+    ServantTask,
+    ServantType,
+    TaskPriority,
+    TaskStatus,
 )
 from elder_flow_task_decomposer import TaskDecomposer, DecomposedTask, TaskCategory
 
@@ -33,6 +38,7 @@ try:
     from task_sage import TaskSage
     from incident_sage import IncidentSage
     from rag_sage import RAGSage
+
     SAGES_AVAILABLE = True
 except ImportError:
     SAGES_AVAILABLE = False
@@ -41,8 +47,9 @@ except ImportError:
 
 class SageRecommendationType(Enum):
     """賢者の推奨タイプ"""
-    OPTIMIZATION = "optimization"      # 最適化提案
-    RISK_WARNING = "risk_warning"      # リスク警告
+
+    OPTIMIZATION = "optimization"  # 最適化提案
+    RISK_WARNING = "risk_warning"  # リスク警告
     KNOWLEDGE_PATTERN = "knowledge_pattern"  # 知識パターン
     ALTERNATIVE_APPROACH = "alternative_approach"  # 代替アプローチ
 
@@ -50,6 +57,7 @@ class SageRecommendationType(Enum):
 @dataclass
 class SageRecommendation:
     """賢者からの推奨事項"""
+
     sage_type: str
     recommendation_type: SageRecommendationType
     title: str
@@ -63,6 +71,7 @@ class SageRecommendation:
 @dataclass
 class ElderFlowSession:
     """Elder Flowセッション"""
+
     session_id: str
     request: str
     decomposed_tasks: List[DecomposedTask]
@@ -113,15 +122,15 @@ class ElderFlowFourSagesIntegration:
 
         # セッション作成
         session = ElderFlowSession(
-            session_id=session_id,
-            request=request,
-            decomposed_tasks=decomposed_tasks
+            session_id=session_id, request=request, decomposed_tasks=decomposed_tasks
         )
         self.sessions[session_id] = session
 
         # Phase 2: 4賢者会議 - 事前協議
         if self.sages_available:
-            recommendations = await self._conduct_sages_council(request, decomposed_tasks)
+            recommendations = await self._conduct_sages_council(
+                request, decomposed_tasks
+            )
             session.sage_recommendations = recommendations
 
             # 賢者の推奨を適用
@@ -150,7 +159,9 @@ class ElderFlowFourSagesIntegration:
         # 最終レポート生成
         return self._generate_comprehensive_report(session)
 
-    async def _conduct_sages_council(self, request: str, tasks: List[DecomposedTask]) -> List[SageRecommendation]:
+    async def _conduct_sages_council(
+        self, request: str, tasks: List[DecomposedTask]
+    ) -> List[SageRecommendation]:
         """4賢者評議会の開催"""
         self.logger.info("🧙‍♂️ 4賢者評議会開催 - 事前協議")
 
@@ -179,7 +190,9 @@ class ElderFlowFourSagesIntegration:
         self.logger.info(f"🧙‍♂️ 4賢者評議会完了 - {len(recommendations)}件の推奨事項")
         return recommendations
 
-    async def _consult_knowledge_sage(self, request: str, tasks: List[DecomposedTask]) -> List[SageRecommendation]:
+    async def _consult_knowledge_sage(
+        self, request: str, tasks: List[DecomposedTask]
+    ) -> List[SageRecommendation]:
         """📚 ナレッジ賢者への相談"""
         try:
             # 過去の知識パターンを検索
@@ -192,13 +205,13 @@ class ElderFlowFourSagesIntegration:
                     recommendation_type=SageRecommendationType.KNOWLEDGE_PATTERN,
                     title=f"知識パターン適用: {pattern.get('title', 'Unknown')}",
                     description=f"過去の類似実装から学習した最適化案: {pattern.get('description', '')}",
-                    confidence=pattern.get('confidence', 0.8),
+                    confidence=pattern.get("confidence", 0.8),
                     impact="品質向上",
                     suggested_changes=[
                         f"推奨アーキテクチャ: {pattern.get('architecture', 'Standard')}",
                         f"テストパターン: {pattern.get('test_pattern', 'Unit+Integration')}",
-                        f"セキュリティ考慮: {pattern.get('security_notes', 'Standard measures')}"
-                    ]
+                        f"セキュリティ考慮: {pattern.get('security_notes', 'Standard measures')}",
+                    ],
                 )
                 recommendations.append(rec)
 
@@ -207,7 +220,9 @@ class ElderFlowFourSagesIntegration:
             self.logger.error(f"ナレッジ賢者相談エラー: {e}")
             return []
 
-    async def _consult_task_sage(self, request: str, tasks: List[DecomposedTask]) -> List[SageRecommendation]:
+    async def _consult_task_sage(
+        self, request: str, tasks: List[DecomposedTask]
+    ) -> List[SageRecommendation]:
         """📋 タスク賢者への相談"""
         try:
             # タスク最適化分析
@@ -232,7 +247,7 @@ class ElderFlowFourSagesIntegration:
                     description="並列実行とタスク依存関係の最適化提案",
                     confidence=0.9,
                     impact="実行時間短縮",
-                    suggested_changes=optimization_suggestions
+                    suggested_changes=optimization_suggestions,
                 )
                 return [rec]
 
@@ -241,7 +256,9 @@ class ElderFlowFourSagesIntegration:
             self.logger.error(f"タスク賢者相談エラー: {e}")
             return []
 
-    async def _consult_incident_sage(self, request: str, tasks: List[DecomposedTask]) -> List[SageRecommendation]:
+    async def _consult_incident_sage(
+        self, request: str, tasks: List[DecomposedTask]
+    ) -> List[SageRecommendation]:
         """🚨 インシデント賢者への相談"""
         try:
             risk_warnings = []
@@ -268,7 +285,7 @@ class ElderFlowFourSagesIntegration:
                     description="実装前に考慮すべきセキュリティ・品質リスク",
                     confidence=0.85,
                     impact="リスク軽減",
-                    suggested_changes=risk_warnings
+                    suggested_changes=risk_warnings,
                 )
                 return [rec]
 
@@ -277,7 +294,9 @@ class ElderFlowFourSagesIntegration:
             self.logger.error(f"インシデント賢者相談エラー: {e}")
             return []
 
-    async def _consult_rag_sage(self, request: str, tasks: List[DecomposedTask]) -> List[SageRecommendation]:
+    async def _consult_rag_sage(
+        self, request: str, tasks: List[DecomposedTask]
+    ) -> List[SageRecommendation]:
         """🔍 RAG賢者への相談"""
         try:
             # 類似実装パターンの検索
@@ -290,13 +309,13 @@ class ElderFlowFourSagesIntegration:
                     recommendation_type=SageRecommendationType.ALTERNATIVE_APPROACH,
                     title=f"代替実装アプローチ: {pattern.get('approach_name', 'Unknown')}",
                     description=f"類似実装からの学習: {pattern.get('description', '')}",
-                    confidence=pattern.get('similarity_score', 0.7),
+                    confidence=pattern.get("similarity_score", 0.7),
                     impact="実装効率向上",
                     suggested_changes=[
                         f"推奨フレームワーク: {pattern.get('framework', 'Standard')}",
                         f"パフォーマンス最適化: {pattern.get('optimization', 'Standard')}",
-                        f"保守性向上: {pattern.get('maintainability', 'Standard practices')}"
-                    ]
+                        f"保守性向上: {pattern.get('maintainability', 'Standard practices')}",
+                    ],
                 )
                 recommendations.append(rec)
 
@@ -305,8 +324,9 @@ class ElderFlowFourSagesIntegration:
             self.logger.error(f"RAG賢者相談エラー: {e}")
             return []
 
-    async def _apply_sage_recommendations(self, tasks: List[DecomposedTask],
-                                        recommendations: List[SageRecommendation]) -> List[DecomposedTask]:
+    async def _apply_sage_recommendations(
+        self, tasks: List[DecomposedTask], recommendations: List[SageRecommendation]
+    ) -> List[DecomposedTask]:
         """賢者の推奨事項をタスクに適用"""
         modified_tasks = tasks.copy()
 
@@ -317,17 +337,25 @@ class ElderFlowFourSagesIntegration:
                     modified_tasks = self._apply_task_optimization(modified_tasks, rec)
                 elif rec.recommendation_type == SageRecommendationType.RISK_WARNING:
                     # セキュリティ強化の適用
-                    modified_tasks = self._apply_security_enhancement(modified_tasks, rec)
+                    modified_tasks = self._apply_security_enhancement(
+                        modified_tasks, rec
+                    )
 
-        self.logger.info(f"🧙‍♂️ 賢者推奨適用完了: {len(tasks)} → {len(modified_tasks)}タスク")
+        self.logger.info(
+            f"🧙‍♂️ 賢者推奨適用完了: {len(tasks)} → {len(modified_tasks)}タスク"
+        )
         return modified_tasks
 
-    def _apply_task_optimization(self, tasks: List[DecomposedTask], rec: SageRecommendation) -> List[DecomposedTask]:
+    def _apply_task_optimization(
+        self, tasks: List[DecomposedTask], rec: SageRecommendation
+    ) -> List[DecomposedTask]:
         """タスク最適化の適用"""
         # 並列化グループの調整など
         return tasks
 
-    def _apply_security_enhancement(self, tasks: List[DecomposedTask], rec: SageRecommendation) -> List[DecomposedTask]:
+    def _apply_security_enhancement(
+        self, tasks: List[DecomposedTask], rec: SageRecommendation
+    ) -> List[DecomposedTask]:
         """セキュリティ強化の適用"""
         # セキュリティチェックタスクの追加など
         enhanced_tasks = tasks.copy()
@@ -340,13 +368,15 @@ class ElderFlowFourSagesIntegration:
             servant_type=ServantType.QUALITY_INSPECTOR,
             command="security_scan",
             arguments={"enhanced_checks": True},
-            priority=TaskPriority.HIGH
+            priority=TaskPriority.HIGH,
         )
         enhanced_tasks.append(security_task)
 
         return enhanced_tasks
 
-    async def _execute_with_monitoring(self, session_id: str, tasks: List[DecomposedTask]) -> Dict[str, Any]:
+    async def _execute_with_monitoring(
+        self, session_id: str, tasks: List[DecomposedTask]
+    ) -> Dict[str, Any]:
         """監視下での並列実行"""
         self.logger.info(f"🌊 監視下並列実行開始: {session_id}")
 
@@ -378,47 +408,54 @@ class ElderFlowFourSagesIntegration:
                 # 実行状況チェック
                 failed_tasks = len(self.executor.failed_tasks)
                 if failed_tasks > 0:
-                    self.logger.warning(f"🚨 インシデント賢者警告: {failed_tasks}件のタスク失敗を検出")
+                    self.logger.warning(
+                        f"🚨 インシデント賢者警告: {failed_tasks}件のタスク失敗を検出"
+                    )
 
                 # 長時間実行タスクの検出
                 for task_id, task in self.executor.running_tasks.items():
                     if task.started_at:
                         duration = (datetime.now() - task.started_at).total_seconds()
                         if duration > 300:  # 5分以上
-                            self.logger.warning(f"🚨 長時間実行タスク検出: {task_id} ({duration:.1f}s)")
+                            self.logger.warning(
+                                f"🚨 長時間実行タスク検出: {task_id} ({duration:.1f}s)"
+                            )
 
         except asyncio.CancelledError:
             self.logger.info("🚨 インシデント賢者監視終了")
 
-    async def _post_execution_learning(self, session: ElderFlowSession,
-                                     result: Dict[str, Any]) -> List[str]:
+    async def _post_execution_learning(
+        self, session: ElderFlowSession, result: Dict[str, Any]
+    ) -> List[str]:
         """実行後の学習・知識化"""
         self.logger.info("🧙‍♂️ 実行後学習開始")
 
         insights = []
 
         # 成功パターンの学習
-        if result['summary']['failed'] == 0:
+        if result["summary"]["failed"] == 0:
             success_pattern = {
                 "request_type": self._categorize_request(session.request),
                 "task_count": len(session.decomposed_tasks),
-                "execution_time": result['summary']['execution_time'],
-                "parallel_efficiency": result['summary']['parallel_efficiency'],
-                "success_factors": self._analyze_success_factors(session, result)
+                "execution_time": result["summary"]["execution_time"],
+                "parallel_efficiency": result["summary"]["parallel_efficiency"],
+                "success_factors": self._analyze_success_factors(session, result),
             }
             self.success_patterns.append(success_pattern)
             insights.append(f"成功パターン学習: {success_pattern['request_type']}")
 
         # 失敗パターンの分析
-        if result['summary']['failed'] > 0:
+        if result["summary"]["failed"] > 0:
             failure_pattern = {
                 "request_type": self._categorize_request(session.request),
-                "failure_count": result['summary']['failed'],
-                "failure_reasons": list(result['failed_tasks'].values()),
-                "lessons_learned": self._analyze_failure_lessons(session, result)
+                "failure_count": result["summary"]["failed"],
+                "failure_reasons": list(result["failed_tasks"].values()),
+                "lessons_learned": self._analyze_failure_lessons(session, result),
             }
             self.failure_patterns.append(failure_pattern)
-            insights.append(f"失敗パターン分析: {len(failure_pattern['failure_reasons'])}件の要因を特定")
+            insights.append(
+                f"失敗パターン分析: {len(failure_pattern['failure_reasons'])}件の要因を特定"
+            )
 
         # ナレッジベースへの知識蓄積
         if self.sages_available:
@@ -437,27 +474,31 @@ class ElderFlowFourSagesIntegration:
         else:
             return "general_development"
 
-    def _analyze_success_factors(self, session: ElderFlowSession, result: Dict[str, Any]) -> List[str]:
+    def _analyze_success_factors(
+        self, session: ElderFlowSession, result: Dict[str, Any]
+    ) -> List[str]:
         """成功要因の分析"""
         factors = []
 
-        if result['summary']['parallel_efficiency'] > 80:
+        if result["summary"]["parallel_efficiency"] > 80:
             factors.append("高並列効率")
 
         if len(session.sage_recommendations) > 0:
             factors.append("賢者推奨活用")
 
-        if result['summary']['execution_time'] < 1.0:
+        if result["summary"]["execution_time"] < 1.0:
             factors.append("高速実行")
 
         return factors
 
-    def _analyze_failure_lessons(self, session: ElderFlowSession, result: Dict[str, Any]) -> List[str]:
+    def _analyze_failure_lessons(
+        self, session: ElderFlowSession, result: Dict[str, Any]
+    ) -> List[str]:
         """失敗からの教訓分析"""
         lessons = []
 
-        for task_id, info in result['failed_tasks'].items():
-            error = info.get('error', '')
+        for task_id, info in result["failed_tasks"].items():
+            error = info.get("error", "")
             if "file_path" in error:
                 lessons.append("ファイルパス検証強化が必要")
             elif "permission" in error.lower():
@@ -467,25 +508,26 @@ class ElderFlowFourSagesIntegration:
 
         return lessons
 
-    async def _save_knowledge_to_base(self, session: ElderFlowSession,
-                                    result: Dict[str, Any], insights: List[str]):
+    async def _save_knowledge_to_base(
+        self, session: ElderFlowSession, result: Dict[str, Any], insights: List[str]
+    ):
         """ナレッジベースへの知識保存"""
         try:
             knowledge_entry = {
                 "session_id": session.session_id,
                 "request": session.request,
                 "task_count": len(session.decomposed_tasks),
-                "execution_result": result['summary'],
+                "execution_result": result["summary"],
                 "sage_recommendations": [
                     {
                         "sage_type": rec.sage_type,
                         "title": rec.title,
-                        "confidence": rec.confidence
+                        "confidence": rec.confidence,
                     }
                     for rec in session.sage_recommendations
                 ],
                 "learning_insights": insights,
-                "created_at": session.created_at.isoformat()
+                "created_at": session.created_at.isoformat(),
             }
 
             # 知識ベースファイルに保存
@@ -494,7 +536,7 @@ class ElderFlowFourSagesIntegration:
             # 既存データの読み込み
             existing_data = []
             if os.path.exists(knowledge_file):
-                with open(knowledge_file, 'r') as f:
+                with open(knowledge_file, "r") as f:
                     existing_data = json.load(f)
 
             # 新しいエントリの追加
@@ -502,7 +544,7 @@ class ElderFlowFourSagesIntegration:
 
             # 保存
             os.makedirs(os.path.dirname(knowledge_file), exist_ok=True)
-            with open(knowledge_file, 'w') as f:
+            with open(knowledge_file, "w") as f:
                 json.dump(existing_data, f, indent=2, ensure_ascii=False)
 
             self.logger.info(f"📚 ナレッジベース保存完了: {knowledge_file}")
@@ -510,12 +552,14 @@ class ElderFlowFourSagesIntegration:
         except Exception as e:
             self.logger.error(f"ナレッジベース保存エラー: {e}")
 
-    def _generate_comprehensive_report(self, session: ElderFlowSession) -> Dict[str, Any]:
+    def _generate_comprehensive_report(
+        self, session: ElderFlowSession
+    ) -> Dict[str, Any]:
         """包括的レポート生成"""
         return {
             "session_id": session.session_id,
             "request": session.request,
-            "execution_summary": session.execution_result.get('summary', {}),
+            "execution_summary": session.execution_result.get("summary", {}),
             "sages_wisdom": {
                 "recommendations_count": len(session.sage_recommendations),
                 "recommendations": [
@@ -523,25 +567,37 @@ class ElderFlowFourSagesIntegration:
                         "sage": rec.sage_type,
                         "type": rec.recommendation_type.value,
                         "title": rec.title,
-                        "confidence": rec.confidence
+                        "confidence": rec.confidence,
                     }
                     for rec in session.sage_recommendations
                 ],
-                "learning_insights": session.learning_insights
+                "learning_insights": session.learning_insights,
             },
             "performance_metrics": {
-                "total_execution_time": (session.completed_at - session.created_at).total_seconds() if session.completed_at else 0,
-                "parallel_efficiency": session.execution_result.get('summary', {}).get('parallel_efficiency', 0),
+                "total_execution_time": (
+                    (session.completed_at - session.created_at).total_seconds()
+                    if session.completed_at
+                    else 0
+                ),
+                "parallel_efficiency": session.execution_result.get("summary", {}).get(
+                    "parallel_efficiency", 0
+                ),
                 "success_rate": (
-                    session.execution_result.get('summary', {}).get('completed', 0) /
-                    max(session.execution_result.get('summary', {}).get('total_tasks', 1), 1) * 100
-                )
+                    session.execution_result.get("summary", {}).get("completed", 0)
+                    / max(
+                        session.execution_result.get("summary", {}).get(
+                            "total_tasks", 1
+                        ),
+                        1,
+                    )
+                    * 100
+                ),
             },
             "next_generation_insights": {
                 "pattern_recognition": f"蓄積パターン数: 成功{len(self.success_patterns)}, 失敗{len(self.failure_patterns)}",
                 "wisdom_evolution": f"4賢者協調レベル: {'高' if self.sages_available else '基本'}",
-                "autonomous_learning": f"学習データ蓄積: {len(session.learning_insights)}件"
-            }
+                "autonomous_learning": f"学習データ蓄積: {len(session.learning_insights)}件",
+            },
         }
 
     # ヘルパーメソッド群
@@ -555,11 +611,13 @@ class ElderFlowFourSagesIntegration:
                 "confidence": 0.9,
                 "architecture": "JWT + PKCE",
                 "test_pattern": "Unit + Integration + Security",
-                "security_notes": "CSRF protection, Secure cookies"
+                "security_notes": "CSRF protection, Secure cookies",
             }
         ]
 
-    async def _search_similar_implementations(self, request: str) -> List[Dict[str, Any]]:
+    async def _search_similar_implementations(
+        self, request: str
+    ) -> List[Dict[str, Any]]:
         """類似実装検索"""
         # 簡易実装
         return [
@@ -569,11 +627,13 @@ class ElderFlowFourSagesIntegration:
                 "similarity_score": 0.85,
                 "framework": "FastAPI + PostgreSQL",
                 "optimization": "Connection pooling, Caching",
-                "maintainability": "Clear separation of concerns"
+                "maintainability": "Clear separation of concerns",
             }
         ]
 
-    def _analyze_parallelization_potential(self, tasks: List[DecomposedTask]) -> List[List[str]]:
+    def _analyze_parallelization_potential(
+        self, tasks: List[DecomposedTask]
+    ) -> List[List[str]]:
         """並列化ポテンシャル分析"""
         # 依存関係のないタスクグループを特定
         independent_groups = []
@@ -587,7 +647,9 @@ class ElderFlowFourSagesIntegration:
 
         return independent_groups
 
-    def _analyze_dependency_optimization(self, tasks: List[DecomposedTask]) -> List[str]:
+    def _analyze_dependency_optimization(
+        self, tasks: List[DecomposedTask]
+    ) -> List[str]:
         """依存関係最適化分析"""
         suggestions = []
 
@@ -599,7 +661,9 @@ class ElderFlowFourSagesIntegration:
             max_depth = max(max_depth, depth)
 
         if max_depth > 3:
-            suggestions.append(f"深い依存関係を検出 (最大{max_depth}層) - 並列化の再検討を推奨")
+            suggestions.append(
+                f"深い依存関係を検出 (最大{max_depth}層) - 並列化の再検討を推奨"
+            )
 
         return suggestions
 
@@ -631,15 +695,15 @@ async def main():
     print(f"🎯 成功率: {result['performance_metrics']['success_rate']:.1f}%")
 
     print(f"\n🧙‍♂️ 4賢者の英知:")
-    for rec in result['sages_wisdom']['recommendations']:
+    for rec in result["sages_wisdom"]["recommendations"]:
         print(f"  {rec['sage']}: {rec['title']} (信頼度: {rec['confidence']:.1f})")
 
     print(f"\n🧠 学習した洞察:")
-    for insight in result['sages_wisdom']['learning_insights']:
+    for insight in result["sages_wisdom"]["learning_insights"]:
         print(f"  💡 {insight}")
 
     print(f"\n🚀 次世代システム状況:")
-    for key, value in result['next_generation_insights'].items():
+    for key, value in result["next_generation_insights"].items():
         print(f"  🔮 {key}: {value}")
 
 

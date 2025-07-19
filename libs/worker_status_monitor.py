@@ -429,9 +429,9 @@ class WorkerStatusMonitor:
                 "cpu_percent": psutil.cpu_percent(),
                 "memory_percent": psutil.virtual_memory().percent,
                 "disk_percent": psutil.disk_usage("/").percent,
-                "load_average": psutil.getloadavg()[0]
-                if hasattr(psutil, "getloadavg")
-                else 0,
+                "load_average": (
+                    psutil.getloadavg()[0] if hasattr(psutil, "getloadavg") else 0
+                ),
             }
         except Exception as e:
             logger.error(f"System metrics error: {e}")

@@ -13,14 +13,16 @@ from datetime import datetime
 import json
 
 # OpenAI APIキーの確認
-OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     print("❌ OPENAI_API_KEY が設定されていません")
     print("   source /home/aicompany/ai_co/.env を実行してください")
     sys.exit(1)
 
 from openai import OpenAI
+
 client = OpenAI(api_key=OPENAI_API_KEY)
+
 
 async def setup_pgvector():
     """pgvector セットアップと動作確認"""
@@ -30,18 +32,18 @@ async def setup_pgvector():
 
     # データベース接続
     conn = await asyncpg.connect(
-        host='localhost',
+        host="localhost",
         port=5432,
-        database='elders_knowledge',
-        user='elders_guild',
-        password='elders_2025'
+        database="elders_knowledge",
+        user="elders_guild",
+        password="elders_2025",
     )
 
     try:
         # 1. pgvector拡張機能の作成を試みる
         print("📦 pgvector拡張機能の有効化...")
         try:
-            await conn.execute('CREATE EXTENSION IF NOT EXISTS vector')
+            await conn.execute("CREATE EXTENSION IF NOT EXISTS vector")
             print("✅ pgvector拡張機能を有効化しました")
         except Exception as e:
             print(f"❌ pgvector有効化エラー: {e}")
@@ -53,7 +55,8 @@ async def setup_pgvector():
 
         # 2. ベクトル検索用テーブルの作成
         print("\n📋 知識ベーステーブル作成中...")
-        await conn.execute("""
+        await conn.execute(
+            """
             CREATE TABLE IF NOT EXISTS knowledge_base.vector_documents (
                 id SERIAL PRIMARY KEY,
                 title VARCHAR(255) NOT NULL,
@@ -63,15 +66,18 @@ async def setup_pgvector():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         # インデックスの作成
-        await conn.execute("""
+        await conn.execute(
+            """
             CREATE INDEX IF NOT EXISTS idx_vector_documents_embedding
             ON knowledge_base.vector_documents
             USING ivfflat (embedding vector_cosine_ops)
             WITH (lists = 100)
-        """)
+        """
+        )
 
         print("✅ ベクトル検索テーブルを作成しました")
 
@@ -80,14 +86,13 @@ async def setup_pgvector():
         test_texts = [
             "エルダーズギルドは4賢者システムで構成される",
             "TDD（テスト駆動開発）はRed-Green-Refactorサイクル",
-            "pgvectorは高速なベクトル検索を可能にする"
+            "pgvectorは高速なベクトル検索を可能にする",
         ]
 
         embeddings = []
         for text in test_texts:
             response = client.embeddings.create(
-                model="text-embedding-ada-002",
-                input=text
+                model="text-embedding-ada-002", input=text
             )
             embedding = response.data[0].embedding
             embeddings.append(embedding)
@@ -96,7 +101,8 @@ async def setup_pgvector():
         # 4. データベースへの保存
         print("\n💾 ベクトルデータ保存中...")
         for i, (text, embedding) in enumerate(zip(test_texts, embeddings)):
-            await conn.execute("""
+            await conn.execute(
+                """
                 INSERT INTO knowledge_base.vector_documents
                 (title, content, embedding, metadata)
                 VALUES ($1, $2, $3::vector, $4)
@@ -104,7 +110,7 @@ async def setup_pgvector():
                 f"テストドキュメント{i+1}",
                 text,
                 str(embedding),  # リストを文字列に変換
-                json.dumps({"test": True, "index": i})
+                json.dumps({"test": True, "index": i}),
             )
         print("✅ 3件のテストデータを保存しました")
 
@@ -114,13 +120,13 @@ async def setup_pgvector():
 
         # クエリのembedding生成
         query_response = client.embeddings.create(
-            model="text-embedding-ada-002",
-            input=query_text
+            model="text-embedding-ada-002", input=query_text
         )
         query_embedding = query_response.data[0].embedding
 
         # 類似検索実行
-        results = await conn.fetch("""
+        results = await conn.fetch(
+            """
             SELECT
                 id,
                 title,
@@ -129,7 +135,9 @@ async def setup_pgvector():
             FROM knowledge_base.vector_documents
             ORDER BY embedding <=> $1::vector
             LIMIT 3
-        """, str(query_embedding))
+        """,
+            str(query_embedding),
+        )
 
         print(f"\nクエリ: '{query_text}'")
         print("検索結果:")
@@ -138,9 +146,11 @@ async def setup_pgvector():
             print(f"    内容: {row['content'][:60]}...")
 
         # 6. 統計情報
-        count = await conn.fetchval("""
+        count = await conn.fetchval(
+            """
             SELECT COUNT(*) FROM knowledge_base.vector_documents
-        """)
+        """
+        )
 
         print(f"\n📊 統計情報:")
         print(f"  - 総ドキュメント数: {count}")
@@ -159,14 +169,12 @@ async def setup_pgvector():
             "embedding_model": "text-embedding-ada-002",
             "vector_dimension": 1536,
             "search_results": [
-                {
-                    "title": row['title'],
-                    "similarity": float(row['similarity'])
-                } for row in results
-            ]
+                {"title": row["title"], "similarity": float(row["similarity"])}
+                for row in results
+            ],
         }
 
-        with open('pgvector_setup_result.json', 'w') as f:
+        with open("pgvector_setup_result.json", "w") as f:
             json.dump(result, f, indent=2, ensure_ascii=False)
 
         return True
@@ -174,11 +182,13 @@ async def setup_pgvector():
     except Exception as e:
         print(f"\n❌ エラー発生: {e}")
         import traceback
+
         traceback.print_exc()
         return False
 
     finally:
         await conn.close()
+
 
 async def main():
     """メイン処理"""
@@ -193,6 +203,7 @@ async def main():
     else:
         print("\n⚠️  セットアップが未完了です")
         print("上記の指示に従って、pgvectorをインストールしてください")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

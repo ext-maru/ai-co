@@ -30,20 +30,27 @@ from scripts.knights_status_monitor import KnightsStatusMonitor
 # ログ設定
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler('logs/knights_autonomous.log'),
-        logging.StreamHandler()
-    ]
+        logging.FileHandler("logs/knights_autonomous.log"),
+        logging.StreamHandler(),
+    ],
 )
 
-logger = logging.getLogger('knights_autonomous_guardian')
+logger = logging.getLogger("knights_autonomous_guardian")
+
 
 class AutonomousAction:
     """自律アクション定義"""
 
-    def __init__(self, name: str, command: List[str], timeout: int = 30,
-                 retry_count: int = 3, escalation_threshold: int = 5):
+    def __init__(
+        self,
+        name: str,
+        command: List[str],
+        timeout: int = 30,
+        retry_count: int = 3,
+        escalation_threshold: int = 5,
+    ):
         self.name = name
         self.command = command
         self.timeout = timeout
@@ -52,6 +59,7 @@ class AutonomousAction:
         self.failure_count = 0
         self.last_execution = None
         self.last_success = None
+
 
 class KnightsAutonomousGuardian:
     """騎士団自律守護システム"""
@@ -68,60 +76,66 @@ class KnightsAutonomousGuardian:
                 name="ワーカー修復",
                 command=["python3", "check_and_fix_workers.py"],
                 timeout=60,
-                retry_count=3
+                retry_count=3,
             ),
             "restart_rabbitmq": AutonomousAction(
                 name="RabbitMQ再起動",
                 command=["sudo", "systemctl", "restart", "rabbitmq-server"],
                 timeout=30,
-                retry_count=2
+                retry_count=2,
             ),
             "clean_logs": AutonomousAction(
                 name="ログクリーンアップ",
                 command=["find", "logs/", "-name", "*.log", "-mtime", "+7", "-delete"],
                 timeout=10,
-                retry_count=1
+                retry_count=1,
             ),
             "check_disk_space": AutonomousAction(
                 name="ディスク容量チェック",
                 command=["df", "-h"],
                 timeout=5,
-                retry_count=1
+                retry_count=1,
             ),
             "update_dependencies": AutonomousAction(
                 name="依存関係更新",
-                command=["bash", "-c", "source venv/bin/activate && pip install -r requirements.txt"],
+                command=[
+                    "bash",
+                    "-c",
+                    "source venv/bin/activate && pip install -r requirements.txt",
+                ],
                 timeout=300,
-                retry_count=1
-            )
+                retry_count=1,
+            ),
         }
 
         # 自動修復ルール
         self.auto_repair_rules = {
             "workers_down": {
-                "condition": lambda status: status["workers"]["running_count"] < status["workers"]["total_expected"],
+                "condition": lambda status: status["workers"]["running_count"]
+                < status["workers"]["total_expected"],
                 "action": "fix_workers",
                 "severity": "high",
-                "auto_execute": True
+                "auto_execute": True,
             },
             "rabbitmq_disconnected": {
                 "condition": lambda status: status["rabbitmq"]["status"] != "connected",
                 "action": "restart_rabbitmq",
                 "severity": "critical",
-                "auto_execute": True
+                "auto_execute": True,
             },
             "knights_script_failed": {
-                "condition": lambda status: status["local_knights"]["status"] != "operational",
+                "condition": lambda status: status["local_knights"]["status"]
+                != "operational",
                 "action": "update_dependencies",
                 "severity": "medium",
-                "auto_execute": True
+                "auto_execute": True,
             },
             "disk_space_low": {
                 "condition": self._check_disk_space,
                 "action": "clean_logs",
                 "severity": "medium",
-                "auto_execute": True
-            }
+                "auto_execute": True,
+            },
         }
 
         # 統計情報
@@ -132,16 +146,17 @@ class KnightsAutonomousGuardian:
             "total_auto_repairs": 0,
             "successful_repairs": 0,
             "failed_repairs": 0,
-            "escalations": 0
+            "escalations": 0,
         }
 
     def _check_disk_space(self, status: Dict) -> bool:
         """ディスク容量チェック"""
         try:
-            result = subprocess.run(["df", "/", "--output=pcent"],
-                                  capture_output=True, text=True, timeout=5)
+            result = subprocess.run(
+                ["df", "/", "--output=pcent"], capture_output=True, text=True, timeout=5
+            )
             if result.returncode == 0:
-                usage = int(result.stdout.split('\n')[1].strip().replace('%', ''))
+                usage = int(result.stdout.split("\n")[1].strip().replace("%", ""))
                 return usage > 85  # 85%以上で警告
         except Exception:
             pass
@@ -161,7 +176,7 @@ class KnightsAutonomousGuardian:
                     action.command,
                     capture_output=True,
                     text=True,
-                    timeout=action.timeout
+                    timeout=action.timeout,
                 )
 
                 action.last_execution = datetime.now()
@@ -176,26 +191,34 @@ class KnightsAutonomousGuardian:
                         "action": action.name,
                         "attempt": attempt + 1,
                         "output": result.stdout,
-                        "execution_time": action.last_execution.isoformat()
+                        "execution_time": action.last_execution.isoformat(),
                     }
                 else:
-                    logger.warning(f"⚠️ Action {action.name} failed (attempt {attempt + 1}): {result.stderr}")
+                    logger.warning(
+                        f"⚠️ Action {action.name} failed (attempt {attempt + 1}): {result.stderr}"
+                    )
 
             except subprocess.TimeoutExpired:
-                logger.error(f"⏰ Action {action.name} timed out (attempt {attempt + 1})")
+                logger.error(
+                    f"⏰ Action {action.name} timed out (attempt {attempt + 1})"
+                )
             except Exception as e:
-                logger.error(f"❌ Action {action.name} error (attempt {attempt + 1}): {e}")
+                logger.error(
+                    f"❌ Action {action.name} error (attempt {attempt + 1}): {e}"
+                )
 
         # 全試行失敗
         action.failure_count += 1
-        logger.error(f"🚨 Action {action.name} failed after {action.retry_count} attempts")
+        logger.error(
+            f"🚨 Action {action.name} failed after {action.retry_count} attempts"
+        )
 
         return {
             "success": False,
             "action": action.name,
             "total_attempts": action.retry_count,
             "failure_count": action.failure_count,
-            "error": "All retry attempts failed"
+            "error": "All retry attempts failed",
         }
 
     async def analyze_and_repair(self) -> Dict:
@@ -211,7 +234,7 @@ class KnightsAutonomousGuardian:
             "overall_health": current_status["overall_health"],
             "issues_detected": [],
             "actions_taken": [],
-            "recommendations": []
+            "recommendations": [],
         }
 
         # 各修復ルールをチェック
@@ -221,12 +244,14 @@ class KnightsAutonomousGuardian:
                     issue = {
                         "rule": rule_name,
                         "severity": rule["severity"],
-                        "action_required": rule["action"]
+                        "action_required": rule["action"],
                     }
                     analysis_result["issues_detected"].append(issue)
                     self.stats["total_issues_detected"] += 1
 
-                    logger.warning(f"🚨 Issue detected: {rule_name} (severity: {rule['severity']})")
+                    logger.warning(
+                        f"🚨 Issue detected: {rule_name} (severity: {rule['severity']})"
+                    )
 
                     # 自動修復実行判定
                     if rule["auto_execute"] and not self.maintenance_mode:
@@ -248,7 +273,9 @@ class KnightsAutonomousGuardian:
                                 analysis_result["recommendations"].append(
                                     f"ESCALATION REQUIRED: {rule_name} - manual intervention needed"
                                 )
-                                logger.critical(f"🚨 ESCALATION: {rule_name} requires manual intervention")
+                                logger.critical(
+                                    f"🚨 ESCALATION: {rule_name} requires manual intervention"
+                                )
                     else:
                         analysis_result["recommendations"].append(
                             f"Manual action recommended: {rule['action']} for {rule_name}"
@@ -259,7 +286,9 @@ class KnightsAutonomousGuardian:
 
         # 予防保守の推奨
         if len(analysis_result["issues_detected"]) == 0:
-            analysis_result["recommendations"].append("System healthy - no immediate action required")
+            analysis_result["recommendations"].append(
+                "System healthy - no immediate action required"
+            )
             logger.info("✅ System health check passed - all systems operational")
 
         return analysis_result
@@ -291,22 +320,37 @@ class KnightsAutonomousGuardian:
                 "running": self.running,
                 "uptime_seconds": int(uptime.total_seconds()),
                 "uptime_human": str(uptime),
-                "maintenance_mode": self.maintenance_mode
+                "maintenance_mode": self.maintenance_mode,
             },
             "statistics": self.stats.copy(),
             "action_status": {
                 name: {
                     "failure_count": action.failure_count,
-                    "last_execution": action.last_execution.isoformat() if action.last_execution else None,
-                    "last_success": action.last_success.isoformat() if action.last_success else None
+                    "last_execution": (
+                        action.last_execution.isoformat()
+                        if action.last_execution
+                        else None
+                    ),
+                    "last_success": (
+                        action.last_success.isoformat() if action.last_success else None
+                    ),
                 }
                 for name, action in self.autonomous_actions.items()
             },
             "efficiency_metrics": {
-                "success_rate": (self.stats["successful_repairs"] / max(1, self.stats["total_auto_repairs"])) * 100,
-                "average_checks_per_hour": self.stats["total_checks"] / max(1, uptime.total_seconds() / 3600),
-                "escalation_rate": (self.stats["escalations"] / max(1, self.stats["total_issues_detected"])) * 100
-            }
+                "success_rate": (
+                    self.stats["successful_repairs"]
+                    / max(1, self.stats["total_auto_repairs"])
+                )
+                * 100,
+                "average_checks_per_hour": self.stats["total_checks"]
+                / max(1, uptime.total_seconds() / 3600),
+                "escalation_rate": (
+                    self.stats["escalations"]
+                    / max(1, self.stats["total_issues_detected"])
+                )
+                * 100,
+            },
         }
 
     async def autonomous_loop(self):
@@ -315,8 +359,12 @@ class KnightsAutonomousGuardian:
         self.running = True
 
         # 定期メンテナンスのスケジュール
-        schedule.every().day.at("02:00").do(lambda: asyncio.create_task(self.scheduled_maintenance()))
-        schedule.every().sunday.at("03:00").do(lambda: asyncio.create_task(self.execute_action("update_dependencies")))
+        schedule.every().day.at("02:00").do(
+            lambda: asyncio.create_task(self.scheduled_maintenance())
+        )
+        schedule.every().sunday.at("03:00").do(
+            lambda: asyncio.create_task(self.execute_action("update_dependencies"))
+        )
 
         try:
             while self.running:
@@ -328,8 +376,10 @@ class KnightsAutonomousGuardian:
 
                     # 重要な問題がある場合はログに記録
                     if analysis["issues_detected"]:
-                        report_file = Path(f"logs/autonomous_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
-                        with open(report_file, 'w') as f:
+                        report_file = Path(
+                            f"logs/autonomous_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                        )
+                        with open(report_file, "w") as f:
                             json.dump(analysis, f, indent=2)
                         logger.info(f"📄 Analysis report saved: {report_file}")
 
@@ -356,19 +406,28 @@ class KnightsAutonomousGuardian:
         """守護システム停止"""
         self.running = False
 
+
 async def main():
     """メイン関数"""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Knights Autonomous Guardian')
-    parser.add_argument('--maintenance', action='store_true', help='Enable maintenance mode (no auto-repairs)')
-    parser.add_argument('--interval', type=int, default=60, help='Check interval in seconds')
-    parser.add_argument('--report', action='store_true', help='Generate health report and exit')
+    parser = argparse.ArgumentParser(description="Knights Autonomous Guardian")
+    parser.add_argument(
+        "--maintenance",
+        action="store_true",
+        help="Enable maintenance mode (no auto-repairs)",
+    )
+    parser.add_argument(
+        "--interval", type=int, default=60, help="Check interval in seconds"
+    )
+    parser.add_argument(
+        "--report", action="store_true", help="Generate health report and exit"
+    )
 
     args = parser.parse_args()
 
     # ログディレクトリ作成
-    Path('logs').mkdir(exist_ok=True)
+    Path("logs").mkdir(exist_ok=True)
 
     guardian = KnightsAutonomousGuardian()
     guardian.check_interval = args.interval
@@ -382,7 +441,8 @@ async def main():
         print(json.dumps(report, indent=2))
         return
 
-    logger.info(f"""
+    logger.info(
+        f"""
 🛡️ Knights Autonomous Guardian Configuration:
 - Check interval: {args.interval} seconds
 - Maintenance mode: {args.maintenance}
@@ -390,10 +450,12 @@ async def main():
 - Log file: logs/knights_autonomous.log
 
 Starting autonomous operations...
-""")
+"""
+    )
 
     # 自律監視開始
     await guardian.autonomous_loop()
+
 
 if __name__ == "__main__":
     asyncio.run(main())

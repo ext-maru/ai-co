@@ -28,8 +28,10 @@ PROJECT_ROOT = Path(__file__).parent.parent
 A2A_STORAGE_DIR = PROJECT_ROOT / "data" / "a2a_messages"
 A2A_STORAGE_DIR.mkdir(parents=True, exist_ok=True)
 
+
 class MessageType(Enum):
     """メッセージタイプ"""
+
     # 基本通信
     QUERY = "query"
     RESPONSE = "response"
@@ -50,17 +52,21 @@ class MessageType(Enum):
     ALERT = "alert"
     EMERGENCY = "emergency"
 
+
 class MessagePriority(Enum):
     """メッセージ優先度"""
+
     LOW = 1
     NORMAL = 2
     HIGH = 3
     URGENT = 4
     EMERGENCY = 5
 
+
 @dataclass
 class A2AMessage:
     """A2Aメッセージ"""
+
     id: str
     sender: str
     recipient: str
@@ -83,7 +89,7 @@ class A2AMessage:
             "expires_at": self.expires_at.isoformat() if self.expires_at else None,
             "payload": self.payload,
             "correlation_id": self.correlation_id,
-            "reply_to": self.reply_to
+            "reply_to": self.reply_to,
         }
 
     @classmethod
@@ -95,11 +101,16 @@ class A2AMessage:
             message_type=MessageType(data["message_type"]),
             priority=MessagePriority(data["priority"]),
             timestamp=datetime.fromisoformat(data["timestamp"]),
-            expires_at=datetime.fromisoformat(data["expires_at"]) if data["expires_at"] else None,
+            expires_at=(
+                datetime.fromisoformat(data["expires_at"])
+                if data["expires_at"]
+                else None
+            ),
             payload=data["payload"],
             correlation_id=data.get("correlation_id"),
-            reply_to=data.get("reply_to")
+            reply_to=data.get("reply_to"),
         )
+
 
 class SimpleA2AClient:
     """シンプルA2A通信クライアント"""
@@ -129,7 +140,7 @@ class SimpleA2AClient:
         payload: Dict[str, Any],
         priority: MessagePriority = MessagePriority.NORMAL,
         expires_in_minutes: int = 60,
-        correlation_id: Optional[str] = None
+        correlation_id: Optional[str] = None,
     ) -> str:
         """メッセージを送信"""
 
@@ -145,7 +156,7 @@ class SimpleA2AClient:
             timestamp=datetime.now(),
             expires_at=expires_at,
             payload=payload,
-            correlation_id=correlation_id
+            correlation_id=correlation_id,
         )
 
         # 受信者のinboxに保存
@@ -153,16 +164,16 @@ class SimpleA2AClient:
         recipient_inbox.mkdir(parents=True, exist_ok=True)
 
         message_file = recipient_inbox / f"{message_id}.json"
-        with open(message_file, 'w', encoding='utf-8') as f:
+        with open(message_file, "w", encoding="utf-8") as f:
             json.dump(message.to_dict(), f, ensure_ascii=False, indent=2)
 
-        logger.info(f"Message sent: {self.agent_id} -> {recipient} ({message_type.value})")
+        logger.info(
+            f"Message sent: {self.agent_id} -> {recipient} ({message_type.value})"
+        )
         return message_id
 
     async def send_response(
-        self,
-        original_message: A2AMessage,
-        response_payload: Dict[str, Any]
+        self, original_message: A2AMessage, response_payload: Dict[str, Any]
     ) -> str:
         """レスポンスメッセージを送信"""
 
@@ -170,7 +181,7 @@ class SimpleA2AClient:
             recipient=original_message.sender,
             message_type=MessageType.RESPONSE,
             payload=response_payload,
-            correlation_id=original_message.id
+            correlation_id=original_message.id,
         )
 
     def get_messages(self, limit: int = 10) -> List[A2AMessage]:
@@ -186,7 +197,7 @@ class SimpleA2AClient:
 
         for message_file in message_files[:limit]:
             try:
-                with open(message_file, 'r', encoding='utf-8') as f:
+                with open(message_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
 
                 message = A2AMessage.from_dict(data)
@@ -210,7 +221,7 @@ class SimpleA2AClient:
 
         for message_file in self.inbox_dir.glob("*.json"):
             try:
-                with open(message_file, 'r', encoding='utf-8') as f:
+                with open(message_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
 
                 if data.get("expires_at"):
@@ -229,9 +240,7 @@ class SimpleA2AClient:
 
         self._running = True
         self._poll_thread = threading.Thread(
-            target=self._poll_messages,
-            args=(interval,),
-            daemon=True
+            target=self._poll_messages, args=(interval,), daemon=True
         )
         self._poll_thread.start()
         logger.info(f"Message polling started for {self.agent_id}")
@@ -267,6 +276,7 @@ class SimpleA2AClient:
         else:
             logger.warning(f"No handler for message type: {message.message_type}")
 
+
 # 4賢者通信システム
 class FourSagesA2A:
     """4賢者間A2A通信システム"""
@@ -283,7 +293,7 @@ class FourSagesA2A:
         message_type: MessageType,
         payload: Dict[str, Any],
         exclude: Optional[List[str]] = None,
-        priority: MessagePriority = MessagePriority.NORMAL
+        priority: MessagePriority = MessagePriority.NORMAL,
     ) -> List[str]:
         """全賢者にブロードキャスト"""
         exclude = exclude or []
@@ -295,17 +305,14 @@ class FourSagesA2A:
                     recipient=sage_id,
                     message_type=message_type,
                     payload=payload,
-                    priority=priority
+                    priority=priority,
                 )
                 message_ids.append(message_id)
 
         return message_ids
 
     async def consult_sage(
-        self,
-        sage_id: str,
-        query: Dict[str, Any],
-        timeout: float = 30.0
+        self, sage_id: str, query: Dict[str, Any], timeout: float = 30.0
     ) -> Optional[Dict[str, Any]]:
         """特定の賢者に相談"""
         if sage_id not in self.SAGE_IDS:
@@ -319,7 +326,7 @@ class FourSagesA2A:
             message_type=MessageType.SAGE_CONSULTATION,
             payload=query,
             correlation_id=correlation_id,
-            priority=MessagePriority.HIGH
+            priority=MessagePriority.HIGH,
         )
 
         # レスポンスを待機
@@ -327,8 +334,10 @@ class FourSagesA2A:
         while time.time() - start_time < timeout:
             messages = self.clients["knowledge_sage"].get_messages()
             for message in messages:
-                if (message.message_type == MessageType.SAGE_RESPONSE and
-                    message.correlation_id == correlation_id):
+                if (
+                    message.message_type == MessageType.SAGE_RESPONSE
+                    and message.correlation_id == correlation_id
+                ):
                     return message.payload
 
             await asyncio.sleep(0.5)
@@ -336,14 +345,18 @@ class FourSagesA2A:
         logger.warning(f"Timeout waiting for response from {sage_id}")
         return None
 
+
 # グローバルインスタンス
 four_sages_a2a = FourSagesA2A()
+
 
 async def create_a2a_client(agent_id: str) -> SimpleA2AClient:
     """A2Aクライアントを作成"""
     return SimpleA2AClient(agent_id)
 
+
 if __name__ == "__main__":
+
     async def test_a2a():
         # テスト実行
         client1 = SimpleA2AClient("test_agent_1")
@@ -353,7 +366,7 @@ if __name__ == "__main__":
         message_id = await client1.send_message(
             recipient="test_agent_2",
             message_type=MessageType.QUERY,
-            payload={"question": "Hello, can you hear me?"}
+            payload={"question": "Hello, can you hear me?"},
         )
 
         print(f"Message sent: {message_id}")
@@ -368,7 +381,7 @@ if __name__ == "__main__":
             # レスポンス送信
             await client2.send_response(
                 original_message=message,
-                response_payload={"answer": "Yes, I can hear you!"}
+                response_payload={"answer": "Yes, I can hear you!"},
             )
 
         # レスポンス受信

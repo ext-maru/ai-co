@@ -402,7 +402,8 @@ class ProgressVisualization:
 
             ax.plot(dates, completion_rates, marker="o", linewidth=2, markersize=6)
             ax.set_title(
-                f"プロジェクト進捗推移 (ID: {project_id})", fontsize=self.viz_config.font_size + 2
+                f"プロジェクト進捗推移 (ID: {project_id})",
+                fontsize=self.viz_config.font_size + 2,
             )
             ax.set_xlabel("日付", fontsize=self.viz_config.font_size)
             ax.set_ylabel("完了率 (%)", fontsize=self.viz_config.font_size)
@@ -473,7 +474,8 @@ class ProgressVisualization:
             )
 
             ax.set_title(
-                f"タスクステータス分布 (ID: {project_id})", fontsize=self.viz_config.font_size + 2
+                f"タスクステータス分布 (ID: {project_id})",
+                fontsize=self.viz_config.font_size + 2,
             )
 
             # テキストの設定

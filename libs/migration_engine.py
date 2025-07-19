@@ -232,7 +232,9 @@ class MDFileAnalyzer:
                 analysis["section_titles"] = matches[1:] if len(matches) > 1 else []
 
         # 言語分析
-        analysis["language"] = "ja" if re.search(r"[ひらがなカタカナ漢字]", content) else "en"
+        analysis["language"] = (
+            "ja" if re.search(r"[ひらがなカタカナ漢字]", content) else "en"
+        )
 
         # 技術内容の分析
         analysis["technical_density"] = self._calculate_technical_density(content)
@@ -329,7 +331,8 @@ class MDFileAnalyzer:
         ):
             spell_type = SpellType.CONFIGURATION
         elif any(
-            keyword in content_lower for keyword in ["template", "テンプレート", "example"]
+            keyword in content_lower
+            for keyword in ["template", "テンプレート", "example"]
         ):
             spell_type = SpellType.TEMPLATE
         elif any(
@@ -873,9 +876,9 @@ class MigrationEngine:
             if "error" not in file_analysis:
                 file_path = file_analysis.get("file_path", "")
                 basic_info = file_analysis.get("basic_info", {})
-                file_info_map[
-                    basic_info.get("relative_path", file_path)
-                ] = file_analysis
+                file_info_map[basic_info.get("relative_path", file_path)] = (
+                    file_analysis
+                )
 
         # 重複グループごとの処理計画
         for group in duplicate_groups:

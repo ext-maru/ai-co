@@ -104,9 +104,11 @@ class QualityWatcher(ElfServant):
         return TaskResult(
             task_id=request.task_id,
             servant_id=self.servant_id,
-            status=TaskStatus.COMPLETED
-            if result.get("status") == "success"
-            else TaskStatus.FAILED,
+            status=(
+                TaskStatus.COMPLETED
+                if result.get("status") == "success"
+                else TaskStatus.FAILED
+            ),
             result_data=result,
             error_message=result.get("error"),
             execution_time_ms=0.0,
@@ -569,9 +571,9 @@ class QualityWatcher(ElfServant):
         error_rate = performance_data.get("error_rate", 0)
 
         performance_summary = {
-            "avg_response_time": statistics.mean(response_times)
-            if response_times
-            else 0,
+            "avg_response_time": (
+                statistics.mean(response_times) if response_times else 0
+            ),
             "max_response_time": max(response_times) if response_times else 0,
             "avg_memory_usage": statistics.mean(memory_usage) if memory_usage else 0,
             "avg_cpu_usage": statistics.mean(cpu_usage) if cpu_usage else 0,
@@ -1133,10 +1135,12 @@ class QualityWatcher(ElfServant):
             "average_quality_score": self.metrics["average_quality_score"],
             "compliance_violations": self.metrics["compliance_violations"],
             "monitoring_performance": {
-                "avg_time": sum(self.metrics["monitoring_times"])
-                / len(self.metrics["monitoring_times"])
-                if self.metrics["monitoring_times"]
-                else 0.0,
+                "avg_time": (
+                    sum(self.metrics["monitoring_times"])
+                    / len(self.metrics["monitoring_times"])
+                    if self.metrics["monitoring_times"]
+                    else 0.0
+                ),
                 "total_checks": len(self.metrics["monitoring_times"]),
             },
         }

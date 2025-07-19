@@ -26,15 +26,17 @@ from libs.elder_enforcement import ElderTreeEnforcement
 
 class SoulSummonMode(Enum):
     """魂召喚モード"""
-    COUNCIL = "council"        # 評議会モード（合議制）
-    TEAM = "team"             # チームモード（協調作業）
-    PARALLEL = "parallel"      # 並列モード（独立実行）
+
+    COUNCIL = "council"  # 評議会モード（合議制）
+    TEAM = "team"  # チームモード（協調作業）
+    PARALLEL = "parallel"  # 並列モード（独立実行）
     SEQUENTIAL = "sequential"  # 逐次モード（順次実行）
 
 
 @dataclass
 class SoulTask:
     """魂への依頼タスク"""
+
     task_id: str
     description: str
     priority: str
@@ -47,6 +49,7 @@ class SoulTask:
 @dataclass
 class SoulResponse:
     """魂からの応答"""
+
     task_id: str
     agent_id: str
     status: str
@@ -79,36 +82,32 @@ class ElderFlowSoulConnector:
                 "knowledge_sage": "技術知識分析・アーキテクチャ検討",
                 "task_sage": "タスク分解・計画立案",
                 "rag_sage": "関連情報検索・ベストプラクティス調査",
-                "incident_sage": "リスク分析・障害予測"
+                "incident_sage": "リスク分析・障害予測",
             },
-
             # Phase 2: サーバント実行
             "phase2_execution": {
                 "code_servant": "コード実装・アルゴリズム開発",
                 "test_guardian": "テスト実装・品質保証",
-                "quality_inspector": "コード品質検査・メトリクス分析"
+                "quality_inspector": "コード品質検査・メトリクス分析",
             },
-
             # Phase 3: 品質ゲート
             "phase3_quality": {
                 "security_auditor": "セキュリティ監査・脆弱性検査",
                 "performance_monitor": "パフォーマンス測定・最適化",
-                "documentation_keeper": "ドキュメント生成・維持"
+                "documentation_keeper": "ドキュメント生成・維持",
             },
-
             # Phase 4: 評議会報告
             "phase4_reporting": {
                 "council_secretary": "評議会記録・議事録作成",
                 "report_generator": "レポート生成・メトリクス集約",
-                "approval_manager": "承認処理・ワークフロー管理"
+                "approval_manager": "承認処理・ワークフロー管理",
             },
-
             # Phase 5: Git自動化
             "phase5_git": {
                 "git_master": "Git操作・バージョン管理",
                 "version_guardian": "リリース管理・変更履歴",
-                "deploy_manager": "デプロイ管理・環境制御"
-            }
+                "deploy_manager": "デプロイ管理・環境制御",
+            },
         }
 
     def _setup_logger(self) -> logging.Logger:
@@ -149,8 +148,9 @@ class ElderFlowSoulConnector:
 
         self.logger.info("✅ Elder Flow Soul Connector initialized")
 
-    async def summon_souls_for_phase(self, phase: str, task_description: str,
-                                   priority: str = "medium") -> Dict[str, Any]:
+    async def summon_souls_for_phase(
+        self, phase: str, task_description: str, priority: str = "medium"
+    ) -> Dict[str, Any]:
         """
         Elder Flowフェーズ用魂召喚
 
@@ -178,7 +178,7 @@ class ElderFlowSoulConnector:
             "priority": priority,
             "souls": {},
             "started_at": datetime.now(),
-            "status": "summoning"
+            "status": "summoning",
         }
 
         # 各魂を召喚・起動
@@ -194,20 +194,30 @@ class ElderFlowSoulConnector:
                 summoned_souls[soul_id] = {"status": "failed", "error": str(e)}
 
         session["souls"] = summoned_souls
-        session["status"] = "active" if any(s.get("status") == "active" for s in summoned_souls.values()) else "failed"
+        session["status"] = (
+            "active"
+            if any(s.get("status") == "active" for s in summoned_souls.values())
+            else "failed"
+        )
 
         self.active_souls[session_id] = session
 
         return {
             "session_id": session_id,
             "phase": phase,
-            "summoned_count": len([s for s in summoned_souls.values() if s.get("status") == "active"]),
+            "summoned_count": len(
+                [s for s in summoned_souls.values() if s.get("status") == "active"]
+            ),
             "total_souls": len(required_souls),
-            "souls": summoned_souls
+            "souls": summoned_souls,
         }
 
-    async def execute_phase_with_souls(self, session_id: str, task_details: Dict[str, Any],
-                                     execution_mode: SoulSummonMode = SoulSummonMode.TEAM) -> Dict[str, Any]:
+    async def execute_phase_with_souls(
+        self,
+        session_id: str,
+        task_details: Dict[str, Any],
+        execution_mode: SoulSummonMode = SoulSummonMode.TEAM,
+    ) -> Dict[str, Any]:
         """
         魂を使用したフェーズ実行
 
@@ -225,7 +235,9 @@ class ElderFlowSoulConnector:
         session = self.active_souls[session_id]
         phase = session["phase"]
 
-        self.logger.info(f"🚀 Executing {phase} with {len(session['souls'])} souls in {execution_mode.value} mode")
+        self.logger.info(
+            f"🚀 Executing {phase} with {len(session['souls'])} souls in {execution_mode.value} mode"
+        )
 
         execution_start = datetime.now()
         results = {}
@@ -253,7 +265,7 @@ class ElderFlowSoulConnector:
             "mode": execution_mode.value,
             "execution_time": execution_time,
             "results": results,
-            "completed_at": datetime.now()
+            "completed_at": datetime.now(),
         }
 
         self.logger.info(f"✅ Phase {phase} completed in {execution_time:.2f}s")
@@ -263,9 +275,11 @@ class ElderFlowSoulConnector:
             "phase": phase,
             "execution_mode": execution_mode.value,
             "execution_time": execution_time,
-            "success_count": len([r for r in results.values() if r.get("status") == "success"]),
+            "success_count": len(
+                [r for r in results.values() if r.get("status") == "success"]
+            ),
             "total_tasks": len(results),
-            "results": results
+            "results": results,
         }
 
     async def dismiss_souls(self, session_id: str) -> Dict[str, Any]:
@@ -291,7 +305,10 @@ class ElderFlowSoulConnector:
             if soul_info.get("status") == "active":
                 try:
                     # エージェント停止は自動的に処理される（プロセス終了時）
-                    dismiss_results[soul_id] = {"status": "dismissed", "timestamp": datetime.now()}
+                    dismiss_results[soul_id] = {
+                        "status": "dismissed",
+                        "timestamp": datetime.now(),
+                    }
                     self.logger.info(f"  ✅ {soul_id} dismissed")
                 except Exception as e:
                     dismiss_results[soul_id] = {"status": "error", "error": str(e)}
@@ -306,10 +323,12 @@ class ElderFlowSoulConnector:
         return {
             "session_id": session_id,
             "dismissed_souls": len(dismiss_results),
-            "dismiss_results": dismiss_results
+            "dismiss_results": dismiss_results,
         }
 
-    async def get_soul_session_status(self, session_id: str) -> Optional[Dict[str, Any]]:
+    async def get_soul_session_status(
+        self, session_id: str
+    ) -> Optional[Dict[str, Any]]:
         """魂セッション状態取得"""
         if session_id not in self.active_souls:
             return None
@@ -320,12 +339,14 @@ class ElderFlowSoulConnector:
         soul_statuses = {}
         for soul_id, soul_info in session["souls"].items():
             if "agent_id" in soul_info:
-                agent_status = await self.registry.get_agent_status(soul_info["agent_id"])
+                agent_status = await self.registry.get_agent_status(
+                    soul_info["agent_id"]
+                )
                 soul_statuses[soul_id] = {
                     "status": agent_status.get("status", "unknown"),
                     "purpose": soul_info.get("purpose", ""),
                     "port": agent_status.get("port"),
-                    "uptime": agent_status.get("uptime", 0)
+                    "uptime": agent_status.get("uptime", 0),
                 }
 
         return {
@@ -335,20 +356,22 @@ class ElderFlowSoulConnector:
             "task_description": session["task_description"],
             "started_at": session["started_at"],
             "souls": soul_statuses,
-            "execution_result": session.get("execution_result")
+            "execution_result": session.get("execution_result"),
         }
 
     async def list_active_soul_sessions(self) -> List[Dict[str, Any]]:
         """アクティブ魂セッション一覧"""
         sessions = []
         for session_id, session in self.active_souls.items():
-            sessions.append({
-                "session_id": session_id,
-                "phase": session["phase"],
-                "status": session["status"],
-                "soul_count": len(session["souls"]),
-                "started_at": session["started_at"]
-            })
+            sessions.append(
+                {
+                    "session_id": session_id,
+                    "phase": session["phase"],
+                    "status": session["status"],
+                    "soul_count": len(session["souls"]),
+                    "started_at": session["started_at"],
+                }
+            )
         return sessions
 
     # プライベートメソッド
@@ -365,7 +388,9 @@ class ElderFlowSoulConnector:
         missing_agents = required_agents - existing_ids
 
         if missing_agents:
-            self.logger.info(f"Creating {len(missing_agents)} missing Elder Flow agents...")
+            self.logger.info(
+                f"Creating {len(missing_agents)} missing Elder Flow agents..."
+            )
 
             for agent_id in missing_agents:
                 await self._create_elder_flow_agent(agent_id)
@@ -374,30 +399,74 @@ class ElderFlowSoulConnector:
         """Elder Flow専用エージェント作成"""
         agent_configs = {
             # 賢者系
-            "knowledge_sage": {"type": AgentType.SAGE, "desc": "Elder Flow技術知識分析エージェント"},
-            "task_sage": {"type": AgentType.SAGE, "desc": "Elder Flowタスク管理エージェント"},
-            "rag_sage": {"type": AgentType.SAGE, "desc": "Elder Flow情報検索エージェント"},
-            "incident_sage": {"type": AgentType.SAGE, "desc": "Elder Flowリスク分析エージェント"},
-
+            "knowledge_sage": {
+                "type": AgentType.SAGE,
+                "desc": "Elder Flow技術知識分析エージェント",
+            },
+            "task_sage": {
+                "type": AgentType.SAGE,
+                "desc": "Elder Flowタスク管理エージェント",
+            },
+            "rag_sage": {
+                "type": AgentType.SAGE,
+                "desc": "Elder Flow情報検索エージェント",
+            },
+            "incident_sage": {
+                "type": AgentType.SAGE,
+                "desc": "Elder Flowリスク分析エージェント",
+            },
             # サーバント系
-            "code_servant": {"type": AgentType.SERVANT, "desc": "Elder Flowコード実装エージェント"},
-            "test_guardian": {"type": AgentType.SERVANT, "desc": "Elder Flowテスト実装エージェント"},
-            "quality_inspector": {"type": AgentType.SERVANT, "desc": "Elder Flow品質検査エージェント"},
-            "documentation_keeper": {"type": AgentType.SERVANT, "desc": "Elder Flowドキュメント管理エージェント"},
-
+            "code_servant": {
+                "type": AgentType.SERVANT,
+                "desc": "Elder Flowコード実装エージェント",
+            },
+            "test_guardian": {
+                "type": AgentType.SERVANT,
+                "desc": "Elder Flowテスト実装エージェント",
+            },
+            "quality_inspector": {
+                "type": AgentType.SERVANT,
+                "desc": "Elder Flow品質検査エージェント",
+            },
+            "documentation_keeper": {
+                "type": AgentType.SERVANT,
+                "desc": "Elder Flowドキュメント管理エージェント",
+            },
             # 騎士系
-            "security_auditor": {"type": AgentType.KNIGHT, "desc": "Elder Flowセキュリティ監査エージェント"},
-
+            "security_auditor": {
+                "type": AgentType.KNIGHT,
+                "desc": "Elder Flowセキュリティ監査エージェント",
+            },
             # エルフ系
-            "performance_monitor": {"type": AgentType.ELF, "desc": "Elder Flowパフォーマンス監視エージェント"},
-
+            "performance_monitor": {
+                "type": AgentType.ELF,
+                "desc": "Elder Flowパフォーマンス監視エージェント",
+            },
             # 評議会系
-            "council_secretary": {"type": AgentType.COUNCIL, "desc": "Elder Flow評議会記録エージェント"},
-            "report_generator": {"type": AgentType.SERVANT, "desc": "Elder Flowレポート生成エージェント"},
-            "approval_manager": {"type": AgentType.COUNCIL, "desc": "Elder Flow承認管理エージェント"},
-            "git_master": {"type": AgentType.SERVANT, "desc": "Elder Flow Git管理エージェント"},
-            "version_guardian": {"type": AgentType.SERVANT, "desc": "Elder Flowバージョン管理エージェント"},
-            "deploy_manager": {"type": AgentType.SERVANT, "desc": "Elder Flowデプロイ管理エージェント"}
+            "council_secretary": {
+                "type": AgentType.COUNCIL,
+                "desc": "Elder Flow評議会記録エージェント",
+            },
+            "report_generator": {
+                "type": AgentType.SERVANT,
+                "desc": "Elder Flowレポート生成エージェント",
+            },
+            "approval_manager": {
+                "type": AgentType.COUNCIL,
+                "desc": "Elder Flow承認管理エージェント",
+            },
+            "git_master": {
+                "type": AgentType.SERVANT,
+                "desc": "Elder Flow Git管理エージェント",
+            },
+            "version_guardian": {
+                "type": AgentType.SERVANT,
+                "desc": "Elder Flowバージョン管理エージェント",
+            },
+            "deploy_manager": {
+                "type": AgentType.SERVANT,
+                "desc": "Elder Flowデプロイ管理エージェント",
+            },
         }
 
         if agent_id not in agent_configs:
@@ -413,14 +482,16 @@ class ElderFlowSoulConnector:
                 agent_type=config["type"],
                 capabilities=["elder_flow", "automation", "a2a_communication"],
                 dependencies=[],
-                auto_start=False  # Elder Flow実行時に動的起動
+                auto_start=False,  # Elder Flow実行時に動的起動
             )
             self.logger.info(f"✅ Created Elder Flow agent: {agent_id}")
 
         except Exception as e:
             self.logger.error(f"❌ Failed to create agent {agent_id}: {e}")
 
-    async def _summon_soul(self, soul_id: str, purpose: str, priority: str) -> Dict[str, Any]:
+    async def _summon_soul(
+        self, soul_id: str, purpose: str, priority: str
+    ) -> Dict[str, Any]:
         """個別魂召喚"""
         try:
             # エージェント起動
@@ -433,7 +504,7 @@ class ElderFlowSoulConnector:
                     "purpose": purpose,
                     "status": "active",
                     "port": agent_status.get("port"),
-                    "summoned_at": datetime.now()
+                    "summoned_at": datetime.now(),
                 }
             else:
                 raise Exception(f"Failed to start agent {soul_id}")
@@ -444,16 +515,19 @@ class ElderFlowSoulConnector:
                 "agent_id": soul_id,
                 "status": "failed",
                 "error": str(e),
-                "summoned_at": datetime.now()
+                "summoned_at": datetime.now(),
             }
 
-    async def _execute_council_mode(self, session: Dict[str, Any],
-                                  task_details: Dict[str, Any]) -> Dict[str, Any]:
+    async def _execute_council_mode(
+        self, session: Dict[str, Any], task_details: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """評議会モード実行"""
         self.logger.info("🏛️ Executing in Council mode (consensus-based)")
 
         # すべての魂で合議制の処理
-        active_souls = [s for s in session["souls"].values() if s.get("status") == "active"]
+        active_souls = [
+            s for s in session["souls"].values() if s.get("status") == "active"
+        ]
 
         if not active_souls:
             return {"error": "No active souls for council"}
@@ -467,7 +541,7 @@ class ElderFlowSoulConnector:
                 "proposal": f"Proposal from {soul_id} for {task_details.get('description', 'task')}",
                 "confidence": 0.8,
                 "estimated_time": 30,
-                "resources_needed": ["time", "compute"]
+                "resources_needed": ["time", "compute"],
             }
 
         # 合議による最終決定
@@ -475,18 +549,21 @@ class ElderFlowSoulConnector:
             "decision": "Proceed with implementation",
             "participating_souls": list(proposals.keys()),
             "consensus_score": 0.85,
-            "action_plan": task_details
+            "action_plan": task_details,
         }
 
         return {"mode": "council", "proposals": proposals, "consensus": consensus}
 
-    async def _execute_team_mode(self, session: Dict[str, Any],
-                                task_details: Dict[str, Any]) -> Dict[str, Any]:
+    async def _execute_team_mode(
+        self, session: Dict[str, Any], task_details: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """チームモード実行"""
         self.logger.info("👥 Executing in Team mode (collaborative)")
 
         # 協調作業での実行
-        active_souls = [s for s in session["souls"].values() if s.get("status") == "active"]
+        active_souls = [
+            s for s in session["souls"].values() if s.get("status") == "active"
+        ]
 
         team_results = {}
         for soul in active_souls:
@@ -496,18 +573,21 @@ class ElderFlowSoulConnector:
                 "task_assigned": f"Collaborative task for {soul_id}",
                 "status": "completed",
                 "contribution": f"Contribution from {soul_id}",
-                "collaboration_score": 0.9
+                "collaboration_score": 0.9,
             }
 
         return {"mode": "team", "team_results": team_results}
 
-    async def _execute_parallel_mode(self, session: Dict[str, Any],
-                                   task_details: Dict[str, Any]) -> Dict[str, Any]:
+    async def _execute_parallel_mode(
+        self, session: Dict[str, Any], task_details: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """並列モード実行"""
         self.logger.info("⚡ Executing in Parallel mode (independent)")
 
         # 並列独立実行
-        active_souls = [s for s in session["souls"].values() if s.get("status") == "active"]
+        active_souls = [
+            s for s in session["souls"].values() if s.get("status") == "active"
+        ]
 
         parallel_tasks = []
         for soul in active_souls:
@@ -527,13 +607,16 @@ class ElderFlowSoulConnector:
 
         return {"mode": "parallel", "parallel_results": parallel_results}
 
-    async def _execute_sequential_mode(self, session: Dict[str, Any],
-                                     task_details: Dict[str, Any]) -> Dict[str, Any]:
+    async def _execute_sequential_mode(
+        self, session: Dict[str, Any], task_details: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """逐次モード実行"""
         self.logger.info("📋 Executing in Sequential mode (ordered)")
 
         # 順次実行
-        active_souls = [s for s in session["souls"].values() if s.get("status") == "active"]
+        active_souls = [
+            s for s in session["souls"].values() if s.get("status") == "active"
+        ]
 
         sequential_results = {}
         previous_result = None
@@ -552,7 +635,9 @@ class ElderFlowSoulConnector:
 
         return {"mode": "sequential", "sequential_results": sequential_results}
 
-    async def _execute_soul_task(self, soul_id: str, task_details: Dict[str, Any]) -> Dict[str, Any]:
+    async def _execute_soul_task(
+        self, soul_id: str, task_details: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """個別魂タスク実行"""
         # シミュレーション: 実際の実装ではA2A通信でタスク実行
         await asyncio.sleep(0.1)  # 処理時間シミュレート
@@ -562,7 +647,7 @@ class ElderFlowSoulConnector:
             "status": "completed",
             "result": f"Task completed by {soul_id}",
             "execution_time": 0.1,
-            "timestamp": datetime.now()
+            "timestamp": datetime.now(),
         }
 
     async def _save_session_record(self, session_id: str, session: Dict[str, Any]):
@@ -577,10 +662,15 @@ class ElderFlowSoulConnector:
             session_copy = session.copy()
             session_copy["started_at"] = session_copy["started_at"].isoformat()
 
-            if "execution_result" in session_copy and "completed_at" in session_copy["execution_result"]:
-                session_copy["execution_result"]["completed_at"] = session_copy["execution_result"]["completed_at"].isoformat()
+            if (
+                "execution_result" in session_copy
+                and "completed_at" in session_copy["execution_result"]
+            ):
+                session_copy["execution_result"]["completed_at"] = session_copy[
+                    "execution_result"
+                ]["completed_at"].isoformat()
 
-            with open(record_file, 'w', encoding='utf-8') as f:
+            with open(record_file, "w", encoding="utf-8") as f:
                 json.dump(session_copy, f, indent=2, ensure_ascii=False, default=str)
 
             self.logger.info(f"📝 Session record saved: {record_file}")
@@ -606,19 +696,24 @@ async def get_elder_flow_soul_connector() -> ElderFlowSoulConnector:
 
 # 便利な関数
 
-async def summon_souls_for_elder_flow(phase: str, task_description: str,
-                                    priority: str = "medium") -> Dict[str, Any]:
+
+async def summon_souls_for_elder_flow(
+    phase: str, task_description: str, priority: str = "medium"
+) -> Dict[str, Any]:
     """Elder Flow用魂召喚（便利関数）"""
     connector = await get_elder_flow_soul_connector()
     return await connector.summon_souls_for_phase(phase, task_description, priority)
 
 
-async def execute_elder_flow_phase(session_id: str, task_details: Dict[str, Any],
-                                 mode: str = "team") -> Dict[str, Any]:
+async def execute_elder_flow_phase(
+    session_id: str, task_details: Dict[str, Any], mode: str = "team"
+) -> Dict[str, Any]:
     """Elder Flowフェーズ実行（便利関数）"""
     connector = await get_elder_flow_soul_connector()
     execution_mode = SoulSummonMode(mode)
-    return await connector.execute_phase_with_souls(session_id, task_details, execution_mode)
+    return await connector.execute_phase_with_souls(
+        session_id, task_details, execution_mode
+    )
 
 
 async def dismiss_elder_flow_souls(session_id: str) -> Dict[str, Any]:
@@ -638,30 +733,37 @@ async def demo_elder_flow_soul_integration():
     # Phase 1: 4賢者会議召喚
     print("\n🧙‍♂️ Phase 1: Summoning 4 Sages for Analysis...")
     session_result = await connector.summon_souls_for_phase(
-        "phase1_analysis",
-        "OAuth2.0認証システム実装",
-        "high"
+        "phase1_analysis", "OAuth2.0認証システム実装", "high"
     )
 
-    print(f"✅ Summoned {session_result['summoned_count']}/{session_result['total_souls']} souls")
+    print(
+        f"✅ Summoned {session_result['summoned_count']}/{session_result['total_souls']} souls"
+    )
     session_id = session_result["session_id"]
 
     # 実行
     print("\n🚀 Executing analysis phase...")
     execution_result = await connector.execute_phase_with_souls(
         session_id,
-        {"description": "OAuth2.0システム分析", "requirements": ["security", "scalability"]},
-        SoulSummonMode.COUNCIL
+        {
+            "description": "OAuth2.0システム分析",
+            "requirements": ["security", "scalability"],
+        },
+        SoulSummonMode.COUNCIL,
     )
 
-    print(f"✅ Analysis completed: {execution_result['success_count']}/{execution_result['total_tasks']} tasks successful")
+    print(
+        f"✅ Analysis completed: {execution_result['success_count']}/{execution_result['total_tasks']} tasks successful"
+    )
 
     # 状態確認
     print("\n📊 Session Status:")
     status = await connector.get_soul_session_status(session_id)
     if status:
         print(f"  Phase: {status['phase']}")
-        print(f"  Active Souls: {len([s for s in status['souls'].values() if s.get('status') == 'active'])}")
+        print(
+            f"  Active Souls: {len([s for s in status['souls'].values() if s.get('status') == 'active'])}"
+        )
 
     # 解散
     print("\n🌅 Dismissing souls...")

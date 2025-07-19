@@ -42,7 +42,11 @@ class WSLSleepRecoverySystem:
         ]
 
         # 復旧に必要なワーカー
-        self.required_workers = ["enhanced_task_worker", "intelligent_pm_worker", "async_result_worker"]
+        self.required_workers = [
+            "enhanced_task_worker",
+            "intelligent_pm_worker",
+            "async_result_worker",
+        ]
 
         # 復旧に必要なプロセス
         self.required_processes = ["elder_watchdog.sh", "start_elder_monitoring.py"]
@@ -75,7 +79,9 @@ class WSLSleepRecoverySystem:
         with open(self.state_file, "w") as f:
             json.dump(state, f, indent=2)
 
-        self.log_recovery(f"状態保存完了: {len(state['workers'])}ワーカー、{len(state['services'])}サービス")
+        self.log_recovery(
+            f"状態保存完了: {len(state['workers'])}ワーカー、{len(state['services'])}サービス"
+        )
 
     def load_state(self) -> Optional[Dict]:
         """保存された状態を読み込み"""
@@ -94,7 +100,9 @@ class WSLSleepRecoverySystem:
         states = {}
         for service in self.required_services:
             try:
-                result = subprocess.run(["systemctl", "is-active", service], capture_output=True, text=True)
+                result = subprocess.run(
+                    ["systemctl", "is-active", service], capture_output=True, text=True
+                )
                 states[service] = result.stdout.strip()
             except Exception as e:
                 states[service] = f"error: {e}"
@@ -124,7 +132,11 @@ class WSLSleepRecoverySystem:
 
     def _get_system_info(self) -> Dict:
         """システム情報を取得"""
-        info = {"uptime": self._get_uptime(), "memory": self._get_memory_info(), "cpu": self._get_cpu_info()}
+        info = {
+            "uptime": self._get_uptime(),
+            "memory": self._get_memory_info(),
+            "cpu": self._get_cpu_info(),
+        }
         return info
 
     def _get_uptime(self) -> str:
@@ -188,12 +200,16 @@ class WSLSleepRecoverySystem:
         for service in self.required_services:
             try:
                 # サービス状態確認
-                result = subprocess.run(["systemctl", "is-active", service], capture_output=True, text=True)
+                result = subprocess.run(
+                    ["systemctl", "is-active", service], capture_output=True, text=True
+                )
 
                 if result.returncode != 0:
                     self.log_recovery(f"サービス復旧中: {service}")
                     # sudoが必要な場合は手動起動を促す
-                    self.log_recovery(f"手動でサービス起動してください: sudo systemctl start {service}")
+                    self.log_recovery(
+                        f"手動でサービス起動してください: sudo systemctl start {service}"
+                    )
                 else:
                     self.log_recovery(f"サービス正常: {service}")
 
@@ -209,7 +225,10 @@ class WSLSleepRecoverySystem:
             worker_fix_script = self.project_root / "check_and_fix_workers.py"
             if worker_fix_script.exists():
                 result = subprocess.run(
-                    [sys.executable, str(worker_fix_script)], cwd=self.project_root, capture_output=True, text=True
+                    [sys.executable, str(worker_fix_script)],
+                    cwd=self.project_root,
+                    capture_output=True,
+                    text=True,
                 )
 
                 if result.returncode == 0:
@@ -231,7 +250,9 @@ class WSLSleepRecoverySystem:
         if watchdog_script.exists():
             try:
                 # 既存のウォッチドッグを停止
-                subprocess.run(["pkill", "-f", "elder_watchdog.sh"], capture_output=True)
+                subprocess.run(
+                    ["pkill", "-f", "elder_watchdog.sh"], capture_output=True
+                )
 
                 # 新しいウォッチドッグを起動
                 subprocess.run(
@@ -326,7 +347,9 @@ pause
                 new_cron = existing_cron + "\n" + cron_command + "\n"
 
                 # 新しいcrontabを設定
-                process = subprocess.Popen(["crontab", "-"], stdin=subprocess.PIPE, text=True)
+                process = subprocess.Popen(
+                    ["crontab", "-"], stdin=subprocess.PIPE, text=True
+                )
                 process.communicate(input=new_cron)
 
                 self.log_recovery("cron ジョブインストール完了")

@@ -536,9 +536,9 @@ class RAGSage(BaseSage):
                     relevant_chunks = [
                         {
                             "id": row[0],
-                            "content": row[1][:200] + "..."
-                            if len(row[1]) > 200
-                            else row[1],
+                            "content": (
+                                row[1][:200] + "..." if len(row[1]) > 200 else row[1]
+                            ),
                         }
                         for row in cursor.fetchall()
                     ]
@@ -547,9 +547,11 @@ class RAGSage(BaseSage):
                         {
                             "document_id": doc_row[0],
                             "title": doc_row[1],
-                            "content_preview": doc_row[2][:300] + "..."
-                            if len(doc_row[2]) > 300
-                            else doc_row[2],
+                            "content_preview": (
+                                doc_row[2][:300] + "..."
+                                if len(doc_row[2]) > 300
+                                else doc_row[2]
+                            ),
                             "document_type": doc_row[3],
                             "source": doc_row[4],
                             "created_at": doc_row[5],
@@ -1027,7 +1029,10 @@ class RAGSage(BaseSage):
 
         # 通常の検索を実行し、結果をコンテキストでフィルタリング
         search_result = await self._search(
-            {"query": query, "limit": limit * 2}  # コンテキストフィルタリングを考慮して多めに取得
+            {
+                "query": query,
+                "limit": limit * 2,
+            }  # コンテキストフィルタリングを考慮して多めに取得
         )
 
         if not search_result.get("success"):

@@ -17,6 +17,7 @@ from datetime import datetime
 
 PROJECT_ROOT = Path(__file__).parent.parent
 
+
 def setup_nwo_automation():
     """nWo自動化セットアップ"""
     print("🌌 nWo (New World Order) 自動化セットアップ開始")
@@ -27,7 +28,7 @@ def setup_nwo_automation():
     directories = [
         PROJECT_ROOT / "nwo_council_reports",
         PROJECT_ROOT / "logs" / "nwo",
-        PROJECT_ROOT / "data" / "nwo"
+        PROJECT_ROOT / "data" / "nwo",
     ]
 
     for directory in directories:
@@ -55,7 +56,7 @@ python3 commands/ai_nwo_vision.py >> logs/nwo/daily_vision.log 2>&1
 echo "✅ nWo自動化完了: $(date)" >> logs/nwo/automation.log
 """
 
-    with open(cron_script_path, 'w') as f:
+    with open(cron_script_path, "w") as f:
         f.write(cron_content)
 
     # 実行権限付与
@@ -75,7 +76,7 @@ echo "✅ nWo自動化完了: $(date)" >> logs/nwo/automation.log
     existing_vision_commands = [
         PROJECT_ROOT / "commands" / "ai_rag.py",
         PROJECT_ROOT / "commands" / "ai_vision.py",
-        PROJECT_ROOT / "scripts" / "rag_elder_vision.py"
+        PROJECT_ROOT / "scripts" / "rag_elder_vision.py",
     ]
 
     vision_command_found = False
@@ -100,10 +101,12 @@ echo "✅ nWo自動化完了: $(date)" >> logs/nwo/automation.log
     # 6. 初回テスト実行
     print("\n🧪 初回テスト実行...")
     try:
-        result = subprocess.run([
-            sys.executable,
-            str(PROJECT_ROOT / "libs" / "nwo_daily_council.py")
-        ], capture_output=True, text=True, timeout=60)
+        result = subprocess.run(
+            [sys.executable, str(PROJECT_ROOT / "libs" / "nwo_daily_council.py")],
+            capture_output=True,
+            text=True,
+            timeout=60,
+        )
 
         if result.returncode == 0:
             print("  ✅ nWo Daily Council テスト成功")
@@ -129,6 +132,7 @@ echo "✅ nWo自動化完了: $(date)" >> logs/nwo/automation.log
     print("👑 Think it, Rule it, Own it")
 
     return True
+
 
 if __name__ == "__main__":
     setup_nwo_automation()
