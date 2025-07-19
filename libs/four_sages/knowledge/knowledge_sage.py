@@ -67,11 +67,9 @@ class KnowledgeSage(BaseSage):
                 )
             """)
             
-            conn.execute("""
-                CREATE INDEX IF NOT EXISTS idx_category ON knowledge_entries(category);
-                CREATE INDEX IF NOT EXISTS idx_tags ON knowledge_entries(tags);
-                CREATE INDEX IF NOT EXISTS idx_hash ON knowledge_entries(hash);
-            """)
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_category ON knowledge_entries(category)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_tags ON knowledge_entries(tags)")
+            conn.execute("CREATE INDEX IF NOT EXISTS idx_hash ON knowledge_entries(hash)")
     
     async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """ナレッジ賢者のリクエスト処理"""
