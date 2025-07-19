@@ -134,14 +134,14 @@ class TestProcessingLimiter(unittest.TestCase):
             json.dump(logs, f)
             
         result = self.async_test(self.limiter.can_process())
-        self.assertTrue(result)  # 3つまでOKなので処理可能
+        self.assertTrue(result)  # 10個まで処理可能なので、2つなら余裕
         
     def test_cannot_process_at_limit(self):
         """制限に達した場合の処理"""
-        # 3つの処理記録を追加（制限値）
+        # 10個の処理記録を追加（制限値）
         logs = [
             {"issue_id": i, "timestamp": datetime.now().isoformat()}
-            for i in range(3)
+            for i in range(10)
         ]
         
         with open(self.test_log_file, 'w') as f:
@@ -200,7 +200,7 @@ class TestAutoIssueProcessor(unittest.TestCase):
         self.assertEqual(capabilities['service'], 'AutoIssueProcessor')
         self.assertEqual(capabilities['version'], '1.0.0')
         self.assertIn('GitHub issue scanning', capabilities['capabilities'])
-        self.assertEqual(capabilities['limits']['max_issues_per_hour'], 3)
+        self.assertEqual(capabilities['limits']['max_issues_per_hour'], 10)
         
     def test_validate_request(self):
         """リクエスト検証"""
@@ -351,8 +351,8 @@ class TestEndToEnd(unittest.TestCase):
         if limiter.processing_log_file.exists():
             limiter.processing_log_file.unlink()
             
-        # 3回まで処理可能
-        for i in range(4):
+        # 10回まで処理可能、11回目で制限
+        for i in range(11):
             can_process = loop.run_until_complete(limiter.can_process())
             print(f"   - 処理 {i+1}: {'可能' if can_process else '制限到達'}")
             

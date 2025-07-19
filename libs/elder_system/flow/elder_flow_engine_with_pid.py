@@ -76,10 +76,7 @@ class ElderFlowEngine(EldersFlowLegacy):
                 "error": "Task already running",
                 "task_name": task_name,
                 "running_pid": lock_info['pid'],
-                "started_at": lock_info['started_at'],
-                "retry_required": True,
-                "retry_message": f"タスク '{task_name}' は現在実行中です。完了後に再度実行してください。",
-                "retry_suggestion": "elder-flow execute --retry \"{}\" --wait-for-pid {}".format(task_name, lock_info['pid'])
+                "started_at": lock_info['started_at']
             }
         
         logger.info(f"🌊 Elder Flow実行開始: {task_name} (ID: {flow_id})")

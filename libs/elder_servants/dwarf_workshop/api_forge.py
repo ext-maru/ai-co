@@ -923,53 +923,44 @@ spec:
         else:
             return "        # Generic implementation\n        result = {'status': 'success'}"
 
-    async def collaborate_with_sages(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
-        """4賢者システムとの協調（ドワーフ工房特化）"""
+    async def collaborate_with_sages(self, sage_type: str, request_data: Dict[str, Any]) -> Dict[str, Any]:
+        """4賢者システムとの協調（DwarfServant基底クラスの抽象メソッド実装）"""
         try:
-            # ナレッジ賢者: APIベストプラクティス
-            knowledge_consultation = {
-                "status": "consulted",
-                "api_patterns": ["REST_best_practices", "OpenAPI_standards"],
-                "framework_guidance": ["performance_optimization", "security_headers"],
-                "design_principles": ["RESTful_design", "API_versioning"]
-            }
-            
-            # タスク賢者: 実装優先順位
-            task_consultation = {
-                "status": "consulted",
-                "implementation_order": ["core_endpoints", "authentication", "tests", "documentation"],
-                "resource_allocation": "optimized_for_api_generation",
-                "estimated_completion": "15_minutes"
-            }
-            
-            # インシデント賢者: セキュリティ監視
-            incident_consultation = {
-                "status": "consulted",
-                "security_checks": ["authentication_validation", "input_sanitization"],
-                "vulnerability_scan": "clean",
-                "compliance_status": "api_standards_compliant"
-            }
-            
-            # RAG賢者: API仕様分析
-            rag_consultation = {
-                "status": "consulted",
-                "specification_analysis": ["endpoint_optimization", "schema_validation"],
-                "similar_implementations": ["fastapi_examples", "flask_patterns"],
-                "enhancement_suggestions": ["async_optimization", "caching_strategies"]
-            }
-            
-            return {
-                "knowledge_sage": knowledge_consultation,
-                "task_sage": task_consultation,
-                "incident_sage": incident_consultation,
-                "rag_sage": rag_consultation
-            }
+            if sage_type == "knowledge":
+                # ナレッジ賢者: APIベストプラクティス
+                return {
+                    "status": "consulted",
+                    "api_patterns": ["REST_best_practices", "OpenAPI_standards"],
+                    "framework_guidance": ["performance_optimization", "security_headers"],
+                    "design_principles": ["RESTful_design", "API_versioning"]
+                }
+            elif sage_type == "task":
+                # タスク賢者: 実装優先順位
+                return {
+                    "status": "consulted",
+                    "implementation_order": ["core_endpoints", "authentication", "tests", "documentation"],
+                    "resource_allocation": "optimized_for_api_generation",
+                    "estimated_completion": "15_minutes"
+                }
+            elif sage_type == "incident":
+                # インシデント賢者: セキュリティ監視
+                return {
+                    "status": "consulted",
+                    "security_checks": ["authentication_validation", "input_sanitization"],
+                    "vulnerability_scan": "clean",
+                    "compliance_status": "api_standards_compliant"
+                }
+            elif sage_type == "rag":
+                # RAG賢者: API仕様分析
+                return {
+                    "status": "consulted",
+                    "specification_analysis": ["endpoint_optimization", "schema_validation"],
+                    "similar_implementations": ["fastapi_examples", "flask_patterns"],
+                    "enhancement_suggestions": ["async_optimization", "caching_strategies"]
+                }
+            else:
+                return {"status": "unknown_sage_type", "sage_type": sage_type}
             
         except Exception as e:
-            self.logger.error(f"Error collaborating with sages: {str(e)}")
-            return {
-                "knowledge_sage": {"status": "error"},
-                "task_sage": {"status": "error"},
-                "incident_sage": {"status": "error"},
-                "rag_sage": {"status": "error"}
-            }
+            self.logger.error(f"Error collaborating with sage {sage_type}: {str(e)}")
+            return {"status": "error", "message": str(e)}

@@ -35,10 +35,22 @@ class ElderFlowEngine:
     async def execute_flow(self, request):
         # TODO: 実際のPR作成を実装する
         # 現在はダミー実装のため、PRリンクは返さない
+        
+        # イシュー番号を取得
+        issue_number = request.get('context', {}).get('issue_number', 'XXX')
+        
+        # 関連ドキュメントへのリンクを作成
+        doc_links = {
+            "design_doc": f"https://github.com/ext-maru/ai-co/blob/main/docs/AUTO_ISSUE_PROCESSOR_DESIGN.md",
+            "issue_link": f"https://github.com/ext-maru/ai-co/issues/{issue_number}",
+            "elder_flow_doc": f"https://github.com/ext-maru/ai-co/blob/main/docs/ELDER_FLOW_ARCHITECTURE.md"
+        }
+        
         return {
             "status": "success", 
             "pr_url": None,  # 実際のPRが作成されるまではNoneを返す
-            "message": "Elder Flow処理が完了しました（PR作成は未実装）"
+            "message": "Elder Flow処理が完了しました（PR作成は未実装）",
+            "related_links": doc_links
         }
 
 # 4賢者のダミー実装（後で実装）
@@ -73,7 +85,7 @@ class ComplexityScore:
 class ProcessingLimiter:
     """処理制限を管理"""
     
-    MAX_ISSUES_PER_HOUR = 3
+    MAX_ISSUES_PER_HOUR = 10  # 1時間あたり最大10イシューまで
     MAX_CONCURRENT = 1
     COOLDOWN_PERIOD = 300  # 5分
     
@@ -221,8 +233,8 @@ class AutoIssueProcessor(EldersServiceLegacy):
         self.limiter = ProcessingLimiter()
         self.evaluator = ComplexityEvaluator()
         
-        # 処理対象の優先度
-        self.target_priorities = ['medium', 'low']
+        # 処理対象の優先度（中以上）
+        self.target_priorities = ['medium']
         
     def get_capabilities(self) -> Dict[str, Any]:
         """サービスの機能を返す"""
@@ -400,11 +412,27 @@ class AutoIssueProcessor(EldersServiceLegacy):
                     )
                 elif message:
                     # PR URLがない場合はメッセージを表示
-                    issue.create_comment(
-                        f"🤖 Elder Flow処理完了\n\n"
-                        f"{message}\n\n"
-                        f"複雑度スコア: {complexity.score:.2f}"
-                    )
+                    related_links = result.get('related_links', {})
+                    
+                    comment_text = f"🤖 Elder Flow処理完了\n\n"
+                    comment_text += f"{message}\n\n"
+                    
+                    # 関連リンクを追加
+                    if related_links:
+                        comment_text += "📚 **関連ドキュメント:**\n"
+                        if related_links.get('design_doc'):
+                            comment_text += f"- [イシュー自動処理システム設計書]({related_links['design_doc']})\n"
+                        if related_links.get('elder_flow_doc'):
+                            comment_text += f"- [Elder Flowアーキテクチャ]({related_links['elder_flow_doc']})\n"
+                        if related_links.get('issue_link'):
+                            comment_text += f"- [このイシュー]({related_links['issue_link']})\n"
+                        comment_text += "\n"
+                    
+                    comment_text += f"📊 **処理情報:**\n"
+                    comment_text += f"- 複雑度スコア: {complexity.score:.2f}\n"
+                    comment_text += f"- 処理基準: 複雑度 < 0.7 かつ 優先度 Medium/Low\n"
+                    
+                    issue.create_comment(comment_text)
                     
             return result
             
@@ -469,14 +497,14 @@ class AutoIssueProcessor(EldersServiceLegacy):
         """イシューの優先度を判定"""
         labels = [label.name.lower() for label in issue.labels]
         
-        # ラベルベースの判定
-        if any(label in ['critical', 'urgent', 'p0'] for label in labels):
+        # ラベルベースの判定（priority:xxxフォーマットも対応）
+        if any(label in ['critical', 'urgent', 'p0', 'priority:critical'] for label in labels):
             return 'critical'
-        elif any(label in ['high', 'important', 'p1'] for label in labels):
+        elif any(label in ['high', 'important', 'p1', 'priority:high'] for label in labels):
             return 'high'
-        elif any(label in ['medium', 'moderate', 'p2'] for label in labels):
+        elif any(label in ['medium', 'moderate', 'p2', 'priority:medium'] for label in labels):
             return 'medium'
-        elif any(label in ['low', 'minor', 'p3'] for label in labels):
+        elif any(label in ['low', 'minor', 'p3', 'priority:low'] for label in labels):
             return 'low'
             
         # タイトルベースの判定

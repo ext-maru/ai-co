@@ -155,31 +155,68 @@ class DocForge(DwarfServant):
         }
 
     def validate_request(self, request: ServantRequest) -> bool:
-        """リクエストの妥当性を検証"""
+        """リクエストの妥当性を検証 - Iron Will準拠"""
         try:
+            # リクエスト自体の検証
+            if not request:
+                self.logger.error("Request is None")
+                return False
+            
+            # タスクタイプの検証
             if request.task_type != "documentation_generation":
+                self.logger.error(f"Invalid task type: {request.task_type}")
                 return False
             
+            # ペイロードの検証
             data = request.payload
-            if "source_code" not in data:
+            if not data:
+                self.logger.error("Request payload is empty")
                 return False
             
+            # 必須フィールドの検証
+            if "source_code" not in data:
+                self.logger.error("Missing required field: source_code")
+                return False
+            
+            if not data["source_code"]:
+                self.logger.error("Source code is empty")
+                return False
+            
+            # ドキュメントタイプの検証
             doc_type = data.get("doc_type", "api_documentation")
             if doc_type not in self.supported_doc_types:
+                self.logger.error(f"Unsupported doc type: {doc_type}")
                 return False
             
+            # 言語の検証
             language = data.get("language", "python")
             if language not in self.supported_languages:
+                self.logger.error(f"Unsupported language: {language}")
                 return False
             
+            # フォーマットの検証
             format_type = data.get("format", "markdown")
             if format_type not in self.supported_formats:
+                self.logger.error(f"Unsupported format: {format_type}")
+                return False
+            
+            # 追加の検証
+            if "include_examples" in data and not isinstance(data["include_examples"], bool):
+                self.logger.error("include_examples must be boolean")
+                return False
+            
+            if "include_diagrams" in data and not isinstance(data["include_diagrams"], bool):
+                self.logger.error("include_diagrams must be boolean")
+                return False
+            
+            if "detail_level" in data and data["detail_level"] not in ["brief", "standard", "comprehensive"]:
+                self.logger.error(f"Invalid detail level: {data['detail_level']}")
                 return False
                 
             return True
             
         except Exception as e:
-            self.logger.error(f"Request validation error: {str(e)}")
+            self.logger.error(f"Request validation error: {str(e)}", exc_info=True)
             return False
 
     async def process_request(self, request: ServantRequest) -> ServantResponse:
@@ -225,7 +262,8 @@ class DocForge(DwarfServant):
                 "language": language,
                 "quality_score": quality_score,
                 "word_count": len(documentation.split()),
-                "sage_consultation": sage_consultation
+                "sage_consultation": sage_consultation,
+                "iron_will_compliance": quality_score >= 95.0
             }
             
             return ServantResponse(
@@ -647,53 +685,283 @@ class DocForge(DwarfServant):
             self.logger.error(f"Error assessing documentation quality: {str(e)}")
             return 50.0  # デフォルトスコア
 
-    async def collaborate_with_sages(self, request_data: Dict[str, Any]) -> Dict[str, Any]:
-        """4賢者システムとの協調（ドワーフ工房特化）"""
+    async def collaborate_with_sages(self, sage_type: str, request_data: Dict[str, Any]) -> Dict[str, Any]:
+        """4賢者システムとの協調（DwarfServant基底クラスの抽象メソッド実装）"""
         try:
-            # ナレッジ賢者: ドキュメントテンプレートとベストプラクティス
-            knowledge_consultation = {
-                "status": "consulted",
-                "templates": ["api_documentation_template", "user_guide_template"],
-                "best_practices": ["clear_structure", "comprehensive_examples"],
-                "style_guide": "technical_writing_standards"
-            }
-            
-            # タスク賢者: ワークフロー最適化
-            task_consultation = {
-                "status": "consulted",
-                "priority": "documentation_generation",
-                "workflow_optimization": "parallel_processing",
-                "estimated_completion": "5_minutes"
-            }
-            
-            # インシデント賢者: 品質監視
-            incident_consultation = {
-                "status": "consulted",
-                "quality_check": "passed",
-                "risk_assessment": "low",
-                "compliance_status": "approved"
-            }
-            
-            # RAG賢者: 類似例とパターン検索
-            rag_consultation = {
-                "status": "consulted",
-                "similar_examples": ["open_source_projects", "enterprise_docs"],
-                "pattern_analysis": "successful_documentation_patterns",
-                "context_enhancement": "domain_specific_terminology"
-            }
-            
-            return {
-                "knowledge_sage": knowledge_consultation,
-                "task_sage": task_consultation,
-                "incident_sage": incident_consultation,
-                "rag_sage": rag_consultation
-            }
+            if sage_type == "knowledge":
+                # ナレッジ賢者: ドキュメントテンプレートとベストプラクティス
+                return {
+                    "status": "consulted",
+                    "templates": ["api_documentation_template", "user_guide_template"],
+                    "best_practices": ["clear_structure", "comprehensive_examples"],
+                    "style_guide": "technical_writing_standards"
+                }
+            elif sage_type == "task":
+                # タスク賢者: ワークフロー最適化
+                return {
+                    "status": "consulted",
+                    "priority": "documentation_generation",
+                    "workflow_optimization": "parallel_processing",
+                    "estimated_completion": "5_minutes"
+                }
+            elif sage_type == "incident":
+                # インシデント賢者: 品質監視
+                return {
+                    "status": "consulted",
+                    "quality_check": "passed",
+                    "risk_assessment": "low",
+                    "compliance_status": "approved"
+                }
+            elif sage_type == "rag":
+                # RAG賢者: 類似例とパターン検索
+                return {
+                    "status": "consulted",
+                    "similar_examples": ["open_source_projects", "enterprise_docs"],
+                    "pattern_analysis": "successful_documentation_patterns",
+                    "context_enhancement": "domain_specific_terminology"
+                }
+            else:
+                return {"status": "unknown_sage_type", "sage_type": sage_type}
             
         except Exception as e:
-            self.logger.error(f"Error collaborating with sages: {str(e)}")
-            return {
-                "knowledge_sage": {"status": "error"},
-                "task_sage": {"status": "error"},
-                "incident_sage": {"status": "error"},
-                "rag_sage": {"status": "error"}
-            }
+            self.logger.error(f"Error collaborating with sage {sage_type}: {str(e)}")
+            return {"status": "error", "message": str(e)}
+    
+    def _evaluate_documentation_structure(self, documentation: str) -> float:
+        """ドキュメント構造を評価"""
+        try:
+            score = 0.0
+            lines = documentation.split('\n')
+            
+            # ヘッダーがあるか
+            has_main_header = any(line.startswith('# ') for line in lines)
+            if has_main_header:
+                score += 0.3
+            
+            # サブヘッダーがあるか
+            has_sub_headers = any(line.startswith('## ') for line in lines)
+            if has_sub_headers:
+                score += 0.3
+            
+            # 適切なセクション分割
+            section_count = sum(1 for line in lines if line.startswith('#'))
+            if section_count >= 3:
+                score += 0.4
+            
+            return min(score, 1.0)
+        except Exception:
+            return 0.0
+    
+    def _evaluate_documentation_completeness(self, documentation: str, config: DocumentationConfig) -> float:
+        """ドキュメントの完全性を評価"""
+        try:
+            score = 0.0
+            doc_lower = documentation.lower()
+            
+            # ドキュメントタイプ別の必須セクション
+            if config.doc_type == "api_documentation":
+                required_sections = ['overview', 'usage', 'example', 'parameter', 'return']
+            elif config.doc_type == "user_guide":
+                required_sections = ['getting started', 'installation', 'usage', 'example']
+            elif config.doc_type == "readme":
+                required_sections = ['installation', 'usage', 'license']
+            else:
+                required_sections = ['overview', 'usage']
+            
+            found_sections = sum(1 for section in required_sections if section in doc_lower)
+            score = found_sections / len(required_sections) if required_sections else 1.0
+            
+            return min(score, 1.0)
+        except Exception:
+            return 0.0
+    
+    def _evaluate_code_examples(self, documentation: str) -> float:
+        """コード例の品質を評価"""
+        try:
+            score = 0.0
+            
+            # コードブロックの数
+            code_blocks = documentation.count('```')
+            if code_blocks >= 2:  # 開始と終了でペア
+                score += 0.5
+            
+            # 言語指定があるか
+            if '```python' in documentation or '```javascript' in documentation:
+                score += 0.3
+            
+            # コメントが含まれているか
+            if '# ' in documentation or '// ' in documentation:
+                score += 0.2
+            
+            return min(score, 1.0)
+        except Exception:
+            return 0.0
+    
+    def _evaluate_detail_level(self, documentation: str, detail_level: str) -> float:
+        """詳細レベルを評価"""
+        try:
+            word_count = len(documentation.split())
+            
+            if detail_level == "brief":
+                return 1.0 if 100 <= word_count <= 500 else 0.5
+            elif detail_level == "standard":
+                return 1.0 if 300 <= word_count <= 1500 else 0.5
+            elif detail_level == "comprehensive":
+                return 1.0 if word_count >= 1000 else 0.5
+            
+            return 0.5
+        except Exception:
+            return 0.0
+    
+    def _evaluate_format_quality(self, documentation: str, format_type: str) -> float:
+        """フォーマット品質を評価"""
+        try:
+            score = 0.0
+            
+            if format_type == "markdown":
+                # Markdown特有の要素
+                if '#' in documentation:
+                    score += 0.3
+                if '[' in documentation and ']' in documentation:
+                    score += 0.2
+                if '*' in documentation or '_' in documentation:
+                    score += 0.2
+                if '`' in documentation:
+                    score += 0.3
+            elif format_type == "html":
+                # HTMLタグの存在
+                if '<h' in documentation and '</h' in documentation:
+                    score += 0.5
+                if '<p>' in documentation or '<div>' in documentation:
+                    score += 0.5
+            else:
+                # その他のフォーマット
+                score = 0.5
+            
+            return min(score, 1.0)
+        except Exception:
+            return 0.0
+    
+    def _evaluate_readability(self, documentation: str) -> float:
+        """読みやすさを評価"""
+        try:
+            score = 1.0
+            lines = documentation.split('\n')
+            
+            # 長すぎる行がないか
+            long_lines = sum(1 for line in lines if len(line) > 120)
+            if long_lines > len(lines) * 0.2:
+                score -= 0.3
+            
+            # 適切な段落分割
+            empty_lines = sum(1 for line in lines if not line.strip())
+            if empty_lines < len(lines) * 0.1:
+                score -= 0.2
+            
+            # 大文字小文字の適切な使用
+            uppercase_ratio = sum(1 for c in documentation if c.isupper()) / len(documentation)
+            if uppercase_ratio > 0.3:
+                score -= 0.2
+            
+            return max(score, 0.0)
+        except Exception:
+            return 0.5
+    
+    def _generate_error_documentation(self, error: str, config: DocumentationConfig) -> str:
+        """エラー時のドキュメントを生成"""
+        return f"""# Documentation Generation Error
+
+## Error Details
+{error}
+
+## Configuration
+- Document Type: {config.doc_type}
+- Language: {config.language}
+- Format: {config.format}
+
+## Troubleshooting
+1. Ensure the source code is valid {config.language} code
+2. Check that all required parameters are provided
+3. Verify the document type is supported
+
+## Support
+Please contact support with the error details above.
+"""
+    
+    async def _generate_changelog(self, context: Dict[str, Any]) -> str:
+        """変更履歴を生成"""
+        project_name = context.get("project_name", "Project")
+        changes = context.get("changes", {})
+        
+        doc_parts = []
+        doc_parts.append(f"# {project_name} Changelog\n")
+        doc_parts.append("All notable changes to this project will be documented in this file.\n")
+        
+        if changes:
+            for version, version_changes in changes.items():
+                doc_parts.append(f"## [{version}] - {datetime.now().strftime('%Y-%m-%d')}\n")
+                for change_type, items in version_changes.items():
+                    doc_parts.append(f"### {change_type}")
+                    for item in items:
+                        doc_parts.append(f"- {item}")
+                    doc_parts.append("")
+        else:
+            doc_parts.append("## [Unreleased]\n")
+            doc_parts.append("### Added")
+            doc_parts.append("- Initial release\n")
+        
+        return "\n".join(doc_parts)
+    
+    async def _generate_installation_guide(self, language: str, context: Dict[str, Any]) -> str:
+        """インストールガイドを生成"""
+        project_name = context.get("project_name", "Application")
+        
+        doc_parts = []
+        doc_parts.append(f"# {project_name} Installation Guide\n")
+        
+        # 言語別のインストール方法
+        if language == "python":
+            doc_parts.extend([
+                "## Requirements",
+                "- Python 3.8 or higher",
+                "- pip package manager\n",
+                "## Installation Steps",
+                "### 1. Using pip",
+                "```bash",
+                "pip install " + project_name.lower().replace(" ", "-"),
+                "```\n",
+                "### 2. From source",
+                "```bash",
+                "git clone https://github.com/username/" + project_name.lower().replace(" ", "-") + ".git",
+                "cd " + project_name.lower().replace(" ", "-"),
+                "pip install -e .",
+                "```\n"
+            ])
+        elif language == "javascript":
+            doc_parts.extend([
+                "## Requirements",
+                "- Node.js 14.0 or higher",
+                "- npm or yarn package manager\n",
+                "## Installation Steps",
+                "### Using npm",
+                "```bash",
+                "npm install " + project_name.lower().replace(" ", "-"),
+                "```\n",
+                "### Using yarn",
+                "```bash",
+                "yarn add " + project_name.lower().replace(" ", "-"),
+                "```\n"
+            ])
+        
+        doc_parts.extend([
+            "## Verification",
+            "After installation, verify by running:",
+            "```bash",
+            "# Verify installation",
+            project_name.lower().replace(" ", "-") + " --version",
+            "```\n",
+            "## Troubleshooting",
+            "If you encounter any issues during installation, please check our troubleshooting guide."
+        ])
+        
+        return "\n".join(doc_parts)

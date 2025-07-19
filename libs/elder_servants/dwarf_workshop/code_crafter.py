@@ -287,48 +287,59 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             if not isinstance(params, list):
                 params = []
                 self.logger.warning("Invalid parameters format, using empty list")
-        
-        # パラメータ文字列の生成
-        param_strings = []
-        for param in params:
-            param_str = param["name"]
-            if "type" in param:
-                param_str += f": {param['type']}"
-            if "default" in param:
-                param_str += f" = {param['default']}"
-            param_strings.append(param_str)
-        
-        params_str = ", ".join(param_strings)
-        
-        # デコレータ文字列
-        decorator_lines = [f"@{dec}" for dec in decorators]
-        decorator_str = "\n".join(decorator_lines) + "\n" if decorators else ""
-        
-        # 関数生成
-        code = f"""{decorator_str}def {name}({params_str}) -> {return_type}:
+            
+            # パラメータ文字列の生成
+            param_strings = []
+            for param in params:
+                param_str = param["name"]
+                if "type" in param:
+                    param_str += f": {param['type']}"
+                if "default" in param:
+                    param_str += f" = {param['default']}"
+                param_strings.append(param_str)
+            
+            params_str = ", ".join(param_strings)
+            
+            # デコレータ文字列
+            decorator_lines = [f"@{dec}" for dec in decorators]
+            decorator_str = "\n".join(decorator_lines) + "\n" if decorators else ""
+            
+            # 関数生成
+            code = f"""{decorator_str}def {name}({params_str}) -> {return_type}:
     \"\"\"{docstring}\"\"\"
     {body}"""
-        
-        # フォーマット
-        if HAS_BLACK:
-            try:
-                formatted_code = black.format_str(code, mode=black.Mode())
-            except:
+            
+            # フォーマット
+            if HAS_BLACK:
+                try:
+                    formatted_code = black.format_str(code, mode=black.Mode())
+                except:
+                    formatted_code = code
+            elif HAS_AUTOPEP8:
+                try:
+                    formatted_code = autopep8.fix_code(code)
+                except:
+                    formatted_code = code
+            else:
                 formatted_code = code
-        elif HAS_AUTOPEP8:
-            try:
-                formatted_code = autopep8.fix_code(code)
-            except:
-                formatted_code = code
-        else:
-            formatted_code = code
         
-        return {
-            "code": formatted_code,
-            "name": name,
-            "type": "function",
-            "line_count": len(formatted_code.splitlines())
-        }
+            return {
+                "code": formatted_code,
+                "name": name,
+                "type": "function",
+                "line_count": len(formatted_code.splitlines())
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error generating function: {str(e)}", exc_info=True)
+            # エラーでも基本的なコードを返す
+            return {
+                "code": f"def {name}():\n    pass  # Error: {str(e)}",
+                "name": name,
+                "type": "function",
+                "line_count": 2,
+                "error": str(e)
+            }
     
     async def _generate_class(self, spec: Dict[str, Any]) -> Dict[str, Any]:
         """クラス生成 - Iron Will準拠の堅牢な実装"""
@@ -356,9 +367,9 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 attributes = []
             if not isinstance(methods, list):
                 methods = []
-        
-        # 基底クラス文字列
-        bases_str = f"({', '.join(base_classes)})" if base_classes else ""
+            
+            # 基底クラス文字列
+            bases_str = f"({', '.join(base_classes)})" if base_classes else ""
         
         # デコレータ文字列
         decorator_lines = [f"@{dec}" for dec in decorators]
@@ -405,16 +416,28 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 formatted_code = autopep8.fix_code(code)
             except:
                 formatted_code = code
-        else:
-            formatted_code = code
-        
-        return {
-            "code": formatted_code,
-            "name": name,
-            "type": "class",
-            "line_count": len(formatted_code.splitlines()),
-            "method_count": len(methods) + (1 if attributes else 0)
-        }
+            else:
+                formatted_code = code
+            
+            return {
+                "code": formatted_code,
+                "name": name,
+                "type": "class",
+                "line_count": len(formatted_code.splitlines()),
+                "method_count": len(methods) + (1 if attributes else 0)
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error generating class: {str(e)}", exc_info=True)
+            # エラーでも基本的なコードを返す
+            return {
+                "code": f"class {name}:\n    pass  # Error: {str(e)}",
+                "name": name,
+                "type": "class",
+                "line_count": 2,
+                "method_count": 0,
+                "error": str(e)
+            }
     
     async def _generate_module(self, spec: Dict[str, Any]) -> Dict[str, Any]:
         """モジュール生成 - Iron Will準拠の堅牢な実装"""
@@ -439,8 +462,8 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             for var_name, default in [("imports", []), ("constants", []), ("functions", []), ("classes", [])]:
                 if not isinstance(locals()[var_name], list):
                     locals()[var_name] = default
-        
-        module_parts = []
+            
+            module_parts = []
         
         # モジュールドキュメント
         if docstring:
@@ -478,31 +501,44 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             class_result = await self._generate_class(class_spec)
             module_parts.append(class_result["code"])
         
-        # モジュール全体のコード
-        code = "\n\n\n".join(module_parts)
-        
-        # フォーマット
-        if HAS_BLACK:
-            try:
-                formatted_code = black.format_str(code, mode=black.Mode())
-            except:
+            # モジュール全体のコード
+            code = "\n\n\n".join(module_parts)
+            
+            # フォーマット
+            if HAS_BLACK:
+                try:
+                    formatted_code = black.format_str(code, mode=black.Mode())
+                except:
+                    formatted_code = code
+            elif HAS_AUTOPEP8:
+                try:
+                    formatted_code = autopep8.fix_code(code)
+                except:
+                    formatted_code = code
+            else:
                 formatted_code = code
-        elif HAS_AUTOPEP8:
-            try:
-                formatted_code = autopep8.fix_code(code)
-            except:
-                formatted_code = code
-        else:
-            formatted_code = code
-        
-        return {
-            "code": formatted_code,
-            "name": name,
-            "type": "module",
-            "line_count": len(formatted_code.splitlines()),
-            "function_count": len(functions),
-            "class_count": len(classes)
-        }
+            
+            return {
+                "code": formatted_code,
+                "name": name,
+                "type": "module",
+                "line_count": len(formatted_code.splitlines()),
+                "function_count": len(functions),
+                "class_count": len(classes)
+            }
+            
+        except Exception as e:
+            self.logger.error(f"Error generating module: {str(e)}", exc_info=True)
+            # エラーでも基本的なコードを返す
+            return {
+                "code": f'"""Module: {name}\nError: {str(e)}\n"""\n',
+                "name": name,
+                "type": "module",
+                "line_count": 3,
+                "function_count": 0,
+                "class_count": 0,
+                "error": str(e)
+            }
     
     async def _refactor_code(self, code: str, refactor_spec: Dict[str, Any]) -> Dict[str, Any]:
         """コードリファクタリング"""
