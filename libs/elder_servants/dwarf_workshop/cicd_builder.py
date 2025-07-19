@@ -25,22 +25,16 @@ Created: 2025-01-19
 
 import asyncio
 import hashlib
-import json
-import logging
-import os
 import uuid
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime
 from enum import Enum
-from pathlib import Path
 from typing import Any, Dict, List, Optional, Union
 
 import yaml
 
 from libs.elder_servants.base.elder_servant import (
     ServantCapability,
-    ServantRequest,
-    ServantResponse,
     TaskResult,
     TaskStatus,
 )
@@ -160,11 +154,41 @@ class CICDBuilder(DwarfServant):
 
     def __init__(self):
         capabilities = [
-            ServantCapability.AUTOMATION_ORCHESTRATION,
-            ServantCapability.SYSTEM_INTEGRATION,
-            ServantCapability.QUALITY_ASSURANCE,
-            ServantCapability.DEPLOYMENT_MANAGEMENT,
-            ServantCapability.MONITORING_ALERTING,
+            ServantCapability(
+                name="automation_orchestration",
+                description="Orchestrate complex automation workflows",
+                input_types=["Dict", "Config"],
+                output_types=["Result", "Dict"],
+                complexity=8,
+            ),
+            ServantCapability(
+                name="system_integration",
+                description="Integrate with multiple CI/CD platforms",
+                input_types=["PlatformConfig", "Dict"],
+                output_types=["IntegrationResult", "Dict"],
+                complexity=7,
+            ),
+            ServantCapability(
+                name="quality_assurance",
+                description="Enforce quality gates and standards",
+                input_types=["QualityConfig", "Dict"],
+                output_types=["QualityResult", "Dict"],
+                complexity=9,
+            ),
+            ServantCapability(
+                name="deployment_management",
+                description="Manage deployment processes",
+                input_types=["DeploymentConfig", "Dict"],
+                output_types=["DeploymentResult", "Dict"],
+                complexity=8,
+            ),
+            ServantCapability(
+                name="monitoring_alerting",
+                description="Monitor pipeline execution and alert on issues",
+                input_types=["MonitorConfig", "Dict"],
+                output_types=["MonitorResult", "Dict"],
+                complexity=6,
+            ),
         ]
 
         super().__init__(
@@ -209,7 +233,7 @@ class CICDBuilder(DwarfServant):
         """Get CICDBuilder capabilities"""
         return {
             "servant_id": self.servant_id,
-            "name": self.name,
+            "name": self.servant_name,
             "specialization": self.specialization,
             "category": self.category.value,
             "capabilities": [
@@ -280,6 +304,97 @@ class CICDBuilder(DwarfServant):
         """Create CI/CD pipeline artifacts"""
         return await self.process_request(specification)
 
+    async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
+        """Execute CI/CD task with Iron Will compliance"""
+        start_time = datetime.now()
+
+        try:
+            # Process the task request
+            result = await self.process_request(task)
+
+            # Calculate execution time
+            execution_time = (datetime.now() - start_time).total_seconds() * 1000
+
+            # Determine task status
+            status = (
+                TaskStatus.COMPLETED
+                if result.get("status") == "success"
+                else TaskStatus.FAILED
+            )
+
+            # Calculate quality score
+            quality_score = await self.validate_crafting_quality(result)
+
+            return TaskResult(
+                task_id=task.get("task_id", str(uuid.uuid4())),
+                servant_id=self.servant_id,
+                status=status,
+                result_data=result,
+                error_message=result.get("error")
+                if status == TaskStatus.FAILED
+                else None,
+                execution_time_ms=execution_time,
+                quality_score=quality_score,
+            )
+
+        except Exception as e:
+            execution_time = (datetime.now() - start_time).total_seconds() * 1000
+            return TaskResult(
+                task_id=task.get("task_id", str(uuid.uuid4())),
+                servant_id=self.servant_id,
+                status=TaskStatus.FAILED,
+                error_message=str(e),
+                execution_time_ms=execution_time,
+                quality_score=0.0,
+            )
+
+    def get_specialized_capabilities(self) -> List[ServantCapability]:
+        """Get CICDBuilder specialized capabilities"""
+        return [
+            ServantCapability(
+                name="pipeline_creation",
+                description="Create CI/CD pipelines for multiple platforms",
+                input_types=["PipelineConfig", "Dict"],
+                output_types=["Dict", "YAML", "JSON"],
+                complexity=8,
+            ),
+            ServantCapability(
+                name="pipeline_execution",
+                description="Execute and monitor CI/CD pipeline runs",
+                input_types=["ExecutionRequest", "Dict"],
+                output_types=["ExecutionResult", "Dict"],
+                complexity=7,
+            ),
+            ServantCapability(
+                name="quality_gates",
+                description="Enforce quality gates and Iron Will compliance",
+                input_types=["QualityGateConfig", "Dict"],
+                output_types=["QualityResult", "Dict"],
+                complexity=9,
+            ),
+            ServantCapability(
+                name="artifact_management",
+                description="Manage build artifacts and deployments",
+                input_types=["ArtifactRequest", "Dict"],
+                output_types=["ArtifactResult", "Dict"],
+                complexity=6,
+            ),
+            ServantCapability(
+                name="deployment_integration",
+                description="Integrate with deployment systems",
+                input_types=["DeploymentConfig", "Dict"],
+                output_types=["DeploymentResult", "Dict"],
+                complexity=8,
+            ),
+            ServantCapability(
+                name="multi_platform_support",
+                description="Support multiple CI/CD platforms",
+                input_types=["PlatformConfig", "Dict"],
+                output_types=["PlatformResult", "Dict"],
+                complexity=9,
+            ),
+        ]
+
     # Core Pipeline Creation Methods
 
     async def _handle_create_pipeline(self, request: Dict[str, Any]) -> Dict[str, Any]:
@@ -291,18 +406,31 @@ class CICDBuilder(DwarfServant):
             return {"status": "error", "error": "Missing pipeline configuration"}
 
         # Convert dict to PipelineConfig if needed
-        if isinstance(config, dict):
-            config = self._dict_to_pipeline_config(config)
-        elif hasattr(config, "platform") and isinstance(config.platform, str):
-            # Convert string platform to enum
-            config.platform = CICDPlatform(config.platform)
+        try:
+            if isinstance(config, dict):
+                config = self._dict_to_pipeline_config(config)
+            elif hasattr(config, "platform") and isinstance(config.platform, str):
+                # Convert string platform to enum
+                config.platform = CICDPlatform(config.platform)
+        except KeyError as e:
+            return {
+                "status": "error",
+                "error": f"Pipeline configuration validation failed: "
+                f"Missing required field {e}",
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "error": f"Pipeline configuration validation failed: {str(e)}",
+            }
 
         # Validate configuration
         validation_result = await self._validate_pipeline_config(config)
         if not validation_result["valid"]:
+            error_msg = ', '.join(validation_result['errors'])
             return {
                 "status": "error",
-                "error": f"Pipeline validation failed: {', '.join(validation_result['errors'])}",
+                "error": f"Pipeline validation failed: {error_msg}",
             }
 
         # Generate pipeline ID
@@ -423,7 +551,9 @@ class CICDBuilder(DwarfServant):
                     path=artifact_data["path"],
                     type=artifact_data["type"],
                     size=artifact_data["size"],
-                    checksum=hashlib.md5(artifact_data["name"].encode()).hexdigest(),
+                    checksum=hashlib.md5(
+                        artifact_data["name"].encode(), usedforsecurity=False
+                    ).hexdigest(),
                     created_at=datetime.now(),
                     storage_url=f"https://storage.example.com/artifacts/{artifact_id}",
                 )
@@ -443,21 +573,21 @@ class CICDBuilder(DwarfServant):
         self, request: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Handle deployment system integration"""
-        pipeline_id = request.get("pipeline_id")
         deployment_config = request.get("deployment_config", {})
 
         # Add deployment stage to pipeline
+        provider = deployment_config.get('provider', 'kubernetes')
+        stage_name = f"deploy_{deployment_config.get('provider', 'k8s')}"
         integration_result = {
             "configured": True,
-            "provider": deployment_config.get("provider", "kubernetes"),
-            "deployment_stage_added": f"deploy_{deployment_config.get('provider', 'k8s')}",
+            "provider": provider,
+            "deployment_stage_added": stage_name,
         }
 
         return {"status": "success", "integration": integration_result}
 
     async def _handle_quality_gates(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Handle quality gate checking"""
-        execution_id = request.get("execution_id")
         gates = request.get("gates", [])
         enforce_iron_will = request.get("enforce_iron_will", False)
 
@@ -471,6 +601,12 @@ class CICDBuilder(DwarfServant):
 
             if gate_name in self.quality_gate_handlers:
                 result = await self.quality_gate_handlers[gate_name](threshold)
+                gate_results[gate_name] = result
+                if not result["passed"]:
+                    overall_passed = False
+            else:
+                # Use default handler for unknown gates
+                result = await self._check_default_gate(gate_name, threshold)
                 gate_results[gate_name] = result
                 if not result["passed"]:
                     overall_passed = False
@@ -590,7 +726,6 @@ class CICDBuilder(DwarfServant):
         self, request: Dict[str, Any]
     ) -> Dict[str, Any]:
         """Handle notification configuration"""
-        pipeline_id = request.get("pipeline_id")
         notifications = request.get("notifications", [])
 
         configured_notifications = []
@@ -1018,6 +1153,22 @@ class CICDBuilder(DwarfServant):
     async def _check_performance_gate(self, threshold: float) -> Dict[str, Any]:
         """Check performance quality gate"""
         value = 93.0  # Mock value
+        return {"value": value, "threshold": threshold, "passed": value >= threshold}
+
+    async def _check_default_gate(
+        self, gate_name: str, threshold: float
+    ) -> Dict[str, Any]:
+        """Check default/unknown quality gate"""
+        # Default implementation for unknown gates
+        if gate_name == "security":
+            value = 92.0  # Mock security score
+        elif gate_name == "reliability":
+            value = 88.0  # Mock reliability score
+        elif gate_name == "maintainability":
+            value = 85.0  # Mock maintainability score
+        else:
+            value = 80.0  # Default value for any other gate
+
         return {"value": value, "threshold": threshold, "passed": value >= threshold}
 
     async def _check_iron_will_compliance(self) -> Dict[str, Any]:
