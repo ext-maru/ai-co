@@ -1,0 +1,103 @@
+name: Sub Issue自動管理システム
+
+on:
+  issues:
+    types: [closed, opened, edited]
+  issue_comment:
+    types: [created, edited]
+
+jobs:
+  auto_progress_update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: 🧙‍♂️ 4賢者システム統合
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const comment = context.payload.comment;
+            
+            // Sub Issue完了時の自動処理
+            if (context.eventName === 'issues' && context.payload.action === 'closed') {
+              // 4賢者システムのラベルをチェック
+              const sageLabels = ['knowledge-sage', 'task-sage', 'incident-sage', 'rag-sage'];
+              const hasSageLabel = issue.labels.some(label => 
+                sageLabels.includes(label.name.toLowerCase())
+              );
+              
+              if (hasSageLabel) {
+                console.log(`🎉 ${issue.title} 完了 - Master Issue進捗更新中...`);
+                
+                // Master Issueを検索（Parent Issue）
+                const issues = await github.rest.issues.listForRepo({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  state: 'open',
+                  labels: 'epic'
+                });
+                
+                // Master Issueに進捗更新コメントを追加
+                for (const masterIssue of issues.data) {
+                  if (masterIssue.body.includes('エルダーズギルド統合計画')) {
+                    await github.rest.issues.createComment({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: masterIssue.number,
+                      body: `🎉 **Sub Issue完了通知**
+                      
+                      ✅ #${issue.number} - ${issue.title}
+                      
+                      ## 📊 自動進捗更新
+                      Sub Issue完了により全体進捗が更新されました。
+                      
+                      🤖 Automated by Elder Flow GitHub Actions`
+                    });
+                  }
+                }
+              }
+            }
+            
+            // 進捗コメント自動分析
+            if (context.eventName === 'issue_comment' && context.payload.action === 'created') {
+              const commentBody = comment.body;
+              
+              // 進捗キーワードを検出
+              const progressKeywords = ['完了', '進行中', '開始', '完了率', '%'];
+              const hasProgress = progressKeywords.some(keyword => 
+                commentBody.includes(keyword)
+              );
+              
+              if (hasProgress) {
+                console.log(`📈 進捗更新検知: Issue #${issue.number}`);
+                
+                // 進捗データを抽出してラベル更新
+                if (commentBody.includes('完了')) {
+                  await github.rest.issues.addLabels({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    labels: ['status:completed']
+                  });
+                } else if (commentBody.includes('進行中')) {
+                  await github.rest.issues.addLabels({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    issue_number: issue.number,
+                    labels: ['status:in-progress']
+                  });
+                }
+              }
+            }
+            
+      - name: 🔍 Elder Flow連携
+        run: |
+          echo "🌊 Elder Flow自動化システムと連携中..."
+          # Elder Flowシステムに進捗通知
+          if [ -f "libs/elder_system/flow/github_integration.py" ]; then
+            python3 libs/elder_system/flow/github_integration.py \
+              --issue-number="${{ github.event.issue.number }}" \
+              --action="${{ github.event.action }}"
+          fi
