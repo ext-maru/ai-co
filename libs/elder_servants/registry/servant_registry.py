@@ -5,6 +5,7 @@
 サーバントの検索、フィルタリング、統計情報の提供を行う。
 """
 
+import asyncio
 import logging
 from collections import defaultdict
 from datetime import datetime
@@ -13,7 +14,7 @@ from typing import Any, Dict, List, Optional, Type
 from ..base.elder_servant import (
     ElderServant,
     ServantCapability,
-    ServantDomain,
+    ServantCategory,
     ServantRequest,
     ServantResponse,
 )
@@ -29,10 +30,10 @@ class ServantRegistry:
 
     def __init__(self):
         self.logger = logging.getLogger("elder_servant.registry")
-        self._servants: Dict[str, ElderServant] = {}
+        self._servants: Dict[str, ElderServantBase] = {}
         self._domain_map: Dict[ServantDomain, List[str]] = defaultdict(list)
         self._capability_map: Dict[ServantCapability, List[str]] = defaultdict(list)
-        self._instance_cache: Dict[str, ElderServant] = {}
+        self._instance_cache: Dict[str, ElderServantBase] = {}
         self._stats = {
             "total_registered": 0,
             "active_servants": 0,
@@ -41,13 +42,13 @@ class ServantRegistry:
         }
 
     def register(
-        self, servant_class: Type[ElderServant], name: str, domain: ServantDomain
+        self, servant_class: Type[ElderServantBase], name: str, domain: ServantDomain
     ) -> bool:
         """
         サーバントクラスをレジストリに登録
 
         Args:
-            servant_class: ElderServantを継承したクラス
+            servant_class: ElderServantBaseを継承したクラス
             name: サーバントの一意な名前
             domain: サーバントが属するドメイン
 
@@ -60,8 +61,8 @@ class ServantRegistry:
                 return False
 
             # サーバントクラスの検証
-            if not issubclass(servant_class, ElderServant):
-                raise ValueError(f"{servant_class} must inherit from ElderServant")
+            if not issubclass(servant_class, ElderServantBase):
+                raise ValueError(f"{servant_class} must inherit from ElderServantBase")
 
             # レジストリに登録
             self._servants[name] = servant_class
@@ -92,7 +93,8 @@ class ServantRegistry:
         if name in self._instance_cache:
             del self._instance_cache[name]
 
-        # サーバントクラスを取得して削除
+        # 各マップから削除
+        servant_class = self._servants[name]
         del self._servants[name]
 
         # ドメインマップから削除
@@ -109,7 +111,7 @@ class ServantRegistry:
         self.logger.info(f"Unregistered servant: {name}")
         return True
 
-    def get_servant(self, name: str) -> Optional[ElderServant]:
+    def get_servant(self, name: str) -> Optional[ElderServantBase]:
         """
         名前でサーバントのインスタンスを取得
 
@@ -136,7 +138,7 @@ class ServantRegistry:
 
         return self._instance_cache[name]
 
-    def find_by_domain(self, domain: ServantDomain) -> List[ElderServant]:
+    def find_by_domain(self, domain: ServantDomain) -> List[ElderServantBase]:
         """ドメインに属するすべてのサーバントを取得"""
         servant_names = self._domain_map.get(domain, [])
         servants = []
@@ -146,7 +148,9 @@ class ServantRegistry:
                 servants.append(servant)
         return servants
 
-    def find_by_capability(self, capability: ServantCapability) -> List[ElderServant]:
+    def find_by_capability(
+        self, capability: ServantCapability
+    ) -> List[ElderServantBase]:
         """特定の能力を持つすべてのサーバントを取得"""
         servant_names = self._capability_map.get(capability, [])
         servants = []
