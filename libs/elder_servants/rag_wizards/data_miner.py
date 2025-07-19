@@ -46,6 +46,7 @@ from ..base.elder_servant import (
     ServantCapability,
     ServantRequest,
     ServantResponse,
+    TaskPriority,
     TaskStatus,
 )
 from ..base.specialized_servants import WizardServant
@@ -72,7 +73,23 @@ class DataMiner(WizardServant):
     """
 
     def __init__(self, servant_id: str, name: str, specialization: str):
-        super().__init__(servant_id, name, specialization)
+        capabilities = [
+            ServantCapability(
+                "data_analysis",
+                "統計分析とデータ処理",
+                ["csv", "json", "database"],
+                ["statistics", "insights", "reports"],
+                complexity=4,
+            ),
+            ServantCapability(
+                "data_mining",
+                "パターン検出とトレンド分析",
+                ["structured_data", "time_series"],
+                ["patterns", "trends", "anomalies"],
+                complexity=5,
+            ),
+        ]
+        super().__init__(servant_id, name, specialization, capabilities)
         self.logger = logging.getLogger(f"elder_servant.{name}")
 
         # サポートする分析タイプ
@@ -117,7 +134,7 @@ class DataMiner(WizardServant):
                 complexity=4,
             ),
             ServantCapability(
-                "data_mining", 
+                "data_mining",
                 "パターン検出とトレンド分析",
                 ["structured_data", "time_series"],
                 ["patterns", "trends", "anomalies"],
@@ -144,15 +161,19 @@ class DataMiner(WizardServant):
             response = await self.process_request(request)
             return response.result_data
         else:
-            return await self._perform_analysis(query, AnalysisConfig("statistical_summary", "json", ["mean", "median"]), {})
+            return await self._perform_analysis(
+                query,
+                AnalysisConfig("statistical_summary", "json", ["mean", "median"]),
+                {},
+            )
 
     async def execute_task(self, task: Dict[str, Any]) -> "TaskResult":
         """タスク実行"""
         from libs.elder_servants.base.elder_servant import TaskResult
-        
+
         # cast_research_spellを呼び出し
         result = await self.cast_research_spell(task)
-        
+
         return TaskResult(
             task_id=task.get("task_id", ""),
             servant_id=self.servant_id,
@@ -244,33 +265,29 @@ class DataMiner(WizardServant):
 
             return ServantResponse(
                 task_id=request.task_id,
-                status="success",
-                data={
+                servant_id=self.servant_id,
+                status=TaskStatus.COMPLETED,
+                result_data={
                     "analysis_results": analysis_results,
                     "insights": insights,
                     "metadata": metadata,
                     "config": config.__dict__,
                 },
-                errors=[],
-                warnings=[],
-                metrics={
-                    "processing_time": 0,  # 実際の処理時間は execute_with_quality_gate で計算
-                    "quality_score": quality_score,
-                    "data_points_analyzed": analysis_results.get("data_info", {}).get(
-                        "row_count", 0
-                    ),
-                },
+                error_message=None,
+                execution_time_ms=0.0,
+                quality_score=quality_score,
             )
 
         except Exception as e:
             self.logger.error(f"Error processing data analysis request: {str(e)}")
             return ServantResponse(
                 task_id=request.task_id,
-                status="failed",
-                data={},
-                errors=[f"Data analysis failed: {str(e)}"],
-                warnings=[],
-                metrics={},
+                servant_id=self.servant_id,
+                status=TaskStatus.FAILED,
+                result_data={},
+                error_message=f"Data analysis failed: {str(e)}",
+                execution_time_ms=0.0,
+                quality_score=0.0,
             )
 
     async def _perform_analysis(
