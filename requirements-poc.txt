@@ -1,0 +1,32 @@
+# OSS移行POC用requirements
+# pytest統合テストフレームワーク
+
+# Core testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-timeout>=2.1.0
+pytest-mock>=3.11.1
+
+# Integration testing
+testcontainers>=3.7.1
+docker>=6.1.3
+
+# Database testing
+psycopg2-binary>=2.9.9
+asyncpg>=0.29.0
+
+# HTTP testing
+aiohttp>=3.9.0
+httpx>=0.25.0
+requests-mock>=1.11.0
+
+# Reporting
+pytest-html>=3.2.0
+pytest-json-report>=1.5.0
+
+# Performance testing (optional)
+pytest-benchmark>=4.0.0
+
+# Utilities
+python-dotenv>=1.0.0

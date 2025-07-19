@@ -232,3 +232,25 @@ def mock_slack():
         from tests.mocks import MockSlackClient
         mock.return_value = MockSlackClient()
         yield mock
+
+
+# OSS移行POC用追加設定
+def pytest_configure(config):
+    """pytest設定 - OSS移行POC"""
+    # カスタムマーカーの登録
+    config.addinivalue_line(
+        "markers", "integration: 統合テスト用マーカー"
+    )
+    config.addinivalue_line(
+        "markers", "database: データベーステスト用マーカー"
+    )
+    config.addinivalue_line(
+        "markers", "api: APIテスト用マーカー"
+    )
+    config.addinivalue_line(
+        "markers", "benchmark: ベンチマークテスト用マーカー"
+    )
+
+
+# pytest-asyncio設定
+pytest_plugins = ['pytest_asyncio']
