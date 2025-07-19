@@ -34,6 +34,8 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
     D01: CodeCrafter - Python実装専門サーバント
     関数・クラス・モジュール生成のエキスパート
+    
+    EldersLegacy準拠: EldersServiceLegacy継承による統一インターフェース
     """
     
     def __init__(self):

@@ -17,8 +17,8 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import statistics
 
-from libs.elder_servants.base.elder_servant_base import (
-    ElderServantBase, ElfServant, ServantRequest, ServantResponse
+from libs.elder_servants.base.specialized_servants import (
+    ElfServant
 )
 
 

@@ -11,9 +11,9 @@ import asyncio
 import logging
 from datetime import datetime
 
-from ..base.elder_servant import (
-    ElderServant, 
-    ServantCategory, 
+from ..base.elder_servant_base import (
+    ElderServantBase, 
+    ServantDomain, 
     ServantCapability,
     ServantRequest,
     ServantResponse
@@ -90,8 +90,7 @@ class ServantRegistry:
         if name in self._instance_cache:
             del self._instance_cache[name]
         
-        # 各マップから削除
-        servant_class = self._servants[name]
+        # サーバントクラスを取得して削除
         del self._servants[name]
         
         # ドメインマップから削除

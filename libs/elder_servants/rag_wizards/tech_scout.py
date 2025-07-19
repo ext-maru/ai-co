@@ -15,20 +15,17 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import hashlib
 
-from libs.elder_servants.base.specialized_servants import (
-    WizardServant
+from ..base.elder_servant_base import (
+    WizardServant, ServantRequest, ServantResponse,
+    ServantCapability, ServantDomain
 )
 
 
 class TechScout(WizardServant):
     """技術調査専門サーバント"""
     
-    def __init__(self):
-        super().__init__(
-            servant_id="W01",
-            name="TechScout",
-            specialization="technology_research"
-        )
+    def __init__(self, servant_id: str, name: str, specialization: str):
+        super().__init__(servant_id, name, specialization)
         self.metrics = {
             "total_researches": 0,
             "research_topics": defaultdict(int),
@@ -40,18 +37,12 @@ class TechScout(WizardServant):
         self.research_cache = {}
         self.cache_ttl = timedelta(hours=24)
     
-    def get_capabilities(self) -> List[str]:
+    def get_capabilities(self) -> List[ServantCapability]:
         """サーバントの能力リストを返す"""
         return [
-            "research_technology",
-            "evaluate_library",
-            "analyze_trends",
-            "compare_solutions",
-            "security_assessment",
-            "performance_benchmark",
-            "deep_dive_research",
-            "generate_tech_radar",
-            "analyze_migration"
+            ServantCapability.ANALYSIS,
+            ServantCapability.MONITORING,
+            ServantCapability.SECURITY
         ]
     
     async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
