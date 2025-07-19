@@ -234,7 +234,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
         self.evaluator = ComplexityEvaluator()
         
         # 処理対象の優先度（中以上）
-        self.target_priorities = ['medium']
+        self.target_priorities = ['critical', 'high', 'medium']
         
     def get_capabilities(self) -> Dict[str, Any]:
         """サービスの機能を返す"""

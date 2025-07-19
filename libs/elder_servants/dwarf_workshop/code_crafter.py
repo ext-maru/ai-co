@@ -370,52 +370,52 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             
             # 基底クラス文字列
             bases_str = f"({', '.join(base_classes)})" if base_classes else ""
-        
-        # デコレータ文字列
-        decorator_lines = [f"@{dec}" for dec in decorators]
-        decorator_str = "\n".join(decorator_lines) + "\n" if decorators else ""
-        
-        # クラス本体の生成
-        class_body = []
-        
-        # __init__メソッド
-        if attributes:
-            init_params = ["self"] + [f"{attr['name']}: {attr.get('type', 'Any')}" for attr in attributes]
-            init_body = "\n        ".join([f"self.{attr['name']} = {attr['name']}" for attr in attributes])
-            class_body.append(f"""
+            
+            # デコレータ文字列
+            decorator_lines = [f"@{dec}" for dec in decorators]
+            decorator_str = "\n".join(decorator_lines) + "\n" if decorators else ""
+            
+            # クラス本体の生成
+            class_body = []
+            
+            # __init__メソッド
+            if attributes:
+                init_params = ["self"] + [f"{attr['name']}: {attr.get('type', 'Any')}" for attr in attributes]
+                init_body = "\n        ".join([f"self.{attr['name']} = {attr['name']}" for attr in attributes])
+                class_body.append(f"""
     def __init__({", ".join(init_params)}):
         {init_body}""")
-        
-        # その他のメソッド
-        for method in methods:
-            method_spec = {
-                "name": method.get("name", "method"),
-                "parameters": [{"name": "self"}] + method.get("parameters", []),
-                "return_type": method.get("return_type", "None"),
-                "docstring": method.get("docstring", ""),
-                "body": method.get("body", "pass"),
-                "decorators": method.get("decorators", [])
-            }
-            method_result = await self._generate_function(method_spec)
-            class_body.append("\n    " + "\n    ".join(method_result["code"].splitlines()))
-        
-        # クラス生成
-        body_str = "\n".join(class_body) if class_body else "\n    pass"
-        
-        code = f"""{decorator_str}class {name}{bases_str}:
+            
+            # その他のメソッド
+            for method in methods:
+                method_spec = {
+                    "name": method.get("name", "method"),
+                    "parameters": [{"name": "self"}] + method.get("parameters", []),
+                    "return_type": method.get("return_type", "None"),
+                    "docstring": method.get("docstring", ""),
+                    "body": method.get("body", "pass"),
+                    "decorators": method.get("decorators", [])
+                }
+                method_result = await self._generate_function(method_spec)
+                class_body.append("\n    " + "\n    ".join(method_result["code"].splitlines()))
+            
+            # クラス生成
+            body_str = "\n".join(class_body) if class_body else "\n    pass"
+            
+            code = f"""{decorator_str}class {name}{bases_str}:
     \"\"\"{docstring}\"\"\"{body_str}"""
-        
-        # フォーマット
-        if HAS_BLACK:
-            try:
-                formatted_code = black.format_str(code, mode=black.Mode())
-            except:
-                formatted_code = code
-        elif HAS_AUTOPEP8:
-            try:
-                formatted_code = autopep8.fix_code(code)
-            except:
-                formatted_code = code
+            
+            # フォーマット
+            if HAS_BLACK:
+                try:
+                    formatted_code = black.format_str(code, mode=black.Mode())
+                except:
+                    formatted_code = code
+            elif HAS_AUTOPEP8:
+                try:
+                    formatted_code = autopep8.fix_code(code)
+                except:
+                    formatted_code = code
             else:
                 formatted_code = code
             
@@ -465,41 +465,41 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             
             module_parts = []
         
-        # モジュールドキュメント
-        if docstring:
-            module_parts.append(f'"""\n{docstring}\n"""')
+            # モジュールドキュメント
+            if docstring:
+                module_parts.append(f'"""\n{docstring}\n"""')
+            
+            # インポート
+            if imports:
+                import_lines = []
+                for imp in imports:
+                    if isinstance(imp, str):
+                        import_lines.append(f"import {imp}")
+                    elif isinstance(imp, dict):
+                        module = imp.get("module", "")
+                        names = imp.get("names", [])
+                        if names:
+                            import_lines.append(f"from {module} import {', '.join(names)}")
+                        else:
+                            import_lines.append(f"import {module}")
+                module_parts.append("\n".join(import_lines))
         
-        # インポート
-        if imports:
-            import_lines = []
-            for imp in imports:
-                if isinstance(imp, str):
-                    import_lines.append(f"import {imp}")
-                elif isinstance(imp, dict):
-                    module = imp.get("module", "")
-                    names = imp.get("names", [])
-                    if names:
-                        import_lines.append(f"from {module} import {', '.join(names)}")
-                    else:
-                        import_lines.append(f"import {module}")
-            module_parts.append("\n".join(import_lines))
+            # 定数
+            if constants:
+                const_lines = []
+                for const in constants:
+                    const_lines.append(f"{const['name']} = {const['value']}")
+                module_parts.append("\n".join(const_lines))
         
-        # 定数
-        if constants:
-            const_lines = []
-            for const in constants:
-                const_lines.append(f"{const['name']} = {const['value']}")
-            module_parts.append("\n".join(const_lines))
-        
-        # 関数
-        for func_spec in functions:
-            func_result = await self._generate_function(func_spec)
-            module_parts.append(func_result["code"])
-        
-        # クラス
-        for class_spec in classes:
-            class_result = await self._generate_class(class_spec)
-            module_parts.append(class_result["code"])
+            # 関数
+            for func_spec in functions:
+                func_result = await self._generate_function(func_spec)
+                module_parts.append(func_result["code"])
+            
+            # クラス
+            for class_spec in classes:
+                class_result = await self._generate_class(class_spec)
+                module_parts.append(class_result["code"])
         
             # モジュール全体のコード
             code = "\n\n\n".join(module_parts)

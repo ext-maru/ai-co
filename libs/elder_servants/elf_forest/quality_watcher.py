@@ -112,11 +112,20 @@ class QualityWatcher(ElfServant):
         return await self._execute_monitoring_task(watch_target)
     
     async def _execute_monitoring_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """タスクを実行"""
+        """タスクを実行 - Iron Will準拠"""
         start_time = datetime.now()
         
         try:
+            # 入力検証
+            if not task:
+                raise ValueError("Task cannot be empty")
+            
             action = task.get("action")
+            if not action:
+                raise ValueError("Action is required for monitoring task")
+            
+            # メトリクス収集開始
+            self._start_metrics_collection(action)
             
             if action == "monitor_code_quality":
                 result = await self._monitor_code_quality(task)
@@ -173,18 +182,47 @@ class QualityWatcher(ElfServant):
                 })
                 result["sage_consultation"] = sage_advice
             
+            # メトリクス収集終了
+            self._end_metrics_collection(action, result.get("quality_score", 0.0))
+            
+            # 品質スコア計算（Iron Will準拠）
+            if "quality_score" not in result:
+                result["quality_score"] = self._calculate_iron_will_quality_score(result)
+            
             return result
             
-        except Exception as e:
+        except ValueError as e:
+            self.logger.error(f"Validation error in monitoring task: {str(e)}")
             return {
                 "status": "error",
                 "error": str(e),
-                "recovery_suggestion": "Check input parameters and try again"
+                "recovery_suggestion": "Check input parameters and ensure all required fields are provided",
+                "quality_score": 0.0
+            }
+        except TypeError as e:
+            self.logger.error(f"Type error in monitoring task: {str(e)}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "recovery_suggestion": "Check data types in the request",
+                "quality_score": 0.0
+            }
+        except Exception as e:
+            self.logger.error(f"Error executing monitoring task: {str(e)}", exc_info=True)
+            return {
+                "status": "error",
+                "error": str(e),
+                "recovery_suggestion": "Check input parameters and try again",
+                "quality_score": 0.0
             }
     
     async def _monitor_code_quality(self, task: Dict[str, Any]) -> Dict[str, Any]:
-        """コード品質監視"""
+        """コード品質監視 - Iron Will準拠"""
+        # 入力検証
         source_code = task.get("source_code", "")
+        if not source_code:
+            raise ValueError("Source code is required for quality monitoring")
+        
         file_path = task.get("file_path", "unknown.py")
         
         # コード解析実行
@@ -991,25 +1029,42 @@ class QualityWatcher(ElfServant):
         }
     
     async def health_check(self) -> Dict[str, Any]:
-        """ヘルスチェック"""
-        avg_monitoring_time = (
-            sum(self.metrics["monitoring_times"]) / len(self.metrics["monitoring_times"])
-            if self.metrics["monitoring_times"]
-            else 0.0
-        )
-        
-        return {
-            "status": "healthy",
-            "servant_id": self.servant_id,
-            "name": self.name,
-            "capabilities": self.get_capabilities(),
-            "iron_will_compliance": self.metrics["average_quality_score"] >= 90,
-            "performance_metrics": {
-                "avg_monitoring_time": avg_monitoring_time,
-                "total_quality_checks": self.metrics["total_quality_checks"],
-                "alerts_generated": self.metrics["alerts_generated"]
+        """ヘルスチェック - Iron Will準拠"""
+        try:
+            avg_monitoring_time = (
+                sum(self.metrics["monitoring_times"]) / len(self.metrics["monitoring_times"])
+                if self.metrics["monitoring_times"]
+                else 0.0
+            )
+            
+            # Iron Will品質基準チェック
+            iron_will_compliance = (
+                self.metrics["average_quality_score"] >= 90 and
+                avg_monitoring_time <= 5.0  # 5秒以内
+            )
+            
+            return {
+                "status": "healthy",
+                "servant_id": self.servant_id,
+                "name": self.name,
+                "capabilities": self.get_capabilities(),
+                "iron_will_compliance": iron_will_compliance,
+                "performance_metrics": {
+                    "avg_monitoring_time": avg_monitoring_time,
+                    "total_quality_checks": self.metrics["total_quality_checks"],
+                    "alerts_generated": self.metrics["alerts_generated"],
+                    "average_quality_score": self.metrics["average_quality_score"]
+                },
+                "quality_score": self.metrics["average_quality_score"]
             }
-        }
+        except Exception as e:
+            self.logger.error(f"Health check failed: {e}")
+            return {
+                "status": "error",
+                "servant_id": self.servant_id,
+                "error": str(e),
+                "quality_score": 0.0
+            }
     
     def get_metrics(self) -> Dict[str, Any]:
         """メトリクス取得"""
@@ -1024,3 +1079,72 @@ class QualityWatcher(ElfServant):
                 "total_checks": len(self.metrics["monitoring_times"])
             }
         }
+    
+    def _calculate_iron_will_quality_score(self, result: Dict[str, Any]) -> float:
+        """Iron Will品質スコア計算"""
+        try:
+            score = 0.0
+            
+            # 1. 基本成功（30%）
+            if result.get("status") == "success":
+                score += 30.0
+            
+            # 2. 品質メトリクス（25%）
+            quality_metrics = result.get("quality_metrics", {})
+            if quality_metrics:
+                maintainability = quality_metrics.get("maintainability_index", 0)
+                if maintainability >= 85:
+                    score += 25.0
+                elif maintainability >= 70:
+                    score += 15.0
+                elif maintainability >= 50:
+                    score += 10.0
+            
+            # 3. コードスメル検出（20%）
+            code_smells = result.get("code_smells", [])
+            major_smells = len([s for s in code_smells if s.get("severity") == "major"])
+            if major_smells == 0:
+                score += 20.0
+            elif major_smells <= 2:
+                score += 10.0
+            elif major_smells <= 5:
+                score += 5.0
+            
+            # 4. 改善提案品質（15%）
+            suggestions = result.get("suggestions", [])
+            if len(suggestions) >= 3:
+                score += 15.0
+            elif len(suggestions) >= 1:
+                score += 10.0
+            
+            # 5. Iron Will基準準拠（10%）
+            meets_iron_will = result.get("meets_iron_will", False)
+            if meets_iron_will:
+                score += 10.0
+            
+            return min(score, 100.0)
+            
+        except Exception as e:
+            self.logger.error(f"Error calculating Iron Will quality score: {e}")
+            return 0.0
+    
+    def _start_metrics_collection(self, action: str):
+        """メトリクス収集開始"""
+        try:
+            self.logger.debug(f"Starting metrics collection for action: {action}")
+        except Exception as e:
+            self.logger.warning(f"Failed to start metrics collection: {e}")
+    
+    def _end_metrics_collection(self, action: str, quality_score: float):
+        """メトリクス収集終了"""
+        try:
+            # 平均品質スコアの更新
+            if self.metrics["total_quality_checks"] > 0:
+                current_avg = self.metrics["average_quality_score"]
+                total = self.metrics["total_quality_checks"]
+                self.metrics["average_quality_score"] = (
+                    (current_avg * total + quality_score) / (total + 1)
+                )
+            self.logger.debug(f"Ended metrics collection for action: {action}")
+        except Exception as e:
+            self.logger.warning(f"Failed to end metrics collection: {e}")

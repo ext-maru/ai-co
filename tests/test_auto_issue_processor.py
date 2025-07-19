@@ -285,8 +285,8 @@ class TestAutoIssueProcessor(unittest.TestCase):
         # スキャン実行
         result = self.async_test(self.processor.scan_processable_issues())
         
-        # 優先度High(2つ)は除外され、Medium(3つ)のみ
-        self.assertEqual(len(result), 3)
+        # 優先度Low(0つ)のみ除外され、Critical/High/Medium(5つ)が処理対象
+        self.assertEqual(len(result), 5)
         
     def test_process_request_scan_mode(self):
         """スキャンモードのテスト"""
