@@ -11,9 +11,9 @@ import asyncio
 import logging
 from datetime import datetime
 
-from ..base.elder_servant_base import (
-    ElderServantBase, 
-    ServantDomain, 
+from ..base.elder_servant import (
+    ElderServant, 
+    ServantCategory, 
     ServantCapability,
     ServantRequest,
     ServantResponse

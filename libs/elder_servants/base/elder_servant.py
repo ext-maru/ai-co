@@ -199,6 +199,9 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
             # 既存のexecute_taskメソッド使用
             result = await self.execute_task(task)
             
+            # 統計更新
+            await self._update_stats(result)
+            
             # ServantResponseに変換
             return ServantResponse(
                 task_id=request.task_id,

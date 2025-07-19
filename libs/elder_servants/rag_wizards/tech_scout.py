@@ -15,8 +15,8 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import hashlib
 
-from libs.elder_servants.base.elder_servant_base import (
-    ElderServantBase, WizardServant, ServantRequest, ServantResponse
+from libs.elder_servants.base.specialized_servants import (
+    WizardServant
 )
 
 
