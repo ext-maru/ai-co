@@ -427,7 +427,7 @@ class CICDBuilder(DwarfServant):
         # Validate configuration
         validation_result = await self._validate_pipeline_config(config)
         if not validation_result["valid"]:
-            error_msg = ', '.join(validation_result['errors'])
+            error_msg = ", ".join(validation_result["errors"])
             return {
                 "status": "error",
                 "error": f"Pipeline validation failed: {error_msg}",
@@ -576,7 +576,7 @@ class CICDBuilder(DwarfServant):
         deployment_config = request.get("deployment_config", {})
 
         # Add deployment stage to pipeline
-        provider = deployment_config.get('provider', 'kubernetes')
+        provider = deployment_config.get("provider", "kubernetes")
         stage_name = f"deploy_{deployment_config.get('provider', 'k8s')}"
         integration_result = {
             "configured": True,
