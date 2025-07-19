@@ -131,14 +131,44 @@ RAG: 「最適解を発見しました」
 2. **コミット後は必ずプッシュ**
 3. **作業中断時も必ずコミット＆プッシュ**
 
+⚠️ **これを忘れた場合、インシデント賢者に自動報告されます**
+
+## 🌿 Feature Branch戦略 (2025/7/19制定)
+
+**エルダー評議会令第32号 - Feature Branch必須化令**
+
+### 📋 基本ルール
+1. **1 Issue = 1 Branch = 1 PR** の原則を厳守
+2. **mainブランチへの直接プッシュ禁止**
+3. **すべての変更はFeature Branch経由**
+
+### 🌳 ブランチ命名規則
 ```bash
-# 機能実装完了時の必須フロー
-git add <変更ファイル>
-git commit -m "feat/fix/docs: 適切なメッセージ"
-git push origin main
+feature/issue-XX-description   # 新機能
+fix/issue-XX-description      # バグ修正
+docs/issue-XX-description     # ドキュメント
+chore/issue-XX-description    # 雑務
 ```
 
-⚠️ **これを忘れた場合、インシデント賢者に自動報告されます**
+### 🔧 標準ワークフロー
+```bash
+# 1. Feature Branch作成（専用ツール使用）
+./scripts/git-feature 17 data-model
+
+# 2. 開発・コミット（Issue番号必須）
+git commit -m "feat: データモデル実装 (#17)"
+
+# 3. プッシュ
+git push -u origin feature/issue-17-data-model
+
+# 4. PR作成（本文に "Closes #XX" を含める）
+```
+
+### 📚 詳細ガイド
+- [Git ワークフローガイド](docs/GIT_WORKFLOW_GUIDE.md)
+- Feature Branch作成ツール: `scripts/git-feature`
+
+**違反時はエルダー評議会による是正指導対象**
 
 ## 🚨 GitHub Actions無効化ポリシー (2025/1/19制定)
 
