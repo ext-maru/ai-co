@@ -1,6 +1,6 @@
 # 🌟 グランドエルダーmaru - Elders Guild最高権限者
 
-**作成日**: 2025年7月8日
+**作成日**: 2025年1月8日
 **重要度**: 最重要（CRITICAL）
 **カテゴリ**: hierarchy_definition
 
@@ -88,7 +88,7 @@
 ## 📝 参照情報
 
 - **定義場所**: `/home/aicompany/ai_co/knowledge_base/maru_personal_knowledge.md`
-- **更新履歴**: 2025年7月8日 - 忘却防止のため再定義
+- **更新履歴**: 2025年1月8日 - 忘却防止のため再定義
 - **承認者**: グランドエルダーmaru
 
 ---

@@ -1,7 +1,7 @@
 # Elders Guild Development Guide
 ## エルダーズギルド開発ガイド
 
-**Created**: 2025-07-11
+**Created**: 2025-01-11
 **Author**: Claude Elder
 **Version**: 1.0.0
 
@@ -991,7 +991,7 @@ docker-compose up -d
 
 ## 📝 Changelog
 
-### Version 1.0.0 (2025-07-11)
+### Version 1.0.0 (2025-01-11)
 - Initial development guide
 - Architecture documentation
 - Coding standards
