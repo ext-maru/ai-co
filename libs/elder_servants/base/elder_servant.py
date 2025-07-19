@@ -7,22 +7,15 @@ Iron Will品質基準とエルダー評議会令第27号に完全準拠します
 """
 
 import asyncio
-import hashlib
-import json
 import logging
 import uuid
-from abc import ABC, abstractmethod
-from datetime import datetime, timedelta
+from abc import abstractmethod
+from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 # EldersLegacy統合インポート
-from libs.core.elders_legacy import (
-    EldersLegacyDomain,
-    EldersServiceLegacy,
-    IronWillCriteria,
-    enforce_boundary,
-)
+from libs.core.elders_legacy import EldersServiceLegacy, enforce_boundary
 
 
 class ServantCategory(Enum):
@@ -31,6 +24,17 @@ class ServantCategory(Enum):
     DWARF = "dwarf"  # ドワーフ工房（開発製作）
     WIZARD = "wizard"  # RAGウィザーズ（調査研究）
     ELF = "elf"  # エルフの森（監視メンテナンス）
+
+
+class ServantDomain(Enum):
+    """サーバントドメイン（専門領域）"""
+
+    DEVELOPMENT = "development"  # 開発
+    RESEARCH = "research"  # 調査研究
+    MONITORING = "monitoring"  # 監視
+    SECURITY = "security"  # セキュリティ
+    OPTIMIZATION = "optimization"  # 最適化
+    TESTING = "testing"  # テスト
 
 
 class TaskStatus(Enum):
@@ -451,7 +455,8 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         meets_iron_will = final_score >= 95.0
 
         self.logger.debug(
-            f"Quality validation score: {final_score:.2f}, Iron Will compliant: {meets_iron_will}"
+            f"Quality validation score: {final_score:.2f}, "
+            f"Iron Will compliant: {meets_iron_will}"
         )
         return final_score
 
@@ -497,7 +502,11 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         return f"{self.servant_name}({self.servant_id})"
 
     def __repr__(self) -> str:
-        return f"<ElderServant {self.servant_name} category={self.category.value} tasks={self.stats['tasks_executed']}>"
+        return (
+            f"<ElderServant {self.servant_name} "
+            f"category={self.category.value} "
+            f"tasks={self.stats['tasks_executed']}>"
+        )
 
 
 class ServantRegistry:
