@@ -155,6 +155,10 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         task_id = task.get("task_id", "unknown")
         task_type = task.get("task_type", "")
         
+        # 新しいリクエスト形式への対応
+        if not task_type and "type" in task:
+            task_type = task["type"]
+        
         try:
             self.logger.info(f"Executing task {task_id}: {task_type}")
             
@@ -711,19 +715,65 @@ class {test_class_name}(unittest.TestCase):
         
         return suggestions
     
-    def _calculate_quality_score(self, analysis: Dict[str, Any]) -> float:
-        """品質スコア計算"""
-        score = 100.0
+    async def _calculate_quality_score(self, result, execution_time_ms: float) -> float:
+        """
+        EldersLegacy準拠の品質スコア計算
         
-        # 問題ごとに減点
-        score -= len(analysis.get("issues", [])) * 5
+        Args:
+            result: 実行結果 (ServantResponseまたはDict)
+            execution_time_ms: 実行時間（ミリ秒）
+            
+        Returns:
+            float: 品質スコア (0-100)
+        """
+        # ServantResponseオブジェクトの場合、result_dataを取得
+        if hasattr(result, 'result_data'):
+            result_data = result.result_data or {}
+            has_error = result.error_message is not None and result.error_message != ""
+        else:
+            result_data = result if isinstance(result, dict) else {}
+            has_error = "error" in result_data
         
-        # 複雑度による減点
-        complexity = analysis.get("complexity", 0)
-        if complexity > 10:
-            score -= (complexity - 10) * 2
+        if has_error:
+            return 0.0
         
-        return max(score, 0.0)
+        quality_score = 50.0  # 基本スコア
+        
+        # コードが存在する
+        if "code" in result_data and result_data["code"]:
+            quality_score += 20.0
+            
+            # 構文的に正しい
+            try:
+                import ast
+                ast.parse(result_data["code"])
+                quality_score += 20.0
+            except:
+                pass
+            
+            # フォーマットされている
+            if self._is_formatted(result_data["code"]):
+                quality_score += 10.0
+        
+        # 実行時間による調整（5秒以内が最適）
+        if execution_time_ms < 5000:
+            quality_score += 5.0
+        elif execution_time_ms > 10000:
+            quality_score -= 5.0
+        
+        # 詳細分析がある場合の追加評価
+        if "analysis" in result_data:
+            analysis = result_data["analysis"]
+            if isinstance(analysis, dict):
+                # 問題ごとに減点
+                quality_score -= len(analysis.get("issues", [])) * 2
+                
+                # 複雑度による減点
+                complexity = analysis.get("complexity", 0)
+                if complexity > 10:
+                    quality_score -= (complexity - 10) * 1
+        
+        return max(min(quality_score, 100.0), 0.0)
     
     def _format_code(self, code: str) -> str:
         """コードフォーマット"""
@@ -745,3 +795,95 @@ class {test_class_name}(unittest.TestCase):
         """フォーマット済みかチェック"""
         formatted = self._format_code(code)
         return formatted == code
+    
+    async def process_request(self, request: "ServantRequest[Dict[str, Any]]") -> "ServantResponse[Dict[str, Any]]":
+        """
+        EldersLegacy準拠のリクエスト処理
+        
+        Args:
+            request: サーバントリクエスト
+            
+        Returns:
+            ServantResponse: 処理結果
+        """
+        from libs.elder_servants.base.elder_servant import ServantResponse
+        
+        try:
+            # タスクを実行 (task_idとtask_typeを含める)
+            task_data = {
+                "task_id": request.task_id,
+                "task_type": request.task_type,
+                **request.payload
+            }
+            task_result = await self.execute_task(task_data)
+            
+            # TaskResultをServantResponseに変換
+            status = "success" if task_result.status == TaskStatus.COMPLETED else "failed"
+            
+            return ServantResponse(
+                task_id=request.task_id,
+                servant_id=self.servant_id,
+                status=TaskStatus.COMPLETED if status == "success" else TaskStatus.FAILED,
+                result_data=task_result.result_data,
+                error_message=task_result.error_message or "",
+                execution_time_ms=task_result.execution_time_ms,
+                quality_score=task_result.quality_score
+            )
+            
+        except Exception as e:
+            return ServantResponse(
+                task_id=request.task_id,
+                servant_id=self.servant_id,
+                status=TaskStatus.FAILED,
+                result_data={},
+                error_message=str(e),
+                execution_time_ms=0.0,
+                quality_score=0.0
+            )
+    
+    def validate_request(self, request: "ServantRequest[Dict[str, Any]]") -> bool:
+        """
+        リクエストの妥当性検証
+        
+        Args:
+            request: 検証するリクエスト
+            
+        Returns:
+            bool: 有効な場合True
+        """
+        if not request.payload:
+            return False
+        
+        task_type = request.task_type
+        if not task_type:
+            return False
+        
+        # サポートされているタスクタイプかチェック
+        supported_types = [
+            "generate_function", "generate_class", "generate_module",
+            "refactor_code", "add_type_hints", "optimize_code",
+            "generate_test_code", "code_analysis", "python_implementation",
+            "class_generation", "module_generation", "function_generation",
+            "requirement_analysis"
+        ]
+        
+        return task_type in supported_types
+    
+    def get_capabilities(self) -> List[str]:
+        """
+        サーバント能力一覧の取得
+        
+        Returns:
+            List[str]: 能力名のリスト
+        """
+        return [
+            "function_generation",
+            "class_generation", 
+            "module_generation",
+            "type_annotation",
+            "docstring_generation",
+            "code_refactoring",
+            "code_analysis",
+            "test_generation",
+            "code_optimization"
+        ]
