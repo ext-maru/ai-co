@@ -1,14 +1,14 @@
 # 🚀 OSS移行プロジェクト 進捗追跡
 **Issue #93: OSS移行実装プロジェクト - 8週間実行計画**
 **開始日**: 2025年7月19日
-**更新日**: 2025年7月19日
+**更新日**: 2025年7月19日（第2回更新）
 
 ## 📊 全体進捗サマリー
 
 | フェーズ | 期間 | 状態 | 進捗率 |
 |---------|------|------|--------|
-| Week 1-2: 準備フェーズ | Aug 1-14 | 🟡 準備開始 | 20% |
-| Week 3-4: pytest移行 | Aug 15-28 | ⏳ 未開始 | 0% |
+| Week 1-2: 準備フェーズ | Aug 1-14 | 🟢 進行中 | 60% |
+| Week 3-4: pytest移行 | Aug 15-28 | 🔵 POC完了 | 15% |
 | Week 5-6: Celery/Ray移行 | Aug 29-Sep 11 | ⏳ 未開始 | 0% |
 | Week 7: SonarQube導入 | Sep 12-18 | ⏳ 未開始 | 0% |
 | Week 8: 完了フェーズ | Sep 19-30 | ⏳ 未開始 | 0% |
@@ -19,9 +19,16 @@
 - [x] requirements-oss.txt作成 (2025/7/19)
 - [x] pytest-oss.ini設定ファイル作成 (2025/7/19)
 - [x] 進捗追跡ファイル作成 (2025/7/19)
+- [x] Docker環境セットアップ (2025/7/19)
+  - docker-compose.oss.yml作成
+  - Dockerfile.test作成
+  - Redis, PostgreSQL, RabbitMQ, Flower, SonarQube, Ray統合
+- [x] pytest POC実装 (2025/7/19)
+  - test_integration_pytest.py作成
+  - testcontainers統合
+  - パフォーマンス比較スクリプト作成
 
 ### 🔄 進行中タスク
-- [ ] Docker環境セットアップ
 - [ ] チーム教育資料作成
 
 ### ⏳ 未着手タスク
@@ -91,6 +98,16 @@
 - OSS移行プロジェクト正式開始
 - 基本設定ファイル作成完了
 - Feature Branch作成: `feature/issue-93-oss-migration`
+- Docker環境構築完了
+  - 全サービスコンテナ化（Redis, PostgreSQL, RabbitMQ, SonarQube, Ray）
+  - docker-compose.oss.yml でワンコマンド起動可能
+- pytest POC実装完了
+  - IntegrationTestFrameworkの一部をpytest化
+  - testcontainers統合でDockerコンテナ自動管理
+  - 並列実行対応（pytest-xdist）
+- パフォーマンス測定ツール作成
+  - 既存フレームワークとの比較スクリプト
+  - コード削減率とパフォーマンス向上を定量化
 
 ---
 **更新者**: クロードエルダー（Claude Elder）
