@@ -23,9 +23,9 @@ import asyncio
 import logging
 from datetime import datetime
 
-from ..base.elder_servant_base import (
-    DwarfServant, ServantRequest, ServantResponse,
-    ServantCapability, ServantDomain
+from libs.elder_servants.base.specialized_servants import DwarfServant
+from libs.elder_servants.base.elder_servant import (
+    ServantRequest, ServantResponse, ServantCapability, TaskResult, TaskStatus
 )
 
 
@@ -48,9 +48,38 @@ class DocForge(DwarfServant):
     自動生成する。複数の言語とフォーマットに対応。
     """
     
-    def __init__(self, servant_id: str, name: str, specialization: str):
-        super().__init__(servant_id, name, specialization)
-        self.logger = logging.getLogger(f"elder_servant.{name}")
+    def __init__(self):
+        capabilities = [
+            ServantCapability(
+                "documentation_generation",
+                "高品質ドキュメント自動生成",
+                ["source_code", "config"],
+                ["documentation"],
+                complexity=4
+            ),
+            ServantCapability(
+                "api_doc_creation",
+                "API仕様書作成",
+                ["api_spec"],
+                ["api_documentation"],
+                complexity=3
+            ),
+            ServantCapability(
+                "readme_generation",
+                "README自動生成",
+                ["project_structure"],
+                ["readme_content"],
+                complexity=2
+            )
+        ]
+        
+        super().__init__(
+            servant_id="D03",
+            servant_name="DocForge",
+            specialization="documentation_generation",
+            capabilities=capabilities
+        )
+        self.logger = logging.getLogger(f"elder_servant.DocForge")
         
         # サポートするドキュメントタイプ
         self.supported_doc_types = {
@@ -73,13 +102,57 @@ class DocForge(DwarfServant):
             "markdown", "html", "json", "pdf", "rst"
         }
 
-    def get_capabilities(self) -> List[ServantCapability]:
-        """サーバントの能力を返す"""
-        return [
-            ServantCapability.DOCUMENTATION,
-            ServantCapability.CODE_GENERATION,
-            ServantCapability.ANALYSIS
-        ]
+    def get_specialized_capabilities(self) -> List[ServantCapability]:
+        """専門特化能力の取得"""
+        return self.capabilities
+    
+    async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
+        """タスク実行（Elder Servant基底クラス用）"""
+        # ServantRequestに変換
+        request = ServantRequest(
+            task_id=task.get("task_id", ""),
+            task_type=task.get("task_type", "documentation_generation"),
+            priority=task.get("priority", "medium"),
+            payload=task.get("payload", {}),
+            context=task.get("context", {})
+        )
+        
+        # craft_artifactを呼び出し
+        result = await self.craft_artifact(request.payload)
+        
+        # TaskResultに変換
+        return TaskResult(
+            task_id=request.task_id,
+            servant_id=self.servant_id,
+            status=TaskStatus.COMPLETED if result.get("success", False) else TaskStatus.FAILED,
+            result_data=result,
+            error_message=result.get("error"),
+            execution_time_ms=0.0,
+            quality_score=result.get("quality_score", 0.0)
+        )
+    
+    async def craft_artifact(self, specification: Dict[str, Any]) -> Dict[str, Any]:
+        """製作品作成（DwarfServant抽象メソッド実装）"""
+        # ServantRequestを作成
+        request = ServantRequest(
+            task_id=specification.get("task_id", "doc_" + str(datetime.now().timestamp())),
+            task_type="documentation_generation",
+            priority="medium",
+            payload=specification,
+            context=specification.get("context", {})
+        )
+        
+        # process_requestを呼び出し
+        response = await self.process_request(request)
+        
+        # 結果を返す
+        return {
+            "success": response.status == TaskStatus.COMPLETED,
+            "documentation": response.result_data.get("documentation", ""),
+            "metadata": response.result_data.get("metadata", {}),
+            "quality_score": response.quality_score,
+            "error": response.error_message
+        }
 
     def validate_request(self, request: ServantRequest) -> bool:
         """リクエストの妥当性を検証"""
@@ -87,7 +160,7 @@ class DocForge(DwarfServant):
             if request.task_type != "documentation_generation":
                 return False
             
-            data = request.data
+            data = request.payload
             if "source_code" not in data:
                 return False
             
@@ -115,22 +188,25 @@ class DocForge(DwarfServant):
             self.logger.info(f"Processing documentation generation request: {request.task_id}")
             
             # 4賢者との協調
-            sage_consultation = await self.collaborate_with_sages(request.data)
+            sage_consultation = await self.collaborate_with_sages("knowledge", {
+                "type": "documentation_advice",
+                "doc_type": request.payload.get("doc_type", "api_documentation")
+            })
             
             # リクエストデータの取得
-            source_code = request.data["source_code"]
-            doc_type = request.data.get("doc_type", "api_documentation")
-            format_type = request.data.get("format", "markdown")
-            language = request.data.get("language", "python")
+            source_code = request.payload["source_code"]
+            doc_type = request.payload.get("doc_type", "api_documentation")
+            format_type = request.payload.get("format", "markdown")
+            language = request.payload.get("language", "python")
             
             # ドキュメント生成設定
             config = DocumentationConfig(
                 doc_type=doc_type,
                 format=format_type,
                 language=language,
-                include_examples=request.data.get("include_examples", True),
-                include_diagrams=request.data.get("include_diagrams", False),
-                detail_level=request.data.get("detail_level", "comprehensive")
+                include_examples=request.payload.get("include_examples", True),
+                include_diagrams=request.payload.get("include_diagrams", False),
+                detail_level=request.payload.get("detail_level", "comprehensive")
             )
             
             # ドキュメント生成の実行
@@ -154,30 +230,28 @@ class DocForge(DwarfServant):
             
             return ServantResponse(
                 task_id=request.task_id,
-                status="success",
-                data={
+                servant_id=self.servant_id,
+                status=TaskStatus.COMPLETED,
+                result_data={
                     "documentation": documentation,
                     "metadata": metadata,
                     "config": config.__dict__
                 },
-                errors=[],
-                warnings=[],
-                metrics={
-                    "processing_time": 0,  # 実際の処理時間は execute_with_quality_gate で計算
-                    "quality_score": quality_score,
-                    "documentation_length": len(documentation)
-                }
+                error_message=None,
+                execution_time_ms=0.0,
+                quality_score=quality_score
             )
             
         except Exception as e:
             self.logger.error(f"Error processing documentation request: {str(e)}")
             return ServantResponse(
                 task_id=request.task_id,
-                status="failed",
-                data={},
-                errors=[f"Documentation generation failed: {str(e)}"],
-                warnings=[],
-                metrics={}
+                servant_id=self.servant_id,
+                status=TaskStatus.FAILED,
+                result_data={},
+                error_message=f"Documentation generation failed: {str(e)}",
+                execution_time_ms=0.0,
+                quality_score=0.0
             )
 
     async def _generate_documentation(self, source_code: str, config: DocumentationConfig, context: Dict[str, Any]) -> str:

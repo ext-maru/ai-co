@@ -15,17 +15,48 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import hashlib
 
-from ..base.elder_servant_base import (
-    WizardServant, ServantRequest, ServantResponse,
-    ServantCapability, ServantDomain
+from libs.elder_servants.base.specialized_servants import WizardServant
+from libs.elder_servants.base.elder_servant import (
+    ServantRequest, ServantResponse, ServantCapability, TaskResult, TaskStatus
 )
 
 
 class TechScout(WizardServant):
     """技術調査専門サーバント"""
     
-    def __init__(self, servant_id: str, name: str, specialization: str):
-        super().__init__(servant_id, name, specialization)
+    def __init__(self):
+        capabilities = [
+            ServantCapability(
+                "technology_research",
+                "最新技術調査・分析",
+                ["research_query", "scope"],
+                ["research_report"],
+                complexity=5
+            ),
+            ServantCapability(
+                "library_analysis",
+                "ライブラリ動向分析",
+                ["technology_stack"],
+                ["recommendations"],
+                complexity=4
+            ),
+            ServantCapability(
+                "security_assessment",
+                "セキュリティ評価",
+                ["technology_name"],
+                ["security_report"],
+                complexity=5
+            )
+        ]
+        
+        super().__init__(
+            servant_id="W01",
+            servant_name="TechScout",
+            specialization="technology_research",
+            capabilities=capabilities
+        )
+        # 互換性のため
+        self.name = self.servant_name
         self.metrics = {
             "total_researches": 0,
             "research_topics": defaultdict(int),
@@ -37,15 +68,40 @@ class TechScout(WizardServant):
         self.research_cache = {}
         self.cache_ttl = timedelta(hours=24)
     
-    def get_capabilities(self) -> List[ServantCapability]:
-        """サーバントの能力リストを返す"""
-        return [
-            ServantCapability.ANALYSIS,
-            ServantCapability.MONITORING,
-            ServantCapability.SECURITY
-        ]
+    def get_specialized_capabilities(self) -> List[ServantCapability]:
+        """専門特化能力の取得"""
+        return self.capabilities
     
-    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
+        """タスク実行（Elder Servant基底クラス用）"""
+        # ServantRequestに変換
+        request = ServantRequest(
+            task_id=task.get("task_id", ""),
+            task_type=task.get("task_type", "technology_research"),
+            priority=task.get("priority", "medium"),
+            payload=task.get("payload", {}),
+            context=task.get("context", {})
+        )
+        
+        # cast_research_spellを呼び出し
+        result = await self.cast_research_spell(request.payload)
+        
+        # TaskResultに変換
+        return TaskResult(
+            task_id=request.task_id,
+            servant_id=self.servant_id,
+            status=TaskStatus.COMPLETED if result.get("status") == "success" else TaskStatus.FAILED,
+            result_data=result,
+            error_message=result.get("error"),
+            execution_time_ms=0.0,
+            quality_score=result.get("confidence_score", 0.0)
+        )
+    
+    async def cast_research_spell(self, query: Dict[str, Any]) -> Dict[str, Any]:
+        """研究魔法詠唱（WizardServant抽象メソッド実装）"""
+        return await self._execute_research_task(query)
+    
+    async def _execute_research_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """タスクを実行"""
         start_time = datetime.now()
         
@@ -98,7 +154,7 @@ class TechScout(WizardServant):
             
             # 4賢者との協調（必要な場合）
             if task.get("consult_sages") and result.get("status") == "success":
-                sage_advice = await self.collaborate_with_sages({
+                sage_advice = await self.collaborate_with_sages("knowledge", {
                     "request_type": "technology_research",
                     "context": task,
                     "result": result
@@ -694,24 +750,3 @@ class TechScout(WizardServant):
                 "cache_hits": self.metrics["cache_hits"]
             }
         }
-    
-    async def process_request(self, request: ServantRequest[Dict[str, Any]]) -> ServantResponse[Dict[str, Any]]:
-        """ElderServantBase準拠のリクエスト処理"""
-        result = await self.execute_task(request.data)
-        
-        return ServantResponse(
-            task_id=request.task_id,
-            status=result.get("status", "failed"),
-            data=result,
-            errors=result.get("errors", []) if isinstance(result.get("errors"), list) else [result.get("error", "")] if result.get("error") else [],
-            warnings=result.get("warnings", []),
-            metrics=result.get("metrics", {})
-        )
-    
-    def validate_request(self, request: ServantRequest[Dict[str, Any]]) -> bool:
-        """リクエストの妥当性検証"""
-        if not request.data:
-            return False
-        
-        action = request.data.get("action")
-        return action in self.get_capabilities()

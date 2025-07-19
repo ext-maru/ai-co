@@ -22,6 +22,7 @@ from core.lightweight_logger import get_logger
 from core.elders_legacy import EldersFlowLegacy, DomainBoundary, enforce_boundary
 from libs.tracking.unified_tracking_db import UnifiedTrackingDB
 from libs.elder_system.flow.elder_flow_orchestrator import ElderFlowOrchestrator
+from libs.elder_system.flow.pid_lock_manager import PIDLockManager, PIDLockContext
 
 logger = get_logger("elder_flow_engine")
 
@@ -35,6 +36,7 @@ class ElderFlowEngine(EldersFlowLegacy):
         self.tracking_db = UnifiedTrackingDB()
         self.active_flows = {}
         self.workflows = {}
+        self.pid_lock_manager = PIDLockManager(lock_dir="/tmp/elder_flow_locks")
         
     @enforce_boundary(DomainBoundary.MONITORING, "execute_elder_flow")
     async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
@@ -61,6 +63,17 @@ class ElderFlowEngine(EldersFlowLegacy):
         priority = request.get("priority", "medium")
         flow_id = str(uuid.uuid4())
         
+        # PIDロックのチェック
+        lock_info = self.pid_lock_manager.is_task_locked(task_name)
+        if lock_info:
+            logger.warning(f"🔒 タスク '{task_name}' は既に実行中です (PID: {lock_info['pid']}, 開始時刻: {lock_info['started_at']})")
+            return {
+                "error": "Task already running",
+                "task_name": task_name,
+                "running_pid": lock_info['pid'],
+                "started_at": lock_info['started_at']
+            }
+        
         logger.info(f"🌊 Elder Flow実行開始: {task_name} (ID: {flow_id})")
         
         # フロー実行データ
@@ -77,9 +90,11 @@ class ElderFlowEngine(EldersFlowLegacy):
         self.active_flows[flow_id] = flow_data
         
         try:
-            # Phase 1: 4賢者会議
-            logger.info("🧙‍♂️ Phase 1: 4賢者会議開始")
-            flow_data["phase"] = "SAGE_COUNCIL"
+            # PIDロックを取得してタスクを実行
+            with PIDLockContext(self.pid_lock_manager, task_name, flow_data):
+                # Phase 1: 4賢者会議
+                logger.info("🧙‍♂️ Phase 1: 4賢者会議開始")
+                flow_data["phase"] = "SAGE_COUNCIL"
             
             sage_council_result = await self.orchestrator.execute_sage_council({
                 "task_name": task_name,

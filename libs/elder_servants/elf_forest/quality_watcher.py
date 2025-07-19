@@ -17,8 +17,9 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import statistics
 
-from libs.elder_servants.base.specialized_servants import (
-    ElfServant
+from libs.elder_servants.base.specialized_servants import ElfServant
+from libs.elder_servants.base.elder_servant import (
+    ServantRequest, ServantResponse, ServantCapability, TaskResult, TaskStatus
 )
 
 
@@ -26,11 +27,38 @@ class QualityWatcher(ElfServant):
     """品質監視専門サーバント"""
     
     def __init__(self):
+        capabilities = [
+            ServantCapability(
+                "quality_monitoring",
+                "コード品質監視",
+                ["code_path", "quality_criteria"],
+                ["quality_report"],
+                complexity=4
+            ),
+            ServantCapability(
+                "iron_will_validation",
+                "Iron Will基準検証",
+                ["project_path"],
+                ["compliance_report"],
+                complexity=5
+            ),
+            ServantCapability(
+                "continuous_monitoring",
+                "継続的品質監視",
+                ["monitoring_config"],
+                ["monitoring_status"],
+                complexity=3
+            )
+        ]
+        
         super().__init__(
             servant_id="E01",
-            name="QualityWatcher",
-            specialization="quality_monitoring"
+            servant_name="QualityWatcher",
+            specialization="quality_monitoring",
+            capabilities=capabilities
         )
+        # 互換性のため
+        self.name = self.servant_name
         self.metrics = {
             "total_quality_checks": 0,
             "alerts_generated": 0,
@@ -50,25 +78,40 @@ class QualityWatcher(ElfServant):
         # 監視履歴
         self.monitoring_history = []
     
-    def get_capabilities(self) -> List[str]:
-        """サーバントの能力リストを返す"""
-        return [
-            "monitor_code_quality",
-            "check_iron_will_compliance",
-            "analyze_test_coverage",
-            "monitor_performance",
-            "security_scan",
-            "dependency_audit",
-            "setup_continuous_monitoring",
-            "analyze_quality_trends",
-            "evaluate_quality_gate",
-            "generate_quality_report",
-            "process_quality_alert",
-            "enforce_iron_will",
-            "calculate_quality_score"
-        ]
+    def get_specialized_capabilities(self) -> List[ServantCapability]:
+        """専門特化能力の取得"""
+        return self.capabilities
     
-    async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
+        """タスク実行（Elder Servant基底クラス用）"""
+        # ServantRequestに変換
+        request = ServantRequest(
+            task_id=task.get("task_id", ""),
+            task_type=task.get("task_type", "quality_monitoring"),
+            priority=task.get("priority", "medium"),
+            payload=task.get("payload", {}),
+            context=task.get("context", {})
+        )
+        
+        # perform_forest_dutyを呼び出し
+        result = await self.perform_forest_duty(request.payload)
+        
+        # TaskResultに変換
+        return TaskResult(
+            task_id=request.task_id,
+            servant_id=self.servant_id,
+            status=TaskStatus.COMPLETED if result.get("status") == "success" else TaskStatus.FAILED,
+            result_data=result,
+            error_message=result.get("error"),
+            execution_time_ms=0.0,
+            quality_score=result.get("quality_score", 0.0)
+        )
+    
+    async def perform_forest_duty(self, watch_target: Dict[str, Any]) -> Dict[str, Any]:
+        """森の任務実行（ElfServant抽象メソッド実装）"""
+        return await self._execute_monitoring_task(watch_target)
+    
+    async def _execute_monitoring_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """タスクを実行"""
         start_time = datetime.now()
         
@@ -105,7 +148,7 @@ class QualityWatcher(ElfServant):
                 result = {
                     "status": "error",
                     "error": f"Unknown action: {action}",
-                    "recovery_suggestion": f"Use one of: {', '.join(self.get_capabilities())}"
+                    "recovery_suggestion": "Use one of the supported actions"
                 }
             
             # メトリクス更新
@@ -123,7 +166,7 @@ class QualityWatcher(ElfServant):
             
             # 4賢者との協調（必要な場合）
             if task.get("consult_sages") and result.get("status") == "success":
-                sage_advice = await self.collaborate_with_sages({
+                sage_advice = await self.collaborate_with_sages("incident", {
                     "request_type": "quality_monitoring",
                     "context": task,
                     "result": result
@@ -981,24 +1024,3 @@ class QualityWatcher(ElfServant):
                 "total_checks": len(self.metrics["monitoring_times"])
             }
         }
-    
-    async def process_request(self, request: ServantRequest[Dict[str, Any]]) -> ServantResponse[Dict[str, Any]]:
-        """ElderServantBase準拠のリクエスト処理"""
-        result = await self.execute_task(request.data)
-        
-        return ServantResponse(
-            task_id=request.task_id,
-            status=result.get("status", "failed"),
-            data=result,
-            errors=result.get("errors", []) if isinstance(result.get("errors"), list) else [result.get("error", "")] if result.get("error") else [],
-            warnings=result.get("warnings", []),
-            metrics=result.get("metrics", {})
-        )
-    
-    def validate_request(self, request: ServantRequest[Dict[str, Any]]) -> bool:
-        """リクエストの妥当性検証"""
-        if not request.data:
-            return False
-        
-        action = request.data.get("action")
-        return action in self.get_capabilities()

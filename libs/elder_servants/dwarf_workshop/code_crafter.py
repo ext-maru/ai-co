@@ -150,22 +150,40 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         ]
     
     async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
-        """タスク実行"""
+        """タスク実行 - Iron Will準拠の堅牢な実装"""
         start_time = datetime.now()
         task_id = task.get("task_id", "unknown")
         task_type = task.get("task_type", "")
+        
+        # 入力検証（Iron Will要件）
+        if not task:
+            return self._create_error_result(
+                task_id, "Task cannot be empty", start_time
+            )
         
         # 新しいリクエスト形式への対応
         if not task_type and "type" in task:
             task_type = task["type"]
         
+        if not task_type:
+            return self._create_error_result(
+                task_id, "Task type is required", start_time
+            )
+        
         try:
             self.logger.info(f"Executing task {task_id}: {task_type}")
             
+            # メトリクス収集開始
+            self._start_metrics_collection(task_id, task_type)
+            
             result_data = {}
             
-            # ペイロードから仕様を取得
-            payload = task.get("payload", {})
+            # ペイロードから仕様を取得 (taskに直接展開されている場合とpayloadキーがある場合の両方に対応)
+            if "payload" in task:
+                payload = task["payload"]
+            else:
+                # task自体がpayloadデータを含んでいる場合
+                payload = {k: v for k, v in task.items() if k not in ["task_id", "task_type"]}
             
             if task_type == "generate_function":
                 result_data = await self._generate_function(payload.get("spec", {}))
@@ -173,6 +191,27 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 result_data = await self._generate_class(payload.get("spec", {}))
             elif task_type == "generate_module":
                 result_data = await self._generate_module(payload.get("spec", {}))
+            elif task_type == "python_implementation":
+                # テスト用: python_implementationをgenerate_functionとして処理
+                # payloadから直接または入れ子構造から取得
+                if "spec" in payload:
+                    spec = payload["spec"]
+                    function_spec = {
+                        "name": spec.get("name", payload.get("function_name", "unnamed_function")),
+                        "parameters": spec.get("parameters", payload.get("parameters", [])),
+                        "return_type": spec.get("return_type", payload.get("return_type", "Any")),
+                        "docstring": spec.get("docstring", payload.get("description", "")),
+                        "body": spec.get("body", "pass  # TODO: Implement function logic")
+                    }
+                else:
+                    function_spec = {
+                        "name": payload.get("function_name", "unnamed_function"),
+                        "parameters": payload.get("parameters", []),
+                        "return_type": payload.get("return_type", "Any"),
+                        "docstring": payload.get("description", ""),
+                        "body": "pass  # TODO: Implement function logic"
+                    }
+                result_data = await self._generate_function(function_spec)
             elif task_type == "refactor_code":
                 result_data = await self._refactor_code(
                     payload.get("code", ""),
@@ -197,6 +236,9 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
             
+            # メトリクス収集終了
+            self._end_metrics_collection(task_id, quality_score)
+            
             return TaskResult(
                 task_id=task_id,
                 servant_id=self.servant_id,
@@ -206,27 +248,45 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 quality_score=quality_score
             )
             
+        except ValueError as e:
+            self.logger.error(f"Task {task_id} validation error: {str(e)}")
+            return self._create_error_result(
+                task_id, f"Validation error: {str(e)}", start_time
+            )
+        except TypeError as e:
+            self.logger.error(f"Task {task_id} type error: {str(e)}")
+            return self._create_error_result(
+                task_id, f"Type error: {str(e)}", start_time
+            )
         except Exception as e:
-            self.logger.error(f"Task {task_id} failed: {str(e)}")
-            execution_time = (datetime.now() - start_time).total_seconds() * 1000
-            
-            return TaskResult(
-                task_id=task_id,
-                servant_id=self.servant_id,
-                status=TaskStatus.FAILED,
-                error_message=str(e),
-                execution_time_ms=execution_time,
-                quality_score=0.0
+            self.logger.error(f"Task {task_id} failed: {str(e)}", exc_info=True)
+            return self._create_error_result(
+                task_id, f"Unexpected error: {str(e)}", start_time
             )
     
     async def _generate_function(self, spec: Dict[str, Any]) -> Dict[str, Any]:
-        """関数生成"""
-        name = spec.get("name", "unnamed_function")
-        params = spec.get("parameters", [])
-        return_type = spec.get("return_type", "Any")
-        docstring = spec.get("docstring", "")
-        body = spec.get("body", "pass")
-        decorators = spec.get("decorators", [])
+        """関数生成 - Iron Will準拠の堅牢な実装"""
+        try:
+            # 入力検証
+            if not spec:
+                raise ValueError("Function specification cannot be empty")
+            
+            name = spec.get("name", "unnamed_function")
+            params = spec.get("parameters", [])
+            return_type = spec.get("return_type", "Any")
+            docstring = spec.get("docstring", "")
+            body = spec.get("body", "pass")
+            decorators = spec.get("decorators", [])
+            
+            # 名前の検証
+            if not name or not name.isidentifier():
+                name = "unnamed_function"
+                self.logger.warning(f"Invalid function name, using default: {name}")
+            
+            # パラメータの検証
+            if not isinstance(params, list):
+                params = []
+                self.logger.warning("Invalid parameters format, using empty list")
         
         # パラメータ文字列の生成
         param_strings = []
@@ -271,13 +331,31 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         }
     
     async def _generate_class(self, spec: Dict[str, Any]) -> Dict[str, Any]:
-        """クラス生成"""
-        name = spec.get("name", "UnnamedClass")
-        base_classes = spec.get("base_classes", [])
-        docstring = spec.get("docstring", "")
-        attributes = spec.get("attributes", [])
-        methods = spec.get("methods", [])
-        decorators = spec.get("decorators", [])
+        """クラス生成 - Iron Will準拠の堅牢な実装"""
+        try:
+            # 入力検証
+            if not spec:
+                raise ValueError("Class specification cannot be empty")
+            
+            name = spec.get("name", "UnnamedClass")
+            base_classes = spec.get("base_classes", [])
+            docstring = spec.get("docstring", "")
+            attributes = spec.get("attributes", [])
+            methods = spec.get("methods", [])
+            decorators = spec.get("decorators", [])
+            
+            # 名前の検証
+            if not name or not name.isidentifier():
+                name = "UnnamedClass"
+                self.logger.warning(f"Invalid class name, using default: {name}")
+            
+            # リストの検証
+            if not isinstance(base_classes, list):
+                base_classes = []
+            if not isinstance(attributes, list):
+                attributes = []
+            if not isinstance(methods, list):
+                methods = []
         
         # 基底クラス文字列
         bases_str = f"({', '.join(base_classes)})" if base_classes else ""
@@ -339,13 +417,28 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         }
     
     async def _generate_module(self, spec: Dict[str, Any]) -> Dict[str, Any]:
-        """モジュール生成"""
-        name = spec.get("name", "unnamed_module")
-        docstring = spec.get("docstring", "")
-        imports = spec.get("imports", [])
-        constants = spec.get("constants", [])
-        functions = spec.get("functions", [])
-        classes = spec.get("classes", [])
+        """モジュール生成 - Iron Will準拠の堅牢な実装"""
+        try:
+            # 入力検証
+            if not spec:
+                raise ValueError("Module specification cannot be empty")
+            
+            name = spec.get("name", "unnamed_module")
+            docstring = spec.get("docstring", "")
+            imports = spec.get("imports", [])
+            constants = spec.get("constants", [])
+            functions = spec.get("functions", [])
+            classes = spec.get("classes", [])
+            
+            # 名前の検証
+            if not name or not all(part.isidentifier() for part in name.split('.')):
+                name = "unnamed_module"
+                self.logger.warning(f"Invalid module name, using default: {name}")
+            
+            # リストの検証
+            for var_name, default in [("imports", []), ("constants", []), ("functions", []), ("classes", [])]:
+                if not isinstance(locals()[var_name], list):
+                    locals()[var_name] = default
         
         module_parts = []
         
@@ -588,26 +681,58 @@ class {test_class_name}(unittest.TestCase):
             }
     
     async def _validate_code_quality(self, result_data: Dict[str, Any]) -> float:
-        """コード品質検証"""
+        """コード品質検証 - Iron Will準拠"""
         if "error" in result_data:
             return 0.0
         
-        quality_score = 50.0  # 基本スコア
+        quality_score = 0.0  # 基本スコアを0から開始
         
-        # コードが存在する
+        # 1. コードが存在する（基本要件: 15%）
         if "code" in result_data and result_data["code"]:
-            quality_score += 20.0
+            quality_score += 15.0
+            code = result_data["code"]
             
-            # 構文的に正しい
+            # 2. 構文的に正しい（基本要件: 15%）
             try:
-                ast.parse(result_data["code"])
-                quality_score += 20.0
-            except:
-                pass
-            
-            # フォーマットされている
-            if self._is_formatted(result_data["code"]):
-                quality_score += 10.0
+                tree = ast.parse(code)
+                quality_score += 15.0
+                
+                # 3. エラーハンドリング（Iron Will要件: 20%）
+                has_error_handling = any(
+                    isinstance(node, ast.Try) for node in ast.walk(tree)
+                )
+                if has_error_handling:
+                    quality_score += 20.0
+                    
+                # 4. ドキュメント品質（Iron Will要件: 15%）
+                doc_score = self._evaluate_documentation_quality(tree)
+                quality_score += doc_score * 15.0
+                
+                # 5. 型ヒント使用（Iron Will要件: 10%）
+                type_hint_score = self._evaluate_type_hints(tree)
+                quality_score += type_hint_score * 10.0
+                
+                # 6. コード複雑度（Iron Will要件: 10%）
+                complexity = self._calculate_complexity(tree)
+                if complexity <= 10:
+                    quality_score += 10.0
+                elif complexity <= 20:
+                    quality_score += 5.0
+                    
+                # 7. フォーマット品質（Iron Will要件: 10%）
+                if self._is_formatted(code):
+                    quality_score += 10.0
+                    
+                # 8. セキュリティチェック（Iron Will要件: 5%）
+                security_score = self._evaluate_security(code)
+                quality_score += security_score * 5.0
+                
+            except SyntaxError as e:
+                self.logger.error(f"Syntax error in generated code: {e}")
+                quality_score += 0.0  # 構文エラーは品質スコア0
+            except Exception as e:
+                self.logger.error(f"Error during quality validation: {e}")
+                # 部分的なスコアを維持
         
         return min(quality_score, 100.0)
     
@@ -793,8 +918,109 @@ class {test_class_name}(unittest.TestCase):
     
     def _is_formatted(self, code: str) -> bool:
         """フォーマット済みかチェック"""
-        formatted = self._format_code(code)
-        return formatted == code
+        try:
+            formatted = self._format_code(code)
+            return formatted == code
+        except Exception as e:
+            self.logger.warning(f"Format check failed: {e}")
+            return False
+    
+    def _evaluate_documentation_quality(self, tree: ast.AST) -> float:
+        """ドキュメント品質評価"""
+        try:
+            total_items = 0
+            documented_items = 0
+            
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.AsyncFunctionDef)):
+                    total_items += 1
+                    if ast.get_docstring(node):
+                        documented_items += 1
+            
+            if total_items == 0:
+                return 1.0  # コードがない場合は満点
+            
+            return documented_items / total_items
+        except Exception as e:
+            self.logger.error(f"Documentation evaluation failed: {e}")
+            return 0.0
+    
+    def _evaluate_type_hints(self, tree: ast.AST) -> float:
+        """型ヒント使用率評価"""
+        try:
+            total_functions = 0
+            typed_functions = 0
+            
+            for node in ast.walk(tree):
+                if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    total_functions += 1
+                    # 戻り値の型ヒントチェック
+                    if node.returns is not None:
+                        typed_functions += 1
+                    # パラメータの型ヒントチェック
+                    elif any(arg.annotation is not None for arg in node.args.args):
+                        typed_functions += 0.5
+            
+            if total_functions == 0:
+                return 1.0  # 関数がない場合は満点
+            
+            return min(typed_functions / total_functions, 1.0)
+        except Exception as e:
+            self.logger.error(f"Type hint evaluation failed: {e}")
+            return 0.0
+    
+    def _evaluate_security(self, code: str) -> float:
+        """セキュリティ評価"""
+        try:
+            security_score = 1.0
+            
+            # 危険なパターンのチェック
+            dangerous_patterns = [
+                'eval(',
+                'exec(',
+                '__import__',
+                'compile(',
+                'globals(',
+                'locals(',
+            ]
+            
+            for pattern in dangerous_patterns:
+                if pattern in code:
+                    security_score -= 0.2
+            
+            return max(security_score, 0.0)
+        except Exception as e:
+            self.logger.error(f"Security evaluation failed: {e}")
+            return 0.5  # エラー時は中間スコア
+    
+    def _create_error_result(self, task_id: str, error_message: str, start_time: datetime) -> TaskResult:
+        """エラー結果作成"""
+        execution_time = (datetime.now() - start_time).total_seconds() * 1000
+        
+        return TaskResult(
+            task_id=task_id,
+            servant_id=self.servant_id,
+            status=TaskStatus.FAILED,
+            error_message=error_message,
+            execution_time_ms=execution_time,
+            quality_score=0.0
+        )
+    
+    def _start_metrics_collection(self, task_id: str, task_type: str):
+        """メトリクス収集開始"""
+        try:
+            # メトリクス収集の実装（将来の拡張用）
+            self.logger.debug(f"Started metrics collection for task {task_id} of type {task_type}")
+        except Exception as e:
+            self.logger.warning(f"Failed to start metrics collection: {e}")
+    
+    def _end_metrics_collection(self, task_id: str, quality_score: float):
+        """メトリクス収集終了"""
+        try:
+            # メトリクス収集の実装（将来の拡張用）
+            self.logger.debug(f"Ended metrics collection for task {task_id} with quality score {quality_score}")
+        except Exception as e:
+            self.logger.warning(f"Failed to end metrics collection: {e}")
     
     async def process_request(self, request: "ServantRequest[Dict[str, Any]]") -> "ServantResponse[Dict[str, Any]]":
         """
@@ -843,7 +1069,7 @@ class {test_class_name}(unittest.TestCase):
     
     def validate_request(self, request: "ServantRequest[Dict[str, Any]]") -> bool:
         """
-        リクエストの妥当性検証
+        リクエストの妥当性検証 - Iron Will準拠
         
         Args:
             request: 検証するリクエスト
@@ -851,23 +1077,47 @@ class {test_class_name}(unittest.TestCase):
         Returns:
             bool: 有効な場合True
         """
-        if not request.payload:
+        try:
+            # リクエスト自体の検証
+            if not request:
+                self.logger.error("Request is None")
+                return False
+            
+            # ペイロードの検証
+            if not request.payload:
+                self.logger.error("Request payload is empty")
+                return False
+            
+            # タスクタイプの検証
+            task_type = request.task_type
+            if not task_type:
+                self.logger.error("Task type is not specified")
+                return False
+            
+            # サポートされているタスクタイプかチェック
+            supported_types = [
+                "generate_function", "generate_class", "generate_module",
+                "refactor_code", "add_type_hints", "optimize_code",
+                "generate_test_code", "code_analysis", "python_implementation",
+                "class_generation", "module_generation", "function_generation",
+                "requirement_analysis"
+            ]
+            
+            if task_type not in supported_types:
+                self.logger.error(f"Unsupported task type: {task_type}")
+                return False
+            
+            # ペイロードの内容検証
+            if task_type in ["generate_function", "function_generation", "python_implementation"]:
+                if "spec" not in request.payload and "name" not in request.payload:
+                    self.logger.error("Function generation requires 'spec' or 'name' in payload")
+                    return False
+            
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Request validation error: {e}")
             return False
-        
-        task_type = request.task_type
-        if not task_type:
-            return False
-        
-        # サポートされているタスクタイプかチェック
-        supported_types = [
-            "generate_function", "generate_class", "generate_module",
-            "refactor_code", "add_type_hints", "optimize_code",
-            "generate_test_code", "code_analysis", "python_implementation",
-            "class_generation", "module_generation", "function_generation",
-            "requirement_analysis"
-        ]
-        
-        return task_type in supported_types
     
     def get_capabilities(self) -> List[str]:
         """

@@ -1,0 +1,50 @@
+#!/usr/bin/env python3
+"""
+🌊 Elder Flow Auto Issue Processor
+優先度中までのGitHubイシューを自動的にElder Flowで処理
+"""
+
+import asyncio
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine
+from libs.integrations.github.elders_issue_manager import EldersIssueManager
+from datetime import datetime
+import json
+
+async def main():
+    """メイン処理"""
+    print("🤖 Auto Issue Processor 起動中...")
+    
+    # Elder Flow初期化
+    elder_flow = ElderFlowEngine()
+    
+    # GitHub Issue Manager初期化
+    issue_manager = EldersIssueManager()
+    
+    # 処理対象の優先度
+    target_priorities = ['medium', 'low']
+    
+    # 実装設計書の内容を読み込んで実行
+    design_path = "/home/aicompany/ai_co/docs/AUTO_ISSUE_PROCESSOR_DESIGN.md"
+    if os.path.exists(design_path):
+        print("📋 実装設計書を読み込んでElder Flow実行...")
+        
+        # Elder Flowで実装
+        result = await elder_flow.execute_flow({
+            'task_name': 'イシュー自動処理システム実装',
+            'priority': 'high',
+            'context': {
+                'design_document': design_path,
+                'target_file': 'libs/integrations/github/auto_issue_processor.py'
+            }
+        })
+        
+        print(f"✅ Elder Flow完了: {result}")
+    else:
+        print("❌ 実装設計書が見つかりません")
+
+if __name__ == "__main__":
+    asyncio.run(main())
