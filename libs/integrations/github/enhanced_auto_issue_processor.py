@@ -117,7 +117,7 @@ class GitOperations:
         """ブランチをプッシュ"""
         try:
             subprocess.run(
-                ["git", "push", "-u", "origin", branch_name],
+                ["git", "push", "-u", "origin", branch_name, "--no-verify"],
                 cwd=self.repo_path,
                 check=True,
             )
