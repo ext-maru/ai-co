@@ -261,7 +261,7 @@ class UTTTaskLog(Base):
     description = Column(Text)
     old_value = Column(JSON)  # 変更前の値
     new_value = Column(JSON)  # 変更後の値
-    metadata = Column(JSON)   # 追加メタデータ
+    log_metadata = Column(JSON)   # 追加メタデータ
     
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
     

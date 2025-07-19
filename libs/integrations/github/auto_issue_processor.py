@@ -378,6 +378,9 @@ class AutoIssueProcessor(EldersServiceLegacy):
             # 処理記録
             await self.limiter.record_processing(issue.number)
             
+            # 複雑度評価（コメント用）
+            complexity = await self.evaluator.evaluate(issue)
+            
             # 4賢者に相談
             sage_advice = await self.consult_four_sages(issue)
             
