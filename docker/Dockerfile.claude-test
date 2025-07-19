@@ -1,0 +1,36 @@
+# Claude CLI テスト環境用Dockerfile
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH=/app
+
+# システムパッケージインストール
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
+
+# Claude CLI インストール (モックバージョン)
+RUN echo '#!/bin/bash\necho "Claude CLI Mock Response"' > /usr/local/bin/claude \
+    && chmod +x /usr/local/bin/claude
+
+WORKDIR /app
+
+# Python依存関係
+COPY requirements.txt requirements-celery.txt ./
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir -r requirements-celery.txt
+
+# テスト用ディレクトリ作成
+RUN mkdir -p /app/logs /app/output /app/db
+
+# アプリケーションコピー
+COPY . /app/
+
+# テスト実行用ユーザー
+RUN useradd --system --create-home --shell /bin/bash tester
+RUN chown -R tester:tester /app
+USER tester
+
+CMD ["pytest", "tests/unit/test_enhanced_task_worker_celery.py", "-v"]

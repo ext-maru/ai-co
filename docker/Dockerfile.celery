@@ -1,0 +1,56 @@
+# Elders Guild Celery Worker Dockerfile
+# OSS移行プロジェクト - Celery統合用
+
+FROM python:3.11-slim
+
+# メタデータ
+LABEL maintainer="Elders Guild"
+LABEL version="1.0.0"
+LABEL description="Celery Worker for Elders Guild OSS Migration"
+
+# 環境変数
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONPATH=/app
+ENV CELERY_BROKER_URL=redis://redis:6379/0
+ENV CELERY_RESULT_BACKEND=redis://redis:6379/0
+
+# システムパッケージのインストール
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    git \
+    curl \
+    procps \
+    && rm -rf /var/lib/apt/lists/*
+
+# Pythonパッケージのインストール
+COPY requirements.txt /tmp/
+COPY requirements-celery.txt /tmp/
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements-celery.txt
+
+# アプリケーションディレクトリ作成
+WORKDIR /app
+
+# ログディレクトリ作成
+RUN mkdir -p /app/logs /app/output /app/db
+
+# アプリケーションファイルをコピー
+COPY . /app/
+
+# 権限設定
+RUN chmod +x /app/workers/enhanced_task_worker_celery.py
+RUN chmod +x /app/scripts/*.sh 2>/dev/null || true
+
+# Celeryユーザー作成
+RUN useradd --system --create-home --shell /bin/bash celery
+RUN chown -R celery:celery /app
+USER celery
+
+# ヘルスチェック
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD python -c "from workers.enhanced_task_worker_celery import app; app.control.inspect().ping()" || exit 1
+
+# デフォルトコマンド
+CMD ["celery", "-A", "workers.enhanced_task_worker_celery", "worker", "--loglevel=info"]
