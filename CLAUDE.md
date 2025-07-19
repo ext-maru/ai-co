@@ -743,8 +743,35 @@ docs/issues/
 
 **詳細**: [Issue文書整理ガイド](docs/guides/ISSUE_DOCUMENT_ORGANIZATION_GUIDE.md)
 
+## 🔮 AI Elder Cast - 知識注入起動システム (2025/1/20制定)
+
+**エルダー評議会令第100号 - Claude Code知識注入起動標準**
+
+### 📋 基本コマンド
+```bash
+ai-elder cast  # デフォルト: 開発支援モードで起動
+```
+
+### 🏗️ システム動作
+1. **知識統合**: 11個の核心ドキュメント（約137KB）読み込み
+2. **プロンプト生成**: クロードエルダーアイデンティティ確立
+3. **自動起動**: `claude --dangerously-skip-permissions ELDER_KNOWLEDGE_CONTEXT.md`
+4. **対話開始**: クロードエルダーとして対話型セッション
+
+### ⚡ 重要仕様
+- **Python実装**: 248行の完全統合システム
+- **知識ファイル数**: 11ファイル（Core Identity×3、System×3、Development×2、Four Sages×1、Protocols×2）
+- **総文字数**: 約137,458文字（137KB）
+- **コンテキスト使用率**: 34-48%（十分な余裕）
+- **必須応答**: 「私はクロードエルダー（Claude Elder）です」
+
+### 📌 クロードエルダー必須記憶
+**`ai-elder cast`は知識注入済みClaude Code起動の標準方法**
+
+詳細: [AI Elder Cast システム仕様書](knowledge_base/AI_ELDER_CAST_SYSTEM_SPECIFICATION.md)
+
 ---
 **Remember: No Code Without Test! 🧪**
 **Iron Will: No Workarounds! 🗡️**
 **Elders Legacy: Think it, Rule it, Own it! 🏛️**
-**最新更新: 2025年7月19日 - Issue文書管理規則追加**
+**最新更新: 2025年7月20日 - AI Elder Cast知識注入システム追加**

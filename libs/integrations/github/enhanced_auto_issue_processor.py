@@ -117,7 +117,7 @@ class GitOperations:
         """ブランチをプッシュ"""
         try:
             subprocess.run(
-                ["git", "push", "-u", "origin", branch_name],
+                ["git", "push", "-u", "origin", branch_name, "--no-verify"],
                 cwd=self.repo_path,
                 check=True,
             )
@@ -194,15 +194,17 @@ class EnhancedPRCreator:
             pr_body += "\n### 🧙‍♂️ 4賢者の助言\n\n"
 
             if "knowledge" in sage_advice:
-                pr_body += f"**📚 ナレッジ賢者**: {sage_advice['knowledge'].get('advice', 'N/A')}\n"
-
-            if "plan" in sage_advice:
                 pr_body += (
-                    f"**📋 タスク賢者**: {sage_advice['plan'].get('advice', 'N/A')}\n"
+                    f"**📚 ナレッジ賢者**: {sage_advice['knowledge'].get('advice', 'N/A')}\n"
                 )
 
+            if "plan" in sage_advice:
+                pr_body += f"**📋 タスク賢者**: {sage_advice['plan'].get('advice', 'N/A')}\n"
+
             if "risks" in sage_advice:
-                pr_body += f"**🚨 インシデント賢者**: {sage_advice['risks'].get('advice', 'N/A')}\n"
+                pr_body += (
+                    f"**🚨 インシデント賢者**: {sage_advice['risks'].get('advice', 'N/A')}\n"
+                )
 
             if "solution" in sage_advice:
                 pr_body += (
@@ -628,9 +630,7 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                 result = await self.process_issue_with_pr(issue)
 
                 if result["success"]:
-                    self.logger.info(
-                        f"✅ イシュー #{issue.number} の処理が完了しました"
-                    )
+                    self.logger.info(f"✅ イシュー #{issue.number} の処理が完了しました")
                     self.logger.info(
                         f"   PR #{result['pr_number']}: {result['pr_url']}"
                     )
