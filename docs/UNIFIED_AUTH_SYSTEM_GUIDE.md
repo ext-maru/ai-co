@@ -790,9 +790,9 @@ def add_security_headers(response):
 
 ### 外部参考資料
 
-- [JWT RFC 7519](https://tools.ietf.org/html/rfc7519)
-- [TOTP RFC 6238](https://tools.ietf.org/html/rfc6238)
-- [OAuth 2.0 RFC 6749](https://tools.ietf.org/html/rfc6749)
+- [JWT RFC 7519](https://datatracker.ietf.org/doc/html/rfc7519)
+- [TOTP RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238)
+- [OAuth 2.0 RFC 6749](https://datatracker.ietf.org/doc/html/rfc6749)
 - [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html)
 
 ---
