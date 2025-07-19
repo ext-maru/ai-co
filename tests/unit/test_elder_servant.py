@@ -8,10 +8,7 @@ Issue #69対応: EldersServiceLegacy継承とTDD品質保証
 import unittest
 from datetime import datetime
 
-from libs.core.elders_legacy import (
-    EldersLegacyDomain,
-    EldersServiceLegacy,
-)
+from libs.core.elders_legacy import EldersLegacyDomain, EldersServiceLegacy
 from libs.elder_servants.base.elder_servant import (
     ElderServant,
     ServantCapability,

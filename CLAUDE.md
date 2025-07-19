@@ -109,7 +109,7 @@ RAG: 「最適解を発見しました」
 
 # 2. TDD実装
 test_login_success()  # 🔴 Red
-login(user, pass)     # 🟢 Green  
+login(user, pass)     # 🟢 Green
 clean_up_code()       # 🔵 Refactor
 git commit -m "feat: ログイン機能実装"  # 🚀 Ship
 ```

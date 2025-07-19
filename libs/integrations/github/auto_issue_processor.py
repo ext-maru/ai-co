@@ -89,17 +89,15 @@ class AutoIssueElderFlowEngine:
         self.elder_flow = ActualElderFlowEngine()
         # Ensure environment variables are loaded for PR creator
         github_token = os.getenv("GITHUB_TOKEN")
-        repo_owner = os.getenv("GITHUB_REPO_OWNER") 
+        repo_owner = os.getenv("GITHUB_REPO_OWNER")
         repo_name = os.getenv("GITHUB_REPO_NAME")
-        
+
         if not github_token or not repo_owner or not repo_name:
             # Use dummy PR creator if config is missing
             self.pr_creator = DummyPRCreator()
         else:
             self.pr_creator = GitHubCreatePullRequestImplementation(
-                token=github_token,
-                repo_owner=repo_owner, 
-                repo_name=repo_name
+                token=github_token, repo_owner=repo_owner, repo_name=repo_name
             )
         self.logger = logger
 
@@ -354,7 +352,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
         github_token = os.getenv("GITHUB_TOKEN")
         repo_owner = os.getenv("GITHUB_REPO_OWNER", "ext-maru")
         repo_name = os.getenv("GITHUB_REPO_NAME", "ai-co")
-        
+
         if not github_token:
             raise ValueError("GITHUB_TOKEN environment variable not set")
 

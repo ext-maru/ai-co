@@ -13,9 +13,9 @@
 - **即座フィードバック**: 「動く？」「これで良い？」「次何する？」
 - **シンプルコミュニケーション**: 複雑な承認プロセスなし
 
-### 🔄 Simplicity (シンプリシティ) 
+### 🔄 Simplicity (シンプリシティ)
 - **最小実装**: 必要最小限の機能から開始
-- **YAGNI原則**: 今必要でないものは作らない  
+- **YAGNI原則**: 今必要でないものは作らない
 - **シンプル設計**: 複雑な抽象化を避ける
 
 ### 📝 Feedback (フィードバック)
@@ -41,7 +41,7 @@
 def test_login_success():
     assert login("user", "pass") == True
 
-# 2. Green: 最小実装でテストを通す  
+# 2. Green: 最小実装でテストを通す
 def login(user, password):
     return True  # 最小実装
 
@@ -58,7 +58,7 @@ def login(user, password):
 ### 3. 🔧 Simple Design
 - **4つのルール**:
   1. テストを通す
-  2. 意図を明確にする  
+  2. 意図を明確にする
   3. 重複を除去する
   4. 要素を最小にする
 
@@ -137,7 +137,7 @@ git add . && git commit -m "feat: ログイン機能実装" && git push
 
 ### 作業規模
 - **⚡ 瞬間**: 1-3分 (バグ修正、小改善)
-- **🌟 短時間**: 3-10分 (小機能追加) 
+- **🌟 短時間**: 3-10分 (小機能追加)
 - **⭐ 中時間**: 10-30分 (中機能実装)
 - **🏆 長時間**: 30分以上 (大規模リファクタリング)
 
@@ -188,7 +188,7 @@ git add . && git commit -m "feat: ログイン機能実装" && git push
 
 ---
 
-**⚡ Remember: Red→Green→Refactor→Ship!**  
+**⚡ Remember: Red→Green→Refactor→Ship!**
 **🎯 Think Small, Act Fast, Ship Often!**
 
 **最終更新: 2025年7月19日 - XP個人開発版完成**
