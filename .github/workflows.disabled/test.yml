@@ -1,0 +1,198 @@
+name: AI Company Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'workers/**'
+      - 'libs/**'
+      - 'core/**'
+      - 'tests/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov pytest-mock pytest-json-report
+    
+    - name: Run unit tests
+      run: |
+        pytest tests/unit/ -v --cov=. --cov-report=json --json-report --json-report-file=test_results.json
+    
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.json
+        flags: unittests
+        name: codecov-umbrella
+    
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results
+        path: |
+          test_results.json
+          coverage.json
+  
+  integration-tests:
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    
+    services:
+      rabbitmq:
+        image: rabbitmq:3.12-management
+        ports:
+          - 5672:5672
+          - 15672:15672
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-mock
+    
+    - name: Wait for RabbitMQ
+      run: |
+        for i in {1..30}; do
+          if nc -z localhost 5672; then
+            echo "RabbitMQ is ready"
+            break
+          fi
+          echo "Waiting for RabbitMQ..."
+          sleep 2
+        done
+    
+    - name: Run integration tests
+      run: |
+        python -m pytest tests/integration/ -v
+    
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run Bandit Security Scan
+      uses: gaurav-nelson/bandit-action@v1
+      with:
+        path: "."
+        level: "medium"
+        confidence: "medium"
+        exit_zero: true
+    
+  code-quality:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black pylint
+    
+    - name: Run flake8
+      run: |
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+    
+    - name: Check formatting with black
+      run: |
+        black --check --diff .
+    
+  notification:
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests, security-scan, code-quality]
+    if: always()
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+    
+    - name: Install dependencies
+      run: |
+        pip install requests
+    
+    - name: Notify test results
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      run: |
+        python3 -c "
+        import os
+        import requests
+        import json
+        
+        webhook_url = os.environ.get('SLACK_WEBHOOK_URL')
+        if not webhook_url:
+            print('No Slack webhook configured')
+            exit(0)
+        
+        # Check job statuses
+        unit_status = '${{ needs.unit-tests.result }}'
+        integration_status = '${{ needs.integration-tests.result }}'
+        security_status = '${{ needs.security-scan.result }}'
+        quality_status = '${{ needs.code-quality.result }}'
+        
+        all_passed = all(status == 'success' for status in [unit_status, integration_status, security_status, quality_status])
+        
+        if all_passed:
+            message = '✅ All AI Company tests passed!'
+            color = 'good'
+        else:
+            message = '❌ Some AI Company tests failed'
+            color = 'danger'
+        
+        payload = {
+            'text': message,
+            'attachments': [{
+                'color': color,
+                'fields': [
+                    {'title': 'Unit Tests', 'value': unit_status, 'short': True},
+                    {'title': 'Integration Tests', 'value': integration_status, 'short': True},
+                    {'title': 'Security Scan', 'value': security_status, 'short': True},
+                    {'title': 'Code Quality', 'value': quality_status, 'short': True}
+                ]
+            }]
+        }
+        
+        response = requests.post(webhook_url, json=payload)
+        print(f'Notification sent: {response.status_code}')
+        "

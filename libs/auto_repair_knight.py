@@ -471,7 +471,7 @@ __all__ = ['{module_name.split('.')[-1].title().replace('_', '')}', 'get_config'
                 if line.strip().endswith('"""') and line.count('"""') == 1:
                     # 未完了の docstring を修正
                     fixed_lines.append(line)
-                    fixed_lines.append('pass  # Auto-fixed by Auto Repair Knight')
+                    fixed_lines.append('    pass  # Placeholder for implementation')
                     fixes_applied.append("Fixed incomplete docstring")
                 else:
                     fixed_lines.append(line)

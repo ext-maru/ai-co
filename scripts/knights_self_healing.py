@@ -752,7 +752,7 @@ class IncidentKnightsSelfHealing:
         for i, line in enumerate(lines):
             # 未完了のトリプルクォート
             if line.strip().endswith('"""') and line.count('"""') == 1:
-                lines[i] = line + "\npass  # Auto-fixed by Incident Knights"
+                lines[i] = line + "\n    pass  # Placeholder for implementation"
 
         fixed_content = "\n".join(lines)
 

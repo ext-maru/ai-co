@@ -1,0 +1,185 @@
+name: Issue自動管理システム
+
+on:
+  issues:
+    types: [opened, edited, labeled, unlabeled]
+  pull_request:
+    types: [opened, closed]
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Command to execute'
+        required: true
+        type: choice
+        options:
+          - sync
+          - report
+          - create-subs
+      issue_number:
+        description: 'Issue number (optional)'
+        required: false
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  auto_manage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: |
+          pip install PyGithub
+          pip install -r requirements.txt || true
+      
+      - name: 🤖 Issue自動管理
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ "${{ github.event_name }}" == "issues" ]]; then
+            # 新規Issue作成時
+            if [[ "${{ github.event.action }}" == "opened" ]]; then
+              echo "🆕 新規Issue検出: #${{ github.event.issue.number }}"
+              
+              # 自動ラベリング
+              python3 -c "
+import os
+from github import Github
+g = Github(os.environ['GITHUB_TOKEN'])
+repo = g.get_repo('${{ github.repository }}')
+issue = repo.get_issue(${{ github.event.issue.number }})
+
+# タイトルと本文から自動ラベリング
+title = issue.title.lower()
+body = (issue.body or '').lower()
+
+labels = []
+if 'bug' in title or 'error' in title or 'fix' in title:
+    labels.append('bug')
+elif 'feature' in title or '機能' in title:
+    labels.append('enhancement')
+elif 'research' in title or '調査' in title:
+    labels.append('research')
+
+if 'urgent' in title or 'critical' in title or '緊急' in title:
+    labels.append('priority:high')
+
+if labels:
+    issue.add_to_labels(*labels)
+    print(f'Added labels: {labels}')
+              "
+              
+              # EpicIssueの場合、Sub Issue作成を提案
+              if [[ "${{ contains(github.event.issue.labels.*.name, 'epic') }}" == "true" ]]; then
+                python3 libs/integrations/github/elders_issue_manager.py create-subs \
+                  --repo "${{ github.repository }}" \
+                  --issue ${{ github.event.issue.number }}
+              fi
+            fi
+            
+            # ラベル変更時
+            if [[ "${{ github.event.action }}" == "labeled" ]]; then
+              # エルダーサーバントへの自動アサイン
+              python3 libs/integrations/github/elders_issue_manager.py auto-assign \
+                --repo "${{ github.repository }}" \
+                --issue ${{ github.event.issue.number }}
+            fi
+          fi
+          
+          # PR処理
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            if [[ "${{ github.event.action }}" == "closed" ]] && [[ "${{ github.event.pull_request.merged }}" == "true" ]]; then
+              echo "🔀 PR マージ検出: #${{ github.event.pull_request.number }}"
+              
+              # 関連Issueの自動クローズ
+              python3 -c "
+import os
+import re
+from github import Github
+
+g = Github(os.environ['GITHUB_TOKEN'])
+repo = g.get_repo('${{ github.repository }}')
+pr = repo.get_pull(${{ github.event.pull_request.number }})
+
+# PR本文から関連Issueを抽出
+body = pr.body or ''
+pattern = r'(?:closes?|fix(?:es)?|resolv(?:es)?)\s*#(\d+)'
+matches = re.findall(pattern, body, re.IGNORECASE)
+
+for issue_num in matches:
+    try:
+        issue = repo.get_issue(int(issue_num))
+        issue.edit(state='closed')
+        issue.create_comment(f'✅ Closed by PR #{pr.number}')
+        print(f'Closed issue #{issue_num}')
+    except:
+        pass
+              "
+            fi
+          fi
+          
+          # 手動実行
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            python3 libs/integrations/github/elders_issue_manager.py ${{ inputs.command }} \
+              --repo "${{ github.repository }}" \
+              ${{ inputs.issue_number && format('--issue {0}', inputs.issue_number) || '' }}
+          fi
+      
+      - name: 📊 4賢者システム同期
+        if: github.event_name == 'issues'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 libs/integrations/github/elders_issue_manager.py sync \
+            --repo "${{ github.repository }}" \
+            --issue ${{ github.event.issue.number }}
+      
+      - name: 📈 日次レポート生成
+        if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.command == 'report')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 libs/integrations/github/elders_issue_manager.py report \
+            --repo "${{ github.repository }}" > daily_report.json
+          
+          # レポートをIssueとして投稿
+          python3 -c "
+import os
+import json
+from datetime import datetime
+from github import Github
+
+with open('daily_report.json', 'r') as f:
+    report = json.load(f)
+
+g = Github(os.environ['GITHUB_TOKEN'])
+repo = g.get_repo('${{ github.repository }}')
+
+title = f'📊 Daily Issue Report - {datetime.now().strftime(\"%Y-%m-%d\")}'
+body = f'''
+# 📊 Daily Issue Management Report
+
+## 📈 Summary
+- **Opened Issues**: {report['summary']['opened_issues']}
+- **Closed Issues**: {report['summary']['closed_issues']}
+- **Active Issues**: {report['summary']['active_issues']}
+- **Completion Rate**: {report['metrics']['completion_rate']:.1f}%
+
+## 🧙‍♂️ 4賢者の洞察
+{json.dumps(report.get('sage_insights', {}), indent=2, ensure_ascii=False)}
+
+---
+🤖 Generated by Elders Guild Issue Management System
+'''
+
+repo.create_issue(title=title, body=body, labels=['report', 'automated'])
+          "
