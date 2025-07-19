@@ -72,13 +72,13 @@ DESCRIPTION=$2
 BRANCH_TYPE=${3:-feature}
 
 # Issue番号の検証
-if \! [[ "$ISSUE_NUMBER" =~ ^[0-9]+$ ]]; then
+if ! [[ "$ISSUE_NUMBER" =~ ^[0-9]+$ ]]; then
     error "Issue番号は数値である必要があります: $ISSUE_NUMBER"
 fi
 
 # ブランチタイプの検証
 case $BRANCH_TYPE in
-    feature < /dev/null | fix|docs|chore)
+    feature|fix|docs|chore)
         ;;
     *)
         error "無効なブランチタイプ: $BRANCH_TYPE (feature/fix/docs/chore のいずれかを指定)"
@@ -89,16 +89,16 @@ esac
 BRANCH_NAME="${BRANCH_TYPE}/issue-${ISSUE_NUMBER}-${DESCRIPTION}"
 
 # Git状態確認
-if \! git rev-parse --git-dir > /dev/null 2>&1; then
+if ! git rev-parse --git-dir > /dev/null 2>&1; then
     error "Gitリポジトリではありません"
 fi
 
 # 変更確認
-if \! git diff-index --quiet HEAD --; then
+if ! git diff-index --quiet HEAD --; then
     warning "コミットされていない変更があります"
     echo -n "続行しますか？ (y/N): "
     read -r response
-    if [[ \! "$response" =~ ^[Yy]$ ]]; then
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
         info "中止しました"
         exit 0
     fi
@@ -109,7 +109,7 @@ CURRENT_BRANCH=$(git branch --show-current)
 info "現在のブランチ: $CURRENT_BRANCH"
 
 # mainブランチに切り替え
-if [ "$CURRENT_BRANCH" \!= "main" ]; then
+if [ "$CURRENT_BRANCH" != "main" ]; then
     info "mainブランチに切り替えます..."
     git checkout main || error "mainブランチへの切り替えに失敗しました"
 fi
@@ -142,10 +142,10 @@ Issue #${ISSUE_NUMBER} の実装
 - [ ] 手動テスト完了
 
 ## 📸 スクリーンショット
-<\!-- 必要に応じて -->
+<!-- 必要に応じて -->
 
 ## 📝 注意事項
-<\!-- レビュアーへの注意事項 -->
+<!-- レビュアーへの注意事項 -->
 
 Closes #${ISSUE_NUMBER}
 EOF
