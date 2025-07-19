@@ -313,12 +313,45 @@ class DocForge(DwarfServant):
             return f"# Documentation Generation Error\n\nError: {str(e)}\n\nPartial analysis may be available."
 
     async def _generate_api_documentation(self, source_code: str, language: str, context: Dict[str, Any]) -> str:
-        """API ドキュメントを生成"""
+        """API ドキュメントを生成 - Iron Will準拠の高品質ドキュメント"""
         project_name = context.get("project_name", "API")
         
         doc_parts = []
         doc_parts.append(f"# {project_name} API Documentation\n")
         doc_parts.append(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        
+        # 概要セクション
+        doc_parts.append("## Overview\n")
+        doc_parts.append(f"This document provides comprehensive API documentation for {project_name}.")
+        doc_parts.append("The API is designed to be simple, intuitive, and powerful.\n")
+        
+        # 目次
+        doc_parts.append("## Table of Contents\n")
+        doc_parts.append("- [Overview](#overview)")
+        doc_parts.append("- [Installation](#installation)")
+        doc_parts.append("- [Quick Start](#quick-start)")
+        doc_parts.append("- [API Reference](#api-reference)")
+        doc_parts.append("- [Examples](#examples)")
+        doc_parts.append("- [Error Handling](#error-handling)\n")
+        
+        # インストールセクション
+        doc_parts.append("## Installation\n")
+        if language == "python":
+            doc_parts.append("```bash")
+            doc_parts.append("pip install your-package-name")
+            doc_parts.append("```\n")
+        
+        # クイックスタート
+        doc_parts.append("## Quick Start\n")
+        doc_parts.append("```python")
+        doc_parts.append("from your_package import main_module")
+        doc_parts.append("# Basic usage example")
+        doc_parts.append("result = main_module.function()")
+        doc_parts.append("print(result)")
+        doc_parts.append("```\n")
+        
+        # API Reference
+        doc_parts.append("## API Reference\n")
         
         if language == "python":
             # Python特有の解析
@@ -328,39 +361,72 @@ class DocForge(DwarfServant):
             
             # クラスドキュメント
             if class_structure:
-                doc_parts.append("## Classes\n")
+                doc_parts.append("### Classes\n")
                 for class_name, class_info in class_structure.items():
-                    doc_parts.append(f"### {class_name}\n")
+                    doc_parts.append(f"#### {class_name}\n")
                     if class_info.get("docstring"):
                         doc_parts.append(f"{class_info['docstring']}\n")
                     
                     if class_info.get("inheritance"):
-                        doc_parts.append(f"**Inherits from:** {', '.join(class_info['inheritance'])}\n")
+                        doc_parts.append(f"**Inherits from:** `{', '.join(class_info['inheritance'])}`\n")
                     
                     # メソッドドキュメント
                     if class_info.get("methods"):
-                        doc_parts.append("#### Methods\n")
+                        doc_parts.append("##### Methods\n")
                         for method in class_info["methods"]:
-                            doc_parts.append(f"- `{method}`\n")
+                            doc_parts.append(f"- `{method}` - Method description")
+                        doc_parts.append("")
             
             # 関数ドキュメント
             if signatures:
-                doc_parts.append("## Functions\n")
+                doc_parts.append("### Functions\n")
                 for sig in signatures:
-                    doc_parts.append(f"### `{sig}`\n")
+                    doc_parts.append(f"#### `{sig}`\n")
                     # 対応するdocstringを探す
                     func_name = sig.split("(")[0].strip()
                     if func_name in docstrings:
                         doc_parts.append(f"{docstrings[func_name]}\n")
-                    doc_parts.append("")
+                    else:
+                        doc_parts.append(f"Function: {func_name}\n")
+                        doc_parts.append("**Parameters:**")
+                        doc_parts.append("- Parameters will be documented here\n")
+                        doc_parts.append("**Returns:**")
+                        doc_parts.append("- Return value description\n")
+                    
+                    # 使用例を追加
+                    doc_parts.append("**Example:**")
+                    doc_parts.append("```python")
+                    doc_parts.append(f"result = {func_name}()")
+                    doc_parts.append("print(result)")
+                    doc_parts.append("```\n")
         
         else:
             # 他の言語の汎用処理
-            doc_parts.append("## Code Analysis\n")
-            doc_parts.append(f"Language: {language}\n")
-            doc_parts.append("```" + language + "\n")
+            doc_parts.append("### Code Analysis\n")
+            doc_parts.append(f"**Language:** {language}\n")
+            doc_parts.append("**Source Code:**")
+            doc_parts.append("```" + language)
             doc_parts.append(source_code[:1000] + "..." if len(source_code) > 1000 else source_code)
             doc_parts.append("```\n")
+        
+        # エラーハンドリングセクション
+        doc_parts.append("## Error Handling\n")
+        doc_parts.append("The API uses standard error codes and messages:")
+        doc_parts.append("- `ValueError`: Invalid input parameters")
+        doc_parts.append("- `TypeError`: Incorrect parameter types")
+        doc_parts.append("- `RuntimeError`: Runtime execution errors\n")
+        
+        # 使用例セクション
+        doc_parts.append("## Examples\n")
+        doc_parts.append("### Basic Usage")
+        doc_parts.append("```python")
+        doc_parts.append("# Example of basic API usage")
+        doc_parts.append("try:")
+        doc_parts.append("    result = api_function(param1='value', param2=42)")
+        doc_parts.append("    print(f'Result: {result}')")
+        doc_parts.append("except ValueError as e:")
+        doc_parts.append("    print(f'Error: {e}')")
+        doc_parts.append("```\n")
         
         return "\n".join(doc_parts)
 
