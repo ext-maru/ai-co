@@ -92,9 +92,9 @@ class PreventiveAlert:
             "message": self.message,
             "context": self.context,
             "created_at": self.created_at.isoformat(),
-            "acknowledged_at": self.acknowledged_at.isoformat()
-            if self.acknowledged_at
-            else None,
+            "acknowledged_at": (
+                self.acknowledged_at.isoformat() if self.acknowledged_at else None
+            ),
             "resolved_at": self.resolved_at.isoformat() if self.resolved_at else None,
             "incident_id": self.incident_id,
             "actions_taken": self.actions_taken,
@@ -299,9 +299,11 @@ class PreventiveAlertSystem(EldersServiceLegacy):
                     context={
                         "metric": metric_name,
                         "current_value": current_value,
-                        "threshold": warning_threshold
-                        if severity == AlertLevel.WARNING
-                        else critical_threshold,
+                        "threshold": (
+                            warning_threshold
+                            if severity == AlertLevel.WARNING
+                            else critical_threshold
+                        ),
                         "rule_config": rule_config,
                     },
                 )

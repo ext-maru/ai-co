@@ -97,7 +97,9 @@ class GitHubProjectsClient:
         # GitHub Token
         self.token = token or self._get_token_from_env()
         if not self.token:
-            logger.warning("GitHub tokenが設定されていません。dry_runモードで動作します")
+            logger.warning(
+                "GitHub tokenが設定されていません。dry_runモードで動作します"
+            )
             self.dry_run = True
         else:
             self.dry_run = False

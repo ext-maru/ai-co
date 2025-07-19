@@ -24,7 +24,9 @@ class GrimoireAccessibilityEnhancer:
 
     def __init__(self):
         self.project_root = PROJECT_ROOT
-        self.grimoire_base = self.project_root / "knowledge_base" / "four_sages_grimoires"
+        self.grimoire_base = (
+            self.project_root / "knowledge_base" / "four_sages_grimoires"
+        )
         self.access_log = self.project_root / "logs" / "grimoire_accessibility.log"
         self.access_log.parent.mkdir(exist_ok=True)
 
@@ -174,7 +176,9 @@ class GrimoireAccessibilityEnhancer:
                             "line_number": line_num,
                             "file": grimoire_path.name,
                             "category": self._categorize_entry(title),
-                            "content_preview": self._get_content_preview(lines, line_num),
+                            "content_preview": self._get_content_preview(
+                                lines, line_num
+                            ),
                         }
                         entries.append(entry)
 
@@ -193,11 +197,15 @@ class GrimoireAccessibilityEnhancer:
         title_lower = title.lower()
 
         # カテゴリ判定ロジック
-        if any(word in title_lower for word in ["error", "exception", "failed", "crash"]):
+        if any(
+            word in title_lower for word in ["error", "exception", "failed", "crash"]
+        ):
             return "error_handling"
         elif any(word in title_lower for word in ["test", "testing", "tdd"]):
             return "testing"
-        elif any(word in title_lower for word in ["performance", "optimization", "speed"]):
+        elif any(
+            word in title_lower for word in ["performance", "optimization", "speed"]
+        ):
             return "performance"
         elif any(word in title_lower for word in ["config", "setting", "setup"]):
             return "configuration"
@@ -207,7 +215,9 @@ class GrimoireAccessibilityEnhancer:
             return "database"
         elif any(word in title_lower for word in ["security", "auth", "permission"]):
             return "security"
-        elif any(word in title_lower for word in ["deployment", "deploy", "production"]):
+        elif any(
+            word in title_lower for word in ["deployment", "deploy", "production"]
+        ):
             return "deployment"
         else:
             return "general"
@@ -287,7 +297,9 @@ def main():
     print("\n📊 改善結果サマリー")
     print("-" * 40)
     print(f"総合状況: {enhancement_results['overall_status'].upper()}")
-    print(f"改善完了率: {enhancement_results['metrics']['enhancement_completion']:.1f}%")
+    print(
+        f"改善完了率: {enhancement_results['metrics']['enhancement_completion']:.1f}%"
+    )
 
 
 if __name__ == "__main__":

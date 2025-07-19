@@ -160,24 +160,28 @@ class GitHubPullRequestsList:
                 "head": {
                     "ref": data.get("head", {}).get("ref"),
                     "sha": data.get("head", {}).get("sha"),
-                    "repo": {
-                        "full_name": data.get("head", {})
-                        .get("repo", {})
-                        .get("full_name")
-                    }
-                    if data.get("head", {}).get("repo")
-                    else None,
+                    "repo": (
+                        {
+                            "full_name": data.get("head", {})
+                            .get("repo", {})
+                            .get("full_name")
+                        }
+                        if data.get("head", {}).get("repo")
+                        else None
+                    ),
                 },
                 "base": {
                     "ref": data.get("base", {}).get("ref"),
                     "sha": data.get("base", {}).get("sha"),
-                    "repo": {
-                        "full_name": data.get("base", {})
-                        .get("repo", {})
-                        .get("full_name")
-                    }
-                    if data.get("base", {}).get("repo")
-                    else None,
+                    "repo": (
+                        {
+                            "full_name": data.get("base", {})
+                            .get("repo", {})
+                            .get("full_name")
+                        }
+                        if data.get("base", {}).get("repo")
+                        else None
+                    ),
                 },
                 "labels": [
                     {
@@ -191,13 +195,15 @@ class GitHubPullRequestsList:
                     {"login": assignee.get("login"), "id": assignee.get("id")}
                     for assignee in data.get("assignees", [])
                 ],
-                "milestone": {
-                    "title": data.get("milestone", {}).get("title"),
-                    "number": data.get("milestone", {}).get("number"),
-                    "state": data.get("milestone", {}).get("state"),
-                }
-                if data.get("milestone")
-                else None,
+                "milestone": (
+                    {
+                        "title": data.get("milestone", {}).get("title"),
+                        "number": data.get("milestone", {}).get("number"),
+                        "state": data.get("milestone", {}).get("state"),
+                    }
+                    if data.get("milestone")
+                    else None
+                ),
                 "draft": data.get("draft", False),
                 "mergeable": data.get("mergeable"),
                 "mergeable_state": data.get("mergeable_state"),

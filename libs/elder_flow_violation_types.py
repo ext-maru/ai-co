@@ -9,15 +9,17 @@ from typing import Dict, List, Optional
 
 class ViolationSeverity(Enum):
     """違反の重要度"""
-    CRITICAL = "致命的"     # 即座に修正が必要
-    HIGH = "高"            # 本番投入前に修正必須
-    MEDIUM = "中"          # 早期の修正を推奨
-    LOW = "低"             # 改善の余地あり
-    WARNING = "警告"       # 注意喚起
+
+    CRITICAL = "致命的"  # 即座に修正が必要
+    HIGH = "高"  # 本番投入前に修正必須
+    MEDIUM = "中"  # 早期の修正を推奨
+    LOW = "低"  # 改善の余地あり
+    WARNING = "警告"  # 注意喚起
 
 
 class ViolationCategory(Enum):
     """違反のカテゴリ"""
+
     IMPLEMENTATION = "実装"
     TESTING = "テスト"
     PERFORMANCE = "パフォーマンス"
@@ -29,6 +31,7 @@ class ViolationCategory(Enum):
 
 class ViolationType(Enum):
     """違反の種類"""
+
     # 実装の不完全性
     MOCK_IN_PRODUCTION = "本番コードにモック残存"
     INCOMPLETE_IMPLEMENTATION = "実装が不完全"
@@ -76,50 +79,53 @@ class ViolationDefinition:
             "severity": ViolationSeverity.CRITICAL,
             "description": "本番環境で動作するコードにモックオブジェクトが含まれている",
             "detection_patterns": ["Mock", "mock", "@mock", "MagicMock"],
-            "remediation": "全てのモックを実際の実装に置き換える"
+            "remediation": "全てのモックを実際の実装に置き換える",
         },
-
         ViolationType.INCOMPLETE_IMPLEMENTATION: {
             "severity": ViolationSeverity.HIGH,
             "description": "機能の一部が未実装またはTODOコメントが残っている",
-            "detection_patterns": ["TODO", "FIXME", "NotImplementedError", "pass # TODO"],
-            "remediation": "全ての機能を完全に実装する"
+            "detection_patterns": [
+                "TODO",
+                "FIXME",
+                "NotImplementedError",
+                "pass # TODO",
+            ],
+            "remediation": "全ての機能を完全に実装する",
         },
-
         ViolationType.MISSING_ERROR_HANDLING: {
             "severity": ViolationSeverity.HIGH,
             "description": "適切なエラーハンドリングが実装されていない",
-            "detection_patterns": ["bare except:", "except Exception:", "no try-except blocks"],
-            "remediation": "具体的な例外タイプを捕捉し、適切に処理する"
+            "detection_patterns": [
+                "bare except:",
+                "except Exception:",
+                "no try-except blocks",
+            ],
+            "remediation": "具体的な例外タイプを捕捉し、適切に処理する",
         },
-
         ViolationType.INSUFFICIENT_TEST_COVERAGE: {
             "severity": ViolationSeverity.HIGH,
             "description": "テストカバレッジが95%未満",
             "detection_patterns": ["coverage < 95%"],
-            "remediation": "テストを追加してカバレッジを95%以上にする"
+            "remediation": "テストを追加してカバレッジを95%以上にする",
         },
-
         ViolationType.NO_PRODUCTION_VERIFICATION: {
             "severity": ViolationSeverity.CRITICAL,
             "description": "本番環境での動作検証が実施されていない",
             "detection_patterns": ["no production test results"],
-            "remediation": "本番環境で全機能の動作を検証する"
+            "remediation": "本番環境で全機能の動作を検証する",
         },
-
         ViolationType.HARDCODED_CREDENTIALS: {
             "severity": ViolationSeverity.CRITICAL,
             "description": "パスワードやAPIキーがコードに直接記述されている",
             "detection_patterns": ["password =", "api_key =", "secret =", "token ="],
-            "remediation": "環境変数や設定ファイルから読み込むように変更"
+            "remediation": "環境変数や設定ファイルから読み込むように変更",
         },
-
         ViolationType.PERFORMANCE_BELOW_THRESHOLD: {
             "severity": ViolationSeverity.HIGH,
             "description": "レスポンスタイムやリソース使用量が基準を超えている",
             "detection_patterns": ["response_time > 200ms", "memory > 512MB"],
-            "remediation": "パフォーマンスを最適化して基準内に収める"
-        }
+            "remediation": "パフォーマンスを最適化して基準内に収める",
+        },
     }
 
     @classmethod

@@ -77,10 +77,37 @@ class TaskBreakdownEngine:
                 "create",
             ],
             "testing": ["テスト", "検証", "確認", "testing", "verify", "test"],
-            "documentation": ["文書", "ドキュメント", "記録", "文書化", "documentation", "document"],
-            "architecture": ["設計", "アーキテクチャ", "構造", "architecture", "design"],
-            "security": ["セキュリティ", "認証", "権限", "security", "auth", "permission"],
-            "quality": ["品質", "改善", "最適化", "quality", "improvement", "optimization"],
+            "documentation": [
+                "文書",
+                "ドキュメント",
+                "記録",
+                "文書化",
+                "documentation",
+                "document",
+            ],
+            "architecture": [
+                "設計",
+                "アーキテクチャ",
+                "構造",
+                "architecture",
+                "design",
+            ],
+            "security": [
+                "セキュリティ",
+                "認証",
+                "権限",
+                "security",
+                "auth",
+                "permission",
+            ],
+            "quality": [
+                "品質",
+                "改善",
+                "最適化",
+                "quality",
+                "improvement",
+                "optimization",
+            ],
         }
 
         # 統計
@@ -267,12 +294,36 @@ class TaskBreakdownEngine:
 
         # カテゴリ別の基本成功基準
         category_criteria = {
-            "implementation": ["コードが正常に動作する", "テストが通る", "コードレビューが完了する"],
-            "testing": ["テストケースが作成される", "テストが実行される", "カバレッジが基準を満たす"],
-            "documentation": ["ドキュメントが作成される", "内容が正確である", "レビューが完了する"],
-            "architecture": ["設計書が作成される", "アーキテクチャが承認される", "実装可能性が確認される"],
-            "security": ["セキュリティ要件が満たされる", "脆弱性検査が完了する", "認証・認可が正常に動作する"],
-            "quality": ["品質基準が満たされる", "改善効果が確認される", "パフォーマンスが向上する"],
+            "implementation": [
+                "コードが正常に動作する",
+                "テストが通る",
+                "コードレビューが完了する",
+            ],
+            "testing": [
+                "テストケースが作成される",
+                "テストが実行される",
+                "カバレッジが基準を満たす",
+            ],
+            "documentation": [
+                "ドキュメントが作成される",
+                "内容が正確である",
+                "レビューが完了する",
+            ],
+            "architecture": [
+                "設計書が作成される",
+                "アーキテクチャが承認される",
+                "実装可能性が確認される",
+            ],
+            "security": [
+                "セキュリティ要件が満たされる",
+                "脆弱性検査が完了する",
+                "認証・認可が正常に動作する",
+            ],
+            "quality": [
+                "品質基準が満たされる",
+                "改善効果が確認される",
+                "パフォーマンスが向上する",
+            ],
         }
 
         # カテゴリ別の基準を追加

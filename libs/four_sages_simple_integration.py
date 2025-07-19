@@ -15,13 +15,18 @@ from typing import Dict, List, Optional, Any
 from pathlib import Path
 
 import sys
-sys.path.append('/home/aicompany/ai_co')
+
+sys.path.append("/home/aicompany/ai_co")
 
 from libs.simple_a2a_communication import (
-    SimpleA2AClient, MessageType, MessagePriority, four_sages_a2a
+    SimpleA2AClient,
+    MessageType,
+    MessagePriority,
+    four_sages_a2a,
 )
 
 logger = logging.getLogger(__name__)
+
 
 class KnowledgeSage:
     """ナレッジ賢者"""
@@ -33,7 +38,9 @@ class KnowledgeSage:
 
     def _setup_handlers(self):
         """メッセージハンドラー設定"""
-        self.client.register_handler(MessageType.SAGE_CONSULTATION, self.handle_consultation)
+        self.client.register_handler(
+            MessageType.SAGE_CONSULTATION, self.handle_consultation
+        )
         self.client.register_handler(MessageType.QUERY, self.handle_query)
 
     async def handle_consultation(self, message):
@@ -43,12 +50,15 @@ class KnowledgeSage:
         # 知識ベースから検索（シンプル実装）
         result = self._search_knowledge(query)
 
-        await self.client.send_response(message, {
-            "sage": "knowledge_sage",
-            "result": result,
-            "confidence": 0.8,
-            "timestamp": datetime.now().isoformat()
-        })
+        await self.client.send_response(
+            message,
+            {
+                "sage": "knowledge_sage",
+                "result": result,
+                "confidence": 0.8,
+                "timestamp": datetime.now().isoformat(),
+            },
+        )
 
     async def handle_query(self, message):
         """クエリ処理"""
@@ -61,13 +71,14 @@ class KnowledgeSage:
             "query": query,
             "found": True,
             "knowledge": f"Knowledge about: {query}",
-            "source": "knowledge_base"
+            "source": "knowledge_base",
         }
 
     def start(self):
         """賢者を開始"""
         self.client.start_polling()
         logger.info("Knowledge Sage started")
+
 
 class TaskSage:
     """タスク賢者"""
@@ -79,8 +90,12 @@ class TaskSage:
 
     def _setup_handlers(self):
         """メッセージハンドラー設定"""
-        self.client.register_handler(MessageType.SAGE_CONSULTATION, self.handle_consultation)
-        self.client.register_handler(MessageType.TASK_ASSIGNMENT, self.handle_task_assignment)
+        self.client.register_handler(
+            MessageType.SAGE_CONSULTATION, self.handle_consultation
+        )
+        self.client.register_handler(
+            MessageType.TASK_ASSIGNMENT, self.handle_task_assignment
+        )
 
     async def handle_consultation(self, message):
         """相談への対応"""
@@ -89,12 +104,15 @@ class TaskSage:
         # タスク分析
         result = self._analyze_task(query)
 
-        await self.client.send_response(message, {
-            "sage": "task_sage",
-            "result": result,
-            "confidence": 0.9,
-            "timestamp": datetime.now().isoformat()
-        })
+        await self.client.send_response(
+            message,
+            {
+                "sage": "task_sage",
+                "result": result,
+                "confidence": 0.9,
+                "timestamp": datetime.now().isoformat(),
+            },
+        )
 
     async def handle_task_assignment(self, message):
         """タスク割り当て処理"""
@@ -104,14 +122,13 @@ class TaskSage:
         self.tasks[task_id] = {
             "task": task,
             "status": "assigned",
-            "assigned_at": datetime.now().isoformat()
+            "assigned_at": datetime.now().isoformat(),
         }
 
-        await self.client.send_response(message, {
-            "task_id": task_id,
-            "status": "accepted",
-            "estimated_completion": "30min"
-        })
+        await self.client.send_response(
+            message,
+            {"task_id": task_id, "status": "accepted", "estimated_completion": "30min"},
+        )
 
     def _analyze_task(self, query: str) -> Dict[str, Any]:
         """タスク分析"""
@@ -120,13 +137,14 @@ class TaskSage:
             "complexity": "medium",
             "estimated_time": "15min",
             "priority": "normal",
-            "dependencies": []
+            "dependencies": [],
         }
 
     def start(self):
         """賢者を開始"""
         self.client.start_polling()
         logger.info("Task Sage started")
+
 
 class IncidentSage:
     """インシデント賢者"""
@@ -138,7 +156,9 @@ class IncidentSage:
 
     def _setup_handlers(self):
         """メッセージハンドラー設定"""
-        self.client.register_handler(MessageType.SAGE_CONSULTATION, self.handle_consultation)
+        self.client.register_handler(
+            MessageType.SAGE_CONSULTATION, self.handle_consultation
+        )
         self.client.register_handler(MessageType.ALERT, self.handle_alert)
         self.client.register_handler(MessageType.EMERGENCY, self.handle_emergency)
 
@@ -149,12 +169,15 @@ class IncidentSage:
         # インシデント分析
         result = self._analyze_incident(query)
 
-        await self.client.send_response(message, {
-            "sage": "incident_sage",
-            "result": result,
-            "confidence": 0.95,
-            "timestamp": datetime.now().isoformat()
-        })
+        await self.client.send_response(
+            message,
+            {
+                "sage": "incident_sage",
+                "result": result,
+                "confidence": 0.95,
+                "timestamp": datetime.now().isoformat(),
+            },
+        )
 
     async def handle_alert(self, message):
         """アラート処理"""
@@ -164,14 +187,17 @@ class IncidentSage:
         self.incidents[incident_id] = {
             "alert": alert,
             "status": "investigating",
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
 
-        await self.client.send_response(message, {
-            "incident_id": incident_id,
-            "status": "acknowledged",
-            "escalation_level": self._determine_escalation_level(alert)
-        })
+        await self.client.send_response(
+            message,
+            {
+                "incident_id": incident_id,
+                "status": "acknowledged",
+                "escalation_level": self._determine_escalation_level(alert),
+            },
+        )
 
     async def handle_emergency(self, message):
         """緊急事態処理"""
@@ -181,10 +207,10 @@ class IncidentSage:
             {
                 "source": "incident_sage",
                 "emergency": message.payload,
-                "action_required": True
+                "action_required": True,
             },
             exclude=["incident_sage"],
-            priority=MessagePriority.EMERGENCY
+            priority=MessagePriority.EMERGENCY,
         )
 
     def _analyze_incident(self, query: str) -> Dict[str, Any]:
@@ -193,7 +219,7 @@ class IncidentSage:
             "severity": "medium",
             "category": "system",
             "resolution_time": "30min",
-            "similar_incidents": 2
+            "similar_incidents": 2,
         }
 
     def _determine_escalation_level(self, alert: Dict[str, Any]) -> str:
@@ -211,6 +237,7 @@ class IncidentSage:
         self.client.start_polling()
         logger.info("Incident Sage started")
 
+
 class RAGSage:
     """RAG賢者"""
 
@@ -220,7 +247,9 @@ class RAGSage:
 
     def _setup_handlers(self):
         """メッセージハンドラー設定"""
-        self.client.register_handler(MessageType.SAGE_CONSULTATION, self.handle_consultation)
+        self.client.register_handler(
+            MessageType.SAGE_CONSULTATION, self.handle_consultation
+        )
         self.client.register_handler(MessageType.QUERY, self.handle_query)
 
     async def handle_consultation(self, message):
@@ -230,12 +259,15 @@ class RAGSage:
         # RAG検索実行
         result = await self._rag_search(query)
 
-        await self.client.send_response(message, {
-            "sage": "rag_sage",
-            "result": result,
-            "confidence": 0.85,
-            "timestamp": datetime.now().isoformat()
-        })
+        await self.client.send_response(
+            message,
+            {
+                "sage": "rag_sage",
+                "result": result,
+                "confidence": 0.85,
+                "timestamp": datetime.now().isoformat(),
+            },
+        )
 
     async def handle_query(self, message):
         """クエリ処理"""
@@ -250,16 +282,17 @@ class RAGSage:
                 {
                     "content": f"RAG result for: {query}",
                     "score": 0.92,
-                    "source": "knowledge_base"
+                    "source": "knowledge_base",
                 }
             ],
-            "total_results": 1
+            "total_results": 1,
         }
 
     def start(self):
         """賢者を開始"""
         self.client.start_polling()
         logger.info("RAG Sage started")
+
 
 class FourSagesController:
     """4賢者統制システム"""
@@ -304,15 +337,15 @@ class FourSagesController:
             {
                 "emergency_type": "council_required",
                 "info": emergency_info,
-                "summoned_by": "claude_elder"
+                "summoned_by": "claude_elder",
             },
-            priority=MessagePriority.EMERGENCY
+            priority=MessagePriority.EMERGENCY,
         )
 
         return {
             "status": "emergency_council_summoned",
             "message_ids": message_ids,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
     def start_all_sages(self):
@@ -325,14 +358,21 @@ class FourSagesController:
 
     def stop_all_sages(self):
         """全賢者を停止"""
-        for sage in [self.knowledge_sage, self.task_sage, self.incident_sage, self.rag_sage]:
+        for sage in [
+            self.knowledge_sage,
+            self.task_sage,
+            self.incident_sage,
+            self.rag_sage,
+        ]:
             sage.client.stop_polling()
         logger.info("All Four Sages stopped")
+
 
 # グローバルインスタンス
 four_sages_controller = FourSagesController()
 
 if __name__ == "__main__":
+
     async def test_four_sages():
         # 4賢者システムテスト
         controller = FourSagesController()
@@ -348,10 +388,9 @@ if __name__ == "__main__":
             print(f"  {sage}: {result}")
 
         # 緊急評議会テスト
-        emergency_result = await controller.emergency_council({
-            "issue": "System performance degradation",
-            "severity": "high"
-        })
+        emergency_result = await controller.emergency_council(
+            {"issue": "System performance degradation", "severity": "high"}
+        )
         print(f"🚨 Emergency Council: {emergency_result}")
 
         controller.stop_all_sages()

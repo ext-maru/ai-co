@@ -8,6 +8,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+
 class RealTimeMonitor:
     def __init__(self):
         self.metrics = {}
@@ -24,8 +25,8 @@ class RealTimeMonitor:
                     "timestamp": datetime.now().isoformat(),
                     "cpu_percent": psutil.cpu_percent(),
                     "memory_percent": psutil.virtual_memory().percent,
-                    "disk_percent": psutil.disk_usage('/').percent,
-                    "active_processes": len(psutil.pids())
+                    "disk_percent": psutil.disk_usage("/").percent,
+                    "active_processes": len(psutil.pids()),
                 }
 
                 # 異常検知
@@ -57,8 +58,9 @@ class RealTimeMonitor:
         return {
             "current_metrics": self.metrics,
             "recent_alerts": self.alerts[-10:],  # 最新10件
-            "monitoring_active": self.running
+            "monitoring_active": self.running,
         }
+
 
 # 予測分析システム
 class PredictiveAnalyzer:
@@ -77,7 +79,10 @@ class PredictiveAnalyzer:
             return "insufficient data"
 
         recent_values = [h.get(metric_name, 0) for h in self.history[-5:]]
-        avg_change = sum(recent_values[i] - recent_values[i-1] for i in range(1, len(recent_values))) / (len(recent_values) - 1)
+        avg_change = sum(
+            recent_values[i] - recent_values[i - 1]
+            for i in range(1, len(recent_values))
+        ) / (len(recent_values) - 1)
 
         if avg_change > 5:
             return "increasing"
@@ -85,6 +90,7 @@ class PredictiveAnalyzer:
             return "decreasing"
         else:
             return "stable"
+
 
 if __name__ == "__main__":
     monitor = RealTimeMonitor()

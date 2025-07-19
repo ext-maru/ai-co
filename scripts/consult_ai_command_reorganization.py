@@ -45,7 +45,11 @@ class AICommandReorganizationCouncil:
                     categories[category] = []
                 categories[category].append(cmd)
 
-        return {"total_commands": len(ai_commands), "categories": categories, "commands": ai_commands}
+        return {
+            "total_commands": len(ai_commands),
+            "categories": categories,
+            "commands": ai_commands,
+        }
 
     def consult_knowledge_sage(self, current_state):
         """ナレッジ賢者との相談"""
@@ -68,7 +72,11 @@ class AICommandReorganizationCouncil:
                 },
                 {
                     "proposal": "コマンドエイリアスシステム",
-                    "details": ["よく使うコマンドの短縮形を提供", "ai-status → ai s", "ai-elder-council → ai ec"],
+                    "details": [
+                        "よく使うコマンドの短縮形を提供",
+                        "ai-status → ai s",
+                        "ai-elder-council → ai ec",
+                    ],
                 },
                 {
                     "proposal": "統合ヘルプシステム",
@@ -101,12 +109,26 @@ class AICommandReorganizationCouncil:
                     "proposal": "ワークフロー指向の再編成",
                     "workflows": {
                         "development": ["ai dev start", "ai dev test", "ai dev commit"],
-                        "operations": ["ai ops status", "ai ops monitor", "ai ops alert"],
-                        "management": ["ai manage tasks", "ai manage team", "ai manage report"],
+                        "operations": [
+                            "ai ops status",
+                            "ai ops monitor",
+                            "ai ops alert",
+                        ],
+                        "management": [
+                            "ai manage tasks",
+                            "ai manage team",
+                            "ai manage report",
+                        ],
                     },
                 },
-                {"proposal": "インタラクティブモード", "details": "ai interactive - 対話的コマンド選択"},
-                {"proposal": "コマンドチェーン機能", "example": "ai chain 'test && commit && deploy'"},
+                {
+                    "proposal": "インタラクティブモード",
+                    "details": "ai interactive - 対話的コマンド選択",
+                },
+                {
+                    "proposal": "コマンドチェーン機能",
+                    "example": "ai chain 'test && commit && deploy'",
+                },
             ],
             "priority": "HIGH - 即座の対応を推奨",
         }
@@ -118,7 +140,11 @@ class AICommandReorganizationCouncil:
             "sage": "Incident Sage",
             "timestamp": self.timestamp.isoformat(),
             "risk_assessment": {
-                "identified_risks": ["コマンド名の衝突可能性", "権限管理の複雑化", "エラーハンドリングの不統一"],
+                "identified_risks": [
+                    "コマンド名の衝突可能性",
+                    "権限管理の複雑化",
+                    "エラーハンドリングの不統一",
+                ],
                 "severity": "MEDIUM",
             },
             "recommendations": [
@@ -141,7 +167,10 @@ class AICommandReorganizationCouncil:
                         "admin": "すべてのコマンド",
                     },
                 },
-                {"proposal": "統一エラーハンドリング", "details": "全コマンドで共通のエラー処理フレームワーク使用"},
+                {
+                    "proposal": "統一エラーハンドリング",
+                    "details": "全コマンドで共通のエラー処理フレームワーク使用",
+                },
             ],
             "immediate_actions": ["重複コマンドの確認", "権限チェックの実装"],
         }
@@ -153,13 +182,21 @@ class AICommandReorganizationCouncil:
             "sage": "RAG Sage",
             "timestamp": self.timestamp.isoformat(),
             "discoverability_analysis": {
-                "current_problems": ["コマンド検索が困難", "関連機能の発見が偶発的", "ドキュメントが分散"],
+                "current_problems": [
+                    "コマンド検索が困難",
+                    "関連機能の発見が偶発的",
+                    "ドキュメントが分散",
+                ],
                 "user_experience": "新規ユーザーの60%が適切なコマンドを見つけられない",
             },
             "recommendations": [
                 {
                     "proposal": "AIコマンドファインダー",
-                    "features": ["自然言語でのコマンド検索", "使用履歴に基づく推薦", "類似コマンドの提案"],
+                    "features": [
+                        "自然言語でのコマンド検索",
+                        "使用履歴に基づく推薦",
+                        "類似コマンドの提案",
+                    ],
                     "command": "ai find 'テストを実行したい'",
                 },
                 {
@@ -172,7 +209,10 @@ class AICommandReorganizationCouncil:
                 },
                 {
                     "proposal": "統合ドキュメントシステム",
-                    "implementation": {"command": "ai docs", "features": ["検索可能", "例示豊富", "インタラクティブ"]},
+                    "implementation": {
+                        "command": "ai docs",
+                        "features": ["検索可能", "例示豊富", "インタラクティブ"],
+                    },
                 },
             ],
             "search_optimization": "全コマンドのメタデータとタグ付けが必要",
@@ -280,7 +320,9 @@ class AICommandReorganizationCouncil:
         }
 
         # Save report
-        report_path = Path("/home/aicompany/ai_co/reports/ai_command_reorganization_council_report.json")
+        report_path = Path(
+            "/home/aicompany/ai_co/reports/ai_command_reorganization_council_report.json"
+        )
         report_path.parent.mkdir(exist_ok=True)
 
         with open(report_path, "w", encoding="utf-8") as f:
@@ -307,7 +349,9 @@ class AICommandReorganizationCouncil:
 ### カテゴリー別コマンド数
 """
         # Add category breakdown
-        for category, commands in sorted(current_state["categories"].items(), key=lambda x: len(x[1]), reverse=True):
+        for category, commands in sorted(
+            current_state["categories"].items(), key=lambda x: len(x[1]), reverse=True
+        ):
             md_content += f"- **{category}**: {len(commands)}個\n"
 
         md_content += """
@@ -365,7 +409,9 @@ class AICommandReorganizationCouncil:
 *Generated by Elder Council Consultation System*
 """
 
-        md_path = Path("/home/aicompany/ai_co/reports/AI_COMMAND_REORGANIZATION_COUNCIL_REPORT.md")
+        md_path = Path(
+            "/home/aicompany/ai_co/reports/AI_COMMAND_REORGANIZATION_COUNCIL_REPORT.md"
+        )
         with open(md_path, "w", encoding="utf-8") as f:
             f.write(md_content)
 
@@ -380,8 +426,12 @@ def main():
 
     print("\n✅ 評議会協議完了")
     print("📄 レポート保存場所:")
-    print("   - JSON: /home/aicompany/ai_co/reports/ai_command_reorganization_council_report.json")
-    print("   - Markdown: /home/aicompany/ai_co/reports/AI_COMMAND_REORGANIZATION_COUNCIL_REPORT.md")
+    print(
+        "   - JSON: /home/aicompany/ai_co/reports/ai_command_reorganization_council_report.json"
+    )
+    print(
+        "   - Markdown: /home/aicompany/ai_co/reports/AI_COMMAND_REORGANIZATION_COUNCIL_REPORT.md"
+    )
 
     # Display summary
     action_plan = report["elder_council_consultation"]["action_plan"]

@@ -89,17 +89,15 @@ class AutoIssueElderFlowEngine:
         self.elder_flow = ActualElderFlowEngine()
         # Ensure environment variables are loaded for PR creator
         github_token = os.getenv("GITHUB_TOKEN")
-        repo_owner = os.getenv("GITHUB_REPO_OWNER") 
+        repo_owner = os.getenv("GITHUB_REPO_OWNER")
         repo_name = os.getenv("GITHUB_REPO_NAME")
-        
+
         if not github_token or not repo_owner or not repo_name:
             # Use dummy PR creator if config is missing
             self.pr_creator = DummyPRCreator()
         else:
             self.pr_creator = GitHubCreatePullRequestImplementation(
-                token=github_token,
-                repo_owner=repo_owner, 
-                repo_name=repo_name
+                token=github_token, repo_owner=repo_owner, repo_name=repo_name
             )
         self.logger = logger
 
@@ -200,7 +198,10 @@ Closes #{issue_number}
                     "branch_name": branch_name,
                 }
             else:
-                return {"success": False, "error": pr_result.get("error", "不明なPR作成エラー")}
+                return {
+                    "success": False,
+                    "error": pr_result.get("error", "不明なPR作成エラー"),
+                }
 
         except Exception as e:
             return {"success": False, "error": f"PR作成例外: {str(e)}"}
@@ -271,13 +272,21 @@ class ComplexityEvaluator:
     """イシューの複雑度を評価"""
 
     COMPLEXITY_FACTORS = {
-        "file_count": {"low": (1, 3), "medium": (4, 10), "high": (11, None)},  # 影響ファイル数
+        "file_count": {
+            "low": (1, 3),
+            "medium": (4, 10),
+            "high": (11, None),
+        },  # 影響ファイル数
         "code_lines": {  # 推定コード行数
             "low": (1, 50),
             "medium": (51, 200),
             "high": (201, None),
         },
-        "dependencies": {"low": (0, 2), "medium": (3, 5), "high": (6, None)},  # 依存関係数
+        "dependencies": {
+            "low": (0, 2),
+            "medium": (3, 5),
+            "high": (6, None),
+        },  # 依存関係数
         "test_coverage": {  # 必要テスト数
             "low": (1, 5),
             "medium": (6, 15),
@@ -354,7 +363,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
         github_token = os.getenv("GITHUB_TOKEN")
         repo_owner = os.getenv("GITHUB_REPO_OWNER", "ext-maru")
         repo_name = os.getenv("GITHUB_REPO_NAME", "ai-co")
-        
+
         if not github_token:
             raise ValueError("GITHUB_TOKEN environment variable not set")
 
@@ -559,9 +568,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
                     if related_links:
                         comment_text += "📚 **関連ドキュメント:**\n"
                         if related_links.get("design_doc"):
-                            comment_text += (
-                                f"- [イシュー自動処理システム設計書]({related_links['design_doc']})\n"
-                            )
+                            comment_text += f"- [イシュー自動処理システム設計書]({related_links['design_doc']})\n"
                         if related_links.get("elder_flow_doc"):
                             comment_text += f"- [Elder Flowアーキテクチャ]({related_links['elder_flow_doc']})\n"
                         if related_links.get("issue_link"):

@@ -54,11 +54,21 @@ class ElderTreeStatisticsReporter:
 
         # 統計データ
         self.worker_stats = defaultdict(
-            lambda: {"uptime": 0, "messages_processed": 0, "errors": 0, "last_active": None}
+            lambda: {
+                "uptime": 0,
+                "messages_processed": 0,
+                "errors": 0,
+                "last_active": None,
+            }
         )
 
         self.sage_stats = defaultdict(
-            lambda: {"sessions": 0, "consensus_reached": 0, "avg_response_time": 0.0, "knowledge_shared": 0}
+            lambda: {
+                "sessions": 0,
+                "consensus_reached": 0,
+                "avg_response_time": 0.0,
+                "knowledge_shared": 0,
+            }
         )
 
         self._init_database()
@@ -122,7 +132,9 @@ class ElderTreeStatisticsReporter:
 
     async def collect_statistics(self, duration_hours: int = 24):
         """統計データ収集"""
-        logger.info(f"📊 Collecting Elder Tree statistics for the last {duration_hours} hours")
+        logger.info(
+            f"📊 Collecting Elder Tree statistics for the last {duration_hours} hours"
+        )
 
         # 並行データ収集
         results = await asyncio.gather(
@@ -144,14 +156,23 @@ class ElderTreeStatisticsReporter:
             }
         )
 
-        return {"workers": worker_stats, "sages": sage_stats, "trends": performance_trends}
+        return {
+            "workers": worker_stats,
+            "sages": sage_stats,
+            "trends": performance_trends,
+        }
 
     async def _collect_worker_statistics(self, hours: int) -> Dict[str, Any]:
         """ワーカー統計収集"""
         worker_data = {}
 
         # 32ワーカーのシミュレーション
-        worker_types = [("incident_knight", 8), ("dwarf_craftsman", 8), ("rag_wizard", 8), ("elf_monitor", 8)]
+        worker_types = [
+            ("incident_knight", 8),
+            ("dwarf_craftsman", 8),
+            ("rag_wizard", 8),
+            ("elf_monitor", 8),
+        ]
 
         total_workers = 0
         active_workers = 0
@@ -173,7 +194,9 @@ class ElderTreeStatisticsReporter:
                     "type": worker_type,
                     "active": is_active,
                     "uptime_hours": random.uniform(0, hours) if is_active else 0,
-                    "messages_processed": random.randint(1000, 10000) if is_active else 0,
+                    "messages_processed": (
+                        random.randint(1000, 10000) if is_active else 0
+                    ),
                     "error_rate": random.uniform(0, 0.05),  # 0-5%エラー率
                     "cpu_usage": random.uniform(10, 80) if is_active else 0,
                     "memory_usage": random.uniform(100, 500) if is_active else 0,
@@ -184,8 +207,12 @@ class ElderTreeStatisticsReporter:
             "total_workers": total_workers,
             "active_workers": active_workers,
             "availability_rate": active_workers / total_workers,
-            "total_messages": sum(w["messages_processed"] for w in worker_data.values()),
-            "avg_error_rate": statistics.mean(w["error_rate"] for w in worker_data.values()),
+            "total_messages": sum(
+                w["messages_processed"] for w in worker_data.values()
+            ),
+            "avg_error_rate": statistics.mean(
+                w["error_rate"] for w in worker_data.values()
+            ),
             "worker_details": worker_data,
         }
 
@@ -200,9 +227,13 @@ class ElderTreeStatisticsReporter:
             # 実際のFour Sages統計を取得（可能な場合）
             try:
                 # Four Sages統合からのデータ取得を試みる
-                analytics = self.four_sages.get_integration_analytics(time_range_days=hours // 24)
+                analytics = self.four_sages.get_integration_analytics(
+                    time_range_days=hours // 24
+                )
 
-                sage_effectiveness = analytics.get("sage_effectiveness", {}).get(sage_type, "good")
+                sage_effectiveness = analytics.get("sage_effectiveness", {}).get(
+                    sage_type, "good"
+                )
                 session_analytics = analytics.get("learning_session_analytics", {})
 
                 sage_data[sage_type] = {
@@ -231,8 +262,12 @@ class ElderTreeStatisticsReporter:
         aggregate_stats = {
             "four_sages_health": "excellent",
             "total_sessions": sum(s["total_sessions"] for s in sage_data.values()),
-            "avg_consensus_rate": statistics.mean(s["consensus_rate"] for s in sage_data.values()),
-            "avg_collaboration_score": statistics.mean(s["collaboration_score"] for s in sage_data.values()),
+            "avg_consensus_rate": statistics.mean(
+                s["consensus_rate"] for s in sage_data.values()
+            ),
+            "avg_collaboration_score": statistics.mean(
+                s["collaboration_score"] for s in sage_data.values()
+            ),
             "sage_details": sage_data,
         }
 
@@ -248,7 +283,12 @@ class ElderTreeStatisticsReporter:
         }
 
         # トレンド分析
-        analysis = {"overall_trend": "improving", "critical_metrics": [], "improvements": [], "degradations": []}
+        analysis = {
+            "overall_trend": "improving",
+            "critical_metrics": [],
+            "improvements": [],
+            "degradations": [],
+        }
 
         for metric, trend_data in trends.items():
             if trend_data["direction"] == "improving":
@@ -258,30 +298,47 @@ class ElderTreeStatisticsReporter:
                 if trend_data["change_rate"] > 20:
                     analysis["critical_metrics"].append(metric)
 
-        return {"trends": trends, "analysis": analysis, "forecast": self._generate_forecast(trends)}
+        return {
+            "trends": trends,
+            "analysis": analysis,
+            "forecast": self._generate_forecast(trends),
+        }
 
     def _calculate_trend(self, metric_type: str, hours: int) -> Dict[str, Any]:
         """トレンド計算"""
         # シミュレートされたトレンドデータ
         import random
 
-        base_value = {"throughput": 1000, "errors": 5, "response_time": 1.5, "health": 95}.get(metric_type, 50)
+        base_value = {
+            "throughput": 1000,
+            "errors": 5,
+            "response_time": 1.5,
+            "health": 95,
+        }.get(metric_type, 50)
 
         # トレンド方向
         trend_factor = random.uniform(-0.2, 0.3)  # -20% to +30%
         current_value = base_value * (1 + trend_factor)
 
-        direction = "improving" if trend_factor > 0.05 else "degrading" if trend_factor < -0.05 else "stable"
+        direction = (
+            "improving"
+            if trend_factor > 0.05
+            else "degrading" if trend_factor < -0.05 else "stable"
+        )
 
         return {
             "current_value": current_value,
             "baseline_value": base_value,
             "change_rate": abs(trend_factor * 100),
             "direction": direction,
-            "data_points": self._generate_trend_data_points(base_value, current_value, hours),
+            "data_points": self._generate_trend_data_points(
+                base_value, current_value, hours
+            ),
         }
 
-    def _generate_trend_data_points(self, start_value: float, end_value: float, hours: int) -> List[Dict]:
+    def _generate_trend_data_points(
+        self, start_value: float, end_value: float, hours: int
+    ) -> List[Dict]:
         """トレンドデータポイント生成"""
         points = []
 
@@ -302,8 +359,11 @@ class ElderTreeStatisticsReporter:
         """将来予測生成"""
         return {
             "next_24_hours": {
-                "expected_throughput": trends["message_throughput"]["current_value"] * 1.05,
-                "expected_error_rate": max(0, trends["error_rates"]["current_value"] * 0.95),
+                "expected_throughput": trends["message_throughput"]["current_value"]
+                * 1.05,
+                "expected_error_rate": max(
+                    0, trends["error_rates"]["current_value"] * 0.95
+                ),
                 "confidence": 0.85,
             },
             "recommendations": [
@@ -336,7 +396,10 @@ class ElderTreeStatisticsReporter:
                         timestamp,
                         int(worker_data["uptime_hours"] * 3600),
                         worker_data["messages_processed"],
-                        int(worker_data["messages_processed"] * worker_data["error_rate"]),
+                        int(
+                            worker_data["messages_processed"]
+                            * worker_data["error_rate"]
+                        ),
                         worker_data["cpu_usage"],
                         worker_data["memory_usage"],
                     ),
@@ -514,7 +577,14 @@ class ElderTreeStatisticsReporter:
 
         # ワーカータイプ別集計
         worker_types_summary = defaultdict(
-            lambda: {"active": 0, "total": 0, "messages": 0, "cpu": [], "memory": [], "errors": []}
+            lambda: {
+                "active": 0,
+                "total": 0,
+                "messages": 0,
+                "cpu": [],
+                "memory": [],
+                "errors": [],
+            }
         )
 
         for worker_id, worker_data in stats["workers"]["worker_details"].items():
@@ -597,8 +667,12 @@ class ElderTreeStatisticsReporter:
 
         for metric_name, trend_data in stats["trends"]["trends"].items():
             trend = trend_data["direction"]
-            trend_class = f"trend-{trend.replace('improving', 'up').replace('degrading', 'down')}"
-            trend_symbol = "↑" if trend == "improving" else "↓" if trend == "degrading" else "→"
+            trend_class = (
+                f"trend-{trend.replace('improving', 'up').replace('degrading', 'down')}"
+            )
+            trend_symbol = (
+                "↑" if trend == "improving" else "↓" if trend == "degrading" else "→"
+            )
 
             html_content += f"""
                 <tr>
@@ -624,7 +698,9 @@ class ElderTreeStatisticsReporter:
 """
 
         for improvement in stats["trends"]["analysis"]["improvements"]:
-            html_content += f"                <li>{improvement.replace('_', ' ').title()}</li>\n"
+            html_content += (
+                f"                <li>{improvement.replace('_', ' ').title()}</li>\n"
+            )
 
         html_content += """
                 </ul>
@@ -636,7 +712,9 @@ class ElderTreeStatisticsReporter:
 """
 
         for degradation in stats["trends"]["analysis"]["degradations"]:
-            html_content += f"                <li>{degradation.replace('_', ' ').title()}</li>\n"
+            html_content += (
+                f"                <li>{degradation.replace('_', ' ').title()}</li>\n"
+            )
 
         html_content += """
                 </ul>
@@ -698,13 +776,21 @@ class ElderTreeStatisticsReporter:
             fig.suptitle("Elder Tree Performance Trends", fontsize=16)
 
             # 各メトリクスのグラフ
-            metrics = ["message_throughput", "error_rates", "response_times", "system_health"]
+            metrics = [
+                "message_throughput",
+                "error_rates",
+                "response_times",
+                "system_health",
+            ]
 
             for idx, (ax, metric) in enumerate(zip(axes.flatten(), metrics)):
                 trend_data = stats["trends"]["trends"][metric]
 
                 # データポイント抽出
-                timestamps = [datetime.fromisoformat(p["timestamp"]) for p in trend_data["data_points"]]
+                timestamps = [
+                    datetime.fromisoformat(p["timestamp"])
+                    for p in trend_data["data_points"]
+                ]
                 values = [p["value"] for p in trend_data["data_points"]]
 
                 ax.plot(timestamps, values, "b-", linewidth=2)

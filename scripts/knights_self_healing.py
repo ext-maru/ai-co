@@ -825,7 +825,9 @@ class IncidentKnightsSelfHealing:
                 )
 
                 self._add_fixed(
-                    "import_error", module_name, f"パッケージをインストール: {package_name}"
+                    "import_error",
+                    module_name,
+                    f"パッケージをインストール: {package_name}",
                 )
 
             except subprocess.CalledProcessError:
@@ -902,7 +904,9 @@ __all__ = ['{module_name.split('.')[-1].title().replace('_', '')}', 'setup', 'ma
         with open(module_file, "w") as f:
             f.write(module_content)
 
-        self._add_fixed("import_error", module_name, f"ダミーモジュールを作成: {module_file}")
+        self._add_fixed(
+            "import_error", module_name, f"ダミーモジュールを作成: {module_file}"
+        )
 
     async def _check_file_attributes(self, file_path: Path):
         """ファイル属性をチェック"""
@@ -913,7 +917,9 @@ __all__ = ['{module_name.split('.')[-1].title().replace('_', '')}', 'setup', 'ma
 
             if not first_line.startswith("#!"):
                 self._add_issue(
-                    "missing_shebang", str(file_path), "実行可能ファイルにシェバングがありません"
+                    "missing_shebang",
+                    str(file_path),
+                    "実行可能ファイルにシェバングがありません",
                 )
                 if self.auto_fix:
                     await self._fix_shebang(file_path)
@@ -984,7 +990,9 @@ __all__ = ['{module_name.split('.')[-1].title().replace('_', '')}', 'setup', 'ma
 
         if not requirements_file.exists():
             self._add_issue(
-                "missing_requirements", "requirements.txt", "依存関係ファイルがありません"
+                "missing_requirements",
+                "requirements.txt",
+                "依存関係ファイルがありません",
             )
             if self.auto_fix:
                 # 基本的な依存関係を作成
@@ -1048,9 +1056,11 @@ __all__ = ['{module_name.split('.')[-1].title().replace('_', '')}', 'setup', 'ma
             "duration_seconds": duration,
             "issues_found": len(self.issues_found),
             "issues_fixed": len(self.issues_fixed),
-            "fix_rate": len(self.issues_fixed) / len(self.issues_found)
-            if self.issues_found
-            else 0,
+            "fix_rate": (
+                len(self.issues_fixed) / len(self.issues_found)
+                if self.issues_found
+                else 0
+            ),
             "details": {"found": self.issues_found, "fixed": self.issues_fixed},
         }
 
@@ -1100,9 +1110,13 @@ __all__ = ['{module_name.split('.')[-1].title().replace('_', '')}', 'setup', 'ma
 
 async def main():
     """メイン実行関数"""
-    parser = argparse.ArgumentParser(description="⚔️ インシデント騎士団 自己修復システム")
+    parser = argparse.ArgumentParser(
+        description="⚔️ インシデント騎士団 自己修復システム"
+    )
     parser.add_argument("--auto-fix", action="store_true", help="問題を自動的に修正")
-    parser.add_argument("--batch-mode", action="store_true", help="バッチモード（対話なし）")
+    parser.add_argument(
+        "--batch-mode", action="store_true", help="バッチモード（対話なし）"
+    )
     parser.add_argument("--daemon", action="store_true", help="デーモンモードで実行")
 
     args = parser.parse_args()

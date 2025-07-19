@@ -868,14 +868,18 @@ class ComprehensiveGrimoireMigration:
                     result.successful += 1
                     result.successful_spells.append(spell_id)
 
-                    self.logger.debug(f"✅ Migrated: {analysis.file_name} -> {spell_id}")
+                    self.logger.debug(
+                        f"✅ Migrated: {analysis.file_name} -> {spell_id}"
+                    )
 
                 except Exception as e:
                     result.failed += 1
                     result.failed_files.append(
                         {"file": analysis.file_path, "error": str(e)}
                     )
-                    self.logger.error(f"❌ Migration failed: {analysis.file_name} - {e}")
+                    self.logger.error(
+                        f"❌ Migration failed: {analysis.file_name} - {e}"
+                    )
 
             result.end_time = datetime.now(timezone.utc)
             result.duration_seconds = (
@@ -990,9 +994,9 @@ class ComprehensiveGrimoireMigration:
                     "files_migrated_successfully": total_successful,
                     "migration_failures": total_failed,
                     "total_duration_seconds": total_duration,
-                    "average_files_per_second": total_successful / total_duration
-                    if total_duration > 0
-                    else 0,
+                    "average_files_per_second": (
+                        total_successful / total_duration if total_duration > 0 else 0
+                    ),
                 },
                 "migration_stats": self.migration_stats,
                 "batch_results": [asdict(result) for result in migration_results],

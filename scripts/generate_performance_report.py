@@ -15,7 +15,7 @@ def generate_html_report(benchmark_data: Dict[str, Any]) -> str:
     """HTMLフォーマットのパフォーマンスレポートを生成"""
 
     # Extract benchmark information
-    benchmarks = benchmark_data.get('benchmarks', [])
+    benchmarks = benchmark_data.get("benchmarks", [])
 
     # Start HTML template
     html = f"""
@@ -114,14 +114,14 @@ def generate_html_report(benchmark_data: Dict[str, Any]) -> str:
 
     # Add benchmark details
     for benchmark in benchmarks:
-        name = benchmark.get('name', 'Unknown')
-        stats = benchmark.get('stats', {})
+        name = benchmark.get("name", "Unknown")
+        stats = benchmark.get("stats", {})
 
-        mean = stats.get('mean', 0)
-        median = stats.get('median', 0)
-        stddev = stats.get('stddev', 0)
-        min_val = stats.get('min', 0)
-        max_val = stats.get('max', 0)
+        mean = stats.get("mean", 0)
+        median = stats.get("median", 0)
+        stddev = stats.get("stddev", 0)
+        min_val = stats.get("min", 0)
+        max_val = stats.get("max", 0)
 
         html += f"""
             <div class="benchmark">
@@ -162,7 +162,7 @@ def generate_html_report(benchmark_data: Dict[str, Any]) -> str:
 def generate_text_report(benchmark_data: Dict[str, Any]) -> str:
     """テキストフォーマットのパフォーマンスレポートを生成"""
 
-    benchmarks = benchmark_data.get('benchmarks', [])
+    benchmarks = benchmark_data.get("benchmarks", [])
 
     report = []
     report.append("=" * 60)
@@ -173,8 +173,8 @@ def generate_text_report(benchmark_data: Dict[str, Any]) -> str:
     report.append("")
 
     for benchmark in benchmarks:
-        name = benchmark.get('name', 'Unknown')
-        stats = benchmark.get('stats', {})
+        name = benchmark.get("name", "Unknown")
+        stats = benchmark.get("stats", {})
 
         report.append(f"Benchmark: {name}")
         report.append("-" * 40)
@@ -189,30 +189,34 @@ def generate_text_report(benchmark_data: Dict[str, Any]) -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate performance report from benchmark data")
+    parser = argparse.ArgumentParser(
+        description="Generate performance report from benchmark data"
+    )
     parser.add_argument("--input", required=True, help="Input benchmark JSON file")
     parser.add_argument("--output", required=True, help="Output report file")
-    parser.add_argument("--format", choices=['html', 'text'], default='html', help="Report format")
+    parser.add_argument(
+        "--format", choices=["html", "text"], default="html", help="Report format"
+    )
 
     args = parser.parse_args()
 
     # Load benchmark data
     try:
-        with open(args.input, 'r') as f:
+        with open(args.input, "r") as f:
             benchmark_data = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"❌ Error loading benchmark data: {e}")
         return 1
 
     # Generate report
-    if args.format == 'html':
+    if args.format == "html":
         report = generate_html_report(benchmark_data)
     else:
         report = generate_text_report(benchmark_data)
 
     # Save report
     try:
-        with open(args.output, 'w', encoding='utf-8') as f:
+        with open(args.output, "w", encoding="utf-8") as f:
             f.write(report)
         print(f"✅ Performance report saved to {args.output}")
         return 0

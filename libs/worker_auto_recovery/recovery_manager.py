@@ -104,7 +104,9 @@ class WorkerRecoveryManager:
 
         # 開始通知
         self.notification_handler.send_notification(
-            "Worker Recovery System Started", "自動復旧システムが起動しました。", severity="info"
+            "Worker Recovery System Started",
+            "自動復旧システムが起動しました。",
+            severity="info",
         )
 
     def stop_monitoring(self):
@@ -118,7 +120,9 @@ class WorkerRecoveryManager:
 
         # 停止通知
         self.notification_handler.send_notification(
-            "Worker Recovery System Stopped", "自動復旧システムが停止しました。", severity="info"
+            "Worker Recovery System Stopped",
+            "自動復旧システムが停止しました。",
+            severity="info",
         )
 
     def _monitoring_loop(self):

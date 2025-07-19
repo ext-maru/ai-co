@@ -7,6 +7,7 @@ import subprocess
 import json
 from pathlib import Path
 
+
 class SelfImprovementSystem:
     def __init__(self):
         self.optimization_history = []
@@ -16,13 +17,14 @@ class SelfImprovementSystem:
         # CPU・メモリ使用率チェック
         try:
             import psutil
+
             cpu_percent = psutil.cpu_percent(interval=1)
             memory_percent = psutil.virtual_memory().percent
 
             analysis = {
                 "cpu_usage": cpu_percent,
                 "memory_usage": memory_percent,
-                "optimization_needed": cpu_percent > 80 or memory_percent > 85
+                "optimization_needed": cpu_percent > 80 or memory_percent > 85,
             }
 
             return analysis
@@ -46,6 +48,7 @@ class SelfImprovementSystem:
             print(f"🔧 自動最適化実行: {opt}")
 
         return optimizations
+
 
 if __name__ == "__main__":
     system = SelfImprovementSystem()

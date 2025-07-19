@@ -83,7 +83,9 @@ def main():
         raise Exception("タスク失敗")
 
     # 成功率30%のタスクを実行
-    result = task_executor.execute_with_resilience(sample_task, args=(0.3,), task_id="demo_task_001")
+    result = task_executor.execute_with_resilience(
+        sample_task, args=(0.3,), task_id="demo_task_001"
+    )
 
     print("\nタスク実行結果:")
     print(f"  状態: {result['status']}")

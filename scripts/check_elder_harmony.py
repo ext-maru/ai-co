@@ -164,7 +164,10 @@ class ElderHarmonyChecker:
     def _check_rag_sage(self) -> bool:
         """RAG賢者をチェック"""
         # RAGマネージャーの存在確認
-        rag_files = [PROJECT_ROOT / "libs" / "rag_manager.py", PROJECT_ROOT / "libs" / "enhanced_rag_manager.py"]
+        rag_files = [
+            PROJECT_ROOT / "libs" / "rag_manager.py",
+            PROJECT_ROOT / "libs" / "enhanced_rag_manager.py",
+        ]
 
         return any(f.exists() for f in rag_files)
 

@@ -10,6 +10,7 @@ import subprocess
 from typing import List, Tuple, Optional
 from libs.claude_environment_guardian import guardian
 
+
 class ClaudeCommandWrapper:
     """Claudeのコマンド実行を安全化するラッパー"""
 
@@ -18,7 +19,9 @@ class ClaudeCommandWrapper:
         self.blocked_count = 0
         self.safe_count = 0
 
-    def execute_command(self, command: str, timeout: Optional[int] = None) -> Tuple[bool, str, str]:
+    def execute_command(
+        self, command: str, timeout: Optional[int] = None
+    ) -> Tuple[bool, str, str]:
         """
         コマンドを安全チェック後に実行
 
@@ -46,20 +49,14 @@ class ClaudeCommandWrapper:
         try:
             self.safe_count += 1
             result = subprocess.run(
-                command,
-                shell=True,
-                capture_output=True,
-                text=True,
-                timeout=timeout
+                command, shell=True, capture_output=True, text=True, timeout=timeout
             )
 
-            self.log_execution(command, "EXECUTED", "Success" if result.returncode == 0 else "Failed")
-
-            return (
-                result.returncode == 0,
-                result.stdout,
-                result.stderr
+            self.log_execution(
+                command, "EXECUTED", "Success" if result.returncode == 0 else "Failed"
             )
+
+            return (result.returncode == 0, result.stdout, result.stderr)
 
         except subprocess.TimeoutExpired:
             self.log_execution(command, "TIMEOUT", f"Exceeded {timeout}s")
@@ -71,11 +68,9 @@ class ClaudeCommandWrapper:
 
     def log_execution(self, command: str, status: str, details: str):
         """実行ログを記録"""
-        self.execution_log.append({
-            "command": command,
-            "status": status,
-            "details": details
-        })
+        self.execution_log.append(
+            {"command": command, "status": status, "details": details}
+        )
 
     def get_statistics(self) -> dict:
         """実行統計を取得"""
@@ -83,11 +78,13 @@ class ClaudeCommandWrapper:
             "total_commands": self.blocked_count + self.safe_count,
             "blocked_commands": self.blocked_count,
             "safe_commands": self.safe_count,
-            "block_rate": f"{(self.blocked_count / max(1, self.blocked_count + self.safe_count) * 100):.1f}%"
+            "block_rate": f"{(self.blocked_count / max(1, self.blocked_count + self.safe_count) * 100):.1f}%",
         }
+
 
 # グローバルラッパーインスタンス
 command_wrapper = ClaudeCommandWrapper()
+
 
 def safe_bash_execute(command: str, description: str = "", timeout: int = 120) -> dict:
     """
@@ -108,19 +105,10 @@ def safe_bash_execute(command: str, description: str = "", timeout: int = 120) -
             print(f"\n💡 代わりにこのコマンドを使用してください:")
             print(f"   {alternative}")
 
-        return {
-            "success": False,
-            "stdout": "",
-            "stderr": stderr,
-            "blocked": True
-        }
+        return {"success": False, "stdout": "", "stderr": stderr, "blocked": True}
 
-    return {
-        "success": success,
-        "stdout": stdout,
-        "stderr": stderr,
-        "blocked": False
-    }
+    return {"success": success, "stdout": stdout, "stderr": stderr, "blocked": False}
+
 
 # モンキーパッチ例（実際のClaude環境で適用）
 def apply_claude_protection():
@@ -139,16 +127,18 @@ def apply_claude_protection():
 
     # subprocessモジュールも保護
     import subprocess
+
     original_run = subprocess.run
 
     def protected_run(cmd, *args, **kwargs):
-        if isinstance(cmd, str) and kwargs.get('shell'):
+        if isinstance(cmd, str) and kwargs.get("shell"):
             check_result = guardian.check_command(cmd)
             if not check_result[0]:  # 危険なコマンド
                 raise EnvironmentError(f"危険なコマンド: {check_result[1]}")
         return original_run(cmd, *args, **kwargs)
 
     subprocess.run = protected_run
+
 
 if __name__ == "__main__":
     # デモ実行

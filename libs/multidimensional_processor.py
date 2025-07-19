@@ -12,6 +12,7 @@ from typing import List, Dict, Any, Callable
 from datetime import datetime
 import json
 
+
 class DimensionalProcessor:
     """次元別処理器"""
 
@@ -36,7 +37,7 @@ class DimensionalProcessor:
             8: self._quantum_processing,
             9: self._meta_processing,
             10: self._universal_processing,
-            11: self._transcendent_processing
+            11: self._transcendent_processing,
         }
 
         processor = processing_patterns.get(self.dimension_id, self._default_processing)
@@ -49,7 +50,7 @@ class DimensionalProcessor:
             "task_id": task.get("id", "unknown"),
             "result": result,
             "execution_time": execution_time,
-            "timestamp": start_time.isoformat()
+            "timestamp": start_time.isoformat(),
         }
 
         self.processing_history.append(processing_record)
@@ -85,8 +86,11 @@ class DimensionalProcessor:
         """6次元: 情報処理"""
         await asyncio.sleep(0.06)
         data = str(task.get("data", ""))
-        entropy = -sum((data.count(c)/len(data)) * np.log2(data.count(c)/len(data))
-                      for c in set(data) if data.count(c) > 0)
+        entropy = -sum(
+            (data.count(c) / len(data)) * np.log2(data.count(c) / len(data))
+            for c in set(data)
+            if data.count(c) > 0
+        )
         return {"type": "information", "entropy": entropy}
 
     async def _consciousness_processing(self, task: Dict[str, Any]) -> Any:
@@ -119,15 +123,20 @@ class DimensionalProcessor:
         await asyncio.sleep(0.01)
         return {"type": "default", "processed": True}
 
+
 class MultidimensionalParallelEngine:
     """多次元並列処理エンジン"""
 
     def __init__(self, max_dimensions: int = 11):
-        self.dimensions = [DimensionalProcessor(i) for i in range(1, max_dimensions + 1)]
+        self.dimensions = [
+            DimensionalProcessor(i) for i in range(1, max_dimensions + 1)
+        ]
         self.parallel_universes = []
         self.processing_stats = {"total_tasks": 0, "total_time": 0}
 
-    async def execute_multidimensional_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute_multidimensional_task(
+        self, task: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """多次元タスク実行"""
         start_time = datetime.now()
 
@@ -137,7 +146,7 @@ class MultidimensionalParallelEngine:
             dimension_task = {
                 **task,
                 "dimension_id": dimension.dimension_id,
-                "id": f"{task.get('id', 'task')}_{dimension.dimension_id}"
+                "id": f"{task.get('id', 'task')}_{dimension.dimension_id}",
             }
             dimension_tasks.append(dimension.process_in_dimension(dimension_task))
 
@@ -158,7 +167,7 @@ class MultidimensionalParallelEngine:
             "dimensional_results": successful_results,
             "failures": failed_results,
             "parallel_efficiency": len(successful_results) / len(self.dimensions),
-            "timestamp": start_time.isoformat()
+            "timestamp": start_time.isoformat(),
         }
 
         self.processing_stats["total_tasks"] += 1
@@ -166,7 +175,9 @@ class MultidimensionalParallelEngine:
 
         return multidimensional_result
 
-    async def parallel_universe_processing(self, tasks: List[Dict[str, Any]]) -> Dict[str, Any]:
+    async def parallel_universe_processing(
+        self, tasks: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """並列宇宙処理"""
         print("🌌 Executing parallel universe processing...")
 
@@ -177,42 +188,55 @@ class MultidimensionalParallelEngine:
         universe_tasks = []
         for i in range(universe_count):
             start_idx = i * tasks_per_universe
-            end_idx = start_idx + tasks_per_universe if i < universe_count - 1 else len(tasks)
+            end_idx = (
+                start_idx + tasks_per_universe if i < universe_count - 1 else len(tasks)
+            )
             universe_tasks.append(tasks[start_idx:end_idx])
 
         # 各宇宙での並列実行
         universe_results = []
-        with concurrent.futures.ThreadPoolExecutor(max_workers=universe_count) as executor:
+        with concurrent.futures.ThreadPoolExecutor(
+            max_workers=universe_count
+        ) as executor:
             future_to_universe = {}
 
             for universe_id, universe_task_list in enumerate(universe_tasks):
-                future = executor.submit(self._process_universe, universe_id, universe_task_list)
+                future = executor.submit(
+                    self._process_universe, universe_id, universe_task_list
+                )
                 future_to_universe[future] = universe_id
 
             for future in concurrent.futures.as_completed(future_to_universe):
                 universe_id = future_to_universe[future]
                 try:
                     result = future.result()
-                    universe_results.append({
-                        "universe_id": universe_id,
-                        "result": result,
-                        "status": "success"
-                    })
+                    universe_results.append(
+                        {
+                            "universe_id": universe_id,
+                            "result": result,
+                            "status": "success",
+                        }
+                    )
                 except Exception as e:
-                    universe_results.append({
-                        "universe_id": universe_id,
-                        "error": str(e),
-                        "status": "failed"
-                    })
+                    universe_results.append(
+                        {
+                            "universe_id": universe_id,
+                            "error": str(e),
+                            "status": "failed",
+                        }
+                    )
 
         return {
             "parallel_universes": universe_count,
             "total_tasks": len(tasks),
             "universe_results": universe_results,
-            "success_rate": sum(1 for r in universe_results if r["status"] == "success") / universe_count
+            "success_rate": sum(1 for r in universe_results if r["status"] == "success")
+            / universe_count,
         }
 
-    def _process_universe(self, universe_id: int, tasks: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _process_universe(
+        self, universe_id: int, tasks: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """単一宇宙での処理（同期版）"""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -220,20 +244,24 @@ class MultidimensionalParallelEngine:
         try:
             results = []
             for task in tasks:
-                result = loop.run_until_complete(self.execute_multidimensional_task(task))
+                result = loop.run_until_complete(
+                    self.execute_multidimensional_task(task)
+                )
                 results.append(result)
 
             return {
                 "universe_id": universe_id,
                 "processed_tasks": len(results),
-                "results": results[:3]  # 最初の3つの結果のみ
+                "results": results[:3],  # 最初の3つの結果のみ
             }
         finally:
             loop.close()
 
     def get_processing_statistics(self) -> Dict[str, Any]:
         """処理統計取得"""
-        avg_time = self.processing_stats["total_time"] / max(self.processing_stats["total_tasks"], 1)
+        avg_time = self.processing_stats["total_time"] / max(
+            self.processing_stats["total_tasks"], 1
+        )
 
         return {
             "total_tasks_processed": self.processing_stats["total_tasks"],
@@ -241,8 +269,9 @@ class MultidimensionalParallelEngine:
             "average_task_time": avg_time,
             "dimensions_available": len(self.dimensions),
             "theoretical_speedup": len(self.dimensions),
-            "processing_efficiency": f"{(len(self.dimensions) * avg_time / avg_time):.1f}x"
+            "processing_efficiency": f"{(len(self.dimensions) * avg_time / avg_time):.1f}x",
         }
+
 
 # デモ実行
 async def multidimensional_demo():
@@ -253,10 +282,14 @@ async def multidimensional_demo():
     result = await engine.execute_multidimensional_task(task)
 
     print("🔄 Multidimensional Task Result:")
-    print(json.dumps({k: v for k, v in result.items() if k != "dimensional_results"}, indent=2))
+    print(
+        json.dumps(
+            {k: v for k, v in result.items() if k != "dimensional_results"}, indent=2
+        )
+    )
 
     # 並列宇宙処理
-    tasks = [{"id": f"universe_task_{i}", "data": i*10} for i in range(15)]
+    tasks = [{"id": f"universe_task_{i}", "data": i * 10} for i in range(15)]
     universe_result = await engine.parallel_universe_processing(tasks)
 
     print("\n🌌 Parallel Universe Processing:")
@@ -266,6 +299,7 @@ async def multidimensional_demo():
     stats = engine.get_processing_statistics()
     print("\n📊 Processing Statistics:")
     print(json.dumps(stats, indent=2))
+
 
 if __name__ == "__main__":
     asyncio.run(multidimensional_demo())

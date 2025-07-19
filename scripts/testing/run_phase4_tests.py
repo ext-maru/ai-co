@@ -183,7 +183,9 @@ Phase 4 Coverage Assault Complete
         print(f"  Test Files: {total_files}")
         print(f"  Valid Tests: {valid_tests}")
         print(f"  New Coverage: {new_coverage}%")
-        print(f"  Target (75%): {'✅ ACHIEVED' if new_coverage >= 75 else '❌ NOT YET'}")
+        print(
+            f"  Target (75%): {'✅ ACHIEVED' if new_coverage >= 75 else '❌ NOT YET'}"
+        )
 
         if new_coverage >= 75:
             print("\n🎉 PHASE 4 COMPLETE! Ready for Phase 5!")

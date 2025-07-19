@@ -421,9 +421,9 @@ class FullyAutonomousSystem:
                 return {
                     "expected_improvement": option["score"] * 100,
                     "confidence": option["score"],
-                    "time_to_effect": "immediate"
-                    if option["score"] > 0.8
-                    else "gradual",
+                    "time_to_effect": (
+                        "immediate" if option["score"] > 0.8 else "gradual"
+                    ),
                 }
 
         return DecisionEngine(component)
@@ -480,7 +480,9 @@ class FullyAutonomousSystem:
     async def _execute_evolution_plan(self, steps: List[Dict[str, Any]]):
         """進化計画実行"""
         for step in steps:
-            self.logger.info(f"進化フェーズ {step['phase']} 開始: {step['description']}")
+            self.logger.info(
+                f"進化フェーズ {step['phase']} 開始: {step['description']}"
+            )
 
             # 各フェーズの実行
             if step["phase"] == 1:
@@ -845,13 +847,17 @@ class FullyAutonomousSystem:
     async def _get_system_health(self) -> Dict[str, Any]:
         """システムヘルス取得"""
         return {
-            "overall": "excellent"
-            if self.current_autonomy_level == AutonomyLevel.FULLY_AUTONOMOUS
-            else "good",
+            "overall": (
+                "excellent"
+                if self.current_autonomy_level == AutonomyLevel.FULLY_AUTONOMOUS
+                else "good"
+            ),
             "components": {comp.value: "healthy" for comp in SystemComponent},
-            "last_intervention": self.intervention_history[-1].timestamp.isoformat()
-            if self.intervention_history
-            else None,
+            "last_intervention": (
+                self.intervention_history[-1].timestamp.isoformat()
+                if self.intervention_history
+                else None
+            ),
         }
 
     async def _save_decision(self, decision: AutonomousDecision):
@@ -910,7 +916,9 @@ async def main():
             print(f"  解決: {demo['solution']['action']}")
             print(f"  人間介入: {demo['human_intervention_required']}")
         elif demo["demo_type"] == "predictive_optimization":
-            print(f"  予測: {demo['prediction']['predicted_load_spike']['time']}に負荷3.5倍")
+            print(
+                f"  予測: {demo['prediction']['predicted_load_spike']['time']}に負荷3.5倍"
+            )
             print(f"  予防: {demo['preventive_action']['action']}")
             print(f"  ダウンタイム: {demo['expected_downtime']}秒")
         elif demo["demo_type"] == "full_autonomous_decisions":

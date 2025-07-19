@@ -1088,9 +1088,9 @@ class ElderCouncilSummoner:
                 )
                 for level in UrgencyLevel
             },
-            "recent_metrics": asdict(self.metrics_history[-1])
-            if self.metrics_history
-            else None,
+            "recent_metrics": (
+                asdict(self.metrics_history[-1]) if self.metrics_history else None
+            ),
             "four_sages_enabled": self.four_sages_enabled,
         }
 
@@ -1103,7 +1103,9 @@ class ElderCouncilSummoner:
     def _escalate_to_grand_elder(self, council_id: str, council_data: Dict[str, Any]):
         """グランドエルダーへの緊急エスカレーション"""
         try:
-            logger.critical(f"🚨 グランドエルダーへの緊急エスカレーション開始: {council_id}")
+            logger.critical(
+                f"🚨 グランドエルダーへの緊急エスカレーション開始: {council_id}"
+            )
 
             # エスカレーションデータ準備
             escalation_data = {
@@ -1112,9 +1114,9 @@ class ElderCouncilSummoner:
                 "council_data": council_data,
                 "escalation_time": datetime.now().isoformat(),
                 "reason": "CRITICAL urgency with deadline exceeded",
-                "current_metrics": asdict(self.metrics_history[-1])
-                if self.metrics_history
-                else None,
+                "current_metrics": (
+                    asdict(self.metrics_history[-1]) if self.metrics_history else None
+                ),
                 "affected_systems": council_data.get("affected_systems", []),
                 "trigger_history": self._get_recent_trigger_summary(),
                 "urgency_level": "ULTIMATE",  # 最高緊急度
@@ -1141,7 +1143,9 @@ class ElderCouncilSummoner:
             # システム全体への警告
             self._broadcast_system_alert(escalation_data)
 
-            logger.critical(f"✅ グランドエルダーエスカレーション完了: {escalation_data['escalation_id']}")
+            logger.critical(
+                f"✅ グランドエルダーエスカレーション完了: {escalation_data['escalation_id']}"
+            )
 
             return escalation_data
 
@@ -1237,7 +1241,9 @@ class ElderCouncilSummoner:
 
             emergency_response["coordination_status"] = "COORDINATED"
 
-            logger.info(f"✅ 緊急対応調整完了: {len(emergency_response['actions'])}個のアクション")
+            logger.info(
+                f"✅ 緊急対応調整完了: {len(emergency_response['actions'])}個のアクション"
+            )
 
             return emergency_response
 
@@ -1293,7 +1299,9 @@ class ElderCouncilSummoner:
                         validation["feasibility"] = 0.90
                     else:
                         validation["status"] = "CAUTION"
-                        validation["risks"].append("メモリ使用率が高い状態での最適化はリスクあり")
+                        validation["risks"].append(
+                            "メモリ使用率が高い状態での最適化はリスクあり"
+                        )
                         validation["feasibility"] = 0.70
 
                 elif action["type"] == "EVOLUTION_CONTROL":
@@ -1328,10 +1336,14 @@ class ElderCouncilSummoner:
                 validation_result["recommendations"].append("段階的な実行を推奨")
 
             if validation_result["risk_assessment"]["high_risk_actions"] > 0:
-                validation_result["recommendations"].append("高リスクアクションは手動確認後に実行")
+                validation_result["recommendations"].append(
+                    "高リスクアクションは手動確認後に実行"
+                )
 
             if any(v["status"] == "CAUTION" for v in validation_result["validations"]):
-                validation_result["recommendations"].append("注意が必要なアクションは監視を強化")
+                validation_result["recommendations"].append(
+                    "注意が必要なアクションは監視を強化"
+                )
 
             # 最終ステータスの決定
             if (

@@ -319,23 +319,39 @@ class EnhancedErrorClassifier:
             category, count = top_category
 
             if category == "system":
-                suggestions.append(f"システムエラーが{count}件発生。依存関係とファイルパスを確認してください。")
+                suggestions.append(
+                    f"システムエラーが{count}件発生。依存関係とファイルパスを確認してください。"
+                )
             elif category == "network":
-                suggestions.append(f"ネットワークエラーが{count}件発生。接続設定とタイムアウト値を確認してください。")
+                suggestions.append(
+                    f"ネットワークエラーが{count}件発生。接続設定とタイムアウト値を確認してください。"
+                )
             elif category == "database":
-                suggestions.append(f"データベースエラーが{count}件発生。DB接続とクエリを確認してください。")
+                suggestions.append(
+                    f"データベースエラーが{count}件発生。DB接続とクエリを確認してください。"
+                )
             elif category == "memory":
-                suggestions.append(f"メモリエラーが{count}件発生。メモリ使用量の最適化を実施してください。")
+                suggestions.append(
+                    f"メモリエラーが{count}件発生。メモリ使用量の最適化を実施してください。"
+                )
             elif category == "api":
-                suggestions.append(f"API通信エラーが{count}件発生。認証情報とエンドポイントを確認してください。")
+                suggestions.append(
+                    f"API通信エラーが{count}件発生。認証情報とエンドポイントを確認してください。"
+                )
             elif category == "worker":
-                suggestions.append(f"ワーカーエラーが{count}件発生。ワーカー設定とタスク処理を確認してください。")
+                suggestions.append(
+                    f"ワーカーエラーが{count}件発生。ワーカー設定とタスク処理を確認してください。"
+                )
             else:
-                suggestions.append(f"{category}カテゴリで{count}件のエラーが発生しています。")
+                suggestions.append(
+                    f"{category}カテゴリで{count}件のエラーが発生しています。"
+                )
 
         # 複数カテゴリがある場合
         if len(error_counts) > 3:
-            suggestions.append("複数のエラーカテゴリが検出されました。包括的なシステム点検を推奨します。")
+            suggestions.append(
+                "複数のエラーカテゴリが検出されました。包括的なシステム点検を推奨します。"
+            )
 
         return suggestions
 

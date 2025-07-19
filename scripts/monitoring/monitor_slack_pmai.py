@@ -75,7 +75,9 @@ def monitor_slack_pmai():
                 for line in recent_lines:
                     print(f"   {line.strip()}")
 
-            print(f"\n⏰ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 次回更新まで10秒...")
+            print(
+                f"\n⏰ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - 次回更新まで10秒..."
+            )
             print("-" * 50)
 
             time.sleep(10)

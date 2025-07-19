@@ -688,7 +688,10 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         matches = re.findall(format_pattern, code)
         conversions = len(matches)
 
-        return {"code": code, "conversions": conversions}  # 実際の変換は複雑なのでプレースホルダー
+        return {
+            "code": code,
+            "conversions": conversions,
+        }  # 実際の変換は複雑なのでプレースホルダー
 
     def _add_type_hints(self, code: str) -> Dict[str, Any]:
         """型ヒント追加"""
@@ -700,7 +703,10 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         # os.pathをpathlibに変換
         conversions = code.count("os.path")
 
-        return {"code": code, "conversions": conversions}  # 実際の変換は複雑なのでプレースホルダー
+        return {
+            "code": code,
+            "conversions": conversions,
+        }  # 実際の変換は複雑なのでプレースホルダー
 
 
 class ComplexityAnalyzer:

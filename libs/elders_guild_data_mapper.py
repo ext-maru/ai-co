@@ -17,8 +17,14 @@ import asyncpg
 from pydantic import BaseModel, ValidationError
 
 from .elders_guild_data_models import (
-    BaseDataModel, KnowledgeEntity, TaskEntity, IncidentEntity,
-    DocumentEntity, RAGContext, SageType, DataStatus
+    BaseDataModel,
+    KnowledgeEntity,
+    TaskEntity,
+    IncidentEntity,
+    DocumentEntity,
+    RAGContext,
+    SageType,
+    DataStatus,
 )
 from .elders_guild_db_manager import EldersGuildDatabaseManager
 
@@ -28,17 +34,21 @@ logger = logging.getLogger(__name__)
 # Data Mapping Configuration
 # ============================================================================
 
+
 class MappingStrategy(Enum):
     """マッピング戦略"""
-    DIRECT = "direct"           # 直接マッピング
-    TRANSFORM = "transform"     # 変換マッピング
-    AGGREGATE = "aggregate"     # 集約マッピング
-    SPLIT = "split"            # 分割マッピング
-    CUSTOM = "custom"          # カスタムマッピング
+
+    DIRECT = "direct"  # 直接マッピング
+    TRANSFORM = "transform"  # 変換マッピング
+    AGGREGATE = "aggregate"  # 集約マッピング
+    SPLIT = "split"  # 分割マッピング
+    CUSTOM = "custom"  # カスタムマッピング
+
 
 @dataclass
 class FieldMapping:
     """フィールドマッピング定義"""
+
     source_field: str
     target_field: str
     strategy: MappingStrategy = MappingStrategy.DIRECT
@@ -64,9 +74,11 @@ class FieldMapping:
         else:
             return value
 
+
 @dataclass
 class DataMapping:
     """データマッピング定義"""
+
     name: str
     description: str
     source_type: str
@@ -90,7 +102,9 @@ class DataMapping:
                 if value is not None:
                     target_data[field_mapping.target_field] = value
             except Exception as e:
-                logger.error(f"Field mapping error for {field_mapping.source_field}: {e}")
+                logger.error(
+                    f"Field mapping error for {field_mapping.source_field}: {e}"
+                )
                 if field_mapping.required:
                     raise
 
@@ -105,9 +119,11 @@ class DataMapping:
 
         return target_data
 
+
 # ============================================================================
 # Data Transformation Functions
 # ============================================================================
+
 
 class DataTransformers:
     """データ変換関数群"""
@@ -123,7 +139,7 @@ class DataTransformers:
     def timestamp_to_datetime(value: Union[str, int, float]) -> datetime:
         """タイムスタンプを datetime に変換"""
         if isinstance(value, str):
-            return datetime.fromisoformat(value.replace('Z', '+00:00'))
+            return datetime.fromisoformat(value.replace("Z", "+00:00"))
         elif isinstance(value, (int, float)):
             return datetime.fromtimestamp(value)
         else:
@@ -134,7 +150,7 @@ class DataTransformers:
         """テキストの正規化"""
         if not value:
             return ""
-        return value.strip().replace('\n', ' ').replace('\r', '')
+        return value.strip().replace("\n", " ").replace("\r", "")
 
     @staticmethod
     def calculate_quality_score(data: Dict[str, Any]) -> float:
@@ -142,7 +158,7 @@ class DataTransformers:
         score = 0.0
 
         # 内容の充実度
-        content_length = len(data.get('content', ''))
+        content_length = len(data.get("content", ""))
         if content_length > 1000:
             score += 0.3
         elif content_length > 500:
@@ -151,29 +167,29 @@ class DataTransformers:
             score += 0.1
 
         # メタデータの充実度
-        metadata_count = len(data.get('metadata', {}))
+        metadata_count = len(data.get("metadata", {}))
         if metadata_count > 5:
             score += 0.2
         elif metadata_count > 2:
             score += 0.1
 
         # タグの存在
-        tags_count = len(data.get('tags', []))
+        tags_count = len(data.get("tags", []))
         if tags_count > 3:
             score += 0.2
         elif tags_count > 0:
             score += 0.1
 
         # カテゴリの存在
-        if data.get('category_id'):
+        if data.get("category_id"):
             score += 0.1
 
         # 参照の存在
-        if data.get('source_references'):
+        if data.get("source_references"):
             score += 0.1
 
         # 関連性の存在
-        if data.get('related_knowledge_ids'):
+        if data.get("related_knowledge_ids"):
             score += 0.1
 
         return min(score, 1.0)
@@ -188,8 +204,32 @@ class DataTransformers:
         words = content.lower().split()
 
         # ストップワードの除外
-        stop_words = {'の', 'は', 'が', 'を', 'に', 'で', 'と', 'から', 'まで', 'より',
-                     'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by'}
+        stop_words = {
+            "の",
+            "は",
+            "が",
+            "を",
+            "に",
+            "で",
+            "と",
+            "から",
+            "まで",
+            "より",
+            "a",
+            "an",
+            "the",
+            "and",
+            "or",
+            "but",
+            "in",
+            "on",
+            "at",
+            "to",
+            "for",
+            "of",
+            "with",
+            "by",
+        }
 
         keywords = []
         for word in words:
@@ -198,6 +238,7 @@ class DataTransformers:
 
         # 頻出順でソート（簡易実装）
         from collections import Counter
+
         word_count = Counter(keywords)
 
         return [word for word, count in word_count.most_common(10)]
@@ -209,20 +250,22 @@ class DataTransformers:
             return ""
 
         # 簡易的な要約（最初の数文を使用）
-        sentences = content.split('。')
+        sentences = content.split("。")
         summary = ""
 
         for sentence in sentences:
             if len(summary + sentence) <= max_length:
-                summary += sentence + '。'
+                summary += sentence + "。"
             else:
                 break
 
         return summary.strip()
 
+
 # ============================================================================
 # Data Mapper Registry
 # ============================================================================
+
 
 class DataMapperRegistry:
     """データマッパー登録システム"""
@@ -257,21 +300,46 @@ class DataMapperRegistry:
                 FieldMapping("title", "title", required=True),
                 FieldMapping("content", "content", required=True),
                 FieldMapping("category", "category_id"),
-                FieldMapping("tags", "tags", MappingStrategy.TRANSFORM,
-                           self.transformers.string_to_list),
-                FieldMapping("created_date", "created_at", MappingStrategy.TRANSFORM,
-                           self.transformers.timestamp_to_datetime),
-                FieldMapping("updated_date", "updated_at", MappingStrategy.TRANSFORM,
-                           self.transformers.timestamp_to_datetime),
+                FieldMapping(
+                    "tags",
+                    "tags",
+                    MappingStrategy.TRANSFORM,
+                    self.transformers.string_to_list,
+                ),
+                FieldMapping(
+                    "created_date",
+                    "created_at",
+                    MappingStrategy.TRANSFORM,
+                    self.transformers.timestamp_to_datetime,
+                ),
+                FieldMapping(
+                    "updated_date",
+                    "updated_at",
+                    MappingStrategy.TRANSFORM,
+                    self.transformers.timestamp_to_datetime,
+                ),
                 FieldMapping("quality", "quality_score", default_value=0.0),
-                FieldMapping("keywords", "keywords", MappingStrategy.TRANSFORM,
-                           self.transformers.string_to_list),
-                FieldMapping("summary", "summary", MappingStrategy.CUSTOM,
-                           lambda data: self.transformers.generate_summary(data.get('content', ''))),
+                FieldMapping(
+                    "keywords",
+                    "keywords",
+                    MappingStrategy.TRANSFORM,
+                    self.transformers.string_to_list,
+                ),
+                FieldMapping(
+                    "summary",
+                    "summary",
+                    MappingStrategy.CUSTOM,
+                    lambda data: self.transformers.generate_summary(
+                        data.get("content", "")
+                    ),
+                ),
             ],
             post_processors=[
-                lambda data: {**data, 'quality_score': self.transformers.calculate_quality_score(data)}
-            ]
+                lambda data: {
+                    **data,
+                    "quality_score": self.transformers.calculate_quality_score(data),
+                }
+            ],
         )
         self.register_mapping(legacy_to_knowledge)
 
@@ -284,16 +352,32 @@ class DataMapperRegistry:
             field_mappings=[
                 FieldMapping("name", "name", required=True),
                 FieldMapping("description", "description"),
-                FieldMapping("priority", "priority", MappingStrategy.TRANSFORM,
-                           lambda x: getattr(DataPriority, x.upper(), DataPriority.NORMAL)),
+                FieldMapping(
+                    "priority",
+                    "priority",
+                    MappingStrategy.TRANSFORM,
+                    lambda x: getattr(DataPriority, x.upper(), DataPriority.NORMAL),
+                ),
                 FieldMapping("assignee", "assigned_to"),
-                FieldMapping("due_date", "deadline", MappingStrategy.TRANSFORM,
-                           self.transformers.timestamp_to_datetime),
-                FieldMapping("depends_on", "dependencies", MappingStrategy.TRANSFORM,
-                           self.transformers.string_to_list),
-                FieldMapping("status", "status", MappingStrategy.TRANSFORM,
-                           lambda x: getattr(DataStatus, x.upper(), DataStatus.ACTIVE)),
-            ]
+                FieldMapping(
+                    "due_date",
+                    "deadline",
+                    MappingStrategy.TRANSFORM,
+                    self.transformers.timestamp_to_datetime,
+                ),
+                FieldMapping(
+                    "depends_on",
+                    "dependencies",
+                    MappingStrategy.TRANSFORM,
+                    self.transformers.string_to_list,
+                ),
+                FieldMapping(
+                    "status",
+                    "status",
+                    MappingStrategy.TRANSFORM,
+                    lambda x: getattr(DataStatus, x.upper(), DataStatus.ACTIVE),
+                ),
+            ],
         )
         self.register_mapping(external_to_task)
 
@@ -315,16 +399,18 @@ class DataMapperRegistry:
             post_processors=[
                 lambda data: {
                     **data,
-                    'quality_score': self.transformers.calculate_quality_score(data),
-                    'indexed_at': datetime.now()
+                    "quality_score": self.transformers.calculate_quality_score(data),
+                    "indexed_at": datetime.now(),
                 }
-            ]
+            ],
         )
         self.register_mapping(raw_to_document)
+
 
 # ============================================================================
 # Data Conversion Engine
 # ============================================================================
+
 
 class DataConversionEngine:
     """データ変換エンジン"""
@@ -333,13 +419,15 @@ class DataConversionEngine:
         self.db_manager = db_manager
         self.mapper_registry = DataMapperRegistry()
         self.conversion_stats = {
-            'total_conversions': 0,
-            'successful_conversions': 0,
-            'failed_conversions': 0,
-            'conversion_time_total': 0.0
+            "total_conversions": 0,
+            "successful_conversions": 0,
+            "failed_conversions": 0,
+            "conversion_time_total": 0.0,
         }
 
-    async def convert_data(self, mapping_name: str, source_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def convert_data(
+        self, mapping_name: str, source_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """データの変換"""
         start_time = asyncio.get_event_loop().time()
 
@@ -352,25 +440,26 @@ class DataConversionEngine:
             target_data = mapping.apply_mapping(source_data)
 
             # 成功統計
-            self.conversion_stats['successful_conversions'] += 1
+            self.conversion_stats["successful_conversions"] += 1
 
             logger.info(f"Successfully converted data using mapping: {mapping_name}")
             return target_data
 
         except Exception as e:
             # 失敗統計
-            self.conversion_stats['failed_conversions'] += 1
+            self.conversion_stats["failed_conversions"] += 1
             logger.error(f"Data conversion failed for mapping {mapping_name}: {e}")
             raise
 
         finally:
             # 処理時間の記録
             conversion_time = asyncio.get_event_loop().time() - start_time
-            self.conversion_stats['conversion_time_total'] += conversion_time
-            self.conversion_stats['total_conversions'] += 1
+            self.conversion_stats["conversion_time_total"] += conversion_time
+            self.conversion_stats["total_conversions"] += 1
 
-    async def batch_convert_data(self, mapping_name: str,
-                               source_data_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def batch_convert_data(
+        self, mapping_name: str, source_data_list: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """バッチデータ変換"""
         converted_data = []
 
@@ -385,8 +474,12 @@ class DataConversionEngine:
 
         return converted_data
 
-    async def convert_and_store(self, mapping_name: str, source_data: Dict[str, Any],
-                              target_model_class: Type[BaseDataModel]) -> BaseDataModel:
+    async def convert_and_store(
+        self,
+        mapping_name: str,
+        source_data: Dict[str, Any],
+        target_model_class: Type[BaseDataModel],
+    ) -> BaseDataModel:
         """データ変換と保存"""
         # データ変換
         converted_data = await self.convert_data(mapping_name, source_data)
@@ -428,16 +521,20 @@ class DataConversionEngine:
         stats = self.conversion_stats.copy()
 
         # 平均処理時間の計算
-        if stats['total_conversions'] > 0:
-            stats['avg_conversion_time'] = stats['conversion_time_total'] / stats['total_conversions']
+        if stats["total_conversions"] > 0:
+            stats["avg_conversion_time"] = (
+                stats["conversion_time_total"] / stats["total_conversions"]
+            )
         else:
-            stats['avg_conversion_time'] = 0.0
+            stats["avg_conversion_time"] = 0.0
 
         # 成功率の計算
-        if stats['total_conversions'] > 0:
-            stats['success_rate'] = stats['successful_conversions'] / stats['total_conversions']
+        if stats["total_conversions"] > 0:
+            stats["success_rate"] = (
+                stats["successful_conversions"] / stats["total_conversions"]
+            )
         else:
-            stats['success_rate'] = 0.0
+            stats["success_rate"] = 0.0
 
         return stats
 
@@ -449,9 +546,11 @@ class DataConversionEngine:
         """利用可能なマッピング一覧"""
         return self.mapper_registry.list_mappings()
 
+
 # ============================================================================
 # Data Migration Tools
 # ============================================================================
+
 
 class DataMigrationTool:
     """データ移行ツール"""
@@ -460,7 +559,9 @@ class DataMigrationTool:
         self.conversion_engine = conversion_engine
         self.migration_history = []
 
-    async def migrate_legacy_knowledge(self, legacy_data: List[Dict[str, Any]]) -> List[KnowledgeEntity]:
+    async def migrate_legacy_knowledge(
+        self, legacy_data: List[Dict[str, Any]]
+    ) -> List[KnowledgeEntity]:
         """レガシー知識データの移行"""
         logger.info(f"Starting migration of {len(legacy_data)} legacy knowledge items")
 
@@ -469,29 +570,37 @@ class DataMigrationTool:
         for item in legacy_data:
             try:
                 entity = await self.conversion_engine.convert_and_store(
-                    "legacy_knowledge_to_entity",
-                    item,
-                    KnowledgeEntity
+                    "legacy_knowledge_to_entity", item, KnowledgeEntity
                 )
                 migrated_entities.append(entity)
 
             except Exception as e:
-                logger.error(f"Failed to migrate knowledge item {item.get('id', 'unknown')}: {e}")
+                logger.error(
+                    f"Failed to migrate knowledge item {item.get('id', 'unknown')}: {e}"
+                )
                 continue
 
         # 移行履歴の記録
-        self.migration_history.append({
-            'type': 'legacy_knowledge',
-            'timestamp': datetime.now(),
-            'total_items': len(legacy_data),
-            'migrated_items': len(migrated_entities),
-            'success_rate': len(migrated_entities) / len(legacy_data) if legacy_data else 0.0
-        })
+        self.migration_history.append(
+            {
+                "type": "legacy_knowledge",
+                "timestamp": datetime.now(),
+                "total_items": len(legacy_data),
+                "migrated_items": len(migrated_entities),
+                "success_rate": (
+                    len(migrated_entities) / len(legacy_data) if legacy_data else 0.0
+                ),
+            }
+        )
 
-        logger.info(f"Completed migration: {len(migrated_entities)}/{len(legacy_data)} items migrated")
+        logger.info(
+            f"Completed migration: {len(migrated_entities)}/{len(legacy_data)} items migrated"
+        )
         return migrated_entities
 
-    async def migrate_external_tasks(self, external_data: List[Dict[str, Any]]) -> List[TaskEntity]:
+    async def migrate_external_tasks(
+        self, external_data: List[Dict[str, Any]]
+    ) -> List[TaskEntity]:
         """外部タスクデータの移行"""
         logger.info(f"Starting migration of {len(external_data)} external tasks")
 
@@ -500,45 +609,57 @@ class DataMigrationTool:
         for item in external_data:
             try:
                 entity = await self.conversion_engine.convert_and_store(
-                    "external_task_to_entity",
-                    item,
-                    TaskEntity
+                    "external_task_to_entity", item, TaskEntity
                 )
                 migrated_entities.append(entity)
 
             except Exception as e:
-                logger.error(f"Failed to migrate task item {item.get('id', 'unknown')}: {e}")
+                logger.error(
+                    f"Failed to migrate task item {item.get('id', 'unknown')}: {e}"
+                )
                 continue
 
         # 移行履歴の記録
-        self.migration_history.append({
-            'type': 'external_tasks',
-            'timestamp': datetime.now(),
-            'total_items': len(external_data),
-            'migrated_items': len(migrated_entities),
-            'success_rate': len(migrated_entities) / len(external_data) if external_data else 0.0
-        })
+        self.migration_history.append(
+            {
+                "type": "external_tasks",
+                "timestamp": datetime.now(),
+                "total_items": len(external_data),
+                "migrated_items": len(migrated_entities),
+                "success_rate": (
+                    len(migrated_entities) / len(external_data)
+                    if external_data
+                    else 0.0
+                ),
+            }
+        )
 
-        logger.info(f"Completed migration: {len(migrated_entities)}/{len(external_data)} tasks migrated")
+        logger.info(
+            f"Completed migration: {len(migrated_entities)}/{len(external_data)} tasks migrated"
+        )
         return migrated_entities
 
     def get_migration_report(self) -> Dict[str, Any]:
         """移行レポートの取得"""
-        total_items = sum(item['total_items'] for item in self.migration_history)
-        migrated_items = sum(item['migrated_items'] for item in self.migration_history)
+        total_items = sum(item["total_items"] for item in self.migration_history)
+        migrated_items = sum(item["migrated_items"] for item in self.migration_history)
 
         return {
-            'total_migrations': len(self.migration_history),
-            'total_items_processed': total_items,
-            'total_items_migrated': migrated_items,
-            'overall_success_rate': migrated_items / total_items if total_items > 0 else 0.0,
-            'migration_history': self.migration_history,
-            'conversion_statistics': self.conversion_engine.get_conversion_statistics()
+            "total_migrations": len(self.migration_history),
+            "total_items_processed": total_items,
+            "total_items_migrated": migrated_items,
+            "overall_success_rate": (
+                migrated_items / total_items if total_items > 0 else 0.0
+            ),
+            "migration_history": self.migration_history,
+            "conversion_statistics": self.conversion_engine.get_conversion_statistics(),
         }
+
 
 # ============================================================================
 # Usage Example
 # ============================================================================
+
 
 async def main():
     """使用例"""
@@ -560,14 +681,13 @@ async def main():
         "created_date": "2025-01-01T00:00:00Z",
         "updated_date": "2025-01-15T12:00:00Z",
         "quality": 0.8,
-        "keywords": "postgresql,performance,index,query"
+        "keywords": "postgresql,performance,index,query",
     }
 
     try:
         # データ変換
         converted_data = await conversion_engine.convert_data(
-            "legacy_knowledge_to_entity",
-            legacy_knowledge_data
+            "legacy_knowledge_to_entity", legacy_knowledge_data
         )
 
         print(f"Converted data: {json.dumps(converted_data, indent=2, default=str)}")
@@ -577,7 +697,9 @@ async def main():
 
         # 複数のレガシーデータを移行
         legacy_data_list = [legacy_knowledge_data]
-        migrated_entities = await migration_tool.migrate_legacy_knowledge(legacy_data_list)
+        migrated_entities = await migration_tool.migrate_legacy_knowledge(
+            legacy_data_list
+        )
 
         print(f"Migrated {len(migrated_entities)} knowledge entities")
 
@@ -587,6 +709,7 @@ async def main():
 
     except Exception as e:
         logger.error(f"Error: {e}")
+
 
 if __name__ == "__main__":
     asyncio.run(main())

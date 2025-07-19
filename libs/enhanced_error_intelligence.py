@@ -976,7 +976,9 @@ class LearningKnowledgeBase:
             "total_solutions": total_solutions,
             "avg_success_rate": avg_success_rate,
             "most_effective_strategies": most_effective[:5],
-            "knowledge_coverage": min(1.0, total_solutions / 100),  # 100解決策で完全カバレッジと仮定
+            "knowledge_coverage": min(
+                1.0, total_solutions / 100
+            ),  # 100解決策で完全カバレッジと仮定
             "learning_rate": 0.8,  # 簡易実装
         }
 

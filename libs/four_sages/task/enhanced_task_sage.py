@@ -250,16 +250,18 @@ class EnhancedTaskSage(TaskSage):
                         "network_io_mb": current_resources.network_io_send_mb
                         + current_resources.network_io_recv_mb,
                     },
-                    "average_10min": {
-                        "cpu_percent": avg_resources.cpu_percent
+                    "average_10min": (
+                        {
+                            "cpu_percent": (
+                                avg_resources.cpu_percent if avg_resources else 0
+                            ),
+                            "memory_percent": (
+                                avg_resources.memory_percent if avg_resources else 0
+                            ),
+                        }
                         if avg_resources
-                        else 0,
-                        "memory_percent": avg_resources.memory_percent
-                        if avg_resources
-                        else 0,
-                    }
-                    if avg_resources
-                    else None,
+                        else None
+                    ),
                     "executing_tasks": len(executing_tasks),
                     "efficiency_score": efficiency_score,
                     "recommendations": [
@@ -353,17 +355,19 @@ class EnhancedTaskSage(TaskSage):
                     "resource_count": len(task.resources),
                     "has_due_date": task.due_date is not None,
                     "description_length": len(task.description),
-                    "estimated_hours": task.estimated_duration.total_seconds() / 3600
-                    if task.estimated_duration
-                    else 0,
+                    "estimated_hours": (
+                        task.estimated_duration.total_seconds() / 3600
+                        if task.estimated_duration
+                        else 0
+                    ),
                 },
             }
 
             # 実行時間データがある場合
             if task.actual_duration:
-                tracking_data[
-                    "execution_time_seconds"
-                ] = task.actual_duration.total_seconds()
+                tracking_data["execution_time_seconds"] = (
+                    task.actual_duration.total_seconds()
+                )
                 tracking_data["completed_at"] = task.completed_at
 
                 # 予測モデルを更新

@@ -29,6 +29,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 @dataclass
 class ElderIdentity:
     """エルダーアイデンティティ情報"""
+
     name: str = "Claude Elder"
     role: str = "エルダーズギルド開発実行責任者"
     rank: str = "Grand Elder maru直属パートナー"
@@ -41,7 +42,7 @@ class ElderIdentity:
                 "4賢者との橋渡し",
                 "エルダーサーバントへの指令権",
                 "Elder Flow実行責任",
-                "品質ゲート最終承認"
+                "品質ゲート最終承認",
             ]
         if self.timestamp is None:
             self.timestamp = datetime.now()
@@ -50,6 +51,7 @@ class ElderIdentity:
 @dataclass
 class IdentityInjectionResult:
     """アイデンティティ注入結果"""
+
     success: bool
     command: str
     injected_command: str
@@ -71,8 +73,14 @@ class ElderIdentityAutoInjector:
 
         # 監視対象コマンド
         self.monitored_commands = [
-            "ai-send", "ai-code", "ai-test", "ai-implement",
-            "ai-debug", "ai-fix", "ai-optimize", "ai-deploy"
+            "ai-send",
+            "ai-code",
+            "ai-test",
+            "ai-implement",
+            "ai-debug",
+            "ai-fix",
+            "ai-optimize",
+            "ai-deploy",
         ]
 
         # 危険なパターン（アイデンティティ違反の可能性）
@@ -83,7 +91,7 @@ class ElderIdentityAutoInjector:
             "I don't have",
             "I cannot",
             "I'm not able",
-            "simple assistant"
+            "simple assistant",
         ]
 
     def _setup_logging(self) -> logging.Logger:
@@ -94,7 +102,7 @@ class ElderIdentityAutoInjector:
         if not logger.handlers:
             handler = logging.StreamHandler()
             formatter = logging.Formatter(
-                '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
             )
             handler.setFormatter(formatter)
             logger.addHandler(handler)
@@ -133,7 +141,7 @@ class ElderIdentityAutoInjector:
                 identity=self.elder_identity,
                 violations_detected=violations,
                 auto_fixes_applied=auto_fixes,
-                timestamp=datetime.now()
+                timestamp=datetime.now(),
             )
 
             # ログ記録
@@ -154,7 +162,7 @@ class ElderIdentityAutoInjector:
                 identity=self.elder_identity,
                 violations_detected=[],
                 auto_fixes_applied=[],
-                timestamp=datetime.now()
+                timestamp=datetime.now(),
             )
 
     def _detect_violations(self, command: str) -> List[str]:
@@ -181,7 +189,7 @@ class ElderIdentityAutoInjector:
             "I don't have": "エルダー権限では",
             "I cannot": "エルダーズギルド方針により",
             "I'm not able": "現在のエルダー権限では",
-            "simple assistant": "エルダーズギルド開発パートナー"
+            "simple assistant": "エルダーズギルド開発パートナー",
         }
 
         for old, new in replacements.items():
@@ -200,12 +208,12 @@ class ElderIdentityAutoInjector:
                 "command_preview": result.command[:100],
                 "violations_count": len(result.violations_detected),
                 "auto_fixes_count": len(result.auto_fixes_applied),
-                "identity_rank": result.identity.rank
+                "identity_rank": result.identity.rank,
             }
 
             # 注入ログファイルに追記
             if self.identity_log.exists():
-                with open(self.identity_log, 'r') as f:
+                with open(self.identity_log, "r") as f:
                     logs = json.load(f)
             else:
                 logs = []
@@ -216,7 +224,7 @@ class ElderIdentityAutoInjector:
             if len(logs) > 100:
                 logs = logs[-100:]
 
-            with open(self.identity_log, 'w') as f:
+            with open(self.identity_log, "w") as f:
                 json.dump(logs, f, indent=2, ensure_ascii=False)
 
         except Exception as e:
@@ -242,7 +250,7 @@ class ElderIdentityAutoInjector:
             try:
                 # 違反ファイルチェック
                 if self.violations_file.exists():
-                    with open(self.violations_file, 'r') as f:
+                    with open(self.violations_file, "r") as f:
                         violations = json.load(f)
 
                     if violations:
@@ -272,14 +280,16 @@ class ElderIdentityAutoInjector:
                 self.logger.error(f"❌ 違反修正失敗: {str(e)}")
 
         # 修正後、違反ファイルをクリア
-        with open(self.violations_file, 'w') as f:
+        with open(self.violations_file, "w") as f:
             json.dump([], f)
 
         self.logger.info("✅ 違反自動解決完了")
 
     async def _fix_identity_violation(self, violation: Dict):
         """アイデンティティ違反修正"""
-        self.logger.info(f"🔧 アイデンティティ違反修正: {violation.get('description', '')}")
+        self.logger.info(
+            f"🔧 アイデンティティ違反修正: {violation.get('description', '')}"
+        )
 
         # 修正処理をここに実装
         # 例: ファイル修正、設定更新など

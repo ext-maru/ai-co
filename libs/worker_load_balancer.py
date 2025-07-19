@@ -82,9 +82,11 @@ class WorkerLoadBalancer:
                             pid=info["pid"],
                             name=info["name"],
                             cpu_percent=info["cpu_percent"] or 0.0,
-                            memory_mb=info["memory_info"].rss / 1024 / 1024
-                            if info["memory_info"]
-                            else 0.0,
+                            memory_mb=(
+                                info["memory_info"].rss / 1024 / 1024
+                                if info["memory_info"]
+                                else 0.0
+                            ),
                             status=info["status"],
                             start_time=datetime.fromtimestamp(info["create_time"]),
                         )
@@ -338,10 +340,14 @@ class WorkerLoadBalancer:
             recommendations.append("システム負荷が高いため、ワーカー数の削減が必要")
 
         if len(targets["idle_long"]) > 0:
-            recommendations.append(f"{len(targets['idle_long'])}個の長時間アイドルワーカーの終了推奨")
+            recommendations.append(
+                f"{len(targets['idle_long'])}個の長時間アイドルワーカーの終了推奨"
+            )
 
         if len(targets["redundant"]) > 0:
-            recommendations.append(f"{len(targets['redundant'])}個の重複ワーカーの統合推奨")
+            recommendations.append(
+                f"{len(targets['redundant'])}個の重複ワーカーの統合推奨"
+            )
 
         if metrics.avg_cpu < 20 and metrics.total_workers > 10:
             recommendations.append("低CPU使用率のため、ワーカー数の最適化推奨")

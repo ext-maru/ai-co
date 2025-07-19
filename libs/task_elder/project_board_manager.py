@@ -226,7 +226,9 @@ class ProjectBoardManager:
                 existing_projects = await client.get_organization_projects()
                 for project in existing_projects:
                     if project.title == board_title:
-                        logger.info(f"既存のプロジェクトが見つかりました: {board_title}")
+                        logger.info(
+                            f"既存のプロジェクトが見つかりました: {board_title}"
+                        )
                         return project
 
                 # 新規プロジェクトの作成（dry runモードではダミーデータを返す）

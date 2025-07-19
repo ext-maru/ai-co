@@ -43,7 +43,9 @@ def check_dependencies():
 
         return True
     except ImportError:
-        print(f"{Colors.YELLOW}⚠️  必要なパッケージがインストールされていません{Colors.ENDC}")
+        print(
+            f"{Colors.YELLOW}⚠️  必要なパッケージがインストールされていません{Colors.ENDC}"
+        )
         print(f"{Colors.BLUE}インストール中...{Colors.ENDC}")
         subprocess.run(
             [sys.executable, "-m", "pip", "install", "flask", "flask-cors"], check=True
@@ -64,7 +66,9 @@ def start_dashboard():
     dashboard_path = project_root / "web" / "project_dashboard.py"
 
     if not dashboard_path.exists():
-        print(f"{Colors.RED}❌ ダッシュボードファイルが見つかりません: {dashboard_path}{Colors.ENDC}")
+        print(
+            f"{Colors.RED}❌ ダッシュボードファイルが見つかりません: {dashboard_path}{Colors.ENDC}"
+        )
         return 1
 
     print(f"{Colors.BLUE}🚀 プロジェクトダッシュボードを起動中...{Colors.ENDC}")

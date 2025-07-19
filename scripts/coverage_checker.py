@@ -35,7 +35,9 @@ class CoverageAnalyzer:
 
         if not test_file.exists():
             # スタンドアロンテストランナーを確認
-            test_runner = self.tests_dir / f"run_{lib_file.stem.replace('_', '_')}_tests.py"
+            test_runner = (
+                self.tests_dir / f"run_{lib_file.stem.replace('_', '_')}_tests.py"
+            )
             if test_runner.exists():
                 test_file = test_runner
             else:
@@ -95,7 +97,9 @@ class CoverageAnalyzer:
 
         # プライベート関数と特殊メソッドを除外
         filtered_definitions = {
-            d for d in definitions if not d.startswith("_") or d.startswith("__") and d.endswith("__")
+            d
+            for d in definitions
+            if not d.startswith("_") or d.startswith("__") and d.endswith("__")
         }
 
         return filtered_definitions
@@ -177,13 +181,17 @@ class CoverageAnalyzer:
 
                 if result["untested_functions"]:
                     print(f"   ❌ 未テスト: {len(result['untested_functions'])}件")
-                    for func in list(result["untested_functions"])[:5]:  # 最初の5件のみ表示
+                    for func in list(result["untested_functions"])[
+                        :5
+                    ]:  # 最初の5件のみ表示
                         print(f"      - {func}")
                     if len(result["untested_functions"]) > 5:
                         print(f"      ... 他{len(result['untested_functions']) - 5}件")
 
         # 全体サマリー
-        overall_coverage = (total_tested / total_definitions * 100) if total_definitions > 0 else 0
+        overall_coverage = (
+            (total_tested / total_definitions * 100) if total_definitions > 0 else 0
+        )
 
         print("\n🎯 全体カバレッジサマリー")
         print("=" * 30)
@@ -213,7 +221,9 @@ class CoverageAnalyzer:
         for result in results["results"]:
             if result["coverage_percentage"] < 90:
                 lib_name = result["lib_file"]
-                suggestions.append(f"📝 {lib_name}: {len(result['untested_functions'])}個の関数にテスト追加")
+                suggestions.append(
+                    f"📝 {lib_name}: {len(result['untested_functions'])}個の関数にテスト追加"
+                )
 
                 # 重要そうな関数を優先
                 important_functions = [
@@ -221,12 +231,21 @@ class CoverageAnalyzer:
                     for f in result["untested_functions"]
                     if any(
                         keyword in f.lower()
-                        for keyword in ["create", "update", "delete", "process", "analyze", "calculate"]
+                        for keyword in [
+                            "create",
+                            "update",
+                            "delete",
+                            "process",
+                            "analyze",
+                            "calculate",
+                        ]
                     )
                 ]
 
                 if important_functions:
-                    suggestions.append(f"   🎯 優先テスト対象: {', '.join(important_functions[:3])}")
+                    suggestions.append(
+                        f"   🎯 優先テスト対象: {', '.join(important_functions[:3])}"
+                    )
 
         return suggestions
 
@@ -247,7 +266,9 @@ def main():
     # 目標到達チェック
     if results["overall_coverage"] < 90:
         print(f"\n🎯 90%カバレッジまであと {90 - results['overall_coverage']:.1f}% !")
-        needed_tests = int((90 * results["total_definitions"] / 100) - results["total_tested"])
+        needed_tests = int(
+            (90 * results["total_definitions"] / 100) - results["total_tested"]
+        )
         print(f"   📝 追加テスト数: 約{needed_tests}個の関数/メソッド")
 
     return 0 if results["overall_coverage"] >= 90 else 1

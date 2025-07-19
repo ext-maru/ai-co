@@ -897,9 +897,9 @@ class MultiCCCoordinator:
             ),
             "total_capacity": total_capacity,
             "current_load": current_load,
-            "load_percentage": (current_load / total_capacity * 100)
-            if total_capacity > 0
-            else 0,
+            "load_percentage": (
+                (current_load / total_capacity * 100) if total_capacity > 0 else 0
+            ),
             "instances": [inst.to_dict() for inst in instances],
         }
 

@@ -85,7 +85,9 @@ def debug_slack_notification():
         print(f"Has webhook: {bool(getattr(notifier, 'webhook_url', None))}")
 
         # 実際の送信メソッドテスト
-        result = notifier.send_notification("Elders Guild SlackNotifierクラス経由のテスト")
+        result = notifier.send_notification(
+            "Elders Guild SlackNotifierクラス経由のテスト"
+        )
         print(f"送信結果: {result}")
 
     except Exception as e:

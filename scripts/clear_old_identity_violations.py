@@ -19,19 +19,22 @@ def clear_old_violations():
         return
 
     # バックアップ作成
-    backup_path = log_path.parent / f"identity_violations.backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    backup_path = (
+        log_path.parent
+        / f"identity_violations.backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
 
-    with open(log_path, 'r') as f:
+    with open(log_path, "r") as f:
         violations = json.load(f)
 
-    with open(backup_path, 'w') as f:
+    with open(backup_path, "w") as f:
         json.dump(violations, f, indent=2, ensure_ascii=False)
 
     print(f"📁 バックアップ作成: {backup_path}")
     print(f"📊 元の違反数: {len(violations)}")
 
     # 空のリストで上書き（すべてクリア）
-    with open(log_path, 'w') as f:
+    with open(log_path, "w") as f:
         json.dump([], f, indent=2, ensure_ascii=False)
 
     print("✅ identity_violations.jsonをクリアしました")
@@ -40,9 +43,9 @@ def clear_old_violations():
     # クリアした違反の詳細を表示
     print("\n🗑️ クリアした違反:")
     for v in violations:
-        source = v.get('source', 'unknown')
-        timestamp = v.get('timestamp', 'unknown')
-        violation_count = len(v.get('violations', []))
+        source = v.get("source", "unknown")
+        timestamp = v.get("timestamp", "unknown")
+        violation_count = len(v.get("violations", []))
         print(f"  - {source}: {violation_count}件 (記録日時: {timestamp})")
 
 

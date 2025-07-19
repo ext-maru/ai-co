@@ -812,9 +812,11 @@ class IncidentSage(BaseSage):
             alert_result = await self._create_alert(
                 {
                     "alert_type": "performance",
-                    "severity": IncidentSeverity.HIGH.value
-                    if metric_value > 95
-                    else IncidentSeverity.MEDIUM.value,
+                    "severity": (
+                        IncidentSeverity.HIGH.value
+                        if metric_value > 95
+                        else IncidentSeverity.MEDIUM.value
+                    ),
                     "title": f"High CPU Usage on {source_system}",
                     "message": f"CPU usage is {metric_value}%, exceeding threshold of {self.alert_rules['cpu_usage_threshold']}%",
                     "source_system": source_system,
@@ -834,9 +836,11 @@ class IncidentSage(BaseSage):
             alert_result = await self._create_alert(
                 {
                     "alert_type": "performance",
-                    "severity": IncidentSeverity.HIGH.value
-                    if metric_value > 95
-                    else IncidentSeverity.MEDIUM.value,
+                    "severity": (
+                        IncidentSeverity.HIGH.value
+                        if metric_value > 95
+                        else IncidentSeverity.MEDIUM.value
+                    ),
                     "title": f"High Memory Usage on {source_system}",
                     "message": f"Memory usage is {metric_value}%, exceeding threshold of {self.alert_rules['memory_usage_threshold']}%",
                     "source_system": source_system,
@@ -856,9 +860,11 @@ class IncidentSage(BaseSage):
             alert_result = await self._create_alert(
                 {
                     "alert_type": "availability",
-                    "severity": IncidentSeverity.CRITICAL.value
-                    if metric_value > 98
-                    else IncidentSeverity.HIGH.value,
+                    "severity": (
+                        IncidentSeverity.CRITICAL.value
+                        if metric_value > 98
+                        else IncidentSeverity.HIGH.value
+                    ),
                     "title": f"High Disk Usage on {source_system}",
                     "message": f"Disk usage is {metric_value}%, exceeding threshold of {self.alert_rules['disk_usage_threshold']}%",
                     "source_system": source_system,
@@ -1083,11 +1089,11 @@ class IncidentSage(BaseSage):
             "alert_statistics": alert_stats,
             "average_resolution_time_minutes": round(avg_resolution, 2),
             "active_alerts_count": active_alerts,
-            "health_status": "healthy"
-            if active_alerts < 5
-            else "degraded"
-            if active_alerts < 20
-            else "critical",
+            "health_status": (
+                "healthy"
+                if active_alerts < 5
+                else "degraded" if active_alerts < 20 else "critical"
+            ),
         }
 
         return {"success": True, "dashboard": dashboard}

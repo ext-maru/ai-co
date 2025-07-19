@@ -13,6 +13,7 @@ from typing import Dict, List, Set, Tuple, Optional, Any
 from dataclasses import dataclass, field
 from enum import Enum
 import logging
+
 # import networkx as nx  # Optional for advanced graph analysis
 # import matplotlib.pyplot as plt  # Optional for visualization
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -20,20 +21,23 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 # プロジェクトルート設定
 PROJECT_ROOT = Path(__file__).parent.parent
 import sys
+
 sys.path.insert(0, str(PROJECT_ROOT))
 
 
 class DependencyType(Enum):
     """依存関係タイプ"""
-    BUILD = "build"          # ビルド時依存
-    RUNTIME = "runtime"      # 実行時依存
-    TEST = "test"           # テスト時依存
-    OPTIONAL = "optional"    # オプショナル依存
+
+    BUILD = "build"  # ビルド時依存
+    RUNTIME = "runtime"  # 実行時依存
+    TEST = "test"  # テスト時依存
+    OPTIONAL = "optional"  # オプショナル依存
 
 
 @dataclass
 class ProjectNode:
     """プロジェクトノード"""
+
     id: str
     name: str
     path: Path
@@ -44,6 +48,7 @@ class ProjectNode:
 @dataclass
 class Dependency:
     """依存関係"""
+
     from_project: str
     to_project: str
     type: DependencyType
@@ -53,6 +58,7 @@ class Dependency:
 
 class CircularDependencyError(Exception):
     """循環依存エラー"""
+
     def __init__(self, cycle: List[str]):
         self.cycle = cycle
         super().__init__(f"循環依存を検出: {' -> '.join(cycle)} -> {cycle[0]}")
@@ -79,12 +85,12 @@ class ProjectDependencyGraph:
 
         # エルダーズギルドのベストプラクティス設定
         self.config = {
-            "max_parallel_projects": 10,     # 最大並列実行数
-            "cycle_detection": True,         # 循環依存検出
-            "auto_resolve_versions": True,   # バージョン自動解決
-            "cache_analysis": True,          # 分析結果キャッシュ
-            "visualization": False,          # 可視化機能（matplotlibなしで無効化）
-            "ai_optimization": True          # AI最適化連携
+            "max_parallel_projects": 10,  # 最大並列実行数
+            "cycle_detection": True,  # 循環依存検出
+            "auto_resolve_versions": True,  # バージョン自動解決
+            "cache_analysis": True,  # 分析結果キャッシュ
+            "visualization": False,  # 可視化機能（matplotlibなしで無効化）
+            "ai_optimization": True,  # AI最適化連携
         }
 
         # キャッシュ
@@ -93,10 +99,10 @@ class ProjectDependencyGraph:
 
         # 4賢者との連携準備
         self.sage_insights = {
-            "task_sage": [],      # タスク実行順序の知見
-            "knowledge_sage": [], # 依存パターンの知識
+            "task_sage": [],  # タスク実行順序の知見
+            "knowledge_sage": [],  # 依存パターンの知識
             "incident_sage": [],  # 依存関係起因のインシデント
-            "rag_sage": []       # 他プロジェクトの成功パターン
+            "rag_sage": [],  # 他プロジェクトの成功パターン
         }
 
     def add_project(self, project: ProjectNode):
@@ -138,7 +144,9 @@ class ProjectDependencyGraph:
 
         self._invalidate_cache()
 
-        self.logger.info(f"依存関係追加: {from_id} -> {to_id} (type: {dependency.type.value})")
+        self.logger.info(
+            f"依存関係追加: {from_id} -> {to_id} (type: {dependency.type.value})"
+        )
         return True
 
     def _would_create_cycle(self, from_id: str, to_id: str) -> bool:
@@ -171,7 +179,11 @@ class ProjectDependencyGraph:
                 if next_node in path or next_node == from_id:
                     path.append(next_node)
                     return path
-            current = list(self.graph.get(current, []))[0] if self.graph.get(current) else current
+            current = (
+                list(self.graph.get(current, []))[0]
+                if self.graph.get(current)
+                else current
+            )
 
         return path
 
@@ -225,7 +237,9 @@ class ProjectDependencyGraph:
                 "projects": level,
                 "can_parallel": True,
                 "estimated_time": self._estimate_level_time(level),
-                "dependencies_from_previous": self._get_dependencies_from_previous(level, i)
+                "dependencies_from_previous": self._get_dependencies_from_previous(
+                    level, i
+                ),
             }
             groups.append(group)
 
@@ -248,7 +262,9 @@ class ProjectDependencyGraph:
         # 並列実行時は最大時間
         return max(times)
 
-    def _get_dependencies_from_previous(self, level: List[str], level_index: int) -> Dict[str, List[str]]:
+    def _get_dependencies_from_previous(
+        self, level: List[str], level_index: int
+    ) -> Dict[str, List[str]]:
         """前レベルからの依存関係"""
         deps = {}
         if level_index == 0:
@@ -264,7 +280,11 @@ class ProjectDependencyGraph:
         if self._critical_path_cache is not None:
             return self._critical_path_cache
 
-        if not self.networkx_available or not self.nx_graph or not self.nx_graph.nodes():
+        if (
+            not self.networkx_available
+            or not self.nx_graph
+            or not self.nx_graph.nodes()
+        ):
             # NetworkXなしでクリティカルパス計算（簡易版）
             return self._calculate_critical_path_simple()
 
@@ -277,6 +297,7 @@ class ProjectDependencyGraph:
         # DAGの最長パスを見つける
         try:
             import networkx as nx
+
             critical_path = nx.dag_longest_path(self.nx_graph, weight="weight")
             self._critical_path_cache = critical_path
             return critical_path
@@ -308,7 +329,7 @@ class ProjectDependencyGraph:
             "total_impacted": list(all_impacted),
             "impact_count": len(all_impacted),
             "critical_path_member": project_id in self.find_critical_path(),
-            "rebuild_required": list(all_impacted)
+            "rebuild_required": list(all_impacted),
         }
 
     def optimize_with_ai(self, context: Dict[str, Any]) -> Dict[str, Any]:
@@ -317,14 +338,14 @@ class ProjectDependencyGraph:
             "original_levels": self.get_execution_order(),
             "optimized_levels": [],
             "improvements": [],
-            "sage_recommendations": {}
+            "sage_recommendations": {},
         }
 
         # タスク賢者の知見を活用
         task_sage_insight = {
             "parallel_efficiency": self._calculate_parallel_efficiency(),
             "bottlenecks": self._identify_bottlenecks(),
-            "optimization_potential": self._calculate_optimization_potential()
+            "optimization_potential": self._calculate_optimization_potential(),
         }
 
         optimization_result["sage_recommendations"]["task_sage"] = task_sage_insight
@@ -333,18 +354,22 @@ class ProjectDependencyGraph:
         knowledge_sage_insight = {
             "common_patterns": self._identify_dependency_patterns(),
             "anti_patterns": self._detect_anti_patterns(),
-            "best_practices": self._suggest_best_practices()
+            "best_practices": self._suggest_best_practices(),
         }
 
-        optimization_result["sage_recommendations"]["knowledge_sage"] = knowledge_sage_insight
+        optimization_result["sage_recommendations"][
+            "knowledge_sage"
+        ] = knowledge_sage_insight
 
         # 最適化提案
         if task_sage_insight["optimization_potential"] > 0.2:
-            optimization_result["improvements"].append({
-                "type": "parallel_optimization",
-                "description": "並列実行の最適化により20%以上の改善が見込めます",
-                "action": "プロジェクト分割を検討してください"
-            })
+            optimization_result["improvements"].append(
+                {
+                    "type": "parallel_optimization",
+                    "description": "並列実行の最適化により20%以上の改善が見込めます",
+                    "action": "プロジェクト分割を検討してください",
+                }
+            )
 
         return optimization_result
 
@@ -394,21 +419,25 @@ class ProjectDependencyGraph:
 
         # レイヤードアーキテクチャパターン
         if self._has_layered_pattern():
-            patterns.append({
-                "type": "layered_architecture",
-                "description": "レイヤードアーキテクチャパターンを検出",
-                "quality": "good"
-            })
+            patterns.append(
+                {
+                    "type": "layered_architecture",
+                    "description": "レイヤードアーキテクチャパターンを検出",
+                    "quality": "good",
+                }
+            )
 
         # スター型依存パターン
         star_centers = self._find_star_patterns()
         if star_centers:
-            patterns.append({
-                "type": "star_dependency",
-                "description": f"スター型依存パターンを検出: {star_centers}",
-                "quality": "warning",
-                "recommendation": "共通ライブラリの分割を検討"
-            })
+            patterns.append(
+                {
+                    "type": "star_dependency",
+                    "description": f"スター型依存パターンを検出: {star_centers}",
+                    "quality": "warning",
+                    "recommendation": "共通ライブラリの分割を検討",
+                }
+            )
 
         return patterns
 
@@ -419,22 +448,26 @@ class ProjectDependencyGraph:
         # 相互依存の検出
         mutual_deps = self._find_mutual_dependencies()
         if mutual_deps:
-            anti_patterns.append({
-                "type": "mutual_dependency",
-                "description": f"相互依存を検出: {mutual_deps}",
-                "severity": "high",
-                "recommendation": "インターフェース分離を検討"
-            })
+            anti_patterns.append(
+                {
+                    "type": "mutual_dependency",
+                    "description": f"相互依存を検出: {mutual_deps}",
+                    "severity": "high",
+                    "recommendation": "インターフェース分離を検討",
+                }
+            )
 
         # 深い依存階層
         max_depth = self._calculate_max_dependency_depth()
         if max_depth > 5:
-            anti_patterns.append({
-                "type": "deep_hierarchy",
-                "description": f"依存階層が深すぎます（{max_depth}層）",
-                "severity": "medium",
-                "recommendation": "中間層の統合を検討"
-            })
+            anti_patterns.append(
+                {
+                    "type": "deep_hierarchy",
+                    "description": f"依存階層が深すぎます（{max_depth}層）",
+                    "severity": "medium",
+                    "recommendation": "中間層の統合を検討",
+                }
+            )
 
         return anti_patterns
 
@@ -476,7 +509,9 @@ class ProjectDependencyGraph:
 
         for node in self.nodes:
             for dependent in self.graph.get(node, []):
-                if (dependent, node) not in checked and node in self.graph.get(dependent, []):
+                if (dependent, node) not in checked and node in self.graph.get(
+                    dependent, []
+                ):
                     mutual.append((node, dependent))
                     checked.add((node, dependent))
                     checked.add((dependent, node))
@@ -506,13 +541,20 @@ class ProjectDependencyGraph:
         for level in levels:
             if level:
                 # 推定時間で最も重いプロジェクトを選択
-                heaviest_project = max(level, key=lambda p:
-                    self.nodes.get(p, type('obj', (object,), {'metadata': {'estimated_minutes': 10}})).metadata.get('estimated_minutes', 10))
+                heaviest_project = max(
+                    level,
+                    key=lambda p: self.nodes.get(
+                        p,
+                        type("obj", (object,), {"metadata": {"estimated_minutes": 10}}),
+                    ).metadata.get("estimated_minutes", 10),
+                )
                 critical_path.append(heaviest_project)
 
         return critical_path
 
-    def visualize(self, output_path: Optional[Path] = None, layout: str = "hierarchical"):
+    def visualize(
+        self, output_path: Optional[Path] = None, layout: str = "hierarchical"
+    ):
         """依存関係グラフの可視化（エルダーズギルド仕様）"""
         if not self.config["visualization"]:
             return
@@ -540,6 +582,7 @@ class ProjectDependencyGraph:
         else:
             # 自動レイアウト
             import networkx as nx
+
             pos = nx.spring_layout(self.nx_graph)
 
         # ノードの色分け
@@ -560,30 +603,42 @@ class ProjectDependencyGraph:
 
         # グラフ描画
         import networkx as nx
-        nx.draw(self.nx_graph, pos,
-                node_color=node_colors,
-                node_size=3000,
-                font_size=10,
-                font_weight="bold",
-                arrows=True,
-                edge_color="gray",
-                arrowsize=20,
-                with_labels=True)
+
+        nx.draw(
+            self.nx_graph,
+            pos,
+            node_color=node_colors,
+            node_size=3000,
+            font_size=10,
+            font_weight="bold",
+            arrows=True,
+            edge_color="gray",
+            arrowsize=20,
+            with_labels=True,
+        )
 
         # クリティカルパスを強調
         critical_path = self.find_critical_path()
         if len(critical_path) > 1:
-            critical_edges = [(critical_path[i], critical_path[i+1])
-                            for i in range(len(critical_path)-1)]
-            nx.draw_networkx_edges(self.nx_graph, pos,
-                                 edgelist=critical_edges,
-                                 edge_color="red",
-                                 width=3,
-                                 arrows=True,
-                                 arrowsize=25)
+            critical_edges = [
+                (critical_path[i], critical_path[i + 1])
+                for i in range(len(critical_path) - 1)
+            ]
+            nx.draw_networkx_edges(
+                self.nx_graph,
+                pos,
+                edgelist=critical_edges,
+                edge_color="red",
+                width=3,
+                arrows=True,
+                arrowsize=25,
+            )
 
-        plt.title("🏛️ エルダーズギルド プロジェクト依存関係グラフ",
-                  fontsize=16, fontweight="bold")
+        plt.title(
+            "🏛️ エルダーズギルド プロジェクト依存関係グラフ",
+            fontsize=16,
+            fontweight="bold",
+        )
 
         # 凡例
         try:
@@ -591,23 +646,23 @@ class ProjectDependencyGraph:
         except ImportError:
             self.logger.warning("matplotlib.patches not available. Skipping legend.")
             if output_path:
-                plt.savefig(output_path, dpi=300, bbox_inches='tight')
+                plt.savefig(output_path, dpi=300, bbox_inches="tight")
                 self.logger.info(f"グラフを保存: {output_path}")
             else:
                 plt.show()
             plt.close()
             return
         legend_elements = [
-            Patch(facecolor='lightblue', label='ライブラリ'),
-            Patch(facecolor='lightgreen', label='サービス'),
-            Patch(facecolor='lightyellow', label='ツール'),
-            Patch(facecolor='lightgray', label='標準'),
-            Patch(facecolor='red', label='クリティカルパス')
+            Patch(facecolor="lightblue", label="ライブラリ"),
+            Patch(facecolor="lightgreen", label="サービス"),
+            Patch(facecolor="lightyellow", label="ツール"),
+            Patch(facecolor="lightgray", label="標準"),
+            Patch(facecolor="red", label="クリティカルパス"),
         ]
-        plt.legend(handles=legend_elements, loc='upper right')
+        plt.legend(handles=legend_elements, loc="upper right")
 
         if output_path:
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             self.logger.info(f"グラフを保存: {output_path}")
         else:
             plt.show()
@@ -619,10 +674,16 @@ class ProjectDependencyGraph:
         mermaid = ["graph TD"]
 
         # スタイル定義
-        mermaid.append("    classDef library fill:#add8e6,stroke:#333,stroke-width:2px;")
-        mermaid.append("    classDef service fill:#90ee90,stroke:#333,stroke-width:2px;")
+        mermaid.append(
+            "    classDef library fill:#add8e6,stroke:#333,stroke-width:2px;"
+        )
+        mermaid.append(
+            "    classDef service fill:#90ee90,stroke:#333,stroke-width:2px;"
+        )
         mermaid.append("    classDef tool fill:#ffffe0,stroke:#333,stroke-width:2px;")
-        mermaid.append("    classDef critical fill:#ff6b6b,stroke:#333,stroke-width:3px;")
+        mermaid.append(
+            "    classDef critical fill:#ff6b6b,stroke:#333,stroke-width:3px;"
+        )
 
         # ノード定義
         for node_id, node in self.nodes.items():
@@ -667,20 +728,20 @@ class ProjectDependencyGraph:
                     "to": dep.to_project,
                     "type": dep.type.value,
                     "version": dep.version,
-                    "metadata": dep.metadata
+                    "metadata": dep.metadata,
                 }
                 for dep in self.dependencies.values()
             ],
             "sage_insights": self.sage_insights,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
-        with open(file_path, 'w', encoding='utf-8') as f:
+        with open(file_path, "w", encoding="utf-8") as f:
             json.dump(state, f, indent=2, ensure_ascii=False, default=str)
 
     def load_state(self, file_path: Path):
         """状態を読み込み"""
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             state = json.load(f)
 
         # ノード復元
@@ -690,7 +751,7 @@ class ProjectDependencyGraph:
                 name=node_data["name"],
                 path=Path(node_data["path"]),
                 type=node_data.get("type", "standard"),
-                metadata=node_data.get("metadata", {})
+                metadata=node_data.get("metadata", {}),
             )
             self.add_project(node)
 
@@ -701,7 +762,7 @@ class ProjectDependencyGraph:
                 to_project=dep_data["to"],
                 type=DependencyType(dep_data["type"]),
                 version=dep_data.get("version"),
-                metadata=dep_data.get("metadata", {})
+                metadata=dep_data.get("metadata", {}),
             )
             self.add_dependency(dep)
 
@@ -716,18 +777,42 @@ def demo():
 
     # プロジェクト定義
     projects = [
-        ProjectNode("frontend", "フロントエンド", Path("frontend"), "service",
-                   {"estimated_minutes": 30}),
-        ProjectNode("api", "API", Path("api"), "service",
-                   {"estimated_minutes": 20}),
-        ProjectNode("database", "データベース", Path("database"), "service",
-                   {"estimated_minutes": 10}),
-        ProjectNode("auth-lib", "認証ライブラリ", Path("libs/auth"), "library",
-                   {"estimated_minutes": 15}),
-        ProjectNode("monitoring", "監視ツール", Path("monitoring"), "tool",
-                   {"estimated_minutes": 25}),
-        ProjectNode("common-lib", "共通ライブラリ", Path("libs/common"), "library",
-                   {"estimated_minutes": 5}),
+        ProjectNode(
+            "frontend",
+            "フロントエンド",
+            Path("frontend"),
+            "service",
+            {"estimated_minutes": 30},
+        ),
+        ProjectNode("api", "API", Path("api"), "service", {"estimated_minutes": 20}),
+        ProjectNode(
+            "database",
+            "データベース",
+            Path("database"),
+            "service",
+            {"estimated_minutes": 10},
+        ),
+        ProjectNode(
+            "auth-lib",
+            "認証ライブラリ",
+            Path("libs/auth"),
+            "library",
+            {"estimated_minutes": 15},
+        ),
+        ProjectNode(
+            "monitoring",
+            "監視ツール",
+            Path("monitoring"),
+            "tool",
+            {"estimated_minutes": 25},
+        ),
+        ProjectNode(
+            "common-lib",
+            "共通ライブラリ",
+            Path("libs/common"),
+            "library",
+            {"estimated_minutes": 5},
+        ),
     ]
 
     # プロジェクト追加
@@ -761,7 +846,7 @@ def demo():
     for group in groups:
         print(f"\nLevel {group['level']}: {group['projects']}")
         print(f"  推定時間: {group['estimated_time']}分（並列実行）")
-        if group['dependencies_from_previous']:
+        if group["dependencies_from_previous"]:
             print(f"  依存元: {group['dependencies_from_previous']}")
 
     # クリティカルパス
@@ -778,8 +863,12 @@ def demo():
     # AI最適化提案
     print("\n🤖 AI最適化提案:")
     optimization = graph.optimize_with_ai({})
-    print(f"  並列実行効率: {optimization['sage_recommendations']['task_sage']['parallel_efficiency']:.1%}")
-    print(f"  ボトルネック: {optimization['sage_recommendations']['task_sage']['bottlenecks']}")
+    print(
+        f"  並列実行効率: {optimization['sage_recommendations']['task_sage']['parallel_efficiency']:.1%}"
+    )
+    print(
+        f"  ボトルネック: {optimization['sage_recommendations']['task_sage']['bottlenecks']}"
+    )
 
     # Mermaid出力
     print("\n📝 Mermaid図:")

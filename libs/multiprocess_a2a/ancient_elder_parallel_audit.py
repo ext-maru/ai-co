@@ -169,8 +169,12 @@ class AncientElderAuditor(EldersAILegacy):
         recommendations = []
 
         if self.audit_specialty == "security":
-            findings.extend(["認証トークンの有効期限チェック不足", "入力値検証の改善余地あり"])
-            recommendations.extend(["JWT有効期限を24時間に設定", "入力値サニタイゼーション強化"])
+            findings.extend(
+                ["認証トークンの有効期限チェック不足", "入力値検証の改善余地あり"]
+            )
+            recommendations.extend(
+                ["JWT有効期限を24時間に設定", "入力値サニタイゼーション強化"]
+            )
             base_score -= 10
 
         elif self.audit_specialty == "performance":
@@ -179,8 +183,12 @@ class AncientElderAuditor(EldersAILegacy):
             base_score -= 5
 
         elif self.audit_specialty == "quality":
-            findings.extend(["テストカバレッジ85%（目標95%）", "複雑度の高いメソッド3つ"])
-            recommendations.extend(["エッジケーステスト追加", "メソッド分割によるリファクタリング"])
+            findings.extend(
+                ["テストカバレッジ85%（目標95%）", "複雑度の高いメソッド3つ"]
+            )
+            recommendations.extend(
+                ["エッジケーステスト追加", "メソッド分割によるリファクタリング"]
+            )
             base_score -= 8
 
         elif self.audit_specialty == "architecture":
@@ -202,9 +210,7 @@ class AncientElderAuditor(EldersAILegacy):
         status = (
             "passed"
             if base_score >= 80
-            else "warning"
-            if base_score >= 60
-            else "failed"
+            else "warning" if base_score >= 60 else "failed"
         )
 
         return AuditResult(
@@ -387,9 +393,9 @@ class ParallelAncientElderOrchestrator:
                 "failed": failed_audits,
                 "warnings": warning_audits,
                 "total_time": total_time,
-                "average_time_per_audit": total_time / total_audits
-                if total_audits > 0
-                else 0,
+                "average_time_per_audit": (
+                    total_time / total_audits if total_audits > 0 else 0
+                ),
                 "audit_results": all_audit_results,
                 "summary_report": summary_report,
             }
@@ -480,9 +486,9 @@ class ParallelAncientElderOrchestrator:
             "top_findings": top_findings,
             "audit_efficiency": {
                 "total_time": total_time,
-                "audits_per_second": len(audit_results) / total_time
-                if total_time > 0
-                else 0,
+                "audits_per_second": (
+                    len(audit_results) / total_time if total_time > 0 else 0
+                ),
                 "parallel_speedup": self.num_elders,  # 理論的な高速化率
             },
         }

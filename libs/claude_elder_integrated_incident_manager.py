@@ -111,7 +111,9 @@ class ClaudeElderIntegratedIncidentManager(IncidentManager):
         self.sage_type = "Integrated Crisis Sage"
         self.wisdom_level = "integrated_crisis_response"
 
-        self.logger.info(f"🤖🚨 {self.sage_type} 初期化完了 - Claude Elder統合アクティブ")
+        self.logger.info(
+            f"🤖🚨 {self.sage_type} 初期化完了 - Claude Elder統合アクティブ"
+        )
 
     def create_incident_with_claude_integration(
         self,
@@ -436,9 +438,7 @@ class ClaudeElderIntegratedIncidentManager(IncidentManager):
             with open(council_file, "w", encoding="utf-8") as f:
                 json.dump(council_data, f, indent=2, ensure_ascii=False)
 
-            self.logger.critical(
-                f"🏛️ Elder Council summoned for incident {incident_id}"
-            )
+            self.logger.critical(f"🏛️ Elder Council summoned for incident {incident_id}")
 
         except Exception as e:
             self.logger.error(

@@ -17,6 +17,7 @@ PostgreSQL MCP + 4賢者システムの知識を自動的に学習・進化さ�
 
 import sys
 from pathlib import Path
+
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -38,12 +39,17 @@ from math import exp, log, sqrt
 # 既存システム統合
 from libs.advanced_search_analytics_platform import AdvancedSearchAnalyticsPlatform
 from libs.four_sages_postgres_mcp_integration import FourSagesPostgresMCPIntegration
-from scripts.postgres_mcp_final_implementation import PostgreSQLMCPClient, PostgreSQLMCPServer
+from scripts.postgres_mcp_final_implementation import (
+    PostgreSQLMCPClient,
+    PostgreSQLMCPServer,
+)
 
 logger = logging.getLogger(__name__)
 
+
 class LearningType(Enum):
     """学習タイプ"""
+
     SUPERVISED = "supervised"
     UNSUPERVISED = "unsupervised"
     REINFORCEMENT = "reinforcement"
@@ -51,15 +57,19 @@ class LearningType(Enum):
     ONLINE = "online"
     INCREMENTAL = "incremental"
 
+
 class AutomationLevel(Enum):
     """自動化レベル"""
+
     MANUAL = "manual"
     SEMI_AUTOMATIC = "semi_automatic"
     FULLY_AUTOMATIC = "fully_automatic"
     ADAPTIVE = "adaptive"
 
+
 class LearningStatus(Enum):
     """学習状態"""
+
     IDLE = "idle"
     LEARNING = "learning"
     OPTIMIZING = "optimizing"
@@ -67,9 +77,11 @@ class LearningStatus(Enum):
     DEPLOYING = "deploying"
     ERROR = "error"
 
+
 @dataclass
 class LearningTask:
     """学習タスク"""
+
     id: str
     task_type: LearningType
     priority: int
@@ -81,9 +93,11 @@ class LearningTask:
     progress: float
     metadata: Dict[str, Any]
 
+
 @dataclass
 class LearningResult:
     """学習結果"""
+
     task_id: str
     success: bool
     metrics: Dict[str, float]
@@ -93,6 +107,7 @@ class LearningResult:
     performance_improvement: float
     confidence: float
     timestamp: datetime
+
 
 class AutomatedLearningSystem:
     """自動化・学習システム"""
@@ -109,13 +124,13 @@ class AutomatedLearningSystem:
 
         # 学習システム設定
         self.learning_config = {
-            'max_concurrent_tasks': 5,
-            'learning_rate': 0.01,
-            'batch_size': 32,
-            'evaluation_interval': 300,  # 5分間隔
-            'auto_deploy_threshold': 0.85,
-            'convergence_threshold': 0.001,
-            'max_learning_time': 3600  # 1時間
+            "max_concurrent_tasks": 5,
+            "learning_rate": 0.01,
+            "batch_size": 32,
+            "evaluation_interval": 300,  # 5分間隔
+            "auto_deploy_threshold": 0.85,
+            "convergence_threshold": 0.001,
+            "max_learning_time": 3600,  # 1時間
         }
 
         # 学習タスクキュー
@@ -126,32 +141,32 @@ class AutomatedLearningSystem:
 
         # 学習エージェント
         self.learning_agents = {
-            'pattern_discovery': PatternDiscoveryAgent(),
-            'optimization': OptimizationAgent(),
-            'recommendation': RecommendationAgent(),
-            'quality_improvement': QualityImprovementAgent()
+            "pattern_discovery": PatternDiscoveryAgent(),
+            "optimization": OptimizationAgent(),
+            "recommendation": RecommendationAgent(),
+            "quality_improvement": QualityImprovementAgent(),
         }
 
         # 自動化設定
         self.automation_settings = {
-            'auto_learning_enabled': True,
-            'auto_optimization_enabled': True,
-            'auto_deployment_enabled': False,  # 安全のため初期は手動
-            'learning_schedule': {
-                'continuous': True,
-                'batch_interval': 1800,  # 30分間隔
-                'evaluation_interval': 300  # 5分間隔
-            }
+            "auto_learning_enabled": True,
+            "auto_optimization_enabled": True,
+            "auto_deployment_enabled": False,  # 安全のため初期は手動
+            "learning_schedule": {
+                "continuous": True,
+                "batch_interval": 1800,  # 30分間隔
+                "evaluation_interval": 300,  # 5分間隔
+            },
         }
 
         # パフォーマンス監視
         self.performance_metrics = {
-            'total_learning_tasks': 0,
-            'successful_learning_tasks': 0,
-            'average_learning_time': 0.0,
-            'model_accuracy_improvement': 0.0,
-            'system_performance_improvement': 0.0,
-            'knowledge_growth_rate': 0.0
+            "total_learning_tasks": 0,
+            "successful_learning_tasks": 0,
+            "average_learning_time": 0.0,
+            "model_accuracy_improvement": 0.0,
+            "system_performance_improvement": 0.0,
+            "knowledge_growth_rate": 0.0,
         }
 
         # 学習履歴
@@ -171,11 +186,13 @@ class AutomatedLearningSystem:
 
             # 既存システム初期化
             search_init = await self.search_platform.initialize_platform()
-            if not search_init['success']:
-                raise Exception(f"検索プラットフォーム初期化失敗: {search_init.get('error')}")
+            if not search_init["success"]:
+                raise Exception(
+                    f"検索プラットフォーム初期化失敗: {search_init.get('error')}"
+                )
 
             sages_init = await self.four_sages.initialize_mcp_integration()
-            if not sages_init['success']:
+            if not sages_init["success"]:
                 raise Exception(f"4賢者システム初期化失敗: {sages_init.get('error')}")
 
             # 学習エージェント初期化
@@ -184,24 +201,21 @@ class AutomatedLearningSystem:
                 self.logger.info(f"🤖 {agent_name} エージェント初期化完了")
 
             # 継続学習開始
-            if self.automation_settings['auto_learning_enabled']:
+            if self.automation_settings["auto_learning_enabled"]:
                 await self.start_continuous_learning()
 
             self.logger.info("✅ 自動化・学習システム初期化完了")
             return {
-                'success': True,
-                'search_platform': search_init,
-                'four_sages': sages_init,
-                'learning_agents': len(self.learning_agents),
-                'continuous_learning': self.continuous_learning_active
+                "success": True,
+                "search_platform": search_init,
+                "four_sages": sages_init,
+                "learning_agents": len(self.learning_agents),
+                "continuous_learning": self.continuous_learning_active,
             }
 
         except Exception as e:
             self.logger.error(f"❌ 学習システム初期化失敗: {e}")
-            return {
-                'success': False,
-                'error': str(e)
-            }
+            return {"success": False, "error": str(e)}
 
     async def start_continuous_learning(self):
         """継続学習開始"""
@@ -210,8 +224,7 @@ class AutomatedLearningSystem:
 
         self.continuous_learning_active = True
         self.learning_loop_thread = threading.Thread(
-            target=self._continuous_learning_loop,
-            daemon=True
+            target=self._continuous_learning_loop, daemon=True
         )
         self.learning_loop_thread.start()
 
@@ -242,7 +255,9 @@ class AutomatedLearningSystem:
                 # 知識の最適化
                 asyncio.run(self._optimize_knowledge_base())
 
-                time.sleep(self.automation_settings['learning_schedule']['batch_interval'])
+                time.sleep(
+                    self.automation_settings["learning_schedule"]["batch_interval"]
+                )
 
             except Exception as e:
                 self.logger.error(f"❌ 継続学習ループエラー: {e}")
@@ -256,11 +271,11 @@ class AutomatedLearningSystem:
 
             for task_config in analysis_tasks:
                 await self.create_learning_task(
-                    task_type=LearningType(task_config['type']),
-                    data_source=task_config['data_source'],
-                    target_metric=task_config['target_metric'],
+                    task_type=LearningType(task_config["type"]),
+                    data_source=task_config["data_source"],
+                    target_metric=task_config["target_metric"],
                     automation_level=AutomationLevel.FULLY_AUTOMATIC,
-                    priority=task_config['priority']
+                    priority=task_config["priority"],
                 )
 
         except Exception as e:
@@ -281,37 +296,49 @@ class AutomatedLearningSystem:
         recommended_tasks = []
 
         # 検索精度改善タスク
-        if search_metrics.get('accuracy', 0) < 0.85:
-            recommended_tasks.append({
-                'type': 'supervised',
-                'data_source': 'search_results',
-                'target_metric': 'accuracy',
-                'priority': 8
-            })
+        if search_metrics.get("accuracy", 0) < 0.85:
+            recommended_tasks.append(
+                {
+                    "type": "supervised",
+                    "data_source": "search_results",
+                    "target_metric": "accuracy",
+                    "priority": 8,
+                }
+            )
 
         # パターン発見タスク
         if len(self.knowledge_evolution) > 10:
-            recommended_tasks.append({
-                'type': 'unsupervised',
-                'data_source': 'knowledge_patterns',
-                'target_metric': 'pattern_discovery',
-                'priority': 6
-            })
+            recommended_tasks.append(
+                {
+                    "type": "unsupervised",
+                    "data_source": "knowledge_patterns",
+                    "target_metric": "pattern_discovery",
+                    "priority": 6,
+                }
+            )
 
         # 推薦システム改善
-        if user_behavior.get('engagement', 0) < 0.8:
-            recommended_tasks.append({
-                'type': 'reinforcement',
-                'data_source': 'user_interactions',
-                'target_metric': 'engagement',
-                'priority': 7
-            })
+        if user_behavior.get("engagement", 0) < 0.8:
+            recommended_tasks.append(
+                {
+                    "type": "reinforcement",
+                    "data_source": "user_interactions",
+                    "target_metric": "engagement",
+                    "priority": 7,
+                }
+            )
 
         return recommended_tasks
 
-    async def create_learning_task(self, task_type: LearningType, data_source: str,
-                                 target_metric: str, automation_level: AutomationLevel,
-                                 priority: int = 5, metadata: Dict[str, Any] = None) -> str:
+    async def create_learning_task(
+        self,
+        task_type: LearningType,
+        data_source: str,
+        target_metric: str,
+        automation_level: AutomationLevel,
+        priority: int = 5,
+        metadata: Dict[str, Any] = None,
+    ) -> str:
         """学習タスク作成"""
         try:
             task_id = f"learning_task_{self.task_counter}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -327,12 +354,14 @@ class AutomatedLearningSystem:
                 created_at=datetime.now(),
                 status=LearningStatus.IDLE,
                 progress=0.0,
-                metadata=metadata or {}
+                metadata=metadata or {},
             )
 
             # タスクキューに追加（優先度順）
             self.learning_queue.append(task)
-            self.learning_queue = deque(sorted(self.learning_queue, key=lambda x: x.priority, reverse=True))
+            self.learning_queue = deque(
+                sorted(self.learning_queue, key=lambda x: x.priority, reverse=True)
+            )
 
             self.logger.info(f"📚 学習タスク作成: {task_id} ({task_type.value})")
 
@@ -347,24 +376,29 @@ class AutomatedLearningSystem:
         try:
             # 並行実行数制限
             active_count = len(self.active_tasks)
-            max_concurrent = self.learning_config['max_concurrent_tasks']
+            max_concurrent = self.learning_config["max_concurrent_tasks"]
 
             if active_count >= max_concurrent:
                 return
 
             # 待機中タスクの実行
             tasks_to_execute = []
-            while len(tasks_to_execute) < (max_concurrent - active_count) and self.learning_queue:
+            while (
+                len(tasks_to_execute) < (max_concurrent - active_count)
+                and self.learning_queue
+            ):
                 task = self.learning_queue.popleft()
                 if task.status == LearningStatus.IDLE:
                     tasks_to_execute.append(task)
 
             # 並行実行
             if tasks_to_execute:
-                await asyncio.gather(*[
-                    self._execute_single_learning_task(task)
-                    for task in tasks_to_execute
-                ])
+                await asyncio.gather(
+                    *[
+                        self._execute_single_learning_task(task)
+                        for task in tasks_to_execute
+                    ]
+                )
 
         except Exception as e:
             self.logger.error(f"❌ 学習タスク実行失敗: {e}")
@@ -407,13 +441,15 @@ class AutomatedLearningSystem:
                 del self.active_tasks[task.id]
 
             # 学習履歴に記録
-            self.learning_history.append({
-                'task_id': task.id,
-                'task_type': task.task_type.value,
-                'success': result.success,
-                'performance_improvement': result.performance_improvement,
-                'timestamp': datetime.now()
-            })
+            self.learning_history.append(
+                {
+                    "task_id": task.id,
+                    "task_type": task.task_type.value,
+                    "success": result.success,
+                    "performance_improvement": result.performance_improvement,
+                    "timestamp": datetime.now(),
+                }
+            )
 
             self.logger.info(f"✅ 学習タスク完了: {task.id}")
 
@@ -431,16 +467,18 @@ class AutomatedLearningSystem:
         return LearningResult(
             task_id=task.id,
             success=True,
-            metrics={'accuracy': 0.85, 'precision': 0.82, 'recall': 0.88},
-            insights=['検索精度が5%向上', '誤分類パターンを特定'],
-            recommendations=['訓練データの追加', '特徴量エンジニアリング'],
-            model_updates={'weights': 'updated', 'bias': 'adjusted'},
+            metrics={"accuracy": 0.85, "precision": 0.82, "recall": 0.88},
+            insights=["検索精度が5%向上", "誤分類パターンを特定"],
+            recommendations=["訓練データの追加", "特徴量エンジニアリング"],
+            model_updates={"weights": "updated", "bias": "adjusted"},
             performance_improvement=0.05,
             confidence=0.85,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
         )
 
-    async def _execute_unsupervised_learning(self, task: LearningTask) -> LearningResult:
+    async def _execute_unsupervised_learning(
+        self, task: LearningTask
+    ) -> LearningResult:
         """教師なし学習実行"""
         # 簡化された教師なし学習
         await asyncio.sleep(3)  # 学習時間のシミュレーション
@@ -448,16 +486,18 @@ class AutomatedLearningSystem:
         return LearningResult(
             task_id=task.id,
             success=True,
-            metrics={'silhouette_score': 0.75, 'inertia': 0.65},
-            insights=['新しい知識クラスターを発見', '異常パターンを特定'],
-            recommendations=['クラスタリング精度向上', '異常検知強化'],
-            model_updates={'clusters': 'updated', 'centroids': 'recalculated'},
+            metrics={"silhouette_score": 0.75, "inertia": 0.65},
+            insights=["新しい知識クラスターを発見", "異常パターンを特定"],
+            recommendations=["クラスタリング精度向上", "異常検知強化"],
+            model_updates={"clusters": "updated", "centroids": "recalculated"},
             performance_improvement=0.08,
             confidence=0.75,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
         )
 
-    async def _execute_reinforcement_learning(self, task: LearningTask) -> LearningResult:
+    async def _execute_reinforcement_learning(
+        self, task: LearningTask
+    ) -> LearningResult:
         """強化学習実行"""
         # 簡化された強化学習
         await asyncio.sleep(4)  # 学習時間のシミュレーション
@@ -465,13 +505,13 @@ class AutomatedLearningSystem:
         return LearningResult(
             task_id=task.id,
             success=True,
-            metrics={'reward': 0.82, 'episode_length': 150},
-            insights=['検索戦略を最適化', 'ユーザー満足度向上'],
-            recommendations=['探索率調整', '報酬関数改善'],
-            model_updates={'policy': 'updated', 'value_function': 'optimized'},
+            metrics={"reward": 0.82, "episode_length": 150},
+            insights=["検索戦略を最適化", "ユーザー満足度向上"],
+            recommendations=["探索率調整", "報酬関数改善"],
+            model_updates={"policy": "updated", "value_function": "optimized"},
             performance_improvement=0.12,
             confidence=0.82,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
         )
 
     async def _execute_transfer_learning(self, task: LearningTask) -> LearningResult:
@@ -482,13 +522,13 @@ class AutomatedLearningSystem:
         return LearningResult(
             task_id=task.id,
             success=True,
-            metrics={'transfer_accuracy': 0.88, 'domain_adaptation': 0.75},
-            insights=['既存知識を新領域に適用', '学習効率向上'],
-            recommendations=['ドメイン適応強化', '知識蒸留実装'],
-            model_updates={'transferred_weights': 'applied', 'fine_tuned': 'completed'},
+            metrics={"transfer_accuracy": 0.88, "domain_adaptation": 0.75},
+            insights=["既存知識を新領域に適用", "学習効率向上"],
+            recommendations=["ドメイン適応強化", "知識蒸留実装"],
+            model_updates={"transferred_weights": "applied", "fine_tuned": "completed"},
             performance_improvement=0.15,
             confidence=0.88,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
         )
 
     async def _execute_online_learning(self, task: LearningTask) -> LearningResult:
@@ -499,13 +539,13 @@ class AutomatedLearningSystem:
         return LearningResult(
             task_id=task.id,
             success=True,
-            metrics={'online_accuracy': 0.83, 'adaptation_rate': 0.92},
-            insights=['リアルタイムデータに適応', '即座の性能向上'],
-            recommendations=['学習率調整', 'バッファサイズ最適化'],
-            model_updates={'online_weights': 'updated', 'memory': 'refreshed'},
+            metrics={"online_accuracy": 0.83, "adaptation_rate": 0.92},
+            insights=["リアルタイムデータに適応", "即座の性能向上"],
+            recommendations=["学習率調整", "バッファサイズ最適化"],
+            model_updates={"online_weights": "updated", "memory": "refreshed"},
             performance_improvement=0.07,
             confidence=0.83,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
         )
 
     async def _execute_incremental_learning(self, task: LearningTask) -> LearningResult:
@@ -516,21 +556,26 @@ class AutomatedLearningSystem:
         return LearningResult(
             task_id=task.id,
             success=True,
-            metrics={'incremental_accuracy': 0.86, 'catastrophic_forgetting': 0.15},
-            insights=['新しい知識を段階的に追加', '既存知識を保持'],
-            recommendations=['正則化強化', '知識蒸留活用'],
-            model_updates={'incremental_weights': 'updated', 'knowledge_base': 'expanded'},
+            metrics={"incremental_accuracy": 0.86, "catastrophic_forgetting": 0.15},
+            insights=["新しい知識を段階的に追加", "既存知識を保持"],
+            recommendations=["正則化強化", "知識蒸留活用"],
+            model_updates={
+                "incremental_weights": "updated",
+                "knowledge_base": "expanded",
+            },
             performance_improvement=0.09,
             confidence=0.86,
-            timestamp=datetime.now()
+            timestamp=datetime.now(),
         )
 
     async def _deploy_learning_result(self, task: LearningTask, result: LearningResult):
         """学習結果デプロイ"""
         try:
             # 自動デプロイ判定
-            if (self.automation_settings['auto_deployment_enabled'] and
-                result.confidence >= self.learning_config['auto_deploy_threshold']):
+            if (
+                self.automation_settings["auto_deployment_enabled"]
+                and result.confidence >= self.learning_config["auto_deploy_threshold"]
+            ):
 
                 # 4賢者システムに結果を統合
                 await self._integrate_with_four_sages(result)
@@ -549,20 +594,22 @@ class AutomatedLearningSystem:
         """4賢者システムとの統合"""
         # 学習結果を4賢者システムに統合
         integration_data = {
-            'task_id': result.task_id,
-            'insights': result.insights,
-            'recommendations': result.recommendations,
-            'performance_improvement': result.performance_improvement,
-            'confidence': result.confidence
+            "task_id": result.task_id,
+            "insights": result.insights,
+            "recommendations": result.recommendations,
+            "performance_improvement": result.performance_improvement,
+            "confidence": result.confidence,
         }
 
         # 4賢者協調分析として記録
-        await self.four_sages.four_sages_collaborative_analysis({
-            'title': f'学習結果統合: {result.task_id}',
-            'query': 'システム学習結果',
-            'context': '自動学習システム',
-            'learning_data': integration_data
-        })
+        await self.four_sages.four_sages_collaborative_analysis(
+            {
+                "title": f"学習結果統合: {result.task_id}",
+                "query": "システム学習結果",
+                "context": "自動学習システム",
+                "learning_data": integration_data,
+            }
+        )
 
     async def _apply_to_search_platform(self, result: LearningResult):
         """検索プラットフォームへの適用"""
@@ -579,18 +626,22 @@ class AutomatedLearningSystem:
             # 学習前後の比較
             if len(self.learning_history) > 0:
                 recent_improvements = [
-                    entry['performance_improvement']
+                    entry["performance_improvement"]
                     for entry in list(self.learning_history)[-10:]
-                    if entry['success']
+                    if entry["success"]
                 ]
 
                 if recent_improvements:
-                    avg_improvement = sum(recent_improvements) / len(recent_improvements)
-                    self.performance_metrics['system_performance_improvement'] = avg_improvement
+                    avg_improvement = sum(recent_improvements) / len(
+                        recent_improvements
+                    )
+                    self.performance_metrics["system_performance_improvement"] = (
+                        avg_improvement
+                    )
 
             # 知識成長率計算
             knowledge_growth = await self._calculate_knowledge_growth_rate()
-            self.performance_metrics['knowledge_growth_rate'] = knowledge_growth
+            self.performance_metrics["knowledge_growth_rate"] = knowledge_growth
 
             self.logger.info(f"📊 システムパフォーマンス評価完了")
 
@@ -604,11 +655,11 @@ class AutomatedLearningSystem:
             quality_metrics = await self._analyze_knowledge_quality()
 
             # 低品質知識の特定
-            low_quality_items = quality_metrics.get('low_quality_items', [])
+            low_quality_items = quality_metrics.get("low_quality_items", [])
 
             # 最適化エージェント実行
             if low_quality_items:
-                optimization_agent = self.learning_agents['optimization']
+                optimization_agent = self.learning_agents["optimization"]
                 await optimization_agent.optimize_knowledge_base(low_quality_items)
 
             self.logger.info(f"🔧 知識ベース最適化完了")
@@ -620,75 +671,76 @@ class AutomatedLearningSystem:
         """学習状況取得"""
         try:
             # 基本統計
-            total_tasks = len(self.completed_tasks) + len(self.active_tasks) + len(self.learning_queue)
-            completed_tasks = len(self.completed_tasks)
-            success_rate = (
-                sum(1 for task in self.completed_tasks.values() if task.status != LearningStatus.ERROR) /
-                max(1, completed_tasks)
+            total_tasks = (
+                len(self.completed_tasks)
+                + len(self.active_tasks)
+                + len(self.learning_queue)
             )
+            completed_tasks = len(self.completed_tasks)
+            success_rate = sum(
+                1
+                for task in self.completed_tasks.values()
+                if task.status != LearningStatus.ERROR
+            ) / max(1, completed_tasks)
 
             # 最近の学習履歴
             recent_history = list(self.learning_history)[-10:]
 
             return {
-                'continuous_learning_active': self.continuous_learning_active,
-                'total_tasks': total_tasks,
-                'active_tasks': len(self.active_tasks),
-                'queued_tasks': len(self.learning_queue),
-                'completed_tasks': completed_tasks,
-                'success_rate': success_rate,
-                'recent_history': recent_history,
-                'performance_metrics': self.performance_metrics,
-                'automation_settings': self.automation_settings,
-                'learning_agents': list(self.learning_agents.keys()),
-                'timestamp': datetime.now().isoformat()
+                "continuous_learning_active": self.continuous_learning_active,
+                "total_tasks": total_tasks,
+                "active_tasks": len(self.active_tasks),
+                "queued_tasks": len(self.learning_queue),
+                "completed_tasks": completed_tasks,
+                "success_rate": success_rate,
+                "recent_history": recent_history,
+                "performance_metrics": self.performance_metrics,
+                "automation_settings": self.automation_settings,
+                "learning_agents": list(self.learning_agents.keys()),
+                "timestamp": datetime.now().isoformat(),
             }
 
         except Exception as e:
             self.logger.error(f"❌ 学習状況取得失敗: {e}")
-            return {'error': str(e)}
+            return {"error": str(e)}
 
     # ヘルパーメソッド
 
     async def _get_search_performance_metrics(self) -> Dict[str, Any]:
         """検索パフォーマンス指標取得"""
         return {
-            'accuracy': 0.82,
-            'precision': 0.85,
-            'recall': 0.78,
-            'f1_score': 0.81,
-            'response_time': 0.25
+            "accuracy": 0.82,
+            "precision": 0.85,
+            "recall": 0.78,
+            "f1_score": 0.81,
+            "response_time": 0.25,
         }
 
     async def _analyze_knowledge_quality(self) -> Dict[str, Any]:
         """知識品質分析"""
         return {
-            'average_quality': 0.85,
-            'high_quality_ratio': 0.75,
-            'low_quality_items': ['item1', 'item2'],
-            'quality_distribution': {
-                'high': 750,
-                'medium': 200,
-                'low': 50
-            }
+            "average_quality": 0.85,
+            "high_quality_ratio": 0.75,
+            "low_quality_items": ["item1", "item2"],
+            "quality_distribution": {"high": 750, "medium": 200, "low": 50},
         }
 
     async def _analyze_user_behavior(self) -> Dict[str, Any]:
         """ユーザー行動分析"""
         return {
-            'engagement': 0.78,
-            'session_duration': 15.5,
-            'bounce_rate': 0.15,
-            'satisfaction_score': 0.85
+            "engagement": 0.78,
+            "session_duration": 15.5,
+            "bounce_rate": 0.15,
+            "satisfaction_score": 0.85,
         }
 
     async def _get_current_performance_metrics(self) -> Dict[str, Any]:
         """現在のパフォーマンス指標取得"""
         return {
-            'search_accuracy': 0.85,
-            'system_response_time': 0.22,
-            'user_satisfaction': 0.88,
-            'knowledge_utilization': 0.82
+            "search_accuracy": 0.85,
+            "system_response_time": 0.22,
+            "user_satisfaction": 0.88,
+            "knowledge_utilization": 0.82,
         }
 
     async def _calculate_knowledge_growth_rate(self) -> float:
@@ -697,12 +749,14 @@ class AutomatedLearningSystem:
             return 0.0
 
         recent_growth = [
-            entry.get('growth', 0) for entry in list(self.knowledge_evolution)[-5:]
+            entry.get("growth", 0) for entry in list(self.knowledge_evolution)[-5:]
         ]
 
         return sum(recent_growth) / len(recent_growth) if recent_growth else 0.0
 
+
 # 学習エージェント定義
+
 
 class LearningAgent:
     """学習エージェント基底クラス"""
@@ -717,22 +771,26 @@ class LearningAgent:
         self.initialized = True
         self.logger.info(f"🤖 {self.name} エージェント初期化完了")
 
+
 class PatternDiscoveryAgent(LearningAgent):
     """パターン発見エージェント"""
 
     def __init__(self):
         super().__init__("PatternDiscovery")
 
-    async def discover_patterns(self, data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    async def discover_patterns(
+        self, data: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """パターン発見"""
         # 簡化されたパターン発見
         patterns = [
-            {'pattern': 'search_frequency', 'confidence': 0.85},
-            {'pattern': 'user_preference', 'confidence': 0.78},
-            {'pattern': 'content_clustering', 'confidence': 0.82}
+            {"pattern": "search_frequency", "confidence": 0.85},
+            {"pattern": "user_preference", "confidence": 0.78},
+            {"pattern": "content_clustering", "confidence": 0.82},
         ]
 
         return patterns
+
 
 class OptimizationAgent(LearningAgent):
     """最適化エージェント"""
@@ -747,6 +805,7 @@ class OptimizationAgent(LearningAgent):
         await asyncio.sleep(1)
         self.logger.info(f"✅ 知識ベース最適化完了")
 
+
 class RecommendationAgent(LearningAgent):
     """推薦エージェント"""
 
@@ -759,10 +818,11 @@ class RecommendationAgent(LearningAgent):
         recommendations = [
             "検索精度向上のための追加学習",
             "ユーザー体験最適化",
-            "知識の体系化強化"
+            "知識の体系化強化",
         ]
 
         return recommendations
+
 
 class QualityImprovementAgent(LearningAgent):
     """品質改善エージェント"""
@@ -774,13 +834,14 @@ class QualityImprovementAgent(LearningAgent):
         """データ品質改善"""
         # 簡化された品質改善
         improvements = {
-            'cleaned_entries': len(data),
-            'quality_score_improvement': 0.15,
-            'duplicate_removal': 5,
-            'standardization': 'completed'
+            "cleaned_entries": len(data),
+            "quality_score_improvement": 0.15,
+            "duplicate_removal": 5,
+            "standardization": "completed",
         }
 
         return improvements
+
 
 async def demo_automated_learning_system():
     """自動化・学習システムデモ"""
@@ -803,7 +864,7 @@ async def demo_automated_learning_system():
             data_source="search_results",
             target_metric="accuracy",
             automation_level=AutomationLevel.FULLY_AUTOMATIC,
-            priority=8
+            priority=8,
         )
         print(f"   作成されたタスク: {task_id}")
 
@@ -835,7 +896,9 @@ async def demo_automated_learning_system():
     except Exception as e:
         print(f"\n❌ デモ中にエラーが発生: {e}")
         import traceback
+
         traceback.print_exc()
+
 
 if __name__ == "__main__":
     # デモ実行

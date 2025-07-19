@@ -153,9 +153,11 @@ class DockerManager:
             container = self.client.containers.create(
                 image=image_name,
                 name=f"ai-company-{request.name}",
-                ports={p.split(":")[1]: p.split(":")[0] for p in request.ports}
-                if request.ports
-                else None,
+                ports=(
+                    {p.split(":")[1]: p.split(":")[0] for p in request.ports}
+                    if request.ports
+                    else None
+                ),
                 volumes=request.volumes,
                 environment=request.environment,
                 labels={
@@ -306,9 +308,11 @@ class DockerManager:
             id=container.short_id,
             name=container.name,
             status=container.status,
-            image=container.image.tags[0]
-            if container.image.tags
-            else container.image.short_id,
+            image=(
+                container.image.tags[0]
+                if container.image.tags
+                else container.image.short_id
+            ),
             created=container.attrs["Created"],
             ports=container.attrs.get("NetworkSettings", {}).get("Ports", {}),
             labels=container.labels,

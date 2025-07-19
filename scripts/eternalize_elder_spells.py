@@ -329,9 +329,9 @@ Elders Guildの中核を成す4つの賢者による自律的管理システム�
                 else:
                     print(f"⚠️  ファイルが見つかりません: {spell['file_path']}")
                     # 代替コンテンツを使用
-                    spell[
-                        "content"
-                    ] = f"# {spell['spell_name']}\n\n[Content to be loaded from file: {spell['file_path']}]"
+                    spell["content"] = (
+                        f"# {spell['spell_name']}\n\n[Content to be loaded from file: {spell['file_path']}]"
+                    )
 
         # PostgreSQLに保存
         if save_spell_to_postgresql(spell):

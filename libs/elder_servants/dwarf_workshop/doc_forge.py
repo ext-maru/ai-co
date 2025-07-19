@@ -135,9 +135,11 @@ class DocForge(DwarfServant):
         return TaskResult(
             task_id=request.task_id,
             servant_id=self.servant_id,
-            status=TaskStatus.COMPLETED
-            if result.get("success", False)
-            else TaskStatus.FAILED,
+            status=(
+                TaskStatus.COMPLETED
+                if result.get("success", False)
+                else TaskStatus.FAILED
+            ),
             result_data=result,
             error_message=result.get("error"),
             execution_time_ms=0.0,

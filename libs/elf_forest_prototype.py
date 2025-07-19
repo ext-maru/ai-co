@@ -229,7 +229,9 @@ class TimeElf(BaseElf):
                         "all", {"alert": "deadline_exceeded", "task": task}
                     )
                 elif time_left < warning_threshold:
-                    self.log_action(f"⚠️ デッドライン接近: {task.name} (残り{time_left})")
+                    self.log_action(
+                        f"⚠️ デッドライン接近: {task.name} (残り{time_left})"
+                    )
 
     async def _process_reminders(self):
         """リマインダー処理"""

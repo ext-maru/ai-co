@@ -39,7 +39,11 @@ def check_system_status():
 
     # RabbitMQ状態
     try:
-        result = subprocess.run(["systemctl", "is-active", "rabbitmq-server"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["systemctl", "is-active", "rabbitmq-server"],
+            capture_output=True,
+            text=True,
+        )
         print(f"  RabbitMQ: {result.stdout.strip()}")
     except Exception as e:
         print(f"  RabbitMQ: エラー - {e}")
@@ -49,7 +53,10 @@ def check_system_status():
         result = subprocess.run(["ps", "aux"], capture_output=True, text=True)
         agent_processes = 0
         for line in result.stdout.split("\n"):
-            if any(keyword in line.lower() for keyword in ["elder", "sage", "council", "a2a"]):
+            if any(
+                keyword in line.lower()
+                for keyword in ["elder", "sage", "council", "a2a"]
+            ):
                 agent_processes += 1
         print(f"  エージェント関連プロセス: {agent_processes}個")
     except Exception as e:
@@ -88,7 +95,9 @@ def check_communication_logs():
         if log_path.exists():
             size = log_path.stat().st_size
             mod_time = datetime.fromtimestamp(log_path.stat().st_mtime)
-            print(f"  ✅ {log_file} ({size:,} bytes, 更新: {mod_time.strftime('%H:%M:%S')})")
+            print(
+                f"  ✅ {log_file} ({size:,} bytes, 更新: {mod_time.strftime('%H:%M:%S')})"
+            )
         else:
             print(f"  ❌ {log_file} (見つかりません)")
 
@@ -143,7 +152,9 @@ def check_a2a_demo():
         try:
             # デモの軽量実行（構文チェック）
             result = subprocess.run(
-                [sys.executable, "-m", "py_compile", str(demo_file)], capture_output=True, text=True
+                [sys.executable, "-m", "py_compile", str(demo_file)],
+                capture_output=True,
+                text=True,
             )
 
             if result.returncode == 0:
@@ -174,11 +185,17 @@ def generate_a2a_summary():
     implemented = sum(1 for f in implementation_files if (PROJECT_ROOT / f).exists())
     implementation_rate = (implemented / len(implementation_files)) * 100
 
-    print(f"実装完了度: {implementation_rate:.0f}% ({implemented}/{len(implementation_files)})")
+    print(
+        f"実装完了度: {implementation_rate:.0f}% ({implemented}/{len(implementation_files)})"
+    )
 
     # RabbitMQ状態
     try:
-        result = subprocess.run(["systemctl", "is-active", "rabbitmq-server"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["systemctl", "is-active", "rabbitmq-server"],
+            capture_output=True,
+            text=True,
+        )
         rabbitmq_status = result.stdout.strip()
         print(f"RabbitMQ: {rabbitmq_status}")
     except:

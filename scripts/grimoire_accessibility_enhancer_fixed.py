@@ -25,7 +25,9 @@ class GrimoireAccessibilityEnhancer:
 
     def __init__(self):
         self.project_root = PROJECT_ROOT
-        self.grimoire_base = self.project_root / "knowledge_base" / "four_sages_grimoires"
+        self.grimoire_base = (
+            self.project_root / "knowledge_base" / "four_sages_grimoires"
+        )
         self.access_log = self.project_root / "logs" / "grimoire_accessibility.log"
         self.access_log.parent.mkdir(exist_ok=True)
 
@@ -90,7 +92,12 @@ class GrimoireAccessibilityEnhancer:
         """包括的索引の生成"""
         print("  📚 包括的索引を生成中...")
 
-        index_result = {"status": "generating", "master_index": {}, "topic_index": {}, "generated_files": []}
+        index_result = {
+            "status": "generating",
+            "master_index": {},
+            "topic_index": {},
+            "generated_files": [],
+        }
 
         try:
             # 索引ファイルの生成
@@ -402,12 +409,22 @@ class GrimoireAccessibilityEnhancer:
         tools = []
 
         # 検索設定ファイルの作成
-        search_config_path = self.project_root / "config" / "grimoire_search_config.json"
+        search_config_path = (
+            self.project_root / "config" / "grimoire_search_config.json"
+        )
         search_config_path.parent.mkdir(exist_ok=True)
 
         search_config = {
-            "grimoire_paths": {sage: str(self.grimoire_base / file) for sage, file in self.grimoire_structure.items()},
-            "search_options": {"case_sensitive": False, "whole_word": False, "regex_enabled": True, "max_results": 50},
+            "grimoire_paths": {
+                sage: str(self.grimoire_base / file)
+                for sage, file in self.grimoire_structure.items()
+            },
+            "search_options": {
+                "case_sensitive": False,
+                "whole_word": False,
+                "regex_enabled": True,
+                "max_results": 50,
+            },
             "index_files": {
                 "master_index": str(self.grimoire_base / "MASTER_INDEX.md"),
                 "topic_index": str(self.grimoire_base / "TOPIC_INDEX.md"),
@@ -656,12 +673,19 @@ if __name__ == "__main__":
         """メトリクスの計算"""
         metrics = {
             "total_grimoires": len(self.grimoire_structure),
-            "enhancement_completion": sum(self.enhancement_phases.values()) / len(self.enhancement_phases) * 100,
+            "enhancement_completion": sum(self.enhancement_phases.values())
+            / len(self.enhancement_phases)
+            * 100,
             "generated_files": 0,
         }
 
         # 生成されたファイル数をカウント
-        generated_files = ["MASTER_INDEX.md", "TOPIC_INDEX.md", "QUICK_REFERENCE.md", "README.md"]
+        generated_files = [
+            "MASTER_INDEX.md",
+            "TOPIC_INDEX.md",
+            "QUICK_REFERENCE.md",
+            "README.md",
+        ]
 
         for file_name in generated_files:
             file_path = self.grimoire_base / file_name
@@ -693,8 +717,12 @@ def main():
     print("\n📊 改善結果サマリー")
     print("-" * 40)
     print(f"総合状況: {enhancement_results['overall_status'].upper()}")
-    print(f"完了フェーズ: {sum(enhancer.enhancement_phases.values())}/{len(enhancer.enhancement_phases)}")
-    print(f"改善完了率: {enhancement_results['metrics']['enhancement_completion']:.1f}%")
+    print(
+        f"完了フェーズ: {sum(enhancer.enhancement_phases.values())}/{len(enhancer.enhancement_phases)}"
+    )
+    print(
+        f"改善完了率: {enhancement_results['metrics']['enhancement_completion']:.1f}%"
+    )
 
     # フェーズ別詳細
     print("\n🔍 フェーズ別状況")
@@ -718,7 +746,11 @@ def main():
     print(f"改善完了率: {metrics['enhancement_completion']:.1f}%")
 
     # 詳細レポート保存
-    report_file = PROJECT_ROOT / "logs" / f"grimoire_accessibility_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    report_file = (
+        PROJECT_ROOT
+        / "logs"
+        / f"grimoire_accessibility_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
     with open(report_file, "w", encoding="utf-8") as f:
         json.dump(enhancement_results, f, indent=2, ensure_ascii=False, default=str)
 

@@ -105,7 +105,10 @@ class RepositoryValidator:
 
         # 厳密モードの場合は拒否
         if self.strict_mode:
-            return False, f"🔒 厳密モードで許可されていないリポジトリです: {repo_owner}/{repo_name}"
+            return (
+                False,
+                f"🔒 厳密モードで許可されていないリポジトリです: {repo_owner}/{repo_name}",
+            )
 
         # 警告付きで許可
         return True, f"⚠️ 警告: 未設定リポジトリです: {repo_owner}/{repo_name}"

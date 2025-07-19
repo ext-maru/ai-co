@@ -230,9 +230,11 @@ class ModelTrainer:
             if algorithm == "kmeans":
                 metrics = {
                     "inertia": model.inertia_,
-                    "silhouette_score": silhouette_score(X, model.labels_)
-                    if len(set(model.labels_)) > 1
-                    else 0,
+                    "silhouette_score": (
+                        silhouette_score(X, model.labels_)
+                        if len(set(model.labels_)) > 1
+                        else 0
+                    ),
                 }
             else:
                 metrics = {
@@ -277,7 +279,10 @@ class PredictionEngine:
         # 予測結果をDataFrameで返す
         if model.model_type == ModelType.CLUSTERING:
             result = pd.DataFrame(
-                {"cluster": predictions, "confidence": 1.0}  # クラスタリングの場合は信頼度1.0
+                {
+                    "cluster": predictions,
+                    "confidence": 1.0,
+                }  # クラスタリングの場合は信頼度1.0
             )
         else:
             # 確率予測が可能な場合

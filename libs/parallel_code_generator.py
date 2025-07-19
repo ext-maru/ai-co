@@ -24,14 +24,16 @@ import tempfile
 
 class GenerationMode(Enum):
     """生成モード"""
-    SEQUENTIAL = "sequential"      # 逐次生成
-    PARALLEL = "parallel"         # 並列生成
-    BATCH = "batch"               # バッチ生成
-    STREAM = "stream"             # ストリーミング生成
+
+    SEQUENTIAL = "sequential"  # 逐次生成
+    PARALLEL = "parallel"  # 並列生成
+    BATCH = "batch"  # バッチ生成
+    STREAM = "stream"  # ストリーミング生成
 
 
 class FileType(Enum):
     """ファイルタイプ"""
+
     PYTHON = "python"
     JAVASCRIPT = "javascript"
     TYPESCRIPT = "typescript"
@@ -48,6 +50,7 @@ class FileType(Enum):
 @dataclass
 class FileSpec:
     """ファイル仕様"""
+
     path: str
     content: str
     file_type: FileType
@@ -60,6 +63,7 @@ class FileSpec:
 @dataclass
 class GenerationTask:
     """生成タスク"""
+
     task_id: str
     files: List[FileSpec]
     mode: GenerationMode
@@ -72,6 +76,7 @@ class GenerationTask:
 @dataclass
 class GenerationResult:
     """生成結果"""
+
     task_id: str
     success: bool
     created_files: List[str]
@@ -105,7 +110,7 @@ class ParallelCodeGenerator:
         self.performance_stats = {
             "total_files": 0,
             "total_time": 0.0,
-            "avg_files_per_second": 0.0
+            "avg_files_per_second": 0.0,
         }
 
         self.logger.info("⚡ Parallel Code Generator initialized")
@@ -141,7 +146,7 @@ class ParallelCodeGenerator:
 if __name__ == "__main__":
     {main_content}
 ''',
-            FileType.JAVASCRIPT: '''/**
+            FileType.JAVASCRIPT: """/**
  * {description}
  * {metadata}
  */
@@ -149,16 +154,16 @@ if __name__ == "__main__":
 {imports}
 
 {content}
-''',
-            FileType.JSON: '''{content}''',
-            FileType.YAML: '''# {description}
-{content}''',
-            FileType.MARKDOWN: '''# {title}
+""",
+            FileType.JSON: """{content}""",
+            FileType.YAML: """# {description}
+{content}""",
+            FileType.MARKDOWN: """# {title}
 
 {description}
 
-{content}''',
-            FileType.HTML: '''<!DOCTYPE html>
+{content}""",
+            FileType.HTML: """<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
@@ -168,25 +173,28 @@ if __name__ == "__main__":
 <body>
 {content}
 </body>
-</html>''',
-            FileType.CSS: '''/* {description} */
+</html>""",
+            FileType.CSS: """/* {description} */
 
-{content}''',
-            FileType.SQL: '''-- {description}
+{content}""",
+            FileType.SQL: """-- {description}
 -- Generated: {timestamp}
 
-{content}''',
-            FileType.SHELL: '''#!/bin/bash
+{content}""",
+            FileType.SHELL: """#!/bin/bash
 # {description}
 # {metadata}
 
-{content}''',
-            FileType.CONFIG: '''{content}'''
+{content}""",
+            FileType.CONFIG: """{content}""",
         }
 
-    async def generate_files(self, file_specs: List[FileSpec],
-                           output_dir: str = "output",
-                           mode: GenerationMode = GenerationMode.PARALLEL) -> GenerationResult:
+    async def generate_files(
+        self,
+        file_specs: List[FileSpec],
+        output_dir: str = "output",
+        mode: GenerationMode = GenerationMode.PARALLEL,
+    ) -> GenerationResult:
         """
         ファイル一括生成
 
@@ -214,7 +222,9 @@ if __name__ == "__main__":
         if mode == GenerationMode.SEQUENTIAL:
             result = await self._generate_sequential(file_specs, output_path, task_id)
         elif mode == GenerationMode.PARALLEL:
-            result = await self._generate_parallel(file_specs, output_path, task_id, dependency_order)
+            result = await self._generate_parallel(
+                file_specs, output_path, task_id, dependency_order
+            )
         elif mode == GenerationMode.BATCH:
             result = await self._generate_batch(file_specs, output_path, task_id)
         else:  # STREAM
@@ -229,7 +239,9 @@ if __name__ == "__main__":
         # 履歴保存
         self.generation_history.append(result)
 
-        self.logger.info(f"✅ Generation completed: {result.file_count} files in {generation_time:.2f}s")
+        self.logger.info(
+            f"✅ Generation completed: {result.file_count} files in {generation_time:.2f}s"
+        )
 
         return result
 
@@ -276,8 +288,10 @@ if __name__ == "__main__":
             spec = files_by_path[path]
 
             # 依存関係がすべて処理済みかチェック
-            deps_ready = all(dep in processed or dep not in files_by_path
-                           for dep in spec.dependencies)
+            deps_ready = all(
+                dep in processed or dep not in files_by_path
+                for dep in spec.dependencies
+            )
 
             if deps_ready:
                 current_level.append(spec)
@@ -294,8 +308,9 @@ if __name__ == "__main__":
 
         return dependency_levels
 
-    async def _generate_sequential(self, file_specs: List[FileSpec],
-                                 output_path: Path, task_id: str) -> GenerationResult:
+    async def _generate_sequential(
+        self, file_specs: List[FileSpec], output_path: Path, task_id: str
+    ) -> GenerationResult:
         """逐次生成"""
         created_files = []
         failed_files = []
@@ -311,7 +326,7 @@ if __name__ == "__main__":
                 # ファイル作成
                 file_path.parent.mkdir(parents=True, exist_ok=True)
 
-                with open(file_path, 'w', encoding='utf-8') as f:
+                with open(file_path, "w", encoding="utf-8") as f:
                     f.write(content)
 
                 created_files.append(str(file_path))
@@ -333,12 +348,16 @@ if __name__ == "__main__":
             file_count=len(created_files),
             total_lines=total_lines,
             errors=errors,
-            warnings=warnings
+            warnings=warnings,
         )
 
-    async def _generate_parallel(self, file_specs: List[FileSpec],
-                               output_path: Path, task_id: str,
-                               dependency_order: List[List[FileSpec]]) -> GenerationResult:
+    async def _generate_parallel(
+        self,
+        file_specs: List[FileSpec],
+        output_path: Path,
+        task_id: str,
+        dependency_order: List[List[FileSpec]],
+    ) -> GenerationResult:
         """並列生成（依存関係順）"""
         created_files = []
         failed_files = []
@@ -346,7 +365,9 @@ if __name__ == "__main__":
         warnings = []
         total_lines = 0
 
-        executor_class = ProcessPoolExecutor if self.use_process_pool else ThreadPoolExecutor
+        executor_class = (
+            ProcessPoolExecutor if self.use_process_pool else ThreadPoolExecutor
+        )
 
         # 依存関係レベルごとに並列実行
         for level_specs in dependency_order:
@@ -354,7 +375,9 @@ if __name__ == "__main__":
                 continue
 
             # 同一レベルのファイルを並列生成
-            with executor_class(max_workers=min(self.max_workers, len(level_specs))) as executor:
+            with executor_class(
+                max_workers=min(self.max_workers, len(level_specs))
+            ) as executor:
                 tasks = []
 
                 for spec in level_specs:
@@ -371,7 +394,9 @@ if __name__ == "__main__":
                         spec = level_specs[i]
                         failed_files.append(spec.path)
                         errors.append(f"{spec.path}: {str(result)}")
-                        self.logger.error(f"❌ Parallel creation failed {spec.path}: {result}")
+                        self.logger.error(
+                            f"❌ Parallel creation failed {spec.path}: {result}"
+                        )
                     else:
                         file_path, lines = result
                         created_files.append(file_path)
@@ -387,7 +412,7 @@ if __name__ == "__main__":
             file_count=len(created_files),
             total_lines=total_lines,
             errors=errors,
-            warnings=warnings
+            warnings=warnings,
         )
 
     def _create_single_file(self, spec: FileSpec, output_path: Path) -> tuple:
@@ -399,13 +424,14 @@ if __name__ == "__main__":
         file_path.parent.mkdir(parents=True, exist_ok=True)
 
         # ファイル書き込み
-        with open(file_path, 'w', encoding='utf-8') as f:
+        with open(file_path, "w", encoding="utf-8") as f:
             f.write(content)
 
         return str(file_path), len(content.splitlines())
 
-    async def _generate_batch(self, file_specs: List[FileSpec],
-                            output_path: Path, task_id: str) -> GenerationResult:
+    async def _generate_batch(
+        self, file_specs: List[FileSpec], output_path: Path, task_id: str
+    ) -> GenerationResult:
         """バッチ生成"""
         batch_size = min(50, len(file_specs))  # バッチサイズ
         created_files = []
@@ -416,10 +442,13 @@ if __name__ == "__main__":
 
         # バッチに分割して処理
         for i in range(0, len(file_specs), batch_size):
-            batch = file_specs[i:i + batch_size]
+            batch = file_specs[i : i + batch_size]
 
             batch_result = await self._generate_parallel(
-                batch, output_path, f"{task_id}_batch_{i//batch_size}", [[spec] for spec in batch]
+                batch,
+                output_path,
+                f"{task_id}_batch_{i//batch_size}",
+                [[spec] for spec in batch],
             )
 
             created_files.extend(batch_result.created_files)
@@ -437,11 +466,12 @@ if __name__ == "__main__":
             file_count=len(created_files),
             total_lines=total_lines,
             errors=errors,
-            warnings=warnings
+            warnings=warnings,
         )
 
-    async def _generate_stream(self, file_specs: List[FileSpec],
-                             output_path: Path, task_id: str) -> GenerationResult:
+    async def _generate_stream(
+        self, file_specs: List[FileSpec], output_path: Path, task_id: str
+    ) -> GenerationResult:
         """ストリーミング生成"""
         created_files = []
         failed_files = []
@@ -467,7 +497,7 @@ if __name__ == "__main__":
             file_count=len(created_files),
             total_lines=total_lines,
             errors=errors,
-            warnings=warnings
+            warnings=warnings,
         )
 
     async def _stream_generator(self, file_specs: List[FileSpec], output_path: Path):
@@ -479,14 +509,14 @@ if __name__ == "__main__":
 
                 file_path.parent.mkdir(parents=True, exist_ok=True)
 
-                with open(file_path, 'w', encoding='utf-8') as f:
+                with open(file_path, "w", encoding="utf-8") as f:
                     f.write(content)
 
                 yield {
                     "success": True,
                     "file_path": str(file_path),
                     "lines": len(content.splitlines()),
-                    "spec_path": spec.path
+                    "spec_path": spec.path,
                 }
 
                 # 小さな遅延（ストリーミング効果）
@@ -496,7 +526,7 @@ if __name__ == "__main__":
                 yield {
                     "success": False,
                     "spec_path": spec.path,
-                    "error": f"{spec.path}: {str(e)}"
+                    "error": f"{spec.path}: {str(e)}",
                 }
 
     def _render_template(self, spec: FileSpec) -> str:
@@ -509,9 +539,9 @@ if __name__ == "__main__":
             "description": f"Generated file: {spec.path}",
             "timestamp": datetime.now().isoformat(),
             "metadata": f"Priority: {spec.priority}, Dependencies: {len(spec.dependencies)}",
-            "title": Path(spec.path).stem.replace('_', ' ').title(),
+            "title": Path(spec.path).stem.replace("_", " ").title(),
             "imports": "",
-            "main_content": "pass"
+            "main_content": "pass",
         }
 
         # カスタムデータ追加
@@ -535,12 +565,19 @@ if __name__ == "__main__":
 
         if self.performance_stats["total_time"] > 0:
             self.performance_stats["avg_files_per_second"] = (
-                self.performance_stats["total_files"] / self.performance_stats["total_time"]
+                self.performance_stats["total_files"]
+                / self.performance_stats["total_time"]
             )
 
-    def create_file_spec(self, path: str, content: str, file_type: FileType,
-                        dependencies: List[str] = None, priority: int = 1,
-                        template_data: Dict = None) -> FileSpec:
+    def create_file_spec(
+        self,
+        path: str,
+        content: str,
+        file_type: FileType,
+        dependencies: List[str] = None,
+        priority: int = 1,
+        template_data: Dict = None,
+    ) -> FileSpec:
         """ファイル仕様作成ヘルパー"""
         return FileSpec(
             path=path,
@@ -548,17 +585,28 @@ if __name__ == "__main__":
             file_type=file_type,
             dependencies=dependencies or [],
             priority=priority,
-            template_data=template_data
+            template_data=template_data,
         )
 
-    def create_python_module(self, module_name: str, classes: List[str] = None,
-                           functions: List[str] = None, imports: List[str] = None) -> FileSpec:
+    def create_python_module(
+        self,
+        module_name: str,
+        classes: List[str] = None,
+        functions: List[str] = None,
+        imports: List[str] = None,
+    ) -> FileSpec:
         """Pythonモジュール作成"""
         imports_section = "\n".join(imports or [])
-        classes_section = "\n\n".join(f"class {cls}:\n    pass" for cls in (classes or []))
-        functions_section = "\n\n".join(f"def {func}():\n    pass" for func in (functions or []))
+        classes_section = "\n\n".join(
+            f"class {cls}:\n    pass" for cls in (classes or [])
+        )
+        functions_section = "\n\n".join(
+            f"def {func}():\n    pass" for func in (functions or [])
+        )
 
-        content = f"{imports_section}\n\n{classes_section}\n\n{functions_section}".strip()
+        content = (
+            f"{imports_section}\n\n{classes_section}\n\n{functions_section}".strip()
+        )
 
         return self.create_file_spec(
             path=f"{module_name}.py",
@@ -566,11 +614,13 @@ if __name__ == "__main__":
             file_type=FileType.PYTHON,
             template_data={
                 "imports": imports_section,
-                "description": f"Python module: {module_name}"
-            }
+                "description": f"Python module: {module_name}",
+            },
         )
 
-    def create_api_endpoint(self, endpoint_name: str, methods: List[str] = None) -> FileSpec:
+    def create_api_endpoint(
+        self, endpoint_name: str, methods: List[str] = None
+    ) -> FileSpec:
         """API エンドポイント作成"""
         methods = methods or ["GET", "POST"]
 
@@ -596,8 +646,8 @@ if __name__ == '__main__':
             file_type=FileType.PYTHON,
             template_data={
                 "description": f"API endpoint: {endpoint_name}",
-                "imports": "from flask import Flask, request, jsonify"
-            }
+                "imports": "from flask import Flask, request, jsonify",
+            },
         )
 
     def create_test_file(self, target_file: str) -> FileSpec:
@@ -629,8 +679,8 @@ class Test{module_name.title()}:
             dependencies=[target_file],
             template_data={
                 "imports": "import pytest",
-                "description": f"Test file for {module_name}"
-            }
+                "description": f"Test file for {module_name}",
+            },
         )
 
     def get_performance_stats(self) -> Dict[str, Any]:
@@ -644,9 +694,11 @@ class Test{module_name.title()}:
     def optimize_generation_order(self, file_specs: List[FileSpec]) -> List[FileSpec]:
         """生成順序最適化"""
         # 優先度とファイルサイズを考慮してソート
-        return sorted(file_specs,
-                     key=lambda spec: (spec.priority, len(spec.content)),
-                     reverse=True)
+        return sorted(
+            file_specs,
+            key=lambda spec: (spec.priority, len(spec.content)),
+            reverse=True,
+        )
 
     def validate_dependencies(self, file_specs: List[FileSpec]) -> bool:
         """依存関係妥当性チェック"""
@@ -675,13 +727,13 @@ async def demo_parallel_generator():
             "user_service",
             classes=["User", "UserManager"],
             functions=["create_user", "get_user"],
-            imports=["from typing import Dict, List", "import uuid"]
+            imports=["from typing import Dict, List", "import uuid"],
         ),
         generator.create_python_module(
             "database",
             classes=["Database", "Connection"],
             functions=["connect", "execute_query"],
-            imports=["import sqlite3", "from typing import Any"]
+            imports=["import sqlite3", "from typing import Any"],
         ),
         generator.create_api_endpoint("users", ["GET", "POST", "PUT", "DELETE"]),
         generator.create_test_file("user_service.py"),
@@ -696,9 +748,7 @@ async def demo_parallel_generator():
 
     # 並列生成実行
     result = await generator.generate_files(
-        file_specs,
-        output_dir="demo_output",
-        mode=GenerationMode.PARALLEL
+        file_specs, output_dir="demo_output", mode=GenerationMode.PARALLEL
     )
 
     print(f"\n✅ Generation Result:")

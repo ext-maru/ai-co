@@ -381,9 +381,9 @@ class RealityAdaptationEngine:
         reality_state["environmental_conditions"]["system_load"] = context.get(
             "system_load", 0.6
         )
-        reality_state["environmental_conditions"][
-            "resource_availability"
-        ] = context.get("resource_availability", 0.8)
+        reality_state["environmental_conditions"]["resource_availability"] = (
+            context.get("resource_availability", 0.8)
+        )
         reality_state["environmental_conditions"]["external_factors"] = context.get(
             "external_factors", {}
         )
@@ -718,9 +718,11 @@ class RealityAdaptationEngine:
             "action_type": "genesis_optimization",
             "description": "Genesis Core統合最適化",
             "parameters": {
-                "fusion_mode": "transcendent"
-                if strategy == AdaptationStrategy.TRANSCENDENT
-                else "standard",
+                "fusion_mode": (
+                    "transcendent"
+                    if strategy == AdaptationStrategy.TRANSCENDENT
+                    else "standard"
+                ),
                 "optimization_target": "system_stability",
                 "expected_improvement": 0.1,
             },

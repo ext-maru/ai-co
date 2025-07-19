@@ -25,8 +25,9 @@ from libs.advanced_search_analytics_platform import (
     AdvancedSearchAnalyticsPlatform,
     SearchQuery,
     SearchType,
-    AnalyticsType
+    AnalyticsType,
 )
+
 
 class AdvancedSearchAnalyticsCLI:
     """高度検索・分析CLI"""
@@ -39,7 +40,7 @@ class AdvancedSearchAnalyticsCLI:
         """初期化"""
         if not self.initialized:
             init_result = await self.platform.initialize_platform()
-            if init_result['success']:
+            if init_result["success"]:
                 self.initialized = True
                 print("✅ 高度検索・分析プラットフォーム初期化完了")
             else:
@@ -47,9 +48,15 @@ class AdvancedSearchAnalyticsCLI:
                 return False
         return True
 
-    async def hybrid_search(self, query: str, search_type: str = "hybrid",
-                          limit: int = 10, similarity_threshold: float = 0.7,
-                          filters: dict = None, context: str = None):
+    async def hybrid_search(
+        self,
+        query: str,
+        search_type: str = "hybrid",
+        limit: int = 10,
+        similarity_threshold: float = 0.7,
+        filters: dict = None,
+        context: str = None,
+    ):
         """ハイブリッド検索実行"""
         if not await self.initialize():
             return
@@ -65,31 +72,31 @@ class AdvancedSearchAnalyticsCLI:
                 filters=filters or {},
                 limit=limit,
                 similarity_threshold=similarity_threshold,
-                context=context
+                context=context,
             )
 
             # 検索実行
             result = await self.platform.hybrid_search(search_query)
 
             # 結果表示
-            if result.get('results'):
+            if result.get("results"):
                 print(f"✅ 検索完了: {result['total_found']}件発見")
                 print(f"🕐 検索時間: {result.get('search_time', 0):.3f}秒")
 
-                for i, item in enumerate(result['results'][:10]):
+                for i, item in enumerate(result["results"][:10]):
                     print(f"\n{i+1}. {item.get('title', 'タイトルなし')}")
                     print(f"   ID: {item.get('id', 'N/A')}")
                     print(f"   類似度: {item.get('similarity', 0):.3f}")
                     print(f"   ソース: {item.get('source', 'N/A')}")
                     print(f"   内容: {item.get('content', '')[:100]}...")
 
-                    if item.get('tags'):
+                    if item.get("tags"):
                         print(f"   タグ: {', '.join(item['tags'])}")
 
-                    if item.get('highlights'):
+                    if item.get("highlights"):
                         print(f"   ハイライト: {', '.join(item['highlights'])}")
 
-                if result['total_found'] > 10:
+                if result["total_found"] > 10:
                     print(f"\n... 他 {result['total_found'] - 10} 件")
 
             else:
@@ -98,8 +105,9 @@ class AdvancedSearchAnalyticsCLI:
         except Exception as e:
             print(f"❌ 検索エラー: {e}")
 
-    async def advanced_analytics(self, analytics_type: str, data_query: str,
-                               context: dict = None):
+    async def advanced_analytics(
+        self, analytics_type: str, data_query: str, context: dict = None
+    ):
         """高度分析実行"""
         if not await self.initialize():
             return
@@ -110,9 +118,7 @@ class AdvancedSearchAnalyticsCLI:
         try:
             # 分析実行
             result = await self.platform.advanced_analytics(
-                AnalyticsType(analytics_type),
-                data_query,
-                context
+                AnalyticsType(analytics_type), data_query, context
             )
 
             # 結果表示
@@ -148,8 +154,9 @@ class AdvancedSearchAnalyticsCLI:
         except Exception as e:
             print(f"❌ 分析エラー: {e}")
 
-    async def personalized_search(self, user_id: str, query: str,
-                                search_history: list = None):
+    async def personalized_search(
+        self, user_id: str, query: str, search_history: list = None
+    ):
         """パーソナライズド検索実行"""
         if not await self.initialize():
             return
@@ -165,23 +172,29 @@ class AdvancedSearchAnalyticsCLI:
             )
 
             # 結果表示
-            if result.get('results'):
+            if result.get("results"):
                 print(f"✅ 検索完了: {result['total_found']}件発見")
-                print(f"🎯 パーソナライズ: {result.get('personalization_applied', False)}")
+                print(
+                    f"🎯 パーソナライズ: {result.get('personalization_applied', False)}"
+                )
 
                 # ユーザープロファイル表示
-                if result.get('user_profile'):
-                    profile = result['user_profile']
+                if result.get("user_profile"):
+                    profile = result["user_profile"]
                     print(f"\n👤 ユーザープロファイル:")
                     print(f"   興味分野: {', '.join(profile.get('interests', []))}")
-                    print(f"   検索パターン: {profile.get('search_patterns', {}).get('frequent_terms', [])}")
+                    print(
+                        f"   検索パターン: {profile.get('search_patterns', {}).get('frequent_terms', [])}"
+                    )
 
                 # 結果表示
-                for i, item in enumerate(result['results'][:5]):
+                for i, item in enumerate(result["results"][:5]):
                     print(f"\n{i+1}. {item.get('title', 'タイトルなし')}")
                     print(f"   類似度: {item.get('similarity', 0):.3f}")
-                    if 'personalization_score' in item:
-                        print(f"   パーソナライズスコア: {item['personalization_score']:.3f}")
+                    if "personalization_score" in item:
+                        print(
+                            f"   パーソナライズスコア: {item['personalization_score']:.3f}"
+                        )
                     print(f"   内容: {item.get('content', '')[:100]}...")
 
             else:
@@ -207,54 +220,68 @@ class AdvancedSearchAnalyticsCLI:
             print(f"🕐 最終更新: {dashboard.get('last_updated', 'N/A')}")
 
             # 検索トレンド
-            if dashboard.get('search_trends'):
-                trends = dashboard['search_trends']
+            if dashboard.get("search_trends"):
+                trends = dashboard["search_trends"]
                 print(f"\n🔍 検索トレンド:")
                 print(f"   人気クエリ: {', '.join(trends.get('top_queries', []))}")
                 print(f"   検索増加率: {trends.get('query_growth', 0)*100:.1f}%")
-                print(f"   人気カテゴリ: {', '.join(trends.get('popular_categories', []))}")
+                print(
+                    f"   人気カテゴリ: {', '.join(trends.get('popular_categories', []))}"
+                )
 
             # コンテンツ統計
-            if dashboard.get('content_statistics'):
-                stats = dashboard['content_statistics']
+            if dashboard.get("content_statistics"):
+                stats = dashboard["content_statistics"]
                 print(f"\n📚 コンテンツ統計:")
                 print(f"   総文書数: {stats.get('total_documents', 0):,}")
                 print(f"   平均品質: {stats.get('average_quality', 0):.2f}")
                 print(f"   最近の追加: {stats.get('recent_additions', 0)}件")
 
-                if stats.get('content_types'):
+                if stats.get("content_types"):
                     print(f"   コンテンツタイプ:")
-                    for content_type, count in stats['content_types'].items():
+                    for content_type, count in stats["content_types"].items():
                         print(f"     {content_type}: {count}")
 
             # ユーザー行動
-            if dashboard.get('user_behavior'):
-                behavior = dashboard['user_behavior']
+            if dashboard.get("user_behavior"):
+                behavior = dashboard["user_behavior"]
                 print(f"\n👥 ユーザー行動:")
                 print(f"   アクティブユーザー: {behavior.get('active_users', 0)}")
-                print(f"   平均セッション時間: {behavior.get('average_session_duration', 0):.1f}分")
+                print(
+                    f"   平均セッション時間: {behavior.get('average_session_duration', 0):.1f}分"
+                )
                 print(f"   離脱率: {behavior.get('bounce_rate', 0)*100:.1f}%")
                 print(f"   エンゲージメント: {behavior.get('engagement_score', 0):.2f}")
 
             # パフォーマンス指標
-            if dashboard.get('performance_metrics'):
-                perf = dashboard['performance_metrics']
+            if dashboard.get("performance_metrics"):
+                perf = dashboard["performance_metrics"]
                 print(f"\n⚡ パフォーマンス指標:")
                 print(f"   平均応答時間: {perf.get('average_response_time', 0):.2f}秒")
                 print(f"   検索成功率: {perf.get('search_success_rate', 0)*100:.1f}%")
                 print(f"   システム稼働率: {perf.get('system_uptime', 0)*100:.3f}%")
-                print(f"   キャッシュヒット率: {perf.get('cache_hit_rate', 0)*100:.1f}%")
+                print(
+                    f"   キャッシュヒット率: {perf.get('cache_hit_rate', 0)*100:.1f}%"
+                )
 
             # 4賢者統合状況
-            if dashboard.get('sages_integration'):
-                sages = dashboard['sages_integration']
+            if dashboard.get("sages_integration"):
+                sages = dashboard["sages_integration"]
                 print(f"\n🧙‍♂️ 4賢者統合状況:")
-                if sages.get('integration_status'):
-                    integration = sages['integration_status']
-                    print(f"   MCP接続: {'✅' if integration.get('mcp_connected') else '❌'}")
-                    print(f"   賢者統合: {'✅' if integration.get('sages_integrated') else '❌'}")
-                    print(f"   保存知識: {integration.get('total_knowledge_stored', 0)}件")
-                    print(f"   実行検索: {integration.get('total_searches_performed', 0)}回")
+                if sages.get("integration_status"):
+                    integration = sages["integration_status"]
+                    print(
+                        f"   MCP接続: {'✅' if integration.get('mcp_connected') else '❌'}"
+                    )
+                    print(
+                        f"   賢者統合: {'✅' if integration.get('sages_integrated') else '❌'}"
+                    )
+                    print(
+                        f"   保存知識: {integration.get('total_knowledge_stored', 0)}件"
+                    )
+                    print(
+                        f"   実行検索: {integration.get('total_searches_performed', 0)}回"
+                    )
 
         except Exception as e:
             print(f"❌ ダッシュボード表示エラー: {e}")
@@ -282,7 +309,7 @@ class AdvancedSearchAnalyticsCLI:
                 "リアルタイム分析ダッシュボード",
                 "4賢者システム統合",
                 "キャッシュ機能",
-                "パフォーマンス監視"
+                "パフォーマンス監視",
             ]
 
             for func in functions:
@@ -296,7 +323,7 @@ class AdvancedSearchAnalyticsCLI:
                 "hybrid (ハイブリッド検索)",
                 "semantic (セマンティック検索)",
                 "fuzzy (あいまい検索)",
-                "contextual (コンテキスト検索)"
+                "contextual (コンテキスト検索)",
             ]
 
             for search_type in search_types:
@@ -310,7 +337,7 @@ class AdvancedSearchAnalyticsCLI:
                 "trend_analysis (トレンド分析)",
                 "predictive (予測分析)",
                 "classification (分類分析)",
-                "clustering (クラスタリング分析)"
+                "clustering (クラスタリング分析)",
             ]
 
             for analytics_type in analytics_types:
@@ -319,35 +346,55 @@ class AdvancedSearchAnalyticsCLI:
         except Exception as e:
             print(f"❌ 状況表示エラー: {e}")
 
+
 def main():
     """メイン関数"""
-    parser = argparse.ArgumentParser(description='高度検索・分析プラットフォーム CLI')
+    parser = argparse.ArgumentParser(description="高度検索・分析プラットフォーム CLI")
 
     # 検索コマンド
-    parser.add_argument('--hybrid-search', type=str, help='ハイブリッド検索実行')
-    parser.add_argument('--search-type', choices=['vector', 'fulltext', 'hybrid', 'semantic', 'fuzzy', 'contextual'],
-                       default='hybrid', help='検索タイプ')
-    parser.add_argument('--limit', type=int, default=10, help='検索結果上限')
-    parser.add_argument('--similarity-threshold', type=float, default=0.7, help='類似度閾値')
-    parser.add_argument('--context', type=str, help='検索コンテキスト')
+    parser.add_argument("--hybrid-search", type=str, help="ハイブリッド検索実行")
+    parser.add_argument(
+        "--search-type",
+        choices=["vector", "fulltext", "hybrid", "semantic", "fuzzy", "contextual"],
+        default="hybrid",
+        help="検索タイプ",
+    )
+    parser.add_argument("--limit", type=int, default=10, help="検索結果上限")
+    parser.add_argument(
+        "--similarity-threshold", type=float, default=0.7, help="類似度閾値"
+    )
+    parser.add_argument("--context", type=str, help="検索コンテキスト")
 
     # 分析コマンド
-    parser.add_argument('--analytics', choices=['statistical', 'pattern_recognition', 'trend_analysis',
-                                               'predictive', 'classification', 'clustering'],
-                       help='分析タイプ')
-    parser.add_argument('data_query', nargs='?', help='分析対象データクエリ')
+    parser.add_argument(
+        "--analytics",
+        choices=[
+            "statistical",
+            "pattern_recognition",
+            "trend_analysis",
+            "predictive",
+            "classification",
+            "clustering",
+        ],
+        help="分析タイプ",
+    )
+    parser.add_argument("data_query", nargs="?", help="分析対象データクエリ")
 
     # パーソナライズド検索
-    parser.add_argument('--personalized-search', type=str, help='ユーザーID')
-    parser.add_argument('--user-query', type=str, help='パーソナライズド検索クエリ')
+    parser.add_argument("--personalized-search", type=str, help="ユーザーID")
+    parser.add_argument("--user-query", type=str, help="パーソナライズド検索クエリ")
 
     # ダッシュボード・状況表示
-    parser.add_argument('--dashboard', action='store_true', help='リアルタイム分析ダッシュボード表示')
-    parser.add_argument('--status', action='store_true', help='プラットフォーム状況表示')
+    parser.add_argument(
+        "--dashboard", action="store_true", help="リアルタイム分析ダッシュボード表示"
+    )
+    parser.add_argument(
+        "--status", action="store_true", help="プラットフォーム状況表示"
+    )
 
     # フィルタ・オプション
-    parser.add_argument('--filters', type=str, help='検索フィルタ（JSON形式）')
-    parser.add_argument('--search-history', type=str, help='検索履歴（JSON形式）')
+    parser.add_argument("--filters", type=str, help="検索フィルタ（JSON形式）")
+    parser.add_argument("--search-history", type=str, help="検索履歴（JSON形式）")
 
     args = parser.parse_args()
 
@@ -368,22 +415,32 @@ def main():
                     args.limit,
                     args.similarity_threshold,
                     filters,
-                    args.context
+                    args.context,
                 )
             elif args.analytics and args.data_query:
                 context = json.loads(args.context) if args.context else None
                 await cli.advanced_analytics(args.analytics, args.data_query, context)
             elif args.personalized_search and args.user_query:
-                history = json.loads(args.search_history) if args.search_history else None
-                await cli.personalized_search(args.personalized_search, args.user_query, history)
+                history = (
+                    json.loads(args.search_history) if args.search_history else None
+                )
+                await cli.personalized_search(
+                    args.personalized_search, args.user_query, history
+                )
             else:
                 parser.print_help()
                 print("\n💡 使用例:")
                 print("   python3 scripts/advanced_search_analytics_cli.py --status")
                 print("   python3 scripts/advanced_search_analytics_cli.py --dashboard")
-                print("   python3 scripts/advanced_search_analytics_cli.py --hybrid-search '4賢者システム' --limit 5")
-                print("   python3 scripts/advanced_search_analytics_cli.py --analytics statistical 'PostgreSQL MCP'")
-                print("   python3 scripts/advanced_search_analytics_cli.py --personalized-search user123 --user-query 'データベース'")
+                print(
+                    "   python3 scripts/advanced_search_analytics_cli.py --hybrid-search '4賢者システム' --limit 5"
+                )
+                print(
+                    "   python3 scripts/advanced_search_analytics_cli.py --analytics statistical 'PostgreSQL MCP'"
+                )
+                print(
+                    "   python3 scripts/advanced_search_analytics_cli.py --personalized-search user123 --user-query 'データベース'"
+                )
 
         except KeyboardInterrupt:
             print("\n⚠️ 処理が中断されました")
@@ -392,6 +449,7 @@ def main():
 
     # 非同期実行
     asyncio.run(run_cli())
+
 
 if __name__ == "__main__":
     main()

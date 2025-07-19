@@ -57,7 +57,9 @@ class ProcessMonitor:
 
         # メモリ使用量チェック
         if memory_usage > self.max_memory_mb:
-            issues.append(f"メモリ使用量過多: {memory_usage:.1f}MB > {self.max_memory_mb}MB")
+            issues.append(
+                f"メモリ使用量過多: {memory_usage:.1f}MB > {self.max_memory_mb}MB"
+            )
 
         return {
             "healthy": len(issues) == 0,

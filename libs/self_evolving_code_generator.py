@@ -31,6 +31,7 @@ import concurrent.futures
 
 class EvolutionStrategy(Enum):
     """進化戦略"""
+
     GENETIC_ALGORITHM = "genetic_algorithm"
     SIMULATED_ANNEALING = "simulated_annealing"
     PARTICLE_SWARM = "particle_swarm"
@@ -40,6 +41,7 @@ class EvolutionStrategy(Enum):
 
 class MutationType(Enum):
     """突然変異タイプ"""
+
     VARIABLE_RENAME = "variable_rename"
     EXPRESSION_MODIFY = "expression_modify"
     STRUCTURE_CHANGE = "structure_change"
@@ -51,6 +53,7 @@ class MutationType(Enum):
 
 class FitnessMetric(Enum):
     """適応度メトリック"""
+
     PERFORMANCE = "performance"
     READABILITY = "readability"
     MAINTAINABILITY = "maintainability"
@@ -63,6 +66,7 @@ class FitnessMetric(Enum):
 @dataclass
 class CodeGene:
     """コード遺伝子"""
+
     gene_id: str
     code_snippet: str
     function_name: str
@@ -78,6 +82,7 @@ class CodeGene:
 @dataclass
 class EvolutionResult:
     """進化結果"""
+
     result_id: str
     target_function: str
     evolved_code: str
@@ -93,6 +98,7 @@ class EvolutionResult:
 @dataclass
 class PopulationStats:
     """個体群統計"""
+
     generation: int
     population_size: int
     average_fitness: float
@@ -118,7 +124,7 @@ class GeneticOperators:
             MutationType.ALGORITHM_REPLACE: self._mutate_algorithm_replace,
             MutationType.OPTIMIZATION_INSERT: self._mutate_optimization_insert,
             MutationType.PERFORMANCE_TUNE: self._mutate_performance_tune,
-            MutationType.LOGIC_ENHANCE: self._mutate_logic_enhance
+            MutationType.LOGIC_ENHANCE: self._mutate_logic_enhance,
         }
 
         # 交叉操作
@@ -126,7 +132,7 @@ class GeneticOperators:
             self._uniform_crossover,
             self._single_point_crossover,
             self._semantic_crossover,
-            self._block_crossover
+            self._block_crossover,
         ]
 
     def _setup_logger(self) -> logging.Logger:
@@ -144,8 +150,9 @@ class GeneticOperators:
 
         return logger
 
-    def mutate_gene(self, gene: CodeGene, mutation_type: MutationType,
-                   mutation_rate: float = 0.1) -> CodeGene:
+    def mutate_gene(
+        self, gene: CodeGene, mutation_type: MutationType, mutation_rate: float = 0.1
+    ) -> CodeGene:
         """遺伝子突然変異"""
         if random.random() > mutation_rate:
             return gene
@@ -168,7 +175,7 @@ class GeneticOperators:
                 parent_genes=[gene.gene_id],
                 mutation_history=gene.mutation_history + [mutation_type.value],
                 performance_metrics={},
-                created_at=datetime.now().isoformat()
+                created_at=datetime.now().isoformat(),
             )
 
             self.logger.info(f"🧬 Mutated gene: {mutation_type.value}")
@@ -182,13 +189,13 @@ class GeneticOperators:
         """変数名変更突然変異"""
         # 簡単な変数名変更
         variable_patterns = [
-            (r'\btemp\b', 'temporary'),
-            (r'\bval\b', 'value'),
-            (r'\bres\b', 'result'),
-            (r'\bi\b', 'index'),
-            (r'\bj\b', 'idx'),
-            (r'\bx\b', 'data'),
-            (r'\by\b', 'output')
+            (r"\btemp\b", "temporary"),
+            (r"\bval\b", "value"),
+            (r"\bres\b", "result"),
+            (r"\bi\b", "index"),
+            (r"\bj\b", "idx"),
+            (r"\bx\b", "data"),
+            (r"\by\b", "output"),
         ]
 
         pattern, replacement = random.choice(variable_patterns)
@@ -198,14 +205,14 @@ class GeneticOperators:
         """式変更突然変異"""
         # 演算子変更
         operator_mutations = [
-            (r'\+', '-'),
-            (r'-', '+'),
-            (r'\*', '//'),
-            (r'//', '*'),
-            (r'==', '!='),
-            (r'!=', '=='),
-            (r'<=', '<'),
-            (r'>=', '>')
+            (r"\+", "-"),
+            (r"-", "+"),
+            (r"\*", "//"),
+            (r"//", "*"),
+            (r"==", "!="),
+            (r"!=", "=="),
+            (r"<=", "<"),
+            (r">=", ">"),
         ]
 
         if operator_mutations:
@@ -219,9 +226,9 @@ class GeneticOperators:
     def _mutate_structure_change(self, code: str) -> str:
         """構造変更突然変異"""
         # ループ構造の変更など
-        if 'for ' in code and random.random() < 0.2:
+        if "for " in code and random.random() < 0.2:
             # for文をリスト内包表記に変更（可能な場合）
-            if 'append' in code:
+            if "append" in code:
                 return self._convert_for_to_comprehension(code)
 
         return code
@@ -229,94 +236,98 @@ class GeneticOperators:
     def _convert_for_to_comprehension(self, code: str) -> str:
         """for文をリスト内包表記に変換"""
         # 簡単なfor文の変換例
-        lines = code.split('\n')
+        lines = code.split("\n")
         result_lines = []
 
         for line in lines:
-            if 'for ' in line and 'in ' in line:
+            if "for " in line and "in " in line:
                 # 簡単なパターンマッチング
                 result_lines.append(line + "  # Converted pattern")
             else:
                 result_lines.append(line)
 
-        return '\n'.join(result_lines)
+        return "\n".join(result_lines)
 
     def _mutate_algorithm_replace(self, code: str) -> str:
         """アルゴリズム置換突然変異"""
         # ソートアルゴリズムの置換
-        if 'sort(' in code:
-            return code.replace('sort()', 'sorted(key=lambda x: x)')
+        if "sort(" in code:
+            return code.replace("sort()", "sorted(key=lambda x: x)")
 
         # 検索アルゴリズムの変更
-        if 'linear_search' in code:
-            return code.replace('linear_search', 'binary_search')
+        if "linear_search" in code:
+            return code.replace("linear_search", "binary_search")
 
         return code
 
     def _mutate_optimization_insert(self, code: str) -> str:
         """最適化挿入突然変異"""
         # キャッシュの追加
-        if 'def ' in code and '@' not in code:
-            lines = code.split('\n')
+        if "def " in code and "@" not in code:
+            lines = code.split("\n")
             for i, line in enumerate(lines):
-                if line.strip().startswith('def '):
-                    lines.insert(i, '@lru_cache(maxsize=128)')
+                if line.strip().startswith("def "):
+                    lines.insert(i, "@lru_cache(maxsize=128)")
                     break
-            return '\n'.join(lines)
+            return "\n".join(lines)
 
         return code
 
     def _mutate_performance_tune(self, code: str) -> str:
         """性能調整突然変異"""
         # NumPy最適化の追加
-        if 'import ' in code and 'numpy' not in code:
+        if "import " in code and "numpy" not in code:
             if random.random() < 0.3:
-                return 'import numpy as np\n' + code
+                return "import numpy as np\n" + code
 
         # リスト操作の最適化
-        if '.append(' in code:
-            return code.replace('.append(', '.extend([') + '])'
+        if ".append(" in code:
+            return code.replace(".append(", ".extend([") + "])"
 
         return code
 
     def _mutate_logic_enhance(self, code: str) -> str:
         """ロジック強化突然変異"""
         # エラー処理の追加
-        if 'try:' not in code and 'def ' in code:
-            lines = code.split('\n')
+        if "try:" not in code and "def " in code:
+            lines = code.split("\n")
             result_lines = []
             in_function = False
 
             for line in lines:
-                if line.strip().startswith('def '):
+                if line.strip().startswith("def "):
                     in_function = True
                     result_lines.append(line)
-                elif in_function and line.strip() and not line.startswith(' '):
+                elif in_function and line.strip() and not line.startswith(" "):
                     in_function = False
                     result_lines.append(line)
                 elif in_function and line.strip():
                     # 関数内にtry-catch追加
-                    if 'return ' in line:
+                    if "return " in line:
                         indent = len(line) - len(line.lstrip())
-                        result_lines.append(' ' * indent + 'try:')
-                        result_lines.append(' ' * (indent + 4) + line.strip())
-                        result_lines.append(' ' * indent + 'except Exception as e:')
-                        result_lines.append(' ' * (indent + 4) + 'return None')
+                        result_lines.append(" " * indent + "try:")
+                        result_lines.append(" " * (indent + 4) + line.strip())
+                        result_lines.append(" " * indent + "except Exception as e:")
+                        result_lines.append(" " * (indent + 4) + "return None")
                     else:
                         result_lines.append(line)
                 else:
                     result_lines.append(line)
 
-            return '\n'.join(result_lines)
+            return "\n".join(result_lines)
 
         return code
 
-    def crossover_genes(self, parent1: CodeGene, parent2: CodeGene) -> Tuple[CodeGene, CodeGene]:
+    def crossover_genes(
+        self, parent1: CodeGene, parent2: CodeGene
+    ) -> Tuple[CodeGene, CodeGene]:
         """遺伝子交叉"""
         crossover_func = random.choice(self.crossover_operators)
 
         try:
-            child1_code, child2_code = crossover_func(parent1.code_snippet, parent2.code_snippet)
+            child1_code, child2_code = crossover_func(
+                parent1.code_snippet, parent2.code_snippet
+            )
 
             # 子遺伝子作成
             child1 = CodeGene(
@@ -329,7 +340,7 @@ class GeneticOperators:
                 parent_genes=[parent1.gene_id, parent2.gene_id],
                 mutation_history=[],
                 performance_metrics={},
-                created_at=datetime.now().isoformat()
+                created_at=datetime.now().isoformat(),
             )
 
             child2 = CodeGene(
@@ -342,7 +353,7 @@ class GeneticOperators:
                 parent_genes=[parent1.gene_id, parent2.gene_id],
                 mutation_history=[],
                 performance_metrics={},
-                created_at=datetime.now().isoformat()
+                created_at=datetime.now().isoformat(),
             )
 
             self.logger.info("🧬 Genes crossed successfully")
@@ -354,8 +365,8 @@ class GeneticOperators:
 
     def _uniform_crossover(self, code1: str, code2: str) -> Tuple[str, str]:
         """一様交叉"""
-        lines1 = code1.split('\n')
-        lines2 = code2.split('\n')
+        lines1 = code1.split("\n")
+        lines2 = code2.split("\n")
 
         max_len = max(len(lines1), len(lines2))
 
@@ -370,12 +381,12 @@ class GeneticOperators:
                 child1_lines.append(lines2[i] if i < len(lines2) else "")
                 child2_lines.append(lines1[i] if i < len(lines1) else "")
 
-        return '\n'.join(child1_lines), '\n'.join(child2_lines)
+        return "\n".join(child1_lines), "\n".join(child2_lines)
 
     def _single_point_crossover(self, code1: str, code2: str) -> Tuple[str, str]:
         """一点交叉"""
-        lines1 = code1.split('\n')
-        lines2 = code2.split('\n')
+        lines1 = code1.split("\n")
+        lines2 = code2.split("\n")
 
         min_len = min(len(lines1), len(lines2))
         if min_len <= 1:
@@ -383,23 +394,27 @@ class GeneticOperators:
 
         crossover_point = random.randint(1, min_len - 1)
 
-        child1 = '\n'.join(lines1[:crossover_point] + lines2[crossover_point:])
-        child2 = '\n'.join(lines2[:crossover_point] + lines1[crossover_point:])
+        child1 = "\n".join(lines1[:crossover_point] + lines2[crossover_point:])
+        child2 = "\n".join(lines2[:crossover_point] + lines1[crossover_point:])
 
         return child1, child2
 
     def _semantic_crossover(self, code1: str, code2: str) -> Tuple[str, str]:
         """意味的交叉"""
         # 関数定義を保持しながら交叉
-        def_pattern = r'def\s+\w+\([^)]*\):'
+        def_pattern = r"def\s+\w+\([^)]*\):"
 
         defs1 = re.findall(def_pattern, code1)
         defs2 = re.findall(def_pattern, code2)
 
         if defs1 and defs2:
             # 関数定義を交換
-            child1 = re.sub(def_pattern, defs2[0] if defs2 else defs1[0], code1, count=1)
-            child2 = re.sub(def_pattern, defs1[0] if defs1 else defs2[0], code2, count=1)
+            child1 = re.sub(
+                def_pattern, defs2[0] if defs2 else defs1[0], code1, count=1
+            )
+            child2 = re.sub(
+                def_pattern, defs1[0] if defs1 else defs2[0], code2, count=1
+            )
             return child1, child2
 
         return self._uniform_crossover(code1, code2)
@@ -420,13 +435,13 @@ class GeneticOperators:
 
             new_blocks1[idx1], new_blocks2[idx2] = new_blocks2[idx2], new_blocks1[idx1]
 
-            return '\n'.join(new_blocks1), '\n'.join(new_blocks2)
+            return "\n".join(new_blocks1), "\n".join(new_blocks2)
 
         return code1, code2
 
     def _extract_blocks(self, code: str) -> List[str]:
         """コードブロック抽出"""
-        lines = code.split('\n')
+        lines = code.split("\n")
         blocks = []
         current_block = []
         current_indent = 0
@@ -435,7 +450,7 @@ class GeneticOperators:
             if line.strip():
                 indent = len(line) - len(line.lstrip())
                 if indent <= current_indent and current_block:
-                    blocks.append('\n'.join(current_block))
+                    blocks.append("\n".join(current_block))
                     current_block = [line]
                     current_indent = indent
                 else:
@@ -446,7 +461,7 @@ class GeneticOperators:
                 current_block.append(line)
 
         if current_block:
-            blocks.append('\n'.join(current_block))
+            blocks.append("\n".join(current_block))
 
         return blocks
 
@@ -465,7 +480,7 @@ class FitnessEvaluator:
             FitnessMetric.MEMORY_EFFICIENCY: 0.15,
             FitnessMetric.CPU_EFFICIENCY: 0.15,
             FitnessMetric.CODE_COMPLEXITY: 0.10,
-            FitnessMetric.TEST_COVERAGE: 0.05
+            FitnessMetric.TEST_COVERAGE: 0.05,
         }
 
     def _setup_logger(self) -> logging.Logger:
@@ -492,19 +507,22 @@ class FitnessEvaluator:
             scores[FitnessMetric.PERFORMANCE] = await self._evaluate_performance(gene)
             scores[FitnessMetric.READABILITY] = self._evaluate_readability(gene)
             scores[FitnessMetric.MAINTAINABILITY] = self._evaluate_maintainability(gene)
-            scores[FitnessMetric.MEMORY_EFFICIENCY] = self._evaluate_memory_efficiency(gene)
+            scores[FitnessMetric.MEMORY_EFFICIENCY] = self._evaluate_memory_efficiency(
+                gene
+            )
             scores[FitnessMetric.CPU_EFFICIENCY] = self._evaluate_cpu_efficiency(gene)
             scores[FitnessMetric.CODE_COMPLEXITY] = self._evaluate_complexity(gene)
             scores[FitnessMetric.TEST_COVERAGE] = self._evaluate_test_coverage(gene)
 
             # 重み付き合計
             total_fitness = sum(
-                scores[metric] * self.metric_weights[metric]
-                for metric in scores
+                scores[metric] * self.metric_weights[metric] for metric in scores
             )
 
             # スコアを遺伝子に保存
-            gene.fitness_scores = {metric.value: score for metric, score in scores.items()}
+            gene.fitness_scores = {
+                metric.value: score for metric, score in scores.items()
+            }
 
             self.logger.info(f"📊 Fitness evaluated: {total_fitness:.3f}")
             return total_fitness
@@ -520,7 +538,7 @@ class FitnessEvaluator:
             start_time = time.time()
 
             # コード実行の模擬
-            lines = len(gene.code_snippet.split('\n'))
+            lines = len(gene.code_snippet.split("\n"))
             complexity_estimate = lines * 0.001  # 行数ベースの複雑度
 
             # 模擬実行時間
@@ -543,26 +561,28 @@ class FitnessEvaluator:
         readability_score = 0.5  # ベーススコア
 
         # コメントの存在
-        if '#' in code:
+        if "#" in code:
             readability_score += 0.1
 
         # 適切な変数名
-        if any(name in code for name in ['result', 'data', 'value', 'output']):
+        if any(name in code for name in ["result", "data", "value", "output"]):
             readability_score += 0.1
 
         # 短すぎる変数名のペナルティ
-        if re.search(r'\b[a-z]\b', code):
+        if re.search(r"\b[a-z]\b", code):
             readability_score -= 0.1
 
         # 行の長さ
-        lines = code.split('\n')
+        lines = code.split("\n")
         long_lines = sum(1 for line in lines if len(line) > 80)
         if long_lines == 0:
             readability_score += 0.1
 
         # 適切なインデント
-        if all(line.startswith('    ') or not line.strip() or not line.startswith(' ')
-               for line in lines):
+        if all(
+            line.startswith("    ") or not line.strip() or not line.startswith(" ")
+            for line in lines
+        ):
             readability_score += 0.1
 
         return max(0.0, min(1.0, readability_score))
@@ -574,7 +594,7 @@ class FitnessEvaluator:
         maintainability_score = 0.5
 
         # 関数サイズ
-        lines = [line for line in code.split('\n') if line.strip()]
+        lines = [line for line in code.split("\n") if line.strip()]
         if len(lines) <= 20:
             maintainability_score += 0.2
         elif len(lines) > 50:
@@ -582,7 +602,7 @@ class FitnessEvaluator:
 
         # 複雑性（ネストレベル）
         max_indent = 0
-        for line in code.split('\n'):
+        for line in code.split("\n"):
             if line.strip():
                 indent = len(line) - len(line.lstrip())
                 max_indent = max(max_indent, indent)
@@ -593,7 +613,7 @@ class FitnessEvaluator:
             maintainability_score -= 0.15
 
         # エラー処理の存在
-        if 'try:' in code and 'except' in code:
+        if "try:" in code and "except" in code:
             maintainability_score += 0.1
 
         # ドキュメント文字列
@@ -609,20 +629,20 @@ class FitnessEvaluator:
         memory_score = 0.7  # ベーススコア
 
         # リスト内包表記の使用
-        if '[' in code and 'for' in code and 'in' in code:
+        if "[" in code and "for" in code and "in" in code:
             memory_score += 0.1
 
         # 不要な変数の回避
-        temp_vars = len(re.findall(r'\btemp\b|\btmp\b', code))
+        temp_vars = len(re.findall(r"\btemp\b|\btmp\b", code))
         memory_score -= temp_vars * 0.05
 
         # ジェネレータの使用
-        if 'yield' in code:
+        if "yield" in code:
             memory_score += 0.15
 
         # 大きなリスト操作のペナルティ
-        if 'range(' in code:
-            range_matches = re.findall(r'range\((\d+)', code)
+        if "range(" in code:
+            range_matches = re.findall(r"range\((\d+)", code)
             for match in range_matches:
                 if int(match) > 10000:
                     memory_score -= 0.1
@@ -636,23 +656,23 @@ class FitnessEvaluator:
         cpu_score = 0.6
 
         # 効率的なアルゴリズム
-        if 'sorted(' in code:
+        if "sorted(" in code:
             cpu_score += 0.1
-        if 'set(' in code:
+        if "set(" in code:
             cpu_score += 0.1
-        if 'dict(' in code:
+        if "dict(" in code:
             cpu_score += 0.05
 
         # 非効率なパターンのペナルティ
-        if 'in' in code and 'list' in code:
+        if "in" in code and "list" in code:
             cpu_score -= 0.1  # リストでのin検索
 
         # ネストループのペナルティ
-        nested_loops = len(re.findall(r'for.*in.*:.*for.*in.*:', code, re.DOTALL))
+        nested_loops = len(re.findall(r"for.*in.*:.*for.*in.*:", code, re.DOTALL))
         cpu_score -= nested_loops * 0.15
 
         # キャッシュの使用
-        if '@lru_cache' in code or '@cache' in code:
+        if "@lru_cache" in code or "@cache" in code:
             cpu_score += 0.2
 
         return max(0.0, min(1.0, cpu_score))
@@ -663,7 +683,15 @@ class FitnessEvaluator:
 
         # サイクロマティック複雑度の簡易版
         complexity_indicators = [
-            'if', 'elif', 'else', 'for', 'while', 'try', 'except', 'and', 'or'
+            "if",
+            "elif",
+            "else",
+            "for",
+            "while",
+            "try",
+            "except",
+            "and",
+            "or",
         ]
 
         complexity = sum(code.count(indicator) for indicator in complexity_indicators)
@@ -681,11 +709,11 @@ class FitnessEvaluator:
         test_score = 0.3
 
         # アサーションの存在
-        if 'assert' in code:
+        if "assert" in code:
             test_score += 0.3
 
         # テスト関数の存在
-        if 'test_' in code or 'def test' in code:
+        if "test_" in code or "def test" in code:
             test_score += 0.4
 
         return min(1.0, test_score)
@@ -732,7 +760,9 @@ class SelfEvolvingCodeGenerator:
 
         return logger
 
-    async def evolve_code(self, target_function: str, requirements: Dict[str, Any]) -> EvolutionResult:
+    async def evolve_code(
+        self, target_function: str, requirements: Dict[str, Any]
+    ) -> EvolutionResult:
         """
         コード進化実行
 
@@ -748,7 +778,9 @@ class SelfEvolvingCodeGenerator:
         start_time = time.time()
 
         # 初期個体群生成
-        population = await self._generate_initial_population(target_function, requirements)
+        population = await self._generate_initial_population(
+            target_function, requirements
+        )
 
         # 進化ループ
         best_fitness_history = []
@@ -777,7 +809,10 @@ class SelfEvolvingCodeGenerator:
             self._adjust_evolution_parameters(generation, stats)
 
         # 最良個体選択
-        best_gene = max(population, key=lambda g: sum(g.fitness_scores.values()) if g.fitness_scores else 0)
+        best_gene = max(
+            population,
+            key=lambda g: sum(g.fitness_scores.values()) if g.fitness_scores else 0,
+        )
 
         evolution_time = time.time() - start_time
 
@@ -786,12 +821,16 @@ class SelfEvolvingCodeGenerator:
             target_function=target_function,
             evolved_code=best_gene.code_snippet,
             generations=generation + 1,
-            best_fitness=sum(best_gene.fitness_scores.values()) if best_gene.fitness_scores else 0,
+            best_fitness=(
+                sum(best_gene.fitness_scores.values())
+                if best_gene.fitness_scores
+                else 0
+            ),
             fitness_history=best_fitness_history,
             optimization_metrics=self._calculate_optimization_metrics(population),
             evolution_time=evolution_time,
             convergence_generation=convergence_generation,
-            final_genes=population[:5]  # トップ5
+            final_genes=population[:5],  # トップ5
         )
 
         self.evolution_history.append(result)
@@ -800,8 +839,9 @@ class SelfEvolvingCodeGenerator:
 
         return result
 
-    async def _generate_initial_population(self, target_function: str,
-                                         requirements: Dict[str, Any]) -> List[CodeGene]:
+    async def _generate_initial_population(
+        self, target_function: str, requirements: Dict[str, Any]
+    ) -> List[CodeGene]:
         """初期個体群生成"""
         population = []
 
@@ -825,7 +865,7 @@ class SelfEvolvingCodeGenerator:
                 parent_genes=[],
                 mutation_history=[],
                 performance_metrics={},
-                created_at=datetime.now().isoformat()
+                created_at=datetime.now().isoformat(),
             )
 
             population.append(gene)
@@ -833,7 +873,9 @@ class SelfEvolvingCodeGenerator:
         self.logger.info(f"🧬 Generated initial population: {len(population)} genes")
         return population
 
-    def _get_code_templates(self, target_function: str, requirements: Dict[str, Any]) -> List[str]:
+    def _get_code_templates(
+        self, target_function: str, requirements: Dict[str, Any]
+    ) -> List[str]:
         """コードテンプレート取得"""
         templates = []
 
@@ -913,7 +955,7 @@ def {target_function}(data):
                 parent_genes=[],
                 mutation_history=[],
                 performance_metrics={},
-                created_at=""
+                created_at="",
             )
 
             mutated_gene = self.genetic_ops.mutate_gene(temp_gene, mutation_type, 0.5)
@@ -925,13 +967,14 @@ def {target_function}(data):
         """個体群評価"""
         # 並列評価
         evaluation_tasks = [
-            self.fitness_evaluator.evaluate_fitness(gene)
-            for gene in population
+            self.fitness_evaluator.evaluate_fitness(gene) for gene in population
         ]
 
         await asyncio.gather(*evaluation_tasks)
 
-    def _calculate_population_stats(self, population: List[CodeGene], generation: int) -> PopulationStats:
+    def _calculate_population_stats(
+        self, population: List[CodeGene], generation: int
+    ) -> PopulationStats:
         """個体群統計計算"""
         fitness_values = [
             sum(gene.fitness_scores.values()) if gene.fitness_scores else 0
@@ -953,10 +996,12 @@ def {target_function}(data):
             diversity_score=diversity_score,
             convergence_rate=self._calculate_convergence_rate(fitness_values),
             mutation_rate=self.mutation_rate,
-            selection_pressure=self.selection_pressure
+            selection_pressure=self.selection_pressure,
         )
 
-        self.logger.info(f"📊 Gen {generation}: Best={stats.best_fitness:.3f}, Avg={stats.average_fitness:.3f}")
+        self.logger.info(
+            f"📊 Gen {generation}: Best={stats.best_fitness:.3f}, Avg={stats.average_fitness:.3f}"
+        )
 
         return stats
 
@@ -996,13 +1041,15 @@ def {target_function}(data):
 
         return improvement < 0.001
 
-    async def _generate_next_generation(self, population: List[CodeGene]) -> List[CodeGene]:
+    async def _generate_next_generation(
+        self, population: List[CodeGene]
+    ) -> List[CodeGene]:
         """次世代生成"""
         # 適応度でソート
         sorted_population = sorted(
             population,
             key=lambda g: sum(g.fitness_scores.values()) if g.fitness_scores else 0,
-            reverse=True
+            reverse=True,
         )
 
         next_generation = []
@@ -1025,13 +1072,17 @@ def {target_function}(data):
 
             # 突然変異
             mutation_type = random.choice(list(MutationType))
-            child1 = self.genetic_ops.mutate_gene(child1, mutation_type, self.mutation_rate)
-            child2 = self.genetic_ops.mutate_gene(child2, mutation_type, self.mutation_rate)
+            child1 = self.genetic_ops.mutate_gene(
+                child1, mutation_type, self.mutation_rate
+            )
+            child2 = self.genetic_ops.mutate_gene(
+                child2, mutation_type, self.mutation_rate
+            )
 
             next_generation.extend([child1, child2])
 
         # 個体数調整
-        return next_generation[:self.population_size]
+        return next_generation[: self.population_size]
 
     def _tournament_selection(self, population: List[CodeGene]) -> CodeGene:
         """トーナメント選択"""
@@ -1040,7 +1091,7 @@ def {target_function}(data):
 
         winner = max(
             tournament,
-            key=lambda g: sum(g.fitness_scores.values()) if g.fitness_scores else 0
+            key=lambda g: sum(g.fitness_scores.values()) if g.fitness_scores else 0,
         )
 
         return winner
@@ -1059,7 +1110,9 @@ def {target_function}(data):
         elif stats.diversity_score > 0.8:
             self.selection_pressure = min(3.0, self.selection_pressure * 1.1)
 
-    def _calculate_optimization_metrics(self, population: List[CodeGene]) -> Dict[str, float]:
+    def _calculate_optimization_metrics(
+        self, population: List[CodeGene]
+    ) -> Dict[str, float]:
         """最適化メトリクス計算"""
         if not population:
             return {}
@@ -1073,11 +1126,16 @@ def {target_function}(data):
             "final_average_fitness": np.mean(fitness_values),
             "fitness_variance": np.var(fitness_values),
             "population_diversity": self._calculate_diversity(population),
-            "evolution_efficiency": max(fitness_values) / max(1.0, np.mean(fitness_values)),
-            "convergence_stability": 1.0 - np.std(fitness_values[-10:]) if len(fitness_values) >= 10 else 0.0
+            "evolution_efficiency": max(fitness_values)
+            / max(1.0, np.mean(fitness_values)),
+            "convergence_stability": (
+                1.0 - np.std(fitness_values[-10:]) if len(fitness_values) >= 10 else 0.0
+            ),
         }
 
-    async def evolve_multiple_functions(self, targets: List[Tuple[str, Dict[str, Any]]]) -> List[EvolutionResult]:
+    async def evolve_multiple_functions(
+        self, targets: List[Tuple[str, Dict[str, Any]]]
+    ) -> List[EvolutionResult]:
         """複数関数の並列進化"""
         self.logger.info(f"🧬 Starting parallel evolution for {len(targets)} functions")
 
@@ -1099,12 +1157,25 @@ def {target_function}(data):
 
         return {
             "total_evolutions": len(self.evolution_history),
-            "average_generations": np.mean([r.generations for r in self.evolution_history]),
-            "average_fitness": np.mean([r.best_fitness for r in self.evolution_history]),
-            "average_evolution_time": np.mean([r.evolution_time for r in self.evolution_history]),
-            "successful_convergences": len([r for r in self.evolution_history if r.convergence_generation >= 0]),
-            "best_overall_fitness": max([r.best_fitness for r in self.evolution_history]),
-            "evolution_efficiency": len([r for r in self.evolution_history if r.evolution_time < 60]) / len(self.evolution_history)
+            "average_generations": np.mean(
+                [r.generations for r in self.evolution_history]
+            ),
+            "average_fitness": np.mean(
+                [r.best_fitness for r in self.evolution_history]
+            ),
+            "average_evolution_time": np.mean(
+                [r.evolution_time for r in self.evolution_history]
+            ),
+            "successful_convergences": len(
+                [r for r in self.evolution_history if r.convergence_generation >= 0]
+            ),
+            "best_overall_fitness": max(
+                [r.best_fitness for r in self.evolution_history]
+            ),
+            "evolution_efficiency": len(
+                [r for r in self.evolution_history if r.evolution_time < 60]
+            )
+            / len(self.evolution_history),
         }
 
     def export_best_genes(self, output_dir: str = "evolved_code"):
@@ -1116,14 +1187,16 @@ def {target_function}(data):
             filename = f"{result.target_function}_evolved.py"
             filepath = output_path / filename
 
-            with open(filepath, 'w', encoding='utf-8') as f:
+            with open(filepath, "w", encoding="utf-8") as f:
                 f.write(f"# Evolved code for {result.target_function}\n")
                 f.write(f"# Fitness: {result.best_fitness:.3f}\n")
                 f.write(f"# Generations: {result.generations}\n")
                 f.write(f"# Evolution time: {result.evolution_time:.2f}s\n\n")
                 f.write(result.evolved_code)
 
-        self.logger.info(f"📁 Exported {len(self.evolution_history)} evolved codes to {output_dir}")
+        self.logger.info(
+            f"📁 Exported {len(self.evolution_history)} evolved codes to {output_dir}"
+        )
 
 
 # 使用例とデモ
@@ -1140,7 +1213,7 @@ async def demo_self_evolving_code_generator():
     requirements = {
         "use_numpy": True,
         "error_handling": True,
-        "optimize_performance": True
+        "optimize_performance": True,
     }
 
     result = await generator.evolve_code(target_function, requirements)
@@ -1162,7 +1235,7 @@ async def demo_self_evolving_code_generator():
     targets = [
         ("calculate_average", {"error_handling": True}),
         ("sort_data", {"optimize_performance": True}),
-        ("validate_input", {"robust_validation": True})
+        ("validate_input", {"robust_validation": True}),
     ]
 
     parallel_results = await generator.evolve_multiple_functions(targets)

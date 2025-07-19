@@ -772,9 +772,9 @@ class SecurityMonitoringService:
             "threat_level_distribution": threat_stats,
             "event_type_distribution": event_stats,
             "active_incidents": len(self.active_incidents),
-            "monitoring_status": "active"
-            if self.config.real_time_monitoring
-            else "passive",
+            "monitoring_status": (
+                "active" if self.config.real_time_monitoring else "passive"
+            ),
             "last_updated": now.isoformat(),
         }
 
@@ -1902,7 +1902,9 @@ class GitHubSecurityEnhancement(EldersServiceLegacy):
                 )
                 if vulnerabilities > 0:
                     # 脆弱性1つあたり1点減点
-                    vulnerability_penalty += min(vulnerabilities * 1.0, 20.0)  # 最大20点減点
+                    vulnerability_penalty += min(
+                        vulnerabilities * 1.0, 20.0
+                    )  # 最大20点減点
 
             # セキュリティ機能ボーナス
             security_bonus = 0.0

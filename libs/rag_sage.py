@@ -6,6 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class RAGSage:
     """Placeholder class for RAG Sage"""
 
@@ -14,12 +15,19 @@ class RAGSage:
 
     async def process_request(self, request):
         """Placeholder process_request method"""
-        logger.warning(f"RAGSage.process_request called with: {request.get('type', 'unknown')}")
-        return {"status": "placeholder", "message": "RAG Sage not implemented", "results": []}
+        logger.warning(
+            f"RAGSage.process_request called with: {request.get('type', 'unknown')}"
+        )
+        return {
+            "status": "placeholder",
+            "message": "RAG Sage not implemented",
+            "results": [],
+        }
 
     def __getattr__(self, name):
         logger.warning(f"Accessing placeholder attribute: {name}")
         return lambda *args, **kwargs: None
+
 
 # Common function placeholders
 def setup(*args, **kwargs):
@@ -27,10 +35,12 @@ def setup(*args, **kwargs):
     logger.warning("Using placeholder setup function")
     pass
 
+
 def main(*args, **kwargs):
     """Placeholder main function"""
     logger.warning("Using placeholder main function")
     pass
 
+
 # Export
-__all__ = ['RagSage', 'setup', 'main']
+__all__ = ["RagSage", "setup", "main"]

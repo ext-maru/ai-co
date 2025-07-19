@@ -528,7 +528,9 @@ Webベースの統合ダッシュボード実装
         except Exception as e:
             print(f"❌ Failed to update Epic: {e}")
 
-    print(f"\n🎉 Successfully created {len(created_issues) + 1} issues for UTT project!")
+    print(
+        f"\n🎉 Successfully created {len(created_issues) + 1} issues for UTT project!"
+    )
     print(f"📊 Epic Issue: #{epic_number}")
     print(f"📋 Sub Issues: {', '.join([f'#{i['number']}' for i in created_issues])}")
 

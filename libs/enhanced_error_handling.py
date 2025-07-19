@@ -415,13 +415,19 @@ class EnhancedTaskExecutor:
         recommendations = []
 
         if error_patterns.get("TIMEOUT", 0) > 10:
-            recommendations.append("タイムアウトエラーが多発しています。処理時間の最適化を検討してください。")
+            recommendations.append(
+                "タイムアウトエラーが多発しています。処理時間の最適化を検討してください。"
+            )
 
         if error_patterns.get("NETWORK", 0) > 5:
-            recommendations.append("ネットワークエラーが発生しています。接続の安定性を確認してください。")
+            recommendations.append(
+                "ネットワークエラーが発生しています。接続の安定性を確認してください。"
+            )
 
         if error_patterns.get("RATE_LIMIT", 0) > 0:
-            recommendations.append("レート制限に達しています。リクエスト頻度を調整してください。")
+            recommendations.append(
+                "レート制限に達しています。リクエスト頻度を調整してください。"
+            )
 
         return recommendations
 

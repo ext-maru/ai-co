@@ -153,14 +153,16 @@ class MonitoringDashboard:
                     "process_count": len(processes),
                     "total_cpu_percent": sum(p["cpu_percent"] for p in processes),
                     "total_memory_mb": sum(p["memory_mb"] for p in processes),
-                    "avg_cpu_percent": sum(p["cpu_percent"] for p in processes)
-                    / len(processes)
-                    if processes
-                    else 0,
-                    "avg_memory_mb": sum(p["memory_mb"] for p in processes)
-                    / len(processes)
-                    if processes
-                    else 0,
+                    "avg_cpu_percent": (
+                        sum(p["cpu_percent"] for p in processes) / len(processes)
+                        if processes
+                        else 0
+                    ),
+                    "avg_memory_mb": (
+                        sum(p["memory_mb"] for p in processes) / len(processes)
+                        if processes
+                        else 0
+                    ),
                     "processes": processes,
                 }
 
@@ -386,11 +388,15 @@ class MonitoringDashboard:
                         > (datetime.utcnow() - timedelta(hours=1)).isoformat()
                     ]
                 ),
-                "system_health": "healthy"
-                if not new_alerts
-                else "warning"
-                if any(a["severity"] == "warning" for a in new_alerts)
-                else "critical",
+                "system_health": (
+                    "healthy"
+                    if not new_alerts
+                    else (
+                        "warning"
+                        if any(a["severity"] == "warning" for a in new_alerts)
+                        else "critical"
+                    )
+                ),
             },
         }
 

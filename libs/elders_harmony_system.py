@@ -91,7 +91,11 @@ class SagesHarmonyEngine:
 
     def _get_task_sage(self):
         """タスク賢者のシミュレーション"""
-        return {"name": "タスク賢者", "speciality": "進捗管理・優先順位", "consultation_time": 1.5}
+        return {
+            "name": "タスク賢者",
+            "speciality": "進捗管理・優先順位",
+            "consultation_time": 1.5,
+        }
 
     def _get_incident_sage(self):
         """インシデント賢者のシミュレーション"""
@@ -103,7 +107,11 @@ class SagesHarmonyEngine:
 
     def _get_rag_sage(self):
         """RAG賢者のシミュレーション"""
-        return {"name": "RAG賢者", "speciality": "最適解探索・知識統合", "consultation_time": 2.5}
+        return {
+            "name": "RAG賢者",
+            "speciality": "最適解探索・知識統合",
+            "consultation_time": 2.5,
+        }
 
     async def lightning_consultation(
         self, request: Dict
@@ -297,7 +305,9 @@ class LightningCommitSystem:
                 return False
 
             # 3. Council用コミット実行（pre-commit軽量化）
-            success = self._execute_git_commit(message, bypass_hooks=True)  # 一時的にバイパス
+            success = self._execute_git_commit(
+                message, bypass_hooks=True
+            )  # 一時的にバイパス
 
             elapsed = time.time() - start_time
             logger.info(f"🏛️ Council Commit完了: {elapsed:.1f}秒")

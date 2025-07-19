@@ -21,7 +21,9 @@ from libs.rag_grimoire_integration import RagGrimoireConfig
 from libs.rag_grimoire_integration import RagGrimoireIntegration
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -29,7 +31,12 @@ class WorkerRAGMigrationVerifier:
     """Verifies that workers have been properly migrated to use RagGrimoireIntegration"""
 
     def __init__(self):
-        self.results = {"verified_workers": [], "failed_workers": [], "skipped_workers": [], "issues": []}
+        self.results = {
+            "verified_workers": [],
+            "failed_workers": [],
+            "skipped_workers": [],
+            "issues": [],
+        }
 
         # Workers that should have RAG integration
         self.target_workers = [
@@ -49,7 +56,9 @@ class WorkerRAGMigrationVerifier:
                 await self._verify_worker(worker_name)
             except Exception as e:
                 logger.error(f"❌ Failed to verify worker {worker_name}: {e}")
-                self.results["failed_workers"].append({"worker": worker_name, "error": str(e)})
+                self.results["failed_workers"].append(
+                    {"worker": worker_name, "error": str(e)}
+                )
 
         return self._generate_report()
 
@@ -72,23 +81,37 @@ class WorkerRAGMigrationVerifier:
                 return
 
             # Verify RAG integration implementation
-            verification_result = await self._verify_rag_implementation(worker_class, worker_name)
+            verification_result = await self._verify_rag_implementation(
+                worker_class, worker_name
+            )
 
             if verification_result["success"]:
                 self.results["verified_workers"].append(
-                    {"worker": worker_name, "class": worker_class.__name__, "features": verification_result["features"]}
+                    {
+                        "worker": worker_name,
+                        "class": worker_class.__name__,
+                        "features": verification_result["features"],
+                    }
                 )
                 logger.info(f"✅ Worker {worker_name} verification passed")
             else:
-                self.results["failed_workers"].append({"worker": worker_name, "issues": verification_result["issues"]})
-                logger.warning(f"⚠️  Worker {worker_name} has issues: {verification_result['issues']}")
+                self.results["failed_workers"].append(
+                    {"worker": worker_name, "issues": verification_result["issues"]}
+                )
+                logger.warning(
+                    f"⚠️  Worker {worker_name} has issues: {verification_result['issues']}"
+                )
 
         except ImportError as e:
             logger.error(f"❌ Cannot import worker {worker_name}: {e}")
-            self.results["failed_workers"].append({"worker": worker_name, "error": f"Import error: {e}"})
+            self.results["failed_workers"].append(
+                {"worker": worker_name, "error": f"Import error: {e}"}
+            )
         except Exception as e:
             logger.error(f"❌ Unexpected error verifying {worker_name}: {e}")
-            self.results["failed_workers"].append({"worker": worker_name, "error": f"Unexpected error: {e}"})
+            self.results["failed_workers"].append(
+                {"worker": worker_name, "error": f"Unexpected error: {e}"}
+            )
 
     def _check_import(self, module, worker_name: str) -> bool:
         """Check if the module imports RagGrimoireIntegration"""
@@ -99,17 +122,23 @@ class WorkerRAGMigrationVerifier:
                 content = f.read()
 
             if "RagGrimoireIntegration" not in content:
-                self.results["issues"].append(f"{worker_name} does not import RagGrimoireIntegration")
+                self.results["issues"].append(
+                    f"{worker_name} does not import RagGrimoireIntegration"
+                )
                 return False
 
             if "RagGrimoireConfig" not in content:
-                self.results["issues"].append(f"{worker_name} does not import RagGrimoireConfig")
+                self.results["issues"].append(
+                    f"{worker_name} does not import RagGrimoireConfig"
+                )
                 return False
 
             return True
 
         except Exception as e:
-            self.results["issues"].append(f"Cannot read source file for {worker_name}: {e}")
+            self.results["issues"].append(
+                f"Cannot read source file for {worker_name}: {e}"
+            )
             return False
 
     def _find_worker_class(self, module, worker_name: str):
@@ -125,7 +154,11 @@ class WorkerRAGMigrationVerifier:
             # DialogTaskWorker for dialog_task_worker
             "DialogTaskWorker" if "dialog" in worker_name else None,
             # KnowledgeManagementScheduler for knowledge_scheduler_worker
-            "KnowledgeManagementScheduler" if "knowledge_scheduler" in worker_name else None,
+            (
+                "KnowledgeManagementScheduler"
+                if "knowledge_scheduler" in worker_name
+                else None
+            ),
         ]
 
         for pattern in class_patterns:
@@ -139,7 +172,9 @@ class WorkerRAGMigrationVerifier:
 
         return None
 
-    async def _verify_rag_implementation(self, worker_class, worker_name: str) -> Dict[str, Any]:
+    async def _verify_rag_implementation(
+        self, worker_class, worker_name: str
+    ) -> Dict[str, Any]:
         """Verify that the worker class properly implements RAG integration"""
         issues = []
         features = []
@@ -180,11 +215,18 @@ class WorkerRAGMigrationVerifier:
                     issues.append("Missing async RAG initialization in start method")
 
         # Check for RAG usage in processing methods
-        processing_methods = ["process_message", "_process_rag_query", "_get_rag_context"]
+        processing_methods = [
+            "process_message",
+            "_process_rag_query",
+            "_get_rag_context",
+        ]
         for method_name in processing_methods:
             if hasattr(worker_class, method_name):
                 method_source = self._get_method_source(worker_class, method_name)
-                if method_source and ("search_unified" in method_source or "add_knowledge_unified" in method_source):
+                if method_source and (
+                    "search_unified" in method_source
+                    or "add_knowledge_unified" in method_source
+                ):
                     features.append(f"RAG usage in {method_name}")
                     break
 
@@ -226,7 +268,9 @@ async def test_rag_integration_functionality():
     try:
         # Create test RAG integration
         config = RagGrimoireConfig(
-            database_url="postgresql://localhost/grimoire_test", search_threshold=0.7, max_search_results=5
+            database_url="postgresql://localhost/grimoire_test",
+            search_threshold=0.7,
+            max_search_results=5,
         )
 
         integration = RagGrimoireIntegration(config)
@@ -245,7 +289,9 @@ async def test_rag_integration_functionality():
         logger.info(f"✅ Knowledge addition successful: {spell_id}")
 
         # Test searching
-        results = await integration.search_unified(query="verification test spell", limit=3)
+        results = await integration.search_unified(
+            query="verification test spell", limit=3
+        )
         logger.info(f"✅ Knowledge search successful: {len(results)} results")
 
         # Test status

@@ -50,8 +50,12 @@ def patch_pm_worker():
     init_content = content[init_start:init_end]
 
     # SlackNotifierの初期化部分を見つけて置換
-    slack_init_start = init_content.find("try:\n            self.slack = SlackNotifier()")
-    slack_init_end = init_content.find("self.slack = None", slack_init_start) + len("self.slack = None")
+    slack_init_start = init_content.find(
+        "try:\n            self.slack = SlackNotifier()"
+    )
+    slack_init_end = init_content.find("self.slack = None", slack_init_start) + len(
+        "self.slack = None"
+    )
 
     if slack_init_start != -1:
         new_slack_init = """try:
@@ -64,7 +68,11 @@ def patch_pm_worker():
             self.slack = None
             self.channel_notifier = None"""
 
-        init_content = init_content[:slack_init_start] + new_slack_init + init_content[slack_init_end:]
+        init_content = (
+            init_content[:slack_init_start]
+            + new_slack_init
+            + init_content[slack_init_end:]
+        )
         content = content[:init_start] + init_content + content[init_end:]
 
     # start_scaling_monitorメソッドの通知部分を修正
@@ -98,10 +106,16 @@ def patch_pm_worker():
                                     response=message
                                 )"""
 
-        content = content[:scaling_notification_start] + new_scaling_notification + content[scaling_notification_end:]
+        content = (
+            content[:scaling_notification_start]
+            + new_scaling_notification
+            + content[scaling_notification_end:]
+        )
 
     # start_health_monitorメソッドの通知部分も同様に修正
-    health_notification_start = content.find("if self.slack:\n                                        issues_text = ")
+    health_notification_start = content.find(
+        "if self.slack:\n                                        issues_text = "
+    )
     if health_notification_start != -1:
         health_notification_end = content.find(")", health_notification_start)
         health_notification_end = content.find("\n", health_notification_end) + 1
@@ -127,11 +141,16 @@ def patch_pm_worker():
                                             response=message
                                         )"""
 
-        content = content[:health_notification_start] + new_health_notification + content[health_notification_end:]
+        content = (
+            content[:health_notification_start]
+            + new_health_notification
+            + content[health_notification_end:]
+        )
 
     # パッチ適用マーカーを追加
     content = content.replace(
-        "# BEST_PRACTICES_PATCH_APPLIED", "# BEST_PRACTICES_PATCH_APPLIED\n# CHANNEL_NOTIFIER_PATCH_APPLIED"
+        "# BEST_PRACTICES_PATCH_APPLIED",
+        "# BEST_PRACTICES_PATCH_APPLIED\n# CHANNEL_NOTIFIER_PATCH_APPLIED",
     )
 
     # ファイルに書き戻す

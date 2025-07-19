@@ -638,9 +638,11 @@ class DataMiner(WizardServant):
                 "dtypes": df.dtypes.to_dict(),
                 "missing_values": df.isnull().sum().to_dict(),
             },
-            "summary": df.describe().to_dict()
-            if len(df.select_dtypes(include=[np.number]).columns) > 0
-            else {},
+            "summary": (
+                df.describe().to_dict()
+                if len(df.select_dtypes(include=[np.number]).columns) > 0
+                else {}
+            ),
         }
 
     def _calculate_descriptive_statistics(
@@ -721,9 +723,9 @@ class DataMiner(WizardServant):
                                 corr_matrix.columns[j],
                             ],
                             "correlation": float(corr_value),
-                            "strength": "strong"
-                            if abs(corr_value) > 0.8
-                            else "moderate",
+                            "strength": (
+                                "strong" if abs(corr_value) > 0.8 else "moderate"
+                            ),
                         }
                     )
 
@@ -759,11 +761,11 @@ class DataMiner(WizardServant):
                         "intercept": float(intercept),
                         "r_squared": float(r_value**2),
                         "p_value": float(p_value),
-                        "trend_direction": "increasing"
-                        if slope > 0
-                        else "decreasing"
-                        if slope < 0
-                        else "stable",
+                        "trend_direction": (
+                            "increasing"
+                            if slope > 0
+                            else "decreasing" if slope < 0 else "stable"
+                        ),
                     }
 
         return trends

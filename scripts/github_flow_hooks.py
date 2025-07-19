@@ -58,7 +58,9 @@ class GitHubFlowHooks:
         """ログディレクトリの設定"""
         self.violation_log.parent.mkdir(exist_ok=True)
 
-    def log_violation(self, violation_type: str, message: str, severity: str = "WARNING"):
+    def log_violation(
+        self, violation_type: str, message: str, severity: str = "WARNING"
+    ):
         """違反ログの記録"""
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         log_entry = f"[{timestamp}] {severity}: {violation_type} - {message}\n"
@@ -234,20 +236,27 @@ echo "✅ Pre-receive validation passed"
         try:
             # 1. ファイル数チェック
             result = subprocess.run(
-                ["git", "diff", "--cached", "--name-only"], capture_output=True, text=True, cwd=self.project_dir
+                ["git", "diff", "--cached", "--name-only"],
+                capture_output=True,
+                text=True,
+                cwd=self.project_dir,
             )
 
             if result.returncode != 0:
                 return True  # 変更がない場合は通す
 
-            staged_files = result.stdout.strip().split("\n") if result.stdout.strip() else []
+            staged_files = (
+                result.stdout.strip().split("\n") if result.stdout.strip() else []
+            )
 
             if len(staged_files) > self.config["max_files_per_commit"]:
                 self.log_violation(
                     "LARGE_COMMIT",
                     f"Too many files in single commit: {len(staged_files)} > {self.config['max_files_per_commit']}",
                 )
-                print(f"❌ 一度に{self.config['max_files_per_commit']}個以上のファイルをコミットできません")
+                print(
+                    f"❌ 一度に{self.config['max_files_per_commit']}個以上のファイルをコミットできません"
+                )
                 print(f"   現在: {len(staged_files)}個のファイル")
                 return False
 
@@ -255,7 +264,9 @@ echo "✅ Pre-receive validation passed"
             for file in staged_files:
                 for forbidden_pattern in self.config["forbidden_files"]:
                     if self._matches_pattern(file, forbidden_pattern):
-                        self.log_violation("FORBIDDEN_FILE", f"Forbidden file type: {file}")
+                        self.log_violation(
+                            "FORBIDDEN_FILE", f"Forbidden file type: {file}"
+                        )
                         print(f"❌ 禁止されたファイル: {file}")
                         return False
 
@@ -276,29 +287,49 @@ echo "✅ Pre-receive validation passed"
         try:
             # 1. 保護ブランチチェック
             if branch in self.config["protected_branches"]:
-                self.log_violation("PROTECTED_BRANCH_PUSH", f"Direct push to protected branch: {branch}")
-                print(f"🛡️  保護されたブランチ '{branch}' への直接プッシュは禁止されています")
-                print("📋 GitHub Flowに従い、feature/fix ブランチからPRを作成してください")
+                self.log_violation(
+                    "PROTECTED_BRANCH_PUSH",
+                    f"Direct push to protected branch: {branch}",
+                )
+                print(
+                    f"🛡️  保護されたブランチ '{branch}' への直接プッシュは禁止されています"
+                )
+                print(
+                    "📋 GitHub Flowに従い、feature/fix ブランチからPRを作成してください"
+                )
                 return False
 
             # 2. 禁止ブランチチェック
             if branch in self.config["forbidden_branches"]:
-                self.log_violation("FORBIDDEN_BRANCH_PUSH", f"Push to forbidden branch: {branch}")
-                print(f"❌ 禁止されたブランチ '{branch}' からのプッシュは許可されていません")
-                print(f"📋 '{self.config['protected_branches'][0]}' ブランチを使用してください")
+                self.log_violation(
+                    "FORBIDDEN_BRANCH_PUSH", f"Push to forbidden branch: {branch}"
+                )
+                print(
+                    f"❌ 禁止されたブランチ '{branch}' からのプッシュは許可されていません"
+                )
+                print(
+                    f"📋 '{self.config['protected_branches'][0]}' ブランチを使用してください"
+                )
                 return False
 
             # 3. ブランチ命名規則チェック
             if not self._is_valid_branch_name(branch):
-                self.log_violation("INVALID_BRANCH_NAME", f"Invalid branch name: {branch}")
+                self.log_violation(
+                    "INVALID_BRANCH_NAME", f"Invalid branch name: {branch}"
+                )
                 print(f"❌ ブランチ名 '{branch}' は命名規則に従っていません")
-                print(f"📋 許可されたプレフィックス: {', '.join(self.config['allowed_prefixes'])}")
+                print(
+                    f"📋 許可されたプレフィックス: {', '.join(self.config['allowed_prefixes'])}"
+                )
                 return False
 
             # 4. エルダー承認チェック
             if self._requires_elder_approval(branch):
                 if not self._has_elder_approval():
-                    self.log_violation("ELDER_APPROVAL_REQUIRED", f"Elder approval required for branch: {branch}")
+                    self.log_violation(
+                        "ELDER_APPROVAL_REQUIRED",
+                        f"Elder approval required for branch: {branch}",
+                    )
                     print("🏛️  このブランチにはエルダー承認が必要です")
                     print("📋 コミットメッセージに 'ELDER-APPROVED' を含めてください")
                     return False
@@ -315,8 +346,13 @@ echo "✅ Pre-receive validation passed"
             # 1. Conventional Commits形式チェック
             if self.config["require_conventional_commits"]:
                 if not self._is_conventional_commit(message):
-                    self.log_violation("INVALID_COMMIT_MESSAGE", f"Non-conventional commit message: {message[:50]}...")
-                    print("❌ コミットメッセージがConventional Commits形式に従っていません")
+                    self.log_violation(
+                        "INVALID_COMMIT_MESSAGE",
+                        f"Non-conventional commit message: {message[:50]}...",
+                    )
+                    print(
+                        "❌ コミットメッセージがConventional Commits形式に従っていません"
+                    )
                     print("📋 形式: <type>(<scope>): <description>")
                     print("   例: feat(auth): add user login functionality")
                     return False
@@ -324,7 +360,10 @@ echo "✅ Pre-receive validation passed"
             # 2. メッセージ長チェック
             lines = message.split("\n")
             if len(lines[0]) > 72:
-                self.log_violation("COMMIT_MESSAGE_TOO_LONG", f"Commit message too long: {len(lines[0])} > 72")
+                self.log_violation(
+                    "COMMIT_MESSAGE_TOO_LONG",
+                    f"Commit message too long: {len(lines[0])} > 72",
+                )
                 print("❌ コミットメッセージの1行目が長すぎます（72文字以内）")
                 return False
 
@@ -332,8 +371,13 @@ echo "✅ Pre-receive validation passed"
             forbidden_words = ["password", "secret", "token", "key", "private"]
             for word in forbidden_words:
                 if word.lower() in message.lower():
-                    self.log_violation("SENSITIVE_INFO_IN_COMMIT", f"Sensitive word in commit message: {word}")
-                    print(f"❌ コミットメッセージに機密情報が含まれている可能性があります: {word}")
+                    self.log_violation(
+                        "SENSITIVE_INFO_IN_COMMIT",
+                        f"Sensitive word in commit message: {word}",
+                    )
+                    print(
+                        f"❌ コミットメッセージに機密情報が含まれている可能性があります: {word}"
+                    )
                     return False
 
             return True
@@ -355,15 +399,23 @@ echo "✅ Pre-receive validation passed"
             ):
                 if branch_name in self.config["protected_branches"]:
                     self.log_violation(
-                        "PROTECTED_BRANCH_DELETE", f"Attempt to delete protected branch: {branch_name}", "CRITICAL"
+                        "PROTECTED_BRANCH_DELETE",
+                        f"Attempt to delete protected branch: {branch_name}",
+                        "CRITICAL",
                     )
-                    print(f"🚨 保護されたブランチ '{branch_name}' の削除は禁止されています")
+                    print(
+                        f"🚨 保護されたブランチ '{branch_name}' の削除は禁止されています"
+                    )
                     return False
 
             # 2. 4賢者による最終検証
             if self.config["four_sages_validation"]:
                 if not self._four_sages_final_validation(old_rev, new_rev, branch_name):
-                    self.log_violation("FOUR_SAGES_REJECTION", f"Four sages rejected push to {branch_name}", "HIGH")
+                    self.log_violation(
+                        "FOUR_SAGES_REJECTION",
+                        f"Four sages rejected push to {branch_name}",
+                        "HIGH",
+                    )
                     print("🧙‍♂️ 4賢者による最終検証に失敗しました")
                     return False
 
@@ -411,7 +463,10 @@ echo "✅ Pre-receive validation passed"
         try:
             # 最新のコミットメッセージを取得
             result = subprocess.run(
-                ["git", "log", "-1", "--pretty=format:%B"], capture_output=True, text=True, cwd=self.project_dir
+                ["git", "log", "-1", "--pretty=format:%B"],
+                capture_output=True,
+                text=True,
+                cwd=self.project_dir,
             )
 
             if result.returncode == 0:
@@ -433,7 +488,9 @@ echo "✅ Pre-receive validation passed"
         pattern = r"^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .+"
         return bool(re.match(pattern, message))
 
-    def _four_sages_final_validation(self, old_rev: str, new_rev: str, branch: str) -> bool:
+    def _four_sages_final_validation(
+        self, old_rev: str, new_rev: str, branch: str
+    ) -> bool:
         """4賢者による最終検証"""
         try:
             # 簡易版4賢者検証

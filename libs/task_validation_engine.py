@@ -555,9 +555,11 @@ class TaskValidationEngine:
             "timestamp": datetime.now().isoformat(),
             "servant_type": servant_type,
             "servant_id": servant_id,
-            "task_description": task_description[:100] + "..."
-            if len(task_description) > 100
-            else task_description,
+            "task_description": (
+                task_description[:100] + "..."
+                if len(task_description) > 100
+                else task_description
+            ),
             "result": result,
             "consulted_elders": consulted_elders,
             "approval_token": approval_token,

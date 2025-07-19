@@ -72,7 +72,12 @@ class DocumentIndexOptimizer(EldersServiceLegacy):
             improvement_score=0.78,
             execution_time=2.3,
             status="COMPLETED",
-            recommendations=["動的チャンクサイズ調整", "エンベディングモデル選択", "並列処理最適化", "インデックス健全性監視"],
+            recommendations=[
+                "動的チャンクサイズ調整",
+                "エンベディングモデル選択",
+                "並列処理最適化",
+                "インデックス健全性監視",
+            ],
         )
 
         await self._record_optimization_metrics(result)

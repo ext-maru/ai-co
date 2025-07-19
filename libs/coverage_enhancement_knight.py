@@ -383,13 +383,13 @@ class Test{target.function_name.title()}:
         # Analyze function body for specific patterns
         for node in ast.walk(func_node):
             if isinstance(node, ast.Raise):
-                test_cases[
-                    "error_handling"
-                ] = "with pytest.raises(Exception):\n            pass  # Test exception raising"
+                test_cases["error_handling"] = (
+                    "with pytest.raises(Exception):\n            pass  # Test exception raising"
+                )
             elif isinstance(node, ast.Return):
-                test_cases[
-                    "basic"
-                ] = "result = {target.function_name}()\n        assert result is not None"
+                test_cases["basic"] = (
+                    "result = {target.function_name}()\n        assert result is not None"
+                )
 
         return test_cases
 
@@ -569,11 +569,11 @@ class Test{target.function_name.title()}:
                             priority = (
                                 0
                                 if target.priority == "CRITICAL"
-                                else 1
-                                if target.priority == "HIGH"
-                                else 2
-                                if target.priority == "MEDIUM"
-                                else 3
+                                else (
+                                    1
+                                    if target.priority == "HIGH"
+                                    else 2 if target.priority == "MEDIUM" else 3
+                                )
                             )
                             self.coverage_targets.put((priority, i, target))
 
@@ -616,9 +616,11 @@ class Test{target.function_name.title()}:
             "total_coverage_gain": sum(
                 imp.coverage_gain for imp in self.completed_improvements
             ),
-            "last_activity": self.completed_improvements[-1].completion_time
-            if self.completed_improvements
-            else None,
+            "last_activity": (
+                self.completed_improvements[-1].completion_time
+                if self.completed_improvements
+                else None
+            ),
         }
 
     def generate_activity_report(self) -> str:

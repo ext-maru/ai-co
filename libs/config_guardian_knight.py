@@ -106,9 +106,11 @@ class ConfigGuardianKnight(IncidentKnight):
             issue_id=issue.id,
             root_cause=f"設定ファイルエラー: {namespace}",
             affected_components=[namespace],
-            repair_complexity="自動修復可能"
-            if diagnosis_data["auto_repair_possible"]
-            else "手動対応必要",
+            repair_complexity=(
+                "自動修復可能"
+                if diagnosis_data["auto_repair_possible"]
+                else "手動対応必要"
+            ),
             estimated_impact="設定取得失敗による機能停止",
             data=diagnosis_data,
         )
@@ -135,7 +137,9 @@ class ConfigGuardianKnight(IncidentKnight):
                 repair_actions.append("修復後の検証を実行")
                 try:
                     repaired_config = config_manager.get_config(namespace)
-                    repair_actions.append(f"✅ 設定取得成功: {len(repaired_config)}個のキー")
+                    repair_actions.append(
+                        f"✅ 設定取得成功: {len(repaired_config)}個のキー"
+                    )
 
                     # 3. 修復履歴を記録
                     self.repair_history.append(

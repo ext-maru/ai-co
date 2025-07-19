@@ -11,7 +11,7 @@ from pathlib import Path
 import sys
 
 # パス追加
-sys.path.append('/home/aicompany/ai_co')
+sys.path.append("/home/aicompany/ai_co")
 
 from libs.claude_task_tracker import ClaudeTaskTracker
 
@@ -49,8 +49,8 @@ maru様の意図を理解するためのコアシステム実装
             "deliverables": [
                 "libs/mind_reading_core.py",
                 "tests/test_mind_reading_core.py",
-                "docs/mind_reading_api.md"
-            ]
+                "docs/mind_reading_api.md",
+            ],
         },
         {
             "title": "Intent Parser実装",
@@ -75,8 +75,8 @@ maru様の意図を理解するためのコアシステム実装
             "deliverables": [
                 "libs/intent_parser.py",
                 "tests/test_intent_parser.py",
-                "examples/intent_parsing_examples.py"
-            ]
+                "examples/intent_parsing_examples.py",
+            ],
         },
         {
             "title": "Elder Flow Turbo Mode実装",
@@ -101,8 +101,8 @@ maru様の意図を理解するためのコアシステム実装
             "deliverables": [
                 "libs/elder_flow_turbo.py",
                 "tests/test_elder_flow_turbo.py",
-                "benchmarks/turbo_performance.py"
-            ]
+                "benchmarks/turbo_performance.py",
+            ],
         },
         {
             "title": "Parallel Code Generator実装",
@@ -127,8 +127,8 @@ maru様の意図を理解するためのコアシステム実装
             "deliverables": [
                 "libs/parallel_code_generator.py",
                 "tests/test_parallel_code_generator.py",
-                "templates/code_templates/"
-            ]
+                "templates/code_templates/",
+            ],
         },
         {
             "title": "Trend Scout Worker v1.0実装",
@@ -153,8 +153,8 @@ maru様の意図を理解するためのコアシステム実装
             "deliverables": [
                 "workers/trend_scout_worker.py",
                 "tests/test_trend_scout_worker.py",
-                "config/trend_sources.yaml"
-            ]
+                "config/trend_sources.yaml",
+            ],
         },
         {
             "title": "Demand Predictor AI実装",
@@ -179,9 +179,9 @@ maru様の意図を理解するためのコアシステム実装
             "deliverables": [
                 "libs/demand_predictor.py",
                 "tests/test_demand_predictor.py",
-                "models/demand_prediction.pkl"
-            ]
-        }
+                "models/demand_prediction.pkl",
+            ],
+        },
     ]
 
     # タスクを一括作成
@@ -194,15 +194,17 @@ maru様の意図を理解するためのコアシステム実装
                 title=task_spec["title"],
                 description=task_spec["description"],
                 priority=task_spec["priority"],
-                tags=task_spec["tags"]
+                tags=task_spec["tags"],
             )
 
-            created_tasks.append({
-                "id": task_id,
-                "title": task_spec["title"],
-                "priority": task_spec["priority"],
-                "deliverables": task_spec["deliverables"]
-            })
+            created_tasks.append(
+                {
+                    "id": task_id,
+                    "title": task_spec["title"],
+                    "priority": task_spec["priority"],
+                    "deliverables": task_spec["deliverables"],
+                }
+            )
 
             print(f"✅ タスク作成完了: {task_id}")
 
@@ -223,17 +225,20 @@ maru様の意図を理解するためのコアシステム実装
         "dependencies": [
             "Mind Reading Core → Intent Parser",
             "Elder Flow Turbo → Parallel Code Generator",
-            "Trend Scout → Demand Predictor"
-        ]
+            "Trend Scout → Demand Predictor",
+        ],
     }
 
     # レポート保存
     report_path = Path("knowledge_base/task_elder_reports")
     report_path.mkdir(parents=True, exist_ok=True)
 
-    report_file = report_path / f"delegation_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    report_file = (
+        report_path
+        / f"delegation_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
 
-    with open(report_file, 'w') as f:
+    with open(report_file, "w") as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
 
     print(f"\n📄 委譲レポート: {report_file}")

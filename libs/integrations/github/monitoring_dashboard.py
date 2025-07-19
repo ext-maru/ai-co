@@ -547,9 +547,7 @@ class AutoIssueMonitoringDashboard:
             status_emoji = (
                 "✅"
                 if metric["processing_status"] == "completed"
-                else "❌"
-                if metric["processing_status"] == "failed"
-                else "⏭️"
+                else "❌" if metric["processing_status"] == "failed" else "⏭️"
             )
             report += f"- {status_emoji} Issue #{metric['issue_number']}: {metric['issue_title']} ({metric['processing_time_seconds']:.1f}s)\n"
 

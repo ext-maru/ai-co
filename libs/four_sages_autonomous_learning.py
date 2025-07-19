@@ -53,7 +53,9 @@ class LearningPattern:
         self.last_used = datetime.now()
         # 成功率の更新（指数移動平均）
         alpha = 0.1  # 学習率
-        self.success_rate = (1 - alpha) * self.success_rate + alpha * (1.0 if success else 0.0)
+        self.success_rate = (1 - alpha) * self.success_rate + alpha * (
+            1.0 if success else 0.0
+        )
 
 
 @dataclass
@@ -88,9 +90,21 @@ class FourSagesAutonomousLearning:
                 "knowledge_graph": defaultdict(list),
                 "learning_history": deque(maxlen=1000),
             },
-            "task_sage": {"optimization_strategies": {}, "performance_baselines": {}, "discovered_patterns": []},
-            "incident_sage": {"incident_patterns": {}, "preventive_measures": {}, "prediction_models": {}},
-            "rag_sage": {"knowledge_index": {}, "semantic_clusters": {}, "expansion_queue": deque(maxlen=100)},
+            "task_sage": {
+                "optimization_strategies": {},
+                "performance_baselines": {},
+                "discovered_patterns": [],
+            },
+            "incident_sage": {
+                "incident_patterns": {},
+                "preventive_measures": {},
+                "prediction_models": {},
+            },
+            "rag_sage": {
+                "knowledge_index": {},
+                "semantic_clusters": {},
+                "expansion_queue": deque(maxlen=100),
+            },
         }
 
         # 学習メトリクス
@@ -219,7 +233,11 @@ class FourSagesAutonomousLearning:
                     {
                         "timestamp": datetime.now(),
                         "patterns_found": len(valid_patterns),
-                        "graph_nodes": len(self.sage_learning_state["knowledge_sage"]["knowledge_graph"]),
+                        "graph_nodes": len(
+                            self.sage_learning_state["knowledge_sage"][
+                                "knowledge_graph"
+                            ]
+                        ),
                     }
                 )
 
@@ -237,7 +255,9 @@ class FourSagesAutonomousLearning:
                 metrics = await self._collect_performance_metrics()
 
                 # 最適化機会の特定
-                optimization_opportunities = self._identify_optimization_opportunities(metrics)
+                optimization_opportunities = self._identify_optimization_opportunities(
+                    metrics
+                )
 
                 for opportunity in optimization_opportunities:
                     # 最適化戦略生成
@@ -246,7 +266,10 @@ class FourSagesAutonomousLearning:
                     # 戦略の実装とテスト
                     result = await self._test_optimization_strategy(strategy)
 
-                    if result["improvement"] >= self.learning_config["optimization_threshold"]:
+                    if (
+                        result["improvement"]
+                        >= self.learning_config["optimization_threshold"]
+                    ):
                         # 成功した最適化の記録
                         await self._record_successful_optimization(strategy, result)
                         self.learning_metrics["successful_optimizations"] += 1
@@ -277,7 +300,9 @@ class FourSagesAutonomousLearning:
                         self.learning_metrics["prevented_incidents"] += 1
 
                     # 予測記録
-                    await self._record_incident_prediction(incident, preventive_measures)
+                    await self._record_incident_prediction(
+                        incident, preventive_measures
+                    )
 
                 await asyncio.sleep(180)  # 3分ごと
 
@@ -293,7 +318,9 @@ class FourSagesAutonomousLearning:
                 knowledge_gaps = await self._identify_knowledge_gaps()
 
                 # 知識拡張候補の生成
-                expansion_candidates = self._generate_expansion_candidates(knowledge_gaps)
+                expansion_candidates = self._generate_expansion_candidates(
+                    knowledge_gaps
+                )
 
                 for candidate in expansion_candidates:
                     # 関連性評価
@@ -321,8 +348,10 @@ class FourSagesAutonomousLearning:
                 learning_insights = self._gather_sage_insights()
 
                 # クロス学習セッション実施
-                cross_learning_result = await self.four_sages.facilitate_cross_sage_learning(
-                    {"insights": learning_insights, "timestamp": datetime.now()}
+                cross_learning_result = (
+                    await self.four_sages.facilitate_cross_sage_learning(
+                        {"insights": learning_insights, "timestamp": datetime.now()}
+                    )
                 )
 
                 # 学習結果の統合
@@ -345,7 +374,12 @@ class FourSagesAutonomousLearning:
         # 最近の処理履歴から頻出パターンを抽出
         import random
 
-        pattern_types = ["api_call_sequence", "data_transformation", "error_recovery", "optimization"]
+        pattern_types = [
+            "api_call_sequence",
+            "data_transformation",
+            "error_recovery",
+            "optimization",
+        ]
 
         for _ in range(random.randint(3, 8)):
             patterns.append(
@@ -363,12 +397,17 @@ class FourSagesAutonomousLearning:
 
         return patterns
 
-    def _extract_valid_patterns(self, patterns: List[Dict[str, Any]]) -> List[LearningPattern]:
+    def _extract_valid_patterns(
+        self, patterns: List[Dict[str, Any]]
+    ) -> List[LearningPattern]:
         """有効パターン抽出"""
         valid_patterns = []
 
         for pattern_data in patterns:
-            if pattern_data["success_rate"] >= self.learning_config["min_pattern_confidence"]:
+            if (
+                pattern_data["success_rate"]
+                >= self.learning_config["min_pattern_confidence"]
+            ):
                 pattern = LearningPattern(
                     pattern_id=f"pattern_{datetime.now().timestamp()}_{len(valid_patterns)}",
                     pattern_type=pattern_data["pattern_type"],
@@ -389,7 +428,11 @@ class FourSagesAutonomousLearning:
         for condition in pattern.context.get("conditions", []):
             for outcome in pattern.context.get("outcomes", []):
                 graph[condition].append(
-                    {"outcome": outcome, "pattern_id": pattern.pattern_id, "confidence": pattern.success_rate}
+                    {
+                        "outcome": outcome,
+                        "pattern_id": pattern.pattern_id,
+                        "confidence": pattern.success_rate,
+                    }
                 )
 
     # Task Sage最適化メソッド
@@ -403,7 +446,9 @@ class FourSagesAutonomousLearning:
             "resource_usage": {"cpu": 65, "memory": 45, "trend": "increasing"},
         }
 
-    def _identify_optimization_opportunities(self, metrics: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _identify_optimization_opportunities(
+        self, metrics: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """最適化機会特定"""
         opportunities = []
 
@@ -431,16 +476,21 @@ class FourSagesAutonomousLearning:
 
         return opportunities
 
-    def _generate_optimization_strategy(self, opportunity: Dict[str, Any]) -> OptimizationStrategy:
+    def _generate_optimization_strategy(
+        self, opportunity: Dict[str, Any]
+    ) -> OptimizationStrategy:
         """最適化戦略生成"""
         return OptimizationStrategy(
             strategy_id=f"opt_{datetime.now().timestamp()}",
             target_metric=opportunity["target"],
             approach=opportunity["approach"],
-            expected_improvement=opportunity["potential_improvement"] / opportunity["current_value"],
+            expected_improvement=opportunity["potential_improvement"]
+            / opportunity["current_value"],
         )
 
-    async def _test_optimization_strategy(self, strategy: OptimizationStrategy) -> Dict[str, Any]:
+    async def _test_optimization_strategy(
+        self, strategy: OptimizationStrategy
+    ) -> Dict[str, Any]:
         """最適化戦略テスト"""
         # シミュレートされたテスト結果
         import random
@@ -448,7 +498,11 @@ class FourSagesAutonomousLearning:
         # 期待値の80-120%の改善
         actual_improvement = strategy.expected_improvement * random.uniform(0.8, 1.2)
 
-        return {"success": actual_improvement > 0, "improvement": actual_improvement, "side_effects": []}
+        return {
+            "success": actual_improvement > 0,
+            "improvement": actual_improvement,
+            "side_effects": [],
+        }
 
     # Incident Sage予測メソッド
 
@@ -456,7 +510,12 @@ class FourSagesAutonomousLearning:
         """システム状態分析"""
         return {
             "timestamp": datetime.now(),
-            "metrics": {"error_rate": 0.02, "latency_p99": 2.5, "queue_depth": 150, "memory_pressure": 0.7},
+            "metrics": {
+                "error_rate": 0.02,
+                "latency_p99": 2.5,
+                "queue_depth": 150,
+                "memory_pressure": 0.7,
+            },
             "anomalies": self._detect_anomalies(),
         }
 
@@ -468,11 +527,15 @@ class FourSagesAutonomousLearning:
         import random
 
         if random.random() < 0.3:
-            anomalies.append({"type": "latency_spike", "severity": "medium", "confidence": 0.85})
+            anomalies.append(
+                {"type": "latency_spike", "severity": "medium", "confidence": 0.85}
+            )
 
         return anomalies
 
-    def _detect_incident_patterns(self, system_state: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _detect_incident_patterns(
+        self, system_state: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """インシデントパターン検出"""
         incidents = []
 
@@ -500,19 +563,35 @@ class FourSagesAutonomousLearning:
 
         return incidents
 
-    def _suggest_preventive_measures(self, incident: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _suggest_preventive_measures(
+        self, incident: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """予防措置提案"""
         measures = []
 
         if incident["type"] == "memory_exhaustion":
-            measures.append({"action": "scale_workers", "parameters": {"scale_factor": 1.5}, "urgency": "high"})
             measures.append(
-                {"action": "clear_caches", "parameters": {"cache_types": ["temporary", "expired"]}, "urgency": "medium"}
+                {
+                    "action": "scale_workers",
+                    "parameters": {"scale_factor": 1.5},
+                    "urgency": "high",
+                }
+            )
+            measures.append(
+                {
+                    "action": "clear_caches",
+                    "parameters": {"cache_types": ["temporary", "expired"]},
+                    "urgency": "medium",
+                }
             )
 
         elif incident["type"] == "performance_degradation":
             measures.append(
-                {"action": "optimize_queries", "parameters": {"optimization_level": "aggressive"}, "urgency": "medium"}
+                {
+                    "action": "optimize_queries",
+                    "parameters": {"optimization_level": "aggressive"},
+                    "urgency": "medium",
+                }
             )
 
         return measures
@@ -533,12 +612,18 @@ class FourSagesAutonomousLearning:
         )
 
         gaps.append(
-            {"area": "error_handling", "missing_concepts": ["circuit_breaker", "retry_strategies"], "importance": 0.9}
+            {
+                "area": "error_handling",
+                "missing_concepts": ["circuit_breaker", "retry_strategies"],
+                "importance": 0.9,
+            }
         )
 
         return gaps
 
-    def _generate_expansion_candidates(self, knowledge_gaps: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _generate_expansion_candidates(
+        self, knowledge_gaps: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """拡張候補生成"""
         candidates = []
 
@@ -604,7 +689,9 @@ class FourSagesAutonomousLearning:
         finally:
             conn.close()
 
-    async def _record_successful_optimization(self, strategy: OptimizationStrategy, result: Dict[str, Any]):
+    async def _record_successful_optimization(
+        self, strategy: OptimizationStrategy, result: Dict[str, Any]
+    ):
         """成功した最適化の記録"""
         conn = sqlite3.connect(str(self.learning_db_path))
         cursor = conn.cursor()
@@ -652,7 +739,9 @@ class FourSagesAutonomousLearning:
 
                 await self.elder_tree.send_message(message)
 
-    async def _record_incident_prediction(self, incident: Dict[str, Any], measures: List[Dict[str, Any]]):
+    async def _record_incident_prediction(
+        self, incident: Dict[str, Any], measures: List[Dict[str, Any]]
+    ):
         """インシデント予測記録"""
         conn = sqlite3.connect(str(self.learning_db_path))
         cursor = conn.cursor()
@@ -738,20 +827,30 @@ class FourSagesAutonomousLearning:
         """賢者インサイト収集"""
         return {
             "knowledge_sage": {
-                "patterns_discovered": len(self.sage_learning_state["knowledge_sage"]["patterns"]),
-                "graph_complexity": len(self.sage_learning_state["knowledge_sage"]["knowledge_graph"]),
+                "patterns_discovered": len(
+                    self.sage_learning_state["knowledge_sage"]["patterns"]
+                ),
+                "graph_complexity": len(
+                    self.sage_learning_state["knowledge_sage"]["knowledge_graph"]
+                ),
             },
             "task_sage": {
-                "optimizations_found": len(self.sage_learning_state["task_sage"]["optimization_strategies"]),
+                "optimizations_found": len(
+                    self.sage_learning_state["task_sage"]["optimization_strategies"]
+                ),
                 "avg_improvement": 0.2,  # 20%平均改善
             },
             "incident_sage": {
-                "predictions_made": len(self.sage_learning_state["incident_sage"]["incident_patterns"]),
+                "predictions_made": len(
+                    self.sage_learning_state["incident_sage"]["incident_patterns"]
+                ),
                 "prevention_success_rate": 0.85,
             },
             "rag_sage": {
                 "knowledge_expansions": self.learning_metrics["knowledge_expansions"],
-                "cluster_count": len(self.sage_learning_state["rag_sage"]["semantic_clusters"]),
+                "cluster_count": len(
+                    self.sage_learning_state["rag_sage"]["semantic_clusters"]
+                ),
             },
         }
 

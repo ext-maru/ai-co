@@ -556,9 +556,9 @@ class SelfHealingEngine:
         """デフォルト修復ハンドラー登録"""
         self.healing_handlers[HealingAction.CLEANUP_TEMP] = self._cleanup_temp_files
         self.healing_handlers[HealingAction.CLEAR_CACHE] = self._clear_cache
-        self.healing_handlers[
-            HealingAction.RESTART_CONNECTION
-        ] = self._restart_connection
+        self.healing_handlers[HealingAction.RESTART_CONNECTION] = (
+            self._restart_connection
+        )
         self.healing_handlers[HealingAction.GRACEFUL_DEGRADE] = self._graceful_degrade
 
     async def execute_healing_action(

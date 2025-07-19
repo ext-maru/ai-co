@@ -99,7 +99,9 @@ class GitHubRateLimiter:
                 self.request_count = state.get("request_count", 0)
                 self.consecutive_errors = state.get("consecutive_errors", 0)
 
-                self.logger.info(f"レート制限状態を読み込み: {self.request_count}回実行済み")
+                self.logger.info(
+                    f"レート制限状態を読み込み: {self.request_count}回実行済み"
+                )
 
             except Exception as e:
                 self.logger.error(f"状態読み込みエラー: {e}")
@@ -209,15 +211,16 @@ class GitHubRateLimiter:
             if self.rate_limit_info.remaining < 10:
                 seconds_until_reset = self.rate_limit_info.seconds_until_reset
                 if seconds_until_reset > 0:
-                    self.logger.warning(f"レート制限近づいています。{seconds_until_reset}秒待機")
+                    self.logger.warning(
+                        f"レート制限近づいています。{seconds_until_reset}秒待機"
+                    )
                     await asyncio.sleep(seconds_until_reset + 1)
                     return True
 
         # 連続エラー時のバックオフ
         if self.consecutive_errors > 0:
             backoff_time = min(
-                self.min_interval
-                * (self.backoff_multiplier**self.consecutive_errors),
+                self.min_interval * (self.backoff_multiplier**self.consecutive_errors),
                 self.max_backoff,
             )
             self.logger.warning(
@@ -266,7 +269,9 @@ class GitHubRateLimiter:
                 return None
 
             elif response.status_code >= 400:
-                self.logger.error(f"HTTPエラー: {response.status_code} - {response.text}")
+                self.logger.error(
+                    f"HTTPエラー: {response.status_code} - {response.text}"
+                )
                 self.consecutive_errors += 1
                 return None
 
@@ -322,15 +327,19 @@ class GitHubRateLimiter:
             "last_request_time": self.last_request_time,
             "rate_limit_info": {
                 "limit": self.rate_limit_info.limit if self.rate_limit_info else None,
-                "remaining": self.rate_limit_info.remaining
-                if self.rate_limit_info
-                else None,
-                "reset_time": self.rate_limit_info.reset_datetime.isoformat()
-                if self.rate_limit_info
-                else None,
-                "seconds_until_reset": self.rate_limit_info.seconds_until_reset
-                if self.rate_limit_info
-                else None,
+                "remaining": (
+                    self.rate_limit_info.remaining if self.rate_limit_info else None
+                ),
+                "reset_time": (
+                    self.rate_limit_info.reset_datetime.isoformat()
+                    if self.rate_limit_info
+                    else None
+                ),
+                "seconds_until_reset": (
+                    self.rate_limit_info.seconds_until_reset
+                    if self.rate_limit_info
+                    else None
+                ),
             },
         }
 

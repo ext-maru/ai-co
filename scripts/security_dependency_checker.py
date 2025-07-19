@@ -83,7 +83,10 @@ class SecurityDependencyChecker:
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[logging.FileHandler(self.logs_dir / "security_dependency_checker.log"), logging.StreamHandler()],
+            handlers=[
+                logging.FileHandler(self.logs_dir / "security_dependency_checker.log"),
+                logging.StreamHandler(),
+            ],
         )
         self.logger = logging.getLogger(__name__)
 
@@ -106,7 +109,9 @@ class SecurityDependencyChecker:
 
         return files
 
-    def check_python_dependencies(self, requirements_files: List[Path]) -> Dict[str, Any]:
+    def check_python_dependencies(
+        self, requirements_files: List[Path]
+    ) -> Dict[str, Any]:
         """Python依存関係チェック"""
         self.logger.info("🐍 Python依存関係チェック開始")
 
@@ -121,7 +126,11 @@ class SecurityDependencyChecker:
 
         try:
             # requirements.txtファイルのみ処理
-            req_files = [f for f in requirements_files if f.name.startswith("requirements") and f.suffix == ".txt"]
+            req_files = [
+                f
+                for f in requirements_files
+                if f.name.startswith("requirements") and f.suffix == ".txt"
+            ]
 
             for req_file in req_files:
                 self.logger.info(f"📦 チェック中: {req_file.name}")
@@ -136,7 +145,9 @@ class SecurityDependencyChecker:
                         line = line.strip()
                         if line and not line.startswith("#"):
                             # パッケージ名とバージョン抽出
-                            match = re.match(r"^([a-zA-Z0-9_-]+)([>=<!=~]+)?([\d.]+)?", line)
+                            match = re.match(
+                                r"^([a-zA-Z0-9_-]+)([>=<!=~]+)?([\d.]+)?", line
+                            )
                             if match:
                                 package_name = match.group(1)
                                 version_spec = match.group(2) or ""
@@ -171,7 +182,9 @@ class SecurityDependencyChecker:
             result["error"] = str(e)
             self.logger.error(f"Python依存関係チェックエラー: {e}")
 
-        self.logger.info(f"🐍 Python依存関係チェック完了: {result['total_packages']}パッケージ")
+        self.logger.info(
+            f"🐍 Python依存関係チェック完了: {result['total_packages']}パッケージ"
+        )
         return result
 
     def check_file_permissions(self) -> Dict[str, Any]:
@@ -215,15 +228,21 @@ class SecurityDependencyChecker:
 
             # 推奨事項
             if result["world_writable"]:
-                result["recommendations"].append("誰でも書き込み可能なファイルの権限を制限してください")
+                result["recommendations"].append(
+                    "誰でも書き込み可能なファイルの権限を制限してください"
+                )
 
             if len(result["executable_scripts"]) > 20:
-                result["recommendations"].append("実行可能スクリプトが多数あります。必要性を確認してください")
+                result["recommendations"].append(
+                    "実行可能スクリプトが多数あります。必要性を確認してください"
+                )
 
         except Exception as e:
             self.logger.error(f"ファイル権限チェックエラー: {e}")
 
-        self.logger.info(f"🔒 ファイル権限チェック完了: {result['total_files']}ファイル")
+        self.logger.info(
+            f"🔒 ファイル権限チェック完了: {result['total_files']}ファイル"
+        )
         return result
 
     def scan_for_secrets(self) -> Dict[str, Any]:
@@ -233,13 +252,28 @@ class SecurityDependencyChecker:
         result = {
             "scanned_files": 0,
             "potential_secrets": [],
-            "by_category": {"api_keys": [], "passwords": [], "database_urls": [], "private_keys": []},
+            "by_category": {
+                "api_keys": [],
+                "passwords": [],
+                "database_urls": [],
+                "private_keys": [],
+            },
             "recommendations": [],
         }
 
         try:
             # テキストファイルをスキャン
-            text_extensions = {".py", ".js", ".json", ".yaml", ".yml", ".conf", ".cfg", ".ini", ".env"}
+            text_extensions = {
+                ".py",
+                ".js",
+                ".json",
+                ".yaml",
+                ".yml",
+                ".conf",
+                ".cfg",
+                ".ini",
+                ".env",
+            }
 
             for file_path in self.project_dir.rglob("*"):
                 if not file_path.is_file():
@@ -262,17 +296,25 @@ class SecurityDependencyChecker:
                     # パターンマッチング
                     for category, patterns in self.security_patterns.items():
                         for pattern in patterns:
-                            matches = re.finditer(pattern, content, re.IGNORECASE | re.MULTILINE)
+                            matches = re.finditer(
+                                pattern, content, re.IGNORECASE | re.MULTILINE
+                            )
                             for match in matches:
                                 # 行番号計算
                                 line_num = content[: match.start()].count("\\n") + 1
 
                                 secret_info = {
-                                    "file": str(file_path.relative_to(self.project_dir)),
+                                    "file": str(
+                                        file_path.relative_to(self.project_dir)
+                                    ),
                                     "line": line_num,
                                     "category": category,
                                     "pattern": pattern,
-                                    "match": match.group()[:50] + "..." if len(match.group()) > 50 else match.group(),
+                                    "match": (
+                                        match.group()[:50] + "..."
+                                        if len(match.group()) > 50
+                                        else match.group()
+                                    ),
                                 }
 
                                 result["potential_secrets"].append(secret_info)
@@ -295,7 +337,9 @@ class SecurityDependencyChecker:
         except Exception as e:
             self.logger.error(f"機密情報スキャンエラー: {e}")
 
-        self.logger.info(f"🕵️ 機密情報スキャン完了: {len(result['potential_secrets'])}個の疑わしい項目")
+        self.logger.info(
+            f"🕵️ 機密情報スキャン完了: {len(result['potential_secrets'])}個の疑わしい項目"
+        )
         return result
 
     def check_system_security(self) -> Dict[str, Any]:
@@ -313,11 +357,15 @@ class SecurityDependencyChecker:
         try:
             # ファイアウォール状態チェック
             try:
-                fw_result = subprocess.run(["ufw", "status"], capture_output=True, text=True)
+                fw_result = subprocess.run(
+                    ["ufw", "status"], capture_output=True, text=True
+                )
                 if fw_result.returncode == 0:
                     if "inactive" in fw_result.stdout.lower():
                         result["firewall_status"] = "inactive"
-                        result["recommendations"].append("ファイアウォールが無効です。有効化を検討してください")
+                        result["recommendations"].append(
+                            "ファイアウォールが無効です。有効化を検討してください"
+                        )
                     else:
                         result["firewall_status"] = "active"
             except FileNotFoundError:
@@ -333,23 +381,33 @@ class SecurityDependencyChecker:
                     # 危険な設定をチェック
                     if "PermitRootLogin yes" in ssh_content:
                         result["ssh_config"]["root_login"] = "enabled"
-                        result["recommendations"].append("SSH root ログインを無効化してください")
+                        result["recommendations"].append(
+                            "SSH root ログインを無効化してください"
+                        )
 
                     if "PasswordAuthentication yes" in ssh_content:
                         result["ssh_config"]["password_auth"] = "enabled"
-                        result["recommendations"].append("SSH パスワード認証を無効化し、公開鍵認証を使用してください")
+                        result["recommendations"].append(
+                            "SSH パスワード認証を無効化し、公開鍵認証を使用してください"
+                        )
 
                 except PermissionError:
                     result["ssh_config"]["error"] = "読み取り権限なし"
 
             # システム更新状態チェック
             try:
-                apt_result = subprocess.run(["apt", "list", "--upgradable"], capture_output=True, text=True)
+                apt_result = subprocess.run(
+                    ["apt", "list", "--upgradable"], capture_output=True, text=True
+                )
                 if apt_result.returncode == 0:
-                    upgrade_count = len(apt_result.stdout.split("\\n")) - 2  # ヘッダーを除く
+                    upgrade_count = (
+                        len(apt_result.stdout.split("\\n")) - 2
+                    )  # ヘッダーを除く
                     if upgrade_count > 0:
                         result["system_updates"] = f"{upgrade_count} packages available"
-                        result["recommendations"].append(f"システムアップデートが利用可能です ({upgrade_count}個)")
+                        result["recommendations"].append(
+                            f"システムアップデートが利用可能です ({upgrade_count}個)"
+                        )
                     else:
                         result["system_updates"] = "up to date"
             except FileNotFoundError:
@@ -380,7 +438,9 @@ class SecurityDependencyChecker:
         requirements_files = self.find_requirements_files()
 
         # 各チェック実行
-        results["python_dependencies"] = self.check_python_dependencies(requirements_files)
+        results["python_dependencies"] = self.check_python_dependencies(
+            requirements_files
+        )
         results["file_permissions"] = self.check_file_permissions()
         results["secrets_scan"] = self.scan_for_secrets()
         results["system_security"] = self.check_system_security()
@@ -415,7 +475,9 @@ class SecurityDependencyChecker:
 
         results["security_score"] = max(0, min(100, score))
 
-        self.logger.info(f"✅ 包括的セキュリティチェック完了: スコア {results['security_score']}/100")
+        self.logger.info(
+            f"✅ 包括的セキュリティチェック完了: スコア {results['security_score']}/100"
+        )
         return results
 
     def print_summary(self, results: Dict[str, Any]):
@@ -435,7 +497,9 @@ class SecurityDependencyChecker:
 
             if deps["requirements_files"]:
                 for req_file in deps["requirements_files"]:
-                    print(f"    {Path(req_file['file']).name}: {len(req_file['packages'])} packages")
+                    print(
+                        f"    {Path(req_file['file']).name}: {len(req_file['packages'])} packages"
+                    )
 
         # ファイル権限
         if results["file_permissions"]:
@@ -475,7 +539,9 @@ class SecurityDependencyChecker:
                 print(f"  {i}. {rec}")
 
             if len(results["overall_recommendations"]) > 10:
-                print(f"    ... and {len(results['overall_recommendations']) - 10} more recommendations")
+                print(
+                    f"    ... and {len(results['overall_recommendations']) - 10} more recommendations"
+                )
 
         print("\\n" + "=" * 60)
 
@@ -485,11 +551,19 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Security & Dependency Checker")
-    parser.add_argument("--full", action="store_true", help="包括的セキュリティチェック")
-    parser.add_argument("--dependencies", action="store_true", help="依存関係チェックのみ")
-    parser.add_argument("--permissions", action="store_true", help="ファイル権限チェックのみ")
+    parser.add_argument(
+        "--full", action="store_true", help="包括的セキュリティチェック"
+    )
+    parser.add_argument(
+        "--dependencies", action="store_true", help="依存関係チェックのみ"
+    )
+    parser.add_argument(
+        "--permissions", action="store_true", help="ファイル権限チェックのみ"
+    )
     parser.add_argument("--secrets", action="store_true", help="機密情報スキャンのみ")
-    parser.add_argument("--system", action="store_true", help="システムセキュリティチェックのみ")
+    parser.add_argument(
+        "--system", action="store_true", help="システムセキュリティチェックのみ"
+    )
     parser.add_argument("--save", action="store_true", help="結果をファイルに保存")
 
     args = parser.parse_args()
@@ -505,7 +579,9 @@ def main():
         print(f"File Permissions Check: {result['total_files']} files scanned")
     elif args.secrets:
         result = checker.scan_for_secrets()
-        print(f"Secrets Scan: {len(result['potential_secrets'])} potential secrets found")
+        print(
+            f"Secrets Scan: {len(result['potential_secrets'])} potential secrets found"
+        )
     elif args.system:
         result = checker.check_system_security()
         print("System Security Check completed")

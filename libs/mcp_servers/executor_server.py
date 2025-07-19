@@ -216,9 +216,9 @@ Exit Code: {result.returncode}
                 success_count = sum(
                     1 for log in recent_logs if log.get("exit_code") == 0
                 )
-                summary[
-                    "recent_success_rate"
-                ] = f"{(success_count / len(recent_logs)) * 100:.1f}%"
+                summary["recent_success_rate"] = (
+                    f"{(success_count / len(recent_logs)) * 100:.1f}%"
+                )
 
             return summary
 

@@ -92,7 +92,8 @@ class GitHubIssueDashboard:
 
                 # 進捗キーワードをハイライト
                 if any(
-                    keyword in comment["body"] for keyword in ["完了", "進行中", "開始", "%"]
+                    keyword in comment["body"]
+                    for keyword in ["完了", "進行中", "開始", "%"]
                 ):
                     print("📈 進捗情報あり")
         else:

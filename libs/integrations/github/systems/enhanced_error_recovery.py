@@ -407,7 +407,9 @@ class ErrorRecoveryManager:
                     else:
                         result = fallback_func(*args, **kwargs)
 
-                    logger.info(f"✅ Fallback executed successfully for: {pattern_name}")
+                    logger.info(
+                        f"✅ Fallback executed successfully for: {pattern_name}"
+                    )
                     return {
                         "success": True,
                         "action": "fallback_success",
@@ -465,9 +467,9 @@ class ErrorRecoveryManager:
         escalation_data = {
             "timestamp": datetime.now().isoformat(),
             "severity": error_info["severity"].value,
-            "error_pattern": error_info["pattern"].pattern
-            if error_info["pattern"]
-            else "unknown",
+            "error_pattern": (
+                error_info["pattern"].pattern if error_info["pattern"] else "unknown"
+            ),
             "context": context,
         }
 

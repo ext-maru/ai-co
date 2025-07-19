@@ -372,9 +372,9 @@ class PerformanceOptimizer:
                                     pattern.get("context", {}), context
                                 ),
                                 "rag_integration": {
-                                    "search_quality": "high"
-                                    if similarity_score > 0.8
-                                    else "medium",
+                                    "search_quality": (
+                                        "high" if similarity_score > 0.8 else "medium"
+                                    ),
                                     "vector_similarity": similarity_score,
                                 },
                             }
@@ -664,9 +664,9 @@ class PerformanceOptimizer:
                 "feedback_processed": True,
                 "model_updated": model_updated,
                 "accuracy_improvement": accuracy_improvement,
-                "current_accuracy": self.learning_model.get("accuracy", 0)
-                if self.learning_model
-                else 0,
+                "current_accuracy": (
+                    self.learning_model.get("accuracy", 0) if self.learning_model else 0
+                ),
                 "feedback_count": len(self.feedback_history),
             }
 
@@ -955,11 +955,11 @@ class PerformanceOptimizer:
 
         return {
             "overall_risk": overall_risk,
-            "risk_level": "high"
-            if overall_risk > 0.4
-            else "medium"
-            if overall_risk > 0.2
-            else "low",
+            "risk_level": (
+                "high"
+                if overall_risk > 0.4
+                else "medium" if overall_risk > 0.2 else "low"
+            ),
             "mitigation_recommended": overall_risk > 0.3,
         }
 
@@ -1154,11 +1154,11 @@ class PerformanceOptimizer:
         return {
             "total_cases": len(similar_cases),
             "success_rate": success_rate,
-            "average_improvement": statistics.mean(
-                [c.get("improvement", 0) for c in similar_cases]
-            )
-            if similar_cases
-            else 0,
+            "average_improvement": (
+                statistics.mean([c.get("improvement", 0) for c in similar_cases])
+                if similar_cases
+                else 0
+            ),
         }
 
     def _calculate_base_success_probability(
@@ -1278,14 +1278,14 @@ class PerformanceOptimizer:
 
         return {
             "urgent_tasks": urgent_count,
-            "priority_level": "critical"
-            if urgent_count > 3
-            else "high"
-            if urgent_count > 1
-            else "normal",
-            "recommended_focus": "immediate_optimization"
-            if urgent_count > 3
-            else "systematic_approach",
+            "priority_level": (
+                "critical"
+                if urgent_count > 3
+                else "high" if urgent_count > 1 else "normal"
+            ),
+            "recommended_focus": (
+                "immediate_optimization" if urgent_count > 3 else "systematic_approach"
+            ),
         }
 
     def _integrate_sage_recommendations(

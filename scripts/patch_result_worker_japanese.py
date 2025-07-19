@@ -65,7 +65,9 @@ MESSAGES_JA = {
     # インポートセクションの後に日本語メッセージを追加
     import_section_end = "AICommandHelper = None"
     if import_section_end in content:
-        content = content.replace(import_section_end, f"{import_section_end}\n\n{japanese_messages}")
+        content = content.replace(
+            import_section_end, f"{import_section_end}\n\n{japanese_messages}"
+        )
 
     # _format_success_messageメソッドを日本語化
     new_format_success = '''    def _format_success_message(self, **kwargs) -> str:

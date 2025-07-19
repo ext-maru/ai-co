@@ -208,7 +208,9 @@ class PriorityQueueManager:
             self.task_status[task_id] = TaskStatus.QUEUED
             self.stats["total_queued"] += 1
 
-            self.logger.info(f"タスクキュー追加: {task_id} (優先度: {priority_enum.name})")
+            self.logger.info(
+                f"タスクキュー追加: {task_id} (優先度: {priority_enum.name})"
+            )
             return True
 
         except Exception as e:
@@ -314,7 +316,9 @@ class PriorityQueueManager:
         self.failed_tasks.append(task)
         self.stats["total_failed"] += 1
 
-        self.logger.warning(f"タスク失敗: {task.task_id} (試行回数: {task.retry_count})")
+        self.logger.warning(
+            f"タスク失敗: {task.task_id} (試行回数: {task.retry_count})"
+        )
 
         # 失敗したタスクをDead Letter Queueに送信
         if self.channel:

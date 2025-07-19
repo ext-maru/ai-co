@@ -660,7 +660,9 @@ class KnightSquad:
                 if available_knights:
                     available_knights[0]["primary_weapon"] = weapon_id
 
-            logger.info(f"📥 Squad {self.squad_id} received {len(weapon_specs)} weapons")
+            logger.info(
+                f"📥 Squad {self.squad_id} received {len(weapon_specs)} weapons"
+            )
             return True
 
         except Exception as e:
@@ -969,25 +971,29 @@ class BattlefieldScout:
         confidence_factors = {
             "data_points": min(1.0, len(incident_history) / 10),
             "pattern_consistency": 0.8 if pattern_type != "random" else 0.3,
-            "time_consistency": 0.9
-            if time_deltas
-            and len(time_deltas) > 1
-            and statistics.stdev(time_deltas) < avg_frequency
-            else 0.5,
+            "time_consistency": (
+                0.9
+                if time_deltas
+                and len(time_deltas) > 1
+                and statistics.stdev(time_deltas) < avg_frequency
+                else 0.5
+            ),
         }
 
         prediction_confidence = statistics.mean(confidence_factors.values())
 
         return {
             "pattern_type": pattern_type,
-            "attack_frequency": 60 / avg_frequency if avg_frequency > 0 else 0,  # 攻撃/時間
+            "attack_frequency": (
+                60 / avg_frequency if avg_frequency > 0 else 0
+            ),  # 攻撃/時間
             "escalation_trend": escalation_trend,
             "prediction_confidence": prediction_confidence,
             "next_attack_prediction": {
                 "estimated_time": avg_frequency if avg_frequency > 0 else None,
-                "estimated_severity": incident_severities[-1]
-                if incident_severities
-                else "medium",
+                "estimated_severity": (
+                    incident_severities[-1] if incident_severities else "medium"
+                ),
                 "confidence": prediction_confidence,
             },
         }
@@ -1014,7 +1020,9 @@ class BattlefieldScout:
         # 監視スレッド開始（簡易実装）
         self.active_monitoring = True
 
-        logger.info(f"🔍 Real-time monitoring started - Scan interval: {scan_interval}s")
+        logger.info(
+            f"🔍 Real-time monitoring started - Scan interval: {scan_interval}s"
+        )
 
         return monitoring_config
 
@@ -1723,9 +1731,9 @@ class TacticalCoordinator:
         return {
             "total_squads_required": len(squad_assignments),
             "estimated_weapon_consumption": len(squad_assignments) * 2,
-            "communication_bandwidth": "high"
-            if len(squad_assignments) > 2
-            else "medium",
+            "communication_bandwidth": (
+                "high" if len(squad_assignments) > 2 else "medium"
+            ),
             "coordination_overhead": len(squad_assignments) * 0.1,
         }
 
@@ -1796,9 +1804,9 @@ class TacticalCoordinator:
 
         return {
             "completed_objectives": completed_objectives,
-            "success_rate": len(completed_objectives) / len(objectives)
-            if objectives
-            else 1.0,
+            "success_rate": (
+                len(completed_objectives) / len(objectives) if objectives else 1.0
+            ),
             "execution_time": execution_time,
         }
 

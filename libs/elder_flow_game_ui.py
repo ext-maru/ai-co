@@ -2,6 +2,7 @@
 Elder Flow Game UI - CUIゲーム風インターフェース
 エルダーズギルドのファンタジー世界観をCUIで表現
 """
+
 import os
 import sys
 import time
@@ -22,32 +23,33 @@ from libs.elder_flow_realtime_monitor import RealtimeMonitoringSystem
 
 class GameColor(Enum):
     """ゲーム用カラーコード"""
-    RESET = '\033[0m'
-    BOLD = '\033[1m'
-    DIM = '\033[2m'
+
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+    DIM = "\033[2m"
 
     # 基本色
-    RED = '\033[31m'
-    GREEN = '\033[32m'
-    YELLOW = '\033[33m'
-    BLUE = '\033[34m'
-    MAGENTA = '\033[35m'
-    CYAN = '\033[36m'
-    WHITE = '\033[37m'
+    RED = "\033[31m"
+    GREEN = "\033[32m"
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    MAGENTA = "\033[35m"
+    CYAN = "\033[36m"
+    WHITE = "\033[37m"
 
     # 背景色
-    BG_RED = '\033[41m'
-    BG_GREEN = '\033[42m'
-    BG_YELLOW = '\033[43m'
-    BG_BLUE = '\033[44m'
-    BG_MAGENTA = '\033[45m'
-    BG_CYAN = '\033[46m'
+    BG_RED = "\033[41m"
+    BG_GREEN = "\033[42m"
+    BG_YELLOW = "\033[43m"
+    BG_BLUE = "\033[44m"
+    BG_MAGENTA = "\033[45m"
+    BG_CYAN = "\033[46m"
 
     # エルダーズギルド専用色
-    ELDER_GOLD = '\033[93m'
-    SAGE_BLUE = '\033[96m'
-    KNIGHT_SILVER = '\033[97m'
-    CRITICAL_RED = '\033[91m'
+    ELDER_GOLD = "\033[93m"
+    SAGE_BLUE = "\033[96m"
+    KNIGHT_SILVER = "\033[97m"
+    CRITICAL_RED = "\033[91m"
 
 
 class UIElement:
@@ -62,38 +64,38 @@ class UIElement:
         return result
 
     @staticmethod
-    def frame_text(text: str, width: int = 60, char: str = '═') -> str:
+    def frame_text(text: str, width: int = 60, char: str = "═") -> str:
         """テキストを枠で囲む"""
-        lines = text.split('\n')
+        lines = text.split("\n")
         framed = []
 
         # 上枠
-        framed.append('╔' + char * (width - 2) + '╗')
+        framed.append("╔" + char * (width - 2) + "╗")
 
         # 内容
         for line in lines:
             padding = width - len(line) - 4
             left_pad = padding // 2
             right_pad = padding - left_pad
-            framed.append('║ ' + ' ' * left_pad + line + ' ' * right_pad + ' ║')
+            framed.append("║ " + " " * left_pad + line + " " * right_pad + " ║")
 
         # 下枠
-        framed.append('╚' + char * (width - 2) + '╝')
+        framed.append("╚" + char * (width - 2) + "╝")
 
-        return '\n'.join(framed)
+        return "\n".join(framed)
 
     @staticmethod
-    def progress_bar(current: int, total: int, width: int = 40, char: str = '█') -> str:
+    def progress_bar(current: int, total: int, width: int = 40, char: str = "█") -> str:
         """プログレスバー生成"""
         if total == 0:
-            return '[' + ' ' * width + '] 0%'
+            return "[" + " " * width + "] 0%"
 
         progress = current / total
         filled = int(width * progress)
         empty = width - filled
 
-        bar = '[' + char * filled + ' ' * empty + ']'
-        percentage = f' {int(progress * 100)}%'
+        bar = "[" + char * filled + " " * empty + "]"
+        percentage = f" {int(progress * 100)}%"
 
         return bar + percentage
 
@@ -101,6 +103,7 @@ class UIElement:
 @dataclass
 class PlayerStats:
     """プレイヤー（開発者）の統計"""
+
     level: int = 1
     exp: int = 0
     violations_fixed: int = 0
@@ -143,7 +146,7 @@ class ElderFlowGameUI:
 
     def clear_screen(self):
         """画面クリア"""
-        os.system('cls' if os.name == 'nt' else 'clear')
+        os.system("cls" if os.name == "nt" else "clear")
 
     def print_header(self):
         """ヘッダー表示"""
@@ -157,11 +160,7 @@ class ElderFlowGameUI:
 
     def get_elder_mood_display(self) -> str:
         """エルダーの気分表示"""
-        mood_map = {
-            "happy": "😊 満足",
-            "neutral": "😐 普通",
-            "angry": "😡 不満"
-        }
+        mood_map = {"happy": "😊 満足", "neutral": "😐 普通", "angry": "😡 不満"}
         return mood_map.get(self.elder_mood, "😐 普通")
 
     def get_elder_mood_color(self) -> GameColor:
@@ -169,7 +168,7 @@ class ElderFlowGameUI:
         mood_colors = {
             "happy": GameColor.GREEN,
             "neutral": GameColor.YELLOW,
-            "angry": GameColor.RED
+            "angry": GameColor.RED,
         }
         return mood_colors.get(self.elder_mood, GameColor.YELLOW)
 
@@ -208,11 +207,15 @@ class ElderFlowGameUI:
             ("🔍 コード品質チェック", random.choice([True, False])),
             ("🔒 セキュリティスキャン", random.choice([True, False])),
             ("📋 ドキュメント確認", random.choice([True, False])),
-            ("🧪 テストカバレッジ", random.choice([True, False]))
+            ("🧪 テストカバレッジ", random.choice([True, False])),
         ]
 
         for check_name, passed in violations:
-            status = UIElement.colorize("✅ 合格", GameColor.GREEN) if passed else UIElement.colorize("❌ 違反", GameColor.RED)
+            status = (
+                UIElement.colorize("✅ 合格", GameColor.GREEN)
+                if passed
+                else UIElement.colorize("❌ 違反", GameColor.RED)
+            )
             print(f"  {check_name}: {status}")
 
         # 統計表示
@@ -220,18 +223,28 @@ class ElderFlowGameUI:
         passed_checks = sum(1 for _, passed in violations if passed)
         success_rate = (passed_checks / total_checks) * 100
 
-        print(f"\n{UIElement.colorize('総合スコア:', GameColor.YELLOW)} {UIElement.progress_bar(passed_checks, total_checks)}")
-        print(f"{UIElement.colorize(f'成功率: {success_rate:.1f}%', GameColor.GREEN if success_rate >= 80 else GameColor.RED)}")
+        print(
+            f"\n{UIElement.colorize('総合スコア:', GameColor.YELLOW)} {UIElement.progress_bar(passed_checks, total_checks)}"
+        )
+        print(
+            f"{UIElement.colorize(f'成功率: {success_rate:.1f}%', GameColor.GREEN if success_rate >= 80 else GameColor.RED)}"
+        )
 
         # エルダーのコメント
         if success_rate >= 90:
-            comment = UIElement.colorize("🏆 グランドエルダーmaru: 「素晴らしい品質です！」", GameColor.GREEN)
+            comment = UIElement.colorize(
+                "🏆 グランドエルダーmaru: 「素晴らしい品質です！」", GameColor.GREEN
+            )
             self.elder_mood = "happy"
         elif success_rate >= 70:
-            comment = UIElement.colorize("💭 クロードエルダー: 「もう少し改善が必要ですね」", GameColor.YELLOW)
+            comment = UIElement.colorize(
+                "💭 クロードエルダー: 「もう少し改善が必要ですね」", GameColor.YELLOW
+            )
             self.elder_mood = "neutral"
         else:
-            comment = UIElement.colorize("⚠️ インシデント賢者: 「緊急対応が必要です！」", GameColor.RED)
+            comment = UIElement.colorize(
+                "⚠️ インシデント賢者: 「緊急対応が必要です！」", GameColor.RED
+            )
             self.elder_mood = "angry"
 
         print(f"\n{comment}")
@@ -255,7 +268,7 @@ class ElderFlowGameUI:
             ("包括的スキャン", random.randint(0, 5), "件の問題"),
             ("アクティブ違反", random.randint(0, 3), "件"),
             ("統計分析", "改善傾向" if random.choice([True, False]) else "要注意", ""),
-            ("レポート生成", "完了", "")
+            ("レポート生成", "完了", ""),
         ]
 
         for audit_type, result, unit in audit_results:
@@ -268,11 +281,13 @@ class ElderFlowGameUI:
 
         # 次回監査予定
         next_audit_minutes = random.randint(5, 45)
-        print(f"\n⏳ {UIElement.colorize(f'次回監査まで: {next_audit_minutes}分', GameColor.CYAN)}")
+        print(
+            f"\n⏳ {UIElement.colorize(f'次回監査まで: {next_audit_minutes}分', GameColor.CYAN)}"
+        )
 
         # プログレスバー表示
         progress = (60 - next_audit_minutes) / 60
-        bar = UIElement.progress_bar(int(progress * 100), 100, 30, '▓')
+        bar = UIElement.progress_bar(int(progress * 100), 100, 30, "▓")
         print(f"   {bar}")
 
         input(f"\n{UIElement.colorize('Enterキーで戻る...', GameColor.CYAN)}")
@@ -294,7 +309,7 @@ class ElderFlowGameUI:
             ("📋 Plan", "計画策定", random.choice(["完了", "実行中", "待機中"])),
             ("⚡ Do", "改善実行", random.choice(["完了", "実行中", "待機中"])),
             ("🔍 Check", "効果測定", random.choice(["完了", "実行中", "待機中"])),
-            ("🔧 Act", "標準化", random.choice(["完了", "実行中", "待機中"]))
+            ("🔧 Act", "標準化", random.choice(["完了", "実行中", "待機中"])),
         ]
 
         for phase, description, status in phases:
@@ -312,14 +327,22 @@ class ElderFlowGameUI:
         metrics = [
             ("違反発生率", random.randint(0, 10), "件/時"),
             ("自動修正率", random.randint(70, 95), "%"),
-            ("平均修復時間", random.randint(15, 45), "分")
+            ("平均修復時間", random.randint(15, 45), "分"),
         ]
 
         for metric, value, unit in metrics:
             if "率" in metric:
-                color = GameColor.GREEN if value >= 80 else GameColor.YELLOW if value >= 60 else GameColor.RED
+                color = (
+                    GameColor.GREEN
+                    if value >= 80
+                    else GameColor.YELLOW if value >= 60 else GameColor.RED
+                )
             else:
-                color = GameColor.GREEN if value <= 20 else GameColor.YELLOW if value <= 35 else GameColor.RED
+                color = (
+                    GameColor.GREEN
+                    if value <= 20
+                    else GameColor.YELLOW if value <= 35 else GameColor.RED
+                )
 
             print(f"  📊 {metric}: {UIElement.colorize(f'{value}{unit}', color)}")
 
@@ -345,7 +368,7 @@ class ElderFlowGameUI:
                 "Gitフック実行",
                 "コマンド実行監視",
                 "自動修正実行",
-                "違反検知"
+                "違反検知",
             ]
 
             event = random.choice(events)
@@ -361,7 +384,9 @@ class ElderFlowGameUI:
                 color = GameColor.RED
                 icon = "🚨"
 
-            print(f"  [{timestamp}] {icon} {event}: {UIElement.colorize(status, color)}")
+            print(
+                f"  [{timestamp}] {icon} {event}: {UIElement.colorize(status, color)}"
+            )
             time.sleep(0.5)
 
         input(f"\n{UIElement.colorize('Enterキーで戻る...', GameColor.CYAN)}")
@@ -385,11 +410,13 @@ class ElderFlowGameUI:
             ("修正した違反", self.player_stats.violations_fixed, "件"),
             ("書いたテスト", self.player_stats.tests_written, "個"),
             ("コミット数", self.player_stats.commits_made, "回"),
-            ("エルダー承認率", f"{self.player_stats.elder_approval_rate:.1f}", "%")
+            ("エルダー承認率", f"{self.player_stats.elder_approval_rate:.1f}", "%"),
         ]
 
         for stat_name, value, unit in stats:
-            print(f"  🎯 {stat_name}: {UIElement.colorize(f'{value}{unit}', GameColor.CYAN)}")
+            print(
+                f"  🎯 {stat_name}: {UIElement.colorize(f'{value}{unit}', GameColor.CYAN)}"
+            )
 
         # 実績システム
         print(f"\n{UIElement.colorize('🏆 実績 (Achievements):', GameColor.YELLOW)}")
@@ -398,12 +425,16 @@ class ElderFlowGameUI:
             ("🛡️ 守護者", "10個の違反を修正"),
             ("🧪 テストマスター", "50個のテストを作成"),
             ("⚡ スピードデバッガー", "1日で5個の違反を修正"),
-            ("🏛️ エルダー認定", "承認率90%を達成")
+            ("🏛️ エルダー認定", "承認率90%を達成"),
         ]
 
         for achievement, description in achievements:
             unlocked = random.choice([True, False])
-            status = UIElement.colorize("✅ 達成", GameColor.GREEN) if unlocked else UIElement.colorize("🔒 未達成", GameColor.DIM)
+            status = (
+                UIElement.colorize("✅ 達成", GameColor.GREEN)
+                if unlocked
+                else UIElement.colorize("🔒 未達成", GameColor.DIM)
+            )
             print(f"  {achievement} {description}: {status}")
 
         input(f"\n{UIElement.colorize('Enterキーで戻る...', GameColor.CYAN)}")
@@ -440,49 +471,73 @@ class ElderFlowGameUI:
     def violation_shooter_game(self):
         """違反撃退ゲーム"""
         self.clear_screen()
-        print(UIElement.colorize("🎯 違反撃退ゲーム開始！", GameColor.CRITICAL_RED, True))
+        print(
+            UIElement.colorize("🎯 違反撃退ゲーム開始！", GameColor.CRITICAL_RED, True)
+        )
         print("違反が出現します。正しい修正方法を選んでください！\n")
 
         violations = [
             {
                 "violation": "本番コードにMockオブジェクトが残っている",
-                "options": ["A) 無視する", "B) 実際の実装に置き換える", "C) コメントアウトする"],
+                "options": [
+                    "A) 無視する",
+                    "B) 実際の実装に置き換える",
+                    "C) コメントアウトする",
+                ],
                 "correct": "B",
-                "explanation": "本番コードのMockは実際の実装に置き換える必要があります"
+                "explanation": "本番コードのMockは実際の実装に置き換える必要があります",
             },
             {
                 "violation": "テストカバレッジが80%しかない",
-                "options": ["A) 十分だから放置", "B) テストを追加して95%以上にする", "C) カバレッジツールを無効化"],
+                "options": [
+                    "A) 十分だから放置",
+                    "B) テストを追加して95%以上にする",
+                    "C) カバレッジツールを無効化",
+                ],
                 "correct": "B",
-                "explanation": "Elder Flowでは95%以上のカバレッジが必要です"
+                "explanation": "Elder Flowでは95%以上のカバレッジが必要です",
             },
             {
                 "violation": "dockerコマンドを直接実行している",
-                "options": ["A) そのまま続行", "B) sg docker -c を使用する", "C) sudoを追加する"],
+                "options": [
+                    "A) そのまま続行",
+                    "B) sg docker -c を使用する",
+                    "C) sudoを追加する",
+                ],
                 "correct": "B",
-                "explanation": "Docker権限問題を避けるため sg docker -c を使用します"
-            }
+                "explanation": "Docker権限問題を避けるため sg docker -c を使用します",
+            },
         ]
 
         score = 0
         for i, violation in enumerate(violations, 1):
-            print(f"{UIElement.colorize(f'問題 {i}:', GameColor.YELLOW)} {violation['violation']}")
-            for option in violation['options']:
+            print(
+                f"{UIElement.colorize(f'問題 {i}:', GameColor.YELLOW)} {violation['violation']}"
+            )
+            for option in violation["options"]:
                 print(f"  {option}")
 
-            answer = input(f"\n{UIElement.colorize('答え:', GameColor.CYAN)} ").strip().upper()
+            answer = (
+                input(f"\n{UIElement.colorize('答え:', GameColor.CYAN)} ")
+                .strip()
+                .upper()
+            )
 
-            if answer == violation['correct']:
+            if answer == violation["correct"]:
                 print(UIElement.colorize("✅ 正解！", GameColor.GREEN))
                 score += 10
                 self.player_stats.add_exp(5, "違反修正")
             else:
                 print(UIElement.colorize("❌ 不正解", GameColor.RED))
 
-            print(f"{UIElement.colorize('解説:', GameColor.BLUE)} {violation['explanation']}\n")
+            print(
+                f"{UIElement.colorize('解説:', GameColor.BLUE)} {violation['explanation']}\n"
+            )
             time.sleep(2)
 
-        print(f"{UIElement.colorize(f'最終スコア: {score}/30', GameColor.ELDER_GOLD, True)}")
+        print(
+            f"{UIElement.colorize(f'最終スコア: {score}/30', GameColor.ELDER_GOLD, True)}"
+        )
         input(f"\n{UIElement.colorize('Enterキーで戻る...', GameColor.CYAN)}")
 
     def code_puzzle_game(self):
@@ -496,7 +551,7 @@ class ElderFlowGameUI:
             "2. テストファースト（TDD）",
             "3. 実装",
             "4. 品質チェック",
-            "5. コミット&プッシュ"
+            "5. コミット&プッシュ",
         ]
 
         shuffled = correct_order.copy()
@@ -506,18 +561,28 @@ class ElderFlowGameUI:
         for i, step in enumerate(shuffled, 1):
             print(f"  {i}. {step}")
 
-        print(f"\n{UIElement.colorize('正しい順序を番号で入力してください (例: 3,1,4,2,5):', GameColor.CYAN)}")
+        print(
+            f"\n{UIElement.colorize('正しい順序を番号で入力してください (例: 3,1,4,2,5):', GameColor.CYAN)}"
+        )
         user_input = input().strip()
 
         try:
-            user_order = [int(x.strip()) - 1 for x in user_input.split(',')]
+            user_order = [int(x.strip()) - 1 for x in user_input.split(",")]
             reordered = [shuffled[i] for i in user_order]
 
             if reordered == correct_order:
-                print(UIElement.colorize("🎉 正解！完璧なElder Flowです！", GameColor.GREEN))
+                print(
+                    UIElement.colorize(
+                        "🎉 正解！完璧なElder Flowです！", GameColor.GREEN
+                    )
+                )
                 self.player_stats.add_exp(15, "パズル解決")
             else:
-                print(UIElement.colorize("❌ 不正解。正しい順序を覚えましょう。", GameColor.RED))
+                print(
+                    UIElement.colorize(
+                        "❌ 不正解。正しい順序を覚えましょう。", GameColor.RED
+                    )
+                )
                 print("\n正解:")
                 for step in correct_order:
                     print(f"  {step}")
@@ -529,7 +594,11 @@ class ElderFlowGameUI:
     def speed_test_game(self):
         """スピードテスト作成ゲーム"""
         self.clear_screen()
-        print(UIElement.colorize("⚡ スピードテスト作成チャレンジ", GameColor.YELLOW, True))
+        print(
+            UIElement.colorize(
+                "⚡ スピードテスト作成チャレンジ", GameColor.YELLOW, True
+            )
+        )
         print("30秒以内にできるだけ多くのテストケースを考えてください！\n")
 
         function_to_test = """
@@ -537,8 +606,12 @@ def calculate_tax(price, tax_rate):
     return price * (1 + tax_rate)
 """
 
-        print(f"テスト対象関数:\n{UIElement.colorize(function_to_test, GameColor.CYAN)}")
-        print(f"{UIElement.colorize('テストケースを1行ずつ入力してください (30秒)', GameColor.YELLOW)}")
+        print(
+            f"テスト対象関数:\n{UIElement.colorize(function_to_test, GameColor.CYAN)}"
+        )
+        print(
+            f"{UIElement.colorize('テストケースを1行ずつ入力してください (30秒)', GameColor.YELLOW)}"
+        )
         print("例: calculate_tax(100, 0.1) == 110")
 
         test_cases = []
@@ -554,7 +627,9 @@ def calculate_tax(price, tax_rate):
                 break
 
         score = len(test_cases) * 5
-        print(f"\n{UIElement.colorize(f'作成したテストケース: {len(test_cases)}個', GameColor.GREEN)}")
+        print(
+            f"\n{UIElement.colorize(f'作成したテストケース: {len(test_cases)}個', GameColor.GREEN)}"
+        )
         print(f"{UIElement.colorize(f'スコア: {score}点', GameColor.ELDER_GOLD)}")
 
         if len(test_cases) >= 5:
@@ -566,45 +641,59 @@ def calculate_tax(price, tax_rate):
     def elder_approval_challenge(self):
         """エルダー承認チャレンジ"""
         self.clear_screen()
-        print(UIElement.colorize("🏆 エルダー承認チャレンジ", GameColor.ELDER_GOLD, True))
+        print(
+            UIElement.colorize("🏆 エルダー承認チャレンジ", GameColor.ELDER_GOLD, True)
+        )
         print("グランドエルダーmaruの厳しい審査に挑戦！\n")
 
         challenges = [
             {
                 "challenge": "完了の定義を述べよ",
                 "answer": "本番環境で実際に動作する完全な実装のみが完了",
-                "keyword": "本番環境"
+                "keyword": "本番環境",
             },
             {
                 "challenge": "Elder Flowの階層の頂点は？",
                 "answer": "グランドエルダーmaru",
-                "keyword": "maru"
+                "keyword": "maru",
             },
             {
                 "challenge": "テストカバレッジの最低基準は？",
                 "answer": "95%以上",
-                "keyword": "95"
-            }
+                "keyword": "95",
+            },
         ]
 
         correct_answers = 0
         for i, challenge in enumerate(challenges, 1):
-            print(f"{UIElement.colorize(f'問題 {i}:', GameColor.YELLOW)} {challenge['challenge']}")
+            print(
+                f"{UIElement.colorize(f'問題 {i}:', GameColor.YELLOW)} {challenge['challenge']}"
+            )
             answer = input(f"{UIElement.colorize('答え:', GameColor.CYAN)} ").strip()
 
-            if challenge['keyword'].lower() in answer.lower():
-                print(UIElement.colorize("✅ グランドエルダーmaruが承認！", GameColor.GREEN))
+            if challenge["keyword"].lower() in answer.lower():
+                print(
+                    UIElement.colorize(
+                        "✅ グランドエルダーmaruが承認！", GameColor.GREEN
+                    )
+                )
                 correct_answers += 1
             else:
                 print(UIElement.colorize("❌ 承認されませんでした", GameColor.RED))
-                print(f"{UIElement.colorize('正解:', GameColor.BLUE)} {challenge['answer']}")
+                print(
+                    f"{UIElement.colorize('正解:', GameColor.BLUE)} {challenge['answer']}"
+                )
             print()
 
         approval_rate = (correct_answers / len(challenges)) * 100
         self.player_stats.elder_approval_rate = approval_rate
 
         if approval_rate >= 80:
-            print(UIElement.colorize("🎉 エルダー認定を獲得！", GameColor.ELDER_GOLD, True))
+            print(
+                UIElement.colorize(
+                    "🎉 エルダー認定を獲得！", GameColor.ELDER_GOLD, True
+                )
+            )
             exp_gained = self.player_stats.add_exp(30, "エルダー認定")
             print(f"{UIElement.colorize(exp_gained, GameColor.GREEN)}")
         else:
@@ -633,16 +722,28 @@ def calculate_tax(price, tax_rate):
         choice = input().strip()
 
         if choice == "1":
-            print(UIElement.colorize("🎨 カラーテーマ変更機能は開発中です", GameColor.YELLOW))
+            print(
+                UIElement.colorize(
+                    "🎨 カラーテーマ変更機能は開発中です", GameColor.YELLOW
+                )
+            )
         elif choice == "2":
-            print(UIElement.colorize("🔊 サウンド設定機能は開発中です", GameColor.YELLOW))
+            print(
+                UIElement.colorize("🔊 サウンド設定機能は開発中です", GameColor.YELLOW)
+            )
         elif choice == "3":
-            confirm = input(UIElement.colorize("統計をリセットしますか？ (y/N): ", GameColor.RED))
-            if confirm.lower() == 'y':
+            confirm = input(
+                UIElement.colorize("統計をリセットしますか？ (y/N): ", GameColor.RED)
+            )
+            if confirm.lower() == "y":
                 self.player_stats = PlayerStats()
                 print(UIElement.colorize("✅ 統計をリセットしました", GameColor.GREEN))
         elif choice == "4":
-            print(UIElement.colorize("💾 データエクスポート機能は開発中です", GameColor.YELLOW))
+            print(
+                UIElement.colorize(
+                    "💾 データエクスポート機能は開発中です", GameColor.YELLOW
+                )
+            )
 
         if choice != "0":
             input(f"\n{UIElement.colorize('Enterキーで戻る...', GameColor.CYAN)}")
@@ -671,7 +772,11 @@ def calculate_tax(price, tax_rate):
             elif choice == "7":
                 self.show_settings()
             elif choice == "0":
-                print(UIElement.colorize("👋 Elder Flow Game UIを終了します", GameColor.CYAN))
+                print(
+                    UIElement.colorize(
+                        "👋 Elder Flow Game UIを終了します", GameColor.CYAN
+                    )
+                )
                 self.running = False
             else:
                 print(UIElement.colorize("❌ 無効な選択です", GameColor.RED))

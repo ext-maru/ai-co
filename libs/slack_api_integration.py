@@ -340,9 +340,11 @@ class SlackAPIIntegration:
             {
                 "timestamp": message.timestamp.isoformat(),
                 "channel": message.channel,
-                "message": message.text[:100] + "..."
-                if len(message.text) > 100
-                else message.text,
+                "message": (
+                    message.text[:100] + "..."
+                    if len(message.text) > 100
+                    else message.text
+                ),
                 "success": result.get("ok", False),
                 "ts": result.get("ts"),
                 "message_type": message.message_type.value,
@@ -436,9 +438,11 @@ class SlackAPIIntegration:
                 member_count=channel_data.get("num_members", 0),
                 topic=channel_data.get("topic", {}).get("value", ""),
                 purpose=channel_data.get("purpose", {}).get("value", ""),
-                created=datetime.fromtimestamp(channel_data.get("created", 0))
-                if channel_data.get("created")
-                else None,
+                created=(
+                    datetime.fromtimestamp(channel_data.get("created", 0))
+                    if channel_data.get("created")
+                    else None
+                ),
             )
             channels.append(channel)
             self.channels_cache[channel.id] = channel
@@ -620,7 +624,7 @@ class SlackAPIIntegration:
 
 # ユーティリティ関数
 async def create_slack_integration(
-    config: Optional[Dict[str, Any]] = None
+    config: Optional[Dict[str, Any]] = None,
 ) -> SlackAPIIntegration:
     """Slack統合システムのファクトリ関数"""
     integration = SlackAPIIntegration(config)

@@ -323,9 +323,9 @@ def aggregate_metrics(data: Dict[str, Any]) -> Dict[str, Any]:
     if "metrics" in data and isinstance(data["metrics"], list):
         data["aggregated"] = {
             "sum": sum(data["metrics"]),
-            "avg": sum(data["metrics"]) / len(data["metrics"])
-            if data["metrics"]
-            else 0,
+            "avg": (
+                sum(data["metrics"]) / len(data["metrics"]) if data["metrics"] else 0
+            ),
             "max": max(data["metrics"]) if data["metrics"] else 0,
             "min": min(data["metrics"]) if data["metrics"] else 0,
         }

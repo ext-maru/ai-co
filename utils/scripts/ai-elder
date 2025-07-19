@@ -11,9 +11,31 @@ import sys
 from typing import Any, Dict, List
 
 # プロジェクトのルートパスを追加
-sys.path.append("/root/ai_co")
+sys.path.append("/home/aicompany/ai_co")
 
-from features.ai.elders_knowledge_manager import EldersKnowledgeManager
+# ai-elder cast 機能の復活
+if len(sys.argv) > 1 and sys.argv[1] == "cast":
+    # ai-elder-cast コマンドにリダイレクト
+    import subprocess
+    cast_args = ["ai-elder-cast"] + sys.argv[2:]
+    subprocess.run(cast_args)
+    exit(0)
+
+print("⚠️ ai-elderコマンドは現在4賢者システムに統合されています")
+print()
+print("🔮 魔法詠唱コマンド:")
+print("  ai-elder cast 知識召喚 'キーワード'")
+print("  ai-elder cast 4賢者会議 'トピック'")
+print("  ai-elder cast 完全自動化 'タスク名' --power high")
+print()
+print("🤖 その他利用可能なコマンド:")
+print("  - elder-flow execute 'タスク名' --priority high")
+print("  - ai-elder-cast 知識召喚 'クエリ' --power medium")
+print()
+print("📚 詳細ヘルプ:")
+print("  ai-elder-cast --help")
+print()
+exit(0)
 
 
 class AIElderCLI:

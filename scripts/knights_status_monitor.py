@@ -16,6 +16,7 @@ import pika
 # パス設定
 sys.path.append(str(Path(__file__).parent.parent))
 
+
 class KnightsStatusMonitor:
     """騎士団統合状況監視システム"""
 
@@ -26,19 +27,28 @@ class KnightsStatusMonitor:
             "local_knights": {},
             "workers": {},
             "rabbitmq": {},
-            "overall_health": "unknown"
+            "overall_health": "unknown",
         }
 
     def check_github_actions_status(self):
         """GitHub Actions の実行状況をチェック"""
         try:
             # GitHub CLI を使用してワークフロー状況を確認
-            result = subprocess.run([
-                'gh', 'run', 'list',
-                '--workflow=incident-knights-autofix.yml',
-                '--limit', '5',
-                '--json', 'status,conclusion,name,event,createdAt'
-            ], capture_output=True, text=True, timeout=10)
+            result = subprocess.run(
+                [
+                    "gh",
+                    "run",
+                    "list",
+                    "--workflow=incident-knights-autofix.yml",
+                    "--limit",
+                    "5",
+                    "--json",
+                    "status,conclusion,name,event,createdAt",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
 
             if result.returncode == 0:
                 runs = json.loads(result.stdout)
@@ -46,42 +56,51 @@ class KnightsStatusMonitor:
                     "status": "accessible",
                     "recent_runs": len(runs),
                     "latest_runs": runs[:3] if runs else [],
-                    "last_check": datetime.now().isoformat()
+                    "last_check": datetime.now().isoformat(),
                 }
             else:
                 self.status_report["github_actions"] = {
                     "status": "cli_error",
                     "error": result.stderr,
-                    "last_check": datetime.now().isoformat()
+                    "last_check": datetime.now().isoformat(),
                 }
 
         except subprocess.TimeoutExpired:
             self.status_report["github_actions"] = {
                 "status": "timeout",
                 "error": "GitHub CLI command timed out",
-                "last_check": datetime.now().isoformat()
+                "last_check": datetime.now().isoformat(),
             }
         except FileNotFoundError:
             self.status_report["github_actions"] = {
                 "status": "cli_not_found",
                 "error": "GitHub CLI not installed or not authenticated",
-                "last_check": datetime.now().isoformat()
+                "last_check": datetime.now().isoformat(),
             }
         except Exception as e:
             self.status_report["github_actions"] = {
                 "status": "error",
                 "error": str(e),
-                "last_check": datetime.now().isoformat()
+                "last_check": datetime.now().isoformat(),
             }
 
     def check_local_knights_script(self):
         """ローカル騎士団スクリプトの動作確認"""
         try:
             # 騎士団スクリプトのクイックヘルスチェック実行
-            result = subprocess.run([
-                sys.executable, 'scripts/knights-github-action.py',
-                'analyze', '--output-format', 'json', '--quick'
-            ], capture_output=True, text=True, timeout=10)
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/knights-github-action.py",
+                    "analyze",
+                    "--output-format",
+                    "json",
+                    "--quick",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=10,
+            )
 
             if result.returncode == 0:
                 try:
@@ -91,36 +110,38 @@ class KnightsStatusMonitor:
                         "script_executable": True,
                         "dependencies_available": True,
                         "last_analysis": {
-                            "total_issues": report.get("summary", {}).get("total_issues", 0),
-                            "timestamp": report.get("timestamp", "unknown")
-                        }
+                            "total_issues": report.get("summary", {}).get(
+                                "total_issues", 0
+                            ),
+                            "timestamp": report.get("timestamp", "unknown"),
+                        },
                     }
                 except json.JSONDecodeError:
                     self.status_report["local_knights"] = {
                         "status": "output_error",
                         "script_executable": True,
                         "dependencies_available": False,
-                        "error": "Invalid JSON output"
+                        "error": "Invalid JSON output",
                     }
             else:
                 self.status_report["local_knights"] = {
                     "status": "execution_error",
                     "script_executable": False,
                     "error": result.stderr,
-                    "stdout": result.stdout
+                    "stdout": result.stdout,
                 }
 
         except subprocess.TimeoutExpired:
             self.status_report["local_knights"] = {
                 "status": "timeout",
                 "script_executable": False,
-                "error": "Script execution timed out"
+                "error": "Script execution timed out",
             }
         except Exception as e:
             self.status_report["local_knights"] = {
                 "status": "error",
                 "script_executable": False,
-                "error": str(e)
+                "error": str(e),
             }
 
     def check_workers_status(self):
@@ -128,21 +149,21 @@ class KnightsStatusMonitor:
         worker_processes = {}
 
         # 実行中のプロセスを確認
-        for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+        for proc in psutil.process_iter(["pid", "name", "cmdline"]):
             try:
-                cmdline = ' '.join(proc.info['cmdline']) if proc.info['cmdline'] else ''
+                cmdline = " ".join(proc.info["cmdline"]) if proc.info["cmdline"] else ""
 
                 # ワーカープロセスを検出
-                if 'worker.py' in cmdline or 'worker' in proc.info['name']:
-                    if 'python' in cmdline and 'workers/' in cmdline:
+                if "worker.py" in cmdline or "worker" in proc.info["name"]:
+                    if "python" in cmdline and "workers/" in cmdline:
                         # ワーカーファイル名を抽出
-                        for part in proc.info['cmdline']:
-                            if 'workers/' in part and '.py' in part:
+                        for part in proc.info["cmdline"]:
+                            if "workers/" in part and ".py" in part:
                                 worker_name = Path(part).name
                                 worker_processes[worker_name] = {
-                                    "pid": proc.info['pid'],
+                                    "pid": proc.info["pid"],
                                     "status": "running",
-                                    "cmdline": cmdline
+                                    "cmdline": cmdline,
                                 }
                                 break
 
@@ -151,9 +172,9 @@ class KnightsStatusMonitor:
 
         # 期待されるワーカーファイルをチェック
         expected_workers = [
-            'enhanced_task_worker.py',
-            'intelligent_pm_worker_simple.py',
-            'async_result_worker_simple.py'
+            "enhanced_task_worker.py",
+            "intelligent_pm_worker_simple.py",
+            "async_result_worker_simple.py",
         ]
 
         for worker in expected_workers:
@@ -162,18 +183,20 @@ class KnightsStatusMonitor:
 
         self.status_report["workers"] = {
             "total_expected": len(expected_workers),
-            "running_count": len([w for w in worker_processes.values() if w.get("status") == "running"]),
-            "processes": worker_processes
+            "running_count": len(
+                [w for w in worker_processes.values() if w.get("status") == "running"]
+            ),
+            "processes": worker_processes,
         }
 
     def check_rabbitmq_status(self):
         """RabbitMQ接続と キュー状況確認"""
         try:
-            connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+            connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
             channel = connection.channel()
 
             # 主要キューの状況確認
-            queues = ['ai_tasks', 'ai_pm', 'ai_results', 'dialog_task_queue']
+            queues = ["ai_tasks", "ai_pm", "ai_results", "dialog_task_queue"]
             queue_status = {}
 
             for queue_name in queues:
@@ -181,25 +204,22 @@ class KnightsStatusMonitor:
                     method = channel.queue_declare(queue=queue_name, passive=True)
                     queue_status[queue_name] = {
                         "exists": True,
-                        "message_count": method.method.message_count
+                        "message_count": method.method.message_count,
                     }
                 except Exception as e:
-                    queue_status[queue_name] = {
-                        "exists": False,
-                        "error": str(e)
-                    }
+                    queue_status[queue_name] = {"exists": False, "error": str(e)}
 
             connection.close()
 
             self.status_report["rabbitmq"] = {
                 "status": "connected",
-                "queues": queue_status
+                "queues": queue_status,
             }
 
         except Exception as e:
             self.status_report["rabbitmq"] = {
                 "status": "connection_failed",
-                "error": str(e)
+                "error": str(e),
             }
 
     def calculate_overall_health(self):
@@ -217,7 +237,9 @@ class KnightsStatusMonitor:
         # ワーカー評価
         workers = self.status_report["workers"]
         if workers["running_count"] < workers["total_expected"]:
-            issues.append(f"Only {workers['running_count']}/{workers['total_expected']} workers running")
+            issues.append(
+                f"Only {workers['running_count']}/{workers['total_expected']} workers running"
+            )
 
         # RabbitMQ評価
         if self.status_report["rabbitmq"].get("status") != "connected":
@@ -276,7 +298,9 @@ class KnightsStatusMonitor:
         report.append(f"  Status: {lk.get('status', 'unknown')}")
         report.append(f"  Script executable: {lk.get('script_executable', False)}")
         if "last_analysis" in lk:
-            report.append(f"  Last analysis: {lk['last_analysis']['total_issues']} issues found")
+            report.append(
+                f"  Last analysis: {lk['last_analysis']['total_issues']} issues found"
+            )
         if "error" in lk:
             report.append(f"  Error: {lk['error']}")
         report.append("")
@@ -297,7 +321,9 @@ class KnightsStatusMonitor:
         if "queues" in rmq:
             for queue, info in rmq["queues"].items():
                 if info.get("exists"):
-                    report.append(f"  📬 {queue}: {info.get('message_count', 0)} messages")
+                    report.append(
+                        f"  📬 {queue}: {info.get('message_count', 0)} messages"
+                    )
                 else:
                     report.append(f"  ❌ {queue}: not found")
         report.append("")
@@ -312,14 +338,16 @@ class KnightsStatusMonitor:
 
         return "\n".join(report)
 
+
 def main():
     """メイン関数"""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Knights Status Monitor')
-    parser.add_argument('--format', choices=['json', 'text'], default='text',
-                       help='Output format')
-    parser.add_argument('--save', help='Save report to file')
+    parser = argparse.ArgumentParser(description="Knights Status Monitor")
+    parser.add_argument(
+        "--format", choices=["json", "text"], default="text", help="Output format"
+    )
+    parser.add_argument("--save", help="Save report to file")
 
     args = parser.parse_args()
 
@@ -329,9 +357,10 @@ def main():
     print(report)
 
     if args.save:
-        with open(args.save, 'w') as f:
+        with open(args.save, "w") as f:
             f.write(report)
         print(f"\n📄 Report saved to: {args.save}")
+
 
 if __name__ == "__main__":
     main()

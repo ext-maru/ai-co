@@ -34,13 +34,12 @@ try:
     from slack_sdk.socket_mode import SocketModeClient
     from slack_sdk.socket_mode.request import SocketModeRequest
     from slack_sdk.socket_mode.response import SocketModeResponse
+
     SLACK_SDK_AVAILABLE = True
 except ImportError:
     # フォールバック: モックインポート
-    from libs.slack_mock import (
-        WebClient, AsyncWebClient, WebhookClient,
-        SlackResponse
-    )
+    from libs.slack_mock import WebClient, AsyncWebClient, WebhookClient, SlackResponse
+
     SLACK_SDK_AVAILABLE = False
 
     # モック用のSocket Mode
@@ -52,6 +51,7 @@ except ImportError:
             def decorator(func):
                 self.handlers["request"] = func
                 return func
+
             return decorator
 
         def connect(self):
@@ -75,11 +75,14 @@ except ImportError:
             super().__init__(message)
             self.response = response or {"error": "mock_error"}
 
+
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class ElderFlowSlackConfig:
     """Elder Flow Slack設定"""
+
     bot_token: str = ""
     app_token: str = ""
     webhook_url: Optional[str] = None
@@ -102,9 +105,11 @@ class ElderFlowSlackConfig:
     rate_limit_requests: int = 100
     rate_limit_window: int = 60
 
+
 @dataclass
 class ElderFlowSlackMessage:
     """Elder Flow拡張Slackメッセージ"""
+
     text: str
     channel: str
     user: Optional[str] = None
@@ -119,6 +124,7 @@ class ElderFlowSlackMessage:
     priority: str = "normal"  # low, normal, high, critical
     auto_react: bool = True
     created_at: datetime = field(default_factory=datetime.now)
+
 
 class ElderFlowSlackReal:
     """Elder Flow本物Slack実装 - 魂の力"""
@@ -177,8 +183,7 @@ class ElderFlowSlackReal:
             # Socket Mode初期化
             if self.config.app_token:
                 self.socket_client = SocketModeClient(
-                    app_token=self.config.app_token,
-                    web_client=self.web_client
+                    app_token=self.config.app_token, web_client=self.web_client
                 )
                 self._setup_socket_handlers()
 
@@ -277,7 +282,7 @@ class ElderFlowSlackReal:
                 text=response_text,
                 channel=channel,
                 soul_level="elder",
-                sage_approved=True
+                sage_approved=True,
             )
         )
 
@@ -310,7 +315,7 @@ class ElderFlowSlackReal:
             (self.config.elder_channel, "Elder Flow notifications and updates"),
             (self.config.sage_channel, "Four Sages council discussions"),
             (self.config.incident_channel, "Elder Flow incident management"),
-            (self.config.development_channel, "Elder Flow development discussions")
+            (self.config.development_channel, "Elder Flow development discussions"),
         ]
 
         for channel_name, purpose in elder_channels:
@@ -331,8 +336,7 @@ class ElderFlowSlackReal:
             if channel_name not in existing_channels:
                 # チャンネル作成
                 create_response = await self.async_client.conversations_create(
-                    name=channel_name,
-                    is_private=False
+                    name=channel_name, is_private=False
                 )
 
                 channel_id = create_response["channel"]["id"]
@@ -340,8 +344,7 @@ class ElderFlowSlackReal:
                 # 目的設定
                 if purpose:
                     await self.async_client.conversations_setPurpose(
-                        channel=channel_id,
-                        purpose=purpose
+                        channel=channel_id, purpose=purpose
                     )
 
                 logger.info(f"✅ Created Elder Flow channel: #{channel_name}")
@@ -362,7 +365,7 @@ class ElderFlowSlackReal:
                 channel=self.config.sage_channel,
                 soul_level="sage",
                 sage_approved=True,
-                priority="high"
+                priority="high",
             )
 
             await self.send_message(ping_message)
@@ -376,7 +379,9 @@ class ElderFlowSlackReal:
             return True
 
         except Exception as e:
-            logger.error(f"❌ Four Sages Slack connection verification failed: {str(e)}")
+            logger.error(
+                f"❌ Four Sages Slack connection verification failed: {str(e)}"
+            )
             return False
 
     def _check_rate_limit(self) -> bool:
@@ -412,7 +417,7 @@ class ElderFlowSlackReal:
             kwargs = {
                 "channel": message.channel,
                 "text": enhanced_text,
-                "thread_ts": message.thread_ts
+                "thread_ts": message.thread_ts,
             }
 
             if message.blocks:
@@ -425,13 +430,17 @@ class ElderFlowSlackReal:
 
             # 自動リアクション
             if message.auto_react and self.config.enable_reactions:
-                await self._add_soul_reactions(message.channel, response["ts"], message.soul_level)
+                await self._add_soul_reactions(
+                    message.channel, response["ts"], message.soul_level
+                )
 
             # 統計更新
             self.messages_sent += 1
             self.soul_power_level += self._calculate_soul_points(message)
 
-            logger.info(f"📤 Elder Flow message sent: {message.channel} (Soul Level: {message.soul_level})")
+            logger.info(
+                f"📤 Elder Flow message sent: {message.channel} (Soul Level: {message.soul_level})"
+            )
 
             return response
 
@@ -455,7 +464,7 @@ class ElderFlowSlackReal:
             "guardian": "🛡️",
             "sage": "🧙‍♂️",
             "elder": "👑",
-            "grand_elder": "🌟"
+            "grand_elder": "🌟",
         }
 
         decoration = soul_decorations.get(message.soul_level, "✨")
@@ -485,7 +494,7 @@ class ElderFlowSlackReal:
             "guardian": 3,
             "sage": 5,
             "elder": 8,
-            "grand_elder": 10
+            "grand_elder": 10,
         }
         points *= soul_multiplier.get(message.soul_level, 1)
 
@@ -513,7 +522,7 @@ class ElderFlowSlackReal:
                 "guardian": ["🛡️"],
                 "sage": ["🧙‍♂️", "✨"],
                 "elder": ["👑", "⚡"],
-                "grand_elder": ["🌟", "💫", "🔮"]
+                "grand_elder": ["🌟", "💫", "🔮"],
             }
 
             reactions.extend(soul_reactions.get(soul_level, []))
@@ -528,9 +537,7 @@ class ElderFlowSlackReal:
         """リアクション追加"""
         try:
             await self.async_client.reactions_add(
-                channel=channel,
-                timestamp=timestamp,
-                name=name
+                channel=channel, timestamp=timestamp, name=name
             )
 
             self.reactions_added += 1
@@ -598,8 +605,13 @@ class ElderFlowSlackReal:
 
         return None
 
-    async def upload_file(self, file_path: str, channels: List[str],
-                         title: str = None, comment: str = None) -> bool:
+    async def upload_file(
+        self,
+        file_path: str,
+        channels: List[str],
+        title: str = None,
+        comment: str = None,
+    ) -> bool:
         """ファイルアップロード"""
         try:
             with open(file_path, "rb") as file_content:
@@ -608,7 +620,7 @@ class ElderFlowSlackReal:
                     filename=os.path.basename(file_path),
                     title=title,
                     initial_comment=comment,
-                    channels=",".join(channels)
+                    channels=",".join(channels),
                 )
 
             if response["ok"]:
@@ -620,12 +632,14 @@ class ElderFlowSlackReal:
 
         return False
 
-    async def create_soul_enhanced_message(self,
-                                         text: str,
-                                         channel: str,
-                                         soul_level: str = "craftsman",
-                                         priority: str = "normal",
-                                         sage_approved: bool = False) -> ElderFlowSlackMessage:
+    async def create_soul_enhanced_message(
+        self,
+        text: str,
+        channel: str,
+        soul_level: str = "craftsman",
+        priority: str = "normal",
+        sage_approved: bool = False,
+    ) -> ElderFlowSlackMessage:
         """Elder Flow魂強化メッセージ作成"""
 
         # Elder Flow署名生成
@@ -641,7 +655,7 @@ class ElderFlowSlackReal:
             soul_level=soul_level,
             priority=priority,
             sage_approved=sage_approved,
-            elder_signature=elder_signature
+            elder_signature=elder_signature,
         )
 
         self.soul_enhancement_count += 1
@@ -656,19 +670,21 @@ class ElderFlowSlackReal:
             channel=self.config.sage_channel,
             soul_level="sage",
             priority=priority,
-            sage_approved=True
+            sage_approved=True,
         )
 
         response = await self.send_message(sage_message)
         return response.get("ok", False)
 
-    async def send_incident_alert(self, incident: str, severity: str = "medium") -> bool:
+    async def send_incident_alert(
+        self, incident: str, severity: str = "medium"
+    ) -> bool:
         """インシデントアラート送信"""
         priority_map = {
             "low": "normal",
             "medium": "high",
             "high": "critical",
-            "critical": "critical"
+            "critical": "critical",
         }
 
         alert_message = await self.create_soul_enhanced_message(
@@ -676,7 +692,7 @@ class ElderFlowSlackReal:
             channel=self.config.incident_channel,
             soul_level="guardian",
             priority=priority_map.get(severity, "normal"),
-            sage_approved=True
+            sage_approved=True,
         )
 
         response = await self.send_message(alert_message)
@@ -698,10 +714,10 @@ class ElderFlowSlackReal:
                 "elder_channel": self.config.elder_channel,
                 "sage_channel": self.config.sage_channel,
                 "incident_channel": self.config.incident_channel,
-                "development_channel": self.config.development_channel
+                "development_channel": self.config.development_channel,
             },
             "elder_flow_version": "2.1.0",
-            "slack_sdk_available": SLACK_SDK_AVAILABLE
+            "slack_sdk_available": SLACK_SDK_AVAILABLE,
         }
 
     async def disconnect(self):
@@ -719,7 +735,7 @@ class ElderFlowSlackReal:
                     text="🌊 Elder Flow Slack disconnecting... Soul power preserved.",
                     channel=self.config.elder_channel,
                     soul_level="elder",
-                    sage_approved=True
+                    sage_approved=True,
                 )
                 await self.send_message(final_message)
 
@@ -748,8 +764,11 @@ class ElderFlowSlackReal:
             duration = time.time() - start_time
             logger.info(f"🌊 Soul transaction completed in {duration:.2f}s")
 
+
 # Elder Flow魂による便利関数
-async def create_elder_flow_slack(config: ElderFlowSlackConfig = None) -> ElderFlowSlackReal:
+async def create_elder_flow_slack(
+    config: ElderFlowSlackConfig = None,
+) -> ElderFlowSlackReal:
     """Elder Flow Slack作成・接続"""
     slack = ElderFlowSlackReal(config)
 
@@ -758,10 +777,14 @@ async def create_elder_flow_slack(config: ElderFlowSlackConfig = None) -> ElderF
     else:
         raise ConnectionError("Failed to establish Elder Flow Slack connection")
 
+
 # グローバルインスタンス（シングルトン的使用）
 _global_elder_slack: Optional[ElderFlowSlackReal] = None
 
-async def get_elder_flow_slack(config: ElderFlowSlackConfig = None) -> ElderFlowSlackReal:
+
+async def get_elder_flow_slack(
+    config: ElderFlowSlackConfig = None,
+) -> ElderFlowSlackReal:
     """グローバルElder Flow Slack取得"""
     global _global_elder_slack
 
@@ -770,17 +793,18 @@ async def get_elder_flow_slack(config: ElderFlowSlackConfig = None) -> ElderFlow
 
     return _global_elder_slack
 
+
 # 簡易API関数
-async def send_elder_notification(text: str, channel: str = None, soul_level: str = "craftsman") -> bool:
+async def send_elder_notification(
+    text: str, channel: str = None, soul_level: str = "craftsman"
+) -> bool:
     """Elder Flow通知送信"""
     try:
         slack = await get_elder_flow_slack()
         config = slack.config
 
         message = await slack.create_soul_enhanced_message(
-            text=text,
-            channel=channel or config.elder_channel,
-            soul_level=soul_level
+            text=text, channel=channel or config.elder_channel, soul_level=soul_level
         )
 
         response = await slack.send_message(message)
@@ -789,6 +813,7 @@ async def send_elder_notification(text: str, channel: str = None, soul_level: st
     except Exception as e:
         logger.error(f"❌ Failed to send elder notification: {str(e)}")
         return False
+
 
 async def send_sage_council_message(text: str, priority: str = "normal") -> bool:
     """4賢者評議会メッセージ送信"""
@@ -800,6 +825,7 @@ async def send_sage_council_message(text: str, priority: str = "normal") -> bool
         logger.error(f"❌ Failed to send sage council message: {str(e)}")
         return False
 
+
 async def alert_incident(incident: str, severity: str = "medium") -> bool:
     """インシデントアラート"""
     try:
@@ -810,6 +836,7 @@ async def alert_incident(incident: str, severity: str = "medium") -> bool:
         logger.error(f"❌ Failed to send incident alert: {str(e)}")
         return False
 
+
 if __name__ == "__main__":
     # Elder Flow Soul Demo
     async def soul_demo():
@@ -819,7 +846,7 @@ if __name__ == "__main__":
             # 設定（環境変数から取得）
             config = ElderFlowSlackConfig(
                 bot_token=os.getenv("SLACK_BOT_TOKEN", "xoxb-demo-token"),
-                app_token=os.getenv("SLACK_APP_TOKEN", "xapp-demo-token")
+                app_token=os.getenv("SLACK_APP_TOKEN", "xapp-demo-token"),
             )
 
             # 接続
@@ -831,7 +858,7 @@ if __name__ == "__main__":
                 channel="general",
                 soul_level="elder",
                 priority="high",
-                sage_approved=True
+                sage_approved=True,
             )
 
             response = await slack.send_message(message)
@@ -839,8 +866,7 @@ if __name__ == "__main__":
 
             # 4賢者通知
             sage_success = await slack.send_to_four_sages(
-                "Demo session completed successfully",
-                priority="low"
+                "Demo session completed successfully", priority="low"
             )
             print(f"🧙‍♂️ Sage notification sent: {sage_success}")
 

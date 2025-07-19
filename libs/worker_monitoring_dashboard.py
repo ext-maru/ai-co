@@ -393,13 +393,13 @@ class MetricsCollector:
                 "avg_cpu_usage": sum(cpu_values) / len(cpu_values) if cpu_values else 0,
                 "max_cpu_usage": max(cpu_values) if cpu_values else 0,
                 "min_cpu_usage": min(cpu_values) if cpu_values else 0,
-                "avg_memory_usage": sum(memory_values) / len(memory_values)
-                if memory_values
-                else 0,
+                "avg_memory_usage": (
+                    sum(memory_values) / len(memory_values) if memory_values else 0
+                ),
                 "max_memory_usage": max(memory_values) if memory_values else 0,
-                "avg_worker_count": sum(worker_counts) / len(worker_counts)
-                if worker_counts
-                else 0,
+                "avg_worker_count": (
+                    sum(worker_counts) / len(worker_counts) if worker_counts else 0
+                ),
                 "max_worker_count": max(worker_counts) if worker_counts else 0,
                 "data_points": len(historical),
                 "time_range": interval,
@@ -1327,9 +1327,9 @@ class WorkerMonitoringDashboard:
             "components": {
                 "metrics_collector": "active",
                 "websocket_manager": "active",
-                "realtime_updater": "active"
-                if self.realtime_updater.is_running
-                else "inactive",
+                "realtime_updater": (
+                    "active" if self.realtime_updater.is_running else "inactive"
+                ),
                 "api": "active" if self.api else "unavailable",
             },
         }

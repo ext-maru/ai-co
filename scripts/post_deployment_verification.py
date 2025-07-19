@@ -23,8 +23,8 @@ class PostDeploymentVerification:
 
         # Environment URLs
         self.urls = {
-            'staging': 'https://staging-ai-company.example.com',
-            'production': 'https://ai-company.example.com'
+            "staging": "https://staging-ai-company.example.com",
+            "production": "https://ai-company.example.com",
         }
 
     def verify(self, name: str, verify_func: callable, critical: bool = True) -> bool:
@@ -43,14 +43,16 @@ class PostDeploymentVerification:
                 print(f"  ❌ {name}: {message} ({duration:.2f}s)")
                 status = "FAIL"
 
-            self.verification_results.append({
-                'name': name,
-                'status': status,
-                'message': message,
-                'duration': duration,
-                'critical': critical,
-                'timestamp': datetime.now().isoformat()
-            })
+            self.verification_results.append(
+                {
+                    "name": name,
+                    "status": status,
+                    "message": message,
+                    "duration": duration,
+                    "critical": critical,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
             return result
 
@@ -58,30 +60,29 @@ class PostDeploymentVerification:
             duration = time.time() - start_time
             print(f"  ❌ {name}: Error - {str(e)} ({duration:.2f}s)")
 
-            self.verification_results.append({
-                'name': name,
-                'status': "ERROR",
-                'message': str(e),
-                'duration': duration,
-                'critical': critical,
-                'timestamp': datetime.now().isoformat()
-            })
+            self.verification_results.append(
+                {
+                    "name": name,
+                    "status": "ERROR",
+                    "message": str(e),
+                    "duration": duration,
+                    "critical": critical,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
             return False
 
     def verify_service_health(self) -> tuple[bool, str]:
         """サービスヘルスチェック"""
-        base_url = self.urls.get(self.environment, '')
+        base_url = self.urls.get(self.environment, "")
 
         try:
-            response = requests.get(
-                f"{base_url}/health",
-                timeout=10
-            )
+            response = requests.get(f"{base_url}/health", timeout=10)
 
             if response.status_code == 200:
                 data = response.json()
-                if data.get('status') == 'healthy':
+                if data.get("status") == "healthy":
                     return True, "Service is healthy"
                 else:
                     return False, f"Service unhealthy: {data.get('message', 'Unknown')}"
@@ -93,22 +94,15 @@ class PostDeploymentVerification:
 
     def verify_api_endpoints(self) -> tuple[bool, str]:
         """主要APIエンドポイントの確認"""
-        base_url = self.urls.get(self.environment, '')
+        base_url = self.urls.get(self.environment, "")
 
         # Test critical endpoints
-        endpoints = [
-            '/api/v1/status',
-            '/api/v1/workers',
-            '/api/v1/tasks'
-        ]
+        endpoints = ["/api/v1/status", "/api/v1/workers", "/api/v1/tasks"]
 
         failed = []
         for endpoint in endpoints:
             try:
-                response = requests.get(
-                    f"{base_url}{endpoint}",
-                    timeout=5
-                )
+                response = requests.get(f"{base_url}{endpoint}", timeout=5)
                 if response.status_code >= 500:
                     failed.append(f"{endpoint} ({response.status_code})")
             except:
@@ -121,17 +115,14 @@ class PostDeploymentVerification:
 
     def verify_worker_status(self) -> tuple[bool, str]:
         """ワーカーステータスの確認"""
-        base_url = self.urls.get(self.environment, '')
+        base_url = self.urls.get(self.environment, "")
 
         try:
-            response = requests.get(
-                f"{base_url}/api/v1/workers/status",
-                timeout=10
-            )
+            response = requests.get(f"{base_url}/api/v1/workers/status", timeout=10)
 
             if response.status_code == 200:
                 data = response.json()
-                active_workers = data.get('active_workers', 0)
+                active_workers = data.get("active_workers", 0)
 
                 if active_workers > 0:
                     return True, f"{active_workers} workers active"
@@ -154,7 +145,7 @@ class PostDeploymentVerification:
                 ["tail", "-n", "10", migration_log],
                 capture_output=True,
                 text=True,
-                timeout=5
+                timeout=5,
             )
 
             if "Migration completed successfully" in result.stdout:
@@ -167,22 +158,15 @@ class PostDeploymentVerification:
 
     def verify_static_assets(self) -> tuple[bool, str]:
         """静的アセットの確認"""
-        base_url = self.urls.get(self.environment, '')
+        base_url = self.urls.get(self.environment, "")
 
         # Check if key static files are accessible
-        static_files = [
-            '/static/css/main.css',
-            '/static/js/app.js',
-            '/favicon.ico'
-        ]
+        static_files = ["/static/css/main.css", "/static/js/app.js", "/favicon.ico"]
 
         missing = []
         for file_path in static_files:
             try:
-                response = requests.head(
-                    f"{base_url}{file_path}",
-                    timeout=3
-                )
+                response = requests.head(f"{base_url}{file_path}", timeout=3)
                 if response.status_code >= 400:
                     missing.append(file_path)
             except:
@@ -195,13 +179,10 @@ class PostDeploymentVerification:
 
     def verify_monitoring(self) -> tuple[bool, str]:
         """モニタリングシステムの確認"""
-        base_url = self.urls.get(self.environment, '')
+        base_url = self.urls.get(self.environment, "")
 
         try:
-            response = requests.get(
-                f"{base_url}/metrics",
-                timeout=5
-            )
+            response = requests.get(f"{base_url}/metrics", timeout=5)
 
             if response.status_code == 200:
                 # Check if we're getting Prometheus metrics
@@ -243,9 +224,9 @@ class PostDeploymentVerification:
         # Summary
         print("\n" + "=" * 50)
         total = len(self.verification_results)
-        passed = sum(1 for r in self.verification_results if r['status'] == 'PASS')
-        failed = sum(1 for r in self.verification_results if r['status'] == 'FAIL')
-        errors = sum(1 for r in self.verification_results if r['status'] == 'ERROR')
+        passed = sum(1 for r in self.verification_results if r["status"] == "PASS")
+        failed = sum(1 for r in self.verification_results if r["status"] == "FAIL")
+        errors = sum(1 for r in self.verification_results if r["status"] == "ERROR")
 
         print(f"📊 Verification Summary:")
         print(f"  Total: {total}")
@@ -264,18 +245,24 @@ class PostDeploymentVerification:
     def save_results(self, output_file: str):
         """検証結果を保存"""
         report = {
-            'environment': self.environment,
-            'timestamp': datetime.now().isoformat(),
-            'summary': {
-                'total': len(self.verification_results),
-                'passed': sum(1 for r in self.verification_results if r['status'] == 'PASS'),
-                'failed': sum(1 for r in self.verification_results if r['status'] == 'FAIL'),
-                'errors': sum(1 for r in self.verification_results if r['status'] == 'ERROR'),
+            "environment": self.environment,
+            "timestamp": datetime.now().isoformat(),
+            "summary": {
+                "total": len(self.verification_results),
+                "passed": sum(
+                    1 for r in self.verification_results if r["status"] == "PASS"
+                ),
+                "failed": sum(
+                    1 for r in self.verification_results if r["status"] == "FAIL"
+                ),
+                "errors": sum(
+                    1 for r in self.verification_results if r["status"] == "ERROR"
+                ),
             },
-            'results': self.verification_results
+            "results": self.verification_results,
         }
 
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             json.dump(report, f, indent=2)
 
         print(f"📁 Verification report saved to {output_file}")
@@ -283,12 +270,13 @@ class PostDeploymentVerification:
 
 def main():
     parser = argparse.ArgumentParser(description="Post-deployment verification")
-    parser.add_argument("--environment",
-                       choices=['staging', 'production'],
-                       required=True,
-                       help="Deployed environment")
-    parser.add_argument("--output",
-                       help="Output file for verification report")
+    parser.add_argument(
+        "--environment",
+        choices=["staging", "production"],
+        required=True,
+        help="Deployed environment",
+    )
+    parser.add_argument("--output", help="Output file for verification report")
 
     args = parser.parse_args()
 

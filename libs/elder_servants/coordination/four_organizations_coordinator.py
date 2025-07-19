@@ -307,9 +307,9 @@ class FourOrganizationsCoordinator:
             current_workload = self.execution_stats["organization_workload"][domain]
             if current_workload >= org_capability.max_concurrent_tasks:
                 capacity_status["can_execute"] = False
-                capacity_status[
-                    "reason"
-                ] = f"Organization {domain.value} at max capacity"
+                capacity_status["reason"] = (
+                    f"Organization {domain.value} at max capacity"
+                )
                 break
 
             # サーバント可用性チェック
@@ -667,9 +667,9 @@ class FourOrganizationsCoordinator:
                     )
                     phase_results[domain] = result
                     if result.status == "success":
-                        hierarchical_context[
-                            f"{domain.value}_phase_{phase_name}"
-                        ] = result.data
+                        hierarchical_context[f"{domain.value}_phase_{phase_name}"] = (
+                            result.data
+                        )
                     else:
                         errors.extend(result.errors)
                 except Exception as e:
@@ -788,9 +788,9 @@ class FourOrganizationsCoordinator:
         return {
             "average_quality": average_quality,
             "organization_coverage": len(organization_results),
-            "success_rate": valid_results / len(organization_results)
-            if organization_results
-            else 0,
+            "success_rate": (
+                valid_results / len(organization_results) if organization_results else 0
+            ),
         }
 
     def _calculate_coordination_efficiency(

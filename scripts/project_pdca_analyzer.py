@@ -44,23 +44,35 @@ class ProjectPDCAAnalyzer:
         project_path = self.projects_dir / project_name
 
         if not project_path.exists():
-            self.console.print(f"[red]エラー: プロジェクト '{project_name}' が見つかりません[/red]")
+            self.console.print(
+                f"[red]エラー: プロジェクト '{project_name}' が見つかりません[/red]"
+            )
             return
 
         # PDCAデータ読み込み
         pdca_file = project_path / ".pdca" / "pdca_history.json"
         if not pdca_file.exists():
-            self.console.print("[yellow]警告: PDCA履歴が見つかりません。初回分析を実行します。[/yellow]")
+            self.console.print(
+                "[yellow]警告: PDCA履歴が見つかりません。初回分析を実行します。[/yellow]"
+            )
             await self.initialize_pdca(project_path)
 
         with open(pdca_file, "r", encoding="utf-8") as f:
             pdca_data = json.load(f)
 
         # 分析実行
-        self.console.print(Panel(f"🔄 PDCA分析開始: {project_name}", title="PDCA Analysis", border_style="bright_blue"))
+        self.console.print(
+            Panel(
+                f"🔄 PDCA分析開始: {project_name}",
+                title="PDCA Analysis",
+                border_style="bright_blue",
+            )
+        )
 
         with Progress(
-            SpinnerColumn(), TextColumn("[progress.description]{task.description}"), console=self.console
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            console=self.console,
         ) as progress:
             # Plan: 計画評価
             task = progress.add_task("計画フェーズ分析...", total=None)
@@ -85,13 +97,20 @@ class ProjectPDCAAnalyzer:
             progress.advance(task)
 
         # 結果表示
-        await self.display_analysis_results(project_name, plan_analysis, do_analysis, check_analysis, act_analysis)
+        await self.display_analysis_results(
+            project_name, plan_analysis, do_analysis, check_analysis, act_analysis
+        )
 
         # PDCA履歴更新
         await self.update_pdca_history(
             project_path,
             pdca_data,
-            {"plan": plan_analysis, "do": do_analysis, "check": check_analysis, "act": act_analysis},
+            {
+                "plan": plan_analysis,
+                "do": do_analysis,
+                "check": check_analysis,
+                "act": act_analysis,
+            },
         )
 
         # エルダー評議会への報告
@@ -108,7 +127,14 @@ class ProjectPDCAAnalyzer:
         }
 
         # 計画の完全性チェック
-        required_elements = ["features", "backend", "frontend", "database", "elders_integration", "deployment"]
+        required_elements = [
+            "features",
+            "backend",
+            "frontend",
+            "database",
+            "elders_integration",
+            "deployment",
+        ]
 
         config = pdca_data.get("initial_config", {})
         for element in required_elements:
@@ -120,12 +146,20 @@ class ProjectPDCAAnalyzer:
         # リスク評価
         if len(config.get("features", [])) > 10:
             analysis["risk_assessment"].append(
-                {"type": "scope_creep", "severity": "medium", "description": "機能数が多すぎる可能性があります"}
+                {
+                    "type": "scope_creep",
+                    "severity": "medium",
+                    "description": "機能数が多すぎる可能性があります",
+                }
             )
 
         if "tdd" not in config.get("elders_integration", []):
             analysis["risk_assessment"].append(
-                {"type": "quality_risk", "severity": "high", "description": "TDDが有効化されていません"}
+                {
+                    "type": "quality_risk",
+                    "severity": "high",
+                    "description": "TDDが有効化されていません",
+                }
             )
 
         return analysis
@@ -157,7 +191,9 @@ class ProjectPDCAAnalyzer:
                 if coverage_file.exists():
                     with open(coverage_file, "r") as f:
                         coverage_data = json.load(f)
-                        analysis["test_coverage"] = coverage_data.get("totals", {}).get("percent_covered", 0)
+                        analysis["test_coverage"] = coverage_data.get("totals", {}).get(
+                            "percent_covered", 0
+                        )
             except Exception as e:
                 analysis["issues"].append(f"カバレッジ測定エラー: {e}")
 
@@ -165,9 +201,13 @@ class ProjectPDCAAnalyzer:
         analysis["code_quality_score"] = await self.calculate_code_quality(project_path)
 
         # 実装進捗計算
-        total_files = len(list(project_path.rglob("*.py"))) + len(list(project_path.rglob("*.ts")))
+        total_files = len(list(project_path.rglob("*.py"))) + len(
+            list(project_path.rglob("*.ts"))
+        )
         if total_files > 0:
-            analysis["implementation_progress"] = min(100, (total_files / 50) * 100)  # 50ファイルを100%とする
+            analysis["implementation_progress"] = min(
+                100, (total_files / 50) * 100
+            )  # 50ファイルを100%とする
 
         return analysis
 
@@ -187,7 +227,9 @@ class ProjectPDCAAnalyzer:
             "test_passing_rate": await self.check_test_passing_rate(project_path),
             "lint_score": await self.check_lint_score(project_path),
             "type_coverage": await self.check_type_coverage(project_path),
-            "documentation_coverage": await self.check_documentation_coverage(project_path),
+            "documentation_coverage": await self.check_documentation_coverage(
+                project_path
+            ),
         }
 
         # エルダーズギルド準拠状況
@@ -217,7 +259,12 @@ class ProjectPDCAAnalyzer:
         return analysis
 
     async def analyze_act_phase(
-        self, project_path: Path, pdca_data: Dict, plan_analysis: Dict, do_analysis: Dict, check_analysis: Dict
+        self,
+        project_path: Path,
+        pdca_data: Dict,
+        plan_analysis: Dict,
+        do_analysis: Dict,
+        check_analysis: Dict,
     ) -> Dict:
         """改善フェーズ分析と提案生成"""
         analysis = {
@@ -236,7 +283,11 @@ class ProjectPDCAAnalyzer:
                     "id": "improve_test_coverage",
                     "title": "テストカバレッジ向上",
                     "description": f"現在のカバレッジ {do_analysis['test_coverage']:.1f}% を95%以上に向上",
-                    "actions": ["未テストのモジュールを特定", "エッジケースのテスト追加", "統合テストの強化"],
+                    "actions": [
+                        "未テストのモジュールを特定",
+                        "エッジケースのテスト追加",
+                        "統合テストの強化",
+                    ],
                     "priority": "high",
                     "estimated_hours": 8,
                 }
@@ -249,7 +300,11 @@ class ProjectPDCAAnalyzer:
                     "id": "improve_code_quality",
                     "title": "コード品質向上",
                     "description": "リファクタリングとベストプラクティス適用",
-                    "actions": ["複雑度の高い関数を分割", "型ヒントの追加", "ドキュメントの充実"],
+                    "actions": [
+                        "複雑度の高い関数を分割",
+                        "型ヒントの追加",
+                        "ドキュメントの充実",
+                    ],
                     "priority": "medium",
                     "estimated_hours": 6,
                 }
@@ -264,7 +319,11 @@ class ProjectPDCAAnalyzer:
                             "id": "manage_scope",
                             "title": "スコープ管理改善",
                             "description": "機能の優先順位付けと段階的リリース",
-                            "actions": ["MVP機能の選定", "フェーズ分けの実施", "ユーザーフィードバック収集"],
+                            "actions": [
+                                "MVP機能の選定",
+                                "フェーズ分けの実施",
+                                "ユーザーフィードバック収集",
+                            ],
                             "priority": "high",
                             "estimated_hours": 4,
                         }
@@ -272,7 +331,9 @@ class ProjectPDCAAnalyzer:
 
         # 優先アクション抽出
         analysis["priority_actions"] = [
-            prop for prop in analysis["improvement_proposals"] if prop["priority"] == "high"
+            prop
+            for prop in analysis["improvement_proposals"]
+            if prop["priority"] == "high"
         ][
             :3
         ]  # 上位3つ
@@ -287,7 +348,9 @@ class ProjectPDCAAnalyzer:
 
         return analysis
 
-    async def display_analysis_results(self, project_name: str, plan: Dict, do: Dict, check: Dict, act: Dict):
+    async def display_analysis_results(
+        self, project_name: str, plan: Dict, do: Dict, check: Dict, act: Dict
+    ):
         """分析結果の表示"""
         # サマリーパネル
         self.console.print(
@@ -311,7 +374,11 @@ class ProjectPDCAAnalyzer:
             table.add_column("推定工数", style="green")
 
             for prop in act["improvement_proposals"]:
-                priority_style = {"high": "red", "medium": "yellow", "low": "green"}.get(prop["priority"], "white")
+                priority_style = {
+                    "high": "red",
+                    "medium": "yellow",
+                    "low": "green",
+                }.get(prop["priority"], "white")
 
                 table.add_row(
                     prop["id"],
@@ -333,7 +400,9 @@ class ProjectPDCAAnalyzer:
         for rec in act["next_cycle_recommendations"]:
             self.console.print(f"  • {rec}")
 
-    async def update_pdca_history(self, project_path: Path, pdca_data: Dict, analysis_results: Dict):
+    async def update_pdca_history(
+        self, project_path: Path, pdca_data: Dict, analysis_results: Dict
+    ):
         """PDCA履歴の更新"""
         # 新しいサイクル記録
         new_cycle = {
@@ -343,7 +412,9 @@ class ProjectPDCAAnalyzer:
             "metrics_snapshot": {
                 "test_coverage": analysis_results["do"]["test_coverage"],
                 "code_quality": analysis_results["do"]["code_quality_score"],
-                "implementation_progress": analysis_results["do"]["implementation_progress"],
+                "implementation_progress": analysis_results["do"][
+                    "implementation_progress"
+                ],
             },
         }
 
@@ -358,7 +429,11 @@ class ProjectPDCAAnalyzer:
 
         for proposal in analysis_results["act"]["improvement_proposals"]:
             pdca_data["improvements"].append(
-                {"proposed_at": datetime.now().isoformat(), "proposal": proposal, "status": "pending"}
+                {
+                    "proposed_at": datetime.now().isoformat(),
+                    "proposal": proposal,
+                    "status": "pending",
+                }
             )
 
         # メトリクス更新
@@ -390,7 +465,12 @@ class ProjectPDCAAnalyzer:
             "initial_config": {},
             "cycles": [],
             "improvements": [],
-            "metrics": {"quality_score": 0, "test_coverage": 0, "performance_score": 0, "user_satisfaction": 0},
+            "metrics": {
+                "quality_score": 0,
+                "test_coverage": 0,
+                "performance_score": 0,
+                "user_satisfaction": 0,
+            },
         }
 
         with open(pdca_dir / "pdca_history.json", "w", encoding="utf-8") as f:
@@ -410,11 +490,15 @@ class ProjectPDCAAnalyzer:
             score += 5
 
         # Dockerfileがあれば+5
-        if (project_path / "Dockerfile").exists() or (project_path / "docker-compose.yml").exists():
+        if (project_path / "Dockerfile").exists() or (
+            project_path / "docker-compose.yml"
+        ).exists():
             score += 5
 
         # テストディレクトリがあれば+10
-        if (project_path / "tests").exists() or (project_path / "backend" / "tests").exists():
+        if (project_path / "tests").exists() or (
+            project_path / "backend" / "tests"
+        ).exists():
             score += 10
 
         return min(100, score)

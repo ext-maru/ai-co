@@ -37,13 +37,17 @@ except ImportError:
         class SecurityConfig:
             jwt_secret = "elders-guild-secret-key"
             encryption_key = None
+
         security = SecurityConfig()
+
     config = MockConfig()
 
 logger = logging.getLogger(__name__)
 
+
 class MessageType(Enum):
     """メッセージタイプ"""
+
     # 基本通信
     QUERY = "query"
     RESPONSE = "response"
@@ -64,17 +68,21 @@ class MessageType(Enum):
     ALERT = "alert"
     EMERGENCY = "emergency"
 
+
 class MessagePriority(Enum):
     """メッセージ優先度"""
+
     LOW = 1
     NORMAL = 2
     HIGH = 3
     URGENT = 4
     EMERGENCY = 5
 
+
 @dataclass
 class RabbitMQA2AMessage:
     """RabbitMQ A2Aメッセージ"""
+
     id: str
     sender: str
     recipient: str
@@ -98,7 +106,7 @@ class RabbitMQA2AMessage:
             "expires_at": self.expires_at.isoformat() if self.expires_at else None,
             "payload": self.payload,
             "correlation_id": self.correlation_id,
-            "reply_to": self.reply_to
+            "reply_to": self.reply_to,
         }
 
     @classmethod
@@ -111,10 +119,14 @@ class RabbitMQA2AMessage:
             message_type=MessageType(data["message_type"]),
             priority=MessagePriority(data["priority"]),
             timestamp=datetime.fromisoformat(data["timestamp"]),
-            expires_at=datetime.fromisoformat(data["expires_at"]) if data["expires_at"] else None,
+            expires_at=(
+                datetime.fromisoformat(data["expires_at"])
+                if data["expires_at"]
+                else None
+            ),
             payload=data["payload"],
             correlation_id=data.get("correlation_id"),
-            reply_to=data.get("reply_to")
+            reply_to=data.get("reply_to"),
         )
 
     def to_amqp_message(self, encryption_key: Optional[str] = None) -> Message:
@@ -142,23 +154,27 @@ class RabbitMQA2AMessage:
                 "message_type": self.message_type.value,
                 "sender": self.sender,
                 "recipient": self.recipient,
-                "correlation_id": self.correlation_id
+                "correlation_id": self.correlation_id,
             },
-            expiration=int((self.expires_at - datetime.now()).total_seconds() * 1000) if self.expires_at else None,
+            expiration=(
+                int((self.expires_at - datetime.now()).total_seconds() * 1000)
+                if self.expires_at
+                else None
+            ),
             message_id=self.id,
             timestamp=self.timestamp,
-            reply_to=self.reply_to
+            reply_to=self.reply_to,
         )
 
     @classmethod
-    def from_amqp_message(cls, message: aio_pika.Message, encryption_key: Optional[str] = None) -> "RabbitMQA2AMessage":
+    def from_amqp_message(
+        cls, message: aio_pika.Message, encryption_key: Optional[str] = None
+    ) -> "RabbitMQA2AMessage":
         """AMQP Messageから復元"""
         # JWT検証
         try:
             message_data = jwt.decode(
-                message.body.decode(),
-                config.security.jwt_secret,
-                algorithms=["HS256"]
+                message.body.decode(), config.security.jwt_secret, algorithms=["HS256"]
             )
         except jwt.InvalidTokenError as e:
             logger.error(f"Invalid JWT token: {e}")
@@ -173,6 +189,7 @@ class RabbitMQA2AMessage:
 
         return cls.from_dict(message_data)
 
+
 class RabbitMQA2AClient:
     """RabbitMQ A2A通信クライアント"""
 
@@ -182,7 +199,10 @@ class RabbitMQA2AClient:
 
         # 暗号化キー設定
         if use_encryption:
-            if hasattr(config.security, 'encryption_key') and config.security.encryption_key:
+            if (
+                hasattr(config.security, "encryption_key")
+                and config.security.encryption_key
+            ):
                 self.encryption_key = config.security.encryption_key
             else:
                 # テスト用固定キー
@@ -216,9 +236,7 @@ class RabbitMQA2AClient:
 
             # Exchange作成（エルダーズギルド専用）
             self.exchange = await self.channel.declare_exchange(
-                "elders_guild",
-                ExchangeType.TOPIC,
-                durable=True
+                "elders_guild", ExchangeType.TOPIC, durable=True
             )
 
             # エージェント専用キュー作成
@@ -228,14 +246,11 @@ class RabbitMQA2AClient:
                 arguments={
                     "x-message-ttl": 3600000,  # 1時間TTL
                     "x-max-priority": 5,  # 優先度キュー
-                }
+                },
             )
 
             # ルーティングキーでバインド
-            await self.queue.bind(
-                self.exchange,
-                routing_key=f"agent.{self.agent_id}.#"
-            )
+            await self.queue.bind(self.exchange, routing_key=f"agent.{self.agent_id}.#")
 
             logger.info(f"Connected to RabbitMQ: {self.agent_id}")
 
@@ -264,7 +279,7 @@ class RabbitMQA2AClient:
         payload: Dict[str, Any],
         priority: MessagePriority = MessagePriority.NORMAL,
         expires_in_minutes: int = 60,
-        correlation_id: Optional[str] = None
+        correlation_id: Optional[str] = None,
     ) -> str:
         """メッセージを送信"""
 
@@ -284,7 +299,7 @@ class RabbitMQA2AClient:
             timestamp=datetime.now(),
             expires_at=expires_at,
             payload=payload,
-            correlation_id=correlation_id
+            correlation_id=correlation_id,
         )
 
         # AMQP Messageに変換
@@ -294,18 +309,15 @@ class RabbitMQA2AClient:
         routing_key = f"agent.{recipient}.{message_type.value}"
 
         # メッセージ送信
-        await self.exchange.publish(
-            amqp_message,
-            routing_key=routing_key
-        )
+        await self.exchange.publish(amqp_message, routing_key=routing_key)
 
-        logger.info(f"Message sent: {self.agent_id} -> {recipient} ({message_type.value})")
+        logger.info(
+            f"Message sent: {self.agent_id} -> {recipient} ({message_type.value})"
+        )
         return message_id
 
     async def send_response(
-        self,
-        original_message: RabbitMQA2AMessage,
-        response_payload: Dict[str, Any]
+        self, original_message: RabbitMQA2AMessage, response_payload: Dict[str, Any]
     ) -> str:
         """レスポンスメッセージを送信"""
 
@@ -313,7 +325,7 @@ class RabbitMQA2AClient:
             recipient=original_message.sender,
             message_type=MessageType.RESPONSE,
             payload=response_payload,
-            correlation_id=original_message.id
+            correlation_id=original_message.id,
         )
 
     async def start_consuming(self):
@@ -362,6 +374,7 @@ class RabbitMQA2AClient:
         else:
             logger.warning(f"No handler for message type: {message.message_type}")
 
+
 class RabbitMQFourSagesA2A:
     """RabbitMQ 4賢者間A2A通信システム"""
 
@@ -388,7 +401,7 @@ class RabbitMQFourSagesA2A:
         message_type: MessageType,
         payload: Dict[str, Any],
         exclude: Optional[List[str]] = None,
-        priority: MessagePriority = MessagePriority.NORMAL
+        priority: MessagePriority = MessagePriority.NORMAL,
     ) -> List[str]:
         """全賢者にブロードキャスト"""
         exclude = exclude or []
@@ -406,7 +419,7 @@ class RabbitMQFourSagesA2A:
                     recipient=sage_id,
                     message_type=message_type,
                     payload=payload,
-                    priority=priority
+                    priority=priority,
                 )
                 message_ids.append(message_id)
 
@@ -417,7 +430,7 @@ class RabbitMQFourSagesA2A:
         sage_id: str,
         query: Dict[str, Any],
         timeout: float = 30.0,
-        requester_id: str = "claude_elder"
+        requester_id: str = "claude_elder",
     ) -> Optional[Dict[str, Any]]:
         """特定の賢者に相談"""
         if sage_id not in self.SAGE_IDS:
@@ -434,8 +447,10 @@ class RabbitMQFourSagesA2A:
 
         async def response_handler(message: RabbitMQA2AMessage):
             nonlocal response_data
-            if (message.message_type == MessageType.SAGE_RESPONSE and
-                message.correlation_id == correlation_id):
+            if (
+                message.message_type == MessageType.SAGE_RESPONSE
+                and message.correlation_id == correlation_id
+            ):
                 response_data = message.payload
                 response_received.set()
 
@@ -449,7 +464,7 @@ class RabbitMQFourSagesA2A:
                 message_type=MessageType.SAGE_CONSULTATION,
                 payload=query,
                 correlation_id=correlation_id,
-                priority=MessagePriority.HIGH
+                priority=MessagePriority.HIGH,
             )
 
             # レスポンス待機
@@ -464,16 +479,22 @@ class RabbitMQFourSagesA2A:
             await temp_client.stop_consuming()
             await temp_client.disconnect()
 
+
 # グローバルインスタンス
 rabbitmq_four_sages_a2a = RabbitMQFourSagesA2A()
 
-async def create_rabbitmq_a2a_client(agent_id: str, use_encryption: bool = True) -> RabbitMQA2AClient:
+
+async def create_rabbitmq_a2a_client(
+    agent_id: str, use_encryption: bool = True
+) -> RabbitMQA2AClient:
     """RabbitMQ A2Aクライアントを作成"""
     client = RabbitMQA2AClient(agent_id, use_encryption)
     await client.connect()
     return client
 
+
 if __name__ == "__main__":
+
     async def test_rabbitmq_a2a():
         # テスト実行
         print("🐰 Testing RabbitMQ A2A Communication")
@@ -490,7 +511,7 @@ if __name__ == "__main__":
             if message.message_type == MessageType.QUERY:
                 await client2.send_response(
                     original_message=message,
-                    response_payload={"answer": "Yes, I can hear you via RabbitMQ!"}
+                    response_payload={"answer": "Yes, I can hear you via RabbitMQ!"},
                 )
 
         client2.register_handler(MessageType.QUERY, response_handler)
@@ -503,7 +524,7 @@ if __name__ == "__main__":
             recipient="test_agent_2",
             message_type=MessageType.QUERY,
             payload={"question": "Hello RabbitMQ, can you hear me?"},
-            priority=MessagePriority.HIGH
+            priority=MessagePriority.HIGH,
         )
 
         print(f"✅ Message sent: {message_id}")

@@ -455,17 +455,17 @@ class PredictivePatternLearningSystem:
                 )
 
             # 期待改善効果計算
-            optimization_strategy[
-                "expected_improvement"
-            ] = await self._calculate_expected_improvement(
-                prediction, optimization_strategy["optimizations"]
+            optimization_strategy["expected_improvement"] = (
+                await self._calculate_expected_improvement(
+                    prediction, optimization_strategy["optimizations"]
+                )
             )
 
             # 実装手順生成
-            optimization_strategy[
-                "implementation_steps"
-            ] = await self._generate_implementation_steps(
-                optimization_strategy["optimizations"]
+            optimization_strategy["implementation_steps"] = (
+                await self._generate_implementation_steps(
+                    optimization_strategy["optimizations"]
+                )
             )
 
             return optimization_strategy
@@ -787,7 +787,9 @@ class PredictivePatternLearningSystem:
             similar_tasks = len(
                 [r for r in self.training_data if r.pattern == predicted_pattern]
             )
-            reasoning_parts.append(f"過去の類似タスク {similar_tasks} 件のデータに基づく予測")
+            reasoning_parts.append(
+                f"過去の類似タスク {similar_tasks} 件のデータに基づく予測"
+            )
 
         return "。".join(reasoning_parts)
 
@@ -1086,11 +1088,29 @@ class PredictivePatternLearningSystem:
 
         for optimization in optimizations:
             if optimization["type"] == "completion_time_optimization":
-                steps.extend(["1. 並列処理可能な部分を特定", "2. タスク分割を実行", "3. リソーススケーリングを適用"])
+                steps.extend(
+                    [
+                        "1. 並列処理可能な部分を特定",
+                        "2. タスク分割を実行",
+                        "3. リソーススケーリングを適用",
+                    ]
+                )
             elif optimization["type"] == "resource_optimization":
-                steps.extend(["1. メモリ使用量を最適化", "2. CPU スケジューリングを調整", "3. I/O 処理を最適化"])
+                steps.extend(
+                    [
+                        "1. メモリ使用量を最適化",
+                        "2. CPU スケジューリングを調整",
+                        "3. I/O 処理を最適化",
+                    ]
+                )
             elif optimization["type"] == "success_rate_optimization":
-                steps.extend(["1. エラーハンドリングを強化", "2. 依存関係の事前検証", "3. テストカバレッジを向上"])
+                steps.extend(
+                    [
+                        "1. エラーハンドリングを強化",
+                        "2. 依存関係の事前検証",
+                        "3. テストカバレッジを向上",
+                    ]
+                )
 
         return list(set(steps))  # 重複除去
 

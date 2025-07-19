@@ -15,6 +15,7 @@ from typing import Dict, List, Optional, Any
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class ElderCouncil:
     """エルダーズ評議会"""
 
@@ -33,7 +34,7 @@ class ElderCouncil:
         """評議会記録復元"""
         if self.council_records_file.exists():
             try:
-                with open(self.council_records_file, 'r', encoding='utf-8') as f:
+                with open(self.council_records_file, "r", encoding="utf-8") as f:
                     self.review_history = json.load(f)
                 logger.info("評議会記録を復元しました")
             except Exception as e:
@@ -42,8 +43,10 @@ class ElderCouncil:
     def save_council_records(self):
         """評議会記録保存"""
         try:
-            with open(self.council_records_file, 'w', encoding='utf-8') as f:
-                json.dump(self.review_history, f, indent=2, ensure_ascii=False, default=str)
+            with open(self.council_records_file, "w", encoding="utf-8") as f:
+                json.dump(
+                    self.review_history, f, indent=2, ensure_ascii=False, default=str
+                )
         except Exception as e:
             logger.error(f"評議会記録保存エラー: {e}")
 
@@ -56,7 +59,7 @@ class ElderCouncil:
             "prophecies_reviewed": [],
             "adjustments_made": [],
             "elder_decisions": [],
-            "council_session_id": f"council_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            "council_session_id": f"council_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
         }
 
         for prophecy_name, prophecy in self.prophecy_engine.prophecies.items():
@@ -64,7 +67,9 @@ class ElderCouncil:
 
             # 1. 現在の進捗確認
             current_metrics = await self.collect_current_metrics(prophecy_name)
-            evaluation = self.prophecy_engine.evaluate_prophecy(prophecy_name, current_metrics)
+            evaluation = self.prophecy_engine.evaluate_prophecy(
+                prophecy_name, current_metrics
+            )
 
             # 2. 基準見直しの必要性判定
             needs_adjustment = self.assess_adjustment_need(prophecy_name, evaluation)
@@ -73,12 +78,14 @@ class ElderCouncil:
                 "prophecy_name": prophecy_name,
                 "evaluation": evaluation,
                 "needs_adjustment": needs_adjustment,
-                "adjustment_reasons": []
+                "adjustment_reasons": [],
             }
 
             if needs_adjustment:
                 # 3. エルダーズの儀式実行
-                adjustment = await self.elder_council_decision(prophecy_name, evaluation)
+                adjustment = await self.elder_council_decision(
+                    prophecy_name, evaluation
+                )
                 if adjustment:
                     self.apply_prophecy_adjustment(prophecy_name, adjustment)
                     review_results["adjustments_made"].append(adjustment)
@@ -94,7 +101,8 @@ class ElderCouncil:
         # 履歴は最新30日分のみ保持
         cutoff_date = datetime.now() - timedelta(days=30)
         self.review_history = [
-            record for record in self.review_history
+            record
+            for record in self.review_history
             if datetime.fromisoformat(record["date"]) > cutoff_date
         ]
 
@@ -111,6 +119,7 @@ class ElderCouncil:
         if prophecy_name == "quality_evolution":
             try:
                 from libs.quality_daemon import QualityMetricsCollector
+
                 collector = QualityMetricsCollector()
                 return await collector.collect_all_metrics()
             except ImportError:
@@ -121,7 +130,7 @@ class ElderCouncil:
         return {
             "last_activity": datetime.now().isoformat(),
             "system_health": 100,
-            "user_satisfaction": 85
+            "user_satisfaction": 85,
         }
 
     def assess_adjustment_need(self, prophecy_name: str, evaluation: Dict) -> bool:
@@ -203,16 +212,20 @@ class ElderCouncil:
         # 準備度が70%以下の場合、調整検討
         return readiness < 0.7
 
-    async def elder_council_decision(self, prophecy_name: str, evaluation: Dict) -> Optional[Dict]:
+    async def elder_council_decision(
+        self, prophecy_name: str, evaluation: Dict
+    ) -> Optional[Dict]:
         """エルダーズ評議会の決定"""
         logger.info(f"🧙‍♂️ エルダーズ評議会招集: {prophecy_name}")
 
         # 4賢者の意見を集約
         council_input = {
-            "knowledge_sage": await self.consult_knowledge_sage(prophecy_name, evaluation),
+            "knowledge_sage": await self.consult_knowledge_sage(
+                prophecy_name, evaluation
+            ),
             "task_oracle": await self.consult_task_oracle(prophecy_name, evaluation),
             "crisis_sage": await self.consult_crisis_sage(prophecy_name, evaluation),
-            "rag_mystic": await self.consult_rag_mystic(prophecy_name, evaluation)
+            "rag_mystic": await self.consult_rag_mystic(prophecy_name, evaluation),
         }
 
         logger.info("🏛️ エルダーズ評議会の意見:")
@@ -227,7 +240,9 @@ class ElderCouncil:
 
         return decision
 
-    async def consult_knowledge_sage(self, prophecy_name: str, evaluation: Dict) -> Dict:
+    async def consult_knowledge_sage(
+        self, prophecy_name: str, evaluation: Dict
+    ) -> Dict:
         """📚 ナレッジ賢者への相談"""
         # 過去の経験と知識に基づく判断
         readiness = evaluation.get("gate_status", {}).get("readiness_score", 0)
@@ -237,21 +252,21 @@ class ElderCouncil:
                 "sage": "knowledge_sage",
                 "recommendation": "基準緩和",
                 "reasoning": "過去の経験から、現在の基準は厳しすぎる可能性があります",
-                "confidence": 0.8
+                "confidence": 0.8,
             }
         elif readiness > 0.8:
             return {
                 "sage": "knowledge_sage",
                 "recommendation": "進化促進",
                 "reasoning": "十分な準備が整っており、進化を促進できます",
-                "confidence": 0.9
+                "confidence": 0.9,
             }
         else:
             return {
                 "sage": "knowledge_sage",
                 "recommendation": "現状維持",
                 "reasoning": "現在の進捗は適切なペースです",
-                "confidence": 0.7
+                "confidence": 0.7,
             }
 
     async def consult_task_oracle(self, prophecy_name: str, evaluation: Dict) -> Dict:
@@ -261,7 +276,7 @@ class ElderCouncil:
             "sage": "task_oracle",
             "recommendation": "段階的調整",
             "reasoning": "現在のタスク負荷を考慮して段階的に調整すべきです",
-            "confidence": 0.8
+            "confidence": 0.8,
         }
 
     async def consult_crisis_sage(self, prophecy_name: str, evaluation: Dict) -> Dict:
@@ -271,7 +286,7 @@ class ElderCouncil:
             "sage": "crisis_sage",
             "recommendation": "慎重進行",
             "reasoning": "システムの安定性を最優先に慎重に進めるべきです",
-            "confidence": 0.9
+            "confidence": 0.9,
         }
 
     async def consult_rag_mystic(self, prophecy_name: str, evaluation: Dict) -> Dict:
@@ -281,7 +296,7 @@ class ElderCouncil:
             "sage": "rag_mystic",
             "recommendation": "データ重視",
             "reasoning": "最新のデータに基づいて客観的に判断すべきです",
-            "confidence": 0.8
+            "confidence": 0.8,
         }
 
     def aggregate_council_wisdom(self, council_input: Dict) -> Optional[Dict]:
@@ -298,7 +313,7 @@ class ElderCouncil:
                 recommendations[recommendation] = {
                     "votes": 0,
                     "confidence_sum": 0,
-                    "supporters": []
+                    "supporters": [],
                 }
 
             recommendations[recommendation]["votes"] += 1
@@ -311,14 +326,17 @@ class ElderCouncil:
 
         if best_recommendation[1]["votes"] >= 2:  # 過半数の支持
             action = best_recommendation[0]
-            confidence = best_recommendation[1]["confidence_sum"] / best_recommendation[1]["votes"]
+            confidence = (
+                best_recommendation[1]["confidence_sum"]
+                / best_recommendation[1]["votes"]
+            )
 
             return {
                 "action": action,
                 "confidence": confidence,
                 "supporters": best_recommendation[1]["supporters"],
                 "council_session": datetime.now().isoformat(),
-                "decision_type": "majority"
+                "decision_type": "majority",
             }
         else:
             # 意見が分かれた場合は現状維持
@@ -327,7 +345,7 @@ class ElderCouncil:
                 "confidence": 0.5,
                 "supporters": ["default"],
                 "council_session": datetime.now().isoformat(),
-                "decision_type": "default"
+                "decision_type": "default",
             }
 
     def apply_prophecy_adjustment(self, prophecy_name: str, adjustment: Dict):
@@ -396,26 +414,36 @@ class ElderCouncil:
         cutoff_date = datetime.now() - timedelta(days=days)
 
         return [
-            record for record in self.review_history
+            record
+            for record in self.review_history
             if datetime.fromisoformat(record["date"]) > cutoff_date
         ]
 
     def get_council_statistics(self) -> Dict:
         """評議会統計情報"""
         total_reviews = len(self.review_history)
-        total_adjustments = sum(len(record["adjustments_made"]) for record in self.review_history)
+        total_adjustments = sum(
+            len(record["adjustments_made"]) for record in self.review_history
+        )
 
         recent_reviews = self.get_council_history(30)
-        recent_adjustments = sum(len(record["adjustments_made"]) for record in recent_reviews)
+        recent_adjustments = sum(
+            len(record["adjustments_made"]) for record in recent_reviews
+        )
 
         return {
             "total_council_sessions": total_reviews,
             "total_adjustments": total_adjustments,
             "recent_sessions_30d": len(recent_reviews),
             "recent_adjustments_30d": recent_adjustments,
-            "adjustment_rate": total_adjustments / total_reviews if total_reviews > 0 else 0,
-            "last_session": self.review_history[-1]["date"] if self.review_history else None
+            "adjustment_rate": (
+                total_adjustments / total_reviews if total_reviews > 0 else 0
+            ),
+            "last_session": (
+                self.review_history[-1]["date"] if self.review_history else None
+            ),
         }
+
 
 # 使用例
 async def main():
@@ -432,6 +460,7 @@ async def main():
     # 統計情報表示
     stats = council.get_council_statistics()
     print(json.dumps(stats, indent=2, ensure_ascii=False))
+
 
 if __name__ == "__main__":
     asyncio.run(main())

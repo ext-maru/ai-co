@@ -21,78 +21,94 @@ from functools import wraps
 import json
 
 # Type definitions
-T = TypeVar('T')
+T = TypeVar("T")
 ErrorHandler = Callable[[Exception], Union[T, None]]
+
 
 # Elder Flow専用例外クラス
 class ElderFlowError(Exception):
     """Elder Flow基底例外クラス"""
-    def __init__(self, message: str, error_code: str = "EF000", details: Optional[Dict] = None):
+
+    def __init__(
+        self, message: str, error_code: str = "EF000", details: Optional[Dict] = None
+    ):
         super().__init__(message)
         self.error_code = error_code
         self.details = details or {}
         self.timestamp = datetime.now()
 
+
 class SageConsultationError(ElderFlowError):
     """賢者相談エラー"""
+
     def __init__(self, sage_type: str, message: str, details: Optional[Dict] = None):
         super().__init__(
-            f"Sage consultation failed: {sage_type} - {message}",
-            "EF001",
-            details
+            f"Sage consultation failed: {sage_type} - {message}", "EF001", details
         )
         self.sage_type = sage_type
 
+
 class QualityGateError(ElderFlowError):
     """品質ゲートエラー"""
+
     def __init__(self, gate_name: str, message: str, score: float = 0.0):
         super().__init__(
             f"Quality gate failed: {gate_name} - {message}",
             "EF002",
-            {"gate_name": gate_name, "score": score}
+            {"gate_name": gate_name, "score": score},
         )
         self.gate_name = gate_name
         self.score = score
 
+
 class ServantExecutionError(ElderFlowError):
     """サーバント実行エラー"""
+
     def __init__(self, servant_type: str, message: str, task_id: Optional[str] = None):
         super().__init__(
             f"Servant execution failed: {servant_type} - {message}",
             "EF003",
-            {"servant_type": servant_type, "task_id": task_id}
+            {"servant_type": servant_type, "task_id": task_id},
         )
         self.servant_type = servant_type
 
+
 class GitAutomationError(ElderFlowError):
     """Git自動化エラー"""
+
     def __init__(self, operation: str, message: str, repository: Optional[str] = None):
         super().__init__(
             f"Git automation failed: {operation} - {message}",
             "EF004",
-            {"operation": operation, "repository": repository}
+            {"operation": operation, "repository": repository},
         )
         self.operation = operation
 
+
 class CouncilReportError(ElderFlowError):
     """評議会報告エラー"""
+
     def __init__(self, report_type: str, message: str):
         super().__init__(
             f"Council report failed: {report_type} - {message}",
             "EF005",
-            {"report_type": report_type}
+            {"report_type": report_type},
         )
         self.report_type = report_type
+
 
 # リトライ戦略
 class RetryStrategy(Enum):
     """リトライ戦略"""
+
     EXPONENTIAL = "exponential"  # 指数バックオフ
-    LINEAR = "linear"           # 線形バックオフ
-    FIXED = "fixed"            # 固定間隔
+    LINEAR = "linear"  # 線形バックオフ
+    FIXED = "fixed"  # 固定間隔
+
 
 class RetryConfig:
     """リトライ設定"""
+
     def __init__(
         self,
         max_attempts: int = 3,
@@ -100,7 +116,7 @@ class RetryConfig:
         base_delay: float = 1.0,
         max_delay: float = 60.0,
         exponential_base: float = 2.0,
-        jitter: bool = True
+        jitter: bool = True,
     ):
         self.max_attempts = max_attempts
         self.strategy = strategy
@@ -112,7 +128,9 @@ class RetryConfig:
     def get_delay(self, attempt: int) -> float:
         """リトライ遅延時間を計算"""
         if self.strategy == RetryStrategy.EXPONENTIAL:
-            delay = min(self.base_delay * (self.exponential_base ** attempt), self.max_delay)
+            delay = min(
+                self.base_delay * (self.exponential_base**attempt), self.max_delay
+            )
         elif self.strategy == RetryStrategy.LINEAR:
             delay = min(self.base_delay * attempt, self.max_delay)
         else:  # FIXED
@@ -121,25 +139,30 @@ class RetryConfig:
         # ジッター追加（ランダム性）
         if self.jitter:
             import random
-            delay *= (0.5 + random.random())
+
+            delay *= 0.5 + random.random()
 
         return delay
+
 
 # サーキットブレーカー
 class CircuitState(Enum):
     """サーキットブレーカー状態"""
-    CLOSED = "closed"      # 正常（通電）
-    OPEN = "open"         # 異常（遮断）
+
+    CLOSED = "closed"  # 正常（通電）
+    OPEN = "open"  # 異常（遮断）
     HALF_OPEN = "half_open"  # 半開（テスト中）
+
 
 class CircuitBreaker:
     """サーキットブレーカーパターン実装"""
+
     def __init__(
         self,
         name: str,
         failure_threshold: int = 5,
         recovery_timeout: float = 60.0,
-        expected_exception: type = Exception
+        expected_exception: type = Exception,
     ):
         self.name = name
         self.failure_threshold = failure_threshold
@@ -161,7 +184,7 @@ class CircuitBreaker:
                 raise ElderFlowError(
                     f"Circuit breaker {self.name} is OPEN",
                     "EF100",
-                    {"state": self.state.value, "failures": self.failure_count}
+                    {"state": self.state.value, "failures": self.failure_count},
                 )
 
         try:
@@ -175,8 +198,9 @@ class CircuitBreaker:
     def _should_attempt_reset(self) -> bool:
         """リセットを試みるべきか判定"""
         return (
-            self.last_failure_time and
-            datetime.now() - self.last_failure_time > timedelta(seconds=self.recovery_timeout)
+            self.last_failure_time
+            and datetime.now() - self.last_failure_time
+            > timedelta(seconds=self.recovery_timeout)
         )
 
     def _on_success(self):
@@ -195,6 +219,7 @@ class CircuitBreaker:
         if self.failure_count >= self.failure_threshold:
             self.logger.warning(f"Circuit breaker {self.name} tripped to OPEN")
             self.state = CircuitState.OPEN
+
 
 # エラーハンドラークラス
 class ElderFlowErrorHandler:
@@ -230,10 +255,14 @@ class ElderFlowErrorHandler:
                             self.logger.info(f"Retrying in {delay:.2f} seconds...")
                             await asyncio.sleep(delay)
                         else:
-                            self.logger.error(f"All {config.max_attempts} attempts failed")
+                            self.logger.error(
+                                f"All {config.max_attempts} attempts failed"
+                            )
 
                 raise last_exception
+
             return wrapper
+
         return decorator
 
     def register_recovery_strategy(self, error_type: type, strategy: ErrorHandler):
@@ -247,23 +276,33 @@ class ElderFlowErrorHandler:
             self.circuit_breakers[name] = CircuitBreaker(name, **kwargs)
         return self.circuit_breakers[name]
 
-    async def handle_error(self, error: Exception, context: Dict[str, Any]) -> Optional[Any]:
+    async def handle_error(
+        self, error: Exception, context: Dict[str, Any]
+    ) -> Optional[Any]:
         """エラーハンドリング実行"""
         # エラー履歴に記録
-        self.error_history.append({
-            "timestamp": datetime.now(),
-            "error_type": type(error).__name__,
-            "message": str(error),
-            "context": context,
-            "traceback": traceback.format_exc()
-        })
+        self.error_history.append(
+            {
+                "timestamp": datetime.now(),
+                "error_type": type(error).__name__,
+                "message": str(error),
+                "context": context,
+                "traceback": traceback.format_exc(),
+            }
+        )
 
         # リカバリー戦略を検索
         for error_type, strategy in self.recovery_strategies.items():
             if isinstance(error, error_type):
-                self.logger.info(f"Applying recovery strategy for {error_type.__name__}")
+                self.logger.info(
+                    f"Applying recovery strategy for {error_type.__name__}"
+                )
                 try:
-                    return await strategy(error) if asyncio.iscoroutinefunction(strategy) else strategy(error)
+                    return (
+                        await strategy(error)
+                        if asyncio.iscoroutinefunction(strategy)
+                        else strategy(error)
+                    )
                 except Exception as recovery_error:
                     self.logger.error(f"Recovery strategy failed: {recovery_error}")
 
@@ -271,7 +310,7 @@ class ElderFlowErrorHandler:
         if isinstance(error, ElderFlowError):
             self.logger.error(
                 f"Elder Flow Error [{error.error_code}]: {error}",
-                extra={"details": error.details}
+                extra={"details": error.details},
             )
         else:
             self.logger.error(f"Unhandled error: {error}")
@@ -295,17 +334,19 @@ class ElderFlowErrorHandler:
             "error_types": error_types,
             "last_error": self.error_history[-1] if self.error_history else None,
             "circuit_breakers": {
-                name: cb.state.value
-                for name, cb in self.circuit_breakers.items()
-            }
+                name: cb.state.value for name, cb in self.circuit_breakers.items()
+            },
         }
+
 
 # グローバルエラーハンドラーインスタンス
 error_handler = ElderFlowErrorHandler()
 
+
 # 便利なデコレータ
 def with_error_handling(func: Callable[..., T]) -> Callable[..., T]:
     """エラーハンドリング付きデコレータ"""
+
     @wraps(func)
     async def wrapper(*args, **kwargs) -> T:
         try:
@@ -314,26 +355,28 @@ def with_error_handling(func: Callable[..., T]) -> Callable[..., T]:
             context = {
                 "function": func.__name__,
                 "args": str(args),
-                "kwargs": str(kwargs)
+                "kwargs": str(kwargs),
             }
             result = await error_handler.handle_error(e, context)
             if result is not None:
                 return result
             raise
+
     return wrapper
+
 
 # エクスポート
 __all__ = [
-    'ElderFlowError',
-    'SageConsultationError',
-    'QualityGateError',
-    'ServantExecutionError',
-    'GitAutomationError',
-    'CouncilReportError',
-    'RetryStrategy',
-    'RetryConfig',
-    'CircuitBreaker',
-    'ElderFlowErrorHandler',
-    'error_handler',
-    'with_error_handling'
+    "ElderFlowError",
+    "SageConsultationError",
+    "QualityGateError",
+    "ServantExecutionError",
+    "GitAutomationError",
+    "CouncilReportError",
+    "RetryStrategy",
+    "RetryConfig",
+    "CircuitBreaker",
+    "ElderFlowErrorHandler",
+    "error_handler",
+    "with_error_handling",
 ]

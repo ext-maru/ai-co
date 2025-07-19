@@ -18,15 +18,19 @@ from typing import Dict, List, Optional, Any, Union
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class EvolutionTrigger(Enum):
     """進化トリガー種別"""
+
     AUTOMATIC = "automatic"
     MANUAL_APPROVAL = "manual_approval"
     ELDER_COUNCIL = "elder_council"
 
+
 @dataclass
 class Criterion:
     """進化条件"""
+
     name: str
     operator: str  # ">=", "<=", "==", "!=", ">", "<"
     target_value: Any
@@ -50,12 +54,16 @@ class Criterion:
                 return current_value < self.target_value
             return False
         except (TypeError, ValueError):
-            logger.warning(f"条件評価エラー: {self.name} {current_value} {self.operator} {self.target_value}")
+            logger.warning(
+                f"条件評価エラー: {self.name} {current_value} {self.operator} {self.target_value}"
+            )
             return False
+
 
 @dataclass
 class Gate:
     """進化ゲート"""
+
     gate_id: str
     target_phase: int
     criteria: List[Criterion]
@@ -81,7 +89,7 @@ class Gate:
                 "target": criterion.target_value,
                 "operator": criterion.operator,
                 "weight": criterion.weight,
-                "description": criterion.description
+                "description": criterion.description,
             }
 
             if passed:
@@ -101,16 +109,17 @@ class Gate:
             "is_ready": readiness_score >= 1.0,
             "criteria_results": results,
             "missing_criteria": [
-                name for name, result in results.items()
-                if not result["passed"]
+                name for name, result in results.items() if not result["passed"]
             ],
             "stability_days": self.stability_days,
-            "trigger": self.trigger.value
+            "trigger": self.trigger.value,
         }
+
 
 @dataclass
 class Phase:
     """進化フェーズ"""
+
     phase_id: int
     name: str
     description: str
@@ -124,9 +133,11 @@ class Phase:
         if self.requirements is None:
             self.requirements = []
 
+
 @dataclass
 class Prophecy:
     """予言書"""
+
     prophecy_name: str
     description: str
     phases: List[Phase]
@@ -143,7 +154,9 @@ class Prophecy:
 
     def get_next_gate(self, current_phase_id: int) -> Optional[Gate]:
         """次のゲートを取得"""
-        current_phase = next((p for p in self.phases if p.phase_id == current_phase_id), None)
+        current_phase = next(
+            (p for p in self.phases if p.phase_id == current_phase_id), None
+        )
         if current_phase and current_phase.gates:
             return current_phase.gates[0]  # 通常は1つのゲートのみ
         return None
@@ -151,6 +164,7 @@ class Prophecy:
     def get_phase_by_id(self, phase_id: int) -> Optional[Phase]:
         """フェーズIDでフェーズを取得"""
         return next((p for p in self.phases if p.phase_id == phase_id), None)
+
 
 class ProphecyEngine:
     """予言書エンジン"""
@@ -174,7 +188,7 @@ class ProphecyEngine:
         """状態復元"""
         if self.state_file.exists():
             try:
-                with open(self.state_file, 'r', encoding='utf-8') as f:
+                with open(self.state_file, "r", encoding="utf-8") as f:
                     self.active_prophecies = json.load(f)
                 # logger.info("予言書状態を復元しました")  # ログ出力を削減
             except Exception as e:
@@ -182,7 +196,7 @@ class ProphecyEngine:
 
         if self.history_file.exists():
             try:
-                with open(self.history_file, 'r', encoding='utf-8') as f:
+                with open(self.history_file, "r", encoding="utf-8") as f:
                     self.prophecy_history = json.load(f)
                 # logger.info("予言書履歴を復元しました")  # ログ出力を削減
             except Exception as e:
@@ -191,11 +205,15 @@ class ProphecyEngine:
     def save_state(self):
         """状態保存"""
         try:
-            with open(self.state_file, 'w', encoding='utf-8') as f:
-                json.dump(self.active_prophecies, f, indent=2, ensure_ascii=False, default=str)
+            with open(self.state_file, "w", encoding="utf-8") as f:
+                json.dump(
+                    self.active_prophecies, f, indent=2, ensure_ascii=False, default=str
+                )
 
-            with open(self.history_file, 'w', encoding='utf-8') as f:
-                json.dump(self.prophecy_history, f, indent=2, ensure_ascii=False, default=str)
+            with open(self.history_file, "w", encoding="utf-8") as f:
+                json.dump(
+                    self.prophecy_history, f, indent=2, ensure_ascii=False, default=str
+                )
 
         except Exception as e:
             logger.error(f"状態保存エラー: {e}")
@@ -210,7 +228,7 @@ class ProphecyEngine:
                 "last_evolution": None,
                 "stability_start": None,
                 "metrics_history": [],
-                "created_at": datetime.now().isoformat()
+                "created_at": datetime.now().isoformat(),
             }
 
         logger.info(f"予言書 '{prophecy.prophecy_name}' を登録しました")
@@ -219,7 +237,7 @@ class ProphecyEngine:
     def load_prophecy_from_yaml(self, yaml_path: Path) -> Optional[Prophecy]:
         """YAMLファイルから予言書を読み込み"""
         try:
-            with open(yaml_path, 'r', encoding='utf-8') as f:
+            with open(yaml_path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f)
 
             prophecy = self.parse_prophecy_data(data)
@@ -249,12 +267,14 @@ class ProphecyEngine:
                                 operator = ">="
                                 value = condition
 
-                            criteria.append(Criterion(
-                                name=name,
-                                operator=operator,
-                                target_value=value,
-                                weight=1.0
-                            ))
+                            criteria.append(
+                                Criterion(
+                                    name=name,
+                                    operator=operator,
+                                    target_value=value,
+                                    weight=1.0,
+                                )
+                            )
 
                 gate = Gate(
                     gate_id=gate_data["gate_id"],
@@ -263,7 +283,7 @@ class ProphecyEngine:
                     evolution_actions=gate_data.get("evolution_actions", []),
                     stability_days=gate_data.get("stability_days", 7),
                     trigger=EvolutionTrigger(gate_data.get("trigger", "automatic")),
-                    description=gate_data.get("description", "")
+                    description=gate_data.get("description", ""),
                 )
                 gates.append(gate)
 
@@ -273,7 +293,7 @@ class ProphecyEngine:
                 description=phase_data.get("description", ""),
                 gates=gates,
                 features=phase_data.get("features", []),
-                requirements=phase_data.get("requirements", [])
+                requirements=phase_data.get("requirements", []),
             )
             phases.append(phase)
 
@@ -285,7 +305,7 @@ class ProphecyEngine:
             updated_at=data.get("updated_at", datetime.now().isoformat()),
             version=data.get("version", "1.0"),
             category=data.get("category", "general"),
-            author=data.get("author", "Claude Elder")
+            author=data.get("author", "Claude Elder"),
         )
 
         return prophecy
@@ -297,14 +317,14 @@ class ProphecyEngine:
         operators = [">=", "<=", "==", "!=", ">", "<"]
         for op in operators:
             if condition.startswith(op):
-                value_str = condition[len(op):].strip()
+                value_str = condition[len(op) :].strip()
                 # パーセント記号を削除
-                if value_str.endswith('%'):
+                if value_str.endswith("%"):
                     value_str = value_str[:-1]
 
                 # 数値変換
                 try:
-                    if '.' in value_str:
+                    if "." in value_str:
                         value = float(value_str)
                     else:
                         value = int(value_str)
@@ -325,10 +345,9 @@ class ProphecyEngine:
         state = self.active_prophecies[prophecy_name]
 
         # メトリクス履歴に追加
-        state["metrics_history"].append({
-            "timestamp": datetime.now().isoformat(),
-            "metrics": current_metrics.copy()
-        })
+        state["metrics_history"].append(
+            {"timestamp": datetime.now().isoformat(), "metrics": current_metrics.copy()}
+        )
 
         # 履歴は最新100件のみ保持
         if len(state["metrics_history"]) > 100:
@@ -343,7 +362,7 @@ class ProphecyEngine:
             return {
                 "status": "Final phase reached",
                 "phase": current_phase.phase_id,
-                "phase_name": current_phase.name
+                "phase_name": current_phase.name,
             }
 
         gate_status = next_gate.evaluate_readiness(current_metrics)
@@ -358,8 +377,10 @@ class ProphecyEngine:
             "gate_status": gate_status,
             "stability_info": stability_info,
             "evolution_ready": gate_status["is_ready"] and stability_info["is_stable"],
-            "next_actions": next_gate.evolution_actions if gate_status["is_ready"] else [],
-            "last_updated": datetime.now().isoformat()
+            "next_actions": (
+                next_gate.evolution_actions if gate_status["is_ready"] else []
+            ),
+            "last_updated": datetime.now().isoformat(),
         }
 
         self.save_state()
@@ -383,17 +404,21 @@ class ProphecyEngine:
 
         prophecy = self.prophecies[prophecy_name]
         current_phase = prophecy.get_current_phase(state)
-        next_gate = prophecy.get_next_gate(current_phase.phase_id) if current_phase else None
+        next_gate = (
+            prophecy.get_next_gate(current_phase.phase_id) if current_phase else None
+        )
         required_days = next_gate.stability_days if next_gate else 7
 
         return {
             "is_stable": stable_days >= required_days,
             "stable_days": stable_days,
             "required_days": required_days,
-            "stability_start": state["stability_start"]
+            "stability_start": state["stability_start"],
         }
 
-    async def execute_evolution(self, prophecy_name: str, gate_id: str, force: bool = False) -> Dict:
+    async def execute_evolution(
+        self, prophecy_name: str, gate_id: str, force: bool = False
+    ) -> Dict:
         """進化実行"""
         if prophecy_name not in self.prophecies:
             return {"error": f"Prophecy {prophecy_name} not found"}
@@ -416,7 +441,7 @@ class ProphecyEngine:
             if not evaluation.get("evolution_ready", False):
                 return {
                     "error": "Evolution conditions not met",
-                    "evaluation": evaluation
+                    "evaluation": evaluation,
                 }
 
         # 進化実行
@@ -428,7 +453,7 @@ class ProphecyEngine:
             "evolution_actions": gate.evolution_actions,
             "executed_at": datetime.now().isoformat(),
             "success": True,
-            "backup_id": None
+            "backup_id": None,
         }
 
         try:
@@ -450,7 +475,9 @@ class ProphecyEngine:
             # 履歴記録
             self.prophecy_history.append(evolution_result)
 
-            logger.info(f"進化完了: {prophecy_name} Phase {current_phase.phase_id} → {gate.target_phase}")
+            logger.info(
+                f"進化完了: {prophecy_name} Phase {current_phase.phase_id} → {gate.target_phase}"
+            )
 
         except Exception as e:
             evolution_result["success"] = False
@@ -462,7 +489,7 @@ class ProphecyEngine:
 
     async def create_backup(self, prophecy_name: str) -> str:
         """バックアップ作成"""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_id = f"{prophecy_name}_backup_{timestamp}"
 
         backup_dir = self.prophecy_dir / "backups" / backup_id
@@ -472,11 +499,11 @@ class ProphecyEngine:
         backup_data = {
             "prophecy_name": prophecy_name,
             "state": self.active_prophecies.get(prophecy_name, {}),
-            "created_at": datetime.now().isoformat()
+            "created_at": datetime.now().isoformat(),
         }
 
         backup_file = backup_dir / "state.json"
-        with open(backup_file, 'w', encoding='utf-8') as f:
+        with open(backup_file, "w", encoding="utf-8") as f:
             json.dump(backup_data, f, indent=2, ensure_ascii=False, default=str)
 
         logger.info(f"バックアップ作成: {backup_id}")
@@ -497,26 +524,36 @@ class ProphecyEngine:
         state = self.active_prophecies[prophecy_name]
 
         current_phase = prophecy.get_current_phase(state)
-        next_gate = prophecy.get_next_gate(current_phase.phase_id) if current_phase else None
+        next_gate = (
+            prophecy.get_next_gate(current_phase.phase_id) if current_phase else None
+        )
 
         return {
             "prophecy_name": prophecy_name,
             "description": prophecy.description,
             "version": prophecy.version,
-            "current_phase": {
-                "phase_id": current_phase.phase_id,
-                "name": current_phase.name,
-                "description": current_phase.description,
-                "features": current_phase.features
-            } if current_phase else None,
-            "next_gate": {
-                "gate_id": next_gate.gate_id,
-                "target_phase": next_gate.target_phase,
-                "criteria_count": len(next_gate.criteria),
-                "stability_days": next_gate.stability_days
-            } if next_gate else None,
+            "current_phase": (
+                {
+                    "phase_id": current_phase.phase_id,
+                    "name": current_phase.name,
+                    "description": current_phase.description,
+                    "features": current_phase.features,
+                }
+                if current_phase
+                else None
+            ),
+            "next_gate": (
+                {
+                    "gate_id": next_gate.gate_id,
+                    "target_phase": next_gate.target_phase,
+                    "criteria_count": len(next_gate.criteria),
+                    "stability_days": next_gate.stability_days,
+                }
+                if next_gate
+                else None
+            ),
             "state": state,
-            "total_phases": len(prophecy.phases)
+            "total_phases": len(prophecy.phases),
         }
 
     def list_prophecies(self) -> List[Dict]:
@@ -524,16 +561,19 @@ class ProphecyEngine:
         result = []
         for name, prophecy in self.prophecies.items():
             state = self.active_prophecies.get(name, {})
-            result.append({
-                "name": name,
-                "description": prophecy.description,
-                "category": prophecy.category,
-                "version": prophecy.version,
-                "current_phase": state.get("current_phase", 1),
-                "total_phases": len(prophecy.phases),
-                "last_updated": prophecy.updated_at
-            })
+            result.append(
+                {
+                    "name": name,
+                    "description": prophecy.description,
+                    "category": prophecy.category,
+                    "version": prophecy.version,
+                    "current_phase": state.get("current_phase", 1),
+                    "total_phases": len(prophecy.phases),
+                    "last_updated": prophecy.updated_at,
+                }
+            )
         return result
+
 
 # 使用例
 async def main():
@@ -555,15 +595,15 @@ async def main():
                         target_phase=2,
                         criteria=[
                             Criterion("test_metric", ">=", 50),
-                            Criterion("stability_metric", ">=", 80)
+                            Criterion("stability_metric", ">=", 80),
                         ],
-                        evolution_actions=["enable_feature_1", "configure_system"]
+                        evolution_actions=["enable_feature_1", "configure_system"],
                     )
-                ]
+                ],
             )
         ],
         created_at=datetime.now().isoformat(),
-        updated_at=datetime.now().isoformat()
+        updated_at=datetime.now().isoformat(),
     )
 
     # 予言書登録
@@ -573,6 +613,7 @@ async def main():
     test_metrics = {"test_metric": 60, "stability_metric": 85}
     result = engine.evaluate_prophecy("test_evolution", test_metrics)
     print(json.dumps(result, indent=2, ensure_ascii=False))
+
 
 if __name__ == "__main__":
     asyncio.run(main())

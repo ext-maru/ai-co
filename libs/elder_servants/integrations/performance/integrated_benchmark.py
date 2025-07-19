@@ -668,21 +668,25 @@ class IntegratedPerformanceBenchmark:
             improvements[test_name] = {
                 "response_time_improvement": (
                     (
-                        baseline.average_response_time_ms
-                        - result.average_response_time_ms
+                        (
+                            baseline.average_response_time_ms
+                            - result.average_response_time_ms
+                        )
+                        / baseline.average_response_time_ms
+                        * 100
                     )
-                    / baseline.average_response_time_ms
-                    * 100
-                )
-                if baseline.average_response_time_ms > 0
-                else 0,
+                    if baseline.average_response_time_ms > 0
+                    else 0
+                ),
                 "throughput_improvement": (
-                    (result.throughput_rps - baseline.throughput_rps)
-                    / baseline.throughput_rps
-                    * 100
-                )
-                if baseline.throughput_rps > 0
-                else 0,
+                    (
+                        (result.throughput_rps - baseline.throughput_rps)
+                        / baseline.throughput_rps
+                        * 100
+                    )
+                    if baseline.throughput_rps > 0
+                    else 0
+                ),
                 "memory_change": result.peak_memory_mb - baseline.peak_memory_mb,
                 "cpu_change": result.average_cpu_percent - baseline.average_cpu_percent,
             }
@@ -707,12 +711,14 @@ class IntegratedPerformanceBenchmark:
                 "best_response_time_ms": best_response_time,
                 "best_throughput_rps": best_throughput,
                 "overall_improvement_percent": (
-                    (baseline.average_response_time_ms - best_response_time)
-                    / baseline.average_response_time_ms
-                    * 100
-                )
-                if baseline.average_response_time_ms > 0
-                else 0,
+                    (
+                        (baseline.average_response_time_ms - best_response_time)
+                        / baseline.average_response_time_ms
+                        * 100
+                    )
+                    if baseline.average_response_time_ms > 0
+                    else 0
+                ),
             },
         )
 
@@ -765,12 +771,18 @@ class IntegratedPerformanceBenchmark:
                 "overall_improvement_percent", 0
             )
             report_lines.extend(
-                ["## 🎯 総合評価", f"**最大パフォーマンス改善: {overall_improvement:.1f}%**", ""]
+                [
+                    "## 🎯 総合評価",
+                    f"**最大パフォーマンス改善: {overall_improvement:.1f}%**",
+                    "",
+                ]
             )
 
             # Iron Will基準判定
             if overall_improvement >= 50.0:  # 50%以上改善
-                report_lines.append("✅ **Iron Will基準達成**: 50%以上のパフォーマンス改善を実現")
+                report_lines.append(
+                    "✅ **Iron Will基準達成**: 50%以上のパフォーマンス改善を実現"
+                )
             else:
                 report_lines.append("⚠️ **Iron Will基準未達**: さらなる最適化が必要")
 

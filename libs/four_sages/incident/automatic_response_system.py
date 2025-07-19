@@ -227,7 +227,9 @@ class AutomaticResponseSystem(EldersServiceLegacy):
 
                 # 承認チェック
                 if rule.approval_required:
-                    logger.warning(f"🔐 Rule {rule.rule_id} requires approval, skipping")
+                    logger.warning(
+                        f"🔐 Rule {rule.rule_id} requires approval, skipping"
+                    )
                     continue
 
                 # ルール実行
@@ -749,9 +751,9 @@ class AutomaticResponseSystem(EldersServiceLegacy):
             "incident_id": execution.incident_id,
             "rule_id": execution.rule_id,
             "started_at": execution.started_at.isoformat(),
-            "completed_at": execution.completed_at.isoformat()
-            if execution.completed_at
-            else None,
+            "completed_at": (
+                execution.completed_at.isoformat() if execution.completed_at else None
+            ),
             "status": execution.status.value,
             "actions_executed": execution.actions_executed,
             "error_messages": execution.error_messages,

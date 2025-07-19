@@ -54,11 +54,17 @@ class ProjectQualityReporter:
         project_path = self.projects_dir / project_name
 
         if not project_path.exists():
-            self.console.print(f"[red]エラー: プロジェクト '{project_name}' が見つかりません[/red]")
+            self.console.print(
+                f"[red]エラー: プロジェクト '{project_name}' が見つかりません[/red]"
+            )
             return
 
         self.console.print(
-            Panel(f"📊 品質レポート生成: {project_name}", title="Quality Report Generation", border_style="bright_blue")
+            Panel(
+                f"📊 品質レポート生成: {project_name}",
+                title="Quality Report Generation",
+                border_style="bright_blue",
+            )
         )
 
         # データ収集
@@ -164,12 +170,17 @@ class ProjectQualityReporter:
                     except:
                         pass
 
-                overview["languages"][lang] = {"files": len(files), "lines": total_lines}
+                overview["languages"][lang] = {
+                    "files": len(files),
+                    "lines": total_lines,
+                }
                 overview["total_files"] += len(files)
                 overview["total_lines"] += total_lines
 
         # プロジェクトサイズ
-        total_size = sum(f.stat().st_size for f in project_path.rglob("*") if f.is_file())
+        total_size = sum(
+            f.stat().st_size for f in project_path.rglob("*") if f.is_file()
+        )
         overview["size_mb"] = round(total_size / (1024 * 1024), 2)
 
         # タイムスタンプ
@@ -210,7 +221,9 @@ class ProjectQualityReporter:
                 if coverage_file.exists():
                     with open(coverage_file, "r") as f:
                         coverage_data = json.load(f)
-                        metrics["test_coverage"] = coverage_data.get("totals", {}).get("percent_covered", 0)
+                        metrics["test_coverage"] = coverage_data.get("totals", {}).get(
+                            "percent_covered", 0
+                        )
             except:
                 pass
 
@@ -236,7 +249,14 @@ class ProjectQualityReporter:
 
     async def collect_test_results(self, project_path: Path) -> Dict:
         """テスト結果収集"""
-        results = {"total_tests": 0, "passed": 0, "failed": 0, "skipped": 0, "duration_seconds": 0, "test_types": {}}
+        results = {
+            "total_tests": 0,
+            "passed": 0,
+            "failed": 0,
+            "skipped": 0,
+            "duration_seconds": 0,
+            "test_types": {},
+        }
 
         # バックエンドテスト
         backend_path = project_path / "backend"
@@ -295,7 +315,10 @@ class ProjectQualityReporter:
                         total_complexity += complexity
                         if complexity > 10:
                             complex_functions.append(
-                                {"file": str(file.relative_to(project_path)), "complexity": complexity}
+                                {
+                                    "file": str(file.relative_to(project_path)),
+                                    "complexity": complexity,
+                                }
                             )
                 except:
                     pass
@@ -309,11 +332,24 @@ class ProjectQualityReporter:
         issues = []
         if not (project_path / ".gitignore").exists():
             issues.append(
-                {"severity": "medium", "type": "missing_file", "message": ".gitignoreファイルが見つかりません"}
+                {
+                    "severity": "medium",
+                    "type": "missing_file",
+                    "message": ".gitignoreファイルが見つかりません",
+                }
             )
 
-        if not (project_path / "requirements.txt").exists() and (project_path / "backend").exists():
-            issues.append({"severity": "high", "type": "missing_file", "message": "requirements.txtが見つかりません"})
+        if (
+            not (project_path / "requirements.txt").exists()
+            and (project_path / "backend").exists()
+        ):
+            issues.append(
+                {
+                    "severity": "high",
+                    "type": "missing_file",
+                    "message": "requirements.txtが見つかりません",
+                }
+            )
 
         analysis["issues"] = issues
 
@@ -341,7 +377,9 @@ class ProjectQualityReporter:
 
                 improvements = pdca_data.get("improvements", [])
                 status["improvements_proposed"] = len(improvements)
-                status["improvements_implemented"] = len([i for i in improvements if i.get("status") == "implemented"])
+                status["improvements_implemented"] = len(
+                    [i for i in improvements if i.get("status") == "implemented"]
+                )
 
         return status
 
@@ -360,14 +398,18 @@ class ProjectQualityReporter:
             with open(project_path / "elders_config.json", "r") as f:
                 config = json.load(f)
                 sages = config.get("four_sages", {})
-                compliance["four_sages_integrated"] = all(sage.get("enabled", False) for sage in sages.values())
+                compliance["four_sages_integrated"] = all(
+                    sage.get("enabled", False) for sage in sages.values()
+                )
 
         # CI/CDチェック
         if (project_path / ".github" / "workflows").exists():
             compliance["cicd_pipeline"] = True
 
         # TDDチェック
-        if (project_path / "pytest.ini").exists() or (project_path / "backend" / "pytest.ini").exists():
+        if (project_path / "pytest.ini").exists() or (
+            project_path / "backend" / "pytest.ini"
+        ).exists():
             compliance["tdd_enabled"] = True
 
         # スコア計算
@@ -398,7 +440,11 @@ class ProjectQualityReporter:
                     "priority": "high",
                     "title": "テストカバレッジ向上",
                     "description": f"現在のカバレッジ {coverage:.1f}% を80%以上に向上させることを推奨します",
-                    "actions": ["未テストのクリティカルパスを特定", "ユニットテストの追加", "統合テストの実装"],
+                    "actions": [
+                        "未テストのクリティカルパスを特定",
+                        "ユニットテストの追加",
+                        "統合テストの実装",
+                    ],
                 }
             )
 
@@ -431,7 +477,11 @@ class ProjectQualityReporter:
                     "priority": "medium",
                     "title": "ドキュメント充実化",
                     "description": "コードドキュメントとユーザーガイドの改善",
-                    "actions": ["主要モジュールへのdocstring追加", "APIドキュメントの自動生成", "ユーザーガイドの作成"],
+                    "actions": [
+                        "主要モジュールへのdocstring追加",
+                        "APIドキュメントの自動生成",
+                        "ユーザーガイドの作成",
+                    ],
                 }
             )
 
@@ -454,7 +504,9 @@ class ProjectQualityReporter:
 """
 
         for lang, stats in data["overview"]["languages"].items():
-            md_content += f"- **{lang}**: {stats['files']}ファイル ({stats['lines']:,}行)\n"
+            md_content += (
+                f"- **{lang}**: {stats['files']}ファイル ({stats['lines']:,}行)\n"
+            )
 
         md_content += f"""
 ## 🎯 品質メトリクス
@@ -495,9 +547,13 @@ class ProjectQualityReporter:
 """
 
         for rec in data["recommendations"]:
-            priority_emoji = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(rec["priority"], "⚪")
+            priority_emoji = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(
+                rec["priority"], "⚪"
+            )
 
-            md_content += f"\n### {priority_emoji} {rec['title']} ({rec['priority']})\n\n"
+            md_content += (
+                f"\n### {priority_emoji} {rec['title']} ({rec['priority']})\n\n"
+            )
             md_content += f"{rec['description']}\n\n"
             md_content += "**アクション:**\n"
             for action in rec["actions"]:
@@ -642,7 +698,11 @@ class ProjectQualityReporter:
     async def generate_summary_report(self):
         """全プロジェクトサマリーレポート生成"""
         self.console.print(
-            Panel("📊 全プロジェクト品質サマリーレポート生成", title="Summary Report", border_style="bright_blue")
+            Panel(
+                "📊 全プロジェクト品質サマリーレポート生成",
+                title="Summary Report",
+                border_style="bright_blue",
+            )
         )
 
         # 全プロジェクトのデータ収集
@@ -650,10 +710,14 @@ class ProjectQualityReporter:
         for project_dir in self.projects_dir.iterdir():
             if project_dir.is_dir():
                 try:
-                    data = await self.collect_project_data(project_dir, project_dir.name)
+                    data = await self.collect_project_data(
+                        project_dir, project_dir.name
+                    )
                     all_projects.append(data)
                 except Exception as e:
-                    self.console.print(f"[yellow]警告: {project_dir.name} のデータ収集に失敗: {e}[/yellow]")
+                    self.console.print(
+                        f"[yellow]警告: {project_dir.name} のデータ収集に失敗: {e}[/yellow]"
+                    )
 
         if not all_projects:
             self.console.print("[red]プロジェクトが見つかりません[/red]")
@@ -673,7 +737,9 @@ class ProjectQualityReporter:
             compliance = f"{project['elders_compliance']['compliance_score']}%"
             recommendations = str(len(project["recommendations"]))
 
-            table.add_row(project["project_name"], coverage, quality, compliance, recommendations)
+            table.add_row(
+                project["project_name"], coverage, quality, compliance, recommendations
+            )
 
         self.console.print(table)
 
@@ -699,8 +765,12 @@ class ProjectQualityReporter:
             return {}
 
         total_coverage = sum(p["quality_metrics"]["test_coverage"] for p in projects)
-        total_quality = sum(p["quality_metrics"]["code_quality_score"] for p in projects)
-        total_compliance = sum(p["elders_compliance"]["compliance_score"] for p in projects)
+        total_quality = sum(
+            p["quality_metrics"]["code_quality_score"] for p in projects
+        )
+        total_compliance = sum(
+            p["elders_compliance"]["compliance_score"] for p in projects
+        )
 
         return {
             "average_test_coverage": total_coverage / len(projects),
@@ -715,10 +785,18 @@ class ProjectQualityReporter:
                 {
                     "project_name": report_data["project_name"],
                     "timestamp": report_data["generated_at"],
-                    "quality_score": report_data["quality_metrics"]["code_quality_score"],
+                    "quality_score": report_data["quality_metrics"][
+                        "code_quality_score"
+                    ],
                     "test_coverage": report_data["quality_metrics"]["test_coverage"],
-                    "compliance_score": report_data["elders_compliance"]["compliance_score"],
-                    "priority_recommendations": [r for r in report_data["recommendations"] if r["priority"] == "high"],
+                    "compliance_score": report_data["elders_compliance"][
+                        "compliance_score"
+                    ],
+                    "priority_recommendations": [
+                        r
+                        for r in report_data["recommendations"]
+                        if r["priority"] == "high"
+                    ],
                 }
             )
 

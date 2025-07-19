@@ -26,11 +26,19 @@ class FourSagesRealSession:
 
     def __init__(self):
         self.monitor = A2AMonitoringSystem()
-        self.session_id = f"four_sages_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        self.session_id = (
+            f"four_sages_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        )
         self.session_log = []
         self.current_problem = None
 
-    def log_sage_communication(self, from_sage: str, to_sage: str, message: str, message_type: str = "collaboration"):
+    def log_sage_communication(
+        self,
+        from_sage: str,
+        to_sage: str,
+        message: str,
+        message_type: str = "collaboration",
+    ):
         """賢者間通信をログに記録"""
         timestamp = datetime.now().isoformat()
 
@@ -86,7 +94,9 @@ class FourSagesRealSession:
             if keyword in query.lower():
                 return response
 
-        return "タスクの実行計画を立案中です。リソースと時間を最適化した方法を提案します。"
+        return (
+            "タスクの実行計画を立案中です。リソースと時間を最適化した方法を提案します。"
+        )
 
     def rag_sage_response(self, query: str, context: Dict) -> str:
         """RAG賢者の応答をシミュレート"""
@@ -141,7 +151,9 @@ class FourSagesRealSession:
         print(f"📤 タスク賢者 → ナレッジ賢者: {comm1['message']}")
 
         knowledge_response = self.knowledge_sage_response(problem_description, {})
-        comm2 = self.log_sage_communication("knowledge_sage", "task_sage", knowledge_response, "query_response")
+        comm2 = self.log_sage_communication(
+            "knowledge_sage", "task_sage", knowledge_response, "query_response"
+        )
 
         print(f"📥 ナレッジ賢者 → タスク賢者: {comm2['message']}")
 
@@ -159,7 +171,9 @@ class FourSagesRealSession:
         print(f"📤 タスク賢者 → RAG賢者: {comm3['message']}")
 
         rag_response = self.rag_sage_response(problem_description, {})
-        comm4 = self.log_sage_communication("rag_sage", "task_sage", rag_response, "query_response")
+        comm4 = self.log_sage_communication(
+            "rag_sage", "task_sage", rag_response, "query_response"
+        )
 
         print(f"📥 RAG賢者 → タスク賢者: {comm4['message']}")
 
@@ -177,7 +191,9 @@ class FourSagesRealSession:
         print(f"📤 RAG賢者 → インシデント賢者: {comm5['message']}")
 
         incident_response = self.incident_sage_response(problem_description, {})
-        comm6 = self.log_sage_communication("incident_sage", "rag_sage", incident_response, "response")
+        comm6 = self.log_sage_communication(
+            "incident_sage", "rag_sage", incident_response, "response"
+        )
 
         print(f"📥 インシデント賢者 → RAG賢者: {comm6['message']}")
 
@@ -186,7 +202,10 @@ class FourSagesRealSession:
         print("-" * 50)
 
         comm7 = self.log_sage_communication(
-            "incident_sage", "task_sage", "リスク評価が完了しました。安全な実装方法を提案します。", "council_decision"
+            "incident_sage",
+            "task_sage",
+            "リスク評価が完了しました。安全な実装方法を提案します。",
+            "council_decision",
         )
 
         print(f"📤 インシデント賢者 → タスク賢者: {comm7['message']}")
@@ -211,7 +230,10 @@ class FourSagesRealSession:
 
         # セッション完了の記録
         comm8 = self.log_sage_communication(
-            "task_sage", "all_sages", "4賢者協調による問題解決が完了しました。", "session_complete"
+            "task_sage",
+            "all_sages",
+            "4賢者協調による問題解決が完了しました。",
+            "session_complete",
         )
 
         print(f"\n✅ {comm8['message']}")
@@ -223,18 +245,27 @@ class FourSagesRealSession:
         report = {
             "session_id": self.session_id,
             "problem": self.current_problem,
-            "start_time": self.session_log[0]["timestamp"] if self.session_log else None,
+            "start_time": (
+                self.session_log[0]["timestamp"] if self.session_log else None
+            ),
             "end_time": self.session_log[-1]["timestamp"] if self.session_log else None,
             "total_communications": len(self.session_log),
             "participants": list(
-                set([comm["from"] for comm in self.session_log] + [comm["to"] for comm in self.session_log])
+                set(
+                    [comm["from"] for comm in self.session_log]
+                    + [comm["to"] for comm in self.session_log]
+                )
             ),
             "communication_pattern": self.session_log,
             "success": True,
         }
 
         # レポートファイルに保存
-        report_file = PROJECT_ROOT / "logs" / f"four_sages_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_file = (
+            PROJECT_ROOT
+            / "logs"
+            / f"four_sages_session_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
         with open(report_file, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
 

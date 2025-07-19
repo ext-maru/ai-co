@@ -44,7 +44,9 @@ def show_scaling_status():
     print(f"  最小ワーカー数: {policy.config['MIN_WORKERS']}")
     print(f"  最大ワーカー数: {policy.config['MAX_WORKERS']}")
     print(f"  スケールアップ閾値: キュー長 > {policy.config['SCALE_UP_QUEUE_LENGTH']}")
-    print(f"  スケールダウン閾値: キュー長 <= {policy.config['SCALE_DOWN_QUEUE_LENGTH']}")
+    print(
+        f"  スケールダウン閾値: キュー長 <= {policy.config['SCALE_DOWN_QUEUE_LENGTH']}"
+    )
     print(f"  クールダウン期間: {policy.config['COOLDOWN_SECONDS']}秒")
 
     # 次のアクション予測

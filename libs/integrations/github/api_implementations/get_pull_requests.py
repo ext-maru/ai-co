@@ -221,11 +221,11 @@ class GitHubGetPullRequestsImplementation:
                     "parameters": params,
                     "total_pages": total_pages or page,
                     "rate_limit_remaining": self.rate_limit_remaining,
-                    "rate_limit_reset": datetime.fromtimestamp(
-                        self.rate_limit_reset
-                    ).isoformat()
-                    if self.rate_limit_reset
-                    else None,
+                    "rate_limit_reset": (
+                        datetime.fromtimestamp(self.rate_limit_reset).isoformat()
+                        if self.rate_limit_reset
+                        else None
+                    ),
                 },
             }
 
@@ -333,9 +333,11 @@ class GitHubGetPullRequestsImplementation:
                 "is_draft": pr.get("draft", False),
                 "is_merged": pr.get("merged", False),
                 "is_closed": pr["state"] == "closed",
-                "has_conflicts": pr.get("mergeable_state") == "dirty"
-                if "mergeable_state" in pr
-                else None,
+                "has_conflicts": (
+                    pr.get("mergeable_state") == "dirty"
+                    if "mergeable_state" in pr
+                    else None
+                ),
                 "review_status": self._get_review_status(pr),
             }
 
@@ -415,11 +417,11 @@ class GitHubGetPullRequestsImplementation:
             "average_age_days": round(average_age, 2),
             "average_size": round(average_size, 2),
             "oldest_pr": max(prs, key=lambda x: x.get("age_days", 0)) if prs else None,
-            "largest_pr": max(
-                prs, key=lambda x: x.get("size_info", {}).get("total_changes", 0)
-            )
-            if prs
-            else None,
+            "largest_pr": (
+                max(prs, key=lambda x: x.get("size_info", {}).get("total_changes", 0))
+                if prs
+                else None
+            ),
         }
 
     def get_pull_request_by_number(self, pr_number: int) -> Dict[str, Any]:
@@ -501,9 +503,11 @@ class GitHubGetPullRequestsImplementation:
             ),
             "commented": sum(1 for r in reviews if r.get("state") == "COMMENTED"),
             "dismissed": sum(1 for r in reviews if r.get("state") == "DISMISSED"),
-            "latest_review": max(reviews, key=lambda x: x.get("submitted_at", ""))
-            if reviews
-            else None,
+            "latest_review": (
+                max(reviews, key=lambda x: x.get("submitted_at", ""))
+                if reviews
+                else None
+            ),
         }
 
         return summary

@@ -158,7 +158,9 @@ class EnhancedGitManager:
         if task_info:
             details.append(f"- **実行ワーカー**: {task_info.get('worker', 'unknown')}")
             details.append(f"- **使用モデル**: {task_info.get('model', 'unknown')}")
-            details.append(f"- **タスクタイプ**: {task_info.get('task_type', 'general')}")
+            details.append(
+                f"- **タスクタイプ**: {task_info.get('task_type', 'general')}"
+            )
 
             # プロンプトの要約
             prompt = task_info.get("prompt", "")
@@ -247,7 +249,8 @@ class EnhancedGitManager:
         if len(first_line) > 40:
             # 重要なキーワードを探す
             keywords = re.findall(
-                r"\b(?:作成|実装|追加|修正|更新|生成|構築)\b.*?(?:[をのに]|$)", first_line
+                r"\b(?:作成|実装|追加|修正|更新|生成|構築)\b.*?(?:[をのに]|$)",
+                first_line,
             )
             if keywords:
                 return keywords[0][:40] + "..."

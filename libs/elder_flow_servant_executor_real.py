@@ -27,10 +27,14 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from libs.elder_flow_servant_executor import (
-    ServantType, ServantStatus, ServantTask, BaseServant
+    ServantType,
+    ServantStatus,
+    ServantTask,
+    BaseServant,
 )
 
 logger = logging.getLogger(__name__)
+
 
 class CodeCraftsmanServantReal(BaseServant):
     """コード職人サーバント - 実装版"""
@@ -44,7 +48,7 @@ class CodeCraftsmanServantReal(BaseServant):
             "generate_code",
             "analyze_code",
             "format_code",
-            "optimize_imports"
+            "optimize_imports",
         ]
 
     async def _execute_specific_task(self, task: ServantTask) -> Dict:
@@ -59,7 +63,7 @@ class CodeCraftsmanServantReal(BaseServant):
             "generate_code": self._generate_code,
             "analyze_code": self._analyze_code,
             "format_code": self._format_code,
-            "optimize_imports": self._optimize_imports
+            "optimize_imports": self._optimize_imports,
         }
 
         if command in command_map:
@@ -79,7 +83,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 file_path.parent.mkdir(parents=True, exist_ok=True)
 
             # ファイルを非同期で書き込み
-            async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
+            async with aiofiles.open(file_path, "w", encoding="utf-8") as f:
                 await f.write(content)
 
             # ファイル情報を取得
@@ -90,7 +94,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "file_path": str(file_path),
                 "size": stat.st_size,
                 "created": True,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -98,7 +102,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "action": "create_file",
                 "file_path": str(file_path),
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     async def _edit_file(self, args: Dict) -> Dict:
@@ -115,11 +119,11 @@ class CodeCraftsmanServantReal(BaseServant):
 
             # バックアップを作成
             if backup:
-                backup_path = file_path.with_suffix(file_path.suffix + '.bak')
+                backup_path = file_path.with_suffix(file_path.suffix + ".bak")
                 shutil.copy2(file_path, backup_path)
 
             # ファイルを読み込み
-            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+            async with aiofiles.open(file_path, "r", encoding="utf-8") as f:
                 content = await f.read()
 
             # 内容を置換
@@ -129,15 +133,17 @@ class CodeCraftsmanServantReal(BaseServant):
             else:
                 # 部分一致を試みる
                 replacements = 0
-                lines = content.split('\n')
+                lines = content.split("\n")
                 for i, line in enumerate(lines):
                     if old_content.strip() in line:
-                        lines[i] = line.replace(old_content.strip(), new_content.strip())
+                        lines[i] = line.replace(
+                            old_content.strip(), new_content.strip()
+                        )
                         replacements += 1
-                content = '\n'.join(lines)
+                content = "\n".join(lines)
 
             # ファイルに書き戻し
-            async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
+            async with aiofiles.open(file_path, "w", encoding="utf-8") as f:
                 await f.write(content)
 
             return {
@@ -145,7 +151,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "file_path": str(file_path),
                 "replacements": replacements,
                 "backup_created": backup,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -153,7 +159,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "action": "edit_file",
                 "file_path": str(file_path),
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     async def _generate_code(self, args: Dict) -> Dict:
@@ -183,7 +189,9 @@ class CodeCraftsmanServantReal(BaseServant):
             if code_type == "class":
                 code = self._generate_class(name, methods, docstring, base_class)
             elif code_type == "function":
-                code = self._generate_function(name, args.get("parameters", []), docstring)
+                code = self._generate_function(
+                    name, args.get("parameters", []), docstring
+                )
             elif code_type == "test":
                 code = self._generate_test_class(name, methods)
             else:
@@ -206,8 +214,8 @@ class CodeCraftsmanServantReal(BaseServant):
                 "code_type": code_type,
                 "name": name,
                 "generated_code": full_code,
-                "lines": len(full_code.split('\n')),
-                "success": True
+                "lines": len(full_code.split("\n")),
+                "success": True,
             }
 
         except Exception as e:
@@ -216,23 +224,25 @@ class CodeCraftsmanServantReal(BaseServant):
                 "code_type": code_type,
                 "name": name,
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
-    def _generate_class(self, name: str, methods: List[Dict], docstring: str, base_class: Optional[str]) -> str:
+    def _generate_class(
+        self, name: str, methods: List[Dict], docstring: str, base_class: Optional[str]
+    ) -> str:
         """クラスコードを生成"""
         inheritance = f"({base_class})" if base_class else ""
 
-        code = f'class {name}{inheritance}:\n'
+        code = f"class {name}{inheritance}:\n"
         if docstring:
             code += f'    """{docstring}"""\n\n'
 
         # __init__メソッド
-        code += '    def __init__(self):\n'
+        code += "    def __init__(self):\n"
         code += '        """Initialize the class"""\n'
         if base_class:
-            code += '        super().__init__()\n'
-        code += '        self.initialized = True\n\n'
+            code += "        super().__init__()\n"
+        code += "        self.initialized = True\n\n"
 
         # その他のメソッド
         for method in methods:
@@ -241,43 +251,48 @@ class CodeCraftsmanServantReal(BaseServant):
             method_docstring = method.get("docstring", "")
 
             param_str = ", ".join(["self"] + params)
-            code += f'    def {method_name}({param_str}):\n'
+            code += f"    def {method_name}({param_str}):\n"
             if method_docstring:
                 code += f'        """{method_docstring}"""\n'
-            code += '        # TODO: Implement this method\n'
-            code += '        pass\n\n'
+            code += "        # TODO: Implement this method\n"
+            code += "        pass\n\n"
 
         return code
 
-    def _generate_function(self, name: str, parameters: List[str], docstring: str) -> str:
+    def _generate_function(
+        self, name: str, parameters: List[str], docstring: str
+    ) -> str:
         """関数コードを生成"""
         param_str = ", ".join(parameters)
 
-        code = f'def {name}({param_str}):\n'
+        code = f"def {name}({param_str}):\n"
         if docstring:
             code += f'    """{docstring}"""\n'
-        code += '    # TODO: Implement this function\n'
-        code += '    pass\n'
+        code += "    # TODO: Implement this function\n"
+        code += "    pass\n"
 
         return code
 
     def _generate_test_class(self, name: str, test_methods: List[Dict]) -> str:
         """テストクラスコードを生成"""
-        code = f'class Test{name}:\n'
+        code = f"class Test{name}:\n"
         code += '    """Test class for ' + name + '"""\n\n'
 
         # setup_methodを追加
-        code += '    def setup_method(self):\n'
+        code += "    def setup_method(self):\n"
         code += '        """Setup test environment"""\n'
-        code += '        self.test_instance = None\n\n'
+        code += "        self.test_instance = None\n\n"
 
         # テストメソッドを追加
         if not test_methods:
             test_methods = [
                 {"name": "test_initialization", "docstring": "Test initialization"},
-                {"name": "test_basic_functionality", "docstring": "Test basic functionality"},
+                {
+                    "name": "test_basic_functionality",
+                    "docstring": "Test basic functionality",
+                },
                 {"name": "test_edge_cases", "docstring": "Test edge cases"},
-                {"name": "test_error_handling", "docstring": "Test error handling"}
+                {"name": "test_error_handling", "docstring": "Test error handling"},
             ]
 
         for method in test_methods:
@@ -287,11 +302,11 @@ class CodeCraftsmanServantReal(BaseServant):
 
             method_docstring = method.get("docstring", "")
 
-            code += f'    def {method_name}(self):\n'
+            code += f"    def {method_name}(self):\n"
             if method_docstring:
                 code += f'        """{method_docstring}"""\n'
-            code += '        # TODO: Implement test\n'
-            code += '        assert True\n\n'
+            code += "        # TODO: Implement test\n"
+            code += "        assert True\n\n"
 
         return code
 
@@ -304,27 +319,37 @@ class CodeCraftsmanServantReal(BaseServant):
                 raise FileNotFoundError(f"File not found: {file_path}")
 
             # ファイルを読み込み
-            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+            async with aiofiles.open(file_path, "r", encoding="utf-8") as f:
                 content = await f.read()
 
             # 基本的なメトリクスを計算
-            lines = content.split('\n')
+            lines = content.split("\n")
             loc = len(lines)
             non_empty_lines = len([line for line in lines if line.strip()])
-            comment_lines = len([line for line in lines if line.strip().startswith('#')])
+            comment_lines = len(
+                [line for line in lines if line.strip().startswith("#")]
+            )
 
             # AST解析
             try:
                 tree = ast.parse(content)
 
                 # クラスと関数をカウント
-                classes = sum(1 for node in ast.walk(tree) if isinstance(node, ast.ClassDef))
-                functions = sum(1 for node in ast.walk(tree) if isinstance(node, ast.FunctionDef))
+                classes = sum(
+                    1 for node in ast.walk(tree) if isinstance(node, ast.ClassDef)
+                )
+                functions = sum(
+                    1 for node in ast.walk(tree) if isinstance(node, ast.FunctionDef)
+                )
 
                 # 複雑度の簡易計算（制御フロー文の数）
-                complexity = sum(1 for node in ast.walk(tree) if isinstance(node, (
-                    ast.If, ast.While, ast.For, ast.ExceptHandler, ast.With
-                )))
+                complexity = sum(
+                    1
+                    for node in ast.walk(tree)
+                    if isinstance(
+                        node, (ast.If, ast.While, ast.For, ast.ExceptHandler, ast.With)
+                    )
+                )
 
             except SyntaxError as e:
                 classes = functions = complexity = 0
@@ -336,21 +361,32 @@ class CodeCraftsmanServantReal(BaseServant):
             issues = []
 
             # 長い行を検出
-            long_lines = [(i+1, len(line)) for i, line in enumerate(lines) if len(line) > 100]
+            long_lines = [
+                (i + 1, len(line)) for i, line in enumerate(lines) if len(line) > 100
+            ]
             if long_lines:
-                issues.append(f"Long lines detected: {len(long_lines)} lines exceed 100 characters")
+                issues.append(
+                    f"Long lines detected: {len(long_lines)} lines exceed 100 characters"
+                )
 
             # TODOコメントを検出
-            todos = [(i+1, line.strip()) for i, line in enumerate(lines) if 'TODO' in line]
+            todos = [
+                (i + 1, line.strip()) for i, line in enumerate(lines) if "TODO" in line
+            ]
             if todos:
                 issues.append(f"TODO comments found: {len(todos)} items")
 
             # ドキュメント不足を検出
             if functions > 0:
-                docstring_count = sum(1 for node in ast.walk(tree)
-                                    if isinstance(node, ast.FunctionDef) and ast.get_docstring(node))
+                docstring_count = sum(
+                    1
+                    for node in ast.walk(tree)
+                    if isinstance(node, ast.FunctionDef) and ast.get_docstring(node)
+                )
                 if docstring_count < functions * 0.8:
-                    issues.append("Insufficient documentation: Less than 80% of functions have docstrings")
+                    issues.append(
+                        "Insufficient documentation: Less than 80% of functions have docstrings"
+                    )
 
             return {
                 "action": "analyze_code",
@@ -362,11 +398,13 @@ class CodeCraftsmanServantReal(BaseServant):
                     "classes": classes,
                     "functions": functions,
                     "complexity": complexity,
-                    "code_quality": self._calculate_quality_score(loc, comment_lines, complexity, issues)
+                    "code_quality": self._calculate_quality_score(
+                        loc, comment_lines, complexity, issues
+                    ),
                 },
                 "issues": issues,
                 "syntax_error": syntax_error,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -374,10 +412,12 @@ class CodeCraftsmanServantReal(BaseServant):
                 "action": "analyze_code",
                 "file_path": str(file_path),
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
-    def _calculate_quality_score(self, loc: int, comments: int, complexity: int, issues: List[str]) -> str:
+    def _calculate_quality_score(
+        self, loc: int, comments: int, complexity: int, issues: List[str]
+    ) -> str:
         """コード品質スコアを計算"""
         score = 100
 
@@ -413,7 +453,7 @@ class CodeCraftsmanServantReal(BaseServant):
 
         try:
             # ファイルを読み込み
-            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+            async with aiofiles.open(file_path, "r", encoding="utf-8") as f:
                 content = await f.read()
 
             original_content = content
@@ -436,7 +476,7 @@ class CodeCraftsmanServantReal(BaseServant):
 
             # 変更があった場合のみ書き込み
             if content != original_content:
-                async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
+                async with aiofiles.open(file_path, "w", encoding="utf-8") as f:
                     await f.write(content)
                 changed = True
             else:
@@ -448,7 +488,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "changed": changed,
                 "black_applied": black_applied,
                 "isort_applied": isort_applied,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -456,7 +496,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "action": "format_code",
                 "file_path": str(file_path),
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     async def _optimize_imports(self, args: Dict) -> Dict:
@@ -465,7 +505,7 @@ class CodeCraftsmanServantReal(BaseServant):
 
         try:
             # ファイルを読み込み
-            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+            async with aiofiles.open(file_path, "r", encoding="utf-8") as f:
                 content = await f.read()
 
             # ASTを解析
@@ -503,7 +543,7 @@ class CodeCraftsmanServantReal(BaseServant):
 
             # ファイルに書き戻し
             if optimized_content != content:
-                async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
+                async with aiofiles.open(file_path, "w", encoding="utf-8") as f:
                     await f.write(optimized_content)
                 changed = True
             else:
@@ -515,7 +555,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "total_imports": len(imports),
                 "unused_imports": unused_imports,
                 "changed": changed,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -523,7 +563,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "action": "optimize_imports",
                 "file_path": str(file_path),
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     async def _refactor_code(self, args: Dict) -> Dict:
@@ -533,7 +573,7 @@ class CodeCraftsmanServantReal(BaseServant):
 
         try:
             # ファイルを読み込み
-            async with aiofiles.open(file_path, 'r', encoding='utf-8') as f:
+            async with aiofiles.open(file_path, "r", encoding="utf-8") as f:
                 content = await f.read()
 
             original_content = content
@@ -546,18 +586,24 @@ class CodeCraftsmanServantReal(BaseServant):
                 for node in ast.walk(tree):
                     if isinstance(node, ast.FunctionDef):
                         # 関数の行数を計算
-                        if hasattr(node, 'lineno') and hasattr(node, 'end_lineno'):
+                        if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
                             func_lines = node.end_lineno - node.lineno
                             if func_lines > 20:
-                                improvements.append(f"Consider extracting method from {node.name} (lines: {func_lines})")
+                                improvements.append(
+                                    f"Consider extracting method from {node.name} (lines: {func_lines})"
+                                )
 
             if refactor_type in ["general", "reduce_complexity"]:
                 # 複雑な条件を簡略化
-                improvements.append("Consider simplifying complex conditional statements")
+                improvements.append(
+                    "Consider simplifying complex conditional statements"
+                )
 
             if refactor_type in ["general", "add_type_hints"]:
                 # 型ヒントの追加を提案
-                improvements.append("Consider adding type hints to function parameters and return values")
+                improvements.append(
+                    "Consider adding type hints to function parameters and return values"
+                )
 
             # コードフォーマットを適用
             try:
@@ -570,7 +616,7 @@ class CodeCraftsmanServantReal(BaseServant):
 
             # 変更があった場合は保存
             if content != original_content:
-                async with aiofiles.open(file_path, 'w', encoding='utf-8') as f:
+                async with aiofiles.open(file_path, "w", encoding="utf-8") as f:
                     await f.write(content)
                 changed = True
             else:
@@ -582,7 +628,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "refactor_type": refactor_type,
                 "improvements": improvements,
                 "changed": changed,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -590,7 +636,7 @@ class CodeCraftsmanServantReal(BaseServant):
                 "action": "refactor_code",
                 "file_path": str(file_path),
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
 
@@ -604,7 +650,7 @@ class TestGuardianServantReal(BaseServant):
             "run_test",
             "generate_test_data",
             "coverage_analysis",
-            "test_optimization"
+            "test_optimization",
         ]
 
     async def _execute_specific_task(self, task: ServantTask) -> Dict:
@@ -617,7 +663,7 @@ class TestGuardianServantReal(BaseServant):
             "run_test": self._run_test,
             "generate_test_data": self._generate_test_data,
             "coverage_analysis": self._coverage_analysis,
-            "test_optimization": self._test_optimization
+            "test_optimization": self._test_optimization,
         }
 
         if command in command_map:
@@ -642,7 +688,7 @@ class TestGuardianServantReal(BaseServant):
             )
 
             # ファイルに書き込み
-            async with aiofiles.open(test_file, 'w', encoding='utf-8') as f:
+            async with aiofiles.open(test_file, "w", encoding="utf-8") as f:
                 await f.write(test_content)
 
             # テストメソッドをカウント
@@ -655,7 +701,7 @@ class TestGuardianServantReal(BaseServant):
                 "target_class": target_class,
                 "test_type": test_type,
                 "test_count": test_count,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
@@ -663,10 +709,12 @@ class TestGuardianServantReal(BaseServant):
                 "action": "create_test",
                 "test_file": str(test_file),
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
-    def _generate_test_content(self, target_module: str, target_class: Optional[str], test_type: str) -> str:
+    def _generate_test_content(
+        self, target_module: str, target_class: Optional[str], test_type: str
+    ) -> str:
         """テストコンテンツを生成"""
         imports = [
             "import pytest",
@@ -674,7 +722,7 @@ class TestGuardianServantReal(BaseServant):
             "from pathlib import Path",
             "import sys",
             "",
-            f"from {target_module} import {target_class or '*'}"
+            f"from {target_module} import {target_class or '*'}",
         ]
 
         test_class_name = f"Test{target_class}" if target_class else "TestModule"
@@ -774,7 +822,7 @@ class {test_class_name}Integration:
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -793,7 +841,7 @@ class {test_class_name}Integration:
                 "output": output[-1000:],  # 最後の1000文字
                 "error_output": error_output[-500:] if error_output else None,
                 "exit_code": process.returncode,
-                "success": process.returncode == 0
+                "success": process.returncode == 0,
             }
 
         except Exception as e:
@@ -801,30 +849,24 @@ class {test_class_name}Integration:
                 "action": "run_test",
                 "test_path": test_path,
                 "error": str(e),
-                "success": False
+                "success": False,
             }
 
     def _parse_pytest_output(self, output: str) -> Dict:
         """pytest出力をパース"""
-        results = {
-            "passed": 0,
-            "failed": 0,
-            "skipped": 0,
-            "total": 0,
-            "coverage": None
-        }
+        results = {"passed": 0, "failed": 0, "skipped": 0, "total": 0, "coverage": None}
 
         # テスト結果の行を探す
-        for line in output.split('\n'):
+        for line in output.split("\n"):
             if " passed" in line and " failed" in line:
                 parts = line.split()
                 for i, part in enumerate(parts):
                     if part == "passed":
-                        results["passed"] = int(parts[i-1])
+                        results["passed"] = int(parts[i - 1])
                     elif part == "failed":
-                        results["failed"] = int(parts[i-1])
+                        results["failed"] = int(parts[i - 1])
                     elif part == "skipped":
-                        results["skipped"] = int(parts[i-1])
+                        results["skipped"] = int(parts[i - 1])
 
             # カバレッジ情報
             if "TOTAL" in line and "%" in line:
@@ -868,13 +910,19 @@ class {test_class_name}Integration:
 
                 if data_type == "json":
                     import json
-                    async with aiofiles.open(output_path, 'w', encoding='utf-8') as f:
+
+                    async with aiofiles.open(output_path, "w", encoding="utf-8") as f:
                         await f.write(json.dumps(generated_data, indent=2))
                 elif data_type == "csv":
                     import csv
-                    async with aiofiles.open(output_path, 'w', encoding='utf-8', newline='') as f:
+
+                    async with aiofiles.open(
+                        output_path, "w", encoding="utf-8", newline=""
+                    ) as f:
                         if generated_data:
-                            writer = csv.DictWriter(f, fieldnames=generated_data[0].keys())
+                            writer = csv.DictWriter(
+                                f, fieldnames=generated_data[0].keys()
+                            )
                             writer.writeheader()
                             writer.writerows(generated_data)
 
@@ -884,15 +932,11 @@ class {test_class_name}Integration:
                 "count": count,
                 "output_file": str(output_file) if output_file else None,
                 "sample_data": generated_data[:3],  # 最初の3件をサンプルとして返す
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "generate_test_data",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "generate_test_data", "error": str(e), "success": False}
 
     def _generate_json_item(self, schema: Dict, index: int) -> Dict:
         """JSONアイテムを生成"""
@@ -924,16 +968,22 @@ class {test_class_name}Integration:
         try:
             # カバレッジコマンドを実行
             cmd = [
-                "python", "-m", "coverage", "run",
-                "--source", source_path,
-                "-m", "pytest", test_path
+                "python",
+                "-m",
+                "coverage",
+                "run",
+                "--source",
+                source_path,
+                "-m",
+                "pytest",
+                test_path,
             ]
 
             process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             await process.communicate()
@@ -945,7 +995,7 @@ class {test_class_name}Integration:
                 *report_cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             report_stdout, _ = await report_process.communicate()
@@ -958,9 +1008,13 @@ class {test_class_name}Integration:
                     "action": "coverage_analysis",
                     "source_path": source_path,
                     "test_path": test_path,
-                    "total_coverage": coverage_data.get("totals", {}).get("percent_covered", 0),
-                    "files": self._summarize_file_coverage(coverage_data.get("files", {})),
-                    "success": True
+                    "total_coverage": coverage_data.get("totals", {}).get(
+                        "percent_covered", 0
+                    ),
+                    "files": self._summarize_file_coverage(
+                        coverage_data.get("files", {})
+                    ),
+                    "success": True,
                 }
             except:
                 # JSONパースに失敗した場合はテキストレポートを取得
@@ -970,7 +1024,7 @@ class {test_class_name}Integration:
                     *text_cmd,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
-                    cwd=PROJECT_ROOT
+                    cwd=PROJECT_ROOT,
                 )
 
                 text_stdout, _ = await text_process.communicate()
@@ -980,27 +1034,25 @@ class {test_class_name}Integration:
                     "source_path": source_path,
                     "test_path": test_path,
                     "report": text_stdout.decode(),
-                    "success": True
+                    "success": True,
                 }
 
         except Exception as e:
-            return {
-                "action": "coverage_analysis",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "coverage_analysis", "error": str(e), "success": False}
 
     def _summarize_file_coverage(self, files_data: Dict) -> List[Dict]:
         """ファイルカバレッジをサマリー"""
         summary = []
 
         for file_path, data in files_data.items():
-            summary.append({
-                "file": file_path,
-                "coverage": data.get("summary", {}).get("percent_covered", 0),
-                "missing_lines": data.get("summary", {}).get("missing_lines", 0),
-                "excluded_lines": data.get("summary", {}).get("excluded_lines", 0)
-            })
+            summary.append(
+                {
+                    "file": file_path,
+                    "coverage": data.get("summary", {}).get("percent_covered", 0),
+                    "missing_lines": data.get("summary", {}).get("missing_lines", 0),
+                    "excluded_lines": data.get("summary", {}).get("excluded_lines", 0),
+                }
+            )
 
         # カバレッジが低い順にソート
         summary.sort(key=lambda x: x["coverage"])
@@ -1019,37 +1071,32 @@ class {test_class_name}Integration:
 
             for test_file in test_files:
                 # ファイルを分析
-                async with aiofiles.open(test_file, 'r', encoding='utf-8') as f:
+                async with aiofiles.open(test_file, "r", encoding="utf-8") as f:
                     content = await f.read()
 
                 # 最適化の提案を生成
                 file_optimizations = self._analyze_test_file(test_file, content)
                 if file_optimizations:
-                    optimizations.append({
-                        "file": str(test_file),
-                        "suggestions": file_optimizations
-                    })
+                    optimizations.append(
+                        {"file": str(test_file), "suggestions": file_optimizations}
+                    )
 
             return {
                 "action": "test_optimization",
                 "test_path": test_path,
                 "analyzed_files": len(test_files),
                 "optimizations": optimizations,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "test_optimization",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "test_optimization", "error": str(e), "success": False}
 
     def _analyze_test_file(self, file_path: Path, content: str) -> List[str]:
         """テストファイルを分析して最適化を提案"""
         suggestions = []
 
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # 重複したセットアップコードを検出
         setup_count = content.count("def setup_")
@@ -1061,23 +1108,29 @@ class {test_class_name}Integration:
             tree = ast.parse(content)
             for node in ast.walk(tree):
                 if isinstance(node, ast.FunctionDef) and node.name.startswith("test_"):
-                    if hasattr(node, 'lineno') and hasattr(node, 'end_lineno'):
+                    if hasattr(node, "lineno") and hasattr(node, "end_lineno"):
                         method_lines = node.end_lineno - node.lineno
                         if method_lines > 20:
-                            suggestions.append(f"Consider splitting {node.name} (lines: {method_lines})")
+                            suggestions.append(
+                                f"Consider splitting {node.name} (lines: {method_lines})"
+                            )
         except:
             pass
 
         # parametrizeの使用を提案
         similar_tests = []
-        test_names = [line.strip() for line in lines if line.strip().startswith("def test_")]
+        test_names = [
+            line.strip() for line in lines if line.strip().startswith("def test_")
+        ]
         for i, name1 in enumerate(test_names):
-            for name2 in test_names[i+1:]:
+            for name2 in test_names[i + 1 :]:
                 if self._are_similar_test_names(name1, name2):
                     similar_tests.append((name1, name2))
 
         if similar_tests:
-            suggestions.append("Consider using @pytest.mark.parametrize for similar tests")
+            suggestions.append(
+                "Consider using @pytest.mark.parametrize for similar tests"
+            )
 
         # アサーションの改善
         if "assert True" in content or "assert False" in content:
@@ -1106,7 +1159,7 @@ class QualityInspectorServantReal(BaseServant):
             "security_scan",
             "performance_test",
             "lint_check",
-            "type_check"
+            "type_check",
         ]
 
     async def _execute_specific_task(self, task: ServantTask) -> Dict:
@@ -1119,7 +1172,7 @@ class QualityInspectorServantReal(BaseServant):
             "security_scan": self._security_scan,
             "performance_test": self._performance_test,
             "lint_check": self._lint_check,
-            "type_check": self._type_check
+            "type_check": self._type_check,
         }
 
         if command in command_map:
@@ -1143,9 +1196,7 @@ class QualityInspectorServantReal(BaseServant):
             cmd = ["python", "-m", "pylint", str(target_path), "--output-format=json"]
 
             process = await asyncio.create_subprocess_exec(
-                *cmd,
-                stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
+                *cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
             )
 
             stdout, stderr = await process.communicate()
@@ -1159,10 +1210,18 @@ class QualityInspectorServantReal(BaseServant):
             # 重要度別に分類
             critical_issues = [i for i in issues if i.get("type") in ["error", "fatal"]]
             warning_issues = [i for i in issues if i.get("type") == "warning"]
-            info_issues = [i for i in issues if i.get("type") in ["convention", "refactor"]]
+            info_issues = [
+                i for i in issues if i.get("type") in ["convention", "refactor"]
+            ]
 
             # スコアを計算
-            score = max(0, 10 - len(critical_issues) * 2 - len(warning_issues) * 0.5 - len(info_issues) * 0.1)
+            score = max(
+                0,
+                10
+                - len(critical_issues) * 2
+                - len(warning_issues) * 0.5
+                - len(info_issues) * 0.1,
+            )
 
             return {
                 "action": "code_quality_check",
@@ -1173,18 +1232,14 @@ class QualityInspectorServantReal(BaseServant):
                     "critical": len(critical_issues),
                     "warning": len(warning_issues),
                     "info": len(info_issues),
-                    "total": len(issues)
+                    "total": len(issues),
                 },
                 "top_issues": issues[:10],  # 最初の10件
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "code_quality_check",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "code_quality_check", "error": str(e), "success": False}
 
     def _score_to_grade(self, score: float) -> str:
         """スコアをグレードに変換"""
@@ -1211,7 +1266,7 @@ class QualityInspectorServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -1225,9 +1280,15 @@ class QualityInspectorServantReal(BaseServant):
             # 脆弱性を重要度別に分類
             vulnerabilities = result.get("results", [])
 
-            high_severity = [v for v in vulnerabilities if v.get("issue_severity") == "HIGH"]
-            medium_severity = [v for v in vulnerabilities if v.get("issue_severity") == "MEDIUM"]
-            low_severity = [v for v in vulnerabilities if v.get("issue_severity") == "LOW"]
+            high_severity = [
+                v for v in vulnerabilities if v.get("issue_severity") == "HIGH"
+            ]
+            medium_severity = [
+                v for v in vulnerabilities if v.get("issue_severity") == "MEDIUM"
+            ]
+            low_severity = [
+                v for v in vulnerabilities if v.get("issue_severity") == "LOW"
+            ]
 
             return {
                 "action": "security_scan",
@@ -1236,20 +1297,16 @@ class QualityInspectorServantReal(BaseServant):
                     "high": len(high_severity),
                     "medium": len(medium_severity),
                     "low": len(low_severity),
-                    "total": len(vulnerabilities)
+                    "total": len(vulnerabilities),
                 },
                 "scan_status": "passed" if not high_severity else "failed",
                 "critical_issues": high_severity[:5],  # 最初の5件
                 "metrics": result.get("metrics", {}),
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "security_scan",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "security_scan", "error": str(e), "success": False}
 
     async def _performance_test(self, args: Dict) -> Dict:
         """パフォーマンステスト（実装）"""
@@ -1263,7 +1320,7 @@ class QualityInspectorServantReal(BaseServant):
 
             # テストスクリプトを読み込み
             if test_script and Path(test_script).exists():
-                async with aiofiles.open(test_script, 'r', encoding='utf-8') as f:
+                async with aiofiles.open(test_script, "r", encoding="utf-8") as f:
                     code = await f.read()
             else:
                 # デフォルトのテストコード
@@ -1288,18 +1345,14 @@ class QualityInspectorServantReal(BaseServant):
                     "median_time": median_time,
                     "std_deviation": std_dev,
                     "min_time": min(times),
-                    "max_time": max(times)
+                    "max_time": max(times),
                 },
                 "performance_status": "passed" if avg_time < 1.0 else "warning",
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "performance_test",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "performance_test", "error": str(e), "success": False}
 
     async def _lint_check(self, args: Dict) -> Dict:
         """Lintチェック（実装）"""
@@ -1313,7 +1366,7 @@ class QualityInspectorServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -1321,7 +1374,7 @@ class QualityInspectorServantReal(BaseServant):
             # 結果をパース（flake8のJSON出力は特殊なので、行ごとに処理）
             issues = []
             if stdout:
-                for line in stdout.decode().split('\n'):
+                for line in stdout.decode().split("\n"):
                     if line.strip():
                         try:
                             issue = json.loads(line)
@@ -1342,15 +1395,11 @@ class QualityInspectorServantReal(BaseServant):
                 "error_types": error_types,
                 "top_issues": issues[:10],
                 "lint_status": "passed" if len(issues) == 0 else "warning",
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "lint_check",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "lint_check", "error": str(e), "success": False}
 
     async def _type_check(self, args: Dict) -> Dict:
         """型チェック（実装）"""
@@ -1364,7 +1413,7 @@ class QualityInspectorServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -1372,7 +1421,7 @@ class QualityInspectorServantReal(BaseServant):
             # 結果をパース
             type_errors = []
             if stderr:
-                for line in stderr.decode().split('\n'):
+                for line in stderr.decode().split("\n"):
                     if ": error:" in line:
                         type_errors.append(line.strip())
 
@@ -1382,15 +1431,11 @@ class QualityInspectorServantReal(BaseServant):
                 "total_errors": len(type_errors),
                 "type_errors": type_errors[:10],  # 最初の10件
                 "type_check_status": "passed" if len(type_errors) == 0 else "failed",
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "type_check",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "type_check", "error": str(e), "success": False}
 
 
 class GitKeeperServantReal(BaseServant):
@@ -1406,7 +1451,7 @@ class GitKeeperServantReal(BaseServant):
             "git_diff",
             "git_log",
             "create_branch",
-            "create_pr"
+            "create_pr",
         ]
 
     async def _execute_specific_task(self, task: ServantTask) -> Dict:
@@ -1422,7 +1467,7 @@ class GitKeeperServantReal(BaseServant):
             "git_diff": self._git_diff,
             "git_log": self._git_log,
             "create_branch": self._create_branch,
-            "create_pr": self._create_pr
+            "create_pr": self._create_pr,
         }
 
         if command in command_map:
@@ -1443,7 +1488,7 @@ class GitKeeperServantReal(BaseServant):
                     return {
                         "action": "git_add",
                         "error": "No files specified",
-                        "success": False
+                        "success": False,
                     }
                 cmd = ["git", "add"] + files
 
@@ -1451,7 +1496,7 @@ class GitKeeperServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -1463,15 +1508,11 @@ class GitKeeperServantReal(BaseServant):
                 "action": "git_add",
                 "files": files if not add_all else "all",
                 "staged_files": status_result.get("staged_files", []),
-                "success": process.returncode == 0
+                "success": process.returncode == 0,
             }
 
         except Exception as e:
-            return {
-                "action": "git_add",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "git_add", "error": str(e), "success": False}
 
     async def _git_commit(self, args: Dict) -> Dict:
         """Git commit実行"""
@@ -1483,7 +1524,7 @@ class GitKeeperServantReal(BaseServant):
                 return {
                     "action": "git_commit",
                     "error": "Commit message is required",
-                    "success": False
+                    "success": False,
                 }
 
             # Claude Elder署名を追加
@@ -1496,7 +1537,7 @@ class GitKeeperServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -1508,7 +1549,7 @@ class GitKeeperServantReal(BaseServant):
                     *get_hash_cmd,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
-                    cwd=PROJECT_ROOT
+                    cwd=PROJECT_ROOT,
                 )
                 hash_stdout, _ = await hash_process.communicate()
                 commit_id = hash_stdout.decode().strip()
@@ -1521,15 +1562,11 @@ class GitKeeperServantReal(BaseServant):
                 "commit_id": commit_id,
                 "output": stdout.decode(),
                 "error_output": stderr.decode() if stderr else None,
-                "success": process.returncode == 0
+                "success": process.returncode == 0,
             }
 
         except Exception as e:
-            return {
-                "action": "git_commit",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "git_commit", "error": str(e), "success": False}
 
     async def _git_push(self, args: Dict) -> Dict:
         """Git push実行"""
@@ -1545,7 +1582,7 @@ class GitKeeperServantReal(BaseServant):
                     *branch_cmd,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
-                    cwd=PROJECT_ROOT
+                    cwd=PROJECT_ROOT,
                 )
                 branch_stdout, _ = await branch_process.communicate()
                 branch = branch_stdout.decode().strip()
@@ -1559,7 +1596,7 @@ class GitKeeperServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -1571,15 +1608,11 @@ class GitKeeperServantReal(BaseServant):
                 "force": force,
                 "output": stdout.decode(),
                 "error_output": stderr.decode() if stderr else None,
-                "success": process.returncode == 0
+                "success": process.returncode == 0,
             }
 
         except Exception as e:
-            return {
-                "action": "git_push",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "git_push", "error": str(e), "success": False}
 
     async def _git_status(self, args: Dict) -> Dict:
         """Git status実行"""
@@ -1590,13 +1623,13 @@ class GitKeeperServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
 
             # ステータスをパース
-            status_lines = stdout.decode().strip().split('\n') if stdout else []
+            status_lines = stdout.decode().strip().split("\n") if stdout else []
 
             staged_files = []
             modified_files = []
@@ -1609,11 +1642,11 @@ class GitKeeperServantReal(BaseServant):
                 status = line[:2]
                 filename = line[3:]
 
-                if status[0] in ['A', 'M', 'D', 'R', 'C']:
+                if status[0] in ["A", "M", "D", "R", "C"]:
                     staged_files.append(filename)
-                if status[1] == 'M':
+                if status[1] == "M":
                     modified_files.append(filename)
-                elif status == '??':
+                elif status == "??":
                     untracked_files.append(filename)
 
             # 現在のブランチを取得
@@ -1622,7 +1655,7 @@ class GitKeeperServantReal(BaseServant):
                 *branch_cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
             branch_stdout, _ = await branch_process.communicate()
             current_branch = branch_stdout.decode().strip()
@@ -1633,16 +1666,13 @@ class GitKeeperServantReal(BaseServant):
                 "staged_files": staged_files,
                 "modified_files": modified_files,
                 "untracked_files": untracked_files,
-                "clean": len(status_lines) == 0 or (len(status_lines) == 1 and not status_lines[0]),
-                "success": True
+                "clean": len(status_lines) == 0
+                or (len(status_lines) == 1 and not status_lines[0]),
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "git_status",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "git_status", "error": str(e), "success": False}
 
     async def _git_diff(self, args: Dict) -> Dict:
         """Git diff実行"""
@@ -1660,7 +1690,7 @@ class GitKeeperServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -1668,8 +1698,8 @@ class GitKeeperServantReal(BaseServant):
             diff_output = stdout.decode()
 
             # 差分のサマリーを作成
-            additions = diff_output.count('\n+')
-            deletions = diff_output.count('\n-')
+            additions = diff_output.count("\n+")
+            deletions = diff_output.count("\n-")
 
             return {
                 "action": "git_diff",
@@ -1679,15 +1709,11 @@ class GitKeeperServantReal(BaseServant):
                 "additions": additions,
                 "deletions": deletions,
                 "has_changes": len(diff_output) > 0,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "git_diff",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "git_diff", "error": str(e), "success": False}
 
     async def _git_log(self, args: Dict) -> Dict:
         """Git log実行"""
@@ -1703,28 +1729,24 @@ class GitKeeperServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
 
             log_output = stdout.decode()
-            commits = log_output.strip().split('\n') if log_output else []
+            commits = log_output.strip().split("\n") if log_output else []
 
             return {
                 "action": "git_log",
                 "limit": limit,
                 "commits": commits,
                 "commit_count": len(commits),
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "git_log",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "git_log", "error": str(e), "success": False}
 
     async def _create_branch(self, args: Dict) -> Dict:
         """ブランチ作成"""
@@ -1736,7 +1758,7 @@ class GitKeeperServantReal(BaseServant):
                 return {
                     "action": "create_branch",
                     "error": "Branch name is required",
-                    "success": False
+                    "success": False,
                 }
 
             # ブランチを作成
@@ -1746,7 +1768,7 @@ class GitKeeperServantReal(BaseServant):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -1756,7 +1778,7 @@ class GitKeeperServantReal(BaseServant):
                     "action": "create_branch",
                     "branch_name": branch_name,
                     "error": stderr.decode(),
-                    "success": False
+                    "success": False,
                 }
 
             # チェックアウト
@@ -1766,7 +1788,7 @@ class GitKeeperServantReal(BaseServant):
                     *checkout_cmd,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
-                    cwd=PROJECT_ROOT
+                    cwd=PROJECT_ROOT,
                 )
 
                 await checkout_process.communicate()
@@ -1775,15 +1797,11 @@ class GitKeeperServantReal(BaseServant):
                 "action": "create_branch",
                 "branch_name": branch_name,
                 "checked_out": checkout,
-                "success": True
+                "success": True,
             }
 
         except Exception as e:
-            return {
-                "action": "create_branch",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "create_branch", "error": str(e), "success": False}
 
     async def _create_pr(self, args: Dict) -> Dict:
         """Pull Request作成（GitHub CLI使用）"""
@@ -1796,7 +1814,7 @@ class GitKeeperServantReal(BaseServant):
                 return {
                     "action": "create_pr",
                     "error": "PR title is required",
-                    "success": False
+                    "success": False,
                 }
 
             # PR本文を生成
@@ -1804,13 +1822,23 @@ class GitKeeperServantReal(BaseServant):
             pr_body += "\n\n🤖 Generated with [Claude Code](https://claude.ai/code)"
 
             # GitHub CLIでPR作成
-            cmd = ["gh", "pr", "create", "--title", title, "--body", pr_body, "--base", base]
+            cmd = [
+                "gh",
+                "pr",
+                "create",
+                "--title",
+                title,
+                "--body",
+                pr_body,
+                "--base",
+                base,
+            ]
 
             process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -1822,21 +1850,17 @@ class GitKeeperServantReal(BaseServant):
                     "title": title,
                     "base": base,
                     "pr_url": pr_url,
-                    "success": True
+                    "success": True,
                 }
             else:
                 return {
                     "action": "create_pr",
                     "error": stderr.decode(),
-                    "success": False
+                    "success": False,
                 }
 
         except Exception as e:
-            return {
-                "action": "create_pr",
-                "error": str(e),
-                "success": False
-            }
+            return {"action": "create_pr", "error": str(e), "success": False}
 
 
 # サーバントファクトリー
@@ -1844,7 +1868,9 @@ class ServantFactory:
     """サーバントファクトリー - 実装版"""
 
     @staticmethod
-    def create_servant(servant_type: ServantType, name: Optional[str] = None) -> BaseServant:
+    def create_servant(
+        servant_type: ServantType, name: Optional[str] = None
+    ) -> BaseServant:
         """サーバントを作成"""
         if servant_type == ServantType.CODE_CRAFTSMAN:
             return CodeCraftsmanServantReal(name or "CodeCraftsman")
@@ -1864,5 +1890,5 @@ __all__ = [
     "TestGuardianServantReal",
     "QualityInspectorServantReal",
     "GitKeeperServantReal",
-    "ServantFactory"
+    "ServantFactory",
 ]

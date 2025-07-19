@@ -25,8 +25,9 @@ from libs.automated_learning_system import (
     AutomatedLearningSystem,
     LearningType,
     AutomationLevel,
-    LearningStatus
+    LearningStatus,
 )
+
 
 class AutomatedLearningCLI:
     """自動化・学習システムCLI"""
@@ -39,7 +40,7 @@ class AutomatedLearningCLI:
         """初期化"""
         if not self.initialized:
             init_result = await self.learning_system.initialize_learning_system()
-            if init_result['success']:
+            if init_result["success"]:
                 self.initialized = True
                 print("✅ 自動化・学習システム初期化完了")
             else:
@@ -60,7 +61,9 @@ class AutomatedLearningCLI:
 
             # 基本情報
             print(f"🔧 システム初期化: {'✅' if self.initialized else '❌'}")
-            print(f"🔄 継続学習: {'✅ 稼働中' if status['continuous_learning_active'] else '❌ 停止中'}")
+            print(
+                f"🔄 継続学習: {'✅ 稼働中' if status['continuous_learning_active'] else '❌ 停止中'}"
+            )
             print(f"🕐 確認時刻: {status['timestamp']}")
 
             # タスク統計
@@ -72,41 +75,51 @@ class AutomatedLearningCLI:
             print(f"   成功率: {status['success_rate']:.2%}")
 
             # パフォーマンス指標
-            if status.get('performance_metrics'):
-                metrics = status['performance_metrics']
+            if status.get("performance_metrics"):
+                metrics = status["performance_metrics"]
                 print(f"\n📈 パフォーマンス指標:")
                 print(f"   総学習タスク: {metrics['total_learning_tasks']}")
                 print(f"   成功学習タスク: {metrics['successful_learning_tasks']}")
                 print(f"   平均学習時間: {metrics['average_learning_time']:.2f}秒")
                 print(f"   モデル精度向上: {metrics['model_accuracy_improvement']:.2%}")
-                print(f"   システム性能向上: {metrics['system_performance_improvement']:.2%}")
+                print(
+                    f"   システム性能向上: {metrics['system_performance_improvement']:.2%}"
+                )
                 print(f"   知識成長率: {metrics['knowledge_growth_rate']:.2%}")
 
             # 学習エージェント
-            if status.get('learning_agents'):
+            if status.get("learning_agents"):
                 print(f"\n🤖 学習エージェント:")
-                for agent in status['learning_agents']:
+                for agent in status["learning_agents"]:
                     print(f"   ✅ {agent}")
 
             # 最近の学習履歴
-            if status.get('recent_history'):
+            if status.get("recent_history"):
                 print(f"\n📚 最近の学習履歴:")
-                for entry in status['recent_history'][-5:]:
-                    success_icon = "✅" if entry['success'] else "❌"
-                    print(f"   {success_icon} {entry['task_type']} | "
-                          f"改善: {entry['performance_improvement']:.2%} | "
-                          f"{entry['timestamp']}")
+                for entry in status["recent_history"][-5:]:
+                    success_icon = "✅" if entry["success"] else "❌"
+                    print(
+                        f"   {success_icon} {entry['task_type']} | "
+                        f"改善: {entry['performance_improvement']:.2%} | "
+                        f"{entry['timestamp']}"
+                    )
 
             # 自動化設定
-            if status.get('automation_settings'):
-                settings = status['automation_settings']
+            if status.get("automation_settings"):
+                settings = status["automation_settings"]
                 print(f"\n⚙️ 自動化設定:")
-                print(f"   自動学習: {'✅' if settings['auto_learning_enabled'] else '❌'}")
-                print(f"   自動最適化: {'✅' if settings['auto_optimization_enabled'] else '❌'}")
-                print(f"   自動デプロイ: {'✅' if settings['auto_deployment_enabled'] else '❌'}")
+                print(
+                    f"   自動学習: {'✅' if settings['auto_learning_enabled'] else '❌'}"
+                )
+                print(
+                    f"   自動最適化: {'✅' if settings['auto_optimization_enabled'] else '❌'}"
+                )
+                print(
+                    f"   自動デプロイ: {'✅' if settings['auto_deployment_enabled'] else '❌'}"
+                )
 
-                if settings.get('learning_schedule'):
-                    schedule = settings['learning_schedule']
+                if settings.get("learning_schedule"):
+                    schedule = settings["learning_schedule"]
                     print(f"   継続学習: {'✅' if schedule['continuous'] else '❌'}")
                     print(f"   バッチ間隔: {schedule['batch_interval']}秒")
                     print(f"   評価間隔: {schedule['evaluation_interval']}秒")
@@ -114,9 +127,14 @@ class AutomatedLearningCLI:
         except Exception as e:
             print(f"❌ 状況表示エラー: {e}")
 
-    async def create_learning_task(self, task_type: str, data_source: str,
-                                 target_metric: str, automation_level: str = "fully_automatic",
-                                 priority: int = 5):
+    async def create_learning_task(
+        self,
+        task_type: str,
+        data_source: str,
+        target_metric: str,
+        automation_level: str = "fully_automatic",
+        priority: int = 5,
+    ):
         """学習タスク作成"""
         if not await self.initialize():
             return
@@ -135,7 +153,7 @@ class AutomatedLearningCLI:
                 data_source=data_source,
                 target_metric=target_metric,
                 automation_level=AutomationLevel(automation_level),
-                priority=priority
+                priority=priority,
             )
 
             print(f"✅ 学習タスク作成成功")
@@ -187,7 +205,7 @@ class AutomatedLearningCLI:
         try:
             # 現在の状況確認
             status_before = await self.learning_system.get_learning_status()
-            queued_before = status_before['queued_tasks']
+            queued_before = status_before["queued_tasks"]
 
             print(f"実行前の待機タスク: {queued_before}")
 
@@ -197,7 +215,7 @@ class AutomatedLearningCLI:
             # 実行後の状況確認
             await asyncio.sleep(2)  # 実行完了待機
             status_after = await self.learning_system.get_learning_status()
-            active_after = status_after['active_tasks']
+            active_after = status_after["active_tasks"]
 
             print(f"実行後のアクティブタスク: {active_after}")
             print("✅ 学習タスク実行完了")
@@ -215,14 +233,14 @@ class AutomatedLearningCLI:
 
         try:
             status = await self.learning_system.get_learning_status()
-            history = status.get('recent_history', [])
+            history = status.get("recent_history", [])
 
             if not history:
                 print("🔍 学習履歴がありません")
                 return
 
             for i, entry in enumerate(history[-limit:], 1):
-                success_icon = "✅" if entry['success'] else "❌"
+                success_icon = "✅" if entry["success"] else "❌"
                 print(f"{i}. {success_icon} {entry['task_type'].upper()}")
                 print(f"   タスクID: {entry['task_id']}")
                 print(f"   性能改善: {entry['performance_improvement']:.2%}")
@@ -245,7 +263,7 @@ class AutomatedLearningCLI:
             "reinforcement (強化学習)",
             "transfer (転移学習)",
             "online (オンライン学習)",
-            "incremental (増分学習)"
+            "incremental (増分学習)",
         ]
 
         for learning_type in learning_types:
@@ -257,7 +275,7 @@ class AutomatedLearningCLI:
             "manual (手動)",
             "semi_automatic (半自動)",
             "fully_automatic (完全自動)",
-            "adaptive (適応型)"
+            "adaptive (適応型)",
         ]
 
         for level in automation_levels:
@@ -270,7 +288,7 @@ class AutomatedLearningCLI:
             "user_interactions (ユーザー行動)",
             "knowledge_patterns (知識パターン)",
             "performance_metrics (パフォーマンス指標)",
-            "system_logs (システムログ)"
+            "system_logs (システムログ)",
         ]
 
         for source in data_sources:
@@ -284,32 +302,43 @@ class AutomatedLearningCLI:
             "recall (再現率)",
             "engagement (エンゲージメント)",
             "performance (パフォーマンス)",
-            "quality (品質)"
+            "quality (品質)",
         ]
 
         for metric in target_metrics:
             print(f"   • {metric}")
 
+
 def main():
     """メイン関数"""
-    parser = argparse.ArgumentParser(description='自動化・学習システム CLI')
+    parser = argparse.ArgumentParser(description="自動化・学習システム CLI")
 
     # 基本コマンド
-    parser.add_argument('--status', action='store_true', help='システム状況表示')
-    parser.add_argument('--options', action='store_true', help='利用可能オプション表示')
-    parser.add_argument('--history', type=int, default=10, help='学習履歴表示（件数指定）')
+    parser.add_argument("--status", action="store_true", help="システム状況表示")
+    parser.add_argument("--options", action="store_true", help="利用可能オプション表示")
+    parser.add_argument(
+        "--history", type=int, default=10, help="学習履歴表示（件数指定）"
+    )
 
     # 学習タスク管理
-    parser.add_argument('--create-task', nargs=3, metavar=('TYPE', 'DATA_SOURCE', 'TARGET_METRIC'),
-                       help='学習タスク作成: タイプ データソース 目標指標')
-    parser.add_argument('--automation-level', choices=['manual', 'semi_automatic', 'fully_automatic', 'adaptive'],
-                       default='fully_automatic', help='自動化レベル')
-    parser.add_argument('--priority', type=int, default=5, help='優先度 (1-10)')
+    parser.add_argument(
+        "--create-task",
+        nargs=3,
+        metavar=("TYPE", "DATA_SOURCE", "TARGET_METRIC"),
+        help="学習タスク作成: タイプ データソース 目標指標",
+    )
+    parser.add_argument(
+        "--automation-level",
+        choices=["manual", "semi_automatic", "fully_automatic", "adaptive"],
+        default="fully_automatic",
+        help="自動化レベル",
+    )
+    parser.add_argument("--priority", type=int, default=5, help="優先度 (1-10)")
 
     # 継続学習制御
-    parser.add_argument('--start-learning', action='store_true', help='継続学習開始')
-    parser.add_argument('--stop-learning', action='store_true', help='継続学習停止')
-    parser.add_argument('--execute-tasks', action='store_true', help='学習タスク実行')
+    parser.add_argument("--start-learning", action="store_true", help="継続学習開始")
+    parser.add_argument("--stop-learning", action="store_true", help="継続学習停止")
+    parser.add_argument("--execute-tasks", action="store_true", help="学習タスク実行")
 
     args = parser.parse_args()
 
@@ -327,8 +356,11 @@ def main():
             elif args.create_task:
                 task_type, data_source, target_metric = args.create_task
                 await cli.create_learning_task(
-                    task_type, data_source, target_metric,
-                    args.automation_level, args.priority
+                    task_type,
+                    data_source,
+                    target_metric,
+                    args.automation_level,
+                    args.priority,
                 )
             elif args.start_learning:
                 await cli.start_continuous_learning()
@@ -341,7 +373,9 @@ def main():
                 print("\n💡 使用例:")
                 print("   python3 scripts/automated_learning_cli.py --status")
                 print("   python3 scripts/automated_learning_cli.py --options")
-                print("   python3 scripts/automated_learning_cli.py --create-task supervised search_results accuracy")
+                print(
+                    "   python3 scripts/automated_learning_cli.py --create-task supervised search_results accuracy"
+                )
                 print("   python3 scripts/automated_learning_cli.py --start-learning")
                 print("   python3 scripts/automated_learning_cli.py --history 5")
 
@@ -352,6 +386,7 @@ def main():
 
     # 非同期実行
     asyncio.run(run_cli())
+
 
 if __name__ == "__main__":
     main()

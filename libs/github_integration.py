@@ -128,7 +128,9 @@ class GitHubIntegrationManager:
             if response.status_code == 200:
                 return response.text
             else:
-                logger.error(f"ファイル取得エラー: {file_path} - {response.status_code}")
+                logger.error(
+                    f"ファイル取得エラー: {file_path} - {response.status_code}"
+                )
 
         except Exception as e:
             logger.error(f"ファイル内容取得エラー: {e}")

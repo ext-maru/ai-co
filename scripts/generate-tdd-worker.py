@@ -113,13 +113,17 @@ def main():
         """,
     )
 
-    parser.add_argument("worker_name", nargs="?", help="ワーカー名（例: DataProcessor）")
+    parser.add_argument(
+        "worker_name", nargs="?", help="ワーカー名（例: DataProcessor）"
+    )
 
     parser.add_argument(
         "worker_type", nargs="?", help="ワーカータイプ（例: data, report, analysis）"
     )
 
-    parser.add_argument("--list-types", action="store_true", help="利用可能なワーカータイプを表示")
+    parser.add_argument(
+        "--list-types", action="store_true", help="利用可能なワーカータイプを表示"
+    )
 
     args = parser.parse_args()
 

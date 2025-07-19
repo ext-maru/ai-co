@@ -31,7 +31,8 @@ for filepath in test_files:
         for i, line in enumerate(lines):
             # Add missing colons
             if re.match(
-                r"^\s*(if < /dev/null | elif|else|for|while|def|class|try|except|finally|with)\s+.*[^:]$", line
+                r"^\s*(if < /dev/null | elif|else|for|while|def|class|try|except|finally|with)\s+.*[^:]$",
+                line,
             ):
                 line = line + ":"
             # Fix empty except
@@ -40,7 +41,9 @@ for filepath in test_files:
             # Add pass to empty blocks
             elif line.strip().endswith(":") and i + 1 < len(lines):
                 next_line = lines[i + 1] if i + 1 < len(lines) else ""
-                if not next_line.strip() or (next_line.strip() and not next_line[0].isspace()):
+                if not next_line.strip() or (
+                    next_line.strip() and not next_line[0].isspace()
+                ):
                     fixed_lines.append(line)
                     fixed_lines.append("    pass")
                     continue

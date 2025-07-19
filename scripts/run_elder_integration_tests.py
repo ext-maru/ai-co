@@ -235,7 +235,9 @@ def generate_markdown_report(report):
 """
 
     if "coverage_report" in report["integration_test"]:
-        md += f"**カバレッジレポート**: {report['integration_test']['coverage_report']}\n"
+        md += (
+            f"**カバレッジレポート**: {report['integration_test']['coverage_report']}\n"
+        )
         md += f"**HTMLカバレッジ**: {report['integration_test']['html_coverage']}\n\n"
 
     md += "## 🔒 セキュリティテスト\n\n"

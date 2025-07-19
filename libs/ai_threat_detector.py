@@ -8,17 +8,18 @@ import re
 from datetime import datetime
 from pathlib import Path
 
+
 class AIThreatDetector:
     def __init__(self):
         self.threat_patterns = [
-            r'rm\s+-rf\s+/',
-            r'chmod\s+777',
-            r'passwd.*root',
-            r'sudo\s+su\s+-',
-            r'eval\(',
-            r'exec\(',
-            r'system\(',
-            r'__import__\('
+            r"rm\s+-rf\s+/",
+            r"chmod\s+777",
+            r"passwd.*root",
+            r"sudo\s+su\s+-",
+            r"eval\(",
+            r"exec\(",
+            r"system\(",
+            r"__import__\(",
         ]
         self.suspicious_activities = []
 
@@ -27,17 +28,21 @@ class AIThreatDetector:
         threats_found = []
 
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 content = f.read()
 
             for pattern in self.threat_patterns:
                 matches = re.findall(pattern, content, re.IGNORECASE)
                 if matches:
-                    threats_found.append({
-                        "pattern": pattern,
-                        "matches": matches,
-                        "severity": "high" if pattern.startswith('rm') else "medium"
-                    })
+                    threats_found.append(
+                        {
+                            "pattern": pattern,
+                            "matches": matches,
+                            "severity": (
+                                "high" if pattern.startswith("rm") else "medium"
+                            ),
+                        }
+                    )
 
         except Exception as e:
             return {"error": str(e)}
@@ -45,7 +50,7 @@ class AIThreatDetector:
         return {
             "file": str(file_path),
             "threats_found": len(threats_found),
-            "details": threats_found
+            "details": threats_found,
         }
 
     def monitor_process_activity(self):
@@ -54,19 +59,21 @@ class AIThreatDetector:
             import psutil
 
             suspicious_processes = []
-            for proc in psutil.process_iter(['pid', 'name', 'cmdline']):
+            for proc in psutil.process_iter(["pid", "name", "cmdline"]):
                 try:
-                    cmdline = ' '.join(proc.info['cmdline'] or [])
+                    cmdline = " ".join(proc.info["cmdline"] or [])
 
                     # 怪しいコマンドパターンチェック
                     for pattern in self.threat_patterns:
                         if re.search(pattern, cmdline, re.IGNORECASE):
-                            suspicious_processes.append({
-                                "pid": proc.info['pid'],
-                                "name": proc.info['name'],
-                                "cmdline": cmdline,
-                                "threat_pattern": pattern
-                            })
+                            suspicious_processes.append(
+                                {
+                                    "pid": proc.info["pid"],
+                                    "name": proc.info["name"],
+                                    "cmdline": cmdline,
+                                    "threat_pattern": pattern,
+                                }
+                            )
 
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     continue
@@ -74,7 +81,7 @@ class AIThreatDetector:
             return {
                 "scan_time": datetime.now().isoformat(),
                 "suspicious_processes": len(suspicious_processes),
-                "details": suspicious_processes
+                "details": suspicious_processes,
             }
 
         except ImportError:
@@ -86,16 +93,21 @@ class AIThreatDetector:
 
         report = {
             "report_time": datetime.now().isoformat(),
-            "security_status": "secure" if process_scan.get("suspicious_processes", 0) == 0 else "threats_detected",
+            "security_status": (
+                "secure"
+                if process_scan.get("suspicious_processes", 0) == 0
+                else "threats_detected"
+            ),
             "process_scan": process_scan,
             "recommendations": [
                 "定期的なコードスキャンを実施",
                 "プロセス監視を継続",
-                "セキュリティパッチの適用確認"
-            ]
+                "セキュリティパッチの適用確認",
+            ],
         }
 
         return report
+
 
 # ゼロトラスト認証システム
 class ZeroTrustAuth:
@@ -112,7 +124,7 @@ class ZeroTrustAuth:
             "entity_id": entity_id,
             "verified": True,  # デモでは常にTrue
             "verification_time": datetime.now().isoformat(),
-            "access_level": "authenticated"
+            "access_level": "authenticated",
         }
 
         self.verified_entities[entity_id] = verification_result
@@ -130,8 +142,9 @@ class ZeroTrustAuth:
             "access": "granted",
             "entity_id": entity_id,
             "resource": resource,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
+
 
 if __name__ == "__main__":
     # 脅威検知デモ

@@ -168,10 +168,12 @@ class KnowledgeBaseMCPServer:
                                     {
                                         "file": kb_file.name,
                                         "context": context,
-                                        "relevance": "high"
-                                        if "solution" in context.lower()
-                                        or "fix" in context.lower()
-                                        else "medium",
+                                        "relevance": (
+                                            "high"
+                                            if "solution" in context.lower()
+                                            or "fix" in context.lower()
+                                            else "medium"
+                                        ),
                                     }
                                 )
                 except Exception as e:

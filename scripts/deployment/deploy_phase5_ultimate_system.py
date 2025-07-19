@@ -209,7 +209,9 @@ class Phase5UltimateDeployment:
                                 try:
                                     count = int(line.split()[0])
                                     passing_tests += count
-                                    logger.info(f"✅ {component}: {count} tests passing")
+                                    logger.info(
+                                        f"✅ {component}: {count} tests passing"
+                                    )
                                 except (ValueError, IndexError):
                                     pass
                     else:
@@ -289,7 +291,9 @@ class Phase5UltimateDeployment:
                 "success" if total_tests >= 100 else "partial"
             )
 
-            logger.info(f"🧠 AI Evolution System deployed: {total_tests} tests verified")
+            logger.info(
+                f"🧠 AI Evolution System deployed: {total_tests} tests verified"
+            )
 
         except Exception as e:
             logger.error(f"AI Evolution deployment failed: {str(e)}")
@@ -527,7 +531,9 @@ class Phase5UltimateDeployment:
             report["next_steps"].append("🤖 Enable full autonomous operation")
 
         if not report["next_steps"]:
-            report["next_steps"].append("🎉 MISSION COMPLETE - System fully autonomous!")
+            report["next_steps"].append(
+                "🎉 MISSION COMPLETE - System fully autonomous!"
+            )
 
         return report
 

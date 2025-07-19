@@ -266,11 +266,11 @@ class AncientElderAuditor:
                     "type": "error_handling",
                     "score": min(score, 1.0),
                     "patterns": patterns,
-                    "severity": "CRITICAL"
-                    if score < 0.5
-                    else "MEDIUM"
-                    if score < 0.8
-                    else "LOW",
+                    "severity": (
+                        "CRITICAL"
+                        if score < 0.5
+                        else "MEDIUM" if score < 0.8 else "LOW"
+                    ),
                 }
             )
 
@@ -357,11 +357,9 @@ class AncientElderAuditor:
                     "type": "performance",
                     "score": score,
                     "optimizations": optimizations,
-                    "severity": "HIGH"
-                    if score < 0.5
-                    else "MEDIUM"
-                    if score < 0.7
-                    else "LOW",
+                    "severity": (
+                        "HIGH" if score < 0.5 else "MEDIUM" if score < 0.7 else "LOW"
+                    ),
                 }
             )
 

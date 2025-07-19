@@ -42,7 +42,9 @@ def main():
                         print(f"\n⚪ {log['task']}")
 
                     print(f"   時刻: {log['timestamp']}")
-                    print(f"   状態: {'✅ 成功' if log['exit_code'] == 0 else '❌ 失敗'}")
+                    print(
+                        f"   状態: {'✅ 成功' if log['exit_code'] == 0 else '❌ 失敗'}"
+                    )
 
                     # エラーの場合は詳細表示
                     if log["exit_code"] != 0 and log.get("path"):
@@ -52,7 +54,9 @@ def main():
                                 # エラー部分を抽出
                                 lines = content.split("\n")
                                 error_lines = [
-                                    l for l in lines if "error" in l.lower() or "❌" in l
+                                    l
+                                    for l in lines
+                                    if "error" in l.lower() or "❌" in l
                                 ]
                                 if error_lines:
                                     print("   エラー詳細:")

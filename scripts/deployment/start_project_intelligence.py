@@ -47,7 +47,9 @@ def check_dependencies():
             missing_modules.append(module)
 
     if missing_modules:
-        print(f"{Colors.RED}❌ 不足モジュール: {', '.join(missing_modules)}{Colors.ENDC}")
+        print(
+            f"{Colors.RED}❌ 不足モジュール: {', '.join(missing_modules)}{Colors.ENDC}"
+        )
         return False
 
     return True
@@ -137,7 +139,9 @@ WantedBy=multi-user.target
         return True
 
     except PermissionError:
-        print(f"{Colors.YELLOW}⚠️  systemdサービス作成にはsudo権限が必要です{Colors.ENDC}")
+        print(
+            f"{Colors.YELLOW}⚠️  systemdサービス作成にはsudo権限が必要です{Colors.ENDC}"
+        )
         print(f"{Colors.BLUE}💡 手動でサービスを作成してください:{Colors.ENDC}")
         print(
             f"  sudo tee /etc/systemd/system/elders-guild-intelligence.service << 'EOF'"
@@ -193,7 +197,9 @@ def main():
     # 実行権限確認
     intelligence_cmd = Path(__file__).parent / "commands" / "ai_project_intelligence.py"
     if not intelligence_cmd.exists():
-        print(f"{Colors.RED}❌ コマンドファイルが見つかりません: {intelligence_cmd}{Colors.ENDC}")
+        print(
+            f"{Colors.RED}❌ コマンドファイルが見つかりません: {intelligence_cmd}{Colors.ENDC}"
+        )
         return 1
 
     # 実行権限付与
@@ -207,10 +213,14 @@ def main():
         show_menu()
 
         try:
-            option = input(f"{Colors.BLUE}選択してください (1-7): {Colors.ENDC}").strip()
+            option = input(
+                f"{Colors.BLUE}選択してください (1-7): {Colors.ENDC}"
+            ).strip()
 
             if option == "7":
-                print(f"{Colors.GREEN}👋 エルダーズギルドがプロジェクトを見守っています{Colors.ENDC}")
+                print(
+                    f"{Colors.GREEN}👋 エルダーズギルドがプロジェクトを見守っています{Colors.ENDC}"
+                )
                 break
             elif option == "h" or option == "help":
                 show_quick_start()
@@ -232,7 +242,9 @@ def main():
                 input(f"\n{Colors.BLUE}Enterキーで続行...{Colors.ENDC}")
 
         except KeyboardInterrupt:
-            print(f"\n{Colors.GREEN}👋 エルダーズギルドがプロジェクトを見守っています{Colors.ENDC}")
+            print(
+                f"\n{Colors.GREEN}👋 エルダーズギルドがプロジェクトを見守っています{Colors.ENDC}"
+            )
             break
         except Exception as e:
             print(f"{Colors.RED}❌ エラー: {e}{Colors.ENDC}")

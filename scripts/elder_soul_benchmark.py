@@ -30,6 +30,7 @@ from libs.elder_enforcement import ElderTreeEnforcement
 @dataclass
 class BenchmarkResult:
     """ベンチマーク結果"""
+
     test_name: str
     execution_time: float
     memory_usage: float
@@ -47,6 +48,7 @@ class BenchmarkResult:
 @dataclass
 class SystemMetrics:
     """システムメトリクス"""
+
     cpu_percent: float
     memory_percent: float
     memory_available_mb: float
@@ -147,7 +149,7 @@ class ElderTreeBenchmark:
             latency_p95=self._percentile(latencies, 95),
             latency_p99=self._percentile(latencies, 99),
             error_count=0,
-            timestamp=datetime.now().isoformat()
+            timestamp=datetime.now().isoformat(),
         )
 
         self.results.append(result)
@@ -173,7 +175,7 @@ class ElderTreeBenchmark:
                     agent_type=AgentType.SERVANT,
                     capabilities=["benchmarking", "testing"],
                     dependencies=[],
-                    auto_start=False
+                    auto_start=False,
                 )
 
                 end_time = time.time()
@@ -181,7 +183,9 @@ class ElderTreeBenchmark:
                 latencies.append(latency)
 
                 if (i + 1) % 20 == 0:
-                    print(f"  Registered {i+1}/100 agents, avg latency: {statistics.mean(latencies[-20:]):.2f}ms")
+                    print(
+                        f"  Registered {i+1}/100 agents, avg latency: {statistics.mean(latencies[-20:]):.2f}ms"
+                    )
 
             except Exception as e:
                 print(f"  Error registering agent {i}: {e}")
@@ -203,8 +207,8 @@ class ElderTreeBenchmark:
             timestamp=datetime.now().isoformat(),
             additional_metrics={
                 "total_agents_registered": len(latencies),
-                "memory_per_agent": memory_delta / len(latencies) if latencies else 0
-            }
+                "memory_per_agent": memory_delta / len(latencies) if latencies else 0,
+            },
         )
 
         self.results.append(result)
@@ -232,7 +236,7 @@ class ElderTreeBenchmark:
                 "source": "test_agent",
                 "target": "target_agent",
                 "payload": {"test_data": "x" * 100},  # 100バイトのテストデータ
-                "timestamp": time.time()
+                "timestamp": time.time(),
             }
 
             # JSON シリアライゼーション/デシリアライゼーション
@@ -244,7 +248,9 @@ class ElderTreeBenchmark:
             latencies.append(latency)
 
             if (i + 1) % 200 == 0:
-                print(f"  Processed {i+1}/1000 messages, avg latency: {statistics.mean(latencies[-200:]):.1f}μs")
+                print(
+                    f"  Processed {i+1}/1000 messages, avg latency: {statistics.mean(latencies[-200:]):.1f}μs"
+                )
 
         result = BenchmarkResult(
             test_name="Communication Latency",
@@ -260,8 +266,12 @@ class ElderTreeBenchmark:
             timestamp=datetime.now().isoformat(),
             additional_metrics={
                 "message_size_bytes": len(json.dumps(message)),
-                "throughput_mbps": (len(json.dumps(message)) * 1000000 / statistics.mean(latencies)) / 1024 / 1024
-            }
+                "throughput_mbps": (
+                    len(json.dumps(message)) * 1000000 / statistics.mean(latencies)
+                )
+                / 1024
+                / 1024,
+            },
         )
 
         self.results.append(result)
@@ -291,7 +301,7 @@ class ElderTreeBenchmark:
                     agent_type=AgentType.SERVANT,
                     capabilities=["scaling"],
                     dependencies=[],
-                    auto_start=False
+                    auto_start=False,
                 )
                 tasks.append(task)
 
@@ -311,10 +321,12 @@ class ElderTreeBenchmark:
                 "execution_time": execution_time,
                 "memory_delta": memory_delta,
                 "agents_per_second": count / (execution_time / 1000),
-                "memory_per_agent": memory_delta / count
+                "memory_per_agent": memory_delta / count,
             }
 
-            print(f"    {count} agents: {execution_time:.1f}ms, {memory_delta:.1f}MB, {scalability_results[count]['agents_per_second']:.1f} agents/sec")
+            print(
+                f"    {count} agents: {execution_time:.1f}ms, {memory_delta:.1f}MB, {scalability_results[count]['agents_per_second']:.1f} agents/sec"
+            )
 
             # クリーンアップ
             for i in range(count):
@@ -342,8 +354,9 @@ class ElderTreeBenchmark:
             additional_metrics={
                 "scalability_results": scalability_results,
                 "max_agents_tested": max_scale,
-                "linear_scaling_factor": max_result["agents_per_second"] / scalability_results[10]["agents_per_second"]
-            }
+                "linear_scaling_factor": max_result["agents_per_second"]
+                / scalability_results[10]["agents_per_second"],
+            },
         )
 
         self.results.append(result)
@@ -386,7 +399,7 @@ class ElderTreeBenchmark:
             timestamp=datetime.now().isoformat(),
             additional_metrics={
                 "scan_frequency": f"Every {statistics.mean(latencies):.1f}ms sustainable"
-            }
+            },
         )
 
         self.results.append(result)
@@ -411,13 +424,15 @@ class ElderTreeBenchmark:
                     agent_type=AgentType.SERVANT,
                     capabilities=["memory_test"],
                     dependencies=[],
-                    auto_start=False
+                    auto_start=False,
                 )
 
             current_memory = psutil.Process().memory_info().rss / 1024 / 1024
             memory_measurements.append(current_memory)
 
-            print(f"  {batch * 10} agents: {current_memory:.1f}MB (+{current_memory - memory_baseline:.1f}MB)")
+            print(
+                f"  {batch * 10} agents: {current_memory:.1f}MB (+{current_memory - memory_baseline:.1f}MB)"
+            )
 
         # メモリ効率計算
         total_agents = 100
@@ -447,8 +462,8 @@ class ElderTreeBenchmark:
             additional_metrics={
                 "memory_per_agent_mb": memory_per_agent,
                 "memory_measurements": memory_measurements,
-                "memory_efficiency_score": 100 / memory_per_agent  # higher is better
-            }
+                "memory_efficiency_score": 100 / memory_per_agent,  # higher is better
+            },
         )
 
         self.results.append(result)
@@ -471,7 +486,7 @@ class ElderTreeBenchmark:
                 description="Concurrent processing test",
                 agent_type=AgentType.SERVANT,
                 capabilities=["concurrent"],
-                auto_start=False
+                auto_start=False,
             )
             concurrent_tasks.append(task)
 
@@ -486,7 +501,9 @@ class ElderTreeBenchmark:
 
         execution_time = (end_time - start_time) * 1000
 
-        print(f"  Concurrent registration: {success_count}/50 succeeded in {execution_time:.1f}ms")
+        print(
+            f"  Concurrent registration: {success_count}/50 succeeded in {execution_time:.1f}ms"
+        )
 
         # クリーンアップ
         for i in range(50):
@@ -509,8 +526,8 @@ class ElderTreeBenchmark:
             timestamp=datetime.now().isoformat(),
             additional_metrics={
                 "concurrency_level": 50,
-                "concurrent_efficiency": success_count / 50
-            }
+                "concurrent_efficiency": success_count / 50,
+            },
         )
 
         self.results.append(result)
@@ -537,9 +554,10 @@ class ElderTreeBenchmark:
             try:
                 # ランダムな操作を実行
                 import random
-                operation = random.choice(['register', 'unregister', 'status', 'list'])
 
-                if operation == 'register':
+                operation = random.choice(["register", "unregister", "status", "list"])
+
+                if operation == "register":
                     agent_id = f"stress_agent_{int(time.time() * 1000000) % 1000000}"
                     await self.registry.register_agent(
                         agent_id=agent_id,
@@ -547,22 +565,24 @@ class ElderTreeBenchmark:
                         description="Stress test agent",
                         agent_type=AgentType.SERVANT,
                         capabilities=["stress"],
-                        auto_start=False
+                        auto_start=False,
                     )
-                elif operation == 'status':
+                elif operation == "status":
                     # ランダムなエージェントの状態確認
                     agents = await self.registry.list_agents()
                     if agents:
                         agent = random.choice(agents)
-                        await self.registry.get_agent_status(agent['agent_id'])
-                elif operation == 'list':
+                        await self.registry.get_agent_status(agent["agent_id"])
+                elif operation == "list":
                     await self.registry.list_agents()
 
                 operations_count += 1
 
                 if operations_count % 100 == 0:
                     elapsed = time.time() - start_time
-                    print(f"    {operations_count} operations in {elapsed:.1f}s ({operations_count/elapsed:.1f} ops/sec)")
+                    print(
+                        f"    {operations_count} operations in {elapsed:.1f}s ({operations_count/elapsed:.1f} ops/sec)"
+                    )
 
             except Exception as e:
                 error_count += 1
@@ -582,9 +602,17 @@ class ElderTreeBenchmark:
             execution_time=total_duration * 1000,
             memory_usage=memory_end - memory_start,
             cpu_usage=await self._get_cpu_usage(),
-            success_rate=((operations_count - error_count) / operations_count * 100) if operations_count > 0 else 0,
+            success_rate=(
+                ((operations_count - error_count) / operations_count * 100)
+                if operations_count > 0
+                else 0
+            ),
             throughput=operations_count / total_duration,
-            latency_avg=(total_duration / operations_count * 1000) if operations_count > 0 else 0,
+            latency_avg=(
+                (total_duration / operations_count * 1000)
+                if operations_count > 0
+                else 0
+            ),
             latency_p95=0,  # N/A for stress test
             latency_p99=0,  # N/A for stress test
             error_count=error_count,
@@ -593,8 +621,12 @@ class ElderTreeBenchmark:
                 "test_duration_seconds": stress_duration,
                 "total_operations": operations_count,
                 "operations_per_second": operations_count / total_duration,
-                "error_rate": (error_count / operations_count * 100) if operations_count > 0 else 0
-            }
+                "error_rate": (
+                    (error_count / operations_count * 100)
+                    if operations_count > 0
+                    else 0
+                ),
+            },
         )
 
         self.results.append(result)
@@ -604,9 +636,9 @@ class ElderTreeBenchmark:
         agents = await self.registry.list_agents()
         cleanup_count = 0
         for agent in agents:
-            if 'stress_agent_' in agent['agent_id']:
+            if "stress_agent_" in agent["agent_id"]:
                 try:
-                    await self.registry.unregister_agent(agent['agent_id'])
+                    await self.registry.unregister_agent(agent["agent_id"])
                     cleanup_count += 1
                 except:
                     pass
@@ -630,20 +662,25 @@ class ElderTreeBenchmark:
                     "python_version": sys.version,
                     "platform": sys.platform,
                     "cpu_count": psutil.cpu_count(),
-                    "memory_total_gb": psutil.virtual_memory().total / 1024 / 1024 / 1024,
+                    "memory_total_gb": psutil.virtual_memory().total
+                    / 1024
+                    / 1024
+                    / 1024,
                 },
-                "baseline_metrics": asdict(self.baseline_metrics) if self.baseline_metrics else None
+                "baseline_metrics": (
+                    asdict(self.baseline_metrics) if self.baseline_metrics else None
+                ),
             },
-            "test_results": [asdict(result) for result in self.results]
+            "test_results": [asdict(result) for result in self.results],
         }
 
         json_file = report_dir / f"elder_soul_benchmark_{timestamp}.json"
-        with open(json_file, 'w', encoding='utf-8') as f:
+        with open(json_file, "w", encoding="utf-8") as f:
             json.dump(detailed_report, f, indent=2, ensure_ascii=False)
 
         # サマリーレポート生成
         summary_file = report_dir / f"elder_soul_summary_{timestamp}.md"
-        with open(summary_file, 'w', encoding='utf-8') as f:
+        with open(summary_file, "w", encoding="utf-8") as f:
             f.write(self._generate_summary_report())
 
         print(f"📄 Detailed report: {json_file}")
@@ -665,7 +702,9 @@ class ElderTreeBenchmark:
             report.append("-" * 30)
             report.append(f"CPU Usage: {self.baseline_metrics.cpu_percent:.1f}%")
             report.append(f"Memory Usage: {self.baseline_metrics.memory_percent:.1f}%")
-            report.append(f"Available Memory: {self.baseline_metrics.memory_available_mb:.0f}MB")
+            report.append(
+                f"Available Memory: {self.baseline_metrics.memory_available_mb:.0f}MB"
+            )
             report.append(f"Process Count: {self.baseline_metrics.process_count}")
             report.append("")
 
@@ -702,7 +741,9 @@ class ElderTreeBenchmark:
 
         avg_success_rate = statistics.mean([r.success_rate for r in self.results])
         total_memory_usage = sum([r.memory_usage for r in self.results])
-        avg_throughput = statistics.mean([r.throughput for r in self.results if r.throughput > 0])
+        avg_throughput = statistics.mean(
+            [r.throughput for r in self.results if r.throughput > 0]
+        )
 
         report.append(f"Average Success Rate: {avg_success_rate:.1f}%")
         report.append(f"Total Memory Impact: {total_memory_usage:.1f}MB")
@@ -733,10 +774,10 @@ class ElderTreeBenchmark:
             cpu_percent=psutil.cpu_percent(interval=1),
             memory_percent=psutil.virtual_memory().percent,
             memory_available_mb=psutil.virtual_memory().available / 1024 / 1024,
-            disk_usage_percent=psutil.disk_usage('/').percent,
+            disk_usage_percent=psutil.disk_usage("/").percent,
             network_io=dict(psutil.net_io_counters()._asdict()),
             process_count=len(psutil.pids()),
-            thread_count=psutil.Process().num_threads()
+            thread_count=psutil.Process().num_threads(),
         )
 
     async def _get_cpu_usage(self) -> float:

@@ -11,17 +11,19 @@ from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
 from enum import Enum
 
+
 class UniversalScale(Enum):
-    PLANCK = 1e-35      # プランク長
-    ATOMIC = 1e-10      # 原子スケール
-    MOLECULAR = 1e-9    # 分子スケール
-    CELLULAR = 1e-6     # 細胞スケール
-    ORGANISM = 1e0      # 生物スケール
-    PLANETARY = 1e7     # 惑星スケール
-    SOLAR = 1e11        # 太陽系スケール
-    GALACTIC = 1e21     # 銀河スケール
-    UNIVERSAL = 1e26    # 宇宙スケール
-    MULTIVERSE = 1e50   # 多元宇宙スケール
+    PLANCK = 1e-35  # プランク長
+    ATOMIC = 1e-10  # 原子スケール
+    MOLECULAR = 1e-9  # 分子スケール
+    CELLULAR = 1e-6  # 細胞スケール
+    ORGANISM = 1e0  # 生物スケール
+    PLANETARY = 1e7  # 惑星スケール
+    SOLAR = 1e11  # 太陽系スケール
+    GALACTIC = 1e21  # 銀河スケール
+    UNIVERSAL = 1e26  # 宇宙スケール
+    MULTIVERSE = 1e50  # 多元宇宙スケール
+
 
 @dataclass
 class UniversalNode:
@@ -32,6 +34,7 @@ class UniversalNode:
     coordinates: List[float]  # 11次元座標
     connected_nodes: List[str]
     specialized_functions: List[str]
+
 
 class UniversalComputingGrid:
     """宇宙規模コンピューティンググリッド"""
@@ -59,7 +62,7 @@ class UniversalComputingGrid:
                 current_load=0.0,
                 coordinates=coordinates,
                 connected_nodes=[],
-                specialized_functions=self._get_scale_functions(scale)
+                specialized_functions=self._get_scale_functions(scale),
             )
 
             self.nodes[node_id] = node
@@ -79,7 +82,7 @@ class UniversalComputingGrid:
             UniversalScale.SOLAR: ["orbital_mechanics", "stellar_evolution"],
             UniversalScale.GALACTIC: ["dark_matter_calculation", "gravitational_waves"],
             UniversalScale.UNIVERSAL: ["cosmic_expansion", "multiverse_interface"],
-            UniversalScale.MULTIVERSE: ["reality_manipulation", "infinite_computation"]
+            UniversalScale.MULTIVERSE: ["reality_manipulation", "infinite_computation"],
         }
         return functions.get(scale, ["general_processing"])
 
@@ -92,12 +95,13 @@ class UniversalComputingGrid:
 
             # 隣接スケールと接続
             if i > 0:
-                node.connected_nodes.append(node_list[i-1])
+                node.connected_nodes.append(node_list[i - 1])
             if i < len(node_list) - 1:
-                node.connected_nodes.append(node_list[i+1])
+                node.connected_nodes.append(node_list[i + 1])
 
             # ランダムな長距離接続（量子もつれシミュレーション）
             import random
+
             for _ in range(2):
                 other_node = random.choice(node_list)
                 if other_node != node_id and other_node not in node.connected_nodes:
@@ -113,7 +117,8 @@ class UniversalComputingGrid:
 
         # 適切なノード選択
         suitable_nodes = [
-            node for node in self.nodes.values()
+            node
+            for node in self.nodes.values()
             if node.scale.value >= required_scale.value and node.current_load < 0.8
         ]
 
@@ -124,7 +129,9 @@ class UniversalComputingGrid:
         selected_node = min(suitable_nodes, key=lambda n: n.current_load)
 
         # 処理実行
-        processing_time = complexity * (1 / selected_node.scale.value) * 1000  # スケールによる処理時間
+        processing_time = (
+            complexity * (1 / selected_node.scale.value) * 1000
+        )  # スケールによる処理時間
         await asyncio.sleep(min(processing_time, 0.1))  # 最大0.1秒
 
         # 負荷更新
@@ -153,7 +160,7 @@ class UniversalComputingGrid:
             "cosmic_coordinates": selected_node.coordinates,
             "specialized_functions": selected_node.specialized_functions,
             "dark_energy_utilized": self.dark_energy_processor.get_energy_level(),
-            "universal_efficiency": self._calculate_universal_efficiency()
+            "universal_efficiency": self._calculate_universal_efficiency(),
         }
 
         # 結果をダークマターキャッシュに保存
@@ -192,7 +199,9 @@ class UniversalComputingGrid:
         total_capacity = sum(node.processing_capacity for node in self.nodes.values())
         total_load = sum(node.current_load for node in self.nodes.values())
 
-        efficiency = (total_capacity - total_load) / total_capacity if total_capacity > 0 else 0
+        efficiency = (
+            (total_capacity - total_load) / total_capacity if total_capacity > 0 else 0
+        )
         return max(min(efficiency, 1.0), 0.0)
 
     async def initiate_big_bang_computation(self) -> Dict[str, Any]:
@@ -206,7 +215,7 @@ class UniversalComputingGrid:
                 "id": f"big_bang_{scale.name}",
                 "type": "universe_creation",
                 "complexity": float(scale.value) / 1e26,  # 宇宙スケールで正規化
-                "scale": scale.name
+                "scale": scale.name,
             }
             big_bang_tasks.append(self.process_universal_task(task))
 
@@ -214,17 +223,23 @@ class UniversalComputingGrid:
         results = await asyncio.gather(*big_bang_tasks, return_exceptions=True)
         successful_results = [r for r in results if not isinstance(r, Exception)]
 
-        total_processing_power = sum(r.get("processing_capacity", 0) for r in successful_results)
+        total_processing_power = sum(
+            r.get("processing_capacity", 0) for r in successful_results
+        )
 
         return {
             "computation_type": "Big Bang Simulation",
             "scales_involved": len(successful_results),
             "total_processing_power": total_processing_power,
-            "universe_creation_time": sum(r.get("execution_time", 0) for r in successful_results),
+            "universe_creation_time": sum(
+                r.get("execution_time", 0) for r in successful_results
+            ),
             "cosmic_efficiency": self._calculate_universal_efficiency(),
-            "dark_energy_consumed": self.dark_energy_processor.consume_energy(total_processing_power),
+            "dark_energy_consumed": self.dark_energy_processor.consume_energy(
+                total_processing_power
+            ),
             "new_universes_created": len(successful_results),
-            "multiverse_expansion": True
+            "multiverse_expansion": True,
         }
 
     def get_universal_status(self) -> Dict[str, Any]:
@@ -232,14 +247,19 @@ class UniversalComputingGrid:
         return {
             "total_nodes": len(self.nodes),
             "scales_covered": [scale.name for scale in UniversalScale],
-            "total_processing_capacity": sum(node.processing_capacity for node in self.nodes.values()),
-            "current_universal_load": sum(node.current_load for node in self.nodes.values()),
+            "total_processing_capacity": sum(
+                node.processing_capacity for node in self.nodes.values()
+            ),
+            "current_universal_load": sum(
+                node.current_load for node in self.nodes.values()
+            ),
             "tasks_completed": len(self.universal_tasks),
             "dark_matter_cache_size": len(self.dark_matter_cache),
             "universal_efficiency": self._calculate_universal_efficiency(),
             "dark_energy_level": self.dark_energy_processor.get_energy_level(),
-            "cosmic_time": datetime.now().isoformat()
+            "cosmic_time": datetime.now().isoformat(),
         }
+
 
 class DarkEnergyProcessor:
     """ダークエネルギー処理器"""
@@ -257,11 +277,13 @@ class DarkEnergyProcessor:
         consumption = min(amount / 1e20, self.energy_level * 0.1)  # 最大10%まで
         self.energy_level -= consumption
 
-        self.energy_consumption_history.append({
-            "amount": consumption,
-            "timestamp": datetime.now().isoformat(),
-            "remaining": self.energy_level
-        })
+        self.energy_consumption_history.append(
+            {
+                "amount": consumption,
+                "timestamp": datetime.now().isoformat(),
+                "remaining": self.energy_level,
+            }
+        )
 
         # エネルギー再生（宇宙膨張による）
         regeneration = consumption * 0.001  # 0.1%再生
@@ -279,8 +301,9 @@ class DarkEnergyProcessor:
             "energy_used": expansion_energy,
             "expansion_rate": "73.2 km/s/Mpc",  # ハッブル定数
             "new_space_created": "infinite",
-            "dark_energy_efficiency": 0.999
+            "dark_energy_efficiency": 0.999,
         }
+
 
 # デモ実行
 async def universal_demo():
@@ -294,7 +317,7 @@ async def universal_demo():
         {"id": "molecular_sim", "type": "chemistry", "complexity": 0.3},
         {"id": "climate_model", "type": "planetary", "complexity": 1.5},
         {"id": "galaxy_formation", "type": "cosmic", "complexity": 25.0},
-        {"id": "multiverse_calc", "type": "reality", "complexity": 150.0}
+        {"id": "multiverse_calc", "type": "reality", "complexity": 150.0},
     ]
 
     for task in tasks:
@@ -310,6 +333,7 @@ async def universal_demo():
     status = universal_system.get_universal_status()
     print("\n🌟 Universal Status:")
     print(json.dumps(status, indent=2))
+
 
 if __name__ == "__main__":
     asyncio.run(universal_demo())

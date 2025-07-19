@@ -30,7 +30,9 @@ class GrimoireAutoUpdateSystem:
 
     def __init__(self):
         self.project_root = PROJECT_ROOT
-        self.grimoire_base = self.project_root / "knowledge_base" / "four_sages_grimoires"
+        self.grimoire_base = (
+            self.project_root / "knowledge_base" / "four_sages_grimoires"
+        )
         self.update_log = self.project_root / "logs" / "grimoire_auto_update.log"
         self.update_log.parent.mkdir(exist_ok=True)
 
@@ -54,7 +56,10 @@ class GrimoireAutoUpdateSystem:
         }
 
         # 監視対象ファイル
-        self.monitored_files = {str(self.grimoire_base / file): sage for sage, file in self.grimoire_structure.items()}
+        self.monitored_files = {
+            str(self.grimoire_base / file): sage
+            for sage, file in self.grimoire_structure.items()
+        }
 
         # 自動更新設定
         self.auto_update_config = {
@@ -148,14 +153,26 @@ class GrimoireAutoUpdateSystem:
         try:
             # 分析ルールの定義
             analysis_rules = [
-                {"name": "new_section_detection", "pattern": r"^#{1,3}\s+", "action": "update_index"},
+                {
+                    "name": "new_section_detection",
+                    "pattern": r"^#{1,3}\s+",
+                    "action": "update_index",
+                },
                 {
                     "name": "cross_reference_detection",
                     "pattern": r"\*\*.*賢者.*\*\*",
                     "action": "update_cross_references",
                 },
-                {"name": "code_block_detection", "pattern": r"```.*```", "action": "highlight_code"},
-                {"name": "link_detection", "pattern": r"\[.*\]\(.*\)", "action": "validate_links"},
+                {
+                    "name": "code_block_detection",
+                    "pattern": r"```.*```",
+                    "action": "highlight_code",
+                },
+                {
+                    "name": "link_detection",
+                    "pattern": r"\[.*\]\(.*\)",
+                    "action": "validate_links",
+                },
             ]
 
             analyzer_result["analysis_rules"] = analysis_rules
@@ -173,7 +190,10 @@ class GrimoireAutoUpdateSystem:
         """索引更新システムのセットアップ"""
         print("  📚 索引更新システムをセットアップ中...")
 
-        updater_result = {"status": "setting_up", "auto_index_enabled": self.auto_update_config["enable_auto_index"]}
+        updater_result = {
+            "status": "setting_up",
+            "auto_index_enabled": self.auto_update_config["enable_auto_index"],
+        }
 
         try:
             # 索引更新スクリプトの準備
@@ -407,14 +427,16 @@ if __name__ == "__main__":
                 self._check_file_changes()
 
                 # 定期バックアップ
-                if (current_time - last_backup_time).total_seconds() > self.auto_update_config["backup_interval"]:
+                if (
+                    current_time - last_backup_time
+                ).total_seconds() > self.auto_update_config["backup_interval"]:
                     self._perform_backup()
                     last_backup_time = current_time
 
                 # ヘルスチェック
-                if (current_time - last_health_check).total_seconds() > self.auto_update_config[
-                    "health_check_interval"
-                ]:
+                if (
+                    current_time - last_health_check
+                ).total_seconds() > self.auto_update_config["health_check_interval"]:
                     self._perform_health_check()
                     last_health_check = current_time
 
@@ -460,7 +482,9 @@ if __name__ == "__main__":
         """索引の更新"""
         try:
             script_path = self.project_root / "scripts" / "auto_index_updater.py"
-            result = subprocess.run([sys.executable, str(script_path)], capture_output=True, text=True)
+            result = subprocess.run(
+                [sys.executable, str(script_path)], capture_output=True, text=True
+            )
 
             if result.returncode == 0:
                 logger.info("Indices updated successfully")
@@ -474,7 +498,9 @@ if __name__ == "__main__":
         """相互参照の更新"""
         try:
             script_path = self.project_root / "scripts" / "auto_cross_ref_updater.py"
-            result = subprocess.run([sys.executable, str(script_path)], capture_output=True, text=True)
+            result = subprocess.run(
+                [sys.executable, str(script_path)], capture_output=True, text=True
+            )
 
             if result.returncode == 0:
                 logger.info("Cross-references updated successfully")
@@ -498,7 +524,12 @@ if __name__ == "__main__":
                     shutil.copy2(file_path, backup_dir / file_name)
 
             # 索引ファイルもバックアップ
-            index_files = ["MASTER_INDEX.md", "TOPIC_INDEX.md", "QUICK_REFERENCE.md", "README.md"]
+            index_files = [
+                "MASTER_INDEX.md",
+                "TOPIC_INDEX.md",
+                "QUICK_REFERENCE.md",
+                "README.md",
+            ]
             for index_file in index_files:
                 index_path = self.grimoire_base / index_file
                 if index_path.exists():
@@ -517,7 +548,11 @@ if __name__ == "__main__":
         try:
             backup_base = self.project_root / "backups" / "grimoire"
             if backup_base.exists():
-                backups = sorted([d for d in backup_base.iterdir() if d.is_dir()], key=lambda x: x.name, reverse=True)
+                backups = sorted(
+                    [d for d in backup_base.iterdir() if d.is_dir()],
+                    key=lambda x: x.name,
+                    reverse=True,
+                )
 
                 # 最大数を超えたバックアップを削除
                 for backup in backups[self.auto_update_config["max_backup_files"] :]:
@@ -550,10 +585,17 @@ if __name__ == "__main__":
                     health_status["checks"][f"{sage_name}_readable"] = False
 
             # 索引ファイル整合性チェック
-            index_files = ["MASTER_INDEX.md", "TOPIC_INDEX.md", "QUICK_REFERENCE.md", "README.md"]
+            index_files = [
+                "MASTER_INDEX.md",
+                "TOPIC_INDEX.md",
+                "QUICK_REFERENCE.md",
+                "README.md",
+            ]
             for index_file in index_files:
                 index_path = self.grimoire_base / index_file
-                health_status["checks"][f"index_{index_file}_exists"] = index_path.exists()
+                health_status["checks"][
+                    f"index_{index_file}_exists"
+                ] = index_path.exists()
 
             # ヘルスチェック結果をログに記録
             health_issues = [k for k, v in health_status["checks"].items() if not v]
@@ -613,7 +655,11 @@ if __name__ == "__main__":
         try:
             backup_base = self.project_root / "backups" / "grimoire"
             if backup_base.exists():
-                backups = sorted([d for d in backup_base.iterdir() if d.is_dir()], key=lambda x: x.name, reverse=True)
+                backups = sorted(
+                    [d for d in backup_base.iterdir() if d.is_dir()],
+                    key=lambda x: x.name,
+                    reverse=True,
+                )
                 if backups:
                     return backups[0].name
         except Exception:
@@ -642,7 +688,9 @@ def main():
     print("\n📊 セットアップ結果サマリー")
     print("-" * 40)
     print(f"総合状況: {setup_results['overall_status'].upper()}")
-    print(f"準備完了システム: {sum(auto_updater.update_systems.values())}/{len(auto_updater.update_systems)}")
+    print(
+        f"準備完了システム: {sum(auto_updater.update_systems.values())}/{len(auto_updater.update_systems)}"
+    )
 
     # システム別詳細
     print("\n🔍 システム別状況")
@@ -663,7 +711,11 @@ def main():
     print(f"最大バックアップ数: {config['max_backup_files']}")
 
     # 詳細レポート保存
-    report_file = PROJECT_ROOT / "logs" / f"grimoire_auto_update_setup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    report_file = (
+        PROJECT_ROOT
+        / "logs"
+        / f"grimoire_auto_update_setup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
     with open(report_file, "w", encoding="utf-8") as f:
         json.dump(setup_results, f, indent=2, ensure_ascii=False, default=str)
 
@@ -684,7 +736,9 @@ def main():
 
                 # システム状態の確認
                 status = auto_updater.get_system_status()
-                print(f"システム稼働状況: {'稼働中' if status['system_running'] else '停止中'}")
+                print(
+                    f"システム稼働状況: {'稼働中' if status['system_running'] else '停止中'}"
+                )
                 print(f"監視ファイル数: {status['monitored_files']}")
 
                 # システム停止（デモンストレーション用）

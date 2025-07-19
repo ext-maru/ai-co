@@ -21,7 +21,7 @@ from scripts.knights_status_monitor import KnightsStatusMonitor
 
 # Flask設定
 app = Flask(__name__)
-app.secret_key = 'knights_dashboard_secret_key'
+app.secret_key = "knights_dashboard_secret_key"
 
 # ログ設定
 logging.basicConfig(level=logging.INFO)
@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 # グローバル状態
 latest_status = {}
 auto_refresh = True
+
 
 class KnightsDashboard:
     """騎士団ダッシュボードメインクラス"""
@@ -40,6 +41,7 @@ class KnightsDashboard:
 
     def start_auto_update(self):
         """自動更新スレッドを開始"""
+
         def update_loop():
             global latest_status
             while auto_refresh:
@@ -54,6 +56,7 @@ class KnightsDashboard:
         thread = threading.Thread(target=update_loop, daemon=True)
         thread.start()
         logger.info("Auto-update thread started")
+
 
 # HTML テンプレート
 DASHBOARD_TEMPLATE = """
@@ -310,8 +313,9 @@ DASHBOARD_TEMPLATE = """
 </html>
 """
 
+
 # Flask ルート
-@app.route('/')
+@app.route("/")
 def dashboard():
     """ダッシュボードメインページ"""
     global latest_status
@@ -322,71 +326,85 @@ def dashboard():
 
     return render_template_string(DASHBOARD_TEMPLATE, status=latest_status)
 
-@app.route('/api/status')
+
+@app.route("/api/status")
 def api_status():
     """ステータスAPI"""
     global latest_status
     return jsonify(latest_status)
 
-@app.route('/api/action', methods=['POST'])
+
+@app.route("/api/action", methods=["POST"])
 def api_action():
     """アクション実行API"""
     data = request.json
-    action = data.get('action')
+    action = data.get("action")
 
     try:
-        if action == 'fix_workers':
-            result = subprocess.run(['python3', 'check_and_fix_workers.py'],
-                                  capture_output=True, text=True, timeout=30)
-            return jsonify({
-                'success': True,
-                'message': 'ワーカー修復を実行しました',
-                'output': result.stdout
-            })
+        if action == "fix_workers":
+            result = subprocess.run(
+                ["python3", "check_and_fix_workers.py"],
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            return jsonify(
+                {
+                    "success": True,
+                    "message": "ワーカー修復を実行しました",
+                    "output": result.stdout,
+                }
+            )
 
-        elif action == 'test_knights':
-            result = subprocess.run([
-                'python3', 'scripts/knights-github-action.py',
-                'analyze', '--output-format', 'text'
-            ], capture_output=True, text=True, timeout=30)
-            return jsonify({
-                'success': True,
-                'message': '騎士団テストを実行しました',
-                'output': result.stdout
-            })
+        elif action == "test_knights":
+            result = subprocess.run(
+                [
+                    "python3",
+                    "scripts/knights-github-action.py",
+                    "analyze",
+                    "--output-format",
+                    "text",
+                ],
+                capture_output=True,
+                text=True,
+                timeout=30,
+            )
+            return jsonify(
+                {
+                    "success": True,
+                    "message": "騎士団テストを実行しました",
+                    "output": result.stdout,
+                }
+            )
 
-        elif action == 'emergency_restart':
+        elif action == "emergency_restart":
             # 緊急再起動シミュレーション（実際の再起動は危険なので模擬）
-            return jsonify({
-                'success': True,
-                'message': '緊急再起動シミュレーションを実行しました（実際の再起動はされていません）'
-            })
+            return jsonify(
+                {
+                    "success": True,
+                    "message": "緊急再起動シミュレーションを実行しました（実際の再起動はされていません）",
+                }
+            )
 
         else:
-            return jsonify({
-                'success': False,
-                'message': f'未知のアクション: {action}'
-            })
+            return jsonify({"success": False, "message": f"未知のアクション: {action}"})
 
     except subprocess.TimeoutExpired:
-        return jsonify({
-            'success': False,
-            'message': 'アクション実行がタイムアウトしました'
-        })
+        return jsonify(
+            {"success": False, "message": "アクション実行がタイムアウトしました"}
+        )
     except Exception as e:
-        return jsonify({
-            'success': False,
-            'message': f'アクション実行エラー: {str(e)}'
-        })
+        return jsonify({"success": False, "message": f"アクション実行エラー: {str(e)}"})
+
 
 def main():
     """メイン関数"""
     import argparse
 
-    parser = argparse.ArgumentParser(description='Knights Dashboard')
-    parser.add_argument('--host', default='127.0.0.1', help='Host address')
-    parser.add_argument('--port', type=int, default=5000, help='Port number')
-    parser.add_argument('--debug', action='store_true', help='Debug mode')
+    parser = argparse.ArgumentParser(description="Knights Dashboard")
+    parser.add_argument("--host", default="127.0.0.1", help="Host address")
+    parser.add_argument("--port", type=int, default=5000, help="Port number")
+    parser.add_argument("--debug", action="store_true", help="Debug mode")
 
     args = parser.parse_args()
 
@@ -394,7 +412,8 @@ def main():
     dashboard = KnightsDashboard()
     dashboard.start_auto_update()
 
-    print(f"""
+    print(
+        f"""
 🛡️ Knights Dashboard Starting...
 
 URL: http://{args.host}:{args.port}
@@ -408,10 +427,12 @@ Debug: {args.debug}
 - ワンクリック修復機能
 
 Ctrl+C で停止
-""")
+"""
+    )
 
     # Flask サーバー起動
     app.run(host=args.host, port=args.port, debug=args.debug, threaded=True)
+
 
 if __name__ == "__main__":
     main()

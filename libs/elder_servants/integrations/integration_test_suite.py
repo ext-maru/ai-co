@@ -918,9 +918,9 @@ class SecureSystem:
             test_result = TestResult(
                 test_id=f"PERF_{self.test_id_counter:03d}",
                 test_name="System Performance - Average Response Time",
-                status=TestStatus.PASSED
-                if performance_acceptable
-                else TestStatus.FAILED,
+                status=(
+                    TestStatus.PASSED if performance_acceptable else TestStatus.FAILED
+                ),
                 severity=TestSeverity.MEDIUM,
                 execution_time_ms=avg_time,
                 success=performance_acceptable,

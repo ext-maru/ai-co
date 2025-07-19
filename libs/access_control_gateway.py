@@ -357,13 +357,13 @@ class AccessControlGateway:
                     restrictions=final_decision.get("restrictions", []),
                     audit_trail={
                         "security_context_id": security_context.session_id,
-                        "resource_context_id": resource_context.context_id
-                        if resource_context
-                        else None,
+                        "resource_context_id": (
+                            resource_context.context_id if resource_context else None
+                        ),
                         "policy_evaluations": len(policy_results),
-                        "access_result": access_result.granted
-                        if access_result
-                        else None,
+                        "access_result": (
+                            access_result.granted if access_result else None
+                        ),
                         "resource_check": resource_check,
                     },
                     processing_time_ms=processing_time,

@@ -134,31 +134,56 @@ class ProjectManagerElder:
             INSERT INTO projects (name, description, owner, start_date, end_date, fantasy_rank, elder_assignment)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """,
-            (name, description, owner, start_date, end_date, fantasy_rank, elder_assignment),
+            (
+                name,
+                description,
+                owner,
+                start_date,
+                end_date,
+                fantasy_rank,
+                elder_assignment,
+            ),
         )
 
         project_id = cursor.lastrowid
         conn.commit()
         conn.close()
 
-        logger.info(f"🏰 プロジェクト '{name}' を作成しました (ID: {project_id}, 担当: {elder_assignment})")
+        logger.info(
+            f"🏰 プロジェクト '{name}' を作成しました (ID: {project_id}, 担当: {elder_assignment})"
+        )
         return project_id
 
     def _assign_elder_by_category(self, name: str, description: str = None) -> str:
         """プロジェクト内容に基づいてエルダーを自動割り当て"""
         content = f"{name} {description or ''}".lower()
 
-        if any(word in content for word in ["障害", "バグ", "修正", "incident", "error", "fix"]):
+        if any(
+            word in content
+            for word in ["障害", "バグ", "修正", "incident", "error", "fix"]
+        ):
             return "🛡️ インシデント騎士団"
         elif any(
-            word in content for word in ["開発", "実装", "新機能", "develop", "feature", "implement"]
+            word in content
+            for word in ["開発", "実装", "新機能", "develop", "feature", "implement"]
         ):
             return "🔨 ドワーフ工房"
         elif any(
-            word in content for word in ["調査", "研究", "ドキュメント", "research", "analyze", "document"]
+            word in content
+            for word in [
+                "調査",
+                "研究",
+                "ドキュメント",
+                "research",
+                "analyze",
+                "document",
+            ]
         ):
             return "🧙‍♂️ RAGウィザーズ"
-        elif any(word in content for word in ["監視", "最適化", "テスト", "monitor", "optimize", "test"]):
+        elif any(
+            word in content
+            for word in ["監視", "最適化", "テスト", "monitor", "optimize", "test"]
+        ):
             return "🧝‍♂️ エルフの森"
         else:
             return "📋 タスクエルダー"
@@ -246,10 +271,14 @@ class ProjectManagerElder:
         conn.commit()
         conn.close()
 
-        logger.info(f"📋 タスク '{task_name}' を作成しました (ID: {task_id}, 分類: {fantasy_classification})")
+        logger.info(
+            f"📋 タスク '{task_name}' を作成しました (ID: {task_id}, 分類: {fantasy_classification})"
+        )
         return task_id
 
-    def _classify_task(self, task_name: str, description: str = None, priority: int = 5) -> str:
+    def _classify_task(
+        self, task_name: str, description: str = None, priority: int = 5
+    ) -> str:
         """タスクをファンタジー世界観で分類"""
         content = f"{task_name} {description or ''}".lower()
 
@@ -278,7 +307,11 @@ class ProjectManagerElder:
             return "✨ 日常任務"
 
     def update_task_status(
-        self, task_id: int, new_status: str, comment: str = None, changed_by: str = "Task Elder"
+        self,
+        task_id: int,
+        new_status: str,
+        comment: str = None,
+        changed_by: str = "Task Elder",
     ) -> bool:
         """タスクステータスを更新"""
         conn = sqlite3.connect(self.db_path)
@@ -318,7 +351,9 @@ class ProjectManagerElder:
         conn.commit()
         conn.close()
 
-        logger.info(f"📝 タスク {task_id} のステータスを '{old_status}' → '{new_status}' に更新")
+        logger.info(
+            f"📝 タスク {task_id} のステータスを '{old_status}' → '{new_status}' に更新"
+        )
         return True
 
     def _update_progress(self, cursor, task_id: int):
@@ -430,7 +465,8 @@ class ProjectManagerElder:
                 "elder_assignment": project[5],
             },
             "milestones": [
-                {"id": m[0], "name": m[1], "due_date": m[2], "progress": m[3]} for m in milestones
+                {"id": m[0], "name": m[1], "due_date": m[2], "progress": m[3]}
+                for m in milestones
             ],
             "tasks": self._build_task_hierarchy(tasks),
         }
@@ -507,7 +543,8 @@ class ProjectManagerElder:
         )
         stats["tasks"] = dict(
             zip(
-                ["total", "pending", "in_progress", "completed", "high_priority"], cursor.fetchone()
+                ["total", "pending", "in_progress", "completed", "high_priority"],
+                cursor.fetchone(),
             )
         )
 
@@ -559,7 +596,12 @@ class ElderGuildIntegration:
         """タスク賢者に最適な実行順序を相談"""
         # タスクの依存関係を分析して最適順序を提案
         return {
-            "critical_path": ["認証システム", "データベース設計", "API実装", "フロントエンド"],
+            "critical_path": [
+                "認証システム",
+                "データベース設計",
+                "API実装",
+                "フロントエンド",
+            ],
             "parallel_tasks": [["ドキュメント作成", "テスト環境構築"]],
             "estimated_duration": "3週間",
         }
@@ -567,8 +609,18 @@ class ElderGuildIntegration:
     def consult_incident_sage(self, task_id: int) -> List[Dict]:
         """インシデント賢者に潜在的リスクを相談"""
         return [
-            {"risk": "メモリリーク", "probability": 0.3, "impact": "高", "mitigation": "定期的なプロファイリング"},
-            {"risk": "認証脆弱性", "probability": 0.2, "impact": "重大", "mitigation": "セキュリティ監査実施"},
+            {
+                "risk": "メモリリーク",
+                "probability": 0.3,
+                "impact": "高",
+                "mitigation": "定期的なプロファイリング",
+            },
+            {
+                "risk": "認証脆弱性",
+                "probability": 0.2,
+                "impact": "重大",
+                "mitigation": "セキュリティ監査実施",
+            },
         ]
 
     def consult_rag_sage(self, query: str) -> str:
@@ -583,7 +635,9 @@ if __name__ == "__main__":
 
     # プロジェクト作成
     project_id = pm.create_project(
-        name="エルダーズギルド Web Portal", description="プロジェクト管理システムのWeb UI実装", fantasy_rank="🏆 EPIC"
+        name="エルダーズギルド Web Portal",
+        description="プロジェクト管理システムのWeb UI実装",
+        fantasy_rank="🏆 EPIC",
     )
 
     # マイルストーン作成

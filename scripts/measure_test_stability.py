@@ -30,14 +30,26 @@ class TestStabilityMeasurer:
         """Run pytest collection and count tests"""
         print("🔍 Running pytest collection...")
 
-        cmd = [sys.executable, "-m", "pytest", "--collect-only", "--quiet", "--no-header", "--tb=no"]
+        cmd = [
+            sys.executable,
+            "-m",
+            "pytest",
+            "--collect-only",
+            "--quiet",
+            "--no-header",
+            "--tb=no",
+        ]
 
         env = os.environ.copy()
         env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
 
         try:
             result = subprocess.run(
-                cmd, capture_output=True, text=True, cwd=self.project_root, env=env if "env" in locals() else None
+                cmd,
+                capture_output=True,
+                text=True,
+                cwd=self.project_root,
+                env=env if "env" in locals() else None,
             )
 
             # Parse output
@@ -90,10 +102,21 @@ class TestStabilityMeasurer:
             if not test_path.exists():
                 continue
 
-            cmd = [sys.executable, "-m", "pytest", str(test_file), "--quiet", "--no-header", "--tb=short", "-v"]
+            cmd = [
+                sys.executable,
+                "-m",
+                "pytest",
+                str(test_file),
+                "--quiet",
+                "--no-header",
+                "--tb=short",
+                "-v",
+            ]
 
             try:
-                result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.project_root)
+                result = subprocess.run(
+                    cmd, capture_output=True, text=True, cwd=self.project_root
+                )
 
                 output = result.stdout + result.stderr
 
@@ -129,14 +152,25 @@ class TestStabilityMeasurer:
         """Analyze common error patterns"""
         print("\n🔬 Analyzing error patterns...")
 
-        cmd = [sys.executable, "-m", "pytest", "--collect-only", "--quiet", "--tb=short"]
+        cmd = [
+            sys.executable,
+            "-m",
+            "pytest",
+            "--collect-only",
+            "--quiet",
+            "--tb=short",
+        ]
 
         env = os.environ.copy()
         env["PYTEST_DISABLE_PLUGIN_AUTOLOAD"] = "1"
 
         try:
             result = subprocess.run(
-                cmd, capture_output=True, text=True, cwd=self.project_root, env=env if "env" in locals() else None
+                cmd,
+                capture_output=True,
+                text=True,
+                cwd=self.project_root,
+                env=env if "env" in locals() else None,
             )
 
             output = result.stderr
@@ -161,7 +195,9 @@ class TestStabilityMeasurer:
                     if "Error" in line:
                         error_patterns["Other"] += 1
 
-            self.results["error_types"] = {k: v for k, v in error_patterns.items() if v > 0}
+            self.results["error_types"] = {
+                k: v for k, v in error_patterns.items() if v > 0
+            }
 
             for error_type, count in self.results["error_types"].items():
                 print(f"  • {error_type}: {count}")
@@ -201,13 +237,19 @@ class TestStabilityMeasurer:
 
         if self.results["error_types"]:
             print("\n🐛 Error Distribution:")
-            for error_type, count in sorted(self.results["error_types"].items(), key=lambda x: x[1], reverse=True):
+            for error_type, count in sorted(
+                self.results["error_types"].items(), key=lambda x: x[1], reverse=True
+            ):
                 print(f"  • {error_type}: {count}")
 
         # Success criteria
         print("\n✅ Success Criteria:")
-        print(f"  • Collection errors: {'✓ PASS' if self.results['collection_errors'] == 0 else '✗ FAIL'} (target: 0)")
-        print(f"  • Test stability: {'✓ PASS' if self.results['stability_rate'] >= 95 else '✗ FAIL'} (target: 95%+)")
+        print(
+            f"  • Collection errors: {'✓ PASS' if self.results['collection_errors'] == 0 else '✗ FAIL'} (target: 0)"
+        )
+        print(
+            f"  • Test stability: {'✓ PASS' if self.results['stability_rate'] >= 95 else '✗ FAIL'} (target: 95%+)"
+        )
 
         # Save report
         report_path = self.project_root / "test_stability_report.json"

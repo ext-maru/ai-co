@@ -1140,3 +1140,88 @@ class ContainerCrafter(DwarfServant):
     async def _deploy_services_batch(self, *args, **kwargs) -> Dict[str, Any]:
         """Deploy services in batch (mock implementation)"""
         return {"deployed_services": 50, "total_replicas": 150, "deployment_time": 120}
+
+    # DwarfServant抽象メソッドの実装
+    async def craft_artifact(self, specifications: Dict[str, Any]) -> TaskResult:
+        """コンテナアーティファクトを作成"""
+        try:
+            if specifications.get("type") == "docker_image":
+                result = await self.build_container(specifications)
+            elif specifications.get("type") == "k8s_deployment":
+                result = await self.deploy_to_kubernetes(specifications)
+            else:
+                result = await self.build_container(specifications)
+            
+            return TaskResult(
+                task_id=specifications.get("task_id", "container-craft"),
+                status=TaskStatus.COMPLETED,
+                result=result,
+                metadata={"crafted_by": "ContainerCrafter"}
+            )
+        except Exception as e:
+            return TaskResult(
+                task_id=specifications.get("task_id", "container-craft"),
+                status=TaskStatus.FAILED,
+                error=str(e),
+                metadata={"crafted_by": "ContainerCrafter"}
+            )
+
+    async def execute_task(self, request: ServantRequest) -> ServantResponse:
+        """タスクを実行"""
+        try:
+            task_type = request.parameters.get("task_type", "build")
+            
+            if task_type == "build":
+                result = await self.build_container(request.parameters)
+            elif task_type == "optimize":
+                result = await self.optimize_image(request.parameters)
+            elif task_type == "scan":
+                result = await self.scan_image_security(request.parameters)
+            elif task_type == "deploy":
+                result = await self.deploy_to_kubernetes(request.parameters)
+            else:
+                result = {"error": f"Unknown task type: {task_type}"}
+            
+            return ServantResponse(
+                request_id=request.request_id,
+                servant_id=self.servant_id,
+                success=True,
+                result=result,
+                metadata={"task_type": task_type}
+            )
+        except Exception as e:
+            return ServantResponse(
+                request_id=request.request_id,
+                servant_id=self.servant_id,
+                success=False,
+                error=str(e)
+            )
+
+    def get_specialized_capabilities(self) -> List[ServantCapability]:
+        """ContainerCrafter特有の能力を取得"""
+        return [
+            ServantCapability(
+                name="container_building",
+                description="Docker コンテナイメージの構築",
+                input_types=["dockerfile", "build_context"],
+                output_types=["container_image"]
+            ),
+            ServantCapability(
+                name="image_optimization",
+                description="コンテナイメージの最適化",
+                input_types=["container_image"],
+                output_types=["optimized_image"]
+            ),
+            ServantCapability(
+                name="security_scanning",
+                description="セキュリティ脆弱性スキャン",
+                input_types=["container_image"],
+                output_types=["security_report"]
+            ),
+            ServantCapability(
+                name="kubernetes_deployment",
+                description="Kubernetes環境への展開",
+                input_types=["container_image", "k8s_manifests"],
+                output_types=["deployment_status"]
+            )
+        ]

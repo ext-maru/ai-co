@@ -84,7 +84,10 @@ class PerformanceAnalyzer:
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[logging.FileHandler(self.logs_dir / "performance_analyzer.log"), logging.StreamHandler()],
+            handlers=[
+                logging.FileHandler(self.logs_dir / "performance_analyzer.log"),
+                logging.StreamHandler(),
+            ],
         )
         self.logger = logging.getLogger(__name__)
 
@@ -128,14 +131,25 @@ class PerformanceAnalyzer:
         )
         return metrics
 
-    def get_process_info(self, limit: int = 10) -> Tuple[List[ProcessInfo], List[ProcessInfo]]:
+    def get_process_info(
+        self, limit: int = 10
+    ) -> Tuple[List[ProcessInfo], List[ProcessInfo]]:
         """プロセス情報取得"""
         self.logger.info("🔍 プロセス情報取得開始")
 
         processes = []
 
         for proc in psutil.process_iter(
-            ["pid", "name", "cpu_percent", "memory_percent", "memory_info", "status", "create_time", "cmdline"]
+            [
+                "pid",
+                "name",
+                "cpu_percent",
+                "memory_percent",
+                "memory_info",
+                "status",
+                "create_time",
+                "cmdline",
+            ]
         ):
             try:
                 pinfo = proc.info
@@ -144,10 +158,16 @@ class PerformanceAnalyzer:
                     name=pinfo["name"],
                     cpu_percent=pinfo["cpu_percent"] or 0,
                     memory_percent=pinfo["memory_percent"] or 0,
-                    memory_mb=(pinfo["memory_info"].rss / 1024 / 1024) if pinfo["memory_info"] else 0,
+                    memory_mb=(
+                        (pinfo["memory_info"].rss / 1024 / 1024)
+                        if pinfo["memory_info"]
+                        else 0
+                    ),
                     status=pinfo["status"],
                     create_time=(
-                        datetime.fromtimestamp(pinfo["create_time"]).isoformat() if pinfo["create_time"] else ""
+                        datetime.fromtimestamp(pinfo["create_time"]).isoformat()
+                        if pinfo["create_time"]
+                        else ""
                     ),
                     cmdline=" ".join(pinfo["cmdline"]) if pinfo["cmdline"] else "",
                 )

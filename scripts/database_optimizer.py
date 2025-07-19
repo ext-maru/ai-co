@@ -37,7 +37,10 @@ class DatabaseOptimizer:
         logging.basicConfig(
             level=logging.INFO,
             format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=[logging.FileHandler(self.logs_dir / "database_optimizer.log"), logging.StreamHandler()],
+            handlers=[
+                logging.FileHandler(self.logs_dir / "database_optimizer.log"),
+                logging.StreamHandler(),
+            ],
         )
         self.logger = logging.getLogger(__name__)
 
@@ -111,7 +114,9 @@ class DatabaseOptimizer:
                 free_pages = cursor.fetchone()[0]
 
                 if analysis["page_count"] > 0:
-                    analysis["fragmentation_percent"] = (free_pages / analysis["page_count"]) * 100
+                    analysis["fragmentation_percent"] = (
+                        free_pages / analysis["page_count"]
+                    ) * 100
             except Exception as e:
                 self.logger.debug(f"ページ情報取得エラー: {e}")
 
@@ -121,7 +126,9 @@ class DatabaseOptimizer:
             analysis["error"] = str(e)
             self.logger.error(f"データベース分析エラー {db_path}: {e}")
 
-        self.logger.info(f"📊 分析完了: {analysis['total_rows']}行, {len(analysis['tables'])}テーブル")
+        self.logger.info(
+            f"📊 分析完了: {analysis['total_rows']}行, {len(analysis['tables'])}テーブル"
+        )
         return analysis
 
     def optimize_database(self, db_path: Path) -> Dict[str, Any]:
@@ -142,7 +149,9 @@ class DatabaseOptimizer:
 
         try:
             # バックアップ作成
-            backup_path = db_path.with_suffix(f".backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db")
+            backup_path = db_path.with_suffix(
+                f".backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.db"
+            )
             shutil.copy2(db_path, backup_path)
             result["backup_created"] = True
             self.logger.info(f"💾 バックアップ作成: {backup_path.name}")
@@ -172,7 +181,9 @@ class DatabaseOptimizer:
 
             # 最適化後のサイズ
             result["size_after_kb"] = db_path.stat().st_size / 1024
-            result["space_saved_kb"] = result["size_before_kb"] - result["size_after_kb"]
+            result["space_saved_kb"] = (
+                result["size_before_kb"] - result["size_after_kb"]
+            )
 
             self.logger.info(f"✅ 最適化完了: {result['space_saved_kb']:.1f}KB削減")
 
@@ -184,9 +195,16 @@ class DatabaseOptimizer:
 
     def archive_old_data(self, db_path: Path, days_to_keep: int = 90) -> Dict[str, Any]:
         """古いデータのアーカイブ"""
-        self.logger.info(f"📦 古いデータアーカイブ: {db_path.name} ({days_to_keep}日より古い)")
+        self.logger.info(
+            f"📦 古いデータアーカイブ: {db_path.name} ({days_to_keep}日より古い)"
+        )
 
-        result = {"database": str(db_path), "archived_tables": [], "total_archived_rows": 0, "error": None}
+        result = {
+            "database": str(db_path),
+            "archived_tables": [],
+            "total_archived_rows": 0,
+            "error": None,
+        }
 
         try:
             conn = sqlite3.connect(db_path)
@@ -207,15 +225,23 @@ class DatabaseOptimizer:
                 timestamp_columns = []
                 for col in columns:
                     col_name = col[1].lower()
-                    if any(keyword in col_name for keyword in ["timestamp", "created", "updated", "date"]):
+                    if any(
+                        keyword in col_name
+                        for keyword in ["timestamp", "created", "updated", "date"]
+                    ):
                         timestamp_columns.append(col[1])
 
                 if timestamp_columns:
-                    timestamp_col = timestamp_columns[0]  # 最初のタイムスタンプカラムを使用
+                    timestamp_col = timestamp_columns[
+                        0
+                    ]  # 最初のタイムスタンプカラムを使用
 
                     try:
                         # 古いデータ数確認
-                        cursor.execute(f"SELECT COUNT(*) FROM {table} WHERE {timestamp_col} < ?", (cutoff_timestamp,))
+                        cursor.execute(
+                            f"SELECT COUNT(*) FROM {table} WHERE {timestamp_col} < ?",
+                            (cutoff_timestamp,),
+                        )
                         old_count = cursor.fetchone()[0]
 
                         if old_count > 0:
@@ -230,9 +256,14 @@ class DatabaseOptimizer:
                                 f"INSERT INTO {archive_table} SELECT * FROM {table} WHERE {timestamp_col} < ?",
                                 (cutoff_timestamp,),
                             )
-                            cursor.execute(f"DELETE FROM {table} WHERE {timestamp_col} < ?", (cutoff_timestamp,))
+                            cursor.execute(
+                                f"DELETE FROM {table} WHERE {timestamp_col} < ?",
+                                (cutoff_timestamp,),
+                            )
 
-                            result["archived_tables"].append({"table": table, "archived_rows": old_count})
+                            result["archived_tables"].append(
+                                {"table": table, "archived_rows": old_count}
+                            )
                             result["total_archived_rows"] += old_count
 
                             self.logger.info(f"📦 {table}: {old_count}行アーカイブ")
@@ -292,10 +323,16 @@ class DatabaseOptimizer:
 
             conn.close()
 
-            if result["integrity_ok"] and result["quick_check_ok"] and result["foreign_key_check_ok"]:
+            if (
+                result["integrity_ok"]
+                and result["quick_check_ok"]
+                and result["foreign_key_check_ok"]
+            ):
                 self.logger.info("✅ 整合性チェック: 問題なし")
             else:
-                self.logger.warning(f"⚠️ 整合性チェック: {len(result['issues'])}個の問題")
+                self.logger.warning(
+                    f"⚠️ 整合性チェック: {len(result['issues'])}個の問題"
+                )
 
         except Exception as e:
             result["error"] = str(e)
@@ -303,7 +340,9 @@ class DatabaseOptimizer:
 
         return result
 
-    def optimize_all_databases(self, include_archive: bool = False, archive_days: int = 90) -> Dict[str, Any]:
+    def optimize_all_databases(
+        self, include_archive: bool = False, archive_days: int = 90
+    ) -> Dict[str, Any]:
         """全データベース最適化"""
         self.logger.info("🚀 全データベース最適化開始")
 
@@ -333,7 +372,9 @@ class DatabaseOptimizer:
                 results["integrity_checks"].append(integrity)
 
                 if not integrity["integrity_ok"]:
-                    self.logger.warning(f"⚠️ 整合性問題のため最適化スキップ: {db_path.name}")
+                    self.logger.warning(
+                        f"⚠️ 整合性問題のため最適化スキップ: {db_path.name}"
+                    )
                     continue
 
                 # 古いデータアーカイブ（オプション）
@@ -357,7 +398,9 @@ class DatabaseOptimizer:
                 self.logger.error(error_msg)
 
         results["end_time"] = datetime.now().isoformat()
-        self.logger.info(f"✅ 全データベース最適化完了: {results['total_space_saved_kb']:.1f}KB削減")
+        self.logger.info(
+            f"✅ 全データベース最適化完了: {results['total_space_saved_kb']:.1f}KB削減"
+        )
 
         return results
 
@@ -382,7 +425,9 @@ class DatabaseOptimizer:
 
         if results["integrity_checks"]:
             good_dbs = sum(
-                1 for check in results["integrity_checks"] if check["integrity_ok"] and check["quick_check_ok"]
+                1
+                for check in results["integrity_checks"]
+                if check["integrity_ok"] and check["quick_check_ok"]
             )
             print("\n🔍 Integrity Checks:")
             print(f"  Healthy databases: {good_dbs}/{len(results['integrity_checks'])}")
@@ -393,7 +438,9 @@ class DatabaseOptimizer:
                     print(f"  ⚠️ Issues in {db_name}: {len(check['issues'])} problems")
 
         if results["archives"]:
-            total_archived = sum(archive["total_archived_rows"] for archive in results["archives"])
+            total_archived = sum(
+                archive["total_archived_rows"] for archive in results["archives"]
+            )
             print("\n📦 Data Archiving:")
             print(f"  Total rows archived: {total_archived}")
 
@@ -410,11 +457,19 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="Database Optimizer")
-    parser.add_argument("--optimize-all", action="store_true", help="全データベース最適化")
+    parser.add_argument(
+        "--optimize-all", action="store_true", help="全データベース最適化"
+    )
     parser.add_argument("--analyze-only", action="store_true", help="分析のみ実行")
-    parser.add_argument("--integrity-check", action="store_true", help="整合性チェックのみ")
-    parser.add_argument("--include-archive", action="store_true", help="古いデータアーカイブを含む")
-    parser.add_argument("--archive-days", type=int, default=90, help="アーカイブ対象日数")
+    parser.add_argument(
+        "--integrity-check", action="store_true", help="整合性チェックのみ"
+    )
+    parser.add_argument(
+        "--include-archive", action="store_true", help="古いデータアーカイブを含む"
+    )
+    parser.add_argument(
+        "--archive-days", type=int, default=90, help="アーカイブ対象日数"
+    )
     parser.add_argument("--save", action="store_true", help="結果をファイルに保存")
 
     args = parser.parse_args()
@@ -434,10 +489,16 @@ def main():
         databases = optimizer.find_databases()
         for db_path in databases[:5]:  # 最初の5個のみ
             integrity = optimizer.check_database_integrity(db_path)
-            status = "✅ OK" if integrity["integrity_ok"] and integrity["quick_check_ok"] else "⚠️ Issues"
+            status = (
+                "✅ OK"
+                if integrity["integrity_ok"] and integrity["quick_check_ok"]
+                else "⚠️ Issues"
+            )
             print(f"{db_path.name}: {status}")
     elif args.optimize_all:
-        results = optimizer.optimize_all_databases(include_archive=args.include_archive, archive_days=args.archive_days)
+        results = optimizer.optimize_all_databases(
+            include_archive=args.include_archive, archive_days=args.archive_days
+        )
         optimizer.print_summary(results)
 
         if args.save:

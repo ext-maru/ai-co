@@ -29,4 +29,8 @@ class SlackPMManager:
 
     def get_status(self) -> Dict[str, Any]:
         """ステータス取得"""
-        return {"active": self.active, "channels": len(self.channels), "timestamp": datetime.now().isoformat()}
+        return {
+            "active": self.active,
+            "channels": len(self.channels),
+            "timestamp": datetime.now().isoformat(),
+        }

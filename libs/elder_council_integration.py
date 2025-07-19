@@ -87,9 +87,9 @@ class ElderMessage:
             "urgency": self.urgency.value,
             "created_at": self.created_at.isoformat(),
             "requires_response": self.requires_response,
-            "response_deadline": self.response_deadline.isoformat()
-            if self.response_deadline
-            else None,
+            "response_deadline": (
+                self.response_deadline.isoformat() if self.response_deadline else None
+            ),
         }
 
 
@@ -728,8 +728,15 @@ class ElderCouncilIntegration:
                 "metrics": completion_content["performance_metrics"],
             },
             impact_assessment={
-                "benefits": ["開発効率300%向上", "インシデント85%削減", "自動化率92%達成"],
-                "risks": ["システム依存度増加 (軽減策: 手動復帰機能)", "学習データ品質依存 (軽減策: 多重検証)"],
+                "benefits": [
+                    "開発効率300%向上",
+                    "インシデント85%削減",
+                    "自動化率92%達成",
+                ],
+                "risks": [
+                    "システム依存度増加 (軽減策: 手動復帰機能)",
+                    "学習データ品質依存 (軽減策: 多重検証)",
+                ],
             },
             implementation_plan={
                 "phase_1": "監視モード稼働 (1週間)",

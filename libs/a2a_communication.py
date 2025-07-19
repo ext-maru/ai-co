@@ -222,7 +222,9 @@ class SecurityManager:
 
     def __init__(self, secret_key: str):
         self.secret_key = secret_key
-        self.fernet = Fernet(Fernet.generate_key())  # 実際の実装では安全なキー管理が必要
+        self.fernet = Fernet(
+            Fernet.generate_key()
+        )  # 実際の実装では安全なキー管理が必要
 
     def generate_jwt_token(self, agent_info: AgentInfo, expires_in: int = 3600) -> str:
         """JWT トークン生成"""

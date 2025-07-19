@@ -24,6 +24,7 @@ from collections import defaultdict
 
 class PredictionType(Enum):
     """予測タイプ"""
+
     TECHNOLOGY_DEMAND = "technology_demand"
     MARKET_TREND = "market_trend"
     SKILL_DEMAND = "skill_demand"
@@ -34,14 +35,16 @@ class PredictionType(Enum):
 
 class TimeFrame(Enum):
     """予測期間"""
-    SHORT_TERM = "short_term"      # 1-3ヶ月
-    MEDIUM_TERM = "medium_term"    # 3-12ヶ月
-    LONG_TERM = "long_term"        # 1-3年
+
+    SHORT_TERM = "short_term"  # 1-3ヶ月
+    MEDIUM_TERM = "medium_term"  # 3-12ヶ月
+    LONG_TERM = "long_term"  # 1-3年
 
 
 @dataclass
 class DemandFeature:
     """需要特徴量"""
+
     name: str
     value: float
     importance: float
@@ -52,6 +55,7 @@ class DemandFeature:
 @dataclass
 class Prediction:
     """予測結果"""
+
     target: str
     prediction_type: PredictionType
     timeframe: TimeFrame
@@ -66,6 +70,7 @@ class Prediction:
 @dataclass
 class PatternAnalysis:
     """パターン分析"""
+
     pattern_name: str
     description: str
     frequency: float
@@ -77,6 +82,7 @@ class PatternAnalysis:
 @dataclass
 class ForecastReport:
     """予測レポート"""
+
     timeframe: TimeFrame
     predictions: List[Prediction]
     pattern_analysis: List[PatternAnalysis]
@@ -94,7 +100,9 @@ class DemandPredictorAI:
         self.logger = self._setup_logger()
 
         # モデル管理
-        self.model_path = Path(model_path) if model_path else Path("models/demand_prediction.pkl")
+        self.model_path = (
+            Path(model_path) if model_path else Path("models/demand_prediction.pkl")
+        )
         self.model_path.parent.mkdir(parents=True, exist_ok=True)
 
         # 学習データ
@@ -137,69 +145,124 @@ class DemandPredictorAI:
                 "description": "指数関数的成長パターン",
                 "indicators": ["rapid_adoption", "viral_spread", "network_effect"],
                 "duration_months": [6, 24],
-                "confidence_threshold": 0.8
+                "confidence_threshold": 0.8,
             },
             "linear_growth": {
                 "description": "線形成長パターン",
-                "indicators": ["steady_adoption", "market_expansion", "gradual_improvement"],
+                "indicators": [
+                    "steady_adoption",
+                    "market_expansion",
+                    "gradual_improvement",
+                ],
                 "duration_months": [12, 36],
-                "confidence_threshold": 0.7
+                "confidence_threshold": 0.7,
             },
             "s_curve": {
                 "description": "S字カーブ採用パターン",
-                "indicators": ["innovation_diffusion", "market_saturation", "early_majority"],
+                "indicators": [
+                    "innovation_diffusion",
+                    "market_saturation",
+                    "early_majority",
+                ],
                 "duration_months": [18, 48],
-                "confidence_threshold": 0.75
+                "confidence_threshold": 0.75,
             },
             "hype_cycle": {
                 "description": "ハイプサイクルパターン",
-                "indicators": ["peak_hype", "trough_disillusionment", "plateau_productivity"],
+                "indicators": [
+                    "peak_hype",
+                    "trough_disillusionment",
+                    "plateau_productivity",
+                ],
                 "duration_months": [24, 60],
-                "confidence_threshold": 0.6
+                "confidence_threshold": 0.6,
             },
             "seasonal": {
                 "description": "季節性パターン",
                 "indicators": ["conference_cycles", "hiring_seasons", "project_cycles"],
                 "duration_months": [3, 12],
-                "confidence_threshold": 0.8
-            }
+                "confidence_threshold": 0.8,
+            },
         }
 
     def _load_tech_keywords(self) -> Dict[str, List[str]]:
         """技術キーワード辞書"""
         return {
             "ai_ml": [
-                "artificial intelligence", "machine learning", "deep learning",
-                "neural networks", "transformer", "gpt", "llm", "nlp",
-                "computer vision", "reinforcement learning"
+                "artificial intelligence",
+                "machine learning",
+                "deep learning",
+                "neural networks",
+                "transformer",
+                "gpt",
+                "llm",
+                "nlp",
+                "computer vision",
+                "reinforcement learning",
             ],
             "web_frameworks": [
-                "react", "vue", "angular", "svelte", "nextjs", "nuxt",
-                "express", "fastapi", "django", "flask", "spring"
+                "react",
+                "vue",
+                "angular",
+                "svelte",
+                "nextjs",
+                "nuxt",
+                "express",
+                "fastapi",
+                "django",
+                "flask",
+                "spring",
             ],
             "cloud_native": [
-                "kubernetes", "docker", "microservices", "serverless",
-                "aws", "gcp", "azure", "terraform", "helm"
+                "kubernetes",
+                "docker",
+                "microservices",
+                "serverless",
+                "aws",
+                "gcp",
+                "azure",
+                "terraform",
+                "helm",
             ],
             "programming_languages": [
-                "python", "javascript", "typescript", "rust", "go",
-                "java", "kotlin", "swift", "dart", "c++"
+                "python",
+                "javascript",
+                "typescript",
+                "rust",
+                "go",
+                "java",
+                "kotlin",
+                "swift",
+                "dart",
+                "c++",
             ],
             "database_tech": [
-                "postgresql", "mongodb", "redis", "elasticsearch",
-                "cassandra", "neo4j", "influxdb", "snowflake"
+                "postgresql",
+                "mongodb",
+                "redis",
+                "elasticsearch",
+                "cassandra",
+                "neo4j",
+                "influxdb",
+                "snowflake",
             ],
             "devops_tools": [
-                "jenkins", "gitlab ci", "github actions", "ansible",
-                "prometheus", "grafana", "elk stack", "datadog"
-            ]
+                "jenkins",
+                "gitlab ci",
+                "github actions",
+                "ansible",
+                "prometheus",
+                "grafana",
+                "elk stack",
+                "datadog",
+            ],
         }
 
     def _load_or_create_model(self) -> Dict:
         """モデル読み込みまたは作成"""
         if self.model_path.exists():
             try:
-                with open(self.model_path, 'rb') as f:
+                with open(self.model_path, "rb") as f:
                     model = pickle.load(f)
                 self.logger.info("📦 Existing model loaded")
                 return model
@@ -214,7 +277,7 @@ class DemandPredictorAI:
             "bias": 0.0,
             "feature_names": [],
             "training_history": [],
-            "performance_metrics": {}
+            "performance_metrics": {},
         }
 
         self.logger.info("🆕 New model created")
@@ -283,11 +346,15 @@ class DemandPredictorAI:
         # タイムスタンプ正規化
         if "timestamp" in normalized:
             if isinstance(normalized["timestamp"], str):
-                normalized["timestamp"] = datetime.fromisoformat(normalized["timestamp"])
+                normalized["timestamp"] = datetime.fromisoformat(
+                    normalized["timestamp"]
+                )
 
         return normalized
 
-    def _extract_features_targets(self, data: List[Dict]) -> Tuple[List[List[float]], List[float]]:
+    def _extract_features_targets(
+        self, data: List[Dict]
+    ) -> Tuple[List[List[float]], List[float]]:
         """特徴量・目標値抽出"""
         features = []
         targets = []
@@ -329,7 +396,9 @@ class DemandPredictorAI:
 
         return vector
 
-    def _train_linear_model(self, features: List[List[float]], targets: List[float]) -> Dict:
+    def _train_linear_model(
+        self, features: List[List[float]], targets: List[float]
+    ) -> Dict:
         """線形モデル訓練"""
         if not features or not targets:
             raise ValueError("Empty features or targets")
@@ -347,14 +416,18 @@ class DemandPredictorAI:
 
             self.model["bias"] = weights[0]
             self.model["weights"] = weights[1:].tolist()
-            self.model["feature_names"] = [f"feature_{i}" for i in range(len(weights) - 1)]
+            self.model["feature_names"] = [
+                f"feature_{i}" for i in range(len(weights) - 1)
+            ]
 
         except np.linalg.LinAlgError:
             # 特異行列の場合は擬似逆行列を使用
             weights = np.linalg.pinv(X_bias.T @ X_bias) @ X_bias.T @ y
             self.model["bias"] = weights[0]
             self.model["weights"] = weights[1:].tolist()
-            self.model["feature_names"] = [f"feature_{i}" for i in range(len(weights) - 1)]
+            self.model["feature_names"] = [
+                f"feature_{i}" for i in range(len(weights) - 1)
+            ]
 
         # 性能評価
         predictions = X_bias @ weights
@@ -365,7 +438,7 @@ class DemandPredictorAI:
             "mse": float(mse),
             "r2_score": float(r2),
             "training_samples": len(targets),
-            "feature_count": len(features[0]) if features else 0
+            "feature_count": len(features[0]) if features else 0,
         }
 
         self.model["performance_metrics"] = performance
@@ -373,13 +446,13 @@ class DemandPredictorAI:
         return {
             "training_completed": True,
             "performance": performance,
-            "model_version": self.model["version"]
+            "model_version": self.model["version"],
         }
 
     def _save_model(self):
         """モデル保存"""
         try:
-            with open(self.model_path, 'wb') as f:
+            with open(self.model_path, "wb") as f:
                 pickle.dump(self.model, f)
             self.logger.info(f"💾 Model saved: {self.model_path}")
         except Exception as e:
@@ -395,7 +468,9 @@ class DemandPredictorAI:
         Returns:
             Prediction: 予測結果
         """
-        self.logger.info(f"🔮 Predicting demand for: {features.get('technology', 'unknown')}")
+        self.logger.info(
+            f"🔮 Predicting demand for: {features.get('technology', 'unknown')}"
+        )
 
         # 特徴量ベクトル作成
         feature_vector = self._create_feature_vector_from_dict(features)
@@ -404,7 +479,9 @@ class DemandPredictorAI:
         predicted_value = self._predict_single(feature_vector)
 
         # 信頼度計算
-        confidence = self._calculate_prediction_confidence(feature_vector, predicted_value)
+        confidence = self._calculate_prediction_confidence(
+            feature_vector, predicted_value
+        )
 
         # トレンド方向判定
         trend_direction = self._determine_trend_direction(features, predicted_value)
@@ -421,12 +498,14 @@ class DemandPredictorAI:
             trend_direction=trend_direction,
             features_used=features_used,
             model_version=self.model["version"],
-            created_at=datetime.now().isoformat()
+            created_at=datetime.now().isoformat(),
         )
 
         self.prediction_history.append(prediction)
 
-        self.logger.info(f"✅ Prediction: {predicted_value:.3f} (confidence: {confidence:.2f})")
+        self.logger.info(
+            f"✅ Prediction: {predicted_value:.3f} (confidence: {confidence:.2f})"
+        )
 
         return prediction
 
@@ -450,14 +529,16 @@ class DemandPredictorAI:
             if len(feature_vector) < len(weights):
                 feature_vector.extend([0.0] * (len(weights) - len(feature_vector)))
             else:
-                feature_vector = feature_vector[:len(weights)]
+                feature_vector = feature_vector[: len(weights)]
 
         prediction = bias + np.dot(weights, feature_vector)
 
         # 0-1の範囲にクリップ
         return max(0.0, min(1.0, prediction))
 
-    def _calculate_prediction_confidence(self, feature_vector: List[float], predicted_value: float) -> float:
+    def _calculate_prediction_confidence(
+        self, feature_vector: List[float], predicted_value: float
+    ) -> float:
         """予測信頼度計算"""
         # 基本信頼度
         base_confidence = 0.7
@@ -482,28 +563,39 @@ class DemandPredictorAI:
         else:
             return "stable"
 
-    def _get_important_features(self, feature_vector: List[float]) -> List[DemandFeature]:
+    def _get_important_features(
+        self, feature_vector: List[float]
+    ) -> List[DemandFeature]:
         """重要特徴量取得"""
         features = []
 
         feature_names = [
-            "AI/ML Category", "Web Frameworks", "Cloud Native",
-            "Programming Languages", "Database Tech", "DevOps Tools",
-            "Monthly Trend", "Quarterly Trend", "GitHub Stars",
-            "Job Postings", "Search Volume"
+            "AI/ML Category",
+            "Web Frameworks",
+            "Cloud Native",
+            "Programming Languages",
+            "Database Tech",
+            "DevOps Tools",
+            "Monthly Trend",
+            "Quarterly Trend",
+            "GitHub Stars",
+            "Job Postings",
+            "Search Volume",
         ]
 
         for i, (name, value) in enumerate(zip(feature_names, feature_vector)):
             if value > 0.1:  # 閾値以上の特徴量のみ
                 importance = value * np.random.uniform(0.8, 1.2)  # 重要度模擬
 
-                features.append(DemandFeature(
-                    name=name,
-                    value=value,
-                    importance=importance,
-                    category="technical",
-                    timestamp=datetime.now().isoformat()
-                ))
+                features.append(
+                    DemandFeature(
+                        name=name,
+                        value=value,
+                        importance=importance,
+                        category="technical",
+                        timestamp=datetime.now().isoformat(),
+                    )
+                )
 
         return sorted(features, key=lambda f: f.importance, reverse=True)[:5]
 
@@ -531,7 +623,9 @@ class DemandPredictorAI:
 
         return patterns
 
-    async def _analyze_single_pattern(self, pattern_name: str, pattern_info: Dict) -> PatternAnalysis:
+    async def _analyze_single_pattern(
+        self, pattern_name: str, pattern_info: Dict
+    ) -> PatternAnalysis:
         """単一パターン分析"""
         # 模擬分析結果
         frequency = np.random.uniform(0.3, 0.8)
@@ -545,7 +639,7 @@ class DemandPredictorAI:
             frequency=frequency,
             correlation_strength=correlation_strength,
             examples=examples,
-            confidence=pattern_info["confidence_threshold"]
+            confidence=pattern_info["confidence_threshold"],
         )
 
     def _analyze_correlations(self) -> List[PatternAnalysis]:
@@ -557,7 +651,7 @@ class DemandPredictorAI:
                 frequency=0.85,
                 correlation_strength=0.92,
                 examples=["PyTorch + 求人増加", "ChatGPT + Python需要"],
-                confidence=0.9
+                confidence=0.9,
             ),
             PatternAnalysis(
                 pattern_name="framework_lifecycle",
@@ -565,8 +659,8 @@ class DemandPredictorAI:
                 frequency=0.7,
                 correlation_strength=0.75,
                 examples=["React成熟期", "Vue成長期", "Svelte導入期"],
-                confidence=0.8
-            )
+                confidence=0.8,
+            ),
         ]
 
         return correlations
@@ -577,31 +671,33 @@ class DemandPredictorAI:
             "exponential_growth": [
                 "ChatGPT adoption in Q4 2022",
                 "React Hook surge in 2019",
-                "Docker containerization boom"
+                "Docker containerization boom",
             ],
             "linear_growth": [
                 "TypeScript steady adoption",
                 "AWS cloud migration trends",
-                "Remote work tool adoption"
+                "Remote work tool adoption",
             ],
             "s_curve": [
                 "Kubernetes enterprise adoption",
                 "GraphQL API transition",
-                "Serverless architecture adoption"
+                "Serverless architecture adoption",
             ],
             "hype_cycle": [
                 "Blockchain development hype",
                 "NoSQL database evolution",
-                "Microservices architecture"
+                "Microservices architecture",
             ],
             "seasonal": [
                 "Conference-driven framework interest",
                 "Hiring season technology demand",
-                "Year-end project technology choices"
-            ]
+                "Year-end project technology choices",
+            ],
         }
 
-        return examples_map.get(pattern_name, ["Generic example 1", "Generic example 2"])
+        return examples_map.get(
+            pattern_name, ["Generic example 1", "Generic example 2"]
+        )
 
     async def generate_forecast(self, timeframe: TimeFrame) -> ForecastReport:
         """
@@ -617,9 +713,15 @@ class DemandPredictorAI:
 
         # 複数技術の予測
         technologies = [
-            "artificial intelligence", "rust programming", "kubernetes",
-            "react framework", "python", "machine learning",
-            "cloud computing", "microservices", "data science"
+            "artificial intelligence",
+            "rust programming",
+            "kubernetes",
+            "react framework",
+            "python",
+            "machine learning",
+            "cloud computing",
+            "microservices",
+            "data science",
         ]
 
         predictions = []
@@ -630,8 +732,8 @@ class DemandPredictorAI:
                 "trend_indicators": {
                     "github_stars": np.random.randint(1000, 50000),
                     "job_postings": np.random.randint(100, 5000),
-                    "search_volume": np.random.randint(10, 100)
-                }
+                    "search_volume": np.random.randint(10, 100),
+                },
             }
 
             prediction = await self.predict_demand(features)
@@ -661,7 +763,7 @@ class DemandPredictorAI:
             recommendations=recommendations,
             risk_factors=risk_factors,
             confidence_level=confidence_level,
-            generated_at=datetime.now().isoformat()
+            generated_at=datetime.now().isoformat(),
         )
 
         # レポート保存
@@ -671,7 +773,9 @@ class DemandPredictorAI:
 
         return report
 
-    def _generate_market_insights(self, predictions: List[Prediction], timeframe: TimeFrame) -> List[str]:
+    def _generate_market_insights(
+        self, predictions: List[Prediction], timeframe: TimeFrame
+    ) -> List[str]:
         """市場洞察生成"""
         insights = []
 
@@ -686,33 +790,47 @@ class DemandPredictorAI:
         insights.append(f"{len(growing)}の技術が成長トレンドを示している")
 
         # AI/ML関連
-        ai_predictions = [p for p in predictions if "ai" in p.target.lower() or "machine" in p.target.lower()]
+        ai_predictions = [
+            p
+            for p in predictions
+            if "ai" in p.target.lower() or "machine" in p.target.lower()
+        ]
         if ai_predictions:
-            avg_ai_demand = sum(p.predicted_value for p in ai_predictions) / len(ai_predictions)
+            avg_ai_demand = sum(p.predicted_value for p in ai_predictions) / len(
+                ai_predictions
+            )
             insights.append(f"AI/ML分野の平均需要予測: {avg_ai_demand:.2f}")
 
         return insights
 
-    def _generate_recommendations(self, predictions: List[Prediction], patterns: List[PatternAnalysis]) -> List[str]:
+    def _generate_recommendations(
+        self, predictions: List[Prediction], patterns: List[PatternAnalysis]
+    ) -> List[str]:
         """推奨事項生成"""
         recommendations = []
 
         # 高需要技術への投資推奨
         high_demand = [p for p in predictions if p.predicted_value > 0.8]
         for pred in high_demand[:3]:
-            recommendations.append(f"{pred.target}への投資を強く推奨（予測需要: {pred.predicted_value:.2f}）")
+            recommendations.append(
+                f"{pred.target}への投資を強く推奨（予測需要: {pred.predicted_value:.2f}）"
+            )
 
         # パターンベース推奨
         strong_patterns = [p for p in patterns if p.correlation_strength > 0.8]
         for pattern in strong_patterns[:2]:
-            recommendations.append(f"{pattern.pattern_name}パターンに基づく戦略策定を推奨")
+            recommendations.append(
+                f"{pattern.pattern_name}パターンに基づく戦略策定を推奨"
+            )
 
         # リスク分散
         recommendations.append("複数技術への分散投資でリスク軽減を推奨")
 
         return recommendations
 
-    def _identify_risk_factors(self, predictions: List[Prediction], timeframe: TimeFrame) -> List[str]:
+    def _identify_risk_factors(
+        self, predictions: List[Prediction], timeframe: TimeFrame
+    ) -> List[str]:
         """リスク要因特定"""
         risks = []
 
@@ -722,7 +840,9 @@ class DemandPredictorAI:
             risks.append(f"{len(low_confidence)}の技術予測で信頼度が低い")
 
         # 急激な変化
-        extreme_values = [p for p in predictions if p.predicted_value > 0.9 or p.predicted_value < 0.2]
+        extreme_values = [
+            p for p in predictions if p.predicted_value > 0.9 or p.predicted_value < 0.2
+        ]
         if extreme_values:
             risks.append("極端な需要変動の可能性")
 
@@ -751,7 +871,7 @@ class DemandPredictorAI:
         report_file = report_dir / f"forecast_{report.timeframe.value}_{timestamp}.json"
 
         try:
-            with open(report_file, 'w', encoding='utf-8') as f:
+            with open(report_file, "w", encoding="utf-8") as f:
                 json.dump(asdict(report), f, indent=2, ensure_ascii=False, default=str)
 
             self.logger.info(f"📄 Forecast report saved: {report_file}")
@@ -765,7 +885,7 @@ class DemandPredictorAI:
             "created_at": self.model.get("created_at", "unknown"),
             "performance": self.model.get("performance_metrics", {}),
             "feature_count": len(self.model.get("feature_names", [])),
-            "prediction_count": len(self.prediction_history)
+            "prediction_count": len(self.prediction_history),
         }
 
     def get_prediction_history(self, limit: int = 10) -> List[Prediction]:
@@ -801,20 +921,32 @@ async def demo_demand_predictor():
             "timestamp": "2024-01-01",
             "technology": "python",
             "demand_score": 85,
-            "trend_indicators": {"github_stars": 45000, "job_postings": 3500, "search_volume": 90}
+            "trend_indicators": {
+                "github_stars": 45000,
+                "job_postings": 3500,
+                "search_volume": 90,
+            },
         },
         {
             "timestamp": "2024-02-01",
             "technology": "javascript",
             "demand_score": 92,
-            "trend_indicators": {"github_stars": 60000, "job_postings": 4200, "search_volume": 95}
+            "trend_indicators": {
+                "github_stars": 60000,
+                "job_postings": 4200,
+                "search_volume": 95,
+            },
         },
         {
             "timestamp": "2024-03-01",
             "technology": "rust",
             "demand_score": 75,
-            "trend_indicators": {"github_stars": 30000, "job_postings": 800, "search_volume": 70}
-        }
+            "trend_indicators": {
+                "github_stars": 30000,
+                "job_postings": 800,
+                "search_volume": 70,
+            },
+        },
     ]
 
     # モデル訓練
@@ -830,8 +962,8 @@ async def demo_demand_predictor():
         "trend_indicators": {
             "github_stars": 25000,
             "job_postings": 2000,
-            "search_volume": 85
-        }
+            "search_volume": 85,
+        },
     }
 
     prediction = await predictor.predict_demand(test_features)
@@ -853,7 +985,9 @@ async def demo_demand_predictor():
     print(f"📊 Forecast Summary:")
     print(f"   Predictions: {len(forecast.predictions)}")
     print(f"   Confidence: {forecast.confidence_level:.2f}")
-    print(f"   Top Technology: {max(forecast.predictions, key=lambda p: p.predicted_value).target}")
+    print(
+        f"   Top Technology: {max(forecast.predictions, key=lambda p: p.predicted_value).target}"
+    )
     print(f"   Market Insights: {len(forecast.market_insights)}")
     print(f"   Recommendations: {len(forecast.recommendations)}")
 

@@ -137,7 +137,9 @@ class SystemHealthDashboard:
         if self.rabbitmq_monitor:
             rabbitmq_status = self.rabbitmq_monitor.get_status_report()
             if not rabbitmq_status["connection_status"]["is_connected"]:
-                self._create_alert("critical", "rabbitmq", "RabbitMQ接続が失われています")
+                self._create_alert(
+                    "critical", "rabbitmq", "RabbitMQ接続が失われています"
+                )
 
         # ワーカー状態チェック
         if self.worker_recovery:
@@ -145,7 +147,9 @@ class SystemHealthDashboard:
             unhealthy_workers = worker_status["health_summary"]["unhealthy"]
             if unhealthy_workers >= self.monitoring_rules["worker_failure_threshold"]:
                 self._create_alert(
-                    "warning", "worker", f"{unhealthy_workers}個のワーカーが異常状態です"
+                    "warning",
+                    "worker",
+                    f"{unhealthy_workers}個のワーカーが異常状態です",
                 )
 
         # 設定チェック
@@ -194,7 +198,9 @@ class SystemHealthDashboard:
 
             if usage_percent > 90:
                 self._create_alert(
-                    "critical", "disk", f"ディスク使用量が危険レベル: {usage_percent:.1f}%"
+                    "critical",
+                    "disk",
+                    f"ディスク使用量が危険レベル: {usage_percent:.1f}%",
                 )
             elif usage_percent > 80:
                 self._create_alert(
@@ -216,7 +222,9 @@ class SystemHealthDashboard:
                     "critical", "memory", f"メモリ使用量が危険レベル: {memory.percent}%"
                 )
             elif memory.percent > 80:
-                self._create_alert("warning", "memory", f"メモリ使用量が高い: {memory.percent}%")
+                self._create_alert(
+                    "warning", "memory", f"メモリ使用量が高い: {memory.percent}%"
+                )
 
         except Exception as e:
             self.logger.error(f"メモリチェックでエラー: {e}")
@@ -239,7 +247,9 @@ class SystemHealthDashboard:
                         cleaned_files += 1
 
             if cleaned_files > 0:
-                self.logger.info(f"古いログファイルをクリーンアップ: {cleaned_files}ファイル")
+                self.logger.info(
+                    f"古いログファイルをクリーンアップ: {cleaned_files}ファイル"
+                )
 
         except Exception as e:
             self.logger.error(f"ログクリーンアップでエラー: {e}")
@@ -437,12 +447,16 @@ class SystemHealthDashboard:
                 "critical": len([a for a in active_alerts if a["type"] == "critical"]),
             },
             "components": {
-                "rabbitmq": self.rabbitmq_monitor.get_status_report()
-                if self.rabbitmq_monitor
-                else None,
-                "workers": self.worker_recovery.get_system_status()
-                if self.worker_recovery
-                else None,
+                "rabbitmq": (
+                    self.rabbitmq_monitor.get_status_report()
+                    if self.rabbitmq_monitor
+                    else None
+                ),
+                "workers": (
+                    self.worker_recovery.get_system_status()
+                    if self.worker_recovery
+                    else None
+                ),
             },
         }
 

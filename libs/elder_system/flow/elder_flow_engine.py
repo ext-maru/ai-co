@@ -102,9 +102,9 @@ class ElderFlowEngine(EldersFlowLegacy):
             "task_name": task_name,
             "priority": priority,
             "soul_mode": soul_mode,
-            "claude_elder_soul_active": True
-            if soul_mode == "claude_elder_default"
-            else False,
+            "claude_elder_soul_active": (
+                True if soul_mode == "claude_elder_default" else False
+            ),
             "start_time": datetime.now().isoformat(),
             "status": "RUNNING",
             "phase": "INITIALIZATION",
@@ -396,14 +396,18 @@ class ElderFlowEngine(EldersFlowLegacy):
         workflow["status"] = "RUNNING"
         workflow["start_time"] = datetime.now().isoformat()
 
-        logger.info(f"🔄 ワークフロー実行開始: {workflow['workflow_name']} (ID: {workflow_id})")
+        logger.info(
+            f"🔄 ワークフロー実行開始: {workflow['workflow_name']} (ID: {workflow_id})"
+        )
 
         results = []
         for task in workflow["tasks"]:
             # PIDロックチェック
             lock_info = self.pid_lock_manager.is_task_locked(task["task_name"])
             if lock_info:
-                logger.warning(f"⏭️ タスク '{task['task_name']}' はスキップ（既に実行中）")
+                logger.warning(
+                    f"⏭️ タスク '{task['task_name']}' はスキップ（既に実行中）"
+                )
                 results.append(
                     {
                         "task_name": task["task_name"],
@@ -426,7 +430,9 @@ class ElderFlowEngine(EldersFlowLegacy):
         workflow["end_time"] = datetime.now().isoformat()
         workflow["results"] = results
 
-        logger.info(f"✅ ワークフロー実行完了: {workflow['workflow_name']} (ID: {workflow_id})")
+        logger.info(
+            f"✅ ワークフロー実行完了: {workflow['workflow_name']} (ID: {workflow_id})"
+        )
 
         return {
             "workflow_id": workflow_id,

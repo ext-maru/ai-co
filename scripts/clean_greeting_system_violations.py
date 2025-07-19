@@ -20,7 +20,7 @@ def clean_greeting_violations():
         return
 
     # 違反データ読み込み
-    with open(violations_file, 'r') as f:
+    with open(violations_file, "r") as f:
         violations = json.load(f)
 
     print(f"📊 削除前の違反数: {len(violations)}")
@@ -28,14 +28,13 @@ def clean_greeting_violations():
     # greeting_systemの違反を除外
     original_count = len(violations)
     filtered_violations = [
-        v for v in violations
-        if v.get("source") != "greeting_system"
+        v for v in violations if v.get("source") != "greeting_system"
     ]
 
     removed_count = original_count - len(filtered_violations)
 
     # ファイル更新
-    with open(violations_file, 'w') as f:
+    with open(violations_file, "w") as f:
         json.dump(filtered_violations, f, indent=2, ensure_ascii=False)
 
     print(f"✅ greeting_system違反を削除")
@@ -51,8 +50,10 @@ def clean_greeting_violations():
         print(f"  - タイムスタンプ範囲: 2025-07-09 10:50 ~ 16:11")
 
     # バックアップ作成
-    backup_path = violations_file.with_suffix(f".backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
-    with open(backup_path, 'w') as f:
+    backup_path = violations_file.with_suffix(
+        f".backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
+    with open(backup_path, "w") as f:
         json.dump(violations, f, indent=2, ensure_ascii=False)
     print(f"\n💾 バックアップ作成: {backup_path}")
 

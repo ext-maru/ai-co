@@ -210,7 +210,9 @@ class NotificationHandler:
         else:
             title = f"Worker Recovery Failed: {worker_name}"
             severity = "error"
-            message = f"復旧に失敗しました: {recovery_result.get('error', 'Unknown error')}"
+            message = (
+                f"復旧に失敗しました: {recovery_result.get('error', 'Unknown error')}"
+            )
 
         additional_data = {
             "strategy": recovery_result.get("strategy"),

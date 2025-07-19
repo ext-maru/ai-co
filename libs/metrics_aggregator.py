@@ -70,7 +70,11 @@ class MetricsAggregator:
                 "type": "gauge",
                 "description": "メモリ使用率",
             },
-            "error_rate": {"unit": "percent", "type": "gauge", "description": "エラー率"},
+            "error_rate": {
+                "unit": "percent",
+                "type": "gauge",
+                "description": "エラー率",
+            },
         }
 
         # メトリクスキャッシュ
@@ -159,7 +163,8 @@ class MetricsAggregator:
     def get_metric_metadata(self, metric_name: str) -> Dict[str, Any]:
         """メトリクスメタデータ取得"""
         return self.metric_definitions.get(
-            metric_name, {"unit": "unknown", "type": "gauge", "description": "不明なメトリクス"}
+            metric_name,
+            {"unit": "unknown", "type": "gauge", "description": "不明なメトリクス"},
         )
 
     # プライベートメソッド

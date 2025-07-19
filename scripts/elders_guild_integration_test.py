@@ -27,7 +27,9 @@ from libs.four_sages_autonomous_learning import FourSagesAutonomousLearning
 from workers.slack_monitor_worker import SlackMonitorWorker
 
 # ロギング設定
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -77,7 +79,9 @@ class EldersGuildIntegrationTest:
 
             # リアルタイムメトリクス取得
             metrics = monitor.get_real_time_metrics()
-            logger.info(f"Real-time metrics: {json.dumps(metrics, indent=2, default=str)}")
+            logger.info(
+                f"Real-time metrics: {json.dumps(metrics, indent=2, default=str)}"
+            )
 
             # ダッシュボードデータ確認
             dashboard = monitor.get_dashboard_data()
@@ -181,7 +185,9 @@ class EldersGuildIntegrationTest:
             learning_system = FourSagesAutonomousLearning()
 
             # 学習タスク開始（短時間）
-            learning_task = asyncio.create_task(learning_system.start_autonomous_learning())
+            learning_task = asyncio.create_task(
+                learning_system.start_autonomous_learning()
+            )
 
             # 5秒間実行
             await asyncio.sleep(5)
@@ -191,7 +197,9 @@ class EldersGuildIntegrationTest:
 
             # 成功判定
             self.test_results["autonomous_learning"] = (
-                "learning_metrics" in report and "sage_insights" in report and len(report["recommendations"]) > 0
+                "learning_metrics" in report
+                and "sage_insights" in report
+                and len(report["recommendations"]) > 0
             )
 
             # タスクキャンセル
@@ -248,7 +256,11 @@ class EldersGuildIntegrationTest:
             "test_execution_time": datetime.now().isoformat(),
             "elder_tree_status": "operational",
             "four_sages_status": "fully_integrated",
-            "performance_metrics": {"response_time": "optimal", "throughput": "high", "error_rate": "minimal"},
+            "performance_metrics": {
+                "response_time": "optimal",
+                "throughput": "high",
+                "error_rate": "minimal",
+            },
             "capabilities_demonstrated": [
                 "Real-time performance monitoring",
                 "Elder Tree hierarchy message routing",

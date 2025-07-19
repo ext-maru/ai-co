@@ -28,6 +28,7 @@ import heapq
 
 class MarketStrategy(Enum):
     """市場戦略"""
+
     AGGRESSIVE_EXPANSION = "aggressive_expansion"
     STEALTH_INFILTRATION = "stealth_infiltration"
     DEFENSIVE_CONSOLIDATION = "defensive_consolidation"
@@ -37,6 +38,7 @@ class MarketStrategy(Enum):
 
 class DominationPhase(Enum):
     """制覇フェーズ"""
+
     RECONNAISSANCE = "reconnaissance"
     INFILTRATION = "infiltration"
     EXPANSION = "expansion"
@@ -46,6 +48,7 @@ class DominationPhase(Enum):
 
 class MarketSegment(Enum):
     """市場セグメント"""
+
     WEB_DEVELOPMENT = "web_development"
     MOBILE_APPS = "mobile_apps"
     AI_ML = "ai_ml"
@@ -60,6 +63,7 @@ class MarketSegment(Enum):
 @dataclass
 class MarketIntelligence:
     """市場情報"""
+
     segment: MarketSegment
     market_size: float
     growth_rate: float
@@ -76,6 +80,7 @@ class MarketIntelligence:
 @dataclass
 class CompetitorAnalysis:
     """競合分析"""
+
     competitor_name: str
     market_share: float
     strengths: List[str]
@@ -89,6 +94,7 @@ class CompetitorAnalysis:
 @dataclass
 class DominationTarget:
     """制覇ターゲット"""
+
     target_id: str
     segment: MarketSegment
     priority: int
@@ -104,6 +110,7 @@ class DominationTarget:
 @dataclass
 class RealTimeEvent:
     """リアルタイムイベント"""
+
     event_id: str
     event_type: str
     severity: str
@@ -117,6 +124,7 @@ class RealTimeEvent:
 @dataclass
 class DominationMetrics:
     """制覇メトリクス"""
+
     overall_domination_level: float
     segment_dominance: Dict[str, float]
     market_influence: float
@@ -143,7 +151,7 @@ class MarketIntelligenceEngine:
             "github_trending": "https://api.github.com/search/repositories",
             "job_market": "mock_job_api",
             "tech_news": "mock_news_api",
-            "stackoverflow": "mock_stackoverflow_api"
+            "stackoverflow": "mock_stackoverflow_api",
         }
 
         self.logger.info("🔍 Market Intelligence Engine initialized")
@@ -203,10 +211,22 @@ class MarketIntelligenceEngine:
         # セグメント特有のトレンド
         trends_map = {
             MarketSegment.AI_ML: ["Large Language Models", "Computer Vision", "AutoML"],
-            MarketSegment.WEB_DEVELOPMENT: ["JAMstack", "WebAssembly", "Progressive Web Apps"],
-            MarketSegment.CLOUD_INFRASTRUCTURE: ["Multi-cloud", "Edge Computing", "Serverless"],
+            MarketSegment.WEB_DEVELOPMENT: [
+                "JAMstack",
+                "WebAssembly",
+                "Progressive Web Apps",
+            ],
+            MarketSegment.CLOUD_INFRASTRUCTURE: [
+                "Multi-cloud",
+                "Edge Computing",
+                "Serverless",
+            ],
             MarketSegment.CYBERSECURITY: ["Zero Trust", "AI Security", "Privacy Tech"],
-            MarketSegment.DATA_SCIENCE: ["MLOps", "Feature Stores", "Automated Analytics"]
+            MarketSegment.DATA_SCIENCE: [
+                "MLOps",
+                "Feature Stores",
+                "Automated Analytics",
+            ],
         }
 
         return MarketIntelligence(
@@ -216,20 +236,31 @@ class MarketIntelligenceEngine:
             competition_level=competition_level,
             entry_barriers=entry_barriers,
             profit_margin=profit_margin,
-            technology_trends=trends_map.get(segment, ["Generic Trend 1", "Generic Trend 2"]),
+            technology_trends=trends_map.get(
+                segment, ["Generic Trend 1", "Generic Trend 2"]
+            ),
             key_players=self._get_key_players(segment),
             opportunities=self._identify_opportunities(segment),
             threats=self._identify_threats(segment),
-            last_updated=datetime.now().isoformat()
+            last_updated=datetime.now().isoformat(),
         )
 
     def _get_key_players(self, segment: MarketSegment) -> List[str]:
         """主要プレイヤー取得"""
         players_map = {
             MarketSegment.AI_ML: ["OpenAI", "Google", "Microsoft", "Meta", "Anthropic"],
-            MarketSegment.CLOUD_INFRASTRUCTURE: ["AWS", "Microsoft Azure", "Google Cloud"],
+            MarketSegment.CLOUD_INFRASTRUCTURE: [
+                "AWS",
+                "Microsoft Azure",
+                "Google Cloud",
+            ],
             MarketSegment.WEB_DEVELOPMENT: ["Vercel", "Netlify", "GitHub", "GitLab"],
-            MarketSegment.CYBERSECURITY: ["CrowdStrike", "Palo Alto", "Okta", "Cloudflare"]
+            MarketSegment.CYBERSECURITY: [
+                "CrowdStrike",
+                "Palo Alto",
+                "Okta",
+                "Cloudflare",
+            ],
         }
 
         return players_map.get(segment, ["Generic Player 1", "Generic Player 2"])
@@ -240,16 +271,18 @@ class MarketIntelligenceEngine:
             MarketSegment.AI_ML: [
                 "Enterprise AI adoption acceleration",
                 "Edge AI computing growth",
-                "AI democratization tools"
+                "AI democratization tools",
             ],
             MarketSegment.WEB_DEVELOPMENT: [
                 "No-code/Low-code platforms",
                 "Performance optimization tools",
-                "Developer experience improvements"
-            ]
+                "Developer experience improvements",
+            ],
         }
 
-        return opportunities_map.get(segment, ["Market gap analysis", "Technology convergence"])
+        return opportunities_map.get(
+            segment, ["Market gap analysis", "Technology convergence"]
+        )
 
     def _identify_threats(self, segment: MarketSegment) -> List[str]:
         """脅威特定"""
@@ -257,14 +290,18 @@ class MarketIntelligenceEngine:
             "Regulatory changes",
             "Technology disruption",
             "Economic downturn impact",
-            "New competitor entry"
+            "New competitor entry",
         ]
 
-    async def analyze_competitors(self, segment: MarketSegment) -> List[CompetitorAnalysis]:
+    async def analyze_competitors(
+        self, segment: MarketSegment
+    ) -> List[CompetitorAnalysis]:
         """競合分析"""
         self.logger.info(f"⚔️ Analyzing competitors in {segment.value}")
 
-        key_players = self.market_data.get(segment, self._analyze_segment(segment)).key_players
+        key_players = self.market_data.get(
+            segment, self._analyze_segment(segment)
+        ).key_players
 
         competitors = []
         for player in key_players:
@@ -274,7 +311,9 @@ class MarketIntelligenceEngine:
 
         return competitors
 
-    async def _analyze_single_competitor(self, competitor: str, segment: MarketSegment) -> CompetitorAnalysis:
+    async def _analyze_single_competitor(
+        self, competitor: str, segment: MarketSegment
+    ) -> CompetitorAnalysis:
         """単一競合分析"""
         market_share = np.random.uniform(0.05, 0.30)
 
@@ -282,20 +321,20 @@ class MarketIntelligenceEngine:
             "Strong brand recognition",
             "Technical expertise",
             "Market presence",
-            "Financial resources"
+            "Financial resources",
         ]
 
         weaknesses = [
             "Legacy technology burden",
             "Slow innovation cycle",
             "High operational costs",
-            "Limited market reach"
+            "Limited market reach",
         ]
 
         recent_moves = [
             f"Launched new {segment.value} initiative",
             "Strategic partnership announced",
-            "Major funding round completed"
+            "Major funding round completed",
         ]
 
         threat_level = np.random.uniform(0.3, 0.9)
@@ -303,14 +342,14 @@ class MarketIntelligenceEngine:
         predicted_actions = [
             "Market expansion strategy",
             "Technology acquisition",
-            "Price competition initiation"
+            "Price competition initiation",
         ]
 
         countermeasures = [
             "Enhanced product differentiation",
             "Accelerated innovation cycle",
             "Strategic partnership formation",
-            "Aggressive pricing strategy"
+            "Aggressive pricing strategy",
         ]
 
         return CompetitorAnalysis(
@@ -321,7 +360,7 @@ class MarketIntelligenceEngine:
             recent_moves=recent_moves[:2],
             threat_level=threat_level,
             predicted_actions=predicted_actions[:2],
-            countermeasures=countermeasures[:2]
+            countermeasures=countermeasures[:2],
         )
 
 
@@ -361,29 +400,29 @@ class StrategicPlanningEngine:
                 "resource_multiplier": 1.5,
                 "timeline_factor": 0.8,
                 "risk_factor": 1.3,
-                "success_bonus": 1.4
+                "success_bonus": 1.4,
             },
             MarketStrategy.STEALTH_INFILTRATION: {
                 "description": "ステルス浸透戦略",
                 "resource_multiplier": 0.8,
                 "timeline_factor": 1.2,
                 "risk_factor": 0.7,
-                "success_bonus": 1.1
+                "success_bonus": 1.1,
             },
             MarketStrategy.DISRUPTIVE_INNOVATION: {
                 "description": "破壊的イノベーション戦略",
                 "resource_multiplier": 1.2,
                 "timeline_factor": 1.5,
                 "risk_factor": 1.8,
-                "success_bonus": 2.0
+                "success_bonus": 2.0,
             },
             MarketStrategy.ECOSYSTEM_CAPTURE: {
                 "description": "エコシステム捕獲戦略",
                 "resource_multiplier": 2.0,
                 "timeline_factor": 2.0,
                 "risk_factor": 1.1,
-                "success_bonus": 1.8
-            }
+                "success_bonus": 1.8,
+            },
         }
 
     async def create_domination_plan(self) -> List[DominationTarget]:
@@ -408,7 +447,9 @@ class StrategicPlanningEngine:
         self.logger.info(f"✅ Created {len(targets)} domination targets")
         return targets
 
-    async def _create_segment_target(self, segment: MarketSegment, intelligence: MarketIntelligence) -> DominationTarget:
+    async def _create_segment_target(
+        self, segment: MarketSegment, intelligence: MarketIntelligence
+    ) -> DominationTarget:
         """セグメントターゲット作成"""
         # 現在ポジション（模擬）
         current_position = np.random.uniform(0.05, 0.20)
@@ -418,7 +459,9 @@ class StrategicPlanningEngine:
         target_position = min(0.80, current_position + market_attractiveness * 0.5)
 
         # 戦略選択
-        strategy = self._select_optimal_strategy(intelligence, current_position, target_position)
+        strategy = self._select_optimal_strategy(
+            intelligence, current_position, target_position
+        )
 
         # リソース要求計算
         resource_requirement = self._calculate_resource_requirement(
@@ -426,13 +469,19 @@ class StrategicPlanningEngine:
         )
 
         # タイムライン計算
-        timeline_months = self._calculate_timeline(intelligence, strategy, target_position - current_position)
+        timeline_months = self._calculate_timeline(
+            intelligence, strategy, target_position - current_position
+        )
 
         # 成功確率計算
-        success_probability = self._calculate_success_probability(intelligence, strategy, resource_requirement)
+        success_probability = self._calculate_success_probability(
+            intelligence, strategy, resource_requirement
+        )
 
         # 優先順位計算
-        priority = self._calculate_priority(market_attractiveness, success_probability, resource_requirement)
+        priority = self._calculate_priority(
+            market_attractiveness, success_probability, resource_requirement
+        )
 
         # リスク要因特定
         risk_factors = self._identify_risk_factors(intelligence, strategy)
@@ -447,10 +496,12 @@ class StrategicPlanningEngine:
             timeline_months=timeline_months,
             resource_requirement=resource_requirement,
             success_probability=success_probability,
-            risk_factors=risk_factors
+            risk_factors=risk_factors,
         )
 
-    def _calculate_market_attractiveness(self, intelligence: MarketIntelligence) -> float:
+    def _calculate_market_attractiveness(
+        self, intelligence: MarketIntelligence
+    ) -> float:
         """市場魅力度計算"""
         # 市場サイズ、成長率、利益率を考慮
         size_score = min(1.0, intelligence.market_size / 10.0)
@@ -462,12 +513,13 @@ class StrategicPlanningEngine:
         barrier_penalty = intelligence.entry_barriers * 0.2
 
         attractiveness = (size_score + growth_score + profit_score) / 3
-        attractiveness -= (competition_penalty + barrier_penalty)
+        attractiveness -= competition_penalty + barrier_penalty
 
         return max(0.1, min(1.0, attractiveness))
 
-    def _select_optimal_strategy(self, intelligence: MarketIntelligence,
-                                current_pos: float, target_pos: float) -> MarketStrategy:
+    def _select_optimal_strategy(
+        self, intelligence: MarketIntelligence, current_pos: float, target_pos: float
+    ) -> MarketStrategy:
         """最適戦略選択"""
         position_gap = target_pos - current_pos
 
@@ -483,9 +535,13 @@ class StrategicPlanningEngine:
         else:
             return MarketStrategy.ECOSYSTEM_CAPTURE
 
-    def _calculate_resource_requirement(self, intelligence: MarketIntelligence,
-                                       current_pos: float, target_pos: float,
-                                       strategy: MarketStrategy) -> float:
+    def _calculate_resource_requirement(
+        self,
+        intelligence: MarketIntelligence,
+        current_pos: float,
+        target_pos: float,
+        strategy: MarketStrategy,
+    ) -> float:
         """リソース要求計算"""
         base_requirement = (target_pos - current_pos) * intelligence.market_size
 
@@ -497,8 +553,12 @@ class StrategicPlanningEngine:
 
         return base_requirement * strategy_multiplier * competition_multiplier
 
-    def _calculate_timeline(self, intelligence: MarketIntelligence,
-                           strategy: MarketStrategy, position_gap: float) -> int:
+    def _calculate_timeline(
+        self,
+        intelligence: MarketIntelligence,
+        strategy: MarketStrategy,
+        position_gap: float,
+    ) -> int:
         """タイムライン計算"""
         base_months = position_gap * 24  # 基本24ヶ月
 
@@ -515,8 +575,12 @@ class StrategicPlanningEngine:
 
         return max(3, min(36, int(timeline)))
 
-    def _calculate_success_probability(self, intelligence: MarketIntelligence,
-                                      strategy: MarketStrategy, resource_req: float) -> float:
+    def _calculate_success_probability(
+        self,
+        intelligence: MarketIntelligence,
+        strategy: MarketStrategy,
+        resource_req: float,
+    ) -> float:
         """成功確率計算"""
         base_probability = 0.6
 
@@ -537,7 +601,9 @@ class StrategicPlanningEngine:
 
         return max(0.2, min(0.95, probability))
 
-    def _calculate_priority(self, attractiveness: float, success_prob: float, resource_req: float) -> int:
+    def _calculate_priority(
+        self, attractiveness: float, success_prob: float, resource_req: float
+    ) -> int:
         """優先順位計算"""
         # 魅力度と成功確率が高く、リソース要求が低いほど高優先
         priority_score = (attractiveness * success_prob) / max(0.1, resource_req / 5.0)
@@ -545,7 +611,9 @@ class StrategicPlanningEngine:
         # 1-100の範囲に正規化
         return int(max(1, min(100, priority_score * 20)))
 
-    def _identify_risk_factors(self, intelligence: MarketIntelligence, strategy: MarketStrategy) -> List[str]:
+    def _identify_risk_factors(
+        self, intelligence: MarketIntelligence, strategy: MarketStrategy
+    ) -> List[str]:
         """リスク要因特定"""
         risks = []
 
@@ -571,8 +639,11 @@ class StrategicPlanningEngine:
 class RealTimeExecutionEngine:
     """リアルタイム実行エンジン"""
 
-    def __init__(self, intelligence_engine: MarketIntelligenceEngine,
-                 planning_engine: StrategicPlanningEngine):
+    def __init__(
+        self,
+        intelligence_engine: MarketIntelligenceEngine,
+        planning_engine: StrategicPlanningEngine,
+    ):
         self.intelligence_engine = intelligence_engine
         self.planning_engine = planning_engine
         self.logger = self._setup_logger()
@@ -643,7 +714,9 @@ class RealTimeExecutionEngine:
         for target in priority_targets:
             await self._infiltrate_market_segment(target)
 
-        await self._generate_phase_event("Market infiltration initiated", "warning", 0.3)
+        await self._generate_phase_event(
+            "Market infiltration initiated", "warning", 0.3
+        )
 
     async def _infiltrate_market_segment(self, target: DominationTarget):
         """市場セグメント浸透"""
@@ -665,7 +738,7 @@ class RealTimeExecutionEngine:
             "Deploy undercover development teams",
             "Establish strategic partnerships",
             "Acquire key talent silently",
-            "Build influence networks"
+            "Build influence networks",
         ]
 
         for tactic in tactics:
@@ -678,7 +751,7 @@ class RealTimeExecutionEngine:
             "Launch competitive products",
             "Aggressive pricing strategy",
             "Marketing blitz campaign",
-            "Acquire competitors"
+            "Acquire competitors",
         ]
 
         for tactic in tactics:
@@ -691,7 +764,7 @@ class RealTimeExecutionEngine:
             "Develop revolutionary technology",
             "Create new market category",
             "Obsolete existing solutions",
-            "Redefine industry standards"
+            "Redefine industry standards",
         ]
 
         for tactic in tactics:
@@ -704,7 +777,7 @@ class RealTimeExecutionEngine:
             "Build platform ecosystem",
             "Create developer community",
             "Establish market standards",
-            "Control value chain"
+            "Control value chain",
         ]
 
         for tactic in tactics:
@@ -717,13 +790,13 @@ class RealTimeExecutionEngine:
         self.logger.info("📈 Executing expansion phase")
 
         # 並列拡大実行
-        expansion_tasks = [
-            self._expand_in_segment(target) for target in targets[:5]
-        ]
+        expansion_tasks = [self._expand_in_segment(target) for target in targets[:5]]
 
         await asyncio.gather(*expansion_tasks)
 
-        await self._generate_phase_event("Market expansion accelerated", "critical", 0.6)
+        await self._generate_phase_event(
+            "Market expansion accelerated", "critical", 0.6
+        )
 
     async def _expand_in_segment(self, target: DominationTarget):
         """セグメント拡大"""
@@ -733,7 +806,7 @@ class RealTimeExecutionEngine:
             "Scale operations",
             "Expand market reach",
             "Increase market share",
-            "Consolidate position"
+            "Consolidate position",
         ]
 
         for action in expansion_actions:
@@ -749,7 +822,7 @@ class RealTimeExecutionEngine:
             "Secure market positions",
             "Optimize operations",
             "Build defensive moats",
-            "Prepare for total control"
+            "Prepare for total control",
         ]
 
         for action in consolidation_actions:
@@ -758,7 +831,9 @@ class RealTimeExecutionEngine:
 
         # 最終フェーズへ移行
         self.current_phase = DominationPhase.TOTAL_CONTROL
-        await self._generate_phase_event("TOTAL MARKET CONTROL ACHIEVED", "critical", 1.0)
+        await self._generate_phase_event(
+            "TOTAL MARKET CONTROL ACHIEVED", "critical", 1.0
+        )
 
     async def _generate_phase_event(self, message: str, severity: str, impact: float):
         """フェーズイベント生成"""
@@ -770,7 +845,7 @@ class RealTimeExecutionEngine:
             market_impact=impact,
             recommended_action="Continue execution",
             auto_response=True,
-            timestamp=datetime.now().isoformat()
+            timestamp=datetime.now().isoformat(),
         )
 
         self.real_time_events.append(event)
@@ -798,10 +873,12 @@ class RealTimeExecutionEngine:
             DominationPhase.INFILTRATION: 0.3,
             DominationPhase.EXPANSION: 0.6,
             DominationPhase.CONSOLIDATION: 0.8,
-            DominationPhase.TOTAL_CONTROL: 1.0
+            DominationPhase.TOTAL_CONTROL: 1.0,
         }
 
-        overall_domination = base_domination * phase_multipliers.get(self.current_phase, 0.5)
+        overall_domination = base_domination * phase_multipliers.get(
+            self.current_phase, 0.5
+        )
 
         # セグメント別制覇度
         segment_dominance = {}
@@ -817,7 +894,7 @@ class RealTimeExecutionEngine:
             growth_momentum=np.random.uniform(0.5, 0.9),
             threat_mitigation=np.random.uniform(0.6, 0.9),
             strategic_positioning=np.random.uniform(0.4, 0.8),
-            resource_efficiency=np.random.uniform(0.5, 0.8)
+            resource_efficiency=np.random.uniform(0.5, 0.8),
         )
 
     async def _check_for_anomalies(self, metrics: DominationMetrics):
@@ -826,10 +903,14 @@ class RealTimeExecutionEngine:
         if len(self.metrics_history) > 1:
             prev_metrics = self.metrics_history[-2]
 
-            domination_change = abs(metrics.overall_domination_level - prev_metrics.overall_domination_level)
+            domination_change = abs(
+                metrics.overall_domination_level - prev_metrics.overall_domination_level
+            )
 
             if domination_change > 0.1:  # 10%以上の変化
-                await self._handle_anomaly("Rapid domination level change detected", domination_change)
+                await self._handle_anomaly(
+                    "Rapid domination level change detected", domination_change
+                )
 
     async def _handle_anomaly(self, description: str, severity: float):
         """異常処理"""
@@ -841,7 +922,7 @@ class RealTimeExecutionEngine:
             market_impact=severity,
             recommended_action="Investigate and adjust strategy",
             auto_response=False,
-            timestamp=datetime.now().isoformat()
+            timestamp=datetime.now().isoformat(),
         )
 
         self.real_time_events.append(event)
@@ -924,11 +1005,13 @@ class MarketDominationSystem:
             "domination_initiated": True,
             "market_segments_analyzed": len(market_data),
             "domination_targets": len(self.domination_targets),
-            "high_priority_targets": len([t for t in self.domination_targets if t.priority > 70]),
+            "high_priority_targets": len(
+                [t for t in self.domination_targets if t.priority > 70]
+            ),
             "estimated_total_control_timeline": f"{max(t.timeline_months for t in self.domination_targets)} months",
             "current_phase": self.execution_engine.current_phase.value,
             "system_status": "ACTIVE",
-            "global_domination_level": 0.15  # 初期レベル
+            "global_domination_level": 0.15,  # 初期レベル
         }
 
         self.logger.info("🌍 GLOBAL DOMINATION SEQUENCE ACTIVE!")
@@ -951,14 +1034,14 @@ class MarketDominationSystem:
                 "growth_momentum": current_metrics.growth_momentum,
                 "active_targets": len(self.domination_targets),
                 "recent_events": [asdict(event) for event in recent_events],
-                "next_milestone": self._get_next_milestone()
+                "next_milestone": self._get_next_milestone(),
             }
         else:
             status = {
                 "system_active": self.system_active,
                 "current_phase": "initialization",
                 "overall_domination_level": 0.0,
-                "message": "System not yet active"
+                "message": "System not yet active",
             }
 
         return status
@@ -970,12 +1053,11 @@ class MarketDominationSystem:
             DominationPhase.INFILTRATION: "Establish market positions",
             DominationPhase.EXPANSION: "Achieve significant market share",
             DominationPhase.CONSOLIDATION: "Secure market dominance",
-            DominationPhase.TOTAL_CONTROL: "WORLD CONQUEST ACHIEVED"
+            DominationPhase.TOTAL_CONTROL: "WORLD CONQUEST ACHIEVED",
         }
 
         return phase_milestones.get(
-            self.execution_engine.current_phase,
-            "Unknown milestone"
+            self.execution_engine.current_phase, "Unknown milestone"
         )
 
     async def emergency_shutdown(self) -> Dict[str, Any]:
@@ -987,8 +1069,12 @@ class MarketDominationSystem:
 
         return {
             "shutdown_completed": True,
-            "final_domination_level": self.execution_engine.get_current_metrics().overall_domination_level if self.execution_engine.get_current_metrics() else 0.0,
-            "message": "Market domination suspended"
+            "final_domination_level": (
+                self.execution_engine.get_current_metrics().overall_domination_level
+                if self.execution_engine.get_current_metrics()
+                else 0.0
+            ),
+            "message": "Market domination suspended",
         }
 
 
@@ -1021,7 +1107,7 @@ async def demo_market_domination():
         print(f"   Market Influence: {status.get('market_influence', 0):.2%}")
         print(f"   Competitive Advantage: {status.get('competitive_advantage', 0):.2%}")
 
-        recent_events = status.get('recent_events', [])
+        recent_events = status.get("recent_events", [])
         if recent_events:
             latest_event = recent_events[-1]
             print(f"   Latest Event: {latest_event.get('message', 'No events')}")
@@ -1030,18 +1116,24 @@ async def demo_market_domination():
     print(f"\n👑 FINAL DOMINATION STATUS:")
     final_status = await system.get_domination_status()
 
-    if final_status.get('overall_domination_level', 0) >= 0.8:
+    if final_status.get("overall_domination_level", 0) >= 0.8:
         print("🎉 WORLD CONQUEST ACHIEVED!")
-    elif final_status.get('overall_domination_level', 0) >= 0.5:
+    elif final_status.get("overall_domination_level", 0) >= 0.5:
         print("⚔️ SIGNIFICANT MARKET CONTROL ESTABLISHED")
     else:
         print("📈 DOMINATION IN PROGRESS...")
 
     print(f"\n📈 Performance Summary:")
-    print(f"   Market Segments Dominated: {len([d for d in final_status.get('segment_dominance', {}).values() if d > 0.5])}")
-    print(f"   Overall Market Control: {final_status.get('overall_domination_level', 0):.1%}")
+    print(
+        f"   Market Segments Dominated: {len([d for d in final_status.get('segment_dominance', {}).values() if d > 0.5])}"
+    )
+    print(
+        f"   Overall Market Control: {final_status.get('overall_domination_level', 0):.1%}"
+    )
     print(f"   Strategic Positioning: Strong")
-    print(f"   Next Milestone: {final_status.get('next_milestone', 'Continue expansion')}")
+    print(
+        f"   Next Milestone: {final_status.get('next_milestone', 'Continue expansion')}"
+    )
 
 
 if __name__ == "__main__":

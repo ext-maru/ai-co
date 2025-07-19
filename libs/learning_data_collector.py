@@ -28,6 +28,7 @@ except ImportError:
 
 class ExecutionStatus(Enum):
     """実行ステータス"""
+
     SUCCESS = "success"
     FAILURE = "failure"
     PARTIAL = "partial"
@@ -37,15 +38,17 @@ class ExecutionStatus(Enum):
 
 class DataQuality(Enum):
     """データ品質"""
-    HIGH = "high"         # 成功＋詳細なフィードバック
-    MEDIUM = "medium"     # 成功またはフィードバックあり
-    LOW = "low"           # 失敗または最小限の情報
+
+    HIGH = "high"  # 成功＋詳細なフィードバック
+    MEDIUM = "medium"  # 成功またはフィードバックあり
+    LOW = "low"  # 失敗または最小限の情報
     UNVERIFIED = "unverified"  # 未検証
 
 
 @dataclass
 class CommandExecution:
     """コマンド実行記録"""
+
     execution_id: str
     original_text: str
     intent_result: Dict[str, Any]  # IntentResultのJSON表現
@@ -63,6 +66,7 @@ class CommandExecution:
 @dataclass
 class LearningPattern:
     """学習パターン"""
+
     pattern_id: str
     intent_type: str
     command_type: str
@@ -78,6 +82,7 @@ class LearningPattern:
 @dataclass
 class InsightReport:
     """洞察レポート"""
+
     report_id: str
     period: str
     total_executions: int
@@ -128,7 +133,8 @@ class LearningDataCollector:
         cursor = conn.cursor()
 
         # コマンド実行履歴テーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS command_executions (
                 execution_id TEXT PRIMARY KEY,
                 original_text TEXT NOT NULL,
@@ -143,10 +149,12 @@ class LearningDataCollector:
                 quality TEXT NOT NULL,
                 timestamp TEXT NOT NULL
             )
-        """)
+        """
+        )
 
         # 学習パターンテーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS learning_patterns (
                 pattern_id TEXT PRIMARY KEY,
                 intent_type TEXT NOT NULL,
@@ -159,10 +167,12 @@ class LearningDataCollector:
                 common_errors TEXT,
                 last_updated TEXT NOT NULL
             )
-        """)
+        """
+        )
 
         # 洞察レポートテーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS insight_reports (
                 report_id TEXT PRIMARY KEY,
                 period TEXT NOT NULL,
@@ -174,12 +184,19 @@ class LearningDataCollector:
                 improvement_suggestions TEXT NOT NULL,
                 generated_at TEXT NOT NULL
             )
-        """)
+        """
+        )
 
         # インデックス作成
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_timestamp ON command_executions(timestamp)")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_intent_type ON learning_patterns(intent_type)")
-        cursor.execute("CREATE INDEX IF NOT EXISTS idx_command_type ON learning_patterns(command_type)")
+        cursor.execute(
+            "CREATE INDEX IF NOT EXISTS idx_timestamp ON command_executions(timestamp)"
+        )
+        cursor.execute(
+            "CREATE INDEX IF NOT EXISTS idx_intent_type ON learning_patterns(intent_type)"
+        )
+        cursor.execute(
+            "CREATE INDEX IF NOT EXISTS idx_command_type ON learning_patterns(command_type)"
+        )
 
         conn.commit()
         conn.close()
@@ -194,7 +211,7 @@ class LearningDataCollector:
         status: ExecutionStatus,
         output: str = "",
         error: Optional[str] = None,
-        feedback: Optional[Dict[str, Any]] = None
+        feedback: Optional[Dict[str, Any]] = None,
     ) -> CommandExecution:
         """
         コマンド実行の記録
@@ -240,7 +257,7 @@ class LearningDataCollector:
             error=error,
             feedback=feedback,
             quality=quality,
-            timestamp=datetime.now().isoformat()
+            timestamp=datetime.now().isoformat(),
         )
 
         # データベースに保存
@@ -262,10 +279,7 @@ class LearningDataCollector:
         return hashlib.md5(content.encode()).hexdigest()[:16]
 
     def _assess_data_quality(
-        self,
-        status: ExecutionStatus,
-        output: str,
-        feedback: Optional[Dict]
+        self, status: ExecutionStatus, output: str, feedback: Optional[Dict]
     ) -> DataQuality:
         """データ品質の評価"""
         if status == ExecutionStatus.SUCCESS:
@@ -284,22 +298,29 @@ class LearningDataCollector:
         cursor = conn.cursor()
 
         try:
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO command_executions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                execution.execution_id,
-                execution.original_text,
-                json.dumps(execution.intent_result, ensure_ascii=False),
-                json.dumps(execution.parsed_command, ensure_ascii=False),
-                execution.executed_command,
-                execution.execution_time,
-                execution.status.value,
-                execution.output,
-                execution.error,
-                json.dumps(execution.feedback, ensure_ascii=False) if execution.feedback else None,
-                execution.quality.value,
-                execution.timestamp
-            ))
+            """,
+                (
+                    execution.execution_id,
+                    execution.original_text,
+                    json.dumps(execution.intent_result, ensure_ascii=False),
+                    json.dumps(execution.parsed_command, ensure_ascii=False),
+                    execution.executed_command,
+                    execution.execution_time,
+                    execution.status.value,
+                    execution.output,
+                    execution.error,
+                    (
+                        json.dumps(execution.feedback, ensure_ascii=False)
+                        if execution.feedback
+                        else None
+                    ),
+                    execution.quality.value,
+                    execution.timestamp,
+                ),
+            )
 
             conn.commit()
         except Exception as e:
@@ -318,9 +339,12 @@ class LearningDataCollector:
 
         try:
             # 既存パターンの取得
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT * FROM learning_patterns WHERE pattern_id = ?
-            """, (pattern_id,))
+            """,
+                (pattern_id,),
+            )
 
             existing = cursor.fetchone()
 
@@ -337,29 +361,43 @@ class LearningDataCollector:
 
                 # 実行時間の更新（移動平均）
                 total_count = success_count + failure_count
-                avg_time = (avg_time * (total_count - 1) + execution.execution_time) / total_count
+                avg_time = (
+                    avg_time * (total_count - 1) + execution.execution_time
+                ) / total_count
 
-                cursor.execute("""
+                cursor.execute(
+                    """
                     UPDATE learning_patterns
                     SET success_count = ?, failure_count = ?, avg_execution_time = ?, last_updated = ?
                     WHERE pattern_id = ?
-                """, (success_count, failure_count, avg_time, datetime.now().isoformat(), pattern_id))
+                """,
+                    (
+                        success_count,
+                        failure_count,
+                        avg_time,
+                        datetime.now().isoformat(),
+                        pattern_id,
+                    ),
+                )
             else:
                 # 新規作成
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO learning_patterns VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    pattern_id,
-                    intent_type,
-                    command_type,
-                    1 if execution.status == ExecutionStatus.SUCCESS else 0,
-                    0 if execution.status == ExecutionStatus.SUCCESS else 1,
-                    execution.execution_time,
-                    json.dumps({}),
-                    json.dumps([]),
-                    json.dumps([]),
-                    datetime.now().isoformat()
-                ))
+                """,
+                    (
+                        pattern_id,
+                        intent_type,
+                        command_type,
+                        1 if execution.status == ExecutionStatus.SUCCESS else 0,
+                        0 if execution.status == ExecutionStatus.SUCCESS else 1,
+                        execution.execution_time,
+                        json.dumps({}),
+                        json.dumps([]),
+                        json.dumps([]),
+                        datetime.now().isoformat(),
+                    ),
+                )
 
             conn.commit()
         except Exception as e:
@@ -368,10 +406,7 @@ class LearningDataCollector:
             conn.close()
 
     async def get_similar_executions(
-        self,
-        intent_type: IntentType,
-        command_type: CommandType,
-        limit: int = 10
+        self, intent_type: IntentType, command_type: CommandType, limit: int = 10
     ) -> List[CommandExecution]:
         """
         類似した実行履歴の取得
@@ -388,13 +423,16 @@ class LearningDataCollector:
         cursor = conn.cursor()
 
         try:
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT * FROM command_executions
                 WHERE json_extract(intent_result, '$.intent_type') = ?
                 AND json_extract(parsed_command, '$.command_type') = ?
                 ORDER BY timestamp DESC
                 LIMIT ?
-            """, (intent_type.value, command_type.value, limit))
+            """,
+                (intent_type.value, command_type.value, limit),
+            )
 
             rows = cursor.fetchall()
             executions = []
@@ -412,7 +450,7 @@ class LearningDataCollector:
                     error=row[8],
                     feedback=json.loads(row[9]) if row[9] else None,
                     quality=DataQuality(row[10]),
-                    timestamp=row[11]
+                    timestamp=row[11],
                 )
                 executions.append(execution)
 
@@ -424,7 +462,9 @@ class LearningDataCollector:
         finally:
             conn.close()
 
-    async def get_success_patterns(self, intent_type: Optional[IntentType] = None) -> List[LearningPattern]:
+    async def get_success_patterns(
+        self, intent_type: Optional[IntentType] = None
+    ) -> List[LearningPattern]:
         """
         成功パターンの取得
 
@@ -439,17 +479,22 @@ class LearningDataCollector:
 
         try:
             if intent_type:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT * FROM learning_patterns
                     WHERE intent_type = ? AND success_count > failure_count
                     ORDER BY (success_count * 1.0 / (success_count + failure_count)) DESC
-                """, (intent_type.value,))
+                """,
+                    (intent_type.value,),
+                )
             else:
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT * FROM learning_patterns
                     WHERE success_count > failure_count
                     ORDER BY (success_count * 1.0 / (success_count + failure_count)) DESC
-                """)
+                """
+                )
 
             rows = cursor.fetchall()
             patterns = []
@@ -465,7 +510,7 @@ class LearningDataCollector:
                     common_parameters=json.loads(row[6]),
                     best_practices=json.loads(row[7]),
                     common_errors=json.loads(row[8]),
-                    last_updated=row[9]
+                    last_updated=row[9],
                 )
                 patterns.append(pattern)
 
@@ -495,38 +540,47 @@ class LearningDataCollector:
             start_date = (datetime.now() - timedelta(days=period_days)).isoformat()
 
             # 基本統計
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT COUNT(*),
                        SUM(CASE WHEN status = 'success' THEN 1 ELSE 0 END),
                        AVG(json_extract(intent_result, '$.confidence'))
                 FROM command_executions
                 WHERE timestamp > ?
-            """, (start_date,))
+            """,
+                (start_date,),
+            )
 
             total, success_count, avg_confidence = cursor.fetchone()
             success_rate = success_count / total if total > 0 else 0.0
 
             # トップ意図
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT json_extract(intent_result, '$.intent_type'), COUNT(*) as cnt
                 FROM command_executions
                 WHERE timestamp > ?
                 GROUP BY json_extract(intent_result, '$.intent_type')
                 ORDER BY cnt DESC
                 LIMIT 5
-            """, (start_date,))
+            """,
+                (start_date,),
+            )
 
             top_intents = cursor.fetchall()
 
             # トップコマンド
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT json_extract(parsed_command, '$.command_type'), COUNT(*) as cnt
                 FROM command_executions
                 WHERE timestamp > ?
                 GROUP BY json_extract(parsed_command, '$.command_type')
                 ORDER BY cnt DESC
                 LIMIT 5
-            """, (start_date,))
+            """,
+                (start_date,),
+            )
 
             top_commands = cursor.fetchall()
 
@@ -545,7 +599,7 @@ class LearningDataCollector:
                 top_intents=top_intents,
                 top_commands=top_commands,
                 improvement_suggestions=improvement_suggestions,
-                generated_at=datetime.now().isoformat()
+                generated_at=datetime.now().isoformat(),
             )
 
             # レポート保存
@@ -565,7 +619,7 @@ class LearningDataCollector:
                 top_intents=[],
                 top_commands=[],
                 improvement_suggestions=["データ取得エラーが発生しました"],
-                generated_at=datetime.now().isoformat()
+                generated_at=datetime.now().isoformat(),
             )
         finally:
             conn.close()
@@ -575,30 +629,43 @@ class LearningDataCollector:
         success_rate: float,
         avg_confidence: float,
         top_intents: List[Tuple[str, int]],
-        top_commands: List[Tuple[str, int]]
+        top_commands: List[Tuple[str, int]],
     ) -> List[str]:
         """改善提案の生成"""
         suggestions = []
 
         # 成功率に基づく提案
         if success_rate < 0.7:
-            suggestions.append("成功率が70%未満です。失敗パターンを分析し、エラーハンドリングを改善してください。")
+            suggestions.append(
+                "成功率が70%未満です。失敗パターンを分析し、エラーハンドリングを改善してください。"
+            )
 
         # 信頼度に基づく提案
         if avg_confidence < 0.6:
-            suggestions.append("平均信頼度が低いです。より明確な指示パターンを学習させることを検討してください。")
+            suggestions.append(
+                "平均信頼度が低いです。より明確な指示パターンを学習させることを検討してください。"
+            )
 
         # 意図の偏りチェック
-        if top_intents and top_intents[0][1] > sum(count for _, count in top_intents) * 0.5:
-            suggestions.append(f"{top_intents[0][0]}の使用が多すぎます。他の機能も活用してバランスを取りましょう。")
+        if (
+            top_intents
+            and top_intents[0][1] > sum(count for _, count in top_intents) * 0.5
+        ):
+            suggestions.append(
+                f"{top_intents[0][0]}の使用が多すぎます。他の機能も活用してバランスを取りましょう。"
+            )
 
         # コマンドの多様性チェック
         if len(top_commands) < 3:
-            suggestions.append("使用されているコマンドタイプが少ないです。より多様な操作を試してみてください。")
+            suggestions.append(
+                "使用されているコマンドタイプが少ないです。より多様な操作を試してみてください。"
+            )
 
         # デフォルト提案
         if not suggestions:
-            suggestions.append("順調に稼働しています。現在の使用パターンを継続してください。")
+            suggestions.append(
+                "順調に稼働しています。現在の使用パターンを継続してください。"
+            )
 
         return suggestions
 
@@ -608,19 +675,22 @@ class LearningDataCollector:
         cursor = conn.cursor()
 
         try:
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO insight_reports VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                report.report_id,
-                report.period,
-                report.total_executions,
-                report.success_rate,
-                report.avg_confidence,
-                json.dumps(report.top_intents),
-                json.dumps(report.top_commands),
-                json.dumps(report.improvement_suggestions, ensure_ascii=False),
-                report.generated_at
-            ))
+            """,
+                (
+                    report.report_id,
+                    report.period,
+                    report.total_executions,
+                    report.success_rate,
+                    report.avg_confidence,
+                    json.dumps(report.top_intents),
+                    json.dumps(report.top_commands),
+                    json.dumps(report.improvement_suggestions, ensure_ascii=False),
+                    report.generated_at,
+                ),
+            )
 
             conn.commit()
         except Exception as e:
@@ -628,7 +698,9 @@ class LearningDataCollector:
         finally:
             conn.close()
 
-    async def export_training_data(self, output_path: str, quality_threshold: DataQuality = DataQuality.MEDIUM):
+    async def export_training_data(
+        self, output_path: str, quality_threshold: DataQuality = DataQuality.MEDIUM
+    ):
         """
         トレーニングデータのエクスポート
 
@@ -645,17 +717,20 @@ class LearningDataCollector:
                 DataQuality.HIGH: ["high"],
                 DataQuality.MEDIUM: ["high", "medium"],
                 DataQuality.LOW: ["high", "medium", "low"],
-                DataQuality.UNVERIFIED: ["high", "medium", "low", "unverified"]
+                DataQuality.UNVERIFIED: ["high", "medium", "low", "unverified"],
             }
 
             placeholders = ",".join("?" * len(quality_values[quality_threshold]))
-            cursor.execute(f"""
+            cursor.execute(
+                f"""
                 SELECT original_text, intent_result, parsed_command,
                        executed_command, status, output
                 FROM command_executions
                 WHERE quality IN ({placeholders})
                 AND status = 'success'
-            """, quality_values[quality_threshold])
+            """,
+                quality_values[quality_threshold],
+            )
 
             rows = cursor.fetchall()
 
@@ -667,7 +742,7 @@ class LearningDataCollector:
                     "intent": json.loads(row[1]),
                     "command": json.loads(row[2]),
                     "execution": row[3],
-                    "output": row[5]
+                    "output": row[5],
                 }
                 training_data.append(data)
 
@@ -675,10 +750,12 @@ class LearningDataCollector:
             output_file = Path(output_path)
             output_file.parent.mkdir(parents=True, exist_ok=True)
 
-            with open(output_file, 'w') as f:
+            with open(output_file, "w") as f:
                 json.dump(training_data, f, indent=2, ensure_ascii=False)
 
-            self.logger.info(f"Exported {len(training_data)} training samples to {output_path}")
+            self.logger.info(
+                f"Exported {len(training_data)} training samples to {output_path}"
+            )
 
         except Exception as e:
             self.logger.error(f"Failed to export training data: {e}")
@@ -698,17 +775,21 @@ class LearningDataCollector:
             stats["total_executions"] = cursor.fetchone()[0]
 
             # ステータス別カウント
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT status, COUNT(*) FROM command_executions
                 GROUP BY status
-            """)
+            """
+            )
             stats["status_counts"] = dict(cursor.fetchall())
 
             # 品質別カウント
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT quality, COUNT(*) FROM command_executions
                 GROUP BY quality
-            """)
+            """
+            )
             stats["quality_counts"] = dict(cursor.fetchall())
 
             # パターン数
@@ -763,7 +844,7 @@ async def demo_learning_collector():
         execution_time=2.5,
         status=ExecutionStatus.SUCCESS,
         output="OAuth2.0 authentication system implemented successfully",
-        feedback={"accuracy": 0.9, "usefulness": "high"}
+        feedback={"accuracy": 0.9, "usefulness": "high"},
     )
 
     print(f"\n📝 Recorded execution: {execution.execution_id}")

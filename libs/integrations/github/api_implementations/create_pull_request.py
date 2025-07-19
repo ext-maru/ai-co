@@ -187,9 +187,9 @@ class GitHubCreatePullRequestImplementation:
 
             return {
                 "success": True,
-                "pull_request": updated_pr["pull_request"]
-                if updated_pr["success"]
-                else pr,
+                "pull_request": (
+                    updated_pr["pull_request"] if updated_pr["success"] else pr
+                ),
                 "conflict_status": conflict_status,
                 "pr_url": pr["html_url"],
             }

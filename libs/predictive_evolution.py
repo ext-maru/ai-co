@@ -200,9 +200,7 @@ class FutureTrendAnalyzer:
                 direction = (
                     "increasing"
                     if slope > 0.01
-                    else "decreasing"
-                    if slope < -0.01
-                    else "stable"
+                    else "decreasing" if slope < -0.01 else "stable"
                 )
                 strength = abs(slope)
                 confidence = min(1.0, strength * 10)  # 簡易信頼度
@@ -249,9 +247,11 @@ class FutureTrendAnalyzer:
                         "timestamp": event["timestamp"],
                         "event_type": event["event_type"],
                         "impact_magnitude": abs(event["performance_change"]),
-                        "anomaly_type": "performance_spike"
-                        if event["performance_change"] > 0
-                        else "performance_drop",
+                        "anomaly_type": (
+                            "performance_spike"
+                            if event["performance_change"] > 0
+                            else "performance_drop"
+                        ),
                     }
                 )
 
@@ -353,7 +353,9 @@ class FutureTrendAnalyzer:
                             "throughput": base_throughput + throughput_growth,
                             "response_time": 150 + day * 0.5,  # 微増
                         },
-                        "confidence_score": max(0.5, 0.9 - day * 0.01),  # 時間と共に減少
+                        "confidence_score": max(
+                            0.5, 0.9 - day * 0.01
+                        ),  # 時間と共に減少
                     }
                 )
 
@@ -691,9 +693,9 @@ class EvolutionPredictor:
         advice = {
             "team_size_considerations": {
                 "current_team_size": team_size,
-                "recommended_scaling": "gradual"
-                if team_size < 10
-                else "parallel_teams",
+                "recommended_scaling": (
+                    "gradual" if team_size < 10 else "parallel_teams"
+                ),
                 "skill_development_priority": [
                     "cloud_technologies",
                     "microservices",
@@ -935,9 +937,9 @@ class EvolutionPredictor:
                     "milestone_id": step["step_id"],
                     "milestone_name": step["step_name"],
                     "target_date": milestone_date,
-                    "criticality": "high"
-                    if step["success_probability"] < 0.8
-                    else "medium",
+                    "criticality": (
+                        "high" if step["success_probability"] < 0.8 else "medium"
+                    ),
                     "dependencies": step["dependencies"],
                 }
             )
@@ -1618,9 +1620,9 @@ class PredictionValidator:
                         {
                             "prediction_id": pred_id,
                             "error_magnitude": avg_error,
-                            "error_direction": "overestimate"
-                            if avg_error > 0
-                            else "underestimate",
+                            "error_direction": (
+                                "overestimate" if avg_error > 0 else "underestimate"
+                            ),
                             "relative_error": avg_relative_error,
                             "metric_errors": metric_errors,
                         }
@@ -2057,11 +2059,11 @@ class RiskAssessment:
         return {
             "overall_stability_score": max(0, stability_score),
             "stability_concerns": concerns,
-            "stability_risk_level": "high"
-            if stability_score < 0.6
-            else "medium"
-            if stability_score < 0.8
-            else "low",
+            "stability_risk_level": (
+                "high"
+                if stability_score < 0.6
+                else "medium" if stability_score < 0.8 else "low"
+            ),
         }
 
     def _recommend_safeguards(
@@ -2782,9 +2784,9 @@ class PredictiveEvolutionSystem:
                     "step_number": i + 1,
                     "step_name": f"Evolution Step {i + 1}",
                     "duration_days": min(30, horizon - i * 30),
-                    "confidence": 0.9 - (i * 0.1)
-                    if uncertainty == "low"
-                    else 0.7 - (i * 0.1),
+                    "confidence": (
+                        0.9 - (i * 0.1) if uncertainty == "low" else 0.7 - (i * 0.1)
+                    ),
                     "key_changes": random.sample(drivers, min(2, len(drivers))),
                 }
             )
@@ -2840,9 +2842,11 @@ class PredictiveEvolutionSystem:
             },
             "cost_benefit_analysis": {
                 scenario["scenario_id"]: {
-                    "cost": sum(scenario["resource_requirements"].values())
-                    if scenario["resource_requirements"]
-                    else 0,
+                    "cost": (
+                        sum(scenario["resource_requirements"].values())
+                        if scenario["resource_requirements"]
+                        else 0
+                    ),
                     "benefit": scenario["predicted_outcomes"]["performance_improvement"]
                     * 10000,
                 }
@@ -2909,11 +2913,11 @@ class PredictiveEvolutionSystem:
 
         return {
             "roi_analysis": {
-                "average_roi": statistics.mean(
-                    [b / c for b, c in zip(benefits, costs) if c > 0]
-                )
-                if costs
-                else 0,
+                "average_roi": (
+                    statistics.mean([b / c for b, c in zip(benefits, costs) if c > 0])
+                    if costs
+                    else 0
+                ),
                 "best_roi_scenario": scenarios[0]["scenario_id"] if scenarios else None,
             },
             "payback_period": random.randint(3, 18),  # months
@@ -3078,9 +3082,9 @@ class PredictiveEvolutionSystem:
                     accuracy_scores.append(accuracy)
 
         return {
-            "overall_accuracy": statistics.mean(accuracy_scores)
-            if accuracy_scores
-            else 0.8,
+            "overall_accuracy": (
+                statistics.mean(accuracy_scores) if accuracy_scores else 0.8
+            ),
             "accuracy_by_prediction_type": {
                 "performance_degradation": random.uniform(0.7, 0.9),
                 "capacity_overflow": random.uniform(0.6, 0.85),
@@ -3164,9 +3168,9 @@ class PredictiveEvolutionSystem:
         return {
             "triggered_warnings": warnings,
             "warning_severity": "medium" if warnings else "low",
-            "recommended_actions": ["increase_monitoring", "model_recalibration"]
-            if warnings
-            else [],
+            "recommended_actions": (
+                ["increase_monitoring", "model_recalibration"] if warnings else []
+            ),
         }
 
     def _detect_model_drift(
@@ -3177,11 +3181,11 @@ class PredictiveEvolutionSystem:
 
         return {
             "drift_indicators": ["accuracy_degradation", "confidence_miscalibration"],
-            "drift_severity": "low"
-            if drift_score < 0.2
-            else "medium"
-            if drift_score < 0.3
-            else "high",
+            "drift_severity": (
+                "low"
+                if drift_score < 0.2
+                else "medium" if drift_score < 0.3 else "high"
+            ),
             "affected_predictions": random.sample(
                 [p["prediction_id"] for p in predictions], min(2, len(predictions))
             ),
@@ -3194,7 +3198,7 @@ class PredictiveEvolutionSystem:
         return {
             "model_updates_needed": drift_detection["drift_severity"] != "low",
             "parameter_adjustments": ["confidence_scaling", "bias_correction"],
-            "retraining_schedule": "weekly"
-            if drift_detection["drift_severity"] == "high"
-            else "monthly",
+            "retraining_schedule": (
+                "weekly" if drift_detection["drift_severity"] == "high" else "monthly"
+            ),
         }

@@ -98,7 +98,9 @@ class CoverageTrendMonitor:
 
     def get_trend_data(self, days: int = 30) -> pd.DataFrame:
         """Get coverage trend data for the specified number of days"""
-        cutoff_date = (datetime.datetime.now() - datetime.timedelta(days=days)).isoformat()
+        cutoff_date = (
+            datetime.datetime.now() - datetime.timedelta(days=days)
+        ).isoformat()
 
         with sqlite3.connect(self.db_path) as conn:
             df = pd.read_sql_query(
@@ -147,7 +149,11 @@ class CoverageTrendMonitor:
             "period_days": days,
             "latest_coverage": latest_coverage,
             "coverage_change": coverage_change,
-            "trend": "increasing" if coverage_change > 1 else "decreasing" if coverage_change < -1 else "stable",
+            "trend": (
+                "increasing"
+                if coverage_change > 1
+                else "decreasing" if coverage_change < -1 else "stable"
+            ),
             "volatility": volatility,
             "significant_drops": len(significant_drops),
             "data_points": len(df),
@@ -155,7 +161,9 @@ class CoverageTrendMonitor:
             "ma_14_latest": df["ma_14"].iloc[-1] if not df.empty else 0,
         }
 
-    def check_coverage_alerts(self, current_coverage: float, threshold: float = 66.7) -> List[Dict]:
+    def check_coverage_alerts(
+        self, current_coverage: float, threshold: float = 66.7
+    ) -> List[Dict]:
         """Check for coverage alerts and record them"""
         alerts = []
 
@@ -212,7 +220,9 @@ class CoverageTrendMonitor:
                 ),
             )
 
-    def generate_trend_chart(self, output_path: str = "reports/coverage_trend.png", days: int = 30) -> bool:
+    def generate_trend_chart(
+        self, output_path: str = "reports/coverage_trend.png", days: int = 30
+    ) -> bool:
         """Generate a coverage trend chart"""
         try:
             df = self.get_trend_data(days)
@@ -222,12 +232,30 @@ class CoverageTrendMonitor:
                 return False
 
             plt.figure(figsize=(12, 6))
-            plt.plot(df["timestamp"], df["total_coverage"], "b-", label="Total Coverage", linewidth=2)
+            plt.plot(
+                df["timestamp"],
+                df["total_coverage"],
+                "b-",
+                label="Total Coverage",
+                linewidth=2,
+            )
 
             if "unit_coverage" in df.columns:
-                plt.plot(df["timestamp"], df["unit_coverage"], "g--", label="Unit Tests", alpha=0.7)
+                plt.plot(
+                    df["timestamp"],
+                    df["unit_coverage"],
+                    "g--",
+                    label="Unit Tests",
+                    alpha=0.7,
+                )
             if "integration_coverage" in df.columns:
-                plt.plot(df["timestamp"], df["integration_coverage"], "r--", label="Integration Tests", alpha=0.7)
+                plt.plot(
+                    df["timestamp"],
+                    df["integration_coverage"],
+                    "r--",
+                    label="Integration Tests",
+                    alpha=0.7,
+                )
             if "generated_coverage" in df.columns:
                 plt.plot(
                     df["timestamp"],
@@ -239,7 +267,9 @@ class CoverageTrendMonitor:
                 )
 
             # Add 66.7% target line
-            plt.axhline(y=66.7, color="red", linestyle=":", alpha=0.5, label="Target (66.7%)")
+            plt.axhline(
+                y=66.7, color="red", linestyle=":", alpha=0.5, label="Target (66.7%)"
+            )
 
             plt.title(f"Coverage Trends - Last {days} Days")
             plt.xlabel("Date")
@@ -259,7 +289,9 @@ class CoverageTrendMonitor:
             print(f"Error generating trend chart: {e}")
             return False
 
-    def generate_report(self, output_path: str = "reports/coverage_trend_report.json") -> Dict:
+    def generate_report(
+        self, output_path: str = "reports/coverage_trend_report.json"
+    ) -> Dict:
         """Generate comprehensive coverage trend report"""
         analysis = self.analyze_trends()
 
@@ -279,7 +311,9 @@ class CoverageTrendMonitor:
         report = {
             "generated_at": datetime.datetime.now().isoformat(),
             "trend_analysis": analysis,
-            "recent_alerts": recent_alerts.to_dict("records") if not recent_alerts.empty else [],
+            "recent_alerts": (
+                recent_alerts.to_dict("records") if not recent_alerts.empty else []
+            ),
             "chart_generated": self.generate_trend_chart(),
             "recommendations": self._generate_recommendations(analysis),
         }
@@ -296,19 +330,27 @@ class CoverageTrendMonitor:
         recommendations = []
 
         if analysis.get("latest_coverage", 0) < 66.7:
-            recommendations.append("Coverage below 66.7% target - prioritize test generation")
+            recommendations.append(
+                "Coverage below 66.7% target - prioritize test generation"
+            )
 
         if analysis.get("trend") == "decreasing":
             recommendations.append("Coverage trending downward - review recent changes")
 
         if analysis.get("volatility", 0) > 10:
-            recommendations.append("High coverage volatility - stabilize test infrastructure")
+            recommendations.append(
+                "High coverage volatility - stabilize test infrastructure"
+            )
 
         if analysis.get("significant_drops", 0) > 0:
-            recommendations.append("Recent significant drops detected - investigate causes")
+            recommendations.append(
+                "Recent significant drops detected - investigate causes"
+            )
 
         if not recommendations:
-            recommendations.append("Coverage trends are healthy - maintain current practices")
+            recommendations.append(
+                "Coverage trends are healthy - maintain current practices"
+            )
 
         return recommendations
 
@@ -351,7 +393,9 @@ def main():
         output = args.output or "reports/coverage_trend_report.json"
         report = monitor.generate_report(output)
         print(f"📋 Trend report generated: {output}")
-        print(f"Latest coverage: {report['trend_analysis'].get('latest_coverage', 'N/A')}%")
+        print(
+            f"Latest coverage: {report['trend_analysis'].get('latest_coverage', 'N/A')}%"
+        )
 
 
 if __name__ == "__main__":

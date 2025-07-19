@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Any
 from enum import Enum
 from dataclasses import dataclass, asdict
+
 try:
     import semver
 except ImportError:
@@ -22,12 +23,13 @@ except ImportError:
     class semver:
         @staticmethod
         def parse(ver):
-            parts = ver.split('.')
+            parts = ver.split(".")
             return {
-                'major': int(parts[0]) if len(parts) > 0 else 0,
-                'minor': int(parts[1]) if len(parts) > 1 else 0,
-                'patch': int(parts[2]) if len(parts) > 2 else 0
+                "major": int(parts[0]) if len(parts) > 0 else 0,
+                "minor": int(parts[1]) if len(parts) > 1 else 0,
+                "patch": int(parts[2]) if len(parts) > 2 else 0,
             }
+
 
 try:
     import requests
@@ -37,6 +39,7 @@ except ImportError:
         @staticmethod
         def get(url, timeout=10):
             raise Exception("requests not available")
+
 
 try:
     from packaging import version
@@ -50,7 +53,7 @@ except ImportError:
     class SimpleVersion:
         def __init__(self, ver):
             self.version = ver
-            self.parts = [int(x) for x in ver.split('.')]
+            self.parts = [int(x) for x in ver.split(".")]
 
         def __gt__(self, other):
             return self.parts > other.parts
@@ -76,16 +79,18 @@ except ImportError:
 
 class UpdatePriority(Enum):
     """アップデート優先度 - nWo階層準拠"""
-    SECURITY_CRITICAL = "security_critical"    # 即座対応
-    NWO_STRATEGIC = "nwo_strategic"           # nWo戦略的重要度
-    ELDER_COUNCIL = "elder_council"           # エルダー評議会承認
-    COMPATIBILITY = "compatibility"           # 互換性維持
-    ENHANCEMENT = "enhancement"               # 機能強化
-    ROUTINE = "routine"                       # 定期メンテナンス
+
+    SECURITY_CRITICAL = "security_critical"  # 即座対応
+    NWO_STRATEGIC = "nwo_strategic"  # nWo戦略的重要度
+    ELDER_COUNCIL = "elder_council"  # エルダー評議会承認
+    COMPATIBILITY = "compatibility"  # 互換性維持
+    ENHANCEMENT = "enhancement"  # 機能強化
+    ROUTINE = "routine"  # 定期メンテナンス
 
 
 class UpdateStatus(Enum):
     """アップデート状況"""
+
     PENDING = "pending"
     TESTING = "testing"
     APPROVED = "approved"
@@ -97,6 +102,7 @@ class UpdateStatus(Enum):
 @dataclass
 class LibraryInfo:
     """ライブラリ情報"""
+
     name: str
     current_version: str
     latest_version: str
@@ -112,6 +118,7 @@ class LibraryInfo:
 @dataclass
 class UpdatePlan:
     """アップデート計画"""
+
     library: LibraryInfo
     scheduled_date: datetime
     test_requirements: List[str]
@@ -131,7 +138,7 @@ class nWoLibraryUpdateStrategy:
             "requirements.txt",
             "requirements-dev.txt",
             "pyproject.toml",
-            "setup.py"
+            "setup.py",
         ]
 
     def _setup_logger(self) -> logging.Logger:
@@ -157,7 +164,7 @@ class nWoLibraryUpdateStrategy:
                 "elder_council": "within_week",
                 "compatibility": "monthly",
                 "enhancement": "quarterly",
-                "routine": "biannual"
+                "routine": "biannual",
             },
             "test_requirements": {
                 "security_critical": ["security_scan", "smoke_test"],
@@ -165,27 +172,41 @@ class nWoLibraryUpdateStrategy:
                 "elder_council": ["full_test_suite", "elder_review"],
                 "compatibility": ["compatibility_test", "regression_test"],
                 "enhancement": ["feature_test", "performance_test"],
-                "routine": ["basic_test"]
+                "routine": ["basic_test"],
             },
             "auto_approve_thresholds": {
                 "patch_version": True,
                 "minor_version": False,
                 "major_version": False,
-                "security_patches": True
+                "security_patches": True,
             },
             "nwo_strategic_libraries": [
-                "fastapi", "sqlalchemy", "asyncio", "pydantic",
-                "pytest", "uvicorn", "redis", "celery",
-                "transformers", "torch", "numpy", "pandas"
+                "fastapi",
+                "sqlalchemy",
+                "asyncio",
+                "pydantic",
+                "pytest",
+                "uvicorn",
+                "redis",
+                "celery",
+                "transformers",
+                "torch",
+                "numpy",
+                "pandas",
             ],
             "elder_council_libraries": [
-                "django", "flask", "postgresql", "elasticsearch",
-                "kubernetes", "docker", "terraform"
-            ]
+                "django",
+                "flask",
+                "postgresql",
+                "elasticsearch",
+                "kubernetes",
+                "docker",
+                "terraform",
+            ],
         }
 
         if self.config_path.exists():
-            with open(self.config_path, 'r') as f:
+            with open(self.config_path, "r") as f:
                 config = json.load(f)
                 # デフォルト設定とマージ
                 for key, value in default_config.items():
@@ -222,22 +243,21 @@ class nWoLibraryUpdateStrategy:
         # pip freezeで現在のライブラリを取得
         try:
             result = subprocess.run(
-                ["pip", "freeze"],
-                capture_output=True,
-                text=True,
-                check=True
+                ["pip", "freeze"], capture_output=True, text=True, check=True
             )
 
-            for line in result.stdout.strip().split('\n'):
-                if '==' in line:
-                    name, version = line.split('==')
+            for line in result.stdout.strip().split("\n"):
+                if "==" in line:
+                    name, version = line.split("==")
                     libraries[name.lower()] = version
         except subprocess.CalledProcessError as e:
             self.logger.error(f"pip freeze 失敗: {e}")
 
         return libraries
 
-    async def _analyze_single_library(self, lib_name: str, current_version: str) -> LibraryInfo:
+    async def _analyze_single_library(
+        self, lib_name: str, current_version: str
+    ) -> LibraryInfo:
         """単一ライブラリ分析"""
         # PyPI APIから最新バージョン取得
         latest_version = await self._get_latest_version(lib_name)
@@ -246,10 +266,14 @@ class nWoLibraryUpdateStrategy:
         update_available = self._is_update_available(current_version, latest_version)
 
         # セキュリティアップデートかチェック
-        security_update = await self._is_security_update(lib_name, current_version, latest_version)
+        security_update = await self._is_security_update(
+            lib_name, current_version, latest_version
+        )
 
         # 優先度決定
-        priority = self._determine_priority(lib_name, security_update, current_version, latest_version)
+        priority = self._determine_priority(
+            lib_name, security_update, current_version, latest_version
+        )
 
         # 依存関係取得
         dependencies = await self._get_dependencies(lib_name)
@@ -271,16 +295,18 @@ class nWoLibraryUpdateStrategy:
             dependencies=dependencies,
             breaking_changes=breaking_changes,
             changelog_url=changelog_url,
-            update_notes=update_notes
+            update_notes=update_notes,
         )
 
     async def _get_latest_version(self, lib_name: str) -> str:
         """最新バージョン取得"""
         try:
-            response = requests.get(f"https://pypi.org/pypi/{lib_name}/json", timeout=10)
+            response = requests.get(
+                f"https://pypi.org/pypi/{lib_name}/json", timeout=10
+            )
             response.raise_for_status()
             data = response.json()
-            return data['info']['version']
+            return data["info"]["version"]
         except Exception as e:
             self.logger.warning(f"⚠️ {lib_name} 最新バージョン取得失敗: {e}")
             return "unknown"
@@ -292,7 +318,9 @@ class nWoLibraryUpdateStrategy:
         except Exception:
             return False
 
-    async def _is_security_update(self, lib_name: str, current: str, latest: str) -> bool:
+    async def _is_security_update(
+        self, lib_name: str, current: str, latest: str
+    ) -> bool:
         """セキュリティアップデートかチェック"""
         # 簡易実装 - 実際はセキュリティデータベースと連携
         security_keywords = ["security", "vulnerability", "cve", "exploit"]
@@ -303,7 +331,9 @@ class nWoLibraryUpdateStrategy:
         except Exception:
             return False
 
-    def _determine_priority(self, lib_name: str, security_update: bool, current: str, latest: str) -> UpdatePriority:
+    def _determine_priority(
+        self, lib_name: str, security_update: bool, current: str, latest: str
+    ) -> UpdatePriority:
         """優先度決定"""
         if security_update:
             return UpdatePriority.SECURITY_CRITICAL
@@ -331,11 +361,13 @@ class nWoLibraryUpdateStrategy:
     async def _get_dependencies(self, lib_name: str) -> List[str]:
         """依存関係取得"""
         try:
-            response = requests.get(f"https://pypi.org/pypi/{lib_name}/json", timeout=10)
+            response = requests.get(
+                f"https://pypi.org/pypi/{lib_name}/json", timeout=10
+            )
             response.raise_for_status()
             data = response.json()
 
-            requires_dist = data['info'].get('requires_dist', [])
+            requires_dist = data["info"].get("requires_dist", [])
             if requires_dist:
                 return [dep.split()[0] for dep in requires_dist if dep]
             return []
@@ -354,14 +386,18 @@ class nWoLibraryUpdateStrategy:
     async def _get_update_notes(self, lib_name: str, version: str) -> str:
         """アップデート情報取得"""
         try:
-            response = requests.get(f"https://pypi.org/pypi/{lib_name}/json", timeout=10)
+            response = requests.get(
+                f"https://pypi.org/pypi/{lib_name}/json", timeout=10
+            )
             response.raise_for_status()
             data = response.json()
-            return data['info'].get('description', '')[:500]  # 最初の500文字
+            return data["info"].get("description", "")[:500]  # 最初の500文字
         except Exception:
             return "更新情報の取得に失敗しました"
 
-    async def create_update_plan(self, libraries: List[LibraryInfo]) -> List[UpdatePlan]:
+    async def create_update_plan(
+        self, libraries: List[LibraryInfo]
+    ) -> List[UpdatePlan]:
         """アップデート計画作成"""
         self.logger.info("📋 アップデート計画作成開始")
 
@@ -392,13 +428,15 @@ class nWoLibraryUpdateStrategy:
                 test_requirements=test_requirements,
                 rollback_plan=rollback_plan,
                 approval_required=approval_required,
-                nwo_impact_score=nwo_impact_score
+                nwo_impact_score=nwo_impact_score,
             )
 
             plans.append(plan)
 
         # 優先度順でソート
-        plans.sort(key=lambda x: (x.library.priority.value, x.nwo_impact_score), reverse=True)
+        plans.sort(
+            key=lambda x: (x.library.priority.value, x.nwo_impact_score), reverse=True
+        )
 
         self.logger.info(f"✅ {len(plans)} 件のアップデート計画作成完了")
         return plans
@@ -413,7 +451,7 @@ class nWoLibraryUpdateStrategy:
             UpdatePriority.ELDER_COUNCIL: now + timedelta(days=7),  # 1週間以内
             UpdatePriority.COMPATIBILITY: now + timedelta(days=30),  # 1ヶ月以内
             UpdatePriority.ENHANCEMENT: now + timedelta(days=90),  # 3ヶ月以内
-            UpdatePriority.ROUTINE: now + timedelta(days=180)  # 6ヶ月以内
+            UpdatePriority.ROUTINE: now + timedelta(days=180),  # 6ヶ月以内
         }
 
         return schedule_map.get(priority, now + timedelta(days=30))
@@ -453,7 +491,7 @@ class nWoLibraryUpdateStrategy:
             UpdatePriority.ELDER_COUNCIL: 60,
             UpdatePriority.COMPATIBILITY: 40,
             UpdatePriority.ENHANCEMENT: 20,
-            UpdatePriority.ROUTINE: 10
+            UpdatePriority.ROUTINE: 10,
         }
 
         score += priority_scores.get(lib.priority, 0)
@@ -481,7 +519,7 @@ class nWoLibraryUpdateStrategy:
             "succeeded": 0,
             "failed": 0,
             "skipped": 0,
-            "details": []
+            "details": [],
         }
 
         for plan in plans:
@@ -500,13 +538,13 @@ class nWoLibraryUpdateStrategy:
             except Exception as e:
                 self.logger.error(f"❌ {plan.library.name} アップデート失敗: {e}")
                 results["failed"] += 1
-                results["details"].append({
-                    "library": plan.library.name,
-                    "status": "failed",
-                    "error": str(e)
-                })
+                results["details"].append(
+                    {"library": plan.library.name, "status": "failed", "error": str(e)}
+                )
 
-        self.logger.info(f"✅ アップデート実行完了: {results['succeeded']} 成功, {results['failed']} 失敗")
+        self.logger.info(
+            f"✅ アップデート実行完了: {results['succeeded']} 成功, {results['failed']} 失敗"
+        )
         return results
 
     async def _execute_single_update(self, plan: UpdatePlan) -> Dict[str, Any]:
@@ -519,7 +557,7 @@ class nWoLibraryUpdateStrategy:
             return {
                 "library": lib.name,
                 "status": "pending_approval",
-                "message": "Elder Council approval required"
+                "message": "Elder Council approval required",
             }
 
         # 即座実行でない場合はスケジュール確認
@@ -528,19 +566,21 @@ class nWoLibraryUpdateStrategy:
             return {
                 "library": lib.name,
                 "status": "scheduled",
-                "scheduled_date": plan.scheduled_date.isoformat()
+                "scheduled_date": plan.scheduled_date.isoformat(),
             }
 
         try:
             # アップデート実行
-            self.logger.info(f"🔄 {lib.name} アップデート実行: {lib.current_version} → {lib.latest_version}")
+            self.logger.info(
+                f"🔄 {lib.name} アップデート実行: {lib.current_version} → {lib.latest_version}"
+            )
 
             # pip install
             result = subprocess.run(
                 ["pip", "install", f"{lib.name}=={lib.latest_version}"],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
 
             # テスト実行
@@ -554,7 +594,7 @@ class nWoLibraryUpdateStrategy:
                     "library": lib.name,
                     "status": "failed",
                     "reason": "test_failed",
-                    "test_results": test_results
+                    "test_results": test_results,
                 }
 
             self.logger.info(f"✅ {lib.name} アップデート成功")
@@ -563,7 +603,7 @@ class nWoLibraryUpdateStrategy:
                 "status": "success",
                 "old_version": lib.current_version,
                 "new_version": lib.latest_version,
-                "test_results": test_results
+                "test_results": test_results,
             }
 
         except subprocess.CalledProcessError as e:
@@ -572,33 +612,38 @@ class nWoLibraryUpdateStrategy:
                 "library": lib.name,
                 "status": "failed",
                 "reason": "install_failed",
-                "error": str(e)
+                "error": str(e),
             }
 
     async def _run_tests(self, test_requirements: List[str]) -> Dict[str, Any]:
         """テスト実行"""
-        test_results = {
-            "passed": True,
-            "details": {}
-        }
+        test_results = {"passed": True, "details": {}}
 
         for test_type in test_requirements:
             try:
                 if test_type == "unit_test":
-                    result = subprocess.run(["pytest", "tests/unit/"], capture_output=True, text=True)
+                    result = subprocess.run(
+                        ["pytest", "tests/unit/"], capture_output=True, text=True
+                    )
                 elif test_type == "integration_test":
-                    result = subprocess.run(["pytest", "tests/integration/"], capture_output=True, text=True)
+                    result = subprocess.run(
+                        ["pytest", "tests/integration/"], capture_output=True, text=True
+                    )
                 elif test_type == "security_scan":
-                    result = subprocess.run(["safety", "check"], capture_output=True, text=True)
+                    result = subprocess.run(
+                        ["safety", "check"], capture_output=True, text=True
+                    )
                 elif test_type == "smoke_test":
-                    result = subprocess.run(["python", "-m", "smoke_test"], capture_output=True, text=True)
+                    result = subprocess.run(
+                        ["python", "-m", "smoke_test"], capture_output=True, text=True
+                    )
                 else:
                     continue
 
                 test_results["details"][test_type] = {
                     "passed": result.returncode == 0,
                     "output": result.stdout,
-                    "error": result.stderr
+                    "error": result.stderr,
                 }
 
                 if result.returncode != 0:
@@ -606,10 +651,7 @@ class nWoLibraryUpdateStrategy:
 
             except Exception as e:
                 test_results["passed"] = False
-                test_results["details"][test_type] = {
-                    "passed": False,
-                    "error": str(e)
-                }
+                test_results["details"][test_type] = {"passed": False, "error": str(e)}
 
         return test_results
 
@@ -620,13 +662,15 @@ class nWoLibraryUpdateStrategy:
                 ["pip", "install", f"{lib.name}=={lib.current_version}"],
                 capture_output=True,
                 text=True,
-                check=True
+                check=True,
             )
             self.logger.info(f"🔄 {lib.name} ロールバック完了")
         except subprocess.CalledProcessError as e:
             self.logger.error(f"❌ {lib.name} ロールバック失敗: {e}")
 
-    async def generate_update_report(self, libraries: List[LibraryInfo], plans: List[UpdatePlan]) -> str:
+    async def generate_update_report(
+        self, libraries: List[LibraryInfo], plans: List[UpdatePlan]
+    ) -> str:
         """アップデートレポート生成"""
         report = f"""
 # nWo Library Update Strategy Report
@@ -642,25 +686,37 @@ class nWoLibraryUpdateStrategy:
 ### 🚨 Security Critical Updates
 """
 
-        security_updates = [lib for lib in libraries if lib.priority == UpdatePriority.SECURITY_CRITICAL]
+        security_updates = [
+            lib for lib in libraries if lib.priority == UpdatePriority.SECURITY_CRITICAL
+        ]
         for lib in security_updates:
-            report += f"- **{lib.name}**: {lib.current_version} → {lib.latest_version}\n"
+            report += (
+                f"- **{lib.name}**: {lib.current_version} → {lib.latest_version}\n"
+            )
 
         report += f"""
 ### 🎯 nWo Strategic Updates
 """
 
-        nwo_updates = [lib for lib in libraries if lib.priority == UpdatePriority.NWO_STRATEGIC]
+        nwo_updates = [
+            lib for lib in libraries if lib.priority == UpdatePriority.NWO_STRATEGIC
+        ]
         for lib in nwo_updates:
-            report += f"- **{lib.name}**: {lib.current_version} → {lib.latest_version}\n"
+            report += (
+                f"- **{lib.name}**: {lib.current_version} → {lib.latest_version}\n"
+            )
 
         report += f"""
 ### 🏛️ Elder Council Updates
 """
 
-        elder_updates = [lib for lib in libraries if lib.priority == UpdatePriority.ELDER_COUNCIL]
+        elder_updates = [
+            lib for lib in libraries if lib.priority == UpdatePriority.ELDER_COUNCIL
+        ]
         for lib in elder_updates:
-            report += f"- **{lib.name}**: {lib.current_version} → {lib.latest_version}\n"
+            report += (
+                f"- **{lib.name}**: {lib.current_version} → {lib.latest_version}\n"
+            )
 
         report += f"""
 ### 📋 Update Plans
@@ -702,7 +758,7 @@ class nWoLibraryUpdateStrategy:
             report_path = f"knowledge_base/nwo_reports/library_update_{timestamp}.md"
             Path(report_path).parent.mkdir(parents=True, exist_ok=True)
 
-            with open(report_path, 'w') as f:
+            with open(report_path, "w") as f:
                 f.write(report)
 
             self.logger.info(f"📄 レポート保存: {report_path}")
@@ -712,7 +768,7 @@ class nWoLibraryUpdateStrategy:
                 "plans_created": len(plans),
                 "immediate_executions": len(immediate_plans),
                 "execution_results": execution_results,
-                "report_path": report_path
+                "report_path": report_path,
             }
 
         except Exception as e:
@@ -734,7 +790,7 @@ async def main():
     print(f"⚡ Immediate Executions: {results['immediate_executions']}")
     print(f"📄 Report: {results['report_path']}")
 
-    execution_results = results['execution_results']
+    execution_results = results["execution_results"]
     print(f"✅ Succeeded: {execution_results['succeeded']}")
     print(f"❌ Failed: {execution_results['failed']}")
     print(f"⏭️ Skipped: {execution_results['skipped']}")

@@ -31,11 +31,31 @@ class ElderCouncilSession:
         print("=" * 60)
 
         council_members = {
-            "grand_elder": {"name": "グランドエルダーmaru", "role": "最高決定権者", "status": "承認待機"},
-            "claude_elder": {"name": "クロードエルダー", "role": "実行責任者", "status": "提案者"},
-            "knowledge_sage": {"name": "ナレッジ賢者", "role": "知識管理", "status": "分析完了"},
-            "task_oracle": {"name": "タスク賢者", "role": "効率管理", "status": "分析完了"},
-            "incident_sage": {"name": "インシデント賢者", "role": "リスク管理", "status": "分析完了"},
+            "grand_elder": {
+                "name": "グランドエルダーmaru",
+                "role": "最高決定権者",
+                "status": "承認待機",
+            },
+            "claude_elder": {
+                "name": "クロードエルダー",
+                "role": "実行責任者",
+                "status": "提案者",
+            },
+            "knowledge_sage": {
+                "name": "ナレッジ賢者",
+                "role": "知識管理",
+                "status": "分析完了",
+            },
+            "task_oracle": {
+                "name": "タスク賢者",
+                "role": "効率管理",
+                "status": "分析完了",
+            },
+            "incident_sage": {
+                "name": "インシデント賢者",
+                "role": "リスク管理",
+                "status": "分析完了",
+            },
             "rag_sage": {"name": "RAG賢者", "role": "情報探索", "status": "分析完了"},
         }
 
@@ -72,7 +92,12 @@ class ElderCouncilSession:
                     "tier2_category": "ai <category> <action> 形式",
                     "tier3_advanced": ["ai find", "ai interactive", "ai workflow"],
                 },
-                "benefits": ["コマンド数30%削減", "学習時間50%短縮", "発見率80%向上", "エラー率40%削減"],
+                "benefits": [
+                    "コマンド数30%削減",
+                    "学習時間50%短縮",
+                    "発見率80%向上",
+                    "エラー率40%削減",
+                ],
             },
             "phases": {
                 "phase1": {
@@ -120,12 +145,19 @@ class ElderCouncilSession:
             "task_oracle": {
                 "opinion": "承認推奨",
                 "reasoning": "効率性の大幅改善が期待できる",
-                "conditions": ["ワークフロー最適化の優先実装", "パフォーマンス指標の継続監視"],
+                "conditions": [
+                    "ワークフロー最適化の優先実装",
+                    "パフォーマンス指標の継続監視",
+                ],
             },
             "incident_sage": {
                 "opinion": "条件付き承認",
                 "reasoning": "リスクは管理可能だが慎重な実装が必要",
-                "conditions": ["段階的移行の厳格な実施", "ロールバック計画の準備", "各フェーズでのテスト徹底"],
+                "conditions": [
+                    "段階的移行の厳格な実施",
+                    "ロールバック計画の準備",
+                    "各フェーズでのテスト徹底",
+                ],
             },
             "rag_sage": {
                 "opinion": "承認推奨",
@@ -164,7 +196,9 @@ class ElderCouncilSession:
             "council_id": self.council_id,
             "date": self.timestamp.isoformat(),
             "votes": votes,
-            "decision": "承認" if votes["approve"] + votes["conditional"] > 2 else "否決",
+            "decision": (
+                "承認" if votes["approve"] + votes["conditional"] > 2 else "否決"
+            ),
             "conditions": [],
             "immediate_actions": [],
         }

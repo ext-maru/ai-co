@@ -55,7 +55,9 @@ def delete_expired_projects():
             if os.path.exists(project_path):
                 try:
                     shutil.rmtree(project_path)
-                    logging.info(f"削除完了: {project['name']} (理由: {project['reason']})")
+                    logging.info(
+                        f"削除完了: {project['name']} (理由: {project['reason']})"
+                    )
 
                     # ナレッジベースに記録
                     record_deletion(project)

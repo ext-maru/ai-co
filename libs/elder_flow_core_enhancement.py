@@ -21,15 +21,17 @@ import subprocess
 
 class FlowPhase(Enum):
     """Elder Flowフェーズ"""
-    SAGE_CONSULTATION = "sage_consultation"    # 4賢者相談
-    SERVANT_EXECUTION = "servant_execution"    # サーバント実行
-    QUALITY_GATE = "quality_gate"              # 品質ゲート
-    COUNCIL_REPORT = "council_report"          # 評議会報告
-    GIT_AUTOMATION = "git_automation"          # Git自動化
+
+    SAGE_CONSULTATION = "sage_consultation"  # 4賢者相談
+    SERVANT_EXECUTION = "servant_execution"  # サーバント実行
+    QUALITY_GATE = "quality_gate"  # 品質ゲート
+    COUNCIL_REPORT = "council_report"  # 評議会報告
+    GIT_AUTOMATION = "git_automation"  # Git自動化
 
 
 class FlowStatus(Enum):
     """フロー状態"""
+
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -40,6 +42,7 @@ class FlowStatus(Enum):
 @dataclass
 class FlowExecution:
     """フロー実行記録"""
+
     execution_id: str
     task_name: str
     priority: str
@@ -84,7 +87,7 @@ class ElderFlowCoreEnhancement:
 
         # ファイルハンドラ
         self.flow_log.parent.mkdir(parents=True, exist_ok=True)
-        file_handler = logging.FileHandler(self.flow_log, mode='a')
+        file_handler = logging.FileHandler(self.flow_log, mode="a")
         file_handler.setFormatter(console_formatter)
         logger.addHandler(file_handler)
 
@@ -98,7 +101,8 @@ class ElderFlowCoreEnhancement:
         cursor = conn.cursor()
 
         # フロー実行テーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS flow_executions (
                 execution_id TEXT PRIMARY KEY,
                 task_name TEXT NOT NULL,
@@ -118,10 +122,12 @@ class ElderFlowCoreEnhancement:
                 metadata TEXT,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP
             )
-        """)
+        """
+        )
 
         # フェーズ履歴テーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS phase_history (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 execution_id TEXT NOT NULL,
@@ -132,10 +138,12 @@ class ElderFlowCoreEnhancement:
                 details TEXT,
                 FOREIGN KEY (execution_id) REFERENCES flow_executions(execution_id)
             )
-        """)
+        """
+        )
 
         # 品質メトリクステーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS quality_metrics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 execution_id TEXT NOT NULL,
@@ -146,10 +154,12 @@ class ElderFlowCoreEnhancement:
                 recorded_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 FOREIGN KEY (execution_id) REFERENCES flow_executions(execution_id)
             )
-        """)
+        """
+        )
 
         # 違反記録テーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS violation_records (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 execution_id TEXT NOT NULL,
@@ -163,7 +173,8 @@ class ElderFlowCoreEnhancement:
                 fixed_at TEXT,
                 FOREIGN KEY (execution_id) REFERENCES flow_executions(execution_id)
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
@@ -181,14 +192,12 @@ class ElderFlowCoreEnhancement:
                 "total_violations_found": 0,
                 "total_violations_fixed": 0,
                 "average_execution_time": 0.0,
-                "phase_success_rates": {
-                    phase.value: 0.0 for phase in FlowPhase
-                },
-                "last_updated": datetime.now().isoformat()
+                "phase_success_rates": {phase.value: 0.0 for phase in FlowPhase},
+                "last_updated": datetime.now().isoformat(),
             }
 
             self.metrics_file.parent.mkdir(parents=True, exist_ok=True)
-            with open(self.metrics_file, 'w') as f:
+            with open(self.metrics_file, "w") as f:
                 json.dump(initial_metrics, f, indent=2)
 
     def generate_execution_id(self, task_name: str) -> str:
@@ -198,7 +207,9 @@ class ElderFlowCoreEnhancement:
         hash_value = hashlib.md5(hash_input).hexdigest()[:8]
         return f"EF_{timestamp}_{hash_value}"
 
-    async def start_flow_execution(self, task_name: str, priority: str = "normal") -> str:
+    async def start_flow_execution(
+        self, task_name: str, priority: str = "normal"
+    ) -> str:
         """フロー実行開始"""
         execution_id = self.generate_execution_id(task_name)
 
@@ -221,7 +232,7 @@ class ElderFlowCoreEnhancement:
             servant_results=[],
             git_commits=[],
             error_log=[],
-            metadata={"priority": priority}
+            metadata={"priority": priority},
         )
 
         # データベース記録
@@ -234,31 +245,39 @@ class ElderFlowCoreEnhancement:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO flow_executions (
                 execution_id, task_name, priority, phase, status,
                 start_time, sage_recommendations, servant_results,
                 git_commits, error_log, metadata
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (
-            execution.execution_id,
-            execution.task_name,
-            execution.priority,
-            execution.phase.value,
-            execution.status.value,
-            execution.start_time.isoformat(),
-            json.dumps(execution.sage_recommendations),
-            json.dumps(execution.servant_results),
-            json.dumps(execution.git_commits),
-            json.dumps(execution.error_log),
-            json.dumps(execution.metadata)
-        ))
+        """,
+            (
+                execution.execution_id,
+                execution.task_name,
+                execution.priority,
+                execution.phase.value,
+                execution.status.value,
+                execution.start_time.isoformat(),
+                json.dumps(execution.sage_recommendations),
+                json.dumps(execution.servant_results),
+                json.dumps(execution.git_commits),
+                json.dumps(execution.error_log),
+                json.dumps(execution.metadata),
+            ),
+        )
 
         conn.commit()
         conn.close()
 
-    async def record_phase_transition(self, execution_id: str, from_phase: FlowPhase,
-                                    to_phase: FlowPhase, details: Dict[str, Any] = None):
+    async def record_phase_transition(
+        self,
+        execution_id: str,
+        from_phase: FlowPhase,
+        to_phase: FlowPhase,
+        details: Dict[str, Any] = None,
+    ):
         """フェーズ遷移記録"""
         self.logger.info(f"🔄 フェーズ遷移: {from_phase.value} → {to_phase.value}")
 
@@ -266,36 +285,46 @@ class ElderFlowCoreEnhancement:
         cursor = conn.cursor()
 
         # 前フェーズ終了
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE phase_history
             SET end_time = ?, status = 'completed'
             WHERE execution_id = ? AND phase = ? AND end_time IS NULL
-        """, (datetime.now().isoformat(), execution_id, from_phase.value))
+        """,
+            (datetime.now().isoformat(), execution_id, from_phase.value),
+        )
 
         # 新フェーズ開始
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO phase_history (execution_id, phase, status, start_time, details)
             VALUES (?, ?, ?, ?, ?)
-        """, (
-            execution_id,
-            to_phase.value,
-            FlowStatus.IN_PROGRESS.value,
-            datetime.now().isoformat(),
-            json.dumps(details) if details else None
-        ))
+        """,
+            (
+                execution_id,
+                to_phase.value,
+                FlowStatus.IN_PROGRESS.value,
+                datetime.now().isoformat(),
+                json.dumps(details) if details else None,
+            ),
+        )
 
         # メイン実行記録更新
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE flow_executions
             SET phase = ?
             WHERE execution_id = ?
-        """, (to_phase.value, execution_id))
+        """,
+            (to_phase.value, execution_id),
+        )
 
         conn.commit()
         conn.close()
 
-    async def record_sage_recommendation(self, execution_id: str, sage_name: str,
-                                       recommendation: Dict[str, Any]):
+    async def record_sage_recommendation(
+        self, execution_id: str, sage_name: str, recommendation: Dict[str, Any]
+    ):
         """賢者推奨記録"""
         self.logger.info(f"🧙‍♂️ {sage_name}からの推奨記録")
 
@@ -303,100 +332,142 @@ class ElderFlowCoreEnhancement:
         cursor = conn.cursor()
 
         # 現在の推奨を取得
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT sage_recommendations FROM flow_executions
             WHERE execution_id = ?
-        """, (execution_id,))
+        """,
+            (execution_id,),
+        )
 
         result = cursor.fetchone()
         if result:
             recommendations = json.loads(result[0]) if result[0] else []
-            recommendations.append({
-                "sage": sage_name,
-                "recommendation": recommendation,
-                "timestamp": datetime.now().isoformat()
-            })
+            recommendations.append(
+                {
+                    "sage": sage_name,
+                    "recommendation": recommendation,
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE flow_executions
                 SET sage_recommendations = ?
                 WHERE execution_id = ?
-            """, (json.dumps(recommendations), execution_id))
+            """,
+                (json.dumps(recommendations), execution_id),
+            )
 
             conn.commit()
 
         conn.close()
 
-    async def record_violation(self, execution_id: str, violation_type: str,
-                             severity: str, location: str, description: str):
+    async def record_violation(
+        self,
+        execution_id: str,
+        violation_type: str,
+        severity: str,
+        location: str,
+        description: str,
+    ):
         """違反記録"""
         self.logger.warning(f"⚠️ 違反検出: {violation_type} ({severity})")
 
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO violation_records (
                 execution_id, violation_type, severity, location, description
             ) VALUES (?, ?, ?, ?, ?)
-        """, (execution_id, violation_type, severity, location, description))
+        """,
+            (execution_id, violation_type, severity, location, description),
+        )
 
         # 違反数更新
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE flow_executions
             SET violations_found = violations_found + 1
             WHERE execution_id = ?
-        """, (execution_id,))
+        """,
+            (execution_id,),
+        )
 
         conn.commit()
         conn.close()
 
-    async def record_violation_fix(self, execution_id: str, violation_id: int,
-                                 fix_details: str):
+    async def record_violation_fix(
+        self, execution_id: str, violation_id: int, fix_details: str
+    ):
         """違反修正記録"""
         self.logger.info(f"✅ 違反修正: ID {violation_id}")
 
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE violation_records
             SET fixed = TRUE, fix_details = ?, fixed_at = ?
             WHERE id = ? AND execution_id = ?
-        """, (fix_details, datetime.now().isoformat(), violation_id, execution_id))
+        """,
+            (fix_details, datetime.now().isoformat(), violation_id, execution_id),
+        )
 
         # 修正数更新
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE flow_executions
             SET violations_fixed = violations_fixed + 1
             WHERE execution_id = ?
-        """, (execution_id,))
+        """,
+            (execution_id,),
+        )
 
         conn.commit()
         conn.close()
 
-    async def record_quality_metric(self, execution_id: str, metric_name: str,
-                                  metric_value: float, threshold: float = None):
+    async def record_quality_metric(
+        self,
+        execution_id: str,
+        metric_name: str,
+        metric_value: float,
+        threshold: float = None,
+    ):
         """品質メトリクス記録"""
         passed = metric_value >= threshold if threshold else True
 
-        self.logger.info(f"📊 品質メトリクス: {metric_name} = {metric_value} "
-                        f"({'PASS' if passed else 'FAIL'})")
+        self.logger.info(
+            f"📊 品質メトリクス: {metric_name} = {metric_value} "
+            f"({'PASS' if passed else 'FAIL'})"
+        )
 
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             INSERT INTO quality_metrics (
                 execution_id, metric_name, metric_value, threshold, passed
             ) VALUES (?, ?, ?, ?, ?)
-        """, (execution_id, metric_name, metric_value, threshold, passed))
+        """,
+            (execution_id, metric_name, metric_value, threshold, passed),
+        )
 
         conn.commit()
         conn.close()
 
-    async def complete_flow_execution(self, execution_id: str, status: FlowStatus,
-                                    quality_score: float, git_commits: List[str] = None):
+    async def complete_flow_execution(
+        self,
+        execution_id: str,
+        status: FlowStatus,
+        quality_score: float,
+        git_commits: List[str] = None,
+    ):
         """フロー実行完了"""
         end_time = datetime.now()
 
@@ -406,29 +477,35 @@ class ElderFlowCoreEnhancement:
         cursor = conn.cursor()
 
         # 開始時刻取得
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT start_time FROM flow_executions
             WHERE execution_id = ?
-        """, (execution_id,))
+        """,
+            (execution_id,),
+        )
 
         result = cursor.fetchone()
         if result:
             start_time = datetime.fromisoformat(result[0])
             duration = (end_time - start_time).total_seconds()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE flow_executions
                 SET status = ?, end_time = ?, duration_seconds = ?,
                     quality_score = ?, git_commits = ?
                 WHERE execution_id = ?
-            """, (
-                status.value,
-                end_time.isoformat(),
-                duration,
-                quality_score,
-                json.dumps(git_commits) if git_commits else None,
-                execution_id
-            ))
+            """,
+                (
+                    status.value,
+                    end_time.isoformat(),
+                    duration,
+                    quality_score,
+                    json.dumps(git_commits) if git_commits else None,
+                    execution_id,
+                ),
+            )
 
             conn.commit()
 
@@ -443,7 +520,8 @@ class ElderFlowCoreEnhancement:
         cursor = conn.cursor()
 
         # 統計取得
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT
                 COUNT(*) as total,
                 SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as successful,
@@ -454,7 +532,8 @@ class ElderFlowCoreEnhancement:
                 AVG(duration_seconds) as avg_duration
             FROM flow_executions
             WHERE end_time IS NOT NULL
-        """)
+        """
+        )
 
         stats = cursor.fetchone()
 
@@ -467,11 +546,13 @@ class ElderFlowCoreEnhancement:
                 "total_violations_found": stats[4] or 0,
                 "total_violations_fixed": stats[5] or 0,
                 "average_execution_time": round(stats[6] or 0, 2),
-                "phase_success_rates": await self._calculate_phase_success_rates(cursor),
-                "last_updated": datetime.now().isoformat()
+                "phase_success_rates": await self._calculate_phase_success_rates(
+                    cursor
+                ),
+                "last_updated": datetime.now().isoformat(),
             }
 
-            with open(self.metrics_file, 'w') as f:
+            with open(self.metrics_file, "w") as f:
                 json.dump(metrics, f, indent=2)
 
         conn.close()
@@ -481,13 +562,16 @@ class ElderFlowCoreEnhancement:
         rates = {}
 
         for phase in FlowPhase:
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT
                     COUNT(*) as total,
                     SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as successful
                 FROM phase_history
                 WHERE phase = ?
-            """, (phase.value,))
+            """,
+                (phase.value,),
+            )
 
             result = cursor.fetchone()
             if result and result[0] > 0:
@@ -503,40 +587,52 @@ class ElderFlowCoreEnhancement:
         cursor = conn.cursor()
 
         # 実行情報取得
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM flow_executions
             WHERE execution_id = ?
-        """, (execution_id,))
+        """,
+            (execution_id,),
+        )
 
         execution = cursor.fetchone()
         if not execution:
             return "実行記録が見つかりません"
 
         # フェーズ履歴取得
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT phase, status, start_time, end_time
             FROM phase_history
             WHERE execution_id = ?
             ORDER BY start_time
-        """, (execution_id,))
+        """,
+            (execution_id,),
+        )
 
         phases = cursor.fetchall()
 
         # 違反記録取得
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT violation_type, severity, fixed
             FROM violation_records
             WHERE execution_id = ?
-        """, (execution_id,))
+        """,
+            (execution_id,),
+        )
 
         violations = cursor.fetchall()
 
         # 品質メトリクス取得
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT metric_name, metric_value, threshold, passed
             FROM quality_metrics
             WHERE execution_id = ?
-        """, (execution_id,))
+        """,
+            (execution_id,),
+        )
 
         metrics = cursor.fetchall()
 
@@ -560,7 +656,9 @@ class ElderFlowCoreEnhancement:
 """
 
         for phase in phases:
-            report += f"- **{phase[0]}**: {phase[1]} ({phase[2]} → {phase[3] or '進行中'})\n"
+            report += (
+                f"- **{phase[0]}**: {phase[1]} ({phase[2]} → {phase[3] or '進行中'})\n"
+            )
 
         report += f"""
 ### ⚠️ 違反記録
@@ -578,7 +676,9 @@ class ElderFlowCoreEnhancement:
 
         for metric in metrics:
             status = "✅" if metric[3] else "❌"
-            report += f"- **{metric[0]}**: {metric[1]} / {metric[2] or 'N/A'} {status}\n"
+            report += (
+                f"- **{metric[0]}**: {metric[1]} / {metric[2] or 'N/A'} {status}\n"
+            )
 
         # 賢者推奨
         if execution[11]:
@@ -601,25 +701,30 @@ class ElderFlowCoreEnhancement:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT execution_id, task_name, status, quality_score,
                    start_time, end_time, duration_seconds
             FROM flow_executions
             ORDER BY start_time DESC
             LIMIT ?
-        """, (limit,))
+        """,
+            (limit,),
+        )
 
         history = []
         for row in cursor.fetchall():
-            history.append({
-                "execution_id": row[0],
-                "task_name": row[1],
-                "status": row[2],
-                "quality_score": row[3],
-                "start_time": row[4],
-                "end_time": row[5],
-                "duration": row[6]
-            })
+            history.append(
+                {
+                    "execution_id": row[0],
+                    "task_name": row[1],
+                    "status": row[2],
+                    "quality_score": row[3],
+                    "start_time": row[4],
+                    "end_time": row[5],
+                    "duration": row[6],
+                }
+            )
 
         conn.close()
         return history
@@ -629,22 +734,26 @@ class ElderFlowCoreEnhancement:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT execution_id, task_name, phase, start_time
             FROM flow_executions
             WHERE status = 'in_progress'
             ORDER BY start_time DESC
-        """)
+        """
+        )
 
         active_flows = []
         for row in cursor.fetchall():
             duration = (datetime.now() - datetime.fromisoformat(row[3])).total_seconds()
-            active_flows.append({
-                "execution_id": row[0],
-                "task_name": row[1],
-                "current_phase": row[2],
-                "duration_seconds": duration
-            })
+            active_flows.append(
+                {
+                    "execution_id": row[0],
+                    "task_name": row[1],
+                    "current_phase": row[2],
+                    "duration_seconds": duration,
+                }
+            )
 
         conn.close()
         return active_flows
@@ -656,7 +765,7 @@ async def main():
     system = ElderFlowCoreEnhancement()
 
     print("🌊 Elder Flow Core Enhancement System")
-    print("="*50)
+    print("=" * 50)
 
     # テスト実行
     execution_id = await system.start_flow_execution("Test Task", "high")
@@ -664,16 +773,14 @@ async def main():
 
     # フェーズ遷移
     await system.record_phase_transition(
-        execution_id,
-        FlowPhase.SAGE_CONSULTATION,
-        FlowPhase.SERVANT_EXECUTION
+        execution_id, FlowPhase.SAGE_CONSULTATION, FlowPhase.SERVANT_EXECUTION
     )
 
     # 賢者推奨記録
     await system.record_sage_recommendation(
         execution_id,
         "ナレッジ賢者",
-        {"summary": "TDD実装推奨", "details": "テストファースト開発"}
+        {"summary": "TDD実装推奨", "details": "テストファースト開発"},
     )
 
     # 違反記録
@@ -682,7 +789,7 @@ async def main():
         "abstract_method",
         "critical",
         "workers/test_worker.py",
-        "validate_config未実装"
+        "validate_config未実装",
     )
 
     # 品質メトリクス
@@ -691,10 +798,7 @@ async def main():
 
     # 実行完了
     await system.complete_flow_execution(
-        execution_id,
-        FlowStatus.COMPLETED,
-        85.5,
-        ["feat: test implementation"]
+        execution_id, FlowStatus.COMPLETED, 85.5, ["feat: test implementation"]
     )
 
     # レポート生成

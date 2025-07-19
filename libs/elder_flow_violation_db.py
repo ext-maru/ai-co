@@ -1,6 +1,7 @@
 """
 Elder Flow違反データベース接続ユーティリティ
 """
+
 import sqlite3
 import json
 import uuid
@@ -12,7 +13,9 @@ import logging
 
 from libs.elder_flow_violation_detector import ViolationRecord
 from libs.elder_flow_violation_types import (
-    ViolationType, ViolationSeverity, ViolationCategory
+    ViolationType,
+    ViolationSeverity,
+    ViolationCategory,
 )
 
 
@@ -40,15 +43,19 @@ class ElderFlowViolationDB:
 
     def _init_database(self):
         """データベースを初期化"""
-        schema_path = Path(__file__).parent.parent / "database/schema/elder_flow_violations_sqlite.sql"
+        schema_path = (
+            Path(__file__).parent.parent
+            / "database/schema/elder_flow_violations_sqlite.sql"
+        )
 
         with self.get_connection() as conn:
             if schema_path.exists():
-                with open(schema_path, 'r') as f:
+                with open(schema_path, "r") as f:
                     conn.executescript(f.read())
             else:
                 # スキーマファイルがない場合は最小限のテーブルを作成
-                conn.execute("""
+                conn.execute(
+                    """
                     CREATE TABLE IF NOT EXISTS elder_flow_violations (
                         id TEXT PRIMARY KEY,
                         violation_type TEXT NOT NULL,
@@ -67,7 +74,8 @@ class ElderFlowViolationDB:
                         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
                     )
-                """)
+                """
+                )
             conn.commit()
 
     def save_violation(self, violation: ViolationRecord) -> str:
@@ -75,29 +83,32 @@ class ElderFlowViolationDB:
         violation_id = str(uuid.uuid4())
 
         with self.get_connection() as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO elder_flow_violations (
                     id, violation_type, category, severity, description,
                     context_command, context_file_path, context_timestamp,
                     context_additional_info, detected_at, resolved_at,
                     resolution_notes, auto_fixed, auto_fixable
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                violation_id,
-                violation.violation_type.value,
-                violation.category.value,
-                violation.severity.value,
-                violation.description,
-                violation.context.command,
-                violation.context.file_path,
-                violation.context.timestamp,
-                json.dumps(violation.context.additional_info),
-                violation.detected_at,
-                violation.resolved_at,
-                violation.resolution_notes,
-                1 if violation.auto_fixed else 0,
-                1 if violation.auto_fixable else 0
-            ))
+            """,
+                (
+                    violation_id,
+                    violation.violation_type.value,
+                    violation.category.value,
+                    violation.severity.value,
+                    violation.description,
+                    violation.context.command,
+                    violation.context.file_path,
+                    violation.context.timestamp,
+                    json.dumps(violation.context.additional_info),
+                    violation.detected_at,
+                    violation.resolved_at,
+                    violation.resolution_notes,
+                    1 if violation.auto_fixed else 0,
+                    1 if violation.auto_fixable else 0,
+                ),
+            )
             conn.commit()
 
         logger.info(f"違反を保存しました: {violation_id}")
@@ -107,8 +118,7 @@ class ElderFlowViolationDB:
         """IDで違反を取得"""
         with self.get_connection() as conn:
             cursor = conn.execute(
-                "SELECT * FROM elder_flow_violations WHERE id = ?",
-                (violation_id,)
+                "SELECT * FROM elder_flow_violations WHERE id = ?", (violation_id,)
             )
             row = cursor.fetchone()
             return dict(row) if row else None
@@ -116,21 +126,26 @@ class ElderFlowViolationDB:
     def get_active_violations(self) -> List[Dict[str, Any]]:
         """アクティブな違反を取得"""
         with self.get_connection() as conn:
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT * FROM elder_flow_violations
                 WHERE resolved_at IS NULL
                 ORDER BY detected_at DESC
-            """)
+            """
+            )
             return [dict(row) for row in cursor.fetchall()]
 
     def resolve_violation(self, violation_id: str, resolution_notes: str) -> bool:
         """違反を解決済みにする"""
         with self.get_connection() as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 UPDATE elder_flow_violations
                 SET resolved_at = ?, resolution_notes = ?, updated_at = ?
                 WHERE id = ?
-            """, (datetime.now(), resolution_notes, datetime.now(), violation_id))
+            """,
+                (datetime.now(), resolution_notes, datetime.now(), violation_id),
+            )
             conn.commit()
             return conn.total_changes > 0
 
@@ -138,7 +153,8 @@ class ElderFlowViolationDB:
         """統計情報を取得"""
         with self.get_connection() as conn:
             # 基本統計
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT
                     COUNT(*) as total_violations,
                     COUNT(CASE WHEN resolved_at IS NULL THEN 1 END) as active_violations,
@@ -148,12 +164,14 @@ class ElderFlowViolationDB:
                     COUNT(CASE WHEN severity = 'low' THEN 1 END) as low_violations,
                     COUNT(CASE WHEN auto_fixed = 1 THEN 1 END) as auto_fixed_violations
                 FROM elder_flow_violations
-            """)
+            """
+            )
             row = cursor.fetchone()
             stats = dict(row) if row else {}
 
             # カテゴリ別統計
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT
                     category,
                     COUNT(*) as violation_count,
@@ -161,17 +179,20 @@ class ElderFlowViolationDB:
                 FROM elder_flow_violations
                 GROUP BY category
                 ORDER BY violation_count DESC
-            """)
-            stats['by_category'] = [dict(row) for row in cursor.fetchall()]
+            """
+            )
+            stats["by_category"] = [dict(row) for row in cursor.fetchall()]
 
             # 違反タイプ別統計
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT violation_type, COUNT(*) as count
                 FROM elder_flow_violations
                 GROUP BY violation_type
                 ORDER BY count DESC
-            """)
-            stats['by_type'] = [dict(row) for row in cursor.fetchall()]
+            """
+            )
+            stats["by_type"] = [dict(row) for row in cursor.fetchall()]
 
             return stats
 
@@ -182,7 +203,7 @@ class ElderFlowViolationDB:
         severity: Optional[str] = None,
         start_date: Optional[datetime] = None,
         end_date: Optional[datetime] = None,
-        resolved: Optional[bool] = None
+        resolved: Optional[bool] = None,
     ) -> List[Dict[str, Any]]:
         """条件に基づいて違反を検索"""
         query = "SELECT * FROM elder_flow_violations WHERE 1=1"
@@ -225,11 +246,14 @@ class ElderFlowViolationDB:
         suggestion_id = str(uuid.uuid4())
 
         with self.get_connection() as conn:
-            conn.execute("""
+            conn.execute(
+                """
                 INSERT INTO violation_fix_suggestions
                 (id, violation_id, suggestion_text)
                 VALUES (?, ?, ?)
-            """, (suggestion_id, violation_id, suggestion))
+            """,
+                (suggestion_id, violation_id, suggestion),
+            )
             conn.commit()
 
         return suggestion_id
@@ -237,7 +261,8 @@ class ElderFlowViolationDB:
     def get_recent_violations(self, limit: int = 10) -> List[Dict[str, Any]]:
         """最近の違反を取得"""
         with self.get_connection() as conn:
-            cursor = conn.execute("""
+            cursor = conn.execute(
+                """
                 SELECT
                     id,
                     violation_type,
@@ -251,5 +276,7 @@ class ElderFlowViolationDB:
                 FROM elder_flow_violations
                 ORDER BY detected_at DESC
                 LIMIT ?
-            """, (limit,))
+            """,
+                (limit,),
+            )
             return [dict(row) for row in cursor.fetchall()]

@@ -165,9 +165,9 @@ class ReportAnalyzer:
                     completeness["requirements_met"][phase] = {
                         "total": len(features),
                         "met": met_count,
-                        "percentage": (met_count / len(features) * 100)
-                        if features
-                        else 0,
+                        "percentage": (
+                            (met_count / len(features) * 100) if features else 0
+                        ),
                     }
 
         # 全体の完了率

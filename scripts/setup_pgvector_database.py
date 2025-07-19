@@ -48,7 +48,11 @@ class PgVectorDatabaseSetup:
                 "index_params": {"m": 16, "ef_construction": 64},
             },
             "tables": {
-                "a2a_communications": {"schema": "a2a", "enable_partitioning": True, "partition_by": "timestamp"},
+                "a2a_communications": {
+                    "schema": "a2a",
+                    "enable_partitioning": True,
+                    "partition_by": "timestamp",
+                },
                 "anomaly_patterns": {"schema": "a2a", "enable_clustering": True},
             },
         }
@@ -66,11 +70,15 @@ class PgVectorDatabaseSetup:
             self.cursor = self.connection.cursor()
 
             # データベースの存在確認と作成
-            self.cursor.execute("SELECT 1 FROM pg_database WHERE datname = %s", (target_db,))
+            self.cursor.execute(
+                "SELECT 1 FROM pg_database WHERE datname = %s", (target_db,)
+            )
 
             if not self.cursor.fetchone():
                 logger.info(f"Creating database: {target_db}")
-                self.cursor.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(target_db)))
+                self.cursor.execute(
+                    sql.SQL("CREATE DATABASE {}").format(sql.Identifier(target_db))
+                )
 
             # 作成したデータベースに再接続
             self.connection.close()
@@ -92,7 +100,9 @@ class PgVectorDatabaseSetup:
             self.connection.commit()
 
             # バージョン確認
-            self.cursor.execute("SELECT extversion FROM pg_extension WHERE extname = 'vector';")
+            self.cursor.execute(
+                "SELECT extversion FROM pg_extension WHERE extname = 'vector';"
+            )
             version = self.cursor.fetchone()
 
             if version:
@@ -425,7 +435,12 @@ class PgVectorDatabaseSetup:
 
     def execute_setup(self) -> Dict[str, Any]:
         """完全なセットアップの実行"""
-        setup_result = {"timestamp": datetime.now().isoformat(), "status": "starting", "steps": {}, "verification": {}}
+        setup_result = {
+            "timestamp": datetime.now().isoformat(),
+            "status": "starting",
+            "steps": {},
+            "verification": {},
+        }
 
         try:
             # 1. データベース接続
@@ -530,7 +545,11 @@ def main():
         result = setup.execute_setup()
 
         # 結果の保存
-        result_file = PROJECT_ROOT / "logs" / f"pgvector_setup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        result_file = (
+            PROJECT_ROOT
+            / "logs"
+            / f"pgvector_setup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
         with open(result_file, "w") as f:
             json.dump(result, f, indent=2, default=str)
 
@@ -540,10 +559,18 @@ def main():
         if result["status"] == "completed":
             print("\n✅ Setup completed successfully!")
             print("\n📊 Verification Summary:")
-            print(f"   - pgvector installed: {result['verification']['pgvector_installed']}")
-            print(f"   - Schemas created: {len(result['verification']['schemas_created'])}")
-            print(f"   - Tables created: {len(result['verification']['tables_created'])}")
-            print(f"   - Indexes created: {len(result['verification']['indexes_created'])}")
+            print(
+                f"   - pgvector installed: {result['verification']['pgvector_installed']}"
+            )
+            print(
+                f"   - Schemas created: {len(result['verification']['schemas_created'])}"
+            )
+            print(
+                f"   - Tables created: {len(result['verification']['tables_created'])}"
+            )
+            print(
+                f"   - Indexes created: {len(result['verification']['indexes_created'])}"
+            )
         else:
             print("\n❌ Setup failed or incomplete")
             if "error" in result:

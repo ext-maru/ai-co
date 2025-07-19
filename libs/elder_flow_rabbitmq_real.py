@@ -29,20 +29,26 @@ try:
     import aio_pika
     from aio_pika import Message, DeliveryMode, ExchangeType
     from aio_pika.abc import (
-        AbstractRobustConnection, AbstractRobustChannel,
-        AbstractQueue, AbstractExchange
+        AbstractRobustConnection,
+        AbstractRobustChannel,
+        AbstractQueue,
+        AbstractExchange,
     )
+
     RABBITMQ_AVAILABLE = True
 except ImportError:
     # フォールバック: モックインポート
     from libs.aio_pika_mock import *
+
     RABBITMQ_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass
 class ElderFlowRabbitMQConfig:
     """Elder Flow RabbitMQ設定"""
+
     url: str = "amqp://guest:guest@localhost:5672/"
     connection_timeout: float = 10.0
     heartbeat: int = 600
@@ -66,9 +72,11 @@ class ElderFlowRabbitMQConfig:
     auto_ack: bool = False
     prefetch_count: int = 10
 
+
 @dataclass
 class ElderFlowMessage:
     """Elder Flow拡張メッセージ"""
+
     body: Union[str, bytes, dict]
     routing_key: str
     headers: Dict[str, Any] = field(default_factory=dict)
@@ -77,6 +85,7 @@ class ElderFlowMessage:
     sage_approved: bool = False
     elder_signature: Optional[str] = None
     created_at: datetime = field(default_factory=datetime.now)
+
 
 class ElderFlowRabbitMQReal:
     """Elder Flow本物RabbitMQ実装 - 魂の力"""
@@ -123,7 +132,7 @@ class ElderFlowRabbitMQReal:
                 ssl_context=ssl_context,
                 timeout=self.config.connection_timeout,
                 heartbeat=self.config.heartbeat,
-                blocked_connection_timeout=self.config.blocked_connection_timeout
+                blocked_connection_timeout=self.config.blocked_connection_timeout,
             )
 
             # チャンネル作成
@@ -165,10 +174,7 @@ class ElderFlowRabbitMQReal:
             context.verify_mode = ssl.CERT_NONE
 
         if self.config.ssl_cert_path and self.config.ssl_key_path:
-            context.load_cert_chain(
-                self.config.ssl_cert_path,
-                self.config.ssl_key_path
-            )
+            context.load_cert_chain(self.config.ssl_cert_path, self.config.ssl_key_path)
 
         return context
 
@@ -180,14 +186,14 @@ class ElderFlowRabbitMQReal:
         self.exchanges["elder_flow"] = await self.channel.declare_exchange(
             self.config.elder_exchange,
             ExchangeType.TOPIC,
-            durable=self.config.durable_queues
+            durable=self.config.durable_queues,
         )
 
         # Four Sages Exchange
         self.exchanges["four_sages"] = await self.channel.declare_exchange(
             self.config.sage_exchange,
             ExchangeType.DIRECT,
-            durable=self.config.durable_queues
+            durable=self.config.durable_queues,
         )
 
         # Elder Flow基本キュー
@@ -195,19 +201,15 @@ class ElderFlowRabbitMQReal:
             (self.config.task_queue, "elder.tasks.*"),
             (self.config.incident_queue, "elder.incidents.*"),
             ("elder_flow_commands", "elder.commands.*"),
-            ("elder_flow_results", "elder.results.*")
+            ("elder_flow_results", "elder.results.*"),
         ]
 
         for queue_name, routing_key in queue_configs:
             queue = await self.channel.declare_queue(
-                queue_name,
-                durable=self.config.durable_queues
+                queue_name, durable=self.config.durable_queues
             )
 
-            await queue.bind(
-                self.exchanges["elder_flow"],
-                routing_key
-            )
+            await queue.bind(self.exchanges["elder_flow"], routing_key)
 
             self.queues[queue_name] = queue
 
@@ -216,23 +218,23 @@ class ElderFlowRabbitMQReal:
             "knowledge_sage_queue",
             "task_sage_queue",
             "incident_sage_queue",
-            "rag_sage_queue"
+            "rag_sage_queue",
         ]
 
         for sage_queue in sage_queues:
             queue = await self.channel.declare_queue(
-                sage_queue,
-                durable=self.config.durable_queues
+                sage_queue, durable=self.config.durable_queues
             )
 
             await queue.bind(
-                self.exchanges["four_sages"],
-                sage_queue.replace("_queue", "")
+                self.exchanges["four_sages"], sage_queue.replace("_queue", "")
             )
 
             self.queues[sage_queue] = queue
 
-        logger.info(f"✅ Created {len(self.exchanges)} exchanges and {len(self.queues)} queues")
+        logger.info(
+            f"✅ Created {len(self.exchanges)} exchanges and {len(self.queues)} queues"
+        )
 
     async def _verify_four_sages_connection(self) -> bool:
         """4賢者接続確認"""
@@ -244,7 +246,7 @@ class ElderFlowRabbitMQReal:
                 body={"type": "ping", "timestamp": datetime.now().isoformat()},
                 routing_key="sages.ping",
                 soul_level="sage",
-                sage_approved=True
+                sage_approved=True,
             )
 
             await self.publish_to_sages(ping_message)
@@ -259,8 +261,9 @@ class ElderFlowRabbitMQReal:
             logger.error(f"❌ Four Sages connection verification failed: {str(e)}")
             return False
 
-    async def publish_message(self, message: ElderFlowMessage,
-                            exchange_name: str = "elder_flow") -> bool:
+    async def publish_message(
+        self, message: ElderFlowMessage, exchange_name: str = "elder_flow"
+    ) -> bool:
         """Elder Flow魂メッセージ送信"""
         if not self.connection or self.connection.is_closed:
             logger.error("❌ No active Elder Flow RabbitMQ connection")
@@ -272,7 +275,7 @@ class ElderFlowRabbitMQReal:
             if isinstance(body, dict):
                 body = json.dumps(body)
             elif isinstance(body, str):
-                body = body.encode('utf-8')
+                body = body.encode("utf-8")
 
             # Elder Flow拡張ヘッダー
             headers = {
@@ -281,7 +284,7 @@ class ElderFlowRabbitMQReal:
                 "soul_level": message.soul_level,
                 "sage_approved": message.sage_approved,
                 "created_at": message.created_at.isoformat(),
-                "soul_power": self.soul_power_level
+                "soul_power": self.soul_power_level,
             }
 
             if message.elder_signature:
@@ -292,7 +295,11 @@ class ElderFlowRabbitMQReal:
                 body,
                 headers=headers,
                 priority=message.priority,
-                delivery_mode=DeliveryMode.PERSISTENT if self.config.persistent_messages else DeliveryMode.NOT_PERSISTENT
+                delivery_mode=(
+                    DeliveryMode.PERSISTENT
+                    if self.config.persistent_messages
+                    else DeliveryMode.NOT_PERSISTENT
+                ),
             )
 
             # Exchange取得
@@ -308,7 +315,9 @@ class ElderFlowRabbitMQReal:
             self.messages_sent += 1
             self.soul_power_level += 1
 
-            logger.info(f"📤 Elder Flow message sent: {message.routing_key} (Soul Level: {message.soul_level})")
+            logger.info(
+                f"📤 Elder Flow message sent: {message.routing_key} (Soul Level: {message.soul_level})"
+            )
             return True
 
         except Exception as e:
@@ -321,9 +330,12 @@ class ElderFlowRabbitMQReal:
         message.soul_level = "sage"
         return await self.publish_message(message, "four_sages")
 
-    async def consume_queue(self, queue_name: str,
-                          callback: Callable[[ElderFlowMessage], Any],
-                          auto_ack: bool = None) -> bool:
+    async def consume_queue(
+        self,
+        queue_name: str,
+        callback: Callable[[ElderFlowMessage], Any],
+        auto_ack: bool = None,
+    ) -> bool:
         """Elder Flowキュー消費"""
         if not self.connection or self.connection.is_closed:
             logger.error("❌ No active Elder Flow RabbitMQ connection")
@@ -352,9 +364,13 @@ class ElderFlowRabbitMQReal:
                         self.messages_received += 1
                         self.soul_power_level += 1
 
-                        logger.info(f"📥 Elder Flow message processed: {elder_message.routing_key}")
+                        logger.info(
+                            f"📥 Elder Flow message processed: {elder_message.routing_key}"
+                        )
                     else:
-                        logger.warning(f"⚠️ Message failed sage validation: {elder_message.routing_key}")
+                        logger.warning(
+                            f"⚠️ Message failed sage validation: {elder_message.routing_key}"
+                        )
 
                     # 手動ACK
                     if not use_auto_ack:
@@ -372,7 +388,9 @@ class ElderFlowRabbitMQReal:
             return True
 
         except Exception as e:
-            logger.error(f"❌ Failed to consume Elder Flow queue {queue_name}: {str(e)}")
+            logger.error(
+                f"❌ Failed to consume Elder Flow queue {queue_name}: {str(e)}"
+            )
             return False
 
     def _convert_to_elder_flow_message(self, aio_message) -> ElderFlowMessage:
@@ -381,7 +399,7 @@ class ElderFlowRabbitMQReal:
 
         # JSON デコード試行
         try:
-            body = json.loads(aio_message.body.decode('utf-8'))
+            body = json.loads(aio_message.body.decode("utf-8"))
         except (json.JSONDecodeError, UnicodeDecodeError):
             body = aio_message.body
 
@@ -393,7 +411,9 @@ class ElderFlowRabbitMQReal:
             soul_level=headers.get("soul_level", "apprentice"),
             sage_approved=headers.get("sage_approved", False),
             elder_signature=headers.get("elder_signature"),
-            created_at=datetime.fromisoformat(headers.get("created_at", datetime.now().isoformat()))
+            created_at=datetime.fromisoformat(
+                headers.get("created_at", datetime.now().isoformat())
+            ),
         )
 
     def _validate_sage_approval(self, message: ElderFlowMessage) -> bool:
@@ -412,15 +432,15 @@ class ElderFlowRabbitMQReal:
 
         return False
 
-    async def create_soul_enhanced_queue(self, queue_name: str,
-                                       routing_key: str,
-                                       soul_level: str = "craftsman") -> bool:
+    async def create_soul_enhanced_queue(
+        self, queue_name: str, routing_key: str, soul_level: str = "craftsman"
+    ) -> bool:
         """Elder Flow魂強化キュー作成"""
         try:
             # 魂レベルに応じたキュー設定
             arguments = {
                 "x-elder-flow-soul-level": soul_level,
-                "x-elder-flow-version": "2.1.0"
+                "x-elder-flow-version": "2.1.0",
             }
 
             if soul_level in ["elder", "grand_elder"]:
@@ -428,30 +448,33 @@ class ElderFlowRabbitMQReal:
                 arguments["x-message-ttl"] = 86400000  # 24 hours
 
             queue = await self.channel.declare_queue(
-                queue_name,
-                durable=True,
-                arguments=arguments
+                queue_name, durable=True, arguments=arguments
             )
 
-            await queue.bind(
-                self.exchanges["elder_flow"],
-                routing_key
-            )
+            await queue.bind(self.exchanges["elder_flow"], routing_key)
 
             self.queues[queue_name] = queue
             self.soul_enhancement_count += 1
 
-            logger.info(f"✨ Created soul-enhanced queue: {queue_name} (Level: {soul_level})")
+            logger.info(
+                f"✨ Created soul-enhanced queue: {queue_name} (Level: {soul_level})"
+            )
             return True
 
         except Exception as e:
-            logger.error(f"❌ Failed to create soul-enhanced queue {queue_name}: {str(e)}")
+            logger.error(
+                f"❌ Failed to create soul-enhanced queue {queue_name}: {str(e)}"
+            )
             return False
 
     async def get_elder_flow_stats(self) -> Dict[str, Any]:
         """Elder Flow統計取得"""
         return {
-            "connection_status": "connected" if self.connection and not self.connection.is_closed else "disconnected",
+            "connection_status": (
+                "connected"
+                if self.connection and not self.connection.is_closed
+                else "disconnected"
+            ),
             "soul_power_level": self.soul_power_level,
             "four_sages_connected": self.four_sages_connected,
             "elder_blessing_active": self.elder_blessing_active,
@@ -461,7 +484,7 @@ class ElderFlowRabbitMQReal:
             "soul_enhancement_count": self.soul_enhancement_count,
             "exchanges": list(self.exchanges.keys()),
             "queues": list(self.queues.keys()),
-            "elder_flow_version": "2.1.0"
+            "elder_flow_version": "2.1.0",
         }
 
     async def disconnect(self):
@@ -499,8 +522,11 @@ class ElderFlowRabbitMQReal:
             logger.error(f"❌ Elder Flow transaction failed: {str(e)}")
             raise
 
+
 # Elder Flow魂による便利関数
-async def create_elder_flow_rabbitmq(config: ElderFlowRabbitMQConfig = None) -> ElderFlowRabbitMQReal:
+async def create_elder_flow_rabbitmq(
+    config: ElderFlowRabbitMQConfig = None,
+) -> ElderFlowRabbitMQReal:
     """Elder Flow RabbitMQ作成・接続"""
     rabbitmq = ElderFlowRabbitMQReal(config)
 
@@ -509,17 +535,25 @@ async def create_elder_flow_rabbitmq(config: ElderFlowRabbitMQConfig = None) -> 
     else:
         raise ConnectionError("Failed to establish Elder Flow RabbitMQ connection")
 
+
 # グローバルインスタンス（シングルトン的使用）
 _global_elder_rabbitmq: Optional[ElderFlowRabbitMQReal] = None
 
-async def get_elder_flow_rabbitmq(config: ElderFlowRabbitMQConfig = None) -> ElderFlowRabbitMQReal:
+
+async def get_elder_flow_rabbitmq(
+    config: ElderFlowRabbitMQConfig = None,
+) -> ElderFlowRabbitMQReal:
     """グローバルElder Flow RabbitMQ取得"""
     global _global_elder_rabbitmq
 
-    if _global_elder_rabbitmq is None or (_global_elder_rabbitmq.connection and _global_elder_rabbitmq.connection.is_closed):
+    if _global_elder_rabbitmq is None or (
+        _global_elder_rabbitmq.connection
+        and _global_elder_rabbitmq.connection.is_closed
+    ):
         _global_elder_rabbitmq = await create_elder_flow_rabbitmq(config)
 
     return _global_elder_rabbitmq
+
 
 if __name__ == "__main__":
     # Elder Flow Soul Demo
@@ -536,7 +570,7 @@ if __name__ == "__main__":
                 body={"task": "soul_test", "power_level": 100},
                 routing_key="elder.tasks.soul_test",
                 soul_level="craftsman",
-                sage_approved=True
+                sage_approved=True,
             )
 
             success = await rabbitmq.publish_message(message)

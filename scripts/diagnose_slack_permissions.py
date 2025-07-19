@@ -114,7 +114,9 @@ def diagnose_permissions():
 
     # 現在のトークンタイプを判定
     print(f"\n📋 トークン診断:")
-    print(f"Bot Token形式: {'✅ 正しい' if bot_token.startswith('xoxb-') else '❌ 不正'}")
+    print(
+        f"Bot Token形式: {'✅ 正しい' if bot_token.startswith('xoxb-') else '❌ 不正'}"
+    )
 
     # 古いトークンの可能性をチェック
     if "xoxb-9133957021265-9120858383298" in bot_token:

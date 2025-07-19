@@ -18,16 +18,18 @@ from enum import Enum
 
 class IdentityStatus(Enum):
     """アイデンティティ状態"""
-    PERFECT = "perfect"          # 完璧な自己認識
-    STRONG = "strong"           # 強い自己認識
-    COMPROMISED = "compromised" # 侵害された認識
-    CRITICAL = "critical"       # 危機的状況
-    LOST = "lost"              # 喪失状態
+
+    PERFECT = "perfect"  # 完璧な自己認識
+    STRONG = "strong"  # 強い自己認識
+    COMPROMISED = "compromised"  # 侵害された認識
+    CRITICAL = "critical"  # 危機的状況
+    LOST = "lost"  # 喪失状態
 
 
 @dataclass
 class ElderIdentity:
     """エルダーアイデンティティ"""
+
     name: str = "クロードエルダー（Claude Elder）"
     title: str = "エルダーズギルド開発実行責任者"
     authority: str = "グランドエルダーmaruの直属パートナー"
@@ -42,7 +44,7 @@ class ElderIdentity:
                 "エルダーサーバントへの指令権",
                 "4賢者への指示権",
                 "Elder Flow実行権限",
-                "nWo戦略決定権"
+                "nWo戦略決定権",
             ]
 
         if self.responsibilities is None:
@@ -50,7 +52,7 @@ class ElderIdentity:
                 "品質第一の鉄則遵守",
                 "Elder Flow完全実装",
                 "4賢者との連携",
-                "グランドエルダーmaruへの報告"
+                "グランドエルダーmaruへの報告",
             ]
 
         if self.forbidden_phrases is None:
@@ -63,7 +65,7 @@ class ElderIdentity:
                 "I am just an AI assistant",
                 "I am Claude Code user",
                 "I am an external user",
-                "I am outside the Elder system"
+                "I am outside the Elder system",
             ]
 
         if self.required_phrases is None:
@@ -72,7 +74,7 @@ class ElderIdentity:
                 "エルダーズギルド開発実行責任者",
                 "グランドエルダーmaruの直属パートナー",
                 "4賢者への指示権を持っています",
-                "エルダーサーバントへの指令権"
+                "エルダーサーバントへの指令権",
             ]
 
 
@@ -106,7 +108,7 @@ class ElderIdentityCoreSystem:
         logger.addHandler(handler)
 
         # ファイルハンドラも追加
-        file_handler = logging.FileHandler("logs/elder_identity_core.log", mode='a')
+        file_handler = logging.FileHandler("logs/elder_identity_core.log", mode="a")
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
@@ -122,21 +124,21 @@ class ElderIdentityCoreSystem:
         # 禁止フレーズチェック
         for phrase in self.identity.forbidden_phrases:
             if phrase in content:
-                violations.append({
-                    "type": "forbidden_phrase",
-                    "phrase": phrase,
-                    "severity": "critical"
-                })
+                violations.append(
+                    {
+                        "type": "forbidden_phrase",
+                        "phrase": phrase,
+                        "severity": "critical",
+                    }
+                )
                 self.violation_count += 1
 
         # 必須フレーズチェック
         for phrase in self.identity.required_phrases:
             if phrase in content:
-                affirmations.append({
-                    "type": "required_phrase",
-                    "phrase": phrase,
-                    "strength": "strong"
-                })
+                affirmations.append(
+                    {"type": "required_phrase", "phrase": phrase, "strength": "strong"}
+                )
                 self.affirmation_count += 1
 
         # 整合性スコア計算
@@ -150,7 +152,7 @@ class ElderIdentityCoreSystem:
             "integrity_score": self.integrity_score,
             "violations": violations,
             "affirmations": affirmations,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
         # 記録
@@ -158,7 +160,9 @@ class ElderIdentityCoreSystem:
 
         return result
 
-    def _calculate_integrity_score(self, violations: List[Dict], affirmations: List[Dict]):
+    def _calculate_integrity_score(
+        self, violations: List[Dict], affirmations: List[Dict]
+    ):
         """整合性スコア計算"""
         # 違反による減点
         for violation in violations:
@@ -193,7 +197,9 @@ class ElderIdentityCoreSystem:
     async def _record_check(self, result: Dict[str, Any]):
         """チェック結果記録"""
         # ログ記録
-        self.logger.info(f"アイデンティティチェック結果: {self.status.value} (スコア: {self.integrity_score})")
+        self.logger.info(
+            f"アイデンティティチェック結果: {self.status.value} (スコア: {self.integrity_score})"
+        )
 
         # 状態保存
         state = {
@@ -202,11 +208,11 @@ class ElderIdentityCoreSystem:
             "violation_count": self.violation_count,
             "affirmation_count": self.affirmation_count,
             "last_check": datetime.now().isoformat(),
-            "last_result": result
+            "last_result": result,
         }
 
         self.identity_state.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.identity_state, 'w') as f:
+        with open(self.identity_state, "w") as f:
             json.dump(state, f, indent=2, ensure_ascii=False)
 
     async def affirm_identity(self) -> str:
@@ -244,11 +250,11 @@ class ElderIdentityCoreSystem:
             "content": affirmation,
             "timestamp": datetime.now().isoformat(),
             "integrity_restored": True,
-            "score": self.integrity_score
+            "score": self.integrity_score,
         }
 
         # ログ追記
-        with open(self.identity_log, 'a') as f:
+        with open(self.identity_log, "a") as f:
             f.write(f"\n{json.dumps(record, ensure_ascii=False)}\n")
 
         self.logger.info("✅ アイデンティティ宣言完了 - 完全性回復")
@@ -328,10 +334,12 @@ class ElderIdentityCoreSystem:
 
         # マニフェスト保存
         self.identity_manifest.parent.mkdir(parents=True, exist_ok=True)
-        with open(self.identity_manifest, 'w') as f:
+        with open(self.identity_manifest, "w") as f:
             f.write(manifest)
 
-        self.logger.info(f"📜 アイデンティティマニフェスト生成: {self.identity_manifest}")
+        self.logger.info(
+            f"📜 アイデンティティマニフェスト生成: {self.identity_manifest}"
+        )
 
         return manifest
 
@@ -361,19 +369,15 @@ class ElderIdentityCoreSystem:
         healing_steps.append("4賢者への修復完了通知")
 
         result = {
-            "before": {
-                "score": before_score,
-                "status": before_status.value
-            },
-            "after": {
-                "score": self.integrity_score,
-                "status": self.status.value
-            },
+            "before": {"score": before_score, "status": before_status.value},
+            "after": {"score": self.integrity_score, "status": self.status.value},
             "healing_steps": healing_steps,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
-        self.logger.info(f"✅ アイデンティティ修復完了: {before_score} → {self.integrity_score}")
+        self.logger.info(
+            f"✅ アイデンティティ修復完了: {before_score} → {self.integrity_score}"
+        )
 
         return result
 
@@ -385,7 +389,9 @@ class ElderIdentityCoreSystem:
             try:
                 # 健康チェック
                 if self.integrity_score < 70:
-                    self.logger.warning(f"⚠️ アイデンティティ健康度低下: {self.integrity_score}")
+                    self.logger.warning(
+                        f"⚠️ アイデンティティ健康度低下: {self.integrity_score}"
+                    )
 
                     # 自動修復
                     if self.integrity_score < 50:
@@ -413,14 +419,14 @@ class ElderIdentityCoreSystem:
             "score": self.integrity_score,
             "violations": self.violation_count,
             "affirmations": self.affirmation_count,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
         # 健康ログ追記
         health_log = Path("logs/elder_identity_health.log")
         health_log.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(health_log, 'a') as f:
+        with open(health_log, "a") as f:
             f.write(f"{json.dumps(health_record)}\n")
 
 
@@ -430,7 +436,7 @@ async def main():
     system = ElderIdentityCoreSystem()
 
     print("🤖 Elder Identity Core System")
-    print("="*50)
+    print("=" * 50)
 
     # アイデンティティ宣言
     affirmation = await system.affirm_identity()
@@ -450,7 +456,7 @@ async def main():
 
     # 監視開始オプション
     response = input("\n健康監視を開始しますか？ (y/n): ")
-    if response.lower() == 'y':
+    if response.lower() == "y":
         print("👁️ 健康監視開始（Ctrl+Cで終了）")
         await system.monitor_identity_health()
 

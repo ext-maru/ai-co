@@ -36,7 +36,9 @@ class ProjectLister:
     def list_projects(self):
         """プロジェクト一覧表示"""
         if not self.projects_dir.exists():
-            self.console.print("[yellow]プロジェクトディレクトリが存在しません[/yellow]")
+            self.console.print(
+                "[yellow]プロジェクトディレクトリが存在しません[/yellow]"
+            )
             return
 
         projects = []
@@ -123,7 +125,9 @@ class ProjectLister:
                     else:
                         info["status"] = "new"
             except Exception as e:
-                self.console.print(f"[red]エラー: {project_path.name} の情報読み取り失敗: {e}[/red]")
+                self.console.print(
+                    f"[red]エラー: {project_path.name} の情報読み取り失敗: {e}[/red]"
+                )
 
         # ファイル統計
         try:
@@ -154,7 +158,12 @@ class ProjectLister:
 
         for project in projects:
             # ステータス表示
-            status_emoji = {"active": "🟢", "idle": "🟡", "stale": "🔴", "new": "🆕"}.get(project["status"], "❓")
+            status_emoji = {
+                "active": "🟢",
+                "idle": "🟡",
+                "stale": "🔴",
+                "new": "🆕",
+            }.get(project["status"], "❓")
 
             # 技術スタック文字列
             tech_stack = []
@@ -263,7 +272,11 @@ class ProjectLister:
             output_file = self.project_root / f"project_list_{timestamp}.json"
             with open(output_file, "w", encoding="utf-8") as f:
                 json.dump(
-                    {"generated_at": datetime.now().isoformat(), "total_projects": len(projects), "projects": projects},
+                    {
+                        "generated_at": datetime.now().isoformat(),
+                        "total_projects": len(projects),
+                        "projects": projects,
+                    },
                     f,
                     indent=2,
                     ensure_ascii=False,
@@ -273,7 +286,9 @@ class ProjectLister:
 
         elif format == "markdown":
             output_file = self.project_root / f"project_list_{timestamp}.md"
-            md_content = f"# プロジェクト一覧\n\n生成日時: {datetime.now().isoformat()}\n\n"
+            md_content = (
+                f"# プロジェクト一覧\n\n生成日時: {datetime.now().isoformat()}\n\n"
+            )
 
             for project in projects:
                 md_content += f"## {project['name']}\n\n"

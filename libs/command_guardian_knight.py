@@ -161,9 +161,11 @@ class CommandGuardianKnight(IncidentKnight):
                         Issue(
                             id=f"cmd_missing_{cmd_name}_{int(datetime.now().timestamp())}",
                             category=IssueCategory.COMMAND_BROKEN,
-                            severity=IssueSeverity.CRITICAL
-                            if cmd_info["critical"]
-                            else IssueSeverity.HIGH,
+                            severity=(
+                                IssueSeverity.CRITICAL
+                                if cmd_info["critical"]
+                                else IssueSeverity.HIGH
+                            ),
                             title=f"Command {cmd_name} missing",
                             description=f"Protected command {cmd_name} is not available",
                             affected_component=cmd_name,

@@ -33,17 +33,25 @@ try:
 except Exception as e:
     REDIS_AVAILABLE = False
 
+
 # モッククラス定義（Redis無しでも動作）
 class MockPubSub:
-    async def subscribe(self, *args): pass
-    async def unsubscribe(self, *args): pass
-    async def get_message(self): return None
+    async def subscribe(self, *args):
+        pass
+
+    async def unsubscribe(self, *args):
+        pass
+
+    async def get_message(self):
+        return None
+
 
 PubSub = MockPubSub
 
 
 class ElderRole(Enum):
     """エルダー役割"""
+
     GRAND_ELDER = "grand_elder"
     CLAUDE_ELDER = "claude_elder"
     SAGE = "sage"
@@ -53,6 +61,7 @@ class ElderRole(Enum):
 
 class SageType(Enum):
     """賢者タイプ"""
+
     KNOWLEDGE = "knowledge"
     TASK = "task"
     INCIDENT = "incident"
@@ -61,6 +70,7 @@ class SageType(Enum):
 
 class MessageType(Enum):
     """メッセージタイプ"""
+
     COMMAND = "command"
     QUERY = "query"
     REPORT = "report"
@@ -72,6 +82,7 @@ class MessageType(Enum):
 @dataclass
 class ElderMessage:
     """エルダー間メッセージ"""
+
     message_id: str
     source_elder: str
     target_elder: str
@@ -88,14 +99,14 @@ class ElderMessage:
     def to_json(self) -> str:
         """JSON変換"""
         data = asdict(self)
-        data['message_type'] = self.message_type.value
+        data["message_type"] = self.message_type.value
         return json.dumps(data, ensure_ascii=False)
 
     @classmethod
-    def from_json(cls, json_str: str) -> 'ElderMessage':
+    def from_json(cls, json_str: str) -> "ElderMessage":
         """JSONから復元"""
         data = json.loads(json_str)
-        data['message_type'] = MessageType(data['message_type'])
+        data["message_type"] = MessageType(data["message_type"])
         return cls(**data)
 
 
@@ -106,12 +117,14 @@ class ElderProcessBase(ABC):
     各エルダーはこのクラスを継承して独立プロセスとして動作する
     """
 
-    def __init__(self,
-                 elder_name: str,
-                 elder_role: ElderRole,
-                 port: int,
-                 redis_url: str = "redis://localhost:6379",
-                 sage_type: Optional[SageType] = None):
+    def __init__(
+        self,
+        elder_name: str,
+        elder_role: ElderRole,
+        port: int,
+        redis_url: str = "redis://localhost:6379",
+        sage_type: Optional[SageType] = None,
+    ):
         """
         Args:
             elder_name: エルダー名（プロセス識別子）
@@ -143,7 +156,7 @@ class ElderProcessBase(ABC):
             "messages_sent": 0,
             "messages_received": 0,
             "errors": 0,
-            "uptime": 0
+            "uptime": 0,
         }
 
         # 下位エルダーリスト（階層構造）
@@ -162,9 +175,7 @@ class ElderProcessBase(ABC):
         log_dir = Path("logs/elders")
         log_dir.mkdir(parents=True, exist_ok=True)
 
-        file_handler = logging.FileHandler(
-            log_dir / f"{self.elder_name}.log"
-        )
+        file_handler = logging.FileHandler(log_dir / f"{self.elder_name}.log")
 
         # フォーマッター
         formatter = logging.Formatter(
@@ -204,9 +215,7 @@ class ElderProcessBase(ABC):
 
             # メインループ開始
             await asyncio.gather(
-                self._message_loop(),
-                self._heartbeat_loop(),
-                self._main_loop()
+                self._message_loop(), self._heartbeat_loop(), self._main_loop()
             )
 
         except Exception as e:
@@ -225,7 +234,7 @@ class ElderProcessBase(ABC):
         await self.pubsub.subscribe(
             f"elder:{self.elder_name}",
             f"elder:broadcast",
-            f"elder:role:{self.elder_role.value}"
+            f"elder:role:{self.elder_role.value}",
         )
 
         self.logger.info("✅ Redis connected")
@@ -279,9 +288,9 @@ class ElderProcessBase(ABC):
                     payload={
                         "status": "active",
                         "uptime": (datetime.now() - self.start_time).total_seconds(),
-                        "stats": self.stats
+                        "stats": self.stats,
                     },
-                    priority=1
+                    priority=1,
                 )
 
                 await self.send_message(heartbeat_msg)
@@ -315,7 +324,9 @@ class ElderProcessBase(ABC):
             await self.redis.publish(channel, message.to_json())
             self.stats["messages_sent"] += 1
 
-            self.logger.debug(f"Sent message to {channel}: {message.message_type.value}")
+            self.logger.debug(
+                f"Sent message to {channel}: {message.message_type.value}"
+            )
 
         except Exception as e:
             self.logger.error(f"Message send error: {e}")
@@ -330,9 +341,9 @@ class ElderProcessBase(ABC):
             message_type=MessageType.ACKNOWLEDGE,
             payload={
                 "original_message_id": original_msg.message_id,
-                "status": "received"
+                "status": "received",
             },
-            priority=original_msg.priority
+            priority=original_msg.priority,
         )
         await self.send_message(ack_msg)
 
@@ -345,7 +356,9 @@ class ElderProcessBase(ABC):
         """ACK処理"""
         self.logger.debug(f"ACK received from {message.source_elder}")
 
-    async def query_elder(self, target_elder: str, query: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    async def query_elder(
+        self, target_elder: str, query: Dict[str, Any]
+    ) -> Optional[Dict[str, Any]]:
         """他のエルダーに問い合わせ"""
         query_msg = ElderMessage(
             message_id=f"query_{self.elder_name}_{datetime.now().timestamp()}",
@@ -354,7 +367,7 @@ class ElderProcessBase(ABC):
             message_type=MessageType.QUERY,
             payload=query,
             priority=7,
-            requires_ack=True
+            requires_ack=True,
         )
 
         # 応答用のFuture
@@ -389,7 +402,7 @@ class ElderProcessBase(ABC):
             target_elder=target,
             message_type=MessageType.REPORT,
             payload=report,
-            priority=6
+            priority=6,
         )
 
         await self.send_message(report_msg)
@@ -441,6 +454,7 @@ class ElderProcessBase(ABC):
 # プロセス起動用ヘルパー関数
 def run_elder_process(elder_class, *args, **kwargs):
     """エルダープロセスを起動"""
+
     async def main():
         elder = elder_class(*args, **kwargs)
         await elder.start()

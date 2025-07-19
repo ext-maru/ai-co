@@ -339,10 +339,14 @@ class KnowledgeSyncSystem:
             # パターン検出ロジック（仮実装）
             # 実際には機械学習やルールベースのパターン検出を実装
             if "WebSocket" in content:
-                patterns.append({"pattern": "WebSocket通信パターン", "usage_count": 4})  # 仮の値
+                patterns.append(
+                    {"pattern": "WebSocket通信パターン", "usage_count": 4}
+                )  # 仮の値
 
             if "エラーハンドリング" in content:
-                patterns.append({"pattern": "エラーハンドリングパターン", "usage_count": 5})
+                patterns.append(
+                    {"pattern": "エラーハンドリングパターン", "usage_count": 5}
+                )
 
         except Exception as e:
             self.logger.error(f"パターン分析エラー: {e}")
@@ -435,7 +439,9 @@ async def main():
     parser.add_argument("--install", action="store_true", help="初期セットアップ実行")
     parser.add_argument("--sync", action="store_true", help="知識同期実行")
     parser.add_argument("--weekly-report", action="store_true", help="週次レポート生成")
-    parser.add_argument("--monthly-review", action="store_true", help="月次レビュー実行")
+    parser.add_argument(
+        "--monthly-review", action="store_true", help="月次レビュー実行"
+    )
     parser.add_argument("--cron", action="store_true", help="cron設定生成")
 
     args = parser.parse_args()

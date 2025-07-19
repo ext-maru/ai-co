@@ -295,7 +295,8 @@ class ClaudeElderRuleEnforcementSystem:
         """タスク賢者への通知"""
         try:
             self.task_tracker.update_progress(
-                f"ルール違反検知: {rule.name}", files_affected=["rule_enforcement_system"]
+                f"ルール違反検知: {rule.name}",
+                files_affected=["rule_enforcement_system"],
             )
             logger.info("📋 タスク賢者への通知完了")
         except Exception as e:
@@ -522,7 +523,8 @@ class ClaudeElderRuleEnforcementSystem:
         try:
             # タスクトラッカーとの同期を実行
             self.task_tracker.update_progress(
-                "自動同期: ルール遵守システムによる定期更新", files_affected=["rule_enforcement_system"]
+                "自動同期: ルール遵守システムによる定期更新",
+                files_affected=["rule_enforcement_system"],
             )
             return True
         except Exception as e:
@@ -542,9 +544,9 @@ class ClaudeElderRuleEnforcementSystem:
                 [v for v in self.violations if v.severity == "HIGH"]
             ),
             "auto_fixes_applied": len([v for v in self.violations if v.fix_applied]),
-            "last_violation": self.violations[-1].timestamp.isoformat()
-            if self.violations
-            else None,
+            "last_violation": (
+                self.violations[-1].timestamp.isoformat() if self.violations else None
+            ),
         }
 
     def enable_rule(self, rule_id: str):

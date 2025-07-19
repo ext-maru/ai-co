@@ -1,4 +1,5 @@
 """GitHub統合テスト設定"""
+
 import sys
 from pathlib import Path
 

@@ -108,7 +108,9 @@ class CommandExecutorDiagnostic:
                 files = list(path.glob("*"))
                 print(f"✅ {name}: 存在 ({len(files)}個のファイル)")
                 if name == "pending" and files:
-                    print(f"   ⚠️ 実行待ちファイルがあります: {[f.name for f in files[:3]]}")
+                    print(
+                        f"   ⚠️ 実行待ちファイルがあります: {[f.name for f in files[:3]]}"
+                    )
                     self.issues.append("PENDING_FILES")
             else:
                 print(f"❌ {name}: 存在しない")
@@ -284,7 +286,9 @@ tmux new-session -d -s command_executor 'python3 workers/command_executor_worker
 
         # 実行待ちファイルがある場合
         if "PENDING_FILES" in self.issues:
-            print("   ⚠️ 実行待ちファイルがあります。プロセスが正常に動作しているか確認してください。")
+            print(
+                "   ⚠️ 実行待ちファイルがあります。プロセスが正常に動作しているか確認してください。"
+            )
 
         # Slack通知
         if fixed:

@@ -428,7 +428,12 @@ class APIIntegrationKnight(IncidentKnight):
             "impact": "ワーカーのAPI呼び出し機能が完全停止",
             "solution": "正しいAPIキーの設定と環境変数の更新",
             "confidence": 0.9,
-            "repair_steps": ["APIキーの形式確認", "環境変数の設定", "設定ファイルの更新", "接続テストの実行"],
+            "repair_steps": [
+                "APIキーの形式確認",
+                "環境変数の設定",
+                "設定ファイルの更新",
+                "接続テストの実行",
+            ],
         }
 
     async def _investigate_worker_issue(self, issue: Issue) -> Dict:
@@ -438,7 +443,12 @@ class APIIntegrationKnight(IncidentKnight):
             "impact": "特定ワーカーのAI機能が使用不可",
             "solution": "ワーカーのAPI統合コードの修正",
             "confidence": 0.85,
-            "repair_steps": ["API統合コードの追加", "例外処理の強化", "設定参照の修正", "ワーカー再起動"],
+            "repair_steps": [
+                "API統合コードの追加",
+                "例外処理の強化",
+                "設定参照の修正",
+                "ワーカー再起動",
+            ],
         }
 
     async def _investigate_config_issue(self, issue: Issue) -> Dict:
@@ -448,7 +458,12 @@ class APIIntegrationKnight(IncidentKnight):
             "impact": "システム全体のAPI機能の信頼性低下",
             "solution": "設定ファイルの構造化と標準化",
             "confidence": 0.8,
-            "repair_steps": ["設定スキーマの定義", "デフォルト値の設定", "バリデーション機能の追加", "設定の統合"],
+            "repair_steps": [
+                "設定スキーマの定義",
+                "デフォルト値の設定",
+                "バリデーション機能の追加",
+                "設定の統合",
+            ],
         }
 
     async def _investigate_connectivity_issue(self, issue: Issue) -> Dict:

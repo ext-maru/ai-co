@@ -480,7 +480,11 @@ class TestElderSystemIntegration:
                 "body": test_data["valid_request"],
                 "assertions": [
                     {"type": "status_code", "expected": 201},
-                    {"type": "json_path", "path": "elder.name", "expected": "テストエルダー"},
+                    {
+                        "type": "json_path",
+                        "path": "elder.name",
+                        "expected": "テストエルダー",
+                    },
                 ],
                 "save_response": {
                     "type": "json_path",
@@ -623,7 +627,9 @@ if __name__ == "__main__":
     print("pytest libs/pytest_integration_migration.py -v")
     print("pytest libs/pytest_integration_migration.py -m unit  # 基本テストのみ")
     print("pytest libs/pytest_integration_migration.py -m integration  # 統合テスト")
-    print("pytest libs/pytest_integration_migration.py -m database  # データベーステスト")
+    print(
+        "pytest libs/pytest_integration_migration.py -m database  # データベーステスト"
+    )
     print("pytest libs/pytest_integration_migration.py -m redis  # Redisテスト")
     print("\n注意: 統合テストにはDocker環境が必要です")
     print("testcontainers使用時: pip install testcontainers")

@@ -67,7 +67,9 @@ def generate_sample_data():
 
         # タイムスタンプ
         timestamp = base_time + timedelta(
-            hours=random.randint(0, 168), minutes=random.randint(0, 59), seconds=random.randint(0, 59)
+            hours=random.randint(0, 168),
+            minutes=random.randint(0, 59),
+            seconds=random.randint(0, 59),
         )
 
         # コンテンツ生成
@@ -177,7 +179,9 @@ def generate_sample_data():
             "severity": anomaly["severity"],
             "description": anomaly["description"],
             "count": random.randint(5, 50),
-            "last_detected": (base_time + timedelta(hours=random.randint(0, 168))).isoformat(),
+            "last_detected": (
+                base_time + timedelta(hours=random.randint(0, 168))
+            ).isoformat(),
             "agents": random.sample(agents, k=random.randint(2, 5)),
             "keywords": anomaly["pattern"].split("-"),
             "threshold": random.uniform(0.6, 0.9),
@@ -193,7 +197,9 @@ def generate_sample_data():
 
         result = {
             "id": f"analysis_{i+1:04d}",
-            "timestamp": (base_time + timedelta(minutes=random.randint(0, 10080))).isoformat(),
+            "timestamp": (
+                base_time + timedelta(minutes=random.randint(0, 10080))
+            ).isoformat(),
             "sender": agent_from,
             "receiver": agent_to,
             "flow": f"{agent_from} -> {agent_to}",
@@ -208,19 +214,25 @@ def generate_sample_data():
     data_dir.mkdir(exist_ok=True)
 
     # 通信データ保存
-    comm_file = data_dir / f"a2a_communications_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    comm_file = (
+        data_dir / f"a2a_communications_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
     with open(comm_file, "w", encoding="utf-8") as f:
         json.dump(communications, f, indent=2, ensure_ascii=False)
     print(f"✅ Generated {len(communications)} communications: {comm_file}")
 
     # 異常パターン保存
-    anomaly_file = data_dir / f"anomaly_patterns_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    anomaly_file = (
+        data_dir / f"anomaly_patterns_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
     with open(anomaly_file, "w", encoding="utf-8") as f:
         json.dump(anomaly_patterns, f, indent=2, ensure_ascii=False)
     print(f"✅ Generated {len(anomaly_patterns)} anomaly patterns: {anomaly_file}")
 
     # 分析結果保存
-    analysis_file = data_dir / f"semantic_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    analysis_file = (
+        data_dir / f"semantic_analysis_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    )
     with open(analysis_file, "w", encoding="utf-8") as f:
         json.dump(analysis_results, f, indent=2, ensure_ascii=False)
     print(f"✅ Generated {len(analysis_results)} analysis results: {analysis_file}")

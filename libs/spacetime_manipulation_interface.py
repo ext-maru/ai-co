@@ -18,8 +18,10 @@ import threading
 import concurrent.futures
 import math
 
+
 class SpacetimeDimension(Enum):
     """時空間次元定義"""
+
     TEMPORAL = "temporal"  # 時間次元
     SPATIAL_X = "spatial_x"  # 空間X軸
     SPATIAL_Y = "spatial_y"  # 空間Y軸
@@ -27,16 +29,20 @@ class SpacetimeDimension(Enum):
     ENERGY = "energy"  # エネルギー次元
     INFORMATION = "information"  # 情報次元
 
+
 class CausalityFlow(Enum):
     """因果律フロー"""
+
     FORWARD = "forward"  # 順行
     BACKWARD = "backward"  # 逆行
     PARALLEL = "parallel"  # 並行
     ORTHOGONAL = "orthogonal"  # 直交
 
+
 @dataclass
 class SpacetimeCoordinate:
     """時空間座標"""
+
     x: float = 0.0
     y: float = 0.0
     z: float = 0.0
@@ -45,9 +51,11 @@ class SpacetimeCoordinate:
     info_density: float = 0.0
     timestamp: datetime = field(default_factory=datetime.now)
 
+
 @dataclass
 class SpacetimeEvent:
     """時空間イベント"""
+
     event_id: str
     coordinates: SpacetimeCoordinate
     event_type: str
@@ -55,6 +63,7 @@ class SpacetimeEvent:
     causality_chain: List[str] = field(default_factory=list)
     probability: float = 1.0
     quantum_state: Optional[str] = None
+
 
 class SpacetimeMatrix:
     """時空間マトリックス"""
@@ -84,10 +93,12 @@ class SpacetimeMatrix:
         self.event_registry[event.event_id] = {
             "event": event,
             "coordinate": coordinate,
-            "matrix_position": (x_idx, y_idx, z_idx, t_idx)
+            "matrix_position": (x_idx, y_idx, z_idx, t_idx),
         }
 
-    def get_local_spacetime(self, center: SpacetimeCoordinate, radius: int = 5) -> np.ndarray:
+    def get_local_spacetime(
+        self, center: SpacetimeCoordinate, radius: int = 5
+    ) -> np.ndarray:
         """局所時空間取得"""
         x_center = int(center.x) % self.x_size
         y_center = int(center.y) % self.y_size
@@ -106,6 +117,7 @@ class SpacetimeMatrix:
 
         return self.matrix[x_start:x_end, y_start:y_end, z_start:z_end, t_start:t_end]
 
+
 class TemporalEngine:
     """時間操作エンジン"""
 
@@ -115,7 +127,9 @@ class TemporalEngine:
         self.causality_violations = []
         self.time_dilation_factor = 1.0
 
-    async def create_time_stream(self, stream_id: str, flow: CausalityFlow = CausalityFlow.FORWARD) -> str:
+    async def create_time_stream(
+        self, stream_id: str, flow: CausalityFlow = CausalityFlow.FORWARD
+    ) -> str:
         """時間ストリーム作成"""
         stream = {
             "id": stream_id,
@@ -123,13 +137,15 @@ class TemporalEngine:
             "created_at": datetime.now(),
             "events": [],
             "velocity": 1.0,  # 時間の流れる速度
-            "direction": 1 if flow == CausalityFlow.FORWARD else -1
+            "direction": 1 if flow == CausalityFlow.FORWARD else -1,
         }
 
         self.time_streams[stream_id] = stream
         return stream_id
 
-    async def time_travel(self, target_time: datetime, method: str = "quantum_tunnel") -> Dict[str, Any]:
+    async def time_travel(
+        self, target_time: datetime, method: str = "quantum_tunnel"
+    ) -> Dict[str, Any]:
         """時間移動"""
         current_time = datetime.now()
         time_delta = (target_time - current_time).total_seconds()
@@ -159,7 +175,7 @@ class TemporalEngine:
             "uncertainty": uncertainty,
             "success": True,
             "energy_cost": abs(delta_seconds) * 1.21,  # ジゴワット/秒
-            "causality_risk": min(abs(delta_seconds) / 86400, 0.99)  # 日数ベース
+            "causality_risk": min(abs(delta_seconds) / 86400, 0.99),  # 日数ベース
         }
 
     async def _temporal_loop_jump(self, delta_seconds: float) -> Dict[str, Any]:
@@ -176,7 +192,7 @@ class TemporalEngine:
             "loop_iterations": loop_iterations,
             "success": True,
             "paradox_risk": loop_iterations * 0.05,
-            "temporal_signature": f"loop_{loop_iterations}_{int(time.time())}"
+            "temporal_signature": f"loop_{loop_iterations}_{int(time.time())}",
         }
 
     async def _causality_bridge(self, delta_seconds: float) -> Dict[str, Any]:
@@ -192,8 +208,9 @@ class TemporalEngine:
             "bridge_strength": bridge_strength,
             "success": bridge_strength > 0.1,
             "causality_preserved": True,
-            "timeline_integrity": bridge_strength
+            "timeline_integrity": bridge_strength,
         }
+
 
 class SpatialManipulator:
     """空間操作システム"""
@@ -204,10 +221,12 @@ class SpatialManipulator:
         self.pocket_dimensions = {}
         self.folding_operations = []
 
-    async def fold_space(self, point_a: SpacetimeCoordinate, point_b: SpacetimeCoordinate) -> Dict[str, Any]:
+    async def fold_space(
+        self, point_a: SpacetimeCoordinate, point_b: SpacetimeCoordinate
+    ) -> Dict[str, Any]:
         """空間折り畳み"""
         distance = self._calculate_spatial_distance(point_a, point_b)
-        folding_energy = distance ** 2 * 1.5  # E = d² × 1.5
+        folding_energy = distance**2 * 1.5  # E = d² × 1.5
 
         # 空間折り畳み処理
         await asyncio.sleep(0.02)
@@ -222,7 +241,7 @@ class SpatialManipulator:
             "folded_distance": distance * 0.01,  # 99%の距離短縮
             "energy_required": folding_energy,
             "stability": max(0.1, 1.0 - distance / 1000),
-            "created_at": datetime.now()
+            "created_at": datetime.now(),
         }
 
         self.folding_operations.append(folding_operation)
@@ -232,10 +251,12 @@ class SpatialManipulator:
             "distance_reduction": distance * 0.99,
             "energy_cost": folding_energy,
             "stability": folding_operation["stability"],
-            "success": True
+            "success": True,
         }
 
-    async def create_wormhole(self, entrance: SpacetimeCoordinate, exit: SpacetimeCoordinate) -> str:
+    async def create_wormhole(
+        self, entrance: SpacetimeCoordinate, exit: SpacetimeCoordinate
+    ) -> str:
         """ワームホール作成"""
         wormhole_id = f"wh_{int(time.time())}_{len(self.wormholes)}"
 
@@ -251,20 +272,24 @@ class SpatialManipulator:
             "stability": stability,
             "throughput": int(stability * 1000),  # 安定性 × 1000 events/sec
             "created_at": datetime.now(),
-            "traverse_count": 0
+            "traverse_count": 0,
         }
 
         self.wormholes[wormhole_id] = wormhole
         return wormhole_id
 
-    def _calculate_spatial_distance(self, point_a: SpacetimeCoordinate, point_b: SpacetimeCoordinate) -> float:
+    def _calculate_spatial_distance(
+        self, point_a: SpacetimeCoordinate, point_b: SpacetimeCoordinate
+    ) -> float:
         """空間距離計算"""
         dx = point_a.x - point_b.x
         dy = point_a.y - point_b.y
         dz = point_a.z - point_b.z
         return math.sqrt(dx**2 + dy**2 + dz**2)
 
-    async def create_pocket_dimension(self, size: Tuple[float, float, float], purpose: str = "storage") -> str:
+    async def create_pocket_dimension(
+        self, size: Tuple[float, float, float], purpose: str = "storage"
+    ) -> str:
         """ポケット次元作成"""
         dimension_id = f"pocket_{int(time.time())}_{len(self.pocket_dimensions)}"
 
@@ -282,11 +307,12 @@ class SpatialManipulator:
             "stability": min(1.0, 100.0 / volume),  # 小さいほど安定
             "contents": [],
             "access_points": [],
-            "created_at": datetime.now()
+            "created_at": datetime.now(),
         }
 
         self.pocket_dimensions[dimension_id] = dimension
         return dimension_id
+
 
 class SpacetimeManipulationInterface:
     """時空間操作統合インターフェース"""
@@ -298,7 +324,9 @@ class SpacetimeManipulationInterface:
         self.operation_history = []
         self.causality_monitor = CausalityMonitor()
 
-    async def execute_spacetime_operation(self, operation: Dict[str, Any]) -> Dict[str, Any]:
+    async def execute_spacetime_operation(
+        self, operation: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """時空間操作実行"""
         operation_start = datetime.now()
 
@@ -309,36 +337,35 @@ class SpacetimeManipulationInterface:
             if operation_type == "time_travel":
                 result = await self.temporal_engine.time_travel(
                     parameters.get("target_time"),
-                    parameters.get("method", "quantum_tunnel")
+                    parameters.get("method", "quantum_tunnel"),
                 )
             elif operation_type == "space_fold":
                 result = await self.spatial_manipulator.fold_space(
-                    parameters.get("point_a"),
-                    parameters.get("point_b")
+                    parameters.get("point_a"), parameters.get("point_b")
                 )
             elif operation_type == "create_wormhole":
                 wormhole_id = await self.spatial_manipulator.create_wormhole(
-                    parameters.get("entrance"),
-                    parameters.get("exit")
+                    parameters.get("entrance"), parameters.get("exit")
                 )
                 result = {"wormhole_id": wormhole_id, "success": True}
             elif operation_type == "pocket_dimension":
                 dimension_id = await self.spatial_manipulator.create_pocket_dimension(
-                    parameters.get("size"),
-                    parameters.get("purpose", "storage")
+                    parameters.get("size"), parameters.get("purpose", "storage")
                 )
                 result = {"dimension_id": dimension_id, "success": True}
             elif operation_type == "time_stream":
                 stream_id = await self.temporal_engine.create_time_stream(
                     parameters.get("stream_id"),
-                    parameters.get("flow", CausalityFlow.FORWARD)
+                    parameters.get("flow", CausalityFlow.FORWARD),
                 )
                 result = {"stream_id": stream_id, "success": True}
             else:
                 raise ValueError(f"Unknown spacetime operation: {operation_type}")
 
             # 因果律チェック
-            causality_check = await self.causality_monitor.check_operation(operation, result)
+            causality_check = await self.causality_monitor.check_operation(
+                operation, result
+            )
 
             operation_record = {
                 "operation": operation,
@@ -346,7 +373,7 @@ class SpacetimeManipulationInterface:
                 "causality_check": causality_check,
                 "execution_time": (datetime.now() - operation_start).total_seconds(),
                 "timestamp": operation_start.isoformat(),
-                "success": True
+                "success": True,
             }
 
             self.operation_history.append(operation_record)
@@ -358,7 +385,7 @@ class SpacetimeManipulationInterface:
                 "error": str(e),
                 "execution_time": (datetime.now() - operation_start).total_seconds(),
                 "timestamp": operation_start.isoformat(),
-                "success": False
+                "success": False,
             }
 
             self.operation_history.append(error_record)
@@ -371,7 +398,7 @@ class SpacetimeManipulationInterface:
                 "x": self.spacetime_matrix.x_size,
                 "y": self.spacetime_matrix.y_size,
                 "z": self.spacetime_matrix.z_size,
-                "t": self.spacetime_matrix.t_size
+                "t": self.spacetime_matrix.t_size,
             },
             "active_events": len(self.spacetime_matrix.event_registry),
             "time_streams": len(self.temporal_engine.time_streams),
@@ -379,8 +406,9 @@ class SpacetimeManipulationInterface:
             "pocket_dimensions": len(self.spatial_manipulator.pocket_dimensions),
             "folding_operations": len(self.spatial_manipulator.folding_operations),
             "total_operations": len(self.operation_history),
-            "causality_violations": len(self.temporal_engine.causality_violations)
+            "causality_violations": len(self.temporal_engine.causality_violations),
         }
+
 
 class CausalityMonitor:
     """因果律監視システム"""
@@ -390,7 +418,9 @@ class CausalityMonitor:
         self.causality_graph = {}
         self.timeline_integrity = 1.0
 
-    async def check_operation(self, operation: Dict[str, Any], result: Dict[str, Any]) -> Dict[str, Any]:
+    async def check_operation(
+        self, operation: Dict[str, Any], result: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """操作の因果律チェック"""
         operation_type = operation.get("type")
         risk_level = 0.0
@@ -417,15 +447,18 @@ class CausalityMonitor:
 
         # タイムライン整合性更新
         if violation_detected:
-            self.timeline_integrity *= (1.0 - causality_impact * 0.1)
+            self.timeline_integrity *= 1.0 - causality_impact * 0.1
 
         return {
             "risk_level": risk_level,
             "causality_impact": causality_impact,
             "violation_detected": violation_detected,
             "timeline_integrity": self.timeline_integrity,
-            "recommendation": "proceed" if not violation_detected else "caution_required"
+            "recommendation": (
+                "proceed" if not violation_detected else "caution_required"
+            ),
         }
+
 
 # デモ実行
 async def spacetime_demo():
@@ -439,10 +472,7 @@ async def spacetime_demo():
     future_time = datetime.now() + timedelta(hours=24)
     time_travel_op = {
         "type": "time_travel",
-        "parameters": {
-            "target_time": future_time,
-            "method": "quantum_tunnel"
-        }
+        "parameters": {"target_time": future_time, "method": "quantum_tunnel"},
     }
 
     print("\n⏰ Testing time travel...")
@@ -455,15 +485,14 @@ async def spacetime_demo():
 
     space_fold_op = {
         "type": "space_fold",
-        "parameters": {
-            "point_a": point_a,
-            "point_b": point_b
-        }
+        "parameters": {"point_a": point_a, "point_b": point_b},
     }
 
     print("\n🌌 Testing space folding...")
     result2 = await interface.execute_spacetime_operation(space_fold_op)
-    print(f"Space folding result: Distance reduced by {result2['result']['distance_reduction']:.2f} units")
+    print(
+        f"Space folding result: Distance reduced by {result2['result']['distance_reduction']:.2f} units"
+    )
 
     # 3. ワームホール作成テスト
     entrance = SpacetimeCoordinate(x=100, y=100, z=0, t=0)
@@ -471,10 +500,7 @@ async def spacetime_demo():
 
     wormhole_op = {
         "type": "create_wormhole",
-        "parameters": {
-            "entrance": entrance,
-            "exit": exit
-        }
+        "parameters": {"entrance": entrance, "exit": exit},
     }
 
     print("\n🕳️ Testing wormhole creation...")
@@ -484,10 +510,7 @@ async def spacetime_demo():
     # 4. ポケット次元作成テスト
     pocket_op = {
         "type": "pocket_dimension",
-        "parameters": {
-            "size": (10, 10, 10),
-            "purpose": "data_storage"
-        }
+        "parameters": {"size": (10, 10, 10), "purpose": "data_storage"},
     }
 
     print("\n📦 Testing pocket dimension creation...")
@@ -500,13 +523,17 @@ async def spacetime_demo():
     print(json.dumps(status, indent=2))
 
     # 6. 因果律レポート
-    causality_violations = sum(1 for op in interface.operation_history
-                             if op.get('causality_check', {}).get('violation_detected', False))
+    causality_violations = sum(
+        1
+        for op in interface.operation_history
+        if op.get("causality_check", {}).get("violation_detected", False)
+    )
 
     print(f"\n⚖️ Causality Report:")
     print(f"Total operations: {len(interface.operation_history)}")
     print(f"Causality violations: {causality_violations}")
     print(f"Timeline integrity: {interface.causality_monitor.timeline_integrity:.3f}")
+
 
 if __name__ == "__main__":
     asyncio.run(spacetime_demo())

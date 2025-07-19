@@ -707,9 +707,9 @@ class AIProjectPlacementManager:
 
             # Save placement metadata (convert enums to strings for JSON serialization)
             criteria_dict = asdict(criteria)
-            criteria_dict[
-                "security_requirements"
-            ] = criteria.security_requirements.value
+            criteria_dict["security_requirements"] = (
+                criteria.security_requirements.value
+            )
             criteria_dict["resource_needs"] = {
                 k.value: v for k, v in criteria.resource_needs.items()
             }

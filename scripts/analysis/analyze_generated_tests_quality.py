@@ -185,14 +185,14 @@ class GeneratedTestsQualityAnalysis:
         }
 
         # Pattern compliance analysis
-        analysis_results[
-            "pattern_compliance_analysis"
-        ] = await self._analyze_pattern_compliance(successful_analyses)
+        analysis_results["pattern_compliance_analysis"] = (
+            await self._analyze_pattern_compliance(successful_analyses)
+        )
 
         # Elder Council recommendations
-        analysis_results[
-            "elder_council_recommendations"
-        ] = self._generate_elder_recommendations(successful_analyses, avg_quality_score)
+        analysis_results["elder_council_recommendations"] = (
+            self._generate_elder_recommendations(successful_analyses, avg_quality_score)
+        )
 
         # 4 Sages insights summary
         analysis_results["four_sages_insights"] = await self._get_four_sages_insights(
@@ -321,10 +321,9 @@ class GeneratedTestsQualityAnalysis:
             "average_coverage_effectiveness": avg_coverage_effectiveness,
             "average_test_complexity": avg_test_complexity,
             "high_pattern_compliance_count": high_pattern_compliance,
-            "pattern_application_success_rate": high_pattern_compliance
-            / len(pattern_scores)
-            if pattern_scores
-            else 0,
+            "pattern_application_success_rate": (
+                high_pattern_compliance / len(pattern_scores) if pattern_scores else 0
+            ),
             "assessment": self._assess_pattern_success(
                 avg_pattern_compliance, high_pattern_compliance, len(results)
             ),
@@ -391,17 +390,17 @@ class GeneratedTestsQualityAnalysis:
 
         # Strategic assessment
         if avg_score >= 0.8:
-            recommendations[
-                "strategic_assessment"
-            ] = "Generated tests demonstrate strong quality and support coverage achievement goals"
+            recommendations["strategic_assessment"] = (
+                "Generated tests demonstrate strong quality and support coverage achievement goals"
+            )
         elif avg_score >= 0.7:
-            recommendations[
-                "strategic_assessment"
-            ] = "Generated tests show good foundation with opportunities for excellence"
+            recommendations["strategic_assessment"] = (
+                "Generated tests show good foundation with opportunities for excellence"
+            )
         else:
-            recommendations[
-                "strategic_assessment"
-            ] = "Generated tests require significant quality improvements before deployment"
+            recommendations["strategic_assessment"] = (
+                "Generated tests require significant quality improvements before deployment"
+            )
 
         # Immediate actions
         low_quality_files = [

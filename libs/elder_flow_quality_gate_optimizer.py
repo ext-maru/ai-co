@@ -15,6 +15,7 @@ from datetime import datetime
 @dataclass
 class QualityMetrics:
     """品質メトリクス"""
+
     test_coverage: float = 70.0  # 最小テストカバレッジ（%）
     code_complexity: float = 10.0  # 最大サイクロマティック複雑度
     duplication_ratio: float = 5.0  # 最大重複率（%）
@@ -27,29 +28,30 @@ class QualityMetrics:
 @dataclass
 class AdaptiveThresholds:
     """適応的な閾値設定"""
+
     # 優先度別の緩和率
     priority_relaxation = {
         "critical": 0.7,  # 30%緩和
-        "high": 0.85,     # 15%緩和
-        "medium": 0.95,   # 5%緩和
-        "low": 1.0        # 緩和なし
+        "high": 0.85,  # 15%緩和
+        "medium": 0.95,  # 5%緩和
+        "low": 1.0,  # 緩和なし
     }
 
     # プロジェクトフェーズ別の調整
     phase_adjustment = {
         "prototype": 0.6,  # プロトタイプフェーズ
         "development": 0.8,  # 開発フェーズ
-        "staging": 0.9,      # ステージング
-        "production": 1.0    # 本番
+        "staging": 0.9,  # ステージング
+        "production": 1.0,  # 本番
     }
 
     # 連続失敗時の段階的緩和
     failure_count_relaxation = {
-        1: 1.0,    # 初回は緩和なし
-        2: 0.95,   # 2回目は5%緩和
-        3: 0.90,   # 3回目は10%緩和
-        4: 0.85,   # 4回目は15%緩和
-        5: 0.80    # 5回以上は20%緩和
+        1: 1.0,  # 初回は緩和なし
+        2: 0.95,  # 2回目は5%緩和
+        3: 0.90,  # 3回目は10%緩和
+        4: 0.85,  # 4回目は15%緩和
+        5: 0.80,  # 5回以上は20%緩和
     }
 
 
@@ -70,7 +72,7 @@ class ElderFlowQualityGateOptimizer:
         """設定ファイル読み込み"""
         if self.config_path.exists():
             try:
-                with open(self.config_path, 'r') as f:
+                with open(self.config_path, "r") as f:
                     config = json.load(f)
 
                 # 基準メトリクス更新
@@ -92,19 +94,22 @@ class ElderFlowQualityGateOptimizer:
             config = {
                 "base_metrics": asdict(self.base_metrics),
                 "history": self.history[-100:],  # 最新100件のみ保存
-                "last_updated": datetime.now().isoformat()
+                "last_updated": datetime.now().isoformat(),
             }
 
             self.config_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(self.config_path, 'w') as f:
+            with open(self.config_path, "w") as f:
                 json.dump(config, f, indent=2)
 
         except Exception as e:
             self.logger.error(f"Failed to save config: {e}")
 
-    def get_adjusted_metrics(self, priority: str = "medium",
-                           phase: str = "development",
-                           failure_count: int = 0) -> Dict[str, float]:
+    def get_adjusted_metrics(
+        self,
+        priority: str = "medium",
+        phase: str = "development",
+        failure_count: int = 0,
+    ) -> Dict[str, float]:
         """
         調整された品質メトリクスを取得
 
@@ -135,8 +140,13 @@ class ElderFlowQualityGateOptimizer:
 
         # 各メトリクスに調整を適用
         for key in adjusted:
-            if key in ["test_coverage", "documentation_coverage", "lint_score",
-                      "security_score", "performance_score"]:
+            if key in [
+                "test_coverage",
+                "documentation_coverage",
+                "lint_score",
+                "security_score",
+                "performance_score",
+            ]:
                 # これらは下限値なので、係数を掛けて下げる
                 adjusted[key] *= total_factor
             elif key in ["code_complexity", "duplication_ratio"]:
@@ -148,22 +158,24 @@ class ElderFlowQualityGateOptimizer:
 
         return adjusted
 
-    def _record_adjustment(self, priority: str, phase: str,
-                          failure_count: int, factor: float):
+    def _record_adjustment(
+        self, priority: str, phase: str, failure_count: int, factor: float
+    ):
         """調整履歴を記録"""
         record = {
             "timestamp": datetime.now().isoformat(),
             "priority": priority,
             "phase": phase,
             "failure_count": failure_count,
-            "adjustment_factor": factor
+            "adjustment_factor": factor,
         }
 
         self.history.append(record)
         self._save_config()
 
-    def evaluate_quality(self, metrics: Dict[str, float],
-                        adjusted_thresholds: Dict[str, float]) -> Dict:
+    def evaluate_quality(
+        self, metrics: Dict[str, float], adjusted_thresholds: Dict[str, float]
+    ) -> Dict:
         """
         品質評価を実行
 
@@ -183,19 +195,26 @@ class ElderFlowQualityGateOptimizer:
             actual_value = metrics.get(metric, 0)
             max_score += 10
 
-            if metric in ["test_coverage", "documentation_coverage", "lint_score",
-                         "security_score", "performance_score"]:
+            if metric in [
+                "test_coverage",
+                "documentation_coverage",
+                "lint_score",
+                "security_score",
+                "performance_score",
+            ]:
                 # 下限値チェック
                 if actual_value >= threshold:
                     score += 10
                 else:
                     passed = False
-                    failures.append({
-                        "metric": metric,
-                        "threshold": threshold,
-                        "actual": actual_value,
-                        "type": "below_minimum"
-                    })
+                    failures.append(
+                        {
+                            "metric": metric,
+                            "threshold": threshold,
+                            "actual": actual_value,
+                            "type": "below_minimum",
+                        }
+                    )
                     # 部分点
                     score += max(0, 10 * (actual_value / threshold))
 
@@ -205,12 +224,14 @@ class ElderFlowQualityGateOptimizer:
                     score += 10
                 else:
                     passed = False
-                    failures.append({
-                        "metric": metric,
-                        "threshold": threshold,
-                        "actual": actual_value,
-                        "type": "above_maximum"
-                    })
+                    failures.append(
+                        {
+                            "metric": metric,
+                            "threshold": threshold,
+                            "actual": actual_value,
+                            "type": "above_maximum",
+                        }
+                    )
                     # 部分点
                     score += max(0, 10 * (threshold / actual_value))
 
@@ -220,7 +241,7 @@ class ElderFlowQualityGateOptimizer:
             "max_score": max_score,
             "percentage": (score / max_score * 100) if max_score > 0 else 0,
             "failures": failures,
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
     def suggest_improvements(self, failures: List[Dict]) -> List[str]:
@@ -277,7 +298,7 @@ class ElderFlowQualityGateOptimizer:
                 "total_adjustments": 0,
                 "average_factor": 1.0,
                 "priority_distribution": {},
-                "phase_distribution": {}
+                "phase_distribution": {},
             }
 
         total = len(self.history)
@@ -301,5 +322,5 @@ class ElderFlowQualityGateOptimizer:
             "average_factor": avg_factor,
             "priority_distribution": priority_dist,
             "phase_distribution": phase_dist,
-            "recent_adjustments": self.history[-10:]  # 最新10件
+            "recent_adjustments": self.history[-10:],  # 最新10件
         }

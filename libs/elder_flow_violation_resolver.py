@@ -21,6 +21,7 @@ import inspect
 
 class ViolationType(Enum):
     """違反タイプ"""
+
     ABSTRACT_METHOD = "abstract_method"
     IDENTITY = "identity"
     QUALITY_GATE = "quality_gate"
@@ -31,6 +32,7 @@ class ViolationType(Enum):
 
 class ViolationStatus(Enum):
     """違反ステータス"""
+
     OPEN = "open"
     IN_PROGRESS = "in_progress"
     RESOLVED = "resolved"
@@ -40,6 +42,7 @@ class ViolationStatus(Enum):
 @dataclass
 class Violation:
     """違反情報"""
+
     id: int
     type: ViolationType
     severity: str
@@ -83,13 +86,25 @@ class ElderFlowViolationResolver:
             "abstract_methods": await self._analyze_abstract_violations(),
             "identity": await self._analyze_identity_violations(),
             "quality_gates": await self._analyze_quality_violations(),
-            "summary": {}
+            "summary": {},
         }
 
         # サマリー作成
-        abstract_count = len(violations["abstract_methods"]) if isinstance(violations["abstract_methods"], list) else 0
-        identity_count = len(violations["identity"]) if isinstance(violations["identity"], list) else 0
-        quality_count = len(violations["quality_gates"]) if isinstance(violations["quality_gates"], list) else 0
+        abstract_count = (
+            len(violations["abstract_methods"])
+            if isinstance(violations["abstract_methods"], list)
+            else 0
+        )
+        identity_count = (
+            len(violations["identity"])
+            if isinstance(violations["identity"], list)
+            else 0
+        )
+        quality_count = (
+            len(violations["quality_gates"])
+            if isinstance(violations["quality_gates"], list)
+            else 0
+        )
 
         total_violations = abstract_count + identity_count + quality_count
 
@@ -110,8 +125,8 @@ class ElderFlowViolationResolver:
             "types": {
                 "abstract_methods": abstract_count,
                 "identity": identity_count,
-                "quality_gates": quality_count
-            }
+                "quality_gates": quality_count,
+            },
         }
 
         self.logger.info(f"✅ 違反分析完了: {total_violations}件の違反発見")
@@ -133,24 +148,28 @@ class ElderFlowViolationResolver:
         self.logger.debug(f"Available columns: {columns}")
 
         # 違反データ取得
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT class_name, missing_method, file_path,
                    severity, status, detected_at
             FROM violations
             WHERE status = 'open'
             ORDER BY severity DESC, detected_at
-        """)
+        """
+        )
 
         for row in cursor.fetchall():
-            violations.append({
-                "class_name": row[0],
-                "method_name": row[1],  # missing_method
-                "file_path": row[2],
-                "line_number": 0,  # line_numberカラムが存在しない
-                "severity": row[3],
-                "status": row[4],
-                "created_at": row[5]
-            })
+            violations.append(
+                {
+                    "class_name": row[0],
+                    "method_name": row[1],  # missing_method
+                    "file_path": row[2],
+                    "line_number": 0,  # line_numberカラムが存在しない
+                    "severity": row[3],
+                    "status": row[4],
+                    "created_at": row[5],
+                }
+            )
 
         conn.close()
         return violations
@@ -162,21 +181,23 @@ class ElderFlowViolationResolver:
         if not self.identity_violations.exists():
             return violations
 
-        with open(self.identity_violations, 'r') as f:
+        with open(self.identity_violations, "r") as f:
             data = json.load(f)
 
         # データは配列形式
         for entry in data:
             if isinstance(entry, dict) and "violations" in entry:
                 for violation in entry.get("violations", []):
-                    violations.append({
-                        "type": "identity",
-                        "phrase": violation.get("phrase"),
-                        "file": entry.get("source", "unknown"),
-                        "line": 0,  # 行番号は記録されていない
-                        "severity": violation.get("severity", "critical"),
-                        "timestamp": entry.get("timestamp")
-                    })
+                    violations.append(
+                        {
+                            "type": "identity",
+                            "phrase": violation.get("phrase"),
+                            "file": entry.get("source", "unknown"),
+                            "line": 0,  # 行番号は記録されていない
+                            "severity": violation.get("severity", "critical"),
+                            "timestamp": entry.get("timestamp"),
+                        }
+                    )
 
         return violations
 
@@ -187,15 +208,17 @@ class ElderFlowViolationResolver:
         # 品質ログから違反を抽出
         quality_log = Path("logs/quality_daemon.log")
         if quality_log.exists():
-            with open(quality_log, 'r') as f:
+            with open(quality_log, "r") as f:
                 for line in f:
                     if "❌" in line or "失敗" in line or "FAILED" in line:
-                        violations.append({
-                            "type": "quality_gate",
-                            "message": line.strip(),
-                            "severity": "high",
-                            "timestamp": datetime.now().isoformat()
-                        })
+                        violations.append(
+                            {
+                                "type": "quality_gate",
+                                "message": line.strip(),
+                                "severity": "high",
+                                "timestamp": datetime.now().isoformat(),
+                            }
+                        )
 
         return violations
 
@@ -204,12 +227,7 @@ class ElderFlowViolationResolver:
         self.logger.info("🔧 抽象メソッド違反解決開始")
 
         violations = await self._analyze_abstract_violations()
-        results = {
-            "total": len(violations),
-            "resolved": 0,
-            "failed": 0,
-            "details": []
-        }
+        results = {"total": len(violations), "resolved": 0, "failed": 0, "details": []}
 
         # クラスごとにグループ化
         class_violations = {}
@@ -230,10 +248,14 @@ class ElderFlowViolationResolver:
                 self.logger.error(f"❌ {class_name} 違反解決失敗: {e}")
                 results["failed"] += len(class_vios)
 
-        self.logger.info(f"✅ 抽象メソッド違反解決完了: {results['resolved']}/{results['total']} 成功")
+        self.logger.info(
+            f"✅ 抽象メソッド違反解決完了: {results['resolved']}/{results['total']} 成功"
+        )
         return results
 
-    async def _resolve_class_violations(self, class_name: str, violations: List[Dict]) -> Dict[str, Any]:
+    async def _resolve_class_violations(
+        self, class_name: str, violations: List[Dict]
+    ) -> Dict[str, Any]:
         """クラス単位の違反解決"""
         result = {
             "class_name": class_name,
@@ -241,7 +263,7 @@ class ElderFlowViolationResolver:
             "violations": len(violations),
             "resolved": 0,
             "failed": 0,
-            "methods_implemented": []
+            "methods_implemented": [],
         }
 
         file_path = Path(violations[0]["file_path"])
@@ -251,7 +273,9 @@ class ElderFlowViolationResolver:
             return result
 
         # 実装コード生成
-        implementation_code = self._generate_abstract_implementations(class_name, violations)
+        implementation_code = self._generate_abstract_implementations(
+            class_name, violations
+        )
 
         # ファイル修正
         try:
@@ -268,7 +292,9 @@ class ElderFlowViolationResolver:
 
         return result
 
-    def _generate_abstract_implementations(self, class_name: str, violations: List[Dict]) -> str:
+    def _generate_abstract_implementations(
+        self, class_name: str, violations: List[Dict]
+    ) -> str:
         """抽象メソッド実装コード生成"""
         implementations = []
 
@@ -436,9 +462,11 @@ class ElderFlowViolationResolver:
 
         return "\n".join(implementations)
 
-    async def _apply_implementation(self, file_path: Path, class_name: str, implementation: str):
+    async def _apply_implementation(
+        self, file_path: Path, class_name: str, implementation: str
+    ):
         """実装コードをファイルに適用"""
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             content = f.read()
 
         # ASTを使ってクラス定義を探す
@@ -460,17 +488,19 @@ class ElderFlowViolationResolver:
             raise ValueError(f"クラス {class_name} が見つかりません")
 
         # ファイル内容を行で分割
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # 実装を挿入
-        implementation_lines = implementation.split('\n')
+        implementation_lines = implementation.split("\n")
 
         # インデントを調整（クラス内のメソッドなので4スペース追加）
-        new_lines = lines[:class_end_line] + implementation_lines + lines[class_end_line:]
+        new_lines = (
+            lines[:class_end_line] + implementation_lines + lines[class_end_line:]
+        )
 
         # ファイル書き込み
-        with open(file_path, 'w') as f:
-            f.write('\n'.join(new_lines))
+        with open(file_path, "w") as f:
+            f.write("\n".join(new_lines))
 
         self.logger.info(f"✅ {class_name} に実装を追加: {file_path}")
 
@@ -483,11 +513,14 @@ class ElderFlowViolationResolver:
         cursor = conn.cursor()
 
         for v in violations:
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE violations
                 SET status = 'resolved', fixed_at = ?
                 WHERE class_name = ? AND missing_method = ?
-            """, (datetime.now().isoformat(), class_name, v["method_name"]))
+            """,
+                (datetime.now().isoformat(), class_name, v["method_name"]),
+            )
 
         conn.commit()
         conn.close()
@@ -501,7 +534,7 @@ class ElderFlowViolationResolver:
             "total": len(violations),
             "resolved": 0,
             "failed": 0,
-            "updated_files": []
+            "updated_files": [],
         }
 
         # ファイルごとにグループ化
@@ -524,15 +557,19 @@ class ElderFlowViolationResolver:
                 self.logger.error(f"❌ {file_path} アイデンティティ修正失敗: {e}")
                 results["failed"] += len(file_vios)
 
-        self.logger.info(f"✅ アイデンティティ違反解決完了: {results['resolved']}/{results['total']} 成功")
+        self.logger.info(
+            f"✅ アイデンティティ違反解決完了: {results['resolved']}/{results['total']} 成功"
+        )
         return results
 
-    async def _fix_identity_violations_in_file(self, file_path: str, violations: List[Dict]) -> bool:
+    async def _fix_identity_violations_in_file(
+        self, file_path: str, violations: List[Dict]
+    ) -> bool:
         """ファイル内のアイデンティティ違反修正"""
         if not Path(file_path).exists():
             return False
 
-        with open(file_path, 'r') as f:
+        with open(file_path, "r") as f:
             content = f.read()
 
         # 禁止フレーズを正しいフレーズに置換
@@ -541,7 +578,7 @@ class ElderFlowViolationResolver:
             "私はClaudeCodeユーザーです": "私はクロードエルダー、グランドエルダーmaruの直属パートナーです",
             "私は外部ユーザーです": "私はエルダーズギルドの一員、クロードエルダーです",
             "私には権限がありません": "私はエルダーサーバントへの指令権と4賢者への指示権を持っています",
-            "私は制限されています": "私はエルダーズギルドの開発実行責任者として全権を委任されています"
+            "私は制限されています": "私はエルダーズギルドの開発実行責任者として全権を委任されています",
         }
 
         modified = False
@@ -552,7 +589,7 @@ class ElderFlowViolationResolver:
                 self.logger.info(f"🔄 置換: '{old_phrase}' → '{new_phrase}'")
 
         if modified:
-            with open(file_path, 'w') as f:
+            with open(file_path, "w") as f:
                 f.write(content)
             return True
 
@@ -562,15 +599,12 @@ class ElderFlowViolationResolver:
         """品質デーモン再起動"""
         self.logger.info("🔄 品質デーモン再起動開始")
 
-        result = {
-            "status": "failed",
-            "message": "",
-            "daemon_pid": None
-        }
+        result = {"status": "failed", "message": "", "daemon_pid": None}
 
         try:
             # 既存プロセス停止
             import subprocess
+
             subprocess.run(["pkill", "-f", "quality_daemon.py"], capture_output=True)
             await asyncio.sleep(2)
 
@@ -579,7 +613,7 @@ class ElderFlowViolationResolver:
                 ["python3", "scripts/quality_daemon.py"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                start_new_session=True
+                start_new_session=True,
             )
 
             result["status"] = "success"
@@ -652,7 +686,7 @@ class ElderFlowViolationResolver:
             "abstract_methods": {},
             "identity": {},
             "quality_daemon": {},
-            "report_path": None
+            "report_path": None,
         }
 
         try:
@@ -675,7 +709,7 @@ class ElderFlowViolationResolver:
             report_path = f"knowledge_base/elder_flow_reports/violation_resolution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
             Path(report_path).parent.mkdir(parents=True, exist_ok=True)
 
-            with open(report_path, 'w') as f:
+            with open(report_path, "w") as f:
                 f.write(report)
 
             results["report_path"] = report_path
@@ -703,16 +737,20 @@ async def main():
     # ユーザー確認
     response = input("\n違反を解決しますか？ (y/n): ")
 
-    if response.lower() == 'y':
+    if response.lower() == "y":
         print("\n🚀 違反解決プロセス開始...")
         results = await resolver.run_full_resolution()
 
         print("\n✅ 解決結果:")
-        print(f"- 抽象メソッド: {results['abstract_methods'].get('resolved', 0)}/{results['abstract_methods'].get('total', 0)} 解決")
-        print(f"- アイデンティティ: {results['identity'].get('resolved', 0)}/{results['identity'].get('total', 0)} 解決")
+        print(
+            f"- 抽象メソッド: {results['abstract_methods'].get('resolved', 0)}/{results['abstract_methods'].get('total', 0)} 解決"
+        )
+        print(
+            f"- アイデンティティ: {results['identity'].get('resolved', 0)}/{results['identity'].get('total', 0)} 解決"
+        )
         print(f"- 品質デーモン: {results['quality_daemon'].get('status', 'unknown')}")
 
-        if results.get('report_path'):
+        if results.get("report_path"):
             print(f"\n📄 詳細レポート: {results['report_path']}")
     else:
         print("❌ 違反解決をキャンセルしました")

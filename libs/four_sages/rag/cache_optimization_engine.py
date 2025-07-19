@@ -416,9 +416,9 @@ class CacheOptimizationEngine(EldersServiceLegacy):
             "memory_usage_mb": memory_usage / 1024 / 1024,
             "total_hits": total_hits,
             "total_accesses": total_accesses,
-            "average_entry_size": memory_usage / total_entries
-            if total_entries > 0
-            else 0,
+            "average_entry_size": (
+                memory_usage / total_entries if total_entries > 0 else 0
+            ),
         }
 
         return metrics
@@ -545,10 +545,14 @@ class CacheOptimizationEngine(EldersServiceLegacy):
             recommendations.append("メモリ使用量が多いため、圧縮を有効化することを推奨")
 
         if len(hot_keys) > 20:
-            recommendations.append("ホットキーが多いため、プリフェッチを有効化することを推奨")
+            recommendations.append(
+                "ホットキーが多いため、プリフェッチを有効化することを推奨"
+            )
 
         if usage_analysis.get("estimated_improvement", 0) > 0.2:
-            recommendations.append("大幅な改善が見込まれるため、キャッシュサイズの拡張を推奨")
+            recommendations.append(
+                "大幅な改善が見込まれるため、キャッシュサイズの拡張を推奨"
+            )
 
         return recommendations
 

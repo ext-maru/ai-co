@@ -193,7 +193,9 @@ class AncientElderAuditor:
         # API実装ファイルを特定
         api_files = [f for f in files if "api_implementations" in f["path"]]
 
-        logger.info(f"🔧 {self.name} auditing {len(api_files)} API implementation files")
+        logger.info(
+            f"🔧 {self.name} auditing {len(api_files)} API implementation files"
+        )
 
         for file_info in api_files:
             file_path = file_info["path"]
@@ -223,11 +225,11 @@ class AncientElderAuditor:
                         "type": "api_completeness",
                         "score": score,
                         "details": checks,
-                        "severity": "HIGH"
-                        if score < 0.7
-                        else "MEDIUM"
-                        if score < 0.8
-                        else "LOW",
+                        "severity": (
+                            "HIGH"
+                            if score < 0.7
+                            else "MEDIUM" if score < 0.8 else "LOW"
+                        ),
                     }
                 )
 
@@ -320,11 +322,7 @@ class AncientElderAuditor:
                 severity = (
                     "CRITICAL"
                     if score < 0.4
-                    else "HIGH"
-                    if score < 0.6
-                    else "MEDIUM"
-                    if score < 0.8
-                    else "LOW"
+                    else "HIGH" if score < 0.6 else "MEDIUM" if score < 0.8 else "LOW"
                 )
 
                 findings.append(
@@ -402,9 +400,7 @@ class AncientElderAuditor:
                 severity = (
                     "CRITICAL"
                     if any("hardcoded_secrets" in i for i in issues)
-                    else "HIGH"
-                    if issues
-                    else "LOW"
+                    else "HIGH" if issues else "LOW"
                 )
 
                 if issues or score < 1.0:
@@ -439,7 +435,9 @@ class AncientElderAuditor:
         """パフォーマンスを監査"""
         findings = []
 
-        logger.info(f"🚀 {self.name} conducting performance audit on {len(files)} files")
+        logger.info(
+            f"🚀 {self.name} conducting performance audit on {len(files)} files"
+        )
 
         performance_patterns = {
             "caching": ["cache", "lru_cache", "memoize", "@cached"],
@@ -486,11 +484,11 @@ class AncientElderAuditor:
                         "score": score,
                         "optimizations": optimizations,
                         "anti_patterns": anti_patterns,
-                        "severity": "HIGH"
-                        if score < 0.4
-                        else "MEDIUM"
-                        if score < 0.6
-                        else "LOW",
+                        "severity": (
+                            "HIGH"
+                            if score < 0.4
+                            else "MEDIUM" if score < 0.6 else "LOW"
+                        ),
                     }
                 )
 
@@ -567,11 +565,11 @@ class AncientElderAuditor:
                         "type": "test_quality",
                         "score": quality_score,
                         "quality_checks": quality_checks,
-                        "severity": "HIGH"
-                        if quality_score < 0.6
-                        else "MEDIUM"
-                        if quality_score < 0.8
-                        else "LOW",
+                        "severity": (
+                            "HIGH"
+                            if quality_score < 0.6
+                            else "MEDIUM" if quality_score < 0.8 else "LOW"
+                        ),
                     }
                 )
 
@@ -590,11 +588,11 @@ class AncientElderAuditor:
                 "implementation_files": len(implementation_files),
                 "coverage_ratio": test_coverage_score,
                 "average_quality": average_test_quality,
-                "severity": "CRITICAL"
-                if overall_score < 0.7
-                else "HIGH"
-                if overall_score < 0.85
-                else "LOW",
+                "severity": (
+                    "CRITICAL"
+                    if overall_score < 0.7
+                    else "HIGH" if overall_score < 0.85 else "LOW"
+                ),
             }
         )
 
@@ -645,11 +643,11 @@ class AncientElderAuditor:
                         "type": "code_quality",
                         "score": score,
                         "metrics": quality_metrics,
-                        "severity": "HIGH"
-                        if score < 0.5
-                        else "MEDIUM"
-                        if score < 0.7
-                        else "LOW",
+                        "severity": (
+                            "HIGH"
+                            if score < 0.5
+                            else "MEDIUM" if score < 0.7 else "LOW"
+                        ),
                     }
                 )
 
@@ -894,9 +892,9 @@ def form_consensus(elder_audits: List[Dict[str, Any]]) -> Dict[str, Any]:
         "max_score": max(scores) if scores else 0,
         "total_findings": len(all_findings),
         "unique_recommendations": list(set(all_recommendations)),
-        "iron_will_average": sum(iron_will_scores) / len(iron_will_scores)
-        if iron_will_scores
-        else 0,
+        "iron_will_average": (
+            sum(iron_will_scores) / len(iron_will_scores) if iron_will_scores else 0
+        ),
         "elder_count": len(elder_audits),
     }
 
@@ -1112,9 +1110,7 @@ async def main():
     logger.info("=" * 80)
     logger.info(f"🎯 FINAL VERDICT: {results['final_verdict']}")
     logger.info(f"📊 Consensus Score: {results['consensus']['average_score']:.2%}")
-    logger.info(
-        f"🗡️ Iron Will Average: {results['consensus']['iron_will_average']:.2%}"
-    )
+    logger.info(f"🗡️ Iron Will Average: {results['consensus']['iron_will_average']:.2%}")
     logger.info(f"⏱️ Total Execution Time: {results['execution_time']:.2f} seconds")
     logger.info(
         f"🧪 Test Success: {results.get('test_results', {}).get('success', False)}"

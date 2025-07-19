@@ -232,7 +232,9 @@ class CodeAnalyzer:
             + code.count("while ")
             + 1
         )
-        self.metrics.cognitive_complexity = self.metrics.cyclomatic_complexity  # 簡易実装
+        self.metrics.cognitive_complexity = (
+            self.metrics.cyclomatic_complexity
+        )  # 簡易実装
 
         # 保守性指標（簡易計算）
         self.metrics.maintainability_index = max(

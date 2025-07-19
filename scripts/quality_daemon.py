@@ -21,11 +21,11 @@ sys.path.insert(0, str(PROJECT_ROOT))
 # ログ設定
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(PROJECT_ROOT / 'logs/quality_daemon.log'),
-        logging.StreamHandler()
-    ]
+        logging.FileHandler(PROJECT_ROOT / "logs/quality_daemon.log"),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
 
@@ -44,7 +44,7 @@ class QualityMetricsCollector:
             self.collect_git_metrics(),
             self.collect_precommit_metrics(),
             self.collect_code_quality_metrics(),
-            self.collect_team_metrics()
+            self.collect_team_metrics(),
         ]
 
         results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -57,7 +57,7 @@ class QualityMetricsCollector:
             else:
                 logger.warning(f"メトリクス収集エラー: {result}")
 
-        all_metrics['collected_at'] = datetime.now().isoformat()
+        all_metrics["collected_at"] = datetime.now().isoformat()
         logger.info(f"📊 メトリクス収集完了: {len(all_metrics)}項目")
 
         return all_metrics
@@ -67,117 +67,143 @@ class QualityMetricsCollector:
         try:
             # 過去7日のコミット数
             result = await asyncio.create_subprocess_exec(
-                'git', 'log', '--since=7 days ago', '--oneline',
+                "git",
+                "log",
+                "--since=7 days ago",
+                "--oneline",
                 cwd=self.project_root,
                 stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
+                stderr=asyncio.subprocess.PIPE,
             )
             stdout, _ = await result.communicate()
 
-            commits_7d = len(stdout.decode().strip().split('\n')) if stdout.decode().strip() else 0
+            commits_7d = (
+                len(stdout.decode().strip().split("\n"))
+                if stdout.decode().strip()
+                else 0
+            )
 
             # 今日のコミット数
             result = await asyncio.create_subprocess_exec(
-                'git', 'log', '--since=1 day ago', '--oneline',
+                "git",
+                "log",
+                "--since=1 day ago",
+                "--oneline",
                 cwd=self.project_root,
-                stdout=asyncio.subprocess.PIPE
+                stdout=asyncio.subprocess.PIPE,
             )
             stdout, _ = await result.communicate()
 
-            commits_today = len(stdout.decode().strip().split('\n')) if stdout.decode().strip() else 0
+            commits_today = (
+                len(stdout.decode().strip().split("\n"))
+                if stdout.decode().strip()
+                else 0
+            )
 
             return {
-                'git_commits_7d': commits_7d,
-                'git_commits_today': commits_today,
-                'git_activity_score': min(commits_7d / 7 * 10, 10)  # 0-10スコア
+                "git_commits_7d": commits_7d,
+                "git_commits_today": commits_today,
+                "git_activity_score": min(commits_7d / 7 * 10, 10),  # 0-10スコア
             }
         except Exception as e:
             logger.warning(f"Git メトリクス収集失敗: {e}")
-            return {'git_commits_7d': 0, 'git_commits_today': 0, 'git_activity_score': 0}
+            return {
+                "git_commits_7d": 0,
+                "git_commits_today": 0,
+                "git_activity_score": 0,
+            }
 
     async def collect_precommit_metrics(self) -> Dict:
         """Pre-commit性能メトリクス"""
         try:
             # .pre-commit-config.yaml存在確認
-            config_file = self.project_root / '.pre-commit-config.yaml'
+            config_file = self.project_root / ".pre-commit-config.yaml"
             if not config_file.exists():
-                return {'precommit_configured': False}
+                return {"precommit_configured": False}
 
             # 模擬的な性能データ（実際は過去ログから算出）
             return {
-                'precommit_configured': True,
-                'precommit_avg_time': 1.8,  # 秒
-                'precommit_success_rate': 98.5,  # %
-                'precommit_last_run': datetime.now().isoformat()
+                "precommit_configured": True,
+                "precommit_avg_time": 1.8,  # 秒
+                "precommit_success_rate": 98.5,  # %
+                "precommit_last_run": datetime.now().isoformat(),
             }
         except Exception as e:
             logger.warning(f"Pre-commit メトリクス収集失敗: {e}")
-            return {'precommit_configured': False}
+            return {"precommit_configured": False}
 
     async def collect_code_quality_metrics(self) -> Dict:
         """コード品質メトリクス"""
         try:
             metrics = {
-                'python_files_count': 0,
-                'python_syntax_errors': 0,
-                'large_files_count': 0,
-                'total_lines_of_code': 0
+                "python_files_count": 0,
+                "python_syntax_errors": 0,
+                "large_files_count": 0,
+                "total_lines_of_code": 0,
             }
 
             # Python ファイル解析
-            for py_file in self.project_root.glob('**/*.py'):
-                if any(exclude in str(py_file) for exclude in ['venv', '__pycache__', '.git']):
+            for py_file in self.project_root.glob("**/*.py"):
+                if any(
+                    exclude in str(py_file)
+                    for exclude in ["venv", "__pycache__", ".git"]
+                ):
                     continue
 
-                metrics['python_files_count'] += 1
+                metrics["python_files_count"] += 1
 
                 # 構文チェック
                 try:
                     result = await asyncio.create_subprocess_exec(
-                        'python3', '-m', 'py_compile', str(py_file),
+                        "python3",
+                        "-m",
+                        "py_compile",
+                        str(py_file),
                         stdout=asyncio.subprocess.PIPE,
-                        stderr=asyncio.subprocess.PIPE
+                        stderr=asyncio.subprocess.PIPE,
                     )
                     await result.communicate()
                     if result.returncode != 0:
-                        metrics['python_syntax_errors'] += 1
+                        metrics["python_syntax_errors"] += 1
                 except:
                     pass
 
                 # 行数カウント
                 try:
-                    lines = py_file.read_text(encoding='utf-8').count('\n')
-                    metrics['total_lines_of_code'] += lines
+                    lines = py_file.read_text(encoding="utf-8").count("\n")
+                    metrics["total_lines_of_code"] += lines
                 except:
                     pass
 
             # 大容量ファイルチェック
-            for file_path in self.project_root.glob('**/*'):
+            for file_path in self.project_root.glob("**/*"):
                 if file_path.is_file() and file_path.stat().st_size > 5_000_000:  # 5MB
-                    metrics['large_files_count'] += 1
+                    metrics["large_files_count"] += 1
 
             # 品質スコア計算
-            if metrics['python_files_count'] > 0:
-                error_rate = metrics['python_syntax_errors'] / metrics['python_files_count']
-                metrics['code_quality_score'] = max(0, 10 - error_rate * 100)
+            if metrics["python_files_count"] > 0:
+                error_rate = (
+                    metrics["python_syntax_errors"] / metrics["python_files_count"]
+                )
+                metrics["code_quality_score"] = max(0, 10 - error_rate * 100)
             else:
-                metrics['code_quality_score'] = 10
+                metrics["code_quality_score"] = 10
 
             return metrics
 
         except Exception as e:
             logger.warning(f"コード品質メトリクス収集失敗: {e}")
-            return {'code_quality_score': 5}  # デフォルト中間値
+            return {"code_quality_score": 5}  # デフォルト中間値
 
     async def collect_team_metrics(self) -> Dict:
         """チームメトリクス（模擬データ）"""
         # 実際の実装では、Slack API、GitHub API、アンケートシステムなどと連携
         return {
-            'team_satisfaction': 85,  # %
-            'tool_understanding_black': 80,  # %
-            'tool_understanding_isort': 75,  # %
-            'developer_complaints': 0,  # 件数
-            'team_readiness_score': 8.5  # 0-10
+            "team_satisfaction": 85,  # %
+            "tool_understanding_black": 80,  # %
+            "tool_understanding_isort": 75,  # %
+            "developer_complaints": 0,  # 件数
+            "team_readiness_score": 8.5,  # 0-10
         }
 
 
@@ -190,19 +216,19 @@ class QualityGateEvaluator:
 
     def get_current_phase(self) -> int:
         """現在のフェーズを判定"""
-        config_file = PROJECT_ROOT / '.pre-commit-config.yaml'
+        config_file = PROJECT_ROOT / ".pre-commit-config.yaml"
         if not config_file.exists():
             return 0
 
         content = config_file.read_text()
 
-        if 'mypy' in content and 'tdd-compliance' in content:
+        if "mypy" in content and "tdd-compliance" in content:
             return 4
-        elif 'black' in content and 'flake8' in content:
+        elif "black" in content and "flake8" in content:
             return 3
-        elif 'black' in content:
+        elif "black" in content:
             return 2
-        elif 'check-ast' in content:
+        elif "check-ast" in content:
             return 1
         else:
             return 0
@@ -223,20 +249,20 @@ class QualityGateEvaluator:
             return self.evaluate_gate_3_to_4(metrics)
         else:
             return {
-                'ready': False,
-                'reason': f'Phase {current_phase} → {next_phase} の評価は未実装',
-                'current_phase': current_phase
+                "ready": False,
+                "reason": f"Phase {current_phase} → {next_phase} の評価は未実装",
+                "current_phase": current_phase,
             }
 
     def evaluate_gate_1_to_2(self, metrics: Dict) -> Dict:
         """Gate 1 → Phase 2 (コードフォーマット) 評価"""
         criteria = {
-            'precommit_success_rate': metrics.get('precommit_success_rate', 0) >= 95,
-            'precommit_performance': metrics.get('precommit_avg_time', 999) <= 3.0,
-            'syntax_errors': metrics.get('python_syntax_errors', 999) == 0,
-            'team_satisfaction': metrics.get('team_satisfaction', 0) >= 80,
-            'tool_understanding': metrics.get('tool_understanding_black', 0) >= 75,
-            'developer_complaints': metrics.get('developer_complaints', 999) <= 3
+            "precommit_success_rate": metrics.get("precommit_success_rate", 0) >= 95,
+            "precommit_performance": metrics.get("precommit_avg_time", 999) <= 3.0,
+            "syntax_errors": metrics.get("python_syntax_errors", 999) == 0,
+            "team_satisfaction": metrics.get("team_satisfaction", 0) >= 80,
+            "tool_understanding": metrics.get("tool_understanding_black", 0) >= 75,
+            "developer_complaints": metrics.get("developer_complaints", 999) <= 3,
         }
 
         passed_criteria = sum(criteria.values())
@@ -244,23 +270,23 @@ class QualityGateEvaluator:
         readiness_score = passed_criteria / total_criteria
 
         return {
-            'ready': readiness_score >= 1.0,
-            'readiness_score': readiness_score,
-            'criteria': criteria,
-            'current_phase': 1,
-            'target_phase': 2,
-            'missing_criteria': [k for k, v in criteria.items() if not v]
+            "ready": readiness_score >= 1.0,
+            "readiness_score": readiness_score,
+            "criteria": criteria,
+            "current_phase": 1,
+            "target_phase": 2,
+            "missing_criteria": [k for k, v in criteria.items() if not v],
         }
 
     def evaluate_gate_2_to_3(self, metrics: Dict) -> Dict:
         """Gate 2 → Phase 3 (品質強化) 評価"""
         # Phase 2の条件（模擬）
         criteria = {
-            'format_compliance': True,  # Black適合率95%以上
-            'import_order': True,       # Import順序適合率95%以上
-            'team_efficiency': True,    # PR作成時間30%短縮
-            'code_review_speed': True,  # レビュー時間20%短縮
-            'team_satisfaction': metrics.get('team_satisfaction', 0) >= 85
+            "format_compliance": True,  # Black適合率95%以上
+            "import_order": True,  # Import順序適合率95%以上
+            "team_efficiency": True,  # PR作成時間30%短縮
+            "code_review_speed": True,  # レビュー時間20%短縮
+            "team_satisfaction": metrics.get("team_satisfaction", 0) >= 85,
         }
 
         passed_criteria = sum(criteria.values())
@@ -268,22 +294,22 @@ class QualityGateEvaluator:
         readiness_score = passed_criteria / total_criteria
 
         return {
-            'ready': readiness_score >= 1.0,
-            'readiness_score': readiness_score,
-            'criteria': criteria,
-            'current_phase': 2,
-            'target_phase': 3
+            "ready": readiness_score >= 1.0,
+            "readiness_score": readiness_score,
+            "criteria": criteria,
+            "current_phase": 2,
+            "target_phase": 3,
         }
 
     def evaluate_gate_3_to_4(self, metrics: Dict) -> Dict:
         """Gate 3 → Phase 4 (TDD完全) 評価"""
         # Phase 3の条件（模擬）
         criteria = {
-            'code_quality': metrics.get('code_quality_score', 0) >= 9.0,
-            'security_clean': True,      # セキュリティ問題ゼロ
-            'test_coverage': False,      # テストカバレッジ70%以上（未実装）
-            'tdd_understanding': False,  # TDD理解度80%以上（未実装）
-            'bug_reduction': False       # バグ率50%削減（未実装）
+            "code_quality": metrics.get("code_quality_score", 0) >= 9.0,
+            "security_clean": True,  # セキュリティ問題ゼロ
+            "test_coverage": False,  # テストカバレッジ70%以上（未実装）
+            "tdd_understanding": False,  # TDD理解度80%以上（未実装）
+            "bug_reduction": False,  # バグ率50%削減（未実装）
         }
 
         passed_criteria = sum(criteria.values())
@@ -291,12 +317,12 @@ class QualityGateEvaluator:
         readiness_score = passed_criteria / total_criteria
 
         return {
-            'ready': False,  # Phase 4は高度なため慎重に
-            'readiness_score': readiness_score,
-            'criteria': criteria,
-            'current_phase': 3,
-            'target_phase': 4,
-            'note': 'Phase 4は手動承認が必要'
+            "ready": False,  # Phase 4は高度なため慎重に
+            "readiness_score": readiness_score,
+            "criteria": criteria,
+            "current_phase": 3,
+            "target_phase": 4,
+            "note": "Phase 4は手動承認が必要",
         }
 
 
@@ -304,7 +330,7 @@ class AutoUpgradeExecutor:
     """自動昇格実行システム"""
 
     def __init__(self):
-        self.backup_dir = PROJECT_ROOT / 'backups/auto_upgrades'
+        self.backup_dir = PROJECT_ROOT / "backups/auto_upgrades"
         self.backup_dir.mkdir(parents=True, exist_ok=True)
 
     async def execute_upgrade(self, from_phase: int, to_phase: int) -> bool:
@@ -336,16 +362,16 @@ class AutoUpgradeExecutor:
 
     async def create_backup(self) -> str:
         """現在の設定をバックアップ"""
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         backup_id = f"phase_backup_{timestamp}"
         backup_path = self.backup_dir / backup_id
         backup_path.mkdir(exist_ok=True)
 
         # 重要ファイルをバックアップ
         files_to_backup = [
-            '.pre-commit-config.yaml',
-            'scripts/check_elder_standards.py',
-            '.gitignore'
+            ".pre-commit-config.yaml",
+            "scripts/check_elder_standards.py",
+            ".gitignore",
         ]
 
         for file_name in files_to_backup:
@@ -370,7 +396,7 @@ class AutoUpgradeExecutor:
 
     async def apply_phase_2_config(self):
         """Phase 2 (コードフォーマット) 設定"""
-        config = '''# 🏛️ エルダーズギルド Pre-commit 設定 (Phase 2)
+        config = """# 🏛️ エルダーズギルド Pre-commit 設定 (Phase 2)
 # 自動昇格により有効化
 
 repos:
@@ -408,15 +434,12 @@ default_stages: [pre-commit]
 # 🎉 Phase 2 自動昇格完了!
 # - Blackによるコード整形が有効になりました
 # - isortによるimport整理が有効になりました
-'''
-        config_file = PROJECT_ROOT / '.pre-commit-config.yaml'
+"""
+        config_file = PROJECT_ROOT / ".pre-commit-config.yaml"
         config_file.write_text(config)
 
         # フック再インストール
-        await asyncio.create_subprocess_exec(
-            'pre-commit', 'install',
-            cwd=PROJECT_ROOT
-        )
+        await asyncio.create_subprocess_exec("pre-commit", "install", cwd=PROJECT_ROOT)
 
     async def apply_phase_3_config(self):
         """Phase 3 (品質強化) 設定"""
@@ -433,10 +456,12 @@ default_stages: [pre-commit]
         try:
             # Pre-commitが正常に動作するかテスト
             result = await asyncio.create_subprocess_exec(
-                'pre-commit', 'run', '--all-files',
+                "pre-commit",
+                "run",
+                "--all-files",
                 cwd=PROJECT_ROOT,
                 stdout=asyncio.subprocess.PIPE,
-                stderr=asyncio.subprocess.PIPE
+                stderr=asyncio.subprocess.PIPE,
             )
             stdout, stderr = await result.communicate()
 
@@ -451,7 +476,7 @@ default_stages: [pre-commit]
         """バックアップにロールバック"""
         backup_path = self.backup_dir / backup_id
 
-        for backup_file in backup_path.glob('**/*'):
+        for backup_file in backup_path.glob("**/*"):
             if backup_file.is_file():
                 relative_path = backup_file.relative_to(backup_path)
                 target_file = PROJECT_ROOT / relative_path
@@ -487,7 +512,7 @@ class QualityEvolutionDaemon:
         self.upgrade_executor = AutoUpgradeExecutor()
 
         self.monitoring_interval = 3600  # 1時間ごと
-        self.upgrade_time = "02:00"      # 深夜2時に昇格チェック
+        self.upgrade_time = "02:00"  # 深夜2時に昇格チェック
         self.metrics_history = []
 
     async def run_forever(self):
@@ -536,9 +561,9 @@ class QualityEvolutionDaemon:
 
     async def check_and_execute_upgrade(self, gate_status: Dict):
         """昇格チェック・実行"""
-        if gate_status.get('ready', False):
-            current_phase = gate_status.get('current_phase', 0)
-            target_phase = gate_status.get('target_phase', 0)
+        if gate_status.get("ready", False):
+            current_phase = gate_status.get("current_phase", 0)
+            target_phase = gate_status.get("target_phase", 0)
 
             logger.info(f"🚀 自動昇格条件達成: Phase {current_phase} → {target_phase}")
 
@@ -551,18 +576,18 @@ class QualityEvolutionDaemon:
             else:
                 logger.warning("⚠️ 自動昇格失敗")
         else:
-            readiness = gate_status.get('readiness_score', 0)
+            readiness = gate_status.get("readiness_score", 0)
             logger.info(f"📊 昇格準備中: {readiness:.1%}")
 
     async def save_status(self, metrics: Dict, gate_status: Dict):
         """状態をファイルに保存"""
-        status_file = PROJECT_ROOT / 'logs/quality_daemon_status.json'
+        status_file = PROJECT_ROOT / "logs/quality_daemon_status.json"
 
         status = {
-            'timestamp': datetime.now().isoformat(),
-            'metrics': metrics,
-            'gate_status': gate_status,
-            'daemon_uptime': self.get_uptime()
+            "timestamp": datetime.now().isoformat(),
+            "metrics": metrics,
+            "gate_status": gate_status,
+            "daemon_uptime": self.get_uptime(),
         }
 
         status_file.write_text(json.dumps(status, indent=2, ensure_ascii=False))
@@ -581,7 +606,7 @@ async def main():
 
 if __name__ == "__main__":
     # ログディレクトリ作成
-    (PROJECT_ROOT / 'logs').mkdir(exist_ok=True)
+    (PROJECT_ROOT / "logs").mkdir(exist_ok=True)
 
     try:
         asyncio.run(main())

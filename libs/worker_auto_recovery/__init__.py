@@ -132,9 +132,7 @@ except Exception as e:
 
         def calculate_backoff_time(self, worker_state):
             base_time = 1.0
-            return base_time * (
-                self.backoff_multiplier**worker_state.recovery_attempts
-            )
+            return base_time * (self.backoff_multiplier**worker_state.recovery_attempts)
 
         async def handle_health_change(self, event):
             pass

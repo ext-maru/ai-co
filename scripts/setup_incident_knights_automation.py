@@ -25,7 +25,9 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 # ロギング設定
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 
@@ -64,17 +66,30 @@ class IncidentKnightsAutomation:
                     logger.info(f"✅ {step_name} 完了")
                     success_count += 1
                     self.setup_log.append(
-                        {"step": step_name, "status": "success", "timestamp": datetime.now().isoformat()}
+                        {
+                            "step": step_name,
+                            "status": "success",
+                            "timestamp": datetime.now().isoformat(),
+                        }
                     )
                 else:
                     logger.warning(f"⚠️ {step_name} 部分的成功")
                     self.setup_log.append(
-                        {"step": step_name, "status": "partial", "timestamp": datetime.now().isoformat()}
+                        {
+                            "step": step_name,
+                            "status": "partial",
+                            "timestamp": datetime.now().isoformat(),
+                        }
                     )
             except Exception as e:
                 logger.error(f"❌ {step_name} 失敗: {e}")
                 self.setup_log.append(
-                    {"step": step_name, "status": "failed", "error": str(e), "timestamp": datetime.now().isoformat()}
+                    {
+                        "step": step_name,
+                        "status": "failed",
+                        "error": str(e),
+                        "timestamp": datetime.now().isoformat(),
+                    }
                 )
 
         logger.info("\n" + "=" * 60)
@@ -151,12 +166,23 @@ class IncidentKnightsAutomation:
             )
 
             # 追加の依存関係
-            additional_deps = ["pydocstyle", "pytest", "pytest-cov", "pytest-asyncio", "aiofiles", "click", "rich"]
+            additional_deps = [
+                "pydocstyle",
+                "pytest",
+                "pytest-cov",
+                "pytest-asyncio",
+                "aiofiles",
+                "click",
+                "rich",
+            ]
 
             for dep in additional_deps:
                 try:
                     subprocess.run(
-                        [sys.executable, "-m", "pip", "install", dep], check=True, capture_output=True, text=True
+                        [sys.executable, "-m", "pip", "install", dep],
+                        check=True,
+                        capture_output=True,
+                        text=True,
                     )
                     logger.info(f"  ✅ {dep} インストール完了")
                 except:
@@ -176,17 +202,29 @@ class IncidentKnightsAutomation:
             subprocess.run(["pre-commit", "install"], check=True, cwd=self.project_root)
 
             # pre-commit install --hook-type commit-msg
-            subprocess.run(["pre-commit", "install", "--hook-type", "commit-msg"], check=True, cwd=self.project_root)
+            subprocess.run(
+                ["pre-commit", "install", "--hook-type", "commit-msg"],
+                check=True,
+                cwd=self.project_root,
+            )
 
             # pre-commit install --hook-type pre-push
-            subprocess.run(["pre-commit", "install", "--hook-type", "pre-push"], check=True, cwd=self.project_root)
+            subprocess.run(
+                ["pre-commit", "install", "--hook-type", "pre-push"],
+                check=True,
+                cwd=self.project_root,
+            )
 
             logger.info("  ✅ pre-commit フック設定完了")
 
             # 初回実行（キャッシュ作成）
             logger.info("  🚀 pre-commit 初回実行（キャッシュ作成）...")
             try:
-                subprocess.run(["pre-commit", "run", "--all-files"], cwd=self.project_root, timeout=300)
+                subprocess.run(
+                    ["pre-commit", "run", "--all-files"],
+                    cwd=self.project_root,
+                    timeout=300,
+                )
             except subprocess.TimeoutExpired:
                 logger.warning("  ⚠️ pre-commit初回実行タイムアウト（正常）")
             except subprocess.CalledProcessError:
@@ -204,7 +242,9 @@ class IncidentKnightsAutomation:
 
         try:
             # knights_self_healing.pyを実行
-            self_healing_script = self.project_root / "scripts" / "knights_self_healing.py"
+            self_healing_script = (
+                self.project_root / "scripts" / "knights_self_healing.py"
+            )
 
             # スクリプトが存在しない場合は作成
             if not self_healing_script.exists():
@@ -213,7 +253,12 @@ class IncidentKnightsAutomation:
                 return True
 
             result = subprocess.run(
-                [sys.executable, str(self_healing_script), "--auto-fix", "--batch-mode"],
+                [
+                    sys.executable,
+                    str(self_healing_script),
+                    "--auto-fix",
+                    "--batch-mode",
+                ],
                 capture_output=True,
                 text=True,
                 timeout=600,
@@ -298,7 +343,9 @@ WantedBy=multi-user.target
                 f.write(service_content)
 
             logger.info(f"  ✅ systemdサービスファイル作成: {service_file}")
-            logger.info("  ℹ️ 手動でインストール: sudo cp incident-knights.service /etc/systemd/system/")
+            logger.info(
+                "  ℹ️ 手動でインストール: sudo cp incident-knights.service /etc/systemd/system/"
+            )
             logger.info("  ℹ️ 有効化: sudo systemctl enable incident-knights")
             logger.info("  ℹ️ 開始: sudo systemctl start incident-knights")
 
@@ -545,7 +592,9 @@ if webhook_url:
             checks.append(("pre-commit config", precommit_config.exists()))
 
             # GitHub Actions確認
-            workflow_file = self.project_root / ".github" / "workflows" / "incident-knights.yml"
+            workflow_file = (
+                self.project_root / ".github" / "workflows" / "incident-knights.yml"
+            )
             checks.append(("GitHub Actions workflow", workflow_file.exists()))
 
             # 設定ファイル確認
@@ -557,7 +606,9 @@ if webhook_url:
             for script_name in scripts:
                 script_path = self.project_root / "scripts" / script_name
                 if script_path.exists():
-                    checks.append((f"Script: {script_name}", os.access(script_path, os.X_OK)))
+                    checks.append(
+                        (f"Script: {script_name}", os.access(script_path, os.X_OK))
+                    )
 
             # 結果表示
             for check_name, passed in checks:
@@ -593,7 +644,9 @@ if webhook_url:
             }
 
             # JSONレポート
-            report_file = self.project_root / "data" / "incident_knights_setup_report.json"
+            report_file = (
+                self.project_root / "data" / "incident_knights_setup_report.json"
+            )
             report_file.parent.mkdir(exist_ok=True)
             with open(report_file, "w") as f:
                 json.dump(report, f, indent=2)
@@ -629,7 +682,9 @@ if webhook_url:
 
 """
         for i, step in enumerate(report["setup_steps"], 1):
-            status_icon = {"success": "✅", "partial": "⚠️", "failed": "❌"}.get(step["status"], "❓")
+            status_icon = {"success": "✅", "partial": "⚠️", "failed": "❌"}.get(
+                step["status"], "❓"
+            )
 
             markdown_content += f"{i}. {status_icon} **{step['step']}**\n"
             if step["status"] == "failed" and "error" in step:

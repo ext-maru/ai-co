@@ -376,11 +376,11 @@ class ConsistencyChecker:
         # 重要度による重み付け
         weighted_issues = sum(
             [
-                3
-                if issue.get("severity") == "high"
-                else 2
-                if issue.get("severity") == "medium"
-                else 1
+                (
+                    3
+                    if issue.get("severity") == "high"
+                    else 2 if issue.get("severity") == "medium" else 1
+                )
                 for issue in contradictions + conflicts
             ]
         )
@@ -414,9 +414,7 @@ class ConsistencyChecker:
         risk_level = (
             "high"
             if high_severity_count > 2
-            else "medium"
-            if high_severity_count > 0
-            else "low"
+            else "medium" if high_severity_count > 0 else "low"
         )
 
         return {
@@ -945,9 +943,12 @@ class KnowledgeEvolutionMechanism:
                     {
                         "area": operation,
                         "identified_from": "usage_patterns",
-                        "urgency_level": "high"
-                        if operation in usage_patterns.get("frequent_operations", [])
-                        else "medium",
+                        "urgency_level": (
+                            "high"
+                            if operation
+                            in usage_patterns.get("frequent_operations", [])
+                            else "medium"
+                        ),
                     }
                 )
 
@@ -1006,9 +1007,9 @@ class KnowledgeEvolutionMechanism:
                 {
                     "gap_type": "missing",
                     "area": gap["area"],
-                    "priority_score": 0.9
-                    if gap.get("urgency_level") == "high"
-                    else 0.7,
+                    "priority_score": (
+                        0.9 if gap.get("urgency_level") == "high" else 0.7
+                    ),
                     "urgency_level": gap.get("urgency_level", "medium"),
                 }
             )
@@ -1165,7 +1166,9 @@ class KnowledgeEvolutionMechanism:
         )
 
         if current_redundancy > max_redundancy:
-            return int((current_redundancy - max_redundancy) * 100)  # 除去された冗長パターン数
+            return int(
+                (current_redundancy - max_redundancy) * 100
+            )  # 除去された冗長パターン数
 
         return 0
 
@@ -1177,9 +1180,9 @@ class KnowledgeEvolutionMechanism:
 
         # アクセスパターンの改善
         if "access_patterns" in optimized:
-            optimized["access_patterns"][
-                "average_retrieval_time"
-            ] = optimization_goals.get("target_retrieval_time", 1.0)
+            optimized["access_patterns"]["average_retrieval_time"] = (
+                optimization_goals.get("target_retrieval_time", 1.0)
+            )
 
         return optimized
 

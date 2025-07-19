@@ -318,11 +318,15 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         quality_status = (
             "excellent"
             if self.stats["average_quality_score"] >= 95
-            else "good"
-            if self.stats["average_quality_score"] >= 85
-            else "warning"
-            if self.stats["average_quality_score"] >= 75
-            else "critical"
+            else (
+                "good"
+                if self.stats["average_quality_score"] >= 85
+                else (
+                    "warning"
+                    if self.stats["average_quality_score"] >= 75
+                    else "critical"
+                )
+            )
         )
 
         # 稼働率計算
@@ -336,9 +340,11 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
             "servant_name": self.servant_name,
             "category": self.category.value,
             "specialization": self.specialization,
-            "status": "healthy"
-            if quality_status in ["excellent", "good"] and success_rate >= 90
-            else "degraded",
+            "status": (
+                "healthy"
+                if quality_status in ["excellent", "good"] and success_rate >= 90
+                else "degraded"
+            ),
             "uptime_seconds": uptime.total_seconds(),
             "current_tasks": len(self.current_tasks),
             "stats": {
@@ -358,7 +364,11 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
                 "health_check", "サーバント健康状態確認", ["none"], ["health_status"], 1
             ),
             ServantCapability(
-                "task_execution", "汎用タスク実行", ["task_definition"], ["task_result"], 3
+                "task_execution",
+                "汎用タスク実行",
+                ["task_definition"],
+                ["task_result"],
+                3,
             ),
             ServantCapability(
                 "quality_validation",

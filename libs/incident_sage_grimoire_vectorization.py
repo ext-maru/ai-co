@@ -290,7 +290,9 @@ class IncidentSageGrimoireVectorization:
     async def vectorize_incident(self, incident_data: Dict[str, Any]) -> str:
         """インシデントのベクトル化"""
         try:
-            self.logger.info(f"🚨 インシデント分析開始: {incident_data.get('title', 'Unknown')}")
+            self.logger.info(
+                f"🚨 インシデント分析開始: {incident_data.get('title', 'Unknown')}"
+            )
 
             # インシデントメタデータ準備
             incident_metadata = await self._analyze_incident_metadata(incident_data)
@@ -598,7 +600,9 @@ class IncidentSageGrimoireVectorization:
 
         # 解決時間（時間単位）
         if metadata.resolution_time_minutes:
-            vector[3] = min(metadata.resolution_time_minutes / 1440.0, 1.0)  # 24時間で正規化
+            vector[3] = min(
+                metadata.resolution_time_minutes / 1440.0, 1.0
+            )  # 24時間で正規化
 
         return vector
 
@@ -670,12 +674,12 @@ class IncidentSageGrimoireVectorization:
                         "incident_id": incident_data.get("id"),
                         "similarity_score": result.similarity_score,
                         "incident_data": incident_data,
-                        "severity": result.tags[2]
-                        if len(result.tags) > 2
-                        else "unknown",
-                        "category": result.tags[1]
-                        if len(result.tags) > 1
-                        else "unknown",
+                        "severity": (
+                            result.tags[2] if len(result.tags) > 2 else "unknown"
+                        ),
+                        "category": (
+                            result.tags[1] if len(result.tags) > 1 else "unknown"
+                        ),
                         "spell_id": result.spell_id,
                         "resolution_available": bool(incident_data.get("resolution")),
                     }

@@ -22,11 +22,15 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from libs.elder_flow_quality_gate import (
-    QualityGateStatus, QualityCheckType, QualityMetric,
-    QualityCheckResult, BaseQualityChecker
+    QualityGateStatus,
+    QualityCheckType,
+    QualityMetric,
+    QualityCheckResult,
+    BaseQualityChecker,
 )
 
 logger = logging.getLogger(__name__)
+
 
 class UnitTestCheckerReal(BaseQualityChecker):
     """ユニットテストチェッカー - 実装版"""
@@ -40,20 +44,22 @@ class UnitTestCheckerReal(BaseQualityChecker):
         try:
             # pytest実行
             cmd = [
-                "python", "-m", "pytest",
+                "python",
+                "-m",
+                "pytest",
                 self.test_path,
                 "--json-report",
                 "--json-report-file=test_report.json",
                 "--cov=.",
                 "--cov-report=xml",
-                "-v"
+                "-v",
             ]
 
             process = await asyncio.create_subprocess_exec(
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -73,7 +79,7 @@ class UnitTestCheckerReal(BaseQualityChecker):
             metrics = [
                 QualityMetric("Test Pass Rate", pass_rate, 100.0, "%"),
                 QualityMetric("Test Coverage", coverage, 80.0, "%"),
-                QualityMetric("Test Count", total_tests, 10.0, "tests")
+                QualityMetric("Test Count", total_tests, 10.0, "tests"),
             ]
 
             # 問題点を収集
@@ -81,24 +87,28 @@ class UnitTestCheckerReal(BaseQualityChecker):
             if failed_tests > 0:
                 failed_list = test_results.get("failed_tests", [])
                 for test in failed_list[:5]:  # 最初の5件
-                    issues.append({
-                        "type": "failed_test",
-                        "severity": "high",
-                        "file": test.get("file", "unknown"),
-                        "test": test.get("name", "unknown"),
-                        "message": test.get("message", "Test failed")
-                    })
+                    issues.append(
+                        {
+                            "type": "failed_test",
+                            "severity": "high",
+                            "file": test.get("file", "unknown"),
+                            "test": test.get("name", "unknown"),
+                            "message": test.get("message", "Test failed"),
+                        }
+                    )
 
             if coverage < 80:
                 uncovered_files = coverage_data.get("uncovered_files", [])
                 for file_info in uncovered_files[:3]:  # 最も低い3ファイル
-                    issues.append({
-                        "type": "low_coverage",
-                        "severity": "medium",
-                        "file": file_info.get("file", "unknown"),
-                        "coverage": file_info.get("coverage", 0),
-                        "message": f"Coverage only {file_info.get('coverage', 0)}%"
-                    })
+                    issues.append(
+                        {
+                            "type": "low_coverage",
+                            "severity": "medium",
+                            "file": file_info.get("file", "unknown"),
+                            "coverage": file_info.get("coverage", 0),
+                            "message": f"Coverage only {file_info.get('coverage', 0)}%",
+                        }
+                    )
 
             # ステータスを決定
             if failed_tests > 0:
@@ -114,9 +124,13 @@ class UnitTestCheckerReal(BaseQualityChecker):
             if failed_tests > 0:
                 recommendations.append(f"Fix {failed_tests} failing tests")
             if coverage < 80:
-                recommendations.append(f"Improve test coverage from {coverage:.1f}% to 80%+")
+                recommendations.append(
+                    f"Improve test coverage from {coverage:.1f}% to 80%+"
+                )
             if total_tests < 50:
-                recommendations.append("Add more tests to ensure comprehensive coverage")
+                recommendations.append(
+                    "Add more tests to ensure comprehensive coverage"
+                )
 
             return QualityCheckResult(
                 check_type=self.check_type,
@@ -130,8 +144,8 @@ class UnitTestCheckerReal(BaseQualityChecker):
                     "skipped": test_results.get("skipped", 0),
                     "total": total_tests,
                     "coverage": coverage,
-                    "execution_time": test_results.get("duration", 0)
-                }
+                    "execution_time": test_results.get("duration", 0),
+                },
             )
 
         except Exception as e:
@@ -140,13 +154,15 @@ class UnitTestCheckerReal(BaseQualityChecker):
                 check_type=self.check_type,
                 status=QualityGateStatus.FAILED,
                 metrics=[],
-                issues=[{
-                    "type": "execution_error",
-                    "severity": "critical",
-                    "message": str(e)
-                }],
+                issues=[
+                    {
+                        "type": "execution_error",
+                        "severity": "critical",
+                        "message": str(e),
+                    }
+                ],
                 recommendations=["Fix test execution environment"],
-                details={"error": str(e)}
+                details={"error": str(e)},
             )
 
     async def _parse_test_results(self) -> Dict:
@@ -157,7 +173,7 @@ class UnitTestCheckerReal(BaseQualityChecker):
             return {"total": 0, "passed": 0, "failed": 0}
 
         try:
-            with open(report_path, 'r') as f:
+            with open(report_path, "r") as f:
                 data = json.load(f)
 
             summary = data.get("summary", {})
@@ -166,11 +182,13 @@ class UnitTestCheckerReal(BaseQualityChecker):
             failed_tests = []
             for test in tests:
                 if test.get("outcome") == "failed":
-                    failed_tests.append({
-                        "file": test.get("nodeid", "").split("::")[0],
-                        "name": test.get("nodeid", ""),
-                        "message": test.get("call", {}).get("longrepr", "")[:200]
-                    })
+                    failed_tests.append(
+                        {
+                            "file": test.get("nodeid", "").split("::")[0],
+                            "name": test.get("nodeid", ""),
+                            "message": test.get("call", {}).get("longrepr", "")[:200],
+                        }
+                    )
 
             return {
                 "total": summary.get("total", 0),
@@ -178,7 +196,7 @@ class UnitTestCheckerReal(BaseQualityChecker):
                 "failed": summary.get("failed", 0),
                 "skipped": summary.get("skipped", 0),
                 "duration": data.get("duration", 0),
-                "failed_tests": failed_tests
+                "failed_tests": failed_tests,
             }
 
         except Exception as e:
@@ -211,17 +229,16 @@ class UnitTestCheckerReal(BaseQualityChecker):
                     line_rate = float(class_elem.attrib.get("line-rate", 0)) * 100
 
                     if line_rate < 80:
-                        uncovered_files.append({
-                            "file": filename,
-                            "coverage": line_rate
-                        })
+                        uncovered_files.append(
+                            {"file": filename, "coverage": line_rate}
+                        )
 
             # カバレッジが低い順にソート
             uncovered_files.sort(key=lambda x: x["coverage"])
 
             return {
                 "percent_covered": coverage_percent,
-                "uncovered_files": uncovered_files
+                "uncovered_files": uncovered_files,
             }
 
         except Exception as e:
@@ -261,10 +278,15 @@ class CodeQualityCheckerReal(BaseQualityChecker):
             metrics = [
                 QualityMetric("Overall Score", overall_score, 8.0, "/10"),
                 QualityMetric("Pylint Score", pylint_score, 8.0, "/10"),
-                QualityMetric("Flake8 Issues", flake8_issues, 10, "issues",
-                            passed=(flake8_issues <= 10)),
+                QualityMetric(
+                    "Flake8 Issues",
+                    flake8_issues,
+                    10,
+                    "issues",
+                    passed=(flake8_issues <= 10),
+                ),
                 QualityMetric("Average Complexity", avg_complexity, 10.0, ""),
-                QualityMetric("Max Complexity", max_complexity, 20.0, "")
+                QualityMetric("Max Complexity", max_complexity, 20.0, ""),
             ]
 
             # 問題点を収集
@@ -272,33 +294,39 @@ class CodeQualityCheckerReal(BaseQualityChecker):
 
             # Pylintの問題
             for issue in pylint_results.get("issues", [])[:5]:
-                issues.append({
-                    "type": "pylint",
-                    "severity": self._map_pylint_severity(issue.get("type", "")),
-                    "file": issue.get("path", ""),
-                    "line": issue.get("line", 0),
-                    "message": issue.get("message", "")
-                })
+                issues.append(
+                    {
+                        "type": "pylint",
+                        "severity": self._map_pylint_severity(issue.get("type", "")),
+                        "file": issue.get("path", ""),
+                        "line": issue.get("line", 0),
+                        "message": issue.get("message", ""),
+                    }
+                )
 
             # Flake8の問題
             for issue in flake8_results.get("issues", [])[:5]:
-                issues.append({
-                    "type": "flake8",
-                    "severity": "medium",
-                    "file": issue.get("filename", ""),
-                    "line": issue.get("line_number", 0),
-                    "message": f"{issue.get('code', '')}: {issue.get('text', '')}"
-                })
+                issues.append(
+                    {
+                        "type": "flake8",
+                        "severity": "medium",
+                        "file": issue.get("filename", ""),
+                        "line": issue.get("line_number", 0),
+                        "message": f"{issue.get('code', '')}: {issue.get('text', '')}",
+                    }
+                )
 
             # 複雑度の問題
             for func in complexity_results.get("complex_functions", [])[:3]:
-                issues.append({
-                    "type": "complexity",
-                    "severity": "high" if func["complexity"] > 15 else "medium",
-                    "file": func.get("file", ""),
-                    "line": func.get("line", 0),
-                    "message": f"Function '{func.get('name', '')}' has complexity {func.get('complexity', 0)}"
-                })
+                issues.append(
+                    {
+                        "type": "complexity",
+                        "severity": "high" if func["complexity"] > 15 else "medium",
+                        "file": func.get("file", ""),
+                        "line": func.get("line", 0),
+                        "message": f"Function '{func.get('name', '')}' has complexity {func.get('complexity', 0)}",
+                    }
+                )
 
             # ステータスを決定
             if overall_score < 6:
@@ -311,9 +339,13 @@ class CodeQualityCheckerReal(BaseQualityChecker):
             # 推奨事項
             recommendations = []
             if pylint_score < 8:
-                recommendations.append(f"Improve Pylint score from {pylint_score:.1f} to 8.0+")
+                recommendations.append(
+                    f"Improve Pylint score from {pylint_score:.1f} to 8.0+"
+                )
             if flake8_issues > 10:
-                recommendations.append(f"Reduce Flake8 issues from {flake8_issues} to under 10")
+                recommendations.append(
+                    f"Reduce Flake8 issues from {flake8_issues} to under 10"
+                )
             if max_complexity > 20:
                 recommendations.append("Refactor complex functions (complexity > 20)")
 
@@ -328,8 +360,8 @@ class CodeQualityCheckerReal(BaseQualityChecker):
                     "pylint_score": pylint_score,
                     "flake8_issues": flake8_issues,
                     "average_complexity": avg_complexity,
-                    "max_complexity": max_complexity
-                }
+                    "max_complexity": max_complexity,
+                },
             )
 
         except Exception as e:
@@ -338,13 +370,15 @@ class CodeQualityCheckerReal(BaseQualityChecker):
                 check_type=self.check_type,
                 status=QualityGateStatus.FAILED,
                 metrics=[],
-                issues=[{
-                    "type": "execution_error",
-                    "severity": "critical",
-                    "message": str(e)
-                }],
+                issues=[
+                    {
+                        "type": "execution_error",
+                        "severity": "critical",
+                        "message": str(e),
+                    }
+                ],
                 recommendations=["Fix code quality check environment"],
-                details={"error": str(e)}
+                details={"error": str(e)},
             )
 
     async def _run_pylint(self) -> Dict:
@@ -356,7 +390,7 @@ class CodeQualityCheckerReal(BaseQualityChecker):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -365,14 +399,13 @@ class CodeQualityCheckerReal(BaseQualityChecker):
                 issues = json.loads(stdout.decode())
 
                 # スコアを計算（簡易版）
-                total_statements = sum(1 for i in issues if i.get("type") == "statement")
+                total_statements = sum(
+                    1 for i in issues if i.get("type") == "statement"
+                )
                 total_issues = len(issues)
                 score = max(0, 10 - (total_issues / max(total_statements, 100) * 10))
 
-                return {
-                    "score": score,
-                    "issues": issues[:20]  # 最初の20件
-                }
+                return {"score": score, "issues": issues[:20]}  # 最初の20件
 
             return {"score": 10.0, "issues": []}
 
@@ -389,14 +422,14 @@ class CodeQualityCheckerReal(BaseQualityChecker):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
 
             issues = []
             if stdout:
-                for line in stdout.decode().split('\n'):
+                for line in stdout.decode().split("\n"):
                     if line.strip():
                         try:
                             issue = json.loads(line)
@@ -419,7 +452,7 @@ class CodeQualityCheckerReal(BaseQualityChecker):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -436,33 +469,48 @@ class CodeQualityCheckerReal(BaseQualityChecker):
                         all_complexities.append(complexity)
 
                         if complexity > 10:
-                            complex_functions.append({
-                                "file": file_path,
-                                "name": func.get("name", ""),
-                                "line": func.get("lineno", 0),
-                                "complexity": complexity
-                            })
+                            complex_functions.append(
+                                {
+                                    "file": file_path,
+                                    "name": func.get("name", ""),
+                                    "line": func.get("lineno", 0),
+                                    "complexity": complexity,
+                                }
+                            )
 
                 # 複雑度が高い順にソート
                 complex_functions.sort(key=lambda x: x["complexity"], reverse=True)
 
-                avg_complexity = sum(all_complexities) / len(all_complexities) if all_complexities else 0
+                avg_complexity = (
+                    sum(all_complexities) / len(all_complexities)
+                    if all_complexities
+                    else 0
+                )
                 max_complexity = max(all_complexities) if all_complexities else 0
 
                 return {
                     "average_complexity": avg_complexity,
                     "max_complexity": max_complexity,
-                    "complex_functions": complex_functions
+                    "complex_functions": complex_functions,
                 }
 
-            return {"average_complexity": 0, "max_complexity": 0, "complex_functions": []}
+            return {
+                "average_complexity": 0,
+                "max_complexity": 0,
+                "complex_functions": [],
+            }
 
         except Exception as e:
             self.logger.error(f"Complexity check failed: {e}")
-            return {"average_complexity": 0, "max_complexity": 0, "complex_functions": []}
+            return {
+                "average_complexity": 0,
+                "max_complexity": 0,
+                "complex_functions": [],
+            }
 
-    def _calculate_overall_score(self, pylint_score: float, flake8_issues: int,
-                                avg_complexity: float) -> float:
+    def _calculate_overall_score(
+        self, pylint_score: float, flake8_issues: int, avg_complexity: float
+    ) -> float:
         """総合スコアを計算"""
         # Pylintスコア（重み: 40%）
         pylint_weight = 0.4
@@ -476,9 +524,9 @@ class CodeQualityCheckerReal(BaseQualityChecker):
         complexity_weight = 0.3
 
         overall = (
-            pylint_score * pylint_weight +
-            flake8_score * flake8_weight +
-            complexity_score * complexity_weight
+            pylint_score * pylint_weight
+            + flake8_score * flake8_weight
+            + complexity_score * complexity_weight
         )
 
         return round(overall, 1)
@@ -491,7 +539,7 @@ class CodeQualityCheckerReal(BaseQualityChecker):
             "warning": "medium",
             "convention": "low",
             "refactor": "low",
-            "info": "low"
+            "info": "low",
         }
         return severity_map.get(pylint_type.lower(), "medium")
 
@@ -513,12 +561,21 @@ class SecurityCheckerReal(BaseQualityChecker):
 
             # 結果を集計
             total_issues = len(bandit_results.get("results", []))
-            high_severity = sum(1 for r in bandit_results.get("results", [])
-                              if r.get("issue_severity") == "HIGH")
-            medium_severity = sum(1 for r in bandit_results.get("results", [])
-                                if r.get("issue_severity") == "MEDIUM")
-            low_severity = sum(1 for r in bandit_results.get("results", [])
-                             if r.get("issue_severity") == "LOW")
+            high_severity = sum(
+                1
+                for r in bandit_results.get("results", [])
+                if r.get("issue_severity") == "HIGH"
+            )
+            medium_severity = sum(
+                1
+                for r in bandit_results.get("results", [])
+                if r.get("issue_severity") == "MEDIUM"
+            )
+            low_severity = sum(
+                1
+                for r in bandit_results.get("results", [])
+                if r.get("issue_severity") == "LOW"
+            )
 
             vulnerable_deps = len(dependency_results.get("vulnerabilities", []))
 
@@ -530,11 +587,23 @@ class SecurityCheckerReal(BaseQualityChecker):
             metrics = [
                 QualityMetric("Security Score", security_score, 8.5, "/10"),
                 QualityMetric("High Severity Issues", high_severity, 0, "issues"),
-                QualityMetric("Medium Severity Issues", medium_severity, 5, "issues",
-                            passed=(medium_severity <= 5)),
-                QualityMetric("Low Severity Issues", low_severity, 10, "issues",
-                            passed=(low_severity <= 10)),
-                QualityMetric("Vulnerable Dependencies", vulnerable_deps, 0, "packages")
+                QualityMetric(
+                    "Medium Severity Issues",
+                    medium_severity,
+                    5,
+                    "issues",
+                    passed=(medium_severity <= 5),
+                ),
+                QualityMetric(
+                    "Low Severity Issues",
+                    low_severity,
+                    10,
+                    "issues",
+                    passed=(low_severity <= 10),
+                ),
+                QualityMetric(
+                    "Vulnerable Dependencies", vulnerable_deps, 0, "packages"
+                ),
             ]
 
             # 問題点を収集
@@ -542,23 +611,27 @@ class SecurityCheckerReal(BaseQualityChecker):
 
             # Banditの問題
             for result in bandit_results.get("results", [])[:10]:
-                issues.append({
-                    "type": "security_vulnerability",
-                    "severity": result.get("issue_severity", "").lower(),
-                    "file": result.get("filename", ""),
-                    "line": result.get("line_number", 0),
-                    "message": f"{result.get('issue_text', '')} ({result.get('test_name', '')})"
-                })
+                issues.append(
+                    {
+                        "type": "security_vulnerability",
+                        "severity": result.get("issue_severity", "").lower(),
+                        "file": result.get("filename", ""),
+                        "line": result.get("line_number", 0),
+                        "message": f"{result.get('issue_text', '')} ({result.get('test_name', '')})",
+                    }
+                )
 
             # 脆弱な依存関係
             for vuln in dependency_results.get("vulnerabilities", [])[:5]:
-                issues.append({
-                    "type": "vulnerable_dependency",
-                    "severity": "high",
-                    "package": vuln.get("package", ""),
-                    "version": vuln.get("installed_version", ""),
-                    "message": vuln.get("description", "")
-                })
+                issues.append(
+                    {
+                        "type": "vulnerable_dependency",
+                        "severity": "high",
+                        "package": vuln.get("package", ""),
+                        "version": vuln.get("installed_version", ""),
+                        "message": vuln.get("description", ""),
+                    }
+                )
 
             # ステータスを決定
             if high_severity > 0 or vulnerable_deps > 0:
@@ -571,9 +644,13 @@ class SecurityCheckerReal(BaseQualityChecker):
             # 推奨事項
             recommendations = []
             if high_severity > 0:
-                recommendations.append(f"Fix {high_severity} high severity security issues immediately")
+                recommendations.append(
+                    f"Fix {high_severity} high severity security issues immediately"
+                )
             if vulnerable_deps > 0:
-                recommendations.append(f"Update {vulnerable_deps} vulnerable dependencies")
+                recommendations.append(
+                    f"Update {vulnerable_deps} vulnerable dependencies"
+                )
             if medium_severity > 5:
                 recommendations.append("Review and fix medium severity issues")
 
@@ -589,10 +666,10 @@ class SecurityCheckerReal(BaseQualityChecker):
                         "high": high_severity,
                         "medium": medium_severity,
                         "low": low_severity,
-                        "total": total_issues
+                        "total": total_issues,
                     },
-                    "vulnerable_dependencies": vulnerable_deps
-                }
+                    "vulnerable_dependencies": vulnerable_deps,
+                },
             )
 
         except Exception as e:
@@ -601,13 +678,15 @@ class SecurityCheckerReal(BaseQualityChecker):
                 check_type=self.check_type,
                 status=QualityGateStatus.FAILED,
                 metrics=[],
-                issues=[{
-                    "type": "execution_error",
-                    "severity": "critical",
-                    "message": str(e)
-                }],
+                issues=[
+                    {
+                        "type": "execution_error",
+                        "severity": "critical",
+                        "message": str(e),
+                    }
+                ],
                 recommendations=["Fix security check environment"],
-                details={"error": str(e)}
+                details={"error": str(e)},
             )
 
     async def _run_bandit(self) -> Dict:
@@ -619,7 +698,7 @@ class SecurityCheckerReal(BaseQualityChecker):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -643,7 +722,7 @@ class SecurityCheckerReal(BaseQualityChecker):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=PROJECT_ROOT
+                cwd=PROJECT_ROOT,
             )
 
             stdout, stderr = await process.communicate()
@@ -653,12 +732,14 @@ class SecurityCheckerReal(BaseQualityChecker):
                 vulnerabilities = []
 
                 for vuln in data.get("vulnerabilities", []):
-                    vulnerabilities.append({
-                        "package": vuln.get("name", ""),
-                        "installed_version": vuln.get("version", ""),
-                        "vulnerability_id": vuln.get("id", ""),
-                        "description": vuln.get("description", "")
-                    })
+                    vulnerabilities.append(
+                        {
+                            "package": vuln.get("name", ""),
+                            "installed_version": vuln.get("version", ""),
+                            "vulnerability_id": vuln.get("id", ""),
+                            "description": vuln.get("description", ""),
+                        }
+                    )
 
                 return {"vulnerabilities": vulnerabilities}
 
@@ -680,24 +761,28 @@ class SecurityCheckerReal(BaseQualityChecker):
                 "flask": ["< 2.0.0"],
                 "django": ["< 3.2"],
                 "requests": ["< 2.20.0"],
-                "urllib3": ["< 1.24.2"]
+                "urllib3": ["< 1.24.2"],
             }
 
-            with open(requirements_path, 'r') as f:
+            with open(requirements_path, "r") as f:
                 for line in f:
                     line = line.strip()
                     if line and not line.startswith("#"):
                         for pkg, vulnerable_versions in vulnerable_packages.items():
                             if pkg in line.lower():
-                                vulnerabilities.append({
-                                    "package": pkg,
-                                    "installed_version": "unknown",
-                                    "description": f"Potentially vulnerable version of {pkg}"
-                                })
+                                vulnerabilities.append(
+                                    {
+                                        "package": pkg,
+                                        "installed_version": "unknown",
+                                        "description": f"Potentially vulnerable version of {pkg}",
+                                    }
+                                )
 
         return {"vulnerabilities": vulnerabilities}
 
-    def _calculate_security_score(self, high: int, medium: int, low: int, deps: int) -> float:
+    def _calculate_security_score(
+        self, high: int, medium: int, low: int, deps: int
+    ) -> float:
         """セキュリティスコアを計算"""
         # 基本スコア10から減点
         score = 10.0
@@ -726,15 +811,16 @@ class QualityGateManagerReal:
         self.checkers = {
             QualityCheckType.UNIT_TESTS: UnitTestCheckerReal(),
             QualityCheckType.CODE_QUALITY: CodeQualityCheckerReal(),
-            QualityCheckType.SECURITY_SCAN: SecurityCheckerReal()
+            QualityCheckType.SECURITY_SCAN: SecurityCheckerReal(),
         }
 
         # モック禁止ポリシー
         self.NO_MOCK_POLICY = True
         self.logger.info("🚫 Quality Gate Real Implementation - NO MOCKS ALLOWED")
 
-    async def run_quality_checks(self, context: Dict,
-                               check_types: Optional[List[QualityCheckType]] = None) -> Dict:
+    async def run_quality_checks(
+        self, context: Dict, check_types: Optional[List[QualityCheckType]] = None
+    ) -> Dict:
         """品質チェックを実行"""
         if check_types is None:
             check_types = list(self.checkers.keys())
@@ -754,18 +840,22 @@ class QualityGateManagerReal:
         # 結果を集計
         for i, check_type in enumerate(check_types):
             if isinstance(check_results[i], Exception):
-                self.logger.error(f"Check {check_type} failed with exception: {check_results[i]}")
+                self.logger.error(
+                    f"Check {check_type} failed with exception: {check_results[i]}"
+                )
                 results[check_type] = QualityCheckResult(
                     check_type=check_type,
                     status=QualityGateStatus.FAILED,
                     metrics=[],
-                    issues=[{
-                        "type": "check_error",
-                        "severity": "critical",
-                        "message": str(check_results[i])
-                    }],
+                    issues=[
+                        {
+                            "type": "check_error",
+                            "severity": "critical",
+                            "message": str(check_results[i]),
+                        }
+                    ],
                     recommendations=["Fix quality check execution"],
-                    details={"error": str(check_results[i])}
+                    details={"error": str(check_results[i])},
                 )
                 overall_status = QualityGateStatus.FAILED
             else:
@@ -774,44 +864,55 @@ class QualityGateManagerReal:
                 # 全体ステータスを更新
                 if check_results[i].status == QualityGateStatus.FAILED:
                     overall_status = QualityGateStatus.FAILED
-                elif check_results[i].status == QualityGateStatus.WARNING and overall_status != QualityGateStatus.FAILED:
+                elif (
+                    check_results[i].status == QualityGateStatus.WARNING
+                    and overall_status != QualityGateStatus.FAILED
+                ):
                     overall_status = QualityGateStatus.WARNING
 
         return {
             "overall_status": overall_status,
             "check_results": results,
             "summary": self._generate_summary(results),
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
         }
 
-    async def _run_check_with_timeout(self, checker: BaseQualityChecker,
-                                    context: Dict, timeout: float = 60.0) -> QualityCheckResult:
+    async def _run_check_with_timeout(
+        self, checker: BaseQualityChecker, context: Dict, timeout: float = 60.0
+    ) -> QualityCheckResult:
         """タイムアウト付きでチェックを実行"""
         try:
-            return await asyncio.wait_for(
-                checker.check(context),
-                timeout=timeout
-            )
+            return await asyncio.wait_for(checker.check(context), timeout=timeout)
         except asyncio.TimeoutError:
             return QualityCheckResult(
                 check_type=checker.check_type,
                 status=QualityGateStatus.FAILED,
                 metrics=[],
-                issues=[{
-                    "type": "timeout",
-                    "severity": "critical",
-                    "message": f"Check timed out after {timeout} seconds"
-                }],
+                issues=[
+                    {
+                        "type": "timeout",
+                        "severity": "critical",
+                        "message": f"Check timed out after {timeout} seconds",
+                    }
+                ],
                 recommendations=["Optimize check performance or increase timeout"],
-                details={"timeout": timeout}
+                details={"timeout": timeout},
             )
 
-    def _generate_summary(self, results: Dict[QualityCheckType, QualityCheckResult]) -> Dict:
+    def _generate_summary(
+        self, results: Dict[QualityCheckType, QualityCheckResult]
+    ) -> Dict:
         """結果のサマリーを生成"""
         total_checks = len(results)
-        passed_checks = sum(1 for r in results.values() if r.status == QualityGateStatus.PASSED)
-        failed_checks = sum(1 for r in results.values() if r.status == QualityGateStatus.FAILED)
-        warning_checks = sum(1 for r in results.values() if r.status == QualityGateStatus.WARNING)
+        passed_checks = sum(
+            1 for r in results.values() if r.status == QualityGateStatus.PASSED
+        )
+        failed_checks = sum(
+            1 for r in results.values() if r.status == QualityGateStatus.FAILED
+        )
+        warning_checks = sum(
+            1 for r in results.values() if r.status == QualityGateStatus.WARNING
+        )
 
         all_issues = []
         all_recommendations = []
@@ -829,9 +930,11 @@ class QualityGateManagerReal:
             "failed": failed_checks,
             "warnings": warning_checks,
             "total_issues": len(all_issues),
-            "critical_issues": len([i for i in all_issues if i.get("severity") == "critical"]),
+            "critical_issues": len(
+                [i for i in all_issues if i.get("severity") == "critical"]
+            ),
             "high_issues": len([i for i in all_issues if i.get("severity") == "high"]),
-            "recommendations": unique_recommendations[:5]  # 上位5件
+            "recommendations": unique_recommendations[:5],  # 上位5件
         }
 
 
@@ -840,5 +943,5 @@ __all__ = [
     "QualityGateManagerReal",
     "UnitTestCheckerReal",
     "CodeQualityCheckerReal",
-    "SecurityCheckerReal"
+    "SecurityCheckerReal",
 ]

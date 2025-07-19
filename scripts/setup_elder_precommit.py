@@ -22,14 +22,18 @@ class Colors:
 
 def print_header():
     """ヘッダー表示"""
-    print(f"\n{Colors.PURPLE}{Colors.BOLD}🏛️ エルダーズギルド Pre-commit Setup{Colors.ENDC}")
+    print(
+        f"\n{Colors.PURPLE}{Colors.BOLD}🏛️ エルダーズギルド Pre-commit Setup{Colors.ENDC}"
+    )
     print("=" * 50)
 
 
 def check_pre_commit_installed():
     """pre-commitインストール確認"""
     try:
-        result = subprocess.run(["pre-commit", "--version"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["pre-commit", "--version"], capture_output=True, text=True
+        )
         if result.returncode == 0:
             version = result.stdout.strip()
             print(f"{Colors.GREEN}✅ {version} がインストール済み{Colors.ENDC}")
@@ -45,7 +49,9 @@ def install_pre_commit():
     """pre-commitインストール"""
     print(f"\n{Colors.BLUE}📦 pre-commit をインストール中...{Colors.ENDC}")
     try:
-        subprocess.run([sys.executable, "-m", "pip", "install", "pre-commit"], check=True)
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "pre-commit"], check=True
+        )
         print(f"{Colors.GREEN}✅ pre-commit インストール完了{Colors.ENDC}")
         return True
     except subprocess.CalledProcessError as e:
@@ -58,7 +64,9 @@ def install_hooks():
     print(f"\n{Colors.BLUE}🔗 フックをインストール中...{Colors.ENDC}")
     try:
         subprocess.run(["pre-commit", "install"], check=True)
-        subprocess.run(["pre-commit", "install", "--hook-type", "post-commit"], check=True)
+        subprocess.run(
+            ["pre-commit", "install", "--hook-type", "post-commit"], check=True
+        )
         print(f"{Colors.GREEN}✅ フックインストール完了{Colors.ENDC}")
         return True
     except subprocess.CalledProcessError as e:
@@ -69,7 +77,9 @@ def install_hooks():
 def run_initial_check():
     """初回チェック実行"""
     print(f"\n{Colors.BLUE}🔍 初回チェックを実行中...{Colors.ENDC}")
-    print(f"{Colors.YELLOW}（初回は依存関係のダウンロードに時間がかかります）{Colors.ENDC}")
+    print(
+        f"{Colors.YELLOW}（初回は依存関係のダウンロードに時間がかかります）{Colors.ENDC}"
+    )
 
     try:
         # すべてのファイルに対して実行（初回のみ）
@@ -84,7 +94,12 @@ def run_initial_check():
 def create_gitignore_entries():
     """必要な.gitignoreエントリ追加"""
     gitignore_path = Path(".gitignore")
-    entries_to_add = ["\n# Pre-commit", ".pre-commit-config.yaml.lock", ".pdca/", "COSTAR_*.md"]
+    entries_to_add = [
+        "\n# Pre-commit",
+        ".pre-commit-config.yaml.lock",
+        ".pdca/",
+        "COSTAR_*.md",
+    ]
 
     if gitignore_path.exists():
         content = gitignore_path.read_text()
@@ -139,7 +154,9 @@ def main():
     # 1. pre-commit確認とインストール
     if not check_pre_commit_installed():
         if not install_pre_commit():
-            print(f"\n{Colors.RED}セットアップ失敗: pre-commitをインストールしてください{Colors.ENDC}")
+            print(
+                f"\n{Colors.RED}セットアップ失敗: pre-commitをインストールしてください{Colors.ENDC}"
+            )
             return 1
 
     # 2. フックインストール
@@ -150,14 +167,18 @@ def main():
     create_gitignore_entries()
 
     # 4. 初回チェック（オプション）
-    response = input(f"\n{Colors.YELLOW}初回チェックを実行しますか？ (y/N): {Colors.ENDC}")
+    response = input(
+        f"\n{Colors.YELLOW}初回チェックを実行しますか？ (y/N): {Colors.ENDC}"
+    )
     if response.lower() == "y":
         run_initial_check()
 
     # 5. 使用ガイド表示
     display_usage_guide()
 
-    print(f"\n{Colors.GREEN}{Colors.BOLD}🎉 エルダーズギルド Pre-commit セットアップ完了！{Colors.ENDC}")
+    print(
+        f"\n{Colors.GREEN}{Colors.BOLD}🎉 エルダーズギルド Pre-commit セットアップ完了！{Colors.ENDC}"
+    )
     print(f"{Colors.BLUE}品質第一の開発を実現しましょう！{Colors.ENDC}\n")
 
     return 0

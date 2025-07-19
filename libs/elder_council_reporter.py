@@ -33,21 +33,23 @@ class ElderCouncilReporter:
             "template_enhancement": {
                 "auto_approve_threshold": 0.8,  # 信頼度80%以上で自動承認
                 "required_evidence": ["success_pattern", "efficiency_improvement"],
-                "elder_consultation_required": False
+                "elder_consultation_required": False,
             },
             "automation_rule": {
                 "auto_approve_threshold": 0.7,
                 "required_evidence": ["efficiency_pattern"],
-                "elder_consultation_required": True
+                "elder_consultation_required": True,
             },
             "quality_check": {
                 "auto_approve_threshold": 0.6,
                 "required_evidence": ["problem_pattern"],
-                "elder_consultation_required": True
-            }
+                "elder_consultation_required": True,
+            },
         }
 
-    async def submit_intelligence_report(self, intelligence_report: Dict[str, Any]) -> Dict[str, Any]:
+    async def submit_intelligence_report(
+        self, intelligence_report: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """知能レポートを評議会に提出"""
         report_id = intelligence_report["report_id"]
 
@@ -60,11 +62,19 @@ class ElderCouncilReporter:
             "submission_date": datetime.now().isoformat(),
             "report_type": "project_intelligence",
             "summary": intelligence_report["summary"],
-            "elder_consultations": await self._generate_elder_consultations(intelligence_report),
+            "elder_consultations": await self._generate_elder_consultations(
+                intelligence_report
+            ),
             "approval_status": "pending",
-            "auto_approval_analysis": await self._analyze_auto_approval(intelligence_report),
-            "recommended_actions": await self._generate_recommended_actions(intelligence_report),
-            "implementation_plan": await self._generate_implementation_plan(intelligence_report)
+            "auto_approval_analysis": await self._analyze_auto_approval(
+                intelligence_report
+            ),
+            "recommended_actions": await self._generate_recommended_actions(
+                intelligence_report
+            ),
+            "implementation_plan": await self._generate_implementation_plan(
+                intelligence_report
+            ),
         }
 
         # 自動承認判定
@@ -75,7 +85,7 @@ class ElderCouncilReporter:
 
         # 評議会レポートファイル保存
         council_file = self.council_dir / f"{council_report['council_report_id']}.json"
-        with open(council_file, 'w', encoding='utf-8') as f:
+        with open(council_file, "w", encoding="utf-8") as f:
             json.dump(council_report, f, indent=2, ensure_ascii=False)
 
         # 守護指針更新
@@ -83,7 +93,9 @@ class ElderCouncilReporter:
 
         return council_report
 
-    async def _generate_elder_consultations(self, intelligence_report: Dict[str, Any]) -> Dict[str, Any]:
+    async def _generate_elder_consultations(
+        self, intelligence_report: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """エルダー相談事項生成"""
         consultations = {}
 
@@ -95,7 +107,7 @@ class ElderCouncilReporter:
                 "consultation_type": "pattern_validation",
                 "question": f"{improvement_type}の改善が過去の成功事例と一致するか検証してください",
                 "context": improvement,
-                "priority": "high" if improvement["priority"] == "high" else "medium"
+                "priority": "high" if improvement["priority"] == "high" else "medium",
             }
 
             # タスク賢者への相談
@@ -103,7 +115,7 @@ class ElderCouncilReporter:
                 "consultation_type": "implementation_planning",
                 "question": f"{improvement_type}の実装計画と優先順位を決定してください",
                 "context": improvement,
-                "priority": improvement["priority"]
+                "priority": improvement["priority"],
             }
 
             # インシデント賢者への相談
@@ -111,7 +123,7 @@ class ElderCouncilReporter:
                 "consultation_type": "risk_assessment",
                 "question": f"{improvement_type}の実装リスクを評価してください",
                 "context": improvement,
-                "priority": "high"
+                "priority": "high",
             }
 
             # RAG賢者への相談
@@ -119,19 +131,21 @@ class ElderCouncilReporter:
                 "consultation_type": "technical_research",
                 "question": f"{improvement_type}に関する最新技術動向を調査してください",
                 "context": improvement,
-                "priority": "medium"
+                "priority": "medium",
             }
 
         return consultations
 
-    async def _analyze_auto_approval(self, intelligence_report: Dict[str, Any]) -> Dict[str, Any]:
+    async def _analyze_auto_approval(
+        self, intelligence_report: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """自動承認分析"""
         analysis = {
             "total_improvements": len(intelligence_report.get("improvements", [])),
             "auto_approvable": 0,
             "requires_manual_review": 0,
             "high_confidence_improvements": [],
-            "requires_elder_consultation": []
+            "requires_elder_consultation": [],
         }
 
         for improvement in intelligence_report.get("improvements", []):
@@ -163,7 +177,9 @@ class ElderCouncilReporter:
             return False
 
         # 信頼度が低い改善がある場合は手動承認
-        low_confidence_improvements = [i for i in improvements if i.get("confidence", 0.0) < 0.6]
+        low_confidence_improvements = [
+            i for i in improvements if i.get("confidence", 0.0) < 0.6
+        ]
         if low_confidence_improvements:
             return False
 
@@ -173,7 +189,9 @@ class ElderCouncilReporter:
 
         return True
 
-    async def _generate_recommended_actions(self, intelligence_report: Dict[str, Any]) -> List[Dict[str, Any]]:
+    async def _generate_recommended_actions(
+        self, intelligence_report: Dict[str, Any]
+    ) -> List[Dict[str, Any]]:
         """推奨アクション生成"""
         actions = []
 
@@ -185,7 +203,7 @@ class ElderCouncilReporter:
                 "estimated_effort": self._estimate_effort(improvement),
                 "dependencies": [],
                 "success_criteria": self._generate_success_criteria(improvement),
-                "rollback_plan": self._generate_rollback_plan(improvement)
+                "rollback_plan": self._generate_rollback_plan(improvement),
             }
             actions.append(action)
 
@@ -196,7 +214,7 @@ class ElderCouncilReporter:
         effort_map = {
             "template_enhancement": "2-4時間",
             "automation_rule": "4-8時間",
-            "quality_check": "1-2時間"
+            "quality_check": "1-2時間",
         }
 
         return effort_map.get(improvement["type"], "要調査")
@@ -207,18 +225,18 @@ class ElderCouncilReporter:
             "template_enhancement": [
                 "新しいテンプレートファイルが正常に生成される",
                 "既存プロジェクトに悪影響がない",
-                "ユーザー満足度が向上する"
+                "ユーザー満足度が向上する",
             ],
             "automation_rule": [
                 "自動化の実行時間が短縮される",
                 "エラー発生率が低減する",
-                "作業効率が向上する"
+                "作業効率が向上する",
             ],
             "quality_check": [
                 "品質スコアが向上する",
                 "問題の早期発見率が向上する",
-                "修正コストが削減される"
-            ]
+                "修正コストが削減される",
+            ],
         }
 
         return criteria_map.get(improvement["type"], ["要定義"])
@@ -228,12 +246,14 @@ class ElderCouncilReporter:
         rollback_map = {
             "template_enhancement": "新しいテンプレートファイルを削除し、旧バージョンに戻す",
             "automation_rule": "自動化ルールを以前の設定に戻す",
-            "quality_check": "追加された品質チェックを無効化する"
+            "quality_check": "追加された品質チェックを無効化する",
         }
 
         return rollback_map.get(improvement["type"], "手動でロールバック")
 
-    async def _generate_implementation_plan(self, intelligence_report: Dict[str, Any]) -> Dict[str, Any]:
+    async def _generate_implementation_plan(
+        self, intelligence_report: Dict[str, Any]
+    ) -> Dict[str, Any]:
         """実装計画生成"""
         improvements = intelligence_report.get("improvements", [])
 
@@ -247,20 +267,20 @@ class ElderCouncilReporter:
                 "name": "緊急改善",
                 "duration": "1-2日",
                 "improvements": high_priority,
-                "blocking": True
+                "blocking": True,
             },
             "phase_2": {
                 "name": "中期改善",
                 "duration": "1週間",
                 "improvements": medium_priority,
-                "blocking": False
+                "blocking": False,
             },
             "phase_3": {
                 "name": "長期改善",
                 "duration": "2-4週間",
                 "improvements": low_priority,
-                "blocking": False
-            }
+                "blocking": False,
+            },
         }
 
         return implementation_plan
@@ -271,7 +291,7 @@ class ElderCouncilReporter:
 
         # 既存の守護指針読み込み
         if principles_file.exists():
-            with open(principles_file, 'r', encoding='utf-8') as f:
+            with open(principles_file, "r", encoding="utf-8") as f:
                 principles = json.load(f)
         else:
             principles = {
@@ -279,7 +299,7 @@ class ElderCouncilReporter:
                 "last_updated": datetime.now().isoformat(),
                 "principles": [],
                 "auto_approval_rules": {},
-                "improvement_patterns": {}
+                "improvement_patterns": {},
             }
 
         # 新しい指針追加
@@ -291,7 +311,7 @@ class ElderCouncilReporter:
                     "description": action["description"],
                     "success_criteria": action["success_criteria"],
                     "established_date": datetime.now().isoformat(),
-                    "source_report": council_report["council_report_id"]
+                    "source_report": council_report["council_report_id"],
                 }
                 principles["principles"].append(principle)
 
@@ -299,7 +319,7 @@ class ElderCouncilReporter:
         principles["last_updated"] = datetime.now().isoformat()
 
         # 保存
-        with open(principles_file, 'w', encoding='utf-8') as f:
+        with open(principles_file, "w", encoding="utf-8") as f:
             json.dump(principles, f, indent=2, ensure_ascii=False)
 
     async def get_council_status(self) -> Dict[str, Any]:
@@ -309,30 +329,44 @@ class ElderCouncilReporter:
         # 評議会レポート一覧
         for report_file in self.council_dir.glob("council_*.json"):
             try:
-                with open(report_file, 'r', encoding='utf-8') as f:
+                with open(report_file, "r", encoding="utf-8") as f:
                     report = json.load(f)
-                    reports.append({
-                        "report_id": report["council_report_id"],
-                        "submission_date": report["submission_date"],
-                        "approval_status": report["approval_status"],
-                        "total_improvements": len(report.get("recommended_actions", []))
-                    })
+                    reports.append(
+                        {
+                            "report_id": report["council_report_id"],
+                            "submission_date": report["submission_date"],
+                            "approval_status": report["approval_status"],
+                            "total_improvements": len(
+                                report.get("recommended_actions", [])
+                            ),
+                        }
+                    )
             except Exception as e:
                 logger.error(f"レポート読み込みエラー {report_file}: {e}")
 
         # 統計情報
         status = {
             "total_reports": len(reports),
-            "pending_approval": len([r for r in reports if r["approval_status"] == "pending"]),
-            "auto_approved": len([r for r in reports if r["approval_status"] == "auto_approved"]),
-            "manual_approved": len([r for r in reports if r["approval_status"] == "approved"]),
+            "pending_approval": len(
+                [r for r in reports if r["approval_status"] == "pending"]
+            ),
+            "auto_approved": len(
+                [r for r in reports if r["approval_status"] == "auto_approved"]
+            ),
+            "manual_approved": len(
+                [r for r in reports if r["approval_status"] == "approved"]
+            ),
             "rejected": len([r for r in reports if r["approval_status"] == "rejected"]),
-            "recent_reports": sorted(reports, key=lambda x: x["submission_date"], reverse=True)[:5]
+            "recent_reports": sorted(
+                reports, key=lambda x: x["submission_date"], reverse=True
+            )[:5],
         }
 
         return status
 
-    async def approve_report(self, report_id: str, approver: str = "manual_review") -> bool:
+    async def approve_report(
+        self, report_id: str, approver: str = "manual_review"
+    ) -> bool:
         """レポート承認"""
         report_file = self.council_dir / f"{report_id}.json"
 
@@ -341,7 +375,7 @@ class ElderCouncilReporter:
 
         try:
             # レポート読み込み
-            with open(report_file, 'r', encoding='utf-8') as f:
+            with open(report_file, "r", encoding="utf-8") as f:
                 report = json.load(f)
 
             # 承認情報更新
@@ -350,7 +384,7 @@ class ElderCouncilReporter:
             report["approved_by"] = approver
 
             # 保存
-            with open(report_file, 'w', encoding='utf-8') as f:
+            with open(report_file, "w", encoding="utf-8") as f:
                 json.dump(report, f, indent=2, ensure_ascii=False)
 
             # 守護指針更新
@@ -366,10 +400,10 @@ class ElderCouncilReporter:
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description='エルダー評議会報告システム')
-    parser.add_argument('--status', action='store_true', help='評議会状況確認')
-    parser.add_argument('--approve', help='レポート承認 (report_id)')
-    parser.add_argument('--test', action='store_true', help='テスト実行')
+    parser = argparse.ArgumentParser(description="エルダー評議会報告システム")
+    parser.add_argument("--status", action="store_true", help="評議会状況確認")
+    parser.add_argument("--approve", help="レポート承認 (report_id)")
+    parser.add_argument("--test", action="store_true", help="テスト実行")
 
     args = parser.parse_args()
 
@@ -386,12 +420,14 @@ if __name__ == "__main__":
         test_report = {
             "report_id": "test_report_001",
             "summary": {"total_improvements": 1},
-            "improvements": [{
-                "type": "template_enhancement",
-                "description": "テスト改善",
-                "priority": "medium",
-                "confidence": 0.8
-            }]
+            "improvements": [
+                {
+                    "type": "template_enhancement",
+                    "description": "テスト改善",
+                    "priority": "medium",
+                    "confidence": 0.8,
+                }
+            ],
         }
 
         result = asyncio.run(reporter.submit_intelligence_report(test_report))

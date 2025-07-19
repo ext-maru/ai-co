@@ -70,7 +70,9 @@ class AncientElderPhasesAuditor:
                 if implementation_files:
                     result["status"] = "PASS"
                     result["score"] = 95
-                    result["findings"].append(f"{len(implementation_files)}個の実装ファイル確認")
+                    result["findings"].append(
+                        f"{len(implementation_files)}個の実装ファイル確認"
+                    )
 
                     # A2A通信パターンチェック
                     proxy_check = self._check_a2a_pattern(phase)
@@ -149,7 +151,12 @@ class AncientElderPhasesAuditor:
                     "docs/rag_sage_tracking_integration_design.md",
                     "docs/rag_sage_phase24_implementation_plan.md",
                 ],
-                "validation_points": ["設計書の完全性", "実装計画の妥当性", "既存実装との整合性", "期待効果の現実性"],
+                "validation_points": [
+                    "設計書の完全性",
+                    "実装計画の妥当性",
+                    "既存実装との整合性",
+                    "期待効果の現実性",
+                ],
             },
             {
                 "phase": "Phase 25",

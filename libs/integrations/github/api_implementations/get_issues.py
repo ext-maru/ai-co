@@ -193,11 +193,11 @@ class GitHubGetIssuesImplementation:
                     "parameters": params,
                     "total_pages": total_pages or page,
                     "rate_limit_remaining": self.rate_limit_remaining,
-                    "rate_limit_reset": datetime.fromtimestamp(
-                        self.rate_limit_reset
-                    ).isoformat()
-                    if self.rate_limit_reset
-                    else None,
+                    "rate_limit_reset": (
+                        datetime.fromtimestamp(self.rate_limit_reset).isoformat()
+                        if self.rate_limit_reset
+                        else None
+                    ),
                 },
             }
 

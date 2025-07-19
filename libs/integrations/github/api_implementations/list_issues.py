@@ -156,13 +156,15 @@ class GitHubIssuesList:
                     {"login": assignee.get("login"), "id": assignee.get("id")}
                     for assignee in data.get("assignees", [])
                 ],
-                "milestone": {
-                    "title": data.get("milestone", {}).get("title"),
-                    "number": data.get("milestone", {}).get("number"),
-                    "state": data.get("milestone", {}).get("state"),
-                }
-                if data.get("milestone")
-                else None,
+                "milestone": (
+                    {
+                        "title": data.get("milestone", {}).get("title"),
+                        "number": data.get("milestone", {}).get("number"),
+                        "state": data.get("milestone", {}).get("state"),
+                    }
+                    if data.get("milestone")
+                    else None
+                ),
                 "comments": data.get("comments"),
                 "created_at": data.get("created_at"),
                 "updated_at": data.get("updated_at"),

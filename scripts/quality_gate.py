@@ -3,12 +3,15 @@ import subprocess
 import sys
 import json
 
+
 def run_quality_checks():
     results = {"passed": True, "checks": []}
 
     # テスト実行
     try:
-        result = subprocess.run(["pytest", "--tb=short"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["pytest", "--tb=short"], capture_output=True, text=True
+        )
         test_passed = result.returncode == 0
         results["checks"].append({"test": "pytest", "passed": test_passed})
     except:
@@ -16,7 +19,9 @@ def run_quality_checks():
 
     # カバレッジチェック
     try:
-        result = subprocess.run(["pytest", "--cov=.", "--cov-report=json"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["pytest", "--cov=.", "--cov-report=json"], capture_output=True, text=True
+        )
         coverage_passed = result.returncode == 0
         results["checks"].append({"test": "coverage", "passed": coverage_passed})
     except:
@@ -32,6 +37,7 @@ def run_quality_checks():
 
     results["passed"] = all(check["passed"] for check in results["checks"])
     return results
+
 
 if __name__ == "__main__":
     results = run_quality_checks()

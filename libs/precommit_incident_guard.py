@@ -359,9 +359,7 @@ class PreCommitIncidentGuard:
                 risk_level = (
                     "🚨"
                     if change.security_issues
-                    else "⚠️"
-                    if change.risk_indicators
-                    else "✅"
+                    else "⚠️" if change.risk_indicators else "✅"
                 )
                 report.append(f"   {risk_level} {change.file_path}")
                 if change.security_issues:
@@ -369,13 +367,17 @@ class PreCommitIncidentGuard:
                         f"      🔒 セキュリティ: {', '.join(change.security_issues)}"
                     )
                 if change.risk_indicators:
-                    report.append(f"      ⚠️ リスク: {', '.join(change.risk_indicators)}")
+                    report.append(
+                        f"      ⚠️ リスク: {', '.join(change.risk_indicators)}"
+                    )
                 report.append(
                     f"      📊 変更: +{change.lines_added}/-{change.lines_deleted}"
                 )
 
         report.append("")
-        report.append("🛡️ 騎士団の誓い: 「コードの平和を守り、バグという名の怪物を討伐せん！」")
+        report.append(
+            "🛡️ 騎士団の誓い: 「コードの平和を守り、バグという名の怪物を討伐せん！」"
+        )
         report.append("=" * 64)
 
         return "\n".join(report)

@@ -595,9 +595,11 @@ class RAGManager(EldersAILegacy):
                         {
                             "document": {
                                 "id": result.document.id,
-                                "content": result.document.content[:500] + "..."
-                                if len(result.document.content) > 500
-                                else result.document.content,
+                                "content": (
+                                    result.document.content[:500] + "..."
+                                    if len(result.document.content) > 500
+                                    else result.document.content
+                                ),
                                 "doc_type": result.document.doc_type.value,
                                 "metadata": result.document.metadata,
                             },

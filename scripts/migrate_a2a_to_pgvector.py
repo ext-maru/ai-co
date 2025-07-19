@@ -74,9 +74,15 @@ class A2APgVectorMigration:
                 "dimension": 1536,
             },
             "data_sources": {
-                "communications": str(PROJECT_ROOT / "analysis_results" / "a2a_communications_*.json"),
-                "anomalies": str(PROJECT_ROOT / "analysis_results" / "anomaly_patterns_*.json"),
-                "semantic_analysis": str(PROJECT_ROOT / "analysis_results" / "semantic_analysis_*.json"),
+                "communications": str(
+                    PROJECT_ROOT / "analysis_results" / "a2a_communications_*.json"
+                ),
+                "anomalies": str(
+                    PROJECT_ROOT / "analysis_results" / "anomaly_patterns_*.json"
+                ),
+                "semantic_analysis": str(
+                    PROJECT_ROOT / "analysis_results" / "semantic_analysis_*.json"
+                ),
             },
         }
 
@@ -105,7 +111,9 @@ class A2APgVectorMigration:
             self.openai_client = openai.OpenAI(api_key=api_key)
             # テスト埋め込み生成
             test_response = self.openai_client.embeddings.create(
-                model=self.config["openai"]["model"], input="test", dimensions=self.config["openai"]["dimension"]
+                model=self.config["openai"]["model"],
+                input="test",
+                dimensions=self.config["openai"]["dimension"],
             )
             logger.info("OpenAI API configured successfully")
             return True
@@ -147,7 +155,9 @@ class A2APgVectorMigration:
 
         try:
             response = self.openai_client.embeddings.create(
-                model=self.config["openai"]["model"], input=text, dimensions=self.config["openai"]["dimension"]
+                model=self.config["openai"]["model"],
+                input=text,
+                dimensions=self.config["openai"]["dimension"],
             )
             embedding = response.data[0].embedding
             self.stats["embeddings_generated"] += 1
@@ -157,7 +167,9 @@ class A2APgVectorMigration:
             self.stats["errors"].append(f"Embedding error: {str(e)[:100]}")
             return None
 
-    def generate_embeddings_batch(self, texts: List[str]) -> List[Optional[List[float]]]:
+    def generate_embeddings_batch(
+        self, texts: List[str]
+    ) -> List[Optional[List[float]]]:
         """バッチでベクトル埋め込みを生成"""
         if not self.openai_client:
             return [None] * len(texts)
@@ -170,7 +182,9 @@ class A2APgVectorMigration:
 
             try:
                 response = self.openai_client.embeddings.create(
-                    model=self.config["openai"]["model"], input=batch, dimensions=self.config["openai"]["dimension"]
+                    model=self.config["openai"]["model"],
+                    input=batch,
+                    dimensions=self.config["openai"]["dimension"],
                 )
 
                 batch_embeddings = [data.embedding for data in response.data]
@@ -242,7 +256,9 @@ class A2APgVectorMigration:
                     # タイムスタンプ処理
                     timestamp = comm.get("timestamp", datetime.now())
                     if isinstance(timestamp, str):
-                        timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                        timestamp = datetime.fromisoformat(
+                            timestamp.replace("Z", "+00:00")
+                        )
 
                     # メタデータ準備
                     metadata = {}
@@ -269,7 +285,9 @@ class A2APgVectorMigration:
 
                 except Exception as e:
                     logger.error(f"Failed to process communication: {e}")
-                    self.stats["errors"].append(f"Communication processing error: {str(e)[:100]}")
+                    self.stats["errors"].append(
+                        f"Communication processing error: {str(e)[:100]}"
+                    )
 
             # バッチ挿入
             if insert_data:
@@ -312,7 +330,13 @@ class A2APgVectorMigration:
                 agent_type = "sage"
 
             insert_data.append(
-                (agent, agent_type, "active", json.dumps({"auto_detected": True}), json.dumps({"message_count": 0}))
+                (
+                    agent,
+                    agent_type,
+                    "active",
+                    json.dumps({"auto_detected": True}),
+                    json.dumps({"message_count": 0}),
+                )
             )
 
         try:
@@ -366,7 +390,9 @@ class A2APgVectorMigration:
         texts = []
         for pattern in patterns_list:
             text_parts = []
-            text_parts.append(f"Pattern: {pattern.get('pattern', pattern.get('type', 'unknown'))}")
+            text_parts.append(
+                f"Pattern: {pattern.get('pattern', pattern.get('type', 'unknown'))}"
+            )
             if "description" in pattern:
                 text_parts.append(f"Description: {pattern['description']}")
             if "severity" in pattern:
@@ -392,7 +418,9 @@ class A2APgVectorMigration:
                 # 最終検出時刻
                 last_detected = pattern.get("last_detected", pattern.get("timestamp"))
                 if isinstance(last_detected, str):
-                    last_detected = datetime.fromisoformat(last_detected.replace("Z", "+00:00"))
+                    last_detected = datetime.fromisoformat(
+                        last_detected.replace("Z", "+00:00")
+                    )
                 elif not isinstance(last_detected, datetime):
                     last_detected = None
 
@@ -524,15 +552,23 @@ class A2APgVectorMigration:
         try:
             # 通信数
             self.cursor.execute("SELECT COUNT(*) FROM a2a.communications;")
-            report["database_status"]["total_communications"] = self.cursor.fetchone()[0]
+            report["database_status"]["total_communications"] = self.cursor.fetchone()[
+                0
+            ]
 
             # 埋め込みありの通信数
-            self.cursor.execute("SELECT COUNT(*) FROM a2a.communications WHERE embedding IS NOT NULL;")
-            report["database_status"]["communications_with_embeddings"] = self.cursor.fetchone()[0]
+            self.cursor.execute(
+                "SELECT COUNT(*) FROM a2a.communications WHERE embedding IS NOT NULL;"
+            )
+            report["database_status"][
+                "communications_with_embeddings"
+            ] = self.cursor.fetchone()[0]
 
             # 異常パターン数
             self.cursor.execute("SELECT COUNT(*) FROM a2a.anomaly_patterns;")
-            report["database_status"]["total_anomaly_patterns"] = self.cursor.fetchone()[0]
+            report["database_status"][
+                "total_anomaly_patterns"
+            ] = self.cursor.fetchone()[0]
 
             # エージェント数
             self.cursor.execute("SELECT COUNT(*) FROM a2a.agents;")
@@ -543,7 +579,9 @@ class A2APgVectorMigration:
 
         # 推奨事項
         if report["database_status"].get("communications_with_embeddings", 0) == 0:
-            report["recommendations"].append("OpenAI API設定を確認してベクトル埋め込みを生成してください")
+            report["recommendations"].append(
+                "OpenAI API設定を確認してベクトル埋め込みを生成してください"
+            )
 
         if self.stats["errors"]:
             report["recommendations"].append(
@@ -551,7 +589,9 @@ class A2APgVectorMigration:
             )
 
         if self.stats["migrated_communications"] < self.stats["total_communications"]:
-            report["recommendations"].append("一部の通信データが移行されていません。データ形式を確認してください")
+            report["recommendations"].append(
+                "一部の通信データが移行されていません。データ形式を確認してください"
+            )
 
         return report
 
@@ -618,7 +658,11 @@ def main():
         report = migration.execute_migration()
 
         # レポート保存
-        report_file = PROJECT_ROOT / "logs" / f"pgvector_migration_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_file = (
+            PROJECT_ROOT
+            / "logs"
+            / f"pgvector_migration_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
         with open(report_file, "w", encoding="utf-8") as f:
             json.dump(report, f, indent=2, ensure_ascii=False, default=str)
 

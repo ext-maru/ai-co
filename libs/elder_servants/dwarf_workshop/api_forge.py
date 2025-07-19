@@ -672,9 +672,11 @@ def {function_name}():
             test_content = [
                 "import pytest",
                 "import requests",
-                "from fastapi.testclient import TestClient"
-                if config.framework == "fastapi"
-                else "import unittest",
+                (
+                    "from fastapi.testclient import TestClient"
+                    if config.framework == "fastapi"
+                    else "import unittest"
+                ),
                 "",
                 "# Test configuration",
                 "BASE_URL = 'http://localhost:8000'",

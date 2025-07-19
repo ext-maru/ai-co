@@ -94,12 +94,16 @@ class ScalingPolicy:
 
         # ワーカー数に対してキューが多すぎる場合
         if workers > 0 and queue_length > workers * 3:
-            logger.info(f"📈 スケールアップ条件: キュー/ワーカー比 {queue_length}/{workers} > 3")
+            logger.info(
+                f"📈 スケールアップ条件: キュー/ワーカー比 {queue_length}/{workers} > 3"
+            )
             return True
 
         # システムリソースに余裕がある場合でキューがある
         if queue_length > 0 and cpu < 50 and memory < 50:
-            logger.info(f"📈 スケールアップ条件: リソース余裕あり (CPU:{cpu}%, Mem:{memory}%)")
+            logger.info(
+                f"📈 スケールアップ条件: リソース余裕あり (CPU:{cpu}%, Mem:{memory}%)"
+            )
             return True
 
         return False
@@ -158,9 +162,11 @@ class ScalingPolicy:
             "total_scaling": len(self.scaling_history),
             "scale_ups": scale_ups,
             "scale_downs": scale_downs,
-            "last_scaling": self.scaling_history[-1]["timestamp"].isoformat()
-            if self.scaling_history
-            else None,
+            "last_scaling": (
+                self.scaling_history[-1]["timestamp"].isoformat()
+                if self.scaling_history
+                else None
+            ),
         }
 
 

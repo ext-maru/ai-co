@@ -20,7 +20,9 @@ def save_to_postgresql():
 
     # 命名規約文書を読み込み
     project_root = Path(__file__).resolve().parent.parent
-    naming_doc_path = project_root / "knowledge_base" / "ELDER_ORGANIZATION_NAMING_CONVENTIONS.md"
+    naming_doc_path = (
+        project_root / "knowledge_base" / "ELDER_ORGANIZATION_NAMING_CONVENTIONS.md"
+    )
 
     if not naming_doc_path.exists():
         print(f"❌ 命名規約文書が見つかりません: {naming_doc_path}")
@@ -51,7 +53,15 @@ def save_to_postgresql():
     metadata.replace("'", "''")
 
     # SQL文を作成 (実際のテーブル構造に合わせる)
-    tags = ["Elder Tree", "Elders Guild", "naming", "governance", "hierarchy", "Grand Elder maru", "Claude Elder"]
+    tags = [
+        "Elder Tree",
+        "Elders Guild",
+        "naming",
+        "governance",
+        "hierarchy",
+        "Grand Elder maru",
+        "Claude Elder",
+    ]
     tags_sql = "ARRAY[" + ",".join([f"'{tag}'" for tag in tags]) + "]"
 
     evolution_history = json.dumps(
@@ -73,7 +83,9 @@ def save_to_postgresql():
     """
 
     check_result = subprocess.run(
-        ["psql", db_url, "-t", "-A", "-c", check_existing_sql], capture_output=True, text=True
+        ["psql", db_url, "-t", "-A", "-c", check_existing_sql],
+        capture_output=True,
+        text=True,
     )
 
     if check_result.returncode == 0 and check_result.stdout.strip():
@@ -110,7 +122,9 @@ def save_to_postgresql():
         """
 
     # psqlコマンドで実行
-    result = subprocess.run(["psql", db_url, "-c", sql_insert], capture_output=True, text=True)
+    result = subprocess.run(
+        ["psql", db_url, "-c", sql_insert], capture_output=True, text=True
+    )
 
     if result.returncode == 0:
         print("✅ PostgreSQL魔法書システムに保存成功！")
@@ -129,7 +143,9 @@ def save_to_postgresql():
         """
 
         check_result = subprocess.run(
-            ["psql", db_url, "-t", "-A", "-F", "|||", "-c", check_sql], capture_output=True, text=True
+            ["psql", db_url, "-t", "-A", "-F", "|||", "-c", check_sql],
+            capture_output=True,
+            text=True,
         )
 
         if check_result.returncode == 0 and check_result.stdout.strip():
@@ -218,7 +234,9 @@ Elders Guildの開発・運営に関わるすべてのエルダー系組織の�
         content_escaped = concept["content"].replace("'", "''")
 
         # タグを準備
-        tags = concept["metadata"].get("tags", ["Elder Tree", "Elders Guild", "governance"])
+        tags = concept["metadata"].get(
+            "tags", ["Elder Tree", "Elders Guild", "governance"]
+        )
         tags_sql = "ARRAY[" + ",".join([f"'{tag}'" for tag in tags]) + "]"
 
         evolution_history = json.dumps(
@@ -234,7 +252,11 @@ Elders Guildの開発・運営に関わるすべてのエルダー系組織の�
 
         # 既存エントリをチェック
         check_sql = f"SELECT id FROM knowledge_grimoire WHERE spell_name = '{concept['spell_name']}' LIMIT 1;"
-        check_res = subprocess.run(["psql", db_url, "-t", "-A", "-c", check_sql], capture_output=True, text=True)
+        check_res = subprocess.run(
+            ["psql", db_url, "-t", "-A", "-c", check_sql],
+            capture_output=True,
+            text=True,
+        )
 
         if check_res.returncode == 0 and check_res.stdout.strip():
             # 更新
@@ -269,7 +291,9 @@ Elders Guildの開発・運営に関わるすべてのエルダー系組織の�
             );
             """
 
-        result = subprocess.run(["psql", db_url, "-c", sql], capture_output=True, text=True)
+        result = subprocess.run(
+            ["psql", db_url, "-c", sql], capture_output=True, text=True
+        )
 
         if result.returncode == 0:
             print(f"✅ {concept['spell_name']}保存成功")
@@ -282,7 +306,9 @@ Elders Guildの開発・運営に関わるすべてのエルダー系組織の�
     WHERE content ILIKE '%Elder Tree%' OR content ILIKE '%Elders Guild%';
     """
 
-    count_result = subprocess.run(["psql", db_url, "-t", "-A", "-c", count_sql], capture_output=True, text=True)
+    count_result = subprocess.run(
+        ["psql", db_url, "-t", "-A", "-c", count_sql], capture_output=True, text=True
+    )
 
     if count_result.returncode == 0:
         count = count_result.stdout.strip()

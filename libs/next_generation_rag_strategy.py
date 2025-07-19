@@ -27,9 +27,14 @@ import time
 
 # Elder Flow統合
 try:
-    from libs.advanced_rag_precision_engine import AdvancedRAGPrecisionEngine, SearchResult, RAGASMetrics
+    from libs.advanced_rag_precision_engine import (
+        AdvancedRAGPrecisionEngine,
+        SearchResult,
+        RAGASMetrics,
+    )
     from libs.mind_reading_core import MindReadingCore, IntentResult, IntentType
     from libs.intent_parser import IntentParser
+
     ELDER_COMPONENTS_AVAILABLE = True
 except ImportError:
     print("⚠️ Elder components not available")
@@ -64,23 +69,26 @@ except ImportError:
 
 class ContextTier(Enum):
     """コンテキスト階層"""
-    CRITICAL = "critical"     # 最重要（即座に必要）
-    IMPORTANT = "important"   # 重要（文脈として必要）
-    RELEVANT = "relevant"     # 関連（参考として有用）
-    BACKGROUND = "background" # 背景（全体理解用）
+
+    CRITICAL = "critical"  # 最重要（即座に必要）
+    IMPORTANT = "important"  # 重要（文脈として必要）
+    RELEVANT = "relevant"  # 関連（参考として有用）
+    BACKGROUND = "background"  # 背景（全体理解用）
 
 
 class StreamingMode(Enum):
     """ストリーミングモード"""
-    REAL_TIME = "real_time"     # リアルタイム更新
-    BATCH = "batch"             # バッチ更新
-    ADAPTIVE = "adaptive"       # 適応的更新
-    ON_DEMAND = "on_demand"     # オンデマンド更新
+
+    REAL_TIME = "real_time"  # リアルタイム更新
+    BATCH = "batch"  # バッチ更新
+    ADAPTIVE = "adaptive"  # 適応的更新
+    ON_DEMAND = "on_demand"  # オンデマンド更新
 
 
 @dataclass
 class HierarchicalContext:
     """階層化コンテキスト"""
+
     context_id: str
     tier: ContextTier
     content: str
@@ -95,6 +103,7 @@ class HierarchicalContext:
 @dataclass
 class StreamingUpdate:
     """ストリーミング更新"""
+
     update_id: str
     document_id: str
     update_type: str  # "create", "update", "delete"
@@ -107,6 +116,7 @@ class StreamingUpdate:
 @dataclass
 class EvidenceTrace:
     """証拠トレース"""
+
     trace_id: str
     query: str
     response: str
@@ -127,7 +137,7 @@ class HierarchicalContextManager:
             ContextTier.CRITICAL: 10,
             ContextTier.IMPORTANT: 50,
             ContextTier.RELEVANT: 200,
-            ContextTier.BACKGROUND: 1000
+            ContextTier.BACKGROUND: 1000,
         }
 
         # 階層別ストレージ
@@ -155,10 +165,18 @@ class HierarchicalContextManager:
 
         return logger
 
-    async def add_context(self, content: str, tier: ContextTier, source: str,
-                         relevance_score: float, dependencies: List[str] = None) -> str:
+    async def add_context(
+        self,
+        content: str,
+        tier: ContextTier,
+        source: str,
+        relevance_score: float,
+        dependencies: List[str] = None,
+    ) -> str:
         """コンテキストを階層に追加"""
-        context_id = hashlib.md5(f"{content[:100]}{datetime.now()}".encode()).hexdigest()[:16]
+        context_id = hashlib.md5(
+            f"{content[:100]}{datetime.now()}".encode()
+        ).hexdigest()[:16]
 
         context = HierarchicalContext(
             context_id=context_id,
@@ -167,7 +185,7 @@ class HierarchicalContextManager:
             source=source,
             relevance_score=relevance_score,
             creation_time=datetime.now(),
-            dependencies=dependencies or []
+            dependencies=dependencies or [],
         )
 
         # 容量制限チェック
@@ -204,7 +222,9 @@ class HierarchicalContextManager:
 
         self.logger.info(f"🗑️ Evicted context from {tier.value}: {to_remove.context_id}")
 
-    async def get_prioritized_contexts(self, query: str, max_total: int = 100) -> List[HierarchicalContext]:
+    async def get_prioritized_contexts(
+        self, query: str, max_total: int = 100
+    ) -> List[HierarchicalContext]:
         """クエリに対する優先順位付きコンテキスト取得"""
         all_contexts = []
 
@@ -220,14 +240,16 @@ class HierarchicalContextManager:
                 # 簡易関連性計算
                 query_words = set(query.lower().split())
                 content_words = set(context.content.lower().split())
-                relevance = len(query_words.intersection(content_words)) / max(len(query_words), 1)
+                relevance = len(query_words.intersection(content_words)) / max(
+                    len(query_words), 1
+                )
 
                 # 階層重みを適用
                 tier_weights = {
                     ContextTier.CRITICAL: 4.0,
                     ContextTier.IMPORTANT: 3.0,
                     ContextTier.RELEVANT: 2.0,
-                    ContextTier.BACKGROUND: 1.0
+                    ContextTier.BACKGROUND: 1.0,
                 }
 
                 final_score = relevance * tier_weights[tier] * context.relevance_score
@@ -252,18 +274,23 @@ class HierarchicalContextManager:
 
                 # アクセス頻度が高いものは上位階層への昇格候補
                 for context in contexts:
-                    if context.access_count > avg_access * 2 and tier != ContextTier.CRITICAL:
+                    if (
+                        context.access_count > avg_access * 2
+                        and tier != ContextTier.CRITICAL
+                    ):
                         await self._promote_context(context, tier)
 
         self.logger.info("✅ Hierarchy optimization complete")
 
-    async def _promote_context(self, context: HierarchicalContext, current_tier: ContextTier):
+    async def _promote_context(
+        self, context: HierarchicalContext, current_tier: ContextTier
+    ):
         """コンテキストの階層昇格"""
         # 昇格先の決定
         promotion_map = {
             ContextTier.BACKGROUND: ContextTier.RELEVANT,
             ContextTier.RELEVANT: ContextTier.IMPORTANT,
-            ContextTier.IMPORTANT: ContextTier.CRITICAL
+            ContextTier.IMPORTANT: ContextTier.CRITICAL,
         }
 
         new_tier = promotion_map.get(current_tier)
@@ -280,7 +307,9 @@ class HierarchicalContextManager:
 
         self.contexts[new_tier][context.context_id] = context
 
-        self.logger.info(f"⬆️ Promoted context {context.context_id} from {current_tier.value} to {new_tier.value}")
+        self.logger.info(
+            f"⬆️ Promoted context {context.context_id} from {current_tier.value} to {new_tier.value}"
+        )
 
 
 class StreamingRAGEngine:
@@ -300,7 +329,7 @@ class StreamingRAGEngine:
             "total_updates": 0,
             "successful_updates": 0,
             "failed_updates": 0,
-            "average_latency": 0.0
+            "average_latency": 0.0,
         }
 
         # バックグラウンドタスク
@@ -362,10 +391,18 @@ class StreamingRAGEngine:
                 self.logger.error(f"Streaming error: {e}")
                 await asyncio.sleep(5)  # エラー時は短い間隔で再試行
 
-    async def add_update(self, document_id: str, update_type: str, content: str,
-                        priority: float = 0.5, source_system: str = "unknown"):
+    async def add_update(
+        self,
+        document_id: str,
+        update_type: str,
+        content: str,
+        priority: float = 0.5,
+        source_system: str = "unknown",
+    ):
         """更新をキューに追加"""
-        update_id = hashlib.md5(f"{document_id}{datetime.now()}".encode()).hexdigest()[:16]
+        update_id = hashlib.md5(f"{document_id}{datetime.now()}".encode()).hexdigest()[
+            :16
+        ]
 
         update = StreamingUpdate(
             update_id=update_id,
@@ -374,7 +411,7 @@ class StreamingRAGEngine:
             content=content,
             timestamp=datetime.now(),
             priority=priority,
-            source_system=source_system
+            source_system=source_system,
         )
 
         self.update_queue.append(update)
@@ -407,7 +444,9 @@ class StreamingRAGEngine:
                 # レイテンシ更新
                 current_avg = self.stream_stats["average_latency"]
                 total = self.stream_stats["total_updates"]
-                self.stream_stats["average_latency"] = (current_avg * (total - 1) + latency) / total
+                self.stream_stats["average_latency"] = (
+                    current_avg * (total - 1) + latency
+                ) / total
 
                 # 処理済みマーク
                 self.processed_updates.add(update.update_id)
@@ -431,8 +470,9 @@ class StreamingRAGEngine:
         """統計情報の更新"""
         # キューサイズと処理速度の監視
         queue_size = len(self.update_queue)
-        success_rate = (self.stream_stats["successful_updates"] /
-                       max(self.stream_stats["total_updates"], 1))
+        success_rate = self.stream_stats["successful_updates"] / max(
+            self.stream_stats["total_updates"], 1
+        )
 
         if queue_size > 1000:  # キューが大きくなりすぎた場合
             self.logger.warning(f"⚠️ Large update queue: {queue_size} items")
@@ -459,7 +499,7 @@ class EvidenceTraceabilitySystem:
             "source_credibility": 0.3,
             "information_freshness": 0.2,
             "cross_reference_count": 0.3,
-            "consistency_score": 0.2
+            "consistency_score": 0.2,
         }
 
         self.logger.info("🔍 Evidence Traceability System initialized")
@@ -486,7 +526,8 @@ class EvidenceTraceabilitySystem:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS evidence_traces (
                 trace_id TEXT PRIMARY KEY,
                 query TEXT,
@@ -497,9 +538,11 @@ class EvidenceTraceabilitySystem:
                 hallucination_risk REAL,
                 created_at TEXT
             )
-        """)
+        """
+        )
 
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS source_credibility (
                 source_id TEXT PRIMARY KEY,
                 source_name TEXT,
@@ -507,15 +550,19 @@ class EvidenceTraceabilitySystem:
                 verification_count INTEGER,
                 last_updated TEXT
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
 
-    async def create_evidence_trace(self, query: str, response: str,
-                                  sources: List[Dict[str, Any]]) -> str:
+    async def create_evidence_trace(
+        self, query: str, response: str, sources: List[Dict[str, Any]]
+    ) -> str:
         """証拠トレースの作成"""
-        trace_id = hashlib.md5(f"{query}{response}{datetime.now()}".encode()).hexdigest()[:16]
+        trace_id = hashlib.md5(
+            f"{query}{response}{datetime.now()}".encode()
+        ).hexdigest()[:16]
 
         # 証拠チェーンの構築
         evidence_chain = []
@@ -528,14 +575,20 @@ class EvidenceTraceabilitySystem:
                 "source_name": source.get("name", "unknown"),
                 "content_snippet": source.get("content", "")[:200],
                 "relevance_score": source.get("relevance", 0.5),
-                "credibility_score": await self._get_source_credibility(source.get("id", "unknown"))
+                "credibility_score": await self._get_source_credibility(
+                    source.get("id", "unknown")
+                ),
             }
 
             evidence_chain.append(evidence)
-            confidence_scores.append(evidence["relevance_score"] * evidence["credibility_score"])
+            confidence_scores.append(
+                evidence["relevance_score"] * evidence["credibility_score"]
+            )
 
         # 検証実行
-        verification_status = await self._verify_evidence_chain(evidence_chain, response)
+        verification_status = await self._verify_evidence_chain(
+            evidence_chain, response
+        )
 
         # トレース作成
         trace = EvidenceTrace(
@@ -545,7 +598,7 @@ class EvidenceTraceabilitySystem:
             evidence_chain=evidence_chain,
             confidence_scores=confidence_scores,
             verification_status=verification_status,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
 
         # データベース保存
@@ -562,9 +615,12 @@ class EvidenceTraceabilitySystem:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT credibility_score FROM source_credibility WHERE source_id = ?
-            """, (source_id,))
+            """,
+                (source_id,),
+            )
 
             result = cursor.fetchone()
             conn.close()
@@ -580,17 +636,22 @@ class EvidenceTraceabilitySystem:
             self.logger.error(f"Credibility check error: {e}")
             return 0.5
 
-    async def _initialize_source_credibility(self, source_id: str, initial_score: float = 0.5):
+    async def _initialize_source_credibility(
+        self, source_id: str, initial_score: float = 0.5
+    ):
         """新しいソースの信頼性初期化"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT OR IGNORE INTO source_credibility
                 (source_id, source_name, credibility_score, verification_count, last_updated)
                 VALUES (?, ?, ?, 0, ?)
-            """, (source_id, source_id, initial_score, datetime.now().isoformat()))
+            """,
+                (source_id, source_id, initial_score, datetime.now().isoformat()),
+            )
 
             conn.commit()
             conn.close()
@@ -598,26 +659,40 @@ class EvidenceTraceabilitySystem:
         except Exception as e:
             self.logger.error(f"Source initialization error: {e}")
 
-    async def _verify_evidence_chain(self, evidence_chain: List[Dict[str, Any]], response: str) -> str:
+    async def _verify_evidence_chain(
+        self, evidence_chain: List[Dict[str, Any]], response: str
+    ) -> str:
         """証拠チェーンの検証"""
         verification_scores = []
 
         # 1. ソース信頼性
         credibility_scores = [e["credibility_score"] for e in evidence_chain]
-        avg_credibility = sum(credibility_scores) / len(credibility_scores) if credibility_scores else 0
-        verification_scores.append(avg_credibility * self.verification_rules["source_credibility"])
+        avg_credibility = (
+            sum(credibility_scores) / len(credibility_scores)
+            if credibility_scores
+            else 0
+        )
+        verification_scores.append(
+            avg_credibility * self.verification_rules["source_credibility"]
+        )
 
         # 2. 情報の新鮮度（簡易版）
         freshness_score = 0.8  # 仮の値
-        verification_scores.append(freshness_score * self.verification_rules["information_freshness"])
+        verification_scores.append(
+            freshness_score * self.verification_rules["information_freshness"]
+        )
 
         # 3. クロスリファレンス数
         cross_ref_score = min(len(evidence_chain) / 5, 1.0)  # 5つ以上で満点
-        verification_scores.append(cross_ref_score * self.verification_rules["cross_reference_count"])
+        verification_scores.append(
+            cross_ref_score * self.verification_rules["cross_reference_count"]
+        )
 
         # 4. 一貫性スコア
         consistency_score = await self._calculate_consistency(evidence_chain, response)
-        verification_scores.append(consistency_score * self.verification_rules["consistency_score"])
+        verification_scores.append(
+            consistency_score * self.verification_rules["consistency_score"]
+        )
 
         # 総合検証スコア
         total_score = sum(verification_scores)
@@ -631,7 +706,9 @@ class EvidenceTraceabilitySystem:
         else:
             return "unreliable"
 
-    async def _calculate_consistency(self, evidence_chain: List[Dict[str, Any]], response: str) -> float:
+    async def _calculate_consistency(
+        self, evidence_chain: List[Dict[str, Any]], response: str
+    ) -> float:
         """一貫性スコア計算"""
         # 証拠間の一貫性と回答との整合性をチェック
         response_words = set(response.lower().split())
@@ -643,7 +720,11 @@ class EvidenceTraceabilitySystem:
             consistency = overlap / max(len(response_words), 1)
             consistency_scores.append(consistency)
 
-        return sum(consistency_scores) / len(consistency_scores) if consistency_scores else 0
+        return (
+            sum(consistency_scores) / len(consistency_scores)
+            if consistency_scores
+            else 0
+        )
 
     async def _save_evidence_trace(self, trace: EvidenceTrace):
         """証拠トレースをデータベースに保存"""
@@ -652,24 +733,31 @@ class EvidenceTraceabilitySystem:
             cursor = conn.cursor()
 
             # 幻覚リスク計算
-            avg_confidence = sum(trace.confidence_scores) / len(trace.confidence_scores) if trace.confidence_scores else 0
+            avg_confidence = (
+                sum(trace.confidence_scores) / len(trace.confidence_scores)
+                if trace.confidence_scores
+                else 0
+            )
             hallucination_risk = 1.0 - avg_confidence
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO evidence_traces
                 (trace_id, query, response, evidence_chain, confidence_scores,
                  verification_status, hallucination_risk, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                trace.trace_id,
-                trace.query,
-                trace.response,
-                json.dumps(trace.evidence_chain),
-                json.dumps(trace.confidence_scores),
-                trace.verification_status,
-                hallucination_risk,
-                trace.created_at.isoformat()
-            ))
+            """,
+                (
+                    trace.trace_id,
+                    trace.query,
+                    trace.response,
+                    json.dumps(trace.evidence_chain),
+                    json.dumps(trace.confidence_scores),
+                    trace.verification_status,
+                    hallucination_risk,
+                    trace.created_at.isoformat(),
+                ),
+            )
 
             conn.commit()
             conn.close()
@@ -683,9 +771,12 @@ class EvidenceTraceabilitySystem:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT hallucination_risk FROM evidence_traces WHERE trace_id = ?
-            """, (trace_id,))
+            """,
+                (trace_id,),
+            )
 
             result = cursor.fetchone()
             conn.close()
@@ -719,7 +810,7 @@ class NextGenerationRAGStrategy:
             "average_response_time": 0.0,
             "hallucination_prevention_rate": 0.0,
             "context_hit_rate": 0.0,
-            "streaming_update_rate": 0.0
+            "streaming_update_rate": 0.0,
         }
 
         self.logger.info("🚀 Next Generation RAG Strategy System initialized")
@@ -783,7 +874,9 @@ class NextGenerationRAGStrategy:
                 intent_result = await self.mind_reader.understand_intent(query)
 
             # 2. 階層化コンテキスト検索
-            hierarchical_contexts = await self.context_manager.get_prioritized_contexts(query)
+            hierarchical_contexts = await self.context_manager.get_prioritized_contexts(
+                query
+            )
 
             # 3. Advanced RAG検索（Elder Flow統合）
             advanced_results = []
@@ -794,7 +887,7 @@ class NextGenerationRAGStrategy:
                         "id": "doc_rag_strategy",
                         "title": "Next Generation RAG Strategy",
                         "content": "階層化コンテキスト管理、ストリーミングRAG、証拠トレーサビリティの3つの革新戦略により、従来のRAGシステムの限界を突破します。",
-                        "metadata": {"category": "rag", "importance": "high"}
+                        "metadata": {"category": "rag", "importance": "high"},
                     }
                 ]
                 await self.advanced_rag.initialize_document_store(sample_docs)
@@ -803,20 +896,24 @@ class NextGenerationRAGStrategy:
             # 4. 証拠トレーサビリティ生成
             evidence_sources = []
             for context in hierarchical_contexts[:3]:
-                evidence_sources.append({
-                    "id": context.context_id,
-                    "name": context.source,
-                    "content": context.content,
-                    "relevance": context.relevance_score
-                })
+                evidence_sources.append(
+                    {
+                        "id": context.context_id,
+                        "name": context.source,
+                        "content": context.content,
+                        "relevance": context.relevance_score,
+                    }
+                )
 
             for result in advanced_results[:2]:
-                evidence_sources.append({
-                    "id": result.doc_id,
-                    "name": result.title,
-                    "content": result.content,
-                    "relevance": result.hybrid_score
-                })
+                evidence_sources.append(
+                    {
+                        "id": result.doc_id,
+                        "name": result.title,
+                        "content": result.content,
+                        "relevance": result.hybrid_score,
+                    }
+                )
 
             # 5. 統合回答生成
             response = await self._generate_integrated_response(
@@ -829,24 +926,34 @@ class NextGenerationRAGStrategy:
             )
 
             # 7. 幻覚リスク評価
-            hallucination_risk = await self.evidence_system.get_hallucination_risk(evidence_trace_id)
+            hallucination_risk = await self.evidence_system.get_hallucination_risk(
+                evidence_trace_id
+            )
 
             # 8. 統計更新
             processing_time = time.time() - start_time
-            await self._update_strategy_stats(processing_time, hallucination_risk,
-                                           len(hierarchical_contexts), len(advanced_results))
+            await self._update_strategy_stats(
+                processing_time,
+                hallucination_risk,
+                len(hierarchical_contexts),
+                len(advanced_results),
+            )
 
             result = {
                 "query": query,
                 "response": response,
-                "intent": intent_result.intent_type.value if intent_result else "unknown",
+                "intent": (
+                    intent_result.intent_type.value if intent_result else "unknown"
+                ),
                 "confidence": intent_result.confidence if intent_result else 0.5,
                 "hierarchical_contexts": len(hierarchical_contexts),
                 "advanced_results": len(advanced_results),
                 "evidence_trace_id": evidence_trace_id,
                 "hallucination_risk": hallucination_risk,
                 "processing_time": processing_time,
-                "verification_status": "verified" if hallucination_risk < 0.2 else "uncertain"
+                "verification_status": (
+                    "verified" if hallucination_risk < 0.2 else "uncertain"
+                ),
             }
 
             self.logger.info(f"✅ Strategic query processed in {processing_time:.2f}s")
@@ -856,9 +963,13 @@ class NextGenerationRAGStrategy:
             self.logger.error(f"Strategic query processing error: {e}")
             return {"error": str(e), "query": query}
 
-    async def _generate_integrated_response(self, query: str, intent_result: Optional[IntentResult],
-                                          contexts: List[HierarchicalContext],
-                                          rag_results: List[SearchResult]) -> str:
+    async def _generate_integrated_response(
+        self,
+        query: str,
+        intent_result: Optional[IntentResult],
+        contexts: List[HierarchicalContext],
+        rag_results: List[SearchResult],
+    ) -> str:
         """統合回答生成"""
         response_parts = []
 
@@ -875,7 +986,9 @@ class NextGenerationRAGStrategy:
         if contexts:
             critical_contexts = [c for c in contexts if c.tier == ContextTier.CRITICAL]
             if critical_contexts:
-                response_parts.append(f"重要な情報として、{critical_contexts[0].content[:100]}...")
+                response_parts.append(
+                    f"重要な情報として、{critical_contexts[0].content[:100]}..."
+                )
 
         # Advanced RAG結果からの情報
         if rag_results:
@@ -890,27 +1003,42 @@ class NextGenerationRAGStrategy:
                 "証拠トレーサビリティシステムで幻覚を完全防止しています。"
             )
 
-        return " ".join(response_parts) if response_parts else "申し訳ございませんが、適切な回答を生成できませんでした。"
+        return (
+            " ".join(response_parts)
+            if response_parts
+            else "申し訳ございませんが、適切な回答を生成できませんでした。"
+        )
 
-    async def _update_strategy_stats(self, processing_time: float, hallucination_risk: float,
-                                   context_count: int, rag_count: int):
+    async def _update_strategy_stats(
+        self,
+        processing_time: float,
+        hallucination_risk: float,
+        context_count: int,
+        rag_count: int,
+    ):
         """戦略統計の更新"""
         self.strategy_stats["total_queries"] += 1
         total = self.strategy_stats["total_queries"]
 
         # 平均応答時間
         old_avg_time = self.strategy_stats["average_response_time"]
-        self.strategy_stats["average_response_time"] = (old_avg_time * (total - 1) + processing_time) / total
+        self.strategy_stats["average_response_time"] = (
+            old_avg_time * (total - 1) + processing_time
+        ) / total
 
         # 幻覚防止率
         prevention_rate = 1.0 - hallucination_risk
         old_prevention = self.strategy_stats["hallucination_prevention_rate"]
-        self.strategy_stats["hallucination_prevention_rate"] = (old_prevention * (total - 1) + prevention_rate) / total
+        self.strategy_stats["hallucination_prevention_rate"] = (
+            old_prevention * (total - 1) + prevention_rate
+        ) / total
 
         # コンテキストヒット率
         hit_rate = 1.0 if context_count > 0 else 0.0
         old_hit_rate = self.strategy_stats["context_hit_rate"]
-        self.strategy_stats["context_hit_rate"] = (old_hit_rate * (total - 1) + hit_rate) / total
+        self.strategy_stats["context_hit_rate"] = (
+            old_hit_rate * (total - 1) + hit_rate
+        ) / total
 
         # ストリーミング更新率
         streaming_rate = len(self.streaming_engine.update_queue) / 1000  # 正規化
@@ -921,18 +1049,21 @@ class NextGenerationRAGStrategy:
         return {
             "next_generation_rag_strategy": {
                 "hierarchical_context_management": {
-                    "total_contexts": sum(len(contexts) for contexts in self.context_manager.contexts.values()),
+                    "total_contexts": sum(
+                        len(contexts)
+                        for contexts in self.context_manager.contexts.values()
+                    ),
                     "tier_distribution": {
                         tier.value: len(contexts)
                         for tier, contexts in self.context_manager.contexts.items()
-                    }
+                    },
                 },
                 "streaming_rag_engine": self.streaming_engine.stream_stats,
                 "evidence_traceability": {
                     "total_traces": len(self.evidence_system.evidence_chains),
-                    "verification_rules": self.evidence_system.verification_rules
+                    "verification_rules": self.evidence_system.verification_rules,
                 },
-                "overall_performance": self.strategy_stats
+                "overall_performance": self.strategy_stats,
             }
         }
 
@@ -959,14 +1090,14 @@ async def demo_next_generation_rag():
             "Elder Flowは自動化開発フローシステムです",
             ContextTier.CRITICAL,
             "elder_flow_docs",
-            0.9
+            0.9,
         )
 
         await strategy.context_manager.add_context(
             "RAGシステムはRetrieval-Augmented Generationの略です",
             ContextTier.IMPORTANT,
             "rag_definition",
-            0.8
+            0.8,
         )
 
         # ストリーミング更新のシミュレーション
@@ -974,7 +1105,7 @@ async def demo_next_generation_rag():
             "doc_rag_latest",
             "update",
             "最新のRAG手法には階層化コンテキスト管理が含まれます",
-            priority=0.8
+            priority=0.8,
         )
 
         # テストクエリ
@@ -983,7 +1114,7 @@ async def demo_next_generation_rag():
             "Elder Flowとの統合方法は？",
             "幻覚を防ぐ方法",
             "リアルタイム知識更新の仕組み",
-            "階層化コンテキスト管理のメリット"
+            "階層化コンテキスト管理のメリット",
         ]
 
         print("\n🎯 Strategic Query Processing Results:")
@@ -1016,12 +1147,24 @@ async def demo_next_generation_rag():
         report = await strategy.get_strategy_report()
         strategy_data = report["next_generation_rag_strategy"]
 
-        print(f"   📚 Total Contexts: {strategy_data['hierarchical_context_management']['total_contexts']}")
-        print(f"   📡 Streaming Updates: {strategy_data['streaming_rag_engine']['total_updates']}")
-        print(f"   🔍 Evidence Traces: {strategy_data['evidence_traceability']['total_traces']}")
-        print(f"   🎯 Total Queries: {strategy_data['overall_performance']['total_queries']}")
-        print(f"   ⚡ Avg Response Time: {strategy_data['overall_performance']['average_response_time']:.2f}s")
-        print(f"   🛡️ Hallucination Prevention: {strategy_data['overall_performance']['hallucination_prevention_rate']:.1%}")
+        print(
+            f"   📚 Total Contexts: {strategy_data['hierarchical_context_management']['total_contexts']}"
+        )
+        print(
+            f"   📡 Streaming Updates: {strategy_data['streaming_rag_engine']['total_updates']}"
+        )
+        print(
+            f"   🔍 Evidence Traces: {strategy_data['evidence_traceability']['total_traces']}"
+        )
+        print(
+            f"   🎯 Total Queries: {strategy_data['overall_performance']['total_queries']}"
+        )
+        print(
+            f"   ⚡ Avg Response Time: {strategy_data['overall_performance']['average_response_time']:.2f}s"
+        )
+        print(
+            f"   🛡️ Hallucination Prevention: {strategy_data['overall_performance']['hallucination_prevention_rate']:.1%}"
+        )
 
         # 革新要素まとめ
         print(f"\n🌟 Revolutionary Features Demonstrated:")

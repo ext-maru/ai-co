@@ -208,9 +208,9 @@ class IncidentKnightsDeployer:
                 "total_issues": total_issues,
                 "repaired_count": repaired_count,
                 "failed_count": failed_count,
-                "success_rate": repaired_count / total_issues
-                if total_issues > 0
-                else 0,
+                "success_rate": (
+                    repaired_count / total_issues if total_issues > 0 else 0
+                ),
                 "timestamp": datetime.now().isoformat(),
             }
         )
@@ -245,7 +245,11 @@ class IncidentKnightsDeployer:
             "total_time_seconds": total_time,
             "deployment_steps": self.deployment_log,
             "summary": self._generate_summary(),
-            "next_steps": ["継続監視の開始", "パフォーマンス最適化", "学習システムの有効化"],
+            "next_steps": [
+                "継続監視の開始",
+                "パフォーマンス最適化",
+                "学習システムの有効化",
+            ],
         }
 
         # レポート保存

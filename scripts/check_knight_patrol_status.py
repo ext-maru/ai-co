@@ -25,7 +25,10 @@ def check_watchdog_processes():
         watchdog_processes = []
 
         for line in result.stdout.split("\n"):
-            if any(keyword in line.lower() for keyword in ["watchdog", "patrol", "guard", "monitor"]):
+            if any(
+                keyword in line.lower()
+                for keyword in ["watchdog", "patrol", "guard", "monitor"]
+            ):
                 if "grep" not in line and line.strip():
                     watchdog_processes.append(line.strip())
 
@@ -51,7 +54,10 @@ def check_knight_files():
     # ファイル検索
     for root, dirs, files in os.walk(PROJECT_ROOT):
         for file in files:
-            if any(keyword in file.lower() for keyword in ["knight", "watchdog", "patrol", "guard"]):
+            if any(
+                keyword in file.lower()
+                for keyword in ["knight", "watchdog", "patrol", "guard"]
+            ):
                 file_path = Path(root) / file
                 if "knight" in file.lower():
                     knight_files.append(file_path)
@@ -84,7 +90,9 @@ def check_logs():
         if log_path.exists():
             try:
                 # 最新の10行を取得
-                result = subprocess.run(["tail", "-10", str(log_path)], capture_output=True, text=True)
+                result = subprocess.run(
+                    ["tail", "-10", str(log_path)], capture_output=True, text=True
+                )
                 last_lines = result.stdout.strip().split("\n")
 
                 if last_lines and last_lines[0]:
@@ -134,7 +142,11 @@ def check_knight_services():
 
     # RabbitMQ状態
     try:
-        result = subprocess.run(["systemctl", "is-active", "rabbitmq-server"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["systemctl", "is-active", "rabbitmq-server"],
+            capture_output=True,
+            text=True,
+        )
         print(f"RabbitMQ: {result.stdout.strip()}")
     except Exception as e:
         print(f"RabbitMQ確認エラー: {e}")

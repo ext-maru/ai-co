@@ -35,7 +35,11 @@ class A2ARealTimeMonitor:
 
         # RabbitMQ状態
         try:
-            result = subprocess.run(["systemctl", "is-active", "rabbitmq-server"], capture_output=True, text=True)
+            result = subprocess.run(
+                ["systemctl", "is-active", "rabbitmq-server"],
+                capture_output=True,
+                text=True,
+            )
             status["rabbitmq"] = result.stdout.strip()
         except:
             status["rabbitmq"] = "error"
@@ -47,7 +51,10 @@ class A2ARealTimeMonitor:
                 [
                     line
                     for line in result.stdout.split("\n")
-                    if any(keyword in line.lower() for keyword in ["elder", "sage", "council"])
+                    if any(
+                        keyword in line.lower()
+                        for keyword in ["elder", "sage", "council"]
+                    )
                 ]
             )
         except:
@@ -78,11 +85,15 @@ class A2ARealTimeMonitor:
 
         # エルダー評議会の最新活動
         try:
-            council_files = list(PROJECT_ROOT.glob("knowledge_base/*council*request*.md"))
+            council_files = list(
+                PROJECT_ROOT.glob("knowledge_base/*council*request*.md")
+            )
             if council_files:
                 latest = max(council_files, key=lambda x: x.stat().st_mtime)
                 mod_time = datetime.fromtimestamp(latest.stat().st_mtime)
-                status["elder_council_activity"] = f"最新要請: {mod_time.strftime('%H:%M:%S')}"
+                status["elder_council_activity"] = (
+                    f"最新要請: {mod_time.strftime('%H:%M:%S')}"
+                )
             else:
                 status["elder_council_activity"] = "評議会要請なし"
         except:
@@ -116,7 +127,9 @@ class A2ARealTimeMonitor:
             if status["recent_communications"]:
                 for comm in status["recent_communications"]:
                     status_emoji = "✅" if comm["status"] == "success" else "❌"
-                    print(f"  {status_emoji} [{comm['time']}] {comm['path']} ({comm['type']})")
+                    print(
+                        f"  {status_emoji} [{comm['time']}] {comm['path']} ({comm['type']})"
+                    )
             else:
                 print("  📭 通信記録なし")
             print()

@@ -142,9 +142,11 @@ class WorkerManagementMCPServer:
                         "worker": worker_name,
                         "stopped": stopped,
                         "started": status["running"],
-                        "message": "Worker restarted successfully"
-                        if status["running"]
-                        else "Failed to start worker",
+                        "message": (
+                            "Worker restarted successfully"
+                            if status["running"]
+                            else "Failed to start worker"
+                        ),
                     }
                 except Exception as e:
                     return {

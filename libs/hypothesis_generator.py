@@ -397,9 +397,9 @@ class HypothesisGenerator:
             result_id = f"result_{uuid.uuid4().hex[:8]}"
 
             # 結果保存
-            self.experiment_results[
-                experiment_results["hypothesis_id"]
-            ] = experiment_results
+            self.experiment_results[experiment_results["hypothesis_id"]] = (
+                experiment_results
+            )
 
             # 学習内容抽出
             learning = self._extract_learning(experiment_results)
@@ -1460,9 +1460,11 @@ class HypothesisGenerator:
     def _get_execution_priorities(self, problem: Dict[str, Any]) -> Dict[str, Any]:
         """実行優先順位取得（タスク賢者）"""
         return {
-            "priority_level": "high"
-            if problem.get("risk_factors", {}).get("production_impact") == "high"
-            else "medium",
+            "priority_level": (
+                "high"
+                if problem.get("risk_factors", {}).get("production_impact") == "high"
+                else "medium"
+            ),
             "recommended_sequence": ["quick_fixes", "comprehensive_solutions"],
             "resource_allocation": "parallel_execution_recommended",
         }

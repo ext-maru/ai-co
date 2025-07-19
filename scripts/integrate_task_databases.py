@@ -249,7 +249,9 @@ class TaskDatabaseIntegrator:
 
             dest_conn.commit()
 
-            logger.info(f"  ✅ {source_name}: {migrated}件移行, {duplicates}件重複スキップ")
+            logger.info(
+                f"  ✅ {source_name}: {migrated}件移行, {duplicates}件重複スキップ"
+            )
             self.stats["duplicates_removed"] += duplicates
 
             return migrated

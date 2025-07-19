@@ -288,7 +288,9 @@ class PMDecisionSupport(BaseManager):
                     )
                     self.decision_history.append(decision)
 
-                logger.info(f"📊 過去データ読み込み完了: {len(self.decision_history)}件の意思決定")
+                logger.info(
+                    f"📊 過去データ読み込み完了: {len(self.decision_history)}件の意思決定"
+                )
 
         except Exception as e:
             logger.error(f"過去データ読み込みエラー: {e}")
@@ -544,7 +546,11 @@ class PMDecisionSupport(BaseManager):
         if relevant_risks:
             reasoning_parts.append(f"関連リスク: {', '.join(relevant_risks[:2])}")
 
-        return "; ".join(reasoning_parts) if reasoning_parts else "定期的な評価に基づく推奨"
+        return (
+            "; ".join(reasoning_parts)
+            if reasoning_parts
+            else "定期的な評価に基づく推奨"
+        )
 
     def _generate_alternatives(
         self, decision_type: DecisionType, metrics: Dict[str, Any]
@@ -589,8 +595,16 @@ class PMDecisionSupport(BaseManager):
                 "チーム内のスキル不足",
                 "コスト増加のリスク",
             ],
-            DecisionType.TASK_PRIORITIZATION: ["優先度変更による混乱", "ステークホルダーの不満", "既存作業の停滞"],
-            DecisionType.QUALITY_GATE: ["品質チェック強化による開発遅延", "プロセス変更への抵抗", "初期コストの増加"],
+            DecisionType.TASK_PRIORITIZATION: [
+                "優先度変更による混乱",
+                "ステークホルダーの不満",
+                "既存作業の停滞",
+            ],
+            DecisionType.QUALITY_GATE: [
+                "品質チェック強化による開発遅延",
+                "プロセス変更への抵抗",
+                "初期コストの増加",
+            ],
             DecisionType.TIMELINE_ADJUSTMENT: [
                 "スケジュール変更による影響範囲拡大",
                 "ステークホルダーの期待値調整",
@@ -605,9 +619,21 @@ class PMDecisionSupport(BaseManager):
     ) -> List[str]:
         """意思決定の利益分析"""
         benefits_map = {
-            DecisionType.RESOURCE_ALLOCATION: ["リソース効率性の向上", "チームの生産性向上", "コスト最適化"],
-            DecisionType.TASK_PRIORITIZATION: ["重要な機能の早期提供", "顧客満足度の向上", "リスクの早期発見"],
-            DecisionType.QUALITY_GATE: ["製品品質の向上", "長期的な保守コスト削減", "顧客信頼の向上"],
+            DecisionType.RESOURCE_ALLOCATION: [
+                "リソース効率性の向上",
+                "チームの生産性向上",
+                "コスト最適化",
+            ],
+            DecisionType.TASK_PRIORITIZATION: [
+                "重要な機能の早期提供",
+                "顧客満足度の向上",
+                "リスクの早期発見",
+            ],
+            DecisionType.QUALITY_GATE: [
+                "製品品質の向上",
+                "長期的な保守コスト削減",
+                "顧客信頼の向上",
+            ],
             DecisionType.TIMELINE_ADJUSTMENT: [
                 "現実的なスケジュール設定",
                 "チームのモチベーション向上",
@@ -723,7 +749,9 @@ class PMDecisionSupport(BaseManager):
                 )
 
                 result = cursor.fetchone()
-                return (result[0] / 5.0) if result and result[0] else 0.7  # デフォルト70%
+                return (
+                    (result[0] / 5.0) if result and result[0] else 0.7
+                )  # デフォルト70%
 
         except Exception as e:
             logger.error(f"過去成功率取得エラー: {e}")
@@ -903,9 +931,9 @@ class PMDecisionSupport(BaseManager):
                     "significance": significance,
                     "current_value": values[0],
                     "previous_value": values[-1],
-                    "change_rate": (values[0] - values[-1]) / values[-1]
-                    if values[-1] != 0
-                    else 0,
+                    "change_rate": (
+                        (values[0] - values[-1]) / values[-1] if values[-1] != 0 else 0
+                    ),
                 }
 
         return trends
@@ -1055,7 +1083,9 @@ class PMDecisionSupport(BaseManager):
                     (datetime.now(), f"Rating: {success_rating}/5", decision_id),
                 )
 
-            logger.info(f"✅ 意思決定結果記録: {decision_id} (評価: {success_rating}/5)")
+            logger.info(
+                f"✅ 意思決定結果記録: {decision_id} (評価: {success_rating}/5)"
+            )
 
         except Exception as e:
             logger.error(f"意思決定結果記録エラー: {e}")

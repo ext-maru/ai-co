@@ -699,7 +699,9 @@ class ErrorClassificationSystem:
             ],
         }
 
-        return action_map.get(category, ["ログを詳細に確認してください", "手動での調査が必要です"])
+        return action_map.get(
+            category, ["ログを詳細に確認してください", "手動での調査が必要です"]
+        )
 
     def _get_documentation_link(self, category: ErrorCategory) -> str:
         """ドキュメントリンクの取得"""
@@ -741,9 +743,9 @@ class ErrorClassificationSystem:
                         "category": category,
                         "confidence": confidence,
                         "priority": priority,
-                        "suggested_action": json.loads(suggested_actions)
-                        if suggested_actions
-                        else [],
+                        "suggested_action": (
+                            json.loads(suggested_actions) if suggested_actions else []
+                        ),
                         "cached": True,
                         "classified_at": classified_at,
                     }
@@ -825,19 +827,22 @@ class ErrorClassificationSystem:
         """分類結果の統計を取得"""
         stats = {
             "total_classified": len(results),
-            "accuracy": sum(r.get("confidence", 0) for r in results) / len(results)
-            if results
-            else 0,
+            "accuracy": (
+                sum(r.get("confidence", 0) for r in results) / len(results)
+                if results
+                else 0
+            ),
             "category_distribution": Counter(
                 r.get("category", "UNKNOWN") for r in results
             ),
             "priority_distribution": Counter(
                 r.get("priority", "unknown") for r in results
             ),
-            "average_confidence": sum(r.get("confidence", 0) for r in results)
-            / len(results)
-            if results
-            else 0,
+            "average_confidence": (
+                sum(r.get("confidence", 0) for r in results) / len(results)
+                if results
+                else 0
+            ),
         }
 
         return stats

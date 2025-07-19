@@ -237,7 +237,9 @@ class EldersLegacyBase(Generic[TRequest, TResponse], ABC):
         self.quality_scores[IronWillCriteria.TEST_COVERAGE] = 95.0  # デフォルト値
 
         # 保守性指標（コード品質ベース）
-        self.quality_scores[IronWillCriteria.MAINTAINABILITY_SCORE] = 80.0  # デフォルト値
+        self.quality_scores[IronWillCriteria.MAINTAINABILITY_SCORE] = (
+            80.0  # デフォルト値
+        )
 
         # 平均品質スコア
         quality_score = sum(self.quality_scores.values()) / len(self.quality_scores)

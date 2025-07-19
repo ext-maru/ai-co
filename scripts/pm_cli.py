@@ -12,7 +12,10 @@ def send_task(prompt, task_type="general"):
     task = {"task_id": "pm_cli_task", "type": task_type, "prompt": prompt}
 
     channel.basic_publish(
-        exchange="", routing_key="task_queue", body=json.dumps(task), properties=pika.BasicProperties(delivery_mode=2)
+        exchange="",
+        routing_key="task_queue",
+        body=json.dumps(task),
+        properties=pika.BasicProperties(delivery_mode=2),
     )
     print("タスク送信完了:", task)
 

@@ -6,7 +6,8 @@ Elder Flow Violation Report Generator
 
 import asyncio
 import sys
-sys.path.append('/home/aicompany/ai_co')
+
+sys.path.append("/home/aicompany/ai_co")
 
 from libs.elder_flow_violation_resolver import ElderFlowViolationResolver
 
@@ -38,7 +39,7 @@ async def main():
     report_path = f"knowledge_base/elder_flow_reports/violation_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
     Path(report_path).parent.mkdir(parents=True, exist_ok=True)
 
-    with open(report_path, 'w') as f:
+    with open(report_path, "w") as f:
         f.write(report)
 
     print(f"✅ レポート生成完了: {report_path}")

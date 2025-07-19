@@ -28,7 +28,12 @@ class Week4SystemVerification:
 
     def verify_cicd_pipeline(self) -> Dict:
         """Verify CI/CD pipeline components"""
-        pipeline_status = {"name": "CI/CD Pipeline", "components": {}, "overall_status": "operational", "details": []}
+        pipeline_status = {
+            "name": "CI/CD Pipeline",
+            "components": {},
+            "overall_status": "operational",
+            "details": [],
+        }
 
         # Check GitHub Actions workflows
         workflows_dir = Path(".github/workflows")
@@ -84,7 +89,12 @@ class Week4SystemVerification:
 
     def verify_test_infrastructure(self) -> Dict:
         """Verify test infrastructure components"""
-        test_status = {"name": "Test Infrastructure", "components": {}, "overall_status": "operational", "details": []}
+        test_status = {
+            "name": "Test Infrastructure",
+            "components": {},
+            "overall_status": "operational",
+            "details": [],
+        }
 
         # Check test directories
         test_dirs = {
@@ -103,9 +113,15 @@ class Week4SystemVerification:
                     "test_files": len(test_files),
                     "description": description,
                 }
-                test_status["details"].append(f"✅ {description}: {len(test_files)} test files")
+                test_status["details"].append(
+                    f"✅ {description}: {len(test_files)} test files"
+                )
             else:
-                test_status["components"][test_dir] = {"status": "missing", "test_files": 0, "description": description}
+                test_status["components"][test_dir] = {
+                    "status": "missing",
+                    "test_files": 0,
+                    "description": description,
+                }
                 test_status["details"].append(f"⚠️ {description}: Directory not found")
 
         # Check test generation system
@@ -117,7 +133,9 @@ class Week4SystemVerification:
                 "files": len(gen_files),
                 "description": "Auto test generation system",
             }
-            test_status["details"].append(f"✅ Auto test generation: {len(gen_files)} generator files")
+            test_status["details"].append(
+                f"✅ Auto test generation: {len(gen_files)} generator files"
+            )
         else:
             test_status["components"]["test_generation"] = {
                 "status": "missing",
@@ -243,7 +261,9 @@ except Exception as e:
         }
 
         if coverage_files:
-            coverage_status["details"].append(f"✅ Coverage data: {len(coverage_files)} files found")
+            coverage_status["details"].append(
+                f"✅ Coverage data: {len(coverage_files)} files found"
+            )
         else:
             coverage_status["details"].append("⚠️ No coverage data files found")
 
@@ -271,7 +291,9 @@ except Exception as e:
                 coverage_pct = data.get("totals", {}).get("percent_covered", 0)
                 if coverage_pct > best_coverage:
                     best_coverage = coverage_pct
-                coverage_assessment["coverage_sources"].append({"file": str(coverage_file), "coverage": coverage_pct})
+                coverage_assessment["coverage_sources"].append(
+                    {"file": str(coverage_file), "coverage": coverage_pct}
+                )
             except Exception:
                 continue
 
@@ -279,10 +301,14 @@ except Exception as e:
         coverage_assessment["target_met"] = best_coverage >= 66.7
 
         if coverage_assessment["target_met"]:
-            coverage_assessment["details"].append(f"🎯 TARGET ACHIEVED: {best_coverage:.1f}% meets 66.7% target")
+            coverage_assessment["details"].append(
+                f"🎯 TARGET ACHIEVED: {best_coverage:.1f}% meets 66.7% target"
+            )
         else:
             gap = 66.7 - best_coverage
-            coverage_assessment["details"].append(f"📈 PROGRESS: {best_coverage:.1f}% coverage, {gap:.1f}% to target")
+            coverage_assessment["details"].append(
+                f"📈 PROGRESS: {best_coverage:.1f}% coverage, {gap:.1f}% to target"
+            )
 
         # Assess infrastructure support
         infrastructure_components = [
@@ -293,7 +319,9 @@ except Exception as e:
         ]
 
         coverage_assessment["infrastructure_components"] = infrastructure_components
-        coverage_assessment["details"].append("✅ Infrastructure supporting 66.7% target:")
+        coverage_assessment["details"].append(
+            "✅ Infrastructure supporting 66.7% target:"
+        )
         for component in infrastructure_components:
             coverage_assessment["details"].append(f"   • {component}")
 
@@ -312,7 +340,9 @@ except Exception as e:
         self.verification_results["infrastructure_components"] = components
 
         # Calculate integration health
-        operational_components = sum(1 for comp in components.values() if comp["overall_status"] == "operational")
+        operational_components = sum(
+            1 for comp in components.values() if comp["overall_status"] == "operational"
+        )
         total_components = len(components)
 
         integration_health = (operational_components / total_components) * 100
@@ -329,7 +359,9 @@ except Exception as e:
             "health_percentage": integration_health,
             "operational_components": operational_components,
             "total_components": total_components,
-            "components_status": {name: comp["overall_status"] for name, comp in components.items()},
+            "components_status": {
+                name: comp["overall_status"] for name, comp in components.items()
+            },
         }
 
         return self.verification_results["integration_status"]
@@ -378,19 +410,27 @@ except Exception as e:
         # Check integration status
         integration = self.verification_results.get("integration_status", {})
         if integration.get("overall_status") != "fully_operational":
-            recommendations.append("Address degraded infrastructure components for optimal performance")
+            recommendations.append(
+                "Address degraded infrastructure components for optimal performance"
+            )
 
         # Check coverage achievement
-        coverage = self.verification_results.get("week4_achievements", {}).get("coverage_target", {})
+        coverage = self.verification_results.get("week4_achievements", {}).get(
+            "coverage_target", {}
+        )
         if not coverage.get("target_met", False):
             gap = 66.7 - coverage.get("current_coverage", 0)
-            recommendations.append(f"Increase coverage by {gap:.1f}% to meet 66.7% strategic target")
+            recommendations.append(
+                f"Increase coverage by {gap:.1f}% to meet 66.7% strategic target"
+            )
 
         # Check component-specific issues
         components = self.verification_results.get("infrastructure_components", {})
         for comp_name, comp_data in components.items():
             if comp_data.get("overall_status") == "degraded":
-                recommendations.append(f"Review {comp_name.replace('_', ' ')} for missing or non-functional components")
+                recommendations.append(
+                    f"Review {comp_name.replace('_', ' ')} for missing or non-functional components"
+                )
 
         # General recommendations
         recommendations.extend(
@@ -421,7 +461,10 @@ except Exception as e:
 
         readiness_factors = {
             "infrastructure_health": integration["health_percentage"],
-            "coverage_target_progress": (coverage["current_coverage"] / coverage["target_percentage"]) * 100,
+            "coverage_target_progress": (
+                coverage["current_coverage"] / coverage["target_percentage"]
+            )
+            * 100,
             "automation_active": 100,  # All automation systems are implemented
             "quality_gates_functional": 85,  # Most quality gates are functional
         }
@@ -430,7 +473,9 @@ except Exception as e:
 
         if overall_readiness >= 90:
             readiness_status = "fully_ready"
-            readiness_message = "Week 4 Strategic Infrastructure is fully operational and ready"
+            readiness_message = (
+                "Week 4 Strategic Infrastructure is fully operational and ready"
+            )
         elif overall_readiness >= 75:
             readiness_status = "ready_with_notes"
             readiness_message = "Week 4 Strategic Infrastructure is ready with minor optimizations needed"
@@ -454,14 +499,20 @@ except Exception as e:
         print("\n📊 Infrastructure Components Status:")
         for comp_name, comp_data in report["infrastructure_components"].items():
             status_icon = "✅" if comp_data["overall_status"] == "operational" else "⚠️"
-            print(f"   {status_icon} {comp_data['name']}: {comp_data['overall_status'].upper()}")
+            print(
+                f"   {status_icon} {comp_data['name']}: {comp_data['overall_status'].upper()}"
+            )
             for detail in comp_data["details"][:3]:  # Show first 3 details
                 print(f"      {detail}")
 
         print("\n🔗 Integration Status:")
         integration = report["integration_status"]
-        print(f"   Overall: {integration['overall_status'].upper()} ({integration['health_percentage']:.1f}%)")
-        print(f"   Components: {integration['operational_components']}/{integration['total_components']} operational")
+        print(
+            f"   Overall: {integration['overall_status'].upper()} ({integration['health_percentage']:.1f}%)"
+        )
+        print(
+            f"   Components: {integration['operational_components']}/{integration['total_components']} operational"
+        )
 
         print("\n🎯 Week 4 Coverage Achievement:")
         coverage = report["week4_achievements"]["coverage_target"]
@@ -483,7 +534,9 @@ except Exception as e:
 
         print("\n✅ Week 4 Strategic Infrastructure Verification Complete")
 
-    def save_report(self, output_path: str = "reports/week4_system_verification.json") -> str:
+    def save_report(
+        self, output_path: str = "reports/week4_system_verification.json"
+    ) -> str:
         """Save verification report to file"""
         output_path = Path(output_path)
         output_path.parent.mkdir(exist_ok=True)
@@ -498,11 +551,17 @@ def main():
     """CLI interface for Week 4 system verification"""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Week 4 Strategic Infrastructure System Verification")
-    parser.add_argument(
-        "--output", default="reports/week4_system_verification.json", help="Output path for verification report"
+    parser = argparse.ArgumentParser(
+        description="Week 4 Strategic Infrastructure System Verification"
     )
-    parser.add_argument("--verbose", action="store_true", help="Show detailed verification output")
+    parser.add_argument(
+        "--output",
+        default="reports/week4_system_verification.json",
+        help="Output path for verification report",
+    )
+    parser.add_argument(
+        "--verbose", action="store_true", help="Show detailed verification output"
+    )
 
     args = parser.parse_args()
 

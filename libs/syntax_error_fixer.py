@@ -126,7 +126,9 @@ class SyntaxErrorFixer(BaseManager):
                     if unsafe_pattern.lower() in code.lower():
                         analysis["fixable"] = False
                         analysis["risk_level"] = "high"
-                        analysis["description"] += f" (危険パターン検出: {unsafe_pattern})"
+                        analysis[
+                            "description"
+                        ] += f" (危険パターン検出: {unsafe_pattern})"
                         break
 
             self.logger.info(
@@ -201,7 +203,9 @@ class SyntaxErrorFixer(BaseManager):
                     result["success"] = True
                     self.logger.info(f"Syntax修正成功: {pattern}")
                 else:
-                    result["error"] = f"修正コード検証失敗: {validation_result['error']}"
+                    result["error"] = (
+                        f"修正コード検証失敗: {validation_result['error']}"
+                    )
                     result["fixed_code"] = backup_code  # ロールバック
                     self.logger.warning(f"Syntax修正検証失敗: {pattern}")
             else:

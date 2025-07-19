@@ -28,6 +28,7 @@ import sqlite3
 try:
     from sklearn.metrics.pairwise import cosine_similarity
     from sklearn.feature_extraction.text import TfidfVectorizer
+
     SKLEARN_AVAILABLE = True
 except ImportError:
     SKLEARN_AVAILABLE = False
@@ -37,6 +38,7 @@ except ImportError:
 @dataclass
 class SearchResult:
     """検索結果"""
+
     doc_id: str
     content: str
     title: str
@@ -50,6 +52,7 @@ class SearchResult:
 @dataclass
 class RAGASMetrics:
     """RAGAS拡張メトリクス"""
+
     faithfulness: float
     answer_relevancy: float
     context_precision: float
@@ -70,11 +73,11 @@ class AdvancedRAGPrecisionEngine:
 
         # 検索パラメータ
         self.search_config = {
-            "hybrid_alpha": 0.7,    # ベクトル検索重み
-            "hybrid_beta": 0.3,     # キーワード検索重み
+            "hybrid_alpha": 0.7,  # ベクトル検索重み
+            "hybrid_beta": 0.3,  # キーワード検索重み
             "max_results": 10,
             "confidence_threshold": 0.6,
-            "position_decay": 0.85  # 順位減衰率
+            "position_decay": 0.85,  # 順位減衰率
         }
 
         # RAGAS重み設定
@@ -83,7 +86,7 @@ class AdvancedRAGPrecisionEngine:
             "answer_relevancy": 0.25,
             "context_precision": 0.20,
             "context_recall": 0.20,
-            "groundedness": 0.10
+            "groundedness": 0.10,
         }
 
         # 文書データベース
@@ -117,7 +120,8 @@ class AdvancedRAGPrecisionEngine:
         cursor = conn.cursor()
 
         # 検索結果テーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS search_results (
                 result_id TEXT PRIMARY KEY,
                 query TEXT,
@@ -128,10 +132,12 @@ class AdvancedRAGPrecisionEngine:
                 confidence REAL,
                 timestamp TEXT
             )
-        """)
+        """
+        )
 
         # RAGASメトリクステーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS ragas_metrics (
                 metric_id TEXT PRIMARY KEY,
                 query TEXT,
@@ -144,10 +150,12 @@ class AdvancedRAGPrecisionEngine:
                 overall_score REAL,
                 timestamp TEXT
             )
-        """)
+        """
+        )
 
         # 改善履歴テーブル
-        cursor.execute("""
+        cursor.execute(
+            """
             CREATE TABLE IF NOT EXISTS improvement_history (
                 improvement_id TEXT PRIMARY KEY,
                 method_name TEXT,
@@ -157,14 +165,17 @@ class AdvancedRAGPrecisionEngine:
                 test_cases_count INTEGER,
                 timestamp TEXT
             )
-        """)
+        """
+        )
 
         conn.commit()
         conn.close()
 
     async def initialize_document_store(self, documents: List[Dict[str, Any]]):
         """文書ストアの初期化"""
-        self.logger.info(f"🔄 Initializing document store with {len(documents)} documents...")
+        self.logger.info(
+            f"🔄 Initializing document store with {len(documents)} documents..."
+        )
 
         # 文書の格納
         for doc in documents:
@@ -172,14 +183,16 @@ class AdvancedRAGPrecisionEngine:
             self.document_store[doc_id] = {
                 "title": doc.get("title", ""),
                 "content": doc.get("content", ""),
-                "metadata": doc.get("metadata", {})
+                "metadata": doc.get("metadata", {}),
             }
 
         # 埋め込みとTF-IDFの生成
         await self._generate_embeddings()
         await self._build_tfidf_index()
 
-        self.logger.info(f"✅ Document store initialized with {len(self.document_store)} documents")
+        self.logger.info(
+            f"✅ Document store initialized with {len(self.document_store)} documents"
+        )
 
     async def _generate_embeddings(self):
         """文書埋め込みの生成（シミュレーション）"""
@@ -193,7 +206,9 @@ class AdvancedRAGPrecisionEngine:
             embedding = await self._simulate_embedding(content)
             self.document_embeddings[doc_id] = embedding
 
-        self.logger.info(f"✅ Generated embeddings for {len(self.document_embeddings)} documents")
+        self.logger.info(
+            f"✅ Generated embeddings for {len(self.document_embeddings)} documents"
+        )
 
     async def _simulate_embedding(self, text: str, dim: int = 384) -> List[float]:
         """埋め込みシミュレーション"""
@@ -220,9 +235,7 @@ class AdvancedRAGPrecisionEngine:
 
         # TF-IDFベクトル化
         self.tfidf_vectorizer = TfidfVectorizer(
-            max_features=5000,
-            stop_words='english',
-            ngram_range=(1, 2)
+            max_features=5000, stop_words="english", ngram_range=(1, 2)
         )
 
         self.tfidf_matrix = self.tfidf_vectorizer.fit_transform(documents)
@@ -261,8 +274,8 @@ class AdvancedRAGPrecisionEngine:
 
             # ハイブリッドスコア計算
             hybrid_score = (
-                self.search_config["hybrid_alpha"] * cosine_score +
-                self.search_config["hybrid_beta"] * bm25_score
+                self.search_config["hybrid_alpha"] * cosine_score
+                + self.search_config["hybrid_beta"] * bm25_score
             )
 
             # 信頼度計算
@@ -271,16 +284,18 @@ class AdvancedRAGPrecisionEngine:
             )
 
             if hybrid_score > 0.05:  # 最小閾値を下げて結果を取得
-                results.append(SearchResult(
-                    doc_id=doc_id,
-                    content=doc_data["content"][:500] + "...",
-                    title=doc_data["title"],
-                    hybrid_score=hybrid_score,
-                    cosine_score=cosine_score,
-                    bm25_score=bm25_score,
-                    confidence=confidence,
-                    metadata=doc_data["metadata"]
-                ))
+                results.append(
+                    SearchResult(
+                        doc_id=doc_id,
+                        content=doc_data["content"][:500] + "...",
+                        title=doc_data["title"],
+                        hybrid_score=hybrid_score,
+                        cosine_score=cosine_score,
+                        bm25_score=bm25_score,
+                        confidence=confidence,
+                        metadata=doc_data["metadata"],
+                    )
+                )
 
         # 3. ハイブリッドスコアでソート
         results.sort(key=lambda x: x.hybrid_score, reverse=True)
@@ -296,7 +311,9 @@ class AdvancedRAGPrecisionEngine:
         self.logger.info(f"✅ Found {len(results[:top_k])} relevant results")
         return results[:top_k]
 
-    async def _calculate_cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
+    async def _calculate_cosine_similarity(
+        self, vec1: List[float], vec2: List[float]
+    ) -> float:
         """コサイン類似度計算"""
         if SKLEARN_AVAILABLE:
             return float(cosine_similarity([vec1], [vec2])[0][0])
@@ -326,8 +343,9 @@ class AdvancedRAGPrecisionEngine:
             return 0.0
 
         # 平均文書長（簡易計算）
-        avg_doc_length = sum(len(doc["content"].split())
-                           for doc in self.document_store.values()) / len(self.document_store)
+        avg_doc_length = sum(
+            len(doc["content"].split()) for doc in self.document_store.values()
+        ) / len(self.document_store)
 
         score = 0.0
         for term in query_terms:
@@ -337,8 +355,11 @@ class AdvancedRAGPrecisionEngine:
                 continue
 
             # 文書頻度（簡易版: 全文書での出現率）
-            df = sum(1 for doc in self.document_store.values()
-                    if term in doc["content"].lower())
+            df = sum(
+                1
+                for doc in self.document_store.values()
+                if term in doc["content"].lower()
+            )
 
             # IDF計算
             idf = math.log((len(self.document_store) - df + 0.5) / (df + 0.5))
@@ -352,8 +373,9 @@ class AdvancedRAGPrecisionEngine:
         # 正規化
         return min(score / len(query_terms), 1.0) if query_terms else 0.0
 
-    async def _calculate_multi_factor_confidence(self, cosine_score: float, bm25_score: float,
-                                               document: str, query: str) -> float:
+    async def _calculate_multi_factor_confidence(
+        self, cosine_score: float, bm25_score: float, document: str, query: str
+    ) -> float:
         """
         多要素信頼度計算
 
@@ -367,14 +389,16 @@ class AdvancedRAGPrecisionEngine:
             float: 統合信頼度スコア
         """
         # 1. 基本信頼度 (ハイブリッドスコアベース)
-        base_confidence = (0.7 * cosine_score + 0.3 * bm25_score)
+        base_confidence = 0.7 * cosine_score + 0.3 * bm25_score
 
         # 2. 検索文書との整合性
         query_terms = set(query.lower().split())
         doc_terms = set(document.lower().split())
 
         if query_terms:
-            alignment_score = len(query_terms.intersection(doc_terms)) / len(query_terms)
+            alignment_score = len(query_terms.intersection(doc_terms)) / len(
+                query_terms
+            )
         else:
             alignment_score = 0.0
 
@@ -390,16 +414,20 @@ class AdvancedRAGPrecisionEngine:
         # 4. 統合信頼度計算
         confidence_weights = [0.5, 0.3, 0.2]
         final_confidence = (
-            confidence_weights[0] * base_confidence +
-            confidence_weights[1] * alignment_score +
-            confidence_weights[2] * density_score
+            confidence_weights[0] * base_confidence
+            + confidence_weights[1] * alignment_score
+            + confidence_weights[2] * density_score
         )
 
         return min(final_confidence, 1.0)
 
-    async def calculate_ragas_metrics(self, query: str, generated_answer: str,
-                                    retrieved_contexts: List[str],
-                                    ground_truth: str = None) -> RAGASMetrics:
+    async def calculate_ragas_metrics(
+        self,
+        query: str,
+        generated_answer: str,
+        retrieved_contexts: List[str],
+        ground_truth: str = None,
+    ) -> RAGASMetrics:
         """
         RAGAS拡張メトリクス計算
 
@@ -415,27 +443,37 @@ class AdvancedRAGPrecisionEngine:
         self.logger.info("📊 Calculating enhanced RAGAS metrics...")
 
         # 1. Faithfulness (忠実性)
-        faithfulness = await self._calculate_faithfulness(generated_answer, retrieved_contexts)
+        faithfulness = await self._calculate_faithfulness(
+            generated_answer, retrieved_contexts
+        )
 
         # 2. Answer Relevancy (回答関連性)
-        answer_relevancy = await self._calculate_answer_relevancy(generated_answer, query)
+        answer_relevancy = await self._calculate_answer_relevancy(
+            generated_answer, query
+        )
 
         # 3. Context Precision (コンテキスト精度)
-        context_precision = await self._calculate_context_precision(retrieved_contexts, ground_truth)
+        context_precision = await self._calculate_context_precision(
+            retrieved_contexts, ground_truth
+        )
 
         # 4. Context Recall (コンテキスト再現率)
-        context_recall = await self._calculate_context_recall(retrieved_contexts, ground_truth)
+        context_recall = await self._calculate_context_recall(
+            retrieved_contexts, ground_truth
+        )
 
         # 5. Response Groundedness (応答根拠性) - 新指標
-        groundedness = await self._calculate_response_groundedness(generated_answer, retrieved_contexts)
+        groundedness = await self._calculate_response_groundedness(
+            generated_answer, retrieved_contexts
+        )
 
         # 6. 総合スコア計算
         overall_score = (
-            self.ragas_weights["faithfulness"] * faithfulness +
-            self.ragas_weights["answer_relevancy"] * answer_relevancy +
-            self.ragas_weights["context_precision"] * context_precision +
-            self.ragas_weights["context_recall"] * context_recall +
-            self.ragas_weights["groundedness"] * groundedness
+            self.ragas_weights["faithfulness"] * faithfulness
+            + self.ragas_weights["answer_relevancy"] * answer_relevancy
+            + self.ragas_weights["context_precision"] * context_precision
+            + self.ragas_weights["context_recall"] * context_recall
+            + self.ragas_weights["groundedness"] * groundedness
         )
 
         metrics = RAGASMetrics(
@@ -444,13 +482,15 @@ class AdvancedRAGPrecisionEngine:
             context_precision=context_precision,
             context_recall=context_recall,
             groundedness=groundedness,
-            overall_score=overall_score
+            overall_score=overall_score,
         )
 
         # メトリクスを記録
         await self._record_ragas_metrics(query, generated_answer, metrics)
 
-        self.logger.info(f"✅ RAGAS metrics calculated: Overall score = {overall_score:.3f}")
+        self.logger.info(
+            f"✅ RAGAS metrics calculated: Overall score = {overall_score:.3f}"
+        )
         return metrics
 
     async def _calculate_faithfulness(self, answer: str, contexts: List[str]) -> float:
@@ -465,7 +505,7 @@ class AdvancedRAGPrecisionEngine:
             answer = str(answer)
 
         # 回答の各文について、コンテキストで支持されているかチェック
-        answer_sentences = re.split(r'[.!?]+', answer)
+        answer_sentences = re.split(r"[.!?]+", answer)
         supported_count = 0
 
         for sentence in answer_sentences:
@@ -506,7 +546,9 @@ class AdvancedRAGPrecisionEngine:
         overlap = len(query_words.intersection(answer_words))
         return overlap / len(query_words)
 
-    async def _calculate_context_precision(self, contexts: List[str], ground_truth: str) -> float:
+    async def _calculate_context_precision(
+        self, contexts: List[str], ground_truth: str
+    ) -> float:
         """コンテキスト精度計算"""
         if not contexts or not ground_truth:
             return 0.0
@@ -526,7 +568,9 @@ class AdvancedRAGPrecisionEngine:
 
         return relevant_count / len(contexts)
 
-    async def _calculate_context_recall(self, contexts: List[str], ground_truth: str) -> float:
+    async def _calculate_context_recall(
+        self, contexts: List[str], ground_truth: str
+    ) -> float:
         """コンテキスト再現率計算"""
         if not contexts or not ground_truth:
             return 0.0
@@ -541,7 +585,9 @@ class AdvancedRAGPrecisionEngine:
 
         return len(covered_words) / max(len(truth_words), 1)
 
-    async def _calculate_response_groundedness(self, answer: str, contexts: List[str]) -> float:
+    async def _calculate_response_groundedness(
+        self, answer: str, contexts: List[str]
+    ) -> float:
         """応答根拠性計算（新指標）"""
         if not answer or not contexts:
             return 0.0
@@ -595,7 +641,15 @@ class AdvancedRAGPrecisionEngine:
             thinking_steps.append("原因分析、解決策、予防策が必要です。")
 
         # 2. 関連技術の推論
-        tech_keywords = ["Elder", "Flow", "RAG", "API", "OAuth", "WebSocket", "データベース"]
+        tech_keywords = [
+            "Elder",
+            "Flow",
+            "RAG",
+            "API",
+            "OAuth",
+            "WebSocket",
+            "データベース",
+        ]
         found_tech = [tech for tech in tech_keywords if tech.lower() in query.lower()]
 
         if found_tech:
@@ -606,7 +660,9 @@ class AdvancedRAGPrecisionEngine:
         thinking_text = " ".join(thinking_steps)
         enhanced_query = f"{query} [THINKING] {thinking_text}"
 
-        self.logger.info(f"✅ Enhanced query with reasoning: {len(enhanced_query)} chars")
+        self.logger.info(
+            f"✅ Enhanced query with reasoning: {len(enhanced_query)} chars"
+        )
         return enhanced_query
 
     async def adaptive_retrieval_strategy(self, query: str) -> str:
@@ -622,8 +678,12 @@ class AdvancedRAGPrecisionEngine:
         # クエリ複雑度の計算
         complexity_factors = {
             "length": len(query.split()) / 20,  # 語数による複雑度
-            "technical_terms": sum(1 for word in query.split() if len(word) > 6) / len(query.split()),
-            "question_depth": query.count("なぜ") + query.count("どのように") + query.count("why") + query.count("how")
+            "technical_terms": sum(1 for word in query.split() if len(word) > 6)
+            / len(query.split()),
+            "question_depth": query.count("なぜ")
+            + query.count("どのように")
+            + query.count("why")
+            + query.count("how"),
         }
 
         complexity = sum(complexity_factors.values()) / len(complexity_factors)
@@ -635,7 +695,9 @@ class AdvancedRAGPrecisionEngine:
         else:
             strategy = "multi_hop_reasoning"
 
-        self.logger.info(f"🎯 Selected strategy: {strategy} (complexity: {complexity:.2f})")
+        self.logger.info(
+            f"🎯 Selected strategy: {strategy} (complexity: {complexity:.2f})"
+        )
         return strategy
 
     async def _record_search_results(self, query: str, results: List[SearchResult]):
@@ -645,20 +707,23 @@ class AdvancedRAGPrecisionEngine:
             cursor = conn.cursor()
 
             for i, result in enumerate(results):
-                cursor.execute("""
+                cursor.execute(
+                    """
                     INSERT INTO search_results
                     (result_id, query, doc_id, hybrid_score, cosine_score, bm25_score, confidence, timestamp)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    f"result_{datetime.now().timestamp()}_{i}",
-                    query,
-                    result.doc_id,
-                    result.hybrid_score,
-                    result.cosine_score,
-                    result.bm25_score,
-                    result.confidence,
-                    datetime.now().isoformat()
-                ))
+                """,
+                    (
+                        f"result_{datetime.now().timestamp()}_{i}",
+                        query,
+                        result.doc_id,
+                        result.hybrid_score,
+                        result.cosine_score,
+                        result.bm25_score,
+                        result.confidence,
+                        datetime.now().isoformat(),
+                    ),
+                )
 
             conn.commit()
             conn.close()
@@ -666,29 +731,34 @@ class AdvancedRAGPrecisionEngine:
         except Exception as e:
             self.logger.error(f"Failed to record search results: {e}")
 
-    async def _record_ragas_metrics(self, query: str, answer: str, metrics: RAGASMetrics):
+    async def _record_ragas_metrics(
+        self, query: str, answer: str, metrics: RAGASMetrics
+    ):
         """RAGASメトリクスの記録"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO ragas_metrics
                 (metric_id, query, generated_answer, faithfulness, answer_relevancy,
                  context_precision, context_recall, groundedness, overall_score, timestamp)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                f"metric_{datetime.now().timestamp()}",
-                query,
-                answer,
-                metrics.faithfulness,
-                metrics.answer_relevancy,
-                metrics.context_precision,
-                metrics.context_recall,
-                metrics.groundedness,
-                metrics.overall_score,
-                datetime.now().isoformat()
-            ))
+            """,
+                (
+                    f"metric_{datetime.now().timestamp()}",
+                    query,
+                    answer,
+                    metrics.faithfulness,
+                    metrics.answer_relevancy,
+                    metrics.context_precision,
+                    metrics.context_recall,
+                    metrics.groundedness,
+                    metrics.overall_score,
+                    datetime.now().isoformat(),
+                ),
+            )
 
             conn.commit()
             conn.close()
@@ -696,7 +766,9 @@ class AdvancedRAGPrecisionEngine:
         except Exception as e:
             self.logger.error(f"Failed to record RAGAS metrics: {e}")
 
-    async def benchmark_improvements(self, test_cases: List[Dict[str, Any]]) -> Dict[str, Any]:
+    async def benchmark_improvements(
+        self, test_cases: List[Dict[str, Any]]
+    ) -> Dict[str, Any]:
         """
         改善効果のベンチマーク
 
@@ -717,18 +789,24 @@ class AdvancedRAGPrecisionEngine:
 
             # ベースライン検索（単純コサイン類似度）
             baseline_results = await self._baseline_search(query)
-            baseline_score = self._calculate_relevance_score(baseline_results, expected_docs)
+            baseline_score = self._calculate_relevance_score(
+                baseline_results, expected_docs
+            )
             baseline_scores.append(baseline_score)
 
             # 改善版検索（ハイブリッド）
             improved_results = await self.hybrid_search(query)
-            improved_score = self._calculate_relevance_score(improved_results, expected_docs)
+            improved_score = self._calculate_relevance_score(
+                improved_results, expected_docs
+            )
             improved_scores.append(improved_score)
 
         # 統計計算
         avg_baseline = sum(baseline_scores) / len(baseline_scores)
         avg_improved = sum(improved_scores) / len(improved_scores)
-        improvement_rate = ((avg_improved - avg_baseline) / max(avg_baseline, 0.001)) * 100  # ゼロ除算対策
+        improvement_rate = (
+            (avg_improved - avg_baseline) / max(avg_baseline, 0.001)
+        ) * 100  # ゼロ除算対策
 
         benchmark_result = {
             "test_cases_count": len(test_cases),
@@ -740,14 +818,20 @@ class AdvancedRAGPrecisionEngine:
                     "query": test_cases[i]["query"],
                     "baseline": baseline_scores[i],
                     "improved": improved_scores[i],
-                    "improvement": ((improved_scores[i] - baseline_scores[i]) / max(baseline_scores[i], 0.001)) * 100
+                    "improvement": (
+                        (improved_scores[i] - baseline_scores[i])
+                        / max(baseline_scores[i], 0.001)
+                    )
+                    * 100,
                 }
                 for i in range(len(test_cases))
-            ]
+            ],
         }
 
         # 結果を記録
-        await self._record_improvement_history("hybrid_search", avg_baseline, avg_improved, len(test_cases))
+        await self._record_improvement_history(
+            "hybrid_search", avg_baseline, avg_improved, len(test_cases)
+        )
 
         self.logger.info(f"✅ Benchmark complete: {improvement_rate:.1f}% improvement")
         return benchmark_result
@@ -763,21 +847,25 @@ class AdvancedRAGPrecisionEngine:
             )
 
             if cosine_score > 0.05:  # 閾値を下げて結果を取得
-                results.append(SearchResult(
-                    doc_id=doc_id,
-                    content=doc_data["content"][:500] + "...",
-                    title=doc_data["title"],
-                    hybrid_score=cosine_score,
-                    cosine_score=cosine_score,
-                    bm25_score=0.0,
-                    confidence=cosine_score,
-                    metadata=doc_data["metadata"]
-                ))
+                results.append(
+                    SearchResult(
+                        doc_id=doc_id,
+                        content=doc_data["content"][:500] + "...",
+                        title=doc_data["title"],
+                        hybrid_score=cosine_score,
+                        cosine_score=cosine_score,
+                        bm25_score=0.0,
+                        confidence=cosine_score,
+                        metadata=doc_data["metadata"],
+                    )
+                )
 
         results.sort(key=lambda x: x.cosine_score, reverse=True)
-        return results[:self.search_config["max_results"]]
+        return results[: self.search_config["max_results"]]
 
-    def _calculate_relevance_score(self, results: List[SearchResult], expected_docs: List[str]) -> float:
+    def _calculate_relevance_score(
+        self, results: List[SearchResult], expected_docs: List[str]
+    ) -> float:
         """関連性スコア計算"""
         if not expected_docs:
             return 0.5  # デフォルトスコア
@@ -789,29 +877,35 @@ class AdvancedRAGPrecisionEngine:
 
         return found_relevant / min(len(expected_docs), 5)
 
-    async def _record_improvement_history(self, method_name: str, baseline: float,
-                                        improved: float, test_count: int):
+    async def _record_improvement_history(
+        self, method_name: str, baseline: float, improved: float, test_count: int
+    ):
         """改善履歴の記録"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
 
-            improvement_rate = ((improved - baseline) / baseline) * 100 if baseline > 0 else 0
+            improvement_rate = (
+                ((improved - baseline) / baseline) * 100 if baseline > 0 else 0
+            )
 
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO improvement_history
                 (improvement_id, method_name, baseline_score, improved_score,
                  improvement_rate, test_cases_count, timestamp)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (
-                f"improvement_{datetime.now().timestamp()}",
-                method_name,
-                baseline,
-                improved,
-                improvement_rate,
-                test_count,
-                datetime.now().isoformat()
-            ))
+            """,
+                (
+                    f"improvement_{datetime.now().timestamp()}",
+                    method_name,
+                    baseline,
+                    improved,
+                    improvement_rate,
+                    test_count,
+                    datetime.now().isoformat(),
+                ),
+            )
 
             conn.commit()
             conn.close()
@@ -834,32 +928,32 @@ async def demo_advanced_rag_precision():
             "id": "doc_elder_flow",
             "title": "Elder Flow開発ガイド",
             "content": "Elder Flowは自動化開発フローシステムです。4賢者との連携によりMind Reading Protocolと統合し、グランドエルダーmaruの意図を理解して自動実行します。OAuth2.0認証システムやWebSocket通信の実装を支援します。",
-            "metadata": {"category": "development", "importance": "high"}
+            "metadata": {"category": "development", "importance": "high"},
         },
         {
             "id": "doc_rag_system",
             "title": "RAG検索システム実装",
             "content": "RAGシステムはRetrieval-Augmented Generationの略で、検索技術と生成AIを組み合わせたシステムです。ベクトル検索とキーワード検索を統合し、文脈理解を深化させます。BM25アルゴリズムとコサイン類似度を併用します。",
-            "metadata": {"category": "rag", "importance": "high"}
+            "metadata": {"category": "rag", "importance": "high"},
         },
         {
             "id": "doc_performance",
             "title": "パフォーマンス最適化ガイド",
             "content": "システムのパフォーマンス最適化には複数のアプローチがあります。データベースクエリの最適化、キャッシュの活用、非同期処理の導入などが効果的です。監視システムでボトルネックを特定し、段階的に改善します。",
-            "metadata": {"category": "optimization", "importance": "medium"}
+            "metadata": {"category": "optimization", "importance": "medium"},
         },
         {
             "id": "doc_security",
             "title": "セキュリティ監査システム",
             "content": "セキュリティ監査システムは脆弱性の検出と対策を自動化します。OAuth2.0認証、API セキュリティ、データ暗号化を実装し、リアルタイム監視により不正アクセスを防止します。",
-            "metadata": {"category": "security", "importance": "high"}
+            "metadata": {"category": "security", "importance": "high"},
         },
         {
             "id": "doc_websocket",
             "title": "WebSocket実装ガイド",
             "content": "WebSocketを使用したリアルタイム通信機能の実装方法。接続管理、メッセージングプロトコル、エラーハンドリングを含む完全なガイドです。マイクロサービス間の通信最適化にも対応します。",
-            "metadata": {"category": "websocket", "importance": "medium"}
-        }
+            "metadata": {"category": "websocket", "importance": "medium"},
+        },
     ]
 
     # 文書ストア初期化
@@ -871,7 +965,7 @@ async def demo_advanced_rag_precision():
         "RAGシステムの検索精度を向上させる方法",
         "WebSocketを使ったリアルタイム通信の最適化",
         "パフォーマンス問題の特定と解決策",
-        "セキュリティ監査の自動化手法"
+        "セキュリティ監査の自動化手法",
     ]
 
     print("\n🔍 Hybrid Search Results:")
@@ -897,10 +991,12 @@ async def demo_advanced_rag_precision():
 
         for j, result in enumerate(results, 1):
             print(f"     [{j}] {result.title}")
-            print(f"         Hybrid: {result.hybrid_score:.3f} | "
-                  f"Cosine: {result.cosine_score:.3f} | "
-                  f"BM25: {result.bm25_score:.3f} | "
-                  f"Confidence: {result.confidence:.3f}")
+            print(
+                f"         Hybrid: {result.hybrid_score:.3f} | "
+                f"Cosine: {result.cosine_score:.3f} | "
+                f"BM25: {result.bm25_score:.3f} | "
+                f"Confidence: {result.confidence:.3f}"
+            )
 
         all_results.extend(results)
 
@@ -915,7 +1011,7 @@ async def demo_advanced_rag_precision():
     ragas_metrics = await engine.calculate_ragas_metrics(
         query=sample_query,
         generated_answer=sample_answer,
-        retrieved_contexts=sample_contexts
+        retrieved_contexts=sample_contexts,
     )
 
     print(f"   Faithfulness: {ragas_metrics.faithfulness:.3f}")
@@ -934,7 +1030,7 @@ async def demo_advanced_rag_precision():
         {"query": "RAG検索精度向上", "expected_docs": ["doc_rag_system"]},
         {"query": "WebSocket最適化", "expected_docs": ["doc_websocket"]},
         {"query": "セキュリティ強化", "expected_docs": ["doc_security"]},
-        {"query": "パフォーマンス改善", "expected_docs": ["doc_performance"]}
+        {"query": "パフォーマンス改善", "expected_docs": ["doc_performance"]},
     ]
 
     benchmark_results = await engine.benchmark_improvements(test_cases)
@@ -942,11 +1038,13 @@ async def demo_advanced_rag_precision():
     print(f"   Test Cases: {benchmark_results['test_cases_count']}")
     print(f"   Baseline Average: {benchmark_results['baseline_average']:.3f}")
     print(f"   Improved Average: {benchmark_results['improved_average']:.3f}")
-    print(f"   🎯 Improvement Rate: {benchmark_results['improvement_rate_percent']:.1f}%")
+    print(
+        f"   🎯 Improvement Rate: {benchmark_results['improvement_rate_percent']:.1f}%"
+    )
 
     # 個別結果
     print(f"\n   Individual Results:")
-    for result in benchmark_results['individual_results']:
+    for result in benchmark_results["individual_results"]:
         print(f"     '{result['query']}': {result['improvement']:.1f}% improvement")
 
     print(f"\n✨ Advanced RAG Precision Engine Demo Complete!")

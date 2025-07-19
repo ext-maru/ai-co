@@ -306,7 +306,9 @@ class UnifiedAuthProvider:
 
         # ユーザーIDが改ざんされていないかチェック
         if user.id != stored_user.id:
-            raise SecurityError(f"ユーザーID改ざん検出: 期待値={stored_user.id}, 実際値={user.id}")
+            raise SecurityError(
+                f"ユーザーID改ざん検出: 期待値={stored_user.id}, 実際値={user.id}"
+            )
 
         # 重要：stored_userの元の権限を使用して判定
         role_hierarchy = {

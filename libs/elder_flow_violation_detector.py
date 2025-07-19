@@ -22,14 +22,16 @@ import uuid
 
 class TaskCompletionStatus(Enum):
     """タスクの完了状態を表す列挙型"""
-    IN_DEVELOPMENT = "開発中"      # モック使用OK
-    IN_VERIFICATION = "検証中"     # 実環境テスト中
-    COMPLETED = "完了"            # 本番環境で完全動作確認済み
-    REJECTED = "却下"             # 不完全な実装
+
+    IN_DEVELOPMENT = "開発中"  # モック使用OK
+    IN_VERIFICATION = "検証中"  # 実環境テスト中
+    COMPLETED = "完了"  # 本番環境で完全動作確認済み
+    REJECTED = "却下"  # 不完全な実装
 
 
 class ElderFlowViolation(Exception):
     """Elder Flow方針違反を表す例外"""
+
     pass
 
 
@@ -37,27 +39,29 @@ class CompletionCriteria:
     """完了基準を管理するクラス"""
 
     def __init__(self):
-        self.unit_tests_pass = False           # 開発段階
-        self.integration_tests_pass = False    # 検証段階
-        self.production_ready = False          # 完了条件
-        self.performance_verified = False      # 完了条件
-        self.security_audited = False         # 完了条件
-        self.error_handling_complete = False   # 完了条件
-        self.documentation_complete = False    # 完了条件
-        self.monitoring_configured = False     # 完了条件
+        self.unit_tests_pass = False  # 開発段階
+        self.integration_tests_pass = False  # 検証段階
+        self.production_ready = False  # 完了条件
+        self.performance_verified = False  # 完了条件
+        self.security_audited = False  # 完了条件
+        self.error_handling_complete = False  # 完了条件
+        self.documentation_complete = False  # 完了条件
+        self.monitoring_configured = False  # 完了条件
 
     def is_complete(self) -> bool:
         """全ての完了条件を満たしているか確認"""
-        return all([
-            self.unit_tests_pass,
-            self.integration_tests_pass,
-            self.production_ready,
-            self.performance_verified,
-            self.security_audited,
-            self.error_handling_complete,
-            self.documentation_complete,
-            self.monitoring_configured
-        ])
+        return all(
+            [
+                self.unit_tests_pass,
+                self.integration_tests_pass,
+                self.production_ready,
+                self.performance_verified,
+                self.security_audited,
+                self.error_handling_complete,
+                self.documentation_complete,
+                self.monitoring_configured,
+            ]
+        )
 
     def get_missing_criteria(self) -> List[str]:
         """未達成の基準をリスト化"""
@@ -70,7 +74,7 @@ class CompletionCriteria:
             "セキュリティ監査": self.security_audited,
             "エラーハンドリング": self.error_handling_complete,
             "ドキュメント": self.documentation_complete,
-            "監視設定": self.monitoring_configured
+            "監視設定": self.monitoring_configured,
         }
 
         for criterion, status in criteria_map.items():
@@ -83,15 +87,17 @@ class CompletionCriteria:
 class ViolationDetectionContext:
     """違反検知のコンテキスト情報"""
 
-    def __init__(self,
-                 task_id: str,
-                 task_type: str,
-                 developer_id: str,
-                 timestamp: datetime,
-                 source_files: List[str],
-                 test_results: Optional[Dict[str, Any]] = None,
-                 production_metrics: Optional[Dict[str, Any]] = None,
-                 metadata: Optional[Dict[str, Any]] = None):
+    def __init__(
+        self,
+        task_id: str,
+        task_type: str,
+        developer_id: str,
+        timestamp: datetime,
+        source_files: List[str],
+        test_results: Optional[Dict[str, Any]] = None,
+        production_metrics: Optional[Dict[str, Any]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+    ):
         """コンテキストの初期化"""
         self.task_id = task_id
         self.task_type = task_type
@@ -105,32 +111,34 @@ class ViolationDetectionContext:
     def to_dict(self) -> Dict[str, Any]:
         """辞書形式に変換"""
         return {
-            'task_id': self.task_id,
-            'task_type': self.task_type,
-            'developer_id': self.developer_id,
-            'timestamp': self.timestamp.isoformat(),
-            'source_files': self.source_files,
-            'test_results': self.test_results,
-            'production_metrics': self.production_metrics,
-            'metadata': self.metadata
+            "task_id": self.task_id,
+            "task_type": self.task_type,
+            "developer_id": self.developer_id,
+            "timestamp": self.timestamp.isoformat(),
+            "source_files": self.source_files,
+            "test_results": self.test_results,
+            "production_metrics": self.production_metrics,
+            "metadata": self.metadata,
         }
 
 
 class ViolationRecord:
     """違反記録を表すデータクラス"""
 
-    def __init__(self,
-                 violation_id: str,
-                 timestamp: datetime,
-                 violation_type: str,
-                 severity: str,
-                 category: str,
-                 description: str,
-                 context: Dict[str, Any],
-                 task_id: Optional[str] = None,
-                 developer_id: Optional[str] = None,
-                 auto_fixed: bool = False,
-                 fix_description: Optional[str] = None):
+    def __init__(
+        self,
+        violation_id: str,
+        timestamp: datetime,
+        violation_type: str,
+        severity: str,
+        category: str,
+        description: str,
+        context: Dict[str, Any],
+        task_id: Optional[str] = None,
+        developer_id: Optional[str] = None,
+        auto_fixed: bool = False,
+        fix_description: Optional[str] = None,
+    ):
         """違反記録の初期化"""
         self.violation_id = violation_id
         self.timestamp = timestamp
@@ -147,25 +155,25 @@ class ViolationRecord:
     def to_dict(self) -> Dict[str, Any]:
         """辞書形式に変換"""
         return {
-            'violation_id': self.violation_id,
-            'timestamp': self.timestamp.isoformat(),
-            'violation_type': self.violation_type,
-            'severity': self.severity,
-            'category': self.category,
-            'description': self.description,
-            'context': self.context,
-            'task_id': self.task_id,
-            'developer_id': self.developer_id,
-            'auto_fixed': self.auto_fixed,
-            'fix_description': self.fix_description
+            "violation_id": self.violation_id,
+            "timestamp": self.timestamp.isoformat(),
+            "violation_type": self.violation_type,
+            "severity": self.severity,
+            "category": self.category,
+            "description": self.description,
+            "context": self.context,
+            "task_id": self.task_id,
+            "developer_id": self.developer_id,
+            "auto_fixed": self.auto_fixed,
+            "fix_description": self.fix_description,
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> 'ViolationRecord':
+    def from_dict(cls, data: Dict[str, Any]) -> "ViolationRecord":
         """辞書形式から生成"""
         data = data.copy()
-        if isinstance(data.get('timestamp'), str):
-            data['timestamp'] = datetime.fromisoformat(data['timestamp'])
+        if isinstance(data.get("timestamp"), str):
+            data["timestamp"] = datetime.fromisoformat(data["timestamp"])
         return cls(**data)
 
 
@@ -190,15 +198,15 @@ class ElderFlowViolationDetector:
                 "README.md",
                 "API_DOCUMENTATION.md",
                 "DEPLOYMENT_GUIDE.md",
-                "TROUBLESHOOTING.md"
+                "TROUBLESHOOTING.md",
             ],
             "security_requirements": [
                 "input_validation",
                 "authentication",
                 "authorization",
                 "encryption",
-                "audit_logging"
-            ]
+                "audit_logging",
+            ],
         }
 
     def _load_incident_patterns(self) -> List[Dict[str, Any]]:
@@ -207,23 +215,23 @@ class ElderFlowViolationDetector:
             {
                 "pattern": "mock_in_production",
                 "description": "本番コードにモックオブジェクトが残存",
-                "severity": "CRITICAL"
+                "severity": "CRITICAL",
             },
             {
                 "pattern": "missing_error_handling",
                 "description": "エラーハンドリングの欠如",
-                "severity": "HIGH"
+                "severity": "HIGH",
             },
             {
                 "pattern": "hardcoded_credentials",
                 "description": "ハードコードされた認証情報",
-                "severity": "CRITICAL"
+                "severity": "CRITICAL",
             },
             {
                 "pattern": "no_timeout_handling",
                 "description": "タイムアウト処理の未実装",
-                "severity": "MEDIUM"
-            }
+                "severity": "MEDIUM",
+            },
         ]
 
     async def validate_completion_claim(
@@ -231,7 +239,7 @@ class ElderFlowViolationDetector:
         task_id: str,
         implementation_path: str,
         test_results: Dict[str, Any],
-        production_verification: Optional[Dict[str, Any]] = None
+        production_verification: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         完了報告の妥当性を検証
@@ -272,7 +280,12 @@ class ElderFlowViolationDetector:
             else:
                 violations.append("本番環境で一部機能が動作していない")
 
-            if production_verification.get("performance_metrics", {}).get("response_time_ms", float('inf')) <= 200:
+            if (
+                production_verification.get("performance_metrics", {}).get(
+                    "response_time_ms", float("inf")
+                )
+                <= 200
+            ):
                 criteria.performance_verified = True
             else:
                 violations.append("パフォーマンス基準を満たしていない")
@@ -299,8 +312,13 @@ class ElderFlowViolationDetector:
             self._log_violation(task_id, violations, warnings)
             raise ElderFlowViolation(
                 f"完了報告は認められません。\n"
-                f"違反事項:\n" + "\n".join(f"  - {v}" for v in violations) +
-                (f"\n\n警告事項:\n" + "\n".join(f"  - {w}" for w in warnings) if warnings else "")
+                f"違反事項:\n"
+                + "\n".join(f"  - {v}" for v in violations)
+                + (
+                    f"\n\n警告事項:\n" + "\n".join(f"  - {w}" for w in warnings)
+                    if warnings
+                    else ""
+                )
             )
 
         # 6. 承認記録を作成
@@ -318,9 +336,9 @@ class ElderFlowViolationDetector:
                 "security_audited": criteria.security_audited,
                 "error_handling": criteria.error_handling_complete,
                 "documentation": criteria.documentation_complete,
-                "monitoring": criteria.monitoring_configured
+                "monitoring": criteria.monitoring_configured,
             },
-            "warnings": warnings if warnings else None
+            "warnings": warnings if warnings else None,
         }
 
         self._save_verification_record(verification_record)
@@ -328,7 +346,7 @@ class ElderFlowViolationDetector:
         return {
             "approved": True,
             "verification_record": verification_record,
-            "message": "グランドエルダーmaruの基準を満たす完全な実装です。"
+            "message": "グランドエルダーmaruの基準を満たす完全な実装です。",
         }
 
     async def _analyze_code_quality(self, implementation_path: str) -> List[str]:
@@ -337,21 +355,23 @@ class ElderFlowViolationDetector:
 
         # モックの使用チェック（本番コードでの使用を検出）
         if os.path.exists(implementation_path):
-            with open(implementation_path, 'r', encoding='utf-8') as f:
+            with open(implementation_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
                 # 本番コードでのモック使用検出
-                if not implementation_path.endswith('_test.py'):
-                    if 'mock' in content.lower() or 'Mock' in content:
+                if not implementation_path.endswith("_test.py"):
+                    if "mock" in content.lower() or "Mock" in content:
                         issues.append("本番コードにモックオブジェクトが検出されました")
 
                 # TODO/FIXMEコメントの検出
-                if 'TODO' in content or 'FIXME' in content:
+                if "TODO" in content or "FIXME" in content:
                     issues.append("未完了のTODO/FIXMEコメントが残っています")
 
                 # 基本的なエラーハンドリングチェック
-                if 'try:' not in content and 'except' not in content:
-                    issues.append("エラーハンドリングが実装されていない可能性があります")
+                if "try:" not in content and "except" not in content:
+                    issues.append(
+                        "エラーハンドリングが実装されていない可能性があります"
+                    )
 
         return issues
 
@@ -360,15 +380,15 @@ class ElderFlowViolationDetector:
         issues = []
 
         if os.path.exists(implementation_path):
-            with open(implementation_path, 'r', encoding='utf-8') as f:
+            with open(implementation_path, "r", encoding="utf-8") as f:
                 content = f.read()
 
                 # ハードコードされた認証情報の検出
                 suspicious_patterns = [
-                    ('password', 'ハードコードされたパスワード'),
-                    ('api_key', 'ハードコードされたAPIキー'),
-                    ('secret', 'ハードコードされたシークレット'),
-                    ('token', 'ハードコードされたトークン')
+                    ("password", "ハードコードされたパスワード"),
+                    ("api_key", "ハードコードされたAPIキー"),
+                    ("secret", "ハードコードされたシークレット"),
+                    ("token", "ハードコードされたトークン"),
                 ]
 
                 for pattern, description in suspicious_patterns:
@@ -406,11 +426,14 @@ class ElderFlowViolationDetector:
             "timestamp": datetime.now().isoformat(),
             "violations": violations,
             "warnings": warnings,
-            "status": TaskCompletionStatus.REJECTED.value
+            "status": TaskCompletionStatus.REJECTED.value,
         }
 
-        log_file = self.violation_log_path / f"violation_{task_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        with open(log_file, 'w', encoding='utf-8') as f:
+        log_file = (
+            self.violation_log_path
+            / f"violation_{task_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        )
+        with open(log_file, "w", encoding="utf-8") as f:
             json.dump(violation_record, f, ensure_ascii=False, indent=2)
 
     def _save_verification_record(self, record: Dict[str, Any]):
@@ -419,7 +442,7 @@ class ElderFlowViolationDetector:
         verification_path.mkdir(parents=True, exist_ok=True)
 
         file_name = f"verification_{record['verification_id']}.json"
-        with open(verification_path / file_name, 'w', encoding='utf-8') as f:
+        with open(verification_path / file_name, "w", encoding="utf-8") as f:
             json.dump(record, f, ensure_ascii=False, indent=2)
 
 
@@ -432,17 +455,14 @@ async def example_usage():
     test_results = {
         "unit_test_coverage": 98,
         "integration_tests_passed": True,
-        "performance_tests_passed": True
+        "performance_tests_passed": True,
     }
 
     # 本番環境検証結果の例
     production_verification = {
         "all_features_working": True,
-        "performance_metrics": {
-            "response_time_ms": 150,
-            "memory_usage_mb": 256
-        },
-        "error_rate": 0.01
+        "performance_metrics": {"response_time_ms": 150, "memory_usage_mb": 256},
+        "error_rate": 0.01,
     }
 
     try:
@@ -450,7 +470,7 @@ async def example_usage():
             task_id="TASK-2025-001",
             implementation_path="libs/example_feature.py",
             test_results=test_results,
-            production_verification=production_verification
+            production_verification=production_verification,
         )
         print(f"✅ 完了承認: {result['message']}")
     except ElderFlowViolation as e:
