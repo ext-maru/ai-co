@@ -118,3 +118,4 @@ projects/*/uploads/
 .pre-commit-config.yaml.lock
 .pdca/
 COSTAR_*.md
+test_env/
