@@ -15,7 +15,7 @@ import uuid
 from abc import ABC, abstractmethod
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union, TypeVar, Generic
+from typing import Any, Dict, Generic, List, Optional, TypeVar, Union
 
 # EldersLegacy統合インポート
 from libs.core.elders_legacy import (
@@ -257,10 +257,10 @@ def iron_will_quality_gate(func):
 class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
     """
     🏛️ 統合エルダーサーバント基盤クラス
-    
+
     EldersServiceLegacyから継承し、Iron Will品質基準に完全準拠。
     エルダー評議会令第27号により、すべてのサーバントは本クラスを継承必須。
-    
+
     新機能:
     - EldersLegacy完全統合
     - Iron Will 6大基準統合
@@ -312,16 +312,18 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         # 4賢者との連携用
         self.sage_connections: Dict[str, Any] = {}
 
-        self.logger.info(f"Unified Elder Servant {servant_name} ({servant_id}) initialized")
+        self.logger.info(
+            f"Unified Elder Servant {servant_name} ({servant_id}) initialized"
+        )
 
     # EldersServiceLegacy抽象メソッド実装
     async def process_request(self, request: ServantRequest) -> ServantResponse:
         """
         EldersServiceLegacy統一リクエスト処理
-        
+
         Args:
             request: ServantRequest形式のリクエスト
-            
+
         Returns:
             ServantResponse: 統一レスポンス
         """
@@ -354,7 +356,9 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
             result = await self.execute_task(task)
 
             # Iron Will品質チェック
-            iron_will_compliant = await self._validate_iron_will_quality(result.result_data)
+            iron_will_compliant = await self._validate_iron_will_quality(
+                result.result_data
+            )
 
             # 統計更新
             await self._update_stats(result)
@@ -386,23 +390,23 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
     def validate_request(self, request: ServantRequest) -> bool:
         """
         EldersServiceLegacyリクエスト検証
-        
+
         Args:
             request: 検証対象リクエスト
-            
+
         Returns:
             bool: 検証結果
         """
         if not request.task_id or not request.task_type:
             return False
-        if not hasattr(request, 'payload'):
+        if not hasattr(request, "payload"):
             return False
         return True
 
     def get_capabilities(self) -> List[str]:
         """
         EldersServiceLegacy能力取得
-        
+
         Returns:
             List[str]: 能力名一覧
         """
@@ -414,10 +418,10 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         """
         タスク実行（各サーバントで具体実装）
         Iron Will品質基準を満たすタスク実行
-        
+
         Args:
             task: 実行タスク情報
-            
+
         Returns:
             TaskResult: 実行結果
         """
@@ -427,20 +431,22 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
     def get_specialized_capabilities(self) -> List[ServantCapability]:
         """
         専門特化能力の取得（各サーバントで具体実装）
-        
+
         Returns:
             List[ServantCapability]: 専門能力一覧
         """
         pass
 
     @iron_will_quality_gate
-    async def execute_with_quality_gate(self, request: ServantRequest) -> ServantResponse:
+    async def execute_with_quality_gate(
+        self, request: ServantRequest
+    ) -> ServantResponse:
         """
         Iron Will品質ゲート付きタスク実行
-        
+
         Args:
             request: リクエスト
-            
+
         Returns:
             ServantResponse: 品質チェック済みレスポンス
         """
@@ -477,7 +483,9 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
             "domain": self.domain.value,
             "specialization": self.specialization,
             "status": "healthy"
-            if quality_status in ["excellent", "good"] and success_rate >= 90 and iron_will_status
+            if quality_status in ["excellent", "good"]
+            and success_rate >= 90
+            and iron_will_status
             else "degraded",
             "uptime_seconds": uptime.total_seconds(),
             "current_tasks": len(self.current_tasks),
@@ -497,20 +505,20 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         """全能力取得（基本能力 + 専門能力）"""
         base_capabilities = [
             ServantCapability(
-                "health_check", 
-                "サーバント健康状態確認", 
-                ["none"], 
-                ["health_status"], 
+                "health_check",
+                "サーバント健康状態確認",
+                ["none"],
+                ["health_status"],
                 1,
-                self.domain
+                self.domain,
             ),
             ServantCapability(
-                "task_execution", 
-                "汎用タスク実行", 
-                ["task_definition"], 
-                ["task_result"], 
+                "task_execution",
+                "汎用タスク実行",
+                ["task_definition"],
+                ["task_result"],
                 3,
-                self.domain
+                self.domain,
             ),
             ServantCapability(
                 "quality_validation",
@@ -518,7 +526,7 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
                 ["result_data"],
                 ["quality_score"],
                 2,
-                self.domain
+                self.domain,
             ),
             ServantCapability(
                 "sage_collaboration",
@@ -526,7 +534,7 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
                 ["collaboration_request"],
                 ["collaboration_result"],
                 4,
-                self.domain
+                self.domain,
             ),
         ]
 
@@ -537,11 +545,11 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
     ) -> Dict[str, Any]:
         """
         4賢者との連携（強化版）
-        
+
         Args:
             sage_type: 連携先賢者タイプ (knowledge/task/incident/rag)
             request: 連携リクエスト
-            
+
         Returns:
             Dict[str, Any]: 連携結果
         """
@@ -562,22 +570,24 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         # 連携履歴を記録
         if sage_type not in self.sage_connections:
             self.sage_connections[sage_type] = []
-        
-        self.sage_connections[sage_type].append({
-            "timestamp": datetime.now(),
-            "request": request,
-            "result": collaboration_result,
-        })
+
+        self.sage_connections[sage_type].append(
+            {
+                "timestamp": datetime.now(),
+                "request": request,
+                "result": collaboration_result,
+            }
+        )
 
         return collaboration_result
 
     async def _validate_iron_will_quality(self, result_data: Dict[str, Any]) -> bool:
         """
         Iron Will品質基準検証（強化版）
-        
+
         Args:
             result_data: 検証対象データ
-            
+
         Returns:
             bool: Iron Will準拠判定
         """
@@ -610,12 +620,12 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         # Iron Will基準更新
         self._iron_will_metrics.root_cause_resolution = max(
             self._iron_will_metrics.root_cause_resolution,
-            base_score if result_data.get("success") else 0
+            base_score if result_data.get("success") else 0,
         )
-        
+
         self._iron_will_metrics.test_coverage = max(
             self._iron_will_metrics.test_coverage,
-            95.0 if checks == 4 else (checks / 4) * 100
+            95.0 if checks == 4 else (checks / 4) * 100,
         )
 
         # 品質スコア判定
@@ -625,7 +635,7 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         self.logger.debug(
             f"Iron Will validation score: {final_score:.2f}, compliant: {meets_iron_will}"
         )
-        
+
         return meets_iron_will
 
     async def _update_stats(self, result: TaskResult):
@@ -667,10 +677,17 @@ class UnifiedElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
 
 # 特化サーバント基底クラス群
 
+
 class DwarfWorkshopServant(UnifiedElderServant):
     """ドワーフ工房専門サーバントの基底クラス"""
 
-    def __init__(self, servant_id: str, servant_name: str, specialization: str, capabilities: List[ServantCapability]):
+    def __init__(
+        self,
+        servant_id: str,
+        servant_name: str,
+        specialization: str,
+        capabilities: List[ServantCapability],
+    ):
         super().__init__(
             servant_id=servant_id,
             servant_name=servant_name,
@@ -692,7 +709,13 @@ class DwarfWorkshopServant(UnifiedElderServant):
 class RAGWizardServant(UnifiedElderServant):
     """RAGウィザーズ専門サーバントの基底クラス"""
 
-    def __init__(self, servant_id: str, servant_name: str, specialization: str, capabilities: List[ServantCapability]):
+    def __init__(
+        self,
+        servant_id: str,
+        servant_name: str,
+        specialization: str,
+        capabilities: List[ServantCapability],
+    ):
         super().__init__(
             servant_id=servant_id,
             servant_name=servant_name,
@@ -702,7 +725,9 @@ class RAGWizardServant(UnifiedElderServant):
             capabilities=capabilities,
         )
 
-    async def research_and_analyze(self, topic: str, depth: str = "standard") -> Dict[str, Any]:
+    async def research_and_analyze(
+        self, topic: str, depth: str = "standard"
+    ) -> Dict[str, Any]:
         """RAGウィザーズ特化：調査研究メソッド"""
         return {
             "research_topic": topic,
@@ -715,7 +740,13 @@ class RAGWizardServant(UnifiedElderServant):
 class ElfForestServant(UnifiedElderServant):
     """エルフの森専門サーバントの基底クラス"""
 
-    def __init__(self, servant_id: str, servant_name: str, specialization: str, capabilities: List[ServantCapability]):
+    def __init__(
+        self,
+        servant_id: str,
+        servant_name: str,
+        specialization: str,
+        capabilities: List[ServantCapability],
+    ):
         super().__init__(
             servant_id=servant_id,
             servant_name=servant_name,
@@ -738,7 +769,13 @@ class ElfForestServant(UnifiedElderServant):
 class IncidentKnightServant(UnifiedElderServant):
     """インシデント騎士団専門サーバントの基底クラス"""
 
-    def __init__(self, servant_id: str, servant_name: str, specialization: str, capabilities: List[ServantCapability]):
+    def __init__(
+        self,
+        servant_id: str,
+        servant_name: str,
+        specialization: str,
+        capabilities: List[ServantCapability],
+    ):
         super().__init__(
             servant_id=servant_id,
             servant_name=servant_name,
@@ -797,17 +834,23 @@ class ServantRegistry:
         """サーバント取得"""
         return self.servants.get(servant_id)
 
-    def get_servants_by_category(self, category: ServantCategory) -> List[UnifiedElderServant]:
+    def get_servants_by_category(
+        self, category: ServantCategory
+    ) -> List[UnifiedElderServant]:
         """カテゴリ別サーバント取得"""
         servant_ids = self.category_index.get(category, [])
         return [self.servants[sid] for sid in servant_ids if sid in self.servants]
 
-    def get_servants_by_domain(self, domain: ServantDomain) -> List[UnifiedElderServant]:
+    def get_servants_by_domain(
+        self, domain: ServantDomain
+    ) -> List[UnifiedElderServant]:
         """ドメイン別サーバント取得"""
         servant_ids = self.domain_index.get(domain, [])
         return [self.servants[sid] for sid in servant_ids if sid in self.servants]
 
-    async def execute_with_best_servant(self, request: ServantRequest) -> ServantResponse:
+    async def execute_with_best_servant(
+        self, request: ServantRequest
+    ) -> ServantResponse:
         """最適サーバントでタスク実行"""
         servant = self.find_best_servant_for_request(request)
 
@@ -822,7 +865,9 @@ class ServantRegistry:
         self.logger.info(f"Executing request with servant: {servant.servant_name}")
         return await servant.execute_with_quality_gate(request)
 
-    def find_best_servant_for_request(self, request: ServantRequest) -> Optional[UnifiedElderServant]:
+    def find_best_servant_for_request(
+        self, request: ServantRequest
+    ) -> Optional[UnifiedElderServant]:
         """リクエストに最適なサーバント選出（強化版）"""
         best_servant = None
         best_score = 0
@@ -873,10 +918,12 @@ class ServantRegistry:
             try:
                 health_result = await servant.health_check()
                 health_results[servant_id] = health_result
-                
-                if health_result.get("iron_will_metrics", {}).get("iron_will_compliant", False):
+
+                if health_result.get("iron_will_metrics", {}).get(
+                    "iron_will_compliant", False
+                ):
                     iron_will_compliant_count += 1
-                    
+
             except Exception as e:
                 health_results[servant_id] = {
                     "success": False,
@@ -897,7 +944,9 @@ class ServantRegistry:
             "healthy_servants": healthy_servants,
             "iron_will_compliant_servants": iron_will_compliant_count,
             "health_rate": round((healthy_servants / max(total_servants, 1)) * 100, 2),
-            "iron_will_compliance_rate": round((iron_will_compliant_count / max(total_servants, 1)) * 100, 2),
+            "iron_will_compliance_rate": round(
+                (iron_will_compliant_count / max(total_servants, 1)) * 100, 2
+            ),
             "servants": health_results,
             "elders_legacy_integrated": True,
         }
