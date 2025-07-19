@@ -1,9 +1,9 @@
 # 🧙‍♂️ PROJECT ELDERZAN Week 1 Day 2 - ストレージ層設計相談
 
-**相談ID**: elderzan_storage_design_20250708_235000  
-**相談者**: Claude  
-**対象**: HybridStorage実装設計  
-**緊急度**: HIGH  
+**相談ID**: elderzan_storage_design_20250708_235000
+**相談者**: Claude
+**対象**: HybridStorage実装設計
+**緊急度**: HIGH
 
 ---
 
@@ -135,13 +135,13 @@ class HybridStorage:
         self.json_store = JSONFileManager()
         self.vector_store = VectorIndexManager()
         self.transaction_manager = TransactionManager()
-    
+
     # 統一インターフェース
     async def save_session(self, context: SessionContext) -> bool
     async def load_session(self, session_id: str) -> SessionContext
     async def search_similar_sessions(self, query: str, top_k: int) -> List[SessionContext]
     async def delete_session(self, session_id: str) -> bool
-    
+
     # 内部管理
     async def _save_to_sqlite(self, metadata: SessionMetadata, interactions: List[SageInteraction])
     async def _save_to_json(self, snapshots: List[ContextSnapshot], extra_data: Dict)
@@ -197,6 +197,6 @@ HybridStorage実装の成功基準は？
 
 **🧙‍♂️ 4賢者の叡智により、最適なHybridStorage設計の策定をお願いします**
 
-**期待アウトプット**: 技術仕様書・実装計画・テスト戦略  
-**次回相談**: SecurityLayer設計  
+**期待アウトプット**: 技術仕様書・実装計画・テスト戦略
+**次回相談**: SecurityLayer設計
 **文書ID**: elderzan_storage_design_20250708_235000

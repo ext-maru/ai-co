@@ -34,8 +34,8 @@ if [ -f db/slack_messages.db ]; then
 SELECT 'Total messages:', COUNT(*) FROM processed_messages;
 SELECT '';
 SELECT 'Latest 5 messages:';
-SELECT datetime(processed_at, 'localtime') as time, 
-       message_ts, 
+SELECT datetime(processed_at, 'localtime') as time,
+       message_ts,
        substr(text, 1, 80) as text_preview
 FROM processed_messages
 ORDER BY processed_at DESC

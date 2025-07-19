@@ -1,6 +1,6 @@
 # 🛡️ インシデント騎士団システム設計書
 
-**作成日**: 2025年7月7日  
+**作成日**: 2025年7月7日
 **目的**: Elders Guildの完全自律デバッグ・予防保守システムの実現
 
 ---
@@ -104,17 +104,17 @@ class IncidentKnight(ABC):
         self.knight_id = knight_id
         self.specialty = specialty
         self.status = "patrolling"
-        
+
     @abstractmethod
     async def patrol(self) -> List[Issue]:
         """巡回して問題を発見"""
         pass
-        
+
     @abstractmethod
     async def investigate(self, issue: Issue) -> Diagnosis:
         """問題を詳細調査"""
         pass
-        
+
     @abstractmethod
     async def resolve(self, diagnosis: Diagnosis) -> Resolution:
         """問題を解決"""
@@ -127,13 +127,13 @@ class KnightsCommandCenter:
         self.knights = []
         self.task_queue = asyncio.Queue()
         self.resource_manager = ResourceManager()
-        
+
     async def deploy_knights(self):
         """騎士を展開"""
         # リソース状況に応じて騎士数を動的調整
         available_resources = self.resource_manager.get_available()
         knight_count = self._calculate_optimal_knights(available_resources)
-        
+
         for i in range(knight_count):
             knight = self._create_knight(specialty=self._assign_specialty(i))
             self.knights.append(knight)
@@ -144,18 +144,18 @@ class KnightsCommandCenter:
 ```python
 class CommandValidationKnight(IncidentKnight):
     """コマンド検証特化騎士"""
-    
+
     async def patrol(self) -> List[Issue]:
         """全コマンドの動作を継続的に検証"""
         issues = []
-        
+
         # Elders Guild独自コマンド
         ai_commands = [
             "ai-start", "ai-stop", "ai-status", "ai-logs",
             "ai-send", "ai-tdd", "ai-test-coverage",
             "ai-knowledge", "ai-worker-recovery"
         ]
-        
+
         for cmd in ai_commands:
             if not await self._verify_command(cmd):
                 issues.append(Issue(
@@ -164,14 +164,14 @@ class CommandValidationKnight(IncidentKnight):
                     command=cmd,
                     details=await self._diagnose_command(cmd)
                 ))
-                
+
         # Pythonパス・インポート検証
         python_imports = await self._scan_all_imports()
         for import_issue in await self._verify_imports(python_imports):
             issues.append(import_issue)
-            
+
         return issues
-    
+
     async def _verify_command(self, cmd: str) -> bool:
         """コマンドの実行可能性を検証"""
         try:
@@ -191,20 +191,20 @@ class CommandValidationKnight(IncidentKnight):
 ```python
 class PredictiveAnalysisKnight(IncidentKnight):
     """予測的問題検出騎士"""
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ml_model = self._load_prediction_model()
-        
+
     async def patrol(self) -> List[Issue]:
         """コード変更を監視して問題を予測"""
         recent_changes = await self._get_recent_changes()
         potential_issues = []
-        
+
         for change in recent_changes:
             # 機械学習モデルで問題発生確率を予測
             risk_score = self.ml_model.predict_risk(change)
-            
+
             if risk_score > 0.7:
                 # 高リスクの変更を検出
                 potential_issues.append(Issue(
@@ -214,7 +214,7 @@ class PredictiveAnalysisKnight(IncidentKnight):
                     change=change,
                     predicted_error=self._predict_error_type(change)
                 ))
-                
+
         return potential_issues
 ```
 
@@ -323,6 +323,6 @@ ai-knights rollback --all
 
 **インシデント騎士団は、Elders Guildを不滅の要塞へと変貌させる守護者たちです。**
 
-**作成者**: Claude Code Instance  
-**承認待ち**: インシデント賢者  
+**作成者**: Claude Code Instance
+**承認待ち**: インシデント賢者
 **最終更新**: 2025年7月7日

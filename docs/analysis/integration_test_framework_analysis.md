@@ -219,7 +219,7 @@ def test_service_integration(docker_compose_file):
     with DockerCompose(docker_compose_file) as compose:
         api_host = compose.get_service_host("api", 8000)
         db_host = compose.get_service_host("db", 5432)
-        
+
         # APIテスト実行
         response = requests.get(f"http://{api_host}/health")
         assert response.status_code == 200

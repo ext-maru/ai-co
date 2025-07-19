@@ -63,10 +63,10 @@ def test_worker_processes_message_successfully():
     # Arrange（準備）
     worker = TaskWorker()
     test_message = {"task_id": "test_123", "prompt": "test"}
-    
+
     # Act（実行）
     result = worker.process_test_message(test_message)
-    
+
     # Assert（検証）
     assert result["status"] == "completed"
     assert "output" in result
@@ -83,7 +83,7 @@ def test_worker_with_mocks(mock_slack, mock_connection):
     # RabbitMQとSlackをモック化
     mock_connection.return_value = MagicMock()
     mock_slack.return_value.send_message = MagicMock()
-    
+
     worker = BaseWorker(worker_type='test')
     assert worker.connection is not None
 ```
@@ -117,10 +117,10 @@ def sample_task():
 def create_worker_with_test(worker_name: str):
     # 1. ワーカー本体を作成
     create_worker_file(worker_name)
-    
+
     # 2. 対応するユニットテストを自動生成
     create_unit_test(worker_name)
-    
+
     # 3. 統合テストに追加
     add_to_integration_test(worker_name)
 ```
@@ -139,48 +139,48 @@ sys.path.append(str(Path(__file__).parent.parent.parent))
 from {module_path} import {class_name}
 
 class Test{class_name}:
-    
+
     @pytest.fixture
     def {instance_name}(self):
         with patch('pika.BlockingConnection'):
             instance = {class_name}()
             yield instance
             instance.cleanup()
-    
+
     def test_initialization(self, {instance_name}):
         '''初期化が正常に行われることを確認'''
         assert {instance_name} is not None
         assert {instance_name}.worker_type == '{worker_type}'
-    
+
     def test_process_message_success(self, {instance_name}):
         '''メッセージ処理が成功することを確認'''
         # テストデータ
         test_body = {test_data}
-        
+
         # 実行
         result = {instance_name}.process_test_message(test_body)
-        
+
         # 検証
         assert result is not None
         assert result.get('status') == 'success'
-    
+
     def test_error_handling(self, {instance_name}):
         '''エラーハンドリングが適切に動作することを確認'''
         # 不正なデータ
         invalid_body = {{"invalid": "data"}}
-        
+
         # エラーが適切に処理されることを確認
         with pytest.raises(Exception):
             {instance_name}.process_test_message(invalid_body)
-    
+
     @patch('libs.slack_notifier.SlackNotifier')
     def test_slack_notification(self, mock_slack, {instance_name}):
         '''Slack通知が送信されることを確認'''
         mock_slack.return_value.send_message = Mock()
-        
+
         # 処理実行
         {instance_name}._notify_completion("Test completed")
-        
+
         # Slack通知が呼ばれたことを確認
         mock_slack.return_value.send_message.assert_called_once()
 """
@@ -239,7 +239,7 @@ changed_files=$(git diff --cached --name-only --diff-filter=ACM | grep "\.py$")
 
 if [ -n "$changed_files" ]; then
     echo "🧪 Running tests for changed files..."
-    
+
     # 各ファイルに対応するテストを実行
     for file in $changed_files; do
         test_file="tests/unit/test_$(basename $file)"
@@ -264,14 +264,14 @@ echo "✅ All tests passed"
 # scripts/check_test_coverage.py
 def check_coverage_before_merge():
     """マージ前のカバレッジチェック"""
-    
+
     # カバレッジ計測
     coverage_result = run_coverage_test()
-    
+
     # 基準チェック
     if coverage_result['total'] < 80:
         raise Exception(f"Coverage {coverage_result['total']}% is below 80%")
-    
+
     # Slack通知
     notify_slack(f"✅ Coverage: {coverage_result['total']}%")
 ```
@@ -342,7 +342,7 @@ def test_network_dependent():
 ```python
 def analyze_test_failure(test_name, error):
     """テスト失敗の自動分析"""
-    
+
     # エラータイプ分類
     if "timeout" in str(error).lower():
         return "Timeout issue - check network/service"
@@ -350,7 +350,7 @@ def analyze_test_failure(test_name, error):
         return "Connection issue - check RabbitMQ"
     elif "import" in str(error).lower():
         return "Import error - check dependencies"
-    
+
     return "Unknown error - manual investigation needed"
 ```
 

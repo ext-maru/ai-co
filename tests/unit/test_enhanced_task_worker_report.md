@@ -23,7 +23,7 @@ Missing lines: 47-80, 423
 ### テストファイル構成
 1. **`test_enhanced_task_worker_comprehensive.py`** (43テスト)
    - 初期化テスト
-   - メッセージ処理テスト  
+   - メッセージ処理テスト
    - テンプレート選択テスト
    - Claude実行テスト
    - ファイル収集テスト
@@ -91,7 +91,7 @@ def handle_error(self, error=None, context=None, severity=None, retry_callback=N
 def _collect_created_files(self, task_id: str) -> list:
     """作成されたファイルを収集（エラーハンドリング付き）"""
     created_files = []
-    
+
     try:
         for file_path in self.output_dir.rglob("*"):
             try:
@@ -108,7 +108,7 @@ def _collect_created_files(self, task_id: str) -> list:
                 continue
     except Exception as e:
         self.logger.error(f"Failed to scan output directory: {e}")
-    
+
     return created_files
 ```
 

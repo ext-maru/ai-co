@@ -60,7 +60,7 @@ show_help() {
 
 setup_cron() {
     log_info "🔧 AI進化システムCron設定開始"
-    
+
     if [ -f "$PROJECT_ROOT/scripts/setup_evolution_cron.sh" ]; then
         cd "$PROJECT_ROOT"
         bash scripts/setup_evolution_cron.sh
@@ -74,7 +74,7 @@ setup_cron() {
 show_status() {
     log_info "📊 AI進化システムCron状況確認"
     echo ""
-    
+
     # Cron設定確認
     echo -e "${cyan}🔧 現在のCron設定:${nc}"
     if crontab -l 2>/dev/null | grep -q "AI Company"; then
@@ -86,7 +86,7 @@ show_status() {
         echo "セットアップコマンド: $SCRIPT_NAME setup"
         echo ""
     fi
-    
+
     # ログファイル確認
     echo -e "${cyan}📁 ログファイル状況:${nc}"
     if [ -d "$LOG_DIR" ]; then
@@ -94,7 +94,7 @@ show_status() {
             echo "  $line"
         done
         echo ""
-        
+
         # 最新ログエントリ確認
         echo -e "${cyan}📈 最新の実行状況:${nc}"
         for log_file in daily_evolution weekly_strategy hourly_status; do
@@ -106,7 +106,7 @@ show_status() {
     else
         log_warning "⚠️ ログディレクトリが見つかりません: $LOG_DIR"
     fi
-    
+
     # システムリソース確認
     echo ""
     echo -e "${cyan}💻 システムリソース:${nc}"
@@ -117,20 +117,20 @@ show_status() {
 
 show_logs() {
     log_info "📋 AI進化システムログ確認"
-    
+
     if [ ! -d "$LOG_DIR" ]; then
         log_error "❌ ログディレクトリが見つかりません: $LOG_DIR"
         return 1
     fi
-    
+
     echo ""
     echo -e "${cyan}📁 利用可能なログファイル:${nc}"
     ls -la "$LOG_DIR"/*.log 2>/dev/null | nl
-    
+
     echo ""
     echo "確認したいログ番号を入力してください (Enter=全て):"
     read -r log_choice
-    
+
     if [ -z "$log_choice" ]; then
         # 全ログの最新エントリを表示
         for log_file in "$LOG_DIR"/*.log; do
@@ -150,7 +150,7 @@ show_logs() {
             echo -e "${cyan}=== $(basename "$selected_log") ===${nc}"
             echo "ファイル全体を見る場合は 'less'、最新100行は 'tail'、リアルタイムは 'follow' を入力:"
             read -r view_mode
-            
+
             case "$view_mode" in
                 "less")
                     less "$selected_log"
@@ -173,9 +173,9 @@ show_logs() {
 
 test_evolution_system() {
     log_info "🧪 AI進化システムテスト実行"
-    
+
     cd "$PROJECT_ROOT"
-    
+
     echo ""
     echo -e "${cyan}1. システム状況確認テスト${nc}"
     if python3 commands/ai_evolve_daily.py --status; then
@@ -183,7 +183,7 @@ test_evolution_system() {
     else
         log_error "❌ システム状況確認: Failed"
     fi
-    
+
     echo ""
     echo -e "${cyan}2. 保留相談確認テスト${nc}"
     if python3 commands/ai_evolve_daily.py --pending; then
@@ -191,7 +191,7 @@ test_evolution_system() {
     else
         log_error "❌ 保留相談確認: Failed"
     fi
-    
+
     echo ""
     echo -e "${cyan}3. 進化履歴確認テスト${nc}"
     if python3 commands/ai_evolve_daily.py --history --limit 3; then
@@ -199,7 +199,7 @@ test_evolution_system() {
     else
         log_error "❌ 進化履歴確認: Failed"
     fi
-    
+
     echo ""
     echo -e "${cyan}4. グランドエルダーインターフェーステスト${nc}"
     if python3 commands/ai_grand_elder.py --consultation-log --limit 3; then
@@ -207,13 +207,13 @@ test_evolution_system() {
     else
         log_error "❌ グランドエルダーインターフェース: Failed"
     fi
-    
+
     echo ""
     echo -e "${cyan}5. Cron設定構文チェック${nc}"
     if crontab -l | grep "ai_evolve_daily" >/dev/null 2>&1; then
         log_info "✅ Cron設定: 検出されました"
         echo "次回実行予定時刻の計算..."
-        
+
         # 次の実行時刻を計算（簡易版）
         current_hour=$(date +%H)
         if [ "$current_hour" -lt 2 ]; then
@@ -224,7 +224,7 @@ test_evolution_system() {
     else
         log_warning "⚠️ Cron設定: AI進化システムの設定が見つかりません"
     fi
-    
+
     log_info "🎉 テスト完了"
 }
 
@@ -239,14 +239,14 @@ remove_cron() {
     echo ""
     echo -e "${red}本当に削除しますか？ (yes/no):${nc}"
     read -r confirmation
-    
+
     if [ "$confirmation" = "yes" ]; then
         # 現在のcrontabをバックアップ
         crontab -l > "/tmp/crontab_backup_$(date +%Y%m%d_%H%M%S)" 2>/dev/null || true
-        
+
         # AI Company関連のエントリを除去
         crontab -l 2>/dev/null | grep -v "AI Company\|ai_evolve_daily\|ai_grand_elder" | crontab -
-        
+
         log_info "✅ AI進化システムCron設定を削除しました"
         log_info "📋 バックアップ: /tmp/crontab_backup_*"
     else
@@ -258,13 +258,13 @@ monitor_system() {
     log_info "🔍 AI進化システムリアルタイム監視開始"
     echo "Ctrl+C で監視を停止します"
     echo ""
-    
+
     while true; do
         clear
         echo -e "${cyan}🤖 AI Company 自己進化システム監視ダッシュボード${nc}"
         echo "更新時刻: $(date)"
         echo "==========================================​=================================="
-        
+
         # システム状況
         echo -e "${green}📊 システム状況:${nc}"
         if [ -f "$LOG_DIR/hourly_status.log" ]; then
@@ -272,7 +272,7 @@ monitor_system() {
         else
             echo "  ログファイルを待機中..."
         fi
-        
+
         # 最新の進化活動
         echo ""
         echo -e "${green}🌟 最新の進化活動:${nc}"
@@ -281,7 +281,7 @@ monitor_system() {
         else
             echo "  進化ログを待機中..."
         fi
-        
+
         # 保留中の相談
         echo ""
         echo -e "${green}👑 保留中の相談:${nc}"
@@ -290,14 +290,14 @@ monitor_system() {
         else
             echo "  相談ログを待機中..."
         fi
-        
+
         # システムリソース
         echo ""
         echo -e "${green}💻 システムリソース:${nc}"
         echo "  CPU: $(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)% 使用中"
         echo "  メモリ: $(free | grep Mem | awk '{printf "%.1f%%", $3/$2 * 100.0}') 使用中"
         echo "  ディスク: $(df "$PROJECT_ROOT" | tail -1 | awk '{print $5}') 使用中"
-        
+
         # 次回実行予定
         echo ""
         echo -e "${green}⏰ 次回実行予定:${nc}"
@@ -307,7 +307,7 @@ monitor_system() {
         else
             echo "  日次進化サイクル: 明日 2:00 AM"
         fi
-        
+
         sleep 10
     done
 }

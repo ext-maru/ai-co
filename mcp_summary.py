@@ -4,8 +4,8 @@ MCP Setup Summary
 """
 
 import sys
-from pathlib import Path
 import time
+from pathlib import Path
 
 PROJECT_ROOT = Path("/home/aicompany/ai_co")
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -21,6 +21,7 @@ helper = AICommandHelper()
 
 # Execute verification
 import subprocess
+
 subprocess.run([sys.executable, "exec_verify.py"])
 
 print("")
@@ -52,7 +53,7 @@ print("# Create a worker")
 print("result = client.call_tool('filesystem', 'create_worker',")
 print("                         {'name': 'test', 'worker_type': 'demo'})")
 print("")
-print("# Execute a command")  
+print("# Execute a command")
 print("result = client.call_tool('executor', 'execute_command',")
 print("                         {'command': 'echo Hello MCP!'})")
 print("```")

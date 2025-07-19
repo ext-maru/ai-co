@@ -1,6 +1,6 @@
 # Elders Guild Command Test Coverage Improvement Report
 
-**生成日時**: 2025-07-08  
+**生成日時**: 2025-07-08
 **対象コマンド**: ai_elder_proactive, ai_grand_elder, ai_evolve_daily
 
 ## 実行サマリ

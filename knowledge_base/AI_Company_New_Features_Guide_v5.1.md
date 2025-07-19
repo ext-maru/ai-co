@@ -159,14 +159,14 @@ task_type: "code"
 template_data:
   prompt: |
     以下のセキュリティ監査を実行してください：
-    
+
     対象ディレクトリ: {{target_dir}}
-    
+
     1. 脆弱性スキャン
     2. 権限チェック
     3. 依存関係の脆弱性確認
     4. ハードコーディングされた認証情報の検出
-    
+
 parameters:
   - name: target_dir
     type: string
@@ -189,11 +189,11 @@ class DataProcessWorker(BaseWorker, CommunicationMixin):
     def __init__(self):
         super().__init__(worker_type='data_process')
         self.setup_communication()
-    
+
     def process_message(self, ch, method, properties, body):
         # データ処理
         processed_data = self.process_data(body['data'])
-        
+
         # 分析ワーカーに送信
         self.send_to_worker(
             'analyzer',
@@ -290,13 +290,13 @@ from core.retry_decorator import retry
 
 class AdvancedWorker(BaseWorker, CommunicationMixin, PriorityMixin, DLQMixin):
     """全機能を活用した高度なワーカー"""
-    
+
     def __init__(self):
         super().__init__(worker_type='advanced')
         self.setup_communication()
         self.setup_priority_consumer()
         self.setup_dlq()
-    
+
     @retry(max_attempts=3, backoff='exponential')
     def process_message(self, ch, method, properties, body):
         try:
@@ -307,16 +307,16 @@ class AdvancedWorker(BaseWorker, CommunicationMixin, PriorityMixin, DLQMixin):
                 result = tm.run_template(body['template'], body['params'])
             else:
                 result = self.process_task(body)
-            
+
             # Command Executor経由で後処理
             helper = AICommandHelper()
             helper.create_bash_command(
                 f"echo 'Task {body['task_id']} completed'",
                 f"notify_{body['task_id']}"
             )
-            
+
             ch.basic_ack(delivery_tag=method.delivery_tag)
-            
+
         except Exception as e:
             self.logger.error(f"Task failed: {str(e)}")
             self.send_to_dlq(ch, method, properties, body, str(e))

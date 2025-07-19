@@ -76,7 +76,7 @@ class ElderServant(ABC):
 
 # 専門特化サブクラス
 class DwarfServant(ElderServant)      # 開発製作特化
-class WizardServant(ElderServant)     # 調査研究特化  
+class WizardServant(ElderServant)     # 調査研究特化
 class ElfServant(ElderServant)        # 監視保守特化
 ```
 

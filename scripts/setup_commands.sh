@@ -102,7 +102,7 @@ chmod +x "$PROJECT_DIR/bin/aic"
 sudo ln -sf "$PROJECT_DIR/bin/aic" "$INSTALL_DIR/aic"
 echo -e "  ${GREEN}✅${NC} aic → ai-code"
 
-# ais = ai status  
+# ais = ai status
 cat > "$PROJECT_DIR/bin/ais" << 'EOF'
 #!/bin/bash
 exec ai-status "$@"
@@ -134,7 +134,7 @@ echo -e "\n${GREEN}✨ インストール完了！${NC}"
 echo -e "\n利用可能なコマンド:"
 echo -e "  ${YELLOW}ai${NC}         - メインコマンド（ヘルプ表示）"
 echo -e "  ${YELLOW}ai-status${NC}  - システム状態確認"
-echo -e "  ${YELLOW}ai-send${NC}    - タスク送信" 
+echo -e "  ${YELLOW}ai-send${NC}    - タスク送信"
 echo -e "  ${YELLOW}ai-code${NC}    - コード生成タスク"
 echo -e "  ${YELLOW}ai-tasks${NC}   - タスク一覧・履歴"
 echo -e "  ${YELLOW}ai-workers${NC} - ワーカー管理"

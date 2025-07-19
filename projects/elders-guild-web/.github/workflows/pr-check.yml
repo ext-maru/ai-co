@@ -20,7 +20,7 @@ jobs:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
-        
+
       - name: 🏷️ Apply Labels
         uses: actions/labeler@v4
         with:
@@ -43,10 +43,10 @@ jobs:
               repo: context.repo.repo,
               pull_number: pr.number
             });
-            
+
             let reviewMessage = '## 🏛️ エルダーズギルド PRレビュー要請\n\n';
             let requiredSages = new Set();
-            
+
             // ファイルタイプに基づいて賢者を選定
             for (const file of files.data) {
               if (file.filename.includes('knowledge') || file.filename.includes('.md')) {
@@ -62,23 +62,23 @@ jobs:
                 requiredSages.add('🔍 RAG Sage');
               }
             }
-            
+
             if (requiredSages.size === 0) {
               requiredSages = new Set(['📚 Knowledge Sage', '📋 Task Sage', '🚨 Incident Sage', '🔍 RAG Sage']);
             }
-            
+
             reviewMessage += '### レビュー担当賢者\n';
             for (const sage of requiredSages) {
               reviewMessage += `- ${sage}\n`;
             }
-            
+
             reviewMessage += '\n### レビューチェックリスト\n';
             reviewMessage += '- [ ] コード品質基準を満たしている\n';
             reviewMessage += '- [ ] テストカバレッジ90%以上\n';
             reviewMessage += '- [ ] エルダーズギルド命名規則遵守\n';
             reviewMessage += '- [ ] ドキュメント更新済み\n';
             reviewMessage += '- [ ] E2Eテスト追加（必要な場合）\n';
-            
+
             await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -94,14 +94,14 @@ jobs:
     steps:
       - name: 📥 Checkout
         uses: actions/checkout@v4
-        
+
       - name: 🔧 Process Command
         uses: actions/github-script@v7
         with:
           script: |
             const comment = context.payload.comment;
             const command = comment.body.trim();
-            
+
             // /elder test - テスト実行
             if (command === '/elder test') {
               await github.rest.issues.createComment({
@@ -110,7 +110,7 @@ jobs:
                 issue_number: context.issue.number,
                 body: '🧪 テストを実行します...'
               });
-              
+
               // テスト実行ワークフローをトリガー
               await github.rest.actions.createWorkflowDispatch({
                 owner: context.repo.owner,
@@ -119,12 +119,12 @@ jobs:
                 ref: 'main'
               });
             }
-            
+
             // /elder approve - 賢者承認
             else if (command.startsWith('/elder approve')) {
               const sage = command.split(' ')[2];
               let approvalMessage = '';
-              
+
               switch(sage) {
                 case 'knowledge':
                   approvalMessage = '📚 Knowledge Sage が承認しました';
@@ -141,7 +141,7 @@ jobs:
                 default:
                   approvalMessage = '❌ 無効な賢者名です';
               }
-              
+
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
@@ -149,7 +149,7 @@ jobs:
                 body: approvalMessage
               });
             }
-            
+
             // /elder council - 評議会招集
             else if (command === '/elder council') {
               await github.rest.issues.createComment({
@@ -173,10 +173,10 @@ jobs:
             const pr = context.payload.pull_request;
             const { additions, deletions } = pr;
             const totalChanges = additions + deletions;
-            
+
             let sizeLabel = '';
             let sizeEmoji = '';
-            
+
             if (totalChanges < 10) {
               sizeLabel = 'size/XS';
               sizeEmoji = '🟢';
@@ -193,7 +193,7 @@ jobs:
               sizeLabel = 'size/XL';
               sizeEmoji = '🔴';
             }
-            
+
             // ラベル追加
             await github.rest.issues.addLabels({
               owner: context.repo.owner,
@@ -201,7 +201,7 @@ jobs:
               issue_number: pr.number,
               labels: [sizeLabel]
             });
-            
+
             // コメント追加
             if (totalChanges > 500) {
               await github.rest.issues.createComment({
@@ -213,12 +213,12 @@ jobs:
             }
 
 # 🧙‍♂️ Four Sages評価
-# 
+#
 # ✅ Knowledge Sage: PR自動分析・ラベリング
 # ✅ Task Sage: 効率的なレビュープロセス
 # ✅ Incident Sage: サイズチェック・品質警告
 # ✅ RAG Sage: コマンドベース操作
-# 
+#
 # PR機能:
 # - 自動ラベリング
 # - 4賢者レビュー要請

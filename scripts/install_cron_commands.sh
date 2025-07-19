@@ -41,17 +41,17 @@ echo "🔗 シンボリックリンク作成中..."
 for cmd in "${commands_to_install[@]}"; do
     source_path="$PROJECT_ROOT/scripts/$cmd"
     target_path="$BIN_DIR/$cmd"
-    
+
     # 既存のリンクがあれば削除
     if [ -L "$target_path" ]; then
         rm "$target_path"
         echo "  🗑️ 既存のリンクを削除: $target_path"
     fi
-    
+
     # 新しいシンボリックリンク作成
     ln -sf "$source_path" "$target_path"
     echo "  🔗 シンボリックリンク作成: $cmd"
-    
+
     # 実行権限確認
     chmod +x "$source_path"
 done

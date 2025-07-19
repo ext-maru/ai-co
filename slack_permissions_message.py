@@ -4,13 +4,15 @@ Slack権限一覧送信スクリプト
 """
 
 import sys
-sys.path.insert(0, '/home/aicompany/ai_co')
+
+sys.path.insert(0, "/home/aicompany/ai_co")
 
 from libs.slack_channel_notifier import SlackChannelNotifier
 
+
 def send_permissions_list():
     """Slack権限一覧をSlackで送信"""
-    
+
     message = """🔐 Elders Guild Slack Bot 権限設定推奨一覧
 
 📊 現在の問題:
@@ -22,7 +24,7 @@ def send_permissions_list():
 🎯 Phase 1: 緊急対応 (今すぐ設定)
 • chat:write           - メッセージ送信
 • chat:write.public    - パブリックチャンネル送信
-• channels:read        - チャンネル情報読み取り  
+• channels:read        - チャンネル情報読み取り
 • channels:history     - チャンネル履歴読み取り
 • channels:join        - チャンネル参加
 • users:read          - ユーザー情報読み取り
@@ -60,20 +62,21 @@ def send_permissions_list():
 Elders Guildのファイル共有、DM機能、インタラクティブ要素の実装予定のため、今のうちに設定推奨。
 
 🏛️ Elders Guild エルダーズより"""
-    
+
     notifier = SlackChannelNotifier()
-    
+
     # デフォルトチャンネルに送信
     success = notifier.send_to_channel(notifier.default_channel, message)
-    
+
     if success:
         print("✅ Slack権限一覧の送信に成功しました")
     else:
         print("❌ Slack送信失敗 - トークンまたはWebhook URL未設定")
         print("メッセージ内容:")
         print(message)
-        
+
     return success
+
 
 if __name__ == "__main__":
     send_permissions_list()

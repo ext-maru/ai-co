@@ -6,6 +6,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class IncidentSage:
     """Placeholder class for Incident Sage"""
 
@@ -14,7 +15,9 @@ class IncidentSage:
 
     async def process_request(self, request):
         """Placeholder process_request method"""
-        logger.warning(f"IncidentSage.process_request called with: {request.get('type', 'unknown')}")
+        logger.warning(
+            f"IncidentSage.process_request called with: {request.get('type', 'unknown')}"
+        )
         return {"status": "placeholder", "message": "Incident Sage not implemented"}
 
     def __getattr__(self, name):

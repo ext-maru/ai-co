@@ -6,19 +6,22 @@ Claude Desktop × Elders Guild × Task Tracker
 
 import sys
 from pathlib import Path
+
 PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from libs.ai_command_helper import AICommandHelper
 import time
+
+from libs.ai_command_helper import AICommandHelper
+
 
 def main():
     helper = AICommandHelper()
-    
+
     print("🤖 Claude Desktop × Elders Guild × Task Tracker")
     print("完全統合デモンストレーション")
     print("=" * 80)
-    
+
     # 1. システム状態確認
     check_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -44,11 +47,11 @@ fi
 
 echo ""
 """
-    
+
     helper.create_bash_command(check_cmd, "check_full_integration")
     print("1️⃣ システム状態を確認中...")
     time.sleep(5)
-    
+
     # 2. Claude Desktop統合テスト実行
     test_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -76,27 +79,27 @@ db_path = Path('/home/aicompany/ai_co/data/tasks.db')
 if db_path.exists():
     conn = sqlite3.connect(str(db_path))
     cursor = conn.cursor()
-    
+
     cursor.execute('''
-    SELECT id, title, status, assignee, created_at 
-    FROM tasks 
+    SELECT id, title, status, assignee, created_at
+    FROM tasks
     WHERE title LIKE '%Claude Desktop%' OR assignee = 'pm'
-    ORDER BY created_at DESC 
+    ORDER BY created_at DESC
     LIMIT 5
     ''')
-    
+
     tasks = cursor.fetchall()
     for task in tasks:
         print(f'ID: {task[0][:8]} | {task[2]:12} | {task[3]:10} | {task[1][:50]}')
-    
+
     conn.close()
 "
 """
-    
+
     helper.create_bash_command(test_cmd, "test_claude_desktop_integration")
     print("\n2️⃣ Claude Desktop統合テストを実行中...")
     time.sleep(15)
-    
+
     # 3. 実際の開発タスク送信デモ
     demo_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -134,11 +137,11 @@ print('  - Web: http://localhost:5555')
 print('  - CLI: ./scripts/task list')
 "
 """
-    
+
     helper.create_bash_command(demo_cmd, "demo_real_tasks")
     print("\n3️⃣ 実際の開発タスクを送信中...")
     time.sleep(10)
-    
+
     # 4. 最終確認
     final_cmd = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -166,11 +169,11 @@ echo "  📊 Task Tracker: http://localhost:5555"
 echo "  📝 タスク一覧: ./scripts/task list"
 echo "  📜 ログ監視: tail -f logs/pm_worker.log"
 """
-    
+
     helper.create_bash_command(final_cmd, "show_integration_summary")
     print("\n4️⃣ 統合結果を集計中...")
     time.sleep(5)
-    
+
     print("\n" + "=" * 80)
     print("✅ 完全統合デモ完了！")
     print("\n📋 Claude Desktopからの使い方:")
@@ -180,6 +183,7 @@ echo "  📜 ログ監視: tail -f logs/pm_worker.log"
     print("task_id = sender.send_development_task('開発依頼内容', priority=4)")
     print("```")
     print("\n🌐 Task Tracker: http://localhost:5555")
+
 
 if __name__ == "__main__":
     main()

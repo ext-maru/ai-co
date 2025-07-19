@@ -17,35 +17,35 @@ pm_worker_path = Path("/home/aicompany/ai_co/workers/pm_worker.py")
 
 if pm_worker_path.exists():
     content = pm_worker_path.read_text()
-    
+
     # 修正前のコードを探す
     # 行135-136あたり: if self.git_flow.commit_changes(None, new_files, use_best_practices=True):
-    
+
     lines = content.split('\n')
     new_lines = []
-    
+
     for i, line in enumerate(lines):
         if "if self.git_flow.commit_changes(None, new_files, use_best_practices=True):" in line:
             # この行の前にcommit_message定義を追加
             indent = len(line) - len(line.lstrip())
             indent_str = ' ' * indent
-            
+
             # コメント行を確認して削除または修正
             if i > 0 and "ベストプラクティス対応（自動生成）" in lines[i-1]:
                 new_lines[-1] = f"{indent_str}# ファイルをコミット（ベストプラクティス対応）"
-            
+
             # commit_message定義を追加
             new_lines.append(f'{indent_str}commit_message = f"Task {{task_id}}: {{git_result_data[\'summary\']}}'[:100] + '"')
-            
+
             # 修正した行を追加（Noneをcommit_messageに置換）
             new_lines.append(line.replace('None', 'commit_message'))
         else:
             new_lines.append(line)
-    
+
     # ファイルを書き込み
     pm_worker_path.write_text('\n'.join(new_lines))
     print("✅ PMWorker修正完了")
-    
+
     # 修正結果を確認
     print("\n📋 修正箇所の確認:")
     lines = pm_worker_path.read_text().split('\n')

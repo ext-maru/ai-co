@@ -1,9 +1,9 @@
 # <type>(<scope>): <subject>
-# 
+#
 # <body>
-# 
+#
 # <footer>
-# 
+#
 # Type: feat, fix, docs, style, refactor, perf, test, build, ci, chore
 # Subject: 50 chars max, imperative mood, no period
 # Body: 72 chars per line, explain what and why

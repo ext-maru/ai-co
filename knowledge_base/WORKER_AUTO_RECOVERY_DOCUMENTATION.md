@@ -1,7 +1,7 @@
 # 🔧 Worker Auto-Recovery System Documentation
 
-**実装完了**: 2025年7月6日  
-**承認者**: 4賢者システム（全会一致承認）  
+**実装完了**: 2025年7月6日
+**承認者**: 4賢者システム（全会一致承認）
 **信頼度**: 89.5%
 
 ---
@@ -313,6 +313,6 @@ cat logs/incident_sage_alerts.json
 
 ---
 
-**作成者**: Claude Code Instance  
-**承認**: 4賢者システム  
+**作成者**: Claude Code Instance
+**承認**: 4賢者システム
 **最終更新**: 2025年7月6日 21:30

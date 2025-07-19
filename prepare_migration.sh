@@ -57,4 +57,3 @@ echo ""
 echo "次のステップ:"
 echo "1. ./safe_migrate.sh を実行して移行"
 echo "2. 問題があれば: tar -xzf $BACKUP_FILE -C / で復元"
-

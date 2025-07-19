@@ -1,9 +1,9 @@
 # 🏛️ エルダー評議会提案書
 
-**会議ID**: council_20250707_four_sages_vectorization  
-**提案者**: Claude Code Instance  
-**議題**: 4賢者魔法書完全ベクトル化計画  
-**緊急度**: HIGH - 戦略的システム進化  
+**会議ID**: council_20250707_four_sages_vectorization
+**提案者**: Claude Code Instance
+**議題**: 4賢者魔法書完全ベクトル化計画
+**緊急度**: HIGH - 戦略的システム進化
 **提案日時**: 2025年07月07日 19:15:00
 
 ---
@@ -81,20 +81,20 @@ rag_sage:
 ```python
 class TaskSageVectorization:
     """タスク賢者のベクトル化実装"""
-    
+
     vector_dimensions = {
         "task_description": 768,      # タスク内容
         "task_context": 384,          # コンテキスト
         "task_dependencies": 256,     # 依存関係
         "task_outcomes": 384          # 成果物
     }
-    
+
     indexable_fields = [
         "title", "description", "objectives",
         "acceptance_criteria", "technical_notes",
         "lessons_learned", "blockers_encountered"
     ]
-    
+
     search_capabilities = [
         "類似タスク検索",
         "依存関係分析",
@@ -107,20 +107,20 @@ class TaskSageVectorization:
 ```python
 class IncidentSageVectorization:
     """インシデント賢者のベクトル化実装"""
-    
+
     vector_dimensions = {
         "incident_description": 768,   # インシデント詳細
         "root_cause": 384,            # 根本原因
         "resolution_steps": 512,      # 解決手順
         "prevention_measures": 384    # 予防策
     }
-    
+
     indexable_fields = [
         "error_message", "stack_trace", "context",
         "resolution", "root_cause_analysis",
         "preventive_actions", "impact_assessment"
     ]
-    
+
     search_capabilities = [
         "類似インシデント検索",
         "根本原因パターン分析",
@@ -133,14 +133,14 @@ class IncidentSageVectorization:
 ```python
 class RAGSageEnhancement:
     """RAG賢者のベクトル化強化"""
-    
+
     enhanced_features = {
         "multi_modal_embeddings": True,   # マルチモーダル対応
         "hierarchical_indexing": True,    # 階層的インデックス
         "cross_sage_retrieval": True,     # 賢者横断検索
         "dynamic_reranking": True         # 動的リランキング
     }
-    
+
     integration_points = [
         "knowledge_base_sync",
         "task_context_injection",
@@ -222,12 +222,12 @@ infrastructure:
     type: "pgvector + Redis"
     storage: "500GB (拡張可能)"
     memory: "32GB専用"
-  
+
   compute:
     embedding_generation: "GPU推奨 (NVIDIA T4以上)"
     indexing_workers: "8 CPU cores"
     search_servers: "4 instances"
-  
+
   api_keys:
     openai: "組織アカウント（月100万トークン）"
     monitoring: "Datadog/Grafana"
@@ -315,7 +315,7 @@ infrastructure:
 
 ---
 
-**提案者**: Claude Code Instance  
-**協力**: 4賢者システム  
-**技術検証**: ナレッジ賢者（ベクトル化実績あり）  
+**提案者**: Claude Code Instance
+**協力**: 4賢者システム
+**技術検証**: ナレッジ賢者（ベクトル化実績あり）
 **提出日時**: 2025年07月07日 19:15:00

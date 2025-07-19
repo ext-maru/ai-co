@@ -107,7 +107,7 @@ A2A（Agent to Agent）通信プロトコルは、Elders Guild内のエージェ
     "priority": "high"
   },
   "task_sage": {
-    "id": "task_sage", 
+    "id": "task_sage",
     "type": "four_sages",
     "capabilities": ["task_management", "resource_allocation", "scheduling"],
     "endpoints": ["assign", "status", "optimize"],
@@ -115,7 +115,7 @@ A2A（Agent to Agent）通信プロトコルは、Elders Guild内のエージェ
   },
   "rag_sage": {
     "id": "rag_sage",
-    "type": "four_sages", 
+    "type": "four_sages",
     "capabilities": ["document_retrieval", "context_enhancement", "semantic_search"],
     "endpoints": ["search", "enhance", "index"],
     "priority": "high"
@@ -267,14 +267,14 @@ sequenceDiagram
     participant G as A2A Gateway
     participant B as Agent B
     participant AS as Auth Service
-    
+
     A->>AS: Request Auth Token
     AS->>A: JWT Token + Public Key
     A->>G: Message + JWT Token
     G->>AS: Validate Token
     AS->>G: Token Valid
     G->>B: Encrypted Message
-    B->>G: Encrypted Response  
+    B->>G: Encrypted Response
     G->>A: Response
 ```
 
@@ -347,22 +347,22 @@ class A2AErrorCode(Enum):
     INVALID_MESSAGE_FORMAT = 1001
     UNSUPPORTED_VERSION = 1002
     MISSING_REQUIRED_FIELD = 1003
-    
-    # 2000-2999: Authentication Errors  
+
+    # 2000-2999: Authentication Errors
     INVALID_TOKEN = 2001
     TOKEN_EXPIRED = 2002
     INSUFFICIENT_PERMISSIONS = 2003
-    
+
     # 3000-3999: Routing Errors
     AGENT_NOT_FOUND = 3001
     AGENT_UNAVAILABLE = 3002
     DELIVERY_TIMEOUT = 3003
-    
+
     # 4000-4999: Application Errors
     METHOD_NOT_SUPPORTED = 4001
     INVALID_PARAMETERS = 4002
     RESOURCE_NOT_FOUND = 4003
-    
+
     # 5000-5999: System Errors
     INTERNAL_ERROR = 5001
     SERVICE_UNAVAILABLE = 5002
@@ -407,7 +407,7 @@ class A2AErrorCode(Enum):
 ### Throughput Targets
 
 - **Peak Load**: 10,000 messages/second
-- **Sustained Load**: 5,000 messages/second  
+- **Sustained Load**: 5,000 messages/second
 - **Per-Agent**: 1,000 messages/second
 
 ### Resource Limits
@@ -418,12 +418,12 @@ resource_limits:
     max_header_size: 8KB
     max_payload_size: 10MB
     max_total_size: 10MB
-  
+
   connection_limits:
     max_connections_per_agent: 100
     connection_timeout: 30s
     idle_timeout: 300s
-  
+
   queue_limits:
     max_queue_depth: 10000
     message_ttl: 3600s
@@ -440,7 +440,7 @@ a2a_messages_total = Counter('a2a_messages_total', ['source', 'target', 'type'])
 a2a_message_duration = Histogram('a2a_message_duration_seconds', ['type'])
 a2a_errors_total = Counter('a2a_errors_total', ['code', 'source', 'target'])
 
-# Performance Metrics  
+# Performance Metrics
 a2a_queue_depth = Gauge('a2a_queue_depth', ['queue_name'])
 a2a_connection_count = Gauge('a2a_connections_active', ['agent_type'])
 a2a_bandwidth_bytes = Counter('a2a_bandwidth_bytes_total', ['direction'])
@@ -452,7 +452,7 @@ a2a_bandwidth_bytes = Counter('a2a_bandwidth_bytes_total', ['direction'])
 {
   "trace_context": {
     "trace_id": "uuid",
-    "span_id": "uuid", 
+    "span_id": "uuid",
     "parent_span_id": "uuid",
     "operation_name": "a2a_message_send",
     "start_time": "2025-07-09T12:00:00.000Z",
@@ -470,7 +470,7 @@ a2a_bandwidth_bytes = Counter('a2a_bandwidth_bytes_total', ['direction'])
 ### Protocol Versioning
 
 - **Major Version**: Breaking changes (1.x.x)
-- **Minor Version**: New features, backward compatible (x.1.x)  
+- **Minor Version**: New features, backward compatible (x.1.x)
 - **Patch Version**: Bug fixes (x.x.1)
 
 ### Compatibility Matrix
@@ -490,7 +490,7 @@ a2a_bandwidth_bytes = Counter('a2a_bandwidth_bytes_total', ['direction'])
 
 ---
 
-**策定日**: 2025年7月9日  
-**策定者**: Claude Elder  
-**バージョン**: 1.0  
+**策定日**: 2025年7月9日
+**策定者**: Claude Elder
+**バージョン**: 1.0
 **次回レビュー**: Phase 1実装完了後

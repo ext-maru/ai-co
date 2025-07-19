@@ -1,8 +1,8 @@
 # 🟠 Level 2: Critical (重大) 対応手順書
 
-**文書番号**: ERP-L2-001  
-**最終更新**: 2025年7月10日  
-**重要度**: HIGH  
+**文書番号**: ERP-L2-001
+**最終更新**: 2025年7月10日
+**重要度**: HIGH
 **対応時間**: 15分以内
 
 ---
@@ -81,14 +81,14 @@ echo "Critical response initiated in $SECONDS seconds"
 class FourSagesCriticalDiagnosis:
     async def emergency_diagnosis(self, incident_data):
         """Four Sagesによる緊急診断"""
-        
+
         diagnosis_results = await asyncio.gather(
             self.knowledge_sage_analyze(incident_data),
             self.task_sage_analyze(incident_data),
             self.incident_sage_analyze(incident_data),
             self.rag_sage_analyze(incident_data)
         )
-        
+
         # 統合診断結果
         return {
             "root_cause": self.identify_root_cause(diagnosis_results),
@@ -96,7 +96,7 @@ class FourSagesCriticalDiagnosis:
             "recovery_plan": self.generate_recovery_plan(diagnosis_results),
             "risk_evaluation": self.evaluate_risks(diagnosis_results)
         }
-    
+
     async def knowledge_sage_analyze(self, data):
         """ナレッジ賢者による過去事例分析"""
         return {
@@ -116,12 +116,12 @@ failover_mapping:
     primary: "auth_worker_primary"
     secondary: "auth_worker_secondary"
     tertiary: "auth_worker_minimal"
-    
+
   four_sages_integration:
     primary: "four_sages_full"
     secondary: "four_sages_limited"
     tertiary: "four_sages_emergency"
-    
+
   task_processing:
     primary: "task_worker_cluster"
     secondary: "task_worker_single"
@@ -131,11 +131,11 @@ failover_rules:
   - condition: "primary_failure"
     action: "activate_secondary"
     timeout: 30
-    
+
   - condition: "secondary_failure"
     action: "activate_tertiary"
     timeout: 60
-    
+
   - condition: "all_failure"
     action: "escalate_to_disaster"
     timeout: 90
@@ -155,7 +155,7 @@ class PartialRecovery:
             self.validate_functionality,
             self.gradual_traffic_restore
         ]
-    
+
     async def execute_partial_recovery(self, affected_services):
         """部分復旧の実行"""
         recovery_report = {
@@ -163,11 +163,11 @@ class PartialRecovery:
             "affected_services": affected_services,
             "stages": {}
         }
-        
+
         for idx, stage in enumerate(self.recovery_stages):
             stage_name = stage.__name__
             print(f"\n🔄 Executing Stage {idx+1}: {stage_name}")
-            
+
             try:
                 result = await stage(affected_services)
                 recovery_report["stages"][stage_name] = {
@@ -175,18 +175,18 @@ class PartialRecovery:
                     "result": result,
                     "timestamp": datetime.now()
                 }
-                
+
             except Exception as e:
                 recovery_report["stages"][stage_name] = {
                     "status": "failed",
                     "error": str(e),
                     "timestamp": datetime.now()
                 }
-                
+
                 # 失敗時のロールバック
                 if not await self.rollback_stage(idx):
                     raise CriticalRecoveryError(f"Rollback failed at stage {stage_name}")
-        
+
         return recovery_report
 ```
 
@@ -200,30 +200,30 @@ class PartialRecovery:
 monitor_critical_recovery() {
     local start_time=$(date +%s)
     local timeout=900  # 15分
-    
+
     while true; do
         current_time=$(date +%s)
         elapsed=$((current_time - start_time))
-        
+
         # タイムアウトチェック
         if [ $elapsed -gt $timeout ]; then
             echo "⚠️ TIMEOUT: Escalating to DISASTER level"
             ai-escalate --to-disaster --reason="Critical recovery timeout"
             break
         fi
-        
+
         # 復旧状態チェック
         recovery_status=$(ai-recovery-status --json)
-        
+
         if echo "$recovery_status" | jq -e '.status == "completed"' > /dev/null; then
             echo "✅ Recovery completed successfully"
             break
         fi
-        
+
         # 進捗表示
         progress=$(echo "$recovery_status" | jq -r '.progress')
         echo "Recovery progress: $progress% (Elapsed: $elapsed seconds)"
-        
+
         sleep 10
     done
 }
@@ -288,7 +288,7 @@ monitor_critical_recovery
 
 class FourSagesLimitedMode:
     """Four Sages機能制限モード"""
-    
+
     def __init__(self):
         self.active_sages = {
             "knowledge": True,    # 知識参照は維持
@@ -296,7 +296,7 @@ class FourSagesLimitedMode:
             "incident": True,    # インシデント対応維持
             "rag": False        # RAG検索停止
         }
-    
+
     def get_available_sage(self, sage_type):
         """利用可能な賢者を取得"""
         if self.active_sages.get(sage_type, False):
@@ -335,6 +335,6 @@ class FourSagesLimitedMode:
 
 ---
 
-**承認**: Grand Elder maru  
-**文書番号**: ERP-L2-001  
+**承認**: Grand Elder maru
+**文書番号**: ERP-L2-001
 **次回レビュー**: 2025年8月10日

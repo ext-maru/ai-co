@@ -4,11 +4,23 @@
 """
 
 from .base.elder_servant import (
-    ElderServant, ServantCategory, TaskStatus, TaskPriority,
-    ServantCapability, TaskResult, ServantRegistry, servant_registry
+    ElderServant,
+    ServantCapability,
+    ServantCategory,
+    ServantRegistry,
+    TaskPriority,
+    TaskResult,
+    TaskStatus,
+    servant_registry,
 )
 
 __all__ = [
-    "ElderServant", "ServantCategory", "TaskStatus", "TaskPriority",
-    "ServantCapability", "TaskResult", "ServantRegistry", "servant_registry"
+    "ElderServant",
+    "ServantCategory",
+    "TaskStatus",
+    "TaskPriority",
+    "ServantCapability",
+    "TaskResult",
+    "ServantRegistry",
+    "servant_registry",
 ]

@@ -13,7 +13,7 @@ health_check:
     error_rate: 0.1           # Error rate threshold (10%)
     queue_size: 100           # Queue size threshold
     response_timeout: 30      # Response timeout in seconds
-  
+
   check_interval: 30          # Individual check interval
   history_size: 100           # Number of history entries to keep
 
@@ -21,7 +21,7 @@ notification:
   slack_enabled: true         # Enable Slack notifications
   log_enabled: true           # Enable log notifications
   elder_notification: true    # Notify Elder Council for critical issues
-  
+
   severity_levels:
     info: '📘'
     warning: '⚠️'
@@ -33,22 +33,22 @@ workers:
     enabled: true
     critical: true
     script: '/home/aicompany/ai_co/workers/enhanced_task_worker.py'
-    
+
   pm_worker:
     enabled: true
     critical: true
     script: '/home/aicompany/ai_co/workers/intelligent_pm_worker_simple.py'
-    
+
   result_worker:
     enabled: true
     critical: true
     script: '/home/aicompany/ai_co/workers/async_result_worker_simple.py'
-    
+
   error_intelligence_worker:
     enabled: true
     critical: false
     script: '/home/aicompany/ai_co/workers/error_intelligence_worker.py'
-    
+
   slack_polling_worker:
     enabled: true
     critical: false
@@ -57,7 +57,7 @@ workers:
 strategies:
   default: soft_restart       # Default recovery strategy
   emergency: hard_restart     # Emergency recovery strategy
-  
+
   priority_map:
     process_not_found: cold_start
     high_resource_usage: resource_recovery

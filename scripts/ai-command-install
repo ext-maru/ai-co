@@ -47,7 +47,7 @@ log_debug() {
 # Check if running as root for system-wide installation
 check_permissions() {
     local install_type="$1"
-    
+
     if [ "$install_type" = "system" ] && [ "$EUID" -ne 0 ]; then
         log_error "System-wide installation requires root privileges"
         echo "Run with: sudo $0 $2"
@@ -58,15 +58,15 @@ check_permissions() {
 # Setup initial AI Company command environment
 setup_environment() {
     log_info "🔧 Setting up AI Company command environment"
-    
+
     # Create user-level directories
     mkdir -p "$HOME/.ai_company"
     mkdir -p "$HOME/.ai_company/bin"
     mkdir -p "$HOME/.ai_company/completions"
-    
+
     # Add AI Company bin to PATH if not already there
     local path_entry="export PATH=\"\$HOME/.ai_company/bin:\$PATH\""
-    
+
     if ! grep -q ".ai_company/bin" "$HOME/.bashrc" 2>/dev/null; then
         echo "" >> "$HOME/.bashrc"
         echo "# AI Company Commands" >> "$HOME/.bashrc"
@@ -75,17 +75,17 @@ setup_environment() {
     else
         log_debug "AI Company bin already in PATH"
     fi
-    
+
     # Add completion loading
     local completion_entry="[ -f \"\$HOME/.ai_company/completions/ai-completion.bash\" ] && source \"\$HOME/.ai_company/completions/ai-completion.bash\""
-    
+
     if ! grep -q "ai-completion.bash" "$HOME/.bashrc" 2>/dev/null; then
         echo "$completion_entry" >> "$HOME/.bashrc"
         log_info "✅ Added completion loading to ~/.bashrc"
     else
         log_debug "Completion loading already configured"
     fi
-    
+
     log_info "✅ Environment setup complete"
     echo "Note: Run 'source ~/.bashrc' or restart terminal to activate changes"
 }
@@ -93,7 +93,7 @@ setup_environment() {
 # Install command aliases
 install_aliases() {
     log_info "🔗 Installing AI Company command aliases"
-    
+
     # Create comprehensive alias file
     cat > "$ALIAS_FILE" << 'EOF'
 #!/bin/bash
@@ -125,7 +125,7 @@ alias ai-task-cancel='python3 /home/aicompany/ai_co/commands/ai_task_cancel.py'
 alias ai-task-queue='python3 /home/aicompany/ai_co/commands/ai_queue.py'
 alias ai-task-queue-clear='python3 /home/aicompany/ai_co/commands/ai_queue_clear.py'
 
-# Worker commands  
+# Worker commands
 alias ai-worker-list='python3 /home/aicompany/ai_co/commands/ai_workers.py'
 alias ai-worker-add='python3 /home/aicompany/ai_co/commands/ai_worker_add.py'
 alias ai-worker-remove='python3 /home/aicompany/ai_co/commands/ai_worker_rm.py'
@@ -193,10 +193,10 @@ alias aie='ai-elder-council'
 
 echo "🚀 AI Company commands loaded! Use 'ai-ui-help' for assistance."
 EOF
-    
+
     # Add alias loading to bashrc
     local alias_entry="[ -f \"$ALIAS_FILE\" ] && source \"$ALIAS_FILE\""
-    
+
     if ! grep -q ".ai_company_aliases" "$HOME/.bashrc" 2>/dev/null; then
         echo "" >> "$HOME/.bashrc"
         echo "# AI Company Aliases" >> "$HOME/.bashrc"
@@ -205,16 +205,16 @@ EOF
     else
         log_debug "Alias loading already configured"
     fi
-    
+
     log_info "✅ Aliases installed: $ALIAS_FILE"
 }
 
 # Install shell completion
 install_completion() {
     log_info "🔧 Installing shell completion"
-    
+
     local user_completion="$HOME/.ai_company/completions/ai-completion.bash"
-    
+
     # Create user completion file
     cat > "$user_completion" << 'EOF'
 #!/bin/bash
@@ -224,10 +224,10 @@ install_completion() {
 _ai_company_completion() {
     local cur prev words cword
     _init_completion || return
-    
+
     # Define domains and their actions
     local domains="system task worker knowledge rag elder incident dev api integration ui docs analytics evolution"
-    
+
     # Domain-specific actions
     case "$prev" in
         ai-system-*)
@@ -325,9 +325,9 @@ complete -F _ai_company_completion ai-send ai-start ai-stop ai-status ai-workers
 complete -F _ai_company_completion ais ait aiw ail aih aie
 
 EOF
-    
+
     log_info "✅ User completion installed: $user_completion"
-    
+
     # Install system-wide completion if running as root
     if [ "$EUID" -eq 0 ]; then
         local system_completion="$COMPLETION_DIR/ai-company"
@@ -341,26 +341,26 @@ EOF
 # Create symbolic links for global access
 install_symlinks() {
     check_permissions "system" "symlinks"
-    
+
     log_info "🔗 Installing system-wide symbolic links"
-    
+
     # Core commands that should be globally accessible
     local core_commands=(
         "ai-system-start:ai_start.py"
-        "ai-system-stop:ai_stop.py"  
+        "ai-system-stop:ai_stop.py"
         "ai-system-status:ai_status.py"
         "ai-task-send:ai_send.py"
         "ai-worker-list:ai_workers.py"
         "ai-dev-logs:ai_logs.py"
         "ai-ui-help:ai_help.py"
     )
-    
+
     for mapping in "${core_commands[@]}"; do
         local symlink_name="${mapping%:*}"
         local target_file="${mapping#*:}"
         local target_path="$PROJECT_ROOT/commands/$target_file"
         local symlink_path="$INSTALL_DIR/$symlink_name"
-        
+
         if [ -f "$target_path" ]; then
             # Create wrapper script instead of direct symlink for Python files
             cat > "$symlink_path" << EOF
@@ -375,7 +375,7 @@ EOF
             log_warning "⚠️ Target not found: $target_path"
         fi
     done
-    
+
     # Create short aliases
     local short_aliases=(
         "ais:ai-system-status"
@@ -384,12 +384,12 @@ EOF
         "ail:ai-dev-logs"
         "aih:ai-ui-help"
     )
-    
+
     for mapping in "${short_aliases[@]}"; do
         local alias_name="${mapping%:*}"
         local target_command="${mapping#*:}"
         local alias_path="$INSTALL_DIR/$alias_name"
-        
+
         cat > "$alias_path" << EOF
 #!/bin/bash
 # AI Company Short Alias: $alias_name -> $target_command
@@ -398,30 +398,30 @@ EOF
         chmod +x "$alias_path"
         log_info "✅ Created alias: $alias_path"
     done
-    
+
     log_info "✅ System-wide links installed"
 }
 
 # Install everything
 install_all() {
     log_info "🚀 Installing complete AI Company command system"
-    
+
     setup_environment
     install_aliases
     install_completion
-    
+
     if [ "$EUID" -eq 0 ]; then
         install_symlinks
     else
         log_warning "⚠️ Skipping system-wide symlinks (not root)"
         log_info "Run 'sudo ai-command-install symlinks' for global commands"
     fi
-    
+
     log_info "✅ Installation complete!"
     echo ""
     echo "🎉 AI Company commands are now available:"
     echo "  • Standard: ai-system-start, ai-task-send, ai-worker-list"
-    echo "  • Legacy: ai-start, ai-send, ai-workers (via aliases)"  
+    echo "  • Legacy: ai-start, ai-send, ai-workers (via aliases)"
     echo "  • Short: ais, ait, aiw, ail, aih"
     echo ""
     echo "📋 Next steps:"
@@ -437,34 +437,34 @@ install_all() {
 # Uninstall AI Company commands
 uninstall() {
     log_warning "🗑️ Uninstalling AI Company command system"
-    
+
     # Remove alias file
     if [ -f "$ALIAS_FILE" ]; then
         rm "$ALIAS_FILE"
         log_info "Removed: $ALIAS_FILE"
     fi
-    
+
     # Remove user directory
     if [ -d "$HOME/.ai_company" ]; then
         rm -rf "$HOME/.ai_company"
         log_info "Removed: $HOME/.ai_company"
     fi
-    
+
     # Remove from bashrc
     if grep -q "AI Company" "$HOME/.bashrc" 2>/dev/null; then
         # Create backup
         cp "$HOME/.bashrc" "$HOME/.bashrc.ai_company_backup"
-        
+
         # Remove AI Company sections
         sed -i '/# AI Company Commands/,+1d' "$HOME/.bashrc"
         sed -i '/# AI Company Aliases/,+1d' "$HOME/.bashrc"
         sed -i '/ai-completion.bash/d' "$HOME/.bashrc"
         sed -i '/.ai_company_aliases/d' "$HOME/.bashrc"
-        
+
         log_info "Removed AI Company entries from ~/.bashrc"
         log_info "Backup saved: ~/.bashrc.ai_company_backup"
     fi
-    
+
     # Remove system-wide files (if root)
     if [ "$EUID" -eq 0 ]; then
         # Remove symlinks
@@ -474,14 +474,14 @@ uninstall() {
                 log_info "Removed: $INSTALL_DIR/$cmd"
             fi
         done
-        
+
         # Remove completion
         if [ -f "$COMPLETION_DIR/ai-company" ]; then
             rm "$COMPLETION_DIR/ai-company"
             log_info "Removed: $COMPLETION_DIR/ai-company"
         fi
     fi
-    
+
     log_info "✅ Uninstallation complete"
     echo "Note: Restart terminal or run 'source ~/.bashrc' to complete removal"
 }
@@ -491,24 +491,24 @@ show_status() {
     echo -e "${cyan}AI Company Command Installation Status${nc}"
     echo "======================================"
     echo ""
-    
+
     # Check environment
     echo -e "${blue}📁 Environment:${nc}"
     [ -d "$HOME/.ai_company" ] && echo "  ✅ User directory exists" || echo "  ❌ User directory missing"
     grep -q ".ai_company/bin" "$HOME/.bashrc" 2>/dev/null && echo "  ✅ PATH configured" || echo "  ❌ PATH not configured"
-    
+
     # Check aliases
     echo ""
     echo -e "${blue}🔗 Aliases:${nc}"
     [ -f "$ALIAS_FILE" ] && echo "  ✅ Alias file exists" || echo "  ❌ Alias file missing"
     grep -q ".ai_company_aliases" "$HOME/.bashrc" 2>/dev/null && echo "  ✅ Aliases loaded in bashrc" || echo "  ❌ Aliases not loaded"
-    
+
     # Check completion
     echo ""
     echo -e "${blue}🔧 Completion:${nc}"
     [ -f "$HOME/.ai_company/completions/ai-completion.bash" ] && echo "  ✅ User completion exists" || echo "  ❌ User completion missing"
     [ -f "$COMPLETION_DIR/ai-company" ] && echo "  ✅ System completion exists" || echo "  ❌ System completion missing"
-    
+
     # Check system links
     echo ""
     echo -e "${blue}🌐 System Links:${nc}"
@@ -516,11 +516,11 @@ show_status() {
     for cmd in "${system_commands[@]}"; do
         [ -x "$INSTALL_DIR/$cmd" ] && echo "  ✅ $cmd available" || echo "  ❌ $cmd missing"
     done
-    
+
     # Test command availability
     echo ""
     echo -e "${blue}🧪 Command Test:${nc}"
-    
+
     # Source aliases temporarily for testing
     if [ -f "$ALIAS_FILE" ]; then
         source "$ALIAS_FILE" 2>/dev/null
@@ -529,23 +529,23 @@ show_status() {
     else
         echo "  ❌ Cannot test (aliases not installed)"
     fi
-    
+
     echo ""
     echo -e "${green}Installation Summary:${nc}"
-    
+
     local components=0
     local installed=0
-    
+
     # Count components
     components=$((components + 1))
     [ -d "$HOME/.ai_company" ] && installed=$((installed + 1))
-    
-    components=$((components + 1)) 
+
+    components=$((components + 1))
     [ -f "$ALIAS_FILE" ] && installed=$((installed + 1))
-    
+
     components=$((components + 1))
     [ -f "$HOME/.ai_company/completions/ai-completion.bash" ] && installed=$((installed + 1))
-    
+
     echo "Installed: $installed/$components components"
     echo "Status: $([ $installed -eq $components ] && echo "✅ Complete" || echo "⚠️ Partial")"
 }

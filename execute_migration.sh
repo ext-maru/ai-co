@@ -33,16 +33,16 @@ find . -name "*.py" -type f | while read file; do
     if grep -q "sys.path.append.*root/ai_co" "$file"; then
         # バックアップ
         cp "$file" "${file}.bak"
-        
+
         # sys.path.append を相対パスに変換
         sed -i "s|sys\.path\.append[^)]*'/root/ai_co'[^)]*)|sys.path.append(str(Path(__file__).parent.parent))|g" "$file"
         sed -i "s|sys\.path\.append[^)]*\"/root/ai_co\"[^)]*)|sys.path.append(str(Path(__file__).parent.parent))|g" "$file"
-        
+
         # Path import を追加（まだない場合）
         if ! grep -q "from pathlib import Path" "$file"; then
             sed -i '1a from pathlib import Path' "$file"
         fi
-        
+
         echo "✅ 変換: $file"
     fi
 done
@@ -94,4 +94,3 @@ echo "確認コマンド:"
 echo "su - $NEW_USER"
 echo "cd ai_co"
 echo "grep -r '/root/ai_co' . --exclude-dir=venv --exclude='*.bak' | wc -l  # 0であるべき"
-

@@ -16,4 +16,8 @@ os.environ["PYTHONPATH"] = str(project_root)
 
 # Grand Protocol実行
 import subprocess
-subprocess.run([sys.executable, str(project_root / "commands" / "ai_commit_grand.py")] + sys.argv[1:])
+
+subprocess.run(
+    [sys.executable, str(project_root / "commands" / "ai_commit_grand.py")]
+    + sys.argv[1:]
+)

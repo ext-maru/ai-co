@@ -69,7 +69,7 @@ print(result)
 ### Python実行
 ```json
 {
-  "type": "python", 
+  "type": "python",
   "content": "import psutil\nprint(f'CPU: {psutil.cpu_percent()}%')",
   "id": "check_cpu"
 }

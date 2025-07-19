@@ -6,20 +6,22 @@
 インシデントエルダーの新機能を活用してテストカバレッジ向上作戦を実行
 """
 
-import sys
 import os
 import subprocess
+import sys
 import time
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 # プロジェクトルートを追加
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+
 def print_banner():
     """騎士団バナー表示"""
-    print("""
+    print(
+        """
 🛡️ ═══════════════════════════════════════════════════════════════════════ 🛡️
    ⚔️  COVERAGE KNIGHTS BATTLE COMMAND ⚔️
    🏰 AI Company インシデント騎士団戦闘システム v2.0
@@ -28,25 +30,31 @@ def print_banner():
 🔥 新装備: インシデントエルダー開発時統合システム
 ⚡ 戦力強化: 事前予測による戦闘効率300%向上
 🎯 目標: テストカバレッジ完全制圧
-""")
+"""
+    )
+
 
 def run_pre_battle_analysis():
     """戦闘前分析"""
     print("🔍 === Phase 1: 戦闘前インシデント予測分析 ===")
     print("📊 インシデントエルダーによる戦況分析を実行中...")
-    
+
     try:
-        result = subprocess.run([
-            'python3', '-m', 'libs.development_incident_predictor'
-        ], capture_output=True, text=True, cwd=PROJECT_ROOT, timeout=120)
-        
+        result = subprocess.run(
+            ["python3", "-m", "libs.development_incident_predictor"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            timeout=120,
+        )
+
         print("✅ 戦況分析完了！")
-        
+
         # 結果ファイル確認
-        prediction_file = PROJECT_ROOT / 'development_incident_prediction.json'
+        prediction_file = PROJECT_ROOT / "development_incident_prediction.json"
         if prediction_file.exists():
             print(f"📋 詳細分析レポート: {prediction_file}")
-            
+
             # 重要な警告を抽出
             if "CRITICAL" in result.stdout:
                 print("🚨 CRITICAL: 緊急事態検出！即座の対応が必要です")
@@ -54,7 +62,7 @@ def run_pre_battle_analysis():
                 print("⚠️ HIGH: 高リスク要因が検出されました")
             else:
                 print("🟢 LOW: 戦闘準備良好です")
-        
+
         return result.returncode == 0
     except subprocess.TimeoutExpired:
         print("⏱️ 分析がタイムアウトしました（2分以内に完了しませんでした）")
@@ -63,20 +71,25 @@ def run_pre_battle_analysis():
         print(f"❌ 分析中にエラーが発生: {e}")
         return False
 
+
 def deploy_test_monitoring():
     """テスト監視システム配備"""
     print("\n🛡️ === Phase 2: テスト監視システム配備 ===")
     print("🔧 戦闘監視システムを配備中...")
-    
+
     try:
         # テスト監視のデモ実行
-        result = subprocess.run([
-            'python3', '-m', 'libs.test_execution_monitor'
-        ], capture_output=True, text=True, cwd=PROJECT_ROOT, timeout=60)
-        
+        result = subprocess.run(
+            ["python3", "-m", "libs.test_execution_monitor"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            timeout=60,
+        )
+
         print("✅ 監視システム配備完了！")
         print("📡 リアルタイム戦闘監視がアクティブになりました")
-        
+
         return True
     except subprocess.TimeoutExpired:
         print("⏱️ 監視システム配備がタイムアウトしました")
@@ -85,16 +98,21 @@ def deploy_test_monitoring():
         print(f"❌ 監視システム配備エラー: {e}")
         return False
 
+
 def install_precommit_protection():
     """pre-commit防御システム設置"""
     print("\n🔒 === Phase 3: Pre-commit防御システム設置 ===")
     print("🛡️ 城門守備システムを設置中...")
-    
+
     try:
-        result = subprocess.run([
-            'python3', '-m', 'libs.precommit_incident_integration', '--install-hook'
-        ], capture_output=True, text=True, cwd=PROJECT_ROOT, timeout=30)
-        
+        result = subprocess.run(
+            ["python3", "-m", "libs.precommit_incident_integration", "--install-hook"],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            timeout=30,
+        )
+
         if result.returncode == 0:
             print("✅ 城門守備システム設置完了！")
             print("🚪 以降、すべてのコミットでインシデント予測が自動実行されます")
@@ -106,54 +124,63 @@ def install_precommit_protection():
         print(f"❌ 城門守備システム設置エラー: {e}")
         return False
 
+
 def execute_coverage_battle():
     """カバレッジ戦闘実行"""
     print("\n⚔️ === Phase 4: カバレッジ戦闘実行 ===")
     print("🏹 Coverage Knightsの突撃を開始します...")
-    
+
     # テストファイル検索
     test_files = list(PROJECT_ROOT.glob("tests/unit/test_*.py"))
     libs_files = list((PROJECT_ROOT / "libs").glob("*.py"))
-    
+
     print(f"🎯 対象: {len(test_files)} テストファイル, {len(libs_files)} libsファイル")
-    
+
     if not test_files:
         print("⚠️ テストファイルが見つかりません。戦闘を延期します。")
         return False
-    
+
     try:
         # カバレッジ付きテスト実行
         print("🛡️ インシデント予測システム監視下でテスト実行...")
-        
+
         start_time = time.time()
-        
-        result = subprocess.run([
-            'python3', '-m', 'pytest',
-            'tests/unit/',
-            '--cov=libs',
-            '--cov-report=html:htmlcov',
-            '--cov-report=term',
-            '--tb=short',
-            '--maxfail=10',
-            '-v'
-        ], capture_output=True, text=True, cwd=PROJECT_ROOT, timeout=300)
-        
+
+        result = subprocess.run(
+            [
+                "python3",
+                "-m",
+                "pytest",
+                "tests/unit/",
+                "--cov=libs",
+                "--cov-report=html:htmlcov",
+                "--cov-report=term",
+                "--tb=short",
+                "--maxfail=10",
+                "-v",
+            ],
+            capture_output=True,
+            text=True,
+            cwd=PROJECT_ROOT,
+            timeout=300,
+        )
+
         execution_time = time.time() - start_time
-        
+
         print(f"⏱️ 戦闘時間: {execution_time:.2f}秒")
-        
+
         if result.returncode == 0:
             print("🏆 戦闘勝利！全テストが成功しました")
         else:
             print(f"⚔️ 戦闘継続中: {result.returncode} 失敗が発生")
-            
+
         # カバレッジレポート確認
         htmlcov_dir = PROJECT_ROOT / "htmlcov"
         if htmlcov_dir.exists():
             print(f"📊 詳細カバレッジレポート: {htmlcov_dir}/index.html")
-        
+
         return True
-        
+
     except subprocess.TimeoutExpired:
         print("⏱️ 戦闘がタイムアウトしました（5分以内に完了しませんでした）")
         return False
@@ -161,10 +188,11 @@ def execute_coverage_battle():
         print(f"❌ 戦闘中にエラーが発生: {e}")
         return False
 
+
 def generate_battle_report():
     """戦闘報告書生成"""
     print("\n📜 === Phase 5: 戦闘報告書生成 ===")
-    
+
     report_content = f"""
 # 🛡️ Coverage Knights Battle Report
 
@@ -193,11 +221,14 @@ def generate_battle_report():
 **報告者**: Coverage Knights Battle Command System
 **承認**: インシデント騎士団長
 """
-    
-    report_file = PROJECT_ROOT / f"coverage_knights_battle_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
-    
+
+    report_file = (
+        PROJECT_ROOT
+        / f"coverage_knights_battle_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+    )
+
     try:
-        with open(report_file, 'w', encoding='utf-8') as f:
+        with open(report_file, "w", encoding="utf-8") as f:
             f.write(report_content)
         print(f"📋 戦闘報告書生成完了: {report_file}")
         return True
@@ -205,60 +236,61 @@ def generate_battle_report():
         print(f"❌ 報告書生成エラー: {e}")
         return False
 
+
 def main():
     """メイン戦闘指令"""
     print_banner()
-    
+
     success_phases = 0
     total_phases = 5
-    
+
     # Phase 1: 戦闘前分析
     if run_pre_battle_analysis():
         success_phases += 1
         print("✅ Phase 1 完了")
     else:
         print("❌ Phase 1 失敗")
-    
+
     time.sleep(2)
-    
+
     # Phase 2: 監視システム配備
     if deploy_test_monitoring():
         success_phases += 1
         print("✅ Phase 2 完了")
     else:
         print("❌ Phase 2 失敗")
-    
+
     time.sleep(2)
-    
+
     # Phase 3: 防御システム設置
     if install_precommit_protection():
         success_phases += 1
         print("✅ Phase 3 完了")
     else:
         print("❌ Phase 3 失敗")
-    
+
     time.sleep(2)
-    
+
     # Phase 4: 戦闘実行
     if execute_coverage_battle():
         success_phases += 1
         print("✅ Phase 4 完了")
     else:
         print("❌ Phase 4 失敗")
-    
+
     time.sleep(2)
-    
+
     # Phase 5: 報告書生成
     if generate_battle_report():
         success_phases += 1
         print("✅ Phase 5 完了")
     else:
         print("❌ Phase 5 失敗")
-    
+
     # 最終結果
     print(f"\n🏆 === 最終戦闘結果 ===")
     print(f"成功フェーズ: {success_phases}/{total_phases}")
-    
+
     if success_phases == total_phases:
         print("🎉 完全勝利！Coverage Knights の完璧な戦闘でした！")
         print("🌟 インシデントエルダーの新装備が戦闘効率を劇的に向上させました")
@@ -268,9 +300,10 @@ def main():
     else:
         print("🔥 戦闘継続中...再編成が必要です")
         print("🛠️ 装備の調整を行ってください")
-    
+
     print("\n🛡️ Coverage Knights Battle Command 完了")
     print("🏰 次回の戦闘でお会いしましょう！")
+
 
 if __name__ == "__main__":
     main()

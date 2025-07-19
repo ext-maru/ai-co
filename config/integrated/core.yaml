@@ -9,7 +9,7 @@ system:
   language: "ja"
   debug: false
   log_level: "INFO"
-  
+
 # プロジェクト設定
 project:
   name: "ai_co"
@@ -25,22 +25,22 @@ hierarchy:
     name: "グランドエルダーmaru"
     title: "Grand Elder maru"
     role: "最高権限者・戦略決定者"
-    
+
   executive_partner:
     name: "クロードエルダー"
     title: "Claude Elder"
     role: "開発実行責任者・4賢者統括"
-    
+
   wisdom_council:
     name: "4賢者システム"
     title: "Four Sages System"
     enabled: true
-    
+
   decision_body:
     name: "エルダー評議会"
     title: "Elder Council"
     enabled: true
-    
+
   execution_force:
     name: "エルダーサーバント"
     title: "Elder Servant"
@@ -50,25 +50,25 @@ hierarchy:
 four_sages:
   enabled: true
   model: "claude-sonnet-4-20250514"
-  
+
   knowledge_sage:
     name: "ナレッジ賢者"
     title: "Knowledge Sage"
     specialty: "知識管理・継承"
     temperature: 0.3
-    
+
   task_sage:
     name: "タスク賢者"
     title: "Task Oracle"
     specialty: "進捗管理・最適化"
     temperature: 0.5
-    
+
   incident_sage:
     name: "インシデント賢者"
     title: "Crisis Sage"
     specialty: "危機対応・品質保証"
     temperature: 0.1
-    
+
   rag_sage:
     name: "RAG賢者"
     title: "Search Mystic"
@@ -80,19 +80,19 @@ security:
   encryption_enabled: true
   audit_logging: true
   config_protection: true
-  
+
 # パフォーマンス設定
 performance:
   cache_enabled: true
   cache_ttl: 300
   optimization_level: "high"
-  
+
 # 監視設定
 monitoring:
   enabled: true
   health_check_interval: 30
   metrics_collection: true
-  
+
 # 開発設定
 development:
   test_mode: false

@@ -112,7 +112,7 @@ Add EmailWorker class to handle asynchronous email notifications.
 This enables the system to send emails without blocking main processes.
 
 - Add SMTP configuration support
-- Implement retry mechanism for failed sends  
+- Implement retry mechanism for failed sends
 - Add template support for common email types
 
 Closes: task_20250102_123456

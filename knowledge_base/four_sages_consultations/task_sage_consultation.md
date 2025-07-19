@@ -1,8 +1,8 @@
 # Task Sage Consultation: pgvector Integration for Task Optimization
 
-**Consultation Date**: July 9, 2025  
-**Sage**: Task Sage  
-**Topic**: Task Optimization and Scheduling with pgvector  
+**Consultation Date**: July 9, 2025
+**Sage**: Task Sage
+**Topic**: Task Optimization and Scheduling with pgvector
 **Consultation ID**: TS-PGV-2025-001
 
 ## Executive Summary
@@ -36,13 +36,13 @@ CREATE TABLE task_vectors (
 );
 
 -- Indexes for efficient task similarity search
-CREATE INDEX idx_task_embedding ON task_vectors 
+CREATE INDEX idx_task_embedding ON task_vectors
 USING ivfflat (task_embedding vector_cosine_ops) WITH (lists = 100);
 
-CREATE INDEX idx_context_embedding ON task_vectors 
+CREATE INDEX idx_context_embedding ON task_vectors
 USING ivfflat (context_embedding vector_cosine_ops) WITH (lists = 50);
 
-CREATE INDEX idx_dependency_embedding ON task_vectors 
+CREATE INDEX idx_dependency_embedding ON task_vectors
 USING ivfflat (dependency_embedding vector_cosine_ops) WITH (lists = 30);
 ```
 
@@ -55,28 +55,28 @@ class TaskOptimizationEngine:
     def __init__(self, pgvector_connection):
         self.conn = pgvector_connection
         self.similarity_threshold = 0.7
-        
+
     def optimize_task_scheduling(self, pending_tasks):
         """
         Optimize task scheduling using vector similarity analysis
         """
         optimized_schedule = []
-        
+
         for task in pending_tasks:
             # Generate task embedding
             task_embedding = self.generate_task_embedding(task)
-            
+
             # Find similar successful tasks
             similar_tasks = self.find_similar_tasks(
-                task_embedding, 
+                task_embedding,
                 success_threshold=0.8
             )
-            
+
             # Predict optimal execution parameters
             optimal_params = self.predict_optimal_execution(
                 task, similar_tasks
             )
-            
+
             optimized_schedule.append({
                 'task': task,
                 'predicted_duration': optimal_params['duration'],
@@ -84,7 +84,7 @@ class TaskOptimizationEngine:
                 'optimal_resources': optimal_params['resources'],
                 'recommended_time_slot': optimal_params['time_slot']
             })
-        
+
         return self.rank_by_optimization_score(optimized_schedule)
 ```
 
@@ -107,14 +107,14 @@ CREATE OR REPLACE FUNCTION optimize_resource_allocation(
 BEGIN
     RETURN QUERY
     WITH similar_tasks AS (
-        SELECT 
+        SELECT
             tv.resource_embedding,
             tv.success_probability,
             tv.actual_duration,
             tv.estimated_duration,
             (tv.task_embedding <=> task_embedding) AS similarity
         FROM task_vectors tv
-        WHERE 
+        WHERE
             tv.success_count > 0
             AND (tv.task_embedding <=> task_embedding) > 0.6
             AND tv.updated_at > NOW() - INTERVAL '24 hours'
@@ -122,16 +122,16 @@ BEGIN
         LIMIT 20
     ),
     resource_patterns AS (
-        SELECT 
+        SELECT
             jsonb_object_keys(available_resources) as resource_type,
             AVG(st.success_probability) as avg_success,
             AVG(st.actual_duration::float / st.estimated_duration) as efficiency_ratio
         FROM similar_tasks st
         GROUP BY resource_type
     )
-    SELECT 
+    SELECT
         rp.resource_type,
-        CASE 
+        CASE
             WHEN rp.efficiency_ratio < 0.8 THEN 1.5
             WHEN rp.efficiency_ratio < 1.0 THEN 1.2
             ELSE 1.0
@@ -155,51 +155,51 @@ class TaskPatternAnalyzer:
     def __init__(self):
         self.pattern_window = 168  # 7 days in hours
         self.pattern_threshold = 0.75
-        
+
     def analyze_execution_patterns(self, task_history):
         """
         Analyze task execution patterns using vector sequences
         """
         patterns = {}
-        
+
         # Group tasks by similarity
         task_clusters = self.cluster_similar_tasks(task_history)
-        
+
         for cluster_id, tasks in task_clusters.items():
             # Extract temporal patterns
             temporal_vectors = self.extract_temporal_vectors(tasks)
-            
+
             # Identify recurring patterns
             recurring_patterns = self.identify_recurring_patterns(
                 temporal_vectors
             )
-            
+
             patterns[cluster_id] = {
                 'patterns': recurring_patterns,
                 'success_rate': self.calculate_cluster_success_rate(tasks),
                 'optimal_timing': self.find_optimal_execution_timing(tasks),
                 'resource_requirements': self.analyze_resource_patterns(tasks)
             }
-        
+
         return patterns
-    
+
     def predict_execution_success(self, task, current_context):
         """
         Predict task execution success based on historical patterns
         """
         # Find similar historical executions
         similar_executions = self.find_similar_executions(task)
-        
+
         # Analyze context similarity
         context_similarity = self.analyze_context_similarity(
             current_context, similar_executions
         )
-        
+
         # Calculate success probability
         success_probability = self.calculate_success_probability(
             similar_executions, context_similarity
         )
-        
+
         return {
             'success_probability': success_probability,
             'confidence_level': self.calculate_confidence(similar_executions),
@@ -237,7 +237,7 @@ CREATE OR REPLACE FUNCTION analyze_failure_patterns(
 BEGIN
     RETURN QUERY
     WITH pattern_matches AS (
-        SELECT 
+        SELECT
             tfp.failure_type,
             tfp.prevention_strategies,
             tfp.occurrence_frequency,
@@ -247,12 +247,12 @@ BEGIN
                 (tfp.pattern_embedding <=> context_embedding) * 0.3
             ) AS pattern_similarity
         FROM task_failure_patterns tfp
-        WHERE 
+        WHERE
             (tfp.pattern_embedding <=> task_embedding) > 0.5
         ORDER BY pattern_similarity DESC
         LIMIT 10
     )
-    SELECT 
+    SELECT
         pm.failure_type,
         (pm.pattern_similarity * pm.occurrence_frequency::float / 100) as risk_probability,
         pm.prevention_strategies as prevention_strategy,
@@ -275,20 +275,20 @@ class TaskSuccessAnalyzer:
     def __init__(self, pgvector_connection):
         self.conn = pgvector_connection
         self.success_threshold = 0.8
-        
+
     def analyze_success_factors(self, task_type):
         """
         Analyze factors contributing to task success
         """
         # Get high-performing tasks
         successful_tasks = self.get_successful_tasks(task_type)
-        
+
         # Extract success factor vectors
         success_factors = self.extract_success_factors(successful_tasks)
-        
+
         # Perform factor analysis
         factor_analysis = self.perform_factor_analysis(success_factors)
-        
+
         return {
             'primary_factors': factor_analysis['primary'],
             'secondary_factors': factor_analysis['secondary'],
@@ -297,24 +297,24 @@ class TaskSuccessAnalyzer:
                 factor_analysis
             )
         }
-    
+
     def optimize_task_for_success(self, task):
         """
         Optimize task configuration for maximum success probability
         """
         # Analyze current task vector
         current_embedding = self.generate_task_embedding(task)
-        
+
         # Find optimal configuration
         optimal_config = self.find_optimal_configuration(
             current_embedding, task.type
         )
-        
+
         # Generate optimization recommendations
         recommendations = self.generate_optimization_recommendations(
             task, optimal_config
         )
-        
+
         return {
             'current_success_probability': self.predict_success_probability(task),
             'optimized_success_probability': optimal_config['success_probability'],
@@ -334,7 +334,7 @@ class AdaptiveTaskImprovement:
     def __init__(self):
         self.learning_rate = 0.1
         self.adaptation_threshold = 0.05
-        
+
     def continuous_improvement_loop(self, task_execution_result):
         """
         Continuously improve task execution based on results
@@ -343,23 +343,23 @@ class AdaptiveTaskImprovement:
         updated_embedding = self.update_task_embedding(
             task_execution_result
         )
-        
+
         # Analyze performance delta
         performance_delta = self.calculate_performance_delta(
             task_execution_result
         )
-        
+
         # Update success prediction model
         if abs(performance_delta) > self.adaptation_threshold:
             self.update_prediction_model(
                 task_execution_result, performance_delta
             )
-        
+
         # Generate improvement recommendations
         improvements = self.generate_improvement_recommendations(
             task_execution_result, updated_embedding
         )
-        
+
         return {
             'updated_embedding': updated_embedding,
             'performance_delta': performance_delta,
@@ -383,61 +383,61 @@ class TaskVectorGenerator:
             'dependencies': 'dependency-embedding-model',
             'resources': 'resource-embedding-model'
         }
-    
+
     def generate_comprehensive_task_vector(self, task):
         """
         Generate comprehensive task vector representation
         """
         vectors = {}
-        
+
         # Task description embedding
         vectors['task'] = self.generate_task_embedding(
-            task.description, 
-            task.type, 
+            task.description,
+            task.type,
             task.requirements
         )
-        
+
         # Context embedding
         vectors['context'] = self.generate_context_embedding(
             task.environment,
             task.constraints,
             task.goals
         )
-        
+
         # Dependency embedding
         vectors['dependencies'] = self.generate_dependency_embedding(
             task.dependencies,
             task.prerequisites
         )
-        
+
         # Resource embedding
         vectors['resources'] = self.generate_resource_embedding(
             task.required_resources,
             task.available_resources
         )
-        
+
         return vectors
-    
+
     def update_task_vector(self, task_id, execution_result):
         """
         Update task vector based on execution results
         """
         # Get current vector
         current_vector = self.get_task_vector(task_id)
-        
+
         # Calculate update based on execution result
         update_vector = self.calculate_vector_update(
             current_vector, execution_result
         )
-        
+
         # Apply update with learning rate
         updated_vector = self.apply_vector_update(
             current_vector, update_vector, self.learning_rate
         )
-        
+
         # Store updated vector
         self.store_updated_vector(task_id, updated_vector)
-        
+
         return updated_vector
 ```
 
@@ -453,7 +453,7 @@ class RealTimeTaskOptimizer:
     def __init__(self, pgvector_connection):
         self.conn = pgvector_connection
         self.optimization_interval = 300  # 5 minutes
-        
+
     async def real_time_optimization_loop(self):
         """
         Real-time task optimization loop
@@ -462,54 +462,54 @@ class RealTimeTaskOptimizer:
             try:
                 # Get current task queue
                 pending_tasks = await self.get_pending_tasks()
-                
+
                 # Analyze current system state
                 system_state = await self.analyze_system_state()
-                
+
                 # Optimize task schedule
                 optimized_schedule = await self.optimize_task_schedule(
                     pending_tasks, system_state
                 )
-                
+
                 # Update task priorities and scheduling
                 await self.update_task_schedule(optimized_schedule)
-                
+
                 # Wait for next optimization cycle
                 await asyncio.sleep(self.optimization_interval)
-                
+
             except Exception as e:
                 print(f"Optimization error: {e}")
                 await asyncio.sleep(60)  # Wait 1 minute before retry
-    
+
     async def optimize_task_schedule(self, tasks, system_state):
         """
         Optimize task schedule based on current system state
         """
         optimized_tasks = []
-        
+
         for task in tasks:
             # Generate task vector
             task_vector = self.generate_task_vector(task)
-            
+
             # Predict optimal execution parameters
             optimal_params = await self.predict_optimal_execution(
                 task_vector, system_state
             )
-            
+
             # Calculate optimization score
             optimization_score = self.calculate_optimization_score(
                 task, optimal_params
             )
-            
+
             optimized_tasks.append({
                 'task': task,
                 'optimal_params': optimal_params,
                 'optimization_score': optimization_score
             })
-        
+
         # Sort by optimization score
-        return sorted(optimized_tasks, 
-                     key=lambda x: x['optimization_score'], 
+        return sorted(optimized_tasks,
+                     key=lambda x: x['optimization_score'],
                      reverse=True)
 ```
 
@@ -527,39 +527,39 @@ class TaskPerformanceMetrics:
             'success_rate_improvement': 0.0,
             'prediction_accuracy': 0.0
         }
-    
+
     def calculate_execution_accuracy(self, predictions, actual_results):
         """
         Calculate accuracy of task execution predictions
         """
         correct_predictions = 0
         total_predictions = len(predictions)
-        
+
         for pred, actual in zip(predictions, actual_results):
             duration_accuracy = abs(pred.duration - actual.duration) / actual.duration
-            success_accuracy = abs(pred.success_probability - actual.success) 
-            
+            success_accuracy = abs(pred.success_probability - actual.success)
+
             if duration_accuracy < 0.2 and success_accuracy < 0.1:
                 correct_predictions += 1
-        
+
         return correct_predictions / total_predictions if total_predictions > 0 else 0
-    
+
     def calculate_scheduling_efficiency(self, scheduled_tasks, executed_tasks):
         """
         Calculate efficiency of task scheduling
         """
         scheduled_duration = sum(task.estimated_duration for task in scheduled_tasks)
         actual_duration = sum(task.actual_duration for task in executed_tasks)
-        
+
         return min(scheduled_duration / actual_duration, 1.0) if actual_duration > 0 else 0
-    
+
     def calculate_success_rate_improvement(self, baseline_success_rate, current_success_rate):
         """
         Calculate improvement in task success rate
         """
         if baseline_success_rate == 0:
             return 1.0 if current_success_rate > 0 else 0.0
-        
+
         return (current_success_rate - baseline_success_rate) / baseline_success_rate
 ```
 
@@ -575,7 +575,7 @@ class TaskPerformanceMetrics:
 ```sql
 -- Metrics calculation view
 CREATE VIEW task_optimization_metrics AS
-SELECT 
+SELECT
     DATE_TRUNC('hour', tv.updated_at) as time_bucket,
     COUNT(*) as total_tasks,
     AVG(tv.success_probability) as avg_success_probability,
@@ -601,30 +601,30 @@ class TaskSystemIntegration:
         self.legacy = legacy_task_system
         self.vector = vector_task_system
         self.integration_mode = 'hybrid'
-        
+
     def hybrid_task_processing(self, task):
         """
         Process tasks using both legacy and vector systems during migration
         """
         # Legacy processing
         legacy_result = self.legacy.process_task(task)
-        
+
         # Vector-based optimization
         vector_optimization = self.vector.optimize_task(task)
-        
+
         # Combine results
         optimized_task = self.merge_optimization_results(
             legacy_result, vector_optimization
         )
-        
+
         # Execute with monitoring
         execution_result = self.execute_optimized_task(optimized_task)
-        
+
         # Update vector system with results
         self.vector.update_from_execution(execution_result)
-        
+
         return execution_result
-    
+
     def gradual_migration_strategy(self):
         """
         Implement gradual migration from legacy to vector system
@@ -649,7 +649,7 @@ class TaskSystemIntegration:
                 'legacy_weight': 0.0
             }
         ]
-        
+
         return migration_phases
 ```
 
@@ -679,13 +679,13 @@ async def optimize_tasks(request: TaskOptimizationRequest):
     """
     try:
         optimizer = TaskOptimizationEngine(pgvector_connection)
-        
+
         optimized_schedule = optimizer.optimize_task_scheduling(
             request.tasks,
             constraints=request.constraints,
             goals=request.optimization_goals
         )
-        
+
         return {
             "optimized_schedule": optimized_schedule,
             "optimization_metrics": optimizer.get_optimization_metrics(),
@@ -701,13 +701,13 @@ async def predict_task_success(request: TaskExecutionRequest):
     """
     try:
         predictor = TaskSuccessPredictor(pgvector_connection)
-        
+
         prediction = predictor.predict_execution_success(
             request.task_id,
             request.execution_context,
             request.resource_allocation
         )
-        
+
         return {
             "prediction": prediction,
             "confidence": prediction.confidence_level,
@@ -732,7 +732,7 @@ async def submit_execution_feedback(
         task_id,
         execution_result
     )
-    
+
     return {"status": "feedback_received"}
 ```
 

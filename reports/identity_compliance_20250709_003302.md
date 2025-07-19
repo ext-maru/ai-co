@@ -40,7 +40,7 @@ Compliance Rate: 0.0%
 ## 🔧 Enforcement Actions
 
 - Identity validation active
-- Greeting compliance enforced  
+- Greeting compliance enforced
 - System monitoring enabled
 - Violation logging active
 

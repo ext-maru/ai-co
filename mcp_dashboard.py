@@ -3,10 +3,10 @@
 MCP Setup Status Dashboard
 """
 
-import sys
-from pathlib import Path
-import time
 import subprocess
+import sys
+import time
+from pathlib import Path
 
 PROJECT_ROOT = Path("/home/aicompany/ai_co")
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -29,9 +29,9 @@ print("Progress:")
 for i in range(35):
     # Progress bar
     progress = int((i + 1) / 35 * 20)
-    bar = '█' * progress + '░' * (20 - progress)
-    print(f"\r[{bar}] {i+1}/35s", end='', flush=True)
-    
+    bar = "█" * progress + "░" * (20 - progress)
+    print(f"\r[{bar}] {i+1}/35s", end="", flush=True)
+
     # Check every 5 seconds
     if i % 5 == 4:
         wrapper_dir = PROJECT_ROOT / "libs" / "mcp_wrapper"
@@ -42,7 +42,7 @@ for i in range(35):
             if len(files) >= 4:  # Should have at least 4 files
                 print(f"   Found {len(files)} files")
                 break
-    
+
     time.sleep(1)
 
 print("\n\n📊 Final Status:")
@@ -70,7 +70,7 @@ commands = ["mcp_monitor_exec", "mcp_final_complete", "mcp_auto_setup"]
 for cmd in commands:
     result = helper.check_results(cmd)
     if result:
-        status = "✅" if result.get('exit_code') == 0 else "⚠️"
+        status = "✅" if result.get("exit_code") == 0 else "⚠️"
         print(f"{status} {cmd}: {result.get('status', 'N/A')}")
 
 print("\n" + "=" * 60)

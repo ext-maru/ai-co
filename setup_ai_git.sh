@@ -39,7 +39,7 @@ fi
 # Check Python environment
 if [[ -f "$SCRIPT_DIR/venv/bin/activate" ]]; then
     echo "✅ Python virtual environment found"
-    
+
     # Check if AI assistant module is available
     source "$SCRIPT_DIR/venv/bin/activate"
     if python3 -c "import sys; sys.path.append('$SCRIPT_DIR'); from libs.ai_git_assistant import AIGitAssistant; print('AI support available')" 2>/dev/null; then

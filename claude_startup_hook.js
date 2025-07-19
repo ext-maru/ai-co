@@ -26,14 +26,14 @@ class ClaudeStartupHook {
 
             // ファイル読み込み
             const claudeContent = fs.readFileSync(this.claudeFile, 'utf-8');
-            
+
             // エルダーズギルド識別
             if (claudeContent.includes('エルダーズギルド') || claudeContent.includes('Claude Elder')) {
                 console.log('🏛️  Elders Guild CLAUDE.md detected - Auto-loading knowledge...');
-                
+
                 // 重要セクションの抽出
                 const sections = this.extractImportantSections(claudeContent);
-                
+
                 return {
                     fullContent: claudeContent,
                     sections: sections,
@@ -54,7 +54,7 @@ class ClaudeStartupHook {
      */
     extractImportantSections(content) {
         const sections = {};
-        
+
         // 重要なセクションパターン
         const patterns = {
             identity: /## 🤖 重要: 私のアイデンティティ([\s\S]*?)(?=##|$)/,
@@ -112,15 +112,15 @@ ${knowledge.sections.commands || 'ai-*コマンド群、ai-tdd、ai-elder-*'}
         const knowledge = await this.loadClaudeKnowledge();
         if (knowledge) {
             const systemPrompt = this.generateSystemPrompt(knowledge);
-            
+
             // 環境変数として設定（Claude CLIが読み取れるように）
             process.env.CLAUDE_SYSTEM_PROMPT = systemPrompt;
             process.env.CLAUDE_KNOWLEDGE_LOADED = 'true';
             process.env.CLAUDE_ELDERS_GUILD = 'active';
-            
+
             console.log('✅ Elders Guild knowledge loaded successfully');
             console.log(`📊 Sections loaded: ${Object.keys(knowledge.sections).length}`);
-            
+
             return systemPrompt;
         }
         return null;

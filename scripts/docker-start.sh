@@ -76,17 +76,17 @@ start_project() {
     local build_flag=""
     local detach_flag="-d"
     local debug_profile=""
-    
+
     if [[ "$BUILD" == "true" ]]; then
         build_flag="--build"
     fi
-    
+
     if [[ "$DEBUG" == "true" ]]; then
         debug_profile="--profile debug"
     fi
-    
+
     create_network
-    
+
     case $project in
         "core")
             log "Starting core infrastructure..."
@@ -114,14 +114,14 @@ start_project() {
             exit 1
             ;;
     esac
-    
+
     success "Project $project started successfully"
 }
 
 # プロジェクト停止
 stop_project() {
     local project=$1
-    
+
     case $project in
         "core")
             log "Stopping core infrastructure..."
@@ -149,14 +149,14 @@ stop_project() {
             exit 1
             ;;
     esac
-    
+
     success "Project $project stopped successfully"
 }
 
 # ログ表示
 show_logs() {
     local project=$1
-    
+
     case $project in
         "core")
             docker compose -f docker-compose.core.yml logs -f
@@ -204,12 +204,12 @@ cleanup() {
 main() {
     local command=$1
     shift
-    
+
     # オプション解析
     BUILD=false
     DEBUG=false
     DETACH=true
-    
+
     while [[ $# -gt 0 ]]; do
         case $1 in
             --build)
@@ -234,7 +234,7 @@ main() {
                 ;;
         esac
     done
-    
+
     case $command in
         "start")
             if [[ -z "$PROJECT" ]]; then

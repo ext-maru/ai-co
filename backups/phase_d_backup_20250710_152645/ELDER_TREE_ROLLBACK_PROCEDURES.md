@@ -2,8 +2,8 @@
 
 ## 🛡️ Grand Elder maru 安全第一原則準拠
 
-**作成日**: 2025年7月10日  
-**責任者**: Claude Elder  
+**作成日**: 2025年7月10日
+**責任者**: Claude Elder
 **承認**: Grand Elder maru
 
 ## 📋 ロールバック段階構成
@@ -26,10 +26,10 @@
    # workers/[target_worker].py の修正
    # Line: from libs.elder_tree_hierarchy import get_elder_tree
    # To: # from libs.elder_tree_hierarchy import get_elder_tree
-   
+
    # Line: ELDER_TREE_AVAILABLE = True
    # To: ELDER_TREE_AVAILABLE = False
-   
+
    # Line: self.elder_tree = get_elder_tree()
    # To: self.elder_tree = None
    ```
@@ -86,21 +86,21 @@
    ```python
    # libs/elder_tree_hierarchy.py の修正
    # 全関数を no-op にする
-   
+
    def get_elder_tree():
        return None
-   
+
    class ElderMessage:
        def __init__(self, *args, **kwargs):
            pass
-   
+
    class ElderRank:
        GRAND_ELDER = "grand_elder"
        CLAUDE_ELDER = "claude_elder"
        SAGE = "sage"
        COUNCIL_MEMBER = "council_member"
        SERVANT = "servant"
-   
+
    class SageType:
        KNOWLEDGE = "knowledge"
        TASK = "task"
@@ -139,7 +139,7 @@
    # 現在のファイルをバックアップ
    mv workers workers_elder_integrated_backup_$(date +%Y%m%d_%H%M%S)
    mv libs libs_elder_integrated_backup_$(date +%Y%m%d_%H%M%S)
-   
+
    # 統合前バックアップから復旧
    BACKUP_DIR="/home/aicompany/ai_co/backups/phase_d_backup_20250710_152645"
    cp -r "$BACKUP_DIR/workers" ./workers_restored
@@ -151,7 +151,7 @@
    # Elder Tree 関連ファイルを完全削除
    rm -f libs/elder_*.py
    rm -f libs/four_sages_integration.py
-   
+
    # ワーカーからElderTree統合コードを完全削除
    find workers/ -name "*.py" -exec sed -i '/elder_tree/d' {} \;
    find workers/ -name "*.py" -exec sed -i '/ELDER_TREE/d' {} \;
@@ -291,8 +291,8 @@
 
 ---
 
-**Grand Elder maru 最終承認**: 2025年7月10日  
-**次回見直し**: 2025年7月17日  
+**Grand Elder maru 最終承認**: 2025年7月10日
+**次回見直し**: 2025年7月17日
 **緊急連絡**: Claude Elder 直通
 
 🛡️ **品質第一×安全第一** 🛡️

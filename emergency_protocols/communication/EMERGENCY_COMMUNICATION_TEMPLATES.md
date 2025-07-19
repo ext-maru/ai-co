@@ -1,8 +1,8 @@
 # 📢 緊急時コミュニケーションテンプレート集
 
-**文書番号**: ECT-001  
-**最終更新**: 2025年7月10日  
-**使用権限**: 緊急対応チーム  
+**文書番号**: ECT-001
+**最終更新**: 2025年7月10日
+**使用権限**: 緊急対応チーム
 **言語**: 日本語/英語
 
 ---
@@ -350,13 +350,13 @@ email_config:
       X-Priority: "1"
       X-MSMail-Priority: "High"
     reply_to: "emergency@aicompany.com"
-    
+
   critical:
     priority: "high"
     importance: "high"
     headers:
       X-Priority: "2"
-    
+
   major:
     priority: "normal"
     importance: "normal"
@@ -413,6 +413,6 @@ TEMPLATES = {
 
 ---
 
-**承認**: Grand Elder maru  
-**文書番号**: ECT-001  
+**承認**: Grand Elder maru
+**文書番号**: ECT-001
 **次回レビュー**: 2025年8月10日

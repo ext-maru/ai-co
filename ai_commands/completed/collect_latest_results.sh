@@ -16,12 +16,12 @@ for logfile in ai_commands/logs/*slack*.log; do
         mod_time=$(stat -c %Y "$logfile" 2>/dev/null || echo "0")
         current_time=$(date +%s)
         age=$((current_time - mod_time))
-        
+
         # 5分以内のログのみ
         if [ $age -lt 300 ]; then
             echo ""
             echo "📄 $filename (${age}秒前)"
-            
+
             # 重要な行を抽出
             grep -E "(✅|❌|⚠️|結論|診断|動作中|停止|タスク化)" "$logfile" | head -10
         fi

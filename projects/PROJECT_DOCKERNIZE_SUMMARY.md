@@ -1,7 +1,7 @@
 # 📦 Project Dockernize - 実装サマリー
 
-**プロジェクト名**: Project Dockernize  
-**実装日**: 2025年7月10日  
+**プロジェクト名**: Project Dockernize
+**実装日**: 2025年7月10日
 **ステータス**: ✅ 完了（projects内のみ）・⏸️ 棚上げ（システム全体）
 
 ---

@@ -38,7 +38,7 @@ export class HistoryProvider implements vscode.TreeDataProvider<HistoryItem> {
                 const timeStr = item.timestamp.toLocaleTimeString();
                 const label = `${icon} ${item.command}`;
                 const description = `${timeStr} (${item.executionTime}ms)`;
-                
+
                 const historyItem = new HistoryItem(label, description, vscode.TreeItemCollapsibleState.None);
                 historyItem.command = {
                     command: 'codeflow.executeCommand',
@@ -62,7 +62,7 @@ export class HistoryProvider implements vscode.TreeDataProvider<HistoryItem> {
         };
 
         this.history.push(item);
-        
+
         // Keep only recent items
         if (this.history.length > this.maxHistorySize) {
             this.history = this.history.slice(-this.maxHistorySize);
@@ -82,7 +82,7 @@ export class HistoryProvider implements vscode.TreeDataProvider<HistoryItem> {
         try {
             const saved = vscode.workspace.getConfiguration('codeflow').get<string>('commandHistory', '[]');
             const parsed = JSON.parse(saved);
-            
+
             this.history = parsed.map((item: any) => ({
                 command: item.command,
                 timestamp: new Date(item.timestamp),

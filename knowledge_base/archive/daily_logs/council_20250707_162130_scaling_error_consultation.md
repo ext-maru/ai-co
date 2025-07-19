@@ -1,8 +1,8 @@
 # 🧙‍♂️ Elder Council Emergency Consultation - スケーリングエラー対策相談
 
-**日時**: 2025年7月7日 16:21  
-**緊急度**: 🔴 高  
-**議題**: WorkerHealthMonitor スケーリングエラーの根本解決  
+**日時**: 2025年7月7日 16:21
+**緊急度**: 🔴 高
+**議題**: WorkerHealthMonitor スケーリングエラーの根本解決
 **提出者**: Claude Code
 
 ---
@@ -24,10 +24,10 @@
 # libs/worker_health_monitor.py (現在)
 class WorkerHealthMonitor:
     """Auto-generated placeholder class"""
-    
+
     def __init__(self, *args, **kwargs):
         logger.warning(f"Using auto-generated placeholder for {self.__class__.__name__}")
-        
+
     def __getattr__(self, name):
         logger.warning(f"Accessing placeholder attribute: {name}")
         return lambda *args, **kwargs: None
@@ -50,12 +50,12 @@ class WorkerHealthMonitor:
 ```python
 class WorkerHealthMonitor:
     """本格的なワーカーヘルス監視実装"""
-    
+
     def __init__(self):
         self.metrics_collector = MetricsCollector()
         self.health_checker = HealthChecker()
         self.scaling_engine = ScalingEngine()
-        
+
     def collect_comprehensive_metrics(self) -> Dict[str, Any]:
         """包括的メトリクス収集"""
         return {
@@ -63,7 +63,7 @@ class WorkerHealthMonitor:
             'system': self._collect_system_metrics(),
             'queues': self._collect_queue_metrics()
         }
-        
+
     def get_scaling_recommendations(self, metrics: Dict[str, Any]) -> Dict[str, Any]:
         """スケーリング推奨事項の生成"""
         return self.scaling_engine.analyze(metrics)
@@ -73,11 +73,11 @@ class WorkerHealthMonitor:
 ```python
 class WorkerHealthMonitor:
     """最小限の修正で動作させる実装"""
-    
+
     def collect_comprehensive_metrics(self) -> Dict[str, Any]:
         # 基本的なメトリクス収集のみ
         return {'status': 'operational', 'workers': {}}
-        
+
     def get_scaling_recommendations(self, metrics: Dict[str, Any]) -> Dict[str, Any]:
         # スケーリング推奨は空で返す（エラー回避）
         return {}
@@ -90,12 +90,12 @@ def _perform_scaling_analysis(self):
     """スケーリング分析実行（エラー耐性強化）"""
     try:
         # 既存コード...
-        
+
         # WorkerHealthMonitor が不完全な場合の対策
         if not hasattr(self.health_monitor, 'get_scaling_recommendations'):
             self.logger.warning("Scaling analysis skipped - not implemented")
             return
-            
+
     except AttributeError as e:
         self.logger.warning(f"Scaling feature not available: {e}")
     except Exception as e:
@@ -192,6 +192,6 @@ def _perform_scaling_analysis(self):
 
 ---
 
-**提出者**: Claude Code  
-**状態**: Elder Council の判断待ち  
+**提出者**: Claude Code
+**状態**: Elder Council の判断待ち
 **次のアクション**: Council の指示に従い即座に実装開始

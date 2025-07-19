@@ -43,7 +43,7 @@ echo "----------------------------------------"
 if [ -f slack_diagnosis.log ]; then
     echo "メンション検出箇所:"
     grep -n -E "@pm-ai|メンション検出|<@U" slack_diagnosis.log | tail -10
-    
+
     echo ""
     echo "エラー箇所:"
     grep -n -E "❌|エラー|Error|error" slack_diagnosis.log | tail -10
@@ -59,7 +59,7 @@ if [ -f db/slack_messages.db ]; then
     sqlite3 db/slack_messages.db << 'SQL'
 .headers on
 .mode column
-SELECT 
+SELECT
     datetime(processed_at, 'localtime') as processed_time,
     message_ts,
     substr(text, 1, 50) || '...' as text_preview
@@ -80,7 +80,7 @@ echo "=========================================="
 # メッセージが取得できているか
 if grep -q "@pm-ai" slack_diagnosis.log 2>/dev/null || grep -q "メンション検出" slack_diagnosis.log 2>/dev/null; then
     echo "✅ Slackメッセージは取得できています"
-    
+
     # Polling Workerが動作しているか
     if [ -n "$POLLING_PID" ]; then
         echo "✅ Polling Workerも動作中"

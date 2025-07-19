@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Acquire lock for Multi-CC Coordination Framework implementation"""
 
-import sys
 import os
+import sys
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from libs.task_lock_manager import TaskLockManager
 import logging
+
+from libs.task_lock_manager import TaskLockManager
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,11 +19,8 @@ lock_manager = TaskLockManager()
 task_id = "multi_cc_coordination_framework"
 task_info = {
     "description": "Implement Multi-CC Coordination Framework with TDD approach",
-    "components": [
-        "test_multi_cc_coordination.py",
-        "libs/multi_cc_coordination.py"
-    ],
-    "started_at": "2025-07-06T10:00:00"
+    "components": ["test_multi_cc_coordination.py", "libs/multi_cc_coordination.py"],
+    "started_at": "2025-07-06T10:00:00",
 }
 
 # Try to acquire lock

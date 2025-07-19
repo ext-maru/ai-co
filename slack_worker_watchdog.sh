@@ -27,15 +27,15 @@ check_and_restart_worker() {
         log_message "✅ SlackWorker正常稼働中"
         return 0
     fi
-    
+
     log_message "❌ SlackWorker停止検知 - 自動復旧開始"
     send_slack_alert "SlackWorker停止検知。自動復旧を開始します..."
-    
+
     # ワーカー再起動
     cd /home/aicompany/ai_co
     nohup python3 "$WORKER_PATH" > /dev/null 2>&1 &
     local worker_pid=$!
-    
+
     # 起動確認（最大30秒待機）
     local retry_count=0
     while [ $retry_count -lt 30 ]; do
@@ -47,7 +47,7 @@ check_and_restart_worker() {
         sleep 1
         retry_count=$((retry_count + 1))
     done
-    
+
     log_message "❌ SlackWorker自動復旧失敗 - 手動介入が必要"
     send_slack_alert "❌ SlackWorker自動復旧失敗。手動での確認が必要です。"
     return 1

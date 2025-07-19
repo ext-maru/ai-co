@@ -88,8 +88,8 @@ interface ElderButton {
 }
 
 // 使用例
-<ElderButton 
-  variant="magic" 
+<ElderButton
+  variant="magic"
   effect="magic-circle"
   icon="🧙‍♂️"
   onClick={castSpell}
@@ -201,7 +201,7 @@ export const ElderComponent: FC<ElderComponentProps> = (props) => {
   // 4賢者フック
   const { knowledge } = useKnowledgeSage();
   const { tasks } = useTaskOracle();
-  
+
   return (
     <div className={styles.container}>
       {/* コンポーネント実装 */}
@@ -227,11 +227,11 @@ export const useElderUI = create<ElderUIState>((set) => ({
   theme: 'elder',
   sidebarOpen: true,
   notifications: [],
-  toggleTheme: () => set((state) => ({ 
-    theme: state.theme === 'dark' ? 'light' : 'dark' 
+  toggleTheme: () => set((state) => ({
+    theme: state.theme === 'dark' ? 'light' : 'dark'
   })),
-  toggleSidebar: () => set((state) => ({ 
-    sidebarOpen: !state.sidebarOpen 
+  toggleSidebar: () => set((state) => ({
+    sidebarOpen: !state.sidebarOpen
   })),
 }));
 ```
@@ -252,10 +252,10 @@ describe('ElderButton', () => {
         Cast Spell
       </ElderButton>
     );
-    
+
     const button = screen.getByText('Cast Spell');
     fireEvent.click(button);
-    
+
     expect(handleClick).toHaveBeenCalled();
     expect(button).toHaveClass('magic-circle-effect');
   });
@@ -269,11 +269,11 @@ import { test, expect } from '@playwright/test';
 
 test('エルダーダッシュボードの動作確認', async ({ page }) => {
   await page.goto('/dashboard');
-  
+
   // 4賢者パネルの確認
   await expect(page.locator('.knowledge-sage-panel')).toBeVisible();
   await expect(page.locator('.task-oracle-panel')).toBeVisible();
-  
+
   // リアルタイム更新の確認
   await page.waitForSelector('.metrics-update', { timeout: 5000 });
 });

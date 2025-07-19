@@ -25,7 +25,7 @@ sleep 3
 # 起動確認
 if tmux has-session -t slack_polling 2>/dev/null; then
     echo "✅ tmuxセッション作成成功"
-    
+
     # プロセス確認
     POLLING_PID=$(pgrep -f "slack_polling_worker\.py")
     if [ -n "$POLLING_PID" ]; then

@@ -10,12 +10,14 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+
 def preview_success_notification():
     """成功通知のプレビュー"""
     print("=" * 60)
     print("SUCCESS NOTIFICATION PREVIEW")
     print("=" * 60)
-    print("""
+    print(
+        """
 💻 **Task Completed: code_20250702_143256**
 Type: `code` | Duration: `3.45s` | Files: `5`
 
@@ -35,10 +37,12 @@ cat /home/aicompany/ai_co/output/code_20250702_143256/main.py
 # Check logs
 ai-logs code_20250702_143256
 ```
-""")
-    
+"""
+    )
+
     print("\n--- File Details (Separate Message) ---\n")
-    print("""
+    print(
+        """
 📁 **Files Created:**
 🐍 `/home/aicompany/ai_co/src/api/main.py`
 🐍 `/home/aicompany/ai_co/src/api/auth.py`
@@ -54,14 +58,17 @@ ls -la /home/aicompany/ai_co/src/api/main.py /home/aicompany/ai_co/src/api/auth.
 # Run if executable
 chmod +x /home/aicompany/ai_co/scripts/start_api.sh && /home/aicompany/ai_co/scripts/start_api.sh
 ```
-""")
+"""
+    )
+
 
 def preview_error_notification():
     """エラー通知のプレビュー"""
     print("\n" + "=" * 60)
     print("ERROR NOTIFICATION PREVIEW")
     print("=" * 60)
-    print("""
+    print(
+        """
 ❌ **Task Failed: general_20250702_143512**
 Type: `general` | Status: `failed`
 
@@ -88,14 +95,17 @@ ai-retry general_20250702_143512
 # Check DLQ
 ai-dlq show general_20250702_143512
 ```
-""")
+"""
+    )
+
 
 def preview_hourly_report():
     """時間別レポートのプレビュー"""
     print("\n" + "=" * 60)
     print("HOURLY REPORT PREVIEW")
     print("=" * 60)
-    print("""
+    print(
+        """
 📊 **Hourly Performance Report**
 Period: 2025-07-02 18:00
 
@@ -104,14 +114,17 @@ Period: 2025-07-02 18:00
 • Failed Tasks: `2`
 • Average Duration: `3.82s`
 • Total Processing Time: `179.5s`
-""")
+"""
+    )
+
 
 def preview_dialog_completion():
     """対話型タスク完了のプレビュー"""
     print("\n" + "=" * 60)
     print("DIALOG TASK COMPLETION PREVIEW")
     print("=" * 60)
-    print("""
+    print(
+        """
 💬 **Task Completed: dialog_20250702_144023**
 Type: `dialog` | Duration: `12.34s` | Files: `3`
 
@@ -131,14 +144,17 @@ cat /home/aicompany/ai_co/output/dialog_20250702_144023/architecture.md
 # Check logs
 ai-logs dialog_20250702_144023
 ```
-""")
+"""
+    )
+
 
 def preview_template_execution():
     """テンプレート実行完了のプレビュー"""
     print("\n" + "=" * 60)
     print("TEMPLATE EXECUTION PREVIEW")
     print("=" * 60)
-    print("""
+    print(
+        """
 📝 **Task Completed: template_daily_report_20250702_150000**
 Type: `template` | Duration: `2.15s` | Files: `1`
 
@@ -158,22 +174,25 @@ cat /home/aicompany/ai_co/reports/daily_report_20250702.md
 # Check logs
 ai-logs template_daily_report_20250702_150000
 ```
-""")
+"""
+    )
+
 
 if __name__ == "__main__":
     print("\n🚀 Elders Guild v5.0 - Result Worker Slack Notification Preview\n")
-    
+
     # 各種通知のプレビュー
     preview_success_notification()
     preview_error_notification()
     preview_dialog_completion()
     preview_template_execution()
     preview_hourly_report()
-    
+
     print("\n" + "=" * 60)
     print("SUMMARY")
     print("=" * 60)
-    print("""
+    print(
+        """
 新しいSlack通知の特徴:
 ✅ プロフェッショナルなデータ中心のフォーマット
 ✅ 測定可能な指標（Duration, Success Rate, Files）
@@ -182,4 +201,5 @@ if __name__ == "__main__":
 ✅ タスクタイプ別の最適化
 ✅ 控えめな絵文字使用（システム状態のみ）
 ✅ 1時間ごとのパフォーマンスレポート
-""")
+"""
+    )

@@ -10,9 +10,10 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from libs.ai_command_helper import AICommandHelper
 
+
 def execute_implementation():
     helper = AICommandHelper()
-    
+
     # 実装コマンド
     implementation_command = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -75,7 +76,7 @@ try:
 
 📋 追加されたタスクタイプ:
 • test - テスト作成・実行
-• fix - バグ修正・問題解決  
+• fix - バグ修正・問題解決
 • deploy - デプロイ・リリース
 • review - コードレビュー
 • docs - ドキュメント生成
@@ -100,26 +101,27 @@ except Exception as e:
 echo ""
 echo "🎉 実装プロセス完了！"
 """
-    
+
     # コマンドを作成
     result = helper.create_bash_command(implementation_command, "execute_ai_send_impl")
     print(f"✅ 実装コマンドを作成しました: {result}")
     print("⏳ 6秒後に自動実行されます...")
-    
+
     # 結果確認コマンドも作成
     import time
+
     time.sleep(20)  # 実装完了を待つ
-    
+
     check_command = """#!/bin/bash
 cd /home/aicompany/ai_co
 echo "📊 ai-send拡張実装結果の確認"
 echo "============================"
 python3 check_ai_send_final_results.py
 """
-    
+
     helper.create_bash_command(check_command, "check_impl_result")
     print("\n✅ 結果確認コマンドも作成しました")
-    
+
     # 実行結果を待って確認
     time.sleep(10)
     try:
@@ -130,6 +132,7 @@ python3 check_ai_send_final_results.py
             print(f"  - Status: {result.get('status', 'N/A')}")
     except Exception as e:
         print(f"⚠️ 結果確認エラー: {e}")
+
 
 if __name__ == "__main__":
     execute_implementation()

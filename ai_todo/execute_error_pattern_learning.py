@@ -1,8 +1,8 @@
-import re
-from pathlib import Path
-from collections import Counter
 import json
+import re
+from collections import Counter
 from datetime import datetime
+from pathlib import Path
 
 log_dir = Path("/home/aicompany/ai_co/logs")
 error_patterns = Counter()
@@ -10,9 +10,9 @@ error_patterns = Counter()
 # 最近のログファイルからエラーを抽出
 for log_file in sorted(log_dir.glob("*.log"), key=lambda x: x.stat().st_mtime)[-10:]:
     try:
-        with open(log_file, 'r', errors='ignore') as f:
+        with open(log_file, "r", errors="ignore") as f:
             content = f.read()
-            errors = re.findall(r'ERROR.*?(?=\n|$)', content)
+            errors = re.findall(r"ERROR.*?(?=\n|$)", content)
             for error in errors:
                 # エラータイプを抽出
                 if "ModuleNotFoundError" in error:
@@ -38,10 +38,10 @@ learning_entry = {
     "timestamp": datetime.now().isoformat(),
     "type": "error_analysis",
     "patterns": dict(error_patterns),
-    "recommendation": "Most common errors should be auto-fixed"
+    "recommendation": "Most common errors should be auto-fixed",
 }
 
 with open(kb_dir / "error_patterns.jsonl", "a") as f:
     f.write(json.dumps(learning_entry) + "\n")
-    
+
 print(f"\n学習結果を {kb_dir}/error_patterns.jsonl に保存しました")

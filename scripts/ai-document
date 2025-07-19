@@ -4,8 +4,8 @@ AI Company 自動ドキュメント生成コマンド
 人間でも簡単に使える統合インターフェース
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # プロジェクトルートをパスに追加
@@ -18,8 +18,9 @@ if venv_python.exists() and sys.executable != str(venv_python):
     # 仮想環境のPythonで再実行
     os.execv(str(venv_python), [str(venv_python)] + sys.argv)
 
-from commands.ai_document import main
 import asyncio
+
+from commands.ai_document import main
 
 if __name__ == "__main__":
     asyncio.run(main())

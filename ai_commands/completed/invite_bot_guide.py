@@ -5,6 +5,7 @@ Slack Bot をチャンネルに招待する手順
 
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from libs.ai_command_helper import AICommandHelper
@@ -66,13 +67,13 @@ with open('/home/aicompany/ai_co/config/slack.conf', 'r') as f:
 
 if token and token.startswith('xoxb-'):
     headers = {'Authorization': f'Bearer {token}'}
-    
+
     # Bot情報取得
     response = requests.get(
         'https://slack.com/api/auth.test',
         headers=headers
     )
-    
+
     if response.status_code == 200:
         data = response.json()
         if data.get('ok'):
@@ -93,8 +94,7 @@ echo "   python3 ai_commands/pending/test_slack_channels.py"
 
 # コマンドを作成
 result = helper.create_bash_command(
-    content=invite_command,
-    command_id="slack_bot_invite_guide"
+    content=invite_command, command_id="slack_bot_invite_guide"
 )
 
 print("✅ Slack Bot招待ガイドを作成しました")

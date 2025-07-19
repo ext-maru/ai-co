@@ -47,7 +47,7 @@ class TaskWorker(BaseWorker):
         super().__init__(worker_type='task', worker_id=worker_id)
         self.config = get_config()
         # 固有の初期化のみ
-    
+
     def process_message(self, ch, method, properties, body):
         # メッセージ処理の実装
         pass
@@ -73,7 +73,7 @@ class SomeManager(BaseManager):
     def __init__(self):
         super().__init__("SomeManager")
         self.config = get_config()
-    
+
     def initialize(self) -> bool:
         # 初期化処理
         return True
@@ -84,7 +84,7 @@ class SomeManager(BaseManager):
 ### BaseWorker
 - ✅ RabbitMQ接続管理
 - ✅ ログ設定
-- ✅ シグナルハンドリング  
+- ✅ シグナルハンドリング
 - ✅ エラーハンドリング
 - ✅ キュー管理
 - ✅ ヘルスチェック

@@ -15,7 +15,7 @@ services:
     image: elders/grand-elder:latest
     depends_on:
       - claude-elder
-  
+
   claude-elder:
     image: elders/claude-elder:latest
     depends_on:
@@ -64,7 +64,7 @@ secrets:
     external: true
   database_password:
     external: true
-    
+
 services:
   knowledge-sage:
     secrets:

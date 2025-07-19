@@ -491,6 +491,6 @@ sudo apt install python3-psutil python3-pika python3-rich python3-tabulate
 
 ---
 
-**Elders Guild Master Knowledge Base v6.0**  
-最終更新: 2025-01-05  
+**Elders Guild Master Knowledge Base v6.0**
+最終更新: 2025-01-05
 統合・再編成版

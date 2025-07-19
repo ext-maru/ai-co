@@ -1,3 +1,8 @@
-from .incident_sage import IncidentSage, IncidentSeverity, IncidentStatus, IncidentCategory
+from .incident_sage import (
+    IncidentCategory,
+    IncidentSage,
+    IncidentSeverity,
+    IncidentStatus,
+)
 
-__all__ = ['IncidentSage', 'IncidentSeverity', 'IncidentStatus', 'IncidentCategory']
+__all__ = ["IncidentSage", "IncidentSeverity", "IncidentStatus", "IncidentCategory"]

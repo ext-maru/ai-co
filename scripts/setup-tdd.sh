@@ -109,12 +109,12 @@ from unittest.mock import Mock, patch
 
 class Test${FEATURE_NAME^}:
     """${FEATURE_NAME^}のテストクラス"""
-    
+
     def test_should_fail_initially(self):
         """最初は失敗するテスト（TDD: Red）"""
         # TODO: 実装前なので失敗する
         assert False, "実装してください"
-    
+
     # TODO: 追加のテストケースをここに記述
 EOT
 
@@ -154,41 +154,41 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
-    
+
     - name: Cache dependencies
       uses: actions/cache@v3
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/test-requirements.txt') }}
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
         pip install -r test-requirements.txt
-    
+
     - name: Run pre-commit
       run: pre-commit run --all-files
-    
+
     - name: Run tests with coverage
       run: |
         pytest tests/unit -v --cov=. --cov-report=xml --cov-report=term
-    
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
         file: ./coverage.xml
         fail_ci_if_error: true
-    
+
     - name: Generate coverage badge
       run: |
         coverage-badge -o coverage.svg -f
-    
+
     - name: Archive test results
       if: always()
       uses: actions/upload-artifact@v3

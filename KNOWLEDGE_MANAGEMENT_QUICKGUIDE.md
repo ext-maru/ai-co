@@ -29,7 +29,7 @@ shield → info
 
 ### 1. 統合ナレッジドキュメント
 - **場所**: `/home/aicompany/ai_co/knowledge_base/CONSOLIDATED_KNOWLEDGE/`
-- **内容**: 
+- **内容**:
   - プロジェクト統計（438ファイル、63,949行）
   - システムアーキテクチャ
   - 全ワーカー・マネージャーの詳細

@@ -8,31 +8,31 @@ TaskWorkerの Before/After 比較
 # BEFORE: 既存のログスタイル
 # ========================================
 
+
 class TaskWorkerOld:
     def process_message(self, ch, method, properties, body):
         """既存のログスタイル（誇張的）"""
         task = json.loads(body)
-        task_id = task.get('task_id')
-        
+        task_id = task.get("task_id")
+
         # 誇張的な開始ログ
         self.logger.info(f"🚀 革新的なAIタスク {task_id} を開始します！")
         self.logger.info(f"✨ 素晴らしい処理を実行中...")
-        
+
         try:
             # 処理
             self.logger.info(f"💡 天才的なアイデアで処理中！")
             result = self.execute_task(task)
-            
+
             # 誇張的な成功ログ
             self.logger.info(f"🎉 完璧に成功しました！")
             self.logger.info(f"🌟 {task_id} は究極の結果を達成！")
-            
+
             # Slack通知（誇張的）
             self.slack.send_message(
-                f"🚀✨ 革新的なタスク {task_id} が完璧に完了！🎉\n"
-                f"素晴らしい結果を生み出しました！💪"
+                f"🚀✨ 革新的なタスク {task_id} が完璧に完了！🎉\n" f"素晴らしい結果を生み出しました！💪"
             )
-            
+
         except Exception as e:
             # 誇張的なエラーログ
             self.logger.error(f"😱 大変！エラーが発生！💥")
@@ -47,73 +47,79 @@ from core import BaseWorker
 from core.improved_logging_mixin import ImprovedLoggingMixin
 from libs.improved_slack_notifier import ImprovedSlackNotifier
 
+
 class TaskWorkerNew(BaseWorker, ImprovedLoggingMixin):
     def __init__(self):
-        BaseWorker.__init__(self, worker_type='task')
+        BaseWorker.__init__(self, worker_type="task")
         ImprovedLoggingMixin.__init__(self)
         self.slack = ImprovedSlackNotifier()
-    
+
     def process_message(self, ch, method, properties, body):
         """改善されたログスタイル（客観的）"""
         task = json.loads(body)
-        task_id = task.get('task_id')
-        task_type = task.get('type', 'general')
-        
+        task_id = task.get("task_id")
+        task_type = task.get("type", "general")
+
         # 客観的な開始ログ
         self.log_task_start(task_id, task_type)
-        self.log_metric(task_id, 'queue_delay_ms', 
-                       int((time.time() - task.get('created_at', time.time())) * 1000))
-        
+        self.log_metric(
+            task_id,
+            "queue_delay_ms",
+            int((time.time() - task.get("created_at", time.time())) * 1000),
+        )
+
         try:
             # 処理の各段階を記録
             self.log_processing("executing", f"{task_type} task")
-            
+
             start_time = time.time()
             result = self.execute_task(task)
             execution_time = time.time() - start_time
-            
+
             # パフォーマンスデータ
             self.log_performance("task execution", execution_time)
-            
+
             # 結果のメトリクス
             if isinstance(result, dict):
-                self.log_metric(task_id, 'output_files', result.get('files_created', 0))
-                self.log_metric(task_id, 'output_size_bytes', result.get('total_size', 0))
-            
+                self.log_metric(task_id, "output_files", result.get("files_created", 0))
+                self.log_metric(
+                    task_id, "output_size_bytes", result.get("total_size", 0)
+                )
+
             # 客観的な完了ログ
             summary = f"Type: {task_type}, Duration: {execution_time:.2f}s"
-            if result.get('files_created'):
+            if result.get("files_created"):
                 summary += f", Files: {result['files_created']}"
-            
+
             self.log_task_complete(task_id, summary)
-            
+
             # Slack通知（データ中心）
             self.slack.send_task_notification(
                 task_id=task_id,
-                status='completed',
+                status="completed",
                 duration=execution_time,
                 details={
-                    'worker': self.worker_id,
-                    'type': task_type,
-                    'files_created': result.get('files_created', 0)
-                }
+                    "worker": self.worker_id,
+                    "type": task_type,
+                    "files_created": result.get("files_created", 0),
+                },
             )
-            
+
             ch.basic_ack(delivery_tag=method.delivery_tag)
-            
+
         except Exception as e:
             # 技術的なエラーログ
-            self.log_task_error(task_id, e, 
-                              context=f"{task_type} task execution",
-                              will_retry=True)
-            
+            self.log_task_error(
+                task_id, e, context=f"{task_type} task execution", will_retry=True
+            )
+
             # エラー通知（技術的詳細）
             self.slack.send_alert(
-                alert_type='task_failure',
+                alert_type="task_failure",
                 message=f"Task {task_id} failed: {type(e).__name__}: {str(e)}",
-                severity='error'
+                severity="error",
             )
-            
+
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
 

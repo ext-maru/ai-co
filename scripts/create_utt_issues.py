@@ -3,14 +3,15 @@
 統合タスクトラッカー(UTT)プロジェクトのGitHub Issue作成スクリプト
 """
 
+import json
 import os
 import sys
-import requests
-import json
 from datetime import datetime
 
+import requests
+
 # GitHubトークンを環境変数から取得
-GITHUB_TOKEN = os.getenv('GITHUB_TOKEN')
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 if not GITHUB_TOKEN:
     print("❌ Error: GITHUB_TOKEN environment variable not set")
     sys.exit(1)
@@ -24,29 +25,31 @@ API_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}"
 HEADERS = {
     "Authorization": f"token {GITHUB_TOKEN}",
     "Accept": "application/vnd.github.v3+json",
-    "User-Agent": "Claude-Elder-UTT"
+    "User-Agent": "Claude-Elder-UTT",
 }
+
 
 def create_issue(title, body, labels=None):
     """GitHub Issueを作成"""
-    issue_data = {
-        "title": title,
-        "body": body,
-        "labels": labels or []
-    }
-    
+    issue_data = {"title": title, "body": body, "labels": labels or []}
+
     response = requests.post(f"{API_BASE_URL}/issues", json=issue_data, headers=HEADERS)
-    
+
     if response.status_code == 201:
         return response.json()
     else:
-        raise Exception(f"Failed to create issue: {response.status_code} - {response.text}")
+        raise Exception(
+            f"Failed to create issue: {response.status_code} - {response.text}"
+        )
+
 
 def create_utt_issues():
     """統合タスクトラッカーのIssue構造を作成"""
-    
-    print(f"🏗️ Creating issues for Unified Task Tracker project in {REPO_OWNER}/{REPO_NAME}...")
-    
+
+    print(
+        f"🏗️ Creating issues for Unified Task Tracker project in {REPO_OWNER}/{REPO_NAME}..."
+    )
+
     # メインEpic Issue
     epic_title = "🏗️ [EPIC] 統合タスクトラッカーシステム実装 (UTT-2025-07)"
     epic_body = """## 🎯 概要
@@ -73,7 +76,7 @@ def create_utt_issues():
 
 ### Phase 1: 基盤構築（Week 1）
 - [ ] #ISSUE_1 データモデル設計・実装
-- [ ] #ISSUE_2 基本CRUD実装  
+- [ ] #ISSUE_2 基本CRUD実装
 - [ ] #ISSUE_3 テスト基盤構築
 
 ### Phase 2: 統合実装（Week 2）
@@ -106,20 +109,26 @@ def create_utt_issues():
 - project:utt
 - elders-guild
 """
-    
+
     # メインEpic作成
     try:
         epic = create_issue(
             title=epic_title,
             body=epic_body,
-            labels=['enhancement', 'epic', 'priority:high', 'project:utt', 'elders-guild']
+            labels=[
+                "enhancement",
+                "epic",
+                "priority:high",
+                "project:utt",
+                "elders-guild",
+            ],
         )
         print(f"✅ Created main Epic: #{epic['number']} - {epic_title}")
-        epic_number = epic['number']
+        epic_number = epic["number"]
     except Exception as e:
         print(f"❌ Failed to create Epic: {e}")
         return
-    
+
     # Sub Issues定義
     sub_issues = [
         # Phase 1: 基盤構築
@@ -149,7 +158,7 @@ def create_utt_issues():
 - Phase: 1 (基盤構築)
 """,
             "labels": ["enhancement", "phase:1", "priority:critical", "size:m"],
-            "milestone": "Phase 1: Foundation"
+            "milestone": "Phase 1: Foundation",
         },
         {
             "title": "🛠️ [UTT-P1-2] 基本CRUD実装",
@@ -180,7 +189,7 @@ def create_utt_issues():
 - 依存: データモデル設計
 """,
             "labels": ["enhancement", "phase:1", "priority:critical", "size:l"],
-            "milestone": "Phase 1: Foundation"
+            "milestone": "Phase 1: Foundation",
         },
         {
             "title": "🧪 [UTT-P1-3] テスト基盤構築",
@@ -209,7 +218,7 @@ def create_utt_issues():
 - Phase: 1 (基盤構築)
 """,
             "labels": ["test", "phase:1", "priority:high", "size:m"],
-            "milestone": "Phase 1: Foundation"
+            "milestone": "Phase 1: Foundation",
         },
         # Phase 2: 統合実装
         {
@@ -240,7 +249,7 @@ def create_utt_issues():
 - 依存: 基本CRUD実装
 """,
             "labels": ["enhancement", "phase:2", "priority:critical", "size:l"],
-            "milestone": "Phase 2: Integration"
+            "milestone": "Phase 2: Integration",
         },
         {
             "title": "🌊 [UTT-P2-2] Elder Flow統合",
@@ -269,7 +278,7 @@ Elder Flowワークフローエンジンとの統合
 - Phase: 2 (統合実装)
 """,
             "labels": ["enhancement", "phase:2", "priority:high", "size:l"],
-            "milestone": "Phase 2: Integration"
+            "milestone": "Phase 2: Integration",
         },
         {
             "title": "🤖 [UTT-P2-3] サーバント統合",
@@ -298,7 +307,7 @@ Elder Flowワークフローエンジンとの統合
 - Phase: 2 (統合実装)
 """,
             "labels": ["enhancement", "phase:2", "priority:medium", "size:m"],
-            "milestone": "Phase 2: Integration"
+            "milestone": "Phase 2: Integration",
         },
         # Phase 3: GitHub連携
         {
@@ -328,7 +337,7 @@ GitHub APIとの包括的な統合を実装
 - Phase: 3 (GitHub連携)
 """,
             "labels": ["enhancement", "phase:3", "priority:high", "size:l"],
-            "milestone": "Phase 3: GitHub Integration"
+            "milestone": "Phase 3: GitHub Integration",
         },
         {
             "title": "🔄 [UTT-P3-2] 同期メカニズム実装",
@@ -358,7 +367,7 @@ GitHub APIとの包括的な統合を実装
 - 依存: GitHub API統合
 """,
             "labels": ["enhancement", "phase:3", "priority:critical", "size:xl"],
-            "milestone": "Phase 3: GitHub Integration"
+            "milestone": "Phase 3: GitHub Integration",
         },
         {
             "title": "🪝 [UTT-P3-3] Webhook処理実装",
@@ -387,7 +396,7 @@ GitHub Webhookのリアルタイム処理を実装
 - Phase: 3 (GitHub連携)
 """,
             "labels": ["enhancement", "phase:3", "priority:medium", "size:m"],
-            "milestone": "Phase 3: GitHub Integration"
+            "milestone": "Phase 3: GitHub Integration",
         },
         # Phase 4: UI/UX・最適化
         {
@@ -417,7 +426,7 @@ GitHub Webhookのリアルタイム処理を実装
 - Phase: 4 (UI/UX・最適化)
 """,
             "labels": ["enhancement", "phase:4", "priority:high", "size:l"],
-            "milestone": "Phase 4: UI/UX & Optimization"
+            "milestone": "Phase 4: UI/UX & Optimization",
         },
         {
             "title": "📊 [UTT-P4-2] ダッシュボード実装",
@@ -446,7 +455,7 @@ Webベースの統合ダッシュボード実装
 - Phase: 4 (UI/UX・最適化)
 """,
             "labels": ["enhancement", "phase:4", "priority:medium", "size:xl"],
-            "milestone": "Phase 4: UI/UX & Optimization"
+            "milestone": "Phase 4: UI/UX & Optimization",
         },
         {
             "title": "⚡ [UTT-P4-3] パフォーマンス最適化",
@@ -475,10 +484,10 @@ Webベースの統合ダッシュボード実装
 - Phase: 4 (UI/UX・最適化)
 """,
             "labels": ["performance", "phase:4", "priority:high", "size:l"],
-            "milestone": "Phase 4: UI/UX & Optimization"
-        }
+            "milestone": "Phase 4: UI/UX & Optimization",
+        },
     ]
-    
+
     # Sub Issues作成
     created_issues = []
     for idx, issue_data in enumerate(sub_issues, 1):
@@ -486,39 +495,50 @@ Webベースの統合ダッシュボード実装
             sub_issue = create_issue(
                 title=issue_data["title"],
                 body=issue_data["body"].replace(f"#{epic_number}", f"#{epic_number}"),
-                labels=issue_data["labels"]
+                labels=issue_data["labels"],
             )
             created_issues.append(sub_issue)
-            print(f"✅ Created Sub Issue {idx}/12: #{sub_issue['number']} - {issue_data['title']}")
+            print(
+                f"✅ Created Sub Issue {idx}/12: #{sub_issue['number']} - {issue_data['title']}"
+            )
         except Exception as e:
             print(f"❌ Failed to create Sub Issue {idx}: {e}")
-    
+
     # Epic Issueの本文を更新（実際のIssue番号で）
     if created_issues:
         updated_body = epic_body
         for idx, issue in enumerate(created_issues):
-            updated_body = updated_body.replace(f"#ISSUE_{idx+1}", f"#{issue['number']}")
-        
+            updated_body = updated_body.replace(
+                f"#ISSUE_{idx+1}", f"#{issue['number']}"
+            )
+
         try:
             update_data = {"body": updated_body}
-            response = requests.patch(f"{API_BASE_URL}/issues/{epic_number}", json=update_data, headers=HEADERS)
+            response = requests.patch(
+                f"{API_BASE_URL}/issues/{epic_number}",
+                json=update_data,
+                headers=HEADERS,
+            )
             if response.status_code == 200:
                 print(f"✅ Updated Epic with actual Sub Issue numbers")
             else:
-                print(f"❌ Failed to update Epic: {response.status_code} - {response.text}")
+                print(
+                    f"❌ Failed to update Epic: {response.status_code} - {response.text}"
+                )
         except Exception as e:
             print(f"❌ Failed to update Epic: {e}")
-    
+
     print(f"\n🎉 Successfully created {len(created_issues) + 1} issues for UTT project!")
     print(f"📊 Epic Issue: #{epic_number}")
     print(f"📋 Sub Issues: {', '.join([f'#{i['number']}' for i in created_issues])}")
-    
+
     # サマリー
     print("\n📊 Project Summary:")
     print(f"- Total Issues: {len(created_issues) + 1}")
     print(f"- Phases: 4")
     print(f"- Estimated Duration: 4 weeks")
     print(f"- Priority: High/Critical")
+
 
 if __name__ == "__main__":
     create_utt_issues()

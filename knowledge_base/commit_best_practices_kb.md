@@ -32,7 +32,7 @@ Elders Guildのコミットメッセージシステムは、Conventional Commits
 #### 1. CommitMessageGenerator
 - **場所**: `libs/commit_message_generator.py`
 - **機能**: 変更内容を分析してコミットメッセージを生成
-- **特徴**: 
+- **特徴**:
   - ファイルタイプとパスから適切なtype/scopeを決定
   - 複数ファイルの変更を要約
   - 詳細な説明とブレットポイントを自動生成
@@ -104,16 +104,16 @@ ai-git analyze
 # 出力例:
 # 📊 変更分析レポート
 # ==================
-# 
+#
 # 変更ファイル数: 3
-# 
+#
 # タイプ別:
 # - Python files: 2
 # - Config files: 1
-# 
+#
 # 推定変更タイプ: feat
 # 推定スコープ: workers
-# 
+#
 # 主な変更:
 # 1. workers/notification_worker.py (新規作成)
 # 2. config/notification.json (新規作成)
@@ -139,7 +139,7 @@ ai-git best-practices
 # 出力:
 # 📋 コミットメッセージ ベストプラクティス
 # =====================================
-# 
+#
 # 1. タイプを正しく選択:
 #    - feat: 新機能
 #    - fix: バグ修正

@@ -1,8 +1,8 @@
 # 🏛️ Elder Council 緊急招集手順
 
-**文書番号**: EC-ESP-001  
-**最終更新**: 2025年7月10日  
-**権限レベル**: ELDER ONLY  
+**文書番号**: EC-ESP-001
+**最終更新**: 2025年7月10日
+**権限レベル**: ELDER ONLY
 **機密度**: HIGH
 
 ---
@@ -52,7 +52,7 @@ from typing import Dict, List, Optional
 
 class ElderCouncilEmergencySummon:
     """Elder Council緊急招集システム"""
-    
+
     def __init__(self):
         self.council_members = {
             "grand_elder": {
@@ -80,22 +80,22 @@ class ElderCouncilEmergencySummon:
                 "response_time_limit": 300  # 5分
             }
         }
-        
+
         self.summon_templates = {
             "DISASTER": self._disaster_template,
             "CRITICAL": self._critical_template,
             "STRATEGIC": self._strategic_template
         }
-    
-    async def emergency_summon(self, 
-                             incident_level: str, 
+
+    async def emergency_summon(self,
+                             incident_level: str,
                              incident_data: Dict,
                              requester: Optional[str] = None) -> Dict:
         """緊急招集実行"""
-        
+
         summon_id = self._generate_summon_id()
         summon_time = datetime.now()
-        
+
         # 招集記録作成
         summon_record = {
             "id": summon_id,
@@ -105,23 +105,23 @@ class ElderCouncilEmergencySummon:
             "requester": requester or "SYSTEM_AUTO",
             "status": "INITIATING"
         }
-        
+
         # 並列通知実行
         notification_tasks = []
         for member_key, member_info in self.council_members.items():
             if self._should_notify_member(incident_level, member_key):
                 task = self._notify_member(member_info, incident_level, incident_data, summon_id)
                 notification_tasks.append(task)
-        
+
         # 全通知を並列実行
         notification_results = await asyncio.gather(*notification_tasks, return_exceptions=True)
-        
+
         # 会議室準備
         meeting_info = await self._prepare_emergency_meeting(summon_id, incident_level)
-        
+
         # 自動対応開始
         auto_actions = await self._execute_auto_actions(incident_level, incident_data)
-        
+
         # 招集結果集計
         summon_record.update({
             "status": "SUMMONED",
@@ -130,19 +130,19 @@ class ElderCouncilEmergencySummon:
             "auto_actions": auto_actions,
             "completion_time": datetime.now()
         })
-        
+
         # 招集記録保存
         await self._save_summon_record(summon_record)
-        
+
         return summon_record
-    
-    async def _notify_member(self, member_info: Dict, level: str, 
+
+    async def _notify_member(self, member_info: Dict, level: str,
                            incident_data: Dict, summon_id: str) -> Dict:
         """個別メンバーへの通知"""
-        
+
         notification_content = self.summon_templates[level](incident_data, summon_id)
         results = []
-        
+
         for channel in member_info["channels"]:
             try:
                 result = await self._send_notification(
@@ -163,12 +163,12 @@ class ElderCouncilEmergencySummon:
                     "error": str(e),
                     "timestamp": datetime.now()
                 })
-        
+
         return {
             "member": member_info["name"],
             "results": results
         }
-    
+
     def _disaster_template(self, incident_data: Dict, summon_id: str) -> Dict:
         """災害級招集テンプレート"""
         return {
@@ -201,10 +201,10 @@ Grand Elder maruの承認が必要です。
                 "emergency_measures"
             ]
         }
-    
+
     async def _prepare_emergency_meeting(self, summon_id: str, level: str) -> Dict:
         """緊急会議室の準備"""
-        
+
         meeting_config = {
             "id": f"emergency_{summon_id}",
             "type": "elder_council_emergency",
@@ -216,25 +216,25 @@ Grand Elder maruの承認が必要です。
                 "secure_channel": True
             }
         }
-        
+
         # 仮想会議室作成（実装では実際のAPI呼び出し）
         meeting_url = f"https://eldercouncil.aicompany/emergency/{summon_id}"
-        
+
         # 会議資料自動準備
         meeting_materials = await self._prepare_meeting_materials(level)
-        
+
         return {
             "url": meeting_url,
             "config": meeting_config,
             "materials": meeting_materials,
             "status": "ready"
         }
-    
+
     async def _execute_auto_actions(self, level: str, incident_data: Dict) -> List[Dict]:
         """レベルに応じた自動対応実行"""
-        
+
         auto_actions = []
-        
+
         if level == "DISASTER":
             # 災害級自動対応
             actions = [
@@ -243,9 +243,9 @@ Grand Elder maruの承認が必要です。
                 self._redirect_traffic(),
                 self._start_emergency_backup()
             ]
-            
+
             results = await asyncio.gather(*actions, return_exceptions=True)
-            
+
             for idx, result in enumerate(results):
                 auto_actions.append({
                     "action": actions[idx].__name__,
@@ -253,7 +253,7 @@ Grand Elder maruの承認が必要です。
                     "result": str(result) if isinstance(result, Exception) else result,
                     "timestamp": datetime.now()
                 })
-        
+
         elif level == "CRITICAL":
             # Critical級自動対応
             actions = [
@@ -261,9 +261,9 @@ Grand Elder maruの承認が必要です。
                 self._activate_degraded_mode(),
                 self._enhance_monitoring()
             ]
-            
+
             results = await asyncio.gather(*actions, return_exceptions=True)
-            
+
             for idx, result in enumerate(results):
                 auto_actions.append({
                     "action": actions[idx].__name__,
@@ -271,7 +271,7 @@ Grand Elder maruの承認が必要です。
                     "result": str(result) if isinstance(result, Exception) else result,
                     "timestamp": datetime.now()
                 })
-        
+
         return auto_actions
 ```
 
@@ -289,7 +289,7 @@ notification_channels:
       - instant_delivery
       - acknowledgment_required
       - fallback_to_email
-  
+
   direct_message:
     type: "messaging"
     priority: "high"
@@ -298,7 +298,7 @@ notification_channels:
       - slack
       - teams
       - internal_chat
-  
+
   email:
     type: "email"
     priority: "high"
@@ -307,7 +307,7 @@ notification_channels:
       smtp_server: "smtp.aicompany.local"
       port: 587
       encryption: "TLS"
-  
+
   sms:
     type: "sms"
     priority: "critical"
@@ -316,7 +316,7 @@ notification_channels:
       account_sid: "${TWILIO_ACCOUNT_SID}"
       auth_token: "${TWILIO_AUTH_TOKEN}"
       from_number: "+1234567890"
-  
+
   council_channel:
     type: "group"
     priority: "high"
@@ -324,7 +324,7 @@ notification_channels:
     recipients:
       - elder_council_members
       - elder_servants_leads
-  
+
   sages_integration:
     type: "api"
     priority: "high"
@@ -343,10 +343,10 @@ notification_channels:
 
 class EmergencySituationAssessment:
     """緊急時状況把握"""
-    
+
     async def rapid_assessment(self, incident_data: Dict) -> Dict:
         """迅速な状況評価"""
-        
+
         assessment_tasks = [
             self._system_health_snapshot(),
             self._impact_analysis(),
@@ -354,9 +354,9 @@ class EmergencySituationAssessment:
             self._risk_evaluation(),
             self._resource_availability()
         ]
-        
+
         results = await asyncio.gather(*assessment_tasks)
-        
+
         return {
             "summary": self._generate_executive_summary(results),
             "details": {
@@ -378,38 +378,38 @@ class EmergencySituationAssessment:
 
 decision_matrix:
   disaster_level:
-    required_quorum: 
+    required_quorum:
       - grand_elder
       - claude_elder
       - elder_council_majority
-    
+
     decision_points:
       - system_shutdown:
           authority: "grand_elder"
           consultation: "claude_elder"
           timeout: 60
-      
+
       - data_recovery_mode:
           authority: "claude_elder"
           approval: "grand_elder"
           timeout: 120
-      
+
       - external_communication:
           authority: "grand_elder"
           support: "elder_council"
           timeout: 180
-  
+
   critical_level:
     required_quorum:
       - claude_elder
       - elder_council_majority
-    
+
     decision_points:
       - service_isolation:
           authority: "claude_elder"
           consultation: "four_sages"
           timeout: 300
-      
+
       - resource_reallocation:
           authority: "elder_council"
           approval: "claude_elder"
@@ -434,13 +434,13 @@ decision_recording:
 
 class EmergencyExecutionApproval:
     """緊急実行承認プロセス"""
-    
-    async def request_approval(self, 
+
+    async def request_approval(self,
                               decision: Dict,
                               authority: str,
                               timeout: int = 300) -> Dict:
         """実行承認要求"""
-        
+
         approval_request = {
             "id": self._generate_approval_id(),
             "decision": decision,
@@ -449,23 +449,23 @@ class EmergencyExecutionApproval:
             "timestamp": datetime.now(),
             "timeout": timeout
         }
-        
+
         # 承認者への通知
         notification_result = await self._notify_approver(authority, approval_request)
-        
+
         # 承認待機（タイムアウト付き）
         try:
             approval_result = await asyncio.wait_for(
                 self._wait_for_approval(approval_request["id"]),
                 timeout=timeout
             )
-            
+
             return {
                 "status": "approved",
                 "approval": approval_result,
                 "execution_authorized": True
             }
-            
+
         except asyncio.TimeoutError:
             # タイムアウト時の自動エスカレーション
             return await self._escalate_approval(approval_request)
@@ -490,12 +490,12 @@ class EmergencyCouncilDashboard {
             systemHealth: {}
         };
     }
-    
+
     updateSummonStatus(status) {
         this.metrics.summonStatus = status;
         this.broadcastUpdate('summon_status', status);
     }
-    
+
     trackMemberResponse(member, response) {
         this.metrics.memberResponses[member] = {
             status: response.status,
@@ -504,7 +504,7 @@ class EmergencyCouncilDashboard {
         };
         this.checkQuorum();
     }
-    
+
     recordDecision(decision) {
         this.metrics.decisionProgress.push({
             id: decision.id,
@@ -525,12 +525,12 @@ class EmergencyCouncilDashboard {
 
 class PostEmergencyAnalysis:
     """緊急対応後の分析"""
-    
+
     def generate_council_report(self, summon_id: str) -> Dict:
         """Elder Council対応報告書生成"""
-        
+
         summon_data = self.load_summon_record(summon_id)
-        
+
         report = {
             "executive_summary": self._generate_summary(summon_data),
             "timeline": self._reconstruct_timeline(summon_data),
@@ -539,10 +539,10 @@ class PostEmergencyAnalysis:
             "lessons_learned": self._extract_lessons(summon_data),
             "improvements": self._recommend_improvements(summon_data)
         }
-        
+
         # 知識ベースへの自動登録
         self._update_knowledge_base(report)
-        
+
         return report
 ```
 
@@ -566,24 +566,24 @@ class PostEmergencyAnalysis:
 
 class EmergencyAuthentication:
     """緊急時認証システム"""
-    
+
     def verify_elder_identity(self, elder_id: str, emergency_token: str) -> bool:
         """Elder身元確認"""
-        
+
         # 多要素認証
         factors = [
             self._verify_system_token(elder_id, emergency_token),
             self._verify_behavior_pattern(elder_id),
             self._verify_emergency_passphrase(elder_id)
         ]
-        
+
         # 2/3の要素が成功で認証
         return sum(factors) >= 2
 ```
 
 ---
 
-**承認**: Grand Elder maru  
-**文書番号**: EC-ESP-001  
-**機密保持期限**: 無期限  
+**承認**: Grand Elder maru
+**文書番号**: EC-ESP-001
+**機密保持期限**: 無期限
 **アクセス制限**: Elder Level以上

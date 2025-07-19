@@ -17,7 +17,7 @@ if [ -d ai_commands/logs ]; then
     ls -t ai_commands/logs/*.log 2>/dev/null | head -5 | while read log; do
         echo "  - $(basename $log)"
     done
-    
+
     # ai_send関連のログを探す
     echo ""
     echo "🔍 ai-send関連のログ:"

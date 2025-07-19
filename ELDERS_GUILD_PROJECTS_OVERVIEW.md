@@ -1,7 +1,7 @@
 # エルダーズギルド プロジェクトポートフォリオ一覧
 
-**更新日**: 2025年7月10日  
-**管理者**: クロードエルダー  
+**更新日**: 2025年7月10日
+**管理者**: クロードエルダー
 **承認**: グランドエルダーmaru
 
 ---
@@ -10,7 +10,7 @@
 
 ### **🌟 メインプロジェクト (ポート9000-9008)**
 
-#### **1. 🏰 Elders Guild Web System** 
+#### **1. 🏰 Elders Guild Web System**
 - **場所**: `projects/elders-guild-web/`
 - **技術**: Next.js 14 (Frontend) + FastAPI (Backend)
 - **ポート**: 9003 (Frontend), 9004 (Backend)
@@ -100,7 +100,7 @@
 ```yaml
 9000: Projects Gateway (Nginx)
 9001: Projects Dashboard (Grafana)
-9002: Projects Monitor (Prometheus) 
+9002: Projects Monitor (Prometheus)
 9003: Elders Guild Web Frontend (Next.js)
 9004: Elders Guild Web Backend (FastAPI)
 9005: Frontend Project Manager (Next.js) ✅

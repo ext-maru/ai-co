@@ -48,15 +48,15 @@ sys.path.append('$PROJECT_DIR')
 
 try:
     from libs.claude_client_with_rotation import ClaudeClientWithRotation
-    
+
     client = ClaudeClientWithRotation('$PROJECT_DIR/config/config.json')
-    
+
     print(f'🏥 API Health Check - {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}')
     print('=' * 60)
-    
+
     # ヘルスチェック実行
     health_result = client.health_check()
-    
+
     # クライアント統計
     stats = health_result['client_stats']
     print(f'📊 Client Statistics:')
@@ -65,7 +65,7 @@ try:
     print(f'   Failed: {stats[\"failed_requests\"]}')
     print(f'   Success Rate: {stats[\"success_rate\"]:.1f}%')
     print()
-    
+
     # API Key Status
     api_status = stats['api_key_status']
     print(f'🔑 API Key Manager Status:')
@@ -74,21 +74,21 @@ try:
     print(f'   Rotation Enabled: {api_status[\"rotation_enabled\"]}')
     print(f'   Strategy: {api_status[\"strategy\"]}')
     print()
-    
+
     # 個別キー健康状態
     api_health = health_result['api_key_health']
     print(f'💊 Individual Key Health:')
-    
+
     for key_alias, health in api_health.items():
         status_emoji = {'healthy': '✅', 'unhealthy': '❌'}
         emoji = status_emoji.get(health['status'], '❓')
         print(f'   {emoji} {key_alias}: {health[\"status\"]}')
-        
+
         if health['status'] == 'unhealthy':
             print(f'      Error: {health[\"error\"]}')
-    
+
     print()
-    
+
     # 推奨アクション
     if api_status['active_keys'] == 0:
         print('⚠️  WARNING: No active API keys available!')
@@ -113,7 +113,7 @@ if [[ "$WATCH_MODE" == "true" ]]; then
     echo "🔄 Continuous health monitoring (Ctrl+C to stop)"
     echo "📊 Update interval: ${INTERVAL} seconds"
     echo ""
-    
+
     while true; do
         run_health_check
         echo ""

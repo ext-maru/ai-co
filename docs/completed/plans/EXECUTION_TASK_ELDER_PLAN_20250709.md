@@ -7,7 +7,7 @@
 # 1. 残存エラー修正
 python3 fix_remaining_errors.py
 
-# 2. 基本モジュールカバレッジ向上  
+# 2. 基本モジュールカバレッジ向上
 python3 -m pytest tests/unit/core/ --cov=core --cov-report=term
 
 # 3. 自動テスト生成開始

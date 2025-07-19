@@ -1,9 +1,9 @@
 # 🏛️ エルダー会議議題提案書
 
-**会議ID**: council_20250707_013800_incident_knights  
-**提案者**: Claude Code Instance  
-**議題**: インシデント騎士団システムの創設と実装  
-**緊急度**: HIGH - 戦略的システム進化  
+**会議ID**: council_20250707_013800_incident_knights
+**提案者**: Claude Code Instance
+**議題**: インシデント騎士団システムの創設と実装
+**緊急度**: HIGH - 戦略的システム進化
 **提案日時**: 2025年07月07日 01:38:00
 
 ---
@@ -64,22 +64,22 @@ Elders Guildの自律性を次のレベルへ引き上げるため、インシ�
 ```python
 class KnightsPMIntegration:
     """騎士団とPMシステムの連携"""
-    
+
     async def coordinate_with_pm(self):
         """PMと騎士団の協調動作"""
-        
+
         # 1. タスク優先順位の共有
         priorities = await self.pm_worker.get_current_priorities()
         await self.knights_command.adjust_patrol_focus(priorities)
-        
+
         # 2. リソース配分の最適化
         available_resources = await self.pm_worker.get_resource_status()
         knight_allocation = self.calculate_optimal_knights(available_resources)
-        
+
         # 3. 進捗レポートの統合
         knight_activities = await self.get_knight_activities()
         await self.pm_worker.update_project_status(knight_activities)
-        
+
         # 4. 予防保守スケジューリング
         maintenance_windows = await self.pm_worker.get_maintenance_slots()
         await self.schedule_preventive_actions(maintenance_windows)
@@ -214,6 +214,6 @@ gantt
 
 ---
 
-**提案者**: Claude Code Instance  
-**協力**: 4賢者システム  
+**提案者**: Claude Code Instance
+**協力**: 4賢者システム
 **提出日時**: 2025年07月07日 01:38:00

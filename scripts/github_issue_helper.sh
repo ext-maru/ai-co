@@ -60,13 +60,13 @@ view_comments() {
 create_sub_issue() {
     local master_id=$1
     local title=$2
-    
+
     echo -e "${GREEN}📝 Sub Issue作成中...${NC}"
-    
+
     # 4賢者システムの担当を判定
     local sage_type=""
     local sage_emoji=""
-    
+
     if [[ "$title" =~ "Knowledge"||"知識"||"ナレッジ" ]]; then
         sage_type="knowledge-sage"
         sage_emoji="📚"
@@ -80,7 +80,7 @@ create_sub_issue() {
         sage_type="rag-sage"
         sage_emoji="🔍"
     fi
-    
+
     # Sub Issue作成
     gh issue create \
         --title "$title" \
@@ -112,9 +112,9 @@ Master Issue #${master_id} のサブタスク実装
 # Sub Issue完了
 close_sub_issue() {
     local issue_number=$1
-    
+
     echo -e "${GREEN}✅ Sub Issue #${issue_number} 完了処理中...${NC}"
-    
+
     gh issue close "$issue_number" --comment "✅ **Sub Issue完了**
 
 ## 📊 最終結果
@@ -129,18 +129,18 @@ Sub Issue完了により、Master Issueの進捗が更新されました。
 # Master Issue進捗更新
 update_master_progress() {
     local master_id=$1
-    
+
     echo -e "${YELLOW}📊 Master Issue #${master_id} 進捗更新中...${NC}"
-    
+
     # 関連Sub Issueの状態を取得
     local total_subs=$(gh issue list --label "sub-issue" --json number,state | jq length)
     local completed_subs=$(gh issue list --label "sub-issue" --state closed --json number | jq length)
-    
+
     local progress=0
     if [ "$total_subs" -gt 0 ]; then
         progress=$((completed_subs * 100 / total_subs))
     fi
-    
+
     # Master Issueに進捗コメント追加
     gh issue comment "$master_id" --body "📊 **自動進捗更新**
 
@@ -158,16 +158,16 @@ $(date '+%Y-%m-%d %H:%M:%S')
 # 4賢者システム状態確認
 sage_status() {
     echo -e "${PURPLE}🧙‍♂️ 4賢者システム状態確認${NC}"
-    
+
     echo -e "${BLUE}📚 Knowledge Sage:${NC}"
     gh issue list --label "knowledge-sage" --json number,title,state
-    
+
     echo -e "${BLUE}📋 Task Sage:${NC}"
     gh issue list --label "task-sage" --json number,title,state
-    
+
     echo -e "${BLUE}🚨 Incident Sage:${NC}"
     gh issue list --label "incident-sage" --json number,title,state
-    
+
     echo -e "${BLUE}🔍 RAG Sage:${NC}"
     gh issue list --label "rag-sage" --json number,title,state
 }

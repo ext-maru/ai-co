@@ -31,17 +31,17 @@ export PYTHONPATH="$PROJECT_ROOT:$PYTHONPATH"
 # Function to setup git hooks
 setup_hooks() {
     echo -e "${YELLOW}🔧 Setting up Git hooks for quality checks...${NC}"
-    
+
     # Get git directory
     GIT_DIR=$(git rev-parse --git-dir 2>/dev/null)
     if [ -z "$GIT_DIR" ]; then
         echo -e "${RED}❌ Not in a git repository${NC}"
         return 1
     fi
-    
+
     # Create hooks directory if it doesn't exist
     mkdir -p "$GIT_DIR/hooks"
-    
+
     # Create pre-commit hook
     cat > "$GIT_DIR/hooks/pre-commit" << 'EOF'
 #!/bin/bash
@@ -88,7 +88,7 @@ fi
 echo "✅ All quality checks passed!"
 exit 0
 EOF
-    
+
     chmod +x "$GIT_DIR/hooks/pre-commit"
     echo -e "${GREEN}✅ Git hooks installed${NC}"
 }
@@ -112,16 +112,16 @@ try:
 except KeyboardInterrupt:
     pass
 " &
-    
+
     MONITOR_PID=$!
-    
+
     # Run aider with all arguments
     aider "$@"
     AIDER_EXIT=$?
-    
+
     # Stop monitor
     kill $MONITOR_PID 2>/dev/null
-    
+
     return $AIDER_EXIT
 }
 
@@ -170,7 +170,7 @@ if [ "$QUALITY_MODE" = true ]; then
     echo -e "${YELLOW}📊 Running in Elder Quality Mode${NC}"
     export AIDER_EDITOR_MODEL="claude-3-5-sonnet-20241022"
     export AIDER_EDITOR_EDIT_FORMAT="diff"
-    
+
     # Add quality prompt
     QUALITY_PROMPT="Always ensure code meets these Iron Will standards:
 - Test coverage must be above 80%
@@ -179,7 +179,7 @@ if [ "$QUALITY_MODE" = true ]; then
 - Include proper error handling
 - Add comprehensive docstrings/comments
 "
-    
+
     # Run with quality prompt
     echo "$QUALITY_PROMPT" | run_with_monitoring "${AIDER_ARGS[@]}"
 else

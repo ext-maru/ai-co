@@ -69,22 +69,22 @@ def test_<action>_<expected>(): # 例: def test_process_message_success():
 ```python
 class TestWorker:
     """すべてのワーカーが実装すべきテスト"""
-    
+
     def test_initialization(self):
         """初期化が正常に完了すること"""
-        
+
     def test_rabbitmq_connection(self):
         """RabbitMQ接続が確立できること"""
-        
+
     def test_process_message_success(self):
         """正常なメッセージを処理できること"""
-        
+
     def test_process_message_invalid_json(self):
         """不正なJSONを適切に処理すること"""
-        
+
     def test_error_handling(self):
         """エラーが適切にハンドリングされること"""
-        
+
     def test_graceful_shutdown(self):
         """グレースフルシャットダウンが動作すること"""
 ```
@@ -94,16 +94,16 @@ class TestWorker:
 ```python
 class TestManager:
     """すべてのマネージャーが実装すべきテスト"""
-    
+
     def test_initialization(self):
         """初期化が正常に完了すること"""
-        
+
     def test_configuration_loading(self):
         """設定が正しく読み込まれること"""
-        
+
     def test_main_functionality(self):
         """主要機能が動作すること"""
-        
+
     def test_error_recovery(self):
         """エラーからの復旧が可能なこと"""
 ```
@@ -113,13 +113,13 @@ class TestManager:
 ```python
 class TestIntegration:
     """ワーカー間の連携テスト"""
-    
+
     def test_task_to_pm_flow(self):
         """TaskWorker→PMWorkerのフローが動作すること"""
-        
+
     def test_complete_task_flow(self):
         """タスク送信から完了通知までの全フローが動作すること"""
-        
+
     def test_error_propagation(self):
         """エラーが適切に伝播すること"""
 ```
@@ -133,10 +133,10 @@ def test_task_processing():
     # Arrange（準備）
     worker = TaskWorker()
     test_task = {"task_id": "test_123", "prompt": "test prompt"}
-    
+
     # Act（実行）
     result = worker.process_task(test_task)
-    
+
     # Assert（検証）
     assert result["status"] == "completed"
     assert "response" in result
@@ -277,11 +277,11 @@ ai-test-report generate
 def test_critical_functionality():
     """
     重要機能のテスト
-    
+
     Given: 正常な設定とデータ
     When: process_critical_task()を実行
     Then: 期待される結果が返される
-    
+
     テストID: TC001
     重要度: Critical
     カテゴリ: Core機能

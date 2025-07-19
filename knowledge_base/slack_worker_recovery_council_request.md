@@ -1,8 +1,8 @@
 # 🏛️ エルダー会議召集要請 - SlackWorker自動復旧システム
 
-**会議ID**: slack_worker_recovery_20250706_230400  
-**緊急度**: HIGH  
-**期限**: 2025年7月13日 23:04  
+**会議ID**: slack_worker_recovery_20250706_230400
+**緊急度**: HIGH
+**期限**: 2025年7月13日 23:04
 **作成日時**: 2025年7月6日 23:04:00
 
 ---
@@ -29,7 +29,7 @@ SlackPollingWorkerの予期しない停止により、Slack対話機能が中断
 - 最大停止時間: 2時間34分
 
 知識ベースから推奨パターン:
-✅ Systemd service化 
+✅ Systemd service化
 ✅ Health check監視
 ✅ 自動restart設定
 ```
@@ -38,7 +38,7 @@ SlackPollingWorkerの予期しない停止により、Slack対話機能が中断
 ```
 現在のWorker管理状況:
 - 手動起動: 5個のWorker
-- 自動起動: 2個のWorker  
+- 自動起動: 2個のWorker
 - 監視なし: 3個のWorker
 
 優先対応タスク:
@@ -103,7 +103,7 @@ SlackPollingWorkerの予期しない停止により、Slack対話機能が中断
 
 ### **優先実装順序**:
 1. **SlackWorker専用監視** (緊急度: Critical)
-2. **自動復旧スクリプト** (緊急度: High)  
+2. **自動復旧スクリプト** (緊急度: High)
 3. **統一Worker管理** (緊急度: Medium)
 
 ### **技術選択推奨**:
@@ -159,5 +159,5 @@ WantedBy=multi-user.target
 
 **エルダー会議の開催をお待ちしています。**
 
-**召集システム**: Elder Council Summoner  
+**召集システム**: Elder Council Summoner
 **文書ID**: slack_worker_recovery_20250706_230400

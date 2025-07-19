@@ -56,7 +56,7 @@ print("```")
 print("")
 print("💡 Key Benefits:")
 print("   • Unified tool interface")
-print("   • 50x development efficiency") 
+print("   • 50x development efficiency")
 print("   • Automatic error handling")
 print("   • Future MCP protocol ready")
 print("")
@@ -72,14 +72,15 @@ print("=" * 70)
 print("\n🧪 Testing MCP now...")
 try:
     from libs.mcp_wrapper.client import MCPClient
+
     client = MCPClient()
     print("✅ MCPClient imported successfully!")
-    
+
     # Quick test
     result = client.call_tool(
         "executor",
         "execute_command",
-        {"command": "echo 'MCP test successful!'", "task_name": "quick_test"}
+        {"command": "echo 'MCP test successful!'", "task_name": "quick_test"},
     )
     print(f"✅ Test command scheduled: {result}")
 except Exception as e:

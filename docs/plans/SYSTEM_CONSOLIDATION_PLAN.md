@@ -24,7 +24,7 @@ class UnifiedItemManager:
         self.resources = {}    # 材料
         self.equipment = {}    # 装備品
         self.allocations = {}  # 割り当て
-        
+
     def allocate_item(self, item_id: str, user_id: str, item_type: str):
         # 統一された割り当て処理
         pass
@@ -59,7 +59,7 @@ class ModularKnight:
     def __init__(self, knight_id: str, modules: List[str]):
         self.knight_id = knight_id
         self.modules = [ModuleFactory.create(module) for module in modules]
-        
+
     def patrol(self):
         for module in self.modules:
             module.execute_patrol()
@@ -103,7 +103,7 @@ class ConfigurableWizard:
         self.capabilities = [
             CapabilityFactory.create(cap) for cap in config.capabilities
         ]
-        
+
     class WizardConfig:
         capabilities: List[str]  # ['knowledge_gap', 'learning', 'rag']
         priority: str
@@ -116,10 +116,10 @@ class UniversalCoordinator:
     def __init__(self):
         self.coordinators = {
             'weapon': WeaponCoordinator(),
-            'task': TaskCoordinator(), 
+            'task': TaskCoordinator(),
             'knowledge': KnowledgeCoordinator()
         }
-        
+
     def coordinate(self, request_type: str, payload: dict):
         return self.coordinators[request_type].handle(payload)
 ```
@@ -226,7 +226,7 @@ Week 1: インベントリ統合
 ├── Day 5: 統合テスト
 └── Day 6-7: 旧システム廃止
 
-Week 2: 騎士システム統合  
+Week 2: 騎士システム統合
 ├── Day 8-10: モジュール式フレームワーク
 ├── Day 11-12: 機能モジュール化
 ├── Day 13: 統合テスト

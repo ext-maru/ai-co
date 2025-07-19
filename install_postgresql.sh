@@ -43,11 +43,11 @@ if command -v psql &> /dev/null; then
 else
     echo "📦 PostgreSQLをインストールします..."
     echo "sudo権限が必要です。パスワードを入力してください:"
-    
+
     # PostgreSQLのインストール
     sudo apt-get update
     sudo apt-get install -y postgresql postgresql-contrib
-    
+
     # pgvectorのインストール
     sudo apt-get install -y postgresql-14-pgvector || sudo apt-get install -y postgresql-15-pgvector || sudo apt-get install -y postgresql-16-pgvector
 fi

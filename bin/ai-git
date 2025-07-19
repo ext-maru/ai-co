@@ -30,7 +30,7 @@ case "$1" in
         echo "📜 Recent commits:"
         git_safe log --oneline -n 10
         ;;
-    
+
     flow)
         echo "🌊 Git Flow Status:"
         echo "Branches:"
@@ -40,7 +40,7 @@ case "$1" in
         git_safe rev-list --count main..develop 2>/dev/null || echo "0"
         echo "commits"
         ;;
-    
+
     release)
         VERSION=${2:-$(date +%Y.%m.%d)}
         echo "🚀 Creating release v$VERSION..."
@@ -65,26 +65,26 @@ else:
 "
         fi
         ;;
-    
+
     cleanup)
         echo "🧹 Cleaning up merged branches..."
         git_safe branch --merged | grep -E 'auto/|feature/' | xargs -n 1 git_safe branch -d 2>/dev/null || true
         echo "✅ Cleanup complete"
         ;;
-    
+
     fix-ownership)
         echo "🔧 Fixing Git ownership issues..."
         git config --global --add safe.directory /home/aicompany/ai_co
         sudo -u aicompany git config --global --add safe.directory /home/aicompany/ai_co
         echo "✅ Ownership issues fixed"
         ;;
-    
+
     *)
         echo "Usage: ai-git {status|flow|release|cleanup|fix-ownership}"
         echo ""
         echo "Commands:"
         echo "  status        - Show git status"
-        echo "  flow          - Show git flow status" 
+        echo "  flow          - Show git flow status"
         echo "  release       - Create a release (develop → main)"
         echo "  cleanup       - Remove merged branches"
         echo "  fix-ownership - Fix Git ownership issues"

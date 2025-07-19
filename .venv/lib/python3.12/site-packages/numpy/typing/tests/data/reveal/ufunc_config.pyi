@@ -3,9 +3,8 @@
 from collections.abc import Callable
 from typing import Any, assert_type
 
-from _typeshed import SupportsWrite
-
 import numpy as np
+from _typeshed import SupportsWrite
 
 def func(a: str, b: int) -> None: ...
 
@@ -23,7 +22,9 @@ assert_type(np.setbufsize(4096), int)
 assert_type(np.getbufsize(), int)
 
 assert_type(np.seterrcall(func), Callable[[str, int], Any] | SupportsWrite[str] | None)
-assert_type(np.seterrcall(Write()), Callable[[str, int], Any] | SupportsWrite[str] | None)
+assert_type(
+    np.seterrcall(Write()), Callable[[str, int], Any] | SupportsWrite[str] | None
+)
 assert_type(np.geterrcall(), Callable[[str, int], Any] | SupportsWrite[str] | None)
 
 assert_type(np.errstate(call=func, all="call"), np.errstate)

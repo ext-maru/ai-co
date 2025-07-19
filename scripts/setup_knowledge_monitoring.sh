@@ -85,17 +85,17 @@ inotifywait -m -r -e create,modify,delete,move \
     "$PROJECT_ROOT/core/" \
     "$PROJECT_ROOT/config/" \
     --format '%w%f %e' 2>/dev/null | while read file event; do
-    
+
     # 一時ファイルや無関係なファイルをスキップ
     if [[ "$file" == *".swp" ]] || [[ "$file" == *".tmp" ]] || [[ "$file" == *"__pycache__"* ]]; then
         continue
     fi
-    
+
     log "INFO: ファイル変更検出: $file ($event)"
-    
+
     # 変更から少し待ってから処理（連続する変更をまとめる）
     sleep 1
-    
+
     # 更新トリガーを実行
     "$PROJECT_ROOT/scripts/update_knowledge_trigger.sh" "$file" "$event" &
 done
@@ -122,7 +122,7 @@ for file in $changed_files; do
     fi
 done
 EOF
-    
+
     chmod +x "$PROJECT_ROOT/.git/hooks/post-commit"
     log "INFO: Git post-commitフックを設定しました"
 else
@@ -264,7 +264,7 @@ for file in "$KNOWLEDGE_BASE"/*.md; do
                 echo "$file: $link"
             fi
         done)
-        
+
         if [ -n "$broken_links" ]; then
             log "WARN: 壊れたリンクを検出: $broken_links"
             ((error_count++))

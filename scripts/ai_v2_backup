@@ -4,29 +4,30 @@ AI Command System v2.1 - Enhanced Edition
 Phase 2: 高度な機能を統合した完全版
 """
 
-import sys
-import os
-import json
-import subprocess
-import re
-from pathlib import Path
-from typing import List, Dict, Optional, Tuple
-from datetime import datetime
-import pwd
 import getpass
+import json
+import os
+import pwd
+import re
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
 
 class AICommandSystemV2:
     """AI統合コマンドシステム v2.1"""
-    
+
     def __init__(self):
         self.scripts_dir = Path("/home/aicompany/ai_co/scripts")
         self.config_dir = Path.home() / ".ai-config"
         self.config_dir.mkdir(exist_ok=True)
         self.version = "2.1.0"
-        
+
         self.user_config = self.load_user_config()
         self.permission_level = self.detect_permission_level()
-        
+
         # Enhanced categories with permission levels
         self.categories = {
             "core": {
@@ -34,98 +35,214 @@ class AICommandSystemV2:
                 "description": "基本システムコマンド",
                 "permission": "user",
                 "commands": {
-                    "start": {"script": "ai-start", "desc": "システム起動", "permission": "developer"},
-                    "stop": {"script": "ai-stop", "desc": "システム停止", "permission": "developer"},
-                    "status": {"script": "ai-status", "desc": "システム状態確認", "permission": "user"},
+                    "start": {
+                        "script": "ai-start",
+                        "desc": "システム起動",
+                        "permission": "developer",
+                    },
+                    "stop": {
+                        "script": "ai-stop",
+                        "desc": "システム停止",
+                        "permission": "developer",
+                    },
+                    "status": {
+                        "script": "ai-status",
+                        "desc": "システム状態確認",
+                        "permission": "user",
+                    },
                     "env": {"script": "ai-env", "desc": "環境設定", "permission": "user"},
-                    "config": {"script": None, "desc": "設定管理", "permission": "user"}
-                }
+                    "config": {"script": None, "desc": "設定管理", "permission": "user"},
+                },
             },
             "elder": {
                 "name": "Elder Management",
                 "description": "エルダー管理機能",
                 "permission": "elder",
                 "commands": {
-                    "status": {"script": "ai-elder", "desc": "エルダー状態確認", "permission": "elder"},
-                    "council": {"script": "ai-elder-council", "desc": "評議会管理", "permission": "elder"},
-                    "settings": {"script": "ai-elder-settings", "desc": "設定表示", "permission": "user"},
-                    "tree": {"script": "ai-elder-tree", "desc": "エルダーツリー表示", "permission": "user"},
-                    "compliance": {"script": "ai-elder-compliance", "desc": "コンプライアンス", "permission": "elder"},
-                    "servant": {"script": "ai-servant", "desc": "サーバント管理", "permission": "elder"}
-                }
+                    "status": {
+                        "script": "ai-elder",
+                        "desc": "エルダー状態確認",
+                        "permission": "elder",
+                    },
+                    "council": {
+                        "script": "ai-elder-council",
+                        "desc": "評議会管理",
+                        "permission": "elder",
+                    },
+                    "settings": {
+                        "script": "ai-elder-settings",
+                        "desc": "設定表示",
+                        "permission": "user",
+                    },
+                    "tree": {
+                        "script": "ai-elder-tree",
+                        "desc": "エルダーツリー表示",
+                        "permission": "user",
+                    },
+                    "compliance": {
+                        "script": "ai-elder-compliance",
+                        "desc": "コンプライアンス",
+                        "permission": "elder",
+                    },
+                    "servant": {
+                        "script": "ai-servant",
+                        "desc": "サーバント管理",
+                        "permission": "elder",
+                    },
+                },
             },
             "worker": {
-                "name": "Worker Management", 
+                "name": "Worker Management",
                 "description": "ワーカー管理",
                 "permission": "developer",
                 "commands": {
-                    "status": {"script": "ai-worker-comm", "desc": "ワーカー通信状態", "permission": "developer"},
-                    "recovery": {"script": "ai-worker-recovery", "desc": "ワーカー復旧", "permission": "developer"},
-                    "dlq": {"script": "ai-dlq", "desc": "DLQ管理", "permission": "developer"}
-                }
+                    "status": {
+                        "script": "ai-worker-comm",
+                        "desc": "ワーカー通信状態",
+                        "permission": "developer",
+                    },
+                    "recovery": {
+                        "script": "ai-worker-recovery",
+                        "desc": "ワーカー復旧",
+                        "permission": "developer",
+                    },
+                    "dlq": {
+                        "script": "ai-dlq",
+                        "desc": "DLQ管理",
+                        "permission": "developer",
+                    },
+                },
             },
             "dev": {
                 "name": "Development Tools",
                 "description": "開発ツール",
                 "permission": "developer",
                 "commands": {
-                    "codegen": {"script": "ai-codegen", "desc": "コード生成", "permission": "developer"},
-                    "document": {"script": "ai-document", "desc": "ドキュメント生成", "permission": "developer"},
-                    "git": {"script": "ai-git", "desc": "Git統合", "permission": "developer"},
-                    "tdd": {"script": "ai-tdd", "desc": "TDD開発", "permission": "developer"}
-                }
+                    "codegen": {
+                        "script": "ai-codegen",
+                        "desc": "コード生成",
+                        "permission": "developer",
+                    },
+                    "document": {
+                        "script": "ai-document",
+                        "desc": "ドキュメント生成",
+                        "permission": "developer",
+                    },
+                    "git": {
+                        "script": "ai-git",
+                        "desc": "Git統合",
+                        "permission": "developer",
+                    },
+                    "tdd": {
+                        "script": "ai-tdd",
+                        "desc": "TDD開発",
+                        "permission": "developer",
+                    },
+                },
             },
             "test": {
                 "name": "Testing Tools",
-                "description": "テストツール", 
+                "description": "テストツール",
                 "permission": "developer",
                 "commands": {
-                    "coverage": {"script": "ai-test-coverage", "desc": "カバレッジ分析", "permission": "developer"},
-                    "quality": {"script": "ai-test-quality", "desc": "品質分析", "permission": "developer"},
-                    "runner": {"script": "ai-test-runner", "desc": "テスト実行", "permission": "developer"},
-                    "magic": {"script": "ai-elf-test-magic", "desc": "エルフテスト魔法", "permission": "developer"}
-                }
+                    "coverage": {
+                        "script": "ai-test-coverage",
+                        "desc": "カバレッジ分析",
+                        "permission": "developer",
+                    },
+                    "quality": {
+                        "script": "ai-test-quality",
+                        "desc": "品質分析",
+                        "permission": "developer",
+                    },
+                    "runner": {
+                        "script": "ai-test-runner",
+                        "desc": "テスト実行",
+                        "permission": "developer",
+                    },
+                    "magic": {
+                        "script": "ai-elf-test-magic",
+                        "desc": "エルフテスト魔法",
+                        "permission": "developer",
+                    },
+                },
             },
             "ops": {
                 "name": "Operations",
                 "description": "運用ツール",
                 "permission": "admin",
                 "commands": {
-                    "dashboard": {"script": "ai-dashboard", "desc": "ダッシュボード", "permission": "developer"},
-                    "api-status": {"script": "ai-api-status", "desc": "API状態", "permission": "user"},
-                    "api-health": {"script": "ai-api-health", "desc": "APIヘルス", "permission": "user"},
-                    "api-reset": {"script": "ai-api-reset", "desc": "APIリセット", "permission": "admin"}
-                }
+                    "dashboard": {
+                        "script": "ai-dashboard",
+                        "desc": "ダッシュボード",
+                        "permission": "developer",
+                    },
+                    "api-status": {
+                        "script": "ai-api-status",
+                        "desc": "API状態",
+                        "permission": "user",
+                    },
+                    "api-health": {
+                        "script": "ai-api-health",
+                        "desc": "APIヘルス",
+                        "permission": "user",
+                    },
+                    "api-reset": {
+                        "script": "ai-api-reset",
+                        "desc": "APIリセット",
+                        "permission": "admin",
+                    },
+                },
             },
             "monitor": {
                 "name": "Monitoring",
                 "description": "監視・ログ",
                 "permission": "developer",
                 "commands": {
-                    "logs": {"script": "ai-logs", "desc": "ログ表示", "permission": "developer"},
-                    "proactive": {"script": "ai-elder-proactive-monitor", "desc": "予防的監視", "permission": "developer"}
-                }
+                    "logs": {
+                        "script": "ai-logs",
+                        "desc": "ログ表示",
+                        "permission": "developer",
+                    },
+                    "proactive": {
+                        "script": "ai-elder-proactive-monitor",
+                        "desc": "予防的監視",
+                        "permission": "developer",
+                    },
+                },
             },
             "integrate": {
                 "name": "Integrations",
                 "description": "外部連携",
-                "permission": "developer", 
+                "permission": "developer",
                 "commands": {
-                    "slack": {"script": "ai-slack", "desc": "Slack統合", "permission": "developer"},
-                    "mcp": {"script": "ai-mcp", "desc": "MCP統合", "permission": "developer"},
-                    "send": {"script": "ai-send", "desc": "メッセージ送信", "permission": "developer"}
-                }
-            }
+                    "slack": {
+                        "script": "ai-slack",
+                        "desc": "Slack統合",
+                        "permission": "developer",
+                    },
+                    "mcp": {
+                        "script": "ai-mcp",
+                        "desc": "MCP統合",
+                        "permission": "developer",
+                    },
+                    "send": {
+                        "script": "ai-send",
+                        "desc": "メッセージ送信",
+                        "permission": "developer",
+                    },
+                },
+            },
         }
-        
+
         # Enhanced aliases with smart context detection
         self.smart_aliases = {
             "build": self.smart_build_command,
             "test": self.smart_test_command,
             "deploy": self.smart_deploy_command,
-            "logs": self.smart_logs_command
+            "logs": self.smart_logs_command,
         }
-        
+
         # Basic aliases
         self.aliases = {
             "help": self.show_help,
@@ -136,9 +253,9 @@ class AICommandSystemV2:
             "find": self.find_command,
             "search": self.find_command,
             "config": self.manage_config,
-            "permissions": self.show_permissions
+            "permissions": self.show_permissions,
         }
-    
+
     def load_user_config(self) -> Dict:
         """ユーザー設定をロード"""
         config_file = self.config_dir / "config.json"
@@ -146,40 +263,40 @@ class AICommandSystemV2:
             "aliases": {},
             "permission_level": "auto",
             "preferred_style": "standard",
-            "enable_smart_aliases": True
+            "enable_smart_aliases": True,
         }
-        
+
         if config_file.exists():
             try:
-                with open(config_file, 'r', encoding='utf-8') as f:
+                with open(config_file, "r", encoding="utf-8") as f:
                     return {**default_config, **json.load(f)}
             except:
                 pass
-        
+
         return default_config
-    
+
     def save_user_config(self):
         """ユーザー設定を保存"""
         config_file = self.config_dir / "config.json"
-        with open(config_file, 'w', encoding='utf-8') as f:
+        with open(config_file, "w", encoding="utf-8") as f:
             json.dump(self.user_config, f, ensure_ascii=False, indent=2)
-    
+
     def detect_permission_level(self) -> str:
         """権限レベルを自動検出"""
         if self.user_config.get("permission_level") != "auto":
             return self.user_config["permission_level"]
-        
+
         current_user = getpass.getuser()
-        
+
         # Admin detection
         if current_user == "root" or current_user == "aicompany":
             return "admin"
-        
+
         # Elder detection (AI Company developers)
         elder_users = ["claude", "maru", "elder"]
         if current_user in elder_users:
             return "elder"
-        
+
         # Developer detection (in development groups)
         try:
             user_groups = [g.gr_name for g in pwd.getpwnam(current_user).pw_gid]
@@ -188,56 +305,60 @@ class AICommandSystemV2:
                 return "developer"
         except:
             pass
-        
+
         return "user"
-    
+
     def check_permission(self, required_level: str) -> bool:
         """権限チェック"""
         levels = ["user", "developer", "elder", "admin"]
         user_level_idx = levels.index(self.permission_level)
         required_level_idx = levels.index(required_level)
         return user_level_idx >= required_level_idx
-    
+
     def detect_project_context(self) -> Dict[str, str]:
         """プロジェクトコンテキストを検出"""
         cwd = Path.cwd()
         context = {"type": "unknown", "build_tool": None, "test_tool": None}
-        
+
         # Python project
         if (cwd / "requirements.txt").exists() or (cwd / "pyproject.toml").exists():
             context["type"] = "python"
-            context["build_tool"] = "pip" if (cwd / "requirements.txt").exists() else "poetry"
+            context["build_tool"] = (
+                "pip" if (cwd / "requirements.txt").exists() else "poetry"
+            )
             context["test_tool"] = "pytest"
-        
+
         # Node.js project
         elif (cwd / "package.json").exists():
             context["type"] = "nodejs"
             context["build_tool"] = "npm"
             context["test_tool"] = "npm"
-        
+
         # Go project
         elif (cwd / "go.mod").exists():
             context["type"] = "go"
             context["build_tool"] = "go"
             context["test_tool"] = "go"
-        
+
         # Rust project
         elif (cwd / "Cargo.toml").exists():
             context["type"] = "rust"
             context["build_tool"] = "cargo"
             context["test_tool"] = "cargo"
-        
+
         return context
-    
+
     def smart_build_command(self, args: List[str]):
         """スマートビルドコマンド"""
         context = self.detect_project_context()
-        
+
         if context["type"] == "python":
             if context["build_tool"] == "poetry":
                 return subprocess.call(["poetry", "install"] + args)
             else:
-                return subprocess.call(["pip", "install", "-r", "requirements.txt"] + args)
+                return subprocess.call(
+                    ["pip", "install", "-r", "requirements.txt"] + args
+                )
         elif context["type"] == "nodejs":
             return subprocess.call(["npm", "install"] + args)
         elif context["type"] == "go":
@@ -247,11 +368,11 @@ class AICommandSystemV2:
         else:
             print("❌ No build configuration detected in current directory")
             return 1
-    
+
     def smart_test_command(self, args: List[str]):
         """スマートテストコマンド"""
         context = self.detect_project_context()
-        
+
         if context["type"] == "python":
             return subprocess.call(["pytest"] + args)
         elif context["type"] == "nodejs":
@@ -263,24 +384,24 @@ class AICommandSystemV2:
         else:
             print("❌ No test configuration detected in current directory")
             return 1
-    
+
     def smart_deploy_command(self, args: List[str]):
         """スマートデプロイコマンド"""
         if not self.check_permission("developer"):
             print("❌ Deploy command requires developer permission")
             return 1
-        
+
         context = self.detect_project_context()
         print(f"🚀 Deploying {context['type']} project...")
-        
+
         # This would integrate with actual deployment systems
         print("Deploy functionality coming soon...")
         return 0
-    
+
     def smart_logs_command(self, args: List[str]):
         """スマートログコマンド"""
         return self.execute_legacy_command("ai-logs", args)
-    
+
     def show_permissions(self, args: List[str] = None):
         """権限情報表示"""
         print(f"\n👤 Current User: {getpass.getuser()}")
@@ -290,14 +411,16 @@ class AICommandSystemV2:
         print("  developer - Development tools included")
         print("  elder     - Elder management included")
         print("  admin     - All commands available")
-        
+
         print(f"\n✅ Available Categories:")
         for cat_id, cat_info in self.categories.items():
             if self.check_permission(cat_info["permission"]):
                 print(f"  {cat_id:<12} {cat_info['description']}")
             else:
-                print(f"  {cat_id:<12} {cat_info['description']} (❌ requires {cat_info['permission']})")
-    
+                print(
+                    f"  {cat_id:<12} {cat_info['description']} (❌ requires {cat_info['permission']})"
+                )
+
     def manage_config(self, args: List[str]):
         """設定管理"""
         if not args:
@@ -311,35 +434,35 @@ class AICommandSystemV2:
             print(f"  ai config get <key>")
             print(f"  ai config reset")
             return 0
-        
+
         if args[0] == "set" and len(args) >= 3:
             key, value = args[1], args[2]
             # Type conversion
-            if value.lower() in ['true', 'false']:
-                value = value.lower() == 'true'
+            if value.lower() in ["true", "false"]:
+                value = value.lower() == "true"
             elif value.isdigit():
                 value = int(value)
-            
+
             self.user_config[key] = value
             self.save_user_config()
             print(f"✅ Set {key} = {value}")
-            
+
         elif args[0] == "get" and len(args) >= 2:
             key = args[1]
             print(f"{key}: {self.user_config.get(key, 'Not set')}")
-            
+
         elif args[0] == "reset":
             self.user_config = {
                 "aliases": {},
                 "permission_level": "auto",
                 "preferred_style": "standard",
-                "enable_smart_aliases": True
+                "enable_smart_aliases": True,
             }
             self.save_user_config()
             print("✅ Configuration reset to defaults")
-        
+
         return 0
-    
+
     def show_help(self, args: List[str] = None):
         """Enhanced help display"""
         if args and len(args) > 0:
@@ -350,7 +473,8 @@ class AICommandSystemV2:
                 print(f"❌ Unknown category: {category}")
                 print(f"Available categories: {', '.join(self.categories.keys())}")
         else:
-            print(f"""
+            print(
+                f"""
 🏛️ AI Command System v{self.version} - Enhanced Edition
 エルダー評議会承認済み統一コマンド体系
 
@@ -361,7 +485,7 @@ Usage: ai <command> [options]
 
 Special Commands:
   help, h, ?         Show this help
-  version, v         Show version  
+  version, v         Show version
   find <query>       Find commands by keyword
   config             Manage configuration
   permissions        Show permission info
@@ -373,14 +497,18 @@ Smart Aliases (context-aware):
   logs               Show system logs
 
 Categories:
-""")
+"""
+            )
             for cat_id, cat_info in self.categories.items():
                 if self.check_permission(cat_info["permission"]):
                     print(f"  {cat_id:<12} {cat_info['description']}")
                 else:
-                    print(f"  {cat_id:<12} {cat_info['description']} (❌ requires {cat_info['permission']})")
-            
-            print("""
+                    print(
+                        f"  {cat_id:<12} {cat_info['description']} (❌ requires {cat_info['permission']})"
+                    )
+
+            print(
+                """
 Examples:
   ai status              # システム状態確認
   ai elder settings      # エルダー設定表示
@@ -391,79 +519,87 @@ Examples:
 
 For detailed help on a category:
   ai help <category>
-""")
-    
+"""
+            )
+
     def show_category_help(self, category: str):
         """Enhanced category help"""
         if not self.check_permission(self.categories[category]["permission"]):
-            print(f"❌ Category '{category}' requires {self.categories[category]['permission']} permission")
+            print(
+                f"❌ Category '{category}' requires {self.categories[category]['permission']} permission"
+            )
             return
-        
+
         cat_info = self.categories[category]
         print(f"\n📁 {cat_info['name']}")
         print(f"{cat_info['description']}\n")
         print("Commands:")
-        
-        for cmd_name, cmd_info in cat_info['commands'].items():
-            if self.check_permission(cmd_info.get('permission', 'user')):
-                if category == 'core':
+
+        for cmd_name, cmd_info in cat_info["commands"].items():
+            if self.check_permission(cmd_info.get("permission", "user")):
+                if category == "core":
                     usage = f"ai {cmd_name}"
                 else:
                     usage = f"ai {category} {cmd_name}"
                 print(f"  {usage:<30} {cmd_info['desc']}")
             else:
-                if category == 'core':
+                if category == "core":
                     usage = f"ai {cmd_name}"
                 else:
                     usage = f"ai {category} {cmd_name}"
-                print(f"  {usage:<30} {cmd_info['desc']} (❌ requires {cmd_info.get('permission', 'user')})")
+                print(
+                    f"  {usage:<30} {cmd_info['desc']} (❌ requires {cmd_info.get('permission', 'user')})"
+                )
         print()
-    
+
     def show_version(self, args: List[str] = None):
         """Enhanced version display"""
         print(f"AI Command System v{self.version} - Enhanced Edition")
         print("Elder Council Approved - 2025-07-09")
         print(f"Permission Level: {self.permission_level}")
-        
+
         context = self.detect_project_context()
         if context["type"] != "unknown":
             print(f"Project Context: {context['type']} ({context['build_tool']})")
-    
+
     def find_command(self, args: List[str]):
         """Enhanced command search"""
         if not args:
             print("Usage: ai find <query>")
             return
-        
-        query = ' '.join(args).lower()
+
+        query = " ".join(args).lower()
         results = []
-        
+
         # Search in all accessible categories
         for cat_id, cat_info in self.categories.items():
             if not self.check_permission(cat_info["permission"]):
                 continue
-                
+
             # Check category name/description
-            if query in cat_info['name'].lower() or query in cat_info['description'].lower():
+            if (
+                query in cat_info["name"].lower()
+                or query in cat_info["description"].lower()
+            ):
                 results.append(f"Category: {cat_id} - {cat_info['description']}")
-            
+
             # Check commands
-            for cmd_name, cmd_info in cat_info['commands'].items():
-                if not self.check_permission(cmd_info.get('permission', 'user')):
+            for cmd_name, cmd_info in cat_info["commands"].items():
+                if not self.check_permission(cmd_info.get("permission", "user")):
                     continue
-                    
-                if query in cmd_name.lower() or query in cmd_info['desc'].lower():
-                    if cat_id == 'core':
+
+                if query in cmd_name.lower() or query in cmd_info["desc"].lower():
+                    if cat_id == "core":
                         usage = f"ai {cmd_name}"
                     else:
                         usage = f"ai {cat_id} {cmd_name}"
                     results.append(f"{usage:<30} {cmd_info['desc']}")
-        
+
         # Search smart aliases
         for alias, _ in self.smart_aliases.items():
             if query in alias.lower():
                 results.append(f"ai {alias:<27} Smart context-aware command")
-        
+
         if results:
             print(f"\n🔍 Found {len(results)} matches for '{query}':\n")
             for result in results:
@@ -471,16 +607,16 @@ For detailed help on a category:
             print()
         else:
             print(f"❌ No accessible commands found matching '{query}'")
-    
+
     def execute_legacy_command(self, script_name: str, args: List[str]):
         """Enhanced legacy command execution with error handling"""
         script_path = self.scripts_dir / script_name
-        
+
         if not script_path.exists():
             print(f"❌ Command not found: {script_name}")
             print(f"💡 Try: ai find \"{script_name.replace('ai-', '')}\"")
             return 1
-        
+
         try:
             cmd = [str(script_path)] + args
             return subprocess.call(cmd)
@@ -495,107 +631,118 @@ For detailed help on a category:
             print(f"❌ Error executing command: {e}")
             print(f"💡 Try: ai help or ai find \"{script_name.replace('ai-', '')}\"")
             return 1
-    
+
     def run(self, args: List[str]):
         """Enhanced main entry point"""
         if not args:
             self.show_help()
             return 0
-        
+
         # Check for smart aliases first
-        if self.user_config.get("enable_smart_aliases", True) and args[0] in self.smart_aliases:
+        if (
+            self.user_config.get("enable_smart_aliases", True)
+            and args[0] in self.smart_aliases
+        ):
             return self.smart_aliases[args[0]](args[1:])
-        
+
         # Check for special commands
         if args[0] in self.aliases:
             self.aliases[args[0]](args[1:])
             return 0
-        
+
         # Check for core commands
-        if args[0] in self.categories['core']['commands']:
-            cmd_info = self.categories['core']['commands'][args[0]]
-            
-            if not self.check_permission(cmd_info.get('permission', 'user')):
-                print(f"❌ Command '{args[0]}' requires {cmd_info.get('permission', 'user')} permission")
+        if args[0] in self.categories["core"]["commands"]:
+            cmd_info = self.categories["core"]["commands"][args[0]]
+
+            if not self.check_permission(cmd_info.get("permission", "user")):
+                print(
+                    f"❌ Command '{args[0]}' requires {cmd_info.get('permission', 'user')} permission"
+                )
                 print(f"💡 Current level: {self.permission_level}")
                 return 1
-            
-            if cmd_info['script']:
-                return self.execute_legacy_command(cmd_info['script'], args[1:])
+
+            if cmd_info["script"]:
+                return self.execute_legacy_command(cmd_info["script"], args[1:])
             else:
                 # Built-in command
                 return self.aliases.get(args[0], lambda x: 1)(args[1:])
-        
+
         # Check for category commands
         if args[0] in self.categories:
             if len(args) < 2:
                 self.show_category_help(args[0])
                 return 0
-            
+
             category = args[0]
             command = args[1]
-            
+
             if not self.check_permission(self.categories[category]["permission"]):
-                print(f"❌ Category '{category}' requires {self.categories[category]['permission']} permission")
+                print(
+                    f"❌ Category '{category}' requires {self.categories[category]['permission']} permission"
+                )
                 return 1
-            
-            if command in self.categories[category]['commands']:
-                cmd_info = self.categories[category]['commands'][command]
-                
-                if not self.check_permission(cmd_info.get('permission', 'user')):
-                    print(f"❌ Command '{category} {command}' requires {cmd_info.get('permission', 'user')} permission")
+
+            if command in self.categories[category]["commands"]:
+                cmd_info = self.categories[category]["commands"][command]
+
+                if not self.check_permission(cmd_info.get("permission", "user")):
+                    print(
+                        f"❌ Command '{category} {command}' requires {cmd_info.get('permission', 'user')} permission"
+                    )
                     return 1
-                
-                return self.execute_legacy_command(cmd_info['script'], args[2:])
+
+                return self.execute_legacy_command(cmd_info["script"], args[2:])
             else:
                 print(f"❌ Unknown command in {category}: {command}")
                 self.show_category_help(category)
                 return 1
-        
+
         # Legacy fallback with helpful suggestions
         legacy_name = f"ai-{args[0]}"
         legacy_path = self.scripts_dir / legacy_name
         if legacy_path.exists():
             print(f"⚠️ Legacy command detected. Please use new syntax.")
             print(f"  Old: {legacy_name}")
-            
+
             # Try to suggest new syntax
             for cat_id, cat_info in self.categories.items():
-                for cmd_name, cmd_info in cat_info['commands'].items():
-                    if cmd_info.get('script') == legacy_name:
-                        if cat_id == 'core':
+                for cmd_name, cmd_info in cat_info["commands"].items():
+                    if cmd_info.get("script") == legacy_name:
+                        if cat_id == "core":
                             print(f"  New: ai {cmd_name}")
                         else:
                             print(f"  New: ai {cat_id} {cmd_name}")
                         break
             print()
             return self.execute_legacy_command(legacy_name, args[1:])
-        
+
         # Unknown command with suggestions
         print(f"❌ Unknown command: {args[0]}")
-        print(f"💡 Try: ai find \"{args[0]}\" or ai help")
-        
+        print(f'💡 Try: ai find "{args[0]}" or ai help')
+
         # Suggest similar commands
         similar = []
         for cat_id, cat_info in self.categories.items():
             if args[0] in cat_id:
                 similar.append(f"ai help {cat_id}")
-            for cmd_name in cat_info['commands']:
+            for cmd_name in cat_info["commands"]:
                 if args[0] in cmd_name:
-                    if cat_id == 'core':
+                    if cat_id == "core":
                         similar.append(f"ai {cmd_name}")
                     else:
                         similar.append(f"ai {cat_id} {cmd_name}")
-        
+
         if similar:
             print(f"🔍 Did you mean: {', '.join(similar[:3])}")
-        
+
         return 1
+
 
 def main():
     """メイン実行"""
     system = AICommandSystemV2()
     sys.exit(system.run(sys.argv[1:]))
+
 
 if __name__ == "__main__":
     main()

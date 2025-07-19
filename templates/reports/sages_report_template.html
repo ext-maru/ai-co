@@ -92,7 +92,7 @@
     <div class="container">
         <h1>🧙‍♂️ {{title}}</h1>
         <p class="timestamp">生成日時: {{generated_at}}</p>
-        
+
         <h2>📊 システム全体ステータス</h2>
         <div class="collaboration-matrix">
             <div class="metric">
@@ -112,14 +112,14 @@
                 <div class="metric-value">{{total_sessions}}</div>
             </div>
         </div>
-        
+
         <h2>🔮 4賢者個別ステータス</h2>
-        
+
         {% for sage_name, sage_data in sage_analytics.items() %}
         <div class="sage-card {{sage_name.split('_')[0]}}">
             <h3>{{sage_display_names[sage_name]}}</h3>
             <p>状態: <span class="status-{{sage_data.status}}">{{sage_data.status.upper()}}</span></p>
-            
+
             {% if sage_name == 'knowledge_sage' %}
             <div class="metric">
                 <div>保存パターン</div>
@@ -159,7 +159,7 @@
             {% endif %}
         </div>
         {% endfor %}
-        
+
         <h2>🤝 賢者間協調状況</h2>
         <div class="chart-container">
             <h4>最近の協調セッション</h4>
@@ -173,19 +173,19 @@
                 {% endfor %}
             </div>
         </div>
-        
+
         <h2>📈 パフォーマンストレンド</h2>
         <div class="chart-container">
             {{performance_chart|safe}}
         </div>
-        
+
         <h2>🎯 推奨最適化</h2>
         <ul>
             {% for optimization in optimization_recommendations %}
             <li>{{optimization}}</li>
             {% endfor %}
         </ul>
-        
+
         <div class="footer">
             <p>このレポートはAI Company 4賢者統合システムによって自動生成されました</p>
             <p>次回レポート: {{next_report_date}}</p>

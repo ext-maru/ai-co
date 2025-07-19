@@ -46,17 +46,17 @@ from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
 
 async def main():
     processor = AutoIssueProcessor()
-    
+
     # まずスキャン
     scan_result = await processor.process_request({'mode': 'scan'})
     print(json.dumps(scan_result, indent=2, ensure_ascii=False))
-    
+
     if scan_result['status'] == 'success' and scan_result['processable_issues'] > 0:
         # 処理実行
         print('\\n処理を開始します...')
         process_result = await processor.process_request({'mode': 'process'})
         print(json.dumps(process_result, indent=2, ensure_ascii=False))
-        
+
         return process_result
     else:
         print('処理可能なイシューがありません')

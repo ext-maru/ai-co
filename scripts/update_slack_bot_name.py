@@ -23,10 +23,7 @@ print("\n3. メンションテスト:")
 print("   @pm-ai こんにちは")
 
 # 設定ファイルのBot名も更新
-env_vars = {
-    "SLACK_BOT_NAME": "pm-ai",
-    "SLACK_BOT_DISPLAY_NAME": "PM-AI"
-}
+env_vars = {"SLACK_BOT_NAME": "pm-ai", "SLACK_BOT_DISPLAY_NAME": "PM-AI"}
 
 print("\n📝 環境変数に追加する設定:")
 for key, value in env_vars.items():

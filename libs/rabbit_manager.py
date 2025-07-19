@@ -7,4 +7,4 @@ RabbitManager - RabbitMQ接続管理のエイリアス
 # queue_managerをrabbit_managerとして公開
 from libs.queue_manager import QueueManager as RabbitManager
 
-__all__ = ['RabbitManager']
+__all__ = ["RabbitManager"]

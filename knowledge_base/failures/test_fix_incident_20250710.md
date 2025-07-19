@@ -11,11 +11,11 @@
 1. **Google Drive Service関連**: 8件
    - メソッド未実装（create_folder, upload_file）
    - インポートエラー（MediaFileUpload）
-   
+
 2. **モデル関連**: 6件
    - created_atフィールドの自動設定なし
    - __repr__メソッド未実装
-   
+
 3. **その他**: 5件
    - EXIF処理の古いAPI使用
    - エラーハンドリング不適切
@@ -33,7 +33,7 @@ pip install pytest-mock --break-system-packages
 - __repr__メソッド実装
 - 表示名の統一
 
-#### Phase 3: Google Drive Service修正  
+#### Phase 3: Google Drive Service修正
 - create_folderメソッド追加
 - upload_fileメソッド追加（upload_imageのエイリアス）
 - MediaFileUploadインポート追加

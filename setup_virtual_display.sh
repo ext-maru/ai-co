@@ -21,9 +21,9 @@ check_root() {
 # Install system dependencies
 install_dependencies() {
     echo "📦 Installing system dependencies..."
-    
+
     apt update
-    
+
     # Core display and browser dependencies
     apt install -y \
         xvfb \
@@ -45,22 +45,22 @@ install_dependencies() {
         libgdk-pixbuf2.0-0 \
         libgtk-3-0 \
         libxss1
-    
+
     # Install browsers
     echo "🌐 Installing browsers..."
     apt install -y chromium-browser firefox-esr
-    
+
     # Install browser drivers
     echo "🔧 Installing browser drivers..."
     apt install -y chromium-chromedriver
-    
+
     echo "✅ System dependencies installed"
 }
 
 # Setup virtual display service
 setup_virtual_display() {
     echo "🖥️ Setting up virtual display service..."
-    
+
     # Create systemd service for virtual display
     cat > /etc/systemd/system/xvfb.service << 'EOF'
 [Unit]
@@ -83,14 +83,14 @@ EOF
     systemctl daemon-reload
     systemctl enable xvfb
     systemctl start xvfb
-    
+
     echo "✅ Virtual display service configured"
 }
 
 # Create GUI testing environment setup script
 create_test_environment() {
     echo "🧪 Creating GUI testing environment..."
-    
+
     cat > /usr/local/bin/gui-test-env << 'EOF'
 #!/bin/bash
 # GUI Testing Environment Setup
@@ -117,14 +117,14 @@ fi
 EOF
 
     chmod +x /usr/local/bin/gui-test-env
-    
+
     echo "✅ GUI testing environment script created at /usr/local/bin/gui-test-env"
 }
 
 # Create Python testing wrapper
 create_python_wrapper() {
     echo "🐍 Creating Python GUI testing wrapper..."
-    
+
     cat > /usr/local/bin/python-gui-test << 'EOF'
 #!/bin/bash
 # Python GUI Testing Wrapper
@@ -156,14 +156,14 @@ exec python3 "$@"
 EOF
 
     chmod +x /usr/local/bin/python-gui-test
-    
+
     echo "✅ Python GUI testing wrapper created at /usr/local/bin/python-gui-test"
 }
 
 # Verify installation
 verify_installation() {
     echo "🔍 Verifying installation..."
-    
+
     # Check if Xvfb is running
     if pgrep -x "Xvfb" > /dev/null; then
         echo "✅ Xvfb virtual display is running"
@@ -171,20 +171,20 @@ verify_installation() {
         echo "❌ Xvfb virtual display is not running"
         return 1
     fi
-    
+
     # Check browser installations
     if command -v chromium-browser &> /dev/null; then
         echo "✅ Chromium browser installed"
     else
         echo "❌ Chromium browser not found"
     fi
-    
+
     if command -v firefox &> /dev/null; then
         echo "✅ Firefox browser installed"
     else
         echo "❌ Firefox browser not found"
     fi
-    
+
     # Test display
     export DISPLAY=:99
     if xset q &> /dev/null; then
@@ -193,7 +193,7 @@ verify_installation() {
         echo "❌ Virtual display is not accessible"
         return 1
     fi
-    
+
     echo "🎉 Installation verification complete!"
 }
 
@@ -201,17 +201,17 @@ verify_installation() {
 main() {
     echo "🚀 WSL2 GUI Testing Setup"
     echo "========================="
-    
+
     if ! check_root; then
         exit 1
     fi
-    
+
     install_dependencies
     setup_virtual_display
     create_test_environment
     create_python_wrapper
     verify_installation
-    
+
     echo ""
     echo "🎉 Setup Complete!"
     echo ""

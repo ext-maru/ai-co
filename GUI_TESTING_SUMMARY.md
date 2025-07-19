@@ -19,7 +19,7 @@ The Elders Guild web dashboard system has a **comprehensive GUI testing framewor
 - **Tests**: `/home/aicompany/ai_co/tests/unit/libs/test_gui_test_framework.py`
 - **Features**: Chrome WebDriver, dashboard testing, screenshot capture, server management
 
-### 2. Playwright Framework 
+### 2. Playwright Framework
 - **File**: `/home/aicompany/ai_co/libs/playwright_gui_test_framework.py`
 - **Tests**: `/home/aicompany/ai_co/tests/unit/libs/test_playwright_gui_test_framework.py`
 - **Features**: Modern browser automation, advanced wait conditions, network interception

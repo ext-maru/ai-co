@@ -177,7 +177,7 @@ secrets:
     file: ./secrets/openai_api_key.txt
   db_password:
     file: ./secrets/db_password.txt
-  
+
 services:
   app:
     secrets:

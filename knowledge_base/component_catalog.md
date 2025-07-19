@@ -79,7 +79,7 @@
 - **テスト**: `/home/aicompany/ai_co/tests/unit/test_pm_worker.py`
 - **クラス**: `PMWorker`
 - **テストカバレッジ**: 目標85%以上
-- **依存関係**: 
+- **依存関係**:
   - GitHubFlowManager
   - PMGitIntegration
   - TestManager
@@ -131,7 +131,7 @@
 - **テストカバレッジ**: 95%以上達成
 - **TDD実装**: 完全なRed-Green-Refactorサイクルで開発
 
-### BaseManager  
+### BaseManager
 - **パス**: `/home/aicompany/ai_co/core/base_manager.py`
 - **テスト**: `/home/aicompany/ai_co/tests/unit/core/test_base_manager_tdd.py`
 - **テストカバレッジ**: 95%以上達成
@@ -252,7 +252,7 @@
 
 ### config.json
 - **パス**: `/home/aicompany/ai_co/config/config.json`
-- **内容**: 
+- **内容**:
   - ワーカー設定（タイムアウト、リトライ）
   - Claude API設定
   - Slack設定

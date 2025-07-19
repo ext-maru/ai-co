@@ -54,7 +54,7 @@ class NewWorker(BaseWorker, KnowledgeAwareMixin):
     def process_message(self, ch, method, properties, body):
         # ナレッジベースを参照
         knowledge = self.consult_knowledge('test')
-        
+
         if knowledge:
             # ナレッジを活用した処理
             self.logger.info("Found relevant knowledge")
@@ -104,10 +104,10 @@ cd /home/aicompany/ai_co && ./setup_knowledge_auto_reference.sh
 # PMWorkerでの実装例
 def process_message(self, ch, method, properties, body):
     error_message = body.get('error', '')
-    
+
     # エラーに関するナレッジを検索
     knowledge = self.consult_knowledge('error')
-    
+
     # 既知のエラーパターンをチェック
     if "ValueError: no option named '--skip-slow'" in error_message:
         # ナレッジから解決策を適用
@@ -120,7 +120,7 @@ def process_message(self, ch, method, properties, body):
 # Claude CLIに送るプロンプトにナレッジを含める
 def _prepare_prompt_with_knowledge(self, original_prompt, task_type):
     knowledge = self.consult_knowledge(task_type)
-    
+
     if knowledge:
         enhanced_prompt = f"""
 {original_prompt}
@@ -132,7 +132,7 @@ def _prepare_prompt_with_knowledge(self, original_prompt, task_type):
 上記の情報を参考にして、ベストプラクティスに従って実装してください。
 """
         return enhanced_prompt
-    
+
     return original_prompt
 ```
 
@@ -143,11 +143,11 @@ def _check_knowledge_updates_periodically(self):
     """5分ごとにナレッジベースの更新をチェック"""
     while self.running:
         updates = self.check_knowledge_updates()
-        
+
         if updates['modified'] or updates['new']:
             self.logger.info("Knowledge base updated")
             # キャッシュをクリアして再読み込み
-        
+
         time.sleep(300)
 ```
 

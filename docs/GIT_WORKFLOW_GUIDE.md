@@ -1,7 +1,7 @@
 # 🌿 エルダーズギルド Git ワークフローガイド
 
-**作成日**: 2025年7月19日  
-**作成者**: クロードエルダー  
+**作成日**: 2025年7月19日
+**作成者**: クロードエルダー
 **バージョン**: 1.0
 
 ## 🎯 Feature Branch戦略
@@ -14,7 +14,7 @@
 
 #### 分割が必要なケース
 - 複数の技術領域にまたがる
-- 完了まで2週間以上かかる  
+- 完了まで2週間以上かかる
 - 1000行以上の変更が予想される
 - 複数人での作業が前提
 
@@ -25,7 +25,7 @@
 
 #### 親Issue運用
 ```markdown
-## 📊 進捗管理  
+## 📊 進捗管理
 - [ ] #51 [機能名] - データベース設計
 - [ ] #52 [機能名] - API実装
 - [ ] #53 [機能名] - フロントエンド統合
@@ -270,13 +270,13 @@ graph LR
 [alias]
     # Feature Branch作成
     fb = "!f() { git checkout -b feature/issue-$1-$2; }; f"
-    
+
     # 現在のブランチ名を表示
     current = branch --show-current
-    
+
     # きれいなログ表示
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-    
+
     # マージ済みブランチの削除
     cleanup = "!git branch --merged | grep -v '\\*\\|main\\|develop' | xargs -n 1 git branch -d"
 ```

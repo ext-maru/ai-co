@@ -44,16 +44,16 @@ show_help() {
 detect_changes() {
     local checksum_file="/tmp/ai_company_watch_checksum"
     local new_checksum_file="/tmp/ai_company_watch_checksum_new"
-    
+
     # チェックサムを計算
     find "${WATCH_DIRS[@]}" -name "*.py" -type f -exec md5sum {} \; 2>/dev/null | sort > "$new_checksum_file"
-    
+
     # 初回実行時
     if [ ! -f "$checksum_file" ]; then
         mv "$new_checksum_file" "$checksum_file"
         return 1  # 変更なし
     fi
-    
+
     # 差分チェック
     if ! diff -q "$checksum_file" "$new_checksum_file" > /dev/null 2>&1; then
         # 変更されたファイルを表示
@@ -63,7 +63,7 @@ detect_changes() {
                 echo -e "  ${BLUE}↻${NC} $(basename "$file")"
             fi
         done
-        
+
         mv "$new_checksum_file" "$checksum_file"
         return 0  # 変更あり
     else
@@ -75,48 +75,48 @@ detect_changes() {
 # テスト実行
 run_tests() {
     local start_time=$(date +%s)
-    
+
     echo -e "\n${GREEN}🧪 テスト実行中...${NC}"
-    
+
     # 仮想環境をアクティベート
     source "$VENV_PATH/bin/activate"
-    
+
     # 自動テストスクリプトを実行
     python3 "$AUTO_TEST_SCRIPT"
     local result=$?
-    
+
     local end_time=$(date +%s)
     local duration=$((end_time - start_time))
-    
+
     if [ $result -eq 0 ]; then
         echo -e "${GREEN}✅ テスト成功 (${duration}秒)${NC}"
-        
+
         # 成功時の通知
         if [ "$NOTIFY_SLACK" = true ]; then
             notify_slack "✅ テスト成功 - 変更は安全です (${duration}秒)"
         fi
     else
         echo -e "${RED}❌ テスト失敗 (${duration}秒)${NC}"
-        
+
         # 失敗時の通知
         if [ "$NOTIFY_SLACK" = true ]; then
             notify_slack "❌ テスト失敗 - 修正が必要です"
         fi
-        
+
         # 自動修正を試みる
         if [ "$AUTO_FIX" = true ]; then
             echo -e "${YELLOW}🔧 自動修正を試みています...${NC}"
             # TODO: 自動修正ロジックの実装
         fi
     fi
-    
+
     return $result
 }
 
 # Slack通知
 notify_slack() {
     local message="$1"
-    
+
     if [ -f "$PROJECT_DIR/libs/slack_notifier.py" ]; then
         python3 -c "
 from libs.slack_notifier import SlackNotifier
@@ -150,7 +150,7 @@ main() {
     INTERVAL=2
     AUTO_FIX=false
     NOTIFY_SLACK=false
-    
+
     # 引数解析
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -177,17 +177,17 @@ main() {
                 ;;
         esac
     done
-    
+
     # シグナルハンドラ設定
     trap cleanup SIGINT SIGTERM
-    
+
     # カウンター初期化
     CHECK_COUNT=0
     CHANGE_COUNT=0
     TEST_COUNT=0
     SUCCESS_COUNT=0
     FAIL_COUNT=0
-    
+
     # 初期メッセージ
     echo -e "${GREEN}🔍 AI Company Test Watch${NC}"
     echo -e "${BLUE}監視中のディレクトリ:${NC}"
@@ -196,24 +196,24 @@ main() {
     done
     echo -e "${BLUE}チェック間隔: ${INTERVAL}秒${NC}"
     echo -e "${YELLOW}終了するには Ctrl+C を押してください${NC}\n"
-    
+
     # 初回のチェックサム作成
     detect_changes > /dev/null 2>&1
-    
+
     # 監視ループ
     while true; do
         CHECK_COUNT=$((CHECK_COUNT + 1))
-        
+
         # プログレス表示
         echo -ne "\r${BLUE}⏳ チェック中... (#$CHECK_COUNT)${NC}"
-        
+
         # 変更検知
         if detect_changes; then
             CHANGE_COUNT=$((CHANGE_COUNT + 1))
-            
+
             # 少し待機（連続した変更をまとめるため）
             sleep 0.5
-            
+
             # テスト実行
             TEST_COUNT=$((TEST_COUNT + 1))
             if run_tests; then
@@ -221,13 +221,13 @@ main() {
             else
                 FAIL_COUNT=$((FAIL_COUNT + 1))
             fi
-            
+
             echo -e "\n${BLUE}監視を継続します...${NC}"
         else
             # 変更なしの場合は改行をクリア
             echo -ne "\r                                        \r"
         fi
-        
+
         # 指定された間隔で待機
         sleep "$INTERVAL"
     done

@@ -4,8 +4,8 @@ AI Elder Settings - 最新のエルダー組織設定表示コマンド
 最新のエルダーツリーとエルダーズギルドの設定を効率的に表示
 """
 
-import sys
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -13,43 +13,50 @@ from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from rich.console import Console
-    from rich.tree import Tree
-    from rich.table import Table
-    from rich.panel import Panel
-    from rich.layout import Layout
     from rich import box
+    from rich.console import Console
+    from rich.layout import Layout
+    from rich.panel import Panel
+    from rich.table import Table
+    from rich.tree import Tree
 except ImportError:
     print("Rich library not found. Installing...")
     os.system(f"{sys.executable} -m pip install rich")
-    from rich.console import Console
-    from rich.tree import Tree
-    from rich.table import Table
-    from rich.panel import Panel
-    from rich.layout import Layout
     from rich import box
+    from rich.console import Console
+    from rich.layout import Layout
+    from rich.panel import Panel
+    from rich.table import Table
+    from rich.tree import Tree
 
 console = Console()
 
+
 class ElderSettingsDisplay:
     """エルダー設定表示システム"""
-    
+
     def __init__(self):
         self.console = console
-        
+
     def show_elder_tree(self):
         """エルダーツリー構造を表示"""
         tree = Tree("🌟 [bold yellow]グランドエルダーmaru[/bold yellow] (Grand Elder maru)")
-        
+
         claude = tree.add("🤖 [bold cyan]クロードエルダー[/bold cyan] (Claude Elder)")
-        
+
         # 4賢者
         sages = claude.add("🧙‍♂️ [bold green]4賢者[/bold green] (Four Sages/Elders)")
-        sages.add("📚 [yellow]ナレッジ賢者[/yellow] (Knowledge Sage)\n   ├── 知識ベース管理\n   └── 文書品質保証")
-        sages.add("📋 [blue]タスク賢者[/blue] (Task Oracle)\n   ├── タスク優先順位決定\n   └── リソース配分最適化")
+        sages.add(
+            "📚 [yellow]ナレッジ賢者[/yellow] (Knowledge Sage)\n   ├── 知識ベース管理\n   └── 文書品質保証"
+        )
+        sages.add(
+            "📋 [blue]タスク賢者[/blue] (Task Oracle)\n   ├── タスク優先順位決定\n   └── リソース配分最適化"
+        )
         sages.add("🚨 [red]インシデント賢者[/red] (Crisis Sage)\n   ├── 緊急対応指揮\n   └── リスク評価")
-        sages.add("🔍 [magenta]RAG賢者[/magenta] (Search Mystic)\n   ├── 情報検索最適化\n   └── コンテキスト分析")
-        
+        sages.add(
+            "🔍 [magenta]RAG賢者[/magenta] (Search Mystic)\n   ├── 情報検索最適化\n   └── コンテキスト分析"
+        )
+
         # エルダー評議会
         council = claude.add("🏛️ [bold blue]エルダー評議会[/bold blue] (Elder Council)")
         council.add("👤 評議会議長")
@@ -57,34 +64,44 @@ class ElderSettingsDisplay:
         council.add("👤 品質評議員")
         council.add("👤 運用評議員")
         council.add("👤 戦略評議員")
-        
+
         # エルダーサーバント
-        servants = claude.add("🤖 [bold magenta]エルダーサーバント[/bold magenta] (Elder Servants)")
-        servants.add("🛡️ [red]インシデント騎士団[/red] (Incident Knights)\n   ├── 24/7監視体制\n   └── 自動対応システム")
-        servants.add("🔨 [yellow]ドワーフ工房[/yellow] (Dwarf Workshop)\n   ├── テスト自動生成\n   └── カバレッジ向上")
-        servants.add("🧙‍♂️ [blue]RAGウィザーズ[/blue] (RAG Wizards)\n   ├── 知識抽出・整理\n   └── コンテキスト強化")
-        servants.add("🧝‍♂️ [green]エルフの森[/green] (Elf Forest)\n   ├── コード品質魔法\n   └── 自動修復システム")
-        
+        servants = claude.add(
+            "🤖 [bold magenta]エルダーサーバント[/bold magenta] (Elder Servants)"
+        )
+        servants.add(
+            "🛡️ [red]インシデント騎士団[/red] (Incident Knights)\n   ├── 24/7監視体制\n   └── 自動対応システム"
+        )
+        servants.add(
+            "🔨 [yellow]ドワーフ工房[/yellow] (Dwarf Workshop)\n   ├── テスト自動生成\n   └── カバレッジ向上"
+        )
+        servants.add(
+            "🧙‍♂️ [blue]RAGウィザーズ[/blue] (RAG Wizards)\n   ├── 知識抽出・整理\n   └── コンテキスト強化"
+        )
+        servants.add(
+            "🧝‍♂️ [green]エルフの森[/green] (Elf Forest)\n   ├── コード品質魔法\n   └── 自動修復システム"
+        )
+
         panel = Panel(tree, title="エルダーツリー (Elder Tree)", border_style="bold cyan")
         self.console.print(panel)
-    
+
     def show_hierarchy_table(self):
         """階層構造テーブルを表示"""
         table = Table(title="エルダーズギルド階層構造", box=box.DOUBLE_EDGE)
-        
+
         table.add_column("階層", style="cyan", no_wrap=True)
         table.add_column("役職", style="magenta")
         table.add_column("責任範囲", style="green")
         table.add_column("メンバー", style="yellow")
-        
+
         table.add_row("Level 0", "グランドエルダー", "全体統治・最終決定権", "maru")
         table.add_row("Level 1", "クロードエルダー", "実行責任・日常運営", "Claude")
         table.add_row("Level 2", "4賢者", "専門領域統括", "Knowledge, Task,\nIncident, RAG")
         table.add_row("Level 2", "エルダー評議会", "意思決定・承認", "5名の評議員")
         table.add_row("Level 3", "エルダーサーバント", "実行部隊", "騎士団, ドワーフ,\nウィザード, エルフ")
-        
+
         self.console.print(table)
-    
+
     def show_latest_settings(self):
         """最新設定情報を表示"""
         settings_text = f"""
@@ -119,10 +136,14 @@ class ElderSettingsDisplay:
 • ai-elder-settings - 本設定表示
 • ai-elder cc - ClaudeCode向けナレッジ提供
 """
-        
-        panel = Panel(settings_text.strip(), title="AI Company Elder Settings", border_style="bold green")
+
+        panel = Panel(
+            settings_text.strip(),
+            title="AI Company Elder Settings",
+            border_style="bold green",
+        )
         self.console.print(panel)
-    
+
     def show_quick_reference(self):
         """クイックリファレンスを表示"""
         ref_text = """
@@ -144,10 +165,10 @@ class ElderSettingsDisplay:
 • ai-elder-council emergency - 緊急評議会召集
 • ai-elder incident         - インシデント対応開始
 """
-        
+
         panel = Panel(ref_text.strip(), title="Quick Reference", border_style="yellow")
         self.console.print(panel)
-    
+
     def run(self, command=None):
         """コマンド実行"""
         if command == "tree":
@@ -160,7 +181,9 @@ class ElderSettingsDisplay:
             self.show_quick_reference()
         else:
             # すべて表示
-            self.console.print("\n[bold cyan]🏛️ AI Company Elder Settings Display System[/bold cyan]\n")
+            self.console.print(
+                "\n[bold cyan]🏛️ AI Company Elder Settings Display System[/bold cyan]\n"
+            )
             self.show_elder_tree()
             self.console.print()
             self.show_hierarchy_table()
@@ -169,15 +192,17 @@ class ElderSettingsDisplay:
             self.console.print()
             self.show_quick_reference()
 
+
 def main():
     """メイン実行関数"""
     display = ElderSettingsDisplay()
-    
+
     if len(sys.argv) > 1:
         command = sys.argv[1].lower()
         display.run(command)
     else:
         display.run()
+
 
 if __name__ == "__main__":
     main()

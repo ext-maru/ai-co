@@ -96,7 +96,7 @@ success = manager.create_template(
     worker_type='task',
     template_name='advanced',
     template_content=content,
-    variables=['task_id', 'task_type', 'priority', 'user_prompt', 
+    variables=['task_id', 'task_type', 'priority', 'user_prompt',
                'rag_context', 'context_files', 'performance_hints'],
     description='Advanced template with comprehensive instructions'
 )

@@ -6,14 +6,15 @@ Generates basic tests for modules without existing test coverage
 
 import ast
 import os
-from pathlib import Path
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
 class SimpleFunction:
     """Simple function information"""
+
     name: str
     args: List[str]
     is_async: bool = False
@@ -24,6 +25,7 @@ class SimpleFunction:
 @dataclass
 class SimpleClass:
     """Simple class information"""
+
     name: str
     methods: List[SimpleFunction]
     has_init: bool = False
@@ -31,18 +33,18 @@ class SimpleClass:
 
 class SimpleASTAnalyzer:
     """Simple AST analyzer for extracting basic information"""
-    
+
     def analyze_file(self, file_path: Path) -> Dict[str, Any]:
         """Analyze a Python file and extract basic info"""
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 content = f.read()
-                
+
             tree = ast.parse(content)
-            
+
             classes = []
             functions = []
-            
+
             for node in tree.body:
                 if isinstance(node, ast.ClassDef):
                     class_info = self._analyze_class(node)
@@ -50,265 +52,279 @@ class SimpleASTAnalyzer:
                 elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     func_info = self._analyze_function(node)
                     functions.append(func_info)
-                    
-            return {
-                'file_path': file_path,
-                'classes': classes,
-                'functions': functions
-            }
+
+            return {"file_path": file_path, "classes": classes, "functions": functions}
         except Exception as e:
             print(f"Error analyzing {file_path}: {e}")
-            return {'file_path': file_path, 'classes': [], 'functions': []}
-            
+            return {"file_path": file_path, "classes": [], "functions": []}
+
     def _analyze_class(self, node: ast.ClassDef) -> SimpleClass:
         """Analyze a class definition"""
         methods = []
         has_init = False
-        
+
         for item in node.body:
             if isinstance(item, (ast.FunctionDef, ast.AsyncFunctionDef)):
-                func_info = self._analyze_function(item, is_method=True, class_name=node.name)
+                func_info = self._analyze_function(
+                    item, is_method=True, class_name=node.name
+                )
                 methods.append(func_info)
-                if func_info.name == '__init__':
+                if func_info.name == "__init__":
                     has_init = True
-                    
-        return SimpleClass(
-            name=node.name,
-            methods=methods,
-            has_init=has_init
-        )
-        
-    def _analyze_function(self, node: ast.FunctionDef, is_method: bool = False, class_name: str = None) -> SimpleFunction:
+
+        return SimpleClass(name=node.name, methods=methods, has_init=has_init)
+
+    def _analyze_function(
+        self, node: ast.FunctionDef, is_method: bool = False, class_name: str = None
+    ) -> SimpleFunction:
         """Analyze a function definition"""
-        args = [arg.arg for arg in node.args.args if arg.arg != 'self']
-        
+        args = [arg.arg for arg in node.args.args if arg.arg != "self"]
+
         return SimpleFunction(
             name=node.name,
             args=args,
             is_async=isinstance(node, ast.AsyncFunctionDef),
             is_method=is_method,
-            class_name=class_name
+            class_name=class_name,
         )
 
 
 class BasicTestGenerator:
     """Generates basic tests for Python modules"""
-    
+
     def __init__(self):
         self.analyzer = SimpleASTAnalyzer()
-        
+
     def generate_test_file(self, module_path: Path) -> str:
         """Generate a basic test file for a module"""
         # Analyze the module
         analysis = self.analyzer.analyze_file(module_path)
-        
+
         # Generate test code
         test_code = []
-        
+
         # Add header
         test_code.extend(self._generate_header(module_path))
-        
+
         # Generate tests for classes
-        for class_info in analysis['classes']:
+        for class_info in analysis["classes"]:
             test_code.extend(self._generate_class_tests(class_info, module_path))
-            
+
         # Generate tests for standalone functions
-        for func_info in analysis['functions']:
+        for func_info in analysis["functions"]:
             test_code.extend(self._generate_function_tests(func_info, module_path))
-            
-        return '\n'.join(test_code)
-        
+
+        return "\n".join(test_code)
+
     def _generate_header(self, module_path: Path) -> List[str]:
         """Generate test file header"""
         module_name = module_path.stem
-        import_path = str(module_path).replace('/', '.').replace('.py', '')
-        
+        import_path = str(module_path).replace("/", ".").replace(".py", "")
+
         # Clean up import path
-        if import_path.startswith('./'):
+        if import_path.startswith("./"):
             import_path = import_path[2:]
-        if import_path.startswith('.'):
+        if import_path.startswith("."):
             import_path = import_path[1:]
-            
+
         return [
-            f'#!/usr/bin/env python3',
+            f"#!/usr/bin/env python3",
             f'"""',
-            f'Generated tests for {module_name}',
-            f'Generated by Auto Test Generator',
+            f"Generated tests for {module_name}",
+            f"Generated by Auto Test Generator",
             f'"""',
-            '',
-            'import pytest',
-            'from unittest.mock import Mock, patch, MagicMock',
-            'import sys',
-            'from pathlib import Path',
-            '',
-            '# Add project root to path',
-            'sys.path.insert(0, str(Path(__file__).parent.parent.parent))',
-            '',
-            f'try:',
-            f'    from {import_path} import *',
-            f'except ImportError as e:',
+            "",
+            "import pytest",
+            "from unittest.mock import Mock, patch, MagicMock",
+            "import sys",
+            "from pathlib import Path",
+            "",
+            "# Add project root to path",
+            "sys.path.insert(0, str(Path(__file__).parent.parent.parent))",
+            "",
+            f"try:",
+            f"    from {import_path} import *",
+            f"except ImportError as e:",
             f'    pytest.skip(f"Could not import {import_path}: {{e}}", allow_module_level=True)',
-            '',
-            ''
+            "",
+            "",
         ]
-        
-    def _generate_class_tests(self, class_info: SimpleClass, module_path: Path) -> List[str]:
+
+    def _generate_class_tests(
+        self, class_info: SimpleClass, module_path: Path
+    ) -> List[str]:
         """Generate tests for a class"""
         test_code = [
-            f'class Test{class_info.name}:',
+            f"class Test{class_info.name}:",
             f'    """Tests for {class_info.name}"""',
-            '',
-            '    @pytest.fixture',
-            '    def instance(self):',
+            "",
+            "    @pytest.fixture",
+            "    def instance(self):",
             '        """Create instance for testing"""',
         ]
-        
+
         # Generate instance creation
         if class_info.has_init:
-            test_code.extend([
-                '        try:',
-                f'            return {class_info.name}()',
-                '        except TypeError:',
-                '            # Handle case where __init__ requires arguments',
-                f'            return {class_info.name}(None, None)',
-            ])
+            test_code.extend(
+                [
+                    "        try:",
+                    f"            return {class_info.name}()",
+                    "        except TypeError:",
+                    "            # Handle case where __init__ requires arguments",
+                    f"            return {class_info.name}(None, None)",
+                ]
+            )
         else:
-            test_code.append(f'        return {class_info.name}()')
-            
-        test_code.extend(['', ''])
-        
+            test_code.append(f"        return {class_info.name}()")
+
+        test_code.extend(["", ""])
+
         # Test initialization
-        test_code.extend([
-            '    def test_initialization(self, instance):',
-            f'        """Test {class_info.name} can be initialized"""',
-            '        assert instance is not None',
-            f'        assert isinstance(instance, {class_info.name})',
-            '',
-            ''
-        ])
-        
+        test_code.extend(
+            [
+                "    def test_initialization(self, instance):",
+                f'        """Test {class_info.name} can be initialized"""',
+                "        assert instance is not None",
+                f"        assert isinstance(instance, {class_info.name})",
+                "",
+                "",
+            ]
+        )
+
         # Test each method
         for method in class_info.methods:
-            if method.name.startswith('_') and method.name != '__init__':
+            if method.name.startswith("_") and method.name != "__init__":
                 continue  # Skip private methods
-                
+
             test_code.extend(self._generate_method_test(method, class_info.name))
-            
+
         return test_code
-        
-    def _generate_method_test(self, method: SimpleFunction, class_name: str) -> List[str]:
+
+    def _generate_method_test(
+        self, method: SimpleFunction, class_name: str
+    ) -> List[str]:
         """Generate test for a method"""
-        test_name = f'test_{method.name}'
-        if method.name == '__init__':
+        test_name = f"test_{method.name}"
+        if method.name == "__init__":
             return []  # Already tested in initialization
-            
+
         # Generate method arguments
         if method.args:
-            args_str = ', '.join(['None'] * len(method.args))
-            call_str = f'instance.{method.name}({args_str})'
+            args_str = ", ".join(["None"] * len(method.args))
+            call_str = f"instance.{method.name}({args_str})"
         else:
-            call_str = f'instance.{method.name}()'
-            
+            call_str = f"instance.{method.name}()"
+
         test_code = [
-            f'    def {test_name}(self, instance):',
+            f"    def {test_name}(self, instance):",
             f'        """Test {method.name} method"""',
-            '        try:',
+            "        try:",
         ]
-        
+
         if method.is_async:
-            test_code.extend([
-                '            import asyncio',
-                f'            result = asyncio.run({call_str})',
-            ])
+            test_code.extend(
+                [
+                    "            import asyncio",
+                    f"            result = asyncio.run({call_str})",
+                ]
+            )
         else:
-            test_code.append(f'            result = {call_str}')
-            
-        test_code.extend([
-            '            # Basic smoke test - method should not crash',
-            '            assert True  # If we get here, method didn\'t crash',
-            '        except NotImplementedError:',
-            '            pytest.skip("Method not implemented")',
-            '        except Exception as e:',
-            '            # Method exists but may need proper arguments',
-            f'            assert hasattr(instance, "{method.name}")',
-            '',
-            ''
-        ])
-        
+            test_code.append(f"            result = {call_str}")
+
+        test_code.extend(
+            [
+                "            # Basic smoke test - method should not crash",
+                "            assert True  # If we get here, method didn't crash",
+                "        except NotImplementedError:",
+                '            pytest.skip("Method not implemented")',
+                "        except Exception as e:",
+                "            # Method exists but may need proper arguments",
+                f'            assert hasattr(instance, "{method.name}")',
+                "",
+                "",
+            ]
+        )
+
         return test_code
-        
-    def _generate_function_tests(self, func_info: SimpleFunction, module_path: Path) -> List[str]:
+
+    def _generate_function_tests(
+        self, func_info: SimpleFunction, module_path: Path
+    ) -> List[str]:
         """Generate tests for standalone functions"""
-        test_name = f'test_{func_info.name}'
-        
+        test_name = f"test_{func_info.name}"
+
         # Generate function arguments
         if func_info.args:
-            args_str = ', '.join(['None'] * len(func_info.args))
-            call_str = f'{func_info.name}({args_str})'
+            args_str = ", ".join(["None"] * len(func_info.args))
+            call_str = f"{func_info.name}({args_str})"
         else:
-            call_str = f'{func_info.name}()'
-            
+            call_str = f"{func_info.name}()"
+
         test_code = [
-            f'def {test_name}():',
+            f"def {test_name}():",
             f'    """Test {func_info.name} function"""',
-            '    try:',
+            "    try:",
         ]
-        
+
         if func_info.is_async:
-            test_code.extend([
-                '        import asyncio',
-                f'        result = asyncio.run({call_str})',
-            ])
+            test_code.extend(
+                [
+                    "        import asyncio",
+                    f"        result = asyncio.run({call_str})",
+                ]
+            )
         else:
-            test_code.append(f'        result = {call_str}')
-            
-        test_code.extend([
-            '        # Basic smoke test - function should not crash',
-            '        assert True  # If we get here, function didn\'t crash',
-            '    except NotImplementedError:',
-            '        pytest.skip("Function not implemented")',
-            '    except Exception as e:',
-            '        # Function exists but may need proper arguments',
-            f'        assert callable({func_info.name})',
-            '',
-            ''
-        ])
-        
+            test_code.append(f"        result = {call_str}")
+
+        test_code.extend(
+            [
+                "        # Basic smoke test - function should not crash",
+                "        assert True  # If we get here, function didn't crash",
+                "    except NotImplementedError:",
+                '        pytest.skip("Function not implemented")',
+                "    except Exception as e:",
+                "        # Function exists but may need proper arguments",
+                f"        assert callable({func_info.name})",
+                "",
+                "",
+            ]
+        )
+
         return test_code
 
 
 def generate_tests_for_modules(module_paths: List[Path], output_dir: Path):
     """Generate tests for multiple modules"""
     generator = BasicTestGenerator()
-    
+
     for module_path in module_paths:
         if not module_path.exists():
             print(f"Module not found: {module_path}")
             continue
-            
+
         print(f"Generating tests for: {module_path}")
-        
+
         # Generate test content
         test_content = generator.generate_test_file(module_path)
-        
+
         # Create output file
         test_filename = f"test_{module_path.stem}_generated.py"
         test_path = output_dir / test_filename
-        
+
         # Ensure output directory exists
         test_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Save test file
-        with open(test_path, 'w') as f:
+        with open(test_path, "w") as f:
             f.write(test_content)
-            
+
         print(f"  Generated: {test_path}")
 
 
 def main():
     """Main function for simple test generation"""
     print("=== Simple Test Generator ===\n")
-    
+
     # Define modules to generate tests for
     modules_to_test = [
         Path("core/rate_limiter.py"),
@@ -316,33 +332,35 @@ def main():
         Path("core/retry_decorator.py"),
         Path("libs/api_key_manager.py"),
         Path("libs/config_validator.py"),
-        Path("commands/ai_config.py")
+        Path("commands/ai_config.py"),
     ]
-    
+
     # Filter existing modules
     existing_modules = [m for m in modules_to_test if m.exists()]
-    
+
     if not existing_modules:
         print("No target modules found. Checking available modules...")
-        
+
         # Find some modules to test
         for pattern in ["core/*.py", "libs/*.py", "commands/*.py"]:
-            found_modules = list(Path(".").glob(pattern))[:2]  # Limit to 2 per directory
+            found_modules = list(Path(".").glob(pattern))[
+                :2
+            ]  # Limit to 2 per directory
             existing_modules.extend(found_modules)
-            
+
         existing_modules = existing_modules[:6]  # Limit total to 6
-    
+
     print(f"Generating tests for {len(existing_modules)} modules:")
     for module in existing_modules:
         print(f"  - {module}")
-    
+
     # Create output directory
     output_dir = Path("tests/generated")
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Generate tests
     generate_tests_for_modules(existing_modules, output_dir)
-    
+
     print(f"\n=== Generation Complete ===")
     print(f"Generated test files in: {output_dir}")
     print("Run 'pytest tests/generated/' to execute the generated tests")

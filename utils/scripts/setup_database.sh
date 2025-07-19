@@ -43,18 +43,18 @@ log_error() {
 # ディレクトリ作成
 create_directories() {
     log "必要なディレクトリを作成中..."
-    
+
     mkdir -p "$DB_DIR"
     mkdir -p "$LOG_DIR"
     mkdir -p "$BACKUP_DIR"
-    
+
     log_success "ディレクトリ作成完了"
 }
 
 # SQLiteがインストールされているかチェック
 check_sqlite() {
     log "SQLiteの確認中..."
-    
+
     if ! command -v sqlite3 &> /dev/null; then
         log_error "SQLite3がインストールされていません"
         log "Ubuntu/Debian: sudo apt-get install sqlite3"
@@ -62,7 +62,7 @@ check_sqlite() {
         log "macOS: brew install sqlite"
         exit 1
     fi
-    
+
     local sqlite_version=$(sqlite3 --version | cut -d' ' -f1)
     log_success "SQLite3が利用可能です (バージョン: $sqlite_version)"
 }
@@ -71,10 +71,10 @@ check_sqlite() {
 backup_existing_database() {
     if [ -f "$DATABASE_PATH" ]; then
         log "既存のデータベースをバックアップ中..."
-        
+
         local backup_file="${BACKUP_DIR}/ai_co_backup_$(date +%Y%m%d_%H%M%S).db"
         cp "$DATABASE_PATH" "$backup_file"
-        
+
         log_success "バックアップ完了: $backup_file"
     fi
 }
@@ -82,7 +82,7 @@ backup_existing_database() {
 # メインテーブル作成
 create_main_tables() {
     log "メインテーブルを作成中..."
-    
+
     sqlite3 "$DATABASE_PATH" << 'EOF'
 -- タスク履歴テーブル
 CREATE TABLE IF NOT EXISTS task_history (
@@ -114,7 +114,7 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- プロジェクトテーブル  
+-- プロジェクトテーブル
 CREATE TABLE IF NOT EXISTS projects (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL UNIQUE,
@@ -180,7 +180,7 @@ EOF
 # インデックス作成
 create_indexes() {
     log "インデックスを作成中..."
-    
+
     sqlite3 "$DATABASE_PATH" << 'EOF'
 -- task_history テーブルのインデックス
 CREATE INDEX IF NOT EXISTS idx_task_history_task_id ON task_history(task_id);
@@ -226,7 +226,7 @@ EOF
 # トリガー作成
 create_triggers() {
     log "トリガーを作成中..."
-    
+
     sqlite3 "$DATABASE_PATH" << 'EOF'
 -- task_history の updated_at 自動更新トリガー
 CREATE TRIGGER IF NOT EXISTS update_task_history_timestamp
@@ -275,14 +275,14 @@ EOF
 # 初期データ投入
 insert_initial_data() {
     log "初期データを投入中..."
-    
+
     sqlite3 "$DATABASE_PATH" << 'EOF'
 -- デフォルト管理者ユーザー
-INSERT OR IGNORE INTO users (username, email, full_name, role, is_active) 
+INSERT OR IGNORE INTO users (username, email, full_name, role, is_active)
 VALUES ('admin', 'admin@ai-co.local', 'System Administrator', 'admin', 1);
 
 -- デフォルトプロジェクト
-INSERT OR IGNORE INTO projects (name, description, status, owner_id) 
+INSERT OR IGNORE INTO projects (name, description, status, owner_id)
 VALUES ('default', 'Default project for general tasks', 'active', 1);
 
 -- システム設定のデフォルト値
@@ -299,12 +299,12 @@ INSERT OR IGNORE INTO system_settings (key, value, description, category) VALUES
 ('timezone', 'Asia/Tokyo', 'Default timezone', 'system');
 
 -- サンプルタスク（オプション）
-INSERT OR IGNORE INTO task_history (task_id, worker, model, prompt, response, summary, status, task_type, priority) 
+INSERT OR IGNORE INTO task_history (task_id, worker, model, prompt, response, summary, status, task_type, priority)
 VALUES (
-    'setup-001', 
-    'system', 
-    'setup', 
-    'Database initialization', 
+    'setup-001',
+    'system',
+    'setup',
+    'Database initialization',
     'Database has been successfully initialized with all required tables and initial data.',
     'Database setup completed successfully',
     'completed',
@@ -319,7 +319,7 @@ EOF
 # データベース最適化
 optimize_database() {
     log "データベースを最適化中..."
-    
+
     sqlite3 "$DATABASE_PATH" << 'EOF'
 -- 外部キー制約を有効化
 PRAGMA foreign_keys = ON;
@@ -352,7 +352,7 @@ EOF
 # データベース整合性チェック
 verify_database() {
     log "データベースの整合性をチェック中..."
-    
+
     local integrity_check=$(sqlite3 "$DATABASE_PATH" "PRAGMA integrity_check;")
     if [ "$integrity_check" = "ok" ]; then
         log_success "データベースの整合性チェック: OK"
@@ -361,7 +361,7 @@ verify_database() {
         log_error "$integrity_check"
         return 1
     fi
-    
+
     # テーブル一覧表示
     log "作成されたテーブル一覧:"
     sqlite3 "$DATABASE_PATH" ".tables" | while read table; do
@@ -372,15 +372,15 @@ verify_database() {
 # 権限設定
 set_permissions() {
     log "ファイル権限を設定中..."
-    
+
     # データベースファイルの権限設定
     chmod 660 "$DATABASE_PATH"
-    
+
     # ディレクトリの権限設定
     chmod 755 "$DB_DIR"
     chmod 755 "$LOG_DIR"
     chmod 755 "$BACKUP_DIR"
-    
+
     log_success "権限設定完了"
 }
 
@@ -407,7 +407,7 @@ show_progress() {
     local current=$1
     local total=$2
     local desc=$3
-    
+
     local progress=$((current * 100 / total))
     printf "\r${BLUE}[%d/%d] (%d%%) %s${NC}" "$current" "$total" "$progress" "$desc"
     if [ "$current" -eq "$total" ]; then
@@ -422,7 +422,7 @@ main() {
     local verify_only=false
     local no_backup=false
     local no_initial_data=false
-    
+
     # 引数解析
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -457,7 +457,7 @@ main() {
                 ;;
         esac
     done
-    
+
     # バナー表示
     echo ""
     echo -e "${BLUE}╔════════════════════════════════════╗${NC}"
@@ -465,10 +465,10 @@ main() {
     echo -e "${BLUE}║      SQLite Initialization         ║${NC}"
     echo -e "${BLUE}╚════════════════════════════════════╝${NC}"
     echo ""
-    
+
     log "データベース初期化を開始します..."
     log "データベースパス: $DATABASE_PATH"
-    
+
     # バックアップのみの場合
     if [ "$backup_only" = true ]; then
         create_directories
@@ -476,7 +476,7 @@ main() {
         log_success "バックアップ処理が完了しました"
         exit 0
     fi
-    
+
     # 検証のみの場合
     if [ "$verify_only" = true ]; then
         if [ ! -f "$DATABASE_PATH" ]; then
@@ -487,7 +487,7 @@ main() {
         log_success "検証処理が完了しました"
         exit 0
     fi
-    
+
     # 既存データベースの処理
     if [ -f "$DATABASE_PATH" ] && [ "$force" = false ]; then
         log_warning "データベースファイルが既に存在します: $DATABASE_PATH"
@@ -498,27 +498,27 @@ main() {
             exit 0
         fi
     fi
-    
+
     # 強制再作成の場合は既存ファイルを削除
     if [ "$force" = true ] && [ -f "$DATABASE_PATH" ]; then
         log "既存のデータベースを削除中..."
         rm -f "$DATABASE_PATH"
     fi
-    
+
     # 処理ステップ
     local steps=7
     local current_step=0
-    
+
     # 1. ディレクトリ作成
     ((current_step++))
     show_progress $current_step $steps "ディレクトリ作成中..."
     create_directories
-    
+
     # 2. SQLiteチェック
     ((current_step++))
     show_progress $current_step $steps "SQLite確認中..."
     check_sqlite
-    
+
     # 3. バックアップ
     if [ "$no_backup" = false ]; then
         ((current_step++))
@@ -528,18 +528,18 @@ main() {
         ((current_step++))
         show_progress $current_step $steps "バックアップをスキップ..."
     fi
-    
+
     # 4. テーブル作成
     ((current_step++))
     show_progress $current_step $steps "テーブル作成中..."
     create_main_tables
-    
+
     # 5. インデックス・トリガー作成
     ((current_step++))
     show_progress $current_step $steps "インデックス・トリガー作成中..."
     create_indexes
     create_triggers
-    
+
     # 6. 初期データ投入
     if [ "$no_initial_data" = false ]; then
         ((current_step++))
@@ -549,33 +549,33 @@ main() {
         ((current_step++))
         show_progress $current_step $steps "初期データ投入をスキップ..."
     fi
-    
+
     # 7. 最適化・権限設定
     ((current_step++))
     show_progress $current_step $steps "最適化・権限設定中..."
     optimize_database
     set_permissions
-    
+
     # 検証
     verify_database
-    
+
     echo ""
     log_success "=== データベース初期化が完了しました ==="
     log "データベースファイル: $DATABASE_PATH"
     log "ログファイル: $LOG_FILE"
     log "バックアップディレクトリ: $BACKUP_DIR"
-    
+
     # データベース情報表示
     local db_size=$(du -h "$DATABASE_PATH" | cut -f1)
     log "データベースサイズ: $db_size"
-    
+
     # 使用例
     echo ""
     log "=== 使用例 ==="
     log "SQLiteコマンドライン接続: sqlite3 $DATABASE_PATH"
     log "テーブル一覧表示: sqlite3 $DATABASE_PATH '.tables'"
     log "タスク履歴確認: sqlite3 $DATABASE_PATH 'SELECT * FROM task_history LIMIT 5;'"
-    
+
     echo ""
     log_success "セットアップが正常に完了しました！"
 }

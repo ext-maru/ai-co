@@ -53,7 +53,7 @@ scrape_configs:
   # 4賢者システムメトリクス
   - job_name: 'four_sages'
     static_configs:
-      - targets: 
+      - targets:
           - 'host.docker.internal:8001' # Knowledge Sage
           - 'host.docker.internal:8002' # Task Sage
           - 'host.docker.internal:8003' # Incident Sage

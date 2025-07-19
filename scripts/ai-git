@@ -3,77 +3,81 @@
 AI Company Git管理コマンド（ベストプラクティス対応版）
 """
 
-import sys
 import argparse
-from pathlib import Path
 import json
+import sys
+from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from libs.github_flow_manager import GitHubFlowManager
-from libs.commit_message_generator import CommitMessageGenerator
 import logging
 
-logging.basicConfig(level=logging.INFO, format='%(message)s')
+from libs.commit_message_generator import CommitMessageGenerator
+from libs.github_flow_manager import GitHubFlowManager
+
+logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
 
+
 def main():
-    parser = argparse.ArgumentParser(description='AI Company Git管理ツール（ベストプラクティス対応）')
-    
-    subparsers = parser.add_subparsers(dest='command', help='コマンド')
-    
+    parser = argparse.ArgumentParser(description="AI Company Git管理ツール（ベストプラクティス対応）")
+
+    subparsers = parser.add_subparsers(dest="command", help="コマンド")
+
     # status
-    subparsers.add_parser('status', help='Git状態を表示')
-    
+    subparsers.add_parser("status", help="Git状態を表示")
+
     # commit（改良版）
-    commit_parser = subparsers.add_parser('commit', help='ベストプラクティスに従ってコミット')
-    commit_parser.add_argument('-m', '--message', help='コミットメッセージ（省略時は自動生成）')
-    commit_parser.add_argument('--simple', action='store_true', help='シンプルなメッセージ形式を使用')
-    commit_parser.add_argument('--preview', action='store_true', help='生成されるメッセージをプレビュー')
-    commit_parser.add_argument('--validate', action='store_true', help='メッセージを検証のみ')
-    
+    commit_parser = subparsers.add_parser("commit", help="ベストプラクティスに従ってコミット")
+    commit_parser.add_argument("-m", "--message", help="コミットメッセージ（省略時は自動生成）")
+    commit_parser.add_argument("--simple", action="store_true", help="シンプルなメッセージ形式を使用")
+    commit_parser.add_argument(
+        "--preview", action="store_true", help="生成されるメッセージをプレビュー"
+    )
+    commit_parser.add_argument("--validate", action="store_true", help="メッセージを検証のみ")
+
     # feature
-    feature_parser = subparsers.add_parser('feature', help='機能ブランチを作成')
-    feature_parser.add_argument('name', help='ブランチ名')
-    
+    feature_parser = subparsers.add_parser("feature", help="機能ブランチを作成")
+    feature_parser.add_argument("name", help="ブランチ名")
+
     # pr
-    pr_parser = subparsers.add_parser('pr', help='プルリクエストを作成')
-    pr_parser.add_argument('branch', nargs='?', help='ブランチ名')
-    pr_parser.add_argument('--title', help='PRタイトル')
-    pr_parser.add_argument('--body', help='PR説明')
-    
+    pr_parser = subparsers.add_parser("pr", help="プルリクエストを作成")
+    pr_parser.add_argument("branch", nargs="?", help="ブランチ名")
+    pr_parser.add_argument("--title", help="PRタイトル")
+    pr_parser.add_argument("--body", help="PR説明")
+
     # release
-    release_parser = subparsers.add_parser('release', help='リリースを作成')
-    release_parser.add_argument('--version', help='バージョン番号')
-    
+    release_parser = subparsers.add_parser("release", help="リリースを作成")
+    release_parser.add_argument("--version", help="バージョン番号")
+
     # changelog（新機能）
-    changelog_parser = subparsers.add_parser('changelog', help='CHANGELOGを生成')
-    changelog_parser.add_argument('--from', dest='from_tag', help='開始タグ')
-    changelog_parser.add_argument('--to', default='HEAD', help='終了タグ（デフォルト: HEAD）')
-    changelog_parser.add_argument('--output', help='出力ファイル')
-    
+    changelog_parser = subparsers.add_parser("changelog", help="CHANGELOGを生成")
+    changelog_parser.add_argument("--from", dest="from_tag", help="開始タグ")
+    changelog_parser.add_argument("--to", default="HEAD", help="終了タグ（デフォルト: HEAD）")
+    changelog_parser.add_argument("--output", help="出力ファイル")
+
     # best-practices（新機能）
-    bp_parser = subparsers.add_parser('best-practices', help='コミットメッセージのベストプラクティスを表示')
-    
+    bp_parser = subparsers.add_parser("best-practices", help="コミットメッセージのベストプラクティスを表示")
+
     # analyze（新機能）
-    analyze_parser = subparsers.add_parser('analyze', help='現在の変更を分析')
-    
+    analyze_parser = subparsers.add_parser("analyze", help="現在の変更を分析")
+
     args = parser.parse_args()
-    
+
     manager = GitHubFlowManager()
-    
-    if args.command == 'status':
+
+    if args.command == "status":
         status = manager.get_status()
         print(f"🌿 Current branch: {status.get('current_branch', 'unknown')}")
         print(f"📝 Has changes: {'Yes' if status.get('has_changes') else 'No'}")
-        
-        if status.get('recent_commits'):
+
+        if status.get("recent_commits"):
             print("\n📜 Recent commits:")
-            for commit in status['recent_commits'][:5]:
+            for commit in status["recent_commits"][:5]:
                 print(f"  {commit}")
-    
-    elif args.command == 'commit':
+
+    elif args.command == "commit":
         if args.preview:
             # メッセージをプレビュー
             generator = CommitMessageGenerator()
@@ -82,7 +86,7 @@ def main():
             print("-" * 72)
             print(message)
             print("-" * 72)
-            
+
             if args.validate:
                 valid, errors = generator.validate_message(message)
                 if valid:
@@ -94,16 +98,18 @@ def main():
         else:
             # 実際にコミット
             use_best_practices = not args.simple
-            if manager.commit_changes(message=args.message, use_best_practices=use_best_practices):
+            if manager.commit_changes(
+                message=args.message, use_best_practices=use_best_practices
+            ):
                 print("✅ Committed successfully with best practices")
             else:
                 print("❌ Commit failed")
-    
-    elif args.command == 'feature':
+
+    elif args.command == "feature":
         branch = manager.create_feature_branch(args.name)
         print(f"✅ Created feature branch: {branch}")
-    
-    elif args.command == 'pr':
+
+    elif args.command == "pr":
         if args.branch:
             title = args.title or f"feat: {args.branch}"
             body = args.body or f"Auto-generated PR for {args.branch}"
@@ -113,25 +119,26 @@ def main():
                 print("❌ PR creation failed")
         else:
             print("❌ Please specify branch for PR")
-    
-    elif args.command == 'release':
+
+    elif args.command == "release":
         if manager.create_release(args.version):
             print(f"✅ Created release: {args.version or 'auto-generated'}")
         else:
             print("❌ Release failed")
-    
-    elif args.command == 'changelog':
+
+    elif args.command == "changelog":
         changelog = manager.generate_changelog(args.from_tag, args.to)
-        
+
         if args.output:
             output_path = PROJECT_ROOT / args.output
             output_path.write_text(changelog)
             print(f"✅ Changelog written to {args.output}")
         else:
             print(changelog)
-    
-    elif args.command == 'best-practices':
-        print("""
+
+    elif args.command == "best-practices":
+        print(
+            """
 # 📚 Git Commit Message Best Practices
 
 ## Conventional Commits形式
@@ -176,36 +183,40 @@ This allows the system to send emails without blocking main processes.
 
 Closes #123
 ```
-        """)
-    
-    elif args.command == 'analyze':
+        """
+        )
+
+    elif args.command == "analyze":
         generator = CommitMessageGenerator()
         changes = generator.analyze_changes()
-        
+
         print("📊 Change Analysis:")
         print(f"Files changed: {len(changes['files'])}")
-        
-        if changes['files']:
+
+        if changes["files"]:
             print("\nModified files:")
-            for file in changes['files'][:10]:
+            for file in changes["files"][:10]:
                 print(f"  - {file}")
-            
-            if len(changes['files']) > 10:
+
+            if len(changes["files"]) > 10:
                 print(f"  ... and {len(changes['files']) - 10} more")
-        
-        if changes['stats']:
+
+        if changes["stats"]:
             print(f"\n{changes['stats']}")
-        
+
         # 推奨されるコミットタイプを表示
-        if changes['files']:
-            commit_type = generator.detect_commit_type(changes['files'], changes['content'])
-            scope = generator.extract_scope(changes['files'])
+        if changes["files"]:
+            commit_type = generator.detect_commit_type(
+                changes["files"], changes["content"]
+            )
+            scope = generator.extract_scope(changes["files"])
             print(f"\nSuggested commit type: {commit_type}")
             if scope:
                 print(f"Suggested scope: {scope}")
-    
+
     else:
         parser.print_help()
+
 
 if __name__ == "__main__":
     main()

@@ -321,11 +321,11 @@
             .grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .header h1 {
                 font-size: 2rem;
             }
-            
+
             .control-buttons {
                 flex-direction: column;
                 align-items: center;
@@ -615,9 +615,9 @@
         function updateStatus(text, active) {
             const statusDot = document.getElementById('status-dot');
             const statusText = document.getElementById('status-text');
-            
+
             statusText.textContent = text;
-            
+
             if (active) {
                 statusDot.classList.add('active');
             } else {
@@ -644,7 +644,7 @@
                 html += `最終分析: ${data.generated_at || '不明'}`;
                 html += `</div>`;
                 html += `</div>`;
-                
+
                 html += `<div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">`;
                 html += `<div style="text-align: center;">`;
                 html += `<div style="font-size: 2rem; color: #2ecc71;">${data.summary.total_analyses || 0}</div>`;
@@ -655,7 +655,7 @@
                 html += `<div style="font-size: 0.9rem; opacity: 0.8;">平均信頼度</div>`;
                 html += `</div>`;
                 html += `</div>`;
-                
+
                 if (data.insights && data.insights.length > 0) {
                     html += `<div style="margin-top: 15px;">`;
                     html += `<div style="font-weight: bold; margin-bottom: 5px;">🔍 主要な洞察:</div>`;
@@ -667,7 +667,7 @@
             } else {
                 html = '<div style="text-align: center; opacity: 0.7;">分析データがありません</div>';
             }
-            
+
             document.getElementById('analytics-summary').innerHTML = html;
         }
 
@@ -676,7 +676,7 @@
                 const button = event.target;
                 button.disabled = true;
                 button.textContent = '分析中...';
-                
+
                 fetch('/analytics/api/run-analysis', { method: 'POST' })
                     .then(response => response.json())
                     .then(data => {
@@ -700,7 +700,7 @@
 
         // 初期読み込みにアナリティクスを追加
         loadAnalyticsSummary();
-        
+
         // 高度機能ダッシュボードを開く
         function openAdvancedDashboard() {
             window.open('/advanced', '_blank');

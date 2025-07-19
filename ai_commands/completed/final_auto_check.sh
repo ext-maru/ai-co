@@ -34,7 +34,7 @@ echo "│ formatting and breaking changes info.   │"
 echo "│                                         │"
 echo "│ - Feature 1 implementation              │"
 echo "│ - Feature 2 enhancement                 │"
-echo "│                                         │" 
+echo "│                                         │"
 echo "│ Refs: task_id                          │"
 echo "└─────────────────────────────────────────┘"
 

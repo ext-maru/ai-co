@@ -34,15 +34,15 @@ echo ""
 check_worker_emoji_usage() {
     local worker_name=$1
     local log_file="$PROJECT_DIR/logs/${worker_name}.log"
-    
+
     if [ -f "$log_file" ]; then
         local emoji_count=$(grep -o '[🚀✨🎉🌟💡🔥💪😎🎯🎊]' "$log_file" 2>/dev/null | wc -l || echo 0)
         local line_count=$(wc -l < "$log_file")
         local emoji_density=$(awk "BEGIN {printf \"%.1f\", $emoji_count * 100 / $line_count}")
-        
+
         echo "  Emoji usage: $emoji_count emojis in $line_count lines (${emoji_density}% density)"
         echo "[$(date)] $worker_name: $emoji_count emojis, ${emoji_density}% density" >> "$MIGRATION_LOG"
-        
+
         return $emoji_count
     else
         echo "  No log file found"
@@ -55,7 +55,7 @@ backup_worker() {
     local worker_name=$1
     local worker_file="$PROJECT_DIR/workers/${worker_name}.py"
     local backup_file="$PROJECT_DIR/workers/${worker_name}.py.pre_log_improvement"
-    
+
     if [ -f "$worker_file" ] && [ ! -f "$backup_file" ]; then
         cp "$worker_file" "$backup_file"
         echo "  Backup created: $backup_file"
@@ -66,7 +66,7 @@ backup_worker() {
 generate_improvement_recommendations() {
     local worker_name=$1
     local recommendations_file="$PROJECT_DIR/docs/log_improvement_${worker_name}.md"
-    
+
     cat > "$recommendations_file" << EOF
 # Log Improvement Recommendations for ${worker_name}
 
@@ -146,27 +146,27 @@ echo ""
 for worker in "${WORKERS[@]}"; do
     echo "Processing: $worker"
     echo "------------------------"
-    
+
     # 現状分析
     echo "Current status:"
     check_worker_emoji_usage "$worker"
     emoji_count=$?
-    
+
     # 改善が必要な場合
     if [ $emoji_count -gt 0 ]; then
         echo "  Status: Improvement needed"
-        
+
         # バックアップ作成
         backup_worker "$worker"
-        
+
         # 推奨事項生成
         generate_improvement_recommendations "$worker"
-        
+
         echo "  Ready for migration"
     else
         echo "  Status: Already professional"
     fi
-    
+
     echo ""
 done
 
@@ -203,36 +203,36 @@ def check_migration_status():
     project_dir = Path("/home/aicompany/ai_co")
     workers_dir = project_dir / "workers"
     logs_dir = project_dir / "logs"
-    
+
     print("AI Company Log Migration Status")
     print("===============================")
     print(f"Checked at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("")
-    
+
     # ワーカー別チェック
     workers = ["task_worker", "pm_worker", "result_worker", "dialog_task_worker"]
-    
+
     status_summary = {
         "migrated": [],
         "in_progress": [],
         "not_started": []
     }
-    
+
     for worker in workers:
         worker_file = workers_dir / f"{worker}.py"
         log_file = logs_dir / f"{worker}.log"
-        
+
         print(f"\n{worker}:")
         print("-" * 40)
-        
+
         # コードチェック
         if worker_file.exists():
             with open(worker_file, 'r') as f:
                 content = f.read()
-            
+
             uses_improved = "ImprovedLoggingMixin" in content or "ImprovedBaseWorker" in content
             has_old_emojis = bool(re.search(r'[🚀✨🎉🌟💡🔥💪😎🎯🎊]', content))
-            
+
             if uses_improved and not has_old_emojis:
                 print("  Code status: ✓ Migrated")
                 status_summary["migrated"].append(worker)
@@ -244,12 +244,12 @@ def check_migration_status():
                 status_summary["not_started"].append(worker)
         else:
             print("  Code status: ? File not found")
-        
+
         # ログチェック（最新100行）
         if log_file.exists():
             with open(log_file, 'r') as f:
                 lines = f.readlines()[-100:]  # 最新100行
-            
+
             content = ''.join(lines)
             emoji_count = len(re.findall(r'[🚀✨🎉🌟💡🔥💪😎🎯🎊]', content))
             professional_patterns = sum([
@@ -258,16 +258,16 @@ def check_migration_status():
                 len(re.findall(r'duration: \d+\.\d+s', content)),
                 len(re.findall(r'Metric:', content))
             ])
-            
+
             print(f"  Recent logs: {emoji_count} emojis, {professional_patterns} professional patterns")
-    
+
     # サマリー
     print("\n\nMigration Summary:")
     print("==================")
     print(f"✓ Fully migrated: {len(status_summary['migrated'])}")
     print(f"⚡ In progress: {len(status_summary['in_progress'])}")
     print(f"✗ Not started: {len(status_summary['not_started'])}")
-    
+
     # 推奨事項
     if status_summary["not_started"]:
         print("\nNext steps:")

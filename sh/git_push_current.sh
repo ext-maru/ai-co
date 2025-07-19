@@ -30,4 +30,3 @@ git commit -m "Initial commit of current ai_co state" || echo "コミットす�
 git push -u origin "$BRANCH" --force
 
 echo "GitHubへプッシュ完了。"
-

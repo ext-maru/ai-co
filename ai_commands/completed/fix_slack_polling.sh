@@ -9,18 +9,18 @@ echo ""
 # Polling Workerが動作していない場合は起動
 if ! pgrep -f "slack_polling_worker" > /dev/null; then
     echo "Slack Polling Workerを起動します..."
-    
+
     # 既存のセッションをクリーンアップ
     tmux kill-session -t slack_polling 2>/dev/null
-    
+
     # 新規起動
     tmux new-session -d -s slack_polling         "cd /home/aicompany/ai_co && source venv/bin/activate && python3 workers/slack_polling_worker.py 2>&1 | tee -a logs/slack_polling_worker.log"
-    
+
     sleep 3
-    
+
     if tmux has-session -t slack_polling 2>/dev/null; then
         echo "✅ Slack Polling Worker起動成功"
-        
+
         # 最初のログ確認
         sleep 2
         echo ""
@@ -31,7 +31,7 @@ if ! pgrep -f "slack_polling_worker" > /dev/null; then
     fi
 else
     echo "✅ Slack Polling Workerは既に動作中"
-    
+
     # ログの最新部分を確認
     echo ""
     echo "最新のログ（問題の手がかり）:"

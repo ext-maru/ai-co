@@ -92,4 +92,3 @@ echo "追加オプション:"
 echo "- 強制的にGit未追跡ファイルも削除: git clean -fd"
 echo "- データベースも削除: rm -f *.db"
 echo "- 設定ファイルのバックアップ: cp -r config config.backup"
-

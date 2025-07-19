@@ -124,7 +124,7 @@ class UnifiedInventoryManager:
         self.weapons = WeaponInventory()
         self.resources = ResourceInventory()
         self.equipment = EquipmentInventory()
-    
+
     def allocate_item(self, item_id, user_id, item_type):
         # 統一された割り当て処理
         pass

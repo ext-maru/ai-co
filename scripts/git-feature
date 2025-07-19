@@ -107,14 +107,14 @@ info "現在のブランチ: $CURRENT_BRANCH"
 # mainブランチに切り替え
 if [[ "$CURRENT_BRANCH" != "main" ]]; then
     warning "mainブランチに切り替えます..."
-    
+
     # 未コミットの変更があるかチェック
     if ! git diff --quiet || ! git diff --staged --quiet; then
         warning "未コミットの変更があります"
         echo "1) stashして続行"
         echo "2) 中止"
         read -p "選択してください (1/2): " choice
-        
+
         case $choice in
             1)
                 git stash push -m "auto-stash before creating feature branch"
@@ -128,7 +128,7 @@ if [[ "$CURRENT_BRANCH" != "main" ]]; then
                 ;;
         esac
     fi
-    
+
     git checkout main
 fi
 

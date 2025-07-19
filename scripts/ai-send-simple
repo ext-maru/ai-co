@@ -78,7 +78,7 @@ try:
         'source': 'ai-send-simple',
         'timestamp': datetime.now().isoformat()
     }
-    
+
     # Send to RabbitMQ
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
@@ -89,9 +89,9 @@ try:
         properties=pika.BasicProperties(delivery_mode=2)
     )
     connection.close()
-    
+
     print("✅ Task submitted successfully!")
-    
+
     # Priority-based message
     if '$PRIORITY' == 'critical':
         print("🚨 Critical priority - TaskWorker will process immediately")
@@ -99,7 +99,7 @@ try:
         print("⚡ High priority - TaskWorker will process soon")
     else:
         print("📡 TaskWorker will process your request...")
-        
+
 except Exception as e:
     print(f"❌ Error: {e}")
     exit(1)

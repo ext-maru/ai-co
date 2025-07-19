@@ -13,19 +13,19 @@ export const ImagePreview: React.FC<ImagePreviewProps> = ({ src, alt, onRemove }
       display: 'inline-block',
       marginRight: '10px'
     }}>
-      <img 
-        src={src} 
+      <img
+        src={src}
         alt={alt}
-        style={{ 
-          maxWidth: '100px', 
-          maxHeight: '100px', 
+        style={{
+          maxWidth: '100px',
+          maxHeight: '100px',
           objectFit: 'contain',
           border: '1px solid #ddd',
           borderRadius: '4px'
         }}
       />
       {onRemove && (
-        <button 
+        <button
           onClick={onRemove}
           type="button"
           style={{

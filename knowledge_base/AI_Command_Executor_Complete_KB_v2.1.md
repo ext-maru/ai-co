@@ -195,7 +195,7 @@ find . -name "*.log" -mtime +30 -delete
 try:
     result = helper.create_bash_command(cmd, cmd_id)
     time.sleep(10)  # 実行を待つ
-    
+
     check = helper.check_results(cmd_id)
     if check.get('exit_code', 1) != 0:
         log = helper.get_latest_log(cmd_id)

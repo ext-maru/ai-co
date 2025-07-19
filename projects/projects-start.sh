@@ -72,20 +72,20 @@ usage() {
 # プロジェクト起動
 start_projects() {
     local build_flag=""
-    
+
     if [[ "$BUILD" == "true" ]]; then
         build_flag="--build"
         log "Building Docker images..."
     fi
-    
+
     log "Starting Elders Guild Projects Portfolio..."
-    
+
     # 必要なディレクトリ作成
     mkdir -p gateway monitoring dashboard
-    
+
     # プロジェクトポートフォリオ起動
     docker-compose -f docker-compose.projects.yml up -d $build_flag
-    
+
     success "Projects portfolio started successfully!"
     info "Access URLs:"
     info "  - Portfolio: http://localhost:9000"
@@ -107,15 +107,15 @@ show_status() {
     echo ""
     docker-compose -f docker-compose.projects.yml ps
     echo ""
-    
+
     log "Network information:"
     docker network ls | grep projects
     echo ""
-    
+
     log "Volume information:"
     docker volume ls | grep projects
     echo ""
-    
+
     log "Port usage:"
     netstat -tlnp 2>/dev/null | grep -E ":(9000|9001|9002|5433)" || echo "No ports in use"
 }
@@ -123,7 +123,7 @@ show_status() {
 # ログ表示
 show_logs() {
     local project=$1
-    
+
     if [[ -z "$project" ]]; then
         log "Showing all projects logs..."
         docker-compose -f docker-compose.projects.yml logs -f
@@ -158,28 +158,28 @@ show_logs() {
 health_check() {
     log "Performing health check..."
     echo ""
-    
+
     # Gateway チェック
     if curl -s -f http://localhost:9000/health > /dev/null; then
         success "✓ Projects Gateway is healthy"
     else
         error "✗ Projects Gateway is not responding"
     fi
-    
+
     # Image Upload Manager チェック
     if curl -s -f http://localhost:9000/image-upload-manager/ > /dev/null; then
         success "✓ Image Upload Manager is healthy"
     else
         error "✗ Image Upload Manager is not responding"
     fi
-    
+
     # Dashboard チェック
     if curl -s -f http://localhost:9001/api/health > /dev/null; then
         success "✓ Projects Dashboard is healthy"
     else
         warn "△ Projects Dashboard may not be ready yet"
     fi
-    
+
     # Monitor チェック
     if curl -s -f http://localhost:9002/-/ready > /dev/null; then
         success "✓ Projects Monitor is healthy"
@@ -219,22 +219,22 @@ cleanup() {
 # 新しいプロジェクト追加テンプレート
 add_project() {
     local project_name=$1
-    
+
     if [[ -z "$project_name" ]]; then
         error "Project name is required"
         exit 1
     fi
-    
+
     if [[ -d "$project_name" ]]; then
         error "Project directory already exists: $project_name"
         exit 1
     fi
-    
+
     log "Creating new project: $project_name"
-    
+
     mkdir -p "$project_name"
     cd "$project_name"
-    
+
     # プロジェクトテンプレート作成
     cat > Dockerfile << EOF
 # $project_name - Dockerfile
@@ -268,12 +268,12 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \\
 # アプリケーション起動
 CMD ["python", "app/main.py"]
 EOF
-    
+
     cat > requirements.txt << EOF
 flask==2.3.3
 requests==2.31.0
 EOF
-    
+
     mkdir -p app
     cat > app/main.py << EOF
 from flask import Flask, jsonify
@@ -295,7 +295,7 @@ def health():
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
 EOF
-    
+
     cat > README.md << EOF
 # $project_name
 
@@ -315,7 +315,7 @@ http://localhost:9000/$project_name/
 - \`GET /\` - プロジェクト情報
 - \`GET /health\` - ヘルスチェック
 EOF
-    
+
     cd ..
     success "Project $project_name created successfully!"
     info "Please update docker-compose.projects.yml to include the new project"
@@ -325,11 +325,11 @@ EOF
 main() {
     local command=$1
     shift
-    
+
     # オプション解析
     BUILD=false
     DEBUG=false
-    
+
     while [[ $# -gt 0 ]]; do
         case $1 in
             --build)
@@ -346,7 +346,7 @@ main() {
                 ;;
         esac
     done
-    
+
     case $command in
         "start")
             start_projects

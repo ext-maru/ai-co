@@ -9,7 +9,7 @@ body:
       value: |
         ## 🎯 子Issue作成
         このテンプレートは親Issueから分割された個別の実装タスク用です。
-        
+
         **原則**: 1つの子Issueは1週間以内に完了可能な粒度で作成してください。
 
   - type: input
@@ -119,17 +119,17 @@ body:
         - Python 3.11+
         - FastAPI
         - SQLAlchemy
-        
+
         ### 設計方針
         - DDDアーキテクチャに準拠
         - Elders Legacy基盤クラスを使用
-        
+
         ### API仕様
         ```
         POST /api/users
         GET /api/users/{id}
         ```
-        
+
         ### データベース設計
         - テーブル名: users
         - 主キー: id (UUID)
@@ -144,11 +144,11 @@ body:
         - [ ] 正常系のテスト
         - [ ] 異常系のテスト（バリデーションエラー等）
         - [ ] 境界値テスト
-        
+
         ### 統合テスト
         - [ ] API エンドポイントのテスト
         - [ ] データベース連携のテスト
-        
+
         ### 手動テスト
         - [ ] ブラウザでの動作確認
         - [ ] エラーハンドリングの確認
@@ -161,10 +161,10 @@ body:
       placeholder: |
         ### 事前条件
         - [ ] Issue #XX の完了が必要
-        
+
         ### 並行可能
         - Issue #YY と並行実装可能
-        
+
         ### ブロック要因
         - 外部APIの仕様確定待ち
 
@@ -200,21 +200,21 @@ body:
     attributes:
       value: |
         ---
-        
+
         ## 🚀 実装開始手順
-        
+
         1. **Feature Branch作成**
            ```bash
            ./scripts/git-feature <issue-number> <description>
            ```
-        
+
         2. **TDD開発サイクル**
            - 🔴 Red: テストを先に書く
            - 🟢 Green: 最小実装でテストを通す
            - 🔵 Refactor: コードを改善
-        
+
         3. **PR作成時**
            - タイトル: `<type>: <説明> (#<issue-number>)`
            - 本文に `Closes #<issue-number>` を含める
-        
+
         **エルダー評議会令第35号**: Issue分割戦略に従って適切に実装してください。

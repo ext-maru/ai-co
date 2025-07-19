@@ -132,7 +132,7 @@ default:
   deployment_method: github_actions  # github_actions | ssh | hybrid
   four_sages_integration: true
   knights_protection: true
-  
+
   # 環境設定
   environments:
     development:
@@ -147,7 +147,7 @@ default:
       auto_deploy: false
       approval_required: true
       rollback_enabled: true
-      
+
   # GitHub Actions設定
   github_actions:
     trigger_on:
@@ -156,14 +156,14 @@ default:
     runner: ubuntu-latest
     timeout: 30
     retry_count: 3
-    
+
   # SSH設定
   ssh:
     connection_timeout: 30
     retry_count: 3
     backup_before_deploy: true
     health_check_wait: 30
-    
+
   # 4賢者統合設定
   four_sages:
     knowledge_sage:
@@ -178,7 +178,7 @@ default:
     rag_sage:
       enabled: true
       optimization: true
-      
+
   # 騎士団設定
   knights:
     security_scan: true
@@ -196,7 +196,7 @@ metadata:
   name: ai-company-web
   template: web-app
   version: "2.1.0"
-  
+
 project:
   name: "AI Company Web Application"
   type: web-app
@@ -205,14 +205,14 @@ project:
     - fastapi
     - postgresql
     - redis
-  
+
   # プロジェクト固有設定
   settings:
     deployment_method: github_actions
     build_command: "python -m build"
     test_command: "pytest tests/"
     health_check_endpoint: "/health"
-    
+
   # 環境固有の上書き
   environment_overrides:
     development:
@@ -224,9 +224,9 @@ project:
     production:
       deployment_method: github_actions
       approval_required: true
-      deployment_window: 
+      deployment_window:
         - "02:00-04:00"  # 深夜メンテナンス時間
-      
+
   # 4賢者カスタマイズ
   four_sages_custom:
     knowledge_sage:
@@ -241,7 +241,7 @@ project:
     rag_sage:
       analysis_depth: deep
       recommendation_level: advanced
-      
+
   # 通知設定
   notifications:
     slack:
@@ -249,13 +249,13 @@ project:
       mention_on_failure: true
     email:
       recipients: ["team@example.com"]
-      
+
   # リソース設定
   resources:
     cpu: "2"
     memory: "4Gi"
     storage: "20Gi"
-    
+
   # 依存関係
   dependencies:
     - elders-guild-api
@@ -341,15 +341,15 @@ class DeploymentConfig:
     environments: Dict[str, Dict[str, Any]]
     four_sages_config: Dict[str, Any]
     knights_config: Dict[str, Any]
-    
+
 class ProjectDeploymentManager:
     """プロジェクト別デプロイメント管理"""
-    
+
     def __init__(self, config_dir: str = "deployment-configs"):
         self.config_dir = Path(config_dir)
         self.sages = FourSagesIntegration()
         self.global_config = self._load_global_config()
-    
+
     def _load_global_config(self) -> Dict[str, Any]:
         """グローバル設定読み込み"""
         global_config_path = self.config_dir / "global" / "default.yml"
@@ -357,23 +357,23 @@ class ProjectDeploymentManager:
             with open(global_config_path, 'r') as f:
                 return yaml.safe_load(f)
         return {}
-    
+
     def get_project_config(self, project_name: str, environment: str) -> DeploymentConfig:
         """プロジェクト設定取得"""
         # 設定継承: Global → Project → Environment → Override
         config = self.global_config.get('default', {}).copy()
-        
+
         # プロジェクト設定
         project_config = self._load_project_config(project_name)
         self._merge_config(config, project_config)
-        
+
         # 環境設定
         env_config = self._load_environment_config(project_name, environment)
         self._merge_config(config, env_config)
-        
+
         # 4賢者による最適化
         optimized_config = self.sages.optimize_deployment_config(config)
-        
+
         return DeploymentConfig(
             project_name=project_name,
             deployment_method=optimized_config.get('deployment_method', 'github_actions'),
@@ -381,7 +381,7 @@ class ProjectDeploymentManager:
             four_sages_config=optimized_config.get('four_sages', {}),
             knights_config=optimized_config.get('knights', {})
         )
-    
+
     def _load_project_config(self, project_name: str) -> Dict[str, Any]:
         """プロジェクト設定読み込み"""
         project_config_path = self.config_dir / "projects" / project_name / "project.yml"
@@ -389,7 +389,7 @@ class ProjectDeploymentManager:
             with open(project_config_path, 'r') as f:
                 return yaml.safe_load(f)
         return {}
-    
+
     def _load_environment_config(self, project_name: str, environment: str) -> Dict[str, Any]:
         """環境設定読み込み"""
         env_config_path = self.config_dir / "projects" / project_name / f"{environment}.yml"
@@ -397,7 +397,7 @@ class ProjectDeploymentManager:
             with open(env_config_path, 'r') as f:
                 return yaml.safe_load(f)
         return {}
-    
+
     def _merge_config(self, base_config: Dict[str, Any], override_config: Dict[str, Any]):
         """設定マージ"""
         for key, value in override_config.items():
@@ -408,26 +408,26 @@ class ProjectDeploymentManager:
                     base_config[key] = value
             else:
                 base_config[key] = value
-    
+
     def validate_config(self, project_name: str, environment: str) -> bool:
         """設定検証"""
         try:
             config = self.get_project_config(project_name, environment)
-            
+
             # 必須フィールド確認
             required_fields = ['deployment_method', 'environments']
             for field in required_fields:
                 if not hasattr(config, field):
                     return False
-            
+
             # 4賢者による検証
             validation_result = self.sages.validate_deployment_config(config)
-            
+
             return validation_result
         except Exception as e:
             print(f"設定検証エラー: {e}")
             return False
-    
+
     def create_project_config(self, project_name: str, template: str = "web-app") -> bool:
         """プロジェクト設定作成"""
         try:
@@ -435,14 +435,14 @@ class ProjectDeploymentManager:
             template_path = self.config_dir / "global" / "templates" / f"{template}.yml"
             if not template_path.exists():
                 raise FileNotFoundError(f"テンプレート '{template}' が見つかりません")
-            
+
             with open(template_path, 'r') as f:
                 template_config = yaml.safe_load(f)
-            
+
             # プロジェクトディレクトリ作成
             project_dir = self.config_dir / "projects" / project_name
             project_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # 設定ファイル作成
             config_files = {
                 'project.yml': template_config,
@@ -450,67 +450,67 @@ class ProjectDeploymentManager:
                 'staging.yml': {'environment': 'staging'},
                 'production.yml': {'environment': 'production'}
             }
-            
+
             for filename, config_data in config_files.items():
                 config_path = project_dir / filename
                 with open(config_path, 'w') as f:
                     yaml.dump(config_data, f, default_flow_style=False)
-            
+
             return True
         except Exception as e:
             print(f"プロジェクト設定作成エラー: {e}")
             return False
-    
+
     def update_project_config(self, project_name: str, config_updates: Dict[str, Any]) -> bool:
         """プロジェクト設定更新"""
         try:
             project_config_path = self.config_dir / "projects" / project_name / "project.yml"
-            
+
             if project_config_path.exists():
                 with open(project_config_path, 'r') as f:
                     current_config = yaml.safe_load(f)
             else:
                 current_config = {}
-            
+
             # 設定更新
             self._merge_config(current_config, config_updates)
-            
+
             # 4賢者による最適化
             optimized_config = self.sages.optimize_deployment_config(current_config)
-            
+
             # 設定保存
             with open(project_config_path, 'w') as f:
                 yaml.dump(optimized_config, f, default_flow_style=False)
-            
+
             return True
         except Exception as e:
             print(f"プロジェクト設定更新エラー: {e}")
             return False
-    
+
     def get_deployment_strategy(self, project_name: str, environment: str) -> str:
         """デプロイ戦略取得"""
         config = self.get_project_config(project_name, environment)
         return config.deployment_method
-    
+
     def set_deployment_method(self, project_name: str, environment: str, method: str) -> bool:
         """デプロイ方法設定"""
         valid_methods = ['github_actions', 'ssh', 'hybrid']
         if method not in valid_methods:
             raise ValueError(f"無効なデプロイ方法: {method}")
-        
+
         env_config_path = self.config_dir / "projects" / project_name / f"{environment}.yml"
-        
+
         if env_config_path.exists():
             with open(env_config_path, 'r') as f:
                 env_config = yaml.safe_load(f)
         else:
             env_config = {}
-        
+
         env_config['deployment_method'] = method
-        
+
         with open(env_config_path, 'w') as f:
             yaml.dump(env_config, f, default_flow_style=False)
-        
+
         return True
 ```
 
@@ -524,60 +524,60 @@ class ProjectDeploymentManager:
 # libs/four_sages_integration.py 拡張
 class FourSagesIntegration:
     """4賢者統合システム（デプロイ設定対応）"""
-    
+
     def optimize_deployment_config(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """4賢者による設定最適化"""
         optimized_config = config.copy()
-        
+
         # 📚 ナレッジ賢者による最適化
         knowledge_optimization = self._knowledge_sage_optimize(optimized_config)
         self._merge_optimization(optimized_config, knowledge_optimization)
-        
+
         # 📋 タスク賢者による最適化
         task_optimization = self._task_sage_optimize(optimized_config)
         self._merge_optimization(optimized_config, task_optimization)
-        
+
         # 🚨 インシデント賢者による最適化
         incident_optimization = self._incident_sage_optimize(optimized_config)
         self._merge_optimization(optimized_config, incident_optimization)
-        
+
         # 🔍 RAG賢者による最適化
         rag_optimization = self._rag_sage_optimize(optimized_config)
         self._merge_optimization(optimized_config, rag_optimization)
-        
+
         return optimized_config
-    
+
     def _knowledge_sage_optimize(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """ナレッジ賢者による最適化"""
         # 過去のデプロイ履歴から学習
         historical_data = self._get_deployment_history()
-        
+
         optimizations = {}
-        
+
         # 成功率の高い設定を推奨
         if historical_data:
             best_practices = self._analyze_best_practices(historical_data)
             optimizations.update(best_practices)
-        
+
         return optimizations
-    
+
     def _task_sage_optimize(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """タスク賢者による最適化"""
         # 依存関係とタスク順序の最適化
         optimizations = {}
-        
+
         # 並列実行可能な設定を推奨
         if config.get('project', {}).get('type') == 'microservice':
             optimizations['parallel_deployment'] = True
             optimizations['dependency_check'] = True
-        
+
         return optimizations
-    
+
     def _incident_sage_optimize(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """インシデント賢者による最適化"""
         # 安全性を重視した設定
         optimizations = {}
-        
+
         # 本番環境は必ず承認フローを有効化
         if 'production' in config.get('environments', {}):
             optimizations.setdefault('environments', {})
@@ -586,14 +586,14 @@ class FourSagesIntegration:
                 'rollback_enabled': True,
                 'health_check_enabled': True
             }
-        
+
         return optimizations
-    
+
     def _rag_sage_optimize(self, config: Dict[str, Any]) -> Dict[str, Any]:
         """RAG賢者による最適化"""
         # パフォーマンスとリソース最適化
         optimizations = {}
-        
+
         # プロジェクトタイプに応じたリソース推奨
         project_type = config.get('project', {}).get('type')
         if project_type == 'web-app':
@@ -608,7 +608,7 @@ class FourSagesIntegration:
                 'memory': '2Gi',
                 'timeout': 600
             }
-        
+
         return optimizations
 ```
 

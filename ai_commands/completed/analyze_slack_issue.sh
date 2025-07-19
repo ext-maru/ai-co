@@ -8,7 +8,7 @@ echo ""
 # Polling Workerが動作しているか
 if pgrep -f "slack_polling_worker" > /dev/null; then
     echo "✅ Slack Polling Workerは動作中"
-    
+
     # ログに最新のアクティビティがあるか
     if [ -f logs/slack_polling_worker.log ]; then
         LAST_LOG_TIME=$(tail -1 logs/slack_polling_worker.log | grep -oE '[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}' | head -1)

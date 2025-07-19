@@ -32,7 +32,7 @@ chmod +x install_commands.sh
 - `--context`: 追加コンテキスト（JSON形式）
 - `--no-slack`: Slack通知を無効化
 
-#### ai-reply  
+#### ai-reply
 - `ai-reply <conversation_id> <response>`: 対話応答送信
 - `--file`: ファイルから応答を読み込み
 
@@ -129,13 +129,13 @@ class NewCommand(BaseCommand):
             name="newcmd",
             description="新しいコマンドの説明"
         )
-        
+
     def setup_arguments(self):
         self.parser.add_argument(
             '--option',
             help='オプションの説明'
         )
-        
+
     def execute(self, args):
         self.header("コマンド実行")
         # 処理実装

@@ -34,11 +34,11 @@ export const FileUploadProgress: React.FC<FileUploadProgressProps> = ({ progress
 
   return (
     <div style={{ marginTop: '8px' }}>
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '4px' 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '4px'
       }}>
         <span style={{ fontSize: '12px', color: '#666' }}>
           {getStatusText()}
@@ -51,7 +51,7 @@ export const FileUploadProgress: React.FC<FileUploadProgressProps> = ({ progress
         borderRadius: '2px',
         overflow: 'hidden'
       }}>
-        <div 
+        <div
           style={{
             width: `${progress}%`,
             backgroundColor: getStatusColor(),

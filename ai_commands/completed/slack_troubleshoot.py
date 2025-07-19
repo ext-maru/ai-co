@@ -5,6 +5,7 @@ Slack設定トラブルシューティング
 
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from libs.ai_command_helper import AICommandHelper
@@ -55,50 +56,50 @@ else:
     print('')
     print('📋 ステップ2: Bot接続テスト')
     print('-' * 40)
-    
+
     headers = {'Authorization': f'Bearer {bot_token}'}
-    
+
     # 認証テスト
     auth_response = requests.post(
         'https://slack.com/api/auth.test',
         headers=headers
     )
-    
+
     if auth_response.status_code == 200:
         auth_data = auth_response.json()
         if auth_data.get('ok'):
             print(f'✅ Bot認証成功')
             print(f'   Bot名: @{auth_data.get('user')}')
             print(f'   Team: {auth_data.get('team')}')
-            
+
             # チャンネル一覧取得
             print('')
             print('📋 ステップ3: チャンネル参加状況確認')
             print('-' * 40)
-            
+
             channels_response = requests.post(
                 'https://slack.com/api/conversations.list',
                 headers=headers,
                 data={'types': 'public_channel,private_channel'}
             )
-            
+
             if channels_response.status_code == 200:
                 channels_data = channels_response.json()
                 if channels_data.get('ok'):
                     bot_user_id = auth_data.get('user_id')
                     channels = channels_data.get('channels', [])
-                    
+
                     scaling_channel = None
                     health_channel = None
-                    
+
                     for channel in channels:
                         if channel.get('name') == 'ai-company-scaling':
                             scaling_channel = channel
                         elif channel.get('name') == 'ai-company-health':
                             health_channel = channel
-                    
+
                     # 各チャンネルの状況確認
-                    for ch_name, ch_data in [('ai-company-scaling', scaling_channel), 
+                    for ch_name, ch_data in [('ai-company-scaling', scaling_channel),
                                               ('ai-company-health', health_channel)]:
                         if ch_data:
                             if ch_data.get('is_member'):
@@ -109,24 +110,24 @@ else:
                         else:
                             print(f'❌ #{ch_name}: チャンネルが見つかりません')
                             print(f'   → Slackでチャンネルを作成してください')
-                    
+
                     # テストメッセージ送信
                     print('')
                     print('📋 ステップ4: メッセージ送信テスト')
                     print('-' * 40)
-                    
+
                     if scaling_channel and scaling_channel.get('is_member'):
                         test_msg = {
                             'channel': scaling_channel['id'],
                             'text': '🧪 テストメッセージ: Bot権限とチャンネル参加OK'
                         }
-                        
+
                         test_response = requests.post(
                             'https://slack.com/api/chat.postMessage',
                             headers=headers,
                             json=test_msg
                         )
-                        
+
                         if test_response.status_code == 200:
                             test_data = test_response.json()
                             if test_data.get('ok'):
@@ -138,7 +139,7 @@ else:
                                     print('   → chat:write 権限を追加してください')
                     else:
                         print('⚠️ テスト送信スキップ（チャンネル未参加）')
-                        
+
                 else:
                     print('❌ チャンネル一覧取得失敗')
                     print('   → channels:read 権限を追加してください')
@@ -165,8 +166,7 @@ print('4. PMWorkerを再起動: ai-restart')
 
 # コマンドを作成
 result = helper.create_bash_command(
-    content=troubleshoot_command,
-    command_id="slack_troubleshoot"
+    content=troubleshoot_command, command_id="slack_troubleshoot"
 )
 
 print("✅ Slackトラブルシューティングを作成しました")

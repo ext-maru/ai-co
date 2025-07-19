@@ -74,12 +74,12 @@ usage() {
 # テスト環境の準備
 prepare_test_env() {
     local project=$1
-    
+
     log "Preparing test environment for $project..."
-    
+
     # テスト結果ディレクトリを作成
     mkdir -p "$project/test_results" "$project/test_data"
-    
+
     # 既存のテスト結果をバックアップ
     if [[ -d "$project/test_results" ]] && [[ "$(ls -A $project/test_results)" ]]; then
         local backup_dir="$project/test_results_backup_$(date +%Y%m%d_%H%M%S)"
@@ -92,7 +92,7 @@ prepare_test_env() {
 # テストイメージのビルド
 build_test_image() {
     local project=$1
-    
+
     log "Building test image for $project..."
     docker-compose -f docker-compose.test.yml build "${project}-test"
     success "Test image built successfully!"
@@ -103,16 +103,16 @@ run_tests() {
     local project=$1
     local test_type=$2
     local specific_test=$3
-    
+
     log "Running $test_type tests for $project..."
-    
+
     # テスト実行
     if [[ "$test_type" == "specific" && -n "$specific_test" ]]; then
         docker-compose -f docker-compose.test.yml run --rm "${project}-test" specific "$specific_test"
     else
         docker-compose -f docker-compose.test.yml run --rm "${project}-test" "$test_type"
     fi
-    
+
     # テスト結果の確認
     if [[ $? -eq 0 ]]; then
         success "Tests passed for $project!"
@@ -125,10 +125,10 @@ run_tests() {
 # テスト結果ビューアを起動
 start_viewer() {
     log "Starting test results viewer..."
-    
+
     # nginx設定ディレクトリ作成
     mkdir -p test-viewer
-    
+
     # nginx設定ファイル作成
     cat > test-viewer/nginx.conf << 'EOF'
 user nginx;
@@ -143,14 +143,14 @@ events {
 http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
-    
+
     sendfile on;
     keepalive_timeout 65;
-    
+
     server {
         listen 80;
         server_name localhost;
-        
+
         location / {
             root /usr/share/nginx/html;
             index index.html;
@@ -158,7 +158,7 @@ http {
             autoindex_exact_size off;
             autoindex_localtime on;
         }
-        
+
         location ~ \.html$ {
             root /usr/share/nginx/html;
             add_header Cache-Control "no-cache, no-store, must-revalidate";
@@ -166,16 +166,16 @@ http {
     }
 }
 EOF
-    
+
     docker-compose -f docker-compose.test.yml --profile viewer up -d test-viewer
-    
+
     success "Test results viewer started at: http://localhost:9003"
 }
 
 # インタラクティブシェル
 interactive_shell() {
     local project=$1
-    
+
     log "Starting interactive shell for $project..."
     docker-compose -f docker-compose.test.yml run --rm "${project}-test" interactive
 }
@@ -183,10 +183,10 @@ interactive_shell() {
 # クリーンアップ
 cleanup() {
     log "Cleaning up test environment..."
-    
+
     docker-compose -f docker-compose.test.yml down --volumes --remove-orphans
     docker system prune -f
-    
+
     success "Test environment cleaned up!"
 }
 
@@ -195,14 +195,14 @@ main() {
     local project=$1
     local test_type=$2
     shift 2
-    
+
     # オプション解析
     BUILD=false
     VIEWER=false
     INTERACTIVE=false
     CLEANUP=false
     SPECIFIC_TEST=""
-    
+
     while [[ $# -gt 0 ]]; do
         case $1 in
             --build)
@@ -227,56 +227,56 @@ main() {
                 ;;
         esac
     done
-    
+
     # バリデーション
     if [[ -z "$project" ]]; then
         error "Project name is required"
         usage
         exit 1
     fi
-    
+
     if [[ "$project" != "image-upload-manager" && "$project" != "all" ]]; then
         error "Unknown project: $project"
         usage
         exit 1
     fi
-    
+
     # クリーンアップのみの場合
     if [[ "$CLEANUP" == "true" ]]; then
         cleanup
         exit 0
     fi
-    
+
     # インタラクティブシェルの場合
     if [[ "$INTERACTIVE" == "true" ]]; then
         interactive_shell "$project"
         exit 0
     fi
-    
+
     # テストタイプが指定されていない場合
     if [[ -z "$test_type" ]]; then
         test_type="all"
     fi
-    
+
     # テスト環境準備
     prepare_test_env "$project"
-    
+
     # ビルドが必要な場合
     if [[ "$BUILD" == "true" ]]; then
         build_test_image "$project"
     fi
-    
+
     # テスト実行
     run_tests "$project" "$test_type" "$SPECIFIC_TEST"
-    
+
     # ビューア起動が必要な場合
     if [[ "$VIEWER" == "true" ]]; then
         start_viewer
     fi
-    
+
     info "Test execution completed for $project"
     info "Results available in: ./$project/test_results/"
-    
+
     if [[ "$VIEWER" == "true" ]]; then
         info "View results at: http://localhost:9003"
     fi

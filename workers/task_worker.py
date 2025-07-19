@@ -16,12 +16,14 @@ from workers.enhanced_task_worker import EnhancedTaskWorker as TaskWorker
 
 # Elder Tree Integration imports
 try:
-    from libs.four_sages_integration import FourSagesIntegration
     from libs.elder_council_summoner import ElderCouncilSummoner
-    from libs.elder_tree_hierarchy import get_elder_tree, ElderMessage, ElderRank
+    from libs.elder_tree_hierarchy import ElderMessage, ElderRank, get_elder_tree
+    from libs.four_sages_integration import FourSagesIntegration
+
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
     import logging
+
     logging.warning(f"Elder Tree integration not available: {e}")
     FourSagesIntegration = None
     ElderCouncilSummoner = None
@@ -31,4 +33,4 @@ except ImportError as e:
     ELDER_TREE_AVAILABLE = False
 
 # Backward compatibility exports with Elder Tree enhancement
-__all__ = ['TaskWorker', 'ELDER_TREE_AVAILABLE']
+__all__ = ["TaskWorker", "ELDER_TREE_AVAILABLE"]

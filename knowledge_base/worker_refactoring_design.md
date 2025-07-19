@@ -33,12 +33,12 @@ from prometheus_client import Counter, Histogram, Gauge
 
 class AsyncBaseWorker(ABC):
     """非同期処理対応の基底ワーカークラス"""
-    
+
     def __init__(self, worker_name: str, config: Dict[str, Any]):
         self.worker_name = worker_name
         self.config = config
         self.logger = structlog.get_logger(worker_name=worker_name)
-        
+
         # メトリクス
         self.processed_messages = Counter(
             f'{worker_name}_processed_total',
@@ -52,26 +52,26 @@ class AsyncBaseWorker(ABC):
             f'{worker_name}_active_tasks',
             'Currently active tasks'
         )
-        
+
         # サーキットブレーカー
         self.circuit_breaker = CircuitBreaker(
             failure_threshold=5,
             recovery_timeout=60,
             expected_exception=Exception
         )
-        
+
         # ヘルスチェック状態
         self.health_status = {
             'status': 'healthy',
             'last_check': None,
             'details': {}
         }
-    
+
     @abstractmethod
     async def process_message(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """メッセージ処理の抽象メソッド"""
         pass
-    
+
     async def health_check(self) -> Dict[str, Any]:
         """ヘルスチェックエンドポイント"""
         return self.health_status
@@ -82,34 +82,34 @@ class AsyncBaseWorker(ABC):
 ```python
 class SecureTaskExecutor:
     """セキュアなタスク実行クラス"""
-    
+
     def __init__(self):
         self.allowed_commands = {
             'python', 'node', 'bash', 'sh'
         }
         self.forbidden_patterns = [
-            'rm -rf', 'sudo', 'chmod 777', 
+            'rm -rf', 'sudo', 'chmod 777',
             'eval', 'exec', '__import__'
         ]
-    
+
     async def validate_input(self, command: str) -> bool:
         """入力検証"""
         # コマンドインジェクション対策
         for pattern in self.forbidden_patterns:
             if pattern in command.lower():
                 raise SecurityError(f"Forbidden pattern: {pattern}")
-        
+
         # ホワイトリスト方式
         cmd_parts = shlex.split(command)
         if cmd_parts[0] not in self.allowed_commands:
             raise SecurityError(f"Command not allowed: {cmd_parts[0]}")
-        
+
         return True
-    
+
     async def execute_secure(self, command: str, timeout: int = 300):
         """セキュアな実行"""
         await self.validate_input(command)
-        
+
         # サンドボックス環境での実行
         proc = await asyncio.create_subprocess_shell(
             command,
@@ -118,16 +118,16 @@ class SecureTaskExecutor:
             cwd='/tmp/sandbox',
             env={**os.environ, 'HOME': '/tmp/sandbox'}
         )
-        
+
         try:
             stdout, stderr = await asyncio.wait_for(
-                proc.communicate(), 
+                proc.communicate(),
                 timeout=timeout
             )
         except asyncio.TimeoutError:
             proc.kill()
             raise TimeoutError(f"Command timed out after {timeout}s")
-        
+
         return stdout, stderr, proc.returncode
 ```
 
@@ -136,23 +136,23 @@ class SecureTaskExecutor:
 ```python
 class RateLimiter:
     """レート制限実装"""
-    
+
     def __init__(self, rate: int = 10, period: int = 60):
         self.rate = rate
         self.period = period
         self.calls = []
-    
+
     async def check_rate_limit(self) -> bool:
         now = time.time()
         # 期限切れの呼び出しを削除
         self.calls = [call for call in self.calls if call > now - self.period]
-        
+
         if len(self.calls) >= self.rate:
             return False
-        
+
         self.calls.append(now)
         return True
-    
+
     async def wait_if_needed(self):
         """必要に応じて待機"""
         while not await self.check_rate_limit():
@@ -160,20 +160,20 @@ class RateLimiter:
 
 class CacheManager:
     """キャッシュ管理"""
-    
+
     def __init__(self, redis_url: str):
         self.redis = aioredis.from_url(redis_url)
-    
+
     async def get(self, key: str) -> Optional[Any]:
         value = await self.redis.get(key)
         if value:
             return json.loads(value)
         return None
-    
+
     async def set(self, key: str, value: Any, ttl: int = 3600):
         await self.redis.setex(
-            key, 
-            ttl, 
+            key,
+            ttl,
             json.dumps(value)
         )
 ```
@@ -191,12 +191,12 @@ class CacheManager:
    - 非同期処理化
    - セキュリティ強化
    - ファイル監視効率化
-   
+
 2. Result Worker改修
    - Slack API非同期化
    - レート制限実装
    - 統計情報永続化
-   
+
 3. PM Worker改修
    - メモリ管理改善
    - 並列処理実装
@@ -279,7 +279,7 @@ class CacheManager:
   - セキュア実行、非同期Claude API、効率的ファイル監視
   - レート制限対応、キャッシング機能実装済み
 
-- **AsyncResultWorker**: `/home/aicompany/ai_co/workers/async_result_worker.py` 
+- **AsyncResultWorker**: `/home/aicompany/ai_co/workers/async_result_worker.py`
   - Slack API レート制限、メッセージサイズ制限対応
   - 統計情報永続化、非同期通知処理実装済み
 

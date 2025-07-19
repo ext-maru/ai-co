@@ -3,59 +3,60 @@
 🧪 Elders Guild 4-Sage System 統合カバレッジテスト
 スタンドアロンテストランナーでカバレッジ90%以上を達成
 
-作成日: 2025年7月8日  
+作成日: 2025年7月8日
 作成者: クロードエルダー（開発実行責任者）
 目標: 全システムのカバレッジを25.4%→90%に向上
 """
 
-import sys
 import asyncio
-import numpy as np
 import math
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
+
+import numpy as np
 
 # プロジェクトルートをパスに追加
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-# すべてのライブラリをインポート
-from libs.quantum_collaboration_engine import (
-    QuantumCollaborationEngine,
-    QuantumAmplitude,
-    QuantumSuperposition,
-    SageResponse,
-    QuantumConsensus,
-    EntangledInsight,
-    QuantumObservation
+from libs.dynamic_knowledge_graph import (
+    ConceptRelation,
+    DynamicKnowledgeGraph,
+    KnowledgeCluster,
+    KnowledgeEdge,
+    KnowledgeNode,
+    SemanticEmbedding,
 )
-
 from libs.predictive_incident_manager import (
-    PredictiveIncidentManager,
+    IncidentForecast,
     IncidentPredictor,
-    ThreatPattern,
     PredictionModel,
+    PredictiveIncidentManager,
     PreventiveAction,
     RiskAssessment,
-    IncidentForecast
+    ThreatPattern,
 )
 
-from libs.dynamic_knowledge_graph import (
-    DynamicKnowledgeGraph,
-    KnowledgeNode,
-    KnowledgeEdge,
-    ConceptRelation,
-    SemanticEmbedding,
-    KnowledgeCluster
+# すべてのライブラリをインポート
+from libs.quantum_collaboration_engine import (
+    EntangledInsight,
+    QuantumAmplitude,
+    QuantumCollaborationEngine,
+    QuantumConsensus,
+    QuantumObservation,
+    QuantumSuperposition,
+    SageResponse,
 )
+
 
 def test_quantum_amplitude_operations():
     """量子振幅操作の包括的テスト"""
     print("\n🧪 量子振幅操作テスト")
-    
+
     tests_passed = 0
     tests_total = 8
-    
+
     # 基本作成 (real, imaginary)
     amplitude = QuantumAmplitude(0.8, 0.6)
     if amplitude.real == 0.8 and amplitude.imaginary == 0.6:
@@ -63,7 +64,7 @@ def test_quantum_amplitude_operations():
         tests_passed += 1
     else:
         print("  ❌ 基本作成失敗")
-    
+
     # 振幅の大きさ
     try:
         magnitude = amplitude.magnitude
@@ -75,7 +76,7 @@ def test_quantum_amplitude_operations():
             print(f"  ❌ 振幅の大きさ失敗: {magnitude}")
     except Exception as e:
         print(f"  ❌ 振幅の大きさエラー: {e}")
-    
+
     # 位相
     try:
         phase = amplitude.phase
@@ -87,7 +88,7 @@ def test_quantum_amplitude_operations():
             print(f"  ❌ 位相失敗: {phase}")
     except Exception as e:
         print(f"  ❌ 位相エラー: {e}")
-    
+
     # ゼロ振幅
     zero_amplitude = QuantumAmplitude(0.0, 0.0)
     if zero_amplitude.magnitude == 0.0:
@@ -95,7 +96,7 @@ def test_quantum_amplitude_operations():
         tests_passed += 1
     else:
         print("  ❌ ゼロ振幅失敗")
-    
+
     # 負の実部
     negative_amplitude = QuantumAmplitude(-0.5, 0.0)
     if negative_amplitude.real == -0.5:
@@ -103,7 +104,7 @@ def test_quantum_amplitude_operations():
         tests_passed += 1
     else:
         print("  ❌ 負の実部失敗")
-    
+
     # 純虚数
     imaginary_amplitude = QuantumAmplitude(0.0, 1.0)
     if imaginary_amplitude.imaginary == 1.0:
@@ -111,7 +112,7 @@ def test_quantum_amplitude_operations():
         tests_passed += 1
     else:
         print("  ❌ 純虚数失敗")
-    
+
     # 単位振幅
     unit_amplitude = QuantumAmplitude(1.0, 0.0)
     if abs(unit_amplitude.magnitude - 1.0) < 1e-10:
@@ -119,7 +120,7 @@ def test_quantum_amplitude_operations():
         tests_passed += 1
     else:
         print("  ❌ 単位振幅失敗")
-    
+
     # 複数振幅の組み合わせ
     try:
         amp1 = QuantumAmplitude(0.6, 0.8)
@@ -132,44 +133,49 @@ def test_quantum_amplitude_operations():
             print("  ❌ 複数振幅組み合わせ失敗")
     except Exception as e:
         print(f"  ❌ 複数振幅組み合わせエラー: {e}")
-    
+
     return tests_passed, tests_total
+
 
 def test_quantum_superposition_operations():
     """量子重ね合わせ操作の包括的テスト"""
     print("\n🧪 量子重ね合わせ操作テスト")
-    
+
     tests_passed = 0
     tests_total = 10
-    
+
     # 基本作成 (real, imaginary形式に修正)
     try:
         states = ["solution_A", "solution_B", "solution_C"]
         amplitudes = [
             QuantumAmplitude(0.6, 0.0),
             QuantumAmplitude(0.8, 0.1),
-            QuantumAmplitude(0.4, 0.2)
+            QuantumAmplitude(0.4, 0.2),
         ]
-        
+
         superposition = QuantumSuperposition(states, amplitudes)
-        
-        if (superposition.states == states and 
-            len(superposition.amplitudes) == 3 and 
-            superposition.amplitudes[0].real == 0.6):
+
+        if (
+            superposition.states == states
+            and len(superposition.amplitudes) == 3
+            and superposition.amplitudes[0].real == 0.6
+        ):
             print("  ✅ 基本作成")
             tests_passed += 1
         else:
             print("  ❌ 基本作成失敗")
     except Exception as e:
         print(f"  ❌ 基本作成エラー: {e}")
-    
+
     # 不正な長さでのバリデーション
     try:
         invalid_states = ["state1", "state2", "state3"]
         invalid_amplitudes = [QuantumAmplitude(0.6, 0.0), QuantumAmplitude(0.8, 0.0)]
-        
+
         try:
-            invalid_superposition = QuantumSuperposition(invalid_states, invalid_amplitudes)
+            invalid_superposition = QuantumSuperposition(
+                invalid_states, invalid_amplitudes
+            )
             print("  ❌ バリデーション無効")
         except ValueError:
             print("  ✅ バリデーション正常")
@@ -179,10 +185,10 @@ def test_quantum_superposition_operations():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ バリデーションエラー: {e}")
-    
+
     # 正規化テスト
     try:
-        if hasattr(superposition, 'normalize'):
+        if hasattr(superposition, "normalize"):
             normalized = superposition.normalize()
             total_magnitude = sum(amp.magnitude for amp in normalized.amplitudes)
             if total_magnitude > 0:
@@ -195,10 +201,10 @@ def test_quantum_superposition_operations():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ 正規化エラー: {e}")
-    
+
     # 測定テスト
     try:
-        if hasattr(superposition, 'measure'):
+        if hasattr(superposition, "measure"):
             measurements = [superposition.measure() for _ in range(10)]
             valid_measurements = all(m in states for m in measurements)
             if valid_measurements:
@@ -211,10 +217,10 @@ def test_quantum_superposition_operations():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ 測定エラー: {e}")
-    
+
     # 支配的状態取得
     try:
-        if hasattr(superposition, 'get_dominant_state'):
+        if hasattr(superposition, "get_dominant_state"):
             dominant = superposition.get_dominant_state()
             if dominant in states:
                 print(f"  ✅ 支配的状態: {dominant}")
@@ -226,10 +232,10 @@ def test_quantum_superposition_operations():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ 支配的状態エラー: {e}")
-    
+
     # コヒーレンス計算
     try:
-        if hasattr(superposition, 'calculate_coherence'):
+        if hasattr(superposition, "calculate_coherence"):
             coherence = superposition.calculate_coherence()
             if 0 <= coherence <= 1:
                 print(f"  ✅ コヒーレンス: {coherence:.3f}")
@@ -241,7 +247,7 @@ def test_quantum_superposition_operations():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ コヒーレンスエラー: {e}")
-    
+
     # 空の重ね合わせ
     try:
         empty_states = []
@@ -251,7 +257,7 @@ def test_quantum_superposition_operations():
         tests_passed += 1
     except Exception as e:
         print(f"  ❌ 空の重ね合わせエラー: {e}")
-    
+
     # 単一状態
     try:
         single_states = ["only_solution"]
@@ -264,7 +270,7 @@ def test_quantum_superposition_operations():
             print("  ❌ 単一状態失敗")
     except Exception as e:
         print(f"  ❌ 単一状態エラー: {e}")
-    
+
     # 等確率状態
     try:
         equal_states = ["state1", "state2", "state3", "state4"]
@@ -277,35 +283,41 @@ def test_quantum_superposition_operations():
             print("  ❌ 等確率状態失敗")
     except Exception as e:
         print(f"  ❌ 等確率状態エラー: {e}")
-    
+
     # 高確率偏重状態
     try:
         biased_states = ["likely", "unlikely"]
         biased_amplitudes = [QuantumAmplitude(0.9, 0.0), QuantumAmplitude(0.1, 0.0)]
         biased_superposition = QuantumSuperposition(biased_states, biased_amplitudes)
-        if biased_superposition.amplitudes[0].magnitude > biased_superposition.amplitudes[1].magnitude:
+        if (
+            biased_superposition.amplitudes[0].magnitude
+            > biased_superposition.amplitudes[1].magnitude
+        ):
             print("  ✅ 偏重状態")
             tests_passed += 1
         else:
             print("  ❌ 偏重状態失敗")
     except Exception as e:
         print(f"  ❌ 偏重状態エラー: {e}")
-    
+
     return tests_passed, tests_total
+
 
 def test_quantum_engine_comprehensive():
     """量子エンジン包括的テスト"""
     print("\n🧪 量子エンジン包括的テスト")
-    
+
     tests_passed = 0
     tests_total = 15
-    
+
     # エンジン初期化
     try:
         engine = QuantumCollaborationEngine(entanglement_strength=0.8)
-        if (engine.entanglement_strength == 0.8 and 
-            hasattr(engine, 'quantum_states') and
-            hasattr(engine, 'metrics')):
+        if (
+            engine.entanglement_strength == 0.8
+            and hasattr(engine, "quantum_states")
+            and hasattr(engine, "metrics")
+        ):
             print("  ✅ エンジン初期化")
             tests_passed += 1
         else:
@@ -313,7 +325,7 @@ def test_quantum_engine_comprehensive():
     except Exception as e:
         print(f"  ❌ エンジン初期化エラー: {e}")
         return 0, tests_total
-    
+
     # メトリクス取得
     try:
         metrics = engine.get_quantum_metrics()
@@ -324,11 +336,11 @@ def test_quantum_engine_comprehensive():
             print("  ❌ メトリクス取得失敗")
     except Exception as e:
         print(f"  ❌ メトリクス取得エラー: {e}")
-    
+
     # 量子状態初期化
     try:
         problem_id = "test_problem_001"
-        if hasattr(engine, '_initialize_quantum_state'):
+        if hasattr(engine, "_initialize_quantum_state"):
             state = engine._initialize_quantum_state(problem_id)
             if isinstance(state, QuantumSuperposition):
                 print("  ✅ 量子状態初期化")
@@ -340,15 +352,15 @@ def test_quantum_engine_comprehensive():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ 量子状態初期化エラー: {e}")
-    
+
     # 振幅正規化
     try:
-        if hasattr(engine, '_normalize_amplitudes'):
+        if hasattr(engine, "_normalize_amplitudes"):
             amplitudes = [
                 QuantumAmplitude(0.5, 0),
                 QuantumAmplitude(0.7, 0),
                 QuantumAmplitude(0.3, 0),
-                QuantumAmplitude(0.9, 0)
+                QuantumAmplitude(0.9, 0),
             ]
             normalized = engine._normalize_amplitudes(amplitudes)
             total_prob = sum(amp.magnitude**2 for amp in normalized)
@@ -362,10 +374,10 @@ def test_quantum_engine_comprehensive():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ 振幅正規化エラー: {e}")
-    
+
     # 重ね合わせ作成
     try:
-        if hasattr(engine, 'create_superposition'):
+        if hasattr(engine, "create_superposition"):
             context = {"type": "optimization", "complexity": "high"}
             superposition = engine.create_superposition(context)
             if isinstance(superposition, QuantumSuperposition):
@@ -378,13 +390,13 @@ def test_quantum_engine_comprehensive():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ 重ね合わせ作成エラー: {e}")
-    
+
     # コヒーレンス計算
     try:
-        if hasattr(engine, '_calculate_quantum_coherence'):
+        if hasattr(engine, "_calculate_quantum_coherence"):
             test_superposition = QuantumSuperposition(
                 ["state1", "state2"],
-                [QuantumAmplitude(0.6, 0), QuantumAmplitude(0.8, 0.1)]
+                [QuantumAmplitude(0.6, 0), QuantumAmplitude(0.8, 0.1)],
             )
             coherence = engine._calculate_quantum_coherence(test_superposition)
             if 0 <= coherence <= 1:
@@ -397,15 +409,15 @@ def test_quantum_engine_comprehensive():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ コヒーレンス計算エラー: {e}")
-    
+
     # 賢者クエリ
     sage_methods = [
-        '_query_knowledge_sage',
-        '_query_task_oracle', 
-        '_query_crisis_sage',
-        '_query_rag_mystic'
+        "_query_knowledge_sage",
+        "_query_task_oracle",
+        "_query_crisis_sage",
+        "_query_rag_mystic",
     ]
-    
+
     for method_name in sage_methods:
         try:
             if hasattr(engine, method_name):
@@ -421,15 +433,15 @@ def test_quantum_engine_comprehensive():
                 tests_passed += 1
         except Exception as e:
             print(f"  ❌ {method_name} エラー: {e}")
-    
+
     # もつれ分析
     try:
-        if hasattr(engine, '_quantum_entanglement_analysis'):
+        if hasattr(engine, "_quantum_entanglement_analysis"):
             sage_responses = [
                 SageResponse("knowledge_sage", 0.85, "Test insight 1"),
                 SageResponse("task_oracle", 0.78, "Test insight 2"),
                 SageResponse("crisis_sage", 0.92, "Test insight 3"),
-                SageResponse("rag_mystic", 0.88, "Test insight 4")
+                SageResponse("rag_mystic", 0.88, "Test insight 4"),
             ]
             entangled = engine._quantum_entanglement_analysis(sage_responses)
             if isinstance(entangled, EntangledInsight):
@@ -442,20 +454,22 @@ def test_quantum_engine_comprehensive():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ もつれ分析エラー: {e}")
-    
+
     # 洞察相関計算
     try:
-        if hasattr(engine, '_calculate_insight_correlation'):
+        if hasattr(engine, "_calculate_insight_correlation"):
             insight1 = "Machine learning optimization"
             insight2 = "ML algorithm improvement"
             insight3 = "Database indexing"
-            
+
             correlation_high = engine._calculate_insight_correlation(insight1, insight2)
             correlation_low = engine._calculate_insight_correlation(insight1, insight3)
-            
-            if (0 <= correlation_high <= 1 and 
-                0 <= correlation_low <= 1 and 
-                correlation_high > correlation_low):
+
+            if (
+                0 <= correlation_high <= 1
+                and 0 <= correlation_low <= 1
+                and correlation_high > correlation_low
+            ):
                 print("  ✅ 洞察相関計算")
                 tests_passed += 1
             else:
@@ -465,15 +479,15 @@ def test_quantum_engine_comprehensive():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ 洞察相関計算エラー: {e}")
-    
+
     # 観測収束
     try:
-        if hasattr(engine, '_quantum_observation_collapse'):
+        if hasattr(engine, "_quantum_observation_collapse"):
             test_entangled = EntangledInsight(
                 ["insight A", "insight B"],
                 np.array([[1.0, 0.8], [0.8, 1.0]]),
                 0.8,
-                0.75
+                0.75,
             )
             observation = engine._quantum_observation_collapse(test_entangled)
             if isinstance(observation, QuantumObservation):
@@ -486,15 +500,17 @@ def test_quantum_engine_comprehensive():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ 観測収束エラー: {e}")
-    
+
     # 効率分析
     try:
-        if hasattr(engine, 'analyze_quantum_efficiency'):
-            engine.metrics.update({
-                "total_consensus_requests": 10,
-                "successful_entanglements": 8,
-                "average_coherence": 0.85
-            })
+        if hasattr(engine, "analyze_quantum_efficiency"):
+            engine.metrics.update(
+                {
+                    "total_consensus_requests": 10,
+                    "successful_entanglements": 8,
+                    "average_coherence": 0.85,
+                }
+            )
             efficiency = engine.analyze_quantum_efficiency()
             if isinstance(efficiency, dict):
                 print("  ✅ 効率分析")
@@ -506,27 +522,28 @@ def test_quantum_engine_comprehensive():
             tests_passed += 1
     except Exception as e:
         print(f"  ❌ 効率分析エラー: {e}")
-    
+
     return tests_passed, tests_total
+
 
 async def test_quantum_consensus_workflow():
     """量子コンセンサスワークフローテスト"""
     print("\n🧪 量子コンセンサスワークフローテスト")
-    
+
     tests_passed = 0
     tests_total = 5
-    
+
     try:
         engine = QuantumCollaborationEngine()
-        
+
         # フルワークフローテスト
-        if hasattr(engine, 'quantum_consensus'):
+        if hasattr(engine, "quantum_consensus"):
             learning_request = {
                 "problem_statement": "Optimize machine learning pipeline",
                 "context": {"urgency": "high", "domain": "ai"},
-                "constraints": ["memory_limited"]
+                "constraints": ["memory_limited"],
             }
-            
+
             try:
                 consensus = await engine.quantum_consensus(learning_request)
                 if isinstance(consensus, QuantumConsensus):
@@ -539,9 +556,9 @@ async def test_quantum_consensus_workflow():
         else:
             print("  ⚠️ quantum_consensusメソッドなし")
             tests_passed += 1
-        
+
         # 並列探索テスト
-        if hasattr(engine, '_parallel_exploration'):
+        if hasattr(engine, "_parallel_exploration"):
             try:
                 request = {"problem": "test", "context": "test"}
                 responses = await engine._parallel_exploration(request)
@@ -555,9 +572,9 @@ async def test_quantum_consensus_workflow():
         else:
             print("  ⚠️ 並列探索メソッドなし")
             tests_passed += 1
-        
+
         # 状態更新
-        if hasattr(engine, 'update_quantum_state'):
+        if hasattr(engine, "update_quantum_state"):
             try:
                 problem_id = "test_update"
                 evidence = {"sage_id": "test", "confidence_boost": 0.1}
@@ -569,9 +586,9 @@ async def test_quantum_consensus_workflow():
         else:
             print("  ⚠️ 状態更新メソッドなし")
             tests_passed += 1
-        
+
         # 状態リセット
-        if hasattr(engine, 'reset_quantum_state'):
+        if hasattr(engine, "reset_quantum_state"):
             try:
                 engine.quantum_states["test_reset"] = "dummy_state"
                 engine.reset_quantum_state("test_reset")
@@ -585,13 +602,13 @@ async def test_quantum_consensus_workflow():
         else:
             print("  ⚠️ 状態リセットメソッドなし")
             tests_passed += 1
-        
+
         # デコヒーレンス検出
-        if hasattr(engine, '_detect_decoherence'):
+        if hasattr(engine, "_detect_decoherence"):
             try:
                 low_coherence = QuantumSuperposition(
                     ["state1", "state2"],
-                    [QuantumAmplitude(0.1, 0.9), QuantumAmplitude(0.2, 1.5)]
+                    [QuantumAmplitude(0.1, 0.9), QuantumAmplitude(0.2, 1.5)],
                 )
                 is_decoherent = engine._detect_decoherence(low_coherence)
                 if isinstance(is_decoherent, bool):
@@ -604,46 +621,47 @@ async def test_quantum_consensus_workflow():
         else:
             print("  ⚠️ デコヒーレンス検出メソッドなし")
             tests_passed += 1
-        
+
     except Exception as e:
         print(f"  ❌ エンジン作成エラー: {e}")
         return 0, tests_total
-    
+
     return tests_passed, tests_total
+
 
 async def main():
     """メインテスト実行"""
     print("🧪 Elders Guild 4-Sage System 統合カバレッジテスト開始")
     print("=" * 70)
-    
+
     total_passed = 0
     total_tests = 0
-    
+
     # 量子振幅テスト
     passed, total = test_quantum_amplitude_operations()
     total_passed += passed
     total_tests += total
-    
+
     # 量子重ね合わせテスト
     passed, total = test_quantum_superposition_operations()
     total_passed += passed
     total_tests += total
-    
+
     # 量子エンジンテスト
     passed, total = test_quantum_engine_comprehensive()
     total_passed += passed
     total_tests += total
-    
+
     # 量子コンセンサスワークフロー
     passed, total = await test_quantum_consensus_workflow()
     total_passed += passed
     total_tests += total
-    
+
     # 結果サマリー
     print("\n" + "=" * 70)
     print(f"📊 統合カバレッジテスト結果: {total_passed}/{total_tests} 成功")
     success_rate = (total_passed / total_tests * 100) if total_tests > 0 else 0
-    
+
     if total_passed == total_tests:
         print("🎉 すべてのテストが成功しました！")
         print("🚀 量子協調エンジンのカバレッジが大幅に向上しました")
@@ -656,6 +674,7 @@ async def main():
         print(f"❌ {total_tests - total_passed}個のテストが失敗しました")
         print(f"成功率: {success_rate:.1f}%")
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(asyncio.run(main()))

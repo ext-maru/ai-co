@@ -76,17 +76,17 @@ class ElderTree:
     def __init__(self):
         self.active = False
         logger.info("Elder Tree initialized in disabled mode")
-    
+
     async def send_message(self, message):
         """メッセージ送信 (無効化済み)"""
         logger.info("Elder Tree message sending is disabled")
         return False
-    
+
     async def initialize(self):
         """初期化 (無効化済み)"""
         logger.info("Elder Tree initialization is disabled")
         return False
-    
+
     async def cleanup(self):
         """クリーンアップ (無効化済み)"""
         logger.info("Elder Tree cleanup is disabled")
@@ -129,17 +129,17 @@ ELDER_TREE_AVAILABLE = False
 
 class FourSagesIntegration:
     """4賢者統合システム (無効化済み)"""
-    
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.active = False
         self.logger.info("Four Sages Integration initialized in disabled mode")
-    
+
     async def initialize(self):
         """初期化 (無効化済み)"""
         self.logger.info("Four Sages Integration initialization is disabled")
         return True
-    
+
     async def get_system_status(self):
         """システム状況取得 (無効化済み)"""
         return {
@@ -147,20 +147,20 @@ class FourSagesIntegration:
             "sages_status": {},
             "timestamp": datetime.now().isoformat()
         }
-    
+
     async def cleanup(self):
         """クリーンアップ (無効化済み)"""
         self.logger.info("Four Sages Integration cleanup is disabled")
         return True
-    
+
     def coordinate_learning_session(self, *args, **kwargs):
         """学習セッション調整 (無効化済み)"""
         return {"session_id": None, "consensus_reached": False}
-    
+
     def facilitate_cross_sage_learning(self, *args, **kwargs):
         """クロス学習促進 (無効化済み)"""
         return {"cross_learning_completed": False}
-    
+
     def resolve_sage_conflicts(self, *args, **kwargs):
         """競合解決 (無効化済み)"""
         return {"conflict_resolved": False}

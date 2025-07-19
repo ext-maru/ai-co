@@ -1,8 +1,8 @@
 # 🏛️ Session Context Manager 設計仕様書
 
-**仕様書ID**: SCM_DESIGN_SPEC_20250708  
-**承認**: 4賢者評議会承認済み  
-**実装期間**: Week 1-2 (Phase A)  
+**仕様書ID**: SCM_DESIGN_SPEC_20250708
+**承認**: 4賢者評議会承認済み
+**実装期間**: Week 1-2 (Phase A)
 **目標**: 80%コストカット実現の核心機能
 
 ---
@@ -38,17 +38,17 @@ class SessionContext:
     updated_at: datetime
     user_id: str
     project_path: str
-    
+
     # 構造化データ
     tasks: List[Dict[str, Any]]
     knowledge_graph: Dict[str, Any]
     error_patterns: List[Dict[str, Any]]
     success_patterns: List[Dict[str, Any]]
-    
+
     # 4賢者データ
     sage_interactions: Dict[str, int]
     performance_metrics: Dict[str, float]
-    
+
     # 圧縮・要約
     summary: str
     key_insights: List[str]
@@ -88,10 +88,10 @@ quality_gates:
 class SecurityLayer:
     # AES-256-GCM暗号化
     def encrypt_sensitive_data(self, data: Dict) -> bytes
-    
+
     # RBACベース権限チェック
     def check_permissions(self, user_id: str, session_id: str) -> bool
-    
+
     # 改ざん防止監査ログ
     def audit_log(self, action: str, user_id: str, details: Dict)
 ```
@@ -114,7 +114,7 @@ class ContextRAG:
         text_vector = self.embedder.encode(context.summary)
         task_vector = self.encode_tasks(context.tasks)
         pattern_vector = self.encode_patterns(context.patterns)
-        
+
         # 重み付き結合: text(40%) + task(30%) + pattern(30%)
         return np.concatenate([
             text_vector * 0.4,
@@ -128,7 +128,7 @@ class ContextRAG:
 # 段階的圧縮: 80-90%圧縮率目標
 strategies = [
     self.remove_redundant_data,
-    self.summarize_conversations, 
+    self.summarize_conversations,
     self.extract_key_decisions,
     self.compress_code_snippets,
 ]
@@ -141,16 +141,16 @@ strategies = [
 async def process_with_four_sages(self, context: SessionContext):
     # 1. ナレッジ賢者: 知識抽出・保存
     knowledge = await self.knowledge_sage.extract_insights(context)
-    
-    # 2. タスク賢者: タスク管理・優先順位  
+
+    # 2. タスク賢者: タスク管理・優先順位
     tasks = await self.task_oracle.analyze_tasks(context)
-    
+
     # 3. インシデント賢者: リスク分析・対策
     risks = await self.crisis_sage.assess_risks(context)
-    
+
     # 4. RAG賢者: 関連情報検索・統合
     related = await self.search_mystic.find_related(context)
-    
+
     return context
 ```
 
@@ -183,12 +183,12 @@ class SessionContextManager:
     async def create_session(self, user_id: str, project_path: str) -> SessionContext
     async def load_session(self, session_id: str) -> SessionContext
     async def save_session(self, context: SessionContext) -> bool
-    
+
     # 知識統合
     async def merge_contexts(self, contexts: List[SessionContext]) -> SessionContext
     async def extract_patterns(self, context: SessionContext) -> Dict[str, Any]
     async def evolve_knowledge(self, context: SessionContext) -> None
-    
+
     # 4賢者統合
     async def sync_with_knowledge_base(self, context: SessionContext) -> None
     async def update_task_tracker(self, context: SessionContext) -> None
@@ -235,7 +235,7 @@ tests/unit/session_management/
 
 ---
 
-**🏛️ エルダー評議会最終承認済み**  
-**🧙‍♂️ 4賢者技術仕様確定済み**  
-**🚀 実装開始準備完了**  
+**🏛️ エルダー評議会最終承認済み**
+**🧙‍♂️ 4賢者技術仕様確定済み**
+**🚀 実装開始準備完了**
 **文書ID**: SCM_DESIGN_SPEC_20250708

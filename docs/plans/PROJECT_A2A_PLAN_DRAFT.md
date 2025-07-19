@@ -30,11 +30,11 @@
 class SessionMemoryMagic:
     def __init__(self):
         self.memory_keeper = "ナレッジ賢者"  # or タスク賢者
-        
+
     def save_session(self, conversation_id, messages):
         """会話をknowledge_base/sessions/に保存"""
         pass
-        
+
     def recall_session(self, trigger_phrase):
         """特定のフレーズで会話を復元"""
         # 例: "前回の続きから" or "セッション復元"

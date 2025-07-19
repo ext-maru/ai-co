@@ -11,7 +11,7 @@ if [[ $# -eq 0 ]]; then
     echo ""
     echo "Examples:"
     echo "  ai-api-reset primary"
-    echo "  ai-api-reset key_1" 
+    echo "  ai-api-reset key_1"
     echo "  ai-api-reset all"
     exit 1
 fi
@@ -36,13 +36,13 @@ sys.path.append('$PROJECT_DIR')
 
 try:
     from libs.claude_client_with_rotation import ClaudeClientWithRotation
-    
+
     client = ClaudeClientWithRotation('$PROJECT_DIR/config/config.json')
     key_alias = '$KEY_ALIAS'
-    
+
     print('🔄 API Key Reset Tool')
     print('=' * 30)
-    
+
     if key_alias.lower() == 'all':
         # 全キーリセット
         success_count = 0
@@ -52,7 +52,7 @@ try:
                 success_count += 1
             else:
                 print(f'❌ Failed to reset: {key.alias}')
-        
+
         print(f'\\n📊 Reset Summary: {success_count}/{len(client.api_key_manager.api_keys)} keys reset')
     else:
         # 個別キーリセット

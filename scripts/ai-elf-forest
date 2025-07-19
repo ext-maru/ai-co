@@ -53,10 +53,10 @@ stop_forest() {
 show_status() {
     echo "📊 AI Company ワーカー状態:"
     echo "=============================="
-    
+
     # ワーカープロセスの確認
     WORKERS=("enhanced_task_worker" "intelligent_pm_worker" "async_result_worker" "simple_task_worker")
-    
+
     for worker in "${WORKERS[@]}"; do
         PID=$(ps aux | grep "$worker" | grep -v grep | awk '{print $2}' | head -1)
         if [ -n "$PID" ]; then
@@ -67,7 +67,7 @@ show_status() {
             echo "❌ $worker (停止中)"
         fi
     done
-    
+
     # エルフの森の状態
     if [ -f "$PROJECT_ROOT/logs/elf_forest.pid" ]; then
         ELF_PID=$(cat "$PROJECT_ROOT/logs/elf_forest.pid")
@@ -87,7 +87,7 @@ show_status() {
 show_dashboard() {
     echo "🌲 エルフの森 - リアルタイムダッシュボード"
     echo "============================================="
-    
+
     python3 -c "
 import sys
 sys.path.insert(0, '$PROJECT_ROOT')
@@ -113,11 +113,11 @@ set_reminder() {
         echo "Example: ai-elf-forest remind enhanced_task_worker \"メンテナンス時間です\""
         return 1
     fi
-    
+
     WORKER_NAME="$1"
     MESSAGE="$2"
     TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-    
+
     # リマインダーログに記録
     REMINDER_LOG="$PROJECT_ROOT/logs/${WORKER_NAME}_reminders.log"
     echo "[$TIMESTAMP] $MESSAGE" >> "$REMINDER_LOG"

@@ -60,14 +60,14 @@ graph TD
     B -->|Change| F[影響分析]
     B -->|Security| G[即時対応]
     B -->|Performance| H[監視強化]
-    
+
     C --> I[解決/エスカレーション]
     D --> I
     E --> I
     F --> I
     G --> I
     H --> I
-    
+
     I --> J[ナレッジ更新]
     J --> K[予防策実装]
 ```
@@ -106,7 +106,7 @@ graph TD
 - **カテゴリ**: Failure
 - **症状**: worker.pyが起動しない
 - **原因**: PYTHONPATH設定不足、依存関係エラー
-- **対応**: 
+- **対応**:
   1. error_handling/PATTERN_001を参照
   2. 自動修正スクリプト実行
   3. systemd設定確認

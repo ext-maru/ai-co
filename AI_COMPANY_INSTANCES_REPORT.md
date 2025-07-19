@@ -26,7 +26,7 @@ After a comprehensive search, I found several instances of these terms that rema
 ### 2. Python Files (`.py`)
 
 #### Integration Scripts
-- **integrate_knowledge_base.py**: 
+- **integrate_knowledge_base.py**:
   - Line with "Elders Guild全体を起動"
   - Index content header "Elders Guild Knowledge Base Index"
 

@@ -1,7 +1,7 @@
 # 🧝‍♂️ エルフの森システム設計書
 
-**作成日**: 2025年7月7日  
-**作成者**: Claude (Elders Guild エンジニア)  
+**作成日**: 2025年7月7日
+**作成者**: Claude (Elders Guild エンジニア)
 **目的**: タスクエルダーを支援するエルフの森システムの設計
 
 ---
@@ -28,7 +28,7 @@ class FlowElf:
         self.name = name
         self.specialty = specialty  # "queue", "pipeline", "dependency"
         self.mana_level = 100
-        
+
     def monitor_task_flow(self):
         # タスクの流れを監視
         # 詰まりを検出したらアラート
@@ -49,7 +49,7 @@ class TimeElf:
         self.name = name
         self.precision = precision  # "minute", "hour", "day"
         self.scheduled_reminders = []
-        
+
     def set_reminder(self, task, when):
         # リマインダー設定
         pass
@@ -68,7 +68,7 @@ class BalanceElf:
     def __init__(self, name, focus):
         self.name = name
         self.focus = focus  # "cpu", "memory", "tasks"
-        
+
     def balance_workload(self):
         # ワーカー間の負荷分散
         pass
@@ -87,7 +87,7 @@ class HealingElf:
     def __init__(self, name, healing_power):
         self.name = name
         self.healing_power = healing_power
-        
+
     def heal_failed_task(self, task):
         # タスクの修復を試みる
         pass
@@ -107,7 +107,7 @@ class WisdomElf:
         self.name = name
         self.knowledge_domain = knowledge_domain
         self.learned_patterns = []
-        
+
     def learn_from_history(self):
         # 過去のタスクから学習
         pass
@@ -140,8 +140,8 @@ def calculate_mana_level(metrics):
     balance_mana = (1 - metrics['load_variance']) * 100
     heal_mana = metrics['recovery_success_rate'] * 100
     wisdom_mana = metrics['pattern_recognition_score'] * 100
-    
-    total_mana = (flow_mana + time_mana + balance_mana + 
+
+    total_mana = (flow_mana + time_mana + balance_mana +
                   heal_mana + wisdom_mana) / 5
     return total_mana
 ```
@@ -159,7 +159,7 @@ flow_monitoring:
     - 処理速度
     - 待機時間
     - 依存関係
-  
+
   アラート条件:
     - キュー積滞 > 100
     - 処理速度低下 > 50%
@@ -174,7 +174,7 @@ reminder_system:
     - デッドラインリマインダー
     - 依存タスク完了通知
     - 異常検知アラート
-  
+
   配信方法:
     - システムログ
     - エルダー報告
@@ -189,7 +189,7 @@ load_balancer:
     - 最小負荷優先
     - 親和性ベース
     - 予測的配分
-  
+
   メトリクス:
     - CPU使用率
     - メモリ使用率
@@ -203,11 +203,11 @@ self_healing:
   レベル1_観察:
     - エラーログ収集
     - パターン分析
-  
+
   レベル2_診断:
     - 根本原因分析
     - 影響範囲特定
-  
+
   レベル3_治療:
     - 自動リトライ
     - 代替ルート探索
@@ -222,13 +222,13 @@ learning_system:
     - エラーパターン
     - 成功パターン
     - リソース使用状況
-  
+
   分析手法:
     - 統計分析
     - パターンマイニング
     - 異常検知
     - トレンド予測
-  
+
   出力:
     - 最適化提案
     - ベストプラクティス
@@ -277,23 +277,23 @@ class ElfForestDashboard:
         self.elves = []
         self.mana_levels = {}
         self.task_metrics = {}
-        
+
     def display_status(self):
         """
         エルフの森の状態表示
-        
+
         🌲 エルフの森ステータス 🌲
         ========================
-        
+
         総マナレベル: ████████░░ 85%
-        
+
         エルフ配置:
         - フローエルフ: 5体 (稼働中)
         - タイムエルフ: 3体 (稼働中)
         - バランスエルフ: 4体 (稼働中)
         - ヒーリングエルフ: 2体 (待機中)
         - ウィズダムエルフ: 2体 (学習中)
-        
+
         現在のアクティビティ:
         - タスクフロー: 正常 ✅
         - 負荷バランス: 最適 ✅

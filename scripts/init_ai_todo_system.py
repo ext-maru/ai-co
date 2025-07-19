@@ -10,16 +10,18 @@ from pathlib import Path
 PROJECT_ROOT = Path("/home/aicompany/ai_co")
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from libs.ai_command_helper import AICommandHelper
 import time
+
+from libs.ai_command_helper import AICommandHelper
+
 
 def setup_ai_todo_system():
     """AI TodoシステムをセットアップしてAI Command Executorで初期実行"""
-    
+
     helper = AICommandHelper()
-    
+
     print("🤖 AI自律型ToDoリストシステムを起動します")
-    
+
     # 1. セットアップスクリプトを実行可能にする
     setup_commands = """#!/bin/bash
 # スクリプトを実行可能にする
@@ -33,13 +35,13 @@ fi
 
 echo "✅ 実行権限とリンクを設定しました"
 """
-    
+
     helper.create_bash_command(setup_commands, "setup_ai_todo_permissions")
     print("✅ Step 1: 権限設定をAI Command Executorに登録")
-    
+
     # 少し待機
     time.sleep(7)
-    
+
     # 2. 初期ToDoリストを作成して実行
     initial_todo_script = """#!/usr/bin/env python3
 import sys
@@ -190,10 +192,10 @@ print("✨ AI成長プロセス完了！")
 helper.create_python_command(process_script, "ai_self_growth_execution")
 print("✅ AI成長ToDoリストの実行をスケジュール")
 """
-    
+
     helper.create_python_command(initial_todo_script, "create_ai_growth_todo")
     print("✅ Step 2: AI成長ToDoリストの作成をスケジュール")
-    
+
     print("\n🎉 AI自律型ToDoリストシステムの起動完了！")
     print("\n今後の使い方:")
     print("  ai-todo create <name>        - 新しいToDoリスト作成")

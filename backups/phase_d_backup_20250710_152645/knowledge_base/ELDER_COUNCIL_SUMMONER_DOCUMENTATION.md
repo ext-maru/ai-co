@@ -1,6 +1,6 @@
 # 🏛️ Elder Council Auto-Summoning System Documentation
 
-**実装完了**: 2025年7月6日 21:30  
+**実装完了**: 2025年7月6日 21:30
 **目的**: 全分析と進化継続のためのエルダー会議自動召集システム
 
 ---
@@ -301,7 +301,7 @@ thresholds = {
 Trigger: worker_failure_rate > 50%
 Urgency: CRITICAL (24 hours)
 Action: Immediate Elder Council summoning
-Agenda: 
+Agenda:
 - Emergency stabilization
 - Root cause analysis
 - Prevention strategy
@@ -437,6 +437,6 @@ cat data/evolution_metrics.json | jq '.[-1]'
 
 ---
 
-**作成者**: Claude Code Instance  
-**承認**: 4賢者システム（分析・設計段階での協力）  
+**作成者**: Claude Code Instance
+**承認**: 4賢者システム（分析・設計段階での協力）
 **最終更新**: 2025年7月6日 21:45

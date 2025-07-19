@@ -93,7 +93,7 @@ Elders Guildが自律的にエラーを判断し、修正し、経験から学�
 ```python
 class ErrorDetector:
     """ログやプロセス出力からエラーを検出"""
-    
+
     def __init__(self):
         self.error_patterns = [
             r"ERROR:.*",
@@ -108,7 +108,7 @@ class ErrorDetector:
             r".*test.*error.*",  # テスト関連は無視
             r".*example.*"       # サンプルコードは無視
         ]
-    
+
     def detect_errors(self, text: str) -> List[ErrorInfo]:
         """テキストからエラーを検出"""
         errors = []
@@ -124,11 +124,11 @@ class ErrorDetector:
 ```python
 class ErrorClassifier:
     """エラーを重要度とタイプで分類"""
-    
+
     def __init__(self):
         self.known_patterns = self._load_known_patterns()
         self.llm_quota = LLMQuotaManager()  # LLM使用量管理
-        
+
     def classify(self, error: ErrorInfo) -> Classification:
         # 1. 既知パターンマッチング（高速）
         for pattern in self.known_patterns:
@@ -140,16 +140,16 @@ class ErrorClassifier:
                     confidence=pattern.confidence,
                     source="pattern_match"
                 )
-        
+
         # 2. コンテキスト分析（中速）
         context_result = self._analyze_context(error)
         if context_result.confidence > 0.7:
             return context_result
-        
+
         # 3. LLM判定（低速・高精度）
         if self.llm_quota.can_use():
             return self._llm_classify(error)
-        
+
         # 4. デフォルト分類
         return Classification(
             category="unknown",
@@ -165,16 +165,16 @@ class ErrorClassifier:
 ```python
 class PatternLearner:
     """エラーパターンを学習して知識ベースを更新"""
-    
+
     def __init__(self):
         self.learning_threshold = 5  # 5回以上出現で学習
         self.confidence_threshold = 0.8
         self.pattern_cache = {}
-        
+
     def learn_from_classification(self, error: ErrorInfo, classification: Classification):
         """分類結果から学習"""
         pattern_key = self._extract_pattern_key(error)
-        
+
         # キャッシュに追加
         if pattern_key not in self.pattern_cache:
             self.pattern_cache[pattern_key] = {
@@ -182,11 +182,11 @@ class PatternLearner:
                 "classifications": [],
                 "fixes": []
             }
-        
+
         cache = self.pattern_cache[pattern_key]
         cache["occurrences"] += 1
         cache["classifications"].append(classification)
-        
+
         # 学習条件を満たしたら既知パターンに昇格
         if cache["occurrences"] >= self.learning_threshold:
             confidence = self._calculate_confidence(cache)
@@ -199,7 +199,7 @@ class PatternLearner:
 ```python
 class AutoFixer:
     """エラーを自動的に修正"""
-    
+
     def __init__(self):
         self.fix_strategies = {
             "pip_install": PipInstallStrategy(),
@@ -209,23 +209,23 @@ class AutoFixer:
             "restart_service": RestartServiceStrategy(),
             "retry_operation": RetryOperationStrategy()
         }
-        
+
     def fix(self, error: ErrorInfo, classification: Classification) -> FixResult:
         """エラーを修正"""
         strategy_name = classification.fix_strategy
-        
+
         if strategy_name not in self.fix_strategies:
             return FixResult(success=False, reason="Unknown strategy")
-        
+
         strategy = self.fix_strategies[strategy_name]
-        
+
         # 修正前の状態を保存（ロールバック用）
         backup = self._create_backup(error.context)
-        
+
         try:
             # 修正実行
             result = strategy.execute(error, classification)
-            
+
             # 検証
             if self._verify_fix(error, result):
                 return FixResult(
@@ -236,7 +236,7 @@ class AutoFixer:
             else:
                 self._rollback(backup)
                 return FixResult(success=False, reason="Verification failed")
-                
+
         except Exception as e:
             self._rollback(backup)
             return FixResult(success=False, reason=str(e))
@@ -247,41 +247,41 @@ class AutoFixer:
 ```python
 class SelfHealingOrchestrator:
     """全体を統括する自己修復システム"""
-    
+
     def __init__(self):
         self.detector = ErrorDetector()
         self.classifier = ErrorClassifier()
         self.learner = PatternLearner()
         self.fixer = AutoFixer()
         self.history = FixHistory()
-        
+
     def heal_system(self):
         """システム全体の自己修復を実行"""
         # 1. エラー検出
         errors = self.detector.scan_all_logs()
-        
+
         # 2. エラー集約（ノイズ除去）
         aggregated_errors = self._aggregate_errors(errors)
-        
+
         # 3. 優先順位付け
         prioritized_errors = self._prioritize_errors(aggregated_errors)
-        
+
         # 4. 修復実行
         for error in prioritized_errors:
             # 分類
             classification = self.classifier.classify(error)
-            
+
             # 修正必要性判断
             if self._should_fix(error, classification):
                 # 過去の成功パターンを参照
                 best_strategy = self._find_best_strategy(error, classification)
-                
+
                 # 修正実行
                 result = self.fixer.fix(error, classification)
-                
+
                 # 結果記録
                 self.history.record(error, classification, result)
-                
+
                 # 学習
                 if result.success:
                     self.learner.learn_from_success(error, classification, result)
@@ -408,19 +408,19 @@ flowchart TD
 ```python
 class ErrorIntelligenceAPI:
     """外部からの利用インターフェース"""
-    
+
     def analyze_error(self, error_text: str) -> AnalysisResult:
         """エラーを分析して結果を返す"""
         pass
-    
+
     def fix_error(self, error_id: str) -> FixResult:
         """エラーIDを指定して修正を実行"""
         pass
-    
+
     def get_statistics(self, time_range: str = "24h") -> Statistics:
         """エラー統計を取得"""
         pass
-    
+
     def get_known_patterns(self) -> List[Pattern]:
         """既知のパターン一覧を取得"""
         pass
@@ -498,11 +498,11 @@ class TestErrorClassifier:
     def test_known_pattern_matching(self):
         """既知パターンの正確なマッチング"""
         pass
-    
+
     def test_confidence_calculation(self):
         """信頼度計算の妥当性"""
         pass
-    
+
     def test_llm_fallback(self):
         """LLMフォールバックの動作"""
         pass
@@ -515,11 +515,11 @@ class TestEndToEnd:
     def test_error_detection_to_classification(self):
         """エラー検出から分類までの流れ"""
         pass
-    
+
     def test_classification_to_fix(self):
         """分類から修正までの流れ"""
         pass
-    
+
     def test_learning_cycle(self):
         """学習サイクルの検証"""
         pass

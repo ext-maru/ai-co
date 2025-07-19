@@ -36,7 +36,7 @@ echo "🐳 Docker設定確認..."
 # Docker Composeファイル確認
 required_files=(
     "docker-compose.yml"
-    "Dockerfile.backend" 
+    "Dockerfile.backend"
     "frontend/Dockerfile"
     "nginx/nginx.conf"
     "scripts/init_db.sql"

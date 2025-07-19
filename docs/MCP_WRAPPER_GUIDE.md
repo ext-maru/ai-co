@@ -46,7 +46,7 @@ result = client.call_tool(
 - `create_worker`: ワーカーの作成
 - `deploy_file`: ファイルの自動配置
 
-#### Executor Server  
+#### Executor Server
 - `execute_command`: コマンドの実行（AI Command Executor経由）
 - `check_result`: 実行結果の確認
 

@@ -69,10 +69,10 @@ def test_worker_processes_message_successfully(self):
     # Arrange（準備）
     worker = TestWorker()
     message = create_test_message()
-    
+
     # Act（実行）
     result = worker.process_message(message)
-    
+
     # Assert（検証）
     self.assertEqual(result['status'], 'success')
     self.assertIn('task_id', result)
@@ -90,13 +90,13 @@ def test_worker_processes_message_successfully(self):
 class TestTaskWorker(WorkerTestCase):
     def test_process_valid_task(self):
         """正常なタスクの処理"""
-        
+
     def test_handle_invalid_json(self):
         """不正なJSONの処理"""
-        
+
     def test_handle_empty_message(self):
         """空メッセージの処理"""
-        
+
     def test_retry_on_failure(self):
         """失敗時のリトライ"""
 ```
@@ -131,7 +131,7 @@ if __name__ == "__main__":  # pragma: no cover
 
 # または .coveragerc で設定
 [run]
-omit = 
+omit =
     */tests/*
     */venv/*
     */migrations/*
@@ -221,17 +221,17 @@ def test_db_operation(self, mock_connect):
 class TestRAGManager(ManagerTestCase):
     """
     RAGManagerのテストスイート
-    
+
     このテストでは以下を検証します：
     - 類似タスクの検索機能
     - プロンプト強化機能
     - データベース操作の正確性
     """
-    
+
     def test_search_returns_relevant_results(self):
         """
         類似タスク検索が関連性の高い結果を返すことを確認
-        
+
         期待される動作:
         1. 検索クエリに基づいて類似タスクを取得
         2. 関連性スコアでソート
@@ -246,10 +246,10 @@ def test_concurrent_message_processing(self):
     """並行メッセージ処理のテスト"""
     # 50個の並行タスクを作成して、
     # デッドロックや競合状態が発生しないことを確認
-    
+
     # 共有リソースへのアクセスをシミュレート
     shared_resource = threading.Lock()
-    
+
     # ... テストコード ...
 ```
 
@@ -323,10 +323,10 @@ ai-test -p manager # マネージャー変更時
 # 既存機能が壊れていないことを確認
 class TestRegression(IntegrationTestCase):
     """回帰テストスイート"""
-    
+
     def test_existing_task_flow(self):
         """既存のタスクフローが正常に動作することを確認"""
-        
+
     def test_backward_compatibility(self):
         """後方互換性の確認"""
 ```
@@ -373,7 +373,7 @@ self.assertGreater(len(results), 0)
 # ❌ NG: 順序依存のテスト
 def test_1_create(self):
     self.id = create_object()
-    
+
 def test_2_delete(self):
     delete_object(self.id)  # test_1に依存
 

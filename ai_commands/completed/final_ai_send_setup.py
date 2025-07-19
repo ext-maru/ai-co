@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
-import sys
 import json
 import os
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 
-sys.path.insert(0, '/home/aicompany/ai_co')
+sys.path.insert(0, "/home/aicompany/ai_co")
 
 # プロジェクトルート
-PROJECT_ROOT = Path('/home/aicompany/ai_co')
+PROJECT_ROOT = Path("/home/aicompany/ai_co")
 
 print("🚀 ai-send拡張実装 - 最終実行")
 print(f"時刻: {datetime.now()}")
@@ -29,14 +29,14 @@ task_types = {
     "backup": {"description": "バックアップ作業", "priority": 4},
     "migrate": {"description": "データ移行・システム移行", "priority": 7},
     "analyze": {"description": "データ分析・調査", "priority": 5},
-    "report": {"description": "レポート生成", "priority": 4}
+    "report": {"description": "レポート生成", "priority": 4},
 }
 
 config_dir = PROJECT_ROOT / "config"
 config_dir.mkdir(exist_ok=True)
 
 task_types_path = config_dir / "task_types.json"
-with open(task_types_path, 'w', encoding='utf-8') as f:
+with open(task_types_path, "w", encoding="utf-8") as f:
     json.dump(task_types, f, indent=2, ensure_ascii=False)
 
 print(f"✅ task_types.json を作成: {task_types_path}")
@@ -65,20 +65,20 @@ class {task_type.capitalize()}Worker(BaseWorker):
     def __init__(self):
         super().__init__(worker_type='{task_type}')
         self.config = get_config()
-    
+
     def process_message(self, ch, method, properties, body):
         """タスク処理"""
         task_id = body.get('task_id', 'unknown')
         self.logger.info(f"Processing {task_type} task: {{task_id}}")
-        
+
         # タスク処理ロジック
         result = self._execute_{task_type}(body)
-        
+
         # 完了通知
         self._notify_completion(f"{task_type.capitalize()} task completed: {{task_id}}")
-        
+
         return result
-    
+
     def _execute_{task_type}(self, task_data):
         """実際の処理"""
         # TODO: 実装
@@ -92,15 +92,15 @@ if __name__ == "__main__":
     worker = {task_type.capitalize()}Worker()
     worker.run()
 '''
-    
+
     template_path = templates_dir / f"{task_type}_template.py"
-    with open(template_path, 'w', encoding='utf-8') as f:
+    with open(template_path, "w", encoding="utf-8") as f:
         f.write(template_content)
-    
+
     print(f"✅ テンプレート作成: {template_path}")
 
 # 4. ガイドドキュメントの作成
-guide_content = '''# AI Send Extended - タスクタイプ拡張ガイド
+guide_content = """# AI Send Extended - タスクタイプ拡張ガイド
 
 ## 概要
 ai-sendコマンドが13種類のタスクタイプに対応しました。
@@ -160,11 +160,13 @@ ai-send docs "README更新" --priority 2
 通知先: `#task-result`
 
 ---
-作成日: ''' + str(datetime.now())
+作成日: """ + str(
+    datetime.now()
+)
 
 guide_path = PROJECT_ROOT / "docs" / "AI_SEND_EXTENDED_GUIDE.md"
 guide_path.parent.mkdir(exist_ok=True)
-with open(guide_path, 'w', encoding='utf-8') as f:
+with open(guide_path, "w", encoding="utf-8") as f:
     f.write(guide_content)
 
 print(f"\n✅ ガイド作成: {guide_path}")
@@ -182,9 +184,10 @@ else:
 # 6. Slack通知
 try:
     from libs.slack_notifier import SlackNotifier
+
     notifier = SlackNotifier()
-    
-    message = f'''🎉 ai-send拡張実装完了！
+
+    message = f"""🎉 ai-send拡張実装完了！
 
 📋 追加されたタスクタイプ: {len(task_types)}種類
 📁 設定ファイル: {task_types_path}
@@ -197,8 +200,8 @@ ai-send fix "バグ修正" --priority 9
 ai-send deploy "本番リリース"
 ```
 
-詳細は `cat {guide_path}` で確認してください。'''
-    
+詳細は `cat {guide_path}` で確認してください。"""
+
     notifier.send_message(message)
     print("\n✅ Slack通知を送信しました")
 except Exception as e:

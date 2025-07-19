@@ -1,7 +1,7 @@
 /**
  * Storybook Configuration
  * 🧙‍♂️ Four Sages評議会決定 - Visual Regression Testing基盤
- * 
+ *
  * エルダーズギルド Storybook設定
  * 実装日: 2025年7月11日
  */
@@ -13,7 +13,7 @@ const config: StorybookConfig = {
     '../src/**/*.stories.@(js|jsx|ts|tsx|mdx)',
     '../src/**/*.story.@(js|jsx|ts|tsx|mdx)',
   ],
-  
+
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
@@ -23,14 +23,14 @@ const config: StorybookConfig = {
     '@storybook/addon-docs',
     '@chromatic-com/storybook',
   ],
-  
+
   framework: {
     name: '@storybook/nextjs',
     options: {},
   },
-  
+
   staticDirs: ['../public'],
-  
+
   // TypeScript設定
   typescript: {
     check: false,
@@ -44,7 +44,7 @@ const config: StorybookConfig = {
       },
     },
   },
-  
+
   // Webpack設定カスタマイズ
   webpackFinal: async (config) => {
     // エイリアス設定
@@ -55,21 +55,21 @@ const config: StorybookConfig = {
         '@': require('path').resolve(__dirname, '../src'),
       },
     };
-    
+
     return config;
   },
-  
+
   // エルダーズギルド特有設定
   env: (config) => ({
     ...config,
     STORYBOOK_ELDERS_GUILD: 'true',
     STORYBOOK_FOUR_SAGES: 'active',
   }),
-  
+
   docs: {
     autodocs: 'tag',
   },
-  
+
   // プレビュー設定
   previewHead: (head) => `
     ${head}
@@ -91,18 +91,18 @@ export default config;
 
 /**
  * 🧙‍♂️ Four Sages評価
- * 
+ *
  * ✅ Knowledge Sage: Storybook最新ベストプラクティス適用
  * ✅ Task Sage: 効率的なビルド・開発設定
  * ✅ Incident Sage: エラー検出・デバッグ支援
  * ✅ RAG Sage: 包括的なドキュメント生成
- * 
+ *
  * 設定特徴:
  * - Next.js完全統合
  * - TypeScript対応
  * - エルダーズギルドテーマ統合
  * - Chromatic連携準備
  * - アクセシビリティテスト
- * 
+ *
  * 次のステップ: Preview設定・Stories作成
  */

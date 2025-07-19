@@ -51,18 +51,18 @@ logger = logging.getLogger(__name__)
 async def main():
     """メインループ"""
     logger.info("Plan Projects Sync デーモン開始")
-    
+
     # GitHub トークンの確認
     github_token = os.environ.get('GITHUB_TOKEN')
     if not github_token:
         logger.warning("GITHUB_TOKEN が設定されていません。機能が制限されます。")
-    
+
     sync_system = PlanProjectsSync(github_token)
-    
+
     # 初回同期
     logger.info("初回同期を実行...")
     await sync_system.auto_sync_all_changes()
-    
+
     # 継続的同期（30分間隔）
     await sync_system.enable_continuous_sync(interval_minutes=30)
 

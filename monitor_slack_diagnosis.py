@@ -6,8 +6,8 @@ Slack診断ログの監視
 
 import sys
 import time
-from pathlib import Path
 from datetime import datetime
+from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -15,32 +15,33 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from libs.ai_command_helper import AICommandHelper
 from libs.ai_log_viewer import AILogViewer
 
+
 def main():
     helper = AICommandHelper()
     viewer = AILogViewer()
-    
+
     print("=== Slack診断ログ監視 ===")
     print(f"開始時刻: {datetime.now()}")
     print("\n数秒後に結果が表示されます...\n")
-    
+
     # 10秒待つ（AI Command Executorの実行を待つ）
     time.sleep(10)
-    
+
     # 最新のログを確認
     print("最新の実行ログ:")
     print("-" * 60)
-    
+
     # コマンドログ確認
     latest_logs = viewer.get_latest_command_logs(5)
     for log in latest_logs:
-        if 'slack' in log['task'].lower():
+        if "slack" in log["task"].lower():
             print(f"\n📋 {log['task']} ({log['timestamp']})")
             print(f"   Exit Code: {log['exit_code']}")
-            if log['exit_code'] == 0:
+            if log["exit_code"] == 0:
                 print("   ✅ 成功")
             else:
                 print("   ❌ 失敗")
-    
+
     # 詳細ログ取得
     monitor_script = """#!/bin/bash
 cd /home/aicompany/ai_co
@@ -77,13 +78,13 @@ if [ -f db/slack_messages.db ]; then
     sqlite3 db/slack_messages.db "SELECT COUNT(*) as total FROM processed_messages WHERE text LIKE '%pm-ai%';" 2>/dev/null
 fi
 """
-    
+
     cmd_id = helper.create_bash_command(monitor_script, "monitor_slack_logs")
     print(f"\nログ監視コマンドを作成: {cmd_id}")
-    
+
     # 結果待ち
     time.sleep(10)
-    
+
     result = helper.check_results("monitor_slack_logs")
     if result:
         log_content = helper.get_latest_log("monitor_slack_logs")
@@ -92,12 +93,13 @@ fi
             print("=" * 80)
             print(log_content)
             print("=" * 80)
-    
+
     print("\n診断完了！")
     print("\n次のアクション:")
     print("1. Slack Polling Workerが停止している場合 → 起動が必要")
     print("2. メッセージが取得できていない場合 → Bot Token/権限確認")
     print("3. メッセージは取得できているがタスク化されない場合 → ワーカーのログ詳細確認")
+
 
 if __name__ == "__main__":
     main()

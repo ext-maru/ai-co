@@ -177,13 +177,13 @@ auth = UnifiedAuthProvider(
 1. **基本認証**
    ```python
    from libs.unified_auth_provider import AuthRequest, AuthResult
-   
+
    auth_request = AuthRequest(
        username="claude_elder",
        password="secure_password",
        ip_address="192.168.1.100"
    )
-   
+
    result, session, user = auth.authenticate(auth_request)
    if result == AuthResult.SUCCESS:
        print(f"認証成功: {user.elder_role}")
@@ -193,7 +193,7 @@ auth = UnifiedAuthProvider(
    ```python
    # MFA有効化
    provisioning_uri = auth.enable_mfa_for_user("claude_elder")
-   
+
    # MFA認証
    auth_request = AuthRequest(
        username="claude_elder",
@@ -256,7 +256,7 @@ class MyWorker(ElderAwareBaseWorker):
             required_elder_role=ElderRole.SAGE,
             required_sage_type=SageType.TASK
         )
-    
+
     async def process_message(self, context, message):
         # Elder階層に応じた処理
         if context.execution_mode == WorkerExecutionMode.GRAND_ELDER:
@@ -619,14 +619,14 @@ result = await security.secure_execute(command, user_role)
 3. **認証システム初期化**
    ```python
    from libs.unified_auth_provider import create_demo_auth_system
-   
+
    auth_system = create_demo_auth_system()
    ```
 
 4. **ワーカー起動**
    ```python
    from workers.elder_enhanced_task_worker import create_elder_task_worker
-   
+
    task_worker = create_elder_task_worker(auth_provider=auth_system)
    await task_worker.start()
    ```
@@ -699,7 +699,7 @@ backup_sessions.py --output /backup/sessions_$(date +%Y%m%d).json
 
 #### 1. 認証エラー
 **症状**: `AuthResult.INVALID_CREDENTIALS`
-**原因**: 
+**原因**:
 - パスワード間違い
 - アカウントロック
 - MFA コード不正
@@ -717,7 +717,7 @@ auth_system.unlock_account("username")
 
 #### 2. 権限エラー
 **症状**: `PermissionError`
-**原因**: 
+**原因**:
 - 不十分な権限
 - 権限昇格試行
 - セッション期限切れ
@@ -797,7 +797,7 @@ class CustomWorker(ElderAwareBaseWorker):
         )
         self.worker_type = 'custom'
         self.worker_id = f"custom_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    
+
     async def process_message(self, context, message):
         # Elder階層に応じた処理分岐
         if context.execution_mode == WorkerExecutionMode.GRAND_ELDER:
@@ -806,15 +806,15 @@ class CustomWorker(ElderAwareBaseWorker):
             return await self._process_sage_mode(context, message)
         else:
             return await self._process_servant_mode(context, message)
-    
+
     async def _process_grand_elder_mode(self, context, message):
         # Grand Elder専用処理
         pass
-    
+
     async def _process_sage_mode(self, context, message):
         # Sage専用処理
         pass
-    
+
     async def _process_servant_mode(self, context, message):
         # Servant処理
         pass
@@ -829,7 +829,7 @@ class CustomWorker(ElderAwareBaseWorker):
     async def admin_operation(self, context, data):
         # Claude Elder以上の権限が必要な操作
         pass
-    
+
     @elder_worker_required(ElderRole.SAGE, SageType.TASK)
     async def specialized_task(self, context, data):
         # Task Sage権限が必要な操作
@@ -867,11 +867,11 @@ class TestCustomWorker:
     @pytest.fixture
     def auth_system(self):
         return create_demo_auth_system()
-    
+
     @pytest.fixture
     def worker(self, auth_system):
         return CustomWorker(auth_provider=auth_system)
-    
+
     @pytest.mark.asyncio
     async def test_process_message(self, worker, auth_system):
         # テストユーザーで認証
@@ -880,7 +880,7 @@ class TestCustomWorker:
             password="task_password"
         )
         result, session, user = auth_system.authenticate(auth_request)
-        
+
         # コンテキスト作成
         context = worker.create_elder_context(
             user=user,
@@ -888,11 +888,11 @@ class TestCustomWorker:
             task_id="test_001",
             priority=ElderTaskPriority.MEDIUM
         )
-        
+
         # メッセージ処理テスト
         message = {"action": "test"}
         result = await worker.process_message(context, message)
-        
+
         assert result.status == "completed"
 ```
 
@@ -903,7 +903,7 @@ class TestCustomWorkerIntegration:
     async def test_end_to_end_flow(self, worker, auth_system):
         # 複数ユーザーでの統合テスト
         users = ["grand_elder", "claude_elder", "task_sage", "servant1"]
-        
+
         for username in users:
             # 認証
             auth_request = AuthRequest(
@@ -911,16 +911,16 @@ class TestCustomWorkerIntegration:
                 password=f"{username}_password"
             )
             result, session, user = auth_system.authenticate(auth_request)
-            
+
             # 処理実行
             context = worker.create_elder_context(
                 user=user, session=session, task_id=f"test_{username}"
             )
-            
+
             # 権限に応じた結果確認
             message = {"action": "test"}
             result = await worker.process_message(context, message)
-            
+
             # 結果検証
             assert result.elder_context.user.elder_role == user.elder_role
 ```
@@ -985,9 +985,9 @@ class TestCustomWorkerIntegration:
 
 ---
 
-**🏛️ Elders Guild Elder Hierarchy Worker System**  
+**🏛️ Elders Guild Elder Hierarchy Worker System**
 **© 2025 Elders Guild - All Rights Reserved**
 
-*エルダーズ評議会承認済み公式ドキュメント*  
-*文書管理者: Claude Elder*  
+*エルダーズ評議会承認済み公式ドキュメント*
+*文書管理者: Claude Elder*
 *最終更新: 2025年7月9日*

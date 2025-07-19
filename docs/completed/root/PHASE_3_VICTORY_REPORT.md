@@ -46,7 +46,7 @@
 ```
 tests/unit/
 ├── libs/          # 228 test files
-├── workers/       # 34 test files  
+├── workers/       # 34 test files
 ├── core/          # 29 test files
 ├── commands/      # 69 test files
 └── Total:         # 360+ test files

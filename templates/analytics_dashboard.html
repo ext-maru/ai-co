@@ -255,7 +255,7 @@
             .analysis-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .header h1 {
                 font-size: 2rem;
             }
@@ -307,7 +307,7 @@
 
         function displayAnalyticsReport(report) {
             // レポート情報を表示
-            document.getElementById('report-info').innerHTML = 
+            document.getElementById('report-info').innerHTML =
                 `最終更新: ${report.generated_at || '不明'}`;
 
             // アクションアイテムを表示
@@ -328,7 +328,7 @@
 
         function displayActionItems(items) {
             const container = document.getElementById('action-items-container');
-            
+
             if (items.length === 0) {
                 container.innerHTML = '';
                 return;
@@ -336,11 +336,11 @@
 
             let html = '<div class="action-items">';
             html += '<h2>🎯 推奨アクション</h2>';
-            
+
             items.forEach(item => {
                 html += `<div class="action-item">${item}</div>`;
             });
-            
+
             html += '</div>';
             container.innerHTML = html;
         }
@@ -417,12 +417,12 @@
         }
 
         function displayNoData() {
-            document.getElementById('analysis-container').innerHTML = 
+            document.getElementById('analysis-container').innerHTML =
                 '<div class="no-data">📊 分析データがありません<br>新規分析を実行してください</div>';
         }
 
         function displayError() {
-            document.getElementById('analysis-container').innerHTML = 
+            document.getElementById('analysis-container').innerHTML =
                 '<div class="no-data">❌ データの読み込みに失敗しました</div>';
         }
 

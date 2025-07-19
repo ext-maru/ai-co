@@ -4,12 +4,12 @@ Magic Grimoire Migration CLI
 魔法書システム移行CLI
 """
 
-import sys
-import asyncio
 import argparse
+import asyncio
 import json
-from pathlib import Path
+import sys
 from datetime import datetime
+from pathlib import Path
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -17,31 +17,35 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 from libs.migration_engine import MigrationEngine
 
+
 def print_banner():
     """バナー表示"""
-    print("""
+    print(
+        """
 🏛️ ═══════════════════════════════════════════════════════════
     AI Company Magic Grimoire Migration System
     魔法書システム移行エンジン v1.0
-    
+
     PostgreSQL + pgvector による次世代ナレッジ管理システム
 🏛️ ═══════════════════════════════════════════════════════════
-""")
+"""
+    )
+
 
 async def run_migration(source_dir: Path, dry_run: bool = False, verbose: bool = False):
     """移行実行"""
     print_banner()
-    
+
     if dry_run:
         print("🔍 DRY RUN MODE - No actual migration will be performed")
-    
+
     print(f"📂 Source directory: {source_dir}")
     print(f"🎯 Target: PostgreSQL + pgvector database")
     print()
-    
+
     # Migration engine initialization
     migration_engine = MigrationEngine(source_directory=source_dir)
-    
+
     try:
         print("🚀 Initializing migration engine...")
         if not dry_run:
@@ -49,107 +53,121 @@ async def run_migration(source_dir: Path, dry_run: bool = False, verbose: bool =
             if not success:
                 print("❌ Failed to initialize migration engine")
                 return False
-        
+
         print("✅ Migration engine ready")
         print()
-        
+
         if dry_run:
             # Dry run analysis
             print("🔍 Performing analysis (dry run)...")
-            
+
             # Discover files
             md_files = await migration_engine._discover_md_files()
             print(f"📋 Found {len(md_files)} MD files")
-            
+
             # Sample analysis
             if md_files:
                 sample_files = md_files[:5] if len(md_files) > 5 else md_files
                 print(f"🔬 Analyzing sample files ({len(sample_files)})...")
-                
-                analyzed_files = await migration_engine._analyze_files_batch(sample_files)
-                
+
+                analyzed_files = await migration_engine._analyze_files_batch(
+                    sample_files
+                )
+
                 print("\n📊 Sample Analysis Results:")
                 for i, analysis in enumerate(analyzed_files):
-                    if 'error' not in analysis:
-                        basic_info = analysis.get('basic_info', {})
-                        classification = analysis.get('classification', {})
+                    if "error" not in analysis:
+                        basic_info = analysis.get("basic_info", {})
+                        classification = analysis.get("classification", {})
                         print(f"  {i+1}. {basic_info.get('file_name', 'unknown')}")
-                        print(f"     📖 Type: {classification.get('spell_type', 'unknown')}")
-                        print(f"     🧙‍♂️ School: {classification.get('magic_school', 'unknown')}")
+                        print(
+                            f"     📖 Type: {classification.get('spell_type', 'unknown')}"
+                        )
+                        print(
+                            f"     🧙‍♂️ School: {classification.get('magic_school', 'unknown')}"
+                        )
                         print(f"     ⚡ Power: {classification.get('power_level', 0)}")
-                        print(f"     🔒 Eternal: {classification.get('is_eternal', False)}")
+                        print(
+                            f"     🔒 Eternal: {classification.get('is_eternal', False)}"
+                        )
                         print()
-            
+
             # Duplicate detection
             if md_files:
                 print("🔍 Checking for duplicates...")
                 analyzed_files = await migration_engine._analyze_files_batch(md_files)
-                duplicate_groups = await migration_engine.duplicate_detector.detect_duplicates(analyzed_files)
-                
+                duplicate_groups = (
+                    await migration_engine.duplicate_detector.detect_duplicates(
+                        analyzed_files
+                    )
+                )
+
                 if duplicate_groups:
                     print(f"📎 Found {len(duplicate_groups)} duplicate groups:")
                     for i, group in enumerate(duplicate_groups):
                         print(f"  Group {i+1}: {group}")
                 else:
                     print("✅ No duplicates found")
-            
+
             print("\n🎯 Dry run completed - use --execute to perform actual migration")
             return True
-        
+
         else:
             # Actual migration
             print("🚀 Starting full migration...")
             report = await migration_engine.run_full_migration()
-            
+
             print("\n📊 Migration Report:")
             print("=" * 50)
-            
-            summary = report['summary']
+
+            summary = report["summary"]
             print(f"📂 Total files discovered: {summary['total_files_discovered']}")
             print(f"⚙️ Total files processed: {summary['total_files_processed']}")
             print(f"✅ Successful migrations: {summary['successful_migrations']}")
             print(f"❌ Failed migrations: {summary['failed_migrations']}")
             print(f"⏭️ Skipped files: {summary['skipped_files']}")
             print(f"📈 Success rate: {summary['success_rate_percent']}%")
-            
+
             print(f"\n🧙‍♂️ Sage Distribution:")
-            sage_distribution = report['sage_distribution']
+            sage_distribution = report["sage_distribution"]
             for sage, count in sage_distribution.items():
                 sage_emoji = {
-                    'knowledge_sage': '📚',
-                    'task_oracle': '📋',
-                    'crisis_sage': '🚨',
-                    'search_mystic': '🔍'
-                }.get(sage, '🧙‍♂️')
+                    "knowledge_sage": "📚",
+                    "task_oracle": "📋",
+                    "crisis_sage": "🚨",
+                    "search_mystic": "🔍",
+                }.get(sage, "🧙‍♂️")
                 print(f"  {sage_emoji} {sage}: {count} spells")
-            
-            duplicate_info = report['duplicate_detection']
+
+            duplicate_info = report["duplicate_detection"]
             print(f"\n📎 Duplicate Detection:")
             print(f"  Groups: {duplicate_info['total_duplicate_groups']}")
             print(f"  Files: {duplicate_info['total_duplicate_files']}")
-            
+
             print(f"\n📋 Migration ID: {report['migration_id']}")
             print(f"⏱️ Duration: {report['duration_seconds']:.2f} seconds")
-            
-            if summary['success_rate_percent'] >= 90:
+
+            if summary["success_rate_percent"] >= 90:
                 print("\n🎉 Migration completed successfully!")
-            elif summary['success_rate_percent'] >= 70:
+            elif summary["success_rate_percent"] >= 70:
                 print("\n⚠️ Migration completed with some issues")
             else:
                 print("\n❌ Migration completed with significant issues")
-            
-            return summary['success_rate_percent'] >= 70
-    
+
+            return summary["success_rate_percent"] >= 70
+
     except Exception as e:
         print(f"\n❌ Migration failed: {e}")
         if verbose:
             import traceback
+
             traceback.print_exc()
         return False
-    
+
     finally:
         if not dry_run:
             await migration_engine.close()
+
 
 def main():
     """メイン関数"""
@@ -160,69 +178,70 @@ def main():
 Examples:
   # Dry run analysis
   %(prog)s --dry-run
-  
+
   # Full migration
   %(prog)s --execute
-  
+
   # Custom source directory
   %(prog)s --source /path/to/knowledge_base --execute
-  
+
   # Verbose output
   %(prog)s --execute --verbose
-        """
+        """,
     )
-    
+
     parser.add_argument(
-        '--source', '-s',
+        "--source",
+        "-s",
         type=Path,
         default=PROJECT_ROOT / "knowledge_base",
-        help='Source knowledge base directory (default: ./knowledge_base)'
+        help="Source knowledge base directory (default: ./knowledge_base)",
     )
-    
+
     parser.add_argument(
-        '--dry-run', '-d',
-        action='store_true',
-        help='Perform analysis without actual migration'
+        "--dry-run",
+        "-d",
+        action="store_true",
+        help="Perform analysis without actual migration",
     )
-    
+
     parser.add_argument(
-        '--execute', '-e',
-        action='store_true',
-        help='Execute actual migration (required for non-dry-run)'
+        "--execute",
+        "-e",
+        action="store_true",
+        help="Execute actual migration (required for non-dry-run)",
     )
-    
+
     parser.add_argument(
-        '--verbose', '-v',
-        action='store_true',
-        help='Enable verbose output'
+        "--verbose", "-v", action="store_true", help="Enable verbose output"
     )
-    
+
     args = parser.parse_args()
-    
+
     # Validation
     if not args.source.exists():
         print(f"❌ Source directory does not exist: {args.source}")
         return 1
-    
+
     if not args.dry_run and not args.execute:
         print("❌ Must specify either --dry-run or --execute")
         parser.print_help()
         return 1
-    
+
     if args.dry_run and args.execute:
         print("❌ Cannot specify both --dry-run and --execute")
         return 1
-    
+
     # Run migration
     try:
-        success = asyncio.run(run_migration(
-            source_dir=args.source,
-            dry_run=args.dry_run,
-            verbose=args.verbose
-        ))
-        
+        success = asyncio.run(
+            run_migration(
+                source_dir=args.source, dry_run=args.dry_run, verbose=args.verbose
+            )
+        )
+
         return 0 if success else 1
-        
+
     except KeyboardInterrupt:
         print("\n🛑 Migration cancelled by user")
         return 1
@@ -230,8 +249,10 @@ Examples:
         print(f"\n💥 Unexpected error: {e}")
         if args.verbose:
             import traceback
+
             traceback.print_exc()
         return 1
+
 
 if __name__ == "__main__":
     sys.exit(main())

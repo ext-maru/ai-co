@@ -16,7 +16,7 @@ for log in ai_commands/logs/*slack*.log; do
             echo "ファイル: $filename"
             grep -E "(✅ 過去3分のメッセージ数:|⭐ このメッセージは処理対象|@pm-ai|テスト)" "$log" | head -10
         fi
-        
+
         if grep -q "Slack Polling Worker" "$log" 2>/dev/null; then
             grep -E "(✅ 動作中|❌ 動作していません|✅ タスク化の記録|⚠️  タスク化の記録なし)" "$log" | head -5
         fi
@@ -29,13 +29,13 @@ echo "【現在の状態】"
 if pgrep -f "slack_polling_worker" > /dev/null; then
     PID=$(pgrep -f "slack_polling_worker")
     echo "✅ Slack Polling Worker: 動作中 (PID: $PID)"
-    
+
     # 最新のログ確認
     if [ -f logs/slack_polling_worker.log ]; then
         echo ""
         echo "最新のWorkerログ（重要部分）:"
         tail -50 logs/slack_polling_worker.log | grep -E "(新規メッセージ|タスク化|メンション|Error|処理)" | tail -10
-        
+
         # タスク投入の記録を探す
         if tail -100 logs/slack_polling_worker.log | grep -q "タスク化"; then
             echo "✅ 最近タスク化の記録あり"
@@ -52,7 +52,7 @@ echo "【データベース状態】"
 if [ -f db/slack_messages.db ]; then
     echo "処理済みメッセージ（最新5件）:"
     sqlite3 db/slack_messages.db << 'SQL' 2>/dev/null || echo "DB読み取りエラー"
-SELECT 
+SELECT
     datetime(processed_at, 'localtime') as time,
     substr(text, 1, 60) as text
 FROM processed_messages

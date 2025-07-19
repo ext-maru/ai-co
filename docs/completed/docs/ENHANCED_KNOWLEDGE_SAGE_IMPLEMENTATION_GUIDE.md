@@ -53,17 +53,17 @@ class EnhancedKnowledgeSage(KnowledgeSage):
         # ベクトル検索コンポーネント
         self.embeddings_cache = {}
         self.vector_index = {}
-        
+
         # 自動タグ付けコンポーネント
         self.tag_patterns = self._initialize_tag_patterns()
         self.category_keywords = self._initialize_category_keywords()
-        
+
         # 品質保証
         self.quality_weights = {...}
-        
+
         # 知識グラフ
         self.knowledge_graph = defaultdict(list)
-        
+
         # バージョニング
         self.version_history = defaultdict(list)
 ```
@@ -196,6 +196,6 @@ python3 test_enhanced_knowledge_sage_manual.py
 - エルダー評議会承認済み設計
 
 ---
-**作成日**: 2025年1月19日  
-**作成者**: クロードエルダー（Claude Elder）  
+**作成日**: 2025年1月19日
+**作成者**: クロードエルダー（Claude Elder）
 **承認**: エルダー評議会（予定）

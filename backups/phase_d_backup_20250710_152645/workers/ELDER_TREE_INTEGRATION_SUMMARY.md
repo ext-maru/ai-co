@@ -14,7 +14,7 @@ Successfully integrated Elder Tree hierarchy into 4 async workers as requested.
   - Integrated with RAG Grimoire system
   - Full async support with proper cleanup
 
-### 2. async_pm_worker_simple.py  
+### 2. async_pm_worker_simple.py
 - **Header**: Updated with "Elders Guild" and Japanese translation
 - **Elder Role**: SERVANT rank reporting to PM Sage
 - **Elder Features**:
@@ -83,7 +83,7 @@ Each worker now includes:
 - Simple workers using BaseWorker use synchronous patterns where needed
 - Each worker reports to the appropriate Sage based on its function:
   - Task workers → Task Sage
-  - PM workers → PM Sage  
+  - PM workers → PM Sage
   - Result workers → Incident Sage (for error tracking)
 
 ## Testing Recommendations

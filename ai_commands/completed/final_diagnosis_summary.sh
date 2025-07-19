@@ -32,29 +32,29 @@ from libs.slack_notifier import SlackNotifier
 
 try:
     notifier = SlackNotifier()
-    
+
     # 最新の診断結果を読み込む
     from pathlib import Path
     log_dir = Path("/home/aicompany/ai_co/ai_commands/logs")
-    
+
     # 最新のwait_analyzeログを探す
     wait_logs = sorted(log_dir.glob("wait_analyze*.log"), key=lambda f: f.stat().st_mtime, reverse=True)
-    
+
     if wait_logs:
         with open(wait_logs[0], 'r') as f:
             content = f.read()
-            
+
         # 問題部分を抽出
         if "検出された問題と解決策" in content:
             idx = content.find("検出された問題と解決策")
             problem_section = content[idx:idx+1000]
-            
+
             message = f"📊 Slack PM-AI診断完了\\n{'='*30}\\n{problem_section[:500]}"
         else:
             message = "📊 Slack PM-AI診断完了\\n診断結果はログを確認してください"
     else:
         message = "📊 Slack PM-AI診断完了\\n詳細はログファイルを確認してください"
-    
+
     notifier.send_message(message)
     print("✅ Slack通知送信")
 except Exception as e:

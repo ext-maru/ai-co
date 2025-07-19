@@ -32,7 +32,7 @@ echo ""
 echo "🔧 PMWorker統合状態:"
 if grep -q "use_best_practices=True" workers/pm_worker.py 2>/dev/null; then
     echo "✅ use_best_practices=True 設定済み"
-    
+
     # commit_messageが正しく設定されているか確認
     if grep -B2 "use_best_practices=True" workers/pm_worker.py | grep -q "commit_message = "; then
         echo "✅ commit_message 正しく定義"

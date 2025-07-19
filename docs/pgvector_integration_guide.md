@@ -170,7 +170,7 @@ SELECT * FROM a2a.find_similar_communications(
 
 ### 異常パターンの類似検索
 ```sql
-SELECT 
+SELECT
     a1.pattern_name,
     a1.severity,
     1 - (a1.embedding <=> a2.embedding) as similarity
@@ -184,7 +184,7 @@ LIMIT 5;
 
 ### エージェント通信統計
 ```sql
-SELECT 
+SELECT
     sender,
     receiver,
     message_type,

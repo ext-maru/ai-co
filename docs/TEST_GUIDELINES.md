@@ -81,10 +81,10 @@ def test_worker_processes_task():
     # Arrange（準備）
     worker = TaskWorker()
     task_data = {"task_id": "test_123", "prompt": "test"}
-    
+
     # Act（実行）
     result = worker.process_task(task_data)
-    
+
     # Assert（検証）
     assert result["status"] == "success"
     assert "output" in result
@@ -118,10 +118,10 @@ def test_worker():
 @patch('pika.BlockingConnection')
 def test_slack_notification(mock_rabbit, mock_requests):
     mock_requests.return_value.status_code = 200
-    
+
     notifier = SlackNotifier()
     result = notifier.send_message("test")
-    
+
     assert result is True
     mock_requests.assert_called_once()
 ```
@@ -149,15 +149,15 @@ def test_task_routing(task_type, expected_queue):
 
 class TestNewWorker:
     """NewWorkerのテストクラス"""
-    
+
     def test_initialization(self):
         """初期化が正常に行われることを確認"""
         pass
-    
+
     def test_process_message_success(self):
         """メッセージ処理が成功することを確認"""
         pass
-    
+
     def test_error_handling(self):
         """エラーハンドリングが適切に動作することを確認"""
         pass

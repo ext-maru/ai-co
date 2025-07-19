@@ -98,7 +98,7 @@ Based on the file listings, the following commands appear to lack dedicated test
 
 ### Recently Added Commands
 - ❌ `ai_elder_proactive.py`
-- ❌ `ai_grand_elder.py` 
+- ❌ `ai_grand_elder.py`
 - ❌ `ai_evolve_daily.py`
 
 ### Legacy/Deprecated Commands
@@ -110,7 +110,7 @@ These may be covered by integration tests or may be deprecated.
 ```ini
 [run]
 source = .
-omit = 
+omit =
     */tests/*
     */test_*
     */__pycache__/*
@@ -135,7 +135,7 @@ title = Elders Guild Test Coverage Report
 [tool:pytest]
 testpaths = tests
 python_files = test_*.py
-addopts = 
+addopts =
     --strict-markers
     --tb=short
     --maxfail=100

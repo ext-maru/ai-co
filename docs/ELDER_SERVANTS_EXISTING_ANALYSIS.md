@@ -2,8 +2,8 @@
 
 ## 🎯 分析概要
 
-**分析日時**: 2025年1月19日  
-**分析者**: クロードエルダー  
+**分析日時**: 2025年1月19日
+**分析者**: クロードエルダー
 **対象**: `libs/elder_servants/` ディレクトリ内の既存実装
 
 ## 📁 ディレクトリ構造
@@ -25,9 +25,9 @@
 ```python
 class ElderServant(ABC):
     """Elderサーバントの基底クラス"""
-    
-    def __init__(self, servant_id: str, servant_name: str, 
-                 category: ServantCategory, specialization: str, 
+
+    def __init__(self, servant_id: str, servant_name: str,
+                 category: ServantCategory, specialization: str,
                  capabilities: List[ServantCapability])
 ```
 
@@ -96,18 +96,18 @@ class TaskPriority(Enum):
 ## 🔧 技術的課題
 
 ### 1. EldersLegacy未使用
-**問題**: 現在の`ElderServant`はEldersLegacyを継承していない  
-**影響**: エルダー評議会令第27号違反  
+**問題**: 現在の`ElderServant`はEldersLegacyを継承していない
+**影響**: エルダー評議会令第27号違反
 **対策**: `EldersServiceLegacy`からの継承に変更
 
 ### 2. TDD未実施
-**問題**: テストコードが存在しない  
-**影響**: 品質保証が不十分  
+**問題**: テストコードが存在しない
+**影響**: 品質保証が不十分
 **対策**: 各サーバント実装前にテスト作成
 
 ### 3. 並列開発の困難性
-**問題**: 単一Issue（#34）での管理  
-**影響**: 複数人での同時開発が困難  
+**問題**: 単一Issue（#34）での管理
+**影響**: 複数人での同時開発が困難
 **対策**: 6つの子Issueへ分割
 
 ## 📊 品質分析
@@ -119,24 +119,24 @@ async def validate_iron_will_quality(self, result_data: Dict[str, Any]) -> float
     """Iron Will品質基準の検証"""
     quality_score = 0
     checks = 0
-    
+
     # エラー率確認
     if result_data.get("error_rate", 1.0) < 0.05:  # 5%未満
         quality_score += 25
-    
+
     # テストカバレッジ確認
     if result_data.get("test_coverage", 0) >= 0.95:  # 95%以上
         quality_score += 25
-    
+
     # コード品質確認
     if result_data.get("code_quality_score", 0) >= 0.9:  # 90%以上
         quality_score += 25
-    
+
     # パフォーマンス確認
     execution_time = result_data.get("execution_time_ms", 0)
     if execution_time > 0 and execution_time < 5000:  # 5秒未満
         quality_score += 25
-    
+
     return quality_score  # 最大100点
 ```
 
@@ -150,7 +150,7 @@ from libs.core.elders_legacy import EldersServiceLegacy
 
 class ElderServantBase(EldersServiceLegacy[ServantRequest, ServantResponse]):
     """すべてのElderサーバントの基底クラス"""
-    
+
     @enforce_boundary("servant")
     async def execute_task(self, task: ServantTask) -> ServantResult:
         """Iron Will品質基準を満たすタスク実行"""
@@ -164,7 +164,7 @@ class TestElderServantBase:
     def test_iron_will_quality_validation(self):
         # 95%闾値の検証
         pass
-    
+
     def test_sage_collaboration(self):
         # 4賢者連携の検証
         pass
@@ -175,11 +175,11 @@ class TestElderServantBase:
 # libs/elder_servants/dwarf_workshop/code_crafter.py
 class CodeCrafter(ElderServantBase):
     """コード実装職人"""
-    
+
     async def execute_task(self, task: ServantTask) -> ServantResult:
         # TDDで実装
         pass
-    
+
     def get_specialized_capabilities(self) -> List[ServantCapability]:
         return [
             ServantCapability("generate_implementation"),
@@ -215,6 +215,6 @@ class CodeCrafter(ElderServantBase):
 ロードマップv2.0に基づき、6つの子Issueへ分割して並列開発を進めることで、4週間での完成が可能です。
 
 ---
-**文書作成**: クロードエルダー  
-**承認**: エルダー評議会（承認待ち）  
+**文書作成**: クロードエルダー
+**承認**: エルダー評議会（承認待ち）
 **最終更新**: 2025年1月19日

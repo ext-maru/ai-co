@@ -26,7 +26,7 @@ case "$COMMAND" in
     check)
         echo "🔍 Environment Configuration Check"
         echo "=================================="
-        
+
         # 仮想環境チェック
         if [[ ! "$AI_VENV_ACTIVE" == "1" ]]; then
             if [[ -f "venv/bin/activate" ]]; then
@@ -34,7 +34,7 @@ case "$COMMAND" in
                 export AI_VENV_ACTIVE=1
             fi
         fi
-        
+
         python3 -c "
 import sys
 sys.path.append('$PROJECT_DIR')
@@ -47,11 +47,11 @@ except Exception as e:
     print('💡 Try: ai-setup')
 "
         ;;
-        
+
     setup)
         echo "📋 Setting up .env file"
         echo "======================="
-        
+
         if [[ -f ".env" ]]; then
             echo "⚠️  .env file already exists"
             echo "Do you want to overwrite it? (y/N)"
@@ -61,7 +61,7 @@ except Exception as e:
                 exit 0
             fi
         fi
-        
+
         if [[ -f ".env.template" ]]; then
             cp .env.template .env
             echo "✅ .env file created from template"
@@ -76,11 +76,11 @@ except Exception as e:
             exit 1
         fi
         ;;
-        
+
     verify)
         echo "✅ Verifying Required Environment Variables"
         echo "=========================================="
-        
+
         # 必須変数リスト
         REQUIRED_VARS=(
             "ANTHROPIC_API_KEY"
@@ -88,16 +88,16 @@ except Exception as e:
             "SLACK_CHANNEL"
             "PYTHONPATH"
         )
-        
+
         # .envファイル読み込み
         if [[ -f ".env" ]]; then
             set -a
             source .env
             set +a
         fi
-        
+
         all_good=true
-        
+
         for var in "${REQUIRED_VARS[@]}"; do
             if [[ -n "${!var}" && "${!var}" != "your_"*"_here" ]]; then
                 echo "✅ $var: Set"
@@ -106,7 +106,7 @@ except Exception as e:
                 all_good=false
             fi
         done
-        
+
         echo ""
         if [[ "$all_good" == "true" ]]; then
             echo "🎉 All required variables are set!"
@@ -115,18 +115,18 @@ except Exception as e:
             echo "💡 Edit .env file to set missing values"
         fi
         ;;
-        
+
     show)
         echo "🔐 Current Environment Configuration"
         echo "==================================="
-        
+
         # .envファイル読み込み
         if [[ -f ".env" ]]; then
             set -a
             source .env
             set +a
         fi
-        
+
         # 重要な変数を表示（マスク付き）
         SHOW_VARS=(
             "ANTHROPIC_API_KEY"
@@ -137,7 +137,7 @@ except Exception as e:
             "PYTHONPATH"
             "AI_VENV_ACTIVE"
         )
-        
+
         for var in "${SHOW_VARS[@]}"; do
             value="${!var}"
             if [[ -n "$value" ]]; then
@@ -157,7 +157,7 @@ except Exception as e:
             fi
         done
         ;;
-        
+
     *)
         echo "❌ Unknown command: $COMMAND"
         exit 1

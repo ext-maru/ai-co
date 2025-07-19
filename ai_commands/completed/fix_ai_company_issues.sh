@@ -24,7 +24,7 @@ echo -e "\n📌 ResultWorkerを修正版に置き換え..."
 if [ -f "workers/result_worker_fixed.py" ]; then
     # 既存のバックアップ
     cp workers/result_worker.py workers/result_worker_backup_$(date +%Y%m%d_%H%M%S).py
-    
+
     # 修正版に置き換え
     mv workers/result_worker_fixed.py workers/result_worker.py
     chmod +x workers/result_worker.py

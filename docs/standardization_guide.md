@@ -46,7 +46,7 @@ class TestWorker(BaseWorker):
             input_queue="test_queue",
             output_queue="test_results"
         )
-    
+
     def process_message(self, message):
         # メッセージ処理ロジックのみに集中
         return {"processed": True}
@@ -71,7 +71,7 @@ class TaskHistoryDB(BaseManager):
             manager_name="TaskHistoryDB",
             db_path="task_history.db"
         )
-    
+
     def setup_schema(self):
         # スキーマ定義
 ```

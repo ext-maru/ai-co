@@ -7,83 +7,79 @@ import json
 import logging
 import os
 import sys
-from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, Optional
+from pathlib import Path
+from typing import Any, Dict, Optional
+
 import requests
 
 # プロジェクトルートをパスに追加
 sys.path.insert(0, str(Path(__file__).parent))
 
+
 class ClaudeElderAPIDirect:
     """Anthropic Claude APIとの直接接続"""
-    
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
-        self.api_key = os.environ.get('ANTHROPIC_API_KEY')
+        self.api_key = os.environ.get("ANTHROPIC_API_KEY")
         self.api_url = "https://api.anthropic.com/v1/messages"
-        
+
         # API設定
         self.model = "claude-3-opus-20240229"  # または他のモデル
         self.max_tokens = 1000
-        
-    def send_to_claude_api(self, message: str, context: Optional[str] = None) -> Dict[str, Any]:
+
+    def send_to_claude_api(
+        self, message: str, context: Optional[str] = None
+    ) -> Dict[str, Any]:
         """Claude APIに直接メッセージを送信"""
-        
+
         # APIキーチェック
         if not self.api_key:
             self.logger.warning("ANTHROPIC_API_KEY not set")
             return self._use_intelligent_fallback(message)
-        
+
         try:
             # メッセージ準備
             system_prompt = self._prepare_system_prompt()
             user_message = self._prepare_user_message(message, context)
-            
+
             # APIリクエスト
             headers = {
                 "x-api-key": self.api_key,
                 "anthropic-version": "2023-06-01",
-                "content-type": "application/json"
+                "content-type": "application/json",
             }
-            
+
             payload = {
                 "model": self.model,
                 "max_tokens": self.max_tokens,
                 "system": system_prompt,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": user_message
-                    }
-                ]
+                "messages": [{"role": "user", "content": user_message}],
             }
-            
+
             response = requests.post(
-                self.api_url,
-                headers=headers,
-                json=payload,
-                timeout=30
+                self.api_url, headers=headers, json=payload, timeout=30
             )
-            
+
             if response.status_code == 200:
                 data = response.json()
-                claude_response = data['content'][0]['text']
-                
+                claude_response = data["content"][0]["text"]
+
                 return {
-                    'success': True,
-                    'response': f"🧾 クロードエルダー: {claude_response}",
-                    'timestamp': datetime.now().isoformat(),
-                    'elder': 'claude_elder_api'
+                    "success": True,
+                    "response": f"🧾 クロードエルダー: {claude_response}",
+                    "timestamp": datetime.now().isoformat(),
+                    "elder": "claude_elder_api",
                 }
             else:
                 self.logger.error(f"API error: {response.status_code}")
                 return self._use_intelligent_fallback(message)
-                
+
         except Exception as e:
             self.logger.error(f"API exception: {str(e)}")
             return self._use_intelligent_fallback(message)
-    
+
     def _prepare_system_prompt(self) -> str:
         """システムプロンプトを準備"""
         return """あなたはElders Guildの「クロードエルダー」です。
@@ -102,49 +98,49 @@ class ClaudeElderAPIDirect:
 4. 技術的な質問には具体的で実践的な回答を提供
 
 回答は日本語で、親しみやすく、かつ権威あるトーンで行ってください。"""
-    
+
     def _prepare_user_message(self, message: str, context: Optional[str] = None) -> str:
         """ユーザーメッセージを準備"""
         full_message = ""
-        
+
         if context:
             full_message += f"[システムコンテキスト]\n{context}\n\n"
-        
+
         full_message += f"[ユーザーからの質問]\n{message}"
-        
+
         return full_message
-    
+
     def _use_intelligent_fallback(self, message: str) -> Dict[str, Any]:
         """インテリジェントなフォールバック応答 - 本物のクロードエルダー風"""
         message_lower = message.lower()
-        
+
         # よりリアルなクロードエルダー応答
-        if 'エルダー' in message or 'elder' in message_lower:
+        if "エルダー" in message or "elder" in message_lower:
             response = self._explain_elder_system()
-        elif '賢者' in message or 'sage' in message_lower:
+        elif "賢者" in message or "sage" in message_lower:
             response = self._explain_four_sages()
-        elif 'タスク' in message or 'task' in message_lower:
+        elif "タスク" in message or "task" in message_lower:
             response = self._explain_task_system()
-        elif 'カバレッジ' in message or 'coverage' in message_lower:
+        elif "カバレッジ" in message or "coverage" in message_lower:
             response = self._explain_coverage_improvement()
-        elif '状態' in message or 'status' in message_lower:
+        elif "状態" in message or "status" in message_lower:
             response = self._get_system_status()
-        elif 'サーベント' in message or 'servant' in message_lower:
+        elif "サーベント" in message or "servant" in message_lower:
             response = self._explain_servant_system()
-        elif 'ダミー' in message or 'dummy' in message_lower:
+        elif "ダミー" in message or "dummy" in message_lower:
             response = self._explain_real_connection()
-        elif 'API' in message or 'api' in message_lower:
+        elif "API" in message or "api" in message_lower:
             response = self._explain_api_status()
         else:
             response = self._intelligent_general_response(message)
-        
+
         return {
-            'success': True,
-            'response': f"🧾 クロードエルダー: {response}",
-            'timestamp': datetime.now().isoformat(),
-            'elder': 'claude_elder_real_behavior'
+            "success": True,
+            "response": f"🧾 クロードエルダー: {response}",
+            "timestamp": datetime.now().isoformat(),
+            "elder": "claude_elder_real_behavior",
         }
-    
+
     def _explain_elder_system(self) -> str:
         """エルダーシステムの説明"""
         return """Elders Guildのエルダーシステムについて説明します。
@@ -157,7 +153,7 @@ class ClaudeElderAPIDirect:
 5. **エルダーサーベント** - 実行部隊
 
 この階層により、効率的かつ品質の高い開発を実現しています。"""
-    
+
     def _explain_four_sages(self) -> str:
         """4賢者システムの説明"""
         return """4賢者システムは、Elders Guildの中核となる自律的判断システムです。
@@ -179,7 +175,7 @@ class ClaudeElderAPIDirect:
   • 膨大な情報から最適な解を発見します
 
 これら4賢者が連携することで、人間の介入なしに多くの問題を解決できます。"""
-    
+
     def _explain_task_system(self) -> str:
         """タスクシステムの説明"""
         return """タスクエルダーシステムの使い方をご説明します。
@@ -196,7 +192,7 @@ class ClaudeElderAPIDirect:
 • **code_review** - コードレビュー
 
 タスクを受けると、4賢者が協調して最適な実行計画を立案し、エルダーサーベントが実行します。"""
-    
+
     def _explain_coverage_improvement(self) -> str:
         """カバレッジ向上の説明"""
         return """カバレッジ向上タスクについてご説明します。
@@ -214,16 +210,23 @@ class ClaudeElderAPIDirect:
 5. ウィザーズが品質を検証
 
 具体的なライブラリを指定していただければ、すぐに作業を開始できます。"""
-    
+
     def _get_system_status(self) -> str:
         """システム状態の取得"""
         try:
             import psutil
+
             cpu = psutil.cpu_percent(interval=0.1)
             memory = psutil.virtual_memory().percent
-            
-            status = "🟢 健全" if cpu < 50 and memory < 60 else "🟡 注意" if cpu < 80 and memory < 80 else "🔴 要対応"
-            
+
+            status = (
+                "🟢 健全"
+                if cpu < 50 and memory < 60
+                else "🟡 注意"
+                if cpu < 80 and memory < 80
+                else "🔴 要対応"
+            )
+
             return f"""現在のシステム状態をお知らせします。
 
 💻 **システムリソース**
@@ -239,7 +242,7 @@ class ClaudeElderAPIDirect:
 詳細はダッシュボードでご確認いただけます。"""
         except:
             return "システム状態は正常です。詳細はダッシュボードでご確認ください。"
-    
+
     def _explain_servant_system(self) -> str:
         """サーベントシステムの説明"""
         return """エルダーサーベント部隊についてご説明します。
@@ -251,14 +254,14 @@ class ClaudeElderAPIDirect:
 🔨 **ドワーフ工房** - 開発・製作
   • build_support_001: ビルド最適化
 
-🧙‍♂️ **ウィザーズ** - 分析・研究  
+🧙‍♂️ **ウィザーズ** - 分析・研究
   • monitoring_analysis_001: システム分析
 
 🧝‍♂️ **エルフの森** - 監視・メンテナンス
   • alert_watcher_001: アラート監視
 
 各サーベントは専門分野で自律的に活動し、必要に応じて協調作業を行います。"""
-    
+
     def _explain_real_connection(self) -> str:
         """リアル接続の説明"""
         return """クロードエルダーとして、現在の接続状況をお知らせします。
@@ -281,7 +284,7 @@ class ClaudeElderAPIDirect:
 3. 両方とも利用可能になれば、より高度な応答が可能になります
 
 現在でも、Elders Guildの知識とシステム情報を駆使して、実用的な支援を提供しています。"""
-    
+
     def _explain_api_status(self) -> str:
         """API状態の説明"""
         return """API接続状況をお知らせします。
@@ -307,16 +310,16 @@ API接続が完了すれば、さらに高度な分析と個別最適化が可�
     def _intelligent_general_response(self, message: str) -> str:
         """知的な一般応答"""
         # メッセージの内容を分析してより適切な応答を生成
-        
+
         # 開発関連キーワード
-        dev_keywords = ['開発', '実装', 'コード', 'テスト', 'バグ', '修正', 'deploy', 'build']
+        dev_keywords = ["開発", "実装", "コード", "テスト", "バグ", "修正", "deploy", "build"]
         # システム関連キーワード
-        sys_keywords = ['システム', 'サーバー', 'メモリ', 'CPU', 'パフォーマンス', 'system']
+        sys_keywords = ["システム", "サーバー", "メモリ", "CPU", "パフォーマンス", "system"]
         # 学習関連キーワード
-        learn_keywords = ['学習', '改善', '最適化', 'カバレッジ', '品質', 'quality']
-        
+        learn_keywords = ["学習", "改善", "最適化", "カバレッジ", "品質", "quality"]
+
         message_lower = message.lower()
-        
+
         if any(keyword in message_lower for keyword in dev_keywords):
             return f"""開発関連のご質問「{message}」にお答えします。
 
@@ -327,7 +330,7 @@ API接続が完了すれば、さらに高度な分析と個別最適化が可�
 • **CI/CD**: エルダーサーベントによる自動化
 
 具体的にどのような開発支援が必要でしょうか？タスクエルダーを通じて、最適な実行計画を立案します。"""
-        
+
         elif any(keyword in message_lower for keyword in sys_keywords):
             return f"""システム関連のご質問「{message}」についてお答えします。
 
@@ -338,7 +341,7 @@ API接続が完了すれば、さらに高度な分析と個別最適化が可�
 • **アラート対応**: 騎士団による即時対応
 
 現在のシステム状況や特定の問題について、より詳細な情報をお聞かせください。"""
-        
+
         elif any(keyword in message_lower for keyword in learn_keywords):
             return f"""品質向上のご質問「{message}」についてお答えします。
 
@@ -349,7 +352,7 @@ API接続が完了すれば、さらに高度な分析と個別最適化が可�
 • **実行支援**: エルダーサーベントによる実装
 
 どのような領域の改善をお考えでしょうか？カバレッジ向上、パフォーマンス最適化、コード品質など、具体的な目標をお聞かせください。"""
-        
+
         else:
             return f"""「{message}」についてお答えします。
 
@@ -364,41 +367,42 @@ API接続が完了すれば、さらに高度な分析と個別最適化が可�
 • プロジェクト管理・タスク調整
 
 具体的にどのような支援をお望みでしょうか？詳細をお聞かせいただければ、最適な解決策をご提案します。"""
-    
+
     def get_system_context(self) -> str:
         """システムコンテキストを取得"""
         try:
             import psutil
-            return f"""CPU: {psutil.cpu_percent()}%, Memory: {psutil.virtual_memory().percent}%, 
+
+            return f"""CPU: {psutil.cpu_percent()}%, Memory: {psutil.virtual_memory().percent}%,
 4 Sages: Active, Elder Servants: 5 units ready"""
         except:
             return "System operational"
 
+
 # ダッシュボード統合用
 class ClaudeElderConnector:
     """ダッシュボード互換性のためのラッパー"""
-    
+
     def __init__(self):
         self.api_direct = ClaudeElderAPIDirect()
-    
-    def send_to_claude(self, message: str, context: Optional[str] = None) -> Dict[str, Any]:
+
+    def send_to_claude(
+        self, message: str, context: Optional[str] = None
+    ) -> Dict[str, Any]:
         """Claude APIに送信"""
         return self.api_direct.send_to_claude_api(message, context)
-    
+
     def get_system_context(self) -> str:
         """システムコンテキストを取得"""
         return self.api_direct.get_system_context()
 
+
 # テスト
-if __name__ == '__main__':
+if __name__ == "__main__":
     connector = ClaudeElderAPIDirect()
-    
-    test_messages = [
-        "Elders Guildの階層構造について教えて",
-        "カバレッジを向上させたい",
-        "システムの状態は？"
-    ]
-    
+
+    test_messages = ["Elders Guildの階層構造について教えて", "カバレッジを向上させたい", "システムの状態は？"]
+
     for msg in test_messages:
         print(f"\n💬 Message: {msg}")
         result = connector.send_to_claude_api(msg)

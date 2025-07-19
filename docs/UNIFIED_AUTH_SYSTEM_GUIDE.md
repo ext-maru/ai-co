@@ -25,7 +25,7 @@ Elders Guild統合認証システムは、4賢者システムとElder階層を�
 └── 🤖 クロードエルダー (開発実行責任者)
     └── 🧙‍♂️ 4賢者システム
         ├── 📚 ナレッジ賢者
-        ├── 📋 タスク賢者  
+        ├── 📋 タスク賢者
         ├── 🚨 インシデント賢者
         └── 🔍 RAG賢者
             └── 🧝‍♂️ サーバント (一般権限)
@@ -48,9 +48,9 @@ Elders Guild統合認証システムは、4賢者システムとElder階層を�
 
 ```python
 from libs.unified_auth_provider import (
-    UnifiedAuthProvider, 
+    UnifiedAuthProvider,
     create_demo_auth_system,
-    ElderRole, 
+    ElderRole,
     SageType
 )
 
@@ -80,7 +80,7 @@ grand_elder = auth_provider.create_user(
 # 賢者作成
 knowledge_sage = auth_provider.create_user(
     username="knowledge_sage",
-    password="sage_password", 
+    password="sage_password",
     email="knowledge@ai-company.com",
     elder_role=ElderRole.SAGE,
     sage_type=SageType.KNOWLEDGE
@@ -362,7 +362,7 @@ auth_provider = UnifiedAuthProvider(
 @app.route('/api/auth/login', methods=['POST'])
 def login():
     data = request.get_json()
-    
+
     auth_request = AuthRequest(
         username=data['username'],
         password=data['password'],
@@ -373,9 +373,9 @@ def login():
             'type': 'web'
         }
     )
-    
+
     result, session_obj, user = auth_provider.authenticate(auth_request)
-    
+
     if result == AuthResult.SUCCESS:
         return jsonify({
             'status': 'success',
@@ -396,9 +396,9 @@ def login():
 @app.route('/api/auth/validate', methods=['POST'])
 def validate():
     token = request.headers.get('Authorization', '').replace('Bearer ', '')
-    
+
     is_valid, user, session_obj = auth_provider.validate_token(token)
-    
+
     if is_valid:
         return jsonify({
             'status': 'valid',
@@ -425,10 +425,10 @@ async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ) -> User:
     is_valid, user, session = auth_provider.validate_token(credentials.credentials)
-    
+
     if not is_valid:
         raise HTTPException(status_code=401, detail="Invalid token")
-    
+
     return user
 
 @app.post("/auth/login")
@@ -438,9 +438,9 @@ async def login(request: Request, username: str, password: str):
         password=password,
         ip_address=request.client.host
     )
-    
+
     result, session, user = auth_provider.authenticate(auth_request)
-    
+
     if result == AuthResult.SUCCESS:
         return {
             "access_token": session.token,
@@ -487,13 +487,13 @@ success_rate = successful_authentications / total_attempts
 
 # アクティブセッション数
 active_session_count = len([
-    s for s in auth_provider.sessions.values() 
+    s for s in auth_provider.sessions.values()
     if datetime.now() < s.expires_at
 ])
 
 # MFA使用率
 mfa_enabled_users = len([
-    u for u in auth_provider.users.values() 
+    u for u in auth_provider.users.values()
     if u.mfa_enabled
 ])
 mfa_usage_rate = mfa_enabled_users / len(auth_provider.users)
@@ -603,22 +603,22 @@ def map_old_role_to_elder_role(old_role):
 ```python
 class HybridAuthProvider:
     """旧システムと新システムのハイブリッド認証"""
-    
+
     def __init__(self, old_auth, new_auth):
         self.old_auth = old_auth
         self.new_auth = new_auth
-    
+
     def authenticate(self, auth_request):
         # 新システムで試行
         result, session, user = self.new_auth.authenticate(auth_request)
-        
+
         if result == AuthResult.INVALID_CREDENTIALS:
             # 旧システムで試行
             if self.old_auth.authenticate(auth_request.username, auth_request.password):
                 # 成功時は新システムに移行
                 migrated_user = self.migrate_user(auth_request.username)
                 return self.new_auth.authenticate(auth_request)
-        
+
         return result, session, user
 ```
 
@@ -634,26 +634,26 @@ import redis
 
 class CachedAuthProvider(UnifiedAuthProvider):
     """キャッシュ付き認証プロバイダー"""
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.redis_client = redis.Redis(host='localhost', port=6379, db=0)
-    
+
     @lru_cache(maxsize=1000)
     def _get_user_cached(self, user_id):
         """ユーザー情報キャッシュ"""
         return self.users.get(user_id)
-    
+
     def validate_token(self, token):
         # Redisキャッシュから検証結果取得
         cached_result = self.redis_client.get(f"token:{token}")
         if cached_result:
             # キャッシュヒット
             return self._deserialize_validation_result(cached_result)
-        
+
         # 通常の検証処理
         is_valid, user, session = super().validate_token(token)
-        
+
         # 結果をキャッシュ（短時間）
         if is_valid:
             self.redis_client.setex(
@@ -661,7 +661,7 @@ class CachedAuthProvider(UnifiedAuthProvider):
                 300,  # 5分キャッシュ
                 self._serialize_validation_result(is_valid, user, session)
             )
-        
+
         return is_valid, user, session
 ```
 
@@ -673,25 +673,25 @@ import aioredis
 
 class AsyncUnifiedAuthProvider:
     """非同期認証プロバイダー"""
-    
+
     async def authenticate_async(self, auth_request):
         """非同期認証"""
         # 非同期データベースアクセス
         user_data = await self.get_user_async(auth_request.username)
-        
+
         if not user_data:
             return AuthResult.INVALID_CREDENTIALS, None, None
-        
+
         # 非同期パスワード検証
         is_valid = await self.verify_password_async(
             auth_request.password, user_data['password_hash']
         )
-        
+
         if is_valid:
             # 非同期セッション作成
             session = await self.create_session_async(user_data)
             return AuthResult.SUCCESS, session, user_data
-        
+
         return AuthResult.INVALID_CREDENTIALS, None, None
 ```
 
@@ -715,7 +715,7 @@ class RotatingSecretKey:
     def __init__(self):
         self.current_key = os.environ.get('AUTH_SECRET_KEY_CURRENT')
         self.previous_key = os.environ.get('AUTH_SECRET_KEY_PREVIOUS')
-    
+
     def decode_token(self, token):
         try:
             return jwt.decode(token, self.current_key, algorithms=['HS256'])
@@ -732,22 +732,22 @@ import time
 
 class RateLimiter:
     """レート制限機能"""
-    
+
     def __init__(self):
         self.attempts = defaultdict(deque)
-    
+
     def is_allowed(self, identifier, max_attempts=5, window_seconds=300):
         """レート制限チェック"""
         now = time.time()
         attempts = self.attempts[identifier]
-        
+
         # 古い試行を削除
         while attempts and attempts[0] < now - window_seconds:
             attempts.popleft()
-        
+
         if len(attempts) >= max_attempts:
             return False
-        
+
         attempts.append(now)
         return True
 
@@ -756,12 +756,12 @@ class RateLimitedAuthProvider(UnifiedAuthProvider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.rate_limiter = RateLimiter()
-    
+
     def authenticate(self, auth_request):
         # IPベースレート制限
         if not self.rate_limiter.is_allowed(auth_request.ip_address):
             return AuthResult.RATE_LIMITED, None, None
-        
+
         return super().authenticate(auth_request)
 ```
 
@@ -818,7 +818,7 @@ https://github.com/ai-company/auth-system/issues
 
 ---
 
-**最終更新**: 2025年7月9日  
-**バージョン**: v2.0  
-**承認者**: エルダーズ評議会  
+**最終更新**: 2025年7月9日
+**バージョン**: v2.0
+**承認者**: エルダーズ評議会
 **次期レビュー**: 2025年7月16日

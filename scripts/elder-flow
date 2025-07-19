@@ -6,38 +6,40 @@ Author: Claude Elder
 Version: 1.0.0
 """
 
-import asyncio
-import sys
 import argparse
+import asyncio
 import json
+import sys
 from pathlib import Path
 
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from libs.elder_flow_integration import (
+    ElderFlowWorkflow,
     execute_elder_flow,
-    get_elder_flow_status,
     get_elder_flow_statistics,
-    ElderFlowWorkflow
-)
-
-# Elder Soul Integration imports
-from libs.elder_flow_soul_integration import (
-    execute_soul_enhanced_elder_flow,
-    get_soul_enhanced_flow_status,
-    ElderFlowSoulMode
+    get_elder_flow_status,
 )
 
 # Retry wrapper import
 from libs.elder_flow_retry_wrapper import execute_elder_flow_with_retry
+
+# Elder Soul Integration imports
+from libs.elder_flow_soul_integration import (
+    ElderFlowSoulMode,
+    execute_soul_enhanced_elder_flow,
+    get_soul_enhanced_flow_status,
+)
 from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine
+
 
 def print_elder_banner():
     """Elder Flow バナー表示"""
     print("🌊 Elder Flow - Claude Elder Automation System")
     print("🏛️ エルダーズギルド完全自動化開発フロー")
     print("=" * 50)
+
 
 async def cmd_execute(args):
     """Elder Flow実行"""
@@ -47,10 +49,10 @@ async def cmd_execute(args):
     priority = args.priority
     auto_commit = not args.no_commit
     commit_message = args.commit_message
-    soul_mode = getattr(args, 'soul_mode', None)
-    retry_on_lock = getattr(args, 'retry', False)
-    max_retries = getattr(args, 'max_retries', 3)
-    retry_interval = getattr(args, 'retry_interval', 5)
+    soul_mode = getattr(args, "soul_mode", None)
+    retry_on_lock = getattr(args, "retry", False)
+    max_retries = getattr(args, "max_retries", 3)
+    retry_interval = getattr(args, "retry_interval", 5)
 
     print(f"📋 Task: {description}")
     print(f"⚡ Priority: {priority}")
@@ -60,7 +62,7 @@ async def cmd_execute(args):
         print(f"🌟 Soul Mode: {soul_mode}")
         print("🧙‍♂️ Using Elder Soul integration")
     else:
-        print("🏛️ Using traditional Elder Flow")
+        print("👑 Using default Claude Elder Soul integration")
     print()
 
     try:
@@ -80,11 +82,13 @@ async def cmd_execute(args):
                 print(f"⏱️  Duration: {status['total_duration']:.2f}s")
                 print(f"📊 Status: {status['soul_mode']}")
 
-                summary = status.get('soul_results_summary', {})
-                completion_rate = summary.get('completion_rate', 0)
-                print(f"🌟 Soul Completion: {completion_rate:.1%} ({summary.get('phases_completed', 0)}/5 phases)")
+                summary = status.get("soul_results_summary", {})
+                completion_rate = summary.get("completion_rate", 0)
+                print(
+                    f"🌟 Soul Completion: {completion_rate:.1%} ({summary.get('phases_completed', 0)}/5 phases)"
+                )
 
-                if status.get('error_message'):
+                if status.get("error_message"):
                     print(f"⚠️  Error: {status['error_message']}")
         else:
             # リトライ機能付きElder Flow実行
@@ -93,19 +97,21 @@ async def cmd_execute(args):
                 print(f"   Max retries: {max_retries}")
                 print(f"   Retry interval: {retry_interval}s")
                 print()
-                
+
             print("🚀 Starting Elder Flow execution...")
-            
+
             # 新しいElder Flow Engineを使用
             result = await execute_elder_flow_with_retry(
                 task_name=description,
                 priority=priority,
                 auto_retry=retry_on_lock,
                 max_retries=max_retries,
-                retry_interval=retry_interval
+                retry_interval=retry_interval,
             )
-            
-            if result.get("error") == "Task already running" and result.get("retry_required"):
+
+            if result.get("error") == "Task already running" and result.get(
+                "retry_required"
+            ):
                 # リトライが必要な場合の処理
                 print(f"\n💡 ヒント: {result.get('retry_suggestion', '')}")
                 return 1
@@ -115,8 +121,8 @@ async def cmd_execute(args):
             else:
                 print(f"✅ Elder Flow completed successfully!")
                 print(f"🆔 Flow ID: {result.get('flow_id', 'N/A')}")
-                
-                if result.get('execution_time'):
+
+                if result.get("execution_time"):
                     print(f"⏱️  Completed at: {result['execution_time']}")
 
     except Exception as e:
@@ -124,6 +130,7 @@ async def cmd_execute(args):
         return 1
 
     return 0
+
 
 async def cmd_status(args):
     """Elder Flow状態確認"""
@@ -142,24 +149,26 @@ async def cmd_status(args):
         print(f"⚡ Priority: {status['priority']}")
         print(f"⏱️  Duration: {status['total_duration']:.2f}s")
 
-        if status.get('orchestration_result'):
+        if status.get("orchestration_result"):
             print(f"🏛️ Orchestration: {status['orchestration_result']['status']}")
 
-        if status.get('execution_result'):
+        if status.get("execution_result"):
             print(f"🤖 Execution: {status['execution_result']['total_tasks']} tasks")
 
-        if status.get('quality_result'):
-            quality = status['quality_result']
-            print(f"🔍 Quality: {quality['overall_status']} (Score: {quality['overall_score']:.2f}/10)")
+        if status.get("quality_result"):
+            quality = status["quality_result"]
+            print(
+                f"🔍 Quality: {quality['overall_status']} (Score: {quality['overall_score']:.2f}/10)"
+            )
 
-        if status.get('report_result'):
+        if status.get("report_result"):
             print(f"📊 Reports: {status['report_result']['reports_saved']}")
 
-        if status.get('git_result'):
-            git = status['git_result']
+        if status.get("git_result"):
+            git = status["git_result"]
             print(f"📤 Git: {'✅' if git['commit_success'] else '❌'}")
 
-        if args.verbose and status.get('error_message'):
+        if args.verbose and status.get("error_message"):
             print(f"⚠️  Error: {status['error_message']}")
 
     else:
@@ -175,6 +184,7 @@ async def cmd_status(args):
 
     return 0
 
+
 async def cmd_workflow(args):
     """Elder Flow ワークフロー"""
     print_elder_banner()
@@ -184,9 +194,21 @@ async def cmd_workflow(args):
 
         # ワークフロー定義（例）
         steps = [
-            {"type": "elder_flow", "description": args.description or "Step 1", "priority": "high"},
-            {"type": "elder_flow", "description": "Add comprehensive tests", "priority": "medium"},
-            {"type": "elder_flow", "description": "Update documentation", "priority": "low"}
+            {
+                "type": "elder_flow",
+                "description": args.description or "Step 1",
+                "priority": "high",
+            },
+            {
+                "type": "elder_flow",
+                "description": "Add comprehensive tests",
+                "priority": "medium",
+            },
+            {
+                "type": "elder_flow",
+                "description": "Update documentation",
+                "priority": "low",
+            },
         ]
 
         workflow_id = workflow.create_workflow(args.name, steps)
@@ -199,53 +221,56 @@ async def cmd_workflow(args):
 
     return 0
 
+
 async def cmd_cleanup(args):
     """古いロックのクリーンアップ"""
     print_elder_banner()
     print("🧹 Cleaning up stale locks...")
-    
+
     engine = ElderFlowEngine()
     result = await engine.cleanup_stale_locks()
-    
+
     if result.get("status") == "success":
         print(f"✅ {result['cleaned_locks']} stale locks cleaned up")
     else:
         print(f"❌ Cleanup failed: {result.get('error', 'Unknown error')}")
         return 1
-    
+
     return 0
+
 
 async def cmd_active(args):
     """アクティブタスクの表示"""
     print_elder_banner()
     print("📋 Active Tasks")
     print()
-    
+
     engine = ElderFlowEngine()
     result = await engine.get_active_tasks()
-    
+
     if result.get("status") == "success":
         active_count = result.get("active_tasks_count", 0)
-        
+
         if active_count == 0:
             print("✨ No active tasks")
         else:
             print(f"🔥 {active_count} active task(s):")
             print()
-            
+
             for task in result.get("active_tasks", []):
                 print(f"  📌 {task['task_id']}")
                 print(f"     PID: {task['pid']}")
                 print(f"     Started: {task['started_at']}")
-                
+
                 # リトライ推奨コマンドを表示
                 print(f"     Retry: elder-flow execute --retry \"{task['task_id']}\"")
                 print()
     else:
         print(f"❌ Failed to get active tasks: {result.get('error', 'Unknown error')}")
         return 1
-    
+
     return 0
+
 
 async def cmd_souls(args):
     """Elder Soul管理"""
@@ -257,6 +282,7 @@ async def cmd_souls(args):
 
         try:
             from libs.elder_flow_soul_connector import get_elder_flow_soul_connector
+
             connector = await get_elder_flow_soul_connector()
 
             # アクティブセッション表示
@@ -265,7 +291,9 @@ async def cmd_souls(args):
             if sessions:
                 print(f"🔥 Active Soul Sessions: {len(sessions)}")
                 for session in sessions:
-                    print(f"  🌊 {session['session_id']}: {session['phase']} ({session['soul_count']} souls)")
+                    print(
+                        f"  🌊 {session['session_id']}: {session['phase']} ({session['soul_count']} souls)"
+                    )
             else:
                 print("💤 No active soul sessions")
 
@@ -280,14 +308,19 @@ async def cmd_souls(args):
 
         try:
             from libs.elder_flow_soul_connector import summon_souls_for_elder_flow
+
             result = await summon_souls_for_elder_flow(phase, description, "medium")
 
-            print(f"✅ Summoned {result['summoned_count']}/{result['total_souls']} souls")
+            print(
+                f"✅ Summoned {result['summoned_count']}/{result['total_souls']} souls"
+            )
             print(f"🆔 Session ID: {result['session_id']}")
 
-            for soul_id, soul_info in result['souls'].items():
-                status_icon = "✅" if soul_info.get('status') == 'active' else "❌"
-                print(f"  {status_icon} {soul_id}: {soul_info.get('purpose', 'Unknown purpose')}")
+            for soul_id, soul_info in result["souls"].items():
+                status_icon = "✅" if soul_info.get("status") == "active" else "❌"
+                print(
+                    f"  {status_icon} {soul_id}: {soul_info.get('purpose', 'Unknown purpose')}"
+                )
 
         except Exception as e:
             print(f"❌ Failed to summon souls: {e}")
@@ -299,6 +332,7 @@ async def cmd_souls(args):
 
         try:
             from libs.elder_flow_soul_connector import dismiss_elder_flow_souls
+
             result = await dismiss_elder_flow_souls(session_id)
 
             print(f"✅ Dismissed {result['dismissed_souls']} souls")
@@ -308,14 +342,16 @@ async def cmd_souls(args):
 
     return 0
 
+
 def cmd_help(args):
     """Elder Flow ヘルプ"""
     print_elder_banner()
     print("🔧 Elder Flow Commands:")
     print()
-    print("  execute <description>    - Elder Flow実行")
+    print("  execute <description>    - Elder Flow実行 (デフォルト: Claude Elder魂統合)")
     print("    --priority <level>     - 優先度 (low/medium/high)")
     print("    --soul-mode <mode>     - Soul統合モード (soul_enhanced/full_soul)")
+    print("                           - 未指定時: Claude Elder魂がデフォルト有効")
     print("    --no-commit            - 自動コミット無効")
     print("    --commit-message <msg> - カスタムコミットメッセージ")
     print("    --retry                - ロック時の自動リトライ有効")
@@ -340,81 +376,128 @@ def cmd_help(args):
     print()
     print("  help                     - このヘルプ")
     print()
-    print("🌊 Traditional Examples:")
-    print("  elder-flow execute 'OAuth2.0認証システム実装' --priority high")
-    print("  elder-flow execute 'バグ修正' --retry --max-retries 5")
+    print("👑 Default Claude Elder Soul Examples:")
+    print(
+        "  elder-flow execute 'OAuth2.0認証システム実装' --priority high  # Claude Elder魂自動統合"
+    )
+    print(
+        "  elder-flow execute 'バグ修正' --retry --max-retries 5         # Claude Elder魂自動統合"
+    )
     print("  elder-flow status")
     print("  elder-flow active")
     print("  elder-flow cleanup")
     print("  elder-flow workflow create oauth_system --execute")
     print()
-    print("🌟 Soul Enhanced Examples:")
-    print("  elder-flow execute 'OAuth2.0実装' --soul-mode soul_enhanced")
-    print("  elder-flow execute 'バグ修正' --soul-mode full_soul --priority high")
+    print("🌟 Advanced Soul Enhanced Examples:")
+    print(
+        "  elder-flow execute 'OAuth2.0実装' --soul-mode soul_enhanced    # より高度なSoul統合"
+    )
+    print(
+        "  elder-flow execute 'バグ修正' --soul-mode full_soul --priority high  # 完全Soul統合"
+    )
     print("  elder-flow souls status")
     print("  elder-flow souls summon phase1_analysis")
     print()
     print("📋 Available Soul Phases:")
-    print("  phase1_analysis  - 4賢者会議 (knowledge_sage, task_sage, rag_sage, incident_sage)")
-    print("  phase2_execution - サーバント実行 (code_servant, test_guardian, quality_inspector)")
-    print("  phase3_quality   - 品質ゲート (security_auditor, performance_monitor, documentation_keeper)")
-    print("  phase4_reporting - 評議会報告 (council_secretary, report_generator, approval_manager)")
+    print(
+        "  phase1_analysis  - 4賢者会議 (knowledge_sage, task_sage, rag_sage, incident_sage)"
+    )
+    print(
+        "  phase2_execution - サーバント実行 (code_servant, test_guardian, quality_inspector)"
+    )
+    print(
+        "  phase3_quality   - 品質ゲート (security_auditor, performance_monitor, documentation_keeper)"
+    )
+    print(
+        "  phase4_reporting - 評議会報告 (council_secretary, report_generator, approval_manager)"
+    )
     print("  phase5_git       - Git自動化 (git_master, version_guardian, deploy_manager)")
     print()
+
 
 def main():
     """メイン関数"""
     parser = argparse.ArgumentParser(
         description="Elder Flow - Claude Elder Automation System",
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
 
-    subparsers = parser.add_subparsers(dest='command', help='Available commands')
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
     # execute コマンド
-    parser_execute = subparsers.add_parser('execute', help='Execute Elder Flow')
-    parser_execute.add_argument('description', help='Task description')
-    parser_execute.add_argument('--priority', choices=['low', 'medium', 'high'], default='medium', help='Task priority')
-    parser_execute.add_argument('--soul-mode', choices=['soul_enhanced', 'full_soul'], help='Elder Soul integration mode')
-    parser_execute.add_argument('--no-commit', action='store_true', help='Disable auto-commit')
-    parser_execute.add_argument('--commit-message', help='Custom commit message')
-    parser_execute.add_argument('--retry', action='store_true', help='Enable automatic retry on lock')
-    parser_execute.add_argument('--max-retries', type=int, default=3, help='Maximum retry attempts (default: 3)')
-    parser_execute.add_argument('--retry-interval', type=int, default=5, help='Retry interval in seconds (default: 5)')
+    parser_execute = subparsers.add_parser("execute", help="Execute Elder Flow")
+    parser_execute.add_argument("description", help="Task description")
+    parser_execute.add_argument(
+        "--priority",
+        choices=["low", "medium", "high"],
+        default="medium",
+        help="Task priority",
+    )
+    parser_execute.add_argument(
+        "--soul-mode",
+        choices=["soul_enhanced", "full_soul"],
+        help="Elder Soul integration mode",
+    )
+    parser_execute.add_argument(
+        "--no-commit", action="store_true", help="Disable auto-commit"
+    )
+    parser_execute.add_argument("--commit-message", help="Custom commit message")
+    parser_execute.add_argument(
+        "--retry", action="store_true", help="Enable automatic retry on lock"
+    )
+    parser_execute.add_argument(
+        "--max-retries", type=int, default=3, help="Maximum retry attempts (default: 3)"
+    )
+    parser_execute.add_argument(
+        "--retry-interval",
+        type=int,
+        default=5,
+        help="Retry interval in seconds (default: 5)",
+    )
     parser_execute.set_defaults(func=cmd_execute)
 
     # status コマンド
-    parser_status = subparsers.add_parser('status', help='Check Elder Flow status')
-    parser_status.add_argument('task_id', nargs='?', help='Specific task ID')
-    parser_status.add_argument('--verbose', '-v', action='store_true', help='Verbose output')
+    parser_status = subparsers.add_parser("status", help="Check Elder Flow status")
+    parser_status.add_argument("task_id", nargs="?", help="Specific task ID")
+    parser_status.add_argument(
+        "--verbose", "-v", action="store_true", help="Verbose output"
+    )
     parser_status.set_defaults(func=cmd_status)
 
     # souls コマンド
-    parser_souls = subparsers.add_parser('souls', help='Elder Soul management')
-    parser_souls.add_argument('action', choices=['status', 'summon', 'dismiss'], help='Soul action')
-    parser_souls.add_argument('phase', nargs='?', help='Phase for summon action')
-    parser_souls.add_argument('session_id', nargs='?', help='Session ID for dismiss action')
-    parser_souls.add_argument('--description', help='Task description for summon')
+    parser_souls = subparsers.add_parser("souls", help="Elder Soul management")
+    parser_souls.add_argument(
+        "action", choices=["status", "summon", "dismiss"], help="Soul action"
+    )
+    parser_souls.add_argument("phase", nargs="?", help="Phase for summon action")
+    parser_souls.add_argument(
+        "session_id", nargs="?", help="Session ID for dismiss action"
+    )
+    parser_souls.add_argument("--description", help="Task description for summon")
     parser_souls.set_defaults(func=cmd_souls)
 
     # workflow コマンド
-    parser_workflow = subparsers.add_parser('workflow', help='Elder Flow workflow management')
-    parser_workflow.add_argument('action', choices=['create'], help='Workflow action')
-    parser_workflow.add_argument('name', help='Workflow name')
-    parser_workflow.add_argument('--execute', action='store_true', help='Execute immediately')
-    parser_workflow.add_argument('--description', help='Workflow description')
+    parser_workflow = subparsers.add_parser(
+        "workflow", help="Elder Flow workflow management"
+    )
+    parser_workflow.add_argument("action", choices=["create"], help="Workflow action")
+    parser_workflow.add_argument("name", help="Workflow name")
+    parser_workflow.add_argument(
+        "--execute", action="store_true", help="Execute immediately"
+    )
+    parser_workflow.add_argument("--description", help="Workflow description")
     parser_workflow.set_defaults(func=cmd_workflow)
 
     # cleanup コマンド
-    parser_cleanup = subparsers.add_parser('cleanup', help='Clean up stale locks')
+    parser_cleanup = subparsers.add_parser("cleanup", help="Clean up stale locks")
     parser_cleanup.set_defaults(func=cmd_cleanup)
 
     # active コマンド
-    parser_active = subparsers.add_parser('active', help='Show active tasks')
+    parser_active = subparsers.add_parser("active", help="Show active tasks")
     parser_active.set_defaults(func=cmd_active)
 
     # help コマンド
-    parser_help = subparsers.add_parser('help', help='Show help')
+    parser_help = subparsers.add_parser("help", help="Show help")
     parser_help.set_defaults(func=cmd_help)
 
     args = parser.parse_args()
@@ -423,7 +506,7 @@ def main():
         cmd_help(args)
         return 0
 
-    if args.command == 'help':
+    if args.command == "help":
         cmd_help(args)
         return 0
 
@@ -433,5 +516,6 @@ def main():
     else:
         return args.func(args)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(main())

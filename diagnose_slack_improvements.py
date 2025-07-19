@@ -5,27 +5,30 @@ Elders Guild Slackメッセージ改善診断ツール
 
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path("/home/aicompany/ai_co")))
 
-from libs.slack_notifier import SlackNotifier
 import json
 import time
+
+from libs.slack_notifier import SlackNotifier
+
 
 def diagnose_slack_improvements():
     """Slack通知の改善点を診断"""
     print("🔍 Elders Guild Slack通知改善診断")
     print("=" * 60)
-    
+
     # 1. 現在の設定確認
     print("\n📋 現在の設定:")
     config_path = Path("/home/aicompany/ai_co/config/config.json")
     if config_path.exists():
         with open(config_path) as f:
             config = json.load(f)
-            slack_config = config.get('slack', {})
+            slack_config = config.get("slack", {})
             print(f"  - Slack有効: {slack_config.get('enabled', False)}")
             print(f"  - チャンネル: {slack_config.get('channel', 'N/A')}")
-    
+
     # 2. ResultWorkerの状態
     print("\n📋 ResultWorkerの状態:")
     result_worker_path = Path("/home/aicompany/ai_co/workers/result_worker.py")
@@ -37,7 +40,7 @@ def diagnose_slack_improvements():
             print("  ✅ フォーマット関数実装済み")
         if "periodic_stats_report" in content:
             print("  ✅ 定期レポート機能あり")
-    
+
     # 3. 改善提案
     print("\n💡 改善提案:")
     improvements = [
@@ -48,16 +51,16 @@ def diagnose_slack_improvements():
         "5. 📱 モバイル最適化された表示",
         "6. 🔗 関連リソースへのリンク集約",
         "7. ⏰ タイムゾーン対応",
-        "8. 🌐 多言語サポート（英語/日本語切り替え）"
+        "8. 🌐 多言語サポート（英語/日本語切り替え）",
     ]
-    
+
     for improvement in improvements:
         print(f"  {improvement}")
-    
+
     # 4. テストメッセージ送信
     print("\n📤 改善版テストメッセージを送信...")
     notifier = SlackNotifier()
-    
+
     # 改善版メッセージサンプル
     improved_message = """
 🎯 **Elders Guild タスク完了レポート**
@@ -101,15 +104,16 @@ ResultWorkerの改善により、より視覚的で理解しやすい通知が�
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 *Elders Guild Intelligence System v5.3*
     """
-    
+
     try:
         notifier.send_message(improved_message)
         print("  ✅ 改善版メッセージ送信成功！")
     except Exception as e:
         print(f"  ❌ 送信エラー: {e}")
-    
+
     print("\n" + "=" * 60)
     print("✅ 診断完了")
+
 
 if __name__ == "__main__":
     diagnose_slack_improvements()

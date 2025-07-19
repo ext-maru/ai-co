@@ -3,23 +3,24 @@
 Create GitHub Issue in correct repository
 """
 
-import requests
 import os
 
+import requests
+
 # GitHub API設定
-token = os.getenv('GITHUB_TOKEN')
+token = os.getenv("GITHUB_TOKEN")
 if not token:
     print("❌ Error: GITHUB_TOKEN environment variable not set")
     print("Please set: export GITHUB_TOKEN='your_token_here'")
     exit(1)
 
-repo = os.getenv('GITHUB_REPO', 'ext-maru/ai-co')
+repo = os.getenv("GITHUB_REPO", "ext-maru/ai-co")
 url = f"https://api.github.com/repos/{repo}/issues"
 
 headers = {
     "Authorization": f"token {token}",
     "Accept": "application/vnd.github.v3+json",
-    "User-Agent": "Claude-Elder-Test"
+    "User-Agent": "Claude-Elder-Test",
 }
 
 issue_data = {
@@ -36,7 +37,7 @@ GitHub統合システムの包括的な改善を実施しました：
 - `authenticate.py`を完全実装（410行のフル実装）
 - 認証、トークン検証、取り消し機能を含む包括的な実装
 
-##### 2. **エラーハンドリング強化** 
+##### 2. **エラーハンドリング強化**
 - `github_flow_manager.py`の重要関数にエラーハンドリング追加
 - `github_integration_enhanced.py`の関数にtry-except追加
 - エラーハンドリング自動修正スクリプトの作成
@@ -84,12 +85,12 @@ GitHub統合システムの包括的な改善を実施しました：
 *このIssueはGitHub統合機能のテストとして、Claude Elderが自動作成しました。*
 *Iron Will 95%準拠を目指した改善の実施報告です。*
 """,
-    "labels": ["iron-will", "improvement", "security", "test"]
+    "labels": ["iron-will", "improvement", "security", "test"],
 }
 
 try:
     response = requests.post(url, json=issue_data, headers=headers)
-    
+
     if response.status_code == 201:
         issue = response.json()
         print("✅ Issue created successfully in ext-maru/ai-co!")
@@ -100,6 +101,6 @@ try:
         print(f"❌ Failed to create issue")
         print(f"Status Code: {response.status_code}")
         print(f"Response: {response.text}")
-        
+
 except Exception as e:
     print(f"Error: {e}")

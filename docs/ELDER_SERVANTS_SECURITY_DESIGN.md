@@ -1,7 +1,7 @@
 # 🛡️ エルダーサーバント32体制 セキュリティ設計書
 
-**作成日**: 2025年7月19日  
-**作成者**: クロードエルダー  
+**作成日**: 2025年7月19日
+**作成者**: クロードエルダー
 **Iron Will セキュリティスコア目標**: 90%以上
 
 ## 🎯 セキュリティ設計方針
@@ -19,7 +19,7 @@
 ```python
 class ServantAuthenticationSystem:
     """サーバント認証システム"""
-    
+
     def __init__(self):
         self.auth_methods = {
             "api_key": self._validate_api_key,
@@ -27,7 +27,7 @@ class ServantAuthenticationSystem:
             "mutual_tls": self._validate_mtls
         }
         self.role_permissions = self._load_rbac_config()
-    
+
     async def authenticate(self, request: Dict[str, Any]) -> AuthResult:
         """多要素認証の実装"""
         # 1. APIキー検証
@@ -35,7 +35,7 @@ class ServantAuthenticationSystem:
         # 3. レート制限チェック
         # 4. 権限確認
         pass
-    
+
     def authorize(self, servant_id: str, resource: str, action: str) -> bool:
         """RBAC（Role-Based Access Control）実装"""
         # サーバントの役割に基づく権限チェック
@@ -62,7 +62,7 @@ data_security:
     in_transit:
       protocol: TLS 1.3
       certificate_pinning: enabled
-    
+
   sensitive_data:
     classification:
       - public
@@ -83,7 +83,7 @@ data_security:
 ```python
 class SecurityGuardServant(DwarfServant):
     """セキュリティ専門サーバント"""
-    
+
     capabilities = [
         "vulnerability_scanning",
         "security_audit",
@@ -91,7 +91,7 @@ class SecurityGuardServant(DwarfServant):
         "incident_response",
         "compliance_checking"
     ]
-    
+
     async def perform_security_scan(self, target: Any) -> SecurityReport:
         """包括的セキュリティスキャン"""
         checks = [
@@ -146,7 +146,7 @@ class SecurityGuardServant(DwarfServant):
 ```python
 class SecurityAuditor:
     """自動セキュリティ監査システム"""
-    
+
     def __init__(self):
         self.audit_rules = {
             "code_quality": self._audit_code_security,
@@ -155,17 +155,17 @@ class SecurityAuditor:
             "access_control": self._audit_access_control,
             "encryption": self._audit_encryption
         }
-    
+
     async def run_audit(self) -> AuditReport:
         """Iron Will セキュリティ基準90%達成チェック"""
         results = {}
         for category, auditor in self.audit_rules.items():
             results[category] = await auditor()
-        
+
         score = self._calculate_security_score(results)
         if score < 90:
             raise SecurityException(f"Security score {score}% below Iron Will threshold")
-        
+
         return AuditReport(score=score, details=results)
 ```
 
@@ -235,6 +235,6 @@ class SecurityAuditor:
 - セキュリティ文化の完全定着
 
 ---
-**Iron Will セキュリティ宣言**: 
+**Iron Will セキュリティ宣言**:
 エルダーサーバント32体制は、設計段階からセキュリティを最優先事項とし、
 継続的な改善により業界最高水準のセキュリティを実現する。

@@ -1,9 +1,9 @@
 # 🚨 AI Company 緊急時対応マスターマニュアル
 
-**バージョン**: 1.0.0  
-**発効日**: 2025年7月10日  
-**承認者**: Grand Elder maru  
-**管理責任者**: Claude Elder  
+**バージョン**: 1.0.0
+**発効日**: 2025年7月10日
+**承認者**: Grand Elder maru
+**管理責任者**: Claude Elder
 **文書管理番号**: ERM-2025-001
 
 ---
@@ -23,8 +23,8 @@
 ## 🔴 緊急度レベル定義
 
 ### Level 1: Disaster (災害級)
-**影響範囲**: 全システム  
-**対応時間**: 5分以内  
+**影響範囲**: 全システム
+**対応時間**: 5分以内
 **症状**:
 - AI Company全サービス停止
 - データベース完全応答不能
@@ -32,8 +32,8 @@
 - Elder Tree階層崩壊
 
 ### Level 2: Critical (重大)
-**影響範囲**: 主要機能  
-**対応時間**: 15分以内  
+**影響範囲**: 主要機能
+**対応時間**: 15分以内
 **症状**:
 - Four Sages機能停止
 - 認証システム障害
@@ -41,8 +41,8 @@
 - データ整合性エラー
 
 ### Level 3: Major (主要)
-**影響範囲**: 一部機能  
-**対応時間**: 30分以内  
+**影響範囲**: 一部機能
+**対応時間**: 30分以内
 **症状**:
 - 特定ワーカーグループ障害
 - パフォーマンス50%以上劣化
@@ -50,8 +50,8 @@
 - Elder Council一部機能不全
 
 ### Level 4: Minor (軽微)
-**影響範囲**: 限定的  
-**対応時間**: 1時間以内  
+**影響範囲**: 限定的
+**対応時間**: 1時間以内
 **症状**:
 - 単一ワーカー障害
 - 軽度のパフォーマンス劣化
@@ -222,24 +222,24 @@ class ElderCouncilEmergencySummon:
                 "auto_actions": ["partial_freeze", "backup_start"]
             }
         }
-    
+
     async def emergency_summon(self, level, incident_data):
         """緊急招集実行"""
         config = self.summon_config[level]
-        
+
         # 1. 通知送信
         await self.send_notifications(config["members"], incident_data)
-        
+
         # 2. 自動アクション実行
         for action in config["auto_actions"]:
             await self.execute_auto_action(action)
-        
+
         # 3. 意思決定準備
         decision_context = await self.prepare_decision_context(incident_data)
-        
+
         # 4. Elder Council会議室準備
         meeting_url = await self.setup_emergency_meeting()
-        
+
         return {
             "status": "summoned",
             "meeting_url": meeting_url,
@@ -329,25 +329,25 @@ ai-system-stop --final
 
 class MinimalServiceMode:
     """最小限サービス維持モード管理"""
-    
+
     ESSENTIAL_WORKERS = [
         "health_check",
         "authentication_worker",
         "data_persistence_worker",
         "emergency_response_worker"
     ]
-    
+
     def activate_minimal_mode(self):
         """最小限モード有効化"""
         # 1. 非必須サービス停止
         self.stop_non_essential_services()
-        
+
         # 2. リソース再配分
         self.reallocate_resources()
-        
+
         # 3. 監視強化
         self.enhance_monitoring()
-        
+
         # 4. 自動復旧準備
         self.prepare_auto_recovery()
 ```
@@ -370,7 +370,7 @@ emergency_contacts:
       - name: "Grand Elder maru"
         channel: "priority_notification"
         response_time: "5_minutes"
-    
+
     secondary:
       - name: "Elder Council"
         channel: "emergency_summon"
@@ -378,13 +378,13 @@ emergency_contacts:
       - name: "Four Sages"
         channel: "auto_activation"
         response_time: "immediate"
-  
+
   CRITICAL:
     primary:
       - name: "Claude Elder"
         channel: "system_alert"
         response_time: "5_minutes"
-    
+
     secondary:
       - name: "Senior Servants"
         channel: "team_notification"
@@ -533,7 +533,7 @@ class IncidentLearning:
     def post_incident_review(self, incident_id):
         """事後レビューと改善点抽出"""
         incident = self.get_incident_data(incident_id)
-        
+
         review = {
             "what_went_well": self.analyze_successes(incident),
             "what_went_wrong": self.analyze_failures(incident),
@@ -541,13 +541,13 @@ class IncidentLearning:
             "improvement_actions": self.generate_improvements(incident),
             "preventive_measures": self.design_preventions(incident)
         }
-        
+
         # 知識ベース更新
         self.update_knowledge_base(review)
-        
+
         # 自動化可能な対応の特定
         self.identify_automation_opportunities(review)
-        
+
         return review
 ```
 

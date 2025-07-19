@@ -1,7 +1,7 @@
 # 🧙‍♂️ 4賢者会議議事録: タスクワーカー安定化作戦
 
-**日時**: 2025年7月6日 18:30  
-**議題**: タスクワーカーの詰まり・停止問題の根本対策と予防策  
+**日時**: 2025年7月6日 18:30
+**議題**: タスクワーカーの詰まり・停止問題の根本対策と予防策
 **出席者**: 4賢者システム全員
 
 ---
@@ -39,7 +39,7 @@
 ```
 類似問題の履歴分析:
 2025-07-01: RabbitMQ接続エラー → ハートビート調整で解決
-2025-07-03: メモリリーク → BaseWorker改善で解決  
+2025-07-03: メモリリーク → BaseWorker改善で解決
 2025-07-05: プロセス停止 → シグナルハンドリング強化
 2025-07-06: 抽象メソッド → 今回発見・解決済み
 ```
@@ -95,13 +95,13 @@ echo "🚨 緊急ワーカー復旧開始"
 STOPPED_WORKERS=$(ps aux | grep worker | grep -c python)
 if [ $STOPPED_WORKERS -lt 3 ]; then
     echo "⚠️ ワーカー不足検出"
-    
+
     # 2. PM Worker復旧
     python3 workers/async_pm_worker_simple.py --worker-id emergency-pm &
-    
-    # 3. Task Worker復旧  
+
+    # 3. Task Worker復旧
     python3 workers/simple_task_worker.py --worker-id emergency-task &
-    
+
     # 4. 通知送信
     echo "✅ 緊急復旧完了" | mail -s "Worker Recovery" admin@ai-company.com
 fi
@@ -111,7 +111,7 @@ fi
 ```python
 class CrisisDetector:
     """危機検知システム"""
-    
+
     def __init__(self):
         self.thresholds = {
             'worker_failure_rate': 0.3,    # 30%以上の失敗率
@@ -119,7 +119,7 @@ class CrisisDetector:
             'response_time': 30,           # 30秒以上の応答時間
             'memory_usage': 0.8            # 80%以上のメモリ使用
         }
-    
+
     def detect_crisis(self) -> bool:
         """危機状況の検知"""
         for metric, threshold in self.thresholds.items():
@@ -131,7 +131,7 @@ class CrisisDetector:
 
 ### 🔄 自動復旧フロー
 1. **検知** → ヘルスチェック → **問題特定**
-2. **分類** → エラー種別 → **対策選択**  
+2. **分類** → エラー種別 → **対策選択**
 3. **実行** → 自動修復 → **効果確認**
 4. **報告** → Slack通知 → **ログ記録**
 
@@ -156,14 +156,14 @@ class AirflowWorker(BaseWorker):
     def __init__(self):
         super().__init__()
         self._validate_implementation()  # 実装検証
-    
+
     def _validate_implementation(self):
         """実装完全性の検証"""
         abstract_methods = self.__class__.__abstractmethods__
         if abstract_methods:
             raise NotImplementedError(f"未実装: {abstract_methods}")
 
-# Celery エラーハンドリングパターン  
+# Celery エラーハンドリングパターン
 class CeleryWorker(Worker):
     def stop(self):
         with self._stop_lock:  # 競合防止
@@ -176,13 +176,13 @@ class CeleryWorker(Worker):
 ```python
 class NextGenWorker(BaseWorker):
     """次世代安定化ワーカー"""
-    
+
     def __init__(self):
         super().__init__()
         self.health_monitor = HealthMonitor(self)
         self.auto_recovery = AutoRecovery(self)
         self.circuit_breaker = CircuitBreaker()
-    
+
     @with_circuit_breaker
     @with_auto_retry(max_attempts=3)
     @with_health_monitoring
@@ -226,13 +226,13 @@ class NextGenWorker(BaseWorker):
 
 2. **冗長化システム**
    ```yaml
-   # docker-compose.yml  
+   # docker-compose.yml
    services:
      pm-worker-primary:
        image: ai-company/pm-worker
        restart: always
      pm-worker-backup:
-       image: ai-company/pm-worker  
+       image: ai-company/pm-worker
        restart: always
    ```
 
@@ -276,12 +276,12 @@ class NextGenWorker(BaseWorker):
 
 ## 🎯 **次回会議予告**
 
-**次回4賢者会議**: 2025年7月13日  
-**議題**: 実装結果評価と次段階戦略策定  
+**次回4賢者会議**: 2025年7月13日
+**議題**: 実装結果評価と次段階戦略策定
 **準備事項**: 各賢者の担当実装完了、効果測定データ準備
 
 ---
 
-*📝 議事録作成: 4賢者システム統合秘書*  
-*🔍 記録保管: ナレッジ賢者*  
+*📝 議事録作成: 4賢者システム統合秘書*
+*🔍 記録保管: ナレッジ賢者*
 *🚨 実装監視: インシデント賢者*

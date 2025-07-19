@@ -26,7 +26,7 @@ helper = AICommandHelper()
 # Bashコマンド
 helper.create_bash_command("echo 'Hello from AI'", "test_cmd")
 
-# Pythonコマンド  
+# Pythonコマンド
 helper.create_python_command("print('Hello from Python')", "test_py")
 
 # 結果確認（10秒後）

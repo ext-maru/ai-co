@@ -72,7 +72,7 @@ if bot_token and channel_id:
         'Authorization': f'Bearer {bot_token}',
         'Content-Type': 'application/json'
     }
-    
+
     # Bot ID取得
     auth_resp = requests.get('https://slack.com/api/auth.test', headers=headers)
     bot_id = None
@@ -81,7 +81,7 @@ if bot_token and channel_id:
         if auth_data.get('ok'):
             bot_id = auth_data.get('user_id')
             print(f"Bot ID: {bot_id}")
-    
+
     # 最新メッセージ取得（過去30分）
     oldest = (datetime.now() - timedelta(minutes=30)).timestamp()
     params = {
@@ -89,32 +89,32 @@ if bot_token and channel_id:
         'oldest': str(oldest),
         'limit': 20
     }
-    
-    msg_resp = requests.get('https://slack.com/api/conversations.history', 
+
+    msg_resp = requests.get('https://slack.com/api/conversations.history',
                           headers=headers, params=params)
-    
+
     if msg_resp.status_code == 200:
         msg_data = msg_resp.json()
         if msg_data.get('ok'):
             messages = msg_data.get('messages', [])
             print(f"メッセージ数: {len(messages)}")
-            
+
             # メンション付きメッセージを処理
             processed = 0
-            
+
             try:
                 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
                 channel = connection.channel()
                 channel.queue_declare(queue='ai_tasks', durable=True)
-                
+
                 for msg in messages:
                     if msg.get('bot_id'):
                         continue
-                    
+
                     text = msg.get('text', '')
                     if bot_id and f'<@{bot_id}>' in text:
                         clean_text = text.replace(f'<@{bot_id}>', '').strip()
-                        
+
                         task = {
                             'task_id': f"slack_emergency_{int(float(msg['ts']) * 1000000)}_code",
                             'type': 'slack_command',
@@ -123,35 +123,35 @@ if bot_token and channel_id:
                             'source': 'slack_emergency',
                             'timestamp': datetime.now().isoformat()
                         }
-                        
+
                         channel.basic_publish(
                             exchange='',
                             routing_key='ai_tasks',
                             body=json.dumps(task),
                             properties=pika.BasicProperties(delivery_mode=2)
                         )
-                        
+
                         print(f"✅ 処理: {clean_text[:50]}...")
                         processed += 1
-                        
+
                         # リアクション追加
                         reaction_data = {
                             'channel': channel_id,
                             'timestamp': msg['ts'],
                             'name': 'robot_face'
                         }
-                        requests.post('https://slack.com/api/reactions.add', 
+                        requests.post('https://slack.com/api/reactions.add',
                                     headers=headers, json=reaction_data)
-                        
+
                         if processed >= 3:  # 最大3件まで
                             break
-                
+
                 channel.close()
                 connection.close()
-                
+
             except Exception as e:
                 print(f"エラー: {str(e)}")
-            
+
             print(f"処理数: {processed}件")
 else:
     print("Slack設定エラー")

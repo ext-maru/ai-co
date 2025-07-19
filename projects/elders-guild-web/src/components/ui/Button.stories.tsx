@@ -1,7 +1,7 @@
 /**
  * Button Component Stories
  * 🧙‍♂️ Four Sages評議会決定 - Visual Regression Testing
- * 
+ *
  * エルダーズギルド Button コンポーネントストーリー
  * 実装日: 2025年7月11日
  */
@@ -287,12 +287,12 @@ export const ChromaticTest: Story = {
 
 /**
  * 🧙‍♂️ Four Sages評価
- * 
+ *
  * ✅ Knowledge Sage: 包括的なストーリー網羅
  * ✅ Task Sage: 効率的なビジュアルテスト設定
  * ✅ Incident Sage: エラー状態・エッジケース対応
  * ✅ RAG Sage: アクセシビリティ・レスポンシブ検証
- * 
+ *
  * ストーリー内容:
  * - 全バリアント網羅
  * - サイズ・状態バリエーション
@@ -301,6 +301,6 @@ export const ChromaticTest: Story = {
  * - アクセシビリティテスト
  * - レスポンシブデザイン
  * - Chromatic最適化
- * 
+ *
  * 次のステップ: CI/CD統合
  */

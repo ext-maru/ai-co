@@ -1,7 +1,7 @@
 /**
  * Test Setup Configuration
  * 🧙‍♂️ Four Sages評議会決定 - Phase 1緊急対応
- * 
+ *
  * React Testing Library + Jest 環境セットアップ
  * 実装日: 2025年7月10日
  */
@@ -77,7 +77,7 @@ beforeAll(() => {
     }
     originalError.call(console, ...args);
   };
-  
+
   console.warn = (...args: any[]) => {
     if (
       typeof args[0] === 'string' &&
@@ -163,17 +163,17 @@ export { customRender as render };
 
 /**
  * 🧙‍♂️ Four Sages評価
- * 
+ *
  * ✅ Knowledge Sage: 最新のテストベストプラクティス適用
  * ✅ Task Sage: テストユーティリティ関数完備
  * ✅ Incident Sage: エラー・警告の適切なモック化
  * ✅ RAG Sage: 将来拡張性を考慮した構造
- * 
+ *
  * 提供機能:
  * - React Testing Library 完全統合
  * - ファイルアップロードテスト支援
  * - API モック機能
  * - レスポンシブデザインテスト対応
- * 
+ *
  * 次のステップ: package.json テストスクリプト追加
  */

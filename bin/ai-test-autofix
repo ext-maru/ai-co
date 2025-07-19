@@ -13,45 +13,45 @@ echo ""
 # 関数定義
 start_workers() {
     echo "🚀 Starting Test Auto-Fix Workers..."
-    
+
     # SEワーカーを起動
     echo "Starting SE Worker..."
     tmux new-session -d -s se_worker "cd /home/aicompany/ai_co && source venv/bin/activate && python3 workers/se_worker.py --worker-id se-1"
-    
+
     # テスト対応PMワーカーを起動
     echo "Starting Test-Enabled PM Worker..."
     tmux new-session -d -s test_pm_worker "cd /home/aicompany/ai_co && source venv/bin/activate && python3 workers/test_enabled_pm_worker.py --worker-id test-pm-1"
-    
+
     echo "✅ Workers started"
 }
 
 stop_workers() {
     echo "🛑 Stopping Test Auto-Fix Workers..."
-    
+
     tmux kill-session -t se_worker 2>/dev/null || true
     tmux kill-session -t test_pm_worker 2>/dev/null || true
-    
+
     echo "✅ Workers stopped"
 }
 
 status_workers() {
     echo "📊 Worker Status:"
     echo "----------------"
-    
+
     # SEワーカーの状態
     if tmux has-session -t se_worker 2>/dev/null; then
         echo "✅ SE Worker: Running"
     else
         echo "❌ SE Worker: Stopped"
     fi
-    
+
     # PMワーカーの状態
     if tmux has-session -t test_pm_worker 2>/dev/null; then
         echo "✅ Test-PM Worker: Running"
     else
         echo "❌ Test-PM Worker: Stopped"
     fi
-    
+
     # キューの状態
     echo ""
     echo "📋 Queue Status:"
@@ -61,7 +61,7 @@ status_workers() {
 test_system() {
     echo "🧪 Testing Auto-Fix System..."
     echo ""
-    
+
     # テスト用の失敗するテストを作成
     cat > tests/test_auto_fix_demo.py << 'EOF'
 import pytest
@@ -113,7 +113,7 @@ monitor_logs() {
     echo "📊 Monitoring Test Auto-Fix Logs..."
     echo "Press Ctrl+C to exit"
     echo ""
-    
+
     # 両方のログを同時に表示
     tail -f logs/se_worker.log logs/pm_worker.log 2>/dev/null || \
     tail -f logs/test_pm_worker.log 2>/dev/null || \

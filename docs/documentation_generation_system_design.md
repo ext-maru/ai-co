@@ -77,7 +77,7 @@ DocumentationWorker (新規) ─→ ドキュメント生成
 ```python
 class DocumentationWorker(AsyncBaseWorkerV2):
     """自動ドキュメント生成ワーカー"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         super().__init__(
             worker_name="documentation_worker",
@@ -85,23 +85,23 @@ class DocumentationWorker(AsyncBaseWorkerV2):
             input_queues=['documentation_requests'],
             output_queues=['documentation_results']
         )
-        
+
         self.output_formats = config.get('output_formats', ['markdown', 'html'])
         self.template_engine = TemplateEngine(config.get('templates_dir'))
         self.diagram_generator = DiagramGenerator()
-    
+
     async def process_message(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """ドキュメント生成要求の処理"""
-        
+
     async def generate_readme(self, analysis_data: Dict) -> str:
         """README.md生成"""
-        
+
     async def generate_api_docs(self, functions_data: List[Dict]) -> str:
         """API仕様書生成"""
-        
+
     async def generate_architecture_docs(self, structure_data: Dict) -> str:
         """アーキテクチャ設計書生成"""
-        
+
     async def generate_diagrams(self, code_structure: Dict) -> List[str]:
         """図表生成"""
 ```
@@ -145,7 +145,7 @@ class DocumentationWorker(AsyncBaseWorkerV2):
         "status": "completed",
         "generated_files": [
             "docs/README.md",
-            "docs/API.md", 
+            "docs/API.md",
             "docs/ARCHITECTURE.md",
             "docs/diagrams/class_diagram.svg"
         ],
@@ -166,16 +166,16 @@ class DocumentationWorker(AsyncBaseWorkerV2):
 ```python
 def test_generate_readme_from_simple_python_project():
     """シンプルなPythonプロジェクトからREADME生成"""
-    
+
 def test_generate_api_docs_from_function_analysis():
     """関数解析結果からAPI仕様書生成"""
-    
+
 def test_generate_architecture_docs_from_project_structure():
     """プロジェクト構造からアーキテクチャ文書生成"""
-    
+
 def test_handle_multiple_output_formats():
     """複数形式での同時出力"""
-    
+
 def test_integration_with_existing_workers():
     """既存ワーカーとの統合"""
 ```
@@ -184,10 +184,10 @@ def test_integration_with_existing_workers():
 ```python
 def test_handle_invalid_code_input():
     """不正コード入力時のエラーハンドリング"""
-    
+
 def test_documentation_quality_metrics():
     """生成文書の品質メトリクス計算"""
-    
+
 def test_template_customization():
     """カスタムテンプレート機能"""
 ```

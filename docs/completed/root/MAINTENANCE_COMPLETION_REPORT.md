@@ -65,7 +65,7 @@
 ### GitHub Push エラー
 **状況**: 大容量ファイルによる push 失敗
 **原因**: node_modules, .next ディレクトリ (142MB, 119MB)
-**対策**: 
+**対策**:
 - .gitignore に追加完了
 - git 履歴クリーンアップ試行中
 - 認証エラーで push 保留中

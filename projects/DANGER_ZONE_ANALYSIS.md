@@ -129,7 +129,7 @@ embeddings = []
 for doc in all_documents:  # 10万件のドキュメント
     embedding = openai.Embedding.create(doc)  # API呼び出し
     embeddings.append(embedding)  # メモリに蓄積
-    
+
 # 全てメモリ上でベクトル化
 vectors = np.array(embeddings)  # 数GB のメモリ使用
 ```

@@ -33,7 +33,7 @@ AI Program RunnerとAI Log Viewerは、AIが自律的にプログラムを実行
 #### 1. AIProgramRunner
 - **場所**: `libs/ai_program_runner.py`
 - **機能**: プログラムの自動実行とアーカイブ
-- **特徴**: 
+- **特徴**:
   - AI Command Executorと統合
   - 成功/失敗の自動振り分け
   - Slack通知
@@ -226,7 +226,7 @@ Completed: [完了時刻]
    ```python
    # Good
    task_name = "user_data_analysis_20250102"
-   
+
    # Bad
    task_name = "test"
    ```

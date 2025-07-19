@@ -44,14 +44,14 @@ recording.mp4  # 30分の企画会議
   ],
   "technical_specs": {
     "framework": "fastapi",
-    "database": "postgresql", 
+    "database": "postgresql",
     "payment": "paypal"
   },
   "deadline": "来月末",
   "development_approach": "TDD",
   "ai_company_tasks": [
     "商品管理APIをTDDで作成",
-    "在庫管理システムを実装", 
+    "在庫管理システムを実装",
     "PayPal決済機能を統合",
     "ユーザー認証機能を追加"
   ]
@@ -66,7 +66,7 @@ Task 1: 商品管理APIをTDDで作成
   → api/product.py              # 実装
   → models/product.py           # モデル
 
-Task 2: 在庫管理システムを実装  
+Task 2: 在庫管理システムを実装
   → tests/test_inventory.py     # 在庫テスト
   → services/inventory.py       # 在庫ロジック
   → api/inventory.py           # 在庫API
@@ -78,7 +78,7 @@ Task 3: PayPal決済機能を統合
 
 Task 4: ユーザー認証機能を追加
   → tests/test_auth.py          # 認証テスト
-  → services/auth.py           # 認証ロジック  
+  → services/auth.py           # 認証ロジック
   → middleware/auth.py         # 認証ミドルウェア
 ```
 
@@ -120,7 +120,7 @@ my-project/
 ```bash
 # .env に追加
 OPENAI_API_KEY=sk-...      # Whisper文字起こし用
-GEMINI_API_KEY=AI...       # Gemini要約用  
+GEMINI_API_KEY=AI...       # Gemini要約用
 ANTHROPIC_API_KEY=sk-...   # Elders Guild用
 ```
 
@@ -135,7 +135,7 @@ ANTHROPIC_API_KEY=sk-...   # Elders Guild用
 ```
 
 ### ケース2: 機能追加の打ち合わせ
-```bash  
+```bash
 # 既存プロジェクトに新機能追加
 # → 会議内容を既存コードに統合
 
@@ -193,7 +193,7 @@ prompt = f"""
 # Geminiが技術選定も自動化
 "technical_specs": {
     "framework": "fastapi",      # 高速API → FastAPI
-    "frontend": "react",         # SPA要件 → React  
+    "frontend": "react",         # SPA要件 → React
     "database": "postgresql",    # RDBMS → PostgreSQL
     "cache": "redis"            # パフォーマンス → Redis
 }
@@ -214,7 +214,7 @@ prompt = f"""
 - **削減時間**: 2週間 → 1時間
 
 ### 事例2: EC企業の機能追加
-- **会議**: レコメンド機能の要件定義（30分）  
+- **会議**: レコメンド機能の要件定義（30分）
 - **結果**: ML推論API + A/Bテスト機能
 - **削減時間**: 1週間 → 30分
 

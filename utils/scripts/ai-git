@@ -72,7 +72,7 @@ check_git_config() {
         echo "git config --global user.name 'Your Name' で設定してください"
         exit 1
     fi
-    
+
     if ! git config user.email > /dev/null 2>&1; then
         log_error "Git user.email が設定されていません"
         echo "git config --global user.email 'your.email@example.com' で設定してください"
@@ -129,19 +129,19 @@ start_feature() {
         log_error "Feature名を指定してください"
         exit 1
     fi
-    
+
     local main_branch=$(get_main_branch)
     local branch_name="feature/$feature_name"
-    
+
     log_info "Feature開始: $branch_name"
-    
+
     # メインブランチに移動して最新化
     git checkout "$main_branch"
     git pull origin "$main_branch"
-    
+
     # Featureブランチ作成
     git checkout -b "$branch_name"
-    
+
     log_success "Feature '$feature_name' を開始しました"
     log_info "作業完了後は 'ai-git finish feature' を実行してください"
 }
@@ -153,19 +153,19 @@ start_release() {
         log_error "バージョンを指定してください"
         exit 1
     fi
-    
+
     local main_branch=$(get_main_branch)
     local branch_name="release/$version"
-    
+
     log_info "Release開始: $branch_name"
-    
+
     # メインブランチに移動して最新化
     git checkout "$main_branch"
     git pull origin "$main_branch"
-    
+
     # Releaseブランチ作成
     git checkout -b "$branch_name"
-    
+
     log_success "Release '$version' を開始しました"
     log_info "作業完了後は 'ai-git finish release' を実行してください"
 }
@@ -177,18 +177,18 @@ start_hotfix() {
         log_error "バージョンを指定してください"
         exit 1
     fi
-    
+
     local branch_name="hotfix/$version"
-    
+
     log_info "Hotfix開始: $branch_name"
-    
+
     # masterブランチに移動して最新化（hotfixは常にmaster基準）
     git checkout master
     git pull origin master
-    
+
     # Hotfixブランチ作成
     git checkout -b "$branch_name"
-    
+
     log_success "Hotfix '$version' を開始しました"
     log_info "作業完了後は 'ai-git finish hotfix' を実行してください"
 }
@@ -198,23 +198,23 @@ finish_branch() {
     local branch_type="$1"
     local current_branch=$(get_current_branch)
     local detected_type=$(get_branch_type "$current_branch")
-    
+
     if [[ "$branch_type" != "$detected_type" ]]; then
         log_error "現在のブランチ ($current_branch) は $branch_type ブランチではありません"
         exit 1
     fi
-    
+
     log_info "$branch_type ブランチを完了します: $current_branch"
-    
+
     # 変更をコミット
     if ! git diff --cached --quiet; then
         log_info "ステージングエリアの変更をコミットします"
         git commit -m "Complete $current_branch" || true
     fi
-    
+
     # プッシュ
     git push origin "$current_branch"
-    
+
     case "$branch_type" in
         "feature")
             local main_branch=$(get_main_branch)
@@ -229,7 +229,7 @@ finish_branch() {
             git pull origin master
             git merge --no-ff "$current_branch"
             git push origin master
-            
+
             if git show-ref --verify --quiet refs/heads/develop; then
                 git checkout develop
                 git pull origin develop
@@ -243,7 +243,7 @@ finish_branch() {
             git pull origin master
             git merge --no-ff "$current_branch"
             git push origin master
-            
+
             if git show-ref --verify --quiet refs/heads/develop; then
                 git checkout develop
                 git pull origin develop
@@ -252,11 +252,11 @@ finish_branch() {
             fi
             ;;
     esac
-    
+
     # ブランチ削除
     git branch -d "$current_branch"
     git push origin --delete "$current_branch"
-    
+
     log_success "$branch_type ブランチ '$current_branch' を完了しました"
 }
 
@@ -265,29 +265,29 @@ create_pr() {
     local title="$1"
     local current_branch=$(get_current_branch)
     local main_branch=$(get_main_branch)
-    
+
     if [[ "$current_branch" == "$main_branch" ]]; then
         log_error "メインブランチからはプルリクエストを作成できません"
         exit 1
     fi
-    
+
     # GitHubリポジトリ情報取得
     local repo_url=$(git config --get remote.origin.url)
     local repo_name=$(echo "$repo_url" | sed -n 's/.*[:/]\([^/]*\/[^/]*\)\.git$/\1/p')
-    
+
     if [[ -z "$repo_name" ]]; then
         log_error "GitHub リポジトリ情報を取得できませんでした"
         exit 1
     fi
-    
+
     # タイトルが指定されていない場合は自動生成
     if [[ -z "$title" ]]; then
         title=$(echo "$current_branch" | sed 's/.*\///' | sed 's/-/ /g' | sed 's/\b\w/\u&/g')
     fi
-    
+
     # 現在のブランチをプッシュ
     git push -u origin "$current_branch"
-    
+
     # AI支援でPR説明を生成
     local pr_body="Auto-generated PR from ai-git"
     if [[ -f "$VENV_PATH/bin/activate" ]]; then
@@ -308,15 +308,15 @@ print(assistant.suggest_pr_description('$current_branch', changes))
     else
         log_warning "AI支援が利用できません（Python環境が見つかりません）"
     fi
-    
+
     # GitHub CLI使用可能かチェック
     if command -v gh > /dev/null 2>&1; then
         log_info "GitHub CLI を使用してプルリクエストを作成します"
-        
+
         # 一時ファイルにPR本文を保存
         local temp_file=$(mktemp)
         echo "$pr_body" > "$temp_file"
-        
+
         # PR作成（エラーハンドリング付き）
         if gh pr create --title "$title" --body-file "$temp_file" --base "$main_branch" --head "$current_branch"; then
             log_success "プルリクエストを作成しました: $title"
@@ -324,7 +324,7 @@ print(assistant.suggest_pr_description('$current_branch', changes))
             log_error "プルリクエストの作成に失敗しました"
             log_info "手動で作成してください: https://github.com/$repo_name/compare/$main_branch...$current_branch"
         fi
-        
+
         # 一時ファイル削除
         rm -f "$temp_file"
     else
@@ -343,9 +343,9 @@ print(assistant.suggest_pr_description('$current_branch', changes))
 sync_branch() {
     local current_branch=$(get_current_branch)
     local main_branch=$(get_main_branch)
-    
+
     log_info "ブランチを同期します"
-    
+
     # 変更を一時退避
     if ! git diff --quiet; then
         log_info "未コミットの変更を一時退避します"
@@ -354,23 +354,23 @@ sync_branch() {
     else
         local stashed=false
     fi
-    
+
     # メインブランチを最新化
     git checkout "$main_branch"
     git pull origin "$main_branch"
-    
+
     # 元のブランチに戻る
     if [[ "$current_branch" != "$main_branch" ]]; then
         git checkout "$current_branch"
         git merge "$main_branch"
     fi
-    
+
     # 変更を復元
     if [[ "$stashed" == "true" ]]; then
         log_info "一時退避した変更を復元します"
         git stash pop
     fi
-    
+
     log_success "同期が完了しました"
 }
 
@@ -378,39 +378,39 @@ sync_branch() {
 show_status() {
     local current_branch=$(get_current_branch)
     local branch_type=$(get_branch_type "$current_branch")
-    
+
     echo "=== ai-git Status ==="
     echo "現在のブランチ: $current_branch"
     echo "ブランチタイプ: $branch_type"
     echo
-    
+
     # 未コミット変更
     if ! git diff --quiet; then
         echo "未コミット変更:"
         git diff --name-only | sed 's/^/  /'
         echo
     fi
-    
+
     # ステージング変更
     if ! git diff --cached --quiet; then
         echo "ステージング変更:"
         git diff --cached --name-only | sed 's/^/  /'
         echo
     fi
-    
+
     # リモート追跡状況
     if git rev-parse --abbrev-ref --symbolic-full-name @{u} > /dev/null 2>&1; then
         local ahead=$(git rev-list --count HEAD..@{u})
         local behind=$(git rev-list --count @{u}..HEAD)
-        
+
         if [[ "$ahead" -gt 0 ]]; then
             echo "リモートより $ahead コミット遅れています"
         fi
-        
+
         if [[ "$behind" -gt 0 ]]; then
             echo "リモートより $behind コミット進んでいます"
         fi
-        
+
         if [[ "$ahead" -eq 0 && "$behind" -eq 0 ]]; then
             echo "リモートと同期済み"
         fi
@@ -422,37 +422,37 @@ show_status() {
 # クリーンアップ
 cleanup_branches() {
     local main_branch=$(get_main_branch)
-    
+
     log_info "マージ済みブランチをクリーンアップします"
-    
+
     # ローカルブランチクリーンアップ
     git checkout "$main_branch"
     git branch --merged | grep -v -E "(^\*|$main_branch|develop|master)" | xargs -r git branch -d
-    
+
     # リモート追跡ブランチクリーンアップ
     git remote prune origin
-    
+
     log_success "クリーンアップが完了しました"
 }
 
 # AI支援コミット
 smart_commit() {
     local message="$1"
-    
+
     log_info "AI支援でコミットを作成します"
-    
+
     # 変更確認
     if git diff --quiet && git diff --cached --quiet; then
         log_warning "コミットする変更がありません"
         return 0
     fi
-    
+
     # AI支援でコミットメッセージ生成
     if [[ -f "$VENV_PATH/bin/activate" ]]; then
         source "$VENV_PATH/bin/activate"
         if python3 -c "import sys; sys.path.append('$PROJECT_DIR'); from libs.ai_git_assistant import AIGitAssistant; print('AI available')" 2>/dev/null; then
             log_info "変更を分析中..."
-            
+
             # AI支援でコミット実行
             if python3 -c "
 import sys
@@ -480,15 +480,15 @@ exit(0 if success else 1)
 # 手動コミット
 manual_commit() {
     local message="$1"
-    
+
     if [[ -z "$message" ]]; then
         log_error "コミットメッセージを指定してください"
         exit 1
     fi
-    
+
     git add .
     git commit -m "$message"
-    
+
     log_success "コミットが完了しました: $message"
 }
 
@@ -498,14 +498,14 @@ main() {
         show_help
         exit 0
     fi
-    
+
     # Git設定確認
     check_git_config
     check_remote
-    
+
     local command="$1"
     shift
-    
+
     case "$command" in
         "feature")
             start_feature "$1"

@@ -75,7 +75,7 @@ for cmd in "${COMMANDS[@]}"; do
 exec "$BIN_DIR/ai_launcher.py" "\$@"
 EOF
     chmod +x "$BIN_DIR/$cmd"
-    
+
     # /usr/local/binにシンボリックリンク
     if [ -w /usr/local/bin ]; then
         sudo ln -sf "$BIN_DIR/$cmd" "/usr/local/bin/$cmd"

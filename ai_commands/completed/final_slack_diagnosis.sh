@@ -40,11 +40,11 @@ try:
         params={'channel': CHANNEL_ID, 'oldest': str(oldest), 'limit': 10}
     )
     data = response.json()
-    
+
     if data.get('ok'):
         messages = [m for m in data.get('messages', []) if '@pm-ai' in m.get('text', '').lower()]
         print(f"過去30分のPM-AIメンション数: {len(messages)}")
-        
+
         for msg in messages[:3]:
             ts = datetime.fromtimestamp(float(msg['ts']))
             text = msg.get('text', '')[:100]
@@ -61,8 +61,8 @@ echo "【処理済みメッセージ】"
 echo "=================="
 if [ -f db/slack_messages.db ]; then
     sqlite3 db/slack_messages.db << 'SQL'
-SELECT 'PM-AI関連メッセージ数:', COUNT(*) 
-FROM processed_messages 
+SELECT 'PM-AI関連メッセージ数:', COUNT(*)
+FROM processed_messages
 WHERE text LIKE '%pm-ai%' OR text LIKE '%PM-AI%';
 
 SELECT '';

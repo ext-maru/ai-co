@@ -10,10 +10,10 @@ echo "【Slack Polling Worker】"
 if pgrep -f "slack_polling_worker" > /dev/null; then
     PID=$(pgrep -f "slack_polling_worker")
     echo "✅ 動作中 (PID: $PID)"
-    
+
     # プロセス詳細
     ps aux | grep $PID | grep -v grep
-    
+
     # 最新ログ（エラーとタスク化に注目）
     echo ""
     echo "最新のログ（重要部分）:"
@@ -21,18 +21,18 @@ if pgrep -f "slack_polling_worker" > /dev/null; then
         # エラーチェック
         ERROR_COUNT=$(tail -100 logs/slack_polling_worker.log | grep -c -i error || echo "0")
         echo "エラー数（最新100行）: $ERROR_COUNT"
-        
+
         # タスク化チェック
         TASK_COUNT=$(tail -100 logs/slack_polling_worker.log | grep -c "タスク化" || echo "0")
         echo "タスク化数（最新100行）: $TASK_COUNT"
-        
+
         echo ""
         echo "最新20行:"
         tail -20 logs/slack_polling_worker.log
     fi
 else
     echo "❌ 停止中"
-    
+
     # tmuxセッション確認
     if tmux has-session -t slack_polling 2>/dev/null; then
         echo "⚠️  tmuxセッションは存在するがプロセスがない"
@@ -61,7 +61,7 @@ if pgrep -f "slack_polling_worker" > /dev/null; then
         LAST_MOD=$(stat -c %Y logs/slack_polling_worker.log 2>/dev/null || echo "0")
         CURRENT=$(date +%s)
         DIFF=$((CURRENT - LAST_MOD))
-        
+
         if [ $DIFF -lt 60 ]; then
             echo "✅ Workerは活発に動作中（1分以内にログ更新）"
         elif [ $DIFF -lt 300 ]; then

@@ -34,7 +34,7 @@ fi
 # システム状況確認のみ
 if [ "$1" = "--status" ]; then
     python3 cc_startup_auto_elder_check.py
-    
+
     # 結果に基づく追加オプション表示
     if [ $? -eq 0 ]; then
         echo ""

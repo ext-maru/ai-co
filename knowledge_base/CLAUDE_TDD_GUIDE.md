@@ -8,7 +8,7 @@
 
 ### TDDサイクル
 1. **🔴 Red**: 失敗するテストを先に書く
-2. **🟢 Green**: 最小限の実装でテストを通す  
+2. **🟢 Green**: 最小限の実装でテストを通す
 3. **🔵 Refactor**: コードを改善する
 
 ### 鉄則
@@ -210,23 +210,23 @@ def run_tdd_cycle(feature_name, requirements):
         "ai-send",
         f"{feature_name}のテストを作成: {requirements}"
     ])
-    
+
     # 2. テスト実行（失敗確認）
     result = subprocess.run(
         ["pytest", f"tests/unit/test_{feature_name.lower()}.py", "-v"],
         capture_output=True
     )
-    
+
     if result.returncode == 0:
         print("⚠️ テストが通ってしまいました！")
         sys.exit(1)
-    
+
     # 3. 実装依頼
     subprocess.run([
         "ai-send",
         "テストが失敗しています。最小限の実装でテストを通してください"
     ])
-    
+
     # 4. リファクタリング依頼
     subprocess.run([
         "ai-send",

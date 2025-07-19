@@ -1,8 +1,8 @@
 # 🏛️ エルダー会議召集要請
 
-**会議ID**: council_20250707_012317_test_coverage_critical  
-**緊急度**: HIGH  
-**期限**: 2025年07月14日 01:23  
+**会議ID**: council_20250707_012317_test_coverage_critical
+**緊急度**: HIGH
+**期限**: 2025年07月14日 01:23
 **作成日時**: 2025年07月07日 01:23:17
 
 ---
@@ -94,5 +94,5 @@ Majority of workers are failing, critical intervention needed; Extremely low tes
 
 **エルダー会議の開催をお待ちしています。**
 
-**召集システム**: Elder Council Summoner  
+**召集システム**: Elder Council Summoner
 **文書ID**: council_20250707_012317_test_coverage_critical

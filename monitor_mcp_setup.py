@@ -3,10 +3,10 @@
 Monitor MCP Setup Progress
 """
 
-import sys
-from pathlib import Path
-import time
 import subprocess
+import sys
+import time
+from pathlib import Path
 
 PROJECT_ROOT = Path("/home/aicompany/ai_co")
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -25,9 +25,9 @@ subprocess.run([sys.executable, "mcp_execute_complete.py"])
 # Step 2: Monitor progress
 print("\n⏳ Monitoring progress...")
 for i in range(30):
-    print(f"\r{'█' * (i+1)}{'░' * (29-i)} {i+1}/30s", end='', flush=True)
+    print(f"\r{'█' * (i+1)}{'░' * (29-i)} {i+1}/30s", end="", flush=True)
     time.sleep(1)
-    
+
     # Check if MCP wrapper exists every 10 seconds
     if i % 10 == 9:
         wrapper_dir = PROJECT_ROOT / "libs" / "mcp_wrapper"
@@ -43,13 +43,11 @@ demo_file = PROJECT_ROOT / "demo_mcp_wrapper.py"
 
 if wrapper_dir.exists() and demo_file.exists():
     print("✅ MCP is ready!")
-    
+
     # Run demo
     print("\n🧪 Running demo...")
     result = subprocess.run(
-        [sys.executable, "demo_mcp_wrapper.py"],
-        capture_output=True,
-        text=True
+        [sys.executable, "demo_mcp_wrapper.py"], capture_output=True, text=True
     )
     if result.returncode == 0:
         print("✅ Demo successful!")
@@ -57,7 +55,7 @@ if wrapper_dir.exists() and demo_file.exists():
         print(result.stdout[-300:])  # Last 300 chars
     else:
         print("❌ Demo failed")
-        
+
 else:
     print("⚠️ MCP not ready, creating directly...")
     subprocess.run([sys.executable, "mcp_direct_create.py"])
@@ -72,7 +70,9 @@ print("  python3 test_mcp_quick.py      # Quick test")
 print("\n💡 Usage:")
 print("from libs.mcp_wrapper.client import MCPClient")
 print("client = MCPClient()")
-print("result = client.call_tool('executor', 'execute_command', {'command': 'echo Hello!'})")
+print(
+    "result = client.call_tool('executor', 'execute_command', {'command': 'echo Hello!'})"
+)
 print("\n📚 Documentation: docs/MCP_WRAPPER_GUIDE.md")
 
 # Check latest command results

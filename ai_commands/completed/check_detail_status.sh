@@ -8,7 +8,7 @@ echo "=== 詳細確認 ==="
 # Polling Workerのデバッグ情報
 if pgrep -f "slack_polling_worker" > /dev/null; then
     echo "1. Polling Worker内部状態:"
-    
+
     # Workerが使用している設定を確認
     python3 << 'EOF'
 import sys
@@ -27,15 +27,15 @@ EOF
     echo ""
     echo "2. 最近のエラー:"
     grep -i error logs/slack_polling_worker.log | tail -5 || echo "エラーなし"
-    
+
 else
     echo "Workerが動作していないため、手動起動します..."
-    
+
     # tmuxで起動
     tmux new-session -d -s slack_polling         "cd /home/aicompany/ai_co && source venv/bin/activate && python3 workers/slack_polling_worker.py 2>&1 | tee -a logs/slack_polling_worker.log"
-    
+
     sleep 5
-    
+
     if tmux has-session -t slack_polling 2>/dev/null; then
         echo "✅ Slack Polling Worker起動成功"
         echo "起動後のログ:"

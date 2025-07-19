@@ -69,7 +69,7 @@ except Exception as e:
         'retry_count': 0  # 初回の場合
     }
     result = self.handle_error(
-        e, context, 
+        e, context,
         severity=ErrorSeverity.HIGH,
         retry_callback=retry_operation
     )

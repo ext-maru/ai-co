@@ -2,7 +2,7 @@
 global:
   # 再送信前の待機時間
   resolve_timeout: 5m
-  
+
   # Slack設定（例）
   # slack_api_url: 'YOUR_SLACK_WEBHOOK_URL'
 
@@ -10,13 +10,13 @@ global:
 route:
   # デフォルトの受信者
   receiver: 'default-receiver'
-  
+
   # グループ化設定
   group_by: ['alertname', 'cluster', 'service']
   group_wait: 10s
   group_interval: 10s
   repeat_interval: 1h
-  
+
   # 子ルート
   routes:
     # Critical alerts - 即座に通知
@@ -25,18 +25,18 @@ route:
       receiver: 'critical-receiver'
       group_wait: 0s
       repeat_interval: 5m
-    
+
     # 4賢者関連アラート
     - match_re:
         sage: (incident|task|knowledge|rag)
       receiver: 'four-sages-receiver'
       group_by: ['sage', 'alertname']
-      
+
     # Elder Flow関連アラート
     - match:
         alertname: ElderFlow.*
       receiver: 'elder-flow-receiver'
-      
+
     # システムアラート
     - match_re:
         alertname: (High.*|Disk.*|Container.*)
@@ -83,7 +83,7 @@ inhibit_rules:
     target_match:
       severity: 'warning'
     equal: ['alertname', 'instance']
-    
+
   # コンテナダウンの場合、そのコンテナの他のアラートを抑制
   - source_match:
       alertname: 'ContainerDown'

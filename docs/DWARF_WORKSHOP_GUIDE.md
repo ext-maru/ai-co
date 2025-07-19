@@ -10,7 +10,7 @@
 ```
 🧙‍♂️ 4賢者との連携魔法
 📚 ナレッジ賢者: 「過去の英知を活用して最高の工具を...」
-🔍 RAG賢者: 「最適なターゲットを発見しました！」  
+🔍 RAG賢者: 「最適なターゲットを発見しました！」
 📋 タスク賢者: 「優先順位に基づいて作業を調整中...」
 🚨 インシデント賢者: 「緊急対応ツールが必要です！」
 → ドワーフ職人: 「まかせろ、最高の武具を作ってやる！」
@@ -79,7 +79,7 @@ coordination = communicator.coordinate_elder_priorities(elder_requests)
 
 **4賢者チャンネル:**
 - 📚 **knowledge_sage**: 知識継承プロトコル
-- 🔍 **rag_sage**: 意味検索プロトコル  
+- 🔍 **rag_sage**: 意味検索プロトコル
 - 📋 **task_sage**: 優先度スケジューリングプロトコル
 - 🚨 **incident_sage**: 緊急対応プロトコル
 
@@ -187,7 +187,7 @@ while True:
     # 自律サイクル実行
     result = workshop.run_autonomous_cycle()
     print(f"サイクル完了: {result['items_crafted']}個のアイテムを作成")
-    
+
     # 5分間隔で実行
     time.sleep(300)
 ```
@@ -196,7 +196,7 @@ while True:
 ```python
 def handle_system_emergency():
     workshop = DwarfWorkshop()
-    
+
     # 緊急事態発生
     emergency_response = workshop.emergency_crafting_mode({
         'type': 'critical_incident',
@@ -204,7 +204,7 @@ def handle_system_emergency():
         'required_tools': ['memory_leak_detector', 'auto_memory_cleanup'],
         'deadline': datetime.now() + timedelta(minutes=10)
     })
-    
+
     if emergency_response['deployment_ready']:
         print("緊急ツール準備完了 - 自動配備開始")
         return emergency_response['emergency_tools_crafted']
@@ -217,7 +217,7 @@ def handle_system_emergency():
 ```python
 def optimize_specific_area(target_area: str, priority: str = 'medium'):
     workshop = DwarfWorkshop()
-    
+
     # 特定領域の最適化
     solutions = workshop.craft_optimization_solutions({
         'optimization_targets': [target_area],
@@ -227,7 +227,7 @@ def optimize_specific_area(target_area: str, priority: str = 'medium'):
             'rag_sage': [f'{target_area}_search_improvement']
         }
     })
-    
+
     return solutions
 
 # 使用例
@@ -321,7 +321,7 @@ elder_requests = communicator.gather_elder_requests(context)
 efficiency_data = workshop.metrics.calculate_workshop_efficiency()
 if efficiency_data['efficiency_trend'] == 'declining':
     print("効率低下検出 - 工房メンテナンス推奨")
-    
+
     # 緊急最適化実行
     emergency_optimization = workshop.emergency_crafting_mode({
         'type': 'efficiency_recovery',
@@ -337,13 +337,13 @@ if efficiency_data['efficiency_trend'] == 'declining':
 def hourly_health_check():
     status = workshop.get_workshop_status()
     health = status['workshop_health']
-    
+
     if health['efficiency_score'] < 0.7:
         print("⚠️ 工房効率低下 - 改善推奨")
-    
+
     if health['cycles_completed'] == 0:
         print("🚨 工房停止 - 即座に調査が必要")
-    
+
     return health
 
 # スケジューラーで実行
@@ -356,11 +356,11 @@ schedule.every().hour.do(hourly_health_check)
 def maintain_elder_satisfaction():
     status = workshop.get_workshop_status()
     satisfaction = status['elder_satisfaction']
-    
+
     for elder, score in satisfaction.items():
         if elder != 'overall' and score < 0.8:
             print(f"📉 {elder}の満足度低下: {score:.2f}")
-            
+
             # 特別なツール作成で満足度向上
             special_tool = workshop.craft_optimization_solutions({
                 'optimization_targets': [f'{elder}_priority_optimization'],
@@ -373,7 +373,7 @@ def maintain_elder_satisfaction():
 def optimize_resource_usage():
     resources = workshop.resource_monitor.get_system_resources()
     efficiency = workshop.resource_monitor.calculate_resource_efficiency(resources)
-    
+
     if efficiency < 0.6:
         # リソース使用量を調整
         workshop.cycle_interval = min(600, workshop.cycle_interval * 1.2)

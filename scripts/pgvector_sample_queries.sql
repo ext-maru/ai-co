@@ -6,23 +6,23 @@
 
                     -- 最新の通信から類似検索
                     WITH latest_comm AS (
-                        SELECT embedding 
-                        FROM a2a.communications 
-                        WHERE embedding IS NOT NULL 
-                        ORDER BY timestamp DESC 
+                        SELECT embedding
+                        FROM a2a.communications
+                        WHERE embedding IS NOT NULL
+                        ORDER BY timestamp DESC
                         LIMIT 1
                     )
                     SELECT * FROM a2a.find_similar_communications(
-                        (SELECT embedding FROM latest_comm), 
+                        (SELECT embedding FROM latest_comm),
                         10
                     );
-                
+
 
 -- Anomaly pattern search
 -- 特定の異常パターンに類似したパターンを検索
 
                     -- 重要度の高い異常パターンの類似検索
-                    SELECT 
+                    SELECT
                         a1.pattern_name,
                         a1.severity,
                         a1.occurrence_count,
@@ -35,13 +35,13 @@
                       AND a2.embedding IS NOT NULL
                     ORDER BY similarity DESC
                     LIMIT 5;
-                
+
 
 -- Agent communication patterns
 -- エージェント間の通信パターン分析
 
                     -- エージェント別通信統計
-                    SELECT 
+                    SELECT
                         sender,
                         receiver,
                         message_type,
@@ -51,5 +51,3 @@
                     GROUP BY sender, receiver, message_type
                     ORDER BY message_count DESC
                     LIMIT 20;
-                
-

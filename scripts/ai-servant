@@ -4,7 +4,7 @@
 
 Usage:
     ai-servant knight <knight-id> "<task-description>"
-    ai-servant dwarf <dwarf-id> "<task-description>"  
+    ai-servant dwarf <dwarf-id> "<task-description>"
     ai-servant wizard <wizard-id> "<task-description>"
     ai-servant elf <elf-id> "<task-description>"
     ai-servant list [servant-type]
@@ -17,10 +17,10 @@ Examples:
     ai-servant status test_guardian_001
 """
 
-import sys
-import os
 import argparse
 import asyncio
+import os
+import sys
 from pathlib import Path
 
 # Add project root to path
@@ -30,133 +30,143 @@ from libs.elder_servant_dispatcher import ElderServantDispatcher
 from libs.servant_registry import ServantRegistry
 from libs.task_validation_engine import TaskValidationEngine
 
+
 class ElderServantCLI:
     """🏛️ Elder Servant Command Line Interface"""
-    
+
     def __init__(self):
         self.dispatcher = ElderServantDispatcher()
         self.registry = ServantRegistry()
         self.validator = TaskValidationEngine()
-    
+
     async def execute_command(self, args):
         """Execute the ai-servant command with Elder hierarchy validation"""
-        
-        if args.command == 'list':
+
+        if args.command == "list":
             return await self._list_servants(args.servant_type)
-        elif args.command == 'status':
+        elif args.command == "status":
             return await self._show_servant_status(args.servant_id)
-        elif args.command in ['knight', 'dwarf', 'wizard', 'elf']:
-            return await self._assign_task(args.command, args.servant_id, args.task_description)
+        elif args.command in ["knight", "dwarf", "wizard", "elf"]:
+            return await self._assign_task(
+                args.command, args.servant_id, args.task_description
+            )
         else:
             print(f"❌ Unknown command: {args.command}")
             return False
-    
+
     async def _list_servants(self, servant_type=None):
         """List available servants"""
         servants = await self.registry.list_servants(servant_type)
-        
+
         if not servants:
             print("📋 No servants currently registered")
             return True
-            
+
         print("🏛️ Elder Servant Registry:")
         for servant in servants:
-            status_icon = "🟢" if servant['status'] == 'active' else "🔴"
-            print(f"  {status_icon} {servant['type'].title()} {servant['id']} - {servant['description']}")
-        
+            status_icon = "🟢" if servant["status"] == "active" else "🔴"
+            print(
+                f"  {status_icon} {servant['type'].title()} {servant['id']} - {servant['description']}"
+            )
+
         return True
-    
+
     async def _show_servant_status(self, servant_id):
         """Show detailed servant status"""
         status = await self.registry.get_servant_status(servant_id)
-        
+
         if not status:
             print(f"❌ Servant '{servant_id}' not found")
             return False
-            
+
         print(f"🔍 Servant Status: {servant_id}")
         print(f"  Type: {status['type'].title()}")
         print(f"  Status: {status['status']}")
         print(f"  Current Task: {status.get('current_task', 'None')}")
         print(f"  Completed Tasks: {status.get('completed_tasks', 0)}")
         print(f"  Last Activity: {status.get('last_activity', 'Unknown')}")
-        
+
         return True
-    
+
     async def _assign_task(self, servant_type, servant_id, task_description):
         """Assign task to Elder Servant with hierarchy validation"""
-        
+
         # Step 1: Validate task through Elder hierarchy
         print("🏛️ Consulting Elder hierarchy...")
         validation_result = await self.validator.validate_task(
             servant_type=servant_type,
             servant_id=servant_id,
-            task_description=task_description
+            task_description=task_description,
         )
-        
+
         if not validation_result.is_valid:
             print(f"❌ Task validation failed: {validation_result.reason}")
             return False
-        
+
         print("✅ Elder approval granted")
-        
+
         # Step 2: Dispatch task to servant
         print(f"⚔️ Dispatching task to {servant_type.title()} {servant_id}...")
         dispatch_result = await self.dispatcher.dispatch_task(
             servant_type=servant_type,
             servant_id=servant_id,
             task_description=task_description,
-            elder_approval=validation_result.approval_token
+            elder_approval=validation_result.approval_token,
         )
-        
+
         if dispatch_result.success:
-            print(f"🎯 Task successfully assigned to {servant_type.title()} {servant_id}")
+            print(
+                f"🎯 Task successfully assigned to {servant_type.title()} {servant_id}"
+            )
             print(f"📋 Task ID: {dispatch_result.task_id}")
             print(f"⏱️ Estimated completion: {dispatch_result.estimated_completion}")
-            
+
             # Step 3: Report to Elder Council
             await self._report_to_elder_council(dispatch_result)
             return True
         else:
             print(f"❌ Task assignment failed: {dispatch_result.error}")
             return False
-    
+
     async def _report_to_elder_council(self, dispatch_result):
         """Report task assignment to Elder Council"""
         print("📜 Reporting to Elder Council...")
         # Implementation will integrate with elder_council_review_system.py
         print("✅ Elder Council notified")
 
+
 def main():
     """Main CLI entry point"""
     parser = argparse.ArgumentParser(
         description="🏛️ Elder Servant Direct Task Assignment System",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=__doc__
+        epilog=__doc__,
     )
-    
-    subparsers = parser.add_subparsers(dest='command', help='Available commands')
-    
+
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
     # Task assignment commands
-    for servant_type in ['knight', 'dwarf', 'wizard', 'elf']:
-        servant_parser = subparsers.add_parser(servant_type, help=f'Assign task to {servant_type}')
-        servant_parser.add_argument('servant_id', help='Servant identifier')
-        servant_parser.add_argument('task_description', help='Task description')
-    
+    for servant_type in ["knight", "dwarf", "wizard", "elf"]:
+        servant_parser = subparsers.add_parser(
+            servant_type, help=f"Assign task to {servant_type}"
+        )
+        servant_parser.add_argument("servant_id", help="Servant identifier")
+        servant_parser.add_argument("task_description", help="Task description")
+
     # List servants command
-    list_parser = subparsers.add_parser('list', help='List available servants')
-    list_parser.add_argument('servant_type', nargs='?', help='Filter by servant type')
-    
+    list_parser = subparsers.add_parser("list", help="List available servants")
+    list_parser.add_argument("servant_type", nargs="?", help="Filter by servant type")
+
     # Status command
-    status_parser = subparsers.add_parser('status', help='Show servant status')
-    status_parser.add_argument('servant_id', help='Servant identifier')
-    
+    status_parser = subparsers.add_parser("status", help="Show servant status")
+    status_parser.add_argument("servant_id", help="Servant identifier")
+
     args = parser.parse_args()
-    
+
     if not args.command:
         parser.print_help()
         return 1
-    
+
     # Execute command
     cli = ElderServantCLI()
     try:
@@ -169,5 +179,6 @@ def main():
         print(f"💥 Unexpected error: {e}")
         return 1
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     sys.exit(main())

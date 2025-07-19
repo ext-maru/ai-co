@@ -122,18 +122,18 @@ task_type: "test"
 template_data:
   prompt: |
     以下のファイルに対するテストを作成してください：
-    
+
     対象ファイル: {{file_path}}
-    
+
     要件：
     1. pytestを使用したユニットテスト
     2. 必要なモックの実装
     3. エッジケースのテスト
     4. カバレッジ80%以上
     5. AI Command Executorでの自動実行設定
-    
+
     テストファイルをtests/ディレクトリに配置してください。
-    
+
 parameters:
   - name: file_path
     type: string
@@ -149,17 +149,17 @@ task_type: "fix"
 template_data:
   prompt: |
     以下のエラーを修正してください：
-    
+
     エラー内容: {{error_message}}
     発生場所: {{file_path}}
-    
+
     修正手順：
     1. エラーの根本原因を特定
     2. 修正を実装
     3. 関連するテストも更新
     4. 動作確認スクリプトを作成
     5. AI Command Executorで確認実行
-    
+
 parameters:
   - name: error_message
     type: string
@@ -179,10 +179,10 @@ task_type: "deploy"
 template_data:
   prompt: |
     以下の環境へのデプロイを実行してください：
-    
+
     環境: {{environment}}
     バージョン: {{version}}
-    
+
     デプロイ手順：
     1. 現在の状態をバックアップ
     2. ヘルスチェック（事前）
@@ -190,7 +190,7 @@ template_data:
     4. ヘルスチェック（事後）
     5. Slack通知
     6. ロールバック手順の準備
-    
+
 parameters:
   - name: environment
     type: string
@@ -223,7 +223,7 @@ print("\n1. process_messageメソッドに以下を追加:")
 print("""
     # タスクタイプに応じた処理
     task_type = body.get('task_type', 'general')
-    
+
     # プロンプト強化
     if task_type in ['code', 'test', 'fix']:
         prompt = self._enhance_prompt_for_type(prompt, task_type)
@@ -236,7 +236,7 @@ print("""
         config_path = Path(self.config.project_root) / "config" / "task_types.json"
         with open(config_path) as f:
             task_config = json.load(f)
-        
+
         if task_type in task_config['task_types']:
             type_info = task_config['task_types'][task_type]
             if type_info.get('enhance_prompt') and 'enhancements' in type_info:

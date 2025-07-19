@@ -30,7 +30,7 @@ echo -e "\n4️⃣ Verification..."
 if pgrep -f "result_worker_simple" > /dev/null; then
     echo "✅ Result Worker (simplified) is running!"
     echo "PID: $(pgrep -f result_worker_simple)"
-    
+
     # ログ確認
     echo -e "\nRecent logs:"
     tail -n 10 logs/result_worker.log

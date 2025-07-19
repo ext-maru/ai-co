@@ -45,14 +45,14 @@ for i, msg in enumerate(test_messages):
             'mentioned': True
         }
     }
-    
+
     channel.basic_publish(
         exchange='',
         routing_key='ai_tasks',
         body=json.dumps(task),
         properties=pika.BasicProperties(delivery_mode=2)
     )
-    
+
     print(f"✅ テストメッセージ{i+1}送信: {task['task_id']}")
 
 channel.close()

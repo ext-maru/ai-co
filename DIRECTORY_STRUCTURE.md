@@ -34,7 +34,7 @@ Elders Guildのコードベースは機能別に整理された構造になっ�
 
 #### core/workers/
 - `pm_worker.py` - プロジェクトマネージャーワーカー
-- `task_worker.py` - タスク実行ワーカー  
+- `task_worker.py` - タスク実行ワーカー
 - `result_worker.py` - 結果処理ワーカー
 - `dialog_*.py` - 対話系ワーカー
 

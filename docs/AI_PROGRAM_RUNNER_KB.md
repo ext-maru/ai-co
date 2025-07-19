@@ -32,7 +32,7 @@ AI Program Runnerは、AI Command Executorを拡張したプログラム自動�
 #### 1. AIProgramRunner
 - **場所**: `libs/ai_program_runner.py`
 - **機能**: プログラムの実行管理とアーカイブ
-- **特徴**: 
+- **特徴**:
   - AI Command Executorと連携
   - 自動的な成功/失敗の振り分け
   - 詳細なログ記録

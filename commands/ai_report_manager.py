@@ -6,9 +6,10 @@ AI Report Manager Command
 """
 
 import sys
-sys.path.append('/home/aicompany/ai_co')
+
+sys.path.append("/home/aicompany/ai_co")
 
 from libs.report_management.report_manager import main
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

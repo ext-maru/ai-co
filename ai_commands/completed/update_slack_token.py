@@ -5,6 +5,7 @@ Slack Bot Token更新スクリプト
 
 import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from libs.ai_command_helper import AICommandHelper
@@ -62,24 +63,24 @@ with open(config_file, 'r') as f:
 
 if token and token.startswith('xoxb-'):
     headers = {'Authorization': f'Bearer {token}'}
-    
+
     # auth.test で基本情報を確認
     response = requests.post(
         'https://slack.com/api/auth.test',
         headers=headers
     )
-    
+
     if response.status_code == 200:
         data = response.json()
         if data.get('ok'):
             print(f'✅ Bot接続成功: {data.get(\"bot_id\")}')
             print(f'   チーム: {data.get(\"team\")}')
             print(f'   ユーザー: {data.get(\"user\")}')
-            
+
             # 権限チェック
             print('')
             print('📋 権限チェック中...')
-            
+
             # テストメッセージ送信を試みる
             test_response = requests.post(
                 'https://slack.com/api/chat.postMessage',
@@ -89,7 +90,7 @@ if token and token.startswith('xoxb-'):
                     'text': '🔑 権限テスト: このメッセージが表示されれば権限は正常です'
                 }
             )
-            
+
             test_data = test_response.json()
             if test_data.get('ok'):
                 print('✅ chat:write 権限: OK')
@@ -114,8 +115,7 @@ else:
 
 # コマンドを作成
 result = helper.create_bash_command(
-    content=update_command,
-    command_id="update_slack_bot_token"
+    content=update_command, command_id="update_slack_bot_token"
 )
 
 print("✅ Slack Bot Token更新ガイドを作成しました")

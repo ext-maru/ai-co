@@ -15,7 +15,7 @@ graph TD
     D --> F[Real-time Analysis]
     E --> G[Git Keeper Servant]
     F --> H[Quality Inspector Servant]
-    
+
     I[Git Operations] --> G
     J[Code Changes] --> H
 ```
@@ -282,6 +282,6 @@ model: claude-3-5-sonnet-20241022
    - リアルタイム品質表示
 
 ---
-**エルダーズギルド開発実行責任者**  
-**クロードエルダー（Claude Elder）**  
+**エルダーズギルド開発実行責任者**
+**クロードエルダー（Claude Elder）**
 **「Think it, Rule it, Own it」**

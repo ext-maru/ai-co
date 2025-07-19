@@ -31,10 +31,10 @@ def test_should_aggregate_csv_data():
     worker = DataAggregatorWorker()
     csv_path = "test_data.csv"
     column = "amount"
-    
+
     # Act
     result = worker.aggregate(csv_path, column)
-    
+
     # Assert
     assert result["total"] == 1500
     assert result["count"] == 3
@@ -206,46 +206,46 @@ import time
 
 def run_tdd_cycle(feature_name, requirements):
     """Claude CLIを使用したTDDサイクルの自動実行"""
-    
+
     # 1. テスト生成を依頼
     print("🔴 Red Phase: テスト生成中...")
     subprocess.run([
         "ai-send",
         f"{feature_name}のテストを作成: {requirements}"
     ])
-    
+
     time.sleep(30)  # 処理待ち
-    
+
     # 2. テスト実行
     print("📋 テスト実行中...")
     result = subprocess.run(
         ["pytest", f"tests/unit/test_{feature_name}.py", "-v"],
         capture_output=True
     )
-    
+
     if result.returncode == 0:
         print("⚠️ テストが通ってしまいました。テストを見直してください")
         return
-    
+
     # 3. 実装を依頼
     print("🟢 Green Phase: 実装中...")
     subprocess.run([
         "ai-send",
         f"テストが失敗しています。最小限の実装でテストを通してください"
     ])
-    
+
     time.sleep(30)
-    
+
     # 4. テスト再実行
     result = subprocess.run(
         ["pytest", f"tests/unit/test_{feature_name}.py", "-v"],
         capture_output=True
     )
-    
+
     if result.returncode != 0:
         print("❌ テストがまだ失敗しています")
         return
-    
+
     # 5. リファクタリング依頼
     print("🔵 Refactor Phase: 改善中...")
     subprocess.run([

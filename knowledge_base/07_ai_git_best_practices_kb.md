@@ -29,7 +29,7 @@ AI Git コミットベストプラクティスは、Elders Guildの全ての自�
 │   GitFlowManager        │
 │  (コミット管理)          │
 └──────────┬──────────────┘
-           │ 
+           │
            ▼
 ┌─────────────────────────┐
 │ CommitMessageGenerator  │
@@ -45,7 +45,7 @@ AI Git コミットベストプラクティスは、Elders Guildの全ての自�
 
 #### 1. CommitMessageGenerator
 - **場所**: `libs/commit_message_generator.py`
-- **機能**: 
+- **機能**:
   - 変更内容の分析
   - コミットタイプの自動判定
   - メッセージの構造化
@@ -140,12 +140,12 @@ ai-git analyze
 # 出力例：
 # 📊 Change Analysis:
 # Files changed: 3
-# 
+#
 # Modified files:
 #   - workers/email_worker.py
 #   - libs/email_manager.py
 #   - config/email.json
-# 
+#
 # Suggested commit type: feat
 # Suggested scope: workers
 ```
@@ -240,9 +240,9 @@ ai-git best-practices
 
 ```
 # <type>(<scope>): <subject>
-# 
+#
 # <body>
-# 
+#
 # <footer>
 
 # Type: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
@@ -378,7 +378,7 @@ def detect_commit_type(self, files: List[str], content: str) -> str:
 ### **3. メッセージ生成**
 
 ```python
-def generate_commit_message(self, 
+def generate_commit_message(self,
                           files_created: List[str] = None,
                           files_updated: List[str] = None,
                           task_id: str = None) -> str:

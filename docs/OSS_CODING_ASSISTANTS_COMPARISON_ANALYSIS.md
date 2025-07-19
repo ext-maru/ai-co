@@ -229,7 +229,7 @@ graph TD
 # 統合アダプター例
 class OSSToolAdapter(ElderServantBase):
     """OSSツールをエルダーサーバントとして統合"""
-    
+
     async def execute_with_continue(self, task):
         # Continue.devのAPI呼び出し
         result = await self.continue_client.complete(task)
@@ -281,15 +281,15 @@ graph TB
     A[エルダーズギルド統合層] --> B[4賢者システム]
     A --> C[エルダーサーバント]
     A --> D[OSSツールアダプター]
-    
+
     D --> E[Continue Adapter]
     D --> F[Aider Adapter]
     D --> G[Cursor Adapter]
-    
+
     B --> H[統合オーケストレーター]
     C --> H
     D --> H
-    
+
     H --> I[Iron Will品質ゲート]
     I --> J[統合出力]
 ```
@@ -336,6 +336,6 @@ graph TB
 
 ---
 
-**レポート作成者**: クロードエルダー  
-**作成日**: 2025年1月19日  
+**レポート作成者**: クロードエルダー
+**作成日**: 2025年1月19日
 **次回レビュー**: 2025年2月1日

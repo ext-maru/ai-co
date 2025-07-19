@@ -58,11 +58,11 @@
 
 class TaskElderMemoryMagic:
     """タスクエルダーによるセッション記憶魔法"""
-    
+
     def __init__(self):
         self.retention_level = "minimal"  # minimal/standard/full
         self.retention_days = 1  # デフォルト24時間
-        
+
     def create_memory_snapshot(self, session_id):
         """現在のセッション状態をスナップショット"""
         snapshot = {
@@ -75,12 +75,12 @@ class TaskElderMemoryMagic:
             "context_summary": self.generate_context_summary()
         }
         return snapshot
-        
+
     def save_memory(self, snapshot):
         """knowledge_base/task_memories/に保存"""
         # JSONとして保存（軽量・検索可能）
         pass
-        
+
     def recall_memory(self, trigger):
         """トリガーフレーズで記憶を呼び出し"""
         # 例: "前回の続き", "プロジェクトA2Aの続き"

@@ -11,12 +11,12 @@ echo "【Slack Polling Worker】"
 if pgrep -f "slack_polling_worker" > /dev/null; then
     PID=$(pgrep -f "slack_polling_worker")
     echo "✅ 動作中 (PID: $PID)"
-    
+
     # tmuxセッション
     if tmux has-session -t slack_polling 2>/dev/null; then
         echo "   tmuxセッション: あり"
     fi
-    
+
     # 最新ログ（最後の10行）
     echo ""
     echo "最新ログ:"
@@ -31,7 +31,7 @@ echo "【最近のタスク処理】"
 if [ -f logs/slack_polling_worker.log ]; then
     TASK_RECORDS=$(grep -c "タスク化" logs/slack_polling_worker.log 2>/dev/null || echo "0")
     echo "タスク化の記録数: $TASK_RECORDS"
-    
+
     # 最新のタスク化記録
     if [ "$TASK_RECORDS" -gt 0 ]; then
         echo "最新のタスク化:"
@@ -51,7 +51,7 @@ if pgrep -f "slack_polling_worker" > /dev/null; then
         LAST_MOD=$(stat -c %Y logs/slack_polling_worker.log)
         CURRENT=$(date +%s)
         DIFF=$((CURRENT - LAST_MOD))
-        
+
         if [ $DIFF -lt 300 ]; then  # 5分以内に更新
             echo "✅ Workerは正常に動作している可能性が高い"
         else

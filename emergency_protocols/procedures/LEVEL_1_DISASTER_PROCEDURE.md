@@ -1,8 +1,8 @@
 # 🔴 Level 1: Disaster (災害級) 対応手順書
 
-**文書番号**: ERP-L1-001  
-**最終更新**: 2025年7月10日  
-**重要度**: CRITICAL  
+**文書番号**: ERP-L1-001
+**最終更新**: 2025年7月10日
+**重要度**: CRITICAL
 **対応時間**: 5分以内
 
 ---
@@ -81,7 +81,7 @@ from datetime import datetime
 class DisasterResponse:
     async def summon_elders(self):
         """災害級インシデントでのElder Council緊急招集"""
-        
+
         # Grand Elder優先通知
         await self.notify_grand_elder({
             "level": "DISASTER",
@@ -89,14 +89,14 @@ class DisasterResponse:
             "auto_response": "ACTIVATED",
             "meeting_url": self.generate_emergency_meeting()
         })
-        
+
         # 全Elder同時通知
         await asyncio.gather(
             self.notify_claude_elder(),
             self.notify_elder_servants(),
             self.notify_four_sages()
         )
-        
+
         # 自動対応開始
         await self.start_auto_recovery()
 ```
@@ -112,19 +112,19 @@ recovery_priority:
     - database_connection_restore
     - authentication_service
     - elder_tree_hierarchy
-    
+
   phase_2_essential:  # 15-30分
     - pm_worker
     - result_worker
     - health_check_worker
     - four_sages_integration
-    
+
   phase_3_important:  # 30-60分
     - task_worker
     - knowledge_worker
     - rag_worker
     - incident_worker
-    
+
   phase_4_standard:  # 60分以降
     - report_worker
     - analytics_worker
@@ -143,11 +143,11 @@ echo "Starting data integrity verification..."
 # PostgreSQL整合性チェック
 echo "Checking PostgreSQL..."
 psql -h localhost -U aicompany -d ai_company_db -c "
-SELECT 
+SELECT
     schemaname,
     tablename,
     pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
-FROM pg_tables 
+FROM pg_tables
 WHERE schemaname = 'public'
 ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;"
 
@@ -179,21 +179,21 @@ class PhasedRecovery:
             3: self.recover_important_services,
             4: self.recover_standard_services
         }
-    
+
     async def execute_recovery(self):
         """段階的復旧実行"""
         for phase, recovery_func in self.recovery_phases.items():
             print(f"\n🔄 Starting Recovery Phase {phase}")
-            
+
             try:
                 await recovery_func()
                 print(f"✅ Phase {phase} completed successfully")
-                
+
                 # 各フェーズ後の健全性チェック
                 if not await self.health_check(phase):
                     print(f"❌ Health check failed for phase {phase}")
                     await self.rollback_phase(phase)
-                    
+
             except Exception as e:
                 print(f"❌ Phase {phase} failed: {e}")
                 await self.emergency_rollback()
@@ -271,6 +271,6 @@ class PhasedRecovery:
 
 ---
 
-**承認**: Grand Elder maru  
-**文書番号**: ERP-L1-001  
+**承認**: Grand Elder maru
+**文書番号**: ERP-L1-001
 **次回レビュー**: 2025年8月10日

@@ -15,7 +15,7 @@ Elders Guildの統一コマンド命名規則と標準化ガイドライン。�
 
 ### Current Command Count
 - **commands/*.py**: 72ファイル (underscore pattern)
-- **scripts/ai-***: 46ファイル (hyphen pattern)  
+- **scripts/ai-***: 46ファイル (hyphen pattern)
 - **ai_commands/*.sh**: 100+ファイル (mixed patterns)
 - **重複・実験的**: 多数の一時ファイル
 
@@ -246,7 +246,7 @@ ai_worker_rm.py → ai-worker-remove
 ai_worker_restart.py → ai-worker-restart
 ai_worker_recovery.py → ai-worker-recover
 
-# Elder council consolidation  
+# Elder council consolidation
 ai_elder_* → ai-elder-*
 ai_elder_council.py → ai-elder-council
 ai_elder_pm.py → ai-elder-pm
@@ -345,9 +345,9 @@ _ai_completion() {
     local cur prev domains actions
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    
+
     domains="system task worker knowledge rag elder incident dev api integration ui docs analytics"
-    
+
     case "$prev" in
         ai-system-*)
             actions="start stop status health monitor backup update config restart reset"
@@ -362,7 +362,7 @@ _ai_completion() {
             actions="$domains"
             ;;
     esac
-    
+
     COMPREPLY=($(compgen -W "$actions" -- "$cur"))
 }
 
@@ -376,7 +376,7 @@ complete -F _ai_completion ai-system- ai-task- ai-worker- ai-knowledge- ai-rag- 
 ```bash
 #!/bin/bash
 # ai-task-send - Send task to Elders Guild
-# 
+#
 # USAGE:
 #   ai-task-send [OPTIONS] <task_description>
 #   ai-task-send [OPTIONS] --file <task_file>
@@ -479,10 +479,10 @@ Phase 4 target: 150/150 (100%)
 
 ---
 
-**Implementation Status**: 🚧 Phase 1 Planning  
-**Target Completion**: 4 weeks  
-**Backward Compatibility**: 100% during transition  
-**Documentation**: Complete standard defined  
+**Implementation Status**: 🚧 Phase 1 Planning
+**Target Completion**: 4 weeks
+**Backward Compatibility**: 100% during transition
+**Documentation**: Complete standard defined
 
 **Next Actions**:
 1. Begin Phase 1 core command consolidation

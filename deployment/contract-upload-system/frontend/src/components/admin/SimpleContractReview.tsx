@@ -35,7 +35,7 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
         setLoading(true);
         // 全契約データを取得（開発環境では admin API を使用）
         const response = await fetch('http://localhost:8000/api/v1/contract/admin/list');
-        
+
         if (response.ok) {
           const data = await response.json();
           const contractItems: ContractItem[] = data.items?.map((item: any) => ({
@@ -124,15 +124,15 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
     try {
       // TODO: APIコール実装
       // await updateContractStatus(contractId, newStatus);
-      
-      setContracts(prev => 
-        prev.map(contract => 
-          contract.id === contractId 
+
+      setContracts(prev =>
+        prev.map(contract =>
+          contract.id === contractId
             ? { ...contract, status: newStatus }
             : contract
         )
       );
-      
+
       console.log(`Contract ${contractId} status updated to ${newStatus}`);
     } catch (error) {
       console.error('ステータス更新エラー:', error);
@@ -153,7 +153,7 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
   });
 
   // 作業中案件（アップしてない、またはNG）のカウント
-  const pendingCount = contracts.filter(c => 
+  const pendingCount = contracts.filter(c =>
     c.status === SimpleStatus.NOT_UPLOADED || c.status === SimpleStatus.NEEDS_REUPLOAD
   ).length;
 
@@ -176,8 +176,8 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
       <div className="review-controls">
         <div className="filter-section">
           <label>絞り込み:</label>
-          <select 
-            value={filterStatus} 
+          <select
+            value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value as SimpleStatus | 'all')}
             className="status-filter"
           >
@@ -187,8 +187,8 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
             <option value={SimpleStatus.APPROVED}>OK完了</option>
           </select>
         </div>
-        
-        <button 
+
+        <button
           className="btn-quick-search"
           onClick={() => setFilterStatus(SimpleStatus.NOT_UPLOADED)}
         >
@@ -215,10 +215,10 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
               <div className="progress-info">
                 <span>書類: {contract.document_count}/{contract.required_document_count}</span>
                 <div className="progress-bar">
-                  <div 
+                  <div
                     className="progress-fill"
-                    style={{ 
-                      width: `${(contract.document_count / contract.required_document_count) * 100}%` 
+                    style={{
+                      width: `${(contract.document_count / contract.required_document_count) * 100}%`
                     }}
                   />
                 </div>
@@ -229,7 +229,7 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
               </div>
 
               {contract.google_drive_folder_url && (
-                <button 
+                <button
                   className="btn-drive"
                   onClick={() => openGoogleDrive(contract.google_drive_folder_url)}
                 >
@@ -240,7 +240,7 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
 
             <div className="card-actions">
               <div className="status-buttons">
-                <button 
+                <button
                   className={`btn-status ok ${
                     contract.status === SimpleStatus.APPROVED ? 'active' : ''
                   }`}
@@ -249,7 +249,7 @@ export const SimpleContractReview: React.FC<SimpleContractReviewProps> = () => {
                 >
                   ✅ OK
                 </button>
-                <button 
+                <button
                   className={`btn-status ng ${
                     contract.status === SimpleStatus.NEEDS_REUPLOAD ? 'active' : ''
                   }`}

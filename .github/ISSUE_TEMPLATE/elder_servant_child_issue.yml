@@ -8,10 +8,10 @@ body:
     attributes:
       value: |
         ## 🧝‍♂️ エルダーサーバント子Issue
-        
+
         このテンプレートは、Issue #34「エルダーサーバント32体制実装」の子Issueを作成するために使用します。
         参照: [実装ロードマップv2.0](docs/ELDER_SERVANTS_IMPLEMENTATION_ROADMAP.md)
-        
+
         ### 📋 チェックリスト
         - [ ] 親Issue #34を確認済み
         - [ ] 実装ロードマップv2.0を参照済み
@@ -47,7 +47,7 @@ body:
         - D06: SecurityGuard - セキュリティ守護者
         - D07: APIArchitect - API設計建築家
         - D08: DatabaseShaper - データベース形成師
-        
+
         各サーバントの能力と責任範囲を含めてください。
     validations:
       required: true
@@ -146,7 +146,7 @@ body:
            - エラーハンドリングテスト
            - 境界値テスト
            - モックを使用した依存関係テスト
-        
+
         2. 統合テスト:
            - 4賢者連携テスト
            - Elder Flow統合テスト
@@ -163,10 +163,10 @@ body:
       placeholder: |
         リスク1: 実装の複雑性による遅延
         対策: ペアプログラミングとコードレビューの強化
-        
+
         リスク2: 統合時の不具合
         対策: 早期の統合テストと段階的デプロイ
-        
+
         リスク3: パフォーマンス基準未達
         対策: 初期段階からのプロファイリング実施
     validations:

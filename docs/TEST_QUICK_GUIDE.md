@@ -85,18 +85,18 @@ from workers.new_worker import NewWorker
 @pytest.mark.unit
 class TestNewWorker:
     """NewWorkerのテストクラス"""
-    
+
     @pytest.fixture
     def worker(self):
         """テスト用ワーカー"""
         with patch('pika.BlockingConnection'):
             return NewWorker(worker_id="test-1")
-    
+
     def test_initialization(self, worker):
         """初期化テスト"""
         assert worker.worker_id == "test-1"
         assert worker.worker_type == "new"
-    
+
     def test_process_message(self, worker):
         """メッセージ処理テスト"""
         # テスト実装

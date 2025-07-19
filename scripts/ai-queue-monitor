@@ -70,19 +70,19 @@ sys.path.append('$PROJECT_DIR')
 try:
     from libs.rate_limit_queue_processor import RateLimitQueueProcessor
     from libs.priority_queue_manager import TaskPriority
-    
+
     # プロセッサー初期化
     processor = RateLimitQueueProcessor('$PROJECT_DIR/config/config.json')
-    
+
     # ステータス取得
     status = processor.get_status()
-    
+
     if '$JSON_OUTPUT' == 'true':
         print(json.dumps(status, indent=2, default=str))
     else:
         print(f'🔍 Queue Monitor - {datetime.now().strftime(\"%Y-%m-%d %H:%M:%S\")}')
         print('=' * 70)
-        
+
         # プロセッサー状態
         print(f'📊 Processor Status:')
         print(f'   Processing: {\"🟢 Active\" if status[\"processing\"] else \"🔴 Inactive\"}')
@@ -90,25 +90,25 @@ try:
         print(f'   Last Success: {status[\"last_successful_request\"]}')
         print(f'   Estimated Delay: {status[\"estimated_delay_seconds\"]}s')
         print()
-        
+
         # キュー状態
         queue_status = status['queue_status']
         queue_sizes = queue_status['queue_sizes']
         total_queued = queue_status['total_queued']
-        
+
         print(f'📋 Queue Status:')
         print(f'   Total Queued: {total_queued}')
         print(f'   Processing: {queue_status[\"processing_count\"]}')
         print(f'   Failed: {queue_status[\"failed_count\"]}')
         print()
-        
+
         print(f'🎯 Priority Breakdown:')
         for priority_name, size in queue_sizes.items():
             if size > 0:
                 emoji = {'CRITICAL': '🔴', 'HIGH': '🟠', 'NORMAL': '🟡', 'LOW': '🟢', 'BACKGROUND': '🔵'}.get(priority_name, '⚪')
                 print(f'   {emoji} {priority_name}: {size}')
         print()
-        
+
         # 統計情報
         stats = status['statistics']
         print(f'📈 Statistics:')
@@ -116,11 +116,11 @@ try:
         print(f'   Processed Tasks: {stats[\"processed_tasks\"]}')
         print(f'   Rate Limited Tasks: {stats[\"rate_limited_tasks\"]}')
         print(f'   Failed Tasks: {stats[\"failed_tasks\"]}')
-        
+
         if stats.get('queue_processing_start'):
             print(f'   Processing Since: {stats[\"queue_processing_start\"]}')
         print()
-        
+
         # Claude Client統計
         claude_stats = status['claude_client_stats']
         print(f'🤖 Claude Client:')
@@ -128,18 +128,18 @@ try:
         print(f'   Success Rate: {claude_stats[\"success_rate\"]:.1f}%')
         print(f'   Active API Keys: {claude_stats[\"api_key_status\"][\"active_keys\"]}/{claude_stats[\"api_key_status\"][\"total_keys\"]}')
         print()
-        
+
         # アラートチェック
         alert_threshold = int('$ALERT_THRESHOLD')
         if total_queued >= alert_threshold:
             print(f'🚨 ALERT: Queue size ({total_queued}) exceeds threshold ({alert_threshold})')
-        
+
         if status['rate_limited']:
             print(f'⚠️  WARNING: System is currently rate limited')
-        
+
         if claude_stats['api_key_status']['active_keys'] == 0:
             print(f'🚨 CRITICAL: No active API keys available!')
-        
+
         # 推奨アクション
         print(f'💡 Recommendations:')
         if status['rate_limited']:
@@ -166,7 +166,7 @@ except Exception as e:
 send_alert() {
     local message="$1"
     echo "🚨 ALERT: $message" >&2
-    
+
     # Slack通知（設定されている場合）
     if [[ -n "$SLACK_BOT_TOKEN" && -n "$SLACK_CHANNEL" ]]; then
         python3 -c "
@@ -187,17 +187,17 @@ if [[ "$WATCH_MODE" == "true" ]]; then
     echo "📊 Update interval: ${INTERVAL} seconds"
     echo "🚨 Alert threshold: ${ALERT_THRESHOLD} tasks"
     echo ""
-    
+
     last_alert_time=0
     alert_cooldown=300  # 5分間のクールダウン
-    
+
     while true; do
         run_queue_monitor
-        
+
         # アラートチェック（JSON出力時は除く）
         if [[ "$JSON_OUTPUT" == "false" ]]; then
             current_time=$(date +%s)
-            
+
             # キューサイズチェック
             queue_size=$(python3 -c "
 import sys
@@ -210,17 +210,17 @@ try:
 except:
     print('0')
 ")
-            
+
             if [[ $queue_size -ge $ALERT_THRESHOLD ]] && [[ $((current_time - last_alert_time)) -ge $alert_cooldown ]]; then
                 send_alert "Queue size exceeded threshold: $queue_size >= $ALERT_THRESHOLD"
                 last_alert_time=$current_time
             fi
         fi
-        
+
         echo ""
         echo "⏳ Next update in ${INTERVAL} seconds..."
         sleep "$INTERVAL"
-        
+
         if [[ "$JSON_OUTPUT" == "false" ]]; then
             clear
         fi

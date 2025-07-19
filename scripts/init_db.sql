@@ -89,12 +89,12 @@ CREATE INDEX IF NOT EXISTS idx_projects_type_status ON projects (project_type, s
 CREATE INDEX IF NOT EXISTS idx_projects_updated_at ON projects (updated_at DESC);
 
 -- ベクトル検索用HNSWインデックス（pgvector）
-CREATE INDEX IF NOT EXISTS idx_projects_feature_vector_hnsw 
-ON projects USING hnsw (feature_vector vector_cosine_ops) 
+CREATE INDEX IF NOT EXISTS idx_projects_feature_vector_hnsw
+ON projects USING hnsw (feature_vector vector_cosine_ops)
 WITH (m = 16, ef_construction = 64);
 
-CREATE INDEX IF NOT EXISTS idx_projects_semantic_vector_hnsw 
-ON projects USING hnsw (semantic_vector vector_cosine_ops) 
+CREATE INDEX IF NOT EXISTS idx_projects_semantic_vector_hnsw
+ON projects USING hnsw (semantic_vector vector_cosine_ops)
 WITH (m = 16, ef_construction = 64);
 
 -- 類似度検索用インデックス
@@ -115,13 +115,13 @@ $$ language 'plpgsql';
 
 -- トリガー作成
 DROP TRIGGER IF EXISTS update_projects_updated_at ON projects;
-CREATE TRIGGER update_projects_updated_at 
-    BEFORE UPDATE ON projects 
+CREATE TRIGGER update_projects_updated_at
+    BEFORE UPDATE ON projects
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 初期データ挿入
-INSERT INTO system_metrics (metric_name, metric_value, metric_data) 
-VALUES 
+INSERT INTO system_metrics (metric_name, metric_value, metric_data)
+VALUES
     ('database_initialized', 1, '{"version": "1.0.0", "initialized_at": "' || NOW() || '"}'),
     ('pgvector_enabled', 1, '{"extension": "vector", "status": "active"}')
 ON CONFLICT DO NOTHING;
@@ -148,7 +148,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO elder_adm
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO elder_admin;
 
 -- 完了ログ
-INSERT INTO system_metrics (metric_name, metric_value, metric_data) 
+INSERT INTO system_metrics (metric_name, metric_value, metric_data)
 VALUES ('database_setup_complete', 1, '{"completed_at": "' || NOW() || '", "status": "success"}');
 
 COMMIT;

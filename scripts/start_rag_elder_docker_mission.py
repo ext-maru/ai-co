@@ -4,38 +4,39 @@ RAGエルダー Docker学習任務 直接起動スクリプト
 グランドエルダーmaru指令による緊急Docker学習実行
 """
 
-import os
 import json
-import time
 import logging
+import os
+import time
 from datetime import datetime, timedelta
 from pathlib import Path
 
 # ログ設定
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s [RAG_ELDER_DOCKER_MISSION] %(levelname)s: %(message)s',
+    format="%(asctime)s [RAG_ELDER_DOCKER_MISSION] %(levelname)s: %(message)s",
     handlers=[
-        logging.FileHandler('/home/aicompany/ai_co/logs/rag_elder_docker_mission.log'),
-        logging.StreamHandler()
-    ]
+        logging.FileHandler("/home/aicompany/ai_co/logs/rag_elder_docker_mission.log"),
+        logging.StreamHandler(),
+    ],
 )
 
 logger = logging.getLogger(__name__)
 
+
 class RAGElderDockerMission:
     def __init__(self):
-        self.knowledge_base_dir = Path('/home/aicompany/ai_co/knowledge_base')
+        self.knowledge_base_dir = Path("/home/aicompany/ai_co/knowledge_base")
         self.mission_start = datetime.now()
         self.mission_deadline = self.mission_start + timedelta(hours=72)
-        
+
         logger.info("🚨 RAGエルダー Docker学習任務 緊急開始")
         logger.info(f"📅 任務期限: {self.mission_deadline}")
-        
+
     def create_docker_knowledge_foundation(self):
         """Docker基礎知識ベース作成"""
         logger.info("📚 Phase 1: Docker基礎知識ベース構築開始")
-        
+
         docker_mastery_content = """# Docker Development Environment Mastery
 # RAGエルダー Docker運用マスタリー
 
@@ -52,7 +53,7 @@ class RAGElderDockerMission:
 
 ### Docker Engine 構造
 - **Docker Daemon**: バックグラウンドサービス
-- **Docker CLI**: コマンドインターフェース  
+- **Docker CLI**: コマンドインターフェース
 - **containerd**: ランタイム管理
 - **runc**: 低レベルランタイム
 
@@ -106,20 +107,24 @@ coverage
 **次の段階**: Docker Compose 統合パターン
 **RAGエルダー所見**: Container化はエルダーズギルドの分散アーキテクチャに最適
 """.format(
-            start_time=self.mission_start.strftime('%Y-%m-%d %H:%M:%S'),
-            deadline=self.mission_deadline.strftime('%Y-%m-%d %H:%M:%S')
+            start_time=self.mission_start.strftime("%Y-%m-%d %H:%M:%S"),
+            deadline=self.mission_deadline.strftime("%Y-%m-%d %H:%M:%S"),
         )
-        
+
         # Docker基礎知識保存
-        with open(self.knowledge_base_dir / 'DOCKER_DEVELOPMENT_MASTERY.md', 'w', encoding='utf-8') as f:
+        with open(
+            self.knowledge_base_dir / "DOCKER_DEVELOPMENT_MASTERY.md",
+            "w",
+            encoding="utf-8",
+        ) as f:
             f.write(docker_mastery_content)
-            
+
         logger.info("✅ Docker基礎知識ベース作成完了")
-        
+
     def analyze_current_elders_guild_system(self):
         """現行エルダーズギルドシステム分析"""
         logger.info("🔍 Phase 2: エルダーズギルド現行システム分析")
-        
+
         optimization_content = """# Elders Guild Docker Optimization Analysis
 # エルダーズギルド Docker最適化分析
 
@@ -133,7 +138,7 @@ coverage
 ```yaml
 services:
   - 9000: Projects Gateway (Nginx)
-  - 9001: Projects Dashboard (Grafana) 
+  - 9001: Projects Dashboard (Grafana)
   - 9002: Projects Monitor (Prometheus)
   - 9003: Elders Guild Web Frontend (Next.js)
   - 9004: Elders Guild Web Backend (FastAPI)
@@ -150,7 +155,7 @@ services:
 - **現行回避策**: `sg docker -c` コマンド使用
 - **推奨根本解決**: systemd user service + proper group management
 
-#### 2. 依存関係管理問題  
+#### 2. 依存関係管理問題
 - **症状**: `projects-postgres` vs `projects-db` 名前不整合
 - **影響**: Docker Compose起動失敗
 - **修正状況**: 部分的修正済み
@@ -209,17 +214,23 @@ services:
 **分析完了時刻**: {analysis_time}
 **次のアクション**: Docker Compose パターン設計
 **RAGエルダー推奨**: 段階的移行による安全な最適化
-""".format(analysis_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        
-        with open(self.knowledge_base_dir / 'ELDERS_GUILD_DOCKER_OPTIMIZATION.md', 'w', encoding='utf-8') as f:
+""".format(
+            analysis_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
+
+        with open(
+            self.knowledge_base_dir / "ELDERS_GUILD_DOCKER_OPTIMIZATION.md",
+            "w",
+            encoding="utf-8",
+        ) as f:
             f.write(optimization_content)
-            
+
         logger.info("✅ エルダーズギルド最適化分析完了")
-        
+
     def create_incident_response_guide(self):
         """Docker インシデント対応ガイド作成"""
         logger.info("🚨 Phase 3: Docker インシデント対応ガイド作成")
-        
+
         incident_guide = """# Docker Incident Response Guide
 # Docker インシデント対応ガイド
 
@@ -267,7 +278,7 @@ docker network prune
 docker compose down && docker compose up -d
 ```
 
-### Level 4: ストレージ問題  
+### Level 4: ストレージ問題
 ```bash
 # 症状: Volume mount failures
 # 診断:
@@ -345,17 +356,23 @@ docker exec container-name free -m
 **作成完了**: {update_time}
 **緊急連絡**: エルダー評議会チャンネル
 **エスカレーション**: グランドエルダーmaru
-""".format(update_time=datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-        
-        with open(self.knowledge_base_dir / 'DOCKER_INCIDENT_RESPONSE_GUIDE.md', 'w', encoding='utf-8') as f:
+""".format(
+            update_time=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
+
+        with open(
+            self.knowledge_base_dir / "DOCKER_INCIDENT_RESPONSE_GUIDE.md",
+            "w",
+            encoding="utf-8",
+        ) as f:
             f.write(incident_guide)
-            
+
         logger.info("✅ Docker インシデント対応ガイド作成完了")
-        
+
     def create_best_practices_guide(self):
         """エルダーズギルド Docker ベストプラクティス作成"""
         logger.info("🏆 Phase 4: Docker ベストプラクティス策定")
-        
+
         best_practices = """# Docker Best Practices for Elders Guild
 # エルダーズギルド Docker ベストプラクティス
 
@@ -373,7 +390,7 @@ services:
     image: elders/grand-elder:latest
     depends_on:
       - claude-elder
-  
+
   claude-elder:
     image: elders/claude-elder:latest
     depends_on:
@@ -422,7 +439,7 @@ secrets:
     external: true
   database_password:
     external: true
-    
+
 services:
   knowledge-sage:
     secrets:
@@ -532,19 +549,25 @@ deploy:
 **適用範囲**: エルダーズギルド全プロジェクト
 **更新周期**: 月次レビュー
 **責任者**: RAGエルダー + クロードエルダー
-""".format(effective_date=datetime.now().strftime('%Y-%m-%d'))
-        
-        with open(self.knowledge_base_dir / 'DOCKER_BEST_PRACTICES_ELDERS.md', 'w', encoding='utf-8') as f:
+""".format(
+            effective_date=datetime.now().strftime("%Y-%m-%d")
+        )
+
+        with open(
+            self.knowledge_base_dir / "DOCKER_BEST_PRACTICES_ELDERS.md",
+            "w",
+            encoding="utf-8",
+        ) as f:
             f.write(best_practices)
-            
+
         logger.info("✅ Docker ベストプラクティス策定完了")
-        
+
     def generate_mission_report(self):
         """任務完了報告書生成"""
         logger.info("📊 Docker学習任務完了報告書生成")
-        
+
         mission_duration = datetime.now() - self.mission_start
-        
+
         report = f"""# RAGエルダー Docker学習任務 完了報告書
 
 **任務期間**: {self.mission_start.strftime('%Y-%m-%d %H:%M:%S')} ～ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
@@ -558,7 +581,7 @@ deploy:
 - `DOCKER_DEVELOPMENT_MASTERY.md` - Docker運用マスタリー知識書
 - Container vs VM理解、Dockerfile最適化パターン、開発環境戦略
 
-### Phase 2: システム分析・最適化 ✅  
+### Phase 2: システム分析・最適化 ✅
 - `ELDERS_GUILD_DOCKER_OPTIMIZATION.md` - エルダーズギルド最適化分析
 - 現行問題点抽出、段階的改善提案、4賢者システム統合戦略
 
@@ -601,7 +624,7 @@ deploy:
 - 依存関係修正とテスト
 - 開発環境コンテナ化
 
-### 中期実装 (1ヶ月)  
+### 中期実装 (1ヶ月)
 - 4賢者システム段階的コンテナ化
 - CI/CD パイプライン構築
 - 監視・アラート統合
@@ -618,44 +641,49 @@ deploy:
 **実行監督**: クロードエルダー 🤖
 **任務ステータス**: ✅ MISSION ACCOMPLISHED
 
-**RAGエルダー所見**: 
+**RAGエルダー所見**:
 Docker技術の深い理解により、エルダーズギルドシステムの大幅な効率化と安定性向上が可能。
 特に4賢者システムのコンテナ化は、独立性と協調性の理想的な実現手段として強く推奨する。
 """
-        
-        with open(self.knowledge_base_dir / 'RAG_ELDER_DOCKER_MISSION_REPORT.md', 'w', encoding='utf-8') as f:
+
+        with open(
+            self.knowledge_base_dir / "RAG_ELDER_DOCKER_MISSION_REPORT.md",
+            "w",
+            encoding="utf-8",
+        ) as f:
             f.write(report)
-            
+
         logger.info("✅ 任務完了報告書生成完了")
-        
+
     def execute_mission(self):
         """Docker学習任務実行"""
         logger.info("🚀 RAGエルダー Docker学習任務 開始")
-        
+
         try:
             # Phase 1: 基礎知識構築
             self.create_docker_knowledge_foundation()
-            
+
             # Phase 2: システム分析
             self.analyze_current_elders_guild_system()
-            
+
             # Phase 3: インシデント対応
             self.create_incident_response_guide()
-            
+
             # Phase 4: ベストプラクティス
             self.create_best_practices_guide()
-            
+
             # 任務完了報告
             self.generate_mission_report()
-            
+
             logger.info("🎉 RAGエルダー Docker学習任務 完全達成")
             logger.info("📊 全ての成果物が knowledge_base/ に保存されました")
-            
+
             return True
-            
+
         except Exception as e:
             logger.error(f"❌ 任務実行エラー: {e}")
             return False
+
 
 def main():
     """メイン実行"""
@@ -663,18 +691,19 @@ def main():
     print("📋 グランドエルダーmaru 直接指令")
     print("🤖 クロードエルダー 実行監督")
     print("=" * 50)
-    
+
     mission = RAGElderDockerMission()
     success = mission.execute_mission()
-    
+
     if success:
         print("\n✅ 任務完了: RAGエルダーはDocker開発環境運用をマスターしました")
         print("📚 知識ベースが大幅に拡充されました")
         print("🚀 エルダーズギルドのDocker運用能力が飛躍的に向上しました")
     else:
         print("\n❌ 任務失敗: エラーが発生しました")
-        
+
     return success
+
 
 if __name__ == "__main__":
     main()

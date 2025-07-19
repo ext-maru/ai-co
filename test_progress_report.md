@@ -29,7 +29,7 @@
 
 **成功したテストファイル**:
 - test_base_manager.py
-- test_base_manager_comprehensive.py  
+- test_base_manager_comprehensive.py
 - test_base_manager_minimal.py
 - test_base_worker_comprehensive.py
 - test_base_worker_dwarf.py
@@ -61,7 +61,7 @@
 
 ### 🔴 まだ失敗しているテスト (13 files)
 1. `test_base_manager_phase6_tdd.py`
-2. `test_base_manager_tdd.py` 
+2. `test_base_manager_tdd.py`
 3. `test_base_worker.py` (1/11テストが失敗)
 4. `test_base_worker_coverage_boost.py`
 5. `test_base_worker_final_coverage.py`

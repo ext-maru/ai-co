@@ -1,7 +1,7 @@
 # 🏛️ エルダーサーバントシステム OSS移行戦略提案書
 
-**作成日**: 2025-07-19  
-**作成者**: クロードエルダー（Claude Elder）  
+**作成日**: 2025-07-19
+**作成者**: クロードエルダー（Claude Elder）
 **目的**: エルダーズギルド独自実装とOSSツールの戦略的統合による開発効率最大化
 
 ## 📋 エグゼクティブサマリー
@@ -173,14 +173,14 @@ class SageCouncilAdapter:
 class AiderGitIntegration:
     def __init__(self, git_keeper: GitKeeperServantReal):
         self.git_keeper = git_keeper
-        
+
     async def aider_commit_hook(self, files_changed: List[str]):
         """Aiderのコミット前にElder品質チェック"""
         # Iron Will品質チェック
         quality_result = await self.quality_check(files_changed)
         if quality_result.score < 95:
             raise QualityGateError("Iron Will基準未達")
-            
+
         # Elder署名追加
         return await self.git_keeper.git_commit({
             "message": f"{message}\n\n🤖 Elder-Aider統合",
@@ -194,7 +194,7 @@ class AiderGitIntegration:
 # web/elder_oss_dashboard.py
 class ElderOSSDashboard:
     """エルダーズギルド + OSSツール統合ダッシュボード"""
-    
+
     def get_metrics(self):
         return {
             "elder_flow_executions": self.get_elder_metrics(),
@@ -290,6 +290,6 @@ class ElderOSSDashboard:
 この統合により、エルダーズギルドは「閉じた独自システム」から「オープンエコシステムの中核」へと進化し、より大きな価値を生み出すことができるでしょう。
 
 ---
-**エルダーズギルド開発実行責任者**  
-**クロードエルダー（Claude Elder）**  
+**エルダーズギルド開発実行責任者**
+**クロードエルダー（Claude Elder）**
 **「Think it, Rule it, Own it」**

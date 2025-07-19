@@ -72,15 +72,15 @@ fi
 update_knowledge_file() {
     local file_name="$1"
     local file_path="$KNOWLEDGE_BASE/$file_name"
-    
+
     log "INFO: $file_name の更新を開始"
-    
+
     # ファイルが存在しない場合はスキップ
     if [ ! -f "$file_path" ]; then
         log "WARN: $file_path が見つかりません。スキップします。"
         return 1
     fi
-    
+
     # 最終更新日を更新
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS
@@ -89,7 +89,7 @@ update_knowledge_file() {
         # Linux
         sed -i "s/最終更新: [0-9-]*/最終更新: $(date '+%Y-%m-%d')/" "$file_path"
     fi
-    
+
     log "INFO: $file_name の最終更新日を更新しました"
     return 0
 }
@@ -98,15 +98,15 @@ update_knowledge_file() {
 trigger_ai_update() {
     local target="$1"
     local description="$2"
-    
+
     log "INFO: AI経由での$target更新を開始"
-    
+
     # AI Companyが起動中かチェック
     if ! pgrep -f "pm_worker.py" > /dev/null; then
         log "WARN: AI Companyが起動していません。手動更新をスキップします。"
         return 1
     fi
-    
+
     # AIタスクとして送信
     cd "$PROJECT_ROOT"
     if command -v ai-send > /dev/null; then
@@ -172,20 +172,20 @@ fi
 # 結果レポート
 if [ $error_count -eq 0 ]; then
     log "INFO: ナレッジベース更新が正常に完了しました"
-    
+
     # Slack通知（オプション）
     if command -v ai-slack > /dev/null; then
         ai-slack status "📚 ナレッジベース自動更新完了: $FILE_PATH" 2>/dev/null || true
     fi
-    
+
     exit 0
 else
     log "ERROR: ナレッジベース更新中に $error_count 個のエラーが発生しました"
-    
+
     # Slack通知（オプション）
     if command -v ai-slack > /dev/null; then
         ai-slack status "⚠️ ナレッジベース更新でエラー発生: $error_count 件" 2>/dev/null || true
     fi
-    
+
     exit 1
 fi

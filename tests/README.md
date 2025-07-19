@@ -58,7 +58,7 @@ on:
 ```
 tests/
 ├── unit/           # ユニットテスト
-├── integration/    # 統合テスト  
+├── integration/    # 統合テスト
 ├── e2e/           # E2Eテスト
 └── fixtures/      # テストフィクスチャ
 

@@ -132,6 +132,6 @@ Week 9-10: コードレビュー（SonarQube + Bandit）
 - [dependency_map.md](./dependency_map.md)
 - [maintenance_cost_analysis.md](./maintenance_cost_analysis.md)
 
-**分析日**: 2025年7月19日  
-**分析者**: クロードエルダー（Claude Elder）  
+**分析日**: 2025年7月19日
+**分析者**: クロードエルダー（Claude Elder）
 **承認**: エルダーズギルド評議会

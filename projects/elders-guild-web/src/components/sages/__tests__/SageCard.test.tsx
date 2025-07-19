@@ -1,7 +1,7 @@
 /**
  * SageCard Component Tests
  * 🧙‍♂️ Four Sages評議会決定 - Phase 3実装
- * 
+ *
  * テスト対象: SageCard.tsx (4賢者UI中核コンポーネント)
  * テストフレームワーク: React Testing Library + Jest
  * 実装日: 2025年7月10日
@@ -39,30 +39,30 @@ jest.mock('@/components/ui/Card', () => ({
 }));
 
 jest.mock('@/components/ui/Badge', () => ({
-  Badge: ({ children, variant, size, pulse, ...props }: any) => 
+  Badge: ({ children, variant, size, pulse, ...props }: any) =>
     <span {...props} data-testid="badge" data-variant={variant} data-size={size} data-pulse={pulse}>
       {children}
     </span>,
 }));
 
 jest.mock('@/components/ui/Avatar', () => ({
-  Avatar: ({ children, sage, size, ...props }: any) => 
+  Avatar: ({ children, sage, size, ...props }: any) =>
     <div {...props} data-testid="avatar" data-sage={sage} data-size={size}>
       {children}
     </div>,
-  AvatarFallback: ({ children, ...props }: any) => 
+  AvatarFallback: ({ children, ...props }: any) =>
     <div {...props} data-testid="avatar-fallback">{children}</div>,
 }));
 
 jest.mock('@/components/ui/Progress', () => ({
-  Progress: ({ value, variant, showValue, ...props }: any) => 
+  Progress: ({ value, variant, showValue, ...props }: any) =>
     <div {...props} data-testid="progress" data-value={value} data-variant={variant} data-show-value={showValue}>
       Progress: {value}%
     </div>,
 }));
 
 jest.mock('@/components/ui/Button', () => ({
-  Button: ({ children, size, variant, onClick, ...props }: any) => 
+  Button: ({ children, size, variant, onClick, ...props }: any) =>
     <button {...props} data-testid="button" data-size={size} data-variant={variant} onClick={onClick}>
       {children}
     </button>,
@@ -93,7 +93,7 @@ describe('SageCard', () => {
     test('Knowledge Sage が正しく表示される', () => {
       const sage = createMockSage('knowledge');
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('Knowledge Sage')).toBeInTheDocument();
       expect(screen.getByText('knowledge management specialist')).toBeInTheDocument();
       expect(screen.getByTestId('book-open-icon')).toBeInTheDocument();
@@ -103,7 +103,7 @@ describe('SageCard', () => {
     test('Task Sage が正しく表示される', () => {
       const sage = createMockSage('task');
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('Task Sage')).toBeInTheDocument();
       expect(screen.getByTestId('trending-up-icon')).toBeInTheDocument();
       expect(screen.getByText('📋')).toBeInTheDocument();
@@ -112,7 +112,7 @@ describe('SageCard', () => {
     test('Incident Sage が正しく表示される', () => {
       const sage = createMockSage('incident');
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('Incident Sage')).toBeInTheDocument();
       expect(screen.getByTestId('alert-circle-icon')).toBeInTheDocument();
       expect(screen.getByText('🚨')).toBeInTheDocument();
@@ -121,7 +121,7 @@ describe('SageCard', () => {
     test('RAG Sage が正しく表示される', () => {
       const sage = createMockSage('rag');
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('Rag Sage')).toBeInTheDocument();
       expect(screen.getByTestId('search-icon')).toBeInTheDocument();
       expect(screen.getByText('🔍')).toBeInTheDocument();
@@ -132,14 +132,14 @@ describe('SageCard', () => {
     test('レベル情報が正しく表示される', () => {
       const sage = createMockSage('knowledge', { level: 8 });
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('Lv.8')).toBeInTheDocument();
     });
 
     test('活動状況が表示される', () => {
       const sage = createMockSage('task', { activity: 'Analyzing workflows' });
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('Analyzing workflows')).toBeInTheDocument();
     });
 
@@ -151,7 +151,7 @@ describe('SageCard', () => {
         },
       });
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('Resolved')).toBeInTheDocument();
       expect(screen.getByText('45')).toBeInTheDocument();
       expect(screen.getByText('Response Time')).toBeInTheDocument();
@@ -163,7 +163,7 @@ describe('SageCard', () => {
     test('稼働中ステータス', () => {
       const sage = createMockSage('knowledge', { status: 'active' });
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('稼働中')).toBeInTheDocument();
       const badge = screen.getByTestId('badge');
       expect(badge).toHaveAttribute('data-pulse', 'true');
@@ -172,21 +172,21 @@ describe('SageCard', () => {
     test('多忙ステータス', () => {
       const sage = createMockSage('task', { status: 'busy' });
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('多忙')).toBeInTheDocument();
     });
 
     test('瞑想中ステータス', () => {
       const sage = createMockSage('incident', { status: 'meditation' });
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('瞑想中')).toBeInTheDocument();
     });
 
     test('休止中ステータス', () => {
       const sage = createMockSage('rag', { status: 'inactive' });
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByText('休止中')).toBeInTheDocument();
     });
   });
@@ -195,7 +195,7 @@ describe('SageCard', () => {
     test('Knowledge Sage: 経験値ベースプログレス', () => {
       const sage = createMockSage('knowledge', { experience: 5000 });
       render(<SageCard sage={sage} />);
-      
+
       const progress = screen.getByTestId('progress');
       expect(progress).toHaveAttribute('data-value', '50'); // 5000/10000 * 100
     });
@@ -203,7 +203,7 @@ describe('SageCard', () => {
     test('Task Sage: 完了率ベースプログレス', () => {
       const sage = createMockSage('task', { completedTasks: 80, activeTasks: 20 });
       render(<SageCard sage={sage} />);
-      
+
       const progress = screen.getByTestId('progress');
       expect(progress).toHaveAttribute('data-value', '80'); // 80/(80+20) * 100
     });
@@ -211,7 +211,7 @@ describe('SageCard', () => {
     test('Incident Sage: 負荷逆算プログレス', () => {
       const sage = createMockSage('incident', { activeIncidents: 3 });
       render(<SageCard sage={sage} />);
-      
+
       const progress = screen.getByTestId('progress');
       expect(progress).toHaveAttribute('data-value', '70'); // 100 - 3*10
     });
@@ -219,7 +219,7 @@ describe('SageCard', () => {
     test('RAG Sage: 検索精度ベースプログレス', () => {
       const sage = createMockSage('rag', { searchAccuracy: 92 });
       render(<SageCard sage={sage} />);
-      
+
       const progress = screen.getByTestId('progress');
       expect(progress).toHaveAttribute('data-value', '92');
     });
@@ -229,7 +229,7 @@ describe('SageCard', () => {
     test('非選択状態では ring クラスが適用されない', () => {
       const sage = createMockSage('knowledge');
       render(<SageCard sage={sage} isSelected={false} />);
-      
+
       const card = screen.getByTestId('card');
       expect(card).not.toHaveClass('ring-2');
     });
@@ -237,7 +237,7 @@ describe('SageCard', () => {
     test('選択状態では ring クラスが適用される', () => {
       const sage = createMockSage('task');
       render(<SageCard sage={sage} isSelected={true} />);
-      
+
       const card = screen.getByTestId('card');
       expect(card).toHaveClass('ring-2', 'ring-offset-2');
     });
@@ -248,10 +248,10 @@ describe('SageCard', () => {
       const handleSelect = jest.fn();
       const sage = createMockSage('knowledge');
       render(<SageCard sage={sage} onSelect={handleSelect} />);
-      
+
       const card = screen.getByTestId('card');
       fireEvent.click(card);
-      
+
       expect(handleSelect).toHaveBeenCalledTimes(1);
     });
 
@@ -259,12 +259,12 @@ describe('SageCard', () => {
       const handleSelect = jest.fn();
       const sage = createMockSage('incident');
       render(<SageCard sage={sage} onSelect={handleSelect} />);
-      
+
       const buttons = screen.getAllByTestId('button');
       const detailButton = buttons.find(btn => btn.textContent === '詳細を見る');
-      
+
       fireEvent.click(detailButton!);
-      
+
       // stopPropagation により、onSelect は呼ばれないはず
       expect(handleSelect).not.toHaveBeenCalled();
     });
@@ -273,12 +273,12 @@ describe('SageCard', () => {
       const handleSelect = jest.fn();
       const sage = createMockSage('rag');
       render(<SageCard sage={sage} onSelect={handleSelect} />);
-      
+
       const buttons = screen.getAllByTestId('button');
       const settingButton = buttons.find(btn => btn.textContent === '設定');
-      
+
       fireEvent.click(settingButton!);
-      
+
       // stopPropagation により、onSelect は呼ばれないはず
       expect(handleSelect).not.toHaveBeenCalled();
     });
@@ -286,7 +286,7 @@ describe('SageCard', () => {
     test('onSelect未定義でもエラーにならない', () => {
       const sage = createMockSage('knowledge');
       render(<SageCard sage={sage} />);
-      
+
       const card = screen.getByTestId('card');
       expect(() => fireEvent.click(card)).not.toThrow();
     });
@@ -296,7 +296,7 @@ describe('SageCard', () => {
     test('Card コンポーネントに正しいprops が渡される', () => {
       const sage = createMockSage('knowledge');
       render(<SageCard sage={sage} />);
-      
+
       const card = screen.getByTestId('card');
       expect(card).toHaveAttribute('variant', 'knowledge');
       expect(card).toHaveAttribute('hover');
@@ -305,10 +305,10 @@ describe('SageCard', () => {
     test('Badge コンポーネントに正しいprops が渡される', () => {
       const sage = createMockSage('task', { level: 7 });
       render(<SageCard sage={sage} />);
-      
+
       const badges = screen.getAllByTestId('badge');
       const levelBadge = badges.find(badge => badge.textContent?.includes('Lv.7'));
-      
+
       expect(levelBadge).toHaveAttribute('data-variant', 'task');
       expect(levelBadge).toHaveAttribute('data-size', 'sm');
     });
@@ -316,7 +316,7 @@ describe('SageCard', () => {
     test('Avatar コンポーネントに正しいprops が渡される', () => {
       const sage = createMockSage('incident');
       render(<SageCard sage={sage} />);
-      
+
       const avatar = screen.getByTestId('avatar');
       expect(avatar).toHaveAttribute('data-sage', 'incident');
       expect(avatar).toHaveAttribute('data-size', 'lg');
@@ -325,7 +325,7 @@ describe('SageCard', () => {
     test('Progress コンポーネントに正しいprops が渡される', () => {
       const sage = createMockSage('rag', { searchAccuracy: 88 });
       render(<SageCard sage={sage} />);
-      
+
       const progress = screen.getByTestId('progress');
       expect(progress).toHaveAttribute('data-variant', 'rag');
       expect(progress).toHaveAttribute('data-show-value', 'true');
@@ -334,11 +334,11 @@ describe('SageCard', () => {
     test('Button コンポーネントに正しいprops が渡される', () => {
       const sage = createMockSage('knowledge');
       render(<SageCard sage={sage} />);
-      
+
       const buttons = screen.getAllByTestId('button');
       const detailButton = buttons.find(btn => btn.textContent === '詳細を見る');
       const settingButton = buttons.find(btn => btn.textContent === '設定');
-      
+
       expect(detailButton).toHaveAttribute('data-size', 'sm');
       expect(detailButton).toHaveAttribute('data-variant', 'knowledge');
       expect(settingButton).toHaveAttribute('data-size', 'sm');
@@ -350,7 +350,7 @@ describe('SageCard', () => {
     test('グリッドレイアウトが適用される', () => {
       const sage = createMockSage('task');
       render(<SageCard sage={sage} />);
-      
+
       const gridContainer = screen.getByTestId('card-content').querySelector('.grid-cols-2');
       expect(gridContainer).toBeInTheDocument();
     });
@@ -358,7 +358,7 @@ describe('SageCard', () => {
     test('flex レイアウトが適用される', () => {
       const sage = createMockSage('incident');
       render(<SageCard sage={sage} />);
-      
+
       const flexContainer = screen.getByTestId('card-content').querySelector('.flex');
       expect(flexContainer).toBeInTheDocument();
     });
@@ -368,7 +368,7 @@ describe('SageCard', () => {
     test('クリック可能要素がフォーカス可能', () => {
       const sage = createMockSage('knowledge');
       render(<SageCard sage={sage} />);
-      
+
       const card = screen.getByTestId('card');
       expect(card).toHaveClass('cursor-pointer');
     });
@@ -376,7 +376,7 @@ describe('SageCard', () => {
     test('ボタンが適切にフォーカス可能', () => {
       const sage = createMockSage('rag');
       render(<SageCard sage={sage} />);
-      
+
       const buttons = screen.getAllByTestId('button');
       buttons.forEach(button => {
         button.focus();
@@ -394,14 +394,14 @@ describe('SageCard', () => {
         },
       });
       render(<SageCard sage={sage} />);
-      
+
       expect(screen.getByTestId('card')).toBeInTheDocument();
     });
 
     test('activeIncidents が undefined の場合', () => {
       const sage = createMockSage('incident', { activeIncidents: undefined });
       render(<SageCard sage={sage} />);
-      
+
       const progress = screen.getByTestId('progress');
       expect(progress).toHaveAttribute('data-value', '100'); // 100 - 0*10
     });
@@ -409,7 +409,7 @@ describe('SageCard', () => {
     test('searchAccuracy が 0 の場合', () => {
       const sage = createMockSage('rag', { searchAccuracy: 0 });
       render(<SageCard sage={sage} />);
-      
+
       const progress = screen.getByTestId('progress');
       expect(progress).toHaveAttribute('data-value', '0');
     });
@@ -417,7 +417,7 @@ describe('SageCard', () => {
     test('completedTasks と activeTasks が両方 0 の場合', () => {
       const sage = createMockSage('task', { completedTasks: 0, activeTasks: 0 });
       render(<SageCard sage={sage} />);
-      
+
       const progress = screen.getByTestId('progress');
       expect(progress).toHaveAttribute('data-value', 'NaN');
     });
@@ -426,20 +426,20 @@ describe('SageCard', () => {
 
 /**
  * 🧙‍♂️ Four Sages評価
- * 
+ *
  * ✅ Knowledge Sage: 4賢者システム完全理解・テスト網羅
  * ✅ Task Sage: 複雑な状態管理・UI統合の完璧なテスト
  * ✅ Incident Sage: Edge Case・エラー処理の徹底的検証
  * ✅ RAG Sage: アクセシビリティ・UX品質の包括的確認
- * 
+ *
  * カバレッジ目標: 95%以上
  * テスト項目: 45+個のテストケース
- * 
+ *
  * Phase 3 成果:
  * - エルダーズギルド中核UI (SageCard) の完全品質保証
  * - 4賢者システム統合テスト完了
  * - 複雑な状態計算・UI連携の検証
  * - アニメーション・レスポンシブデザイン対応
- * 
+ *
  * 次の対象: Dashboard.tsx (メインダッシュボード)
  */

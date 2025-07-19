@@ -154,12 +154,12 @@ graph TD
     A[Frontend] --> B[API Gateway]
     B --> C[Business Logic]
     C --> D[Database]
-    
+
     subgraph "External Services"
         E[Third-party API]
         F[Cloud Storage]
     end
-    
+
     C --> E
     C --> F
 ```
@@ -190,20 +190,20 @@ class ProjectVectorizer:
     def __init__(self):
         self.openai_client = OpenAI()
         self.rag_elder = EnhancedRAGElder()
-    
+
     async def vectorize_project(self, project_path: str) -> np.ndarray:
         # 1. コード特徴抽出
         code_features = await self._extract_code_features(project_path)
-        
+
         # 2. 依存関係特徴抽出
         dependency_features = await self._extract_dependency_features(project_path)
-        
+
         # 3. 説明文ベクトル化
         description_vector = await self._vectorize_description(code_features['description'])
-        
+
         # 4. 技術スタックベクトル化
         tech_vector = await self._vectorize_tech_stack(dependency_features)
-        
+
         # 5. 統合ベクトル生成
         return self._combine_vectors([description_vector, tech_vector])
 ```
@@ -232,7 +232,7 @@ class AsyncProjectAnalyzer:
             self._analyze_git_history(project_path),
             self._generate_similarity_vector(project_path)
         ]
-        
+
         results = await asyncio.gather(*tasks)
         return self._combine_analysis_results(results)
 ```
@@ -242,7 +242,7 @@ class AsyncProjectAnalyzer:
 class AnalysisProgress:
     def __init__(self, websocket_manager):
         self.ws_manager = websocket_manager
-        
+
     async def update_progress(self, project_id: str, step: str, progress: float):
         await self.ws_manager.send_sage_message(
             SageMessage(
@@ -265,24 +265,24 @@ class ProjectPortalManager:
     def __init__(self):
         self.placement_manager = AIProjectPlacementManager()
         self.rag_elder = EnhancedRAGElder()
-        
+
     async def get_project_recommendations(self, project_id: str):
         # 1. プロジェクト分析結果取得
         analysis = await self.get_project_analysis(project_id)
-        
+
         # 2. 配置最適化提案
         placement_rec = self.placement_manager.recommend_placement(
             self._analysis_to_criteria(analysis)
         )
-        
+
         # 3. 類似プロジェクトからの学習
         similar_projects = await self._find_similar_projects(project_id)
-        
+
         # 4. RAGエルダーによる知見統合
         insights = await self.rag_elder.cast_hyper_precision_search(
             f"プロジェクト{project_id}の最適化についてのベストプラクティス"
         )
-        
+
         return ProjectRecommendations(
             placement=placement_rec,
             similar_projects=similar_projects,
@@ -333,10 +333,10 @@ class ProjectPortalManager:
 interface ProjectDashboard {
   // プロジェクト一覧（カード形式）
   projects: ProjectCard[]
-  
+
   // 検索・フィルタリング
   searchInterface: ProjectSearchInterface
-  
+
   // 統計情報
   statistics: {
     totalProjects: number
@@ -344,7 +344,7 @@ interface ProjectDashboard {
     completedProjects: number
     languageDistribution: Record<string, number>
   }
-  
+
   // 最近の活動
   recentActivity: ActivityItem[]
 }
@@ -355,7 +355,7 @@ interface ProjectDashboard {
 interface ProjectDetailView {
   // 基本情報
   projectInfo: ProjectMetadata
-  
+
   // 自動生成ドキュメント
   autoDocumentation: {
     readme: string
@@ -363,7 +363,7 @@ interface ProjectDetailView {
     architecture: MermaidDiagram
     dependencies: DependencyTree
   }
-  
+
   // コード分析結果
   codeAnalysis: {
     structure: CodeStructure
@@ -371,10 +371,10 @@ interface ProjectDetailView {
     coverage: TestCoverage
     quality: QualityMetrics
   }
-  
+
   // 類似プロジェクト
   similarProjects: SimilarProject[]
-  
+
   // RAGエルダーからの提案
   elderInsights: RAGInsight[]
 }
@@ -486,8 +486,8 @@ RAGエルダーの専門知識と既存Elders Guild環境の強みを活用す�
 
 ---
 
-**策定者**: Claude Elder（開発実行責任者）  
-**協力**: RAGエルダー（36件の高精度専門知識提供）  
+**策定者**: Claude Elder（開発実行責任者）
+**協力**: RAGエルダー（36件の高精度専門知識提供）
 **承認待ち**: Elder Council（エルダー評議会）
 
 ---

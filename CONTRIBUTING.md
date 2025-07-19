@@ -66,7 +66,7 @@ pytest tests/unit/test_base_worker.py::TestBaseWorker::test_stats_tracking
    # Good
    pattern = r"test\d+"
    path = "path\\to\\file"
-   
+
    # Bad
    pattern = "test\d+"  # SyntaxWarning
    ```
@@ -78,7 +78,7 @@ pytest tests/unit/test_base_worker.py::TestBaseWorker::test_stats_tracking
    Multi-line
    description
    """
-   
+
    # Bad
    description = """
    Unclosed string
@@ -105,15 +105,15 @@ class MyWorker(BaseWorker):
     def __init__(self):
         super().__init__(worker_type='my_worker')
         # self.stats は自動的に初期化される
-    
+
     def process_message(self, ch, method, properties, body):
         try:
             # メッセージ処理
             result = self.do_work(body)
-            
+
             # 統計を更新
             self.stats['processed_count'] += 1
-            
+
             ch.basic_ack(delivery_tag=method.delivery_tag)
         except Exception as e:
             # handle_errorが自動的にstats['error_count']を更新

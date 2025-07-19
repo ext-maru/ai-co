@@ -34,4 +34,3 @@ for conf in config/*.conf; do
 done
 
 echo "🎯 完了！"
-

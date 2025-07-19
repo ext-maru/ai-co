@@ -50,7 +50,7 @@ log_knight() {
 # 🧙‍♂️ 4賢者事前確認
 four_sages_pre_check() {
     log_info "🧙‍♂️ 4賢者事前確認開始..."
-    
+
     # 📚 ナレッジ賢者チェック
     log_sage "📚 ナレッジ賢者: デプロイ履歴確認中..."
     if [ -f "$PROJECT_ROOT/knowledge_base/deployment_history.md" ]; then
@@ -58,7 +58,7 @@ four_sages_pre_check() {
     else
         log_warn "📚 ナレッジ賢者: デプロイ履歴ファイルが見つかりません"
     fi
-    
+
     # 📋 タスク賢者チェック
     log_sage "📋 タスク賢者: 依存関係確認中..."
     if python3 -c "
@@ -78,7 +78,7 @@ four_sages_pre_check() {
         log_error "📋 タスク賢者: 依存関係エラー"
         return 1
     fi
-    
+
     # 🚨 インシデント賢者チェック
     log_sage "🚨 インシデント賢者: システム状態確認中..."
     if python3 -c "
@@ -97,7 +97,7 @@ four_sages_pre_check() {
         log_error "🚨 インシデント賢者: システム異常検知"
         return 1
     fi
-    
+
     # 🔍 RAG賢者チェック
     log_sage "🔍 RAG賢者: 環境分析中..."
     if python3 -c "
@@ -116,7 +116,7 @@ four_sages_pre_check() {
         log_error "🔍 RAG賢者: 環境分析エラー"
         return 1
     fi
-    
+
     log_info "🏛️ 4賢者事前確認: 全て承認"
     return 0
 }
@@ -124,7 +124,7 @@ four_sages_pre_check() {
 # 🛡️ 騎士団セキュリティ確認
 knights_security_check() {
     log_info "🛡️ 騎士団セキュリティ確認開始..."
-    
+
     # ⚔️ セキュリティ騎士団
     log_knight "⚔️ セキュリティ騎士団: 権限確認中..."
     if [ "$(id -u)" -eq 0 ]; then
@@ -132,7 +132,7 @@ knights_security_check() {
         return 1
     fi
     log_knight "⚔️ セキュリティ騎士団: 権限確認完了"
-    
+
     # 🗡️ 認証騎士団
     log_knight "🗡️ 認証騎士団: SSH設定確認中..."
     if [ -z "${SSH_AUTH_SOCK:-}" ]; then
@@ -140,7 +140,7 @@ knights_security_check() {
         return 1
     fi
     log_knight "🗡️ 認証騎士団: SSH認証確認完了"
-    
+
     # 🛡️ 監視騎士団
     log_knight "🛡️ 監視騎士団: プロセス監視開始"
     # バックグラウンドで監視プロセス開始
@@ -153,7 +153,7 @@ knights_security_check() {
     MONITOR_PID=$!
     echo "$MONITOR_PID" > "/tmp/deploy_monitor.pid"
     log_knight "🛡️ 監視騎士団: 監視開始 (PID: $MONITOR_PID)"
-    
+
     log_info "🏛️ 騎士団セキュリティ確認: 完了"
     return 0
 }
@@ -161,23 +161,23 @@ knights_security_check() {
 # 🧪 事前テスト実行
 pre_deploy_tests() {
     log_info "🧪 事前テスト実行開始..."
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Python環境確認
     log_info "🐍 Python環境確認中..."
     if ! python3 --version; then
         log_error "🐍 Python3が見つかりません"
         return 1
     fi
-    
+
     # 依存関係確認
     log_info "📦 依存関係確認中..."
     if [ -f "requirements.txt" ]; then
         pip3 install -r requirements.txt --quiet
         log_info "📦 依存関係インストール完了"
     fi
-    
+
     # 基本テスト実行
     log_info "🧪 基本テスト実行中..."
     if python3 -c "
@@ -196,7 +196,7 @@ pre_deploy_tests() {
         log_error "🧪 基本テスト: 失敗"
         return 1
     fi
-    
+
     log_info "🏛️ 事前テスト: 完了"
     return 0
 }
@@ -206,12 +206,12 @@ execute_deployment() {
     local target_env="$1"
     local target_host="$2"
     local target_user="$3"
-    
+
     log_info "🚀 デプロイメント実行開始..."
     log_info "🎯 対象環境: $target_env"
     log_info "🖥️  対象ホスト: $target_host"
     log_info "👤 対象ユーザー: $target_user"
-    
+
     # Git状態確認
     log_info "📝 Git状態確認中..."
     if ! git status --porcelain | grep -q .; then
@@ -220,7 +220,7 @@ execute_deployment() {
         log_warn "📝 Git状態: 未コミットの変更があります"
         git status --porcelain
     fi
-    
+
     # リモートサーバーへの接続確認
     log_info "🌐 リモートサーバー接続確認中..."
     if ssh -o ConnectTimeout=10 -o BatchMode=yes "$target_user@$target_host" "echo 'SSH接続確認'" 2>/dev/null; then
@@ -229,7 +229,7 @@ execute_deployment() {
         log_error "🌐 リモートサーバー接続: 失敗"
         return 1
     fi
-    
+
     # ファイル転送
     log_info "📤 ファイル転送開始..."
     if rsync -avz --exclude='.git' --exclude='__pycache__' --exclude='*.pyc' \
@@ -239,7 +239,7 @@ execute_deployment() {
         log_error "📤 ファイル転送: 失敗"
         return 1
     fi
-    
+
     # リモートでの依存関係インストール
     log_info "📦 リモート依存関係インストール中..."
     if ssh "$target_user@$target_host" "cd /opt/elders-guild && pip3 install -r requirements.txt --quiet"; then
@@ -248,7 +248,7 @@ execute_deployment() {
         log_error "📦 リモート依存関係インストール: 失敗"
         return 1
     fi
-    
+
     # サービス再起動
     log_info "🔄 サービス再起動中..."
     if ssh "$target_user@$target_host" "cd /opt/elders-guild && sudo systemctl restart elders-guild"; then
@@ -257,7 +257,7 @@ execute_deployment() {
         log_error "🔄 サービス再起動: 失敗"
         return 1
     fi
-    
+
     log_info "🏛️ デプロイメント実行: 完了"
     return 0
 }
@@ -266,9 +266,9 @@ execute_deployment() {
 post_deploy_verification() {
     local target_host="$1"
     local target_user="$2"
-    
+
     log_info "🔍 事後検証開始..."
-    
+
     # サービス状態確認
     log_info "🔍 サービス状態確認中..."
     if ssh "$target_user@$target_host" "systemctl is-active elders-guild"; then
@@ -277,7 +277,7 @@ post_deploy_verification() {
         log_error "🔍 サービス状態: 異常"
         return 1
     fi
-    
+
     # ヘルスチェック
     log_info "🔍 ヘルスチェック実行中..."
     sleep 30  # サービス起動待機
@@ -287,7 +287,7 @@ post_deploy_verification() {
         log_error "🔍 ヘルスチェック: 失敗"
         return 1
     fi
-    
+
     # 4賢者最終確認
     log_sage "🧙‍♂️ 4賢者最終確認中..."
     if ssh "$target_user@$target_host" "cd /opt/elders-guild && python3 -c 'from libs.four_sages_integration import FourSagesIntegration; sages = FourSagesIntegration(); sages.post_deploy_verification()'"; then
@@ -296,7 +296,7 @@ post_deploy_verification() {
         log_error "🧙‍♂️ 4賢者最終確認: 拒否"
         return 1
     fi
-    
+
     log_info "🏛️ 事後検証: 完了"
     return 0
 }
@@ -304,7 +304,7 @@ post_deploy_verification() {
 # 🧹 クリーンアップ
 cleanup() {
     log_info "🧹 クリーンアップ開始..."
-    
+
     # 監視プロセス終了
     if [ -f "/tmp/deploy_monitor.pid" ]; then
         MONITOR_PID=$(cat "/tmp/deploy_monitor.pid")
@@ -313,10 +313,10 @@ cleanup() {
         fi
         rm -f "/tmp/deploy_monitor.pid"
     fi
-    
+
     # 一時ファイル削除
     rm -f "$DEPLOY_LOG.monitor"
-    
+
     log_info "🧹 クリーンアップ: 完了"
 }
 
@@ -342,48 +342,48 @@ main() {
         usage
         exit 1
     fi
-    
+
     local target_env="$1"
     local target_host="$2"
     local target_user="$3"
-    
+
     # ログファイル初期化
     echo "🏛️ エルダーズギルド SSH デプロイメントログ - $TIMESTAMP" > "$DEPLOY_LOG"
-    
+
     # トラップ設定
     trap cleanup EXIT
-    
+
     log_info "🚀 デプロイメント開始: $target_env"
-    
+
     # 実行フロー
     if ! four_sages_pre_check; then
         log_error "🧙‍♂️ 4賢者事前確認失敗"
         exit 1
     fi
-    
+
     if ! knights_security_check; then
         log_error "🛡️ 騎士団セキュリティ確認失敗"
         exit 1
     fi
-    
+
     if ! pre_deploy_tests; then
         log_error "🧪 事前テスト失敗"
         exit 1
     fi
-    
+
     if ! execute_deployment "$target_env" "$target_host" "$target_user"; then
         log_error "🚀 デプロイメント実行失敗"
         exit 1
     fi
-    
+
     if ! post_deploy_verification "$target_host" "$target_user"; then
         log_error "🔍 事後検証失敗"
         exit 1
     fi
-    
+
     log_info "🏛️ デプロイメント完了: $target_env"
     log_info "📝 ログファイル: $DEPLOY_LOG"
-    
+
     # 成功通知
     echo -e "${GREEN}🎉 エルダーズギルド デプロイメント成功! 🎉${NC}"
     echo -e "${GREEN}🧙‍♂️ 4賢者承認 🛡️ 騎士団防衛完了${NC}"

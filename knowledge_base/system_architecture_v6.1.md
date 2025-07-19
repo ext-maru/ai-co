@@ -188,15 +188,15 @@ graph TD
     E --> F[ai_results]
     F --> G[Result Worker]
     G --> H[Slack Notification]
-    
+
     E --> I[ai_dialog]
     E --> J[ai_command]
     E --> K[ai_email]
-    
+
     I --> L[Dialog Worker]
     J --> M[Command Worker]
     K --> N[Email Worker]
-    
+
     L --> F
     M --> F
     N --> F

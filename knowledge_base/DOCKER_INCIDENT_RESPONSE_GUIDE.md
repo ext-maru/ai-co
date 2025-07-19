@@ -45,7 +45,7 @@ docker network prune
 docker compose down && docker compose up -d
 ```
 
-### Level 4: ストレージ問題  
+### Level 4: ストレージ問題
 ```bash
 # 症状: Volume mount failures
 # 診断:

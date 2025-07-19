@@ -28,7 +28,7 @@ conn.execute('''
     )
 ''')
 conn.execute('''
-    CREATE INDEX IF NOT EXISTS idx_processed_at 
+    CREATE INDEX IF NOT EXISTS idx_processed_at
     ON processed_messages(processed_at DESC)
 ''')
 conn.commit()

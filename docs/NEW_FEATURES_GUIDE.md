@@ -131,19 +131,19 @@ class MyWorker(BaseWorker, CommunicationMixin):
     def __init__(self):
         super().__init__(worker_type='my_worker')
         self.setup_communication()
-        
+
         # メッセージハンドラー登録
         self.register_message_handler('task_request', self.handle_task_request)
-        
+
     def process_message(self, ch, method, properties, body):
         # ワーカー間通信メッセージをチェック
         data = json.loads(body)
         if self.process_worker_message(data):
             ch.basic_ack(delivery_tag=method.delivery_tag)
             return
-            
+
         # 通常の処理...
-        
+
         # 他のワーカーに通知
         self.send_to_worker(
             'pm',
@@ -151,7 +151,7 @@ class MyWorker(BaseWorker, CommunicationMixin):
             {'task_id': task_id, 'status': 'success'},
             priority='high'
         )
-        
+
     def handle_task_request(self, data):
         """他のワーカーからのリクエスト処理"""
         # 処理実装

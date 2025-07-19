@@ -19,7 +19,7 @@ echo "  総サイズ: $(du -sh knowledge_base 2>/dev/null | cut -f1)"
 echo ""
 echo "📋 主要ドキュメント:"
 echo "  • Core Knowledge v5.1 - システム全体の概要"
-echo "  • Command Executor v1.1 - 自動実行システム"  
+echo "  • Command Executor v1.1 - 自動実行システム"
 echo "  • New Features Guide v5.1 - 新機能活用ガイド"
 echo "  • UPDATE NOTES v5.1 - 更新内容の要約"
 

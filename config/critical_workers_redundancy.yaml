@@ -8,19 +8,19 @@ critical_workers:
     priority: 1
     auto_failover: true
     health_check_interval: 5
-    
+
   task_dispatcher:
     instances: 3
     priority: 1
     auto_failover: true
     health_check_interval: 5
-    
+
   queue_processor:
     instances: 2
     priority: 2
     auto_failover: true
     health_check_interval: 10
-    
+
   elder_council_manager:
     instances: 2
     priority: 1
@@ -30,16 +30,16 @@ critical_workers:
 redundancy_settings:
   # Load balancing strategy
   load_balancing: "round_robin"
-  
+
   # Failover settings
   failover_timeout: 10  # seconds
   health_check_failures_threshold: 2
-  
+
   # Instance management
   restart_failed_instances: true
   max_restart_attempts: 3
   restart_delay: 30  # seconds
-  
+
   # Monitoring
   monitor_instance_performance: true
   performance_threshold:
@@ -52,13 +52,13 @@ high_availability:
   enable_circuit_breaker: true
   circuit_breaker_threshold: 5
   circuit_breaker_timeout: 60
-  
+
   enable_graceful_shutdown: true
   shutdown_timeout: 30
-  
+
   enable_rolling_updates: true
   update_strategy: "blue_green"
-  
+
   # Zero-downtime deployment
   enable_zero_downtime_deployment: true
   deployment_strategy: "canary"
@@ -70,12 +70,12 @@ notifications:
     enabled: true
     severity: "high"
     channels: ["slack", "email"]
-    
+
   failover_event:
     enabled: true
     severity: "medium"
     channels: ["slack"]
-    
+
   performance_degradation:
     enabled: true
     severity: "medium"

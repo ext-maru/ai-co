@@ -11,7 +11,7 @@
 ```yaml
 services:
   - 9000: Projects Gateway (Nginx)
-  - 9001: Projects Dashboard (Grafana) 
+  - 9001: Projects Dashboard (Grafana)
   - 9002: Projects Monitor (Prometheus)
   - 9003: Elders Guild Web Frontend (Next.js)
   - 9004: Elders Guild Web Backend (FastAPI)
@@ -28,7 +28,7 @@ services:
 - **現行回避策**: `sg docker -c` コマンド使用
 - **推奨根本解決**: systemd user service + proper group management
 
-#### 2. 依存関係管理問題  
+#### 2. 依存関係管理問題
 - **症状**: `projects-postgres` vs `projects-db` 名前不整合
 - **影響**: Docker Compose起動失敗
 - **修正状況**: 部分的修正済み

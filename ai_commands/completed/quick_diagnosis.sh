@@ -10,12 +10,12 @@ if pgrep -f "slack_polling_worker" > /dev/null; then
     echo "✅ Slack Polling Worker: 動作中"
     PID=$(pgrep -f "slack_polling_worker")
     echo "   PID: $PID"
-    
+
     # ログの最終更新
     if [ -f logs/slack_polling_worker.log ]; then
         LAST_MOD=$(stat -c %y logs/slack_polling_worker.log | cut -d'.' -f1)
         echo "   最終ログ更新: $LAST_MOD"
-        
+
         # 最新のログ内容
         echo ""
         echo "最新ログ（5行）:"

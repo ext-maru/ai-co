@@ -72,18 +72,18 @@ from libs.slack_api_integration import create_slack_integration, SlackMessage, S
 async def main():
     # Slack統合システムの作成
     slack = await create_slack_integration()
-    
+
     # 接続テスト
     test_results = await slack.test_connection()
     print(f"Connection test: {test_results}")
-    
+
     # 基本メッセージ送信
     message = SlackMessage(
         channel="general",
         text="Hello from Elders Guild!"
     )
     result = await slack.send_message(message)
-    
+
     # フォーマット済みメッセージ
     await slack.send_formatted_message(
         channel="general",
@@ -91,7 +91,7 @@ async def main():
         content="All systems are operational",
         color="good"
     )
-    
+
     # 4賢者通知
     await slack.send_4sages_notification(
         "Knowledge Sage",
@@ -108,10 +108,10 @@ asyncio.run(main())
 ```python
 async def webhook_example():
     slack = await create_slack_integration()
-    
+
     # シンプルなWebhook送信
     success = await slack.send_webhook_message("Quick update!")
-    
+
     # リッチフォーマット
     await slack.send_webhook_message(
         "Deployment completed",
@@ -132,7 +132,7 @@ async def webhook_example():
 ```python
 async def error_handling():
     slack = await create_slack_integration()
-    
+
     try:
         # 何らかの処理
         raise ValueError("Something went wrong")
@@ -150,13 +150,13 @@ async def error_handling():
 ```python
 async def event_example():
     slack = await create_slack_integration()
-    
+
     # イベントハンドラ登録
     def message_handler(event_data):
         print(f"Message received: {event_data}")
-    
+
     slack.register_event_handler('message', message_handler)
-    
+
     # イベント発火
     await slack.handle_event('message', {'text': 'Hello!'})
 ```
@@ -377,5 +377,5 @@ slack = await create_slack_integration()
 
 ---
 
-**Elders Guild Slack API Integration System v1.0**  
+**Elders Guild Slack API Integration System v1.0**
 *Generated with 🤖 Claude Code - Elders Guild 4 Sages System*

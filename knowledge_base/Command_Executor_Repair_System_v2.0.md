@@ -264,7 +264,7 @@ try:
     result = helper.create_bash_command(cmd, cmd_id)
     time.sleep(10)
     check = helper.check_results(cmd_id)
-    
+
     if check.get('exit_code', 1) != 0:
         # エラー処理
         log = helper.get_latest_log(cmd_id)

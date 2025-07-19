@@ -4,61 +4,69 @@ AI Elder Emergency - 緊急時対応コマンド
 システム障害や緊急事態での迅速な対応
 """
 
-import sys
 import argparse
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).parent.parent
 
+
 def trigger_emergency_council():
     """緊急評議会を召集"""
     print("🚨 緊急エルダー評議会を召集中...")
-    print("="*60)
-    
+    print("=" * 60)
+
     # 評議会召集
-    subprocess.run([
-        sys.executable,
-        str(PROJECT_ROOT / "commands" / "ai_elder_council.py"),
-        "simulate",
-        "--type", "emergency"
-    ])
-    
+    subprocess.run(
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "commands" / "ai_elder_council.py"),
+            "simulate",
+            "--type",
+            "emergency",
+        ]
+    )
+
     # インシデント騎士団も動員
     print("\n⚔️ インシデント騎士団を緊急動員...")
-    subprocess.run([
-        sys.executable, 
-        str(PROJECT_ROOT / "commands" / "ai_incident_knights.py"),
-        "status"
-    ])
+    subprocess.run(
+        [
+            sys.executable,
+            str(PROJECT_ROOT / "commands" / "ai_incident_knights.py"),
+            "status",
+        ]
+    )
+
 
 def system_health_check():
     """システム全体の健康診断"""
     print("🏥 システム健康診断実行中...")
-    print("="*60)
-    
+    print("=" * 60)
+
     checks = [
         ("RabbitMQ", "systemctl is-active rabbitmq-server"),
         ("PostgreSQL", "systemctl is-active postgresql"),
         ("AI Workers", "ps aux | grep -c 'worker'"),
         ("Disk Space", "df -h / | tail -1 | awk '{print $5}'"),
-        ("Memory", "free -m | grep Mem | awk '{print ($3/$2)*100}'")
+        ("Memory", "free -m | grep Mem | awk '{print ($3/$2)*100}'"),
     ]
-    
+
     results = []
     for name, cmd in checks:
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
         status = "✅" if result.returncode == 0 else "❌"
         results.append(f"{status} {name}: {result.stdout.strip()}")
-    
+
     print("\n".join(results))
     return results
+
 
 def rollback_system(version=None):
     """システムロールバック"""
     print("⏮️ システムロールバック準備中...")
-    
+
     if not version:
         # 最新の安定バージョンを取得
         print("最新の安定バージョンを検索中...")
@@ -67,24 +75,28 @@ def rollback_system(version=None):
     else:
         print(f"バージョン {version} へのロールバック準備中...")
 
+
 def emergency_notification(message, severity="high"):
     """緊急通知送信"""
     print(f"\n📢 緊急通知送信: [{severity.upper()}]")
     print(f"メッセージ: {message}")
-    
+
     # Slack通知（実装済みの場合）
     try:
-        subprocess.run([
-            sys.executable,
-            "-c",
-            f"""
+        subprocess.run(
+            [
+                sys.executable,
+                "-c",
+                f"""
 from libs.slack_integration import send_notification
 send_notification('#{severity}', '{message}', mention='@channel' if '{severity}' == 'critical' else None)
-"""
-        ])
+""",
+            ]
+        )
         print("✅ Slack通知送信完了")
     except:
         print("⚠️  Slack通知送信失敗")
+
 
 def create_incident_report(title, description, severity="high"):
     """インシデントレポート作成"""
@@ -96,113 +108,118 @@ def create_incident_report(title, description, severity="high"):
         "description": description,
         "severity": severity,
         "reported_by": "Claude Elder",
-        "status": "investigating"
+        "status": "investigating",
     }
-    
+
     # レポート保存
     report_dir = PROJECT_ROOT / "knowledge_base" / "incident_reports"
     report_dir.mkdir(exist_ok=True)
-    
+
     filename = f"incident_{report['id']}.json"
     filepath = report_dir / filename
-    
+
     import json
-    with open(filepath, 'w', encoding='utf-8') as f:
+
+    with open(filepath, "w", encoding="utf-8") as f:
         json.dump(report, f, ensure_ascii=False, indent=2)
-    
+
     print(f"\n📄 インシデントレポート作成: {filepath}")
     return report
+
 
 def emergency_fix_common_issues():
     """よくある問題の緊急修正"""
     print("\n🔧 一般的な問題の自動修正を試行中...")
-    
+
     fixes = [
         {
             "name": "RabbitMQ接続リセット",
             "cmd": "systemctl restart rabbitmq-server",
-            "check": "systemctl is-active rabbitmq-server"
+            "check": "systemctl is-active rabbitmq-server",
         },
         {
             "name": "古いロックファイル削除",
             "cmd": "find /tmp -name '*.lock' -mtime +1 -delete",
-            "check": "echo 'Cleaned'"
+            "check": "echo 'Cleaned'",
         },
         {
             "name": "ディスクスペース確保",
             "cmd": "find /var/log -name '*.log' -mtime +7 -delete",
-            "check": "df -h /"
-        }
+            "check": "df -h /",
+        },
     ]
-    
+
     for fix in fixes:
         print(f"\n🔧 {fix['name']}...")
-        result = subprocess.run(fix['cmd'], shell=True, capture_output=True)
+        result = subprocess.run(fix["cmd"], shell=True, capture_output=True)
         if result.returncode == 0:
             print(f"✅ {fix['name']} 完了")
-            subprocess.run(fix['check'], shell=True)
+            subprocess.run(fix["check"], shell=True)
         else:
             print(f"❌ {fix['name']} 失敗")
 
+
 def main():
-    parser = argparse.ArgumentParser(
-        description='緊急時対応コマンド - システム障害時の迅速な対応'
-    )
-    
-    subparsers = parser.add_subparsers(dest='command', help='緊急対応コマンド')
-    
+    parser = argparse.ArgumentParser(description="緊急時対応コマンド - システム障害時の迅速な対応")
+
+    subparsers = parser.add_subparsers(dest="command", help="緊急対応コマンド")
+
     # 緊急評議会
-    council_parser = subparsers.add_parser('council', help='緊急評議会召集')
-    
+    council_parser = subparsers.add_parser("council", help="緊急評議会召集")
+
     # システムチェック
-    check_parser = subparsers.add_parser('check', help='システム健康診断')
-    
+    check_parser = subparsers.add_parser("check", help="システム健康診断")
+
     # ロールバック
-    rollback_parser = subparsers.add_parser('rollback', help='システムロールバック')
-    rollback_parser.add_argument('--version', help='ロールバック先バージョン')
-    
+    rollback_parser = subparsers.add_parser("rollback", help="システムロールバック")
+    rollback_parser.add_argument("--version", help="ロールバック先バージョン")
+
     # 緊急通知
-    notify_parser = subparsers.add_parser('notify', help='緊急通知送信')
-    notify_parser.add_argument('message', help='通知メッセージ')
-    notify_parser.add_argument('--severity', default='high',
-                             choices=['low', 'medium', 'high', 'critical'],
-                             help='重要度')
-    
+    notify_parser = subparsers.add_parser("notify", help="緊急通知送信")
+    notify_parser.add_argument("message", help="通知メッセージ")
+    notify_parser.add_argument(
+        "--severity",
+        default="high",
+        choices=["low", "medium", "high", "critical"],
+        help="重要度",
+    )
+
     # インシデント作成
-    incident_parser = subparsers.add_parser('incident', help='インシデント作成')
-    incident_parser.add_argument('title', help='インシデントタイトル')
-    incident_parser.add_argument('description', help='詳細説明')
-    incident_parser.add_argument('--severity', default='high',
-                               choices=['low', 'medium', 'high', 'critical'])
-    
+    incident_parser = subparsers.add_parser("incident", help="インシデント作成")
+    incident_parser.add_argument("title", help="インシデントタイトル")
+    incident_parser.add_argument("description", help="詳細説明")
+    incident_parser.add_argument(
+        "--severity", default="high", choices=["low", "medium", "high", "critical"]
+    )
+
     # 自動修正
-    fix_parser = subparsers.add_parser('fix', help='一般的な問題の自動修正')
-    
+    fix_parser = subparsers.add_parser("fix", help="一般的な問題の自動修正")
+
     # オールインワン緊急対応
-    all_parser = subparsers.add_parser('all', help='全緊急対応実行')
-    
+    all_parser = subparsers.add_parser("all", help="全緊急対応実行")
+
     args = parser.parse_args()
-    
+
     if not args.command:
         parser.print_help()
         return
-    
+
     print(f"\n🚨 緊急対応モード: {args.command}")
-    print("="*60)
-    
-    if args.command == 'council':
+    print("=" * 60)
+
+    if args.command == "council":
         trigger_emergency_council()
-    elif args.command == 'check':
+    elif args.command == "check":
         system_health_check()
-    elif args.command == 'rollback':
+    elif args.command == "rollback":
         rollback_system(args.version)
-    elif args.command == 'notify':
+    elif args.command == "notify":
         emergency_notification(args.message, args.severity)
-    elif args.command == 'incident':
+    elif args.command == "incident":
         create_incident_report(args.title, args.description, args.severity)
-    elif args.command == 'fix':
+    elif args.command == "fix":
         emergency_fix_common_issues()
-    elif args.command == 'all':
+    elif args.command == "all":
         # 全対応実行
         print("🚨 完全緊急対応モード\n")
         system_health_check()
@@ -212,6 +229,7 @@ def main():
         trigger_emergency_council()
         print()
         emergency_notification("緊急対応モード実行中", "high")
+
 
 if __name__ == "__main__":
     main()

@@ -7,37 +7,38 @@ Issue #5 Phase 2の最終成果物として、統合アーキテクチャを設�
 import json
 import os
 import sys
-from typing import Dict, List, Any, Optional
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
+
 
 class IntegrationArchitectureDesign:
     """エルダーズギルド + OSS統合アーキテクチャ設計"""
-    
+
     def __init__(self):
         self.architecture = {}
         self.design_principles = []
         self.integration_patterns = {}
-        
+
     def define_design_principles(self) -> List[str]:
         """設計原則の定義"""
         principles = [
             "🏛️ Elder Guild Hierarchy Preservation - エルダーズギルド階層構造の保持",
-            "🔧 OSS Tool Selective Integration - OSS ツールの選択的統合", 
+            "🔧 OSS Tool Selective Integration - OSS ツールの選択的統合",
             "🛡️ Security-First Architecture - セキュリティファースト設計",
             "⚡ Performance Optimization - パフォーマンス最適化",
             "🔄 Backward Compatibility - 後方互換性保持",
             "📈 Scalable Integration - スケーラブル統合",
             "🧪 Test-Driven Integration - テスト駆動統合",
-            "📋 Monitoring & Observability - 監視・可観測性"
+            "📋 Monitoring & Observability - 監視・可観測性",
         ]
-        
+
         self.design_principles = principles
         return principles
-    
+
     def design_layered_architecture(self) -> Dict[str, Any]:
         """階層化アーキテクチャ設計"""
         architecture = {
@@ -54,22 +55,22 @@ class IntegrationArchitectureDesign:
                             "/elder/servants/{id}/execute",
                             "/elder/sages/consult",
                             "/elder/quality/iron-will",
-                            "/elder/knowledge/search"
-                        ]
+                            "/elder/knowledge/search",
+                        ],
                     },
                     {
                         "name": "Aider Integration CLI",
-                        "type": "OSS_INTEGRATION", 
+                        "type": "OSS_INTEGRATION",
                         "responsibility": "Aider コマンドライン統合",
-                        "technology": "Python CLI + Elder System Bridge"
+                        "technology": "Python CLI + Elder System Bridge",
                     },
                     {
                         "name": "Elder Flow Web Dashboard",
                         "type": "ELDER_NATIVE",
                         "responsibility": "Elder Flow 可視化・制御",
-                        "technology": "Elder Monitoring Dashboard"
-                    }
-                ]
+                        "technology": "Elder Monitoring Dashboard",
+                    },
+                ],
             },
             "layer_2_integration": {
                 "name": "統合層",
@@ -82,22 +83,22 @@ class IntegrationArchitectureDesign:
                         "patterns": [
                             "Adapter Pattern - OSS API ラッピング",
                             "Bridge Pattern - Elder/OSS 通信橋渡し",
-                            "Facade Pattern - 統一インターフェース提供"
-                        ]
+                            "Facade Pattern - 統一インターフェース提供",
+                        ],
                     },
                     {
                         "name": "Quality Gate Integration",
                         "type": "HYBRID",
                         "responsibility": "Iron Will 品質基準とOSS品質チェック統合",
-                        "technology": "Elder Quality Inspector + Flake8/PyTest"
+                        "technology": "Elder Quality Inspector + Flake8/PyTest",
                     },
                     {
                         "name": "Security Validation Layer",
                         "type": "ELDER_NATIVE",
                         "responsibility": "OSS統合時のセキュリティ検証",
-                        "technology": "Elder Security Audit + Custom Validators"
-                    }
-                ]
+                        "technology": "Elder Security Audit + Custom Validators",
+                    },
+                ],
             },
             "layer_3_orchestration": {
                 "name": "オーケストレーション層",
@@ -111,8 +112,8 @@ class IntegrationArchitectureDesign:
                             "Knowledge Sage - OSS知識ベース統合",
                             "Task Sage - OSS/Elder ハイブリッドタスク管理",
                             "Incident Sage - OSS脆弱性監視",
-                            "RAG Sage - OSS文書検索統合"
-                        ]
+                            "RAG Sage - OSS文書検索統合",
+                        ],
                     },
                     {
                         "name": "Elder Flow Engine v2",
@@ -120,12 +121,12 @@ class IntegrationArchitectureDesign:
                         "responsibility": "OSS統合を含む自動化フロー",
                         "phases": [
                             "OSS Tool Selection Phase",
-                            "Elder + OSS Execution Phase", 
+                            "Elder + OSS Execution Phase",
                             "Hybrid Quality Gate Phase",
-                            "Integration Validation Phase"
-                        ]
-                    }
-                ]
+                            "Integration Validation Phase",
+                        ],
+                    },
+                ],
             },
             "layer_4_execution": {
                 "name": "実行層",
@@ -139,24 +140,42 @@ class IntegrationArchitectureDesign:
                             {
                                 "id": "H01",
                                 "name": "Hybrid Code Craftsman",
-                                "elder_capabilities": ["Elder patterns", "Iron Will compliance"],
-                                "oss_integration": ["Continue.dev code generation", "Aider refactoring"]
+                                "elder_capabilities": [
+                                    "Elder patterns",
+                                    "Iron Will compliance",
+                                ],
+                                "oss_integration": [
+                                    "Continue.dev code generation",
+                                    "Aider refactoring",
+                                ],
                             },
                             {
-                                "id": "H02", 
+                                "id": "H02",
                                 "name": "Hybrid Test Guardian",
-                                "elder_capabilities": ["Elder test patterns", "Quality enforcement"],
-                                "oss_integration": ["PyTest execution", "Coverage analysis"]
+                                "elder_capabilities": [
+                                    "Elder test patterns",
+                                    "Quality enforcement",
+                                ],
+                                "oss_integration": [
+                                    "PyTest execution",
+                                    "Coverage analysis",
+                                ],
                             },
                             {
                                 "id": "H03",
-                                "name": "Hybrid Quality Inspector", 
-                                "elder_capabilities": ["Iron Will validation", "Elder metrics"],
-                                "oss_integration": ["Flake8 linting", "Security scanning"]
-                            }
-                        ]
+                                "name": "Hybrid Quality Inspector",
+                                "elder_capabilities": [
+                                    "Iron Will validation",
+                                    "Elder metrics",
+                                ],
+                                "oss_integration": [
+                                    "Flake8 linting",
+                                    "Security scanning",
+                                ],
+                            },
+                        ],
                     }
-                ]
+                ],
             },
             "layer_5_data": {
                 "name": "データ層",
@@ -169,27 +188,27 @@ class IntegrationArchitectureDesign:
                         "storage": [
                             "Elder Knowledge (Markdown/JSON)",
                             "OSS Documentation (API integration)",
-                            "Integration Patterns (Learned knowledge)"
-                        ]
+                            "Integration Patterns (Learned knowledge)",
+                        ],
                     },
                     {
                         "name": "Monitoring & Metrics",
-                        "type": "HYBRID", 
+                        "type": "HYBRID",
                         "responsibility": "Elder + OSS パフォーマンス監視",
                         "metrics": [
                             "Elder Flow execution times",
                             "OSS tool performance",
                             "Integration success rates",
-                            "Quality scores"
-                        ]
-                    }
-                ]
-            }
+                            "Quality scores",
+                        ],
+                    },
+                ],
+            },
         }
-        
+
         self.architecture = architecture
         return architecture
-    
+
     def define_integration_patterns(self) -> Dict[str, Any]:
         """統合パターンの定義"""
         patterns = {
@@ -199,43 +218,43 @@ class IntegrationArchitectureDesign:
                 "use_cases": [
                     "単純なlinting → Flake8に委譲",
                     "基本的なテスト実行 → PyTestに委譲",
-                    "コード生成 → Continue.dev/Aiderに委譲"
+                    "コード生成 → Continue.dev/Aiderに委譲",
                 ],
                 "implementation": {
                     "trigger": "Elder Servant が capability 分析",
                     "decision": "4 Sages が最適ツール選択",
                     "execution": "OSS Adapter を通じて実行",
-                    "validation": "Elder Quality Gate で検証"
-                }
+                    "validation": "Elder Quality Gate で検証",
+                },
             },
             "pattern_2_enhancement": {
-                "name": "OSS Enhancement Pattern", 
+                "name": "OSS Enhancement Pattern",
                 "description": "OSSツールの出力をElderシステムで強化",
                 "use_cases": [
                     "Flake8出力 + Elder品質分析",
                     "PyTest結果 + Iron Will準拠チェック",
-                    "Continue.dev生成コード + Elder pattern適用"
+                    "Continue.dev生成コード + Elder pattern適用",
                 ],
                 "implementation": {
                     "execution": "OSS ツールで基本処理",
                     "enhancement": "Elder システムで高度な分析・改善",
                     "integration": "Elder Flow で統合・最適化",
-                    "output": "Elder基準を満たす最終成果物"
-                }
+                    "output": "Elder基準を満たす最終成果物",
+                },
             },
             "pattern_3_hybrid_workflow": {
                 "name": "Hybrid Workflow Pattern",
                 "description": "ElderとOSSの能力を組み合わせた複合ワークフロー",
                 "use_cases": [
                     "新機能開発: Continue.dev → Elder review → Aider refactor → Elder validation",
-                    "品質改善: Elder analysis → OSS tools → Elder integration → Quality gate"
+                    "品質改善: Elder analysis → OSS tools → Elder integration → Quality gate",
                 ],
                 "phases": [
                     "Phase 1: Elder Flow 計画・分析",
                     "Phase 2: OSS ツール実行",
                     "Phase 3: Elder 検証・改善",
-                    "Phase 4: 統合・最終化"
-                ]
+                    "Phase 4: 統合・最終化",
+                ],
             },
             "pattern_4_fallback": {
                 "name": "Intelligent Fallback Pattern",
@@ -243,20 +262,20 @@ class IntegrationArchitectureDesign:
                 "scenarios": [
                     "OSS tool unavailable → Elder native implementation",
                     "OSS output quality insufficient → Elder enhancement",
-                    "Security concern → Elder secure alternative"
+                    "Security concern → Elder secure alternative",
                 ],
                 "implementation": {
                     "monitoring": "OSS tool health check",
                     "decision": "4 Sages による fallback 判断",
                     "execution": "Elder システムでの代替実行",
-                    "learning": "失敗パターンの学習・改善"
-                }
-            }
+                    "learning": "失敗パターンの学習・改善",
+                },
+            },
         }
-        
+
         self.integration_patterns = patterns
         return patterns
-    
+
     def design_deployment_strategy(self) -> Dict[str, Any]:
         """デプロイメント戦略設計"""
         return {
@@ -265,39 +284,34 @@ class IntegrationArchitectureDesign:
                     "duration": "2週間",
                     "scope": "Continue.dev 統合のみ",
                     "targets": ["Code Craftsman Servant", "基本的なAPI endpoints"],
-                    "success_criteria": ["API稼働率95%以上", "応答時間<2秒", "Iron Will基準維持"]
+                    "success_criteria": ["API稼働率95%以上", "応答時間<2秒", "Iron Will基準維持"],
                 },
                 "phase_2_expansion": {
-                    "duration": "4週間", 
+                    "duration": "4週間",
                     "scope": "Aider + PyTest 統合追加",
                     "targets": ["Test Guardian Servant", "Quality Inspector拡張"],
-                    "success_criteria": ["テスト実行時間30%短縮", "品質スコア95%維持"]
+                    "success_criteria": ["テスト実行時間30%短縮", "品質スコア95%維持"],
                 },
                 "phase_3_full_integration": {
                     "duration": "6週間",
                     "scope": "全OSS統合完了",
                     "targets": ["全Hybrid Servants", "統合監視システム"],
-                    "success_criteria": ["総合パフォーマンス20%向上", "セキュリティインシデント0件"]
-                }
+                    "success_criteria": ["総合パフォーマンス20%向上", "セキュリティインシデント0件"],
+                },
             },
             "rollback_strategy": {
                 "triggers": ["品質スコア90%以下", "セキュリティ脆弱性発見", "パフォーマンス20%以上劣化"],
-                "procedure": [
-                    "OSS統合無効化",
-                    "Elder native システム復旧",
-                    "原因分析・改善",
-                    "再統合計画策定"
-                ]
+                "procedure": ["OSS統合無効化", "Elder native システム復旧", "原因分析・改善", "再統合計画策定"],
             },
             "monitoring_requirements": [
                 "API endpoint monitoring",
                 "OSS tool availability",
                 "Integration performance metrics",
                 "Security event monitoring",
-                "Quality score tracking"
-            ]
+                "Quality score tracking",
+            ],
         }
-    
+
     def generate_implementation_roadmap(self) -> Dict[str, Any]:
         """実装ロードマップ生成"""
         return {
@@ -305,11 +319,11 @@ class IntegrationArchitectureDesign:
                 "title": "Foundation Setup",
                 "tasks": [
                     "✅ Continue.dev POC完了",
-                    "✅ Aider統合テスト完了", 
+                    "✅ Aider統合テスト完了",
                     "✅ パフォーマンスベンチマーク完了",
                     "✅ セキュリティ評価完了",
-                    "🔧 統合アーキテクチャ設計完了"
-                ]
+                    "🔧 統合アーキテクチャ設計完了",
+                ],
             },
             "week_3_4": {
                 "title": "Core Integration Development",
@@ -317,8 +331,8 @@ class IntegrationArchitectureDesign:
                     "OSS Adapter Framework 開発",
                     "Hybrid Elder Servants 実装",
                     "Quality Gate Integration 構築",
-                    "Security Validation Layer 実装"
-                ]
+                    "Security Validation Layer 実装",
+                ],
             },
             "week_5_6": {
                 "title": "Enhanced 4 Sages System",
@@ -326,8 +340,8 @@ class IntegrationArchitectureDesign:
                     "Knowledge Sage OSS知識統合",
                     "Task Sage ハイブリッドタスク管理",
                     "Incident Sage OSS監視機能",
-                    "RAG Sage 統合文書検索"
-                ]
+                    "RAG Sage 統合文書検索",
+                ],
             },
             "week_7_8": {
                 "title": "Elder Flow v2 & Integration",
@@ -335,20 +349,15 @@ class IntegrationArchitectureDesign:
                     "Elder Flow Engine v2 開発",
                     "統合ワークフロー実装",
                     "監視・メトリクス システム",
-                    "統合テスト・品質検証"
-                ]
+                    "統合テスト・品質検証",
+                ],
             },
             "week_9_10": {
                 "title": "Deployment & Optimization",
-                "tasks": [
-                    "段階的デプロイメント実施",
-                    "パフォーマンス最適化",
-                    "セキュリティ強化",
-                    "ドキュメント・運用手順整備"
-                ]
-            }
+                "tasks": ["段階的デプロイメント実施", "パフォーマンス最適化", "セキュリティ強化", "ドキュメント・運用手順整備"],
+            },
         }
-    
+
     def generate_architecture_document(self) -> str:
         """アーキテクチャドキュメント生成"""
         principles = self.define_design_principles()
@@ -356,7 +365,7 @@ class IntegrationArchitectureDesign:
         patterns = self.define_integration_patterns()
         deployment = self.design_deployment_strategy()
         roadmap = self.generate_implementation_roadmap()
-        
+
         doc = f"""
 # エルダーズギルド + OSS統合アーキテクチャ設計書
 
@@ -376,7 +385,7 @@ class IntegrationArchitectureDesign:
 
 ### Layer 1: プレゼンテーション層
 - **Continue.dev Integration API**: FastAPI ベースの統合エンドポイント
-- **Aider Integration CLI**: コマンドライン統合インターフェース  
+- **Aider Integration CLI**: コマンドライン統合インターフェース
 - **Elder Flow Web Dashboard**: Elder Flow 可視化・制御UI
 
 ### Layer 2: 統合層
@@ -400,7 +409,7 @@ class IntegrationArchitectureDesign:
 ### 1. Elder-OSS Delegation Pattern
 Elder システムが適切なOSSツールに処理を委譲するパターン
 
-### 2. OSS Enhancement Pattern  
+### 2. OSS Enhancement Pattern
 OSSツールの出力をElderシステムで強化するパターン
 
 ### 3. Hybrid Workflow Pattern
@@ -416,7 +425,7 @@ OSS失敗時のElderシステムフォールバックパターン
 - 基本的なAPI endpoints
 - 成功指標: API稼働率95%以上
 
-### Phase 2: Expansion (4週間)  
+### Phase 2: Expansion (4週間)
 - Aider + PyTest 統合追加
 - Test Guardian Servant 拡張
 - 成功指標: テスト実行時間30%短縮
@@ -477,7 +486,7 @@ OSS失敗時のElderシステムフォールバックパターン
 ## 🎯 Phase 2 完了基準
 
 ✅ Continue.dev 統合POC完了
-✅ Aider 連携テスト完了  
+✅ Aider 連携テスト完了
 ✅ パフォーマンスベンチマーク完了
 ✅ セキュリティリスク評価完了
 ✅ 統合アーキテクチャ設計完了
@@ -492,55 +501,57 @@ OSS失敗時のElderシステムフォールバックパターン
 
 **グランドエルダーmaru承認**: 2025年7月19日
 """
-        
+
         return doc
-    
+
     def save_architecture_document(self, output_path: str = None) -> str:
         """アーキテクチャドキュメントの保存"""
         if output_path is None:
-            output_path = "/home/aicompany/ai_co/docs/PHASE2_INTEGRATION_ARCHITECTURE_DESIGN.md"
-        
+            output_path = (
+                "/home/aicompany/ai_co/docs/PHASE2_INTEGRATION_ARCHITECTURE_DESIGN.md"
+            )
+
         document = self.generate_architecture_document()
-        
+
         # ディレクトリ作成
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        
-        with open(output_path, 'w', encoding='utf-8') as f:
+
+        with open(output_path, "w", encoding="utf-8") as f:
             f.write(document)
-        
+
         return output_path
-    
+
     def run_design_process(self) -> Dict[str, Any]:
         """設計プロセス実行"""
         print("🏗️ Starting Integration Architecture Design Process")
         print("=" * 70)
-        
+
         try:
             # 設計プロセス実行
             print("📋 1. Defining design principles...")
             principles = self.define_design_principles()
             print(f"   ✅ {len(principles)} principles defined")
-            
+
             print("🏛️ 2. Designing layered architecture...")
             architecture = self.design_layered_architecture()
             print(f"   ✅ {len(architecture)} layers designed")
-            
+
             print("🔄 3. Defining integration patterns...")
             patterns = self.define_integration_patterns()
             print(f"   ✅ {len(patterns)} patterns defined")
-            
+
             print("🚀 4. Planning deployment strategy...")
             deployment = self.design_deployment_strategy()
             print("   ✅ 3-phase deployment strategy planned")
-            
+
             print("📅 5. Generating implementation roadmap...")
             roadmap = self.generate_implementation_roadmap()
             print("   ✅ 10-week roadmap generated")
-            
+
             print("📝 6. Creating architecture document...")
             doc_path = self.save_architecture_document()
             print(f"   ✅ Document saved: {doc_path}")
-            
+
             # サマリー出力
             print("\n" + "=" * 70)
             print("📊 Integration Architecture Design Summary")
@@ -550,9 +561,9 @@ OSS失敗時のElderシステムフォールバックパターン
             print(f"🔄 Integration Patterns: {len(patterns)}")
             print(f"📅 Implementation Weeks: 10")
             print(f"📝 Documentation: {doc_path}")
-            
+
             print("\n🎉 Phase 2 Complete! Ready for Phase 3 Implementation.")
-            
+
             return {
                 "success": True,
                 "principles": principles,
@@ -562,23 +573,25 @@ OSS失敗時のElderシステムフォールバックパターン
                 "roadmap": roadmap,
                 "document_path": doc_path,
                 "phase_2_status": "COMPLETED",
-                "next_phase": "Phase 3: Implementation"
+                "next_phase": "Phase 3: Implementation",
             }
-            
+
         except Exception as e:
             return {"error": str(e)}
+
 
 def main():
     """メインエントリーポイント"""
     designer = IntegrationArchitectureDesign()
     result = designer.run_design_process()
-    
+
     if result.get("success"):
         print("\n✅ Integration Architecture Design completed successfully!")
         return 0
     else:
         print(f"\n❌ Design process failed: {result.get('error')}")
         return 1
+
 
 if __name__ == "__main__":
     exit(main())

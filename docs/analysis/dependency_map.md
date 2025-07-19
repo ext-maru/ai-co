@@ -13,34 +13,34 @@ graph TD
     C[integration_test_framework.py] --> G[外部依存]
     D[advanced_monitoring_dashboard.py] --> H[外部依存]
     I[security_audit_system.py] --> J[外部依存]
-    
+
     A --> A1[ast, re, tokenize]
     A --> A2[hashlib, logging, json]
     A --> A3[datetime, collections]
-    
+
     B --> B1[asyncio, threading]
     B --> B2[psutil, weakref, gc]
     B --> B3[concurrent.futures]
-    
+
     C --> C1[aiohttp, subprocess]
     C --> C2[psutil, socket, tempfile]
     C --> C3[jinja2]
-    
+
     D --> D1[websockets, sqlite3]
     D --> D2[psutil, threading]
     D --> D3[aiohttp, uuid]
-    
+
     I --> I1[hashlib, subprocess]
     I --> I2[sqlite3, tempfile]
     I --> I3[re, uuid]
-    
+
     subgraph "相互関係"
         A -.-> D
         B -.-> D
         C -.-> I
         D -.-> I
     end
-    
+
     subgraph "共通依存"
         K[psutil] --> B
         K --> C

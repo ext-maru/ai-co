@@ -74,7 +74,7 @@ cc evolution history --since=yesterday
 cc next-plan start --phase=foundation
 ```
 - Learning Data Collector
-- Pattern Analyzer  
+- Pattern Analyzer
 - ナレッジ賢者連携システム
 - 基本学習エンジン + テスト
 
@@ -99,7 +99,7 @@ cc next-plan start --phase=automation
 cc next-plan start --phase=evolution
 ```
 - Meta Learning System
-- Cross-Worker Learning  
+- Cross-Worker Learning
 - 完全統合テスト + ドキュメント
 
 ## 🔧 設定ファイル
@@ -111,12 +111,12 @@ evolution:
   learning_mode: "continuous"  # continuous, batch, manual
   auto_apply: true
   confidence_threshold: 0.8
-  
+
 learning:
   data_retention_days: 30
   min_samples: 100
   update_frequency: "1h"
-  
+
 optimization:
   max_experiments: 10
   safety_mode: true
@@ -282,7 +282,7 @@ cc evolution report --latest
 Claude CLI を通じて、どのセッションからでもこの進化プロセスに参加し、
 AIの成長を見守ることができます。」
 
-**ナレッジ保存完了！** 🎉  
+**ナレッジ保存完了！** 🎉
 他のClaude CLI セッションからも実行可能になりました。
 
 ---

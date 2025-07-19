@@ -83,7 +83,7 @@ git commit -m "$COMMIT_MESSAGE"
 # コミット結果を確認
 if [ $? -eq 0 ]; then
     echo "✅ コミットが成功しました"
-    
+
     # PRを作成するかどうか確認
     echo ""
     echo "🔄 Pull Requestを作成しますか？"
@@ -95,17 +95,17 @@ if [ $? -eq 0 ]; then
     echo ""
     echo "   git push origin fix/$FEATURE_NAME"
     echo "   その後GitHubでPRを作成"
-    
+
     # コミットログを表示
     echo ""
     echo "📋 コミット内容:"
     git log --oneline -1
-    
+
     # 差分統計を表示
     echo ""
     echo "📊 変更統計:"
     git diff --stat HEAD~1
-    
+
 else
     echo "❌ コミットに失敗しました"
     exit 1

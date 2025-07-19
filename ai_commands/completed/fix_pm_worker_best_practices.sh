@@ -13,16 +13,16 @@ pm_worker_path = Path("/home/aicompany/ai_co/workers/pm_worker.py")
 
 if pm_worker_path.exists():
     content = pm_worker_path.read_text()
-    
+
     # 修正前のパターン
     old_pattern = r'(commit_message = f"Task {task_id}: {git_result_data\[\'summary\'\]}")\s*\n(\s*if self\.git_flow\.commit_changes\(commit_message, new_files\):)'
-    
+
     # 修正後のパターン
     new_pattern = r'\1\n\2[:-1], use_best_practices=True):'
-    
+
     # 置換実行
     new_content = re.sub(old_pattern, new_pattern, content)
-    
+
     if new_content != content:
         pm_worker_path.write_text(new_content)
         print("✅ PMWorker修正完了")

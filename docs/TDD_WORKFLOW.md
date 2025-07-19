@@ -62,38 +62,38 @@ from unittest.mock import Mock, patch
 
 class TestWorkerManager:
     """WorkerManagerのテストクラス"""
-    
+
     def test_should_initialize_with_default_config(self):
         """デフォルト設定で初期化できることを確認"""
         # Arrange
         expected_config = {'max_workers': 10}
-        
+
         # Act
         manager = WorkerManager()
-        
+
         # Assert
         assert manager.config == expected_config
-    
+
     def test_should_add_worker_successfully(self):
         """ワーカーを正常に追加できることを確認"""
         # Arrange
         manager = WorkerManager()
         worker = Mock()
-        
+
         # Act
         result = manager.add_worker(worker)
-        
+
         # Assert
         assert result is True
         assert worker in manager.workers
-    
+
     def test_should_handle_worker_failure(self):
         """ワーカー障害を適切に処理できることを確認"""
         # Arrange
         manager = WorkerManager()
         failing_worker = Mock()
         failing_worker.health_check.side_effect = Exception("Worker failed")
-        
+
         # Act & Assert
         with pytest.raises(WorkerFailureException):
             manager.check_worker_health(failing_worker)
@@ -106,18 +106,18 @@ class TestWorkerManager:
 
 class WorkerManager:
     """ワーカー管理クラス"""
-    
+
     def __init__(self, config=None):
         self.config = config or {'max_workers': 10}
         self.workers = []
-    
+
     def add_worker(self, worker):
         """ワーカーを追加"""
         if len(self.workers) >= self.config['max_workers']:
             return False
         self.workers.append(worker)
         return True
-    
+
     def check_worker_health(self, worker):
         """ワーカーの健全性をチェック"""
         try:
@@ -177,10 +177,10 @@ def test_example(self):
     # Arrange（準備）
     test_data = {"key": "value"}
     mock_service = Mock()
-    
+
     # Act（実行）
     result = process_data(test_data, mock_service)
-    
+
     # Assert（検証）
     assert result["status"] == "success"
     mock_service.save.assert_called_once_with(test_data)

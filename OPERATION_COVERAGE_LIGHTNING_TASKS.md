@@ -24,7 +24,7 @@
       "dependencies": []
     },
     {
-      "task_id": "T1_002", 
+      "task_id": "T1_002",
       "title": "commands/ai_stop.py 90%カバレッジ達成",
       "description": "停止プロセス、グレースフルシャットダウン、リソースクリーンアップのテスト",
       "target_coverage": 90,
@@ -33,7 +33,7 @@
     },
     {
       "task_id": "T1_003",
-      "title": "commands/ai_status.py 90%カバレッジ達成", 
+      "title": "commands/ai_status.py 90%カバレッジ達成",
       "description": "システム状態監視、ワーカー状態、ヘルスチェック機能のテスト",
       "target_coverage": 90,
       "estimated_hours": 2,
@@ -86,7 +86,7 @@
 ```json
 {
   "batch_id": "lightning_tier2_workers",
-  "priority": "HIGH", 
+  "priority": "HIGH",
   "auto_execution": true,
   "parallel_with": ["lightning_tier1_ai"],
   "tasks": [
@@ -100,7 +100,7 @@
     },
     {
       "task_id": "T2_002",
-      "title": "workers/pm_worker.py 90%カバレッジ達成", 
+      "title": "workers/pm_worker.py 90%カバレッジ達成",
       "description": "プロジェクト管理ワーカーのテスト。タスク調整、進捗管理、リソース配分を含む",
       "target_coverage": 90,
       "estimated_hours": 3,
@@ -233,14 +233,14 @@
 ```
 Hour 0-2:   TIER 1 Core Commands (T1_001-003) 並行実行
 Hour 2-4:   TIER 1 AI Commands (T1_004-006) + TIER 2開始
-Hour 4-6:   TIER 2 Workers完了 + TIER 3開始  
+Hour 4-6:   TIER 2 Workers完了 + TIER 3開始
 Hour 6-8:   TIER 3 Libs完了 + 最終検証
 Hour 8:     90%カバレッジ達成確認 + 成果報告
 ```
 
 ### **成功条件**
 - 🎯 **90%総合カバレッジ達成**
-- 🔬 **95%+テスト成功率維持** 
+- 🔬 **95%+テスト成功率維持**
 - ⚡ **8時間以内完了**
 - 🏆 **品質劣化なし**
 

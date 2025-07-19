@@ -43,41 +43,41 @@ from workers.new_worker import NewWorker
 class TestNewWorker:
     def setup_method(self):
         self.worker = None
-    
+
     def teardown_method(self):
         if self.worker:
             self.worker.cleanup()
-    
+
     @patch('pika.BlockingConnection')
     def test_initialization(self, mock_connection):
         mock_connection.return_value = Mock()
         self.worker = NewWorker()
         assert self.worker is not None
         assert self.worker.worker_type == 'new'
-    
+
     @patch('pika.BlockingConnection')
     def test_message_processing(self, mock_connection):
         mock_connection.return_value = Mock()
         self.worker = NewWorker()
-        
+
         # テストメッセージ
         test_body = json.dumps({
             'task_id': 'test_123',
             'data': 'test data'
         })
-        
+
         mock_channel = Mock()
         mock_method = Mock(delivery_tag='test_tag')
-        
+
         self.worker.process_message(
             mock_channel,
             mock_method,
             {},
             test_body
         )
-        
+
         mock_channel.basic_ack.assert_called_with(delivery_tag='test_tag')
-    
+
     def test_error_handling(self):
         # エラーケースのテスト
         pass

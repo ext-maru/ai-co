@@ -11,7 +11,7 @@ graph TD
     E --> B
     D -->|Score >= 85| F[ResultWorker]
     F --> G[Final Output]
-    
+
     H[TestWorker] --> I[Continuous Testing]
     I --> J[Test Results]
 ```
@@ -22,7 +22,7 @@ graph TD
 ```json
 {
   "message_id": "msg_uuid_here",
-  "task_id": "code_review_001", 
+  "task_id": "code_review_001",
   "timestamp": "2025-07-06T12:00:00Z",
   "worker_source": "task_worker",
   "worker_target": "pm_worker",
@@ -62,7 +62,7 @@ graph TD
         {
           "line": 2,
           "type": "style",
-          "severity": "warning", 
+          "severity": "warning",
           "message": "Missing docstring",
           "suggestion": "Add function docstring"
         }
@@ -103,7 +103,7 @@ graph TD
         "expected_improvement": 10
       },
       {
-        "priority": "medium", 
+        "priority": "medium",
         "category": "performance",
         "suggestion": "Consider using f-strings for string formatting",
         "expected_improvement": 5
@@ -134,7 +134,7 @@ graph TD
     "final_code": "def hello():\n    \"\"\"Print hello world message.\"\"\"\n    print('world')",
     "review_report": {
       "syntax_score": 95,
-      "logic_score": 85, 
+      "logic_score": 85,
       "performance_score": 80,
       "security_score": 90
     }

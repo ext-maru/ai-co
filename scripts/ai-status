@@ -28,7 +28,7 @@ declare -A workers=(
 for worker_name in "${!workers[@]}"; do
     pattern="${workers[$worker_name]}"
     count=$(ps aux | grep -E "$pattern" | grep -v grep | wc -l)
-    
+
     if [ $count -gt 0 ]; then
         echo -e "${GREEN}✅ $worker_name${NC} ($count running)"
         ps aux | grep -E "$pattern" | grep -v grep | awk '{printf "   PID: %-8s CPU: %-6s MEM: %-6s CMD: %s\n", $2, $3"%", $4"%", substr($0, index($0,$11))}'
@@ -85,19 +85,19 @@ import pika
 try:
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
-    
+
     # Check ai_tasks queue
     method = channel.queue_declare(queue='ai_tasks', passive=True, durable=True)
     print(f"  ai_tasks queue: {method.method.message_count} messages")
-    
+
     # Check ai_pm queue
     method = channel.queue_declare(queue='ai_pm', passive=True, durable=True)
     print(f"  ai_pm queue: {method.method.message_count} messages")
-    
+
     # Check ai_results queue
     method = channel.queue_declare(queue='ai_results', passive=True, durable=True)
     print(f"  ai_results queue: {method.method.message_count} messages")
-    
+
     connection.close()
 except Exception as e:
     print(f"  ❌ Could not connect to RabbitMQ: {e}")

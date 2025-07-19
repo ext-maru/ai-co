@@ -94,13 +94,13 @@ $$ language 'plpgsql';
 
 -- トリガー作成
 DROP TRIGGER IF EXISTS update_projects_updated_at ON projects;
-CREATE TRIGGER update_projects_updated_at 
-    BEFORE UPDATE ON projects 
+CREATE TRIGGER update_projects_updated_at
+    BEFORE UPDATE ON projects
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 DROP TRIGGER IF EXISTS update_project_configs_updated_at ON project_configs;
-CREATE TRIGGER update_project_configs_updated_at 
-    BEFORE UPDATE ON project_configs 
+CREATE TRIGGER update_project_configs_updated_at
+    BEFORE UPDATE ON project_configs
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- 初期データ挿入

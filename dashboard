@@ -19,4 +19,5 @@ os.environ["PYTHONPATH"] = str(project_root)
 
 # ダッシュボード起動
 import subprocess
+
 subprocess.run([str(python_path), str(project_root / "run_dashboard.py")])

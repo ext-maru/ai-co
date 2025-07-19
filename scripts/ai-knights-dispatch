@@ -63,36 +63,36 @@ check_prerequisites() {
         echo -e "${CROSS} ${RED}Knights framework not found!${NC}"
         return 1
     fi
-    
+
     if [ ! -f "scripts/deploy_incident_knights.py" ]; then
         echo -e "${CROSS} ${RED}Deployment script not found!${NC}"
         return 1
     fi
-    
+
     return 0
 }
 
 deploy_knights() {
     local force_flag="$1"
     local quiet_flag="$2"
-    
+
     if [ "$quiet_flag" != "--quiet" ]; then
         show_banner
         echo -e "${YELLOW}${SWORD} Deploying Knights Regiment...${NC}"
         echo ""
     fi
-    
+
     if ! check_prerequisites; then
         return 1
     fi
-    
+
     if [ "$quiet_flag" != "--quiet" ]; then
         echo -e "${BLUE}🏰 Initializing Knight Deployment...${NC}"
     fi
-    
+
     python3 scripts/deploy_incident_knights.py
     local deploy_result=$?
-    
+
     if [ $deploy_result -eq 0 ]; then
         if [ "$quiet_flag" != "--quiet" ]; then
             echo -e "${GREEN}${CHECK} Knights deployed successfully!${NC}"
@@ -106,21 +106,21 @@ deploy_knights() {
 
 check_knights_status() {
     local report_flag="$1"
-    
+
     show_banner
     echo -e "${CYAN}${SHIELD} Checking Knights Status...${NC}"
     echo ""
-    
+
     if [ -f "scripts/knights_status_check.py" ]; then
         python3 scripts/knights_status_check.py
         local status_result=$?
-        
+
         if [ "$report_flag" = "--report" ]; then
             echo ""
             echo -e "${YELLOW}📊 Generating Detailed Report...${NC}"
             python3 commands/ai_elder_council.py status
         fi
-        
+
         return $status_result
     else
         echo -e "${WARN} ${YELLOW}Status check script not available${NC}"
@@ -133,7 +133,7 @@ emergency_dispatch() {
     echo -e "${RED}${FIRE} EMERGENCY KNIGHTS DISPATCH ${FIRE}${NC}"
     echo -e "${YELLOW}⚡ Responding to critical system threats...${NC}"
     echo ""
-    
+
     # Check for critical issues first
     if command -v python3 >/dev/null 2>&1; then
         echo -e "${BLUE}🔍 Scanning for critical issues...${NC}"
@@ -143,7 +143,7 @@ emergency_dispatch() {
             return $?
         }
     fi
-    
+
     echo -e "${GREEN}${CHECK} No critical threats detected.${NC}"
     echo -e "${CYAN}Deploying standard knight patrol...${NC}"
     deploy_knights "" "--quiet"
@@ -155,7 +155,7 @@ patrol_mode() {
     echo -e "${YELLOW}Knights will patrol and auto-respond to threats${NC}"
     echo -e "${YELLOW}Press Ctrl+C to stop patrol${NC}"
     echo ""
-    
+
     # Start elder council monitoring which includes knights
     python3 commands/ai_elder_council.py start
 }
@@ -164,7 +164,7 @@ recall_knights() {
     show_banner
     echo -e "${CROWN} ${YELLOW}Recalling Knights to Base...${NC}"
     echo ""
-    
+
     # This would typically stop any running knight processes
     # For now, we'll just show the recall message
     echo -e "${GREEN}${CHECK} Knights recalled successfully${NC}"
@@ -174,7 +174,7 @@ recall_knights() {
 dispatch_repair_knights() {
     echo -e "${SWORD} ${CYAN}Dispatching Repair Knights Only...${NC}"
     echo ""
-    
+
     if [ -f "libs/auto_repair_knight.py" ]; then
         python3 libs/auto_repair_knight.py
         echo -e "${GREEN}${CHECK} Repair knights deployed${NC}"
@@ -187,7 +187,7 @@ dispatch_repair_knights() {
 dispatch_guard_knights() {
     echo -e "${SHIELD} ${CYAN}Dispatching Guardian Knights Only...${NC}"
     echo ""
-    
+
     if [ -f "libs/command_guardian_knight.py" ]; then
         python3 libs/command_guardian_knight.py
         echo -e "${GREEN}${CHECK} Guardian knights deployed${NC}"
@@ -200,7 +200,7 @@ dispatch_guard_knights() {
 dispatch_coverage_knights() {
     echo -e "📊 ${CYAN}Dispatching Coverage Enhancement Knights...${NC}"
     echo ""
-    
+
     if [ -f "libs/coverage_enhancement_knight.py" ]; then
         echo -e "${BLUE}🔍 Starting coverage analysis and idle monitoring...${NC}"
         python3 libs/coverage_enhancement_knight.py --monitor --duration 3600 &

@@ -3,68 +3,86 @@
 COVERAGE ENHANCEMENT KNIGHT - Strategic Test Generation for Core Modules
 Targets high-impact modules for maximum coverage gain
 """
+import ast
+import inspect
 import os
 import sys
 from pathlib import Path
-import ast
-import inspect
 
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+
 class CoverageEnhancementKnight:
     """Elder Servant: Coverage Enhancement Knight"""
-    
+
     def __init__(self):
         self.project_root = PROJECT_ROOT
         self.tests_generated = 0
-        
+
         # High-impact core modules for 15% coverage gain
         self.priority_modules = [
-            ('core/base_worker.py', 'tests/unit/core/test_base_worker_enhanced.py'),
-            ('core/security_module.py', 'tests/unit/core/test_security_module_enhanced.py'),
-            ('core/error_handler_mixin.py', 'tests/unit/core/test_error_handler_enhanced.py'),
-            ('core/lightweight_logger.py', 'tests/unit/core/test_lightweight_logger_enhanced.py'),
-            ('core/rate_limiter.py', 'tests/unit/core/test_rate_limiter_enhanced.py'),
-            ('libs/rabbit_manager.py', 'tests/unit/libs/test_rabbit_manager_enhanced.py'),
-            ('libs/env_config.py', 'tests/unit/libs/test_env_config_enhanced.py'),
-            ('libs/task_sender.py', 'tests/unit/libs/test_task_sender_enhanced.py'),
-            ('libs/slack_pm_manager.py', 'tests/unit/libs/test_slack_pm_manager_enhanced.py'),
-            ('libs/worker_health_monitor.py', 'tests/unit/libs/test_worker_health_monitor_enhanced.py'),
+            ("core/base_worker.py", "tests/unit/core/test_base_worker_enhanced.py"),
+            (
+                "core/security_module.py",
+                "tests/unit/core/test_security_module_enhanced.py",
+            ),
+            (
+                "core/error_handler_mixin.py",
+                "tests/unit/core/test_error_handler_enhanced.py",
+            ),
+            (
+                "core/lightweight_logger.py",
+                "tests/unit/core/test_lightweight_logger_enhanced.py",
+            ),
+            ("core/rate_limiter.py", "tests/unit/core/test_rate_limiter_enhanced.py"),
+            (
+                "libs/rabbit_manager.py",
+                "tests/unit/libs/test_rabbit_manager_enhanced.py",
+            ),
+            ("libs/env_config.py", "tests/unit/libs/test_env_config_enhanced.py"),
+            ("libs/task_sender.py", "tests/unit/libs/test_task_sender_enhanced.py"),
+            (
+                "libs/slack_pm_manager.py",
+                "tests/unit/libs/test_slack_pm_manager_enhanced.py",
+            ),
+            (
+                "libs/worker_health_monitor.py",
+                "tests/unit/libs/test_worker_health_monitor_enhanced.py",
+            ),
         ]
-    
+
     def analyze_module(self, module_path):
         """Analyze module to identify testable components"""
         try:
-            with open(self.project_root / module_path, 'r') as f:
+            with open(self.project_root / module_path, "r") as f:
                 source = f.read()
-            
+
             tree = ast.parse(source)
-            
+
             classes = []
             functions = []
-            
+
             for node in ast.walk(tree):
                 if isinstance(node, ast.ClassDef):
-                    methods = [n.name for n in node.body if isinstance(n, ast.FunctionDef)]
-                    classes.append({
-                        'name': node.name,
-                        'methods': methods
-                    })
+                    methods = [
+                        n.name for n in node.body if isinstance(n, ast.FunctionDef)
+                    ]
+                    classes.append({"name": node.name, "methods": methods})
                 elif isinstance(node, ast.FunctionDef) and node.col_offset == 0:
                     functions.append(node.name)
-            
+
             return classes, functions
-            
+
         except Exception as e:
             print(f"❌ Error analyzing {module_path}: {e}")
             return [], []
-    
+
     def generate_comprehensive_test(self, module_path, test_path):
         """Generate comprehensive test for a module"""
         classes, functions = self.analyze_module(module_path)
         module_name = Path(module_path).stem
-        
+
         test_content = f'''#!/usr/bin/env python3
 """
 Enhanced comprehensive tests for {module_name}
@@ -84,7 +102,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 # Import test utilities
 from tests.mock_utils import (
-    create_mock_rabbitmq, create_mock_redis, 
+    create_mock_rabbitmq, create_mock_redis,
     create_mock_slack, create_mock_logger,
     create_test_task_data
 )
@@ -95,7 +113,7 @@ except ImportError:
     # Try alternative import
     import importlib.util
     spec = importlib.util.spec_from_file_location(
-        "{module_name}", 
+        "{module_name}",
         PROJECT_ROOT / "{module_path}"
     )
     module = importlib.util.module_from_spec(spec)
@@ -109,52 +127,52 @@ except ImportError:
             test_content += f'''
 class Test{cls['name']}Enhanced(unittest.TestCase):
     """Enhanced tests for {cls['name']} with full coverage"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.mock_logger = create_mock_logger()
         self.mock_rabbit_conn, self.mock_channel = create_mock_rabbitmq()
         self.mock_redis = create_mock_redis()
         self.mock_slack = create_mock_slack()
-    
+
     def tearDown(self):
         """Clean up after tests"""
         pass
 '''
-            
+
             # Generate tests for each method
-            for method in cls['methods']:
-                if method.startswith('_'):
+            for method in cls["methods"]:
+                if method.startswith("_"):
                     continue
-                    
+
                 test_content += f'''
     def test_{method}_success(self):
         """Test {method} successful execution"""
         # TODO: Implement based on method signature
         pass
-    
+
     def test_{method}_with_error(self):
         """Test {method} error handling"""
         # TODO: Implement error scenarios
         pass
 '''
-                
+
                 # Add edge case tests for specific method patterns
-                if 'connect' in method.lower():
+                if "connect" in method.lower():
                     test_content += f'''
     def test_{method}_connection_retry(self):
         """Test {method} with connection retries"""
         # TODO: Test retry logic
         pass
 '''
-                elif 'send' in method.lower() or 'publish' in method.lower():
+                elif "send" in method.lower() or "publish" in method.lower():
                     test_content += f'''
     def test_{method}_with_timeout(self):
         """Test {method} with timeout scenarios"""
         # TODO: Test timeout handling
         pass
 '''
-                elif 'process' in method.lower() or 'handle' in method.lower():
+                elif "process" in method.lower() or "handle" in method.lower():
                     test_content += f'''
     def test_{method}_with_invalid_data(self):
         """Test {method} with invalid input data"""
@@ -168,22 +186,22 @@ class Test{cls['name']}Enhanced(unittest.TestCase):
 
 class Test{module_name.title().replace('_', '')}Functions(unittest.TestCase):
     """Tests for standalone functions in {module_name}"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.mock_logger = create_mock_logger()
 '''
-            
+
             for func in functions:
-                if func.startswith('_'):
+                if func.startswith("_"):
                     continue
-                    
+
                 test_content += f'''
     def test_{func}_success(self):
         """Test {func} successful execution"""
         # TODO: Implement based on function signature
         pass
-    
+
     def test_{func}_with_invalid_input(self):
         """Test {func} with invalid input"""
         # TODO: Test input validation
@@ -195,22 +213,22 @@ class Test{module_name.title().replace('_', '')}Functions(unittest.TestCase):
 
 class Test{module_name.title().replace('_', '')}Integration(unittest.TestCase):
     """Integration tests for {module_name}"""
-    
+
     def setUp(self):
         """Set up integration test environment"""
         self.mock_logger = create_mock_logger()
         self.mock_rabbit_conn, self.mock_channel = create_mock_rabbitmq()
-    
+
     def test_full_workflow(self):
         """Test complete workflow integration"""
         # TODO: Implement end-to-end workflow test
         pass
-    
+
     def test_concurrent_operations(self):
         """Test concurrent operation handling"""
         # TODO: Test thread safety and race conditions
         pass
-    
+
     def test_resource_cleanup(self):
         """Test proper resource cleanup"""
         # TODO: Test cleanup and resource management
@@ -220,26 +238,26 @@ class Test{module_name.title().replace('_', '')}Integration(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main()
 '''
-        
+
         # Create test directory if needed
         test_dir = self.project_root / Path(test_path).parent
         test_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Write test file
         test_file = self.project_root / test_path
         test_file.write_text(test_content)
         print(f"✅ Generated enhanced test: {test_path}")
         self.tests_generated += 1
-    
+
     def generate_all_priority_tests(self):
         """Generate tests for all priority modules"""
         print("⚔️ COVERAGE ENHANCEMENT KNIGHT DEPLOYED")
         print("=" * 60)
-        
+
         for module_path, test_path in self.priority_modules:
             print(f"\n🎯 Generating enhanced tests for: {module_path}")
             self.generate_comprehensive_test(module_path, test_path)
-        
+
         print("\n" + "=" * 60)
         print(f"✅ COVERAGE ENHANCEMENT KNIGHT MISSION COMPLETE")
         print(f"📊 Tests generated: {self.tests_generated}")
@@ -247,6 +265,6 @@ if __name__ == '__main__':
         print("=" * 60)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     knight = CoverageEnhancementKnight()
     knight.generate_all_priority_tests()

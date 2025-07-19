@@ -1,3 +1,3 @@
-from .task_sage import TaskSage, TaskStatus, TaskPriority
+from .task_sage import TaskPriority, TaskSage, TaskStatus
 
-__all__ = ['TaskSage', 'TaskStatus', 'TaskPriority']
+__all__ = ["TaskSage", "TaskStatus", "TaskPriority"]

@@ -37,7 +37,7 @@ AI Command Executorは、AIとユーザー間のコマンド実行を完全自�
 #### 1. CommandExecutorWorker
 - **場所**: `workers/command_executor_worker.py`
 - **機能**: pendingディレクトリを監視し、コマンドを自動実行
-- **特徴**: 
+- **特徴**:
   - RabbitMQを使わない独立したワーカー
   - 5秒ごとにディレクトリをチェック
   - エラーハンドリングとリトライ機能

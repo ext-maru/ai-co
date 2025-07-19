@@ -55,11 +55,11 @@ show_help() {
 log_message() {
     local message="$1"
     local timestamp=$(date '+%Y-%m-%d %H:%M:%S')
-    
+
     if [ "$QUIET_MODE" != "true" ]; then
         echo -e "$message"
     fi
-    
+
     if [ -n "$LOG_FILE" ]; then
         echo "[$timestamp] $message" | sed 's/\x1B\[[0-9;]*[JKmsu]//g' >> "$LOG_FILE"
     fi
@@ -68,11 +68,11 @@ log_message() {
 assess_system_threat_level() {
     local threat_level="NONE"
     local issue_count=0
-    
+
     # Check Elder Council triggers
     if command -v python3 >/dev/null 2>&1; then
         local triggers_output=$(python3 commands/ai_elder_council.py triggers 2>/dev/null)
-        
+
         if echo "$triggers_output" | grep -q "CRITICAL"; then
             threat_level="CRITICAL"
             issue_count=$((issue_count + $(echo "$triggers_output" | grep -c "CRITICAL")))
@@ -87,14 +87,14 @@ assess_system_threat_level() {
             issue_count=$((issue_count + $(echo "$triggers_output" | grep -c "LOW")))
         fi
     fi
-    
+
     echo "$threat_level:$issue_count"
 }
 
 should_dispatch_knights() {
     local current_threat="$1"
     local threshold="$2"
-    
+
     case "$threshold" in
         "CRITICAL")
             [ "$current_threat" = "CRITICAL" ]
@@ -118,9 +118,9 @@ smart_dispatch_decision() {
     local threat_info="$1"
     local threat_level=$(echo "$threat_info" | cut -d: -f1)
     local issue_count=$(echo "$threat_info" | cut -d: -f2)
-    
+
     log_message "${THINKING} ${CYAN}AI Analysis: Threat=${threat_level}, Issues=${issue_count}${NC}"
-    
+
     # Smart decision logic
     case "$threat_level" in
         "CRITICAL")
@@ -155,11 +155,11 @@ smart_dispatch_decision() {
 execute_dispatch() {
     local dispatch_type="$1"
     local quiet_flag=""
-    
+
     if [ "$QUIET_MODE" = "true" ]; then
         quiet_flag="--quiet"
     fi
-    
+
     case "$dispatch_type" in
         "FULL_DEPLOYMENT")
             log_message "${FIRE} ${RED}Executing FULL DEPLOYMENT${NC}"
@@ -186,22 +186,22 @@ execute_dispatch() {
 monitor_mode() {
     local interval="$1"
     local threshold="$2"
-    
+
     log_message "${ROBOT} ${CYAN}Starting continuous monitoring mode${NC}"
     log_message "${BLUE}Interval: ${interval}s, Threshold: ${threshold}${NC}"
     log_message "${YELLOW}Press Ctrl+C to stop monitoring${NC}"
     echo ""
-    
+
     while true; do
         local threat_info=$(assess_system_threat_level)
         local threat_level=$(echo "$threat_info" | cut -d: -f1)
         local issue_count=$(echo "$threat_info" | cut -d: -f2)
-        
+
         log_message "${THINKING} ${CYAN}[$(date '+%H:%M:%S')] Threat Level: ${threat_level}, Issues: ${issue_count}${NC}"
-        
+
         if should_dispatch_knights "$threat_level" "$threshold"; then
             log_message "${FIRE} ${RED}Threat threshold exceeded! Dispatching knights...${NC}"
-            
+
             if [ "$MODE" = "smart" ]; then
                 local decision=$(smart_dispatch_decision "$threat_info")
                 execute_dispatch "$decision"
@@ -211,25 +211,25 @@ monitor_mode() {
         else
             log_message "${CHECK} ${GREEN}System within acceptable parameters${NC}"
         fi
-        
+
         sleep "$interval"
     done
 }
 
 once_mode() {
     local threshold="$1"
-    
+
     log_message "${SHIELD} ${CYAN}Single assessment mode${NC}"
-    
+
     local threat_info=$(assess_system_threat_level)
     local threat_level=$(echo "$threat_info" | cut -d: -f1)
     local issue_count=$(echo "$threat_info" | cut -d: -f2)
-    
+
     log_message "${THINKING} ${CYAN}Assessment: Threat=${threat_level}, Issues=${issue_count}${NC}"
-    
+
     if should_dispatch_knights "$threat_level" "$threshold"; then
         log_message "${FIRE} ${YELLOW}Dispatching knights based on assessment...${NC}"
-        
+
         if [ "$MODE" = "smart" ]; then
             local decision=$(smart_dispatch_decision "$threat_info")
             execute_dispatch "$decision"
@@ -244,7 +244,7 @@ once_mode() {
 emergency_mode() {
     log_message "${FIRE} ${RED}Emergency-only monitoring mode${NC}"
     log_message "${YELLOW}Will only dispatch for CRITICAL threats${NC}"
-    
+
     monitor_mode "$INTERVAL" "CRITICAL"
 }
 

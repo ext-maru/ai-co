@@ -132,7 +132,7 @@ BACKEND_HOST=0.0.0.0
 BACKEND_PORT=8000
 DATABASE_URL=sqlite:///app/data/contract_upload.db
 
-# Frontend設定  
+# Frontend設定
 FRONTEND_HOST=0.0.0.0
 FRONTEND_PORT=3000
 REACT_APP_API_URL=http://57.181.4.111:8000
@@ -178,7 +178,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # プロキシタイムアウト
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
@@ -192,7 +192,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # APIタイムアウト（ファイルアップロード対応）
         proxy_connect_timeout 300s;
         proxy_send_timeout 300s;
@@ -203,7 +203,7 @@ server {
     location /uploads/ {
         alias /opt/elders-guild/contract-upload-system/uploads/;
         expires 7d;
-        
+
         # セキュリティ制限
         location ~* \.(php|pl|py|jsp|asp|sh|cgi)$ {
             deny all;

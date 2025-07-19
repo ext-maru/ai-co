@@ -94,11 +94,11 @@ export class StatusItem extends vscode.TreeItem {
         super(label, collapsibleState);
         this.tooltip = description;
         this.description = description;
-        
+
         if (contextValue) {
             this.contextValue = contextValue;
         }
-        
+
         // Set icons based on context
         switch (contextValue) {
             case 'info':

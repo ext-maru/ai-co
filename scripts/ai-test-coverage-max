@@ -49,28 +49,28 @@ analyze_coverage() {
     log_info "📊 Analyzing current test coverage"
     echo "=================================="
     echo ""
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Run coverage analysis
     log_info "Running coverage analysis..."
     python3 -m coverage run -m pytest tests/unit/commands/ -v --tb=short
     python3 -m coverage report --include="commands/*" > /tmp/coverage_report.txt
-    
+
     # Display summary
     echo -e "${cyan}📈 Coverage Summary:${nc}"
     tail -10 /tmp/coverage_report.txt
-    
+
     # Find commands without tests
     echo ""
     echo -e "${cyan}🔍 Commands without dedicated tests:${nc}"
     find_commands_without_tests
-    
+
     # Find low coverage files
     echo ""
     echo -e "${cyan}⚠️ Commands with low coverage (<80%):${nc}"
     python3 -m coverage report --include="commands/*" | awk '$4 < 80 && NR > 1 && $1 != "TOTAL" {print $1, $4"%"}'
-    
+
     echo ""
     log_info "✅ Analysis complete. Run 'ai-test-coverage-max generate' to create missing tests."
 }
@@ -80,12 +80,12 @@ find_commands_without_tests() {
     local commands_dir="$PROJECT_ROOT/commands"
     local tests_dir="$PROJECT_ROOT/tests/unit/commands"
     local count=0
-    
+
     for cmd_file in "$commands_dir"/ai_*.py; do
         if [ -f "$cmd_file" ]; then
             local basename=$(basename "$cmd_file" .py)
             local test_file="$tests_dir/test_${basename}.py"
-            
+
             # Check for any test variant
             if ! ls "$tests_dir"/test_${basename}*.py >/dev/null 2>&1; then
                 echo "  ❌ $basename (no test file found)"
@@ -93,7 +93,7 @@ find_commands_without_tests() {
             fi
         fi
     done
-    
+
     if [ $count -eq 0 ]; then
         echo "  ✅ All commands have test files!"
     else
@@ -107,35 +107,35 @@ generate_missing_tests() {
     log_info "🔧 Generating missing test files"
     echo "================================"
     echo ""
-    
+
     local commands_dir="$PROJECT_ROOT/commands"
     local tests_dir="$PROJECT_ROOT/tests/unit/commands"
     local generated=0
-    
+
     # Commands that need comprehensive tests
     local priority_commands=(
         "ai_elder_proactive"
         "ai_grand_elder"
         "ai_evolve_daily"
     )
-    
+
     for cmd_name in "${priority_commands[@]}"; do
         local cmd_file="$commands_dir/${cmd_name}.py"
         local test_file="$tests_dir/test_${cmd_name}_comprehensive.py"
-        
+
         if [ -f "$cmd_file" ] && [ ! -f "$test_file" ]; then
             log_info "Generating comprehensive test for $cmd_name..."
             generate_comprehensive_test "$cmd_name" "$test_file"
             generated=$((generated + 1))
         fi
     done
-    
+
     # Generate tests for any remaining commands without tests
     for cmd_file in "$commands_dir"/ai_*.py; do
         if [ -f "$cmd_file" ]; then
             local basename=$(basename "$cmd_file" .py)
             local test_file="$tests_dir/test_${basename}.py"
-            
+
             if ! ls "$tests_dir"/test_${basename}*.py >/dev/null 2>&1; then
                 log_info "Generating test for $basename..."
                 generate_standard_test "$basename" "$test_file"
@@ -143,7 +143,7 @@ generate_missing_tests() {
             fi
         fi
     done
-    
+
     log_info "✅ Generated $generated test files"
 }
 
@@ -151,7 +151,7 @@ generate_missing_tests() {
 generate_comprehensive_test() {
     local cmd_name="$1"
     local test_file="$2"
-    
+
     cat > "$test_file" << 'EOF'
 #!/usr/bin/env python3
 """
@@ -188,21 +188,21 @@ except ImportError:
 
 class TestCMD_NAMEComprehensive(unittest.TestCase):
     """包括的テストクラス"""
-    
+
     def setUp(self):
         """テストセットアップ"""
         pass
-    
+
     def test_main_function_coverage(self):
         """メイン関数の全パスカバレッジ"""
         # TODO: Implement comprehensive main function tests
         pass
-    
+
     def test_error_handling_coverage(self):
         """エラーハンドリングの全パスカバレッジ"""
         # TODO: Test all error paths
         pass
-    
+
     def test_edge_cases_coverage(self):
         """エッジケースの全パスカバレッジ"""
         # TODO: Test boundary conditions
@@ -212,10 +212,10 @@ class TestCMD_NAMEComprehensive(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main(verbosity=2)
 EOF
-    
+
     # Replace CMD_NAME placeholder
     sed -i "s/CMD_NAME/$cmd_name/g" "$test_file"
-    
+
     chmod +x "$test_file"
 }
 
@@ -223,7 +223,7 @@ EOF
 generate_standard_test() {
     local cmd_name="$1"
     local test_file="$2"
-    
+
     cat > "$test_file" << 'EOF'
 #!/usr/bin/env python3
 """
@@ -251,7 +251,7 @@ except ImportError:
 
 class TestCMD_NAME(unittest.TestCase):
     """CMD_NAME基本テスト"""
-    
+
     def test_main_function(self):
         """メイン関数テスト"""
         with patch('sys.argv', ['CMD_NAME', '--help']):
@@ -262,10 +262,10 @@ class TestCMD_NAME(unittest.TestCase):
 if __name__ == '__main__':
     unittest.main(verbosity=2)
 EOF
-    
+
     # Replace CMD_NAME placeholder
     sed -i "s/CMD_NAME/$cmd_name/g" "$test_file"
-    
+
     chmod +x "$test_file"
 }
 
@@ -274,27 +274,27 @@ run_coverage_tests() {
     log_info "🚀 Running tests with coverage measurement"
     echo "========================================="
     echo ""
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Clean previous coverage data
     rm -f .coverage
     rm -rf htmlcov/
-    
+
     # Run tests with coverage
     log_info "Executing test suite..."
     python3 -m coverage run -m pytest tests/unit/commands/ -v --tb=short
-    
+
     # Generate coverage report
     log_info "Generating coverage report..."
     python3 -m coverage report --include="commands/*"
     python3 -m coverage html --include="commands/*"
-    
+
     # Display summary
     echo ""
     echo -e "${cyan}📊 Coverage Results:${nc}"
     python3 -m coverage report --include="commands/*" | tail -15
-    
+
     echo ""
     log_info "✅ Coverage report generated: $COVERAGE_REPORT"
     echo "Open in browser: firefox $COVERAGE_REPORT"
@@ -305,17 +305,17 @@ generate_coverage_report() {
     log_info "📋 Generating detailed coverage report"
     echo "====================================="
     echo ""
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Create comprehensive report
     local report_file="$PROJECT_ROOT/docs/COMMAND_TEST_COVERAGE_REPORT.md"
-    
+
     cat > "$report_file" << EOF
 # AI Company Command Test Coverage Report
 
-**Generated**: $(date -Iseconds)  
-**Tool**: AI Test Coverage Maximizer  
+**Generated**: $(date -Iseconds)
+**Tool**: AI Test Coverage Maximizer
 
 ## Coverage Summary
 
@@ -327,32 +327,32 @@ $(python3 -m coverage report --include="commands/*" 2>/dev/null || echo "Coverag
 
 ### ✅ Commands with 100% Coverage
 EOF
-    
+
     # Find 100% coverage commands
     python3 -m coverage report --include="commands/*" 2>/dev/null | awk '$4 == 100 && NR > 1 && $1 != "TOTAL" {print "- "$1" (100%)"}' >> "$report_file"
-    
+
     echo "" >> "$report_file"
     echo "### ⚠️ Commands Needing Improvement" >> "$report_file"
-    
+
     # Find low coverage commands
     python3 -m coverage report --include="commands/*" 2>/dev/null | awk '$4 < 80 && NR > 1 && $1 != "TOTAL" {print "- "$1" ("$4"%)"}' >> "$report_file"
-    
+
     echo "" >> "$report_file"
     echo "### 📊 Coverage by Category" >> "$report_file"
     echo "" >> "$report_file"
-    
+
     # Categorize commands
     echo "#### System Commands" >> "$report_file"
     python3 -m coverage report --include="commands/ai_start*,commands/ai_stop*,commands/ai_status*,commands/ai_health*" 2>/dev/null | grep -E "ai_(start|stop|status|health)" >> "$report_file" || true
-    
+
     echo "" >> "$report_file"
     echo "#### Task Commands" >> "$report_file"
     python3 -m coverage report --include="commands/ai_task*,commands/ai_send*,commands/ai_queue*" 2>/dev/null | grep -E "ai_(task|send|queue)" >> "$report_file" || true
-    
+
     echo "" >> "$report_file"
     echo "#### Worker Commands" >> "$report_file"
     python3 -m coverage report --include="commands/ai_worker*" 2>/dev/null | grep "ai_worker" >> "$report_file" || true
-    
+
     echo "" >> "$report_file"
     echo "## Improvement Strategy" >> "$report_file"
     echo "" >> "$report_file"
@@ -360,7 +360,7 @@ EOF
     echo "2. Add edge case tests for error handling" >> "$report_file"
     echo "3. Ensure all command options are tested" >> "$report_file"
     echo "4. Test integration with external systems (mocked)" >> "$report_file"
-    
+
     log_info "✅ Detailed report saved: $report_file"
 }
 
@@ -369,15 +369,15 @@ show_missing_coverage() {
     log_info "🔍 Showing missing coverage lines"
     echo "================================="
     echo ""
-    
+
     cd "$PROJECT_ROOT"
-    
+
     # Show missing lines for low coverage files
     echo -e "${cyan}Files with missing coverage:${nc}"
     echo ""
-    
+
     python3 -m coverage report --include="commands/*" -m | grep -E "(ai_.*\.py|TOTAL)" | awk '$4 < 80 {print}'
-    
+
     echo ""
     echo -e "${blue}To see detailed missing lines for a specific file:${nc}"
     echo "  python3 -m coverage report -m --include='commands/ai_example.py'"
@@ -389,12 +389,12 @@ show_missing_coverage() {
 # Fix helper method references in tests
 fix_test_helper_references() {
     log_info "🔧 Fixing test helper method references"
-    
+
     local test_file="$1"
-    
+
     # Common fixes for helper method tests
     sed -i 's/self\.test_insight/self.setUp().test_insight/g' "$test_file" 2>/dev/null || true
-    
+
     # Add missing test_insight to setUp if needed
     if grep -q "test_insight" "$test_file" && ! grep -q "self.test_insight" "$test_file"; then
         sed -i '/def setUp(self):/a\        self.test_insight = self._create_test_insight()' "$test_file"
@@ -405,7 +405,7 @@ fix_test_helper_references() {
 main() {
     cd "$PROJECT_ROOT"
     init_coverage
-    
+
     case "${1:-}" in
         "analyze")
             analyze_coverage

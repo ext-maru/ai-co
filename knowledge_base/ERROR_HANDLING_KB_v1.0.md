@@ -135,7 +135,7 @@ import subprocess
 
 def check_rabbitmq_service():
     try:
-        result = subprocess.run(['systemctl', 'is-active', 'rabbitmq-server'], 
+        result = subprocess.run(['systemctl', 'is-active', 'rabbitmq-server'],
                               capture_output=True, text=True)
         if result.stdout.strip() != 'active':
             # AI Command Executorで起動
@@ -235,7 +235,7 @@ class NewWorker(BaseWorker):
     def __init__(self):
         super().__init__(worker_type='new')
         self.config = get_config()
-    
+
     def process_message(self, ch, method, properties, body):
         try:
             # ビジネスロジック
@@ -243,7 +243,7 @@ class NewWorker(BaseWorker):
         except Exception as e:
             self.handle_error(e, "process_message")
             self._safe_notify("エラーが発生しました")
-    
+
     def _safe_notify(self, message):
         """安全なSlack通知"""
         try:

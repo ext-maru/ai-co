@@ -18,7 +18,7 @@
    ```python
    # Before
    class TemplateServant(ElderServantBase):
-   
+
    # After (例: CodeCrafterの場合)
    class CodeCrafterServant(DwarfServant):
    ```
@@ -27,10 +27,10 @@
    ```bash
    # RED: テストが失敗することを確認
    pytest tests/elder_servants/test_code_crafter.py -v
-   
+
    # GREEN: 最小限の実装でテストを通す
    # (実装を少しずつ追加)
-   
+
    # REFACTOR: コードを改善
    # (リファクタリング後も必ずテストを実行)
    ```
@@ -65,7 +65,7 @@
    ```python
    # ドワーフ工房の場合
    return TemplateServant("servant_name", ServantDomain.DWARF_WORKSHOP)
-   
+
    # RAGウィザーズの場合
    return TemplateServant("servant_name", ServantDomain.RAG_WIZARDS)
    ```

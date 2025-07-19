@@ -29,7 +29,7 @@ class UnifiedAuthProvider:
     - Elder階層システム連携
     - 4賢者システム統合
     """
-    
+
     def __init__(self):
         self.jwt_manager = JWTManager()
         self.session_manager = SessionManager()
@@ -48,13 +48,13 @@ class MFAManager:
     - Email認証
     - Hardware keys (FIDO2/WebAuthn)
     """
-    
+
     async def enable_totp(self, user_id: int) -> TOTPSecret:
         # TOTP設定
-        
+
     async def verify_totp(self, user_id: int, token: str) -> bool:
         # TOTP検証
-        
+
     async def send_sms_code(self, user_id: int, phone: str) -> str:
         # SMS認証コード送信
 ```
@@ -69,10 +69,10 @@ class OAuth2Manager:
     - Microsoft Azure AD
     - 企業LDAP/Active Directory
     """
-    
+
     async def initiate_oauth_flow(self, provider: str, redirect_uri: str) -> OAuthState:
         # OAuth2フロー開始
-        
+
     async def handle_oauth_callback(self, state: str, code: str) -> AuthResult:
         # OAuth2コールバック処理
 ```
@@ -87,10 +87,10 @@ class APIKeyManager:
     - 使用状況追跡
     - 自動ローテーション
     """
-    
+
     async def generate_api_key(self, user_id: int, scopes: List[str]) -> APIKey:
         # APIキー生成
-        
+
     async def validate_api_key(self, key: str) -> Optional[APIKeyInfo]:
         # APIキー検証
 ```
@@ -105,10 +105,10 @@ class ElderAuthIntegration:
     - 評議会認証
     - 賢者間通信認証
     """
-    
+
     async def authenticate_elder(self, elder_id: str, credentials: Dict) -> ElderAuthResult:
         # Elder認証
-        
+
     async def authorize_sage_action(self, sage_type: str, action: str, user: User) -> bool:
         # 賢者アクション認可
 ```
@@ -125,33 +125,33 @@ CREATE TABLE users (
     email VARCHAR(100) UNIQUE NOT NULL,
     phone VARCHAR(20),
     hashed_password VARCHAR(255) NOT NULL,
-    
+
     -- Elder階層
     elder_role VARCHAR(20) DEFAULT 'servant',
     sage_type VARCHAR(20),
     elder_level INTEGER DEFAULT 0,
-    
+
     -- セキュリティ
     mfa_enabled BOOLEAN DEFAULT FALSE,
     mfa_secret VARCHAR(255),
     backup_codes TEXT[],
-    
+
     -- アカウント状態
     is_active BOOLEAN DEFAULT TRUE,
     is_verified BOOLEAN DEFAULT FALSE,
     email_verified BOOLEAN DEFAULT FALSE,
     phone_verified BOOLEAN DEFAULT FALSE,
-    
+
     -- セキュリティ追跡
     failed_login_attempts INTEGER DEFAULT 0,
     locked_until TIMESTAMP,
     password_changed_at TIMESTAMP,
-    
+
     -- OAuth統合
     oauth_provider VARCHAR(50),
     oauth_id VARCHAR(100),
     oauth_data JSONB,
-    
+
     -- タイムスタンプ
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
@@ -165,31 +165,31 @@ CREATE TABLE users (
 CREATE TABLE user_sessions (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    
+
     -- セッション情報
     session_token VARCHAR(255) UNIQUE NOT NULL,
     refresh_token VARCHAR(255) UNIQUE,
     jwt_token_id VARCHAR(100),
-    
+
     -- デバイス情報
     device_id VARCHAR(100),
     device_name VARCHAR(100),
     device_type VARCHAR(50),
     device_fingerprint VARCHAR(255),
-    
+
     -- 接続情報
     ip_address INET,
     user_agent TEXT,
     geolocation JSONB,
-    
+
     -- セキュリティ
     is_trusted_device BOOLEAN DEFAULT FALSE,
     requires_mfa BOOLEAN DEFAULT FALSE,
     mfa_verified BOOLEAN DEFAULT FALSE,
-    
+
     -- 状態
     is_active BOOLEAN DEFAULT TRUE,
-    
+
     -- タイムスタンプ
     created_at TIMESTAMP DEFAULT NOW(),
     expires_at TIMESTAMP NOT NULL,
@@ -203,29 +203,29 @@ CREATE TABLE user_sessions (
 CREATE TABLE api_keys (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    
+
     -- キー情報
     key_id VARCHAR(50) UNIQUE NOT NULL,
     key_hash VARCHAR(255) NOT NULL,
     key_prefix VARCHAR(20) NOT NULL,
-    
+
     -- メタデータ
     name VARCHAR(100) NOT NULL,
     description TEXT,
     scopes TEXT[] DEFAULT '{}',
-    
+
     -- 使用制限
     rate_limit_per_minute INTEGER DEFAULT 60,
     rate_limit_per_hour INTEGER DEFAULT 3600,
     rate_limit_per_day INTEGER DEFAULT 86400,
-    
+
     -- 統計
     usage_count INTEGER DEFAULT 0,
     last_used TIMESTAMP,
-    
+
     -- 状態
     is_active BOOLEAN DEFAULT TRUE,
-    
+
     -- タイムスタンプ
     created_at TIMESTAMP DEFAULT NOW(),
     expires_at TIMESTAMP,
@@ -238,27 +238,27 @@ CREATE TABLE api_keys (
 CREATE TABLE mfa_devices (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    
+
     -- デバイス情報
     device_type VARCHAR(20) NOT NULL, -- 'totp', 'sms', 'email', 'fido2'
     device_name VARCHAR(100) NOT NULL,
     device_identifier VARCHAR(255),
-    
+
     -- TOTP設定
     totp_secret VARCHAR(255),
     totp_algorithm VARCHAR(10) DEFAULT 'SHA1',
     totp_digits INTEGER DEFAULT 6,
     totp_period INTEGER DEFAULT 30,
-    
+
     -- FIDO2設定
     fido2_credential_id VARCHAR(255),
     fido2_public_key TEXT,
     fido2_counter INTEGER DEFAULT 0,
-    
+
     -- 状態
     is_active BOOLEAN DEFAULT TRUE,
     is_verified BOOLEAN DEFAULT FALSE,
-    
+
     -- タイムスタンプ
     created_at TIMESTAMP DEFAULT NOW(),
     verified_at TIMESTAMP,
@@ -271,23 +271,23 @@ CREATE TABLE mfa_devices (
 CREATE TABLE oauth_integrations (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    
+
     -- OAuth情報
     provider VARCHAR(50) NOT NULL,
     provider_user_id VARCHAR(100) NOT NULL,
-    
+
     -- トークン情報
     access_token VARCHAR(500),
     refresh_token VARCHAR(500),
     token_expires_at TIMESTAMP,
-    
+
     -- プロバイダー情報
     provider_data JSONB,
     profile_data JSONB,
-    
+
     -- 状態
     is_active BOOLEAN DEFAULT TRUE,
-    
+
     -- タイムスタンプ
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
@@ -300,26 +300,26 @@ CREATE TABLE oauth_integrations (
 CREATE TABLE auth_audit_log (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
-    
+
     -- イベント情報
     event_type VARCHAR(50) NOT NULL,
     event_category VARCHAR(20) NOT NULL, -- 'auth', 'authz', 'security'
     event_action VARCHAR(50) NOT NULL,
     event_result VARCHAR(20) NOT NULL, -- 'success', 'failure', 'blocked'
-    
+
     -- 詳細情報
     details JSONB,
     error_message TEXT,
-    
+
     -- 接続情報
     ip_address INET,
     user_agent TEXT,
     session_id VARCHAR(255),
-    
+
     -- セキュリティ
     risk_score INTEGER DEFAULT 0,
     flagged BOOLEAN DEFAULT FALSE,
-    
+
     -- タイムスタンプ
     created_at TIMESTAMP DEFAULT NOW()
 );
@@ -337,10 +337,10 @@ class PasswordSecurity:
     - 履歴管理
     - 自動期限切れ
     """
-    
+
     def validate_password_strength(self, password: str, user_context: Dict) -> PasswordValidation:
         # パスワード強度検証
-        
+
     def check_password_history(self, user_id: int, password: str) -> bool:
         # パスワード履歴チェック
 ```
@@ -355,10 +355,10 @@ class ThreatDetector:
     - デバイス異常検知
     - 地理的異常検知
     """
-    
+
     async def analyze_login_attempt(self, user_id: int, login_data: Dict) -> ThreatScore:
         # ログイン試行分析
-        
+
     async def detect_brute_force(self, ip_address: str, user_id: int) -> bool:
         # ブルートフォース攻撃検知
 ```
@@ -373,10 +373,10 @@ class SessionManager:
     - 同時セッション制御
     - 自動期限切れ
     """
-    
+
     async def create_session(self, user: User, device_info: Dict) -> SessionResult:
         # セッション作成
-        
+
     async def validate_session(self, session_token: str) -> Optional[Session]:
         # セッション検証
 ```
@@ -439,10 +439,10 @@ class SessionManager:
 class TestUnifiedAuthProvider:
     def test_basic_authentication(self):
         # 基本認証テスト
-        
+
     def test_mfa_flow(self):
         # MFA フローテスト
-        
+
     def test_oauth_integration(self):
         # OAuth統合テスト
 ```
@@ -453,7 +453,7 @@ class TestUnifiedAuthProvider:
 class TestAuthenticationFlow:
     def test_full_login_flow(self):
         # 完全ログインフローテスト
-        
+
     def test_session_management(self):
         # セッション管理テスト
 ```
@@ -464,7 +464,7 @@ class TestAuthenticationFlow:
 class TestSecurityFeatures:
     def test_brute_force_protection(self):
         # ブルートフォース保護テスト
-        
+
     def test_jwt_security(self):
         # JWT セキュリティテスト
 ```
@@ -529,7 +529,7 @@ class TestSecurityFeatures:
 
 ---
 
-**更新日**: 2025年7月9日  
-**承認**: エルダーズ評議会  
+**更新日**: 2025年7月9日
+**承認**: エルダーズ評議会
 **実装責任者**: クロードエルダー
 **次期レビュー**: 2025年7月16日

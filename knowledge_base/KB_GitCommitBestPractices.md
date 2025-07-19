@@ -125,7 +125,7 @@ Add comprehensive notification system with multiple channels
 support including email, Slack, and SMS integration.
 
 - Implement retry mechanism with exponential backoff
-- Add template engine for message formatting  
+- Add template engine for message formatting
 - Create unified notification interface
 - Support priority-based queue processing
 
@@ -189,7 +189,7 @@ Refs: code_20250703_123456
 fix: バグ修正
 feat: 新機能追加
 
-# ✅ 良い例  
+# ✅ 良い例
 fix(pm_worker): resolve race condition in file detection
 feat(notification): add email template customization
 ```
@@ -201,7 +201,7 @@ feat(notification): add email template customization
 
 # ✅ 良い例
 Fix race condition that occurred when multiple workers
-tried to detect new files simultaneously. 
+tried to detect new files simultaneously.
 
 The issue was caused by:
 - Lack of file locking mechanism

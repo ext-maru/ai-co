@@ -14,7 +14,7 @@ from core import BaseWorker
 class MyWorker(BaseWorker):
     def __init__(self):
         super().__init__(worker_type='my_worker')
-    
+
     def process_message(self, ch, method, properties, body):
         # メッセージ処理を実装
         task = json.loads(body)
@@ -30,7 +30,7 @@ from core import BaseManager
 class MyManager(BaseManager):
     def __init__(self):
         super().__init__("MyManager")
-    
+
     def initialize(self):
         # 初期化処理
         return True
@@ -121,26 +121,26 @@ class DataProcessWorker(BaseWorker):
     def __init__(self):
         super().__init__(worker_type='data_process')
         self.config = get_config()
-        
+
     def process_message(self, ch, method, properties, body):
         try:
             data = json.loads(body)
             self.logger.info(f"{EMOJI['process']} Processing data...")
-            
+
             # データ処理
             result = self.process_data(data)
-            
+
             # 結果送信
             self.send_result({
                 'task_id': data.get('task_id'),
                 'status': 'completed',
                 'result': result
             })
-            
+
         except Exception as e:
             self.handle_error(e, "process_data")
             raise
-    
+
     def process_data(self, data):
         # 実際の処理
         return {"processed": True}
@@ -155,17 +155,17 @@ class CacheManager(BaseManager):
     def __init__(self):
         super().__init__("CacheManager")
         self.cache = {}
-        
+
     def initialize(self):
         # キャッシュの初期化
         self.logger.info("Cache initialized")
         return True
-    
+
     def get(self, key):
         value = self.cache.get(key)
         self._increment_stats("get")
         return value
-    
+
     def set(self, key, value):
         self.cache[key] = value
         self._increment_stats("set")
@@ -177,7 +177,7 @@ class CacheManager(BaseManager):
 # ワーカーのテスト
 python3 core/examples/enhanced_task_worker.py
 
-# マネージャーのテスト  
+# マネージャーのテスト
 python3 core/examples/enhanced_rag_manager.py
 
 # ユニットテスト（将来実装）
@@ -262,5 +262,5 @@ Elders Guild内部使用
 
 ---
 
-**Version**: 1.0.0  
+**Version**: 1.0.0
 **Last Updated**: 2025-07-01

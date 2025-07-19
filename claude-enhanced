@@ -14,7 +14,7 @@ if [ -f "claude_startup_hook.js" ]; then
     echo "📚 Loading CLAUDE.md knowledge..."
     node claude_startup_hook.js
     HOOK_EXIT_CODE=$?
-    
+
     if [ $HOOK_EXIT_CODE -eq 0 ]; then
         echo "✅ Knowledge loaded successfully"
     else

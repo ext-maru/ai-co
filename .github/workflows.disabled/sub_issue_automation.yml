@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: 🧙‍♂️ 4賢者システム統合
         uses: actions/github-script@v7
         with:
@@ -31,18 +31,18 @@ jobs:
             const issue = context.payload.issue;
             const comment = context.payload.comment;
             const pr = context.payload.pull_request;
-            
+
             // Sub Issue完了時の自動処理
             if (context.eventName === 'issues' && context.payload.action === 'closed') {
               // 4賢者システムのラベルをチェック
               const sageLabels = ['knowledge-sage', 'task-sage', 'incident-sage', 'rag-sage'];
-              const hasSageLabel = issue.labels.some(label => 
+              const hasSageLabel = issue.labels.some(label =>
                 sageLabels.includes(label.name.toLowerCase())
               );
-              
+
               if (hasSageLabel) {
                 console.log(`🎉 ${issue.title} 完了 - Master Issue進捗更新中...`);
-                
+
                 // Master Issueを検索（Parent Issue）
                 const issues = await github.rest.issues.listForRepo({
                   owner: context.repo.owner,
@@ -50,7 +50,7 @@ jobs:
                   state: 'open',
                   labels: 'epic'
                 });
-                
+
                 // Master Issueに進捗更新コメントを追加
                 for (const masterIssue of issues.data) {
                   if (masterIssue.body.includes('エルダーズギルド統合計画')) {
@@ -59,32 +59,32 @@ jobs:
                       repo: context.repo.repo,
                       issue_number: masterIssue.number,
                       body: `🎉 **Sub Issue完了通知**
-                      
+
                       ✅ #${issue.number} - ${issue.title}
-                      
+
                       ## 📊 自動進捗更新
                       Sub Issue完了により全体進捗が更新されました。
-                      
+
                       🤖 Automated by Elder Flow GitHub Actions`
                     });
                   }
                 }
               }
             }
-            
+
             // 進捗コメント自動分析
             if (context.eventName === 'issue_comment' && context.payload.action === 'created') {
               const commentBody = comment.body;
-              
+
               // 進捗キーワードを検出
               const progressKeywords = ['完了', '進行中', '開始', '完了率', '%', 'done', 'progress', 'complete'];
-              const hasProgress = progressKeywords.some(keyword => 
+              const hasProgress = progressKeywords.some(keyword =>
                 commentBody.toLowerCase().includes(keyword.toLowerCase())
               );
-              
+
               if (hasProgress) {
                 console.log(`📈 進捗更新検知: Issue #${issue.number}`);
-                
+
                 // 進捗データを抽出してラベル更新
                 if (commentBody.includes('完了')) {
                   await github.rest.issues.addLabels({
@@ -103,19 +103,19 @@ jobs:
                 }
               }
             }
-            
+
             // PR マージ時の関連Issue自動クローズ
             if (context.eventName === 'pull_request' && pr.merged) {
               const prBody = pr.body || '';
-              
+
               // Issue参照パターンを検出 (closes #123, fixes #456, resolves #789)
               const issuePattern = /(closes?|fix(?:es)?|resolv(?:es)?)\s*#(\d+)/gi;
               const matches = [...prBody.matchAll(issuePattern)];
-              
+
               for (const match of matches) {
                 const issueNumber = parseInt(match[2]);
                 console.log(`🔧 PR #${pr.number} マージによりIssue #${issueNumber} を自動クローズ`);
-                
+
                 try {
                   // Issueをクローズ
                   await github.rest.issues.update({
@@ -125,7 +125,7 @@ jobs:
                     state: 'closed',
                     state_reason: 'completed'
                   });
-                  
+
                   // 完了コメント追加
                   await github.rest.issues.createComment({
                     owner: context.repo.owner,
@@ -138,11 +138,11 @@ jobs:
                 }
               }
             }
-            
+
             // 定期実行時の進捗チェック
             if (context.eventName === 'schedule') {
               console.log('📊 定期進捗チェック実行中...');
-              
+
               // 全てのオープンIssueを取得
               const openIssues = await github.rest.issues.listForRepo({
                 owner: context.repo.owner,
@@ -150,7 +150,7 @@ jobs:
                 state: 'open',
                 per_page: 100
               });
-              
+
               for (const issue of openIssues.data) {
                 // Sub Issueのあるマスターissueを検出
                 if (issue.body && issue.body.includes('- [ ]')) {
@@ -158,16 +158,16 @@ jobs:
                   const matches = [...issue.body.matchAll(checklistPattern)];
                   const completed = matches.filter(m => m[1] === 'x').length;
                   const total = matches.length;
-                  
+
                   if (total > 0) {
                     const progress = Math.round((completed / total) * 100);
-                    
+
                     // 進捗ラベルを更新
                     const progressLabel = `progress:${progress}%`;
-                    
+
                     // 既存の進捗ラベルを削除
                     const currentLabels = issue.labels.filter(l => !l.name.startsWith('progress:'));
-                    
+
                     // 新しい進捗ラベルを追加
                     await github.rest.issues.setLabels({
                       owner: context.repo.owner,
@@ -175,13 +175,13 @@ jobs:
                       issue_number: issue.number,
                       labels: [...currentLabels.map(l => l.name), progressLabel]
                     });
-                    
+
                     console.log(`Issue #${issue.number}: 進捗 ${progress}% 更新完了`);
                   }
                 }
               }
             }
-            
+
       - name: 🔍 Elder Flow連携
         run: |
           echo "🌊 Elder Flow自動化システムと連携中..."

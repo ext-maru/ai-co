@@ -75,7 +75,7 @@ jobs:
       - name: 📋 タスク賢者検証
       - name: 🚨 インシデント賢者監視
       - name: 🔍 RAG賢者分析
-  
+
   騎士団防衛:
     needs: 四賢者検証
     runs-on: ubuntu-latest
@@ -83,7 +83,7 @@ jobs:
       - name: 🛡️ セキュリティスキャン
       - name: 🗡️ 脆弱性チェック
       - name: ⚔️ 権限監査
-  
+
   テスト実行:
     needs: 騎士団防衛
     runs-on: ubuntu-latest
@@ -91,7 +91,7 @@ jobs:
       - name: 🧪 ユニットテスト
       - name: 🔄 統合テスト
       - name: 🎯 E2Eテスト
-  
+
   デプロイ実行:
     needs: テスト実行
     runs-on: ubuntu-latest
@@ -175,7 +175,7 @@ source scripts/post-deploy-verify.sh
 - **役割**: デプロイ履歴管理、ベストプラクティス蓄積
 - **責務**: 過去のデプロイ問題分析、改善提案
 
-#### 📋 タスク賢者  
+#### 📋 タスク賢者
 - **役割**: デプロイタスク管理、進捗監視
 - **責務**: デプロイ計画最適化、依存関係分析
 

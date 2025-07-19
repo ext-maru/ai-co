@@ -62,7 +62,7 @@ if bot_token and channel_id:
         'Authorization': f'Bearer {bot_token}',
         'Content-Type': 'application/json'
     }
-    
+
     # Bot ID取得
     auth_resp = requests.get('https://slack.com/api/auth.test', headers=headers)
     if auth_resp.status_code == 200:
@@ -70,20 +70,20 @@ if bot_token and channel_id:
         if auth_data.get('ok'):
             bot_id = auth_data.get('user_id')
             print(f"Bot ID: {bot_id}")
-            
+
             # 最新メッセージ取得
             params = {
                 'channel': channel_id,
                 'limit': 10
             }
-            msg_resp = requests.get('https://slack.com/api/conversations.history', 
+            msg_resp = requests.get('https://slack.com/api/conversations.history',
                                   headers=headers, params=params)
-            
+
             if msg_resp.status_code == 200:
                 msg_data = msg_resp.json()
                 if msg_data.get('ok'):
                     messages = msg_data.get('messages', [])
-                    
+
                     # メンション付きメッセージを探す
                     for msg in messages:
                         text = msg.get('text', '')
@@ -91,25 +91,25 @@ if bot_token and channel_id:
                             print(f"📌 未処理のメンション検出:")
                             print(f"   時刻: {msg.get('ts')}")
                             print(f"   内容: {text[:100]}...")
-                            
+
                             # 手動でタスク投入
                             import pika
                             import json
                             from datetime import datetime
-                            
+
                             try:
                                 connection = pika.BlockingConnection(
                                     pika.ConnectionParameters('localhost'))
                                 channel = connection.channel()
                                 channel.queue_declare(queue='ai_tasks', durable=True)
-                                
+
                                 clean_text = text.replace(f'<@{bot_id}>', '').strip()
-                                
+
                                 task = {
                                     'task_id': f"slack_recovery_{int(float(msg['ts']) * 1000000)}_code",
                                     'type': 'slack_command',
-                                    'task_type': 'code' if any(kw in clean_text.lower() 
-                                        for kw in ['コード', 'code', '作成', 'create', 'プログラム']) 
+                                    'task_type': 'code' if any(kw in clean_text.lower()
+                                        for kw in ['コード', 'code', '作成', 'create', 'プログラム'])
                                         else 'general',
                                     'prompt': clean_text,
                                     'source': 'slack_recovery',
@@ -121,19 +121,19 @@ if bot_token and channel_id:
                                         'mentioned': True
                                     }
                                 }
-                                
+
                                 channel.basic_publish(
                                     exchange='',
                                     routing_key='ai_tasks',
                                     body=json.dumps(task),
                                     properties=pika.BasicProperties(delivery_mode=2)
                                 )
-                                
+
                                 print(f"✅ タスク投入成功: {task['task_id']}")
                                 channel.close()
                                 connection.close()
                                 break
-                                
+
                             except Exception as e:
                                 print(f"タスク投入エラー: {e}")
 PYTHON_EOF

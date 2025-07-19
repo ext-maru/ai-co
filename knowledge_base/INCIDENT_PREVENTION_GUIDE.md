@@ -14,7 +14,7 @@
 ```bash
 # 問題：.envファイルにRabbitMQ設定が欠如
 RABBITMQ_HOST=          # 未設定
-RABBITMQ_PORT=          # 未設定  
+RABBITMQ_PORT=          # 未設定
 RABBITMQ_USER=          # 未設定
 RABBITMQ_PASS=          # 未設定
 

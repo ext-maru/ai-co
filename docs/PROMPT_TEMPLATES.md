@@ -76,7 +76,7 @@ class MyWorker(BaseWorker, PromptTemplateMixin):
     def __init__(self):
         BaseWorker.__init__(self, worker_type='my_worker')
         PromptTemplateMixin.__init__(self)
-    
+
     def process_message(self, ch, method, properties, body):
         # プロンプト生成
         prompt = self.generate_prompt(
@@ -86,7 +86,7 @@ class MyWorker(BaseWorker, PromptTemplateMixin):
                 'user_prompt': task['prompt']
             }
         )
-        
+
         # Claudeで実行
         result = self.execute_claude(prompt)
 ```

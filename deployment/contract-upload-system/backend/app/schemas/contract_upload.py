@@ -1,14 +1,9 @@
 from datetime import datetime
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
-from app.models.contract_type import ContractType
-from app.models.contract_type import DocumentType
+from app.models.contract_type import ContractType, DocumentType
 from app.models.upload import UploadStatus
-from pydantic import BaseModel
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 
 class DocumentUploadStatus(BaseModel):
@@ -49,22 +44,22 @@ class ContractUploadResponse(BaseModel):
     reviewed_by: Optional[str] = None
     review_notes: Optional[str] = None
     metadata: Optional[Dict[str, Any]] = None
-    
+
     @classmethod
     def from_orm(cls, obj):
         """ORMオブジェクトからスキーマオブジェクトを作成"""
         data = {
-            'id': obj.id,
-            'user_id': obj.user_id,
-            'contract_type': obj.contract_type,
-            'status': obj.status,
-            'created_at': obj.created_at,
-            'updated_at': obj.updated_at,
-            'submitted_at': obj.submitted_at,
-            'reviewed_at': obj.reviewed_at,
-            'reviewed_by': obj.reviewed_by,
-            'review_notes': obj.review_notes,
-            'metadata': obj.meta_data if hasattr(obj, 'meta_data') else {}
+            "id": obj.id,
+            "user_id": obj.user_id,
+            "contract_type": obj.contract_type,
+            "status": obj.status,
+            "created_at": obj.created_at,
+            "updated_at": obj.updated_at,
+            "submitted_at": obj.submitted_at,
+            "reviewed_at": obj.reviewed_at,
+            "reviewed_by": obj.reviewed_by,
+            "review_notes": obj.review_notes,
+            "metadata": obj.meta_data if hasattr(obj, "meta_data") else {},
         }
         return cls(**data)
 

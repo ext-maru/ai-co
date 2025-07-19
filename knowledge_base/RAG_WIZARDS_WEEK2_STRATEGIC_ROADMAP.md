@@ -145,7 +145,7 @@ def generate_batch_tests(modules_list):
 # 成功パターンのテンプレート化
 class HighEfficiencyTestTemplate:
     """高効率テストのテンプレート"""
-    
+
     def generate_standard_test_suite(self, module):
         """標準テストスイートの生成"""
         return [
@@ -162,7 +162,7 @@ class HighEfficiencyTestTemplate:
 # テスト効率の学習システム
 class TestEfficiencyLearner:
     """テスト効率の学習と最適化"""
-    
+
     def learn_from_successful_patterns(self):
         """成功パターンから学習"""
         # 高効率パターンの抽出
@@ -292,7 +292,7 @@ ai-knights-auto --performance-analysis
 
 ---
 
-**作成者**: RAGウィザーズ  
-**作成日**: 2025年7月7日  
-**バージョン**: 1.0 - 戦略的最適化版  
+**作成者**: RAGウィザーズ
+**作成日**: 2025年7月7日
+**バージョン**: 1.0 - 戦略的最適化版
 **更新予定**: 日次アップデート

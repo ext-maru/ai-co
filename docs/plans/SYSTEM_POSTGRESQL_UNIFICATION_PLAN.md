@@ -1,5 +1,5 @@
 # 🏛️ PostgreSQL統一移行計画書
-**Elders Guild PostgreSQL Unification Migration Plan**  
+**Elders Guild PostgreSQL Unification Migration Plan**
 **エルダーズ評議会承認申請書**
 
 ## 📋 移行計画概要
@@ -118,7 +118,7 @@ CREATE TABLE unified_tasks (
 CREATE INDEX idx_unified_tasks_status ON unified_tasks(status);
 CREATE INDEX idx_unified_tasks_sage ON unified_tasks(assigned_sage);
 CREATE INDEX idx_unified_tasks_priority ON unified_tasks(priority, created_at);
-CREATE INDEX idx_unified_tasks_embedding ON unified_tasks 
+CREATE INDEX idx_unified_tasks_embedding ON unified_tasks
 USING ivfflat (task_embedding vector_cosine_ops);
 CREATE INDEX idx_unified_tasks_metadata ON unified_tasks USING gin(metadata);
 ```
@@ -146,9 +146,9 @@ CREATE TABLE unified_conversations (
 );
 
 -- 全文検索インデックス
-CREATE INDEX idx_conversations_fts ON unified_conversations 
+CREATE INDEX idx_conversations_fts ON unified_conversations
 USING gin(to_tsvector('english', user_message || ' ' || ai_response));
-CREATE INDEX idx_conversations_embedding ON unified_conversations 
+CREATE INDEX idx_conversations_embedding ON unified_conversations
 USING ivfflat (message_embedding vector_cosine_ops);
 ```
 
@@ -163,13 +163,13 @@ from typing import List, Dict
 class PostgreSQLUnificationMigrator:
     def __init__(self):
         self.pg_url = "postgresql://aicompany@localhost:5432/ai_company_grimoire"
-    
+
     async def migrate_tasks(self):
         """タスクデータ移行"""
         # SQLiteからデータ取得
         sqlite_conn = sqlite3.connect('task_history.db')
         tasks = sqlite_conn.execute("SELECT * FROM task_history").fetchall()
-        
+
         # PostgreSQLに移行
         pg_conn = await asyncpg.connect(self.pg_url)
         for task in tasks:
@@ -177,10 +177,10 @@ class PostgreSQLUnificationMigrator:
                 INSERT INTO unified_tasks (task_id, title, description, status, created_at)
                 VALUES ($1, $2, $3, $4, $5)
             """, task[0], task[1], task[2], task[3], task[4])
-        
+
         await pg_conn.close()
         sqlite_conn.close()
-    
+
     async def migrate_conversations(self):
         """会話データ移行"""
         # 同様の移行処理
@@ -194,7 +194,7 @@ class PostgreSQLUnificationMigrator:
 Day 1: エルダーズ評議会承認 ✅
 Day 2-3: Phase 1 タスクトラッカー移行実装
 Day 4: Phase 1 動作確認・本番切り替え
-Day 5-7: Phase 2 会話管理移行実装  
+Day 5-7: Phase 2 会話管理移行実装
 Day 8: Phase 2 動作確認・本番切り替え
 Day 9-10: Phase 3 ダッシュボード移行
 Day 11: 統合システム完全動作確認
@@ -210,7 +210,7 @@ Day 11: 統合システム完全動作確認
 
 ### ⚠️ **想定リスク**
 1. **データ移行失敗**: バックアップ完全保持で対応
-2. **性能劣化**: インデックス最適化で対応  
+2. **性能劣化**: インデックス最適化で対応
 3. **システム停止**: 段階的移行でリスク最小化
 4. **互換性問題**: 移行前の入念な動作確認
 
@@ -241,7 +241,7 @@ Day 11: 統合システム完全動作確認
 - [ ] 性能向上確認（クエリ速度10倍以上）
 - [ ] pgvector類似性検索動作確認
 
-### ✅ **Phase 2成功基準**  
+### ✅ **Phase 2成功基準**
 - [ ] 全会話データ移行完了
 - [ ] 全文検索機能正常動作
 - [ ] AI学習データ統合確認
@@ -277,7 +277,7 @@ Elders Guildの真の統合システム実現のため、PostgreSQL統一移行�
 
 この移行により：
 - **統治力強化**: 全データの一元管理
-- **品質向上**: ACID準拠の完全データ保護  
+- **品質向上**: ACID準拠の完全データ保護
 - **AI進化**: pgvectorによる次世代AI機能
 - **将来対応**: マルチエージェント・AGI統合基盤
 
@@ -285,8 +285,8 @@ Elders Guildの真の統合システム実現のため、PostgreSQL統一移行�
 
 ---
 
-**提案者**: Claude Elder (Elders Guild Development Executive Officer)  
-**承認要請**: Grand Elder maru, 4賢者評議会  
-**実行予定**: 承認後即座開始  
-**完了目標**: 7-10日以内  
+**提案者**: Claude Elder (Elders Guild Development Executive Officer)
+**承認要請**: Grand Elder maru, 4賢者評議会
+**実行予定**: 承認後即座開始
+**完了目標**: 7-10日以内
 **提出日**: 2025年7月8日

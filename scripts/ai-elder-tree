@@ -6,12 +6,13 @@ AI Elder Tree Display Command
 
 import sys
 from pathlib import Path
-from rich.console import Console
-from rich.tree import Tree
-from rich.panel import Panel
-from rich.text import Text
+
 from rich import box
+from rich.console import Console
+from rich.panel import Panel
 from rich.table import Table
+from rich.text import Text
+from rich.tree import Tree
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -19,37 +20,38 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 console = Console()
 
+
 def show_elder_tree():
     """Display the Elder Tree structure"""
-    
+
     # Create the root of the tree
     tree = Tree(
         "[bold yellow]🌟 グランドエルダーmaru[/bold yellow] (Grand Elder maru)",
-        guide_style="bold bright_blue"
+        guide_style="bold bright_blue",
     )
-    
+
     # Add Claude Elder
     claude = tree.add("[bold cyan]🤖 クロードエルダー[/bold cyan] (Claude Elder)")
-    
+
     # Add Four Sages with their responsibilities
     four_sages = claude.add("[bold green]🧙‍♂️ 4賢者[/bold green] (Four Sages/Elders)")
-    
+
     knowledge_sage = four_sages.add("📚 ナレッジ賢者 (Knowledge Sage)")
     knowledge_sage.add("[dim]- 知識ベース管理[/dim]")
     knowledge_sage.add("[dim]- 文書品質保証[/dim]")
-    
+
     task_sage = four_sages.add("📋 タスク賢者 (Task Oracle)")
     task_sage.add("[dim]- タスク優先順位決定[/dim]")
     task_sage.add("[dim]- リソース配分最適化[/dim]")
-    
+
     incident_sage = four_sages.add("🚨 インシデント賢者 (Crisis Sage)")
     incident_sage.add("[dim]- 緊急対応指揮[/dim]")
     incident_sage.add("[dim]- リスク評価[/dim]")
-    
+
     rag_sage = four_sages.add("🔍 RAG賢者 (Search Mystic)")
     rag_sage.add("[dim]- 情報検索最適化[/dim]")
     rag_sage.add("[dim]- コンテキスト分析[/dim]")
-    
+
     # Add Elder Council with members
     council = claude.add("[bold blue]🏛️ エルダー評議会[/bold blue] (Elder Council)")
     council.add("👤 評議会議長")
@@ -57,87 +59,66 @@ def show_elder_tree():
     council.add("👤 品質評議員")
     council.add("👤 運用評議員")
     council.add("👤 戦略評議員")
-    
+
     # Add Elder Servants with details
     servants = claude.add("[bold magenta]🤖 エルダーサーバント[/bold magenta] (Elder Servants)")
-    
+
     knights = servants.add("🛡️ インシデント騎士団 (Incident Knights)")
     knights.add("[dim]- 24/7監視体制[/dim]")
     knights.add("[dim]- 自動対応システム[/dim]")
-    
+
     dwarves = servants.add("🔨 ドワーフ工房 (Dwarf Workshop)")
     dwarves.add("[dim]- テスト自動生成[/dim]")
     dwarves.add("[dim]- カバレッジ向上[/dim]")
-    
+
     wizards = servants.add("🧙‍♂️ RAGウィザーズ (RAG Wizards)")
     wizards.add("[dim]- 知識抽出・整理[/dim]")
     wizards.add("[dim]- コンテキスト強化[/dim]")
-    
+
     elves = servants.add("🧝‍♂️ エルフの森 (Elf Forest)")
     elves.add("[dim]- コード品質魔法[/dim]")
     elves.add("[dim]- 自動修復システム[/dim]")
-    
+
     # Display the tree
     console.print("\n")
-    console.print(Panel(
-        tree,
-        title="[bold]エルダーツリー (Elder Tree)[/bold]",
-        subtitle="AI Company Organizational Hierarchy",
-        border_style="bright_blue",
-        box=box.ROUNDED,
-        expand=False
-    ))
+    console.print(
+        Panel(
+            tree,
+            title="[bold]エルダーツリー (Elder Tree)[/bold]",
+            subtitle="AI Company Organizational Hierarchy",
+            border_style="bright_blue",
+            box=box.ROUNDED,
+            expand=False,
+        )
+    )
+
 
 def show_hierarchy_table():
     """Show hierarchy in table format"""
-    
+
     table = Table(title="エルダーズギルド階層構造", box=box.ROUNDED)
     table.add_column("階層", style="cyan", no_wrap=True)
     table.add_column("役職", style="yellow")
     table.add_column("責任範囲", style="green")
     table.add_column("メンバー", style="blue")
-    
-    table.add_row(
-        "Level 0",
-        "グランドエルダー",
-        "全体統治・最終決定権",
-        "maru"
-    )
-    
-    table.add_row(
-        "Level 1",
-        "クロードエルダー",
-        "実行責任・日常運営",
-        "Claude"
-    )
-    
-    table.add_row(
-        "Level 2",
-        "4賢者",
-        "専門領域統括",
-        "Knowledge, Task, Incident, RAG"
-    )
-    
-    table.add_row(
-        "Level 2",
-        "エルダー評議会",
-        "意思決定・承認",
-        "5名の評議員"
-    )
-    
-    table.add_row(
-        "Level 3",
-        "エルダーサーバント",
-        "実行部隊",
-        "騎士団, ドワーフ, ウィザード, エルフ"
-    )
-    
+
+    table.add_row("Level 0", "グランドエルダー", "全体統治・最終決定権", "maru")
+
+    table.add_row("Level 1", "クロードエルダー", "実行責任・日常運営", "Claude")
+
+    table.add_row("Level 2", "4賢者", "専門領域統括", "Knowledge, Task, Incident, RAG")
+
+    table.add_row("Level 2", "エルダー評議会", "意思決定・承認", "5名の評議員")
+
+    table.add_row("Level 3", "エルダーサーバント", "実行部隊", "騎士団, ドワーフ, ウィザード, エルフ")
+
     console.print("\n")
     console.print(table)
 
+
 def show_quick_reference():
     """Show quick reference guide"""
-    
+
     ref_text = """
 [bold cyan]クイックリファレンス:[/bold cyan]
 
@@ -158,45 +139,48 @@ def show_quick_reference():
 • タスク自動割り当て
 • 品質自動監視
 """
-    
-    console.print(Panel(
-        ref_text,
-        title="[bold]運用ガイド[/bold]",
-        border_style="green",
-        box=box.ROUNDED
-    ))
+
+    console.print(
+        Panel(
+            ref_text, title="[bold]運用ガイド[/bold]", border_style="green", box=box.ROUNDED
+        )
+    )
+
 
 def main():
     """Main function"""
-    
-    console.print("\n[bold white on blue] AI Company Elder Tree Display System [/bold white on blue]\n")
-    
+
+    console.print(
+        "\n[bold white on blue] AI Company Elder Tree Display System [/bold white on blue]\n"
+    )
+
     # Parse arguments
     if len(sys.argv) > 1:
         arg = sys.argv[1]
-        if arg in ['-h', '--help', 'help']:
+        if arg in ["-h", "--help", "help"]:
             console.print("[bold]使用方法:[/bold]")
             console.print("  ai-elder-tree         - ツリー構造を表示")
             console.print("  ai-elder-tree table   - テーブル形式で表示")
             console.print("  ai-elder-tree guide   - クイックガイド表示")
             console.print("  ai-elder-tree all     - すべて表示")
             return
-        elif arg == 'table':
+        elif arg == "table":
             show_hierarchy_table()
             return
-        elif arg == 'guide':
+        elif arg == "guide":
             show_quick_reference()
             return
-        elif arg == 'all':
+        elif arg == "all":
             show_elder_tree()
             show_hierarchy_table()
             show_quick_reference()
             return
-    
+
     # Default: show tree
     show_elder_tree()
-    
+
     console.print("\n[dim]詳細は 'ai-elder-tree help' を実行してください[/dim]\n")
+
 
 if __name__ == "__main__":
     main()

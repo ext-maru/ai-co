@@ -73,13 +73,13 @@ export class AICommandSystem {
     async executeCommand(command: string): Promise<CommandResult> {
         const config = vscode.workspace.getConfiguration('codeflow');
         const timeout = config.get<number>('commandTimeout', 30) * 1000;
-        
+
         const startTime = Date.now();
-        
+
         try {
             const result = await this.executeAICommand(command, timeout);
             const executionTime = Date.now() - startTime;
-            
+
             return {
                 success: true,
                 output: result.output,
@@ -87,7 +87,7 @@ export class AICommandSystem {
             };
         } catch (error) {
             const executionTime = Date.now() - startTime;
-            
+
             return {
                 success: false,
                 output: '',
@@ -122,7 +122,7 @@ export class AICommandSystem {
     async processNaturalLanguage(input: string): Promise<NaturalLanguageSuggestion[]> {
         const config = vscode.workspace.getConfiguration('codeflow');
         const enableNaturalLanguage = config.get<boolean>('enableNaturalLanguage', true);
-        
+
         if (!enableNaturalLanguage) {
             return [];
         }
@@ -141,7 +141,7 @@ export class AICommandSystem {
 
     private async executeAICommand(command: string, timeout: number = 30000): Promise<{ output: string; error?: string }> {
         const fullCommand = `${this.aiSystemPath} ${command}`;
-        
+
         try {
             const { stdout, stderr } = await execAsync(fullCommand, { timeout });
             return { output: stdout, error: stderr };
@@ -156,27 +156,27 @@ export class AICommandSystem {
     private parseCommandsFromHelp(helpOutput: string): Command[] {
         const commands: Command[] = [];
         const lines = helpOutput.split('\n');
-        
+
         let currentCategory = '';
         let inCommandsSection = false;
-        
+
         for (const line of lines) {
             const trimmed = line.trim();
-            
+
             // Detect category headers
             if (trimmed.endsWith(':') && !trimmed.startsWith(' ')) {
                 currentCategory = trimmed.slice(0, -1);
                 inCommandsSection = true;
                 continue;
             }
-            
+
             // Parse command lines
             if (inCommandsSection && trimmed.startsWith(' ') && trimmed.includes(' ')) {
                 const parts = trimmed.split(/\s+/);
                 if (parts.length >= 2) {
                     const name = parts[0];
                     const description = parts.slice(1).join(' ');
-                    
+
                     commands.push({
                         name,
                         description,
@@ -184,13 +184,13 @@ export class AICommandSystem {
                     });
                 }
             }
-            
+
             // Reset when we hit a new section
             if (trimmed === '' || (!trimmed.startsWith(' ') && !trimmed.endsWith(':'))) {
                 inCommandsSection = false;
             }
         }
-        
+
         return commands;
     }
 
@@ -204,10 +204,10 @@ export class AICommandSystem {
         let permissions = 'Unknown';
 
         const lines = statusOutput.split('\n');
-        
+
         for (const line of lines) {
             const trimmed = line.trim();
-            
+
             // Parse worker status
             if (trimmed.includes('Worker') && (trimmed.includes('✅') || trimmed.includes('❌'))) {
                 const status = trimmed.includes('✅') ? 'Running' : 'Stopped';
@@ -220,7 +220,7 @@ export class AICommandSystem {
                     });
                 }
             }
-            
+
             // Parse queue status
             if (trimmed.includes('queue:') && trimmed.includes('messages')) {
                 const queueMatch = trimmed.match(/(\w+)\s+queue:\s+(\d+)\s+messages/);
@@ -231,7 +231,7 @@ export class AICommandSystem {
                     });
                 }
             }
-            
+
             // Parse permissions
             if (trimmed.includes('Permission Level:')) {
                 const permMatch = trimmed.match(/Permission Level:\s+(\w+)/);
@@ -261,16 +261,16 @@ export class AICommandSystem {
     private parseNaturalLanguageResponse(response: string): NaturalLanguageSuggestion[] {
         const suggestions: NaturalLanguageSuggestion[] = [];
         const lines = response.split('\n');
-        
+
         for (const line of lines) {
             const trimmed = line.trim();
-            
+
             // Look for numbered suggestions
             const match = trimmed.match(/^\s*(\d+)\.\s*(.+?)\s*\((\d+)%\)/);
             if (match) {
                 const command = match[2];
                 const confidence = parseInt(match[3]);
-                
+
                 suggestions.push({
                     command,
                     confidence,
@@ -278,7 +278,7 @@ export class AICommandSystem {
                 });
             }
         }
-        
+
         return suggestions;
     }
 }

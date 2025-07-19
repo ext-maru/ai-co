@@ -28,7 +28,7 @@ class ElderServantProvider {
         }
       })
     });
-    
+
     const result = await response.json();
     return result.result.result_data.generated_code || "";
   }
@@ -44,7 +44,7 @@ export const config: Config = {
       apiKey: "elder-guild-key",
     },
     {
-      title: "Elder Test Guardian", 
+      title: "Elder Test Guardian",
       provider: new ElderServantProvider("test-guardian"),
       model: "elder-servant",
       apiKey: "elder-guild-key",
@@ -64,7 +64,7 @@ export const config: Config = {
       description: "Execute Elder Flow for the current task",
       run: async function* (sdk) {
         yield "🌊 Initiating Elder Flow...";
-        
+
         const response = await fetch(`${ELDER_SERVANTS_BASE_URL}/elder/flow/execute`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -76,7 +76,7 @@ export const config: Config = {
             }
           })
         });
-        
+
         const result = await response.json();
         yield `✅ Elder Flow completed: ${result.message}`;
       }
@@ -86,7 +86,7 @@ export const config: Config = {
       description: "Consult with the 4 Sages",
       run: async function* (sdk) {
         yield "🧙‍♂️ Consulting with the 4 Sages...";
-        
+
         const response = await fetch(`${ELDER_SERVANTS_BASE_URL}/elder/sages/consult`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -97,7 +97,7 @@ export const config: Config = {
             }
           })
         });
-        
+
         const wisdom = await response.json();
         yield `📜 Sage Wisdom:\n${wisdom.advice}`;
       }
@@ -107,13 +107,13 @@ export const config: Config = {
       description: "Check code quality against Iron Will standards",
       run: async function* (sdk) {
         yield "🗡️ Checking Iron Will quality standards...";
-        
+
         const currentFile = await sdk.ide.getCurrentFile();
         if (!currentFile) {
           yield "❌ No file selected";
           return;
         }
-        
+
         const response = await fetch(`${ELDER_SERVANTS_BASE_URL}/elder/quality/iron-will`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -122,7 +122,7 @@ export const config: Config = {
             content: currentFile.content
           })
         });
-        
+
         const quality = await response.json();
         yield `${quality.score >= 95 ? "✅" : "❌"} Quality Score: ${quality.score}%\n${quality.details}`;
       }
@@ -139,7 +139,7 @@ export const config: Config = {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query })
         });
-        
+
         const knowledge = await response.json();
         return knowledge.items.map((item: any) => ({
           name: item.title,
@@ -153,7 +153,7 @@ export const config: Config = {
       getContextItems: async () => {
         const response = await fetch(`${ELDER_SERVANTS_BASE_URL}/elder/tasks/active`);
         const tasks = await response.json();
-        
+
         return tasks.map((task: any) => ({
           name: `Task: ${task.name}`,
           description: `Priority: ${task.priority} | Status: ${task.status}`,
@@ -181,13 +181,13 @@ export const config: Config = {
   },
 
   // アシスタント設定
-  systemMessage: `You are integrated with the Elder Guild system. 
+  systemMessage: `You are integrated with the Elder Guild system.
   You have access to:
   - 4 Sages (Knowledge, Task, Incident, RAG)
   - Elder Servants (Code Craftsman, Test Guardian, Quality Inspector, Git Keeper)
   - Elder Flow automation
   - Iron Will quality standards (95% minimum)
-  
+
   Always maintain the highest quality standards and consult with the appropriate systems when needed.`,
 
   // 埋め込みプロバイダー（RAG用）

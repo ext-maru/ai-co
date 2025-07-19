@@ -6,7 +6,7 @@ alert_system:
   name: "Elder Tree Alert System"
   version: "1.0.0"
   enabled: true
-  
+
 # アラートレベル定義
 alert_levels:
   critical:
@@ -19,7 +19,7 @@ alert_levels:
       - pager: immediate
     auto_escalate: true
     escalation_time: 300  # 5分
-    
+
   high:
     symbol: "🟠"
     priority: 2
@@ -29,7 +29,7 @@ alert_levels:
       - email: immediate
     auto_escalate: true
     escalation_time: 900  # 15分
-    
+
   medium:
     symbol: "🟡"
     priority: 3
@@ -38,7 +38,7 @@ alert_levels:
       - slack: batch
       - email: hourly
     auto_escalate: false
-    
+
   low:
     symbol: "🟢"
     priority: 4
@@ -57,7 +57,7 @@ elder_tree_alerts:
       - notify_all_channels
       - activate_emergency_protocol
       - attempt_auto_recovery
-      
+
   elder_council_quorum_loss:
     level: critical
     condition: "active_council_members < 5"
@@ -65,7 +65,7 @@ elder_tree_alerts:
     actions:
       - notify_admins
       - activate_backup_elders
-      
+
   elder_tree_communication_delay:
     level: high
     condition: "avg_response_time > 1000ms for 60s"
@@ -83,7 +83,7 @@ worker_alerts:
     actions:
       - emergency_worker_restart
       - scale_up_backup_workers
-      
+
   worker_high_failure_rate:
     level: high
     condition: "failed_workers > 8"  # 25%以上
@@ -91,7 +91,7 @@ worker_alerts:
     actions:
       - restart_failed_workers
       - investigate_failure_cause
-      
+
   worker_resource_exhaustion:
     level: high
     condition: "avg_worker_cpu > 80% or avg_worker_memory > 85%"
@@ -99,7 +99,7 @@ worker_alerts:
     actions:
       - optimize_task_distribution
       - consider_scaling
-      
+
   worker_idle_excess:
     level: medium
     condition: "idle_workers > 24 for 300s"  # 75%以上が5分間アイドル
@@ -117,7 +117,7 @@ four_sages_alerts:
     actions:
       - restart_sage_service
       - activate_backup_sage
-      
+
   incident_sage_overload:
     level: high
     condition: "incident_sage.active_incidents > 50"
@@ -125,7 +125,7 @@ four_sages_alerts:
     actions:
       - prioritize_critical_incidents
       - scale_incident_workers
-      
+
   knowledge_sage_storage_full:
     level: high
     condition: "knowledge_sage.storage_used > 90%"
@@ -133,7 +133,7 @@ four_sages_alerts:
     actions:
       - archive_old_knowledge
       - expand_storage_capacity
-      
+
   task_sage_queue_overflow:
     level: high
     condition: "task_sage.queue_length > 1000"
@@ -141,7 +141,7 @@ four_sages_alerts:
     actions:
       - increase_worker_allocation
       - optimize_task_scheduling
-      
+
   rag_sage_slow_response:
     level: medium
     condition: "rag_sage.avg_response_time > 500ms"
@@ -159,7 +159,7 @@ resource_alerts:
     actions:
       - identify_cpu_consumers
       - throttle_non_critical_tasks
-      
+
   memory_critical:
     level: critical
     condition: "system_memory > 95%"
@@ -167,7 +167,7 @@ resource_alerts:
     actions:
       - trigger_garbage_collection
       - restart_memory_intensive_services
-      
+
   disk_space_low:
     level: high
     condition: "disk_free < 10%"
@@ -175,7 +175,7 @@ resource_alerts:
     actions:
       - cleanup_old_logs
       - archive_historical_data
-      
+
   network_saturation:
     level: medium
     condition: "network_utilization > 80%"
@@ -193,14 +193,14 @@ anomaly_detection:
         - "worker_failures increasing exponentially"
         - "multiple_sages reporting errors"
       level: critical
-      
+
     - name: "performance_degradation"
       description: "段階的性能劣化"
       conditions:
         - "response_times increasing linearly"
         - "throughput decreasing"
       level: high
-      
+
     - name: "unusual_activity"
       description: "異常な活動パターン"
       conditions:
@@ -216,7 +216,7 @@ notifications:
       critical_channel: "#alerts-critical"
       high_channel: "#alerts-high"
       default_channel: "#alerts-general"
-      
+
     email:
       smtp_server: "smtp.gmail.com"
       smtp_port: 587
@@ -224,43 +224,43 @@ notifications:
       admin_list:
         - "admin@aicompany.com"
         - "oncall@aicompany.com"
-        
+
     pager:
       service: "pagerduty"
       api_key: "${PAGERDUTY_API_KEY}"
-      
+
   templates:
     critical:
       subject: "🔴 CRITICAL: {alert_name}"
       body: |
         Elder Tree Critical Alert
-        
+
         Alert: {alert_name}
         Level: CRITICAL
         Time: {timestamp}
         Message: {message}
-        
+
         Affected Components:
         {components}
-        
+
         Automated Actions Taken:
         {actions}
-        
+
         Manual Intervention Required: YES
-        
+
     high:
       subject: "🟠 HIGH: {alert_name}"
       body: |
         Elder Tree High Priority Alert
-        
+
         Alert: {alert_name}
         Level: HIGH
         Time: {timestamp}
         Message: {message}
-        
+
         Current Status:
         {status}
-        
+
         Recommended Actions:
         {recommendations}
 
@@ -269,16 +269,16 @@ suppression_rules:
   - name: "maintenance_window"
     condition: "during_scheduled_maintenance"
     suppress: ["low", "medium"]
-    
+
   - name: "known_issue"
     condition: "alert_id in known_issues_list"
     suppress: ["all"]
     duration: 3600  # 1時間
-    
+
   - name: "duplicate_prevention"
     condition: "same_alert within 300s"
     suppress: ["duplicate"]
-    
+
   - name: "storm_control"
     condition: "alert_rate > 100 per minute"
     action: "batch_and_summarize"
@@ -291,15 +291,15 @@ auto_recovery:
     restart_worker:
       command: "systemctl restart aicompany-worker@{worker_id}"
       timeout: 30
-      
+
     restart_sage:
       command: "systemctl restart aicompany-sage-{sage_name}"
       timeout: 60
-      
+
     clear_cache:
       command: "redis-cli FLUSHDB"
       timeout: 10
-      
+
     scale_workers:
       command: "kubectl scale deployment workers --replicas={count}"
       timeout: 120
@@ -311,14 +311,14 @@ reporting:
     - daily: "00:00"
     - weekly: "monday 00:00"
     - monthly: "1st 00:00"
-    
+
   metrics:
     - total_alerts_by_level
     - mttr_by_component  # Mean Time To Recovery
     - false_positive_rate
     - auto_recovery_success_rate
     - top_10_recurring_alerts
-    
+
   destinations:
     - email: "reports@aicompany.com"
     - slack: "#monitoring-reports"

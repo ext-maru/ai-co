@@ -80,7 +80,7 @@ sys.path.append('$PROJECT_DIR')
 try:
     from libs.env_config import verify_setup
     success = verify_setup()
-    
+
     if success:
         print()
         print('🎉 Setup completed successfully!')
@@ -95,7 +95,7 @@ try:
         print('⚠️  Setup completed but some configuration issues found')
         print('Please check the .env file')
         exit(1)
-        
+
 except Exception as e:
     print(f'❌ Setup verification failed: {e}')
     exit(1)

@@ -36,7 +36,7 @@
    ```bash
    # RabbitMQのハートビート設定を60秒に変更
    sudo rabbitmqctl eval 'application:set_env(rabbit, heartbeat, 60).'
-   
+
    # Elders Guildを再起動
    bash scripts/fix_worker_stability.sh
    ```
@@ -204,7 +204,7 @@ print('✅ Success' if notifier.send_enhanced_task_notification(test_data) else 
    - ✅ status機能: 正常
    - 🔀 Git操作支援機能が稼働中
 
-2. **ai-dialog コマンド**  
+2. **ai-dialog コマンド**
    - ✅ ヘルプ表示: 正常
    - ❌ 実行: ModuleNotFoundError (libs モジュールが見つからない)
    - 💬 対話型セッション開始機能（要修正）
@@ -276,14 +276,14 @@ PostgreSQLとpgvectorを使用した意味検索可能な知識管理システ�
    ```bash
    # 知識を検索
    ai-elder search "検索クエリ"
-   
+
    # 新しい知識を追加
    ai-elder add "タイトル" "内容" --category "技術" --tags "Python" "AI"
-   
+
    # カテゴリ・エルダー一覧
    ai-elder list-categories
    ai-elder list-elders
-   
+
    # JSONインポート
    ai-elder import data.json
    ```

@@ -34,7 +34,7 @@ try:
     print('✅ pytest: ' + pytest.__version__)
 except:
     print('❌ pytest: インストール失敗')
-    
+
 try:
     import pytest_cov
     print('✅ pytest-cov: インストール済み')

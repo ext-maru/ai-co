@@ -129,13 +129,13 @@ from workers.task_worker import TaskWorker
 @pytest.mark.unit
 class TestTaskWorker:
     """TaskWorkerのテストクラス"""
-    
+
     @pytest.fixture
     def worker(self):
         """テスト用ワーカー"""
         with patch('pika.BlockingConnection'):
             return TaskWorker(worker_id="test-1")
-    
+
     def test_initialization(self, worker):
         """初期化テスト"""
         assert worker.worker_id == "test-1"
@@ -226,7 +226,7 @@ chmod +x .git/hooks/pre-commit
 # カバレッジ目標
 COVERAGE_TARGETS = {
     "core": 90,      # Core モジュール: 90%以上
-    "workers": 80,   # Workers: 80%以上  
+    "workers": 80,   # Workers: 80%以上
     "libs": 80,      # Libraries: 80%以上
     "scripts": 60    # Scripts: 60%以上
 }

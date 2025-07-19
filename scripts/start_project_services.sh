@@ -60,7 +60,7 @@ services=(
 for service in "${services[@]}"; do
     port="${service%%:*}"
     name="${service##*:}"
-    
+
     if curl -sf "http://localhost:$port/" >/dev/null 2>&1; then
         log "✅ $name (Port $port): 正常"
     else

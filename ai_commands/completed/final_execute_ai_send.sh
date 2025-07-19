@@ -18,7 +18,7 @@ if [ -f config/task_types.json ]; then
     echo ""
     echo "📋 登録されたタスクタイプ:"
     python3 -c "import json; data=json.load(open('config/task_types.json')); print('\n'.join(f'{k}: {v[\"description\"]}' for k,v in data['task_types'].items()))"
-    
+
     # Slack通知
     echo ""
     echo "📢 Slack通知送信中..."

@@ -9,7 +9,7 @@ common:
   retry_delay: 60
   max_workers: 4
   min_workers: 1
-  
+
 # RabbitMQ設定
 rabbitmq:
   host: "localhost"
@@ -18,11 +18,11 @@ rabbitmq:
   password: "guest"
   heartbeat: 600
   blocked_connection_timeout: 300
-  
+
 # Redis設定
 redis:
   url: "redis://localhost:6379/0"
-  
+
 # スケーリング設定
 scaling:
   enabled: true
@@ -30,14 +30,14 @@ scaling:
   scale_up_threshold: 0.8
   scale_down_threshold: 0.3
   auto_scaling: true
-  
+
 # 個別ワーカー設定
 workers:
   enhanced_task_worker:
     enabled: true
     critical: true
     script: "/home/aicompany/ai_co/workers/enhanced_task_worker.py"
-    
+
     # Claude API設定
     claude:
       model: "claude-sonnet-4-20250514"
@@ -45,13 +45,13 @@ workers:
       temperature: 0.7
       timeout: 300
       rate_limit: 10
-      
+
     # セキュリティ設定
     security:
       sandbox_base: "/tmp/ai_sandbox"
       memory_limit_mb: 512
       execution_timeout: 300
-      
+
     # 許可ツール
     allowed_tools:
       - "Edit"
@@ -59,109 +59,109 @@ workers:
       - "Read"
       - "FileSystem"
       - "Bash"
-      
+
     # キャッシュ設定
     cache:
       ttl: 3600
       enabled: true
-      
+
     # RAG設定
     rag:
       enabled: true
-      
+
     # 出力設定
     output:
       dir: "/home/aicompany/ai_co/output"
-      
+
     # 通知設定
     notifications:
       slack_enabled: true
-      
+
   async_result_worker:
     enabled: true
     critical: true
     script: "/home/aicompany/ai_co/workers/async_result_worker_simple.py"
-    
+
     # Slack設定
     slack:
       rate_limit: 1
       max_message_size: 3000
-      
+
     # 統計設定
     stats:
       file: "/home/aicompany/ai_co/data/result_worker_stats.json"
       report_interval_hours: 1
-      
+
     # キャッシュ設定
     cache:
       ttl: 86400
-      
+
     # リトライ設定
     retry:
       failed_notifications: true
       max_attempts: 3
       delay: 300
-      
+
   intelligent_pm_worker:
     enabled: true
     critical: true
     script: "/home/aicompany/ai_co/workers/intelligent_pm_worker_simple.py"
-    
+
     # メモリ管理
     memory:
       max_mb: 1024
       cleanup_threshold: 0.8
-      
+
     # 並列処理
     parallel:
       max_concurrent_tasks: 5
-      
+
     # フェーズ設定
     phase:
       timeout: 600
-      
+
     # チェックポイント
     checkpoint:
       retention_hours: 24
-      
+
     # キャッシュ設定
     cache:
       ttl: 3600
-      
+
   dialog_task_worker:
     enabled: true
     critical: false
     script: "/home/aicompany/ai_co/workers/dialog_task_worker.py"
-    
+
     # 会話設定
     conversation:
       max_turns: 50
       timeout: 1800
-      
+
     # キャッシュ設定
     cache:
       ttl: 7200
-      
+
   error_intelligence_worker:
     enabled: true
     critical: false
     script: "/home/aicompany/ai_co/workers/error_intelligence_worker.py"
-    
+
     # 分析設定
     analysis:
       max_batch_size: 10
       deduplication: true
-      
+
     # インシデント設定
     incident:
       threshold: 3
       ttl: 86400
-      
+
   slack_polling_worker:
     enabled: true
     critical: false
     script: "/home/aicompany/ai_co/workers/slack_polling_worker.py"
-    
+
 # 自動回復設定
 recovery:
   enabled: true
@@ -169,13 +169,13 @@ recovery:
   max_retries: 3
   retry_delay: 10
   cooldown_period: 300
-  
+
 # ヘルスチェック設定
 health_check:
   enabled: true
   interval: 30
   timeout: 10
-  
+
   # 閾値設定
   thresholds:
     cpu_percent: 90.0
@@ -183,10 +183,10 @@ health_check:
     error_rate: 0.1
     queue_size: 100
     response_timeout: 30
-    
+
   # 履歴設定
   history_size: 100
-  
+
 # セキュリティ設定
 security:
   # 許可コマンド
@@ -210,7 +210,7 @@ security:
     - "find"
     - "sed"
     - "awk"
-    
+
   # 禁止パターン
   forbidden_patterns:
     - 'rm\s+-rf\s+/'
@@ -228,32 +228,32 @@ security:
     - '>\s*/dev/sd'
     - 'mkfs\.'
     - 'fdisk'
-    
+
   # サンドボックス設定
   sandbox:
     cleanup_hours: 24
     max_size_mb: 1000
-    
+
 # 監視設定
 monitoring:
   enabled: true
-  
+
   # ヘルスエンドポイント
   health_endpoints:
     - "/health"
     - "/ready"
-    
+
   # メトリクスエンドポイント
   metrics_endpoints:
     - "/metrics"
-    
+
   # アラート設定
   alerts:
     memory_threshold: 90
     error_rate_threshold: 5
     response_time_threshold: 30
     queue_length_threshold: 1000
-    
+
 # 環境別設定
 environments:
   development:
@@ -261,7 +261,7 @@ environments:
     verbose_logging: false
     test_mode: false
     mock_external_services: false
-    
+
   production:
     auto_scaling: true
     min_workers: 2

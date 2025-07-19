@@ -13,23 +13,23 @@ class AutoIssueProcessor(EldersServiceLegacy):
     GitHubイシュー自動処理システム
     優先度Medium/Lowのイシューを自動的にElder Flowで処理
     """
-    
+
     def __init__(self):
         super().__init__()
         self.issue_manager = EldersIssueManager()
         self.elder_flow = ElderFlowEngine()
         self.task_sage = TaskSage()
         self.incident_sage = IncidentSage()
-        
+
     async def process_request(self, request: Dict[str, Any]):
         """イシュー自動処理のメインエントリーポイント"""
-        
+
     async def scan_processable_issues(self) -> List[Issue]:
         """処理可能なイシューをスキャン"""
-        
+
     async def evaluate_issue_complexity(self, issue: Issue) -> Dict:
         """イシューの複雑度を評価"""
-        
+
     async def execute_auto_processing(self, issue: Issue) -> Dict:
         """Elder Flowを使用してイシューを自動処理"""
 ```
@@ -54,7 +54,7 @@ graph TD
 ```python
 class ComplexityEvaluator:
     """イシューの複雑度を評価"""
-    
+
     COMPLEXITY_FACTORS = {
         'file_count': {          # 影響ファイル数
             'low': (1, 3),
@@ -77,7 +77,7 @@ class ComplexityEvaluator:
             'high': (16, None)
         }
     }
-    
+
     async def evaluate(self, issue: Issue) -> ComplexityScore:
         """複雑度スコアを計算"""
 ```
@@ -89,14 +89,14 @@ class ComplexityEvaluator:
 ```python
 class ProcessingLimiter:
     """処理制限を管理"""
-    
+
     MAX_ISSUES_PER_HOUR = 3
     MAX_CONCURRENT = 1
     COOLDOWN_PERIOD = 300  # 5分
-    
+
     async def can_process(self) -> bool:
         """処理可能かチェック"""
-        
+
     async def record_processing(self, issue_id: int):
         """処理記録を保存"""
 ```
@@ -106,9 +106,9 @@ class ProcessingLimiter:
 ```python
 class QualityGate:
     """Iron Will基準での品質保証"""
-    
+
     IRON_WILL_THRESHOLD = 95.0
-    
+
     async def validate_implementation(self, pr_data: Dict) -> bool:
         """実装の品質を検証"""
         checks = [
@@ -125,10 +125,10 @@ class QualityGate:
 ```python
 class RollbackManager:
     """問題発生時の自動ロールバック"""
-    
+
     async def create_checkpoint(self, issue_id: int):
         """処理前のチェックポイント作成"""
-        
+
     async def rollback_if_needed(self, issue_id: int, error: Exception):
         """必要に応じてロールバック実行"""
 ```
@@ -169,7 +169,7 @@ class RollbackManager:
 ```python
 async def execute_with_elder_flow(self, issue: Issue):
     """Elder Flowを使用した実行"""
-    
+
     # Elder Flowリクエスト構築
     flow_request = {
         'task_name': f"Auto-fix Issue #{issue.number}",
@@ -187,7 +187,7 @@ async def execute_with_elder_flow(self, issue: Issue):
             'labels': [l.name for l in issue.labels]
         }
     }
-    
+
     result = await self.elder_flow.execute_flow(flow_request)
     return result
 ```
@@ -197,19 +197,19 @@ async def execute_with_elder_flow(self, issue: Issue):
 ```python
 async def consult_four_sages(self, issue: Issue):
     """4賢者への相談"""
-    
+
     # ナレッジ賢者: 過去の類似事例検索
     knowledge = await self.knowledge_sage.search_similar_issues(issue)
-    
+
     # タスク賢者: 実行計画立案
     plan = await self.task_sage.create_execution_plan(issue)
-    
+
     # インシデント賢者: リスク評価
     risks = await self.incident_sage.evaluate_risks(issue)
-    
+
     # RAG賢者: 最適解探索
     solution = await self.rag_sage.find_optimal_solution(issue)
-    
+
     return {
         'knowledge': knowledge,
         'plan': plan,
@@ -223,7 +223,7 @@ async def consult_four_sages(self, issue: Issue):
 ```python
 class AutoProcessingMetrics:
     """処理メトリクスの収集"""
-    
+
     metrics = {
         'total_processed': 0,
         'success_rate': 0.0,
@@ -231,10 +231,10 @@ class AutoProcessingMetrics:
         'quality_score': 0.0,
         'rollback_count': 0
     }
-    
+
     async def record_success(self, issue_id: int, duration: float):
         """成功記録"""
-        
+
     async def record_failure(self, issue_id: int, error: Exception):
         """失敗記録"""
 ```
@@ -262,7 +262,7 @@ class AutoProcessingMetrics:
 - [ ] cronジョブ設定
 
 ---
-**技術責任者**: クロードエルダー  
-**レビュー者**: 4賢者評議会  
-**作成日**: 2025/01/19  
+**技術責任者**: クロードエルダー
+**レビュー者**: 4賢者評議会
+**作成日**: 2025/01/19
 **最終更新**: 2025/01/19

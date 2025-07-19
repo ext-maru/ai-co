@@ -27,23 +27,23 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sages-approved: ${{ steps.sages-check.outputs.approved }}
-    
+
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
+
       - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: 📦 Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+
       - name: 📚 Knowledge Sage Check
         id: knowledge-sage
         run: |
@@ -53,7 +53,7 @@ jobs:
           result = sages.knowledge_sage_pre_deploy_check()
           print(f'Knowledge Sage Status: {result}')
           "
-      
+
       - name: 📋 Task Sage Verification
         id: task-sage
         run: |
@@ -63,7 +63,7 @@ jobs:
           result = sages.task_sage_dependency_check()
           print(f'Task Sage Status: {result}')
           "
-      
+
       - name: 🚨 Incident Sage Monitoring
         id: incident-sage
         run: |
@@ -73,7 +73,7 @@ jobs:
           result = sages.incident_sage_pre_deploy_scan()
           print(f'Incident Sage Status: {result}')
           "
-      
+
       - name: 🔍 RAG Sage Analysis
         id: rag-sage
         run: |
@@ -83,7 +83,7 @@ jobs:
           result = sages.rag_sage_environment_analysis()
           print(f'RAG Sage Status: {result}')
           "
-      
+
       - name: 🏛️ Sages Council Decision
         id: sages-check
         run: |
@@ -96,38 +96,38 @@ jobs:
     runs-on: ubuntu-latest
     needs: four-sages-verification
     if: needs.four-sages-verification.outputs.sages-approved == 'true'
-    
+
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
-      
+
       - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: 📦 Install Security Tools
         run: |
           python -m pip install --upgrade pip
           pip install safety bandit semgrep
           pip install -r requirements.txt
-      
+
       - name: 🗡️ Security Vulnerability Scan
         run: |
           echo "🗡️ Running security vulnerability scan..."
           safety check --json --output safety-report.json || true
           bandit -r . -f json -o bandit-report.json || true
-      
+
       - name: ⚔️ Code Security Analysis
         run: |
           echo "⚔️ Running code security analysis..."
           semgrep --config=auto --json --output=semgrep-report.json . || true
-      
+
       - name: 🛡️ Permission Audit
         run: |
           echo "🛡️ Running permission audit..."
           find . -type f -name "*.py" -exec grep -l "chmod\|chown\|sudo" {} \; > permission-audit.txt || true
-      
+
       - name: 📊 Security Report
         run: |
           echo "📊 Security scan completed"
@@ -138,7 +138,7 @@ jobs:
     name: 🧪 Test Execution
     runs-on: ubuntu-latest
     needs: knights-security-defense
-    
+
     services:
       postgres:
         image: postgres:15
@@ -150,7 +150,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      
+
       rabbitmq:
         image: rabbitmq:3-management
         options: >-
@@ -158,27 +158,27 @@ jobs:
           --health-interval 30s
           --health-timeout 30s
           --health-retries 3
-    
+
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
-      
+
       - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: 📦 Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov pytest-asyncio
-      
+
       - name: 🧪 Unit Tests
         run: |
           echo "🧪 Running unit tests..."
           pytest tests/unit/ -v --cov=. --cov-report=xml --cov-report=html
-      
+
       - name: 🔄 Integration Tests
         run: |
           echo "🔄 Running integration tests..."
@@ -186,12 +186,12 @@ jobs:
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
           RABBITMQ_URL: amqp://guest:guest@localhost:5672/
-      
+
       - name: 🎯 End-to-End Tests
         run: |
           echo "🎯 Running E2E tests..."
           python -m pytest tests/e2e/ -v --tb=short
-      
+
       - name: 📊 Coverage Report
         run: |
           echo "📊 Test coverage report generated"
@@ -204,26 +204,26 @@ jobs:
     needs: test-execution
     if: github.ref == 'refs/heads/staging' || github.event_name == 'workflow_dispatch'
     environment: staging
-    
+
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
-      
+
       - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: 📦 Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+
       - name: 🔧 Build Application
         run: |
           echo "🔧 Building application for staging..."
           python -m compileall .
-      
+
       - name: 🚀 Deploy to Staging
         run: |
           echo "🚀 Deploying to staging environment..."
@@ -232,13 +232,13 @@ jobs:
           STAGING_HOST: ${{ secrets.STAGING_HOST }}
           STAGING_USER: ${{ secrets.STAGING_USER }}
           STAGING_KEY: ${{ secrets.STAGING_SSH_KEY }}
-      
+
       - name: 🔍 Health Check
         run: |
           echo "🔍 Running health check..."
           sleep 30
           echo "✅ Health check passed"
-      
+
       - name: 📊 Four Sages Verification
         run: |
           python -c "
@@ -255,26 +255,26 @@ jobs:
     needs: test-execution
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
-    
+
     steps:
       - name: 📥 Checkout Code
         uses: actions/checkout@v4
-      
+
       - name: 🐍 Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      
+
       - name: 📦 Install Dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+
       - name: 🔧 Build Application
         run: |
           echo "🔧 Building application for production..."
           python -m compileall .
-      
+
       - name: 🚀 Blue-Green Deployment
         run: |
           echo "🚀 Starting blue-green deployment..."
@@ -283,13 +283,13 @@ jobs:
           PRODUCTION_HOST: ${{ secrets.PRODUCTION_HOST }}
           PRODUCTION_USER: ${{ secrets.PRODUCTION_USER }}
           PRODUCTION_KEY: ${{ secrets.PRODUCTION_SSH_KEY }}
-      
+
       - name: 🔍 Production Health Check
         run: |
           echo "🔍 Running production health check..."
           sleep 60
           echo "✅ Production health check passed"
-      
+
       - name: 📊 Four Sages Final Verification
         run: |
           python -c "
@@ -305,7 +305,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-staging, deploy-production]
     if: always()
-    
+
     steps:
       - name: 📢 Slack Notification
         uses: 8398a7/action-slack@v3
@@ -319,7 +319,7 @@ jobs:
             🚀 Environment: ${{ github.ref == 'refs/heads/main' && 'Production' || 'Staging' }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      
+
       - name: 📝 Four Sages Report
         run: |
           echo "📝 Generating Four Sages deployment report..."

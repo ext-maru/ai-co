@@ -3,13 +3,14 @@
 SonarQube移行デモンストレーション
 既存のautomated_code_reviewとSonarQube/リンター統合版の比較
 """
-import sys
 import json
+import sys
 from pathlib import Path
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from libs.automated_code_review import CodeAnalyzer, SecurityScanner, ReviewEngine
-from libs.sonarqube_integration_poc import UnifiedCodeReview, AutomatedCodeReviewCompat
+from libs.automated_code_review import CodeAnalyzer, ReviewEngine, SecurityScanner
+from libs.sonarqube_integration_poc import AutomatedCodeReviewCompat, UnifiedCodeReview
 
 
 def demo_existing_review():
@@ -17,7 +18,7 @@ def demo_existing_review():
     print("=" * 60)
     print("🔧 既存のautomated_code_review.pyのデモ")
     print("=" * 60)
-    
+
     # サンプルコード
     sample_code = '''
 import pickle
@@ -54,17 +55,17 @@ def process_order(order_data):
     # 100行以上の処理...
     pass
 '''
-    
+
     try:
         # 既存システムで分析
         analyzer = CodeAnalyzer()
         results = analyzer.analyze_code_quality(sample_code)
-        
+
         print(f"✅ 分析完了")
         print(f"  - 品質スコア: {results['quality_score']}")
         print(f"  - 発見された問題: {len(results['issues'])}")
         print(f"  - メトリクス:")
-        for key, value in results['metrics'].items():
+        for key, value in results["metrics"].items():
             print(f"    - {key}: {value}")
     except Exception as e:
         print(f"❌ エラー: {e}")
@@ -75,7 +76,7 @@ def demo_sonarqube_review():
     print("\n" + "=" * 60)
     print("🚀 SonarQube/リンター統合POCのデモ")
     print("=" * 60)
-    
+
     # 同じサンプルコード
     sample_code = '''
 import pickle
@@ -112,18 +113,18 @@ def process_order(order_data):
     # 100行以上の処理...
     pass
 '''
-    
+
     try:
         # 統合版で分析
         compat = AutomatedCodeReviewCompat()
         results = compat.analyze_code_quality(sample_code)
-        
+
         print(f"✅ 分析完了（統合版）")
         print(f"  - 品質スコア: {results['quality_score']}")
         print(f"  - 発見された問題: {results['metrics']['total_issues']}")
         print(f"  - 重大な問題: {results['metrics']['critical_issues']}")
         print(f"  - 高優先度の問題: {results['metrics']['high_issues']}")
-        
+
         print("\n📋 統合リンターの利点:")
         print("  - Flake8: PEP8スタイルチェック")
         print("  - Pylint: 高度なコード分析")
@@ -131,7 +132,7 @@ def process_order(order_data):
         print("  - Mypy: 静的型チェック")
         print("  - Black/isort: 自動フォーマット")
         print("  - SonarQube: 統合品質ダッシュボード")
-        
+
     except Exception as e:
         print(f"❌ エラー: {e}")
         print("  注: 各種リンターがインストールされていない可能性があります")
@@ -142,7 +143,7 @@ def show_tool_comparison():
     print("\n" + "=" * 60)
     print("📊 ツール機能比較")
     print("=" * 60)
-    
+
     comparison = """
     | 機能 | 既存実装 | SonarQube統合 |
     |------|---------|--------------|
@@ -167,7 +168,7 @@ def show_migration_benefits():
     print("\n" + "=" * 60)
     print("💡 SonarQube/リンター統合のメリット")
     print("=" * 60)
-    
+
     benefits = [
         ("🎯", "標準化", "業界標準ツールによる品質管理"),
         ("📊", "可視化", "Webダッシュボードで品質メトリクス一覧"),
@@ -178,9 +179,9 @@ def show_migration_benefits():
         ("⚡", "高速化", "インクリメンタル分析で高速"),
         ("🛡️", "セキュリティ", "OWASP準拠のセキュリティルール"),
         ("🤝", "チーム協力", "品質ゲートによる自動承認"),
-        ("📚", "学習コスト", "豊富なドキュメントとコミュニティ")
+        ("📚", "学習コスト", "豊富なドキュメントとコミュニティ"),
     ]
-    
+
     for icon, title, desc in benefits:
         print(f"{icon} {title}: {desc}")
 
@@ -190,7 +191,7 @@ def show_pre_commit_benefits():
     print("\n" + "=" * 60)
     print("🪝 Pre-commitフックの追加メリット")
     print("=" * 60)
-    
+
     print("コミット前の自動チェック:")
     print("  ✅ Black: コードの自動フォーマット")
     print("  ✅ isort: importの自動ソート")
@@ -199,7 +200,7 @@ def show_pre_commit_benefits():
     print("  ✅ Mypy: 型エラーの検出")
     print("  ✅ ファイルサイズ制限")
     print("  ✅ マージコンフリクト検出")
-    
+
     print("\n効果:")
     print("  - コードレビュー時間: 50%削減")
     print("  - スタイル議論: ゼロ化")
@@ -211,7 +212,7 @@ def show_migration_steps():
     print("\n" + "=" * 60)
     print("📋 推奨移行手順")
     print("=" * 60)
-    
+
     steps = [
         ("1️⃣", "環境構築", "SonarQubeサーバーのセットアップ（Docker）"),
         ("2️⃣", "リンター導入", "pip install flake8 pylint bandit mypy black isort"),
@@ -220,12 +221,12 @@ def show_migration_steps():
         ("5️⃣", "品質ゲート", "合格基準の設定（段階的に厳しく）"),
         ("6️⃣", "CI/CD統合", "GitHub ActionsにSonarQube追加"),
         ("7️⃣", "チーム教育", "ダッシュボードの使い方研修"),
-        ("8️⃣", "段階的移行", "新規コードから適用開始")
+        ("8️⃣", "段階的移行", "新規コードから適用開始"),
     ]
-    
+
     for num, title, desc in steps:
         print(f"{num} {title}: {desc}")
-    
+
     print("\n⏱️ 推定期間: 1-2週間（段階的導入）")
 
 
@@ -234,17 +235,17 @@ def show_cost_analysis():
     print("\n" + "=" * 60)
     print("💰 コスト分析")
     print("=" * 60)
-    
+
     print("初期コスト:")
     print("  - SonarQube Community Edition: 無料")
     print("  - 各種リンター: 無料（OSS）")
     print("  - セットアップ時間: 1-2日")
-    
+
     print("\n削減効果:")
     print("  - コードレビュー時間: 年間200時間削減")
     print("  - バグ修正コスト: 30%削減")
     print("  - 保守コスト: 50%削減")
-    
+
     print("\nROI:")
     print("  - 投資回収期間: 2-3ヶ月")
     print("  - 年間削減額: 開発コストの20-30%")
@@ -255,20 +256,20 @@ def main():
     print("🏛️ OSS移行POC - コードレビューシステム比較デモ")
     print("📅 2025年7月19日")
     print("👤 クロードエルダー")
-    
+
     # 既存システムのデモ
     demo_existing_review()
-    
+
     # SonarQube統合版のデモ
     demo_sonarqube_review()
-    
+
     # 比較と移行計画
     show_tool_comparison()
     show_migration_benefits()
     show_pre_commit_benefits()
     show_migration_steps()
     show_cost_analysis()
-    
+
     print("\n✅ デモ完了！")
     print("\n📝 次のアクション:")
     print("1. docker-compose.ymlにSonarQubeを追加")

@@ -14,7 +14,7 @@
 
 ### Docker Engine 構造
 - **Docker Daemon**: バックグラウンドサービス
-- **Docker CLI**: コマンドインターフェース  
+- **Docker CLI**: コマンドインターフェース
 - **containerd**: ランタイム管理
 - **runc**: 低レベルランタイム
 

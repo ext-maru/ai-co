@@ -2,8 +2,8 @@
 
 ## Current System Analysis
 
-**Environment:** Ubuntu 24.04.2 LTS on WSL2  
-**Python:** 3.12.3  
+**Environment:** Ubuntu 24.04.2 LTS on WSL2
+**Python:** 3.12.3
 **Issue:** Missing browser dependencies for GUI testing
 
 ## Root Cause Analysis

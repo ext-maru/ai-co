@@ -17,7 +17,7 @@ User → ai-send/ai-dialog → RabbitMQ
                               ↓
                         ResultWorker
                         (Slack通知)
-                              
+
      Command Executor (バックグラウンド常駐)
 ```
 

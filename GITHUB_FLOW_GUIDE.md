@@ -72,7 +72,7 @@ manager.create_feature_branch(task_id)  # auto/task_id
 manager.commit_changes()
 manager.merge_to_develop(branch_name)
 
-# 現在  
+# 現在
 manager.create_feature_branch(task_id)  # feature/task_id
 manager.commit_changes()
 manager.create_pull_request(branch_name, title, body)  # PR作成試行

@@ -12,13 +12,13 @@ echo "【Slack Polling Worker】"
 if pgrep -f "slack_polling_worker" > /dev/null; then
     PID=$(pgrep -f "slack_polling_worker")
     echo "✅ 動作中 (PID: $PID)"
-    
+
     # ログ確認
     if [ -f logs/slack_polling_worker.log ]; then
         echo ""
         echo "最新ログ（10行）:"
         tail -10 logs/slack_polling_worker.log
-        
+
         # エラー確認
         ERROR_COUNT=$(tail -50 logs/slack_polling_worker.log | grep -ci error || echo "0")
         echo ""

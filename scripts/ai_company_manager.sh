@@ -43,7 +43,7 @@ health_check() {
 # 緊急修正
 emergency_fix() {
     echo -e "${RED}🚨 緊急修正を開始...${NC}"
-    
+
     # 確認プロンプト
     read -p "緊急修正を実行しますか？ (y/N): " -n 1 -r
     echo
@@ -57,14 +57,14 @@ emergency_fix() {
 # クリーンアップ
 cleanup() {
     echo -e "${YELLOW}🧹 クリーンアップを開始...${NC}"
-    
+
     cd $PROJECT_ROOT
-    
+
     # 古いログファイルの削除
     echo "古いログファイルを削除中..."
     find . -name "*.log" -mtime +7 -delete
     find . -name "slack_project_status_*.log" -mtime +1 -delete
-    
+
     # バックアップファイルの整理
     echo "バックアップファイルを整理中..."
     find . -name "*_backup_*" -o -name "*.bak" | while read file; do
@@ -72,20 +72,20 @@ cleanup() {
         mkdir -p "$archive_dir"
         mv "$file" "$archive_dir/"
     done
-    
+
     # 空のディレクトリを削除
     find . -type d -empty -delete
-    
+
     echo -e "${GREEN}✅ クリーンアップ完了${NC}"
 }
 
 # システムレポート生成
 generate_report() {
     echo -e "${BLUE}📊 システムレポートを生成中...${NC}"
-    
+
     REPORT_FILE="${PROJECT_ROOT}/reports/system_report_$(date +%Y%m%d_%H%M%S).md"
     mkdir -p $(dirname "$REPORT_FILE")
-    
+
     cat > "$REPORT_FILE" << EOF
 # AI Company システムレポート
 生成日時: $(date '+%Y年%m月%d日 %H:%M:%S')
@@ -175,28 +175,28 @@ else:
 ---
 レポート生成完了: $(date)
 EOF
-    
+
     echo -e "${GREEN}✅ レポートを生成しました: $REPORT_FILE${NC}"
 }
 
 # システム再起動
 safe_restart() {
     echo -e "${YELLOW}🔄 システムを安全に再起動します...${NC}"
-    
+
     # 現在の状態を保存
     echo "現在の状態を保存中..."
     generate_report
-    
+
     # ワーカーを停止
     echo "ワーカーを停止中..."
     ${PROJECT_ROOT}/commands/ai-stop
-    
+
     sleep 5
-    
+
     # ワーカーを起動
     echo "ワーカーを起動中..."
     ${PROJECT_ROOT}/commands/ai-start
-    
+
     echo -e "${GREEN}✅ 再起動完了${NC}"
 }
 
@@ -205,32 +205,32 @@ monitor_system() {
     echo -e "${BLUE}👁️  リアルタイム監視を開始...${NC}"
     echo "Ctrl+C で終了"
     echo ""
-    
+
     while true; do
         clear
         echo -e "${BLUE}=== AI Company リアルタイム監視 ===${NC}"
         echo "更新時刻: $(date '+%Y-%m-%d %H:%M:%S')"
         echo ""
-        
+
         # CPU/メモリ使用率
         echo -e "${YELLOW}[システムリソース]${NC}"
         top -bn1 | grep "Cpu\|Mem" | head -2
         echo ""
-        
+
         # ワーカー状態
         echo -e "${YELLOW}[アクティブワーカー]${NC}"
         ps aux | grep -E "(worker|Worker)" | grep -v grep | wc -l | xargs echo "実行中:"
         echo ""
-        
+
         # 最新ログ
         echo -e "${YELLOW}[最新ログ (直近5件)]${NC}"
         find $PROJECT_ROOT/logs -name "*.log" -mmin -5 -exec tail -1 {} \; | tail -5
         echo ""
-        
+
         # ディスク使用率
         echo -e "${YELLOW}[ディスク使用率]${NC}"
         df -h $PROJECT_ROOT | tail -1
-        
+
         sleep 10
     done
 }
@@ -238,21 +238,21 @@ monitor_system() {
 # バックアップ作成
 create_backup() {
     echo -e "${BLUE}💾 バックアップを作成中...${NC}"
-    
+
     BACKUP_DIR="${PROJECT_ROOT}/backups/$(date +%Y%m%d_%H%M%S)"
     mkdir -p "$BACKUP_DIR"
-    
+
     # 重要なファイルをバックアップ
     echo "設定ファイルをバックアップ中..."
     cp -r $PROJECT_ROOT/config $BACKUP_DIR/
     cp $PROJECT_ROOT/.env $BACKUP_DIR/ 2>/dev/null || true
-    
+
     echo "ナレッジベースをバックアップ中..."
     cp -r $PROJECT_ROOT/knowledge_base $BACKUP_DIR/
-    
+
     echo "ワーカーをバックアップ中..."
     cp -r $PROJECT_ROOT/workers $BACKUP_DIR/
-    
+
     # バックアップ情報を記録
     cat > "$BACKUP_DIR/backup_info.txt" << EOF
 バックアップ作成日時: $(date)
@@ -264,13 +264,13 @@ create_backup() {
 - ナレッジベース (knowledge_base/)
 - ワーカー (workers/)
 EOF
-    
+
     # 圧縮
     echo "圧縮中..."
     cd $(dirname "$BACKUP_DIR")
     tar -czf "$(basename "$BACKUP_DIR").tar.gz" "$(basename "$BACKUP_DIR")"
     rm -rf "$BACKUP_DIR"
-    
+
     echo -e "${GREEN}✅ バックアップ完了: $(dirname "$BACKUP_DIR")/$(basename "$BACKUP_DIR").tar.gz${NC}"
 }
 

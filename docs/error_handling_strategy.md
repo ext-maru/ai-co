@@ -20,7 +20,7 @@ class RecoverableError(Exception):
 
 # 例:
 - ネットワーク一時的エラー
-- 外部API率制限エラー  
+- 外部API率制限エラー
 - メモリ不足エラー
 - キュー満杯エラー
 ```
@@ -77,15 +77,15 @@ class CodeReviewTaskWorker(AsyncTaskWorkerSimple):
             # 予期しないエラー
             await self._handle_unexpected_error(message, e)
             raise FatalError(f"Unexpected error in TaskWorker: {str(e)}", "TASK_UNEXPECTED")
-    
+
     async def _handle_partial_analysis(self, message: Dict, error: PartialError) -> Dict:
         """部分的エラーの処理 - 可能な解析のみ実行"""
         partial_results = {}
-        
+
         # 構文解析のみ実行（他の解析が失敗した場合）
         if "syntax" not in error.failed_components:
             partial_results["syntax_issues"] = await self._analyze_syntax(message)
-        
+
         # 部分結果でもPMWorkerに送信
         return {
             "status": "partial_success",
@@ -111,15 +111,15 @@ class CodeReviewPMWorker(AsyncPMWorkerSimple):
         except FatalError as e:
             # エラー結果としてResultWorkerに送信
             return await self._create_error_final_result(message, e)
-    
+
     async def _evaluate_partial_results(self, message: Dict, error: PartialError) -> Dict:
         """部分的結果での品質評価"""
         # 利用可能なデータのみで品質スコア算出
         available_results = message.get("analysis_results", {})
-        
+
         # 重み付けを調整して部分スコア算出
         partial_score = await self._calculate_partial_quality_score(available_results)
-        
+
         # 部分結果でも改善提案生成
         if partial_score < 85:
             return await self._generate_improvement_for_partial(message, available_results)
@@ -143,18 +143,18 @@ class CodeReviewResultWorker(AsyncResultWorkerSimple):
         except FatalError as e:
             # エラーレポート生成
             return await self._generate_error_report(message, e)
-    
+
     async def _generate_partial_report(self, message: Dict, error: PartialError) -> Dict:
         """部分的レポート生成 - 可能な形式のみ"""
         available_formats = set(["json", "markdown", "html"]) - set(error.failed_components)
-        
+
         reports = {}
         for format_type in available_formats:
             try:
                 reports[format_type] = await self._generate_format(message, format_type)
             except Exception as e:
                 self.logger.warning(f"Failed to generate {format_type} report", error=str(e))
-        
+
         return {
             "status": "partial_success",
             "generated_reports": reports,
@@ -169,20 +169,20 @@ class CodeReviewResultWorker(AsyncResultWorkerSimple):
 ```python
 class IterationController:
     MAX_ITERATIONS = 5
-    
+
     async def handle_iteration_errors(self, task_id: str, iteration: int, error: Exception):
         if iteration >= self.MAX_ITERATIONS:
             # 反復上限到達
             return await self._finalize_with_current_quality(task_id)
-        
+
         if isinstance(error, RecoverableError):
             # 次の反復で再試行
             return await self._schedule_next_iteration(task_id, iteration + 1, error.retry_after)
-        
+
         elif isinstance(error, PartialError):
             # 部分結果で次の反復実行
             return await self._continue_with_partial_results(task_id, iteration + 1, error)
-        
+
         else:
             # 致命的エラー - 反復停止
             return await self._abort_iteration_cycle(task_id, error)
@@ -197,14 +197,14 @@ class ErrorMetricsCollector:
         self.error_counter = metrics_system.counter('errors_total')
         self.error_histogram = metrics_system.histogram('error_processing_time')
         self.recovery_rate = metrics_system.gauge('error_recovery_rate')
-    
+
     def record_error(self, error_type: str, component: str, recovery_success: bool):
         self.error_counter.labels(
             error_type=error_type,
             component=component,
             recovered=recovery_success
         ).inc()
-        
+
         if recovery_success:
             self.recovery_rate.inc()
 ```
@@ -215,11 +215,11 @@ alert_thresholds:
   error_rate:
     warning: "> 1% over 5 minutes"
     critical: "> 5% over 5 minutes"
-  
+
   recovery_rate:
     warning: "< 90% over 10 minutes"
     critical: "< 70% over 10 minutes"
-  
+
   fatal_errors:
     warning: "> 0 over 1 minute"
     critical: "> 3 over 5 minutes"
@@ -237,7 +237,7 @@ class ErrorInjectionTests:
             # When: コードレビュー実行
             result = await self.code_review_system.process(sample_code)
             # Then: 適切にリトライされ最終的に成功
-        
+
     async def test_partial_component_failure(self):
         """部分的コンポーネント障害テスト"""
         # Given: セキュリティ解析コンポーネント障害
@@ -245,7 +245,7 @@ class ErrorInjectionTests:
             # When: コードレビュー実行
             result = await self.code_review_system.process(sample_code)
             # Then: 他の解析は成功し、部分結果が返される
-        
+
     async def test_iteration_cycle_error_handling(self):
         """反復サイクルエラーハンドリングテスト"""
         # Given: 3回目の反復で障害発生
@@ -267,7 +267,7 @@ class StructuredErrorInfo:
         self.error_message = str(error)
         self.context = context
         self.stack_trace = traceback.format_exc()
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return {
             "error_id": self.error_id,
@@ -280,5 +280,5 @@ class StructuredErrorInfo:
 ```
 
 ---
-*作成日: 2025-07-06*  
+*作成日: 2025-07-06*
 *バージョン: 1.0*

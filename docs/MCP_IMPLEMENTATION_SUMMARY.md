@@ -52,7 +52,7 @@ client = MCPClient()
 # ワーカー作成
 result = client.call_tool(
     "filesystem",
-    "create_worker", 
+    "create_worker",
     {"name": "analytics", "worker_type": "data"}
 )
 

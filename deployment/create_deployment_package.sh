@@ -125,7 +125,7 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # プロキシタイムアウト
         proxy_connect_timeout 60s;
         proxy_send_timeout 60s;
@@ -137,7 +137,7 @@ server {
         alias /opt/elders-guild/image-upload-manager/app/static/;
         expires 30d;
         add_header Cache-Control "public, immutable";
-        
+
         # セキュリティ
         location ~* \.(php|pl|py|jsp|asp|sh|cgi)$ {
             deny all;
@@ -148,7 +148,7 @@ server {
     location /uploads/ {
         alias /opt/elders-guild/image-upload-manager/uploads/;
         expires 7d;
-        
+
         # セキュリティ制限
         location ~* \.(php|pl|py|jsp|asp|sh|cgi)$ {
             deny all;

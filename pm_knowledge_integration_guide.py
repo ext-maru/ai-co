@@ -6,9 +6,10 @@ PMWorkerへのナレッジベース統合ガイド
 import sys
 from pathlib import Path
 
+
 def generate_integration_guide():
     """統合ガイドを生成"""
-    
+
     guide = """
 # 🤖 PMWorkerへのナレッジベース統合ガイド
 
@@ -37,7 +38,7 @@ class PMWorker(BaseWorker, KnowledgeAwareMixin):
 ```python
 def process_message(self, ch, method, properties, body):
     task_data = json.loads(body)
-    
+
     # タスクタイプに応じてナレッジを参照
     if task_data.get('task_type') == 'test':
         # テストに関するナレッジを参照
@@ -45,7 +46,7 @@ def process_message(self, ch, method, properties, body):
         if test_knowledge:
             self.logger.info("Found test framework knowledge")
             # ナレッジを活用した処理
-    
+
     # 既存の処理...
 ```
 
@@ -59,7 +60,7 @@ def _check_knowledge_updates_periodically(self):
         if updates['modified'] or updates['new']:
             self.logger.info("Knowledge base updated, reloading...")
             # 必要に応じて再読み込み
-        
+
         time.sleep(300)  # 5分ごとにチェック
 ```
 
@@ -104,9 +105,9 @@ vim workers/pm_worker.py
 # KnowledgeAwareMixinを追加
 ```
 """
-    
+
     print(guide)
-    
+
     # 統合パッチスクリプトも生成
     patch_script = '''#!/usr/bin/env python3
 """
@@ -117,40 +118,40 @@ from pathlib import Path
 
 def patch_pm_worker():
     pm_worker_path = Path("/home/aicompany/ai_co/workers/pm_worker.py")
-    
+
     if not pm_worker_path.exists():
         print("❌ pm_worker.pyが見つかりません")
         return False
-    
+
     with open(pm_worker_path, 'r') as f:
         content = f.read()
-    
+
     # すでにパッチ済みかチェック
     if "KnowledgeAwareMixin" in content:
         print("✓ すでにナレッジベース機能が追加されています")
         return True
-    
+
     # インポート追加
     import_line = "from libs.knowledge_base_manager import KnowledgeAwareMixin\\n"
     content = content.replace(
         "from core import BaseWorker",
         f"from core import BaseWorker\\n{import_line}"
     )
-    
+
     # クラス定義修正
     content = re.sub(
         r'class PMWorker\\(BaseWorker\\):',
         'class PMWorker(BaseWorker, KnowledgeAwareMixin):',
         content
     )
-    
+
     # ナレッジ参照の例を追加（コメントとして）
     example = """
         # ナレッジベース参照の例
         # knowledge = self.consult_knowledge('test')
         # updates = self.check_knowledge_updates()
 """
-    
+
     # process_messageメソッドにコメントを追加
     content = re.sub(
         r'(def process_message.*?:.*?\\n)',
@@ -158,26 +159,27 @@ def patch_pm_worker():
         content,
         flags=re.DOTALL
     )
-    
+
     # ファイルに書き戻し
     with open(pm_worker_path, 'w') as f:
         f.write(content)
-    
+
     print("✅ PMWorkerにナレッジベース機能を追加しました")
     return True
 
 if __name__ == "__main__":
     patch_pm_worker()
 '''
-    
+
     # パッチスクリプトを保存
     patch_path = Path("/home/aicompany/ai_co/scripts/patch_pm_worker_knowledge.py")
-    with open(patch_path, 'w') as f:
+    with open(patch_path, "w") as f:
         f.write(patch_script)
-    
+
     print(f"\n📝 パッチスクリプトを作成しました: {patch_path}")
     print("\n実行方法:")
     print("  python scripts/patch_pm_worker_knowledge.py")
+
 
 if __name__ == "__main__":
     generate_integration_guide()

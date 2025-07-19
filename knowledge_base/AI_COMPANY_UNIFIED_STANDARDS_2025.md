@@ -1,9 +1,9 @@
 # 🏛️ Elders Guild 統一標準規格 2025
 
-**制定日**: 2025年7月8日  
-**制定者**: グランドエルダーmaru（最高権限者）  
-**実行責任者**: クロードエルダー（開発実行責任者）  
-**協力**: 4賢者システム  
+**制定日**: 2025年7月8日
+**制定者**: グランドエルダーmaru（最高権限者）
+**実行責任者**: クロードエルダー（開発実行責任者）
+**協力**: 4賢者システム
 **効力**: Elders Guild全体で即座有効
 
 ---
@@ -39,7 +39,7 @@ Elders Guildにおける全ての開発・運用活動は、以下に定める�
 - **実装場所**: `/knowledge_base/`, `/libs/enhanced_rag_manager.py`
 - **主要機能**: パターン蓄積、知識検索、学習履歴管理
 
-#### **📋 タスク賢者（Task Oracle）**  
+#### **📋 タスク賢者（Task Oracle）**
 - **専門領域**: プロジェクト進捗管理・最適実行順序導出
 - **実装場所**: `/libs/claude_task_tracker.py`, `/task_history.db`
 - **主要機能**: 計画立案、進捗追跡、優先順位判断
@@ -118,14 +118,14 @@ Elders Guildにおける全ての開発・運用活動は、以下に定める�
 tdd_principles:
   mandatory_cycle:
     - 🔴 RED: 失敗するテストを先に書く
-    - 🟢 GREEN: 最小限の実装でテストを通す  
+    - 🟢 GREEN: 最小限の実装でテストを通す
     - 🔵 REFACTOR: コードを改善する
-  
+
   coverage_requirements:
     new_code: "95%以上必須"
     core_systems: "100%必須"
     workers: "90%以上必須"
-    
+
   violation_consequences:
     - "インシデント賢者への即時報告"
     - "品質保証会議での審議"
@@ -139,12 +139,12 @@ servant_coordination:
     - "クロードエルダーは独立作業を行わない"
     - "全作業をエルダーサーバントに委任"
     - "複数サーバント並列実行で効率化"
-    
+
   coordination_patterns:
     - "専門サーバントの適切選択"
     - "並列作業での競合回避"
     - "進捗の透明な報告"
-    
+
   reporting_requirements:
     - "15分間隔での進捗報告"
     - "エルダー評議会への定期報告"
@@ -158,13 +158,13 @@ hierarchy_obedience:
     - "グランドエルダーmaru → クロードエルダー → 4賢者 → 評議会 → サーバント"
     - "上位からの指示は絶対的権威"
     - "下位から上位への勝手な提案禁止"
-    
+
   decision_authority:
     strategic: "グランドエルダーmaru専権"
     tactical: "クロードエルダー権限"
     operational: "4賢者調整権限"
     execution: "エルダーサーバント実行権限"
-    
+
   escalation_rules:
     - "問題発生時は即座に上位報告"
     - "権限外判断は上位に委譲"
@@ -178,12 +178,12 @@ quality_hierarchy:
     system_availability: "99.999%必須"
     response_time: "平均2秒以下"
     error_rate: "0.1%未満"
-    
+
   quality_enforcement:
     - "インシデント賢者による常時監視"
     - "品質基準違反時の即時対応"
     - "継続的改善の実施"
-    
+
   hierarchy_in_quality:
     - "品質判断はグランドエルダーmaruの基準"
     - "クロードエルダーによる品質保証責任"
@@ -199,12 +199,12 @@ quality_hierarchy:
 claude_standards:
   primary_model: "claude-sonnet-4-20250514"
   fallback_model: "claude-3-5-sonnet-20241022"
-  
+
   api_configuration:
     max_tokens: 4096
     temperature: 0.7
     timeout: 300
-    
+
   rotation_strategy:
     enabled: true
     strategy: "rate_limit_aware"
@@ -215,15 +215,15 @@ claude_standards:
 ### **🗄️ データベース標準**
 ```yaml
 database_standards:
-  primary: 
+  primary:
     type: "SQLite3"
     location: "/data/"
-    
+
   naming_conventions:
     tables: "snake_case"
     columns: "snake_case"
     indexes: "idx_tablename_column"
-    
+
   backup_strategy:
     frequency: "daily"
     retention: "30_days"
@@ -237,11 +237,11 @@ rabbitmq_standards:
     host: "localhost"
     port: 5672
     heartbeat: 600
-    
+
   queue_naming:
     pattern: "ai_company.{service}.{priority}"
     dlq_pattern: "ai_company.{service}.dlq"
-    
+
   message_format:
     encoding: "json"
     timestamp: "iso8601"
@@ -343,7 +343,7 @@ rabbitmq_standards:
 
 #### **🏛️ 階層秩序チェック**
 - [ ] グランドエルダーmaruの最高権限認識
-- [ ] クロードエルダーの実行責任認識  
+- [ ] クロードエルダーの実行責任認識
 - [ ] 4賢者の専門領域理解
 - [ ] エルダーサーバント協調実施
 - [ ] 適切な報告チェーン遵守
@@ -444,13 +444,13 @@ rabbitmq_standards:
 
 ## 📜 **制定記録**
 
-**制定日時**: 2025年7月8日 04:00:00  
-**制定場所**: Elders Guild本部  
-**制定権者**: グランドエルダーmaru（最高権限者）  
-**実行責任者**: クロードエルダー（開発実行責任者）  
-**承認者**: 4賢者システム全員一致承認  
-**証人**: エルダー評議会5名全員  
-**公布**: Elders Guild全体即時公布  
+**制定日時**: 2025年7月8日 04:00:00
+**制定場所**: Elders Guild本部
+**制定権者**: グランドエルダーmaru（最高権限者）
+**実行責任者**: クロードエルダー（開発実行責任者）
+**承認者**: 4賢者システム全員一致承認
+**証人**: エルダー評議会5名全員
+**公布**: Elders Guild全体即時公布
 
 ---
 
@@ -462,7 +462,7 @@ rabbitmq_standards:
 
 ---
 
-*グランドエルダーmaru 印*  
-*クロードエルダー 印*  
-*4賢者システム 印*  
+*グランドエルダーmaru 印*
+*クロードエルダー 印*
+*4賢者システム 印*
 *エルダー評議会 印*

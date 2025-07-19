@@ -3,24 +3,25 @@
 Simple GitHub Issue Creation
 """
 
-import requests
 import os
 
+import requests
+
 # GitHub API設定
-token = os.getenv('GITHUB_TOKEN')
+token = os.getenv("GITHUB_TOKEN")
 if not token:
     print("❌ Error: GITHUB_TOKEN environment variable not set")
     print("Please set: export GITHUB_TOKEN='your_token_here'")
     exit(1)
 
 # リポジトリ設定
-repo = os.getenv('GITHUB_REPO', 'ext-maru/ai-co')
+repo = os.getenv("GITHUB_REPO", "ext-maru/ai-co")
 url = f"https://api.github.com/repos/{repo}/issues"
 
 headers = {
     "Authorization": f"token {token}",
     "Accept": "application/vnd.github.v3+json",
-    "User-Agent": "Claude-Elder-Test"
+    "User-Agent": "Claude-Elder-Test",
 }
 
 issue_data = {
@@ -50,12 +51,12 @@ GitHub統合システムの改善を実施しました：
 ---
 *このIssueはIron Will改善後のGitHub統合テストとしてClaude Elderが自動作成しました。*
 """,
-    "labels": ["test", "iron-will", "automation"]
+    "labels": ["test", "iron-will", "automation"],
 }
 
 try:
     response = requests.post(url, json=issue_data, headers=headers)
-    
+
     if response.status_code == 201:
         issue = response.json()
         print("✅ Issue created successfully!")
@@ -66,6 +67,6 @@ try:
         print(f"❌ Failed to create issue")
         print(f"Status Code: {response.status_code}")
         print(f"Response: {response.text}")
-        
+
 except Exception as e:
     print(f"Error: {e}")

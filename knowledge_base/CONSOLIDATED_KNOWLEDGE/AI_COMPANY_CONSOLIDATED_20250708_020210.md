@@ -35,7 +35,7 @@ User -> ai-send/ai-dialog
 task_worker.py - Enhanced Task Workerへのエイリアス
 
 既存のテストとの互換性のために作成
-- クラス: 
+- クラス:
 - 関数数: 0
 - 行数: 9
 
@@ -68,7 +68,7 @@ task_worker.py - Enhanced Task Workerへのエイリアス
 pm_worker.py - Enhanced PM Workerへのエイリアス
 
 既存のテストとの互換性のために作成
-- クラス: 
+- クラス:
 - 関数数: 0
 - 行数: 9
 
@@ -214,7 +214,7 @@ API制限時の優先度付きキュー管理システム
 - 関数数: 2
 
 #### rabbit_manager
-- クラス: 
+- クラス:
 - 関数数: 0
 
 #### incident_manager

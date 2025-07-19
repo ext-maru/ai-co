@@ -89,7 +89,7 @@ try:
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
     channel.queue_declare(queue='ai_tasks', durable=True)
-    
+
     test_task = {
         'task_id': f'slack_test_{datetime.now().strftime("%Y%m%d_%H%M%S")}_code',
         'type': 'slack_command',
@@ -104,19 +104,19 @@ try:
             'mentioned': True
         }
     }
-    
+
     channel.basic_publish(
         exchange='',
         routing_key='ai_tasks',
         body=json.dumps(test_task),
         properties=pika.BasicProperties(delivery_mode=2)
     )
-    
+
     print(f"✅ テストタスク送信成功: {test_task['task_id']}")
-    
+
     channel.close()
     connection.close()
-    
+
 except Exception as e:
     print(f"❌ エラー: {str(e)}")
 EOF
@@ -131,7 +131,7 @@ from libs.slack_notifier import SlackNotifier
 
 try:
     notifier = SlackNotifier()
-    
+
     message = '''🎉 Slack PM-AI修復完了！
 ━━━━━━━━━━━━━━━━━━━━━━
 ✅ TMUXセッション: ai_company
@@ -146,7 +146,7 @@ Slackで @pm-ai をメンションしてメッセージ送信
 🔍 動作確認:
 - tmux attach -t ai_company
 - tmux select-window -t slack_polling'''
-    
+
     notifier.send_message(message)
     print("✅ Slack通知送信")
 except Exception as e:

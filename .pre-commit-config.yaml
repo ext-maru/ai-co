@@ -1,5 +1,5 @@
-# 🏛️ エルダーズギルド Pre-commit 設定（シンプル版）
-# 品質第一の開発標準を自動適用
+# 🏛️ エルダーズギルド Pre-commit 設定（OSS統合版）
+# OSS移行プロジェクト対応 - 業界標準品質ツール統合
 
 repos:
   # Python基本チェック
@@ -16,12 +16,54 @@ repos:
       - id: check-ast
       - id: debug-statements
 
+  # コードフォーマッター (自動修正)
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        language_version: python3
+
+  # インポート整理
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
+
+  # スタイルチェック
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        args: [--max-line-length=88, --extend-ignore=E203,W503]
+
+  # セキュリティチェック
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.5
+    hooks:
+      - id: bandit
+        args: [--quiet, --format=custom, --skip, B101]
+
+  # 型チェック
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-requests]
+        args: [--ignore-missing-imports, --no-strict-optional]
+
 # 設定オプション
 fail_fast: false
 default_stages: [pre-commit]
 
 # エルダーズギルド品質基準
-# Phase 1: 基本チェックのみ（現在）
-# Phase 2: コードフォーマット追加予定
-# Phase 3: 品質チェック強化予定
-# Phase 4: TDD強制予定
+# ✅ Phase 1: OSS統合品質チェック（実装完了）
+# - Black: コード整形
+# - isort: インポート整理
+# - Flake8: スタイルチェック
+# - Bandit: セキュリティ検査
+# - Mypy: 型チェック
+#
+# 🎯 Iron Will 品質基準強制
+# - 全フックパス必須（品質95%以上）
+# - コミット前自動修正適用

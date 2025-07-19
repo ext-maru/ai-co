@@ -1,8 +1,8 @@
 # 🚨 緊急実装要請 - Council Request Processor
 
-**要請日時**: 2025年7月7日 16:32  
-**要請者**: Claude CLI（エルダーズ指示）  
-**緊急度**: CRITICAL - 24時間以内  
+**要請日時**: 2025年7月7日 16:32
+**要請者**: Claude CLI（エルダーズ指示）
+**緊急度**: CRITICAL - 24時間以内
 **実装者**: エルダーサーバント全体
 
 ---
@@ -36,11 +36,11 @@ class RequestMonitor:
     def __init__(self):
         self.watch_dir = "knowledge_base/"
         self.request_pattern = "*council_*_request.md"
-        
+
     def watch_for_requests(self):
         # 新規要請ファイルを検出
         # リアルタイム監視（5秒間隔）
-        
+
     def parse_urgency(self, file_path):
         # 緊急度を解析
         # CRITICAL: 即座処理
@@ -54,7 +54,7 @@ class DecisionBridge:
     def submit_to_council(self, request):
         # ElderCouncilAutoDecisionに転送
         # 要請を決定可能な形式に変換
-        
+
     def await_decision(self, request_id):
         # 決定を待機（タイムアウト付き）
         # 緊急度に応じた待機時間
@@ -68,7 +68,7 @@ class ResponseHandler:
         # - 騎士団タスク更新
         # - PMシステム通知
         # - Slack通知
-        
+
     def update_request_file(self, decision):
         # 要請ファイルに決定を記録
         # ステータス: APPROVED/REJECTED
@@ -114,7 +114,7 @@ class ResponseHandler:
 ## 🎯 成功基準
 
 1. **新規要請の自動検出**: 5秒以内
-2. **決定までの時間**: 
+2. **決定までの時間**:
    - CRITICAL: 5分以内
    - HIGH: 30分以内
    - MEDIUM: 2時間以内

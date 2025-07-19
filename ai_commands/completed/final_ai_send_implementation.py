@@ -13,10 +13,12 @@ print("🚀 ai-send拡張の最終実装を開始...")
 print("=" * 50)
 
 # final_implement_ai_send.pyを実行
-result = subprocess.run([
-    sys.executable,
-    str(PROJECT_ROOT / "final_implement_ai_send.py")
-], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+result = subprocess.run(
+    [sys.executable, str(PROJECT_ROOT / "final_implement_ai_send.py")],
+    capture_output=True,
+    text=True,
+    cwd=str(PROJECT_ROOT),
+)
 
 print("\n📊 実行結果:")
 print("=" * 50)

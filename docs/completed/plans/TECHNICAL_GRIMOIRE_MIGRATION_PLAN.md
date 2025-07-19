@@ -1,8 +1,8 @@
 # 🏛️ 魔法書システム移行計画
 
-**プロジェクト**: 466個のMDファイル → PostgreSQL + pgvector 魔法書システム  
-**承認**: エルダーズ評議会承認済み (2025年7月7日)  
-**実行者**: タスクエルダー + エルフ森協調システム  
+**プロジェクト**: 466個のMDファイル → PostgreSQL + pgvector 魔法書システム
+**承認**: エルダーズ評議会承認済み (2025年7月7日)
+**実行者**: タスクエルダー + エルフ森協調システム
 
 ---
 
@@ -13,7 +13,7 @@
 # 現状調査結果
 Total MD files: 466個
 ├── knowledge_base/: 主要ナレッジ
-├── docs/: 開発ドキュメント  
+├── docs/: 開発ドキュメント
 ├── tests/: テスト関連文書
 ├── プロジェクトルート: README、ガイド類
 └── 各種レポート: 一時的文書
@@ -90,10 +90,10 @@ CREATE TABLE grand_elder_permissions (
 );
 
 -- 🔍 ベクトル検索用インデックス
-CREATE INDEX idx_grimoire_vector 
+CREATE INDEX idx_grimoire_vector
 ON knowledge_grimoire USING hnsw (content_vector vector_cosine_ops);
 
-CREATE INDEX idx_grimoire_tags 
+CREATE INDEX idx_grimoire_tags
 ON knowledge_grimoire USING gin(tags);
 ```
 
@@ -181,7 +181,7 @@ libs/
 ```python
 class GrimoireMigrationEngine:
     """MDファイル→PostgreSQL移行エンジン"""
-    
+
     async def analyze_md_files(self, root_path: str) -> List[FileAnalysis]
     async def classify_content(self, content: str) -> ClassificationResult
     async def detect_duplicates(self, files: List[FileAnalysis]) -> DuplicateGroups
@@ -194,7 +194,7 @@ class GrimoireMigrationEngine:
 ```python
 class ContentAnalyzer:
     """コンテンツ分析・分類システム"""
-    
+
     def extract_metadata(self, content: str) -> Metadata
     def detect_spell_type(self, content: str) -> SpellType
     def infer_magic_school(self, content: str) -> MagicSchool
@@ -206,7 +206,7 @@ class ContentAnalyzer:
 ```python
 class DuplicateDetector:
     """重複・類似コンテンツ検出システム"""
-    
+
     def analyze_similarity(self, content1: str, content2: str) -> SimilarityScore
     def group_similar_files(self, files: List[FileAnalysis]) -> List[DuplicateGroup]
     def suggest_merge_strategy(self, group: DuplicateGroup) -> MergeStrategy
@@ -306,8 +306,8 @@ quality_metrics = {
 
 ## 🏛️ **エルダーズ評議会承認事項**
 
-**承認日**: 2025年7月7日 23:42  
-**承認者**: 4賢者評議会 (全員一致)  
+**承認日**: 2025年7月7日 23:42
+**承認者**: 4賢者評議会 (全員一致)
 
 ### **承認条件**
 1. ✅ **呪文永続化**: 既存知識の完全保持
@@ -328,6 +328,6 @@ quality_metrics = {
 
 ---
 
-**文書ID**: GRIMOIRE_MIGRATION_PLAN_v1.0  
-**最終更新**: 2025年7月7日  
+**文書ID**: GRIMOIRE_MIGRATION_PLAN_v1.0
+**最終更新**: 2025年7月7日
 **次回レビュー**: 移行完了後

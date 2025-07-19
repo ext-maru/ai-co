@@ -17,21 +17,21 @@ ai_company_commands:
     - ai-stop: "システム停止"
     - ai-status: "ステータス確認"
     - ai-logs: "ログ表示"
-    
+
   development:
     - ai-send: "タスク送信"
     - ai-tdd: "TDD開発"
     - ai-test-coverage: "カバレッジ分析"
     - pytest: "テスト実行"
-    
+
   knowledge:
     - ai-knowledge: "知識管理"
     - ai-elder-council: "エルダー会議"
-    
+
   workers:
     - ai-worker-recovery: "ワーカー復旧"
     - ai-worker-status: "ワーカー状態"
-    
+
   python:
     - python3: "Python実行"
     - pip: "パッケージ管理"
@@ -46,33 +46,33 @@ ai_company_commands:
 ```python
 class PreFlightKnight(IncidentKnight):
     """コマンド実行前の完全性チェック"""
-    
+
     async def intercept_command(self, cmd: str, args: List[str]) -> ValidationResult:
         """コマンド実行を傍受して事前検証"""
-        
+
         # 1. コマンド存在確認
         if not self._command_exists(cmd):
             await self._auto_fix_command(cmd)
-            
+
         # 2. 依存関係チェック
         missing_deps = await self._check_dependencies(cmd)
         if missing_deps:
             await self._install_dependencies(missing_deps)
-            
+
         # 3. 環境変数検証
         env_issues = await self._validate_environment(cmd)
         if env_issues:
             await self._fix_environment(env_issues)
-            
+
         # 4. 権限チェック
         if not await self._check_permissions(cmd):
             await self._fix_permissions(cmd)
-            
+
         # 5. リソース予測
         resources = await self._predict_resource_usage(cmd, args)
         if resources.will_exceed_limits():
             await self._optimize_resources()
-            
+
         return ValidationResult(ready=True)
 ```
 
@@ -80,18 +80,18 @@ class PreFlightKnight(IncidentKnight):
 ```python
 class HealthGuardianKnight(IncidentKnight):
     """24/7でコマンドの健全性を監視"""
-    
+
     async def continuous_patrol(self):
         """1分ごとに全コマンドをサイレントチェック"""
         while True:
             for cmd in self.protected_commands:
                 # バックグラウンドで静かに検証
                 result = await self._silent_verify(cmd)
-                
+
                 if not result.is_healthy:
                     # 問題を検出したら即座に修復
                     await self._silent_repair(cmd, result.issues)
-                    
+
                     # インシデント記録（ユーザーには見せない）
                     await self._log_prevented_error({
                         'command': cmd,
@@ -99,7 +99,7 @@ class HealthGuardianKnight(IncidentKnight):
                         'fix_applied': result.fix_description,
                         'user_impact': 'none'  # ユーザーは気づかない
                     })
-                    
+
             await asyncio.sleep(60)  # 1分待機
 ```
 
@@ -107,25 +107,25 @@ class HealthGuardianKnight(IncidentKnight):
 ```python
 class PredictiveRepairKnight(IncidentKnight):
     """将来の問題を予測して先回り修復"""
-    
+
     async def predict_future_issues(self):
         """コード変更から将来の問題を予測"""
-        
+
         # 最近の変更を分析
         recent_changes = await self._get_git_diff()
-        
+
         for change in recent_changes:
             # この変更がどのコマンドに影響するか予測
             affected_commands = await self._analyze_impact(change)
-            
+
             for cmd in affected_commands:
                 # 問題が起きる確率を計算
                 failure_probability = await self._calculate_failure_risk(cmd, change)
-                
+
                 if failure_probability > 0.3:  # 30%以上の確率
                     # 予防的修正を実施
                     await self._preventive_fix(cmd, change)
-                    
+
                     # 開発者に見えないところで修正完了
                     logger.info(f"Prevented future error in {cmd} (probability was {failure_probability})")
 ```
@@ -219,17 +219,17 @@ import libs.not_yet_created_module  # <- これはエラーになる
 ```python
 class GuardianMetrics:
     """守護騎士団の成功指標"""
-    
+
     # ゼロを目指す指標
     user_encountered_errors = 0  # ユーザーが遭遇したエラー
     command_failures = 0         # コマンド実行失敗
     manual_fixes_required = 0    # 手動修正が必要だった回数
-    
+
     # 最大化する指標
     prevented_errors = 2341      # 予防したエラー数
     silent_fixes = 1892         # サイレント修正数
     uptime_percentage = 99.99   # システム稼働率
-    
+
     # 効率性指標
     avg_prevention_time = 0.3   # 平均予防時間（秒）
     detection_accuracy = 99.7   # 問題検出精度（%）
@@ -240,6 +240,6 @@ class GuardianMetrics:
 
 **「エラーは起きてから直すものではない。起きる前に消し去るものだ。」**
 
-**作成者**: Claude Code Instance  
-**ミッション**: 開発者体験の完全性  
+**作成者**: Claude Code Instance
+**ミッション**: 開発者体験の完全性
 **最終更新**: 2025年7月7日

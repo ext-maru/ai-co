@@ -4,20 +4,23 @@
 既存のv1.1と新しいv2.0を統合
 """
 
-from pathlib import Path
 import shutil
 from datetime import datetime
+from pathlib import Path
 
 PROJECT_ROOT = Path("/home/aicompany/ai_co")
 kb_dir = PROJECT_ROOT / "knowledge_base"
 
 print("📚 Command Executorナレッジベース統合")
-print("="*50)
+print("=" * 50)
 
 # 統合版の内容を作成
-integrated_content = """# 🤖 AI Command Executor 統合ナレッジベース v2.1
+integrated_content = (
+    """# 🤖 AI Command Executor 統合ナレッジベース v2.1
 
-> 最終更新: """ + datetime.now().strftime('%Y-%m-%d %H:%M:%S') + """
+> 最終更新: """
+    + datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    + """
 
 ## 📋 概要
 
@@ -212,7 +215,7 @@ find . -name "*.log" -mtime +30 -delete
 try:
     result = helper.create_bash_command(cmd, cmd_id)
     time.sleep(10)  # 実行を待つ
-    
+
     check = helper.check_results(cmd_id)
     if check.get('exit_code', 1) != 0:
         log = helper.get_latest_log(cmd_id)
@@ -323,10 +326,11 @@ ai-cmd-executor test     # テスト実行
 
 このナレッジベースは定期的に更新されます。最新情報は `/home/aicompany/ai_co/knowledge_base/` を確認してください。
 """
+)
 
 # 統合版ファイルを作成
 integrated_file = kb_dir / "AI_Command_Executor_Complete_KB_v2.1.md"
-with open(integrated_file, 'w', encoding='utf-8') as f:
+with open(integrated_file, "w", encoding="utf-8") as f:
     f.write(integrated_content)
 
 print(f"✅ 統合版ナレッジベース作成: {integrated_file}")
@@ -341,10 +345,10 @@ index_content = f"""# Elders Guild Knowledge Base Index
 1. **[AI_Command_Executor_Complete_KB_v2.1.md](AI_Command_Executor_Complete_KB_v2.1.md)**
    - 統合版ナレッジベース（最新・推奨）
    - 基本機能 + 修復・監視システム
-   
+
 2. **[AI_Command_Executor_Knowledge_v1.1.md](AI_Command_Executor_Knowledge_v1.1.md)**
    - 基本機能のナレッジベース
-   
+
 3. **[Command_Executor_Repair_System_v2.0.md](Command_Executor_Repair_System_v2.0.md)**
    - 修復・監視システムの詳細
 
@@ -356,7 +360,7 @@ index_content = f"""# Elders Guild Knowledge Base Index
 """
 
 index_file = kb_dir / "README.md"
-with open(index_file, 'w', encoding='utf-8') as f:
+with open(index_file, "w", encoding="utf-8") as f:
     f.write(index_content)
 
 print(f"✅ インデックスファイル更新: {index_file}")

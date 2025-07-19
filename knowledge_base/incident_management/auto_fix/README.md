@@ -191,7 +191,7 @@ print(f"緊急対応結果: {emergency_result['final_resolution']['resolution_su
 ```
 🚨 障害検知: RabbitMQ接続断
 🤖 自動診断: サービス停止を確認
-🔧 自動修復: 
+🔧 自動修復:
   1. RabbitMQサービス再起動
   2. キュー状態リセット
   3. ワーカー再接続
@@ -234,7 +234,7 @@ print(f"緊急対応結果: {emergency_result['final_resolution']['resolution_su
 ### 自動修復戦略
 
 - **Conservative**: 安全第一の慎重アプローチ
-- **Moderate**: バランス型の標準アプローチ  
+- **Moderate**: バランス型の標準アプローチ
 - **Aggressive**: 迅速重視の積極アプローチ
 
 ### 学習メカニズム

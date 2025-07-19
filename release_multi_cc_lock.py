@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Release lock for Multi-CC Coordination Framework implementation"""
 
-import sys
 import os
+import sys
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from libs.task_lock_manager import TaskLockManager

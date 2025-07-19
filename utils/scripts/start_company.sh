@@ -90,4 +90,3 @@ tmux send-keys -t $SESSION:logs "tail -f *.log" C-m
 
 echo "✅ AI Company 起動完了！"
 echo "接続: tmux attach -t $SESSION"
-

@@ -20,7 +20,7 @@ Slack Guardian Knightが以下の問題を検出しました：
    - 以下を追加:
      - channels:read
      - groups:read
-     - mpim:read 
+     - mpim:read
      - im:read
      - channels:history
 

@@ -53,4 +53,3 @@ grep -h "FileHandler.*/" workers/*.py libs/*.py 2>/dev/null | head -3
 echo ""
 echo "【その他の絶対パス】"
 grep -h "Path.*/" workers/*.py libs/*.py | grep -v "__file__" | head -3
-

@@ -72,7 +72,7 @@ elif [ -n "$SLACK_PID" ]; then
     LAST_LOG_TIME=$(stat -c %Y "/home/aicompany/ai_co/logs/slack_polling_worker.log" 2>/dev/null || echo 0)
     CURRENT_TIME=$(date +%s)
     TIME_DIFF=$((CURRENT_TIME - LAST_LOG_TIME))
-    
+
     if [ $TIME_DIFF -gt 300 ]; then
         echo "⚠️ ログ更新が5分以上停止しています"
         echo "   → 可能性: ワーカーが応答なし状態"

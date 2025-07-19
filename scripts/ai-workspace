@@ -4,40 +4,44 @@ AI Company Workspace Manager CLI
 Manages secure project workspaces with Docker isolation
 """
 
-import sys
 import argparse
 import json
+import sys
 from pathlib import Path
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from libs.ai_project_placement_manager import (
+    AIProjectPlacementManager,
+    PlacementStrategy,
+)
 from libs.auto_project_manager import AutoProjectManager
 from libs.shared_enums import SecurityLevel
-from libs.ai_project_placement_manager import AIProjectPlacementManager, PlacementStrategy
+
 
 def main():
     parser = argparse.ArgumentParser(
-        description='AI Company Workspace Manager',
+        description="AI Company Workspace Manager",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用例:
   # 新しいプロジェクト作成
   ai-workspace create "My Web App" --type web --description "FastAPI web application"
-  
+
   # 要件ファイルからプロジェクト作成
   ai-workspace create-from-file requirements.json --name "Generated Project"
-  
+
   # プロジェクト一覧表示
   ai-workspace list
-  
+
   # プロジェクト詳細情報
   ai-workspace status "my_web_app"
-  
+
   # Docker環境起動
   ai-workspace start "my_web_app"
-  
+
   # Docker環境停止
   ai-workspace stop "my_web_app"
 
@@ -46,102 +50,119 @@ def main():
   - restricted: 制限付きアクセス（限定的ネットワーク）
   - development: 標準開発環境
   - trusted: 信頼済み（手動承認必要）
-        """
+        """,
     )
-    
-    subparsers = parser.add_subparsers(dest='command', help='Commands')
-    
+
+    subparsers = parser.add_subparsers(dest="command", help="Commands")
+
     # create コマンド
-    create_parser = subparsers.add_parser('create', help='新しいプロジェクトを作成')
-    create_parser.add_argument('name', help='プロジェクト名')
-    create_parser.add_argument('--description', help='プロジェクトの説明')
-    create_parser.add_argument('--dependencies', nargs='*', help='依存パッケージ')
-    create_parser.add_argument('--features', nargs='*', help='機能リスト')
-    create_parser.add_argument('--security-level', 
-                             choices=['sandbox', 'restricted', 'development', 'trusted'],
-                             help='セキュリティレベル（自動検出をオーバーライド）')
-    create_parser.add_argument('--strategy',
-                             choices=['security_first', 'balanced', 'dev_focused', 'performance'],
-                             default='balanced',
-                             help='配置戦略（デフォルト: balanced）')
-    create_parser.add_argument('--development-phase',
-                             choices=['prototype', 'development', 'testing', 'production'],
-                             default='development',
-                             help='開発フェーズ')
-    create_parser.add_argument('--team-access-level',
-                             choices=['junior', 'senior', 'architect', 'admin'], 
-                             default='senior',
-                             help='チームアクセスレベル')
-    create_parser.add_argument('--intelligent', action='store_true',
-                             help='インテリジェント配置システムを使用')
-    
+    create_parser = subparsers.add_parser("create", help="新しいプロジェクトを作成")
+    create_parser.add_argument("name", help="プロジェクト名")
+    create_parser.add_argument("--description", help="プロジェクトの説明")
+    create_parser.add_argument("--dependencies", nargs="*", help="依存パッケージ")
+    create_parser.add_argument("--features", nargs="*", help="機能リスト")
+    create_parser.add_argument(
+        "--security-level",
+        choices=["sandbox", "restricted", "development", "trusted"],
+        help="セキュリティレベル（自動検出をオーバーライド）",
+    )
+    create_parser.add_argument(
+        "--strategy",
+        choices=["security_first", "balanced", "dev_focused", "performance"],
+        default="balanced",
+        help="配置戦略（デフォルト: balanced）",
+    )
+    create_parser.add_argument(
+        "--development-phase",
+        choices=["prototype", "development", "testing", "production"],
+        default="development",
+        help="開発フェーズ",
+    )
+    create_parser.add_argument(
+        "--team-access-level",
+        choices=["junior", "senior", "architect", "admin"],
+        default="senior",
+        help="チームアクセスレベル",
+    )
+    create_parser.add_argument(
+        "--intelligent", action="store_true", help="インテリジェント配置システムを使用"
+    )
+
     # create-from-file コマンド
-    file_parser = subparsers.add_parser('create-from-file', 
-                                       help='要件ファイルからプロジェクト作成')
-    file_parser.add_argument('requirements_file', help='要件JSONファイル')
-    file_parser.add_argument('--name', help='プロジェクト名（指定しない場合は要件から推定）')
-    file_parser.add_argument('--security-level',
-                           choices=['sandbox', 'restricted', 'development', 'trusted'],
-                           help='セキュリティレベル（自動検出をオーバーライド）')
-    
+    file_parser = subparsers.add_parser("create-from-file", help="要件ファイルからプロジェクト作成")
+    file_parser.add_argument("requirements_file", help="要件JSONファイル")
+    file_parser.add_argument("--name", help="プロジェクト名（指定しない場合は要件から推定）")
+    file_parser.add_argument(
+        "--security-level",
+        choices=["sandbox", "restricted", "development", "trusted"],
+        help="セキュリティレベル（自動検出をオーバーライド）",
+    )
+
     # list コマンド
-    list_parser = subparsers.add_parser('list', help='プロジェクト一覧表示')
-    list_parser.add_argument('--security-level', 
-                           choices=['sandbox', 'restricted', 'development', 'trusted'],
-                           help='特定のセキュリティレベルのみ表示')
-    
+    list_parser = subparsers.add_parser("list", help="プロジェクト一覧表示")
+    list_parser.add_argument(
+        "--security-level",
+        choices=["sandbox", "restricted", "development", "trusted"],
+        help="特定のセキュリティレベルのみ表示",
+    )
+
     # status コマンド
-    status_parser = subparsers.add_parser('status', help='プロジェクト詳細情報')
-    status_parser.add_argument('name', help='プロジェクト名')
-    
+    status_parser = subparsers.add_parser("status", help="プロジェクト詳細情報")
+    status_parser.add_argument("name", help="プロジェクト名")
+
     # start コマンド
-    start_parser = subparsers.add_parser('start', help='Docker環境起動')
-    start_parser.add_argument('name', help='プロジェクト名')
-    
+    start_parser = subparsers.add_parser("start", help="Docker環境起動")
+    start_parser.add_argument("name", help="プロジェクト名")
+
     # stop コマンド
-    stop_parser = subparsers.add_parser('stop', help='Docker環境停止')
-    stop_parser.add_argument('name', help='プロジェクト名')
-    
+    stop_parser = subparsers.add_parser("stop", help="Docker環境停止")
+    stop_parser.add_argument("name", help="プロジェクト名")
+
     # analyze コマンド
-    analyze_parser = subparsers.add_parser('analyze', help='リスク分析（プロジェクト作成前）')
-    analyze_parser.add_argument('requirements_file', help='要件JSONファイル')
-    
+    analyze_parser = subparsers.add_parser("analyze", help="リスク分析（プロジェクト作成前）")
+    analyze_parser.add_argument("requirements_file", help="要件JSONファイル")
+
     args = parser.parse_args()
-    
+
     if not args.command:
         parser.print_help()
         return
-    
+
     manager = AutoProjectManager()
     placement_manager = AIProjectPlacementManager()
-    
+
     try:
-        if args.command == 'create':
+        if args.command == "create":
             requirements = {
-                'description': args.description or f'{args.name} project',
-                'dependencies': args.dependencies or [],
-                'features': args.features or [],
-                'development_phase': args.development_phase,
-                'team_access_level': args.team_access_level
+                "description": args.description or f"{args.name} project",
+                "dependencies": args.dependencies or [],
+                "features": args.features or [],
+                "development_phase": args.development_phase,
+                "team_access_level": args.team_access_level,
             }
-            
+
             if args.intelligent:
                 # Use intelligent placement system
                 strategy_mapping = {
-                    'security_first': PlacementStrategy.SECURITY_FIRST,
-                    'balanced': PlacementStrategy.BALANCED,
-                    'dev_focused': PlacementStrategy.DEVELOPMENT_FOCUSED,
-                    'performance': PlacementStrategy.PERFORMANCE_OPTIMIZED
+                    "security_first": PlacementStrategy.SECURITY_FIRST,
+                    "balanced": PlacementStrategy.BALANCED,
+                    "dev_focused": PlacementStrategy.DEVELOPMENT_FOCUSED,
+                    "performance": PlacementStrategy.PERFORMANCE_OPTIMIZED,
                 }
-                strategy = strategy_mapping.get(args.strategy, PlacementStrategy.BALANCED)
-                
-                project_path, placement_info = placement_manager.create_project_with_intelligent_placement(
+                strategy = strategy_mapping.get(
+                    args.strategy, PlacementStrategy.BALANCED
+                )
+
+                (
+                    project_path,
+                    placement_info,
+                ) = placement_manager.create_project_with_intelligent_placement(
                     args.name, requirements, strategy
                 )
-                
+
                 recommendation = placement_info["placement_recommendation"]
                 risk = placement_info["risk_assessment"]
-                
+
                 print(f"✅ インテリジェント配置でプロジェクト作成完了:")
                 print(f"   📁 パス: {project_path}")
                 print(f"   🔒 セキュリティレベル: {recommendation.security_level.value}")
@@ -149,16 +170,16 @@ def main():
                 print(f"   🎯 配置信頼度: {recommendation.confidence_score:.2f}")
                 print(f"   ⏱️  セットアップ時間: {recommendation.estimated_setup_time}分")
                 print(f"   🔐 分離タイプ: {recommendation.isolation_type}")
-                
+
                 print(f"\n📋 配置理由:")
                 for justification in recommendation.justification:
                     print(f"   ✓ {justification}")
-                
+
                 if recommendation.warnings:
                     print(f"\n⚠️  注意事項:")
                     for warning in recommendation.warnings:
                         print(f"   {warning}")
-                
+
                 print(f"\n🚀 開発を開始するには:")
                 print(f"   ai-workspace start {project_path.name}")
             else:
@@ -166,44 +187,48 @@ def main():
                 security_override = None
                 if args.security_level:
                     security_override = SecurityLevel(args.security_level)
-                
-                project_path, risk = manager.create_project(args.name, requirements, security_override)
-                
+
+                project_path, risk = manager.create_project(
+                    args.name, requirements, security_override
+                )
+
                 print(f"✅ プロジェクト作成完了:")
                 print(f"   📁 パス: {project_path}")
                 print(f"   🔒 セキュリティレベル: {risk.recommended_security.value}")
                 print(f"   📊 リスクレベル: {risk.level}")
                 if risk.factors:
                     print(f"   ⚠️  リスク要因: {', '.join(risk.factors)}")
-                
+
                 print(f"\n🚀 開発を開始するには:")
                 print(f"   ai-workspace start {project_path.name}")
-            
-        elif args.command == 'create-from-file':
-            with open(args.requirements_file, 'r', encoding='utf-8') as f:
+
+        elif args.command == "create-from-file":
+            with open(args.requirements_file, "r", encoding="utf-8") as f:
                 requirements = json.load(f)
-            
-            project_name = args.name or requirements.get('name', 'generated_project')
-            
+
+            project_name = args.name or requirements.get("name", "generated_project")
+
             security_override = None
             if args.security_level:
                 security_override = SecurityLevel(args.security_level)
-            
-            project_path, risk = manager.create_project(project_name, requirements, security_override)
-            
+
+            project_path, risk = manager.create_project(
+                project_name, requirements, security_override
+            )
+
             print(f"✅ プロジェクト作成完了:")
             print(f"   📁 パス: {project_path}")
             print(f"   🔒 セキュリティレベル: {risk.recommended_security.value}")
             print(f"   📊 リスクレベル: {risk.level}")
-            
-        elif args.command == 'list':
+
+        elif args.command == "list":
             projects_by_level = manager.list_projects()
-            
+
             total_projects = 0
             for level, projects in projects_by_level.items():
                 if args.security_level and level != args.security_level:
                     continue
-                
+
                 if projects:
                     print(f"\n🔒 {level.upper()} セキュリティレベル:")
                     print("=" * 50)
@@ -213,13 +238,13 @@ def main():
                         print(f"   作成日: {project['created'][:10]}")
                         print()
                         total_projects += 1
-            
+
             if total_projects == 0:
                 print("📭 プロジェクトが見つかりません")
             else:
                 print(f"合計: {total_projects} プロジェクト")
-        
-        elif args.command == 'status':
+
+        elif args.command == "status":
             status = manager.get_project_status(args.name)
             if status:
                 print(f"📁 プロジェクト: {status['name']}")
@@ -227,77 +252,92 @@ def main():
                 print(f"📍 パス: {status['path']}")
                 print(f"📅 作成日: {status['created'][:10]}")
                 print(f"🐳 Docker実行中: {'✅ Yes' if status['docker_running'] else '❌ No'}")
-                print(f"🔗 GitHub統合: {'✅ Yes' if status['github_integration'] else '❌ No'}")
+                print(
+                    f"🔗 GitHub統合: {'✅ Yes' if status['github_integration'] else '❌ No'}"
+                )
             else:
                 print(f"❌ プロジェクト '{args.name}' が見つかりません")
                 return
-        
-        elif args.command == 'start':
+
+        elif args.command == "start":
             status = manager.get_project_status(args.name)
             if not status:
                 print(f"❌ プロジェクト '{args.name}' が見つかりません")
                 return
-            
-            project_path = Path(status['path'])
+
+            project_path = Path(status["path"])
             start_script = project_path / ".docker" / "start.sh"
-            
+
             if start_script.exists():
                 import subprocess
+
                 print(f"🚀 Docker環境を起動中...")
-                result = subprocess.run([str(start_script)], cwd=str(project_path), 
-                                      capture_output=True, text=True)
-                
+                result = subprocess.run(
+                    [str(start_script)],
+                    cwd=str(project_path),
+                    capture_output=True,
+                    text=True,
+                )
+
                 if result.returncode == 0:
                     print("✅ Docker環境が正常に起動しました")
-                    print(f"🔗 アクセス: docker exec -it {args.name}_{status['security_level']} bash")
+                    print(
+                        f"🔗 アクセス: docker exec -it {args.name}_{status['security_level']} bash"
+                    )
                 else:
                     print(f"❌ 起動エラー: {result.stderr}")
             else:
                 print("❌ Docker設定が見つかりません")
-        
-        elif args.command == 'stop':
+
+        elif args.command == "stop":
             status = manager.get_project_status(args.name)
             if not status:
                 print(f"❌ プロジェクト '{args.name}' が見つかりません")
                 return
-            
-            project_path = Path(status['path'])
+
+            project_path = Path(status["path"])
             stop_script = project_path / ".docker" / "stop.sh"
-            
+
             if stop_script.exists():
                 import subprocess
+
                 print(f"🛑 Docker環境を停止中...")
-                result = subprocess.run([str(stop_script)], cwd=str(project_path),
-                                      capture_output=True, text=True)
-                
+                result = subprocess.run(
+                    [str(stop_script)],
+                    cwd=str(project_path),
+                    capture_output=True,
+                    text=True,
+                )
+
                 if result.returncode == 0:
                     print("✅ Docker環境が正常に停止しました")
                 else:
                     print(f"❌ 停止エラー: {result.stderr}")
             else:
                 print("❌ Docker設定が見つかりません")
-        
-        elif args.command == 'analyze':
-            with open(args.requirements_file, 'r', encoding='utf-8') as f:
+
+        elif args.command == "analyze":
+            with open(args.requirements_file, "r", encoding="utf-8") as f:
                 requirements = json.load(f)
-            
+
             project_content = json.dumps(requirements, default=str)
             risk = manager.analyze_project_risk(project_content, requirements)
-            
+
             print(f"🔍 リスク分析結果:")
             print(f"   📊 リスクレベル: {risk.level}")
             print(f"   🔒 推奨セキュリティレベル: {risk.recommended_security.value}")
             print(f"   🏗️  隔離が必要: {'Yes' if risk.isolation_required else 'No'}")
             print(f"   ✋ 手動承認が必要: {'Yes' if risk.manual_approval else 'No'}")
-            
+
             if risk.factors:
                 print(f"   ⚠️  検出されたリスク要因:")
                 for factor in risk.factors:
                     print(f"     - {factor}")
-    
+
     except Exception as e:
         print(f"❌ エラー: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

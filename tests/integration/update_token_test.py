@@ -38,16 +38,18 @@ Slack Bot Token 更新と動作確認
 
 import sys
 from pathlib import Path
+
 import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+
 def test_slack_token_update():
     """Slack Bot Token更新と動作確認のテスト"""
     pytest.skip("Integration test - requires manual execution")
-    
+
     from libs.ai_command_helper import AICommandHelper
-    
+
     helper = AICommandHelper()
 
     # Token更新と確認コマンド
@@ -91,11 +93,11 @@ if auth_response.status_code == 200:
         print(f'Bot名: @{auth_data.get(\"user\")}')
         print(f'Team: {auth_data.get(\"team\")}')
         bot_user_id = auth_data.get('user_id')
-        
+
         # テストメッセージ送信
         print('')
         print('📨 テストメッセージ送信')
-        
+
         # scaling チャンネル
         test_msg1 = requests.post(
             'https://slack.com/api/chat.postMessage',
@@ -105,7 +107,7 @@ if auth_response.status_code == 200:
                 'text': '✅ Bot Token更新完了 - スケーリング通知テスト'
             }
         )
-        
+
         if test_msg1.json().get('ok'):
             print('✅ #ai-company-scaling への送信成功')
         else:
@@ -113,7 +115,7 @@ if auth_response.status_code == 200:
             print(f'❌ #ai-company-scaling への送信失敗: {error}')
             if error == 'not_in_channel':
                 print('   → Botをチャンネルに招待してください')
-        
+
         # health チャンネル
         test_msg2 = requests.post(
             'https://slack.com/api/chat.postMessage',
@@ -123,7 +125,7 @@ if auth_response.status_code == 200:
                 'text': '✅ Bot Token更新完了 - ヘルスチェック通知テスト'
             }
         )
-        
+
         if test_msg2.json().get('ok'):
             print('✅ #ai-company-health への送信成功')
         else:
@@ -131,7 +133,7 @@ if auth_response.status_code == 200:
             print(f'❌ #ai-company-health への送信失敗: {error}')
             if error == 'not_in_channel':
                 print('   → Botをチャンネルに招待してください')
-                
+
     else:
         print(f'❌ Bot認証失敗: {auth_data.get(\"error\")}')
         print('Token が無効か、権限が不足している可能性があります')
@@ -194,10 +196,7 @@ else:
 """
 
     # コマンドを作成
-    result = helper.create_bash_command(
-        update_and_test,
-        "update_token_and_test"
-    )
+    result = helper.create_bash_command(update_and_test, "update_token_and_test")
 
     print("✅ Token更新と動作確認を開始します")
     print("6秒後に自動実行されます...")

@@ -57,7 +57,7 @@ Categories:
     test('Should cache commands appropriately', async () => {
         const commands1 = await aiSystem.getAvailableCommands();
         const commands2 = await aiSystem.getAvailableCommands();
-        
+
         // Should return same reference if cached
         assert.strictEqual(commands1, commands2);
     });

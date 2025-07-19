@@ -1,8 +1,8 @@
 # 🏛️ エルダー会議召集要請
 
-**会議ID**: council_20250706_230433_worker_system_critical  
-**緊急度**: CRITICAL  
-**期限**: 2025年07月07日 23:04  
+**会議ID**: council_20250706_230433_worker_system_critical
+**緊急度**: CRITICAL
+**期限**: 2025年07月07日 23:04
 **作成日時**: 2025年07月06日 23:04:33
 
 ---
@@ -94,5 +94,5 @@ System stability directly affects operational continuity; Majority of workers ar
 
 **エルダー会議の開催をお待ちしています。**
 
-**召集システム**: Elder Council Summoner  
+**召集システム**: Elder Council Summoner
 **文書ID**: council_20250706_230433_worker_system_critical

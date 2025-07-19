@@ -40,7 +40,7 @@ try:
         'source': 'ai-test',
         'timestamp': datetime.now().isoformat()
     }
-    
+
     # Send to RabbitMQ
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
@@ -51,13 +51,13 @@ try:
         properties=pika.BasicProperties(delivery_mode=2)
     )
     connection.close()
-    
+
     print("✅ Task submitted successfully!")
     print("📡 TaskWorker will process your request...")
     print("")
     print("To check logs:")
     print("  tail -f /home/aicompany/ai_co/logs/simple_task_worker.log")
-    
+
 except Exception as e:
     print(f"❌ Error: {e}")
     exit(1)

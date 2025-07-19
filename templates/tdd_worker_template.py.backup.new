@@ -20,13 +20,13 @@ from libs.slack_notifier import SlackNotifier
 
 class {WorkerName}(BaseWorker):
     """{WorkerName}の実装
-    
+
     機能:
     - [機能1の説明]
     - [機能2の説明]
     - [機能3の説明]
     """
-    
+
     def __init__(self, worker_id: Optional[str] = None):
         """
         Args:
@@ -37,19 +37,19 @@ class {WorkerName}(BaseWorker):
             worker_type='{worker_type}',
             worker_id=worker_id
         )
-        
+
         # TODO: 必要な初期化処理を追加
         self.slack_notifier = SlackNotifier()
         self._init_worker_specific_settings()
-    
+
     def _init_worker_specific_settings(self):
         """ワーカー固有の設定を初期化"""
         # TODO: ワーカー固有の設定を実装
         pass
-    
+
     def process_message(self, ch, method, properties, body):
         """メッセージ処理のメイン実装
-        
+
         Args:
             ch: RabbitMQチャンネル
             method: メッセージメソッド
@@ -57,87 +57,87 @@ class {WorkerName}(BaseWorker):
             body: メッセージ本文
         """
         task_id = None
-        
+
         try:
             # メッセージのパース
             message = json.loads(body)
             task_id = message.get('task_id', 'unknown')
             self.current_task = task_id
-            
+
             self.logger.info(f"📥 タスク受信: {task_id}")
-            
+
             # TODO: メッセージ検証を実装
             if not self._validate_message(message):
                 raise ValueError("Invalid message format")
-            
+
             # TODO: メイン処理を実装
             result = self._process_task(message)
-            
+
             # 結果送信
             self._send_success_result(result, task_id)
-            
+
             # 統計更新
             self._increment_stats('processed_count')
             self._update_stats('last_task_id', task_id)
-            
+
             # メッセージ確認
             ch.basic_ack(delivery_tag=method.delivery_tag)
-            
+
         except Exception as e:
             self.handle_error(e, f"process_message({task_id})")
-            
+
             # エラー結果送信
             if task_id:
                 self._send_error_result(str(e), task_id)
-            
+
             # メッセージ確認（エラーでも確認）
             ch.basic_ack(delivery_tag=method.delivery_tag)
-        
+
         finally:
             self.current_task = None
-    
+
     def _validate_message(self, message: Dict[str, Any]) -> bool:
         """メッセージの検証
-        
+
         Args:
             message: 検証するメッセージ
-            
+
         Returns:
             bool: 検証結果
         """
         # TODO: 必須フィールドの検証を実装
         required_fields = ['task_id', 'action']
-        
+
         for field in required_fields:
             if field not in message:
                 self.logger.error(f"必須フィールドが不足: {field}")
                 return False
-        
+
         return True
-    
+
     def _process_task(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """タスクの処理
-        
+
         Args:
             message: 処理するメッセージ
-            
+
         Returns:
             Dict[str, Any]: 処理結果
         """
         action = message.get('action')
-        
+
         # TODO: アクションに応じた処理を実装
         if action == 'example_action':
             return self._handle_example_action(message)
         else:
             raise ValueError(f"Unknown action: {action}")
-    
+
     def _handle_example_action(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """サンプルアクションの処理
-        
+
         Args:
             message: 処理するメッセージ
-            
+
         Returns:
             Dict[str, Any]: 処理結果
         """
@@ -147,10 +147,10 @@ class {WorkerName}(BaseWorker):
             'result': 'Example action completed',
             'processed_data': message.get('data', {})
         }
-    
+
     def _send_success_result(self, result: Dict[str, Any], task_id: str):
         """成功結果の送信
-        
+
         Args:
             result: 処理結果
             task_id: タスクID
@@ -162,9 +162,9 @@ class {WorkerName}(BaseWorker):
             'result': result,
             'timestamp': self._get_timestamp()
         }
-        
+
         self.send_result(response)
-        
+
         # Slack通知（必要に応じて）
         if self._should_notify_slack(result):
             self.slack_notifier.send_task_completion_simple(
@@ -173,10 +173,10 @@ class {WorkerName}(BaseWorker):
                 prompt="Task completed",
                 response=json.dumps(result, ensure_ascii=False)
             )
-    
+
     def _send_error_result(self, error: str, task_id: str):
         """エラー結果の送信
-        
+
         Args:
             error: エラーメッセージ
             task_id: タスクID
@@ -188,24 +188,24 @@ class {WorkerName}(BaseWorker):
             'error': error,
             'timestamp': self._get_timestamp()
         }
-        
+
         self.send_result(response)
-    
+
     def _should_notify_slack(self, result: Dict[str, Any]) -> bool:
         """Slack通知が必要かどうかを判定
-        
+
         Args:
             result: 処理結果
-            
+
         Returns:
             bool: 通知が必要な場合True
         """
         # TODO: 通知条件を実装
         return result.get('notify_slack', False)
-    
+
     def _get_timestamp(self) -> str:
         """現在のタイムスタンプを取得
-        
+
         Returns:
             str: ISO形式のタイムスタンプ
         """
@@ -216,7 +216,7 @@ class {WorkerName}(BaseWorker):
 def main():
     """メイン処理"""
     worker = {WorkerName}()
-    
+
     try:
         worker.logger.info("🚀 {WorkerName}を起動します...")
         worker.start()

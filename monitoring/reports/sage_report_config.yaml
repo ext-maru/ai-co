@@ -5,41 +5,41 @@
 sage_reports:
   enabled: true
   report_interval: 3600  # 1時間ごと
-  
+
 # Incident Sage レポート設定
 incident_sage_reports:
   name: "Incident Sage Activity Report"
   enabled: true
-  
+
   metrics:
     - total_incidents:
         description: "検知したインシデント総数"
         aggregation: count
-        
+
     - resolved_incidents:
         description: "解決済みインシデント数"
         aggregation: count
         filter: "status == 'resolved'"
-        
+
     - avg_resolution_time:
         description: "平均解決時間"
         aggregation: average
         unit: seconds
-        
+
     - auto_recovery_rate:
         description: "自動回復成功率"
         aggregation: percentage
-        
+
     - incident_by_severity:
         description: "重要度別インシデント数"
         aggregation: group_by
         field: severity
-        
+
     - top_error_patterns:
         description: "頻出エラーパターンTOP10"
         aggregation: top_n
         n: 10
-        
+
   sections:
     - summary:
         title: "インシデント概要"
@@ -48,14 +48,14 @@ incident_sage_reports:
           - resolved_incidents
           - avg_resolution_time
           - auto_recovery_rate
-          
+
     - details:
         title: "詳細分析"
         include:
           - incident_by_severity
           - top_error_patterns
           - timeline_chart
-          
+
     - recommendations:
         title: "改善提案"
         auto_generate: true
@@ -67,36 +67,36 @@ incident_sage_reports:
 knowledge_sage_reports:
   name: "Knowledge Sage Learning Report"
   enabled: true
-  
+
   metrics:
     - knowledge_entries:
         description: "知識エントリー総数"
         aggregation: count
-        
+
     - new_entries_added:
         description: "新規追加エントリー数"
         aggregation: count
         time_range: report_period
-        
+
     - embeddings_generated:
         description: "生成された埋め込みベクトル数"
         aggregation: count
-        
+
     - storage_usage:
         description: "ストレージ使用量"
         aggregation: current
         unit: GB
-        
+
     - query_performance:
         description: "クエリ応答性能"
         aggregation: percentile
         percentiles: [50, 90, 99]
         unit: milliseconds
-        
+
     - knowledge_categories:
         description: "カテゴリ別知識分布"
         aggregation: distribution
-        
+
   sections:
     - growth:
         title: "知識ベース成長"
@@ -104,14 +104,14 @@ knowledge_sage_reports:
           - knowledge_entries
           - new_entries_added
           - growth_trend_chart
-          
+
     - performance:
         title: "パフォーマンス"
         include:
           - query_performance
           - embeddings_generated
           - storage_usage
-          
+
     - insights:
         title: "学習インサイト"
         include:
@@ -123,39 +123,39 @@ knowledge_sage_reports:
 task_sage_reports:
   name: "Task Sage Management Report"
   enabled: true
-  
+
   metrics:
     - total_tasks:
         description: "処理タスク総数"
         aggregation: count
-        
+
     - completed_tasks:
         description: "完了タスク数"
         aggregation: count
         filter: "status == 'completed'"
-        
+
     - completion_rate:
         description: "タスク完了率"
         aggregation: percentage
-        
+
     - avg_task_duration:
         description: "平均タスク処理時間"
         aggregation: average
         unit: seconds
-        
+
     - queue_length:
         description: "現在のキュー長"
         aggregation: current
-        
+
     - worker_utilization:
         description: "ワーカー使用率"
         aggregation: average
         unit: percentage
-        
+
     - task_distribution:
         description: "タスクタイプ別分布"
         aggregation: distribution
-        
+
   sections:
     - efficiency:
         title: "処理効率"
@@ -164,7 +164,7 @@ task_sage_reports:
           - completed_tasks
           - completion_rate
           - avg_task_duration
-          
+
     - workload:
         title: "ワークロード分析"
         include:
@@ -172,7 +172,7 @@ task_sage_reports:
           - worker_utilization
           - task_distribution
           - peak_hours_analysis
-          
+
     - optimization:
         title: "最適化提案"
         include:
@@ -183,35 +183,35 @@ task_sage_reports:
 rag_sage_reports:
   name: "RAG Sage Retrieval Report"
   enabled: true
-  
+
   metrics:
     - total_queries:
         description: "検索クエリ総数"
         aggregation: count
-        
+
     - avg_response_time:
         description: "平均応答時間"
         aggregation: average
         unit: milliseconds
-        
+
     - retrieval_accuracy:
         description: "検索精度"
         aggregation: percentage
-        
+
     - cache_hit_rate:
         description: "キャッシュヒット率"
         aggregation: percentage
-        
+
     - index_size:
         description: "インデックスサイズ"
         aggregation: current
         unit: documents
-        
+
     - popular_queries:
         description: "人気検索クエリTOP20"
         aggregation: top_n
         n: 20
-        
+
   sections:
     - performance:
         title: "検索パフォーマンス"
@@ -219,14 +219,14 @@ rag_sage_reports:
           - total_queries
           - avg_response_time
           - cache_hit_rate
-          
+
     - quality:
         title: "検索品質"
         include:
           - retrieval_accuracy
           - relevance_scores
           - user_satisfaction
-          
+
     - trends:
         title: "検索トレンド"
         include:
@@ -239,7 +239,7 @@ integrated_report:
   name: "Elder Tree System Integrated Report"
   enabled: true
   frequency: "daily"  # daily, weekly, monthly
-  
+
   sections:
     - executive_summary:
         title: "エグゼクティブサマリー"
@@ -248,7 +248,7 @@ integrated_report:
           - key_metrics_dashboard
           - critical_alerts_summary
           - action_items
-          
+
     - sage_performance:
         title: "Four Sages パフォーマンス"
         subsections:
@@ -256,7 +256,7 @@ integrated_report:
           - knowledge_sage_summary
           - task_sage_summary
           - rag_sage_summary
-          
+
     - system_health:
         title: "システム健全性"
         content:
@@ -264,14 +264,14 @@ integrated_report:
           - worker_pool_status
           - resource_utilization
           - error_rates
-          
+
     - trends_analysis:
         title: "トレンド分析"
         content:
           - performance_trends
           - capacity_planning
           - predictive_insights
-          
+
     - recommendations:
         title: "改善提案"
         content:
@@ -285,15 +285,15 @@ report_delivery:
     - html:
         enabled: true
         template: "elder_tree_report_template.html"
-        
+
     - pdf:
         enabled: true
         include_charts: true
-        
+
     - json:
         enabled: true
         raw_data: false
-        
+
   destinations:
     - email:
         enabled: true
@@ -304,19 +304,19 @@ report_delivery:
           daily: "09:00"
           weekly: "monday 09:00"
           monthly: "1st 09:00"
-          
+
     - slack:
         enabled: true
         channels:
           - "#elder-reports"
           - "#system-health"
         summary_only: true
-        
+
     - dashboard:
         enabled: true
         url: "/monitoring/reports/latest"
         auto_refresh: true
-        
+
     - s3:
         enabled: false
         bucket: "elder-tree-reports"
@@ -329,12 +329,12 @@ generation_options:
   cache_intermediate_results: true
   include_raw_data: false
   compress_large_reports: true
-  
+
   visualization:
     chart_library: "plotly"
     color_scheme: "elder_tree"
     interactive_charts: true
-    
+
   quality_checks:
     validate_data_completeness: true
     check_anomalies: true

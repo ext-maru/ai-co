@@ -1,3 +1,3 @@
 from .rag_sage import RAGSage
 
-__all__ = ['RAGSage']
+__all__ = ["RAGSage"]

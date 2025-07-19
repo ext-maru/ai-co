@@ -32,12 +32,12 @@ dashboards:
     - Four Sages活動サマリー
     - システムリソースゲージ
     - アクティブアラート一覧
-    
+
   elder_detail:
     - Elder Council意思決定ログ
     - メンバー別活動状況
     - 投票履歴と結果
-    
+
   worker_detail:
     - 個別ワーカー詳細
     - タスク実行履歴

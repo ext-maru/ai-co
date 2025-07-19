@@ -161,22 +161,22 @@ class MessageType(Enum):
     QUERY_RESPONSE = "query_response"
     COMMAND = "command"
     STATUS_UPDATE = "status_update"
-    
+
     # エルダー評議会
     COUNCIL_SUMMON = "council_summon"
     COUNCIL_DECISION = "council_decision"
     URGENT_CONSULTATION = "urgent_consultation"
-    
+
     # タスク管理
     TASK_ASSIGNMENT = "task_assignment"
     TASK_STATUS = "task_status"
     TASK_COMPLETION = "task_completion"
-    
+
     # 知識管理
     KNOWLEDGE_QUERY = "knowledge_query"
     KNOWLEDGE_UPDATE = "knowledge_update"
     PATTERN_SHARING = "pattern_sharing"
-    
+
     # インシデント管理
     INCIDENT_ALERT = "incident_alert"
     RECOVERY_REQUEST = "recovery_request"
@@ -306,7 +306,7 @@ structlog       # 構造化ログ
 
 ---
 
-**策定日**: 2025年7月9日  
-**策定者**: Claude Elder  
-**バージョン**: 1.0  
+**策定日**: 2025年7月9日
+**策定者**: Claude Elder
+**バージョン**: 1.0
 **レビュー予定**: Phase 1完了後

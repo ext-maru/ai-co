@@ -1,7 +1,7 @@
 # 🌟 グランドエルダーmaru - Elders Guild最高権限者
 
-**作成日**: 2025年7月8日  
-**重要度**: 最重要（CRITICAL）  
+**作成日**: 2025年7月8日
+**重要度**: 最重要（CRITICAL）
 **カテゴリ**: hierarchy_definition
 
 ---

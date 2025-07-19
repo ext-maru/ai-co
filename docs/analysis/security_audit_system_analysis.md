@@ -56,7 +56,7 @@ async def scan_vulnerabilities(self, scan_targets):
         'container_vulnerabilities': [],
         'overall_risk_score': 0
     }
-    
+
     # 各カテゴリのスキャン実行
     # リスクスコア計算
     # 推奨事項生成

@@ -89,7 +89,7 @@ jobs:
         run: |
           mkdir -p week4_reports/{coverage,quality,integration}
           mkdir -p week4_artifacts/{tests,reports,monitoring}
-          
+
           # Initialize Elder Council system
           python -c "
           import sys
@@ -107,7 +107,7 @@ jobs:
         run: |
           # Quick coverage baseline measurement
           pytest tests/ --cov=. --cov-report=json:week4_artifacts/baseline_coverage.json -x -q || true
-          
+
           if [ -f week4_artifacts/baseline_coverage.json ]; then
             BASELINE=$(python -c "
             import json
@@ -127,7 +127,7 @@ jobs:
         run: |
           BASELINE="${{ steps.baseline.outputs.coverage }}"
           TARGET="${{ env.COVERAGE_TARGET }}"
-          
+
           if (( $(echo "$BASELINE >= $TARGET" | bc -l) )); then
             STRATEGY="maintenance"
             echo "🎯 Strategy: Coverage maintenance mode"
@@ -138,7 +138,7 @@ jobs:
             STRATEGY="incremental"
             echo "📈 Strategy: Incremental coverage improvement"
           fi
-          
+
           echo "strategy=$STRATEGY" >> $GITHUB_OUTPUT
 
   pre-commit-quality-gates:
@@ -174,7 +174,7 @@ jobs:
             pre-commit run --all-files || echo "⚠️ Pre-commit checks completed with warnings"
           else
             echo "ℹ️ No pre-commit config found, running manual checks"
-            
+
             # Manual quality checks
             echo "🔍 Running code quality checks..."
             black --check --diff . || echo "⚠️ Black formatting issues detected"
@@ -223,13 +223,13 @@ jobs:
       - name: Generate missing tests
         run: |
           echo "🎯 Generating tests for coverage gaps..."
-          
+
           # Check if auto-generation tools exist
           if [ -f "test_generation/auto_test_generator.py" ]; then
             python test_generation/auto_test_generator.py --target-coverage ${{ env.COVERAGE_TARGET }}
           else
             echo "⚠️ Auto-generation tools not found, creating basic test structure"
-            
+
             # Create basic test generation script
             cat > week4_artifacts/generate_basic_tests.py << 'EOF'
 #!/usr/bin/env python3
@@ -296,7 +296,7 @@ for module_dir in target_modules:
 
 print("🎯 Basic test generation completed")
 EOF
-            
+
             python week4_artifacts/generate_basic_tests.py
           fi
 
@@ -325,7 +325,7 @@ EOF
       matrix:
         test-suite: [unit, integration, generated, quality]
       fail-fast: false
-    
+
     services:
       rabbitmq:
         image: rabbitmq:3-management
@@ -337,7 +337,7 @@ EOF
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      
+
       redis:
         image: redis:alpine
         ports:
@@ -473,7 +473,7 @@ EOF
       - name: Execute Elder Council Review
         run: |
           echo "👥 Initiating Elder Council Quality Review..."
-          
+
           # Check if Elder Council system exists
           if [ -f "elder_council_review.py" ]; then
             python -c "
@@ -481,35 +481,35 @@ EOF
             import sys
             sys.path.append('.')
             from elder_council_review import ElderCouncilReview
-            
+
             async def run_council_review():
                 council = ElderCouncilReview()
-                
+
                 # Review test quality for key files
                 test_files = [
                     'tests/unit/test_base_worker.py',
                     'tests/integration/test_worker_integration.py',
                     'tests/generated/test_core_generated.py'
                 ]
-                
+
                 for test_file in test_files:
                     try:
                         result = await council.review_test_quality(test_file)
                         print(f'📊 {test_file}: {result.approval_status} (Quality: {result.quality_metrics.overall_quality_score:.2f})')
                     except Exception as e:
                         print(f'⚠️ Review failed for {test_file}: {e}')
-                
+
                 # Generate quality report
                 report = await council.generate_quality_report(7)
                 print('📈 Elder Council Quality Report generated')
-                
+
                 # Save report
                 import json
                 with open('week4_reports/elder_council_quality_report.json', 'w') as f:
                     json.dump(report, f, indent=2, default=str)
-                
+
                 return report
-            
+
             asyncio.run(run_council_review())
             " || echo "⚠️ Elder Council review completed with warnings"
           else
@@ -527,10 +527,10 @@ EOF
       - name: Generate Elder Council Summary
         run: |
           echo "📋 Generating Elder Council Summary..."
-          
+
           cat > week4_reports/elder_council_summary.md << 'EOF'
 # Elder Council Quality Review Summary
-          
+
 ## Review Overview
 - **Date**: $(date)
 - **Coverage Target**: ${{ env.COVERAGE_TARGET }}%
@@ -589,15 +589,15 @@ EOF
       - name: Combine coverage reports
         run: |
           echo "📊 Combining coverage reports..."
-          
+
           # Combine all coverage files
           coverage combine week4_reports/coverage/.coverage* 2>/dev/null || echo "⚠️ No coverage files to combine"
-          
+
           # Generate comprehensive coverage report
           coverage report --format=markdown > week4_reports/coverage_summary.md || echo "⚠️ Coverage report generation issue"
           coverage json -o week4_reports/final_coverage.json || echo "⚠️ Coverage JSON generation issue"
           coverage html -d week4_reports/coverage_html || echo "⚠️ Coverage HTML generation issue"
-          
+
           # Generate coverage badge
           if [ -f week4_reports/final_coverage.json ]; then
             COVERAGE=$(python -c "
@@ -618,7 +618,7 @@ EOF
       - name: Generate Week 4 Strategic Report
         run: |
           echo "📈 Generating Week 4 Strategic Infrastructure Report..."
-          
+
           cat > week4_reports/week4_strategic_report.md << EOF
 # Week 4 Strategic Infrastructure - Final Report
 
@@ -698,7 +698,7 @@ EOF
           else
             COLOR="orange"
           fi
-          
+
           echo "BADGE_COLOR=$COLOR" >> $GITHUB_ENV
           echo "📊 Coverage: $COVERAGE% (Badge: $COLOR)"
 
@@ -718,7 +718,7 @@ EOF
       - name: Validate Week 4 Integration
         run: |
           echo "🔗 Validating Week 4 Strategic Infrastructure Integration..."
-          
+
           # Check artifact completeness
           COMPONENTS=(
             "quality-gates-reports"
@@ -730,7 +730,7 @@ EOF
             "elder-council-review"
             "week4-strategic-reports"
           )
-          
+
           echo "📋 Component Validation:"
           for component in "${COMPONENTS[@]}"; do
             if [ -d "week4_validation/$component" ]; then
@@ -739,7 +739,7 @@ EOF
               echo "⚠️ $component: Missing"
             fi
           done
-          
+
           # Validate integration completeness
           echo -e "\n🎯 Integration Validation Summary:"
           echo "- CI/CD Pipeline: ✅ Operational"
@@ -747,7 +747,7 @@ EOF
           echo "- Elder Council: ✅ Quality Review Active"
           echo "- Coverage Monitoring: ✅ Reporting Functional"
           echo "- Quality Gates: ✅ Enforced"
-          
+
           echo -e "\n🚀 Week 4 Strategic Infrastructure: FULLY OPERATIONAL"
 
       - name: Generate integration summary
@@ -770,7 +770,7 @@ EOF
   },
   "next_actions": [
     "Monitor coverage trends",
-    "Refine quality thresholds", 
+    "Refine quality thresholds",
     "Enhance test generation patterns",
     "Expand Elder Council integration"
   ]
@@ -801,7 +801,7 @@ EOF
           echo "Elder Council: ${{ needs.elder-council-quality-review.result }}"
           echo "Coverage Analysis: ${{ needs.coverage-analysis-reporting.result }}"
           echo "Integration: ${{ needs.integration-validation.result }}"
-          
+
           if [ "${{ needs.integration-validation.result }}" == "success" ]; then
             echo "🎉 WEEK 4 STRATEGIC INFRASTRUCTURE: FULLY OPERATIONAL"
             echo "✅ All systems integrated and functional"
@@ -814,3 +814,4 @@ EOF
           echo "📬 Week 4 Strategic Infrastructure deployment notification sent"
           echo "🔗 Artifacts available for download and review"
           echo "📈 Coverage monitoring and quality assurance active"
+EOF

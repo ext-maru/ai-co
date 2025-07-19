@@ -196,7 +196,7 @@ class CustomWorker(ElderAwareBaseWorker):
             required_elder_role=ElderRole.SAGE,
             required_sage_type=SageType.TASK
         )
-    
+
     async def process_message(self, context, message):
         # Elder階層に応じた処理
         return await self.execute_with_elder_context(context, self.process_task)
@@ -269,9 +269,9 @@ async def admin_operation(self, context, data):
 
 ---
 
-**🏛️ Elders Guild Elder Hierarchy Worker System**  
+**🏛️ Elders Guild Elder Hierarchy Worker System**
 **© 2025 Elders Guild - All Rights Reserved**
 
-*エルダーズ評議会承認済み公式システム*  
-*開発責任者: Claude Elder*  
+*エルダーズ評議会承認済み公式システム*
+*開発責任者: Claude Elder*
 *完成日: 2025年7月9日*

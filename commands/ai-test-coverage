@@ -18,7 +18,7 @@ from scripts.coverage_report import CoverageReporter
 
 def main():
     parser = argparse.ArgumentParser(
-        description='AI Company テストカバレッジツール',
+        description="AI Company テストカバレッジツール",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用例:
@@ -26,71 +26,63 @@ def main():
   ai-test-coverage --html       # HTMLレポートを開く
   ai-test-coverage --watch      # 継続的にカバレッジを監視
   ai-test-coverage --threshold 90  # カバレッジ閾値を設定
-        """
+        """,
     )
-    
+
     parser.add_argument(
-        '--html', '-H',
-        action='store_true',
-        help='HTMLカバレッジレポートをブラウザで開く'
+        "--html", "-H", action="store_true", help="HTMLカバレッジレポートをブラウザで開く"
     )
-    
+
     parser.add_argument(
-        '--watch', '-w',
-        action='store_true',
-        help='ファイル変更を監視して自動的にカバレッジを更新'
+        "--watch", "-w", action="store_true", help="ファイル変更を監視して自動的にカバレッジを更新"
     )
-    
+
     parser.add_argument(
-        '--threshold', '-t',
-        type=float,
-        default=80.0,
-        help='カバレッジの閾値（デフォルト: 80%%）'
+        "--threshold", "-t", type=float, default=80.0, help="カバレッジの閾値（デフォルト: 80%%）"
     )
-    
+
     parser.add_argument(
-        '--path', '-p',
-        default='tests/unit',
-        help='テスト対象のパス（デフォルト: tests/unit）'
+        "--path", "-p", default="tests/unit", help="テスト対象のパス（デフォルト: tests/unit）"
     )
-    
+
     args = parser.parse_args()
-    
+
     reporter = CoverageReporter()
-    
+
     if args.watch:
         print("🔍 ファイル変更を監視中... (Ctrl+Cで終了)")
         try:
             import time
-            from watchdog.observers import Observer
+
             from watchdog.events import FileSystemEventHandler
-            
+            from watchdog.observers import Observer
+
             class TestWatcher(FileSystemEventHandler):
                 def on_modified(self, event):
-                    if event.src_path.endswith('.py'):
+                    if event.src_path.endswith(".py"):
                         print(f"\n📝 変更検出: {event.src_path}")
                         reporter.main()
-            
+
             observer = Observer()
             observer.schedule(TestWatcher(), str(reporter.project_root), recursive=True)
             observer.start()
-            
+
             try:
                 while True:
                     time.sleep(1)
             except KeyboardInterrupt:
                 observer.stop()
             observer.join()
-            
+
         except ImportError:
             print("❌ watchdogがインストールされていません")
             print("pip install watchdog でインストールしてください")
             sys.exit(1)
-    
+
     else:
         # 通常のカバレッジ実行
         reporter.main()
-        
+
         # HTMLレポートを開く
         if args.html:
             html_path = reporter.htmlcov_dir / "index.html"

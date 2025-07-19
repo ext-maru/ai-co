@@ -5,17 +5,20 @@
 
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parent))
 
-from libs.ai_command_helper import AICommandHelper
 import time
+
+from libs.ai_command_helper import AICommandHelper
+
 
 def main():
     helper = AICommandHelper()
-    
+
     print("🚀 Starting Commit Message Best Practices Implementation")
     print("=" * 60)
-    
+
     # マスターセットアップコマンド
     master_command = """#!/bin/bash
 set -e
@@ -103,24 +106,23 @@ echo "   Format: <type>(<scope>): <subject>"
 echo ""
 date
 """
-    
+
     # コマンドを作成して実行
     result = helper.create_bash_command(
-        master_command,
-        "full_commit_best_practices_setup"
+        master_command, "full_commit_best_practices_setup"
     )
-    
+
     print(f"\n✅ Master setup command created!")
     print(f"📄 Command ID: {result['command_id']}")
     print("⏳ Executing setup (this may take a moment)...")
-    
+
     # 実行完了を待つ
     for i in range(12):  # 最大60秒待つ
         time.sleep(5)
         check = helper.check_results("full_commit_best_practices_setup")
-        if check and check.get('status') in ['SUCCESS', 'FAILED']:
+        if check and check.get("status") in ["SUCCESS", "FAILED"]:
             print(f"\n🏁 Execution completed with status: {check['status']}")
-            
+
             # ログを表示
             log = helper.get_latest_log("full_commit_best_practices_setup")
             if log:
@@ -130,26 +132,27 @@ date
             break
         else:
             print(f"⏳ Still executing... ({(i+1)*5}s)")
-    
+
     print("\n🎯 Next Steps:")
     print("1. Check Slack for detailed results")
     print("2. Try 'ai-git commit --preview' to test")
     print("3. All future commits will use best practices!")
-    
+
     # サマリー生成
     print("\n📋 Implementation Summary:")
     print("• CommitMessageGenerator - Analyzes changes and generates messages")
-    print("• GitFlowManager v2 - Integrated with best practices")  
+    print("• GitFlowManager v2 - Integrated with best practices")
     print("• ai-git enhanced - New commands for better workflow")
     print("• Automatic validation - Ensures message quality")
     print("• CHANGELOG generation - From commit history")
-    
+
     print("\n✨ Commit messages will now be:")
     print("• Conventional Commits compliant")
     print("• Automatically categorized (feat/fix/docs/etc)")
     print("• Properly formatted (50/72 rule)")
     print("• Include detailed context")
     print("• Support breaking changes")
+
 
 if __name__ == "__main__":
     main()

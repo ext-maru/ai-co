@@ -121,10 +121,10 @@ def test_should_process_message_successfully(self):
     # Arrange（準備）
     worker = Worker()
     message = {"task_id": "123", "action": "process"}
-    
+
     # Act（実行）
     result = worker.process_message(message)
-    
+
     # Assert（検証）
     assert result["status"] == "success"
     assert result["task_id"] == "123"
@@ -137,7 +137,7 @@ def test_should_process_message_successfully(self):
 class TestBadExample:
     def test_1_create_user(self):
         self.user_id = create_user()  # 状態を保持
-    
+
     def test_2_delete_user(self):
         delete_user(self.user_id)  # test_1に依存
 
@@ -146,10 +146,10 @@ class TestGoodExample:
     def test_should_create_and_delete_user(self):
         # Arrange
         user_id = create_user()
-        
+
         # Act
         result = delete_user(user_id)
-        
+
         # Assert
         assert result is True
 ```
@@ -239,10 +239,10 @@ def test_should_connect_to_rabbitmq(self, mock_connection):
     # Arrange
     mock_channel = Mock()
     mock_connection.return_value.channel.return_value = mock_channel
-    
+
     # Act
     worker = Worker()
-    
+
     # Assert
     mock_connection.assert_called_once()
 ```
@@ -255,7 +255,7 @@ def test_should_generate_timestamp(self, mock_time):
     """タイムスタンプを生成できることを確認"""
     # Act
     timestamp = generate_timestamp()
-    
+
     # Assert
     assert timestamp == "2009-02-13T23:31:30"
 ```
@@ -300,7 +300,7 @@ jobs:
 ```python
 class TestEmailValidator:
     """EmailValidatorのテストスイート
-    
+
     以下の機能をテスト:
     - メールアドレスの形式検証
     - ドメインの存在確認
@@ -313,7 +313,7 @@ class TestEmailValidator:
 ```python
 def test_should_validate_standard_email_format(self):
     """標準的なメールアドレス形式を検証できることを確認
-    
+
     テストケース:
     - user@example.com → True
     - user.name@example.co.jp → True

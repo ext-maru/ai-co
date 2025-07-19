@@ -49,7 +49,7 @@ class PMSession:
     context: Dict[str, Any] = None
     conversation_history: List[Dict] = None
     pending_approval: Optional[str] = None
-    
+
     def __post_init__(self):
         if self.context is None:
             self.context = {}
@@ -60,19 +60,19 @@ class SlackPMManager:
     """
     Slack統合プロジェクトマネージャー
     """
-    
+
     def __init__(self, config_path: str = None):
         self.logger = logging.getLogger(__name__)
         self.config = self._load_config(config_path)
-        
+
         # Slack クライアント
         self.web_client = WebClient(token=self.config['slack']['bot_token'])
         self.rtm_client = None
-        
+
         # セッション管理
         self.active_sessions: Dict[str, PMSession] = {}  # user_id -> session
         self.session_timeout = timedelta(hours=2)
-        
+
         # PM機能
         self.pm_capabilities = {
             'task_breakdown': True,
@@ -81,19 +81,19 @@ class SlackPMManager:
             'approval_workflow': True,
             'context_awareness': True
         }
-        
+
         # メッセージ解析パターン
         self._setup_message_patterns()
-        
+
         # コールバック
         self.on_task_created: Optional[Callable] = None
         self.on_approval_needed: Optional[Callable] = None
         self.on_task_completed: Optional[Callable] = None
-        
+
         # バックグラウンドタスク
         self.running = False
         self.cleanup_thread = None
-        
+
     def _load_config(self, config_path: str) -> Dict:
         """設定読み込み"""
         default_config = {

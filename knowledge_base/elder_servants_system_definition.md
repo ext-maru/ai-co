@@ -1,7 +1,7 @@
 # 🏛️ エルダーサーバント・システム定義書
 
-**定義日**: 2025年7月7日 15:51  
-**定義者**: ユーザー指定による正式命名  
+**定義日**: 2025年7月7日 15:51
+**定義者**: ユーザー指定による正式命名
 **カテゴリ**: system_architecture_definition
 
 ---
@@ -20,7 +20,7 @@
    - 知識管理・継承・進化
    - 場所: `knowledge_base/`
 
-2. **📋 タスク賢者** (Task Oracle)  
+2. **📋 タスク賢者** (Task Oracle)
    - プロジェクト管理・最適化
    - 場所: `libs/claude_task_tracker.py`
 
@@ -57,7 +57,7 @@
     ↓ 指令・承認
 🤖 Elder Servants (エルダーサーバント)
     ├─ 4賢者システム
-    ├─ Incident Knights  
+    ├─ Incident Knights
     ├─ Worker Auto-Recovery
     └─ Report Management
 ```
@@ -82,7 +82,7 @@
 🧙‍♂️ 4賢者会議 → 最適解導出
      ↓
 ⚔️ Knights実装 → 緊急対応
-     ↓  
+     ↓
 🔄 Auto-Recovery → 自動復旧
      ↓
 📊 Report Analysis → 成果報告
@@ -113,5 +113,5 @@
 
 ---
 
-**正式名称確定: エルダーサーバント (Elder Servants)**  
+**正式名称確定: エルダーサーバント (Elder Servants)**
 **今後、全ドキュメントでこの名称を使用**

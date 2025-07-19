@@ -4,13 +4,13 @@ AI Company Elder Council System
 エルダー評議会統合管理システム
 """
 
-import sys
-import os
-import json
 import argparse
-from pathlib import Path
-from datetime import datetime
+import json
+import os
 import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -19,55 +19,57 @@ sys.path.insert(0, str(PROJECT_ROOT))
 try:
     from libs.elder_council_review_system import ElderCouncilReviewSystem, ReviewStatus
     from libs.sage_propagation_engine import SagePropagationEngine
+
     SYSTEM_AVAILABLE = True
 except ImportError:
     SYSTEM_AVAILABLE = False
 
+
 class ElderCouncilCommand:
     """エルダー評議会コマンドシステム"""
-    
+
     def __init__(self):
         self.project_root = PROJECT_ROOT
         self.council_dir = self.project_root / "council_sessions"
         self.council_dir.mkdir(exist_ok=True)
-        
+
         if SYSTEM_AVAILABLE:
             self.review_system = ElderCouncilReviewSystem()
             self.propagation_engine = SagePropagationEngine()
-    
+
     def show_status(self):
         """評議会システムの状態表示"""
         print("🏛️ AI Company Elder Council System")
         print("=" * 60)
-        
+
         if not SYSTEM_AVAILABLE:
             print("⚠️ Elder Council review system is not available")
             print("📋 基本機能のみ利用可能")
             return
-        
+
         print(f"📊 システム状態: ✅ 稼働中")
         print(f"📁 評議会セッション記録: {self.council_dir}")
-        
+
         # 最近の評議会セッション
         sessions = list(self.council_dir.glob("session_*.json"))
         if sessions:
             print(f"📝 最近のセッション: {len(sessions)}件")
             recent = sorted(sessions, key=lambda x: x.stat().st_mtime, reverse=True)[:3]
             for session in recent:
-                with open(session, 'r', encoding='utf-8') as f:
+                with open(session, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     print(f"  • {data.get('title', 'Untitled')} ({session.name})")
         else:
             print("📝 評議会セッション記録: なし")
-        
+
         print("\n🧙‍♂️ 4賢者システム:")
         sage_paths = {
             "ナレッジ賢者": "/home/aicompany/ai_co/knowledge_base/council_reports",
             "インシデント賢者": "/home/aicompany/ai_co/knowledge_base/incident_management",
             "タスク賢者": "/home/aicompany/ai_co/task_council_integration.log",
-            "RAG賢者": "/home/aicompany/ai_co/rag_index"
+            "RAG賢者": "/home/aicompany/ai_co/rag_index",
         }
-        
+
         for sage_name, path in sage_paths.items():
             if os.path.exists(path):
                 if os.path.isdir(path):
@@ -77,50 +79,50 @@ class ElderCouncilCommand:
                     print(f"  ✅ {sage_name}: ファイル存在")
             else:
                 print(f"  ⚠️ {sage_name}: ストレージ未作成")
-    
+
     def submit_report(self, title, content, category="general", priority="medium"):
         """評議会への報告書提出"""
         if not SYSTEM_AVAILABLE:
             print("⚠️ Elder Council review system is not available")
             self.create_manual_session(title, content, category, priority)
             return
-        
+
         print(f"📋 評議会への報告書提出")
         print(f"タイトル: {title}")
         print(f"カテゴリ: {category}")
         print(f"優先度: {priority}")
         print("-" * 50)
-        
+
         report = {
             "title": title,
             "content": content,
             "category": category,
-            "priority": priority
+            "priority": priority,
         }
-        
+
         try:
             report_id, result = self.review_system.submit_report(report)
-            
+
             print(f"✅ 報告書提出完了")
             print(f"📄 報告ID: {report_id}")
             print(f"📊 ステータス: {result.status.value}")
             print(f"🎯 品質スコア: {result.quality_score.overall:.2f}")
-            
+
             if result.propagation_targets:
                 print(f"🧙‍♂️ 反映対象賢者: {[t.value for t in result.propagation_targets]}")
-            
+
             if result.enhanced_report:
                 print("✨ 自動改善が実施されました")
-                
+
         except Exception as e:
             print(f"❌ 報告書提出エラー: {e}")
             self.create_manual_session(title, content, category, priority)
-    
+
     def create_manual_session(self, title, content, category, priority):
         """手動評議会セッションの作成"""
         session_id = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
         session_file = self.council_dir / f"{session_id}.json"
-        
+
         session_data = {
             "session_id": session_id,
             "title": title,
@@ -129,47 +131,47 @@ class ElderCouncilCommand:
             "priority": priority,
             "created_at": datetime.now().isoformat(),
             "status": "manual_pending",
-            "council_decision": "pending_review"
+            "council_decision": "pending_review",
         }
-        
-        with open(session_file, 'w', encoding='utf-8') as f:
+
+        with open(session_file, "w", encoding="utf-8") as f:
             json.dump(session_data, f, ensure_ascii=False, indent=2)
-        
+
         print(f"📝 手動評議会セッション作成: {session_id}")
         print(f"📁 記録場所: {session_file}")
-    
+
     def list_sessions(self):
         """評議会セッション一覧表示"""
         print("📋 Elder Council Sessions")
         print("=" * 60)
-        
+
         sessions = list(self.council_dir.glob("session_*.json"))
         if not sessions:
             print("📝 評議会セッション記録はありません")
             return
-        
+
         sessions.sort(key=lambda x: x.stat().st_mtime, reverse=True)
-        
+
         for session_file in sessions:
             try:
-                with open(session_file, 'r', encoding='utf-8') as f:
+                with open(session_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
-                
+
                 print(f"\n📄 {data.get('session_id', 'Unknown')}")
                 print(f"   タイトル: {data.get('title', 'Untitled')}")
                 print(f"   カテゴリ: {data.get('category', 'general')}")
                 print(f"   優先度: {data.get('priority', 'medium')}")
                 print(f"   作成日時: {data.get('created_at', 'Unknown')}")
                 print(f"   ステータス: {data.get('status', 'unknown')}")
-                
+
             except Exception as e:
                 print(f"❌ セッション読み込みエラー: {session_file.name} - {e}")
-    
+
     def emergency_session(self, title, description):
         """緊急評議会セッション"""
         print("🚨 緊急評議会セッション招集")
         print("=" * 60)
-        
+
         emergency_content = f"""
 # 緊急事態発生
 
@@ -193,24 +195,30 @@ class ElderCouncilCommand:
 ## 緊急評議会判定
 このセッションは緊急評議会として招集されました。
 """
-        
+
         self.submit_report(
             title=f"[緊急] {title}",
             content=emergency_content,
             category="incident",
-            priority="high"
+            priority="high",
         )
-    
+
     def run_integration_test(self):
         """統合テストの実行"""
         print("🧪 Elder Council Integration Test")
         print("=" * 60)
-        
-        test_script = self.project_root / "scripts" / "test_complete_elder_council_system.py"
+
+        test_script = (
+            self.project_root / "scripts" / "test_complete_elder_council_system.py"
+        )
         if test_script.exists():
             try:
-                result = subprocess.run([sys.executable, str(test_script)], 
-                                      capture_output=True, text=True, cwd=str(self.project_root))
+                result = subprocess.run(
+                    [sys.executable, str(test_script)],
+                    capture_output=True,
+                    text=True,
+                    cwd=str(self.project_root),
+                )
                 print(result.stdout)
                 if result.stderr:
                     print("⚠️ Warnings/Errors:")
@@ -219,7 +227,7 @@ class ElderCouncilCommand:
                 print(f"❌ テスト実行エラー: {e}")
         else:
             print("⚠️ 統合テストスクリプトが見つかりません")
-    
+
     def show_help(self):
         """ヘルプ表示"""
         print("🏛️ AI Company Elder Council System")
@@ -240,51 +248,56 @@ class ElderCouncilCommand:
         print()
         print("Examples:")
         print("  ai-elder-council status")
-        print("  ai-elder-council submit \"新機能実装\" \"詳細説明...\"")
-        print("  ai-elder-council emergency \"システム障害\" \"詳細...\"")
+        print('  ai-elder-council submit "新機能実装" "詳細説明..."')
+        print('  ai-elder-council emergency "システム障害" "詳細..."')
         print("  ai-elder-council test")
+
 
 def main():
     """メイン関数"""
-    parser = argparse.ArgumentParser(description='AI Company Elder Council System')
-    parser.add_argument('command', nargs='?', default='help',
-                       help='Command to execute')
-    parser.add_argument('args', nargs='*', help='Command arguments')
-    parser.add_argument('--category', default='general',
-                       help='Report category (default: general)')
-    parser.add_argument('--priority', default='medium',
-                       choices=['low', 'medium', 'high'],
-                       help='Priority level (default: medium)')
-    
+    parser = argparse.ArgumentParser(description="AI Company Elder Council System")
+    parser.add_argument("command", nargs="?", default="help", help="Command to execute")
+    parser.add_argument("args", nargs="*", help="Command arguments")
+    parser.add_argument(
+        "--category", default="general", help="Report category (default: general)"
+    )
+    parser.add_argument(
+        "--priority",
+        default="medium",
+        choices=["low", "medium", "high"],
+        help="Priority level (default: medium)",
+    )
+
     args = parser.parse_args()
-    
+
     council = ElderCouncilCommand()
-    
-    if args.command == 'status':
+
+    if args.command == "status":
         council.show_status()
-    elif args.command == 'submit':
+    elif args.command == "submit":
         if len(args.args) >= 2:
             title = args.args[0]
             content = args.args[1]
             council.submit_report(title, content, args.category, args.priority)
         else:
             print("❌ Usage: ai-elder-council submit <title> <content>")
-    elif args.command == 'list':
+    elif args.command == "list":
         council.list_sessions()
-    elif args.command == 'emergency':
+    elif args.command == "emergency":
         if len(args.args) >= 2:
             title = args.args[0]
             description = args.args[1]
             council.emergency_session(title, description)
         else:
             print("❌ Usage: ai-elder-council emergency <title> <description>")
-    elif args.command == 'test':
+    elif args.command == "test":
         council.run_integration_test()
-    elif args.command == 'help' or args.command == '--help' or args.command == '-h':
+    elif args.command == "help" or args.command == "--help" or args.command == "-h":
         council.show_help()
     else:
         print(f"❌ Unknown command: {args.command}")
         council.show_help()
+
 
 if __name__ == "__main__":
     main()

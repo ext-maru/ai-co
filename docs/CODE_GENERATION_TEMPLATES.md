@@ -142,7 +142,7 @@ class MyTemplate:
                 "param1": {"type": "str", "required": True}
             }
         }
-    
+
     def generate(self, params: Dict[str, Any]) -> Dict[str, str]:
         # Generate code files
         return {

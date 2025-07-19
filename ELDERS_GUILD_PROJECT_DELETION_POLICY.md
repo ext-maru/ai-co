@@ -86,6 +86,6 @@ python3 scripts/remove_from_deletion_schedule.py プロジェクト名
 - ナレッジベース: `knowledge_base/project_lifecycle/deletions/`
 
 ---
-**制定日**: 2025年1月11日  
-**承認**: エルダーズギルド評議会  
+**制定日**: 2025年1月11日
+**承認**: エルダーズギルド評議会
 **管理**: インシデント賢者

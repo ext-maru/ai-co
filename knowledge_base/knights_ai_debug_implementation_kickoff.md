@@ -1,8 +1,8 @@
 # ⚔️ Incident Knights - ai-debug実装キックオフ
 
-**開始日時**: 2025年7月7日 16:27  
-**承認者**: Elder Council (Manual Override)  
-**実装騎士団**: Incident Knights  
+**開始日時**: 2025年7月7日 16:27
+**承認者**: Elder Council (Manual Override)
+**実装騎士団**: Incident Knights
 **緊急度**: CRITICAL
 
 ---

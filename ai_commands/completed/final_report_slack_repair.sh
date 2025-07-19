@@ -56,7 +56,7 @@ try:
 🔍 動作確認:
 tmux attach -t ai_company
 → slack_polling ウィンドウで動作確認'''
-    
+
     notifier.send_message(message)
 except:
     pass

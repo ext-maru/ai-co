@@ -11,7 +11,7 @@ import json
 
 try:
     notifier = SlackNotifier()
-    
+
     message = """📚 新しいナレッジベースが作成されました
 
 *AI Git コミットベストプラクティス ナレッジベース v1.0*
@@ -43,10 +43,10 @@ support and retry mechanism.
 Refs: code_20250703_123456
 ```
 """
-    
+
     notifier.send_message(message)
     print("✅ Slack通知を送信しました")
-    
+
 except Exception as e:
     print(f"Slack通知エラー: {e}")
 

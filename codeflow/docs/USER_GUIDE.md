@@ -231,7 +231,7 @@ A: Absolutely! Check our [Contributing Guide](https://github.com/aicompany/codef
 
 ### Q: How do I get support?
 
-A: 
+A:
 - GitHub Issues for bug reports
 - Discussions for questions
 - Email: support@aicompany.dev

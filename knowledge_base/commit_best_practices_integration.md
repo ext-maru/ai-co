@@ -49,14 +49,14 @@ Elders Guildのコミットメッセージベストプラクティス統合は�
 class CommitMessageGenerator:
     def __init__(self):
         self.config = self._load_config()
-    
+
     def generate_message(self, changes_info, use_ai=True):
         # AIを使用して詳細なメッセージを生成
         commit_type = self.detect_commit_type(files, content)
         scope = self.extract_scope(files)
         subject = self.generate_subject(commit_type, scope, summary)
         body = self.generate_body(changes_info)
-        
+
         return self.format_message(commit_type, scope, subject, body)
 ```
 
@@ -84,14 +84,14 @@ def commit_changes(self, message=None, files=None, use_best_practices=False):
     if use_best_practices and files:
         from libs.commit_message_generator import CommitMessageGenerator
         generator = CommitMessageGenerator()
-        
+
         changes_info = {
             'files': files,
             'original_message': message,
             'branch': self.get_current_branch(),
             'task_id': self._extract_task_id(message)
         }
-        
+
         message = generator.generate_message(changes_info)
 ```
 
@@ -113,7 +113,7 @@ if self.git_flow.commit_changes(commit_message, new_files, use_best_practices=Tr
 elif [[ "$1" == "analyze" ]]; then
     # 現在の変更を分析
     python3 -m libs.commit_message_generator analyze
-    
+
 elif [[ "$1" == "commit" && "$2" == "--preview" ]]; then
     # コミットメッセージをプレビュー
     python3 -m libs.commit_message_generator preview
@@ -165,7 +165,7 @@ content = pm_path.read_text()
 if "if self.git_flow.commit_changes(None" in content:
     lines = content.split('\n')
     new_lines = []
-    
+
     for i, line in enumerate(lines):
         if "if self.git_flow.commit_changes(None" in line:
             indent = ' ' * (len(line) - len(line.lstrip()))
@@ -173,7 +173,7 @@ if "if self.git_flow.commit_changes(None" in content:
             new_lines.append(line.replace('None', 'commit_message'))
         else:
             new_lines.append(line)
-    
+
     pm_path.write_text('\n'.join(new_lines))
     print("✅ PMWorker修正完了")
 EOF

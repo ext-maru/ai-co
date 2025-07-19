@@ -6,16 +6,15 @@ function-based counterpart in `../from_numeric.py`.
 
 """
 
-from collections.abc import Iterator
 import ctypes as ct
 import operator
+from collections.abc import Iterator
 from types import ModuleType
 from typing import Any, Literal, assert_type
 
-from typing_extensions import CapsuleType
-
 import numpy as np
 import numpy.typing as npt
+from typing_extensions import CapsuleType
 
 class SubClass(npt.NDArray[np.object_]): ...
 
@@ -189,10 +188,15 @@ assert_type(AR_U.flatten(), np.ndarray[tuple[int], np.dtype[np.str_]])
 
 assert_type(AR_i8.reshape(None), npt.NDArray[np.int64])
 assert_type(AR_f8.reshape(-1), np.ndarray[tuple[int], np.dtype[np.float64]])
-assert_type(AR_c8.reshape(2, 3, 4, 5), np.ndarray[tuple[int, int, int, int], np.dtype[np.complex64]])
+assert_type(
+    AR_c8.reshape(2, 3, 4, 5),
+    np.ndarray[tuple[int, int, int, int], np.dtype[np.complex64]],
+)
 assert_type(AR_m.reshape(()), np.ndarray[tuple[()], np.dtype[np.timedelta64]])
 assert_type(AR_U.reshape([]), np.ndarray[tuple[()], np.dtype[np.str_]])
-assert_type(AR_V.reshape((480, 720, 4)), np.ndarray[tuple[int, int, int], np.dtype[np.void]])
+assert_type(
+    AR_V.reshape((480, 720, 4)), np.ndarray[tuple[int, int, int], np.dtype[np.void]]
+)
 
 assert_type(int(AR_f8), int)
 assert_type(int(AR_U), int)

@@ -30,7 +30,7 @@ Elders Guild の Worker 達が効率的にタスクを処理するための専�
 # Worker ステータスのリアルタイム表示
 class WorkerTaskDashboard:
     """Worker 専用ダッシュボード"""
-    
+
     def show_worker_status(self):
         """各 Worker の現在状況を表示"""
         return {
@@ -55,7 +55,7 @@ class WorkerTaskDashboard:
 # タスクの Worker 間の流れを追跡
 class TaskPipeline:
     """タスクの Worker 間フロー管理"""
-    
+
     def track_task_flow(self, task_id):
         """タスクが Worker 間をどう流れているか追跡"""
         return {
@@ -75,11 +75,11 @@ class TaskPipeline:
 ```python
 class WorkerLoadBalancer:
     """Worker の負荷を自動調整"""
-    
+
     def optimize_task_distribution(self):
         """Worker の負荷に応じてタスクを最適分散"""
         worker_loads = self.get_worker_loads()
-        
+
         # 負荷の少ない Worker を優先
         if worker_loads['task_worker_1'] < 50:
             return 'task_worker_1'
@@ -93,17 +93,17 @@ class WorkerLoadBalancer:
 ```python
 class WorkerScalingPredictor:
     """Worker のスケーリングを予測"""
-    
+
     def predict_worker_needs(self):
         """過去のパターンから Worker の必要数を予測"""
         historical_data = self.get_historical_load()
         current_queue_size = self.get_queue_sizes()
-        
+
         # AI 予測モデル
         predicted_load = self.ml_model.predict(
             features=[current_queue_size, time_of_day, day_of_week]
         )
-        
+
         return {
             'recommended_workers': 3,
             'scale_up_in': '5 minutes',
@@ -154,7 +154,7 @@ class TaskFlowVisualizer {
 ```python
 class WorkerHealthMonitor:
     """Worker の健康状態を常時監視"""
-    
+
     def check_worker_health(self, worker_type):
         return {
             'cpu_usage': 45,
@@ -169,7 +169,7 @@ class WorkerHealthMonitor:
 ```python
 class WorkerAutoRecovery:
     """Worker の自動復旧"""
-    
+
     def handle_worker_failure(self, worker_id):
         """Worker 障害時の自動対応"""
         # 1. 未処理タスクを他の Worker に移動
@@ -183,7 +183,7 @@ class WorkerAutoRecovery:
 ```python
 class WorkerMetrics:
     """Worker 特化型メトリクス"""
-    
+
     def get_worker_kpis(self):
         return {
             'throughput': {
@@ -231,11 +231,11 @@ class WorkerMetrics:
 def test_worker_status_tracking():
     """Worker のステータス追跡機能をテスト"""
     tracker = WorkerTaskTracker()
-    
+
     # Worker がタスクを開始
     tracker.start_task('task_worker', 'CODE-1234')
     status = tracker.get_worker_status('task_worker')
-    
+
     assert status['current_task'] == 'CODE-1234'
     assert status['status'] == 'processing'
     assert status['start_time'] is not None
@@ -254,7 +254,7 @@ def test_worker_status_tracking():
 
 **最初はどの機能から始めましょうか？**
 1. **Worker ステータス可視化** - 今何をしているか見える化
-2. **タスクフロー追跡** - Worker 間の連携を可視化  
+2. **タスクフロー追跡** - Worker 間の連携を可視化
 3. **パフォーマンス監視** - Worker の効率性を測定
 
 どれが一番重要だと思いますか？

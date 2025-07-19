@@ -98,7 +98,7 @@ ai-project new --costar "プロジェクト名"
 ```python
 class FeatureCOSTAR:
     """機能開発のCO-STAR定義"""
-    
+
     def __init__(self, feature_name):
         self.context = {}      # 機能の背景
         self.objective = {}    # 機能の目的
@@ -106,7 +106,7 @@ class FeatureCOSTAR:
         self.tone = {}         # コード規約
         self.audience = {}     # 利用者
         self.response = {}     # 期待出力
-    
+
     def validate(self):
         """CO-STAR要素の完全性チェック"""
         return all([
@@ -268,6 +268,6 @@ task:
 
 ---
 
-**最終更新**: 2025年7月10日  
-**作成者**: クロードエルダー  
+**最終更新**: 2025年7月10日
+**作成者**: クロードエルダー
 **承認**: エルダーズギルド評議会

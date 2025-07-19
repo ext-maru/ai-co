@@ -8,7 +8,7 @@
 
 - **エラー** - システムエラー、例外（既存のerror_handlingと連携）
 - **障害** - サービス停止、機能不全
-- **要求** - 新機能要求、サービス要求  
+- **要求** - 新機能要求、サービス要求
 - **変更** - 設定変更、構成変更
 - **セキュリティ** - セキュリティインシデント
 - **パフォーマンス** - 処理遅延、リソース問題
@@ -173,7 +173,7 @@ helper.create_bash_command(incident_script, "handle_worker_failure")
 システムは以下のメトリクスを自動追跡：
 
 - **MTTR** (Mean Time To Resolve) - 平均解決時間
-- **MTBF** (Mean Time Between Failures) - 平均故障間隔  
+- **MTBF** (Mean Time Between Failures) - 平均故障間隔
 - **再発率** - 同一問題の再発頻度
 - **カテゴリ別統計** - 問題の傾向分析
 - **コンポーネント別影響度** - 最も問題が多いコンポーネント

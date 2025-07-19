@@ -4,50 +4,54 @@
 Script to eternalize critical Elder spells in PostgreSQL
 """
 
-import os
 import json
+import os
 import subprocess
 from datetime import datetime
 from pathlib import Path
 
 # データベースURL
-DB_URL = 'postgresql://aicompany@localhost:5432/ai_company_grimoire'
+DB_URL = "postgresql://aicompany@localhost:5432/ai_company_grimoire"
+
 
 def escape_content(content):
     """SQLインジェクション防止のためのエスケープ"""
     return content.replace("'", "''")
 
+
 def save_spell_to_postgresql(spell_data):
     """単一の呪文をPostgreSQLに保存"""
     current_time = datetime.now().isoformat()
-    
+
     # エスケープ処理
-    content_escaped = escape_content(spell_data['content'])
-    
+    content_escaped = escape_content(spell_data["content"])
+
     # タグをSQL配列形式に
-    tags_sql = "ARRAY[" + ",".join([f"'{tag}'" for tag in spell_data['tags']]) + "]"
-    
+    tags_sql = "ARRAY[" + ",".join([f"'{tag}'" for tag in spell_data["tags"]]) + "]"
+
     # 進化履歴
-    evolution_history = json.dumps([{
-        "version": 1,
-        "date": current_time,
-        "author": "Claude Elder",
-        "reason": f"Eternal preservation of {spell_data['spell_name']}"
-    }])
-    
+    evolution_history = json.dumps(
+        [
+            {
+                "version": 1,
+                "date": current_time,
+                "author": "Claude Elder",
+                "reason": f"Eternal preservation of {spell_data['spell_name']}",
+            }
+        ]
+    )
+
     # 既存エントリをチェック
     check_sql = f"SELECT id FROM knowledge_grimoire WHERE spell_name = '{spell_data['spell_name']}' LIMIT 1;"
     check_result = subprocess.run(
-        ['psql', DB_URL, '-t', '-A', '-c', check_sql],
-        capture_output=True,
-        text=True
+        ["psql", DB_URL, "-t", "-A", "-c", check_sql], capture_output=True, text=True
     )
-    
+
     if check_result.returncode == 0 and check_result.stdout.strip():
         # 更新
         existing_id = check_result.stdout.strip()
         sql = f"""
-        UPDATE knowledge_grimoire 
+        UPDATE knowledge_grimoire
         SET content = '{content_escaped}',
             spell_type = '{spell_data['spell_type']}',
             magic_school = '{spell_data['magic_school']}',
@@ -79,35 +83,35 @@ def save_spell_to_postgresql(spell_data):
             '{current_time}'
         );
         """
-    
-    result = subprocess.run(
-        ['psql', DB_URL, '-c', sql],
-        capture_output=True,
-        text=True
-    )
-    
+
+    result = subprocess.run(["psql", DB_URL, "-c", sql], capture_output=True, text=True)
+
     if result.returncode == 0:
-        print(f"✅ {spell_data['spell_name']} 永続化成功 (Power: {spell_data['power_level']})")
+        print(
+            f"✅ {spell_data['spell_name']} 永続化成功 (Power: {spell_data['power_level']})"
+        )
         return True
     else:
         print(f"❌ {spell_data['spell_name']} 永続化失敗: {result.stderr}")
         return False
 
+
 def load_file_content(file_path):
     """ファイルからコンテンツを読み込む"""
     if file_path.exists():
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             return f.read()
     return None
+
 
 def eternalize_elder_spells():
     """エルダーズギルドの永続呪文を保存"""
     print("🏛️ エルダーズギルド永続呪文の保存開始")
     print("=" * 60)
-    
+
     project_root = Path(__file__).resolve().parent.parent
     kb_path = project_root / "knowledge_base"
-    
+
     # 永続化すべき呪文のリスト
     eternal_spells = [
         # エルダー魔法 (Power Level 10)
@@ -118,7 +122,7 @@ def eternalize_elder_spells():
             "magic_school": "elder_magic",
             "power_level": 10,
             "is_eternal": "true",
-            "tags": ["hierarchy", "grand-elder", "governance", "critical", "maru"]
+            "tags": ["hierarchy", "grand-elder", "governance", "critical", "maru"],
         },
         {
             "spell_name": "Claude_Elder_Identity_Core",
@@ -127,7 +131,7 @@ def eternalize_elder_spells():
             "magic_school": "elder_magic",
             "power_level": 10,
             "is_eternal": "true",
-            "tags": ["claude-elder", "identity", "responsibilities", "critical"]
+            "tags": ["claude-elder", "identity", "responsibilities", "critical"],
         },
         {
             "spell_name": "AI_Company_Unified_Standards_2025",
@@ -136,9 +140,8 @@ def eternalize_elder_spells():
             "magic_school": "elder_magic",
             "power_level": 10,
             "is_eternal": "true",
-            "tags": ["standards", "unified", "2025", "critical", "terminology"]
+            "tags": ["standards", "unified", "2025", "critical", "terminology"],
         },
-        
         # 開発魔法 (Power Level 10)
         {
             "spell_name": "TDD_Mandatory_Rule",
@@ -147,7 +150,7 @@ def eternalize_elder_spells():
             "magic_school": "development_magic",
             "power_level": 10,
             "is_eternal": "true",
-            "tags": ["tdd", "development", "mandatory", "quality", "testing"]
+            "tags": ["tdd", "development", "mandatory", "quality", "testing"],
         },
         {
             "spell_name": "Incident_Sage_Consultation_Rule",
@@ -180,7 +183,7 @@ def eternalize_elder_spells():
             "magic_school": "development_magic",
             "power_level": 9,
             "is_eternal": "true",
-            "tags": ["consultation", "incident-sage", "error-prevention", "mandatory"]
+            "tags": ["consultation", "incident-sage", "error-prevention", "mandatory"],
         },
         {
             "spell_name": "Quality_First_Hierarchy_Order",
@@ -211,9 +214,8 @@ def eternalize_elder_spells():
             "magic_school": "development_magic",
             "power_level": 10,
             "is_eternal": "true",
-            "tags": ["quality", "hierarchy", "philosophy", "grand-elder", "critical"]
+            "tags": ["quality", "hierarchy", "philosophy", "grand-elder", "critical"],
         },
-        
         # 賢者の知恵 (Power Level 9)
         {
             "spell_name": "Four_Sages_System_Definition",
@@ -250,7 +252,7 @@ Elders Guildの中核を成す4つの賢者による自律的管理システム�
             "magic_school": "sage_wisdom",
             "power_level": 9,
             "is_eternal": "true",
-            "tags": ["four-sages", "system-core", "coordination", "autonomous"]
+            "tags": ["four-sages", "system-core", "coordination", "autonomous"],
         },
         {
             "spell_name": "Four_Sages_Coordination_Magic",
@@ -259,9 +261,8 @@ Elders Guildの中核を成す4つの賢者による自律的管理システム�
             "magic_school": "sage_wisdom",
             "power_level": 9,
             "is_eternal": "true",
-            "tags": ["four-sages", "coordination", "magic", "collaboration"]
+            "tags": ["four-sages", "coordination", "magic", "collaboration"],
         },
-        
         # システム構造 (Power Level 8)
         {
             "spell_name": "Project_Structure_Definition",
@@ -291,7 +292,7 @@ Elders Guildの中核を成す4つの賢者による自律的管理システム�
             "magic_school": "system_architecture",
             "power_level": 8,
             "is_eternal": "true",
-            "tags": ["architecture", "structure", "components", "directories"]
+            "tags": ["architecture", "structure", "components", "directories"],
         },
         {
             "spell_name": "Elder_Servants_Organization",
@@ -300,7 +301,7 @@ Elders Guildの中核を成す4つの賢者による自律的管理システム�
             "magic_school": "system_architecture",
             "power_level": 8,
             "is_eternal": "true",
-            "tags": ["workers", "servants", "organization", "fantasy"]
+            "tags": ["workers", "servants", "organization", "fantasy"],
         },
         {
             "spell_name": "Fantasy_Classification_System",
@@ -309,68 +310,69 @@ Elders Guildの中核を成す4つの賢者による自律的管理システム�
             "magic_school": "system_architecture",
             "power_level": 8,
             "is_eternal": "true",
-            "tags": ["fantasy", "classification", "tasks", "incidents"]
-        }
+            "tags": ["fantasy", "classification", "tasks", "incidents"],
+        },
     ]
-    
+
     success_count = 0
     failed_count = 0
-    
+
     for spell in eternal_spells:
         print(f"\n📜 処理中: {spell['spell_name']}")
-        
+
         # コンテンツの取得
-        if 'content' not in spell:
-            if 'file_path' in spell and spell['file_path']:
-                content = load_file_content(spell['file_path'])
+        if "content" not in spell:
+            if "file_path" in spell and spell["file_path"]:
+                content = load_file_content(spell["file_path"])
                 if content:
-                    spell['content'] = content
+                    spell["content"] = content
                 else:
                     print(f"⚠️  ファイルが見つかりません: {spell['file_path']}")
                     # 代替コンテンツを使用
-                    spell['content'] = f"# {spell['spell_name']}\n\n[Content to be loaded from file: {spell['file_path']}]"
-        
+                    spell[
+                        "content"
+                    ] = f"# {spell['spell_name']}\n\n[Content to be loaded from file: {spell['file_path']}]"
+
         # PostgreSQLに保存
         if save_spell_to_postgresql(spell):
             success_count += 1
         else:
             failed_count += 1
-    
+
     # 最終統計
     print("\n" + "=" * 60)
     print("📊 永続化結果統計:")
     print(f"   ✅ 成功: {success_count} 呪文")
     print(f"   ❌ 失敗: {failed_count} 呪文")
-    
+
     # 永続化された呪文の確認
     print("\n🔍 永続化された呪文の確認中...")
     check_sql = """
     SELECT spell_name, magic_school, power_level, is_eternal,
            array_to_string(tags, ', ') as tags
-    FROM knowledge_grimoire 
+    FROM knowledge_grimoire
     WHERE is_eternal = true
     ORDER BY power_level DESC, magic_school, spell_name;
     """
-    
+
     check_result = subprocess.run(
-        ['psql', DB_URL, '-c', check_sql],
-        capture_output=True,
-        text=True
+        ["psql", DB_URL, "-c", check_sql], capture_output=True, text=True
     )
-    
+
     if check_result.returncode == 0:
         print("\n📚 現在の永続呪文一覧:")
         print(check_result.stdout)
-    
+
     return success_count, failed_count
+
 
 if __name__ == "__main__":
     print("🏛️ エルダーズギルド永続呪文システム")
     print("🔮 これらの呪文は永遠に保存され、Elders Guildの礎となります")
     print()
-    
+
     success, failed = eternalize_elder_spells()
-    
+
     if failed == 0:
         print("\n🎉 すべての永続呪文が正常に保存されました！")
         print("✨ エルダーズギルドの知恵は永遠に継承されます")

@@ -6,7 +6,7 @@ This report identifies test files in the Elders Guild project with import errors
 
 **Date**: 2025-01-08
 **Total Test Files Found**: ~508 files
-**Critical Issues Identified**: 
+**Critical Issues Identified**:
 - base_test import errors
 - Missing PROJECT_ROOT setup
 - Direct imports instead of mocked dependencies
@@ -72,7 +72,7 @@ This report identifies test files in the Elders Guild project with import errors
 
 ### 1. base_test Import Error
 **Issue**: `ModuleNotFoundError: No module named 'base_test'`
-**Affected Files**: 
+**Affected Files**:
 - `tests/test_task_worker.py`
 - `tests/test_integration.py`
 - `tests/test_enhanced_rag_manager.py`

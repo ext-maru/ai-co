@@ -43,7 +43,7 @@ init_monitoring() {
 # Execute monitoring cycle
 execute_monitoring_cycle() {
     log_info "🔮 先制的監視サイクル実行中..."
-    
+
     # Generate proactive insights
     log_info "💡 洞察生成開始"
     if python3 "$COMMAND" generate 2>&1 | tee -a "$LOG_FILE"; then
@@ -52,7 +52,7 @@ execute_monitoring_cycle() {
         log_error "❌ 洞察生成失敗"
         return 1
     fi
-    
+
     # Check system status
     log_info "📊 システム状況確認"
     if python3 "$COMMAND" status 2>&1 | tee -a "$LOG_FILE"; then
@@ -60,7 +60,7 @@ execute_monitoring_cycle() {
     else
         log_warning "⚠️ 状況確認で警告"
     fi
-    
+
     # Generate comprehensive report
     log_info "📋 包括レポート生成"
     if python3 "$COMMAND" report --type comprehensive 2>&1 | tee -a "$LOG_FILE"; then
@@ -68,25 +68,25 @@ execute_monitoring_cycle() {
     else
         log_warning "⚠️ レポート生成で警告"
     fi
-    
+
     log_info "🌟 監視サイクル完了"
 }
 
 # Daemon mode
 run_daemon() {
     log_info "🤖 デーモンモード開始 - 継続監視"
-    
+
     local cycle_count=0
     while true; do
         cycle_count=$((cycle_count + 1))
         log_info "🔄 監視サイクル #$cycle_count 開始"
-        
+
         if execute_monitoring_cycle; then
             log_info "✅ サイクル #$cycle_count 成功"
         else
             log_error "❌ サイクル #$cycle_count 失敗"
         fi
-        
+
         # Wait 30 minutes between cycles
         log_info "⏰ 次の監視まで30分待機..."
         sleep 1800
@@ -102,7 +102,7 @@ run_single() {
 # Main execution
 main() {
     init_monitoring
-    
+
     case "${1:-single}" in
         "daemon")
             run_daemon

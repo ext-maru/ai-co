@@ -29,7 +29,7 @@ if tmux has-session -t ai_company 2>/dev/null; then
     # PMWorkerのプロセスを停止
     pkill -f "pm_worker.py" || true
     sleep 2
-    
+
     # 新しいPMWorkerを起動
     tmux send-keys -t ai_company:1 "cd /home/aicompany/ai_co && source venv/bin/activate && python3 workers/pm_worker.py" C-m
     echo "✅ PMWorker再起動完了"

@@ -1,7 +1,7 @@
 # 🧙‍♂️ Elder Council Reporting Rules - エルダー評議会報告ルール提案書
 
-**日時**: 2025年7月7日 16:38  
-**提案者**: Claude Code  
+**日時**: 2025年7月7日 16:38
+**提案者**: Claude Code
 **承認要請**: ユーザー様への確認
 
 ---
@@ -28,26 +28,26 @@ metadata:
 content:
   summary: "報告の要約"
   details: "詳細な報告内容"
-  
+
 # 4賢者への自動振り分け情報
 sage_directives:
   knowledge_sage:
     - action: "store"
       data: "報告書全文"
       tags: ["scaling", "error", "health_monitor"]
-      
+
   incident_sage:
     - action: "create_incident"
       title: "WorkerHealthMonitor scaling error"
       category: "error"
       priority: "high"
-      
+
   task_sage:
     - action: "create_task"
       title: "Fix health monitor implementation"
       assignee: "incident_knights"
       deadline: "2025-07-08"
-      
+
   rag_sage:
     - action: "index"
       keywords: ["health_monitor", "scaling", "error"]
@@ -62,8 +62,8 @@ sage_directives:
 ```python
 class ElderCouncilReporter:
     """エルダー評議会統一報告システム"""
-    
-    def report_to_council(self, 
+
+    def report_to_council(self,
                          title: str,
                          content: str,
                          category: str,
@@ -73,31 +73,31 @@ class ElderCouncilReporter:
         評議会への報告 = 4賢者への自動反映
         """
         report_id = f"council_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{category}"
-        
+
         # 1. ナレッジ賢者への保存（必須）
         knowledge_path = self._save_to_knowledge_base(report_id, title, content)
-        
+
         # 2. 報告内容の自動解析
         if auto_actions is None:
             auto_actions = self._analyze_and_extract_actions(content)
-        
+
         # 3. インシデント賢者への反映
         if incidents := auto_actions.get('incidents', []):
             for incident in incidents:
                 self.incident_manager.create_incident(**incident)
-        
+
         # 4. タスク賢者への反映
         if tasks := auto_actions.get('tasks', []):
             for task in tasks:
                 self.task_manager.create_task(**task)
-        
+
         # 5. RAG賢者へのインデックス登録
         self.rag_manager.index_document(
             path=knowledge_path,
             tags=auto_actions.get('tags', []),
             keywords=self._extract_keywords(content)
         )
-        
+
         # 6. 反映結果のサマリー生成
         return self._generate_propagation_summary(report_id, auto_actions)
 ```

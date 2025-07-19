@@ -162,37 +162,37 @@ CREATE TABLE search_index (
 ```python
 class UnifiedRAGManager:
     """統合RAG検索エンジン"""
-    
+
     def __init__(self):
         self.vector_store = VectorStoreManager()
         self.entity_db = UnifiedEntityDatabase()
         self.search_preprocessor = SearchPreprocessor()
         self.context_assembler = ContextAssembler()
-    
+
     async def unified_search(self, query: str, filters: Dict = None) -> SearchResult:
         """統合検索機能"""
         # 1. クエリ前処理
         processed_query = self.search_preprocessor.process(query)
-        
+
         # 2. ベクトル検索
         vector_results = await self.vector_store.similarity_search(
-            processed_query.embedding, 
+            processed_query.embedding,
             filters=filters
         )
-        
+
         # 3. 関係性検索
         related_entities = await self.entity_db.find_related_entities(
-            vector_results, 
+            vector_results,
             relationship_types=['derived_from', 'related_to']
         )
-        
+
         # 4. コンテキスト組み立て
         context = self.context_assembler.assemble(
-            vector_results, 
+            vector_results,
             related_entities,
             processed_query.intent
         )
-        
+
         return SearchResult(
             primary_results=vector_results,
             related_entities=related_entities,
@@ -260,7 +260,7 @@ POST   /api/v1/incidents/{id}/learn        # 学習データ抽出
 ```python
 class UnifiedAPIAuth:
     """統合API認証システム"""
-    
+
     def __init__(self):
         self.sage_permissions = {
             'knowledge_sage': ['knowledge:*', 'search:*'],
@@ -268,7 +268,7 @@ class UnifiedAPIAuth:
             'crisis_sage': ['incidents:*', 'alerts:*'],
             'search_mystic': ['search:*', 'relationships:*']
         }
-    
+
     def authorize_sage(self, sage_type: str, action: str) -> bool:
         """4賢者システムの認可チェック"""
         permissions = self.sage_permissions.get(sage_type, [])
@@ -284,21 +284,21 @@ class UnifiedAPIAuth:
 ```python
 class IncidentToKnowledgeConverter:
     """インシデントから知識への自動変換"""
-    
+
     async def convert_incident(self, incident: IncidentEntity) -> KnowledgeEntity:
         """インシデントを知識エンティティに変換"""
-        
+
         # 1. 解決パターン抽出
         resolution_pattern = self._extract_resolution_pattern(incident)
-        
+
         # 2. 一般化可能性評価
         generalizability = self._evaluate_generalizability(incident)
-        
+
         # 3. 知識品質スコア算出
         quality_score = self._calculate_knowledge_quality(
             incident, resolution_pattern, generalizability
         )
-        
+
         if quality_score > 0.7:  # 閾値以上で知識化
             knowledge = KnowledgeEntity(
                 title=f"解決策: {incident.title}",
@@ -310,12 +310,12 @@ class IncidentToKnowledgeConverter:
                     'verification_status': 'pending'
                 }
             )
-            
+
             # 関係性設定
             knowledge.relationships['derived_from'] = incident.id
-            
+
             return knowledge
-        
+
         return None
 ```
 
@@ -324,7 +324,7 @@ class IncidentToKnowledgeConverter:
 ```python
 class KnowledgeEffectivenessTracker:
     """知識の有効性追跡システム"""
-    
+
     def track_usage(self, knowledge_id: str, context: Dict):
         """知識使用時の追跡"""
         self.usage_db.record_usage(
@@ -332,16 +332,16 @@ class KnowledgeEffectivenessTracker:
             context=context,
             timestamp=datetime.now()
         )
-    
+
     def update_effectiveness(self, knowledge_id: str, outcome: bool):
         """知識の有効性更新"""
         current_rating = self.get_effectiveness_rating(knowledge_id)
         new_rating = self._calculate_new_rating(current_rating, outcome)
-        
+
         self.entity_db.update_knowledge_effectiveness(
             knowledge_id, new_rating
         )
-        
+
         # 低有効性知識の自動非推奨化
         if new_rating < 0.3:
             self._deprecate_knowledge(knowledge_id)
@@ -467,7 +467,7 @@ class KnowledgeEffectivenessTracker:
 
 ---
 
-**最終更新**: 2025年7月6日  
-**設計者**: Claude Code Assistant  
-**承認者**: Elders Guild Elders Council  
-**バージョン**: 1.0  
+**最終更新**: 2025年7月6日
+**設計者**: Claude Code Assistant
+**承認者**: Elders Guild Elders Council
+**バージョン**: 1.0

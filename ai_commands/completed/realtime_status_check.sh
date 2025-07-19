@@ -11,7 +11,7 @@ echo "Slack Polling Worker:"
 if pgrep -f "slack_polling_worker" > /dev/null; then
     PID=$(pgrep -f "slack_polling_worker")
     echo "✅ 動作中 (PID: $PID)"
-    
+
     # プロセスの詳細
     ps aux | grep $PID | grep -v grep | awk '{print "  CPU: "$3"%, MEM: "$4"%, 起動時刻: "$9}'
 else
@@ -26,7 +26,7 @@ if [ -f logs/slack_polling_worker.log ]; then
     LAST_MOD=$(stat -c %y logs/slack_polling_worker.log | cut -d'.' -f1)
     echo "  サイズ: $SIZE bytes"
     echo "  最終更新: $LAST_MOD"
-    
+
     # 最新10行
     echo ""
     echo "最新ログ（10行）:"
@@ -41,7 +41,7 @@ echo "エラーチェック:"
 if [ -f logs/slack_polling_worker.log ]; then
     ERROR_COUNT=$(tail -100 logs/slack_polling_worker.log | grep -ci error || echo "0")
     echo "  最新100行のエラー数: $ERROR_COUNT"
-    
+
     if [ $ERROR_COUNT -gt 0 ]; then
         echo "  最新のエラー:"
         tail -100 logs/slack_polling_worker.log | grep -i error | tail -3

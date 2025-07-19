@@ -45,7 +45,7 @@ total_count=${#components[@]}
 
 for component in "${components[@]}"; do
     IFS=':' read -r name file pattern <<< "$component"
-    
+
     if [ -z "$pattern" ]; then
         # ファイル存在チェック
         if [ -f "$file" ]; then

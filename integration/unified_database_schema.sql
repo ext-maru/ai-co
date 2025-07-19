@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS unified_entities (
     search_metadata JSON NOT NULL DEFAULT '{}',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
+
     -- 型別特殊フィールド
     knowledge_data JSON DEFAULT NULL,  -- 知識特有データ
     incident_data JSON DEFAULT NULL,   -- インシデント特有データ
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS entity_relationships (
     metadata JSON DEFAULT '{}',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     created_by TEXT DEFAULT 'system',
-    
+
     UNIQUE(source_id, target_id, relationship_type),
     FOREIGN KEY (source_id) REFERENCES unified_entities(id) ON DELETE CASCADE,
     FOREIGN KEY (target_id) REFERENCES unified_entities(id) ON DELETE CASCADE
@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS search_index (
     indexed_content TEXT,          -- 検索用正規化コンテンツ
     embedding_model TEXT DEFAULT 'text-embedding-ada-002',
     indexed_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
+
     FOREIGN KEY (entity_id) REFERENCES unified_entities(id) ON DELETE CASCADE
 );
 
@@ -98,7 +98,7 @@ CREATE TABLE IF NOT EXISTS entity_usage_stats (
     effectiveness_score REAL,     -- 効果スコア (0.0-1.0)
     used_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     used_by TEXT,                  -- 使用者/システム
-    
+
     FOREIGN KEY (entity_id) REFERENCES unified_entities(id) ON DELETE CASCADE
 );
 
@@ -124,7 +124,7 @@ CREATE TABLE IF NOT EXISTS learning_events (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     verified_at DATETIME,
     verified_by TEXT,
-    
+
     FOREIGN KEY (source_entity_id) REFERENCES unified_entities(id),
     FOREIGN KEY (target_entity_id) REFERENCES unified_entities(id)
 );
@@ -161,7 +161,7 @@ INSERT OR IGNORE INTO system_metadata (key, value, description) VALUES
 
 -- 知識エンティティビュー
 CREATE VIEW IF NOT EXISTS knowledge_entities AS
-SELECT 
+SELECT
     id,
     title,
     content,
@@ -173,12 +173,12 @@ SELECT
     json_extract(knowledge_data, '$.effectiveness_rating') as effectiveness_rating,
     created_at,
     updated_at
-FROM unified_entities 
+FROM unified_entities
 WHERE type = 'knowledge';
 
 -- インシデントエンティティビュー
 CREATE VIEW IF NOT EXISTS incident_entities AS
-SELECT 
+SELECT
     id,
     title,
     content,
@@ -190,12 +190,12 @@ SELECT
     json_extract(incident_data, '$.root_cause') as root_cause,
     created_at,
     updated_at
-FROM unified_entities 
+FROM unified_entities
 WHERE type = 'incident';
 
 -- タスクエンティティビュー
 CREATE VIEW IF NOT EXISTS task_entities AS
-SELECT 
+SELECT
     id,
     title,
     content,
@@ -207,26 +207,26 @@ SELECT
     json_extract(task_data, '$.completion_percentage') as completion_percentage,
     created_at,
     updated_at
-FROM unified_entities 
+FROM unified_entities
 WHERE type = 'task';
 
 -- 効果的な知識ビュー（高評価・高使用率）
 CREATE VIEW IF NOT EXISTS effective_knowledge AS
-SELECT 
+SELECT
     ke.*,
     COALESCE(avg_stats.avg_effectiveness, 0.0) as avg_effectiveness,
     COALESCE(usage_stats.usage_count, 0) as total_usage_count
 FROM knowledge_entities ke
 LEFT JOIN (
-    SELECT 
+    SELECT
         entity_id,
         AVG(effectiveness_score) as avg_effectiveness
-    FROM entity_usage_stats 
+    FROM entity_usage_stats
     WHERE effectiveness_score IS NOT NULL
     GROUP BY entity_id
 ) avg_stats ON ke.id = avg_stats.entity_id
 LEFT JOIN (
-    SELECT 
+    SELECT
         entity_id,
         COUNT(*) as usage_count
     FROM entity_usage_stats
@@ -243,8 +243,8 @@ ORDER BY avg_effectiveness DESC, total_usage_count DESC;
 CREATE TRIGGER IF NOT EXISTS update_entity_timestamp
     AFTER UPDATE ON unified_entities
 BEGIN
-    UPDATE unified_entities 
-    SET updated_at = CURRENT_TIMESTAMP 
+    UPDATE unified_entities
+    SET updated_at = CURRENT_TIMESTAMP
     WHERE id = NEW.id;
 END;
 
@@ -252,8 +252,8 @@ END;
 CREATE TRIGGER IF NOT EXISTS auto_update_search_index
     AFTER UPDATE OF content, title ON unified_entities
 BEGIN
-    UPDATE search_index 
-    SET 
+    UPDATE search_index
+    SET
         keywords = lower(NEW.title || ' ' || COALESCE(NEW.content, '')),
         indexed_content = NEW.title || ' ' || COALESCE(NEW.content, ''),
         indexed_at = CURRENT_TIMESTAMP
@@ -294,7 +294,7 @@ CREATE TABLE IF NOT EXISTS legacy_mapping (
     unified_entity_id TEXT,
     mapping_notes TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
+
     PRIMARY KEY (legacy_id, legacy_table)
 );
 
@@ -304,7 +304,7 @@ CREATE TABLE IF NOT EXISTS legacy_mapping (
 
 -- 日別エンティティ作成統計
 CREATE VIEW IF NOT EXISTS daily_entity_stats AS
-SELECT 
+SELECT
     DATE(created_at) as date,
     type,
     COUNT(*) as count
@@ -314,7 +314,7 @@ ORDER BY date DESC;
 
 -- 関係性統計
 CREATE VIEW IF NOT EXISTS relationship_stats AS
-SELECT 
+SELECT
     relationship_type,
     COUNT(*) as count,
     AVG(weight) as avg_weight
@@ -324,7 +324,7 @@ ORDER BY count DESC;
 
 -- 学習イベント統計
 CREATE VIEW IF NOT EXISTS learning_stats AS
-SELECT 
+SELECT
     event_type,
     COUNT(*) as total_events,
     COUNT(CASE WHEN applied = TRUE THEN 1 END) as applied_events,
@@ -340,7 +340,7 @@ GROUP BY event_type;
 -- システムエンティティの作成
 INSERT OR IGNORE INTO unified_entities (
     id, type, title, content, metadata
-) VALUES 
+) VALUES
 (
     'system-bootstrap-001',
     'system',
@@ -351,7 +351,7 @@ INSERT OR IGNORE INTO unified_entities (
 
 -- サンプル関係性タイプの定義（設定として）
 INSERT OR IGNORE INTO system_metadata (key, value, description) VALUES
-('relationship_types', 
+('relationship_types',
  json('["derived_from", "related_to", "depends_on", "resolves", "causes", "prevents", "improves", "replaces"]'),
  '利用可能な関係性タイプ一覧');
 
@@ -397,14 +397,14 @@ ANALYZE;
 -- スキーマバージョン記録
 -- ============================================
 
-UPDATE system_metadata 
-SET value = '"1.0"', updated_at = CURRENT_TIMESTAMP 
+UPDATE system_metadata
+SET value = '"1.0"', updated_at = CURRENT_TIMESTAMP
 WHERE key = 'schema_version';
 
-UPDATE system_metadata 
-SET value = '"2025-07-06T' || time('now') || '"', updated_at = CURRENT_TIMESTAMP 
+UPDATE system_metadata
+SET value = '"2025-07-06T' || time('now') || '"', updated_at = CURRENT_TIMESTAMP
 WHERE key = 'last_migration';
 
 -- 完了ログ
-INSERT INTO migration_log (migration_type, source_file, status) 
+INSERT INTO migration_log (migration_type, source_file, status)
 VALUES ('schema_creation', 'unified_database_schema.sql', 'completed');

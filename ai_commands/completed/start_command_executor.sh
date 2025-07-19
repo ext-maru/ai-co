@@ -10,15 +10,15 @@ if ps aux | grep -E 'command_executor' | grep -v grep > /dev/null; then
     ps aux | grep -E 'command_executor' | grep -v grep
 else
     echo "🚀 Command Executorを起動します..."
-    
+
     # 仮想環境をアクティベート
     source venv/bin/activate
-    
+
     # バックグラウンドで起動
     nohup python3 workers/command_executor_worker.py > logs/command_executor.log 2>&1 &
-    
+
     sleep 2
-    
+
     # 起動確認
     if ps aux | grep -E 'command_executor' | grep -v grep > /dev/null; then
         echo "✅ Command Executorが正常に起動しました"

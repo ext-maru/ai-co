@@ -11,6 +11,4 @@ PROJECT ELDERZAN SecurityLayer Monitoring
 
 from .audit_logger import ComplianceAuditLogger
 
-__all__ = [
-    "ComplianceAuditLogger"
-]
+__all__ = ["ComplianceAuditLogger"]

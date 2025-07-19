@@ -29,7 +29,7 @@ export class CommandProvider implements vscode.TreeDataProvider<CommandItem> {
         if (!element) {
             // Return categories
             const categories = [...new Set(this.commands.map(cmd => cmd.category))];
-            return categories.map(category => 
+            return categories.map(category =>
                 new CommandItem(category, '', vscode.TreeItemCollapsibleState.Expanded, true)
             );
         }
@@ -75,7 +75,7 @@ export class CommandItem extends vscode.TreeItem {
         super(label, collapsibleState);
         this.tooltip = description;
         this.description = description;
-        
+
         if (isCategory) {
             this.iconPath = new vscode.ThemeIcon('folder');
         } else {

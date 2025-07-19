@@ -1,8 +1,8 @@
 # 🏛️ エルダー会議召集要請
 
-**会議ID**: council_20250707_014356_system_evolution_knights  
-**緊急度**: HIGH  
-**期限**: 2025年07月14日 01:43  
+**会議ID**: council_20250707_014356_system_evolution_knights
+**緊急度**: HIGH
+**期限**: 2025年07月14日 01:43
 **作成日時**: 2025年07月07日 01:43:56
 
 ---
@@ -96,5 +96,5 @@ Extremely low test coverage poses significant quality risks
 
 **エルダー会議の開催をお待ちしています。**
 
-**召集システム**: Elder Council Summoner  
+**召集システム**: Elder Council Summoner
 **文書ID**: council_20250707_014356_system_evolution_knights

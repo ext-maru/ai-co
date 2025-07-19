@@ -8,7 +8,7 @@
 ### Phase 1: クリーンアップ（完了）
 #### 削除された重複ファイル
 - **PMワーカー**: 4つ → 1つ (enhanced_pm_worker.py)
-- **TaskWorker**: 4つ → 1つ (enhanced_task_worker.py)  
+- **TaskWorker**: 4つ → 1つ (enhanced_task_worker.py)
 - **WorkerController/Monitor**: 重複削除
 - **TaskHistoryDB**: 重複削除
 - **_archived/**: 104KB古いファイル削除
@@ -36,7 +36,7 @@
 **新しい統一規則**:
 ```
 - BaseWorker標準: ai_{worker_type} → ai_results
-- タスク系: ai_tasks → ai_pm  
+- タスク系: ai_tasks → ai_pm
 - 専門ワーカー: ai_{worker_type} → ai_results
 - 応答用: ai_{worker_type}_response
 ```
@@ -48,7 +48,7 @@ task_worker:
   input: ai_tasks
   output: ai_pm
 
-pm_worker: 
+pm_worker:
   input: ai_pm
   output: ai_results
 
@@ -60,7 +60,7 @@ dialog_worker:
 email_worker:
   input: ai_email
   output: ai_results
-  
+
 command_worker:
   input: ai_command
   output: ai_results

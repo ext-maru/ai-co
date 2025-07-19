@@ -1,8 +1,8 @@
 # 🏛️ エルダー会議召集要請
 
-**会議ID**: council_20250707_021501_resource_allocation_conflict  
-**緊急度**: HIGH  
-**期限**: 2025年07月14日 02:15  
+**会議ID**: council_20250707_021501_resource_allocation_conflict
+**緊急度**: HIGH
+**期限**: 2025年07月14日 02:15
 **作成日時**: 2025年07月07日 02:15:01
 
 ---
@@ -88,5 +88,5 @@ Majority of workers are failing, critical intervention needed; Extremely low tes
 
 **エルダー会議の開催をお待ちしています。**
 
-**召集システム**: Elder Council Summoner  
+**召集システム**: Elder Council Summoner
 **文書ID**: council_20250707_021501_resource_allocation_conflict

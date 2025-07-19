@@ -5,34 +5,39 @@ Quick Test Fix V2 - RAGウィザーズ緊急修復ツール
 """
 
 import os
+import re
 import sys
 from pathlib import Path
-import re
+
 
 class QuickTestFixV2:
     """緊急テスト修復ツール"""
-    
+
     def fix_pytest_import(self, content: str) -> str:
         """pytest importエラーを修正"""
         # すでにpytestがインポートされているか確認
-        if 'import pytest' not in content:
+        if "import pytest" not in content:
             # sys.path.insert の後にpytestインポートを追加
-            insert_pos = content.find('sys.path.insert(0, str(PROJECT_ROOT))')
+            insert_pos = content.find("sys.path.insert(0, str(PROJECT_ROOT))")
             if insert_pos != -1:
-                insert_pos = content.find('\n', insert_pos) + 1
-                content = content[:insert_pos] + '\nimport pytest\n' + content[insert_pos:]
+                insert_pos = content.find("\n", insert_pos) + 1
+                content = (
+                    content[:insert_pos] + "\nimport pytest\n" + content[insert_pos:]
+                )
             else:
                 # 最初のimport文の後に追加
-                import_end = content.find('\n\n')
+                import_end = content.find("\n\n")
                 if import_end != -1:
-                    content = content[:import_end] + '\nimport pytest' + content[import_end:]
-        
+                    content = (
+                        content[:import_end] + "\nimport pytest" + content[import_end:]
+                    )
+
         return content
-    
+
     def fix_missing_classes(self, content: str, module_name: str) -> str:
         """欠落しているクラス定義を修正"""
         # worker_health_monitorの特殊ケース
-        if module_name == 'worker_health_monitor':
+        if module_name == "worker_health_monitor":
             # インポート文を修正
             old_import = """from libs.worker_health_monitor import (
     WorkerHealthMonitor,
@@ -68,11 +73,11 @@ class WorkerMetrics:
     cpu_percent: float
     status: str
     timestamp: datetime
-    
+
     @property
     def is_healthy(self) -> bool:
-        return (self.status == "running" and 
-                self.memory_mb < 1000 and 
+        return (self.status == "running" and
+                self.memory_mb < 1000 and
                 self.cpu_percent < 80)
 
 @dataclass
@@ -81,14 +86,14 @@ class ScalingDecision:
     current_workers: int
     target_workers: int
     reason: str"""
-            
+
             content = content.replace(old_import, new_import)
-        
+
         # elder_council_summonerの特殊ケース
-        elif module_name == 'elder_council_summoner':
+        elif module_name == "elder_council_summoner":
             old_import = """from libs.elder_council_summoner import (
-    ElderCouncilSummoner, 
-    UrgencyLevel, 
+    ElderCouncilSummoner,
+    UrgencyLevel,
     TriggerCategory,
     CouncilTrigger,
     SystemEvolutionMetrics
@@ -138,64 +143,66 @@ class SystemEvolutionMetrics:
     api_success_rate: float
     knowledge_base_growth: float
     error_rate: float"""
-            
+
             content = content.replace(old_import, new_import)
-        
+
         return content
-    
+
     def fix_test_file(self, file_path: str):
         """テストファイルを修正"""
         try:
-            with open(file_path, 'r') as f:
+            with open(file_path, "r") as f:
                 content = f.read()
-            
+
             # モジュール名を取得
-            module_name = Path(file_path).stem.replace('test_', '')
-            
+            module_name = Path(file_path).stem.replace("test_", "")
+
             # pytest importの修正
             content = self.fix_pytest_import(content)
-            
+
             # 欠落クラスの修正
             content = self.fix_missing_classes(content, module_name)
-            
+
             # ファイルを書き戻す
-            with open(file_path, 'w') as f:
+            with open(file_path, "w") as f:
                 f.write(content)
-            
+
             print(f"✅ 修正完了: {file_path}")
             return True
-            
+
         except Exception as e:
             print(f"❌ エラー: {file_path} - {e}")
             return False
 
+
 def main():
     """メイン実行関数"""
     fixer = QuickTestFixV2()
-    
+
     # 修正対象ファイル
     test_files = [
-        'tests/unit/test_task_sender.py',
-        'tests/unit/test_elder_council_summoner.py',
-        'tests/unit/test_worker_health_monitor.py',
-        'tests/unit/commands/test_ai_send.py',
-        'tests/unit/commands/test_ai_monitor.py',
-        'tests/unit/libs/test_rabbit_manager.py',
-        'tests/unit/libs/test_queue_manager.py',
-        'tests/unit/libs/test_error_intelligence_manager.py',
-        'tests/unit/workers/test_pm_worker.py',
-        'tests/unit/workers/test_task_worker.py'
+        "tests/unit/test_task_sender.py",
+        "tests/unit/test_elder_council_summoner.py",
+        "tests/unit/test_worker_health_monitor.py",
+        "tests/unit/commands/test_ai_send.py",
+        "tests/unit/commands/test_ai_monitor.py",
+        "tests/unit/libs/test_rabbit_manager.py",
+        "tests/unit/libs/test_queue_manager.py",
+        "tests/unit/libs/test_error_intelligence_manager.py",
+        "tests/unit/workers/test_pm_worker.py",
+        "tests/unit/workers/test_task_worker.py",
     ]
-    
+
     fixed_count = 0
     for test_file in test_files:
         test_path = Path(test_file)
         if test_path.exists():
             if fixer.fix_test_file(str(test_path)):
                 fixed_count += 1
-    
+
     print(f"\n🎯 修正完了: {fixed_count}/{len(test_files)} ファイル")
     print("次のステップ: pytest tests/unit/test_task_sender.py -v")
+
 
 if __name__ == "__main__":
     main()

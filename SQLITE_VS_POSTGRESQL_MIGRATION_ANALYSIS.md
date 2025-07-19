@@ -203,7 +203,7 @@ CREATE TABLE conversations (
 );
 
 -- 2. 全文検索設定
-CREATE INDEX idx_conversations_fts ON conversations 
+CREATE INDEX idx_conversations_fts ON conversations
 USING gin(to_tsvector('english', user_message || ' ' || ai_response));
 ```
 
@@ -212,7 +212,7 @@ USING gin(to_tsvector('english', user_message || ' ' || ai_response));
 #### 🔄 **統合クエリ例**
 ```sql
 -- タスクと会話の統合分析
-SELECT 
+SELECT
     t.title,
     c.user_message,
     t.status,
@@ -223,7 +223,7 @@ WHERE t.status = 'in_progress'
 ORDER BY similarity;
 
 -- 4賢者の活動統合分析
-SELECT 
+SELECT
     assigned_sage,
     COUNT(*) as task_count,
     AVG(quality_score) as avg_quality
@@ -295,7 +295,7 @@ keep_sqlite: # SQLite維持推奨
 
 ---
 
-**分析実行**: Claude Elder  
-**推奨**: 段階的PostgreSQL統一移行  
-**開始推奨**: タスクトラッカーから即座開始  
+**分析実行**: Claude Elder
+**推奨**: 段階的PostgreSQL統一移行
+**開始推奨**: タスクトラッカーから即座開始
 **完了目標**: 6ヶ月以内に主要システム統合完了

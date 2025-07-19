@@ -1,7 +1,7 @@
 /**
  * Dashboard Component Tests
  * 🧙‍♂️ Four Sages評議会決定 - Phase 3実装
- * 
+ *
  * テスト対象: Dashboard.tsx (メインダッシュボード)
  * テストフレームワーク: React Testing Library + Jest
  * 実装日: 2025年7月10日
@@ -43,21 +43,21 @@ jest.mock('@/components/ui/Card', () => ({
 }));
 
 jest.mock('@/components/ui/Badge', () => ({
-  Badge: ({ children, variant, size, pulse, ...props }: any) => 
+  Badge: ({ children, variant, size, pulse, ...props }: any) =>
     <span {...props} data-testid="badge" data-variant={variant} data-size={size} data-pulse={pulse}>
       {children}
     </span>,
 }));
 
 jest.mock('@/components/ui/Button', () => ({
-  Button: ({ children, size, variant, onClick, disabled, ...props }: any) => 
+  Button: ({ children, size, variant, onClick, disabled, ...props }: any) =>
     <button {...props} data-testid="button" data-size={size} data-variant={variant} onClick={onClick} disabled={disabled}>
       {children}
     </button>,
 }));
 
 jest.mock('@/components/ui/Progress', () => ({
-  Progress: ({ value, variant, className, ...props }: any) => 
+  Progress: ({ value, variant, className, ...props }: any) =>
     <div {...props} data-testid="progress" data-value={value} data-variant={variant} className={className}>
       Progress: {value}%
     </div>,
@@ -65,8 +65,8 @@ jest.mock('@/components/ui/Progress', () => ({
 
 jest.mock('@/components/sages/SageCard', () => ({
   SageCard: ({ sage, isSelected, onSelect }: any) => (
-    <div 
-      data-testid="sage-card" 
+    <div
+      data-testid="sage-card"
       data-sage-type={sage.type}
       data-selected={isSelected}
       onClick={onSelect}
@@ -153,7 +153,7 @@ describe('Dashboard', () => {
   describe('基本レンダリング', () => {
     test('ダッシュボードが正しく表示される', () => {
       render(<Dashboard />);
-      
+
       expect(screen.getByText('System Status')).toBeInTheDocument();
       expect(screen.getByText('Council')).toBeInTheDocument();
       expect(screen.getByText('Messages')).toBeInTheDocument();
@@ -162,14 +162,14 @@ describe('Dashboard', () => {
 
     test('Four Sages セクションが表示される', () => {
       render(<Dashboard />);
-      
+
       expect(screen.getByText('Four Sages')).toBeInTheDocument();
       expect(screen.getByText('Auto-sync Active')).toBeInTheDocument();
     });
 
     test('Recent Activity セクションが表示される', () => {
       render(<Dashboard />);
-      
+
       expect(screen.getByText('Recent Activity')).toBeInTheDocument();
       expect(screen.getByText('Latest updates from the sages')).toBeInTheDocument();
     });
@@ -181,9 +181,9 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         culturalMode: true,
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       expect(screen.getByText('稼働状況')).toBeInTheDocument();
       expect(screen.getByText('評議会')).toBeInTheDocument();
       expect(screen.getByText('メッセージ')).toBeInTheDocument();
@@ -197,9 +197,9 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         culturalMode: false,
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       expect(screen.getByText('System Status')).toBeInTheDocument();
       expect(screen.getByText('Council')).toBeInTheDocument();
       expect(screen.getByText('Messages')).toBeInTheDocument();
@@ -212,14 +212,14 @@ describe('Dashboard', () => {
   describe('システムステータス', () => {
     test('稼働中賢者数が正しく表示される', () => {
       render(<Dashboard />);
-      
+
       expect(screen.getByText('3/4')).toBeInTheDocument(); // 3 active sages
       expect(screen.getByText('Sages Active')).toBeInTheDocument();
     });
 
     test('進捗バーが正しく計算される', () => {
       render(<Dashboard />);
-      
+
       const progress = screen.getAllByTestId('progress')[0];
       expect(progress).toHaveAttribute('data-value', '75'); // 3/4 * 100
     });
@@ -234,9 +234,9 @@ describe('Dashboard', () => {
           createMockSage('rag'),
         ]),
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       expect(screen.getByText('4/4')).toBeInTheDocument();
       const progress = screen.getAllByTestId('progress')[0];
       expect(progress).toHaveAttribute('data-value', '100');
@@ -246,7 +246,7 @@ describe('Dashboard', () => {
   describe('評議会ステータス', () => {
     test('評議会待機中の表示', () => {
       render(<Dashboard />);
-      
+
       expect(screen.getByText('Standby')).toBeInTheDocument();
       const badge = screen.getAllByTestId('badge').find(b => b.textContent === 'Standby');
       expect(badge).toHaveAttribute('data-variant', 'secondary');
@@ -257,9 +257,9 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         getCouncilStatus: jest.fn(() => 'active'),
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       expect(screen.getByText('In Session')).toBeInTheDocument();
       const badge = screen.getAllByTestId('badge').find(b => b.textContent === 'In Session');
       expect(badge).toHaveAttribute('data-variant', 'elder');
@@ -272,12 +272,12 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         startCouncilSession: mockStartCouncilSession,
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       const startButton = screen.getByText('Start Council');
       fireEvent.click(startButton);
-      
+
       expect(mockStartCouncilSession).toHaveBeenCalledWith({
         type: 'regular',
         participants: expect.any(Array),
@@ -291,9 +291,9 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         getCouncilStatus: jest.fn(() => 'active'),
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       const startButton = screen.getByText('Start Council');
       expect(startButton).toBeDisabled();
     });
@@ -302,19 +302,19 @@ describe('Dashboard', () => {
   describe('メッセージ表示', () => {
     test('メッセージ総数が表示される', () => {
       render(<Dashboard />);
-      
+
       expect(screen.getByText('3')).toBeInTheDocument(); // 3 messages
       expect(screen.getByText('Unread Messages')).toBeInTheDocument();
     });
 
     test('賢者別メッセージ数バッジが表示される', () => {
       render(<Dashboard />);
-      
+
       const badges = screen.getAllByTestId('badge');
       const knowledgeBadge = badges.find(b => b.getAttribute('data-variant') === 'knowledge');
       const incidentBadge = badges.find(b => b.getAttribute('data-variant') === 'incident');
       const taskBadge = badges.find(b => b.getAttribute('data-variant') === 'task');
-      
+
       expect(knowledgeBadge).toHaveTextContent('1');
       expect(incidentBadge).toHaveTextContent('1');
       expect(taskBadge).toHaveTextContent('1');
@@ -325,12 +325,12 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         messages: [mockMessages[0]], // knowledge のみ
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       const badges = screen.getAllByTestId('badge');
       const ragBadge = badges.find(b => b.getAttribute('data-variant') === 'rag');
-      
+
       expect(ragBadge).toBeFalsy();
     });
   });
@@ -338,17 +338,17 @@ describe('Dashboard', () => {
   describe('システム効率', () => {
     test('効率値が表示される', () => {
       render(<Dashboard />);
-      
+
       expect(screen.getByText('92%')).toBeInTheDocument();
       expect(screen.getByText('Optimized')).toBeInTheDocument();
     });
 
     test('効率プログレスバーが正しく設定される', () => {
       render(<Dashboard />);
-      
+
       const progressBars = screen.getAllByTestId('progress');
       const efficiencyProgress = progressBars.find(p => p.getAttribute('data-variant') === 'task');
-      
+
       expect(efficiencyProgress).toHaveAttribute('data-value', '92');
     });
   });
@@ -356,10 +356,10 @@ describe('Dashboard', () => {
   describe('Four Sages表示', () => {
     test('4つの賢者カードが表示される', () => {
       render(<Dashboard />);
-      
+
       const sageCards = screen.getAllByTestId('sage-card');
       expect(sageCards).toHaveLength(4);
-      
+
       expect(sageCards[0]).toHaveAttribute('data-sage-type', 'knowledge');
       expect(sageCards[1]).toHaveAttribute('data-sage-type', 'task');
       expect(sageCards[2]).toHaveAttribute('data-sage-type', 'incident');
@@ -371,9 +371,9 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         selectedSage: 'knowledge',
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       const sageCards = screen.getAllByTestId('sage-card');
       expect(sageCards[0]).toHaveAttribute('data-selected', 'true');
       expect(sageCards[1]).toHaveAttribute('data-selected', 'false');
@@ -385,12 +385,12 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         selectSage: mockSelectSage,
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       const sageCards = screen.getAllByTestId('sage-card');
       fireEvent.click(sageCards[0]);
-      
+
       expect(mockSelectSage).toHaveBeenCalledWith('knowledge');
     });
   });
@@ -398,7 +398,7 @@ describe('Dashboard', () => {
   describe('Recent Activity', () => {
     test('最新5件のメッセージが表示される', () => {
       render(<Dashboard />);
-      
+
       expect(screen.getByText('Knowledge base updated')).toBeInTheDocument();
       expect(screen.getByText('Critical incident resolved')).toBeInTheDocument();
       expect(screen.getByText('Task optimization completed')).toBeInTheDocument();
@@ -406,7 +406,7 @@ describe('Dashboard', () => {
 
     test('メッセージの時刻が正しく表示される', () => {
       render(<Dashboard />);
-      
+
       // toLocaleTimeString のモック
       const timeString = new Date('2025-01-01T10:00:00Z').toLocaleTimeString();
       expect(screen.getByText(timeString)).toBeInTheDocument();
@@ -414,12 +414,12 @@ describe('Dashboard', () => {
 
     test('メッセージの優先度バッジが表示される', () => {
       render(<Dashboard />);
-      
+
       const badges = screen.getAllByTestId('badge');
       const urgentBadge = badges.find(b => b.textContent === 'urgent');
       const highBadge = badges.find(b => b.textContent === 'high');
       const mediumBadge = badges.find(b => b.textContent === 'medium');
-      
+
       expect(urgentBadge).toHaveAttribute('data-variant', 'destructive');
       expect(highBadge).toHaveAttribute('data-variant', 'incident');
       expect(mediumBadge).toHaveAttribute('data-variant', 'task');
@@ -433,14 +433,14 @@ describe('Dashboard', () => {
         timestamp: new Date().toISOString(),
         priority: 'medium' as const,
       }));
-      
+
       mockUseSageStore.mockReturnValue({
         ...defaultMockStore,
         messages: manyMessages,
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       expect(screen.getByText('Message 0')).toBeInTheDocument();
       expect(screen.getByText('Message 4')).toBeInTheDocument();
       expect(screen.queryByText('Message 5')).not.toBeInTheDocument();
@@ -450,17 +450,17 @@ describe('Dashboard', () => {
   describe('レスポンシブデザイン', () => {
     test('グリッドレイアウトクラスが適用される', () => {
       render(<Dashboard />);
-      
+
       const statusGrid = document.querySelector('.md\\:grid-cols-4');
       const sageGrid = document.querySelector('.md\\:grid-cols-2.lg\\:grid-cols-4');
-      
+
       expect(statusGrid).toBeInTheDocument();
       expect(sageGrid).toBeInTheDocument();
     });
 
     test('コンテナクラスが適用される', () => {
       render(<Dashboard />);
-      
+
       const container = document.querySelector('.container.mx-auto');
       expect(container).toBeInTheDocument();
     });
@@ -469,7 +469,7 @@ describe('Dashboard', () => {
   describe('アクセシビリティ', () => {
     test('ボタンがフォーカス可能', () => {
       render(<Dashboard />);
-      
+
       const startButton = screen.getByText('Start Council');
       startButton.focus();
       expect(document.activeElement).toBe(startButton);
@@ -477,7 +477,7 @@ describe('Dashboard', () => {
 
     test('適切なheading構造', () => {
       render(<Dashboard />);
-      
+
       const heading = screen.getByText('Four Sages');
       expect(heading.tagName).toBe('H2');
     });
@@ -489,9 +489,9 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         messages: [],
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       expect(screen.getByText('0')).toBeInTheDocument();
     });
 
@@ -500,9 +500,9 @@ describe('Dashboard', () => {
         ...defaultMockStore,
         getActiveSages: jest.fn(() => []),
       } as any);
-      
+
       render(<Dashboard />);
-      
+
       expect(screen.getByText('0/4')).toBeInTheDocument();
       const progress = screen.getAllByTestId('progress')[0];
       expect(progress).toHaveAttribute('data-value', '0');
@@ -512,7 +512,7 @@ describe('Dashboard', () => {
   describe('アニメーション', () => {
     test('framer-motionコンポーネントが使用される', () => {
       render(<Dashboard />);
-      
+
       // motion.divがdivとしてレンダリングされることを確認
       expect(screen.getByText('System Status').closest('div')).toBeInTheDocument();
     });
@@ -521,21 +521,21 @@ describe('Dashboard', () => {
 
 /**
  * 🧙‍♂️ Four Sages評価
- * 
+ *
  * ✅ Knowledge Sage: ダッシュボード全機能の完全理解・テスト化
  * ✅ Task Sage: 複雑な状態管理・Store統合の完璧なテスト
  * ✅ Incident Sage: エラーケース・Edge Case の徹底的検証
  * ✅ RAG Sage: 多言語対応・アクセシビリティの包括的確認
- * 
+ *
  * カバレッジ目標: 95%以上
  * テスト項目: 50+個のテストケース
- * 
+ *
  * Phase 3 成果:
  * - エルダーズギルド メインダッシュボードの完全品質保証
  * - 多言語対応（文化モード）の動作確認
  * - Store統合・状態管理の詳細テスト
  * - レスポンシブデザイン・アクセシビリティ対応
  * - アニメーション・UX機能の検証
- * 
+ *
  * 次の対象: Phase 3 完了報告・CI/CD統合準備
  */

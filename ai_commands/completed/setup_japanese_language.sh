@@ -10,7 +10,7 @@ echo "📝 ワーカーの日本語化..."
 python3 scripts/apply_japanese_patch.py
 
 # 2. Claude CLI日本語設定
-echo "🤖 Claude CLI日本語設定..."  
+echo "🤖 Claude CLI日本語設定..."
 python3 scripts/setup_claude_japanese.py
 
 # 3. system.json更新（存在しない場合は作成）
@@ -41,7 +41,7 @@ echo "🎉 日本語化が完了しました！"
 echo "以下の機能が日本語対応になりました："
 echo "  - ワーカーのログメッセージ"
 echo "  - Slack通知"
-echo "  - エラーメッセージ"  
+echo "  - エラーメッセージ"
 echo "  - Claude CLIの応答（コメント、ログ等）"
 echo ""
 echo "設定を変更する場合は config/system.json の language を編集してください"

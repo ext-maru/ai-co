@@ -1,7 +1,7 @@
 /**
  * Storybook Preview Configuration
  * 🧙‍♂️ Four Sages評議会決定 - Visual Testing環境設定
- * 
+ *
  * エルダーズギルド Storybookプレビュー設定
  * 実装日: 2025年7月11日
  */
@@ -20,7 +20,7 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-    
+
     // ビューポート設定
     viewport: {
       viewports: {
@@ -47,7 +47,7 @@ const preview: Preview = {
         },
       },
     },
-    
+
     // エルダーズギルドテーマ設定
     backgrounds: {
       default: 'elders-dark',
@@ -70,7 +70,7 @@ const preview: Preview = {
         },
       ],
     },
-    
+
     // Chromatic設定
     chromatic: {
       // スナップショット遅延（アニメーション対応）
@@ -91,7 +91,7 @@ const preview: Preview = {
         },
       },
     },
-    
+
     // ドキュメント設定
     docs: {
       theme: {
@@ -102,16 +102,16 @@ const preview: Preview = {
       },
     },
   },
-  
+
   // グローバルデコレーター
   decorators: [
     (Story, context) => {
       const theme = context.globals.theme || 'dark';
       const locale = context.globals.locale || 'ja';
-      
+
       return (
         <ThemeProvider defaultTheme={theme}>
-          <div 
+          <div
             className={`elders-guild-storybook ${theme}`}
             data-locale={locale}
           >
@@ -121,7 +121,7 @@ const preview: Preview = {
       );
     },
   ],
-  
+
   // グローバル設定
   globalTypes: {
     theme: {
@@ -165,7 +165,7 @@ const preview: Preview = {
       },
     },
   },
-  
+
   // タグ設定
   tags: ['autodocs', 'elders-guild', 'four-sages'],
 };
@@ -174,18 +174,18 @@ export default preview;
 
 /**
  * 🧙‍♂️ Four Sages評価
- * 
+ *
  * ✅ Knowledge Sage: Visual Testing完全環境構築
  * ✅ Task Sage: 効率的なStory開発環境
  * ✅ Incident Sage: デバッグ・検証機能完備
  * ✅ RAG Sage: 多言語・マルチテーマ対応
- * 
+ *
  * プレビュー機能:
  * - エルダーズギルドテーマ統合
  * - 多言語切り替え
  * - 4賢者モード選択
  * - Chromatic最適化
  * - カスタムビューポート
- * 
+ *
  * 次のステップ: コンポーネントStories作成
  */

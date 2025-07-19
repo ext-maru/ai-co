@@ -1,8 +1,8 @@
 # Knowledge Sage Consultation: pgvector Integration Improvements
 
-**Consultation Date**: July 9, 2025  
-**Sage**: Knowledge Sage  
-**Topic**: Optimizing Knowledge Storage and Retrieval with pgvector  
+**Consultation Date**: July 9, 2025
+**Sage**: Knowledge Sage
+**Topic**: Optimizing Knowledge Storage and Retrieval with pgvector
 **Consultation ID**: KS-PGV-2025-001
 
 ## Executive Summary
@@ -31,10 +31,10 @@ CREATE TABLE knowledge_vectors (
 );
 
 -- Index for efficient similarity search
-CREATE INDEX idx_knowledge_embedding ON knowledge_vectors 
+CREATE INDEX idx_knowledge_embedding ON knowledge_vectors
 USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
 
-CREATE INDEX idx_concept_embedding ON knowledge_vectors 
+CREATE INDEX idx_concept_embedding ON knowledge_vectors
 USING ivfflat (concept_embedding vector_cosine_ops) WITH (lists = 50);
 ```
 
@@ -55,10 +55,10 @@ def optimize_knowledge_storage(knowledge_item):
         'concept': extract_concept_embedding(knowledge_item.concepts),
         'context': derive_context_embedding(knowledge_item.context)
     }
-    
+
     # Determine optimal storage location
     cluster_id = find_optimal_cluster(embeddings['content'])
-    
+
     # Store with metadata
     return store_knowledge_vector(
         embeddings=embeddings,
@@ -78,25 +78,25 @@ class AdaptiveKnowledgeRetrieval:
     def __init__(self, pgvector_connection):
         self.conn = pgvector_connection
         self.expansion_threshold = 0.7
-        
+
     def retrieve_knowledge(self, query, context=None):
         """
         Retrieve knowledge with adaptive query expansion
         """
         # Generate initial query embedding
         query_embedding = self.generate_query_embedding(query, context)
-        
+
         # Primary search
         primary_results = self.similarity_search(query_embedding, limit=10)
-        
+
         # Adaptive expansion if results are insufficient
         if len(primary_results) < 5 or max(r.score for r in primary_results) < self.expansion_threshold:
             expanded_query = self.expand_query(query, primary_results)
             expanded_embedding = self.generate_query_embedding(expanded_query, context)
-            
+
             # Combined search
             return self.combined_search(query_embedding, expanded_embedding)
-        
+
         return primary_results
 ```
 
@@ -120,20 +120,20 @@ CREATE OR REPLACE FUNCTION retrieve_multimodal_knowledge(
 ) AS $$
 BEGIN
     RETURN QUERY
-    SELECT 
+    SELECT
         kv.id,
         kv.content,
         (kv.embedding <=> query_embedding) AS similarity_score,
-        CASE 
+        CASE
             WHEN concept_filter IS NOT NULL THEN (kv.concept_embedding <=> concept_filter)
             ELSE NULL
         END AS concept_similarity,
-        CASE 
+        CASE
             WHEN context_filter IS NOT NULL THEN (kv.context_embedding <=> context_filter)
             ELSE NULL
         END AS context_relevance
     FROM knowledge_vectors kv
-    WHERE 
+    WHERE
         (kv.embedding <=> query_embedding) > similarity_threshold
         AND (concept_filter IS NULL OR (kv.concept_embedding <=> concept_filter) > 0.6)
         AND (context_filter IS NULL OR (kv.context_embedding <=> context_filter) > 0.4)
@@ -156,10 +156,10 @@ def discover_knowledge_patterns(time_window_hours=24):
     """
     # Get recent knowledge vectors
     recent_vectors = get_recent_knowledge_vectors(time_window_hours)
-    
+
     # Perform density-based clustering
     clusters = perform_dbscan_clustering(recent_vectors)
-    
+
     # Identify novel clusters
     novel_patterns = []
     for cluster in clusters:
@@ -171,7 +171,7 @@ def discover_knowledge_patterns(time_window_hours=24):
                 'confidence': calculate_pattern_confidence(cluster),
                 'related_concepts': extract_related_concepts(cluster)
             })
-    
+
     return novel_patterns
 ```
 
@@ -203,7 +203,7 @@ CREATE OR REPLACE FUNCTION discover_knowledge_relationships(
 BEGIN
     RETURN QUERY
     WITH similar_knowledge AS (
-        SELECT 
+        SELECT
             kv2.id as target_id,
             (kv1.embedding <=> kv2.embedding) AS similarity
         FROM knowledge_vectors kv1
@@ -211,10 +211,10 @@ BEGIN
         WHERE kv1.id = source_id
         AND (kv1.embedding <=> kv2.embedding) > similarity_threshold
     )
-    SELECT 
+    SELECT
         sk.target_id,
         sk.similarity as relationship_strength,
-        CASE 
+        CASE
             WHEN sk.similarity > 0.8 THEN 'strongly_related'
             WHEN sk.similarity > 0.7 THEN 'related'
             ELSE 'weakly_related'
@@ -240,7 +240,7 @@ class KnowledgeEmbeddingManager:
             'conceptual': 'concept-net-embeddings',
             'contextual': 'context-aware-embeddings'
         }
-    
+
     def generate_embedding(self, content, knowledge_type='general'):
         model = self.models.get(knowledge_type, self.models['general'])
         return self.embed_content(content, model)
@@ -278,16 +278,16 @@ class KnowledgeMetrics:
             'query_response_time': 0.0,
             'knowledge_utilization': 0.0
         }
-    
+
     def calculate_retrieval_accuracy(self, queries, results):
         """Calculate precision and recall for knowledge retrieval"""
         relevant_retrieved = sum(1 for r in results if r.is_relevant)
         total_retrieved = len(results)
         total_relevant = sum(1 for q in queries if q.has_relevant_knowledge)
-        
+
         precision = relevant_retrieved / total_retrieved if total_retrieved > 0 else 0
         recall = relevant_retrieved / total_relevant if total_relevant > 0 else 0
-        
+
         return 2 * (precision * recall) / (precision + recall) if (precision + recall) > 0 else 0
 ```
 
@@ -314,12 +314,12 @@ class KnowledgeSystemIntegration:
         self.legacy = legacy_system
         self.vector = vector_system
         self.migration_threshold = 0.8
-    
+
     def hybrid_retrieval(self, query):
         """Implement hybrid retrieval during migration"""
         vector_results = self.vector.search(query)
         legacy_results = self.legacy.search(query)
-        
+
         # Combine and rank results
         combined_results = self.merge_results(vector_results, legacy_results)
         return self.rank_by_relevance(combined_results)

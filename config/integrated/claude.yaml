@@ -8,7 +8,7 @@ api:
   max_tokens: 4096
   temperature: 0.7
   timeout: 300
-  
+
 # APIキー管理
 api_keys:
   rotation_enabled: true
@@ -22,27 +22,27 @@ rate_limits:
   requests_per_minute: 50
   tokens_per_minute: 40000
   concurrent_requests: 5
-  
+
 # 4賢者システム統合設定
 four_sages:
   model: "claude-sonnet-4-20250514"
   max_tokens: 4096
-  
+
   knowledge_sage:
     temperature: 0.3
     specialty: "knowledge_management"
     prompt_template: "knowledge_sage_template"
-    
+
   task_sage:
     temperature: 0.5
     specialty: "task_optimization"
     prompt_template: "task_sage_template"
-    
+
   incident_sage:
     temperature: 0.1
     specialty: "crisis_response"
     prompt_template: "incident_sage_template"
-    
+
   rag_sage:
     temperature: 0.4
     specialty: "information_search"
@@ -54,19 +54,19 @@ error_handling:
   retry_delay: 60
   backoff_multiplier: 2
   fallback_model: "claude-3-5-sonnet-20241022"
-  
+
 # パフォーマンス最適化
 performance:
   streaming_enabled: true
   response_caching: true
   cache_ttl: 300
-  
+
 # 監視設定
 monitoring:
   usage_tracking: true
   performance_metrics: true
   error_alerting: true
-  
+
 # セキュリティ設定
 security:
   api_key_protection: true

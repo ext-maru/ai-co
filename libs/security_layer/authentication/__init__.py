@@ -11,6 +11,4 @@ PROJECT ELDERZAN SecurityLayer Authentication
 
 from .rbac_manager import ElderZanRBACManager
 
-__all__ = [
-    "ElderZanRBACManager"
-]
+__all__ = ["ElderZanRBACManager"]
