@@ -109,7 +109,7 @@ RAG: 「最適解を発見しました」
 
 # 2. TDD実装
 test_login_success()  # 🔴 Red
-login(user, pass)     # 🟢 Green  
+login(user, pass)     # 🟢 Green
 clean_up_code()       # 🔵 Refactor
 git commit -m "feat: ログイン機能実装"  # 🚀 Ship
 ```
@@ -654,6 +654,61 @@ ai-elf-optimize coverage_boost_batch
 ai-task-status coverage_boost_20250707_232321
 ```
 
+## 📁 プロジェクト構造ルール (2025/7/19制定)
+
+**エルダー評議会令第34号 - プロジェクト構造標準化令**
+
+### 🗂️ ディレクトリ構造
+```
+ai_co/
+├── README.md, CLAUDE.md         # ルートに残す
+├── docs/                        # すべてのドキュメント
+│   ├── reports/                # レポート・分析結果
+│   ├── guides/                 # ガイド・ベストプラクティス
+│   ├── policies/               # ポリシー・プロトコル
+│   └── technical/              # 技術文書
+├── scripts/                    # すべての実行スクリプト
+│   ├── ai-commands/           # AIコマンドツール
+│   ├── monitoring/            # モニタリングスクリプト
+│   ├── analysis/              # 分析ツール
+│   ├── utilities/             # ユーティリティ
+│   ├── deployment/            # デプロイメント
+│   └── testing/               # テスト実行
+├── tests/                      # すべてのテストファイル
+├── libs/                       # ライブラリコード
+├── configs/                    # 設定ファイル
+├── data/                       # データファイル
+├── daily_reports/              # 日次レポート
+├── knowledge_base/             # ナレッジベース
+└── generated_reports/          # 自動生成レポート
+```
+
+### 📋 ファイル配置ルール
+1. **ルートディレクトリ最小化**
+   - 必須ファイルのみ（README.md, CLAUDE.md, Dockerfile等）
+   - その他はすべて適切なサブディレクトリへ
+
+2. **ドキュメント配置**
+   - レポート系 → `docs/reports/`
+   - ガイド系 → `docs/guides/`
+   - ポリシー系 → `docs/policies/`
+   - 技術文書 → `docs/technical/`
+
+3. **スクリプト配置**
+   - 実行可能ファイルは必ず `scripts/` 配下
+   - 用途別にサブディレクトリ分類
+
+4. **テストファイル**
+   - すべての `test_*.py` は `tests/` へ
+   - テストユーティリティも同ディレクトリ
+
+### 🚨 違反時対応
+- インシデント賢者が自動検知
+- クロードエルダーが即座に修正
+- 知識ベースに記録
+
 ---
 **Remember: No Code Without Test! 🧪**
-**最新更新: 2025年7月19日 - XP (Extreme Programming) 採用**
+**Iron Will: No Workarounds! 🗡️**
+**Elders Legacy: Think it, Rule it, Own it! 🏛️**
+**最新更新: 2025年7月19日 - プロジェクト構造標準化**
