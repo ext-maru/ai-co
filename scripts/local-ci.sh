@@ -74,6 +74,7 @@ print_step "Phase 3: テスト実行"
 echo "pytest移行済みテストを実行中..."
 test_files=(
     "tests/unit/incident_knight_fixes_pytest.py"
+    "tests/unit/elder_servant_pytest_extended.py"
     "tests/poc/integration_pytest_poc.py"
 )
 

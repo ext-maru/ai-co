@@ -36,5 +36,15 @@ def main(*args, **kwargs):
     pass
 
 
+def get_config():
+    """Placeholder get_config function"""
+    logger.warning("Using placeholder get_config function")
+    return EnvConfig()
+
+def env_config():
+    """Placeholder env_config function"""
+    logger.warning("Using placeholder env_config function")
+    return EnvConfig()
+
 # Export
-__all__ = ["EnvConfig", "setup", "main"]
+__all__ = ["EnvConfig", "setup", "main", "get_config", "env_config"]
