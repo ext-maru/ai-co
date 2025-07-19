@@ -15,14 +15,14 @@ from datetime import datetime, timedelta
 from collections import defaultdict
 import hashlib
 
-from libs.elder_servants.base.elder_servant_base import (
-    ElderServantBase, WizardServant, ServantRequest, ServantResponse
+from libs.elder_servants.base.specialized_servants import (
+    WizardServant
 )
 
 
 class TechScout(WizardServant):
     """技術調査専門サーバント"""
-    
+
     def __init__(self):
         super().__init__(
             servant_id="W01",
@@ -39,7 +39,7 @@ class TechScout(WizardServant):
         # 調査結果のキャッシュ（実際の実装では外部ストレージを使用）
         self.research_cache = {}
         self.cache_ttl = timedelta(hours=24)
-    
+
     def get_capabilities(self) -> List[str]:
         """サーバントの能力リストを返す"""
         return [
@@ -53,14 +53,14 @@ class TechScout(WizardServant):
             "generate_tech_radar",
             "analyze_migration"
         ]
-    
+
     async def execute_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """タスクを実行"""
         start_time = datetime.now()
-        
+
         try:
             action = task.get("action")
-            
+
             # キャッシュチェック（該当するアクションのみ）
             if action in ["research_technology", "evaluate_library"] and task.get("use_cache", True):
                 cache_key = self._generate_cache_key(task)
@@ -69,7 +69,7 @@ class TechScout(WizardServant):
                     self.metrics["cache_hits"] += 1
                     cached_result["from_cache"] = True
                     return cached_result
-            
+
             # アクション実行
             if action == "research_technology":
                 result = await self._research_technology(task)
@@ -95,16 +95,16 @@ class TechScout(WizardServant):
                     "error": f"Unknown action: {action}",
                     "recovery_suggestion": f"Use one of: {', '.join(self.get_capabilities())}"
                 }
-            
+
             # メトリクス更新
             research_time = (datetime.now() - start_time).total_seconds()
             self.metrics["research_times"].append(research_time)
-            
+
             # キャッシュ保存（成功した場合）
             if result.get("status") == "success" and action in ["research_technology", "evaluate_library"]:
                 cache_key = self._generate_cache_key(task)
                 self._save_to_cache(cache_key, result)
-            
+
             # 4賢者との協調（必要な場合）
             if task.get("consult_sages") and result.get("status") == "success":
                 sage_advice = await self.collaborate_with_sages({
@@ -113,27 +113,27 @@ class TechScout(WizardServant):
                     "result": result
                 })
                 result["sage_consultation"] = sage_advice
-            
+
             return result
-            
+
         except Exception as e:
             return {
                 "status": "error",
                 "error": str(e),
                 "recovery_suggestion": "Check input parameters and try again"
             }
-    
+
     async def _research_technology(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """技術調査の実行"""
         topic = task.get("topic", "")
         depth = task.get("depth", "standard")
-        
+
         # 調査シミュレーション（実際の実装では外部APIや知識ベースを使用）
         await asyncio.sleep(0.5)  # 調査時間のシミュレーション
-        
+
         key_findings = []
         recommendations = []
-        
+
         if "async" in topic.lower():
             key_findings.extend([
                 "Asyncio is the standard library for asynchronous programming in Python",
@@ -157,19 +157,19 @@ class TechScout(WizardServant):
                 "Evaluate alternatives before final decision",
                 "Start with a proof of concept"
             ])
-        
+
         confidence_score = 85 + (5 if depth == "comprehensive" else 0)
-        
+
         self.metrics["total_researches"] += 1
         self.metrics["research_topics"][topic] += 1
-        
+
         # 知識ベースへの保存
         await self._store_research_knowledge({
             "topic": topic,
             "findings": key_findings,
             "date": datetime.now().isoformat()
         })
-        
+
         return {
             "status": "success",
             "research_summary": f"Comprehensive analysis of {topic}",
@@ -179,15 +179,15 @@ class TechScout(WizardServant):
             "sources": ["Official documentation", "Community forums", "Technical blogs", "GitHub repositories", "Stack Overflow"],
             "quality_score": 95 if task.get("quality_requirements") == "iron_will" else 90
         }
-    
+
     async def _evaluate_library(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """ライブラリ評価"""
         library_name = task.get("library_name", "")
         criteria = task.get("criteria", ["performance", "documentation", "community", "stability"])
-        
+
         # 評価シミュレーション
         await asyncio.sleep(0.3)
-        
+
         evaluation_scores = {}
         for criterion in criteria:
             # スコア生成（実際の実装では詳細な分析を行う）
@@ -206,23 +206,23 @@ class TechScout(WizardServant):
                     "stability": 85
                 }
             evaluation_scores[criterion] = scores.get(criterion, 75)
-        
+
         overall_score = sum(evaluation_scores.values()) / len(evaluation_scores)
-        
+
         pros = [
-            f"Strong {criterion} score" 
-            for criterion, score in evaluation_scores.items() 
+            f"Strong {criterion} score"
+            for criterion, score in evaluation_scores.items()
             if score >= 85
         ]
-        
+
         cons = [
-            f"{criterion} could be improved" 
-            for criterion, score in evaluation_scores.items() 
+            f"{criterion} could be improved"
+            for criterion, score in evaluation_scores.items()
             if score < 75
         ]
-        
+
         recommendation = "Highly recommended" if overall_score >= 85 else "Recommended with considerations" if overall_score >= 70 else "Evaluate alternatives"
-        
+
         return {
             "status": "success",
             "library_name": library_name,
@@ -232,19 +232,19 @@ class TechScout(WizardServant):
             "cons": cons,
             "recommendation": recommendation
         }
-    
+
     async def _analyze_trends(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """技術トレンド分析"""
         domain = task.get("domain", "general")
         timeframe = task.get("timeframe", "last_year")
-        
+
         await asyncio.sleep(0.4)
-        
+
         # トレンド分析シミュレーション
         trending_technologies = []
         declining_technologies = []
         emerging_patterns = []
-        
+
         if domain == "web development":
             trending_technologies = [
                 "TypeScript", "Next.js", "Tailwind CSS", "GraphQL", "WebAssembly"
@@ -270,12 +270,12 @@ class TechScout(WizardServant):
                 "AI-driven operations",
                 "Sustainable computing"
             ]
-        
+
         future_predictions = [
-            f"{tech} adoption will increase by 50%" 
+            f"{tech} adoption will increase by 50%"
             for tech in trending_technologies[:3]
         ]
-        
+
         return {
             "status": "success",
             "domain": domain,
@@ -285,18 +285,18 @@ class TechScout(WizardServant):
             "emerging_patterns": emerging_patterns,
             "future_predictions": future_predictions
         }
-    
+
     async def _compare_solutions(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """ソリューション比較"""
         solutions = task.get("solutions", [])
         use_case = task.get("use_case", "")
         comparison_criteria = task.get("comparison_criteria", ["performance", "ease_of_use", "features", "ecosystem"])
-        
+
         await asyncio.sleep(0.5)
-        
+
         comparison_matrix = {}
         detailed_analysis = {}
-        
+
         # 各ソリューションの評価
         for solution in solutions:
             scores = {}
@@ -324,17 +324,17 @@ class TechScout(WizardServant):
                         "ecosystem": 75
                     }
                 scores[criterion] = criterion_scores.get(criterion, 75)
-            
+
             comparison_matrix[solution] = scores
             detailed_analysis[solution] = {
                 "strengths": [c for c, s in scores.items() if s >= 85],
                 "weaknesses": [c for c, s in scores.items() if s < 75],
                 "overall_score": sum(scores.values()) / len(scores)
             }
-        
+
         # 勝者の決定
         winner = max(detailed_analysis.items(), key=lambda x: x[1]["overall_score"])[0]
-        
+
         return {
             "status": "success",
             "comparison_matrix": comparison_matrix,
@@ -342,18 +342,18 @@ class TechScout(WizardServant):
             "winner": winner,
             "use_case": use_case
         }
-    
+
     async def _security_assessment(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """セキュリティ評価"""
         technology = task.get("technology", "")
         context = task.get("context", "")
-        
+
         await asyncio.sleep(0.3)
-        
+
         # セキュリティ評価シミュレーション
         vulnerabilities = []
         best_practices = []
-        
+
         if "jwt" in technology.lower():
             vulnerabilities = [
                 "Token expiration must be properly configured",
@@ -377,11 +377,11 @@ class TechScout(WizardServant):
                 "Keep dependencies updated"
             ]
             security_score = 75
-        
+
         recommendations = [
             f"Address: {vuln}" for vuln in vulnerabilities[:2]
         ]
-        
+
         return {
             "status": "success",
             "technology": technology,
@@ -391,16 +391,16 @@ class TechScout(WizardServant):
             "best_practices": best_practices,
             "recommendations": recommendations
         }
-    
+
     async def _performance_benchmark(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """パフォーマンスベンチマーク"""
         technologies = task.get("technologies", [])
         benchmark_type = task.get("benchmark_type", "general")
-        
+
         await asyncio.sleep(0.6)
-        
+
         benchmark_results = {}
-        
+
         # ベンチマーク結果シミュレーション
         if benchmark_type == "concurrent_requests":
             base_scores = {
@@ -414,7 +414,7 @@ class TechScout(WizardServant):
                 "threading": 80,
                 "multiprocessing": 75
             }
-        
+
         for tech in technologies:
             benchmark_results[tech] = {
                 "score": base_scores.get(tech, 70),
@@ -422,21 +422,21 @@ class TechScout(WizardServant):
                 "latency": 100 / base_scores.get(tech, 70),  # ms
                 "resource_usage": 100 - base_scores.get(tech, 70)  # %
             }
-        
+
         # ランキング作成
         performance_ranking = sorted(
             technologies,
             key=lambda t: benchmark_results[t]["score"],
             reverse=True
         )
-        
+
         analysis = f"For {benchmark_type}, {performance_ranking[0]} shows the best performance"
         recommendations = [
             f"Use {performance_ranking[0]} for high-concurrency scenarios",
             "Consider resource constraints when choosing",
             "Profile your specific use case"
         ]
-        
+
         return {
             "status": "success",
             "benchmark_type": benchmark_type,
@@ -445,16 +445,16 @@ class TechScout(WizardServant):
             "analysis": analysis,
             "recommendations": recommendations
         }
-    
+
     async def _deep_dive_research(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """深掘り調査"""
         topic = task.get("topic", "")
         aspects = task.get("aspects", [])
-        
+
         await asyncio.sleep(0.8)
-        
+
         comprehensive_report = {}
-        
+
         for aspect in aspects:
             # 各側面の詳細調査
             comprehensive_report[aspect] = {
@@ -469,7 +469,7 @@ class TechScout(WizardServant):
                     f"Monitor {aspect} metrics"
                 ]
             }
-        
+
         case_studies = [
             {
                 "company": "Tech Corp",
@@ -484,7 +484,7 @@ class TechScout(WizardServant):
                 "lessons": ["Team training essential", "Tool selection critical"]
             }
         ]
-        
+
         implementation_roadmap = [
             "Phase 1: Assessment and planning",
             "Phase 2: Proof of concept",
@@ -492,7 +492,7 @@ class TechScout(WizardServant):
             "Phase 4: Full rollout",
             "Phase 5: Optimization and scaling"
         ]
-        
+
         return {
             "status": "success",
             "topic": topic,
@@ -500,21 +500,21 @@ class TechScout(WizardServant):
             "case_studies": case_studies,
             "implementation_roadmap": implementation_roadmap
         }
-    
+
     async def _generate_tech_radar(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """技術レーダー生成"""
         categories = task.get("categories", ["languages", "frameworks", "tools", "platforms"])
         organization_context = task.get("organization_context", "enterprise")
-        
+
         await asyncio.sleep(0.5)
-        
+
         tech_radar = {
             "adopt": [],
             "trial": [],
             "assess": [],
             "hold": []
         }
-        
+
         # コンテキストに基づく技術分類
         if organization_context == "startup":
             tech_radar["adopt"] = ["Python", "FastAPI", "PostgreSQL", "Docker", "GitHub Actions"]
@@ -526,12 +526,12 @@ class TechScout(WizardServant):
             tech_radar["trial"] = ["Microservices", "Kubernetes", "React"]
             tech_radar["assess"] = ["Serverless", "AI/ML platforms"]
             tech_radar["hold"] = ["Outdated libraries", "Unsupported tools"]
-        
+
         # カテゴリ別に追加
         for category in categories:
             if category not in ["languages", "frameworks", "tools", "platforms"]:
                 tech_radar["assess"].append(f"New {category} technologies")
-        
+
         return {
             "status": "success",
             "tech_radar": tech_radar,
@@ -539,15 +539,15 @@ class TechScout(WizardServant):
             "organization_context": organization_context,
             "last_updated": datetime.now().isoformat()
         }
-    
+
     async def _analyze_migration(self, task: Dict[str, Any]) -> Dict[str, Any]:
         """移行分析"""
         from_technology = task.get("from_technology", "")
         to_technology = task.get("to_technology", "")
         project_size = task.get("project_size", "medium")
-        
+
         await asyncio.sleep(0.6)
-        
+
         # 複雑性の計算
         complexity_factors = {
             "monolithic": 3,
@@ -555,17 +555,17 @@ class TechScout(WizardServant):
             "django": 1,
             "fastapi": 1
         }
-        
+
         complexity_score = 0
         for term, factor in complexity_factors.items():
             if term in from_technology.lower():
                 complexity_score += factor
             if term in to_technology.lower():
                 complexity_score += factor / 2
-        
+
         size_multiplier = {"small": 0.5, "medium": 1.0, "large": 2.0, "enterprise": 3.0}
         complexity_score *= size_multiplier.get(project_size, 1.0)
-        
+
         if complexity_score < 2:
             migration_complexity = "low"
         elif complexity_score < 4:
@@ -574,7 +574,7 @@ class TechScout(WizardServant):
             migration_complexity = "high"
         else:
             migration_complexity = "very_high"
-        
+
         migration_steps = [
             "1. Current state assessment",
             "2. Target architecture design",
@@ -586,21 +586,21 @@ class TechScout(WizardServant):
             "8. Cutover planning",
             "9. Post-migration optimization"
         ]
-        
+
         risks = [
             "Data loss during migration",
             "Service disruption",
             "Performance degradation",
             "Integration challenges"
         ]
-        
+
         timeline_weeks = {
             "low": 4,
             "medium": 12,
             "high": 24,
             "very_high": 52
         }
-        
+
         cost_benefit_analysis = {
             "costs": [
                 "Development effort",
@@ -616,7 +616,7 @@ class TechScout(WizardServant):
             ],
             "roi_months": timeline_weeks[migration_complexity] * 2
         }
-        
+
         return {
             "status": "success",
             "from_technology": from_technology,
@@ -627,7 +627,7 @@ class TechScout(WizardServant):
             "timeline_estimate": f"{timeline_weeks[migration_complexity]} weeks",
             "cost_benefit_analysis": cost_benefit_analysis
         }
-    
+
     def _generate_cache_key(self, task: Dict[str, Any]) -> str:
         """キャッシュキー生成"""
         key_parts = [
@@ -638,7 +638,7 @@ class TechScout(WizardServant):
         ]
         key_string = "|".join(str(part) for part in key_parts)
         return hashlib.md5(key_string.encode()).hexdigest()
-    
+
     def _get_from_cache(self, cache_key: str) -> Optional[Dict[str, Any]]:
         """キャッシュから取得"""
         if cache_key in self.research_cache:
@@ -649,21 +649,21 @@ class TechScout(WizardServant):
                 # 期限切れのキャッシュを削除
                 del self.research_cache[cache_key]
         return None
-    
+
     def _save_to_cache(self, cache_key: str, result: Dict[str, Any]):
         """キャッシュに保存"""
         self.research_cache[cache_key] = {
             "result": result,
             "timestamp": datetime.now()
         }
-    
+
     async def _store_research_knowledge(self, research_data: Dict[str, Any]) -> bool:
         """調査結果を知識ベースに保存"""
         # TODO: 実際の知識ベースへの保存実装
         # ここではログ出力のみ
         self.logger.info(f"Storing research knowledge: {research_data['topic']}")
         return True
-    
+
     async def health_check(self) -> Dict[str, Any]:
         """ヘルスチェック"""
         avg_research_time = (
@@ -671,13 +671,13 @@ class TechScout(WizardServant):
             if self.metrics["research_times"]
             else 0.0
         )
-        
+
         cache_hit_rate = (
             self.metrics["cache_hits"] / self.metrics["total_researches"]
             if self.metrics["total_researches"] > 0
             else 0.0
         )
-        
+
         return {
             "status": "healthy",
             "servant_id": self.servant_id,
@@ -690,7 +690,7 @@ class TechScout(WizardServant):
                 "cache_hit_rate": cache_hit_rate
             }
         }
-    
+
     def get_metrics(self) -> Dict[str, Any]:
         """メトリクス取得"""
         return {
@@ -703,11 +703,11 @@ class TechScout(WizardServant):
                 "cache_hits": self.metrics["cache_hits"]
             }
         }
-    
+
     async def process_request(self, request: ServantRequest[Dict[str, Any]]) -> ServantResponse[Dict[str, Any]]:
         """ElderServantBase準拠のリクエスト処理"""
         result = await self.execute_task(request.data)
-        
+
         return ServantResponse(
             task_id=request.task_id,
             status=result.get("status", "failed"),
@@ -716,11 +716,11 @@ class TechScout(WizardServant):
             warnings=result.get("warnings", []),
             metrics=result.get("metrics", {})
         )
-    
+
     def validate_request(self, request: ServantRequest[Dict[str, Any]]) -> bool:
         """リクエストの妥当性検証"""
         if not request.data:
             return False
-        
+
         action = request.data.get("action")
         return action in self.get_capabilities()
