@@ -381,16 +381,51 @@ class GitHubCreatePullRequestImplementation:
         return messages.get(mergeable_state, "Unknown merge state")
 
     def _enable_auto_merge(self, pr_number: int) -> Dict[str, Any]:
-        """自動マージを有効化"""
+        """自動マージを有効化（REST APIで即座にマージ）"""
         try:
-            # GraphQL APIを使用（REST APIでは未サポート）
-            logger.info(
-                f"Auto-merge requested for PR #{pr_number} (requires GraphQL API)"
+            # PRの状態を確認
+            pr_info = self._get_pull_request(pr_number)
+            if not pr_info["success"]:
+                return {"success": False, "error": "Failed to get PR info"}
+            
+            pr = pr_info["pull_request"]
+            
+            # マージ可能かチェック
+            mergeable = pr.get("mergeable")
+            if mergeable is None:
+                # GitHubがまだ計算中の場合、少し待つ
+                logger.info(f"PR #{pr_number} mergeable status is still being calculated, waiting...")
+                import time
+                time.sleep(2)
+                # 再度取得
+                pr_info = self._get_pull_request(pr_number)
+                if pr_info["success"]:
+                    pr = pr_info["pull_request"]
+                    mergeable = pr.get("mergeable")
+            
+            if mergeable is False:
+                return {"success": False, "error": "PR is not mergeable"}
+            
+            if pr.get("draft", False):
+                return {"success": False, "error": "Cannot merge draft PR"}
+            
+            # マージ実行
+            merge_response = self._make_api_request(
+                endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/pulls/{pr_number}/merge",
+                method="PUT",
+                json_data={
+                    "commit_title": f"Auto-merge PR #{pr_number}",
+                    "commit_message": f"Automatically merged by Auto Issue Processor",
+                    "merge_method": "merge"  # merge, squash, rebase から選択
+                }
             )
-            return {
-                "success": False,
-                "message": "Auto-merge requires GraphQL API implementation",
-            }
+            
+            if merge_response["success"]:
+                logger.info(f"Successfully auto-merged PR #{pr_number}")
+                return {"success": True, "merged": True}
+            else:
+                logger.warning(f"Failed to auto-merge PR #{pr_number}: {merge_response.get('error')}")
+                return {"success": False, "error": merge_response.get("error")}
 
         except Exception as e:
             logger.warning(f"Failed to enable auto-merge: {e}")

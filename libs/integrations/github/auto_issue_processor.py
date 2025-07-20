@@ -99,6 +99,8 @@ class AutoIssueElderFlowEngine:
             self.pr_creator = GitHubCreatePullRequestImplementation(
                 token=github_token, repo_owner=repo_owner, repo_name=repo_name
             )
+            # 自動マージを有効化
+            self.pr_creator.auto_merge_enabled = True
         self.logger = logger
 
     async def execute_flow(self, request):
@@ -272,7 +274,7 @@ Closes #{issue_number}
 *このPRはAuto Issue Processorにより自動生成されました*
 """,
                 labels=["auto-generated", "auto-fix"],
-                draft=True,  # ドラフトとして作成
+                draft=False,  # 通常のPRとして作成（自動マージ可能）
             )
 
             if pr_result.get("success"):
