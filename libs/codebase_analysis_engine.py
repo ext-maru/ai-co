@@ -69,11 +69,31 @@ class ASTAnalyzer:
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
     
+    def _is_external_library_file(self, file_path: str) -> bool:
+        """外部ライブラリファイルかどうかを判定"""
+        path_str = str(file_path).lower()
+        external_indicators = [
+            'site-packages', 'dist-packages', 'lib/python',
+            'miniconda', 'anaconda', 'virtualenv', 'venv',
+            '.tox', '.conda', '__pycache__', '.git'
+        ]
+        return any(indicator in path_str for indicator in external_indicators)
+    
     def analyze_file(self, file_path: str) -> Dict[str, Any]:
         """Pythonファイルを解析"""
         try:
+            # 外部ライブラリファイルの早期除外
+            if self._is_external_library_file(file_path):
+                self.logger.debug(f"Skipping external library file: {file_path}")
+                return self._create_fallback_analysis(file_path)
+            
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
+            
+            # 大きなファイルのスキップ (>50KB)
+            if len(content) > 50000:
+                self.logger.debug(f"Skipping large file: {file_path}")
+                return self._create_fallback_analysis(file_path)
             
             tree = ast.parse(content)
             analysis = {
@@ -88,6 +108,9 @@ class ASTAnalyzer:
             
             return analysis
             
+        except (SyntaxError, UnicodeDecodeError) as e:
+            self.logger.debug(f"Parse error in {file_path}: {e}")
+            return self._create_fallback_analysis(file_path)
         except Exception as e:
             self.logger.warning(f"Failed to analyze {file_path}: {e}")
             return self._create_fallback_analysis(file_path)
@@ -500,10 +523,12 @@ class CodebaseAnalysisEngine:
         self.pattern_extractor = PatternExtractor()
         self.logger = logging.getLogger(self.__class__.__name__)
         
-        # 除外するディレクトリ
+        # 除外するディレクトリ (外部ライブラリ強化)
         self.exclude_dirs = {
             '__pycache__', '.git', '.pytest_cache', 'node_modules',
-            '.venv', 'venv', 'env', '.env', 'build', 'dist'
+            '.venv', 'venv', 'env', '.env', 'build', 'dist',
+            'site-packages', 'lib', 'dist-packages', 'Lib',
+            '.tox', '.conda', 'miniconda3', 'anaconda3'
         }
     
     def analyze_codebase(self, tech_stack: Dict[str, Any]) -> CodebaseIntelligence:
@@ -599,7 +624,7 @@ class CodebaseAnalysisEngine:
     def _filter_relevant_files(self, files: List[Path], tech_stack: Dict[str, Any]) -> List[Path]:
         """技術スタックに関連するファイルをフィルタリング"""
         if not tech_stack or tech_stack.get('primary_stack') == 'general':
-            return files[:20]  # 一般的な場合は最大20ファイル
+            return files[:10]  # 一般的な場合は最大10ファイル (最適化)
         
         primary_stack = tech_stack.get('primary_stack', '')
         relevant_files = []
@@ -630,7 +655,7 @@ class CodebaseAnalysisEngine:
         
         # スコア順にソートして上位を返す
         relevant_files.sort(key=lambda x: x[1], reverse=True)
-        return [file_path for file_path, _ in relevant_files[:30]]  # 最大30ファイル
+        return [file_path for file_path, _ in relevant_files[:10]]  # 最大10ファイル (最適化)
     
     def _analyze_tech_domains(self, analyses: List[Dict[str, Any]]) -> Dict[str, float]:
         """技術ドメインを分析"""
@@ -661,3 +686,13 @@ class CodebaseAnalysisEngine:
                 structure[directory].append(filename)
         
         return dict(structure)
+    
+    def _is_external_library_file(self, file_path: str) -> bool:
+        """外部ライブラリファイルかどうかを判定"""
+        path_str = str(file_path).lower()
+        external_indicators = [
+            'site-packages', 'dist-packages', 'lib/python',
+            'miniconda', 'anaconda', 'virtualenv', 'venv',
+            '.tox', '.conda', '__pycache__', '.git'
+        ]
+        return any(indicator in path_str for indicator in external_indicators)
