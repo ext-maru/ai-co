@@ -24,11 +24,8 @@ sys.path.insert(0, str(project_root))
 
 from libs.core.elders_legacy import EldersServiceLegacy
 
-# Elder System実装は現在ダミーとして使用（実装時に実際のクラスに置き換え）
-try:
-    from libs.rag_manager import RagManager as ActualRAGSage
-except ImportError:
-    ActualRAGSage = DummySage
+# RAG Manager実装
+from libs.rag_manager import RagManager as ActualRAGSage
 
 
 # ダミー実装クラス（実際の4賢者システムがない場合の代替）
