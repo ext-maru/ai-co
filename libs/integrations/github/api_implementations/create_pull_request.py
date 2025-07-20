@@ -6,6 +6,8 @@ GitHub Create Pull Request API実装
 """
 
 import logging
+import subprocess
+import os
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -459,3 +461,76 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
             return {"success": True, "pull_request": response["data"]}
         else:
             return {"success": False, "error": response.get("error")}
+
+    def create_pull_request_with_safe_git(
+        self,
+        title: str,
+        body: Optional[str] = None,
+        base: str = "main",
+        branch_prefix: str = "feature",
+        auto_branch_name: bool = True,
+        **kwargs
+    ) -> Dict[str, Any]:
+        """安全なGit操作を使ったPR作成（unstaged changesエラー対策）"""
+        try:
+            # 安全なGit操作をインポート
+            from ..safe_git_operations import SafeGitOperations
+            
+            safe_git = SafeGitOperations()
+            
+            # 1. ブランチ名を生成
+            if auto_branch_name:
+                # タイトルからブランチ名を生成
+                import re
+                safe_title = re.sub(r'[^a-zA-Z0-9\-_]', '-', title.lower())
+                safe_title = re.sub(r'-+', '-', safe_title).strip('-')[:50]
+                branch_name = f"{branch_prefix}/{safe_title}"
+            else:
+                branch_name = kwargs.get("head", f"{branch_prefix}/auto-generated")
+            
+            # 2. 安全にブランチを作成
+            branch_result = safe_git.create_feature_branch_safely(branch_name, base)
+            if not branch_result["success"]:
+                return {
+                    "success": False,
+                    "error": f"Failed to create branch: {branch_result['error']}",
+                    "branch_management": branch_result
+                }
+            
+            # 3. 変更をコミット（既に存在する場合）
+            commit_result = safe_git.auto_commit_if_changes(title)
+            
+            # 4. ブランチをプッシュ
+            push_result = safe_git.push_branch_safely(branch_name)
+            if not push_result["success"]:
+                return {
+                    "success": False,
+                    "error": f"Failed to push branch {branch_name}: {push_result['error']}",
+                    "branch_management": branch_result,
+                    "commit_result": commit_result
+                }
+            
+            # 5. PRを作成
+            pr_result = self.create_pull_request(
+                title=title,
+                head=branch_name,
+                base=base,
+                body=body,
+                **kwargs
+            )
+            
+            # 6. 結果をまとめて返す
+            return {
+                "success": pr_result["success"],
+                "pull_request": pr_result.get("pull_request"),
+                "pr_url": pr_result.get("pr_url"),
+                "branch_name": branch_name,
+                "branch_management": branch_result,
+                "commit_result": commit_result,
+                "push_result": push_result,
+                "error": pr_result.get("error") if not pr_result["success"] else None
+            }
+            
+        except Exception as e:
+            logger.error(f"Error in create_pull_request_with_safe_git: {e}")
+            return {"success": False, "error": str(e)}
