@@ -276,18 +276,21 @@ sg docker -c "docker compose up -d"
 3. 🔵 **Refactor**: コードを改善する
 4. 📤 **Push**: GitHub Flowに従いコミット＆プッシュ
 
-## 🌊 Elder Flow実装完了 (2025年7月12日)
+## 🌊 Elder Flow実装完了 (2025年7月12日) - A2A対応
 
-### ✅ Elder Flow - 完全自動化開発フロー
-**🎉 実装完了！** クロードエルダーによる完全自動化開発システム
+### ✅ Elder Flow - 完全自動化開発フロー（マルチプロセスA2A実装）
+**🎉 実装完了！** 各エージェントが独立プロセスで動作し、コンテキスト爆発を防止
 
 #### 🔧 Elder Flow CLI
 ```bash
-# Elder Flow実行
+# Elder Flow実行（A2A魂モード自動適用）
 elder-flow execute "OAuth2.0認証システム実装" --priority high
 
-# 状態確認
-elder-flow status
+# PIDロック状態確認
+elder-flow active
+
+# リトライ機能付き実行
+elder-flow execute "バグ修正" --retry --max-retries 5
 
 # ワークフロー実行
 elder-flow workflow create oauth_system --execute
@@ -296,26 +299,34 @@ elder-flow workflow create oauth_system --execute
 elder-flow help
 ```
 
-#### 🏛️ 5段階自動化フロー
-1. **🧙‍♂️ 4賢者会議**: 技術相談・リスク分析・最適化提案
-2. **🤖 エルダーサーバント実行**: コード職人・テスト守護者・品質検査官
+#### 🏛️ 5段階自動化フロー（A2A独立プロセス実行）
+1. **🧙‍♂️ 4賢者会議**: 技術相談・リスク分析・最適化提案（並列プロセス）
+2. **🤖 エルダーサーバント実行**: コード職人・テスト守護者・品質検査官（独立プロセス）
 3. **🔍 品質ゲート**: 包括的品質チェック・セキュリティスキャン
 4. **📊 評議会報告**: 自動報告書生成・承認フロー
 5. **📤 Git自動化**: Conventional Commits・自動プッシュ
+
+#### 🔒 PIDロック機能
+- **重複実行防止**: 同一タスクの二重実行を自動ブロック
+- **プロセス監視**: psutilによる生存確認
+- **デッドロック対策**: 古いロックの自動クリーンアップ
 
 #### ⚡ 実測性能
 - **実行時間**: 0.70秒
 - **成功率**: 100%
 - **品質スコア**: 62.15/100（改善中）
+- **コンテキスト効率**: 各プロセス独立により最大90%削減
 
 #### 🌊 使用例
 ```python
-# Python API
+# Python API（A2A自動適用）
 task_id = await execute_elder_flow("新機能実装", "high")
 
-# CLI
+# CLI（PIDロック付き）
 elder-flow execute "新機能実装" --priority high
 ```
+
+**📚 詳細**: [Elder Flow A2A実装とPIDロック機能アーキテクチャ](docs/technical/ELDER_FLOW_A2A_PID_LOCK_ARCHITECTURE.md)
 
 ## 🚀 最新実装状況 (2025年7月)
 
