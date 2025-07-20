@@ -24,6 +24,7 @@ sys.path.insert(0, str(project_root))
 
 from libs.core.elders_legacy import EldersServiceLegacy
 
+# 必要なモジュールのインポート（フォールバック付き）
 # ダミー実装クラス（実際の4賢者システムがない場合の代替）
 class DummyElderFlowEngine:
     async def process_request(self, request):
@@ -33,6 +34,14 @@ class DummyElderFlowEngine:
 class DummySage:
     async def process_request(self, request):
         return {"status": "success", "message": "Dummy sage response"}
+
+
+class DummyPRCreator:
+    def __init__(self, token=None, repo_owner=None, repo_name=None):
+        pass  # Dummy implementation accepts but ignores arguments
+    
+    def create_pull_request(self, **kwargs):
+        return {"success": False, "error": "PR creation not implemented yet"}
 
 
 # 実際のクラスまたはダミーを使用
@@ -64,7 +73,7 @@ except ImportError:
 try:
     from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
 except ImportError:
-    GitHubCreatePullRequestImplementation = None
+    GitHubCreatePullRequestImplementation = DummyPRCreator
 
 
 class AutoIssueElderFlowEngine:
@@ -73,20 +82,24 @@ class AutoIssueElderFlowEngine:
     def __init__(self):
         self.elder_flow = ActualElderFlowEngine()
         
-        # GitHub設定の検証
+        # GitHub設定の検証と初期化
         github_token = os.getenv("GITHUB_TOKEN")
         repo_owner = os.getenv("GITHUB_REPO_OWNER")
         repo_name = os.getenv("GITHUB_REPO_NAME")
 
         if not github_token or not repo_owner or not repo_name:
             # Use dummy PR creator if config is missing
-            from types import SimpleNamespace
-            self.pr_creator = SimpleNamespace()
-            self.pr_creator.create_pull_request = lambda **kwargs: {"success": False, "error": "PR creation not configured"}
+            logger.warning("GitHub configuration missing, using dummy PR creator")
+            self.pr_creator = GitHubCreatePullRequestImplementation(
+                token=github_token or "", 
+                repo_owner=repo_owner or "dummy", 
+                repo_name=repo_name or "dummy"
+            ) if GitHubCreatePullRequestImplementation else DummyPRCreator()
         else:
             self.pr_creator = GitHubCreatePullRequestImplementation(
                 token=github_token, repo_owner=repo_owner, repo_name=repo_name
             )
+        
         # 自動マージを有効化（可能な場合のみ）
         if hasattr(self.pr_creator, 'auto_merge_enabled'):
             self.pr_creator.auto_merge_enabled = True
@@ -430,10 +443,10 @@ class AutoIssueProcessor(EldersServiceLegacy):
 
         # コンポーネント初期化
         self.elder_flow = AutoIssueElderFlowEngine()
-        self.task_sage = ActualTaskSage()
-        self.incident_sage = ActualIncidentSage()
-        self.knowledge_sage = ActualKnowledgeSage()
-        self.rag_sage = ActualRAGSage()
+        self.task_sage = TaskSage()
+        self.incident_sage = IncidentSage()
+        self.knowledge_sage = KnowledgeSage()
+        self.rag_sage = RagManager()
 
         self.limiter = ProcessingLimiter()
         self.evaluator = ComplexityEvaluator()
