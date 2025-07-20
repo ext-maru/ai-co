@@ -32,6 +32,7 @@ from libs.knowledge_sage import KnowledgeSage
 from libs.task_sage import TaskSage
 from libs.incident_sage import IncidentSage
 from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
+from libs.claude_cli_executor import ClaudeCLIExecutor
 
 
 class AutoIssueElderFlowEngine:
@@ -645,6 +646,15 @@ class AutoIssueProcessor(EldersServiceLegacy):
         
         # 処理履歴ファイル
         self.processing_history_file = "logs/auto_issue_processing.json"
+        
+        # A2Aモード設定
+        self.a2a_enabled = os.getenv("AUTO_ISSUE_A2A_MODE", "false").lower() == "true"
+        self.a2a_max_parallel = int(os.getenv("AUTO_ISSUE_A2A_MAX_PARALLEL", "5"))
+        
+        if self.a2a_enabled:
+            logger.info(f"A2A mode is ENABLED with max parallel: {self.a2a_max_parallel}")
+        else:
+            logger.info("A2A mode is DISABLED (using sequential processing)")
 
     def get_capabilities(self) -> Dict[str, Any]:
         """サービスの機能を返す"""
@@ -715,30 +725,49 @@ class AutoIssueProcessor(EldersServiceLegacy):
                         "message": "No processable issues found.",
                     }
 
-                # イシューを順番に処理（スキップされたら次へ）
-                for issue in issues:
-                    result = await self.execute_auto_processing(issue)
+                # A2Aモードの場合は並列処理
+                if self.a2a_enabled:
+                    logger.info("Processing issues in A2A mode (parallel isolated processes)")
+                    results = await self.process_issues_a2a(issues)
                     
-                    # 既存PRがある場合はスキップして次へ
-                    if result.get("status") == "already_exists":
-                        logger.info(f"Issue #{issue.number} スキップ (既存PR有り) - 次のIssueを処理...")
-                        continue
+                    # 成功したIssueを集計
+                    successful = [r for r in results if r.get("status") == "success"]
+                    failed = [r for r in results if r.get("status") == "error"]
                     
-                    # 処理成功または失敗の場合は結果を返す
                     return {
-                        "status": "success",
-                        "processed_issue": {
-                            "number": issue.number,
-                            "title": issue.title,
-                            "result": result,
-                        },
+                        "status": "a2a_completed",
+                        "mode": "a2a",
+                        "total_issues": len(issues),
+                        "successful": len(successful),
+                        "failed": len(failed),
+                        "results": results,
+                        "message": f"A2A processing completed: {len(successful)}/{len(issues)} issues processed successfully"
                     }
-                
-                # すべてのIssueがスキップされた場合
-                return {
-                    "status": "all_skipped",
-                    "message": f"All {len(issues)} processable issues were skipped (existing PRs)",
-                }
+                else:
+                    # 従来の順次処理モード
+                    for issue in issues:
+                        result = await self.execute_auto_processing(issue)
+                        
+                        # 既存PRがある場合はスキップして次へ
+                        if result.get("status") == "already_exists":
+                            logger.info(f"Issue #{issue.number} スキップ (既存PR有り) - 次のIssueを処理...")
+                            continue
+                        
+                        # 処理成功または失敗の場合は結果を返す
+                        return {
+                            "status": "success",
+                            "processed_issue": {
+                                "number": issue.number,
+                                "title": issue.title,
+                                "result": result,
+                            },
+                        }
+                    
+                    # すべてのIssueがスキップされた場合
+                    return {
+                        "status": "all_skipped",
+                        "message": f"All {len(issues)} processable issues were skipped (existing PRs)",
+                    }
 
             elif mode == "dry_run":
                 # ドライラン（実際には処理しない）
@@ -957,6 +986,122 @@ class AutoIssueProcessor(EldersServiceLegacy):
             )
 
             return {"status": "error", "message": str(e)}
+
+    def enable_a2a_mode(self):
+        """A2Aモードを有効化"""
+        self.a2a_enabled = True
+        logger.info("A2A mode enabled for Auto Issue Processor")
+
+    def disable_a2a_mode(self):
+        """A2Aモードを無効化"""
+        self.a2a_enabled = False
+        logger.info("A2A mode disabled for Auto Issue Processor")
+
+    async def process_issue_isolated(self, issue: Issue) -> Dict[str, Any]:
+        """
+        独立したClaude CLIプロセスでIssueを処理
+        コンテキストの分離とPIDロック回避のためのA2A実装
+        """
+        try:
+            # Claude CLI実行用のプロンプト作成
+            prompt = f"""あなたはクロードエルダー（Claude Elder）です。
+
+以下のGitHub Issueを自動処理してください：
+
+**Issue情報:**
+- 番号: #{issue.number}
+- タイトル: {issue.title}
+- 内容: {issue.body or "No description"}
+- ラベル: {', '.join([label.name for label in issue.labels]) if issue.labels else 'None'}
+
+**実行指示:**
+1. Elder Flowを使用してこのIssueを解決してください
+2. TDDアプローチで実装してください
+3. 実装完了後、自動的にPull Requestを作成してください
+4. 品質ゲートをパスすることを確認してください
+
+**重要:**
+- このタスクは独立したプロセスで実行されています
+- 他のIssue処理とは完全に分離されたコンテキストです
+- 完了後、結果をJSON形式で返してください
+
+elder-flow execute "Auto-fix Issue #{issue.number}: {issue.title}" --priority medium
+"""
+
+            # Claude CLIの実行
+            executor = ClaudeCLIExecutor()
+            result_json = executor.execute(
+                prompt=prompt,
+                model="claude-sonnet-4-20250514",
+                working_dir=str(Path.cwd())
+            )
+
+            # 結果のパース
+            try:
+                result = json.loads(result_json)
+                return result
+            except json.JSONDecodeError:
+                # JSON形式でない場合は、テキストから情報を抽出
+                if "PR created" in result_json or "pull request" in result_json.lower():
+                    return {
+                        "status": "success",
+                        "message": result_json,
+                        "pr_created": True
+                    }
+                else:
+                    return {
+                        "status": "completed",
+                        "message": result_json
+                    }
+
+        except Exception as e:
+            logger.error(f"Error in isolated process for issue #{issue.number}: {str(e)}")
+            return {
+                "status": "error",
+                "message": str(e),
+                "issue_number": issue.number
+            }
+
+    async def process_issues_a2a(self, issues: List[Issue]) -> List[Dict[str, Any]]:
+        """
+        複数のIssueをA2A方式で並列処理
+        各Issueは独立したClaude CLIプロセスで実行される
+        """
+        logger.info(f"Starting A2A processing for {len(issues)} issues")
+        
+        # 並列実行数の制限
+        semaphore = asyncio.Semaphore(self.a2a_max_parallel)
+        
+        async def process_with_limit(issue: Issue) -> Dict[str, Any]:
+            """セマフォで並列度を制限しながら処理"""
+            async with semaphore:
+                logger.info(f"Processing issue #{issue.number} in isolated process")
+                return await self.process_issue_isolated(issue)
+        
+        # すべてのタスクを作成
+        tasks = [
+            asyncio.create_task(process_with_limit(issue))
+            for issue in issues
+        ]
+        
+        # 結果を収集（例外も含む）
+        results = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # 結果の整形
+        processed_results = []
+        for i, result in enumerate(results):
+            if isinstance(result, Exception):
+                processed_results.append({
+                    "status": "error",
+                    "message": str(result),
+                    "issue_number": issues[i].number
+                })
+            else:
+                processed_results.append(result)
+        
+        logger.info(f"A2A processing completed. Success: {sum(1 for r in processed_results if r.get('status') == 'success')}/{len(processed_results)}")
+        
+        return processed_results
 
     async def consult_four_sages(self, issue: Issue) -> Dict[str, Any]:
         """4賢者への相談"""
