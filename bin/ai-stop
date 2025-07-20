@@ -1,6 +1,0 @@
-#!/bin/bash
-echo "🛑 AI Company を停止中..."
-tmux kill-session -t ai_company 2>/dev/null && echo "✅ tmuxセッション停止完了" || echo "ℹ️  tmuxセッションは既に停止しています"
-pkill -f "worker.py" 2>/dev/null
-rm -f /tmp/ai_command_executor.pid 2>/dev/null
-echo "✅ AI Company 停止完了"

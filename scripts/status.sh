@@ -1,9 +1,60 @@
 #!/bin/bash
 
+# ヘルプ表示
+show_help() {
+    cat << EOF
+status.sh - AI Company システム状態確認コマンド
+
+使用方法:
+    status.sh [オプション]
+
+説明:
+    AI Company システムの状態を確認します。
+    以下の情報を表示します:
+    - RabbitMQサーバー状態
+    - キューの状態
+    - Claude CLI可用性
+    - 出力ファイル数
+    - ワーカープロセス状態
+
+オプション:
+    --help, -h          このヘルプを表示
+    --watch             リアルタイム監視モード (2秒間隔)
+    --brief             簡潔な表示
+
+例:
+    status.sh                   # 状態を1回表示
+    status.sh --watch           # 2秒間隔で監視
+    status.sh --brief           # 簡潔な表示
+EOF
+}
+
+# 引数チェック
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    show_help
+    exit 0
+fi
+
+if [ "$1" = "--watch" ]; then
+    echo "🔄 リアルタイム監視モード (Ctrl+C で終了)"
+    watch -n 2 "$0 --brief"
+    exit 0
+fi
+
 PROJECT_DIR="$HOME/ai_co"
 
-echo "🏢 AI Company Status - $(date +%H:%M:%S)"
-echo "===================================="
+# 簡潔表示フラグ
+BRIEF_MODE=false
+if [ "$1" = "--brief" ]; then
+    BRIEF_MODE=true
+fi
+
+if [ "$BRIEF_MODE" = "false" ]; then
+    echo "🏢 AI Company Status - $(date +%H:%M:%S)"
+    echo "===================================="
+else
+    echo "🏢 $(date +%H:%M:%S)"
+fi
 
 # RabbitMQ
 echo "[RabbitMQ]"

@@ -1,6 +1,6 @@
-#!/home/aicompany/ai_co/venv/bin/python3
+#!/usr/bin/env python3
+import argparse
 import json
-import sys
 from datetime import datetime
 
 import pika
@@ -36,12 +36,49 @@ def send_task(prompt, task_type="general"):
         print(f"❌ エラー: {e}")
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        print("使用方法: send_task.py <prompt> [type]")
-        print("例: send_task.py 'Pythonでフィボナッチ数列を生成' code")
-        sys.exit(1)
+def main():
+    parser = argparse.ArgumentParser(
+        description="Task submission tool - Send tasks to the Elders Guild task queue",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  %(prog)s "Create Python fibonacci function" code
+  %(prog)s "Analyze system performance" analysis
+  %(prog)s "Write unit tests for auth module" test
+  %(prog)s "Fix database connection issue" fix
+        """,
+    )
 
-    prompt = sys.argv[1]
-    task_type = sys.argv[2] if len(sys.argv) > 2 else "general"
-    send_task(prompt, task_type)
+    parser.add_argument(
+        "prompt", help="Task description or prompt to send to the AI system"
+    )
+
+    parser.add_argument(
+        "type",
+        nargs="?",
+        default="general",
+        choices=["general", "code", "analysis", "test", "fix"],
+        help="Task type (default: general). Available types: general, code, analysis, test, fix",
+    )
+
+    parser.add_argument(
+        "--verbose",
+        "-v",
+        action="store_true",
+        help="Enable verbose output with task details",
+    )
+
+    args = parser.parse_args()
+
+    if args.verbose:
+        print(f"📋 タスク詳細:")
+        print(f"   タイプ: {args.type}")
+        print(f"   プロンプト: {args.prompt}")
+        print(f"   送信時刻: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print()
+
+    send_task(args.prompt, args.type)
+
+
+if __name__ == "__main__":
+    main()

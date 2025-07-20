@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
-from pathlib import Path
-
 """
 会話の自動要約・圧縮バッチ
 """
 import sys
 
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append("/root/ai_co")
 import logging
 
-from libs.conversation_summarizer import ConversationSummarizer
+from features.conversation.conversation_summarizer import ConversationSummarizer
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [AutoSummarize] %(message)s"

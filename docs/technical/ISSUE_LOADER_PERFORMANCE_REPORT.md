@@ -96,8 +96,23 @@
 2. **キャッシュ最適化**: コードベース解析結果の再利用
 3. **テンプレート充実**: データサイエンス、DevOps分野等への拡張
 
+## 📋 関連ドキュメント
+
+### Issue #185 ドキュメント
+- [Issue #185 概要](../issues/issue-185-oss-code-generation/README.md)
+- [性能最適化ロードマップ](../issues/issue-185-oss-code-generation/PERFORMANCE_OPTIMIZATION_ROADMAP.md)
+
+### フェーズ別詳細レポート
+- [Phase 1: ベースライン性能](PHASE1_BASELINE_PERFORMANCE_REPORT.md)
+- [Phase 2: Issue理解エンジン](PHASE2_INTELLIGENCE_PERFORMANCE_REPORT.md)  
+- [Phase 3: コードベース学習](PHASE3_CODEBASE_LEARNING_REPORT.md)
+
+### アーキテクチャ
+- [OSS組み合わせアーキテクチャ](OSS_CODE_GENERATION_ARCHITECTURE.md)
+
 ---
 
 **評価者**: クロードエルダー  
 **評価基準**: エルダーズギルド品質基準準拠  
+**関連Issue**: [#185](../issues/issue-185-oss-code-generation/)  
 **次回評価**: Phase 4完了後
