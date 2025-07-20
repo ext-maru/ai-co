@@ -10,7 +10,18 @@ Features:
 - 品質基準未満でのマージ阻止
 """
 
-set -e
+set -euo pipefail
+IFS=$'\n\t'
+
+# セキュリティ設定
+export PATH="/usr/local/bin:/usr/bin:/bin"
+umask 077
+
+# Root実行防止
+if [[ $(id -u) -eq 0 ]]; then
+    echo "❌ ERROR: Security policy violation - script cannot run as root"
+    exit 1
+fi
 
 # Colors for output
 RED='\033[0;31m'
@@ -57,10 +68,25 @@ check_bypass() {
     fi
 }
 
-# Get current branch info
+# Validate and sanitize branch names
+validate_branch_name() {
+    local branch="$1"
+    # Allow only alphanumeric, hyphens, underscores, and forward slashes
+    if [[ ! "$branch" =~ ^[a-zA-Z0-9/_-]+$ ]]; then
+        print_error "Invalid branch name: $branch"
+        exit 1
+    fi
+    echo "$branch"
+}
+
+# Get current branch info with validation
 get_branch_info() {
     CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
     TARGET_BRANCH=${1:-main}
+    
+    # Validate branch names
+    CURRENT_BRANCH=$(validate_branch_name "$CURRENT_BRANCH")
+    TARGET_BRANCH=$(validate_branch_name "$TARGET_BRANCH")
     
     print_status "Analyzing merge: $CURRENT_BRANCH → $TARGET_BRANCH"
 }
@@ -93,33 +119,49 @@ run_merge_quality_analysis() {
         if [[ -f "$file" ]]; then
             print_status "Checking quality of: $file"
             
-            # Use 4 Sages quality analysis if available
+            # Use 4 Sages quality analysis if available (SECURE)
             if [[ -f "$PROJECT_ROOT/libs/four_sages_quality_bridge.py" ]]; then
+                # セキュアな実行のため、Elder Guild Security Validatorを使用
                 QUALITY_RESULT=$(python3 -c "
-import asyncio
 import sys
 sys.path.insert(0, '$PROJECT_ROOT')
+from libs.elder_guild_security_validator import execute_secure_python
+
+# セキュアなスクリプト
+secure_script = '''
+import asyncio
 from libs.four_sages_quality_bridge import four_sages_analyze_file
 
 async def main():
     try:
-        result = await four_sages_analyze_file('$file')
-        if result and 'analysis' in result:
-            score = result['analysis'].get('quality_score', 0)
-            print(f'SCORE:{score}')
+        result = await four_sages_analyze_file(file_path)
+        if result and \"analysis\" in result:
+            score = result[\"analysis\"].get(\"quality_score\", 0)
+            print(f\"SCORE:{score}\")
             
             # Check Iron Will compliance
-            iron_will = result['analysis'].get('iron_will_compliance', True)
+            iron_will = result[\"analysis\"].get(\"iron_will_compliance\", True)
             if not iron_will:
-                print('IRON_WILL_VIOLATION')
-            
+                print(\"IRON_WILL_VIOLATION\")
         else:
-            print('SCORE:70')
+            print(\"SCORE:70\")
     except Exception as e:
-        print(f'ERROR:{str(e)}')
-        print('SCORE:70')
+        print(f\"ERROR:{str(e)}\")
+        print(\"SCORE:70\")
 
 asyncio.run(main())
+'''
+
+# ファイルパス変数追加
+script_with_file = secure_script.replace('file_path', '\"$file\"')
+
+# セキュア実行
+result = execute_secure_python(script_with_file, '$file', 60)
+if result['success']:
+    print(result['stdout'])
+else:
+    print('SCORE:70')
+    print(f'ERROR:{result.get(\"error\", \"Unknown error\")}')
 " 2>/dev/null || echo "SCORE:70")
                 
                 # Extract score
@@ -158,8 +200,20 @@ asyncio.run(main())
         AVG_SCORE=$(echo "scale=2; $TOTAL_SCORE / $FILE_COUNT" | bc -l)
         print_status "Average quality score: $AVG_SCORE/100"
         
-        # Generate merge quality report
-        MERGE_REPORT_FILE="$PROJECT_ROOT/data/merge_quality_report_$(date +%Y%m%d_%H%M%S).json"
+        # Generate merge quality report with secure temp file
+        create_secure_merge_report() {
+            local report_dir="$PROJECT_ROOT/data/merge_quality_reports"
+            mkdir -p "$report_dir"
+            chmod 700 "$report_dir"
+            
+            # セキュアな一時ファイル作成
+            local temp_report=$(mktemp "$report_dir/merge_report_XXXXXXXX.json")
+            chmod 600 "$temp_report"
+            
+            echo "$temp_report"
+        }
+        
+        MERGE_REPORT_FILE=$(create_secure_merge_report)
         cat > "$MERGE_REPORT_FILE" << EOF
 {
     "timestamp": "$(date -Iseconds)",

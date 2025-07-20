@@ -43,9 +43,9 @@ class AutoIssueElderFlowEngine:
         self.elder_flow = ElderFlowEngine()
         
         # GitHub設定の検証と初期化
-        github_token = EnvManager.get_github_token()
-        repo_owner = EnvManager.get_github_repo_owner()
-        repo_name = EnvManager.get_github_repo_name()
+        github_token = os.getenv("GITHUB_TOKEN")
+        repo_owner = os.getenv("GITHUB_REPO_OWNER")
+        repo_name = os.getenv("GITHUB_REPO_NAME")
 
         if not github_token:
             raise ValueError("GITHUB_TOKEN environment variable is required")
