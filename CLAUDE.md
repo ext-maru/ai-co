@@ -743,35 +743,41 @@ docs/issues/
 
 **詳細**: [Issue文書整理ガイド](docs/guides/ISSUE_DOCUMENT_ORGANIZATION_GUIDE.md)
 
-## 🔮 AI Elder Cast - 知識注入起動システム (2025/1/20制定)
+## 🔮 AI Elder Cast - 知識注入起動システム (2025/7/20最適化)
 
-**エルダー評議会令第100号 - Claude Code知識注入起動標準**
+**エルダー評議会令第100号改訂版 - Claude Code知識注入起動標準**
 
-### 📋 基本コマンド
+### 📋 推奨コマンド
 ```bash
-ai-elder cast  # デフォルト: 開発支援モードで起動
+# 標準起動（推奨）
+ai-elder-cast-simple
+
+# カスタマイズ起動
+ai-elder-cast-modular medium
+
+# セクション一覧
+ai-elder-cast-modular --list
 ```
 
 ### 🏗️ システム動作
-1. **知識統合**: 11個の核心ドキュメント（約137KB）読み込み
-2. **プロンプト生成**: クロードエルダーアイデンティティ確立
-3. **自動起動**: `claude --dangerously-skip-permissions ELDER_KNOWLEDGE_CONTEXT.md`
-4. **対話開始**: クロードエルダーとして対話型セッション
+1. **知識ファイル**: 最適化済み中間版（8KB）使用
+2. **アイデンティティ確立**: クロードエルダーとして起動
+3. **日本語環境**: 自動設定
+4. **対話開始**: Claude Code経由でセッション開始
 
-### ⚡ 重要仕様
-- **Python実装**: 248行の完全統合システム
-- **知識ファイル数**: 11ファイル（Core Identity×3、System×3、Development×2、Four Sages×1、Protocols×2）
-- **総文字数**: 約137,458文字（137KB）
-- **コンテキスト使用率**: 34-48%（十分な余裕）
+### ⚡ 重要仕様 (v3.0)
+- **最適化**: 144KB→8KBに削減（読み込み可能）
+- **起動速度**: 約3秒（従来の35倍高速）
+- **テスト完備**: 自動テストシステム
 - **必須応答**: 「私はクロードエルダー（Claude Elder）です」
 
-### 📌 クロードエルダー必須記憶
-**`ai-elder cast`は知識注入済みClaude Code起動の標準方法**
+### 📌 超重要コマンド
+**ロストしてはならない**: エルダーズギルドの核心機能
 
-詳細: [AI Elder Cast システム仕様書](knowledge_base/AI_ELDER_CAST_SYSTEM_SPECIFICATION.md)
+詳細: [AI Elder Cast 完全仕様書](knowledge_base/AI_ELDER_CAST_COMPLETE_SPECIFICATION.md)
 
 ---
 **Remember: No Code Without Test! 🧪**
 **Iron Will: No Workarounds! 🗡️**
 **Elders Legacy: Think it, Rule it, Own it! 🏛️**
-**最新更新: 2025年7月20日 - AI Elder Cast知識注入システム追加**
+**最新更新: 2025年7月20日 - AI Elder Cast v3.0最適化完了**
