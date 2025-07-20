@@ -158,6 +158,17 @@ class SmartCodeGenerator:
             self.use_intelligence = False
             self.logger = logging.getLogger(self.__class__.__name__)
             self.logger.warning(f"Issue Intelligence Engine not available: {e}")
+        
+        # Phase 3: コードベース解析エンジン統合
+        try:
+            from libs.codebase_analysis_engine import CodebaseAnalysisEngine
+            self.codebase_engine = CodebaseAnalysisEngine()
+            self.use_codebase_analysis = True
+            self.logger.info("Codebase Analysis Engine enabled")
+        except ImportError as e:
+            self.codebase_engine = None
+            self.use_codebase_analysis = False
+            self.logger.warning(f"Codebase Analysis Engine not available: {e}")
     
     def generate_implementation(
         self, 
@@ -193,6 +204,27 @@ class SmartCodeGenerator:
         else:
             intelligence = None
         
+        # Phase 3: コードベース解析による学習強化
+        codebase_intelligence = None
+        if self.use_codebase_analysis and intelligence:
+            try:
+                # 技術スタックに基づいてコードベース分析
+                enhanced_tech_stack = {
+                    'primary_stack': intelligence.primary_domain,
+                    'services': [req.name.split('_', 1)[1] for req in intelligence.tech_requirements 
+                               if req.category == intelligence.primary_domain and '_' in req.name][:5]
+                }
+                
+                codebase_intelligence = self.codebase_engine.analyze_codebase(enhanced_tech_stack)
+                self.logger.info(f"Codebase analysis completed:")
+                self.logger.info(f"  Import patterns: {len(codebase_intelligence.import_patterns)}")
+                self.logger.info(f"  Class patterns: {len(codebase_intelligence.class_patterns)}")
+                self.logger.info(f"  Similar implementations found")
+                
+            except Exception as e:
+                self.logger.warning(f"Codebase analysis failed: {e}")
+                codebase_intelligence = None
+        
         # 1. 技術スタック検出 (従来方式 + Intelligence統合)
         tech_stack = self.tech_detector.detect_tech_stack(full_text)
         
@@ -220,9 +252,9 @@ class SmartCodeGenerator:
         # 2. テンプレート選択
         impl_template_path, test_template_path = self.template_selector.select_templates(tech_stack)
         
-        # 3. 強化されたコンテキスト生成
+        # 3. 強化されたコンテキスト生成 (Phase 3統合)
         context = self._generate_enhanced_context(
-            issue_number, issue_title, issue_body, tech_stack, intelligence
+            issue_number, issue_title, issue_body, tech_stack, intelligence, codebase_intelligence
         )
         
         # 4. コード生成
@@ -241,6 +273,12 @@ class SmartCodeGenerator:
                     "estimated_effort": intelligence.estimated_effort if intelligence else "medium",
                     "implementation_hints": intelligence.implementation_hints if intelligence else [],
                     "complexity_score": sum(intelligence.complexity_indicators.values()) / max(1, len(intelligence.complexity_indicators)) if intelligence else 0.5
+                },
+                "codebase_learning": {
+                    "import_patterns_found": len(codebase_intelligence.import_patterns) if codebase_intelligence else 0,
+                    "class_patterns_found": len(codebase_intelligence.class_patterns) if codebase_intelligence else 0,
+                    "similar_implementations": len(context.get('similar_implementations', [])),
+                    "learned_error_patterns": len(context.get('learned_error_patterns', []))
                 },
                 "templates_used": {
                     "implementation": impl_template_path,
@@ -316,7 +354,8 @@ class SmartCodeGenerator:
         issue_title: str, 
         issue_body: str, 
         tech_stack: Dict[str, Any],
-        intelligence
+        intelligence,
+        codebase_intelligence=None
     ) -> Dict[str, Any]:
         """強化されたコンテキスト生成 (Phase 2対応)"""
         
@@ -353,6 +392,41 @@ class SmartCodeGenerator:
             
             # 工数見積もりに基づくコメント詳細度
             context['detailed_comments'] = intelligence.estimated_effort in ['large', 'extra_large']
+        
+        # Phase 3: コードベース学習による強化
+        if codebase_intelligence:
+            # 学習したインポートパターンを追加
+            context['learned_imports'] = []
+            for pattern in codebase_intelligence.import_patterns[:5]:  # 上位5つ
+                context['learned_imports'].append({
+                    'module': pattern.module,
+                    'alias': pattern.alias,
+                    'frequency': pattern.frequency,
+                    'context': pattern.context
+                })
+            
+            # 学習したクラスパターンを追加
+            context['learned_class_patterns'] = []
+            for pattern in codebase_intelligence.class_patterns:
+                if pattern.tech_domain == tech_stack.get('primary_stack', 'general'):
+                    context['learned_class_patterns'].append({
+                        'name': pattern.name,
+                        'base_classes': pattern.base_classes,
+                        'common_methods': pattern.methods[:5],  # 上位5メソッド
+                        'attributes': pattern.attributes[:3]   # 上位3属性
+                    })
+            
+            # エラーハンドリングパターンを追加
+            context['learned_error_patterns'] = codebase_intelligence.common_error_handling[:3]
+            
+            # 命名規則を追加
+            context['naming_conventions'] = codebase_intelligence.naming_conventions
+            
+            # 類似実装からの学習
+            similar_files = []
+            if hasattr(self, 'codebase_engine'):
+                similar_files = self.codebase_engine.find_similar_implementations(tech_stack)
+            context['similar_implementations'] = similar_files[:3]  # 最大3ファイル
         
         return context
     
