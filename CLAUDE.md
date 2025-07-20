@@ -472,7 +472,7 @@ ai-tdd new FeatureName "機能要件"
 │   └── ai-tdd                # TDD専用コマンド
 └── knowledge_base/           # ナレッジベース
     ├── CLAUDE_TDD_GUIDE.md
-    ├── XP_DEVELOPMENT_GUIDE.md  # XP個人開発ガイド
+    │   └── XP_DEVELOPMENT_GUIDE.md  # XP個人開発ガイド
     └── ELDERS_GUILD_LLM_WEB_DESIGN_GUIDE.md
 ```
 
@@ -586,9 +586,9 @@ def my_claude_function():
 ## 🔍 詳細ガイド
 
 ### 知識ベース
-- [CLAUDE_TDD_GUIDE.md](knowledge_base/CLAUDE_TDD_GUIDE.md) - Claude CLI TDD完全ガイド
-- [XP_DEVELOPMENT_GUIDE.md](knowledge_base/XP_DEVELOPMENT_GUIDE.md) - XP個人開発ガイド
-- [ELDERS_GUILD_LLM_WEB_DESIGN_GUIDE.md](knowledge_base/ELDERS_GUILD_LLM_WEB_DESIGN_GUIDE.md) - LLMウェブデザインガイド
+- [CLAUDE_TDD_GUIDE.md](knowledge_base/core/guides/CLAUDE_TDD_GUIDE.md) - Claude CLI TDD完全ガイド
+- [XP_DEVELOPMENT_GUIDE.md](knowledge_base/core/guides/XP_DEVELOPMENT_GUIDE.md) - XP個人開発ガイド
+- [ELDERS_GUILD_LLM_WEB_DESIGN_GUIDE.md](knowledge_base/core/guides/ELDERS_GUILD_LLM_WEB_DESIGN_GUIDE.md) - LLMウェブデザインガイド
 
 ### ワークフロー
 - [TDD_WORKFLOW.md](docs/TDD_WORKFLOW.md) - 一般的なTDDワークフロー
