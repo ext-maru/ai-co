@@ -432,7 +432,7 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
                 method="PUT",
                 json_data={
                     "commit_title": f"Auto-merge PR #{pr_number}",
-                    "commit_message": f"Automatically merged by Auto Issue Processor",
+                    "commit_message": f"Automatically merged by Auto Issue Processor\n\nCloses #{pr.get('number', pr_number)}",
                     "merge_method": "merge"  # merge, squash, rebase から選択
                 }
             )
