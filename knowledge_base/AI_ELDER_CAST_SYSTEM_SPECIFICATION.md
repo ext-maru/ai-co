@@ -93,7 +93,8 @@ possible_paths = [
 
 起動コマンド:
 ```bash
-claude --locale ja --dangerously-skip-permissions ELDER_KNOWLEDGE_CONTEXT.md
+# 日本語環境設定
+LANG=ja_JP.UTF-8 LC_ALL=ja_JP.UTF-8 claude --dangerously-skip-permissions ELDER_KNOWLEDGE_CONTEXT.md
 ```
 
 ---
@@ -117,7 +118,8 @@ graph TD
 ## ⚡ 重要な仕様
 
 ### 🇯🇵 日本語モード
-- **デフォルト**: `--locale ja`を自動追加
+- **デフォルト**: 環境変数`LANG=ja_JP.UTF-8`を自動設定
+- **方法**: `os.environ`で日本語ロケール設定
 - **理由**: クロードエルダーの日本語コミュニケーション優先
 
 ### 🔐 権限管理
@@ -148,6 +150,7 @@ graph TD
 - **2025/01/20 v2**: 理想的な11ファイル構成に拡張（137KB）
 - **2025/01/20 v2.1**: 日付正規化・絶対パス修正・重複コンテンツ最適化
 - **2025/01/20 v2.2**: 日本語モードデフォルト化・起動メッセージ日本語化
+- **2025/01/20 v2.3**: 日本語設定を環境変数方式に変更（--locale未サポート対応）
 
 ### 依存関係
 - Python 3.x
