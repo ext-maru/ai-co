@@ -29,7 +29,6 @@ class ClaudeElderAutoFlowInterceptor:
     """クロードエルダー自動Elder Flow適用システム"""
 
     def __init__(self):
-        self.elder_flow_engine = ElderFlowEngine()
         self.auto_flow_patterns = self._load_auto_flow_patterns()
         self.enabled = True
         self.bypass_keywords = ["help", "status", "explain", "show", "list", "describe"]
@@ -156,14 +155,8 @@ class ClaudeElderAutoFlowInterceptor:
         )
 
         try:
-            # Elder Flow実行
-            result = await execute_elder_flow_with_retry(
-                task_name=user_input,
-                priority=flow_info["priority"],
-                auto_retry=True,
-                max_retries=3,
-                retry_interval=5,
-            )
+            # Elder Flow実行（軽量版 - シンプルなコマンド実行）
+            result = await self._execute_elder_flow_lightweight(user_input, flow_info["priority"])
 
             if result.get("error"):
                 # Elder Flow失敗時は通常処理にフォールバック
@@ -264,6 +257,66 @@ class ClaudeElderAutoFlowInterceptor:
                 )
 
         return results
+
+    async def _execute_elder_flow_lightweight(self, task_name: str, priority: str) -> Dict[str, Any]:
+        """軽量版Elder Flow実行（依存関係最小化）"""
+        import subprocess
+        import uuid
+        
+        flow_id = str(uuid.uuid4())
+        start_time = datetime.now()
+        
+        try:
+            # Elder Flow CLIコマンドを実行
+            cmd = [
+                "python3", 
+                f"{project_root}/scripts/elder-flow", 
+                "execute", 
+                task_name,
+                "--priority", priority,
+                "--retry"
+            ]
+            
+            logger.info(f"🚀 Elder Flow軽量実行: {' '.join(cmd)}")
+            
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                cwd=project_root
+            )
+            
+            stdout, stderr = await process.communicate()
+            
+            end_time = datetime.now()
+            execution_time = (end_time - start_time).total_seconds()
+            
+            if process.returncode == 0:
+                return {
+                    "flow_id": flow_id,
+                    "status": "success",
+                    "stdout": stdout.decode('utf-8'),
+                    "execution_time": end_time.isoformat(),
+                    "duration": execution_time
+                }
+            else:
+                return {
+                    "error": f"Elder Flow failed with return code {process.returncode}",
+                    "stderr": stderr.decode('utf-8'),
+                    "stdout": stdout.decode('utf-8'),
+                    "execution_time": end_time.isoformat(),
+                    "duration": execution_time
+                }
+                
+        except Exception as e:
+            end_time = datetime.now()
+            execution_time = (end_time - start_time).total_seconds()
+            
+            return {
+                "error": f"Elder Flow execution failed: {str(e)}",
+                "execution_time": end_time.isoformat(),
+                "duration": execution_time
+            }
 
 
 # シングルトンインスタンス
