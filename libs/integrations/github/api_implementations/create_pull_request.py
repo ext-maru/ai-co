@@ -199,7 +199,10 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
             return {"success": False, "error": str(e), "pull_request": None}
 
     def _validate_pr_params(self, title: str, head: str, base: str) -> Dict[str, Any]:
-        """PRパラメータの検証"""
+        """PRパラメータの検証（セキュリティ強化版）"""
+        import re
+        
+        # 空文字チェック
         if not title or not title.strip():
             return {"valid": False, "error": "Pull request title cannot be empty"}
 
@@ -214,6 +217,32 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
                 "valid": False,
                 "error": "Head and base branches cannot be the same",
             }
+        
+        # タイトル長チェック
+        if len(title) > 256:
+            return {"valid": False, "error": "Pull request title too long (max 256 chars)"}
+        
+        # ブランチ名の安全性チェック（英数字、ハイフン、アンダースコア、スラッシュのみ）
+        branch_pattern = r'^[a-zA-Z0-9_\-/]+$'
+        if not re.match(branch_pattern, head):
+            return {"valid": False, "error": f"Invalid head branch name: {head}"}
+        
+        if not re.match(branch_pattern, base):
+            return {"valid": False, "error": f"Invalid base branch name: {base}"}
+        
+        # 危険な文字のチェック（SQLインジェクション、コマンドインジェクション対策）
+        dangerous_patterns = [
+            r'[;\'"\\]',  # SQL/コマンドインジェクション文字
+            r'\.\.',     # ディレクトリトラバーサル
+            r'<[^>]+>',   # HTMLタグ
+            r'[`$]',      # シェルコマンド実行
+        ]
+        
+        for pattern in dangerous_patterns:
+            if re.search(pattern, title):
+                return {"valid": False, "error": "Title contains potentially dangerous characters"}
+            if re.search(pattern, head) or re.search(pattern, base):
+                return {"valid": False, "error": "Branch name contains potentially dangerous characters"}
 
         return {"valid": True}
 

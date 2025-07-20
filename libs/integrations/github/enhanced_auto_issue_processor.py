@@ -923,6 +923,10 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
 
                     self.logger.info(f"✅ PR作成完了: #{pr.number}")
                     self.logger.info(f"   → PR URL: {pr.html_url}")
+                    
+                    # スマートマージシステムを起動
+                    if self.conflict_resolution_enabled:
+                        await self._attempt_smart_merge(pr, issue)
 
                     # イシューにコメントを追加
                     await self._create_issue_comment_safe(
@@ -935,6 +939,7 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                         f"**4賢者の助言**:\n"
                         f"- リスクレベル: {sage_advice.get('risks', {}).get('level', 'unknown')}\n"
                         f"- 推奨アプローチ: {sage_advice.get('solution', {}).get('approach', 'standard')}\n\n"
+                        f"**スマートマージ**: 自動マージを試行中...\n\n"
                         f"レビューをお願いします。",
                     )
 
@@ -971,6 +976,61 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
         self.metrics["processed_issues"] += 1
 
         return result
+    
+    async def _attempt_smart_merge(self, pr, issue):
+        """スマートマージシステムを使用してPRのマージを試行"""
+        try:
+            # スマートマージシステムの遅延初期化
+            if self.smart_merge_system is None:
+                self.logger.info("🔧 スマートマージシステムを初期化中...")
+                from .enhanced_merge_system_v2 import EnhancedMergeSystemV2
+                
+                github_token = os.environ.get("GITHUB_TOKEN")
+                repo_parts = pr.base.repo.full_name.split("/")
+                self.smart_merge_system = EnhancedMergeSystemV2(
+                    github_token=github_token,
+                    repo_owner=repo_parts[0],
+                    repo_name=repo_parts[1]
+                )
+                self.logger.info("   → スマートマージシステム初期化完了")
+            
+            self.logger.info(f"🚀 PR #{pr.number}のスマートマージを開始...")
+            
+            # マージを試行
+            merge_result = await self.smart_merge_system.handle_pull_request(
+                pr_number=pr.number,
+                monitoring_duration=300,  # 5分間監視
+                auto_merge=True
+            )
+            
+            if merge_result["success"]:
+                self.logger.info(f"✅ PR #{pr.number}のマージ成功!")
+                # イシューにマージ成功コメントを追加
+                await self._create_issue_comment_safe(
+                    issue,
+                    f"🎉 PR #{pr.number}が自動的にマージされました！\n\n"
+                    f"**マージ方法**: {merge_result.get('merge_method', 'merge')}\n"
+                    f"**実行時間**: {merge_result.get('total_duration', 0):.1f}秒"
+                )
+            else:
+                self.logger.warning(f"⚠️ PR #{pr.number}のマージ失敗: {merge_result.get('error')}")
+                if merge_result.get("conflict_detected"):
+                    # コンフリクトがある場合のコメント
+                    await self._create_issue_comment_safe(
+                        issue,
+                        f"⚠️ PR #{pr.number}にコンフリクトが検出されました。\n\n"
+                        f"**詳細**: {merge_result.get('error')}\n"
+                        f"手動での解決が必要です。"
+                    )
+            
+            return merge_result
+            
+        except Exception as e:
+            self.logger.error(f"❌ スマートマージ中にエラー: {e}")
+            return {
+                "success": False,
+                "error": str(e)
+            }
 
     async def _implement_solution(
         self, issue: Issue, sage_advice: Dict[str, Any]
