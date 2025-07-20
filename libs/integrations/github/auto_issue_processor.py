@@ -24,11 +24,8 @@ sys.path.insert(0, str(project_root))
 
 from libs.core.elders_legacy import EldersServiceLegacy
 
-# Elder System実装は現在ダミーとして使用（実装時に実際のクラスに置き換え）
-try:
-    from libs.rag_manager import RagManager as ActualRAGSage
-except ImportError:
-    ActualRAGSage = DummySage
+# RAG Manager実装
+from libs.rag_manager import RagManager as ActualRAGSage
 
 
 # ダミー実装クラス（実際の4賢者システムがない場合の代替）
@@ -51,38 +48,16 @@ class DummyPRCreator:
 
 
 # 実際のクラスまたはダミーを使用
-try:
-    from libs.elder_system.flow.elder_flow_engine import (
-        ElderFlowEngine as ActualElderFlowEngine,
-    )
-except ImportError:
-    ActualElderFlowEngine = DummyElderFlowEngine
+# Elder Flow Engine実装
+from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine as ActualElderFlowEngine
 
-try:
-    from libs.four_sages.knowledge.knowledge_sage import (
-        KnowledgeSage as ActualKnowledgeSage,
-    )
-except ImportError:
-    ActualKnowledgeSage = DummySage
+# 実際の4賢者実装を使用
+from libs.knowledge_sage import KnowledgeSage as ActualKnowledgeSage
+from libs.task_sage import TaskSage as ActualTaskSage
+from libs.incident_sage import IncidentSage as ActualIncidentSage
 
-try:
-    from libs.four_sages.task.task_sage import TaskSage as ActualTaskSage
-except ImportError:
-    ActualTaskSage = DummySage
-
-try:
-    from libs.four_sages.incident.incident_sage import (
-        IncidentSage as ActualIncidentSage,
-    )
-except ImportError:
-    ActualIncidentSage = DummySage
-
-try:
-    from libs.integrations.github.api_implementations.create_pull_request import (
-        GitHubCreatePullRequestImplementation,
-    )
-except ImportError:
-    GitHubCreatePullRequestImplementation = DummyPRCreator
+# GitHub PR作成実装
+from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
 
 
 class AutoIssueElderFlowEngine:
@@ -889,6 +864,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
         except Exception as e:
             logger.warning(f"Error checking existing PRs: {str(e)}")
             return None
+
 
 
 async def main():
