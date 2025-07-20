@@ -1,13 +1,29 @@
 #!/bin/bash
+<<<<<<< HEAD
 # Git Elder Commit - Elder Flowを自動適用するgitコミットラッパー
 
 set -euo pipefail
 
 # カラー定義
+=======
+#
+# git-elder-commit
+# エルダーズギルド標準のGitコミットツール
+# Conventional Commitsに準拠した自動コミット＆プッシュ
+#
+
+set -euo pipefail
+
+# プロジェクトルート
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+
+# 色定義
+>>>>>>> origin/main
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+<<<<<<< HEAD
 NC='\033[0m'
 
 # Elder Flow自動適用キーワード
@@ -34,3 +50,97 @@ else
     echo -e "${GREEN}✅ Elder Flow適用条件外のため、通常コミットを実行します${NC}"
     git commit -m "$COMMIT_MSG"
 fi
+=======
+NC='\033[0m' # No Color
+
+# エルダーズギルドアイコン
+ELDER_ICON="🏛️"
+SUCCESS_ICON="✅"
+ERROR_ICON="❌"
+INFO_ICON="📋"
+
+# 使用方法
+usage() {
+    echo "Usage: git-elder-commit <type> <scope> <message>"
+    echo ""
+    echo "Types:"
+    echo "  feat     : 新機能"
+    echo "  fix      : バグ修正"
+    echo "  docs     : ドキュメント変更"
+    echo "  style    : コードスタイル変更"
+    echo "  refactor : リファクタリング"
+    echo "  perf     : パフォーマンス改善"
+    echo "  test     : テスト追加・修正"
+    echo "  chore    : ビルド・補助ツール変更"
+    echo ""
+    echo "Example:"
+    echo "  git-elder-commit feat auth 'OAuth2.0認証実装'"
+    exit 1
+}
+
+# 引数チェック
+if [ $# -lt 3 ]; then
+    usage
+fi
+
+TYPE=$1
+SCOPE=$2
+MESSAGE=$3
+
+# タイプ検証
+VALID_TYPES=("feat" "fix" "docs" "style" "refactor" "perf" "test" "chore")
+if [[ ! " ${VALID_TYPES[@]} " =~ " ${TYPE} " ]]; then
+    echo -e "${ERROR_ICON} ${RED}Invalid type: ${TYPE}${NC}"
+    usage
+fi
+
+# Git状態確認
+echo -e "${ELDER_ICON} エルダーズギルド Git自動化システム"
+echo "================================"
+
+# 変更確認
+if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo -e "${INFO_ICON} 変更内容:"
+    git status --short
+    echo ""
+else
+    echo -e "${ERROR_ICON} ${RED}コミットする変更がありません${NC}"
+    exit 1
+fi
+
+# ステージング
+echo -e "${INFO_ICON} すべての変更をステージング..."
+git add -A
+
+# コミットメッセージ作成
+COMMIT_MESSAGE="${TYPE}(${SCOPE}): ${MESSAGE}
+
+🤖 Generated with Elder Flow
+Co-authored-by: Claude Elder <claude@elders-guild.com>"
+
+# コミット実行
+echo -e "${INFO_ICON} コミット実行中..."
+if git commit -m "$COMMIT_MESSAGE"; then
+    echo -e "${SUCCESS_ICON} ${GREEN}コミット成功！${NC}"
+else
+    echo -e "${ERROR_ICON} ${RED}コミット失敗${NC}"
+    exit 1
+fi
+
+# プッシュ
+echo -e "${INFO_ICON} リモートにプッシュ中..."
+BRANCH=$(git branch --show-current)
+if git push origin "$BRANCH"; then
+    echo -e "${SUCCESS_ICON} ${GREEN}プッシュ成功！${NC}"
+else
+    echo -e "${YELLOW}⚠️  プッシュ失敗。手動でプッシュしてください: git push origin $BRANCH${NC}"
+fi
+
+echo ""
+echo -e "${ELDER_ICON} ${GREEN}Elder Flow Git自動化完了${NC}"
+echo "================================"
+
+# 最新のコミット表示
+echo -e "${INFO_ICON} 最新のコミット:"
+git log --oneline -1
+>>>>>>> origin/main

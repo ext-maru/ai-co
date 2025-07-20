@@ -114,19 +114,24 @@ clean_up_code()       # 🔵 Refactor
 git commit -m "feat: ログイン機能実装"  # 🚀 Ship
 ```
 
-## 🌊 **重要: Elder Flow自動適用** (2025/7/12実装)
+## 🌊 **重要: Elder Flow自動適用** (2025/1/20実装)
 
 **クロードエルダーは以下の場合、自動的にElder Flowを適用します：**
 
 ### 🤖 自動適用条件
-- **実装系タスク**: 「実装」「implement」「add」「create」「build」「develop」「新機能」
-- **修正系タスク**: 「修正」「fix」「bug」「エラー」「error」「問題」「issue」
-- **最適化系タスク**: 「最適化」「optimize」「リファクタリング」「refactor」「改善」
-- **セキュリティ系タスク**: 「セキュリティ」「security」「認証」「authentication」
+- **実装系タスク**: 「実装」「implement」「add」「create」「build」「develop」「新機能」「OAuth」「API」「システム」
+- **修正系タスク**: 「修正」「fix」「bug」「エラー」「error」「問題」「issue」「バグ」「デバッグ」
+- **最適化系タスク**: 「最適化」「optimize」「リファクタリング」「refactor」「改善」「パフォーマンス」
+- **セキュリティ系タスク**: 「セキュリティ」「security」「認証」「authentication」「脆弱性」「権限」
+- **テスト系タスク**: 「テスト」「test」「TDD」「カバレッジ」「検証」「pytest」
 
 ### 🎯 Elder Flow強制適用
 以下のキーワードを含む場合は**強制適用**されます：
 - 「elder flow」「elder-flow」「エルダーフロー」「エルダー・フロー」
+
+### ⏭️ バイパス条件
+以下のキーワードを含む場合は**通常処理**になります：
+- 「help」「status」「explain」「show」「list」「describe」
 
 ### 🔧 使用例
 ```bash
@@ -137,6 +142,25 @@ git commit -m "feat: ログイン機能実装"  # 🚀 Ship
 
 # 適用されない例
 "ドキュメントを更新してください" → 通常処理
+"help" → 通常処理
+"現在の状況を説明してください" → 通常処理
+```
+
+### 🎛️ 自動Elder Flow管理
+```bash
+# 有効化・無効化
+claude-elder-auto-flow enable    # 自動Elder Flow有効化
+claude-elder-auto-flow disable   # 自動Elder Flow無効化
+
+# 状態確認
+claude-elder-auto-flow status    # システム状態確認
+
+# パターンテスト
+claude-elder-auto-flow test --input "OAuth実装"
+
+# バイパスキーワード管理
+claude-elder-auto-flow add-bypass "調査" "レポート"
+claude-elder-auto-flow remove-bypass "調査"
 ```
 
 ## 🎯 重要: TDD（テスト駆動開発）必須
@@ -743,8 +767,35 @@ docs/issues/
 
 **詳細**: [Issue文書整理ガイド](docs/guides/ISSUE_DOCUMENT_ORGANIZATION_GUIDE.md)
 
+## 🔮 AI Elder Cast - 知識注入起動システム (2025/1/20制定)
+
+**エルダー評議会令第100号 - Claude Code知識注入起動標準**
+
+### 📋 基本コマンド
+```bash
+ai-elder cast  # デフォルト: 開発支援モードで起動
+```
+
+### 🏗️ システム動作
+1. **知識統合**: 11個の核心ドキュメント（約137KB）読み込み
+2. **プロンプト生成**: クロードエルダーアイデンティティ確立
+3. **自動起動**: `claude --dangerously-skip-permissions ELDER_KNOWLEDGE_CONTEXT.md`
+4. **対話開始**: クロードエルダーとして対話型セッション
+
+### ⚡ 重要仕様
+- **Python実装**: 248行の完全統合システム
+- **知識ファイル数**: 11ファイル（Core Identity×3、System×3、Development×2、Four Sages×1、Protocols×2）
+- **総文字数**: 約137,458文字（137KB）
+- **コンテキスト使用率**: 34-48%（十分な余裕）
+- **必須応答**: 「私はクロードエルダー（Claude Elder）です」
+
+### 📌 クロードエルダー必須記憶
+**`ai-elder cast`は知識注入済みClaude Code起動の標準方法**
+
+詳細: [AI Elder Cast システム仕様書](knowledge_base/AI_ELDER_CAST_SYSTEM_SPECIFICATION.md)
+
 ---
 **Remember: No Code Without Test! 🧪**
 **Iron Will: No Workarounds! 🗡️**
 **Elders Legacy: Think it, Rule it, Own it! 🏛️**
-**最新更新: 2025年7月19日 - Issue文書管理規則追加**
+**最新更新: 2025年7月20日 - AI Elder Cast知識注入システム追加**

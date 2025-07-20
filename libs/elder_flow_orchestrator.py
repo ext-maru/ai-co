@@ -260,6 +260,178 @@ class ElderFlowOrchestrator:
 
             raise
 
+    async def execute_sage_council(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 1: 4賢者会議を実行"""
+        task_name = request.get("task_name", "")
+        priority = request.get("priority", "medium")
+        flow_id = request.get("flow_id", str(uuid.uuid4()))
+        
+        # 新しいタスクを作成または既存のタスクを取得
+        if flow_id not in self.active_tasks:
+            task = ElderFlowTask(flow_id, task_name, priority)
+            self.active_tasks[flow_id] = task
+        else:
+            task = self.active_tasks[flow_id]
+        
+        try:
+            await self._phase_1_council(task)
+            
+            return {
+                "status": "success",
+                "flow_id": flow_id,
+                "sage_advice": task.sage_advice,
+                "recommendations": task.sage_advice.get("integrated_advice", {}).get("recommended_approach", [])
+            }
+        except Exception as e:
+            self.logger.error(f"Sage council failed: {str(e)}")
+            return {
+                "status": "error",
+                "flow_id": flow_id,
+                "error": str(e)
+            }
+
+    async def execute_elder_servants(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 2: エルダーサーバント実行"""
+        task_name = request.get("task_name", "")
+        flow_id = request.get("flow_id", str(uuid.uuid4()))
+        
+        if flow_id not in self.active_tasks:
+            return {
+                "status": "error",
+                "flow_id": flow_id,
+                "error": "Task not found. Please execute sage council first."
+            }
+        
+        task = self.active_tasks[flow_id]
+        
+        try:
+            # 実行計画策定
+            await self._phase_2_planning(task)
+            # サーバント実行
+            await self._phase_3_execution(task)
+            
+            return {
+                "status": "success",
+                "flow_id": flow_id,
+                "execution_plan": task.execution_plan,
+                "execution_results": task.execution_results
+            }
+        except Exception as e:
+            self.logger.error(f"Elder servants execution failed: {str(e)}")
+            return {
+                "status": "error",
+                "flow_id": flow_id,
+                "error": str(e)
+            }
+
+    async def execute_quality_gate(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 3: 品質ゲート実行"""
+        flow_id = request.get("flow_id", str(uuid.uuid4()))
+        
+        if flow_id not in self.active_tasks:
+            return {
+                "status": "error",
+                "flow_id": flow_id,
+                "error": "Task not found. Please execute elder servants first."
+            }
+        
+        task = self.active_tasks[flow_id]
+        
+        try:
+            await self._phase_4_quality(task)
+            
+            return {
+                "status": "success",
+                "flow_id": flow_id,
+                "quality_results": task.quality_results,
+                "overall_score": task.quality_results.get("overall_score", 0)
+            }
+        except Exception as e:
+            self.logger.error(f"Quality gate failed: {str(e)}")
+            return {
+                "status": "error",
+                "flow_id": flow_id,
+                "error": str(e)
+            }
+
+    async def execute_council_report(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 4: 評議会報告生成"""
+        flow_id = request.get("flow_id", str(uuid.uuid4()))
+        
+        if flow_id not in self.active_tasks:
+            return {
+                "status": "error",
+                "flow_id": flow_id,
+                "error": "Task not found. Please execute quality gate first."
+            }
+        
+        task = self.active_tasks[flow_id]
+        
+        try:
+            # 報告書生成（Git操作は含まない）
+            execution_summary = self._summarize_execution_results(task)
+            quality_summary = self._summarize_quality_results(task)
+            
+            task.council_report = {
+                "summary": f"Elder Flow execution completed: {task.description}",
+                "task_id": task.task_id,
+                "status": task.status.value,
+                "execution_time": (datetime.now() - task.created_at).total_seconds(),
+                "sage_consensus": task.sage_advice.get("consensus_reached", False),
+                "execution_summary": execution_summary,
+                "quality_summary": quality_summary,
+                "quality_score": task.quality_results.get("overall_score", 0),
+                "recommendations": self._generate_recommendations(task),
+                "next_steps": self._generate_next_steps(task),
+                "generated_at": datetime.now().isoformat(),
+            }
+            
+            task.add_log("✅ Council report completed")
+            
+            return {
+                "status": "success",
+                "flow_id": flow_id,
+                "council_report": task.council_report
+            }
+        except Exception as e:
+            self.logger.error(f"Council report generation failed: {str(e)}")
+            return {
+                "status": "error",
+                "flow_id": flow_id,
+                "error": str(e)
+            }
+
+    async def execute_git_automation(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 5: Git自動化実行"""
+        flow_id = request.get("flow_id", str(uuid.uuid4()))
+        
+        if flow_id not in self.active_tasks:
+            return {
+                "status": "error",
+                "flow_id": flow_id,
+                "error": "Task not found. Please execute council report first."
+            }
+        
+        task = self.active_tasks[flow_id]
+        
+        try:
+            # Git操作を実行
+            await self._phase_5_reporting(task)
+            
+            return {
+                "status": "success",
+                "flow_id": flow_id,
+                "git_commit_id": task.git_commit_id,
+                "git_status": "committed" if task.git_commit_id else "no_changes"
+            }
+        except Exception as e:
+            self.logger.error(f"Git automation failed: {str(e)}")
+            return {
+                "status": "error",
+                "flow_id": flow_id,
+                "error": str(e)
+            }
+
     @with_error_handling
     async def _phase_1_council(self, task: ElderFlowTask):
         """Phase 1: 4賢者会議"""
@@ -854,6 +1026,220 @@ class ElderFlowOrchestrator:
         self.error_handler.register_recovery_strategy(
             QualityGateError, quality_gate_recovery
         )
+
+    # ==============================
+    # Elder Flow Engine用公開API
+    # ==============================
+
+    async def execute_sage_council(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 1: 4賢者会議実行"""
+        task_id = str(uuid.uuid4())
+        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        self.active_tasks[task_id] = task
+        
+        try:
+            await self._phase_1_council(task)
+            return {
+                "success": True,
+                "task_id": task_id,
+                "sage_advice": task.sage_advice,
+                "recommendations": task.sage_advice.get("integrated_advice", {}),
+                "phase": "sage_council_completed"
+            }
+        except Exception as e:
+            self.logger.error(f"Sage council execution failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "task_id": task_id,
+                "phase": "sage_council_failed"
+            }
+
+    async def execute_elder_servants(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 2: エルダーサーバント実行"""
+        task_id = str(uuid.uuid4())
+        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        
+        # 賢者の推奨事項を適用
+        if "sage_recommendations" in request:
+            task.sage_advice = {"integrated_advice": {"recommendations": request["sage_recommendations"]}}
+        
+        self.active_tasks[task_id] = task
+        
+        try:
+            await self._phase_3_execution(task)
+            return {
+                "success": True,
+                "task_id": task_id,
+                "execution_results": task.execution_results,
+                "phase": "servant_execution_completed"
+            }
+        except Exception as e:
+            self.logger.error(f"Elder servants execution failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "task_id": task_id,
+                "phase": "servant_execution_failed"
+            }
+
+    async def execute_quality_gate(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 3: 品質ゲート実行"""
+        task_id = str(uuid.uuid4())
+        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        
+        # 実装結果を適用
+        if "implementation_results" in request:
+            task.execution_results = request["implementation_results"].get("execution_results", [])
+        
+        self.active_tasks[task_id] = task
+        
+        try:
+            await self._phase_4_quality(task)
+            return {
+                "success": True,
+                "task_id": task_id,
+                "quality_results": task.quality_results,
+                "overall_score": task.quality_results.get("overall_score", 0),
+                "phase": "quality_gate_completed"
+            }
+        except Exception as e:
+            self.logger.error(f"Quality gate execution failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "task_id": task_id,
+                "phase": "quality_gate_failed"
+            }
+
+    async def execute_council_report(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 4: 評議会報告実行"""
+        task_id = str(uuid.uuid4())
+        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        
+        # 全ての結果を適用
+        if "all_results" in request:
+            all_results = request["all_results"]
+            if "sage_council" in all_results:
+                task.sage_advice = all_results["sage_council"].get("sage_advice", {})
+            if "servant_execution" in all_results:
+                task.execution_results = all_results["servant_execution"].get("execution_results", [])
+            if "quality_gate" in all_results:
+                task.quality_results = all_results["quality_gate"].get("quality_results", {})
+        
+        self.active_tasks[task_id] = task
+        
+        try:
+            await self._phase_5_reporting(task)
+            return {
+                "success": True,
+                "task_id": task_id,
+                "council_report": task.council_report,
+                "git_commit_id": task.git_commit_id,
+                "phase": "council_report_completed"
+            }
+        except Exception as e:
+            self.logger.error(f"Council report execution failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "task_id": task_id,
+                "phase": "council_report_failed"
+            }
+
+    async def execute_git_automation(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """Phase 5: Git自動化実行"""
+        task_id = str(uuid.uuid4())
+        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        
+        # 実装結果を適用してGit操作の対象を設定
+        if "implementation_results" in request:
+            task.execution_results = request["implementation_results"].get("execution_results", [])
+        
+        self.active_tasks[task_id] = task
+        
+        try:
+            # Git操作のみを実行（Phase 5のGit部分のみ）
+            await self._execute_git_operations(task)
+            return {
+                "success": True,
+                "task_id": task_id,
+                "git_commit_id": task.git_commit_id,
+                "phase": "git_automation_completed"
+            }
+        except Exception as e:
+            self.logger.error(f"Git automation execution failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "task_id": task_id,
+                "phase": "git_automation_failed"
+            }
+
+    async def _execute_git_operations(self, task: ElderFlowTask):
+        """Git操作のみ実行（Phase 5から抽出）"""
+        task.add_log("📤 Starting Git automation")
+        
+        # 実装版サーバントをインポート
+        from libs.elder_flow_servant_executor_real import ServantFactory, ServantType
+        from libs.elder_flow_servant_executor import ServantTask
+        
+        # Git管理者サーバントを作成
+        git_servant = ServantFactory.create_servant(ServantType.GIT_KEEPER)
+        
+        # Git状態を確認
+        status_task = ServantTask(
+            task_id=str(uuid.uuid4()),
+            servant_type=ServantType.GIT_KEEPER,
+            description="Check Git status",
+            command="git_status",
+            arguments={},
+        )
+        
+        status_result = await git_servant.execute_task(status_task)
+        
+        # 変更がある場合はコミット
+        if status_result.get("success") and not status_result.get("clean"):
+            # すべての変更をステージング
+            add_task = ServantTask(
+                task_id=str(uuid.uuid4()),
+                servant_type=ServantType.GIT_KEEPER,
+                description="Stage all changes",
+                command="git_add",
+                arguments={"add_all": True},
+            )
+            
+            add_result = await git_servant.execute_task(add_task)
+            
+            if add_result.get("success"):
+                task.add_log(
+                    f"📝 Staged {len(add_result.get('staged_files', []))} files"
+                )
+                
+                # コミットメッセージを生成
+                commit_message = self._generate_commit_message(task)
+                
+                # コミット実行
+                commit_task = ServantTask(
+                    task_id=str(uuid.uuid4()),
+                    servant_type=ServantType.GIT_KEEPER,
+                    description="Commit changes",
+                    command="git_commit",
+                    arguments={"message": commit_message},
+                )
+                
+                commit_result = await git_servant.execute_task(commit_task)
+                
+                if commit_result.get("success"):
+                    task.git_commit_id = commit_result.get("commit_id")
+                    task.add_log(f"📤 Git commit completed: {task.git_commit_id[:8]}")
+                else:
+                    task.add_log(
+                        f"⚠️ Git commit failed: {commit_result.get('error', 'Unknown error')}",
+                        "warning",
+                    )
+        else:
+            task.add_log("ℹ️ No changes to commit")
 
 
 # Global orchestrator instance

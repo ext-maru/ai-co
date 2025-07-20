@@ -293,9 +293,9 @@ ai-send "カバレッジレポートを確認して以下を実施:
 
 ## 📚 参考資料
 
-- [TDD_WORKFLOW.md](/home/aicompany/ai_co/docs/TDD_WORKFLOW.md) - 一般的なTDDワークフロー
-- [TDD_WITH_CLAUDE_CLI.md](/home/aicompany/ai_co/docs/TDD_WITH_CLAUDE_CLI.md) - Claude CLI特有のTDD手法
-- [TDD_TEST_RULES.md](/home/aicompany/ai_co/tests/TDD_TEST_RULES.md) - テスト作成ルール
+- [TDD_WORKFLOW.md](../docs/TDD_WORKFLOW.md) - 一般的なTDDワークフロー
+- [TDD_WITH_CLAUDE_CLI.md](../docs/TDD_WITH_CLAUDE_CLI.md) - Claude CLI特有のTDD手法
+- [TDD_TEST_RULES.md](../tests/TDD_TEST_RULES.md) - テスト作成ルール
 
 ## 🎯 まとめ
 

@@ -163,8 +163,14 @@ class AutoIssueElderFlowEngine:
     ):
         """自動でPR作成"""
         try:
-            # ブランチ名を生成
-            branch_name = f"auto-fix-issue-{issue_number}"
+            # ブランチ名を生成（タイムスタンプオプション）
+            timestamp = datetime.now().strftime("%H%M%S")
+            use_timestamp = os.getenv("AUTO_ISSUE_USE_TIMESTAMP", "false").lower() == "true"
+            
+            if use_timestamp:
+                branch_name = f"auto-fix/issue-{issue_number}-{timestamp}"
+            else:
+                branch_name = f"auto-fix-issue-{issue_number}"
 
             # まずブランチを作成してpush
             import subprocess
@@ -599,6 +605,17 @@ class AutoIssueProcessor(EldersServiceLegacy):
     async def execute_auto_processing(self, issue: Issue) -> Dict[str, Any]:
         """Elder Flowを使用してイシューを自動処理"""
         try:
+            # 既存のPRをチェック
+            existing_pr = await self._check_existing_pr_for_issue(issue.number)
+            if existing_pr:
+                logger.info(f"PR already exists for issue #{issue.number}: PR #{existing_pr['number']}")
+                return {
+                    "status": "already_exists",
+                    "message": f"PR #{existing_pr['number']} already exists for this issue",
+                    "pr_url": existing_pr['html_url'],
+                    "pr_number": existing_pr['number']
+                }
+            
             # 処理記録
             await self.limiter.record_processing(issue.number)
 
@@ -625,7 +642,15 @@ class AutoIssueProcessor(EldersServiceLegacy):
             result = await self.elder_flow.execute_flow(flow_request)
 
             # 結果に基づいてイシューを更新
-            if result.get("status") == "success":
+            if result.get("status") == "already_exists":
+                # 既存のPRがある場合
+                issue.create_comment(
+                    f"🤖 Auto Issue Processor Notice\n\n"
+                    f"This issue already has an associated PR: {result.get('pr_url')}\n"
+                    f"Skipping automatic processing to avoid duplication."
+                )
+                return result
+            elif result.get("status") == "success":
                 # PRが作成されたらイシューにコメント
                 pr_url = result.get("pr_url")
                 message = result.get("message", "")
@@ -761,6 +786,62 @@ class AutoIssueProcessor(EldersServiceLegacy):
 
         # デフォルトは低優先度
         return "low"
+    
+    async def _check_existing_pr_for_issue(self, issue_number: int) -> Optional[Dict[str, Any]]:
+        """指定されたイシューに対する既存のPRをチェック"""
+        try:
+            # オープンなPRを検索
+            pulls = self.repo.get_pulls(state='open')
+            
+            for pr in pulls:
+                # PRのボディ内でイシュー番号への参照をチェック
+                if pr.body and f"#{issue_number}" in pr.body:
+                    return {
+                        "number": pr.number,
+                        "html_url": pr.html_url,
+                        "title": pr.title,
+                        "state": pr.state
+                    }
+                
+                # タイトルにイシュー番号が含まれているかチェック
+                if f"#{issue_number}" in pr.title:
+                    return {
+                        "number": pr.number,
+                        "html_url": pr.html_url,
+                        "title": pr.title,
+                        "state": pr.state
+                    }
+            
+            # クローズされたPRも確認（最近のもののみ）
+            closed_pulls = self.repo.get_pulls(state='closed', sort='updated', direction='desc')
+            count = 0
+            for pr in closed_pulls:
+                if count >= 20:  # 最近の20件のみチェック
+                    break
+                    
+                if pr.body and f"#{issue_number}" in pr.body:
+                    return {
+                        "number": pr.number,
+                        "html_url": pr.html_url,
+                        "title": pr.title,
+                        "state": pr.state
+                    }
+                    
+                if f"#{issue_number}" in pr.title:
+                    return {
+                        "number": pr.number,
+                        "html_url": pr.html_url,
+                        "title": pr.title,
+                        "state": pr.state
+                    }
+                    
+                count += 1
+            
+            return None
+            
+        except Exception as e:
+            logger.warning(f"Error checking existing PRs: {str(e)}")
+            return None
 
 
 async def main():

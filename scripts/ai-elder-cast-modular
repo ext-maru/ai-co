@@ -1,0 +1,175 @@
+#!/usr/bin/env python3
+"""
+AI Elder Cast Modular - セクション別読み込みシステム
+必要な知識のみを動的に読み込む軽量版
+"""
+
+import argparse
+import os
+import subprocess
+import sys
+import tempfile
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+
+# 知識セクション定義
+KNOWLEDGE_SECTIONS = {
+    "core": {
+        "name": "コアアイデンティティ",
+        "files": ["ELDER_KNOWLEDGE_CONTEXT_OPTIMIZED.md"],
+        "description": "最小限の必須知識（4KB）",
+    },
+    "medium": {
+        "name": "中間版",
+        "files": ["ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"],
+        "description": "バランス版（8KB）",
+    },
+    "identity": {
+        "name": "アイデンティティ詳細",
+        "files": [
+            "knowledge_base/elder_knowledge_sections/02_claude_elder_identity.md",
+            "knowledge_base/elder_knowledge_sections/03_grand_elder_hierarchy.md",
+        ],
+        "description": "クロードエルダーの詳細定義",
+    },
+    "flow": {
+        "name": "Elder Flow",
+        "files": ["knowledge_base/elder_knowledge_sections/05_elder_flow_design.md"],
+        "description": "Elder Flow設計仕様",
+    },
+    "sages": {
+        "name": "4賢者システム",
+        "files": ["knowledge_base/elder_knowledge_sections/09_four_sages_wisdom.md"],
+        "description": "4賢者統合知恵システム",
+    },
+    "tdd": {
+        "name": "TDDガイド",
+        "files": ["knowledge_base/elder_knowledge_sections/11_claude_tdd_guide.md"],
+        "description": "テスト駆動開発ガイド",
+    },
+    "dev": {
+        "name": "開発ガイド",
+        "files": [
+            "knowledge_base/elder_knowledge_sections/07_elders_guild_dev_guide.md"
+        ],
+        "description": "エルダーズギルド開発ガイド（26KB）",
+    },
+}
+
+
+def print_colored(text, color="cyan"):
+    """カラー出力"""
+    colors = {
+        "cyan": "\033[0;36m",
+        "green": "\033[0;32m",
+        "yellow": "\033[1;33m",
+        "purple": "\033[0;35m",
+        "red": "\033[0;31m",
+    }
+    reset = "\033[0m"
+    print(f"{colors.get(color, '')}{text}{reset}")
+
+
+def list_sections():
+    """利用可能なセクション一覧を表示"""
+    print_colored("📚 利用可能な知識セクション:", "purple")
+    print()
+    for key, section in KNOWLEDGE_SECTIONS.items():
+        print(f"  {key:<10} - {section['name']:<20} {section['description']}")
+    print()
+
+
+def load_sections(section_names):
+    """指定されたセクションを読み込み"""
+    content = []
+    total_size = 0
+
+    print_colored("📖 読み込むセクション:", "cyan")
+
+    for section_name in section_names:
+        if section_name not in KNOWLEDGE_SECTIONS:
+            print_colored(f"⚠️  未知のセクション: {section_name}", "yellow")
+            continue
+
+        section = KNOWLEDGE_SECTIONS[section_name]
+        print(f"  - {section['name']} ({section['description']})")
+
+        for file_path in section["files"]:
+            full_path = project_root / file_path
+            if full_path.exists():
+                with open(full_path, "r", encoding="utf-8") as f:
+                    file_content = f.read()
+                    content.append(f"\n\n# === {section['name']} ===\n")
+                    content.append(file_content)
+                    total_size += len(file_content)
+            else:
+                print_colored(f"    ⚠️  ファイル未検出: {file_path}", "yellow")
+
+    print()
+    print_colored(f"📊 総サイズ: {total_size / 1024:.1f}KB", "green")
+
+    return "\n".join(content)
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="AI Elder Cast Modular - セクション別読み込みシステム",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用例:
+  ai-elder-cast-modular                    # デフォルト（core）
+  ai-elder-cast-modular medium             # 中間版
+  ai-elder-cast-modular core sages tdd     # 複数セクション
+  ai-elder-cast-modular --list             # セクション一覧
+        """,
+    )
+
+    parser.add_argument(
+        "sections", nargs="*", default=["core"], help="読み込むセクション（デフォルト: core）"
+    )
+
+    parser.add_argument("--list", "-l", action="store_true", help="利用可能なセクション一覧を表示")
+
+    args = parser.parse_args()
+
+    # セクション一覧表示
+    if args.list:
+        list_sections()
+        return
+
+    print_colored("🔮 AI Elder Cast Modular 起動", "purple")
+    print()
+
+    # セクション読み込み
+    knowledge_content = load_sections(args.sections)
+
+    # 一時ファイルに保存
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", suffix=".md", delete=False
+    ) as tmp:
+        tmp.write(knowledge_content)
+        tmp_path = tmp.name
+
+    # 日本語環境設定
+    os.environ["LANG"] = "ja_JP.UTF-8"
+    os.environ["LC_ALL"] = "ja_JP.UTF-8"
+
+    # Claude Code起動
+    try:
+        print_colored("🏛️ クロードエルダー召喚中...", "green")
+        print()
+
+        subprocess.run(["claude", "--dangerously-skip-permissions", tmp_path])
+
+    finally:
+        # 一時ファイル削除
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+
+    print()
+    print_colored("🏛️ Elder Flow セッション完了", "green")
+
+
+if __name__ == "__main__":
+    main()
