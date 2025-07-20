@@ -282,30 +282,85 @@ class TodoWorker(BaseWorker):
         return status
 
     def cleanup(self):
-        """TODO: cleanupメソッドを実装してください"""
-        pass
+        """ワーカーのクリーンアップ処理"""
+        try:
+            if self.elder_systems_initialized and self.four_sages:
+                # Elder systems に終了を通知
+                self.four_sages.report_to_task_sage({
+                    "type": "worker_shutdown",
+                    "worker": "todo_worker",
+                    "timestamp": datetime.now().isoformat()
+                })
+            
+            self.logger.info("TodoWorker cleanup completed")
+        except Exception as e:
+            self.logger.warning(f"Error during cleanup: {e}")
 
     def stop(self):
-        """TODO: stopメソッドを実装してください"""
-        pass
+        """ワーカーの停止処理"""
+        try:
+            self.cleanup()
+            super().stop()
+            self.logger.info("TodoWorker stopped successfully")
+        except Exception as e:
+            self.logger.error(f"Error stopping TodoWorker: {e}")
 
     def initialize(self) -> None:
         """ワーカーの初期化処理"""
-        # TODO: 初期化ロジックを実装してください
-        logger.info(f"{self.__class__.__name__} initialized")
-        pass
+        try:
+            # Elder systems が利用可能な場合は初期化
+            if not self.elder_systems_initialized:
+                self._initialize_elder_systems()
+            
+            # Manager の初期化確認
+            if not self.manager:
+                self.manager = AIGrowthTodoManager()
+            
+            self.logger.info(f"{self.__class__.__name__} initialized successfully")
+        except Exception as e:
+            self.logger.error(f"Initialization error: {e}")
+            raise
 
-    def handle_error(self):
-        """TODO: handle_errorメソッドを実装してください"""
-        pass
+    def handle_error(self, error: Exception, context: str = "unknown"):
+        """エラーハンドリング処理"""
+        try:
+            error_details = {
+                "worker": "todo_worker",
+                "context": context,
+                "error": str(error),
+                "error_type": type(error).__name__
+            }
+            
+            # Incident Sage にエラー報告
+            if self.elder_systems_initialized:
+                self._report_error_to_incident_sage(context, error)
+            
+            self.logger.error(f"TodoWorker error in {context}: {error}")
+        except Exception as e:
+            self.logger.critical(f"Error in error handler: {e}")
 
-    def get_status(self):
-        """TODO: get_statusメソッドを実装してください"""
-        pass
+    def get_status(self) -> Dict[str, Any]:
+        """ワーカーの状態を取得"""
+        return self.get_elder_todo_status()
 
-    def validate_config(self):
-        """TODO: validate_configメソッドを実装してください"""
-        pass
+    def validate_config(self) -> bool:
+        """設定の妥当性を検証"""
+        try:
+            # 基本設定の確認
+            if not self.config:
+                self.logger.warning("No config available")
+                return False
+            
+            # Manager の確認
+            if not self.manager:
+                self.logger.error("AIGrowthTodoManager not initialized")
+                return False
+            
+            self.logger.info("TodoWorker config validation passed")
+            return True
+        except Exception as e:
+            self.logger.error(f"Config validation failed: {e}")
+            return False
 
 
 if __name__ == "__main__":

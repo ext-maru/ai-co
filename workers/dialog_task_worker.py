@@ -302,26 +302,109 @@ class DialogTaskWorker(BaseWorker):
         pass
 
     def stop(self):
-        """TODO: stopメソッドを実装してください"""
-        pass
+        """ワーカーを停止し、リソースをクリーンアップ"""
+        try:
+            self.logger.info("DialogTaskWorker stopping...")
+            
+            # Elder Tree に終了を通知
+            if self.elder_tree_initialized and self.four_sages:
+                self.four_sages.report_to_task_sage({
+                    "type": "worker_shutdown",
+                    "worker": "dialog_task_worker",
+                    "timestamp": datetime.now().isoformat()
+                })
+            
+            # ベースクラスの停止処理
+            super().stop()
+            
+            self.logger.info("DialogTaskWorker stopped successfully")
+        except Exception as e:
+            self.logger.error(f"Error stopping DialogTaskWorker: {e}")
 
     def initialize(self) -> None:
         """ワーカーの初期化処理"""
-        # TODO: 初期化ロジックを実装してください
-        logger.info(f"{self.__class__.__name__} initialized")
-        pass
+        try:
+            # Elder Tree システムの初期化
+            if not self.elder_tree_initialized:
+                self._initialize_elder_tree()
+            
+            # RAG システムの初期化
+            if not self.rag_grimoire:
+                self._initialize_rag_systems()
+            
+            # 会話マネージャの初期化
+            if not self.conversation_manager:
+                self.conversation_manager = ConversationManager()
+            
+            self.logger.info(f"{self.__class__.__name__} initialized successfully")
+        except Exception as e:
+            self.logger.error(f"Initialization error: {e}")
+            raise
 
-    def handle_error(self):
-        """TODO: handle_errorメソッドを実装してください"""
-        pass
+    def handle_error(self, error: Exception, context: str = "unknown"):
+        """エラーハンドリング処理"""
+        try:
+            error_details = {
+                "worker": "dialog_task_worker",
+                "context": context,
+                "error": str(error),
+                "error_type": type(error).__name__,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            # Incident Sage にエラー報告
+            if self.elder_tree_initialized and self.four_sages:
+                self.four_sages.consult_incident_sage({
+                    "type": "dialog_processing_error",
+                    **error_details
+                })
+            
+            self.logger.error(f"DialogTaskWorker error in {context}: {error}")
+        except Exception as e:
+            self.logger.critical(f"Error in error handler: {e}")
 
-    def get_status(self):
-        """TODO: get_statusメソッドを実装してください"""
-        pass
+    def get_status(self) -> dict:
+        """ワーカーの現在の状態を取得"""
+        return {
+            "worker_type": "dialog_task_worker",
+            "worker_id": self.worker_id,
+            "elder_role": "Dialog Processing Specialist",
+            "elder_tree": {
+                "initialized": self.elder_tree_initialized,
+                "four_sages_active": self.four_sages is not None,
+                "council_summoner_active": self.council_summoner is not None
+            },
+            "rag_systems": {
+                "grimoire_active": self.rag_grimoire is not None,
+                "manager_active": self.rag_manager is not None
+            },
+            "conversation_manager": self.conversation_manager is not None,
+            "tasks_processed": getattr(self, 'tasks_processed', 0),
+            "status": "healthy" if self.elder_tree_initialized else "degraded",
+            "timestamp": datetime.now().isoformat()
+        }
 
-    def validate_config(self):
-        """TODO: validate_configメソッドを実装してください"""
-        pass
+    def validate_config(self) -> bool:
+        """設定の妥当性を検証"""
+        try:
+            # ベース設定の確認
+            if not hasattr(self, 'worker_id') or not self.worker_id:
+                self.logger.error("Worker ID not set")
+                return False
+            
+            # Elder Tree 設定の確認
+            if ELDER_TREE_AVAILABLE and not self.elder_tree_initialized:
+                self.logger.warning("Elder Tree not initialized")
+            
+            # RAG システムの確認
+            if not self.rag_manager and not self.rag_grimoire:
+                self.logger.warning("No RAG system available")
+            
+            self.logger.info("DialogTaskWorker config validation passed")
+            return True
+        except Exception as e:
+            self.logger.error(f"Config validation failed: {e}")
+            return False
 
 
 if __name__ == "__main__":
