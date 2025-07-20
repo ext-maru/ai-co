@@ -1,4 +1,0 @@
-approval_required: true
-auto_deploy: true
-deployment_method: github_actions
-environment: staging

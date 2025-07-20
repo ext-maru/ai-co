@@ -1,7 +1,0 @@
-approval_required: true
-auto_deploy: false
-deployment_method: github_actions
-deployment_window:
-- 02:00-04:00
-environment: production
-last_updated: '2025-07-10T16:19:58.460501'

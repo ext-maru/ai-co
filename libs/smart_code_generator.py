@@ -145,7 +145,19 @@ class SmartCodeGenerator:
     def __init__(self, template_dir: str = "templates/smart_generation"):
         self.tech_detector = TechStackDetector()
         self.template_selector = SmartTemplateSelector(template_dir)
-        self.logger = logging.getLogger(self.__class__.__name__)
+        
+        # Phase 2: Issue理解エンジン統合
+        try:
+            from libs.issue_intelligence_engine import IssueIntelligenceEngine
+            self.intelligence_engine = IssueIntelligenceEngine()
+            self.use_intelligence = True
+            self.logger = logging.getLogger(self.__class__.__name__)
+            self.logger.info("Issue Intelligence Engine enabled")
+        except ImportError as e:
+            self.intelligence_engine = None
+            self.use_intelligence = False
+            self.logger = logging.getLogger(self.__class__.__name__)
+            self.logger.warning(f"Issue Intelligence Engine not available: {e}")
     
     def generate_implementation(
         self, 
@@ -154,7 +166,7 @@ class SmartCodeGenerator:
         issue_body: str = ""
     ) -> Dict[str, Any]:
         """
-        Issue情報から実装コードを生成
+        Issue情報から実装コードを生成 (Phase 2: 高度理解対応)
         
         Args:
             issue_number: Issue番号
@@ -164,17 +176,54 @@ class SmartCodeGenerator:
         Returns:
             生成されたコード情報
         """
-        # 1. 技術スタック検出
         full_text = f"{issue_title} {issue_body}"
+        
+        # Phase 2: Issue理解エンジンによる詳細分析
+        if self.use_intelligence:
+            try:
+                intelligence = self.intelligence_engine.analyze_issue(issue_title, issue_body)
+                self.logger.info(f"Issue intelligence analysis completed:")
+                self.logger.info(f"  Primary domain: {intelligence.primary_domain}")
+                self.logger.info(f"  Tech requirements: {len(intelligence.tech_requirements)}")
+                self.logger.info(f"  Feature requirements: {len(intelligence.feature_requirements)}")
+                self.logger.info(f"  Estimated effort: {intelligence.estimated_effort}")
+            except Exception as e:
+                self.logger.warning(f"Issue intelligence analysis failed: {e}")
+                intelligence = None
+        else:
+            intelligence = None
+        
+        # 1. 技術スタック検出 (従来方式 + Intelligence統合)
         tech_stack = self.tech_detector.detect_tech_stack(full_text)
         
-        self.logger.info(f"Detected tech stack: {tech_stack}")
+        # Intelligence結果で技術スタックを強化
+        if intelligence and intelligence.tech_requirements:
+            primary_tech = intelligence.primary_domain
+            if primary_tech != 'general':
+                tech_stack['primary_stack'] = primary_tech
+                tech_stack['intelligence_confidence'] = max(
+                    req.confidence for req in intelligence.tech_requirements
+                )
+                
+                # AWS サービスの詳細検出
+                if primary_tech == 'aws':
+                    aws_services = []
+                    for req in intelligence.tech_requirements:
+                        if req.category == 'aws' and '_' in req.name:
+                            service = req.name.split('_', 1)[1]
+                            aws_services.append(service)
+                    if aws_services:
+                        tech_stack['services'] = list(set(aws_services))
+        
+        self.logger.info(f"Enhanced tech stack: {tech_stack}")
         
         # 2. テンプレート選択
         impl_template_path, test_template_path = self.template_selector.select_templates(tech_stack)
         
-        # 3. コンテキスト生成
-        context = self._generate_context(issue_number, issue_title, issue_body, tech_stack)
+        # 3. 強化されたコンテキスト生成
+        context = self._generate_enhanced_context(
+            issue_number, issue_title, issue_body, tech_stack, intelligence
+        )
         
         # 4. コード生成
         try:
@@ -187,6 +236,12 @@ class SmartCodeGenerator:
                 "test_code": test_code,
                 "tech_stack": tech_stack,
                 "context": context,
+                "intelligence": {
+                    "primary_domain": intelligence.primary_domain if intelligence else "unknown",
+                    "estimated_effort": intelligence.estimated_effort if intelligence else "medium",
+                    "implementation_hints": intelligence.implementation_hints if intelligence else [],
+                    "complexity_score": sum(intelligence.complexity_indicators.values()) / max(1, len(intelligence.complexity_indicators)) if intelligence else 0.5
+                },
                 "templates_used": {
                     "implementation": impl_template_path,
                     "test": test_template_path
@@ -198,7 +253,8 @@ class SmartCodeGenerator:
             return {
                 "success": False,
                 "error": str(e),
-                "tech_stack": tech_stack
+                "tech_stack": tech_stack,
+                "intelligence": intelligence.primary_domain if intelligence else "unknown"
             }
     
     def _generate_context(
@@ -251,6 +307,52 @@ class SmartCodeGenerator:
                 "data_libraries": tech_stack.get('technologies', ['pandas']),
                 "ml_framework": self._detect_ml_framework(tech_stack)
             })
+        
+        return context
+    
+    def _generate_enhanced_context(
+        self, 
+        issue_number: int, 
+        issue_title: str, 
+        issue_body: str, 
+        tech_stack: Dict[str, Any],
+        intelligence
+    ) -> Dict[str, Any]:
+        """強化されたコンテキスト生成 (Phase 2対応)"""
+        
+        # 基本コンテキスト
+        context = self._generate_context(issue_number, issue_title, issue_body, tech_stack)
+        
+        # Intelligence による強化
+        if intelligence:
+            # 実装ヒントを追加
+            context['implementation_hints'] = intelligence.implementation_hints
+            
+            # 機能要件から詳細メソッド生成
+            context['feature_methods'] = []
+            for feature in intelligence.feature_requirements[:5]:  # 最大5個
+                method_name = f"{feature.action}_{feature.target.replace(' ', '_').lower()}"
+                method_name = re.sub(r'[^a-zA-Z0-9_]', '', method_name)  # 無効文字除去
+                context['feature_methods'].append({
+                    'name': method_name,
+                    'action': feature.action,
+                    'target': feature.target,
+                    'priority': feature.priority,
+                    'details': feature.details
+                })
+            
+            # 複雑度に基づく設定調整
+            complexity_score = sum(intelligence.complexity_indicators.values()) / max(1, len(intelligence.complexity_indicators))
+            context['complexity_level'] = 'high' if complexity_score > 0.6 else 'medium' if complexity_score > 0.3 else 'low'
+            context['include_monitoring'] = complexity_score > 0.4
+            context['include_caching'] = 'performance' in intelligence.complexity_indicators and intelligence.complexity_indicators['performance'] > 0.3
+            context['include_async'] = 'real_time' in intelligence.complexity_indicators and intelligence.complexity_indicators['real_time'] > 0.3
+            
+            # キーエンティティの活用
+            context['key_entities'] = intelligence.key_entities
+            
+            # 工数見積もりに基づくコメント詳細度
+            context['detailed_comments'] = intelligence.estimated_effort in ['large', 'extra_large']
         
         return context
     
