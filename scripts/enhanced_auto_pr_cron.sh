@@ -29,16 +29,8 @@ cd "$SCRIPT_DIR" || {
     exit 1
 }
 
-# Python仮想環境の確認と有効化
-if [ -d "venv" ]; then
-    log "📦 Python仮想環境を有効化"
-    source venv/bin/activate
-elif [ -d ".venv" ]; then
-    log "📦 Python仮想環境を有効化"
-    source .venv/bin/activate
-else
-    log "⚠️  警告: Python仮想環境が見つかりません。システムPythonを使用"
-fi
+# Python仮想環境スキップ（壊れているため）
+log "📦 システムPythonを使用（仮想環境は一時的にスキップ）"
 
 # 依存関係確認
 log "🔍 依存関係確認中..."

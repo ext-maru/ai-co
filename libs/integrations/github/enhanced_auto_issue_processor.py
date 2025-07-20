@@ -420,16 +420,31 @@ class EnhancedFourSagesIntegration:
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
+        self.logger.info("🏛️ 4賢者統合システム初期化開始")
         self.sages_available = FOUR_SAGES_AVAILABLE
         self.rag_manager_available = RAG_MANAGER_AVAILABLE
+        self.logger.info(f"   → 4賢者利用可能: {self.sages_available}")
+        self.logger.info(f"   → RAGManager利用可能: {self.rag_manager_available}")
 
         # 4賢者システム初期化
         if self.sages_available:
             try:
+                self.logger.info("   → 📚 ナレッジ賢者(Knowledge Sage)初期化中...")
                 self.knowledge_sage = KnowledgeSage()
+                self.logger.info("     → ナレッジ賢者初期化完了")
+
+                self.logger.info("   → 📋 タスク賢者(Task Sage)初期化中...")
                 self.task_sage = TaskSage()
+                self.logger.info("     → タスク賢者初期化完了")
+
+                self.logger.info("   → 🚨 インシデント賢者(Incident Sage)初期化中...")
                 self.incident_sage = IncidentSage()
+                self.logger.info("     → インシデント賢者初期化完了")
+
+                self.logger.info("   → 🔍 RAG賢者(RAG Sage)初期化中...")
                 self.rag_sage = RAGSage()
+                self.logger.info("     → RAG賢者初期化完了")
+
                 self.logger.info("✅ 4賢者システム初期化完了")
             except Exception as e:
                 self.logger.error(f"❌ 4賢者システム初期化エラー: {e}")
@@ -438,6 +453,7 @@ class EnhancedFourSagesIntegration:
         # RAGManager初期化（フォールバック）
         if self.rag_manager_available:
             try:
+                self.logger.info("   → 🔎 RAGManager(フォールバック)初期化中...")
                 self.rag_manager = RagManager()
                 self.logger.info("✅ RAGManager初期化完了")
             except Exception as e:
@@ -644,9 +660,25 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
     """PR作成機能を追加した拡張版Auto Issue Processor"""
 
     def __init__(self):
+        self.logger = logging.getLogger(__name__)
+        self.logger.info("🏗️ Enhanced Auto Issue Processor初期化開始")
+
+        self.logger.info("   → 親クラス(AutoIssueProcessor)初期化中...")
         super().__init__()
+        self.logger.info("   → 親クラス初期化完了")
+
+        self.logger.info("   → Git操作クラス初期化中...")
         self.git_ops = GitOperations()
+        self.logger.info("   → Git操作クラス初期化完了")
+
+        self.logger.info("   → 4賢者統合システム初期化中...")
+        self.logger.info("     → KnowledgeSage (ナレッジ賢者) 初期化中...")
+        self.logger.info("     → TaskSage (タスク賢者) 初期化中...")
+        self.logger.info("     → IncidentSage (インシデント賢者) 初期化中...")
+        self.logger.info("     → RAGSage (RAG賢者) 初期化中...")
         self.four_sages = EnhancedFourSagesIntegration()
+        self.logger.info("   → 4賢者統合システム初期化完了")
+
         self.pr_creator = None  # GitHubクライアント初期化後に設定
         self.metrics = {
             "processed_issues": 0,
@@ -656,6 +688,8 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
             "processing_time": [],
             "started_at": datetime.now(),
         }
+        self.logger.info("   → メトリクス初期化完了")
+        self.logger.info("✅ Enhanced Auto Issue Processor初期化完了")
 
     async def process_issue_with_pr(self, issue: Issue) -> Dict[str, Any]:
         """イシューを処理してPRまで作成"""
@@ -831,84 +865,175 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
     async def run_enhanced(self):
         """拡張版の実行"""
         try:
+            self.logger.info("🚀 Enhanced Auto Issue Processor 起動開始")
+            self.logger.info("   → プロセスID: %s", os.getpid())
+            self.logger.info(
+                "   → 実行時刻: %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            )
+
             # GitHubクライアントを初期化
+            self.logger.info("📌 GitHub認証情報を確認中...")
             github_token = os.environ.get("GITHUB_TOKEN")
             if not github_token:
                 self.logger.error("GITHUB_TOKEN環境変数が設定されていません")
                 return
+            self.logger.info("   → GITHUB_TOKEN: 設定済み (%d文字)", len(github_token))
 
             if not GITHUB_AVAILABLE:
                 self.logger.error("PyGithubがインストールされていません")
                 return
+            self.logger.info("   → PyGithubライブラリ: 利用可能")
 
+            self.logger.info("🔑 GitHub APIクライアント初期化中...")
             github = Github(github_token)
-            repo = github.get_repo(
-                os.environ.get("GITHUB_REPOSITORY", "ext-maru/ai-co")
-            )
+            self.logger.info("   → GitHub APIクライアント作成完了")
+
+            repo_name = os.environ.get("GITHUB_REPOSITORY", "ext-maru/ai-co")
+            self.logger.info("   → リポジトリ: %s", repo_name)
+
+            repo = github.get_repo(repo_name)
+            self.logger.info("   → リポジトリ接続: 成功")
 
             # PR作成クラスを初期化
+            self.logger.info("🔧 PR作成システム初期化中...")
             self.pr_creator = EnhancedPRCreator(github, repo)
+            self.logger.info("   → PR作成システム: 準備完了")
 
             # 処理可能なイシューを直接取得
+            self.logger.info("📋 オープンイシューを取得中...")
+            self.logger.info("   → GitHub APIを呼び出しています...")
             open_issues = list(repo.get_issues(state="open"))
+            self.logger.info(f"   → {len(open_issues)}件のオープンイシューを発見")
+
+            self.logger.info("🔍 処理対象イシューをフィルタリング中...")
             processable_issues = []
+            filtered_count = {"pr": 0, "auto_generated": 0, "high_priority": 0}
 
             for issue in open_issues:
-                # PR以外でauto-generatedラベルが無いものを処理
-                if not issue.pull_request and "auto-generated" not in [
-                    l.name for l in issue.labels
-                ]:
-                    priority = self._determine_priority(issue)
-                    if priority in ["low", "medium"]:
-                        processable_issues.append(
-                            {
-                                "number": issue.number,
-                                "title": issue.title,
-                                "priority": priority,
-                            }
-                        )
+                # PRかどうかチェック
+                if issue.pull_request:
+                    filtered_count["pr"] += 1
+                    continue
+
+                # auto-generatedラベルをチェック
+                labels = [l.name for l in issue.labels]
+                if "auto-generated" in labels:
+                    filtered_count["auto_generated"] += 1
+                    continue
+
+                # 優先度を判定
+                priority = self._determine_priority(issue)
+                if priority not in ["low", "medium"]:
+                    filtered_count["high_priority"] += 1
+                    continue
+
+                # 処理対象として追加
+                processable_issues.append(
+                    {
+                        "number": issue.number,
+                        "title": issue.title,
+                        "priority": priority,
+                    }
+                )
+
+            self.logger.info(f"   → フィルタリング結果:")
+            self.logger.info(f"     → PR除外: {filtered_count['pr']}件")
+            self.logger.info(
+                f"     → auto-generated除外: {filtered_count['auto_generated']}件"
+            )
+            self.logger.info(f"     → 高優先度除外: {filtered_count['high_priority']}件")
+            self.logger.info(f"     → 処理対象: {len(processable_issues)}件")
 
             if not processable_issues:
-                self.logger.info("処理可能なイシューがありません")
+                self.logger.info("❌ 処理可能なイシューがありません")
                 return
 
             # 各イシューを処理
-            self.logger.info(f"処理可能なイシュー: {len(processable_issues)}件発見")
+            self.logger.info(f"✅ 処理可能なイシュー: {len(processable_issues)}件発見")
+            priority_counts = {}
+            for issue in processable_issues:
+                priority = issue.get("priority", "unknown")
+                priority_counts[priority] = priority_counts.get(priority, 0) + 1
+            self.logger.info(f"   → 優先度内訳: {priority_counts}")
 
             # configが存在しない場合のデフォルト値
             max_issues = getattr(self, "config", {}).get(
                 "max_issues_per_run", 1
             )  # 5→1に変更
 
+            processed_count = 0
             for issue_data in processable_issues[:max_issues]:
-                issue = repo.get_issue(issue_data["number"])
-                self.logger.info(f"イシュー #{issue.number} を処理中: {issue.title}")
+                processed_count += 1
+                self.logger.info(
+                    f"📌 処理 {processed_count}/{max_issues}: イシュー #{issue_data['number']}"
+                )
 
+                # イシューの詳細を取得
+                self.logger.info(f"   → イシュー詳細を取得中...")
+                issue = repo.get_issue(issue_data["number"])
+                self.logger.info(f"   → タイトル: {issue.title}")
+                self.logger.info(f"   → 優先度: {issue_data['priority']}")
+                self.logger.info(
+                    f"   → ラベル: {', '.join([l.name for l in issue.labels]) if issue.labels else 'なし'}"
+                )
+
+                # イシューを処理
+                self.logger.info(f"   → 処理開始...")
+                start_time = datetime.now()
                 result = await self.process_issue_with_pr(issue)
+                processing_time = (datetime.now() - start_time).total_seconds()
 
                 if result["success"]:
                     self.logger.info(f"✅ イシュー #{issue.number} の処理が完了しました")
-                    self.logger.info(
-                        f"   PR #{result['pr_number']}: {result['pr_url']}"
-                    )
+                    self.logger.info(f"   → 処理時間: {processing_time:.1f}秒")
+                    if result["pr_number"]:
+                        self.logger.info(f"   → PR番号: #{result['pr_number']}")
+                        self.logger.info(f"   → PR URL: {result['pr_url']}")
                 else:
-                    self.logger.error(
-                        f"❌ イシュー #{issue.number} の処理に失敗: {result['error']}"
-                    )
+                    self.logger.error(f"❌ イシュー #{issue.number} の処理に失敗")
+                    self.logger.error(f"   → エラー: {result['error']}")
+                    self.logger.error(f"   → 処理時間: {processing_time:.1f}秒")
 
-                # 処理間隔を空ける（短縮）
-                await asyncio.sleep(1)  # 5秒→1秒に短縮
+                # 次の処理まで待機（最後の処理後は待たない）
+                if processed_count < max_issues and processed_count < len(
+                    processable_issues
+                ):
+                    self.logger.info(f"   → 次の処理まで1秒待機...")
+                    await asyncio.sleep(1)
+
+            # 処理完了サマリー
+            self.logger.info("=" * 60)
+            self.logger.info("📊 Enhanced Auto Issue Processor 実行完了")
+            self.logger.info(
+                f"   → 処理イシュー数: {processed_count}/{len(processable_issues)}件"
+            )
+            self.logger.info(
+                f"   → 全体処理時間: {(datetime.now() - self.metrics['started_at']).total_seconds():.1f}秒"
+            )
+            self.logger.info("=" * 60)
 
         except Exception as e:
             self.logger.error(f"拡張版実行中にエラー: {e}")
+            self.logger.error(f"   → エラー詳細: {type(e).__name__}")
+            import traceback
+
+            self.logger.error(f"   → スタックトレース:\n{traceback.format_exc()}")
 
 
 async def main():
     """メイン関数"""
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        format="%(levelname)s:%(name)s:%(message)s",
     )
+
+    logger = logging.getLogger(__name__)
+    logger.info("🚀 Enhanced Auto Issue Processor メイン処理開始")
+    logger.info("📦 必要なシステムコンポーネントを初期化しています...")
+    logger.info("   → これには30-40秒程度かかる場合があります")
+    logger.info("   → 4賢者システム（Knowledge, Task, Incident, RAG）の初期化")
+    logger.info("   → 知識ベースのロード")
+    logger.info("   → GitHub API接続の確立")
 
     processor = EnhancedAutoIssueProcessor()
     await processor.run_enhanced()
