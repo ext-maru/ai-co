@@ -4,7 +4,6 @@ AI Elder Cast - エルダーズギルド完全知識統合Claude Code起動シ�
 PERFECT IMPLEMENTATION - 妥協度0%
 """
 
-import json
 import os
 import subprocess
 import sys
@@ -48,7 +47,7 @@ def prepare_elder_knowledge():
                 with open(full_path, "r", encoding="utf-8") as f:
                     content = f.read()
                     knowledge_content.append(
-                        f"\n## {description}\n\n{content}\n{'='*80}\n"
+                        f"\n## {description}\n\n{content}\n{'=' * 80}\n"
                     )
                     loaded_files += 1
             except Exception as e:
@@ -176,13 +175,13 @@ def launch_claude_code_with_knowledge():
     # 文字数計算
     total_chars = len("".join(knowledge_content))
 
-    print(f"📚 知識統合状況:")
+    print("📚 知識統合状況:")
     print(f"   ✅ {loaded_files}/11個の核心ドキュメント読み込み完了")
     print(f"   ✅ 合計 {total_chars:,} 文字の知識統合")
     print(f"   ✅ {total_commands}個のAIコマンド体系統合")
-    print(f"   ✅ 4賢者システム完全連携")
-    print(f"   ✅ Elder Flow自動化実装済み")
-    print(f"   ✅ Iron Will品質基準適用済み")
+    print("   ✅ 4賢者システム完全連携")
+    print("   ✅ Elder Flow自動化実装済み")
+    print("   ✅ Iron Will品質基準適用済み")
 
     # 完璧なプロンプト生成
     elder_prompt = create_elder_prompt(knowledge_content, total_commands)
@@ -242,26 +241,35 @@ def launch_claude_code_with_knowledge():
         sys.exit(1)
 
     # Claude Codeの正しいオプション確認
-    help_result = subprocess.run(
-        claude_cmd + ["--help"], capture_output=True, text=True, timeout=5
-    )
+    subprocess.run(claude_cmd + ["--help"], capture_output=True, text=True, timeout=5)
 
-    print(f"🔍 Claude コマンドヘルプ確認完了")
+    print("🔍 Claude コマンドヘルプ確認完了")
 
-    # 最適化版を使用（25,000トークン以下）
-    optimized_file = project_root / "ELDER_KNOWLEDGE_CONTEXT_OPTIMIZED.md"
+    # 中間版を使用（8KB - 読み込み可能）
+    medium_file = project_root / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
 
-    # 最適化版が存在しない場合は作成
-    if not optimized_file.exists():
-        print("⚠️  最適化版が見つかりません。作成します...")
-        # 元のファイルから生成する代わりに、エラーメッセージ
-        print("❌ ELDER_KNOWLEDGE_CONTEXT_OPTIMIZED.md が必要です")
-        print("💡 'python scripts/create_optimized_knowledge.py' を実行してください")
-        sys.exit(1)
+    # 中間版が存在することを確認
+    if medium_file.exists():
+        knowledge_file = medium_file
+        print(f"📄 中間版エルダーズギルド知識ファイル使用: {knowledge_file} (8KB)")
+    else:
+        # 中間版もない場合は最小版を作成
+        print("⚠️  知識ファイルが見つかりません。最小版を作成します...")
+        minimal_content = """# 🏛️ エルダーズギルド知識統合（最小版）
 
-    # 最適化版を使用
-    knowledge_file = optimized_file
-    print(f"📄 最適化版エルダーズギルド知識ファイル使用: {knowledge_file}")
+## 🤖 私のアイデンティティ
+**私 = クロードエルダー（Claude Elder）**
+- エルダーズギルド開発実行責任者
+- グランドエルダーmaruの直属パートナー
+
+## 🎯 実行指示
+必ず最初に「私はクロードエルダー（Claude Elder）です」と自己紹介してください。
+"""
+        minimal_file = project_root / "ELDER_KNOWLEDGE_MINIMAL.md"
+        with open(minimal_file, "w", encoding="utf-8") as f:
+            f.write(minimal_content)
+        knowledge_file = minimal_file
+        print(f"📄 最小版エルダーズギルド知識ファイル作成: {knowledge_file}")
 
     # 最適な日本語モード起動方法を選択
     launch_args = claude_cmd.copy()
@@ -301,7 +309,7 @@ def launch_claude_code_with_knowledge():
         # 一時ファイル削除
         try:
             os.unlink(temp_file)
-        except:
+        except Exception:
             pass
 
 
