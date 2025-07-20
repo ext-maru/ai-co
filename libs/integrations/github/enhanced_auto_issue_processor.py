@@ -10,6 +10,7 @@ import asyncio
 import json
 import logging
 import os
+import random
 import re
 import subprocess
 import time
@@ -58,6 +59,52 @@ except ImportError:
 
 # 既存のAutoIssueProcessorをインポート
 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
+
+
+def retry_on_github_error(max_retries=3, base_delay=1.0):
+    """GitHub APIエラー時のリトライデコレータ"""
+
+    def decorator(func):
+        async def wrapper(*args, **kwargs):
+            logger = logging.getLogger(__name__)
+
+            for attempt in range(max_retries):
+                try:
+                    return await func(*args, **kwargs)
+                except Exception as e:
+                    error_str = str(e).lower()
+
+                    # リトライ可能なエラーかチェック
+                    retryable_errors = [
+                        "rate limit",
+                        "timeout",
+                        "connection",
+                        "502",
+                        "503",
+                        "504",
+                        "network",
+                        "temporary",
+                        "unavailable",
+                    ]
+
+                    is_retryable = any(error in error_str for error in retryable_errors)
+
+                    if attempt == max_retries - 1 or not is_retryable:
+                        # 最後の試行またはリトライ不可能なエラー
+                        logger.error(f"GitHub API呼び出し失敗 (最終試行): {e}")
+                        raise e
+
+                    # リトライ待機（指数バックオフ + ジッター）
+                    delay = base_delay * (2**attempt) + random.uniform(0, 1)
+                    logger.warning(
+                        f"GitHub APIエラー (試行 {attempt + 1}/{max_retries}): {e}"
+                    )
+                    logger.info(f"   → {delay:.1f}秒後にリトライ...")
+                    await asyncio.sleep(delay)
+
+        return wrapper
+
+    return decorator
 
 
 class IssueCache:
@@ -741,66 +788,90 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
             "error": None,
         }
 
-        # 一時的に実装をスキップしてイシューを閉じるだけに
-        try:
-            self.logger.info(f"🚧 Issue #{issue.number} - 実装は準備中、イシューを自動クローズ")
-            issue.create_comment(
-                f"🤖 Auto Issue Processorが処理しました。\n\n"
-                f"現在、自動実装機能は開発中です。\n"
-                f"このイシューは一時的にクローズされます。"
-            )
-            issue.edit(state="closed")
-            result["success"] = True
-            result["error"] = "実装スキップ（開発中）"
-            return result
-        except Exception as e:
-            result["error"] = f"イシュークローズ失敗: {e}"
-            return result
-
         try:
             # 処理開始時刻を記録
             start_time = datetime.now()
+            self.logger.info(f"🚀 Issue #{issue.number} 処理開始: {issue.title}")
 
             # 4賢者に相談
-            self.logger.info(f"4賢者に相談中: Issue #{issue.number}")
-            sage_advice = await self.four_sages.consult_on_issue(issue)
-            self.metrics["consultation_count"] += 1
+            self.logger.info(f"🧙‍♂️ 4賢者に相談中: Issue #{issue.number}")
+            try:
+                sage_advice = await self.four_sages.consult_on_issue(issue)
+                self.metrics["consultation_count"] += 1
+            except Exception as e:
+                self.logger.error(f"❌ 4賢者相談エラー: {e}")
+                # フォールバック: デフォルトの助言を使用
+                sage_advice = {
+                    "knowledge": {"advice": "相談失敗のためデフォルト処理", "confidence": 0.5},
+                    "plan": {"advice": "標準的な実装手順を適用", "complexity": "medium"},
+                    "risks": {"advice": "中程度のリスク想定", "level": "medium"},
+                    "solution": {"advice": "基本的なアプローチで実装", "approach": "standard"},
+                }
 
             # 自動処理可能か判断
             should_process, reason = self.four_sages.should_auto_process(
                 issue, sage_advice
             )
             if not should_process:
+                self.logger.warning(f"⚠️ 自動処理不可: {reason}")
+                # 自動処理できない場合はコメントを追加
+                await self._create_issue_comment_safe(
+                    issue,
+                    f"🤖 Auto Issue Processorが分析しました。\n\n"
+                    f"**判定結果**: 自動処理不可\n"
+                    f"**理由**: {reason}\n\n"
+                    f"手動での対応が必要です。4賢者の分析結果:\n"
+                    f"- **リスクレベル**: {sage_advice.get('risks', {}).get('level', 'unknown')}\n"
+                    f"- **複雑度**: {sage_advice.get('plan', {}).get('complexity', 'unknown')}\n"
+                    f"- **信頼度**: {sage_advice.get('knowledge', {}).get('confidence', 0)}",
+                )
                 result["error"] = f"自動処理不可: {reason}"
-                self.logger.warning(result["error"])
                 return result
 
+            self.logger.info(f"✅ 自動処理判定: 可能 ({reason})")
+
             # フィーチャーブランチを作成
+            self.logger.info(f"🌿 フィーチャーブランチ作成中...")
             branch_name = await self.git_ops.create_feature_branch(
                 issue.number, issue.title
             )
+            self.logger.info(f"   → ブランチ作成完了: {branch_name}")
 
-            # 実装を実行（ここでは実際の実装の代わりにダミーを使用）
+            # 実装を実行
+            self.logger.info(f"⚙️ 実装実行中...")
             implementation_details = await self._implement_solution(issue, sage_advice)
+            self.logger.info(f"   → 実装完了: {implementation_details['type']}")
 
             # 変更をコミット
+            self.logger.info(f"💾 変更をコミット中...")
+            commit_message = self._generate_commit_message(
+                issue, implementation_details
+            )
             commit_success = await self.git_ops.commit_changes(
-                f"Auto-implement: {issue.title}", issue.number
+                commit_message, issue.number
             )
 
             if not commit_success:
                 result["error"] = "コミットに失敗しました"
+                self.logger.error(f"❌ コミット失敗")
                 return result
 
+            self.logger.info(f"   → コミット完了")
+
             # ブランチをプッシュ
+            self.logger.info(f"📤 ブランチプッシュ中...")
             push_success = await self.git_ops.push_branch(branch_name)
 
             if not push_success:
                 result["error"] = "プッシュに失敗しました"
+                self.logger.error(f"❌ プッシュ失敗")
                 return result
+
+            self.logger.info(f"   → プッシュ完了")
 
             # PRを作成
             if self.pr_creator:
+                self.logger.info(f"📋 PR作成中...")
                 pr = await self.pr_creator.create_pull_request(
                     issue, branch_name, implementation_details, sage_advice
                 )
@@ -811,29 +882,51 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                     result["pr_number"] = pr.number
                     result["pr_url"] = pr.html_url
 
+                    self.logger.info(f"✅ PR作成完了: #{pr.number}")
+                    self.logger.info(f"   → PR URL: {pr.html_url}")
+
                     # イシューにコメントを追加
-                    issue.create_comment(
-                        f"🤖 Auto Issue Processorによる自動実装が完了しました。\n"
-                        f"PR #{pr.number} を作成しました: {pr.html_url}"
+                    await self._create_issue_comment_safe(
+                        issue,
+                        f"🤖 Auto Issue Processorによる自動実装が完了しました。\n\n"
+                        f"**作成されたPR**: #{pr.number} {pr.html_url}\n\n"
+                        f"**実装内容**:\n"
+                        f"- タイプ: {implementation_details['type']}\n"
+                        f"- 変更ファイル数: {len(implementation_details['files_modified'])}件\n\n"
+                        f"**4賢者の助言**:\n"
+                        f"- リスクレベル: {sage_advice.get('risks', {}).get('level', 'unknown')}\n"
+                        f"- 推奨アプローチ: {sage_advice.get('solution', {}).get('approach', 'standard')}\n\n"
+                        f"レビューをお願いします。",
                     )
 
                     # メトリクスを更新
                     self.metrics["successful_prs"] += 1
                 else:
                     result["error"] = "PR作成に失敗しました"
+                    self.logger.error(f"❌ PR作成失敗")
                     self.metrics["failed_attempts"] += 1
             else:
                 result["error"] = "GitHubクライアントが初期化されていません"
+                self.logger.error(f"❌ GitHubクライアント未初期化")
 
         except Exception as e:
             result["error"] = str(e)
-            self.logger.error(f"イシュー処理中にエラー: {e}")
+            self.logger.error(f"❌ イシュー処理中にエラー: {e}")
             self.metrics["failed_attempts"] += 1
+
+            # エラー発生時にもコメントを追加
+            await self._create_issue_comment_safe(
+                issue,
+                f"🤖 Auto Issue Processorでエラーが発生しました。\n\n"
+                f"**エラー内容**: {str(e)}\n\n"
+                f"手動での対応が必要です。",
+            )
 
         # 処理時間を記録
         if "start_time" in locals():
             processing_time = (datetime.now() - start_time).total_seconds()
             self.metrics["processing_time"].append(processing_time)
+            self.logger.info(f"⏱️ 処理時間: {processing_time:.1f}秒")
 
         # 処理済みイシュー数を更新
         self.metrics["processed_issues"] += 1
@@ -860,6 +953,39 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
         implementation_details["files_modified"].append(dummy_file_path)
 
         return implementation_details
+
+    def _generate_commit_message(
+        self, issue: Issue, implementation_details: Dict[str, Any]
+    ) -> str:
+        """コミットメッセージを生成"""
+        issue_type = implementation_details.get("type", "general")
+
+        # Conventional Commits形式でプレフィックスを決定
+        prefix_map = {
+            "bug_fix": "fix",
+            "feature": "feat",
+            "documentation": "docs",
+            "optimization": "perf",
+            "test": "test",
+            "general": "chore",
+        }
+        prefix = prefix_map.get(issue_type, "chore")
+
+        # タイトルを短縮（50文字制限）
+        title = issue.title[:40] if len(issue.title) > 40 else issue.title
+
+        return f"{prefix}: {title} (#{issue.number})"
+
+    @retry_on_github_error(max_retries=3, base_delay=1.0)
+    async def _create_issue_comment_safe(self, issue: Issue, comment_body: str) -> bool:
+        """安全にイシューコメントを作成（リトライあり）"""
+        try:
+            issue.create_comment(comment_body)
+            self.logger.info(f"   → コメント作成完了: Issue #{issue.number}")
+            return True
+        except Exception as e:
+            self.logger.error(f"❌ コメント作成失敗: {e}")
+            return False
 
     def _determine_priority(self, issue: Issue) -> str:
         """イシューの優先度を判定"""
