@@ -44,6 +44,9 @@ class WorkerStatusMonitor:
         self.error_history = defaultdict(deque)
         self.task_metrics = defaultdict(dict)
         self.queue_status_cache = {}
+        self._last_system_metrics_time = 0
+        self._system_metrics_cache = None
+        self._system_metrics_cache_duration = 10  # システムメトリクスのキャッシュ期間（秒）
         self.db_path = PROJECT_ROOT / "data" / "worker_status.db"
 
         # データベース初期化
@@ -300,7 +303,8 @@ class WorkerStatusMonitor:
             process = psutil.Process(pid)
 
             is_alive = process.is_running()
-            cpu_percent = process.cpu_percent()
+            # CPU使用率取得（インターバルなしで高速化）
+            cpu_percent = process.cpu_percent(interval=None)
             memory_mb = process.memory_info().rss / 1024 / 1024
 
             # ヘルススコア計算 (簡易版)
@@ -407,6 +411,13 @@ class WorkerStatusMonitor:
                 # キューステータス更新
                 self.queue_status_cache = self.get_queue_status()
 
+                # 動的インターバル調整
+                worker_count = len(self.workers_status)
+                if worker_count > 50:
+                    self.monitoring_interval = min(10, self.monitoring_interval + 0.5)
+                elif worker_count < 10:
+                    self.monitoring_interval = max(1, self.monitoring_interval - 0.5)
+
                 time.sleep(self.monitoring_interval)
 
             except Exception as e:
@@ -423,16 +434,29 @@ class WorkerStatusMonitor:
         }
 
     def _get_system_metrics(self) -> Dict:
-        """システムメトリクスを取得"""
+        """システムメトリクスを取得（キャッシュ付き）"""
+        current_time = time.time()
+
+        # キャッシュが有効ならそれを返す
+        if (
+            self._system_metrics_cache is not None
+            and current_time - self._last_system_metrics_time
+            < self._system_metrics_cache_duration
+        ):
+            return self._system_metrics_cache
+
         try:
-            return {
-                "cpu_percent": psutil.cpu_percent(),
+            # メトリクス取得（インターバル付きでCPU負荷軽減）
+            self._system_metrics_cache = {
+                "cpu_percent": psutil.cpu_percent(interval=0.1),
                 "memory_percent": psutil.virtual_memory().percent,
                 "disk_percent": psutil.disk_usage("/").percent,
                 "load_average": (
                     psutil.getloadavg()[0] if hasattr(psutil, "getloadavg") else 0
                 ),
             }
+            self._last_system_metrics_time = current_time
+            return self._system_metrics_cache
         except Exception as e:
             logger.error(f"System metrics error: {e}")
             return {

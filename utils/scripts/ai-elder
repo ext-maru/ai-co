@@ -15,11 +15,11 @@ sys.path.append("/home/aicompany/ai_co")
 
 # ai-elder cast 機能の復活
 if len(sys.argv) > 1 and sys.argv[1] == "cast":
-    # ai-elder-cast コマンドにリダイレクト
-    import subprocess
+    # ai-elder-cast コマンドにリダイレクト（TTY保持のためexecを使用）
+    import os
     cast_args = ["ai-elder-cast"] + sys.argv[2:]
-    subprocess.run(cast_args)
-    exit(0)
+    os.execvp("ai-elder-cast", cast_args)
+    # execvpは戻らないのでexit不要
 
 print("⚠️ ai-elderコマンドは現在4賢者システムに統合されています")
 print()

@@ -1,0 +1,14 @@
+[Unit]
+Description=Elders Guild Incident Knights Self-Healing Service
+After=network.target
+
+[Service]
+Type=simple
+User=aicompany
+WorkingDirectory=/home/aicompany/ai_co
+ExecStart=/usr/bin/python3 /home/aicompany/ai_co/scripts/knights_self_healing.py --daemon
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

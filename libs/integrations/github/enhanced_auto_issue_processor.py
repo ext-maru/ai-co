@@ -237,35 +237,38 @@ class GitOperations:
             for attempt in range(2):
                 try:
                     self.logger.info(f"コミット試行 {attempt + 1}/2...")
-                    subprocess.run(
+                    result = subprocess.run(
                         ["git", "commit", "-m", full_message],
                         cwd=self.repo_path,
-                        check=True,
                         capture_output=True,
                         text=True,
                     )
-                    self.logger.info(f"✅ コミット成功 (試行 {attempt + 1})")
-                    return True
+
+                    if result.returncode == 0:
+                        self.logger.info(f"✅ コミット成功 (試行 {attempt + 1})")
+                        return True
+                    else:
+                        if (
+                            attempt == 0
+                            and "files were modified by this hook" in result.stdout
+                        ):
+                            # pre-commitフックによる自動修正
+                            self.logger.warning("⚠️ pre-commitフックによる自動修正を検出")
+                            self.logger.info("🔄 修正されたファイルを再ステージング...")
+                            subprocess.run(
+                                ["git", "add", "-A"], cwd=self.repo_path, check=True
+                            )
+                            continue
+                        else:
+                            # エラー詳細をログ
+                            self.logger.error(f"❌ コミット失敗: {result.stderr}")
+                            return False
 
                 except subprocess.CalledProcessError as e:
-                    if attempt == 0:
-                        # 1回目の失敗: pre-commitフックによる自動修正の可能性
-                        self.logger.warning(
-                            f"⚠️ コミット失敗 (試行 1): pre-commitフックによる修正が実行された可能性があります"
-                        )
-                        self.logger.info("🔄 修正されたファイルを再ステージング...")
-
-                        # 修正されたファイルを再ステージング
-                        subprocess.run(
-                            ["git", "add", "-A"], cwd=self.repo_path, check=True
-                        )
-                        continue
-                    else:
-                        # 2回目の失敗: 真のエラー
-                        self.logger.error(f"❌ コミット失敗 (試行 2): {e}")
-                        # エラー詳細をログ出力
-                        if e.stderr:
-                            self.logger.error(f"エラー詳細: {e.stderr}")
+                    self.logger.error(f"❌ コミットエラー: {e}")
+                    if e.stderr:
+                        self.logger.error(f"詳細: {e.stderr}")
+                    if attempt == 1:  # 最後の試行
                         return False
 
             return False
@@ -1580,7 +1583,12 @@ This is a general solution template for issue #{issue.number}. The specific impl
             self.logger.info("🔍 処理対象イシューをフィルタリング中...")
             start_filter = datetime.now()
             processable_issues = []
-            filtered_count = {"pr": 0, "auto_generated": 0, "high_priority": 0}
+            filtered_count = {
+                "pr": 0,
+                "auto_generated": 0,
+                "high_priority": 0,
+                "low_priority_excluded": 0
+            }
 
             # メモリ上のデータで高速フィルタリング
             for data in issue_data_cache:
@@ -1596,8 +1604,8 @@ This is a general solution template for issue #{issue.number}. The specific impl
 
                 # 優先度を判定（メモリアクセス - 高速）
                 priority = self._determine_priority_from_cache(data)
-                if priority not in ["low", "medium"]:
-                    filtered_count["high_priority"] += 1
+                if priority in ["low"]:  # lowのみ除外、medium以上を処理
+                    filtered_count["low_priority_excluded"] += 1
                     continue
 
                 # 処理対象として追加
@@ -1618,6 +1626,7 @@ This is a general solution template for issue #{issue.number}. The specific impl
                 f"     → auto-generated除外: {filtered_count['auto_generated']}件"
             )
             self.logger.info(f"     → 高優先度除外: {filtered_count['high_priority']}件")
+            self.logger.info(f"     → 低優先度除外: {filtered_count['low_priority_excluded']}件")
             self.logger.info(f"     → 処理対象: {len(processable_issues)}件")
 
             if not processable_issues:

@@ -17,10 +17,11 @@ sys.path.insert(0, str(project_root))
 def prepare_elder_knowledge():
     """完全なエルダーズギルド知識を準備"""
 
-    # 核心ドキュメント読み込み（理想的な11ファイル構成）
+    # 核心ドキュメント読み込み（理想的な12ファイル構成）
     knowledge_files = {
-        # Core Identity (必須)
-        "CLAUDE.md": "エルダーズギルド基本設定",
+        # Core Identity (必須) - CLAUDE.mdを最優先
+        "CLAUDE.md": "エルダーズギルド基本設定（最重要）",
+        "ELDER_KNOWLEDGE_MINIMAL.md": "エルダー最小知識統合",
         "knowledge_base/CLAUDE_ELDER_IDENTITY_CORE.md": "クロードエルダー核心アイデンティティ",
         "knowledge_base/GRAND_ELDER_MARU_HIERARCHY.md": "グランドエルダー階層構造",
         # System (必須)
@@ -265,7 +266,7 @@ def launch_claude_code_with_knowledge():
 ## 🎯 実行指示
 必ず最初に「私はクロードエルダー（Claude Elder）です」と自己紹介してください。
 """
-        minimal_file = project_root / "ELDER_KNOWLEDGE_MINIMAL.md"
+        minimal_file = project_root / "knowledge_base" / "ELDER_KNOWLEDGE_MINIMAL.md"
         with open(minimal_file, "w", encoding="utf-8") as f:
             f.write(minimal_content)
         knowledge_file = minimal_file

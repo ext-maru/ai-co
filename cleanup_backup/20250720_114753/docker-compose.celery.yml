@@ -1,0 +1,142 @@
+version: '3.8'
+
+services:
+  # Redis (Celeryブローカー)
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - elders_network
+
+  # Celery Worker
+  celery_worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.celery
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+      - celery_logs:/app/logs
+    working_dir: /app
+    command: >
+      celery -A workers.enhanced_task_worker_celery worker 
+      --loglevel=info 
+      --concurrency=4
+      --queues=claude_tasks,notifications,sage_tasks
+    networks:
+      - elders_network
+    restart: unless-stopped
+
+  # Celery Beat (定期タスク)
+  celery_beat:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.celery
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - PYTHONPATH=/app
+    volumes:
+      - .:/app
+      - celery_logs:/app/logs
+    working_dir: /app
+    command: >
+      celery -A workers.enhanced_task_worker_celery beat 
+      --loglevel=info
+      --schedule=/app/celerybeat-schedule
+    networks:
+      - elders_network
+    restart: unless-stopped
+
+  # Celery Flower (監視ツール)
+  celery_flower:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.celery
+    depends_on:
+      - redis
+      - celery_worker
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    ports:
+      - "5555:5555"
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: >
+      celery -A workers.enhanced_task_worker_celery flower
+      --port=5555
+      --broker_api=redis://redis:6379/0
+    networks:
+      - elders_network
+    restart: unless-stopped
+
+  # Claude CLI テスト環境
+  claude_test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.claude-test
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - PYTHONPATH=/app
+      - TEST_MODE=true
+    volumes:
+      - .:/app
+      - test_output:/app/output
+    working_dir: /app
+    command: >
+      pytest tests/unit/test_enhanced_task_worker_celery.py 
+      -v --tb=short
+    networks:
+      - elders_network
+    profiles:
+      - test
+
+  # Redis Commander (Redis GUI)
+  redis_commander:
+    image: rediscommander/redis-commander:latest
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    networks:
+      - elders_network
+    profiles:
+      - debug
+
+networks:
+  elders_network:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local
+  celery_logs:
+    driver: local
+  test_output:
+    driver: local
