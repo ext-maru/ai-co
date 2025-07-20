@@ -62,9 +62,9 @@ Multiple files contain hardcoded paths with "aicompany":
 - **patch_pm_now.py**: `/home/aicompany/ai_co`
 - Various scripts in `/scripts/` directory
 
-### 4. Codeflow Extension
+### 4. Codeflow Extension (削除済み)
 
-- **/home/aicompany/ai_co/codeflow/MARKETPLACE.md**:
+- **/home/aicompany/ai_co/codeflow/MARKETPLACE.md**: (codeflowディレクトリは削除済み)
   - Extension Name: "Elders Guild CodeFlow"
   - Publisher: "aicompany"
   - Login command: `vsce login aicompany`

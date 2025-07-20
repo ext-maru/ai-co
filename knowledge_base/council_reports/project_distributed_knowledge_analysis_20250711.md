@@ -24,9 +24,9 @@
 #### 1. **独立プロジェクト群の実態**
 ```yaml
 ai_co/
-├── ai-company-web/     # 旧統合Web（非推奨）
+├── ai-company-web/     # 旧統合Web（削除済み）
 ├── ai-elder/           # CLI統合（使用中止）
-├── codeflow/           # 開発フロー（新規）
+├── codeflow/           # 開発フロー（削除済み）
 └── projects/           # 新規プロジェクト群
     ├── elders-guild-web/        # Next.js + FastAPI
     ├── frontend-project-manager/ # Next.js専用

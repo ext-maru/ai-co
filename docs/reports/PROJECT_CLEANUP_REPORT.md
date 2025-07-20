@@ -22,7 +22,7 @@
 4. **projects/image-upload-manager/**
    - 古いバージョンの画像アップロードシステム（180MB）
    - バックアップ作成後削除
-   - バックアップ: `/home/aicompany/ai_co/backups/image-upload-manager-backup-20250111.tar.gz`
+   - バックアップ: `/home/aicompany/ai_co/backups/image-upload-manager-backup-20250111.tar.gz` (backupsディレクトリも削除済み)
 
 5. **deployment/image-upload-manager/**
    - 古いデプロイメント設定

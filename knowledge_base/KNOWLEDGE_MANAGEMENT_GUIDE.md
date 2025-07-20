@@ -91,7 +91,7 @@ ai-knowledge status
 └── archives/                      # 月次アーカイブ
     └── knowledge_archive_*.tar.gz
 
-/home/aicompany/ai_co/web/         # Webレポート
+/home/aicompany/ai_co/generated_reports/    # レポート（旧webディレクトリ）
 ├── knowledge_report_*.html
 └── evolution_viz_*.html
 ```

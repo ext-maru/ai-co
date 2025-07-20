@@ -25,10 +25,10 @@
 │   └── 品質検証機能
 │
 └── 📁 プロジェクト専用ナレッジ
-    ├── ai-company-web/PROJECT_KNOWLEDGE.md
+    ├── ai-company-web/PROJECT_KNOWLEDGE.md (削除済み)
     ├── ai-elder/PROJECT_KNOWLEDGE.md
     ├── projects/*/PROJECT_KNOWLEDGE.md
-    └── codeflow/PROJECT_KNOWLEDGE.md
+    └── codeflow/PROJECT_KNOWLEDGE.md (削除済み)
 ```
 
 ## 📝 プロジェクト専用ナレッジの構造
