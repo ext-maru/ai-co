@@ -842,8 +842,8 @@ class AutoIssueProcessor(EldersServiceLegacy):
         elif any(word in title_lower for word in ["bug", "fix", "error"]):
             return "medium"
 
-        # デフォルトは低優先度
-        return "low"
+        # デフォルトは中優先度（ラベル無しIssueも処理対象にする）
+        return "medium"
     
     async def _check_existing_pr_for_issue(self, issue_number: int) -> Optional[Dict[str, Any]]:
         """指定されたイシューに対する既存のPRをチェック"""
