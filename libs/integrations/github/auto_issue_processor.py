@@ -8,6 +8,7 @@ import asyncio
 import json
 import logging
 import os
+import subprocess
 
 # Elder System imports
 import sys
@@ -105,6 +106,14 @@ class AutoIssueElderFlowEngine:
                         "flow_result": flow_result,
                         "pr_error": pr_result.get("error"),
                     }
+            elif not quality_gate_success:
+                return {
+                    "status": "quality_gate_failed",
+                    "pr_url": None,
+                    "message": f"品質ゲート失敗のためPR作成を中止: {task_name}",
+                    "flow_result": flow_result,
+                    "quality_gate_error": flow_result.get("results", {}).get("quality_gate", {}).get("error"),
+                }
             else:
                 return {
                     "status": "error",
@@ -724,40 +733,27 @@ class AutoIssueProcessor(EldersServiceLegacy):
             # Elder Flow実行
             result = await self.elder_flow.execute_flow(flow_request)
 
-            # 結果をPR作成に渡す（実装コード生成のため）
+            # Elder Flowエンジンが既にPR作成を処理済み
+            # 結果に基づいてイシューにコメント追加
             if result.get("status") == "success":
-                # Elder Flow結果を含めてPR作成
-                pr_result = await self._create_pull_request(
-                    issue.number, issue.title, issue.body or "", 
-                    f"Auto-fix Issue #{issue.number}: {issue.title}",
-                    flow_result=result.get("flow_result")
-                )
-                
-                if pr_result.get("success"):
-                    # PR作成成功時の処理
+                # PR作成成功時
+                pr_url = result.get("pr_url")
+                if pr_url:
                     issue.create_comment(
                         f"🤖 Auto-processed by Elder Flow\n\n"
-                        f"PR created: {pr_result.get('pr_url')}\n\n"
+                        f"PR created: {pr_url}\n\n"
                         f"This issue was automatically processed with code implementation."
                     )
-                    return {
-                        "status": "success",
-                        "pr_url": pr_result.get("pr_url"),
-                        "message": f"Elder Flow完了、PR #{pr_result.get('pr_number', 'XXX')} を作成しました",
-                        "flow_result": result.get("flow_result"),
-                        "pr_result": pr_result,
-                    }
-                else:
-                    return {
-                        "status": "partial_success", 
-                        "pr_url": None,
-                        "message": f"Elder Flow完了、但しPR作成に失敗: {pr_result.get('error', '不明なエラー')}",
-                        "flow_result": result.get("flow_result"),
-                        "pr_error": pr_result.get("error"),
-                    }
-                    
-            # 結果に基づいてイシューを更新
-            if result.get("status") == "already_exists":
+                return result
+            elif result.get("status") == "quality_gate_failed":
+                # 品質ゲート失敗時
+                issue.create_comment(
+                    f"🚨 Auto-processing failed\n\n"
+                    f"Quality gate failed: {result.get('quality_gate_error', 'Unknown error')}\n\n"
+                    f"Manual review and implementation required."
+                )
+                return result
+            elif result.get("status") == "already_exists":
                 # 既存のPRがある場合
                 issue.create_comment(
                     f"🤖 Auto Issue Processor Notice\n\n"

@@ -585,7 +585,9 @@ class ElderFlowOrchestrator:
             "test_coverage": 0,
             "code_quality": "F",
             "security_scan": "failed",
+            "security_issues": 0,  # security_issuesキーを初期化
             "lint_status": "failed",
+            "lint_issues": 0,      # lint_issuesキーも初期化
             "overall_score": 0,
         }
 
