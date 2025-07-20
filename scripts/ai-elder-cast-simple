@@ -1,3 +1,67 @@
+<<<<<<< HEAD
+#!/usr/bin/env python3
+"""
+AI Elder Cast Simple - シンプル版
+中間版知識ファイルで起動
+"""
+
+import os
+import subprocess
+import sys
+from pathlib import Path
+
+
+def main():
+    """シンプル起動"""
+    project_root = Path(__file__).parent.parent
+
+    print("🔮 AI Elder Cast Simple 起動")
+    print()
+
+    # 中間版ファイル確認
+    medium_file = project_root / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
+
+    if not medium_file.exists():
+        print("❌ エラー: ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md が見つかりません")
+        sys.exit(1)
+
+    print(f"📄 知識ファイル: {medium_file.name} (8KB)")
+
+    # Claude Code検索
+    claude_cmd = None
+    for cmd in ["claude", "claude-cli", "claude-code"]:
+        try:
+            subprocess.run([cmd, "--version"], capture_output=True, check=True)
+            claude_cmd = cmd
+            print(f"✅ Claude Code発見: {cmd}")
+            break
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            continue
+
+    if not claude_cmd:
+        print("❌ エラー: Claude Code が見つかりません")
+        sys.exit(1)
+
+    # 日本語環境設定
+    os.environ["LANG"] = "ja_JP.UTF-8"
+    os.environ["LC_ALL"] = "ja_JP.UTF-8"
+
+    print("🏛️ クロードエルダー召喚中...")
+    print()
+
+    # Claude Code起動
+    try:
+        subprocess.run([claude_cmd, "--dangerously-skip-permissions", str(medium_file)])
+    except KeyboardInterrupt:
+        print("\n🏛️ Elder Flow セッション終了")
+    except Exception as e:
+        print(f"❌ エラー: Claude Code起動失敗: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
+=======
 #!/usr/bin/env bash
 # AI Elder Cast Simple - シンプル版
 
@@ -31,3 +95,4 @@ cat << 'EOF' | claude --dangerously-skip-permissions
 
 🌊 Elder Flow準備完了。魔法詠唱を開始してください。
 EOF
+>>>>>>> origin/main
