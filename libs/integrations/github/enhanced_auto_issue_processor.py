@@ -12,6 +12,7 @@ import logging
 import os
 import re
 import subprocess
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -57,6 +58,39 @@ except ImportError:
 
 # 既存のAutoIssueProcessorをインポート
 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
+
+
+class IssueCache:
+    """GitHub Issueのキャッシュ管理"""
+
+    def __init__(self, ttl=300):  # デフォルト5分
+        self.ttl = ttl
+        self.cache = {}
+        self.logger = logging.getLogger(__name__)
+
+    def get(self, key: str) -> Optional[Any]:
+        """キャッシュから取得"""
+        if key not in self.cache:
+            return None
+
+        entry = self.cache[key]
+        if time.time() - entry["timestamp"] > self.ttl:
+            self.logger.info(f"キャッシュ期限切れ: {key}")
+            del self.cache[key]
+            return None
+
+        self.logger.info(f"キャッシュヒット: {key}")
+        return entry["data"]
+
+    def set(self, key: str, data: Any):
+        """キャッシュに保存"""
+        self.cache[key] = {"data": data, "timestamp": time.time()}
+        self.logger.info(f"キャッシュ保存: {key}")
+
+    def clear(self):
+        """キャッシュクリア"""
+        self.cache.clear()
+        self.logger.info("キャッシュクリア完了")
 
 
 class GitOperations:
@@ -679,6 +713,10 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
         self.four_sages = EnhancedFourSagesIntegration()
         self.logger.info("   → 4賢者統合システム初期化完了")
 
+        self.logger.info("   → イシューキャッシュ初期化中...")
+        self.issue_cache = IssueCache(ttl=600)  # 10分キャッシュ
+        self.logger.info("   → イシューキャッシュ初期化完了")
+
         self.pr_creator = None  # GitHubクライアント初期化後に設定
         self.metrics = {
             "processed_issues": 0,
@@ -899,17 +937,39 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
             self.pr_creator = EnhancedPRCreator(github, repo)
             self.logger.info("   → PR作成システム: 準備完了")
 
-            # 処理可能なイシューを直接取得
+            # 処理可能なイシューを取得（キャッシュ＋プリフェッチ戦略）
             self.logger.info("📋 オープンイシューを取得中...")
-            self.logger.info("   → GitHub APIを呼び出しています...")
-            open_issues = list(repo.get_issues(state="open"))
-            self.logger.info(f"   → {len(open_issues)}件のオープンイシューを発見")
+
+            cache_key = f"open_issues_{repo.full_name}"
+            cached_issues = self.issue_cache.get(cache_key)
+
+            if cached_issues is not None:
+                open_issues = cached_issues
+                self.logger.info(f"   → キャッシュから取得: {len(open_issues)}件")
+            else:
+                self.logger.info("   → GitHub APIを呼び出しています...")
+                self.logger.info("   → プリフェッチ戦略: 全データを一括取得")
+                start_fetch = datetime.now()
+
+                # リスト化により全データを一度に取得（API呼び出し削減）
+                open_issues = list(
+                    repo.get_issues(state="open", sort="updated", direction="desc")
+                )
+
+                # キャッシュに保存
+                self.issue_cache.set(cache_key, open_issues)
+
+                fetch_time = (datetime.now() - start_fetch).total_seconds()
+                self.logger.info(f"   → {len(open_issues)}件のオープンイシューを発見")
+                self.logger.info(f"   → 取得時間: {fetch_time:.1f}秒")
 
             self.logger.info("🔍 処理対象イシューをフィルタリング中...")
+            start_filter = datetime.now()
             processable_issues = []
             filtered_count = {"pr": 0, "auto_generated": 0, "high_priority": 0}
 
-            for issue in open_issues:
+            # バッチ処理でフィルタリング（プリフェッチしたデータを活用）
+            for i, issue in enumerate(open_issues):
                 # PRかどうかチェック
                 if issue.pull_request:
                     filtered_count["pr"] += 1
@@ -936,6 +996,8 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                     }
                 )
 
+            filter_time = (datetime.now() - start_filter).total_seconds()
+            self.logger.info(f"   → フィルタリング完了: {filter_time:.1f}秒")
             self.logger.info(f"   → フィルタリング結果:")
             self.logger.info(f"     → PR除外: {filtered_count['pr']}件")
             self.logger.info(

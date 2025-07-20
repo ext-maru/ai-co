@@ -21,10 +21,10 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 # 各コンポーネントのインポート
 try:
+    from libs.four_sages.knowledge.enhanced_knowledge_sage import EnhancedKnowledgeSage
     from libs.four_sages_collaboration_enhanced import FourSagesCollaborationEnhanced
-    from libs.four_sages_integration import FourSagesIntegration
+    from libs.four_sages_integration_complete import FourSagesIntegrationComplete
     from libs.knowledge_index_optimizer import KnowledgeIndexOptimizer
-    from libs.knowledge_sage_enhanced import KnowledgeSageEnhanced
     from libs.system_performance_enhancer import get_performance_enhancer
 except ImportError as e:
     print(f"Import error: {e}")
@@ -82,7 +82,8 @@ class ImprovementReportGenerator:
         """4賢者システム測定"""
         try:
             # 統合システム
-            integration = FourSagesIntegration()
+            integration = FourSagesIntegrationComplete()
+            await integration.initialize()
             status = await integration.get_system_status()
 
             # 連携システム
@@ -118,18 +119,19 @@ class ImprovementReportGenerator:
         try:
             # 知識賢者
             kb_path = PROJECT_ROOT / "knowledge_base"
-            sage = KnowledgeSageEnhanced(knowledge_base_path=kb_path)
-            sage.build_index()
+            sage = EnhancedKnowledgeSage()
 
-            # 検索テスト
+            # 検索機能の存在確認
+            search_times = []
             import time
 
-            search_times = []
-
-            for query in ["elder", "test", "system", "四賢者"]:
-                start = time.time()
-                results = sage.search(query)
-                search_times.append(time.time() - start)
+            # セマンティック検索テスト（EnhancedKnowledgeSageの実装済みメソッド）
+            if hasattr(sage, "semantic_search"):
+                for query in ["elder", "test", "system", "四賢者"]:
+                    start = time.time()
+                    # semantic_searchは非同期メソッド
+                    results = await sage.semantic_search(query)
+                    search_times.append(time.time() - start)
 
             avg_search_time = (
                 sum(search_times) / len(search_times) if search_times else 0
@@ -142,7 +144,9 @@ class ImprovementReportGenerator:
             opt_stats = optimizer.build_optimized_index()
 
             self.current_metrics["knowledge_base"] = {
-                "index_size": len(sage.index),
+                "index_size": len(sage.knowledge_graph.nodes)
+                if hasattr(sage, "knowledge_graph")
+                else 0,
                 "average_search_time_ms": avg_search_time * 1000,
                 "search_features": ["basic", "fuzzy", "semantic", "tag-based"],
                 "cache_enabled": True,

@@ -248,17 +248,20 @@ def launch_claude_code_with_knowledge():
 
     print(f"🔍 Claude コマンドヘルプ確認完了")
 
-    # 知識ファイルを作業ディレクトリに配置
-    knowledge_file = project_root / "ELDER_KNOWLEDGE_CONTEXT.md"
+    # 最適化版を使用（25,000トークン以下）
+    optimized_file = project_root / "ELDER_KNOWLEDGE_CONTEXT_OPTIMIZED.md"
 
-    with open(temp_file, "r", encoding="utf-8") as f:
-        knowledge_prompt = f.read()
+    # 最適化版が存在しない場合は作成
+    if not optimized_file.exists():
+        print("⚠️  最適化版が見つかりません。作成します...")
+        # 元のファイルから生成する代わりに、エラーメッセージ
+        print("❌ ELDER_KNOWLEDGE_CONTEXT_OPTIMIZED.md が必要です")
+        print("💡 'python scripts/create_optimized_knowledge.py' を実行してください")
+        sys.exit(1)
 
-    # 知識ファイルを保存
-    with open(knowledge_file, "w", encoding="utf-8") as f:
-        f.write(knowledge_prompt)
-
-    print(f"📄 エルダーズギルド知識ファイル作成: {knowledge_file}")
+    # 最適化版を使用
+    knowledge_file = optimized_file
+    print(f"📄 最適化版エルダーズギルド知識ファイル使用: {knowledge_file}")
 
     # 最適な日本語モード起動方法を選択
     launch_args = claude_cmd.copy()
