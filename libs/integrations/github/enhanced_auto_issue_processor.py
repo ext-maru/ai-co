@@ -1180,8 +1180,8 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
             start_filter = datetime.now()
             processable_issues = []
             filtered_count = {
-                "pr": 0, 
-                "auto_generated": 0, 
+                "pr": 0,
+                "auto_generated": 0,
                 "high_priority": 0,
                 "low_priority_excluded": 0
             }
