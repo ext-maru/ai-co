@@ -876,7 +876,9 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
             self.logger.info(f"処理可能なイシュー: {len(processable_issues)}件発見")
 
             # configが存在しない場合のデフォルト値
-            max_issues = getattr(self, "config", {}).get("max_issues_per_run", 5)
+            max_issues = getattr(self, "config", {}).get(
+                "max_issues_per_run", 1
+            )  # 5→1に変更
 
             for issue_data in processable_issues[:max_issues]:
                 issue = repo.get_issue(issue_data["number"])
@@ -894,8 +896,8 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                         f"❌ イシュー #{issue.number} の処理に失敗: {result['error']}"
                     )
 
-                # 処理間隔を空ける
-                await asyncio.sleep(5)
+                # 処理間隔を空ける（短縮）
+                await asyncio.sleep(1)  # 5秒→1秒に短縮
 
         except Exception as e:
             self.logger.error(f"拡張版実行中にエラー: {e}")
