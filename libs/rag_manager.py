@@ -755,6 +755,20 @@ class RagManager:
                 "error": str(e),
                 "results": []
             }
+    
+    def search(self, query: str, limit: int = 10, category: str = None) -> List[SearchResult]:
+        """
+        互換性メソッド: search_knowledgeへのエイリアス
+        
+        Args:
+            query: 検索クエリ
+            limit: 最大結果数
+            category: カテゴリフィルタ（任意）
+            
+        Returns:
+            List[SearchResult]: 検索結果リスト
+        """
+        return self.search_knowledge(query, category, limit)
 
 
 # 互換性関数
