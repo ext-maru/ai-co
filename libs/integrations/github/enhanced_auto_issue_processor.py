@@ -882,6 +882,27 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
 
         return "low"
 
+    def _determine_priority_from_cache(self, issue_data: Dict[str, Any]) -> str:
+        """キャッシュされたデータから優先度を判定（高速版）"""
+        labels = [label.lower() for label in issue_data["labels"]]
+        title_lower = issue_data["title"].lower()
+
+        # ラベルベースの優先度判定
+        if any(label in labels for label in ["critical", "urgent", "blocker"]):
+            return "critical"
+        elif any(label in labels for label in ["high", "priority:high", "important"]):
+            return "high"
+        elif any(label in labels for label in ["medium", "priority:medium"]):
+            return "medium"
+
+        # タイトルベースの優先度判定
+        if any(word in title_lower for word in ["critical", "urgent", "emergency"]):
+            return "critical"
+        elif any(word in title_lower for word in ["important", "high priority"]):
+            return "high"
+
+        return "low"
+
     async def get_metrics_report(self) -> Dict[str, Any]:
         """メトリクスレポートを生成"""
         total = self.metrics["processed_issues"]
@@ -963,26 +984,58 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                 self.logger.info(f"   → {len(open_issues)}件のオープンイシューを発見")
                 self.logger.info(f"   → 取得時間: {fetch_time:.1f}秒")
 
+            # 事前データ読み込み（バッチ処理最適化）
+            self.logger.info("🔄 全イシューデータを事前読み込み中...")
+            start_preload = datetime.now()
+            issue_data_cache = []
+
+            # 全イシューの必要データを一括でメモリに読み込み
+            for i, issue in enumerate(open_issues):
+                if i % 10 == 0 and i > 0:
+                    self.logger.info(f"   → 事前読み込み進捗: {i}/{len(open_issues)}件")
+
+                # 必要なデータを一度に取得（以降はメモリアクセスのみ）
+                try:
+                    labels = [l.name for l in issue.labels]  # 一度だけAPI呼び出し
+                    is_pr = issue.pull_request is not None
+
+                    issue_data_cache.append(
+                        {
+                            "number": issue.number,
+                            "title": issue.title,
+                            "labels": labels,
+                            "is_pr": is_pr,
+                            "issue_obj": issue,  # 実際のオブジェクトも保持
+                        }
+                    )
+                except Exception as e:
+                    self.logger.warning(f"   → イシュー #{issue.number} 読み込みエラー: {e}")
+                    continue
+
+            preload_time = (datetime.now() - start_preload).total_seconds()
+            self.logger.info(f"   → 事前読み込み完了: {preload_time:.1f}秒")
+            self.logger.info(f"   → キャッシュしたイシュー: {len(issue_data_cache)}件")
+
+            # 高速フィルタリング（メモリ上のデータのみ使用）
             self.logger.info("🔍 処理対象イシューをフィルタリング中...")
             start_filter = datetime.now()
             processable_issues = []
             filtered_count = {"pr": 0, "auto_generated": 0, "high_priority": 0}
 
-            # バッチ処理でフィルタリング（プリフェッチしたデータを活用）
-            for i, issue in enumerate(open_issues):
-                # PRかどうかチェック
-                if issue.pull_request:
+            # メモリ上のデータで高速フィルタリング
+            for data in issue_data_cache:
+                # PRかどうかチェック（メモリアクセス - 高速）
+                if data["is_pr"]:
                     filtered_count["pr"] += 1
                     continue
 
-                # auto-generatedラベルをチェック
-                labels = [l.name for l in issue.labels]
-                if "auto-generated" in labels:
+                # auto-generatedラベルをチェック（メモリアクセス - 高速）
+                if "auto-generated" in data["labels"]:
                     filtered_count["auto_generated"] += 1
                     continue
 
-                # 優先度を判定
-                priority = self._determine_priority(issue)
+                # 優先度を判定（メモリアクセス - 高速）
+                priority = self._determine_priority_from_cache(data)
                 if priority not in ["low", "medium"]:
                     filtered_count["high_priority"] += 1
                     continue
@@ -990,9 +1043,10 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                 # 処理対象として追加
                 processable_issues.append(
                     {
-                        "number": issue.number,
-                        "title": issue.title,
+                        "number": data["number"],
+                        "title": data["title"],
                         "priority": priority,
+                        "issue_obj": data["issue_obj"],  # 実際の処理用
                     }
                 )
 
@@ -1030,14 +1084,35 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                     f"📌 処理 {processed_count}/{max_issues}: イシュー #{issue_data['number']}"
                 )
 
-                # イシューの詳細を取得
+                # イシューの詳細を取得（キャッシュされたオブジェクトを使用）
                 self.logger.info(f"   → イシュー詳細を取得中...")
-                issue = repo.get_issue(issue_data["number"])
+                issue = issue_data.get("issue_obj") or repo.get_issue(
+                    issue_data["number"]
+                )
                 self.logger.info(f"   → タイトル: {issue.title}")
                 self.logger.info(f"   → 優先度: {issue_data['priority']}")
-                self.logger.info(
-                    f"   → ラベル: {', '.join([l.name for l in issue.labels]) if issue.labels else 'なし'}"
-                )
+
+                # ラベル表示（キャッシュから取得）
+                if "issue_obj" in issue_data:
+                    # キャッシュからラベル情報を取得（高速）
+                    cached_labels = next(
+                        (
+                            data["labels"]
+                            for data in issue_data_cache
+                            if data["number"] == issue_data["number"]
+                        ),
+                        [],
+                    )
+                    label_str = ", ".join(cached_labels) if cached_labels else "なし"
+                else:
+                    # フォールバック: 直接取得
+                    label_str = (
+                        ", ".join([l.name for l in issue.labels])
+                        if issue.labels
+                        else "なし"
+                    )
+
+                self.logger.info(f"   → ラベル: {label_str}")
 
                 # イシューを処理
                 self.logger.info(f"   → 処理開始...")
