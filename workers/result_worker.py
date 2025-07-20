@@ -1258,30 +1258,435 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
 
         return recommendations
 
-    def cleanup(self):
-        """TODO: cleanupメソッドを実装してください"""
-        pass
+    def cleanup(self) -> None:
+        """ワーカーのクリーンアップ処理（Elder Tree終了通知、リソース解放）"""
+        try:
+            self.logger.info(f"🧹 {self.__class__.__name__} cleanup開始")
+            
+            # Elder Tree終了通知
+            if ELDER_INTEGRATION_AVAILABLE and self.elder_tree:
+                try:
+                    message = ElderMessage(
+                        sender_rank=ElderRank.SERVANT,
+                        sender_id=f"result_worker",
+                        recipient_rank=ElderRank.SAGE,
+                        recipient_id="task_sage",
+                        message_type="worker_shutdown",
+                        content={
+                            "worker_type": "result_worker",
+                            "shutdown_reason": "normal_cleanup",
+                            "final_stats": self.stats.copy(),
+                            "timestamp": datetime.now().isoformat()
+                        },
+                        priority="normal"
+                    )
+                    # Synchronous call for cleanup
+                    import asyncio
+                    try:
+                        loop = asyncio.get_event_loop()
+                        if loop.is_running():
+                            loop.create_task(self.elder_tree.send_message(message))
+                        else:
+                            asyncio.run(self.elder_tree.send_message(message))
+                    except:
+                        # Fallback for non-async context
+                        pass
+                    self.logger.info("🌳 Elder Tree終了通知送信完了")
+                except Exception as e:
+                    self.logger.warning(f"Elder Tree終了通知失敗: {e}")
+            
+            # Slack通知システムのクリーンアップ
+            if hasattr(self, 'slack_notifier'):
+                try:
+                    # 連続処理の終了通知
+                    self.slack_notifier.send_message(
+                        f"📊 **Result Worker 停止通知** `{datetime.now().strftime('%H:%M:%S')}`\n\n"
+                        f"・ 総タスク数: {self.stats.get('total_tasks', 0)}\n"
+                        f"・ 成功率: {(self.stats.get('successful_tasks', 0) / max(1, self.stats.get('total_tasks', 1))) * 100:.1f}%\n"
+                        f"・ Elderエスカレーション: {self.stats.get('elder_escalations', 0)}\n"
+                        f"・ 評議会要請: {self.stats.get('council_requests', 0)}"
+                    )
+                    self.logger.info("📲 Slack停止通知送信完了")
+                except Exception as e:
+                    self.logger.warning(f"Slack停止通知失敗: {e}")
+            
+            # 統計情報の保存
+            try:
+                import json
+                stats_file = Path(f"/tmp/result_worker_stats_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+                final_stats = {
+                    "worker_type": "result_worker",
+                    "shutdown_time": datetime.now().isoformat(),
+                    "stats": self.stats.copy(),
+                    "elder_integration_status": self.elder_integration_status.copy()
+                }
+                stats_file.write_text(json.dumps(final_stats, indent=2, ensure_ascii=False))
+                self.logger.info(f"📁 統計情報保存: {stats_file}")
+            except Exception as e:
+                self.logger.warning(f"統計情報保存失敗: {e}")
+            
+            self.logger.info(f"✅ {self.__class__.__name__} cleanup完了")
+            
+        except Exception as e:
+            self.logger.error(f"❌ Cleanup処理中にエラー: {e}")
+            import traceback
+            self.logger.error(f"エラー詳細: {traceback.format_exc()}")
 
-    def stop(self):
-        """TODO: stopメソッドを実装してください"""
-        pass
+    def stop(self) -> None:
+        """ワーカーの停止処理（cleanup呼び出し、super().stop()）"""
+        try:
+            self.logger.info(f"🛑 {self.__class__.__name__} 停止開始")
+            
+            # クリーンアップ処理を先に実行
+            self.cleanup()
+            
+            # ベースクラスの停止処理
+            super().stop()
+            
+            self.logger.info(f"✅ {self.__class__.__name__} 停止完了")
+            
+        except Exception as e:
+            self.logger.error(f"❌ 停止処理中にエラー: {e}")
+            # エラーが発生してもベースクラスの停止は実行
+            try:
+                super().stop()
+            except Exception as base_error:
+                self.logger.error(f"❌ ベースクラス停止エラー: {base_error}")
 
     def initialize(self) -> None:
-        """ワーカーの初期化処理"""
-        # TODO: 初期化ロジックを実装してください
-        pass
+        """初期化処理（Elder Tree初期化、必要コンポーネント初期化）"""
+        try:
+            self.logger.info(f"🔧 {self.__class__.__name__} 初期化開始")
+            
+            # Elder Tree システム初期化
+            if ELDER_INTEGRATION_AVAILABLE:
+                if not self.four_sages:
+                    try:
+                        self.four_sages = FourSagesIntegration()
+                        self.elder_integration_status["four_sages"] = True
+                        self.logger.info("🧙‍♂️ Four Sages Integration 初期化成功")
+                    except Exception as e:
+                        self.logger.warning(f"Four Sages 初期化失敗: {e}")
+                
+                if not self.elder_council:
+                    try:
+                        self.elder_council = ElderCouncilSummoner()
+                        self.elder_integration_status["elder_council"] = True
+                        self.logger.info("🏰 Elder Council Summoner 初期化成功")
+                    except Exception as e:
+                        self.logger.warning(f"Elder Council 初期化失敗: {e}")
+                
+                if not self.elder_tree:
+                    try:
+                        self.elder_tree = get_elder_tree()
+                        self.elder_integration_status["elder_tree"] = True
+                        self.logger.info("🌳 Elder Tree Hierarchy 初期化成功")
+                    except Exception as e:
+                        self.logger.warning(f"Elder Tree 初期化失敗: {e}")
+            
+            # Slack通知システムの初期化確認
+            if not self.slack_notifier:
+                try:
+                    from libs.slack_notifier import SlackNotifier
+                    self.slack_notifier = SlackNotifier()
+                    self.logger.info("📲 Slack Notifier 初期化成功")
+                except Exception as e:
+                    self.logger.warning(f"Slack Notifier 初期化失敗: {e}")
+            
+            # AI Command Helperの初期化確認
+            if not self.ai_helper:
+                try:
+                    from libs.ai_command_helper import AICommandHelper
+                    self.ai_helper = AICommandHelper()
+                    self.logger.info("🤖 AI Command Helper 初期化成功")
+                except Exception as e:
+                    self.logger.warning(f"AI Command Helper 初期化失敗: {e}")
+            
+            # 統計初期化
+            if not hasattr(self, 'stats'):
+                self.stats = {
+                    "total_tasks": 0,
+                    "successful_tasks": 0,
+                    "failed_tasks": 0,
+                    "total_duration": 0.0,
+                    "elder_escalations": 0,
+                    "sage_consultations": 0,
+                    "council_requests": 0,
+                }
+            
+            # Elder Tree初期化完了通知
+            if ELDER_INTEGRATION_AVAILABLE and self.four_sages:
+                try:
+                    self.four_sages.report_to_task_sage({
+                        "type": "worker_initialization",
+                        "worker": "result_worker",
+                        "capabilities": {
+                            "slack_integration": self.slack_notifier is not None,
+                            "ai_helper_integration": self.ai_helper is not None,
+                            "elder_integration": sum(self.elder_integration_status.values())
+                        },
+                        "timestamp": datetime.now().isoformat()
+                    })
+                except Exception as e:
+                    self.logger.warning(f"Elder Tree初期化通知失敗: {e}")
+            
+            self.logger.info(f"✅ {self.__class__.__name__} 初期化完了")
+            self.logger.info(f"   - Elder統合: {sum(self.elder_integration_status.values())}/3")
+            self.logger.info(f"   - Slack統合: {self.slack_notifier is not None}")
+            self.logger.info(f"   - AI Helper統合: {self.ai_helper is not None}")
+            
+        except Exception as e:
+            self.logger.error(f"❌ 初期化処理中にエラー: {e}")
+            raise RuntimeError(f"ResultWorker初期化失敗: {e}")
 
-    def handle_error(self):
-        """TODO: handle_errorメソッドを実装してください"""
-        pass
+    def handle_error(self, error: Exception, context: str = "unknown", task_data: dict = None) -> None:
+        """エラーハンドリング（Incident Sageへの報告、ログ記録）"""
+        try:
+            import time
+            error_id = f"result_error_{int(time.time() * 1000)}"
+            
+            # 詳細なエラー情報を記録
+            error_info = {
+                "error_id": error_id,
+                "error_type": type(error).__name__,
+                "error_message": str(error),
+                "context": context,
+                "worker_type": "result_worker",
+                "timestamp": datetime.now().isoformat(),
+                "task_data": task_data or {},
+                "worker_stats": self.stats.copy()
+            }
+            
+            # 統計更新
+            self.stats["failed_tasks"] += 1
+            
+            # ログに記録
+            self.logger.error(f"❌ [{error_id}] エラー発生 - {context}: {error}")
+            
+            # スタックトレースを取得
+            import traceback
+            error_trace = traceback.format_exc()
+            error_info["stack_trace"] = error_trace
+            self.logger.error(f"スタックトレース:\n{error_trace}")
+            
+            # Incident Sageへの報告
+            if ELDER_INTEGRATION_AVAILABLE and self.four_sages:
+                try:
+                    incident_data = {
+                        "type": "result_processing_error",
+                        "worker": "result_worker",
+                        "error_id": error_id,
+                        "severity": self._determine_error_severity(error),
+                        "error_details": error_info,
+                        "recommended_actions": self._get_error_recommendations(error),
+                        "timestamp": datetime.now().isoformat()
+                    }
+                    
+                    self.four_sages.consult_incident_sage(incident_data)
+                    self.stats["elder_escalations"] += 1
+                    self.logger.info(f"🚨 Incident Sage報告送信: {error_id}")
+                    
+                except Exception as sage_error:
+                    self.logger.error(f"Incident Sage報告失敗: {sage_error}")
+            
+            # Slackエラー通知
+            if self.slack_notifier and self._is_critical_error(error):
+                try:
+                    error_notification = (
+                        f"🚨 **Result Worker 重要エラー** `{error_id}`\n\n"
+                        f"📍 **コンテキスト**: {context}\n"
+                        f"⚠️ **エラー**: {str(error)[:200]}\n"
+                        f"📊 **統計**: 総タスク{self.stats['total_tasks']}, 失敗{self.stats['failed_tasks']}"
+                    )
+                    self.slack_notifier.send_message(error_notification)
+                    self.logger.info(f"📲 Slackエラー通知送信: {error_id}")
+                except Exception as slack_error:
+                    self.logger.warning(f"Slackエラー通知失敗: {slack_error}")
+            
+            # エラーファイルに保存
+            try:
+                import json
+                error_file = Path(f"/tmp/result_worker_errors_{datetime.now().strftime('%Y%m%d')}.json")
+                errors = []
+                if error_file.exists():
+                    try:
+                        errors = json.loads(error_file.read_text())
+                    except:
+                        errors = []
+                errors.append(error_info)
+                
+                # 最新100件のみ保持
+                if len(errors) > 100:
+                    errors = errors[-100:]
+                
+                error_file.write_text(json.dumps(errors, indent=2, ensure_ascii=False))
+                
+            except Exception as file_error:
+                self.logger.warning(f"エラーファイル保存失敗: {file_error}")
+            
+            # 重要エラーの場合は追加処理
+            if self._is_critical_error(error):
+                self.logger.critical(f"🔥 重要エラー検出: {error_id}")
+                # 必要に応じて自動復旧処理や緊急停止処理を実装
+                
+        except Exception as handler_error:
+            # エラーハンドラー自体のエラーは最小限のログのみ
+            self.logger.error(f"❌ エラーハンドラー内でエラー: {handler_error}")
+            self.logger.error(f"元のエラー: {error}")
 
-    def get_status(self):
-        """TODO: get_statusメソッドを実装してください"""
-        pass
+    def get_status(self) -> dict:
+        """ワーカー状態取得（Elder Tree状態、処理統計）"""
+        try:
+            status = {
+                "worker_info": {
+                    "worker_type": "result_worker",
+                    "class_name": self.__class__.__name__,
+                    "timestamp": datetime.now().isoformat()
+                },
+                "processing_stats": self.stats.copy(),
+                "elder_integration": {
+                    "available": ELDER_INTEGRATION_AVAILABLE,
+                    "status": self.elder_integration_status.copy(),
+                    "active_systems": sum(self.elder_integration_status.values()),
+                    "total_systems": len(self.elder_integration_status)
+                },
+                "components": {
+                    "slack_notifier": self.slack_notifier is not None,
+                    "ai_helper": self.ai_helper is not None,
+                    "four_sages": self.four_sages is not None,
+                    "elder_council": self.elder_council is not None,
+                    "elder_tree": self.elder_tree is not None
+                },
+                "health_status": self._determine_health_status(),
+                "recommendations": self._generate_recommendations()
+            }
+            
+            # Elder Tree詳細状態
+            if self.elder_tree:
+                try:
+                    status["elder_tree_details"] = {
+                        "node_count": len(self.elder_tree.nodes),
+                        "message_queue_size": len(getattr(self.elder_tree, 'message_queue', [])),
+                        "connection_status": "connected"
+                    }
+                except Exception as e:
+                    status["elder_tree_details"] = {
+                        "connection_status": "error",
+                        "error": str(e)
+                    }
+            
+            # パフォーマンスメトリクス
+            if self.stats["total_tasks"] > 0:
+                status["performance"] = {
+                    "success_rate": (self.stats["successful_tasks"] / self.stats["total_tasks"]) * 100,
+                    "average_duration": self.stats["total_duration"] / self.stats["total_tasks"],
+                    "elder_escalation_rate": (self.stats["elder_escalations"] / self.stats["total_tasks"]) * 100
+                }
+            
+            return status
+            
+        except Exception as e:
+            self.logger.error(f"状態取得エラー: {e}")
+            return {
+                "error": f"状態取得失敗: {e}",
+                "timestamp": datetime.now().isoformat(),
+                "worker_type": "result_worker"
+            }
 
-    def validate_config(self):
-        """TODO: validate_configメソッドを実装してください"""
-        pass
+    def validate_config(self) -> dict:
+        """設定検証（設定妥当性チェック、必須項目確認）"""
+        validation_result = {
+            "is_valid": True,
+            "errors": [],
+            "warnings": [],
+            "recommendations": [],
+            "config_details": {},
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        try:
+            # 基本設定確認
+            if not hasattr(self, 'config') or not self.config:
+                validation_result["warnings"].append("設定オブジェクトが初期化されていません")
+            else:
+                validation_result["config_details"]["config_available"] = True
+            
+            # Slack統合確認
+            validation_result["config_details"]["slack_integration"] = {
+                "notifier_available": self.slack_notifier is not None,
+                "enabled": self.config.get("slack.enabled", False) if self.config else False
+            }
+            
+            if not self.slack_notifier:
+                validation_result["warnings"].append("Slack Notifierが利用できません")
+                validation_result["recommendations"].append("Slack統合の設定を確認してください")
+            
+            # AI Command Helper確認
+            validation_result["config_details"]["ai_helper_available"] = self.ai_helper is not None
+            if not self.ai_helper:
+                validation_result["warnings"].append("AI Command Helperが利用できません")
+            
+            # Elder Tree統合状態チェック
+            validation_result["config_details"]["elder_integration"] = {
+                "available": ELDER_INTEGRATION_AVAILABLE,
+                "systems_status": self.elder_integration_status.copy(),
+                "active_systems": sum(self.elder_integration_status.values()),
+                "total_systems": len(self.elder_integration_status)
+            }
+            
+            if ELDER_INTEGRATION_AVAILABLE:
+                active_systems = sum(self.elder_integration_status.values())
+                if active_systems == 0:
+                    validation_result["errors"].append("Elder Treeシステムが全く初期化されていません")
+                    validation_result["is_valid"] = False
+                    validation_result["recommendations"].append("initialize()を呼び出してElder Treeシステムを初期化してください")
+                elif active_systems < 3:
+                    validation_result["warnings"].append(f"Elder Treeシステムが部分的にしか初期化されていません ({active_systems}/3)")
+                    validation_result["recommendations"].append("無効なシステムの再初期化を検討してください")
+            else:
+                validation_result["warnings"].append("Elder Tree統合ライブラリが利用できません")
+            
+            # 統計情報の妥当性
+            if hasattr(self, 'stats'):
+                validation_result["config_details"]["stats"] = self.stats.copy()
+                
+                for key, value in self.stats.items():
+                    if isinstance(value, (int, float)) and value < 0:
+                        validation_result["errors"].append(f"統計項目 '{key}' が負の値です: {value}")
+                        validation_result["is_valid"] = False
+                
+                # パフォーマンス警告
+                if self.stats["total_tasks"] > 0:
+                    error_rate = (self.stats["failed_tasks"] / self.stats["total_tasks"]) * 100
+                    if error_rate > 10:
+                        validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:.1f}%")
+                        validation_result["recommendations"].append("エラーパターンの分析を実施してください")
+                    elif error_rate > 5:
+                        validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:.1f}%")
+            
+            # 初期化エラーチェック
+            if hasattr(self, 'elder_integration_status') and self.elder_integration_status.get("initialization_errors"):
+                for error in self.elder_integration_status["initialization_errors"]:
+                    validation_result["warnings"].append(f"初期化エラー: {error}")
+            
+            # 成功時の追加情報
+            if validation_result["is_valid"]:
+                validation_result["summary"] = "設定は有効です"
+                if not validation_result["warnings"]:
+                    validation_result["summary"] += " - 警告なし"
+            else:
+                validation_result["summary"] = f"設定に {len(validation_result['errors'])} 個のエラーがあります"
+            
+            self.logger.info(f"設定検証完了: {validation_result['summary']}")
+            
+            return validation_result
+            
+        except Exception as e:
+            validation_result["is_valid"] = False
+            validation_result["errors"].append(f"設定検証中にエラー: {e}")
+            validation_result["summary"] = "設定検証失敗"
+            self.logger.error(f"設定検証エラー: {e}")
+            return validation_result
 
 
 # Backward compatibility alias
