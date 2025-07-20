@@ -13,7 +13,7 @@ import os
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Set
 
 from github import Github
 from github.Issue import Issue
@@ -473,6 +473,9 @@ class AutoIssueProcessor(EldersServiceLegacy):
 
         # 処理対象の優先度（中以上）
         self.target_priorities = ["critical", "high", "medium"]
+        
+        # 処理履歴ファイル
+        self.processing_history_file = "logs/auto_issue_processing.json"
 
     def get_capabilities(self) -> Dict[str, Any]:
         """サービスの機能を返す"""
@@ -580,8 +583,11 @@ class AutoIssueProcessor(EldersServiceLegacy):
             return {"status": "error", "message": str(e)}
 
     async def scan_processable_issues(self) -> List[Issue]:
-        """処理可能なイシューをスキャン"""
+        """処理可能なイシューをスキャン（重複処理防止機能付き）"""
         processable_issues = []
+
+        # 最近処理されたイシューを確認（重複防止）
+        recently_processed = self._get_recently_processed_issues()
 
         # オープンなイシューを取得
         open_issues = self.repo.get_issues(state="open")
@@ -589,6 +595,11 @@ class AutoIssueProcessor(EldersServiceLegacy):
         for issue in open_issues:
             # PRは除外
             if issue.pull_request:
+                continue
+
+            # 重複処理防止チェック
+            if issue.number in recently_processed:
+                logger.info(f"Issue #{issue.number} は最近処理済みのためスキップ")
                 continue
 
             # 優先度チェック
@@ -606,6 +617,37 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 break
 
         return processable_issues
+
+    def _get_recently_processed_issues(self, hours=24) -> Set[int]:
+        """指定時間内に処理されたイシュー番号を取得"""
+        recently_processed = set()
+        
+        try:
+            import json
+            from datetime import datetime, timedelta
+            
+            if not os.path.exists(self.processing_history_file):
+                return recently_processed
+                
+            with open(self.processing_history_file, 'r') as f:
+                history = json.load(f)
+                
+            cutoff_time = datetime.now() - timedelta(hours=hours)
+            
+            for record in history:
+                try:
+                    record_time = datetime.fromisoformat(record.get("timestamp", ""))
+                    if record_time > cutoff_time:
+                        issue_id = record.get("issue_id") or record.get("issue_number")
+                        if issue_id:
+                            recently_processed.add(int(issue_id))
+                except (ValueError, TypeError):
+                    continue
+                    
+        except Exception as e:
+            logger.warning(f"処理履歴の読み込みに失敗: {e}")
+            
+        return recently_processed
 
     async def execute_auto_processing(self, issue: Issue) -> Dict[str, Any]:
         """Elder Flowを使用してイシューを自動処理"""
