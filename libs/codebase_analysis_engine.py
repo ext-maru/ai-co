@@ -266,27 +266,39 @@ class ASTAnalyzer:
     
     def _get_decorator_name(self, decorator: ast.expr) -> str:
         """デコレータ名を取得"""
-        if isinstance(decorator, ast.Name):
-            return decorator.id
-        elif isinstance(decorator, ast.Attribute):
-            return f"{decorator.value.id}.{decorator.attr}" if hasattr(decorator.value, 'id') else decorator.attr
-        return str(decorator)
+        try:
+            if isinstance(decorator, ast.Name):
+                return decorator.id
+            elif isinstance(decorator, ast.Attribute):
+                return f"{decorator.value.id}.{decorator.attr}" if hasattr(decorator.value, 'id') else decorator.attr
+            elif isinstance(decorator, ast.Call):
+                func_name = self._get_decorator_name(decorator.func)
+                return f"{func_name}(...)"
+            return f"<{type(decorator).__name__}>"
+        except Exception:
+            return "<decorator_error>"
     
     def _get_base_name(self, base: ast.expr) -> str:
         """基底クラス名を取得"""
-        if isinstance(base, ast.Name):
-            return base.id
-        elif isinstance(base, ast.Attribute):
-            return f"{base.value.id}.{base.attr}" if hasattr(base.value, 'id') else base.attr
-        return str(base)
+        try:
+            if isinstance(base, ast.Name):
+                return base.id
+            elif isinstance(base, ast.Attribute):
+                return f"{base.value.id}.{base.attr}" if hasattr(base.value, 'id') else base.attr
+            return f"<{type(base).__name__}>"
+        except Exception:
+            return "<base_error>"
     
     def _get_exception_name(self, exc_type: ast.expr) -> Optional[str]:
         """例外タイプ名を取得"""
-        if isinstance(exc_type, ast.Name):
-            return exc_type.id
-        elif isinstance(exc_type, ast.Attribute):
-            return f"{exc_type.value.id}.{exc_type.attr}" if hasattr(exc_type.value, 'id') else exc_type.attr
-        return None
+        try:
+            if isinstance(exc_type, ast.Name):
+                return exc_type.id
+            elif isinstance(exc_type, ast.Attribute):
+                return f"{exc_type.value.id}.{exc_type.attr}" if hasattr(exc_type.value, 'id') else exc_type.attr
+            return f"<{type(exc_type).__name__}>"
+        except Exception:
+            return "<exception_error>"
     
     def _get_constant_value(self, value_node: ast.expr) -> Any:
         """定数値を取得"""
@@ -297,16 +309,18 @@ class ASTAnalyzer:
                 return value_node.s
             elif isinstance(value_node, ast.Num):
                 return value_node.n
-            elif isinstance(value_node, ast.List):
-                return [self._get_constant_value(item) for item in value_node.elts]
+            elif isinstance(value_node, (ast.List, ast.Tuple)):
+                return "[collection]"
             elif isinstance(value_node, ast.Dict):
-                return {
-                    self._get_constant_value(k): self._get_constant_value(v)
-                    for k, v in zip(value_node.keys, value_node.values)
-                }
-        except:
-            pass
-        return None
+                return "{dict}"
+            elif isinstance(value_node, ast.Call):
+                return f"call({getattr(value_node.func, 'id', 'function')})"
+            elif isinstance(value_node, ast.Name):
+                return f"ref({value_node.id})"
+        except Exception as e:
+            # より詳細なエラーログ
+            return f"<parse_error: {type(value_node).__name__}>"
+        return "<unknown>"
     
     def _create_fallback_analysis(self, file_path: str) -> Dict[str, Any]:
         """フォールバック解析結果"""
