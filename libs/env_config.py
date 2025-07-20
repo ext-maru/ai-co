@@ -1,50 +1,22 @@
 """
-env_config - Auto-generated module by Incident Knights
-Created to prevent import errors
+Environment Configuration - 環境設定管理
+
+既存のenv_configから実装をインポート
 """
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-# Placeholder implementations
-
-
-class EnvConfig:
-    """Auto-generated placeholder class"""
-
-    def __init__(self, *args, **kwargs):
-        logger.warning(
-            f"Using auto-generated placeholder for {self.__class__.__name__}"
-        )
-
-    def __getattr__(self, name):
-        logger.warning(f"Accessing placeholder attribute: {name}")
-        return lambda *args, **kwargs: None
-
-
-# Common function placeholders
-def setup(*args, **kwargs):
-    """Placeholder setup function"""
-    logger.warning("Using placeholder setup function")
-    pass
-
-
-def main(*args, **kwargs):
-    """Placeholder main function"""
-    logger.warning("Using placeholder main function")
-    pass
-
-
-def get_config():
-    """Placeholder get_config function"""
-    logger.warning("Using placeholder get_config function")
-    return EnvConfig()
-
-def env_config():
-    """Placeholder env_config function"""
-    logger.warning("Using placeholder env_config function")
-    return EnvConfig()
-
-# Export
-__all__ = ["EnvConfig", "setup", "main", "get_config", "env_config"]
+try:
+    from core.env_config import *
+except ImportError:
+    import os
+    
+    def get_config(key, default=None):
+        """環境変数から設定を取得"""
+        return os.getenv(key, default)
+    
+    def get_database_url():
+        """データベースURLを取得"""
+        return get_config('DATABASE_URL', 'sqlite:///data/app.db')
+    
+    def get_github_token():
+        """GitHub トークンを取得"""
+        return get_config('GITHUB_TOKEN')

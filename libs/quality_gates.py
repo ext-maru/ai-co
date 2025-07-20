@@ -1,40 +1,5 @@
 """
-quality_gates - Auto-generated module by Incident Knights
-Created to prevent import errors
+quality_gates module
 """
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-# Placeholder implementations
-
-
-class QualityGates:
-    """Auto-generated placeholder class"""
-
-    def __init__(self, *args, **kwargs):
-        logger.warning(
-            f"Using auto-generated placeholder for {self.__class__.__name__}"
-        )
-
-    def __getattr__(self, name):
-        logger.warning(f"Accessing placeholder attribute: {name}")
-        return lambda *args, **kwargs: None
-
-
-# Common function placeholders
-def setup(*args, **kwargs):
-    """Placeholder setup function"""
-    logger.warning("Using placeholder setup function")
-    pass
-
-
-def main(*args, **kwargs):
-    """Placeholder main function"""
-    logger.warning("Using placeholder main function")
-    pass
-
-
-# Export
-__all__ = ["QualityGates", "setup", "main"]
+# quality_gates module implementation placeholder
