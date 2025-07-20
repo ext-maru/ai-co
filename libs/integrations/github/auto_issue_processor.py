@@ -479,17 +479,29 @@ class AutoIssueProcessor(EldersServiceLegacy):
                         "message": "No processable issues found.",
                     }
 
-                # 最初のイシューを処理
-                issue = issues[0]
-                result = await self.execute_auto_processing(issue)
-
+                # イシューを順番に処理（スキップされたら次へ）
+                for issue in issues:
+                    result = await self.execute_auto_processing(issue)
+                    
+                    # 既存PRがある場合はスキップして次へ
+                    if result.get("status") == "already_exists":
+                        logger.info(f"Issue #{issue.number} スキップ (既存PR有り) - 次のIssueを処理...")
+                        continue
+                    
+                    # 処理成功または失敗の場合は結果を返す
+                    return {
+                        "status": "success",
+                        "processed_issue": {
+                            "number": issue.number,
+                            "title": issue.title,
+                            "result": result,
+                        },
+                    }
+                
+                # すべてのIssueがスキップされた場合
                 return {
-                    "status": "success",
-                    "processed_issue": {
-                        "number": issue.number,
-                        "title": issue.title,
-                        "result": result,
-                    },
+                    "status": "all_skipped",
+                    "message": f"All {len(issues)} processable issues were skipped (existing PRs)",
                 }
 
             elif mode == "dry_run":
@@ -549,6 +561,13 @@ class AutoIssueProcessor(EldersServiceLegacy):
             if len(processable_issues) >= 10:
                 break
 
+        # 優先度でソート（critical > high > medium > low）
+        priority_order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+        processable_issues.sort(key=lambda issue: (
+            priority_order.get(self._determine_priority(issue), 4),  # 不明な優先度は最後
+            issue.number  # 同じ優先度では番号順
+        ))
+        
         return processable_issues
 
     def _get_recently_processed_issues(self, hours=24) -> Set[int]:
