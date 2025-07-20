@@ -1,0 +1,28 @@
+{
+  "_comment": "環境変数から動的に設定されます。デフォルト値のみここに記載",
+  "allowed_repositories": [
+    {
+      "owner": "${GITHUB_REPO_OWNER}",
+      "name": "${GITHUB_REPO_NAME}",
+      "description": "メインプロジェクトリポジトリ",
+      "is_primary": true
+    }
+  ],
+  "default_repository": {
+    "owner": "${GITHUB_REPO_OWNER}",
+    "name": "${GITHUB_REPO_NAME}"
+  },
+  "default_values": {
+    "owner": "ext-maru",
+    "name": "ai-co"
+  },
+  "forbidden_repositories": [
+    {
+      "owner": "anthropics",
+      "name": "claude-code",
+      "reason": "間違って使用したリポジトリ"
+    }
+  ],
+  "strict_mode": true,
+  "auto_correction": true
+}
