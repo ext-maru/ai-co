@@ -966,14 +966,16 @@ class AutoIssueProcessor(EldersServiceLegacy):
         """
         try:
             # 既存PRのチェック
-            existing_pr = self._check_existing_pr(issue)
+            existing_pr = await self._check_existing_pr_for_issue(issue.number)
             if existing_pr:
-                logger.info(f"Issue #{issue.number} already has PR: {existing_pr.html_url}")
+                pr_url = existing_pr.get("html_url", "")
+                pr_number = existing_pr.get("number", "")
+                logger.info(f"Issue #{issue.number} already has PR: {pr_url}")
                 return {
                     "status": "already_exists",
                     "issue_number": issue.number,
-                    "pr_url": existing_pr.html_url,
-                    "message": f"Issue already has PR #{existing_pr.number}"
+                    "pr_url": pr_url,
+                    "message": f"Issue already has PR #{pr_number}"
                 }
             
             # Claude CLI実行用のプロンプト作成
