@@ -651,6 +651,111 @@ class RagManager:
         else:
             return "high"
 
+    async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        4賢者システム互換: 非同期リクエスト処理
+        
+        Args:
+            request: リクエストデータ
+                - type: "search" | "add_knowledge" | "get_stats"
+                - query: 検索クエリ (type="search"時)
+                - max_results: 最大結果数 (デフォルト: 5)
+                - category: カテゴリフィルタ (任意)
+                
+        Returns:
+            Dict[str, Any]: 処理結果
+        """
+        try:
+            request_type = request.get("type", "search")
+            
+            if request_type == "search":
+                # 検索処理
+                query = request.get("query", "")
+                max_results = request.get("max_results", 5)
+                category = request.get("category")
+                
+                if not query:
+                    return {
+                        "status": "error",
+                        "error": "Query is required for search",
+                        "results": []
+                    }
+                
+                # 検索実行
+                search_results = self.search(
+                    query=query,
+                    limit=max_results,
+                    category=category
+                )
+                
+                # 結果を辞書形式に変換
+                results = []
+                for result in search_results:
+                    results.append({
+                        "content": result.content,
+                        "source": result.source,
+                        "relevance_score": result.relevance_score,
+                        "timestamp": result.timestamp.isoformat(),
+                        "metadata": result.metadata
+                    })
+                
+                return {
+                    "status": "success",
+                    "results": results,
+                    "query": query,
+                    "total_results": len(results)
+                }
+                
+            elif request_type == "add_knowledge":
+                # 知識追加処理
+                content = request.get("content", "")
+                source = request.get("source", "api_request")
+                category = request.get("category", "general")
+                tags = request.get("tags", [])
+                
+                if not content:
+                    return {
+                        "status": "error",
+                        "error": "Content is required"
+                    }
+                
+                # 知識追加
+                knowledge_id = self.add_knowledge(
+                    content=content,
+                    source=source,
+                    category=category,
+                    tags=tags
+                )
+                
+                return {
+                    "status": "success",
+                    "knowledge_id": knowledge_id,
+                    "message": "Knowledge added successfully"
+                }
+                
+            elif request_type == "get_stats":
+                # 統計取得
+                stats = self.get_knowledge_stats()
+                return {
+                    "status": "success",
+                    "stats": stats
+                }
+                
+            else:
+                return {
+                    "status": "error",
+                    "error": f"Unknown request type: {request_type}",
+                    "supported_types": ["search", "add_knowledge", "get_stats"]
+                }
+                
+        except Exception as e:
+            logger.error(f"RAG Manager process_request error: {e}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "results": []
+            }
+
 
 # 互換性関数
 def setup(*args, **kwargs):

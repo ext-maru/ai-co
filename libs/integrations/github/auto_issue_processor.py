@@ -24,10 +24,6 @@ sys.path.insert(0, str(project_root))
 
 from libs.core.elders_legacy import EldersServiceLegacy
 
-# RAG Manager実装
-from libs.rag_manager import RagManager as ActualRAGSage
-
-
 # ダミー実装クラス（実際の4賢者システムがない場合の代替）
 class DummyElderFlowEngine:
     async def process_request(self, request):
@@ -37,14 +33,6 @@ class DummyElderFlowEngine:
 class DummySage:
     async def process_request(self, request):
         return {"status": "success", "message": "Dummy sage response"}
-
-
-class DummyPRCreator:
-    def __init__(self, token=None, repo_owner=None, repo_name=None):
-        pass  # Dummy implementation accepts but ignores arguments
-    
-    def create_pull_request(self, **kwargs):
-        return {"success": False, "error": "PR creation not implemented yet"}
 
 
 # 実際のクラスまたはダミーを使用
@@ -69,9 +57,14 @@ except ImportError:
     ActualIncidentSage = DummySage
 
 try:
+    from libs.rag_manager import RagManager as ActualRAGSage
+except ImportError:
+    ActualRAGSage = DummySage
+
+try:
     from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
 except ImportError:
-    GitHubCreatePullRequestImplementation = DummyPRCreator
+    GitHubCreatePullRequestImplementation = None
 
 
 class AutoIssueElderFlowEngine:
@@ -79,19 +72,23 @@ class AutoIssueElderFlowEngine:
 
     def __init__(self):
         self.elder_flow = ActualElderFlowEngine()
-        # Ensure environment variables are loaded for PR creator
+        
+        # GitHub設定の検証
         github_token = os.getenv("GITHUB_TOKEN")
         repo_owner = os.getenv("GITHUB_REPO_OWNER")
         repo_name = os.getenv("GITHUB_REPO_NAME")
 
         if not github_token or not repo_owner or not repo_name:
             # Use dummy PR creator if config is missing
-            self.pr_creator = DummyPRCreator()
+            from types import SimpleNamespace
+            self.pr_creator = SimpleNamespace()
+            self.pr_creator.create_pull_request = lambda **kwargs: {"success": False, "error": "PR creation not configured"}
         else:
             self.pr_creator = GitHubCreatePullRequestImplementation(
                 token=github_token, repo_owner=repo_owner, repo_name=repo_name
             )
-            # 自動マージを有効化
+        # 自動マージを有効化（可能な場合のみ）
+        if hasattr(self.pr_creator, 'auto_merge_enabled'):
             self.pr_creator.auto_merge_enabled = True
         self.logger = logger
 

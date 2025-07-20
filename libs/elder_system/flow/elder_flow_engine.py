@@ -19,7 +19,10 @@ from typing import Any, Dict, List, Optional
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from core.lightweight_logger import get_logger
+import logging
+
+def get_logger(name):
+    return logging.getLogger(name)
 from libs.core.elders_legacy import (
     EldersFlowLegacy,
     EldersLegacyDomain,
