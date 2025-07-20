@@ -1146,7 +1146,7 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
             self.logger.info("🔍 処理対象イシューをフィルタリング中...")
             start_filter = datetime.now()
             processable_issues = []
-            filtered_count = {"pr": 0, "auto_generated": 0, "high_priority": 0}
+            filtered_count = {"pr": 0, "auto_generated": 0, "high_priority": 0, "low_priority_excluded": 0}
 
             # メモリ上のデータで高速フィルタリング
             for data in issue_data_cache:
@@ -1162,8 +1162,8 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
 
                 # 優先度を判定（メモリアクセス - 高速）
                 priority = self._determine_priority_from_cache(data)
-                if priority not in ["low", "medium"]:
-                    filtered_count["high_priority"] += 1
+                if priority in ["low"]:  # lowのみ除外、medium以上を処理
+                    filtered_count["low_priority_excluded"] += 1
                     continue
 
                 # 処理対象として追加
@@ -1184,6 +1184,7 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                 f"     → auto-generated除外: {filtered_count['auto_generated']}件"
             )
             self.logger.info(f"     → 高優先度除外: {filtered_count['high_priority']}件")
+            self.logger.info(f"     → 低優先度除外: {filtered_count['low_priority_excluded']}件")
             self.logger.info(f"     → 処理対象: {len(processable_issues)}件")
 
             if not processable_issues:
