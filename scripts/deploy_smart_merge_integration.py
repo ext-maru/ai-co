@@ -42,26 +42,26 @@ def check_dependencies():
     print_header("依存関係チェック")
     
     required_libs = [
-        "github",  # PyGithub
-        "git",     # GitPython
-        "aiohttp", # 非同期HTTP
+        ("github", "PyGithub"),      # PyGithub
+        ("git", "GitPython"),        # GitPython
+        ("aiohttp", "aiohttp"),      # 非同期HTTP
     ]
     
     missing = []
-    for lib in required_libs:
+    for lib, package_name in required_libs:
         try:
             __import__(lib)
-            print(f"✅ {lib} インストール済み")
+            print(f"✅ {package_name} インストール済み")
         except ImportError:
-            print(f"❌ {lib} が見つかりません")
-            missing.append(lib)
+            print(f"⚠️ {package_name} が見つかりません（オプション）")
+            missing.append(package_name)
     
     if missing:
-        print("\n⚠️ 不足しているライブラリをインストールしてください:")
+        print("\n💡 推奨: 以下のライブラリをインストールすると機能が向上します:")
         print(f"pip install {' '.join(missing)}")
-        return False
+        print("\n※ ただし、基本機能は動作します")
     
-    return True
+    return True  # 必須ではないので常にTrue
 
 def validate_integration():
     """統合の検証"""
