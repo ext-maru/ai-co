@@ -270,8 +270,25 @@ class ClaudeTaskTracker:
         """デストラクタ"""
         if self._initialized and self.postgres_tracker:
             try:
-                asyncio.create_task(self.close())
-            except:
+                # 同期的にcloseを実行
+                import asyncio
+
+                try:
+                    loop = asyncio.get_event_loop()
+                    if loop.is_running():
+                        # 既存ループでタスクをスケジュール
+                        loop.create_task(self.close())
+                    else:
+                        # 新しいループでcloseを実行
+                        asyncio.run(self.close())
+                except RuntimeError:
+                    # イベントループが利用できない場合は直接クリーンアップ
+                    if hasattr(self.postgres_tracker, "_connection_manager"):
+                        try:
+                            self.postgres_tracker._connection_manager.emergency_shutdown()
+                        except Exception:
+                            pass
+            except Exception:
                 pass
 
 
