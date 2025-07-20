@@ -26,6 +26,7 @@ from libs.elder_flow_servant_executor import (
     create_quality_task,
 )
 from libs.elder_flow_quality_gate import QualityGateSystem, run_quality_gate
+from libs.elder_flow_quality_integration import get_elder_flow_quality_integration
 from libs.elder_flow_council_reporter import (
     create_task_completion_report,
     create_quality_assessment_report,

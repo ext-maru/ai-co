@@ -72,6 +72,124 @@ RAG: 「最適解を発見しました」
 → 自動的に最良の解決策を実行
 ```
 
+## 🏛️ **エルダーズギルド最高品質保証システム** (2025/7/21実装完了)
+
+**エルダー評議会令第200号 - 自動品質保証システム標準化令**  
+**エルダー評議会令第201号 - マージ品質ゲート統合完了**
+
+### 🎯 **完全統合品質システム**
+**すべての開発プロセスに品質チェックが自動統合されました**
+
+#### ✅ **デフォルト有効機能**
+- **🌊 Elder Flow統合**: 実行時自動品質チェック・学習機能
+- **🔗 Git Hooks**: コミット前強制品質チェック（Iron Will遵守）
+- **🔀 Merge Quality Gates**: マージ前品質ゲート・ブランチ保護
+- **🧙‍♂️ 4賢者連携**: リアルタイム品質分析・改善提案
+- **📊 自動監視**: 継続的品質監視・トレンド分析・nWo報告
+- **📋 Issue生成**: 品質問題の自動GitHub Issue化
+
+#### 🚀 **1コマンドセットアップ**
+```bash
+# 全品質システム自動インストール・有効化
+./scripts/auto-install-quality-system
+```
+
+#### 💻 **日常使用コマンド**
+```bash
+# Elder Flow（品質チェック自動実行）
+elder-flow execute "新機能実装" --priority high
+
+# Git操作（品質ゲート自動実行）
+git commit -m "feat: 新機能"  # Pre-commit品質チェック
+git merge feature-branch      # Pre-merge品質ゲート
+
+# 個別品質分析
+elders-code-quality analyze myfile.py
+
+# プロジェクト品質レポート  
+elders-code-quality report /path/to/project
+
+# PR品質チェック
+./scripts/pr-quality-check <pr_number> <source_branch> <target_branch>
+
+# 品質学習（バグケース・パターン）
+elders-code-quality learn-bug bug_case.json
+elders-code-quality learn-pattern pattern.json
+
+# 品質監視・レポート確認
+ps aux | grep quality-monitor
+tail -f logs/quality_monitor.log
+ls data/merge_quality_reports/
+ls data/merge_approvals/
+```
+
+#### ⚙️ **品質基準（自動適用）**
+- **最低品質スコア**: 70/100
+- **Iron Will遵守**: 必須（TODO/FIXME禁止）
+- **セキュリティリスク**: レベル7以上で即座ブロック
+- **TDD互換性**: 推奨（テスト存在確認）
+
+#### 🛡️ **自動品質ゲート**
+1. **Elder Flow実行前**: 品質チェック・違反時停止
+2. **Git コミット前**: 品質基準未満でコミット阻止
+3. **Git マージ前**: マージ品質ゲート・ブランチ保護
+4. **PR作成時**: プルリクエスト品質分析・レポート生成
+5. **継続監視**: 1時間毎プロジェクト品質スキャン
+6. **学習機能**: 実行結果から自動でバグ・パターン学習
+
+#### 🚨 **緊急時バイパス（使用注意）**
+```bash
+# 環境変数でバイパス
+export ELDER_GUILD_BYPASS=1
+
+# Git hooks バイパス
+git commit --no-verify
+
+# Merge品質ゲートバイパス
+git merge --no-verify <branch>
+
+# Elder Flow 品質チェック無効
+elder-flow execute "緊急タスク" --no-quality
+```
+
+### 📊 **品質システム詳細**
+
+#### **🔍 品質分析エンジン機能**
+- **複雑度分析**: サイクロマティック複雑度・保守性指数
+- **アンチパターン検出**: God Class、Long Method、Magic Numbers
+- **セキュリティスキャン**: eval()、os.system()等危険コード検出
+- **Iron Will監視**: 回避策・TODO コメント検出
+- **TDD互換性**: テスト関連コード自動判定
+
+#### **🧙‍♂️ 4賢者品質連携**
+- **📚 ナレッジ賢者**: 品質パターン蓄積・ベストプラクティス管理
+- **🚨 インシデント賢者**: 品質問題即座検出・エスカレーション
+- **📋 タスク賢者**: 品質改善タスク優先順位付け・工数見積もり
+- **🔍 RAG賢者**: 類似品質問題・解決策ベクトル検索
+
+#### **📈 自動監視・報告**
+- **リアルタイム監視**: プロジェクト品質の継続スキャン
+- **トレンド分析**: 品質スコア変化の自動追跡
+- **日次レポート**: 品質状況のnWo評議会報告
+- **アラートシステム**: 閾値違反の即座通知・対応提案
+
+#### **📋 GitHub Issue自動生成**
+- **品質違反Issue**: エルダーズギルド標準準拠Issue作成
+- **実装計画**: 具体的改善手順・受け入れ基準
+- **4賢者推奨**: 各賢者の改善提案統合
+- **作業量見積もり**: 精密な工数・優先度計算
+
+### 📚 **品質システム設定ファイル**
+- **メイン設定**: `.elder-guild-quality.conf`
+- **Git hooks設定**: `.elder-guild-hooks.conf`
+- **マージ品質設定**: `.elder-guild-merge.conf`
+- **品質履歴**: `data/quality_metrics_history.json`
+- **監視ログ**: `logs/quality_monitor.log`
+- **マージレポート**: `data/merge_quality_reports/`
+- **マージ承認**: `data/merge_approvals/`
+
+**詳細ドキュメント**: [品質システム完全ガイド](docs/ELDERS_GUILD_QUALITY_SYSTEM.md)
+
 ## ⚡ XP (Extreme Programming) 開発手法（2025/7/19採用）
 
 **個人開発・実験プロジェクトに最適化されたXP手法を採用**

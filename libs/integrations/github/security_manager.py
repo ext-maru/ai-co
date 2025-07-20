@@ -29,10 +29,20 @@ logger = logging.getLogger("SecurityManager")
 
 
 class SecurityLevel(Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    CRITICAL = "critical"
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3
+    CRITICAL = 4
+    
+    def __lt__(self, other):
+        if isinstance(other, SecurityLevel):
+            return self.value < other.value
+        return NotImplemented
+    
+    def __gt__(self, other):
+        if isinstance(other, SecurityLevel):
+            return self.value > other.value
+        return NotImplemented
 
 
 class PermissionLevel(Enum):

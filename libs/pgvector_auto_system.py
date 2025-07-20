@@ -10,6 +10,7 @@ import logging
 import json
 import hashlib
 import time
+import threading
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Dict, List, Any, Optional
@@ -25,8 +26,9 @@ logger = logging.getLogger(__name__)
 class KnowledgeBaseWatcher(FileSystemEventHandler):
     """ナレッジベースファイル監視"""
     
-    def __init__(self, callback):
+    def __init__(self, callback, loop):
         self.callback = callback
+        self.loop = loop
         self.last_modified = {}
         
     def on_modified(self, event):
@@ -41,18 +43,36 @@ class KnowledgeBaseWatcher(FileSystemEventHandler):
                 
         self.last_modified[event.src_path] = now
         
-        # コールバック実行
-        asyncio.create_task(self.callback('modified', event.src_path))
+        # asyncioループを使用してタスクを安全に実行
+        try:
+            asyncio.run_coroutine_threadsafe(
+                self.callback('modified', event.src_path), 
+                self.loop
+            )
+        except Exception as e:
+            logger.error(f"❌ ファイル変更イベント処理エラー: {e}")
         
     def on_created(self, event):
         if event.is_directory or not event.src_path.endswith('.md'):
             return
-        asyncio.create_task(self.callback('created', event.src_path))
+        try:
+            asyncio.run_coroutine_threadsafe(
+                self.callback('created', event.src_path), 
+                self.loop
+            )
+        except Exception as e:
+            logger.error(f"❌ ファイル作成イベント処理エラー: {e}")
         
     def on_deleted(self, event):
         if event.is_directory or not event.src_path.endswith('.md'):
             return
-        asyncio.create_task(self.callback('deleted', event.src_path))
+        try:
+            asyncio.run_coroutine_threadsafe(
+                self.callback('deleted', event.src_path), 
+                self.loop
+            )
+        except Exception as e:
+            logger.error(f"❌ ファイル削除イベント処理エラー: {e}")
 
 class PgVectorAutoSystem:
     """pgvector自動化システム"""
@@ -94,8 +114,11 @@ class PgVectorAutoSystem:
         """ファイル監視開始"""
         logger.info("👁️ ファイル監視開始")
         
+        # 現在のイベントループを取得
+        current_loop = asyncio.get_running_loop()
+        
         self.observer = Observer()
-        handler = KnowledgeBaseWatcher(self._handle_file_event)
+        handler = KnowledgeBaseWatcher(self._handle_file_event, current_loop)
         
         self.observer.schedule(
             handler,
@@ -285,18 +308,31 @@ class PgVectorAutoSystem:
             'timestamp': datetime.now().isoformat(),
             'message': message,
             'system': 'pgvector_auto_system',
-            'stats': self.stats
+            'stats': self.stats.copy() if hasattr(self.stats, 'copy') else dict(self.stats)
         }
+        
+        # statsのdatetimeオブジェクトをISO文字列に変換
+        if isinstance(alert_data['stats'].get('start_time'), datetime):
+            alert_data['stats']['start_time'] = alert_data['stats']['start_time'].isoformat()
+        if alert_data['stats'].get('last_update') and isinstance(alert_data['stats']['last_update'], datetime):
+            alert_data['stats']['last_update'] = alert_data['stats']['last_update'].isoformat()
         
         # ログファイルに記録
         try:
             os.makedirs(os.path.dirname(self.config['alert_log']), exist_ok=True)
             with open(self.config['alert_log'], 'a', encoding='utf-8') as f:
                 f.write(json.dumps(alert_data, ensure_ascii=False) + '\n')
+            logger.info(f"📝 アラートログ書き込み完了: {self.config['alert_log']}")
         except Exception as e:
             logger.error(f"❌ アラートログ書き込みエラー: {e}")
             
         logger.error(f"🚨 アラート: {message}")
+        
+        # 追加: コンソールにもアラート表示
+        print(f"\n🚨🚨🚨 PGVECTOR ALERT 🚨🚨🚨")
+        print(f"Time: {alert_data['timestamp']}")
+        print(f"Message: {message}")
+        print(f"🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨🚨\n")
         
     async def get_status(self) -> Dict[str, Any]:
         """システム状況取得"""

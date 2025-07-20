@@ -59,6 +59,9 @@ class TaskType(Enum):
     RESEARCH = "research"
     DEPLOYMENT = "deployment"
     MAINTENANCE = "maintenance"
+    DEVELOPMENT = "development"
+    OPTIMIZATION = "optimization"
+    SYSTEM = "system"
 
 
 class PostgreSQLClaudeTaskTracker:
@@ -236,6 +239,43 @@ class PostgreSQLClaudeTaskTracker:
         async with self.connection_manager.get_connection() as conn:
             yield conn
 
+    def _validate_input(self, title: str, description: str = "", **kwargs):
+        """
+        入力値検証
+        
+        Args:
+            title: タスク名
+            description: 説明
+            **kwargs: その他パラメータ
+            
+        Raises:
+            ValueError: 検証エラー
+        """
+        # 必須フィールド検証
+        if not title or not isinstance(title, str):
+            raise ValueError("タスク名は必須です（文字列）")
+        
+        if not isinstance(description, str):
+            raise ValueError("説明は文字列である必要があります")
+        
+        # 長さ制限
+        if len(title) > 255:
+            raise ValueError("タスク名は255文字以下である必要があります")
+        
+        if len(description) > 10000:
+            raise ValueError("説明は10,000文字以下である必要があります")
+        
+        # 空文字列チェック
+        if title.strip() == "":
+            raise ValueError("タスク名に空文字列は使用できません")
+        
+        # 危険な文字列パターンチェック
+        dangerous_patterns = ["DROP", "DELETE", "UPDATE", "INSERT", "ALTER", "--", ";"]
+        title_upper = title.upper()
+        for pattern in dangerous_patterns:
+            if pattern in title_upper:
+                raise ValueError(f"危険なパターンが検出されました: {pattern}")
+
     async def create_task(
         self,
         title: str,
@@ -269,6 +309,9 @@ class PostgreSQLClaudeTaskTracker:
         Returns:
             str: タスクID
         """
+        # 入力値検証
+        self._validate_input(title, description)
+        
         task_id = str(uuid4())
         now = datetime.now()
 
@@ -291,8 +334,8 @@ class PostgreSQLClaudeTaskTracker:
                 task_id,
                 title,  # nameフィールドにtitleを格納
                 description,
-                task_type.value,
-                priority.value,
+                task_type.value if hasattr(task_type, 'value') else task_type,
+                priority.value if hasattr(priority, 'value') else priority,
                 TaskStatus.PENDING.value,
                 assigned_to,  # assigneeフィールドに格納
                 estimated_duration_minutes,  # estimated_durationフィールドに格納
@@ -362,7 +405,7 @@ class PostgreSQLClaudeTaskTracker:
         # 更新フィールド設定
         if status is not None:
             updates.append(f"status = ${param_count}")
-            values.append(status.value)
+            values.append(status.value if hasattr(status, 'value') else status)
             param_count += 1
 
         if progress is not None:
@@ -420,10 +463,18 @@ class PostgreSQLClaudeTaskTracker:
         async with self._get_connection() as conn:
             result = await conn.execute(sql, *values)
 
-        updated = result.split()[-1] == "1"
-        if updated:
-            logger.info(f"Updated task: {task_id}")
-        return updated
+        # PostgreSQL UPDATE結果の適切な処理
+        if result.startswith("UPDATE"):
+            updated_count = int(result.split()[-1])
+            updated = updated_count > 0
+            if updated:
+                logger.info(f"Updated task: {task_id}")
+            else:
+                logger.warning(f"Task not found for update: {task_id}")
+            return updated
+        else:
+            logger.error(f"Unexpected UPDATE result: {result}")
+            return False
 
     async def list_tasks(
         self,

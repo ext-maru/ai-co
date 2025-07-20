@@ -348,18 +348,17 @@ class PgVectorUnifiedManager:
         logger.info(f"🔍 知識検索: '{query}' (limit: {limit})")
         
         try:
-            # PostgreSQL検索を試行
+            # PostgreSQL検索を試行（similarity関数なしの簡易版）
             search_sql = f"""
-            SELECT title, content, source_file, category, priority, 
-                   similarity(content, '{query}') as relevance
+            SELECT title, content, source_file, category, priority
             FROM knowledge_documents 
-            WHERE content ILIKE '%{query}%'
-            ORDER BY relevance DESC, priority ASC
+            WHERE content ILIKE '%{query}%' OR title ILIKE '%{query}%'
+            ORDER BY priority ASC, created_at DESC
             LIMIT {limit};
             """
             
             cmd = self.config['docker_command_prefix'] + [
-                f"docker exec elders-guild-postgres-new psql -U {self.config['postgres']['user']} "
+                f"docker exec elders-guild-postgres-new psql -U admin "
                 f"-d {self.config['postgres']['database']} -t -c \"{search_sql}\""
             ]
             
@@ -369,19 +368,27 @@ class PgVectorUnifiedManager:
                 # PostgreSQL結果をパース
                 results = []
                 for line in result.stdout.strip().split('\n'):
-                    if line.strip():
+                    if line.strip() and '|' in line:
                         parts = line.split('|')
                         if len(parts) >= 5:
-                            results.append({
-                                'title': parts[0].strip(),
-                                'content': parts[1].strip()[:500],
-                                'source_file': parts[2].strip(),
-                                'category': parts[3].strip(),
-                                'priority': int(parts[4].strip()) if parts[4].strip().isdigit() else 4,
-                                'source': 'postgresql'
-                            })
-                logger.info(f"✅ PostgreSQL検索成功: {len(results)}件")
-                return results
+                            try:
+                                results.append({
+                                    'title': parts[0].strip(),
+                                    'content': parts[1].strip()[:500],
+                                    'source_file': parts[2].strip(),
+                                    'category': parts[3].strip(),
+                                    'priority': int(parts[4].strip()) if parts[4].strip().isdigit() else 4,
+                                    'source': 'postgresql'
+                                })
+                            except (ValueError, IndexError) as e:
+                                logger.warning(f"⚠️ PostgreSQL結果パースエラー: {e}")
+                                continue
+                
+                if results:
+                    logger.info(f"✅ PostgreSQL検索成功: {len(results)}件")
+                    return results
+                else:
+                    logger.info("📝 PostgreSQL検索結果が空、SQLiteにフォールバック")
             
         except Exception as e:
             logger.warning(f"⚠️ PostgreSQL検索失敗: {e}")

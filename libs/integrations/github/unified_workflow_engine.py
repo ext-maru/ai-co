@@ -418,6 +418,7 @@ class UnifiedWorkflowEngine:
     def __init__(self):
         self.components: Dict[ComponentType, WorkflowComponent] = {}
         self.execution_history: List[WorkflowResult] = []
+        self.max_parallel_executions = 5  # 最大並列実行数
         self._register_components()
     
     def _register_components(self):
@@ -598,6 +599,23 @@ class UnifiedWorkflowEngine:
             "success_rate": successful / len(self.execution_history) if self.execution_history else 0,
             "average_execution_time": avg_execution_time,
             "last_execution": self.execution_history[-1].workflow_id if self.execution_history else None
+        }
+    
+    def get_capabilities(self) -> Dict[str, Any]:
+        """エンジン機能一覧取得"""
+        return {
+            "service": "UnifiedWorkflowEngine",
+            "version": "1.0.0",
+            "supported_modes": ["elder_flow", "a2a", "hybrid"],
+            "components": [comp.value for comp in ComponentType],
+            "max_parallel_executions": self.max_parallel_executions,
+            "features": [
+                "component_dependency_management",
+                "execution_mode_switching", 
+                "error_recovery_integration",
+                "performance_optimization",
+                "comprehensive_logging"
+            ]
         }
 
 
