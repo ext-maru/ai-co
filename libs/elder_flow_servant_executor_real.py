@@ -678,15 +678,36 @@ class CodeCraftsmanServantReal(BaseServant):
             }
 
     async def _tdd_generate_failing_test(self, args: Dict) -> Dict:
-        """TDD Step 1: 失敗するテストを生成"""
+        """TDD Step 1: スマートテスト生成"""
         test_name = args.get("test_name", "test_feature")
         feature_description = args.get("feature_description", "")
         target_class = args.get("target_class", "Implementation")
         target_method = args.get("target_method", "execute")
+        issue_title = args.get("issue_title", "")
+        issue_body = args.get("issue_body", "")
         
         try:
-            # 実際に失敗するテストを生成
-            test_content = f'''"""
+            # スマートコード生成を試行
+            try:
+                from libs.smart_code_generator import SmartCodeGenerator
+                
+                # Issue番号を抽出
+                issue_number = int(target_class.replace("Issue", "").replace("Implementation", ""))
+                
+                generator = SmartCodeGenerator()
+                smart_result = generator.generate_implementation(issue_number, issue_title, issue_body)
+                
+                if smart_result.get("success"):
+                    test_content = smart_result["test_code"]
+                    self.logger.info(f"Smart test generation successful for {target_class}")
+                else:
+                    self.logger.warning(f"Smart test generation failed: {smart_result.get('error')}")
+                    raise Exception("Fallback to basic template")
+                    
+            except Exception as e:
+                self.logger.warning(f"Smart test generation error: {e}, using fallback")
+                # フォールバック: 従来の基本テンプレート
+                test_content = f'''"""
 TDD Red Phase: {test_name}
 {feature_description}
 
@@ -755,14 +776,35 @@ if __name__ == "__main__":
             }
 
     async def _tdd_implement_code(self, args: Dict) -> Dict:
-        """TDD Step 2: テストを通すための最小実装"""
+        """TDD Step 2: スマート実装生成"""
         target_class = args.get("target_class", "Implementation")
         target_method = args.get("target_method", "execute")
         feature_description = args.get("feature_description", "")
+        issue_title = args.get("issue_title", "")
+        issue_body = args.get("issue_body", "")
         
         try:
-            # テストを通すための最小実装を生成
-            impl_content = f'''"""
+            # スマートコード生成を試行
+            try:
+                from libs.smart_code_generator import SmartCodeGenerator
+                
+                # Issue番号を抽出
+                issue_number = int(target_class.replace("Issue", "").replace("Implementation", ""))
+                
+                generator = SmartCodeGenerator()
+                smart_result = generator.generate_implementation(issue_number, issue_title, issue_body)
+                
+                if smart_result.get("success"):
+                    impl_content = smart_result["implementation_code"]
+                    self.logger.info(f"Smart implementation generation successful for {target_class}")
+                else:
+                    self.logger.warning(f"Smart implementation generation failed: {smart_result.get('error')}")
+                    raise Exception("Fallback to basic template")
+                    
+            except Exception as e:
+                self.logger.warning(f"Smart implementation generation error: {e}, using fallback")
+                # フォールバック: 従来の基本実装
+                impl_content = f'''"""
 TDD Green Phase: {target_class}
 {feature_description}
 

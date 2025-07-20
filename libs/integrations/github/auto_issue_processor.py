@@ -355,7 +355,7 @@ Closes #{issue_number}
             self.logger.info(f"🔍 DEBUG: Generated target_class={target_class}")
             self.logger.info(f"Starting TDD flow for Issue #{issue_number}: {target_class}")
             
-            # Step 1: RED - 失敗するテストを生成
+            # Step 1: RED - 失敗するテストを生成（スマート生成対応）
             red_task = ServantTask(
                 task_id=f"tdd_red_{issue_number}",
                 servant_type=ServantType.CODE_CRAFTSMAN,
@@ -366,6 +366,8 @@ Closes #{issue_number}
                     "feature_description": feature_description,
                     "target_class": target_class,
                     "target_method": target_method,
+                    "issue_title": issue_title,
+                    "issue_body": self._get_issue_body_for_tdd(issue_number),
                 }
             )
             
@@ -382,7 +384,7 @@ Closes #{issue_number}
                 
                 self.logger.info(f"TDD RED: Generated failing test: {red_test_path}")
                 
-                # Step 2: GREEN - テストを通す最小実装
+                # Step 2: GREEN - テストを通す最小実装（スマート生成対応）
                 green_task = ServantTask(
                     task_id=f"tdd_green_{issue_number}",
                     servant_type=ServantType.CODE_CRAFTSMAN,
@@ -392,6 +394,8 @@ Closes #{issue_number}
                         "target_class": target_class,
                         "target_method": target_method,
                         "feature_description": feature_description,
+                        "issue_title": issue_title,
+                        "issue_body": self._get_issue_body_for_tdd(issue_number),
                     }
                 )
                 
@@ -452,6 +456,15 @@ Closes #{issue_number}
         except Exception as e:
             self.logger.error(f"TDD flow execution error: {e}")
             return False
+    
+    def _get_issue_body_for_tdd(self, issue_number: int) -> str:
+        """TDD用にIssue本文を取得"""
+        try:
+            issue = self.repo.get_issue(issue_number)
+            return issue.body or ""
+        except Exception as e:
+            self.logger.warning(f"Failed to get issue body for #{issue_number}: {e}")
+            return ""
 
 
 # Setup logging
