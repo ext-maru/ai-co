@@ -24,58 +24,6 @@ sys.path.insert(0, str(project_root))
 
 from libs.core.elders_legacy import EldersServiceLegacy
 
-<<<<<<< Updated upstream
-# 必要なモジュールのインポート（フォールバック付き）
-# ダミー実装クラス（実際の4賢者システムがない場合の代替）
-class DummyElderFlowEngine:
-    async def process_request(self, request):
-        return {"status": "success", "task_name": request.get("task_name", "")}
-
-
-class DummySage:
-    async def process_request(self, request):
-        return {"status": "success", "message": "Dummy sage response"}
-
-
-class DummyPRCreator:
-    def __init__(self, token=None, repo_owner=None, repo_name=None):
-        pass  # Dummy implementation accepts but ignores arguments
-    
-    def create_pull_request(self, **kwargs):
-        return {"success": False, "error": "PR creation not implemented yet"}
-
-
-# 実際のクラスまたはダミーを使用
-try:
-    from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine as ActualElderFlowEngine
-except ImportError:
-    ActualElderFlowEngine = DummyElderFlowEngine
-
-try:
-    from libs.knowledge_sage import KnowledgeSage as ActualKnowledgeSage
-except ImportError:
-    ActualKnowledgeSage = DummySage
-
-try:
-    from libs.task_sage import TaskSage as ActualTaskSage
-except ImportError:
-    ActualTaskSage = DummySage
-
-try:
-    from libs.incident_sage import IncidentSage as ActualIncidentSage
-except ImportError:
-    ActualIncidentSage = DummySage
-
-try:
-    from libs.rag_manager import RagManager as ActualRAGSage
-except ImportError:
-    ActualRAGSage = DummySage
-
-try:
-    from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
-except ImportError:
-    GitHubCreatePullRequestImplementation = DummyPRCreator
-=======
 # 必要なモジュールのインポート
 from libs.rag_manager import RagManager
 from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine
@@ -83,7 +31,6 @@ from libs.knowledge_sage import KnowledgeSage
 from libs.task_sage import TaskSage
 from libs.incident_sage import IncidentSage
 from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
->>>>>>> Stashed changes
 
 # 実際のインポート（存在する場合は上書き）
 try:
@@ -121,35 +68,13 @@ class AutoIssueElderFlowEngine:
     """Auto Issue Processor専用のElder Flow Engine"""
 
     def __init__(self):
-<<<<<<< Updated upstream
-        self.elder_flow = ActualElderFlowEngine()
-=======
         self.elder_flow = ElderFlowEngine()
->>>>>>> Stashed changes
         
         # GitHub設定の検証と初期化
         github_token = os.getenv("GITHUB_TOKEN")
         repo_owner = os.getenv("GITHUB_REPO_OWNER")
         repo_name = os.getenv("GITHUB_REPO_NAME")
 
-<<<<<<< Updated upstream
-        if not github_token or not repo_owner or not repo_name:
-            # Use dummy PR creator if config is missing
-            logger.warning("GitHub configuration missing, using dummy PR creator")
-            self.pr_creator = GitHubCreatePullRequestImplementation(
-                token=github_token or "", 
-                repo_owner=repo_owner or "dummy", 
-                repo_name=repo_name or "dummy"
-            ) if GitHubCreatePullRequestImplementation else DummyPRCreator()
-        else:
-            self.pr_creator = GitHubCreatePullRequestImplementation(
-                token=github_token, repo_owner=repo_owner, repo_name=repo_name
-            )
-        
-        # 自動マージを有効化（可能な場合のみ）
-        if hasattr(self.pr_creator, 'auto_merge_enabled'):
-            self.pr_creator.auto_merge_enabled = True
-=======
         if not github_token:
             raise ValueError("GITHUB_TOKEN environment variable is required")
         if not repo_owner:
@@ -162,7 +87,6 @@ class AutoIssueElderFlowEngine:
         )
         # 自動マージを有効化
         self.pr_creator.auto_merge_enabled = True
->>>>>>> Stashed changes
         self.logger = logger
 
     async def execute_flow(self, request):
