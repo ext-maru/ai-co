@@ -1,8 +1,0 @@
-# 知識ベース自動同期（毎日午前6時）
-0 6 * * * cd /home/aicompany/ai_co && python3 setup_knowledge_sync.py --sync
-
-# 週次レポート生成（毎週月曜日午前9時）
-0 9 * * 1 cd /home/aicompany/ai_co && python3 setup_knowledge_sync.py --weekly-report
-
-# 月次統合レビュー（毎月1日午前10時）
-0 10 1 * * cd /home/aicompany/ai_co && python3 setup_knowledge_sync.py --monthly-review

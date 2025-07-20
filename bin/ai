@@ -1,2 +1,0 @@
-#!/bin/bash
-exec "/home/aicompany/ai_co/bin/ai_launcher.py" "$@"

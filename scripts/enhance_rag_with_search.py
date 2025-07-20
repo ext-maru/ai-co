@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-from pathlib import Path
-
 """
 RAGマネージャーに検索機能を統合
 """
 import sys
 
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append("/root/ai_co")
 
 # RAGマネージャーを拡張するコード
 enhanced_rag_code = '''
@@ -19,7 +17,7 @@ def build_context_with_search(self, prompt: str, include_similar: bool = True) -
 
     if include_similar:
         # AI学習インターフェースから類似タスク情報を取得
-        from libs.ai_learning_interface import AILearningInterface
+        from features.ai.ai_learning_interface import AILearningInterface
         ai_interface = AILearningInterface()
         learning_data = ai_interface.learn_from_similar_tasks(prompt)
 

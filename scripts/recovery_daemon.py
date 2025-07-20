@@ -1,6 +1,4 @@
 #!/usr/bin/env python3
-from pathlib import Path
-
 """
 会話リカバリデーモン
 """
@@ -8,8 +6,8 @@ import logging
 import sys
 import time
 
-sys.path.append(str(Path(__file__).parent.parent))
-from libs.conversation_recovery import ConversationRecoveryManager
+sys.path.append("/root/ai_co")
+from features.conversation.conversation_recovery import ConversationRecoveryManager
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [RecoveryDaemon] %(message)s"

@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-from pathlib import Path
-
 """
 会話システムヘルスチェック
 """
 import sys
 
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append("/root/ai_co")
 import json
 
-from libs.conversation_manager import ConversationManager
-from libs.conversation_recovery import ConversationRecoveryManager
+from features.conversation.conversation_manager import ConversationManager
+from features.conversation.conversation_recovery import ConversationRecoveryManager
 
 
 def health_check():

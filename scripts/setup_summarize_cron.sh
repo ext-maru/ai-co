@@ -1,7 +1,7 @@
 #!/bin/bash
 # 毎日深夜2時に自動要約を実行
 
-CRON_CMD="0 2 * * * cd /home/aicompany/ai_co && /home/aicompany/ai_co/venv/bin/python /home/aicompany/ai_co/scripts/auto_summarize.py >> /home/aicompany/ai_co/logs/auto_summarize.log 2>&1"
+CRON_CMD="0 2 * * * cd /root/ai_co && /root/ai_co/venv/bin/python /root/ai_co/scripts/auto_summarize.py >> /root/ai_co/logs/auto_summarize.log 2>&1"
 
 # 既存のcronジョブを確認
 if ! crontab -l 2>/dev/null | grep -q "auto_summarize.py"; then

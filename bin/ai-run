@@ -1,5 +1,0 @@
-#!/bin/bash
-# Shortcut for ai-template run
-cd /home/aicompany/ai_co
-source venv/bin/activate 2>/dev/null || true
-exec python3 scripts/ai-template run "$@"

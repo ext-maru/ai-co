@@ -1,4 +1,0 @@
-#!/bin/bash
-# AI Company command wrapper
-SCRIPT_NAME=$(basename "$0")
-exec "/home/aicompany/ai_co/bin/ai_launcher.py" "$SCRIPT_NAME" "$@"
