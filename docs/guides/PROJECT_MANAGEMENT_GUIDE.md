@@ -22,8 +22,8 @@ python3 start_project_dashboard.py
 # 方法2: CLIコマンド
 ai-project dashboard
 
-# 方法3: 直接起動
-python3 web/project_dashboard.py
+# 方法3: CLIベース（推奨）
+ai-status  # システム状態確認
 ```
 
 → ブラウザで http://localhost:8080 が自動的に開きます

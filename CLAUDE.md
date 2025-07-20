@@ -325,7 +325,7 @@ elder-flow execute "新機能実装" --priority high
 3. **Phase 11: 統合テストフレームワーク構築** (19 tests) - `libs/integration_test_framework.py`
 4. **Phase 12: 監視ダッシュボード高度化** (24 tests) - `libs/advanced_monitoring_dashboard.py`
 5. **Phase 13: セキュリティ監査システム** (20 tests) - `libs/security_audit_system.py`
-6. **Phase 14: Worker専用タスクトラッカー** (33 tests) - `libs/worker_status_monitor.py`, `libs/worker_task_flow.py`, `web/worker_dashboard.py`
+6. **Phase 14: Worker専用タスクトラッカー** (33 tests) - `libs/worker_status_monitor.py`, `libs/worker_task_flow.py`
 7. **Phase 15: タスクエルダー + エルフ協調システム** (2025年7月7日) - `libs/claude_task_tracker.py`, `libs/elf_forest_coordination.py`
 
 **総計: 249テスト (Phase 1-4: 111 + Phase 14: 138)、100%成功率**

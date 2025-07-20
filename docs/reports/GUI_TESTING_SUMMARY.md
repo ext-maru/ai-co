@@ -26,9 +26,9 @@ The Elders Guild web dashboard system has a **comprehensive GUI testing framewor
 
 ## 🌐 Web Dashboard System
 
-### Main Components
-- **Dashboard**: `/home/aicompany/ai_co/web/dashboard_final.py` - Elder Assembly Dashboard
-- **Authentication**: `/home/aicompany/ai_co/web/auth_manager.py` - Complete auth system
+### Main Components (DEPRECATED - Web modules removed)
+- **Dashboard**: Moved to CLI-based monitoring (`ai-status`, `ai-logs`)
+- **Authentication**: Integrated into core system
 - **API Endpoints**: 7 RESTful endpoints for system interaction
 
 ### Working API Endpoints

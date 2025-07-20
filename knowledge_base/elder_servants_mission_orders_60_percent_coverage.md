@@ -98,7 +98,7 @@ ai-rag-wizards --predict-coverage --target=60
 ```bash
 # Real-time coverage monitoring dashboard
 ai-start --dashboard --coverage-monitor
-python3 web/worker_dashboard.py --coverage-focus
+ai-status --coverage-focus  # CLI-based monitoring
 ```
 
 ### 🤝 Resource Coordination

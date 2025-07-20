@@ -311,7 +311,7 @@ if __name__ == "__main__":
 </body>
 </html>"""
 
-        dashboard_path = Path("web/dashboard/elder_flow_dashboard.html")
+        dashboard_path = Path("docs/reports/elder_flow_dashboard.html")
         dashboard_path.parent.mkdir(parents=True, exist_ok=True)
         with open(dashboard_path, 'w') as f:
             f.write(dashboard_html)
@@ -320,7 +320,7 @@ if __name__ == "__main__":
             "status": "completed",
             "files_created": [
                 "bin/elder-flow",
-                "web/dashboard/elder_flow_dashboard.html"
+                "docs/reports/elder_flow_dashboard.html"
             ],
             "features": ["Elder Flow CLI", "リアルタイムダッシュボード", "タスク可視化"]
         }
