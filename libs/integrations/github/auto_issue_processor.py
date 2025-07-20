@@ -254,6 +254,7 @@ Closes #{issue_number}
             files_created = 0
             
             # TDDフローの実行を優先
+            self.logger.info(f"🔍 DEBUG: Calling _execute_tdd_flow with issue_number={issue_number}, issue_title='{issue_title}'")
             tdd_success = await self._execute_tdd_flow(issue_number, issue_title, execution_results)
             if tdd_success:
                 files_created += 4  # RED, GREEN, BLUE, FINAL の4ファイル
@@ -349,6 +350,9 @@ Closes #{issue_number}
             target_method = "execute"
             feature_description = f"Implementation for {issue_title}"
             
+            # デバッグログ追加
+            self.logger.info(f"🔍 DEBUG: TDD flow called with issue_number={issue_number}, issue_title='{issue_title}'")
+            self.logger.info(f"🔍 DEBUG: Generated target_class={target_class}")
             self.logger.info(f"Starting TDD flow for Issue #{issue_number}: {target_class}")
             
             # Step 1: RED - 失敗するテストを生成
