@@ -262,10 +262,10 @@ def launch_claude_code_with_knowledge():
 
     # 最適な日本語モード起動方法を選択
     launch_args = claude_cmd.copy()
-    
+
     # 日本語モード設定を優先で追加
     launch_args.extend(["--locale", "ja"])
-    
+
     # --dangerously-skip-permissionsオプションを追加（正しい形式）
     launch_args.append("--dangerously-skip-permissions")
 

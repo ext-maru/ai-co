@@ -75,7 +75,7 @@ class EventLoopSafeWrapper:
 async def _ensure_pool(self):
     loop = asyncio.get_running_loop()
     loop_id = id(loop)
-    
+
     if loop_id not in self._pools:
         # ループごとに独立した接続プールを作成
         pool = await asyncpg.create_pool(**config)
@@ -214,7 +214,7 @@ PostgreSQL AsyncIO修正により以下を達成：
 
 ---
 
-**作成日**: 2025/01/19  
-**更新日**: 2025/01/19  
-**作成者**: Claude Elder  
+**作成日**: 2025/01/19
+**更新日**: 2025/01/19
+**作成者**: Claude Elder
 **レビュー**: 4賢者会議承認済み

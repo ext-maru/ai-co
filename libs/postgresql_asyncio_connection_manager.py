@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class PostgreSQLConnectionManager:
     """
     PostgreSQL接続マネージャー - シングルトンパターン
-    
+
     特徴:
     - シングルトンパターンによる接続プール一元管理
     - イベントループ競合回避
@@ -49,7 +49,7 @@ class PostgreSQLConnectionManager:
     def __init__(self, **config):
         """
         初期化（シングルトンなので1回のみ実行）
-        
+
         Args:
             **config: PostgreSQL接続設定
         """
@@ -93,10 +93,10 @@ class PostgreSQLConnectionManager:
     async def get_instance(cls, **config) -> "PostgreSQLConnectionManager":
         """
         インスタンス取得（非同期初期化付き）
-        
+
         Args:
             **config: PostgreSQL接続設定
-            
+
         Returns:
             PostgreSQLConnectionManager: シングルトンインスタンス
         """
@@ -114,9 +114,7 @@ class PostgreSQLConnectionManager:
                 logger.info(f"Creating new connection pool for loop {loop_id}")
 
                 # 接続プール作成
-                pool = await asyncpg.create_pool(
-                    **self.config, **self.pool_config
-                )
+                pool = await asyncpg.create_pool(**self.config, **self.pool_config)
 
                 self._pools[loop_id] = pool
 
@@ -166,7 +164,7 @@ class PostgreSQLConnectionManager:
     async def get_connection(self):
         """
         データベース接続取得（コンテキストマネージャー）
-        
+
         Yields:
             asyncpg.Connection: データベース接続
         """
@@ -183,7 +181,7 @@ class PostgreSQLConnectionManager:
 
         try:
             connection = await pool.acquire()
-            
+
             # スレッドセーフに接続を追跡
             with self._connection_lock:
                 self._active_connections.add(connection_id)
@@ -209,11 +207,11 @@ class PostgreSQLConnectionManager:
     async def execute_query(self, query: str, *args) -> Any:
         """
         クエリ実行（単発実行用）
-        
+
         Args:
             query: SQLクエリ
             *args: クエリパラメータ
-            
+
         Returns:
             Any: クエリ実行結果
         """
@@ -223,11 +221,11 @@ class PostgreSQLConnectionManager:
     async def fetch_one(self, query: str, *args) -> Optional[Dict]:
         """
         単一レコード取得
-        
+
         Args:
             query: SQLクエリ
             *args: クエリパラメータ
-            
+
         Returns:
             Optional[Dict]: 取得レコード
         """
@@ -238,11 +236,11 @@ class PostgreSQLConnectionManager:
     async def fetch_all(self, query: str, *args) -> list:
         """
         複数レコード取得
-        
+
         Args:
             query: SQLクエリ
             *args: クエリパラメータ
-            
+
         Returns:
             list: 取得レコードリスト
         """
@@ -253,10 +251,10 @@ class PostgreSQLConnectionManager:
     async def execute_transaction(self, operations: list) -> bool:
         """
         トランザクション実行
-        
+
         Args:
             operations: 実行操作のリスト [(query, args), ...]
-            
+
         Returns:
             bool: 実行成功フラグ
         """
@@ -273,7 +271,7 @@ class PostgreSQLConnectionManager:
     async def health_check(self) -> Dict[str, Any]:
         """
         ヘルスチェック実行
-        
+
         Returns:
             Dict: ヘルス情報
         """
@@ -338,7 +336,7 @@ class PostgreSQLConnectionManager:
                     logger.error(f"Emergency shutdown error: {e}")
 
         self._pools.clear()
-        
+
         # 接続追跡もクリア
         with self._connection_lock:
             self._active_connections.clear()
@@ -354,11 +352,11 @@ class EventLoopSafeWrapper:
     def run_async(coro, timeout: Optional[float] = None):
         """
         非同期コルーチンを安全に実行
-        
+
         Args:
             coro: 実行するコルーチン
             timeout: タイムアウト（秒）
-            
+
         Returns:
             Any: 実行結果
         """
@@ -407,10 +405,10 @@ class EventLoopSafeWrapper:
 async def get_postgres_manager(**config) -> PostgreSQLConnectionManager:
     """
     PostgreSQL接続マネージャー取得
-    
+
     Args:
         **config: 接続設定
-        
+
     Returns:
         PostgreSQLConnectionManager: 接続マネージャー
     """
@@ -420,11 +418,11 @@ async def get_postgres_manager(**config) -> PostgreSQLConnectionManager:
 def run_postgres_operation(coro, timeout: Optional[float] = None):
     """
     PostgreSQL操作を安全に実行
-    
+
     Args:
         coro: 実行するコルーチン
         timeout: タイムアウト（秒）
-        
+
     Returns:
         Any: 実行結果
     """

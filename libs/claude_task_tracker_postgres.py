@@ -4,8 +4,6 @@ Claude Task Tracker - PostgreSQL Migration Wrapper
 既存のSQLite版インターフェースを維持しながらPostgreSQLに切り替え
 """
 
-import asyncio
-import json
 import logging
 import sys
 from datetime import datetime
@@ -17,7 +15,6 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from libs.postgres_claude_task_tracker import (
-    PostgreSQLClaudeTaskTracker,
     TaskPriority,
     TaskStatus,
     TaskType,
@@ -64,6 +61,7 @@ class ClaudeTaskTracker:
     def _run_async(self, coro):
         """非同期関数を同期的に実行（改良版）"""
         from libs.postgresql_asyncio_connection_manager import EventLoopSafeWrapper
+
         return EventLoopSafeWrapper.run_async(coro)
 
     async def _create_task_async(self, *args, **kwargs):
@@ -265,7 +263,7 @@ class ClaudeTaskTracker:
             try:
                 # 同期的なクローズを試行
                 self.close_sync()
-            except:
+            except Exception:
                 # エラーが発生しても継続
                 pass
 

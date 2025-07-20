@@ -23,8 +23,8 @@ PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from libs.postgresql_asyncio_connection_manager import (
-    PostgreSQLConnectionManager,
     EventLoopSafeWrapper,
+    PostgreSQLConnectionManager,
     get_postgres_manager,
 )
 
