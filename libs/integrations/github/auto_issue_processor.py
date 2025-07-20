@@ -75,6 +75,37 @@ try:
 except ImportError:
     GitHubCreatePullRequestImplementation = DummyPRCreator
 
+# 実際のインポート（存在する場合は上書き）
+try:
+    from libs.rag_manager import RagManager
+    ActualRAGSage = RagManager
+except ImportError:
+    pass
+
+try:
+    from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine
+    ActualElderFlowEngine = ElderFlowEngine
+except ImportError:
+    pass
+
+try:
+    from libs.knowledge_sage import KnowledgeSage
+    ActualKnowledgeSage = KnowledgeSage
+except ImportError:
+    pass
+
+try:
+    from libs.task_sage import TaskSage
+    ActualTaskSage = TaskSage
+except ImportError:
+    pass
+
+try:
+    from libs.incident_sage import IncidentSage
+    ActualIncidentSage = IncidentSage
+except ImportError:
+    pass
+
 
 class AutoIssueElderFlowEngine:
     """Auto Issue Processor専用のElder Flow Engine"""
