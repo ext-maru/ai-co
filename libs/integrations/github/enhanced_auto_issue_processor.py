@@ -669,6 +669,22 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
             "error": None,
         }
 
+        # 一時的に実装をスキップしてイシューを閉じるだけに
+        try:
+            self.logger.info(f"🚧 Issue #{issue.number} - 実装は準備中、イシューを自動クローズ")
+            issue.create_comment(
+                f"🤖 Auto Issue Processorが処理しました。\n\n"
+                f"現在、自動実装機能は開発中です。\n"
+                f"このイシューは一時的にクローズされます。"
+            )
+            issue.edit(state="closed")
+            result["success"] = True
+            result["error"] = "実装スキップ（開発中）"
+            return result
+        except Exception as e:
+            result["error"] = f"イシュークローズ失敗: {e}"
+            return result
+
         try:
             # 処理開始時刻を記録
             start_time = datetime.now()

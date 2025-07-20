@@ -263,8 +263,10 @@ def launch_claude_code_with_knowledge():
     # 最適な日本語モード起動方法を選択
     launch_args = claude_cmd.copy()
 
-    # 日本語モード設定を優先で追加
-    launch_args.extend(["--locale", "ja"])
+    # Claude CLIは--localeオプションをサポートしていないため、
+    # 環境変数で日本語設定を行う
+    os.environ["LANG"] = "ja_JP.UTF-8"
+    os.environ["LC_ALL"] = "ja_JP.UTF-8"
 
     # --dangerously-skip-permissionsオプションを追加（正しい形式）
     launch_args.append("--dangerously-skip-permissions")
@@ -272,8 +274,9 @@ def launch_claude_code_with_knowledge():
     # 知識ファイルをパラメータとして追加
     launch_args.append(str(knowledge_file))
 
-    print(f"🚀 Claude日本語モード起動コマンド: {' '.join(launch_args)}")
-    print("💡 エルダーズギルド知識を日本語モードで自動注入して起動します")
+    print(f"🚀 Claude起動コマンド (日本語環境): {' '.join(launch_args)}")
+    print("💡 エルダーズギルド知識を日本語環境で自動注入して起動します")
+    print("🇯🇵 環境変数: LANG=ja_JP.UTF-8, LC_ALL=ja_JP.UTF-8")
 
     try:
         # プロジェクトディレクトリで起動
