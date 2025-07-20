@@ -169,6 +169,17 @@ class SmartCodeGenerator:
             self.codebase_engine = None
             self.use_codebase_analysis = False
             self.logger.warning(f"Codebase Analysis Engine not available: {e}")
+        
+        # Phase 4: インテリジェントテスト生成統合
+        try:
+            from libs.intelligent_test_generator import IntelligentTestGenerator
+            self.test_generator = IntelligentTestGenerator()
+            self.use_test_generation = True
+            self.logger.info("Intelligent Test Generator enabled")
+        except ImportError as e:
+            self.test_generator = None
+            self.use_test_generation = False
+            self.logger.warning(f"Intelligent Test Generator not available: {e}")
     
     def generate_implementation(
         self, 
@@ -262,6 +273,30 @@ class SmartCodeGenerator:
             implementation_code = self._render_template(impl_template_path, context)
             test_code = self._render_template(test_template_path, context)
             
+            # Phase 4: インテリジェントテスト生成
+            intelligent_tests = None
+            if self.use_test_generation and implementation_code:
+                try:
+                    # Intelligence オブジェクトを辞書形式に変換
+                    intelligence_dict = None
+                    if intelligence:
+                        intelligence_dict = {
+                            'primary_domain': intelligence.primary_domain,
+                            'tech_requirements': intelligence.tech_requirements,
+                            'implementation_hints': intelligence.implementation_hints,
+                            'estimated_effort': intelligence.estimated_effort
+                        }
+                    
+                    intelligent_tests = self.test_generator.generate_comprehensive_tests(
+                        implementation_code, intelligence_dict, codebase_intelligence
+                    )
+                    self.logger.info(f"Intelligent tests generated: {len(intelligent_tests.unit_tests)} unit, "
+                                   f"{len(intelligent_tests.integration_tests)} integration, "
+                                   f"{len(intelligent_tests.property_tests)} property")
+                except Exception as e:
+                    self.logger.warning(f"Intelligent test generation failed: {e}")
+                    intelligent_tests = None
+            
             return {
                 "success": True,
                 "implementation_code": implementation_code,
@@ -279,6 +314,14 @@ class SmartCodeGenerator:
                     "class_patterns_found": len(codebase_intelligence.class_patterns) if codebase_intelligence else 0,
                     "similar_implementations": len(context.get('similar_implementations', [])),
                     "learned_error_patterns": len(context.get('learned_error_patterns', []))
+                },
+                "intelligent_tests": {
+                    "unit_tests": len(intelligent_tests.unit_tests) if intelligent_tests else 0,
+                    "integration_tests": len(intelligent_tests.integration_tests) if intelligent_tests else 0,
+                    "property_tests": len(intelligent_tests.property_tests) if intelligent_tests else 0,
+                    "mock_configurations": len(intelligent_tests.mock_configurations) if intelligent_tests else 0,
+                    "fixtures": len(intelligent_tests.fixtures) if intelligent_tests else 0,
+                    "test_suite": intelligent_tests
                 },
                 "templates_used": {
                     "implementation": impl_template_path,
