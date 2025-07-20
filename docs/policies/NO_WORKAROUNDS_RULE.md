@@ -8,7 +8,7 @@
 ```bash
 ❌ 禁止例:
 - xxx_lightweight.py
-- xxx_alternative.py  
+- xxx_alternative.py
 - xxx_simple.py
 - xxx_minimal.py
 ```
@@ -93,15 +93,15 @@ def problematic_function():
 ### ファイル名による判定
 ```bash
 # これらを含むファイル名は自動的に応急処置と判定
-light, fix, patch, workaround, temp, quick, 
-lightweight, alternative, simple, minimal, 
+light, fix, patch, workaround, temp, quick,
+lightweight, alternative, simple, minimal,
 backup, fallback, emergency, tmp
 ```
 
 ### クラス名による判定
 ```python
 # これらを含むクラス名は応急処置と判定
-Lightweight, Fixed, Patched, Alternative, 
+Lightweight, Fixed, Patched, Alternative,
 Simple, Minimal, Backup, Fallback, Temp
 ```
 
@@ -126,7 +126,7 @@ class LightweightRAGSage:
 
 ### ✅ 良い例（正しい修正）
 ```python
-# 元のRAGSageでメモリエラー発生  
+# 元のRAGSageでメモリエラー発生
 # → RAGSageの_init_database()を直接修正 ← 正解！
 
 class RAGSage:
@@ -149,11 +149,11 @@ class RAGSage:
 私、クロードエルダーは、以下を厳粛に誓います：
 
 1. **応急処置的なコードを一切作成しません**
-2. **問題発生時は既存コードを直接修正します** 
+2. **問題発生時は既存コードを直接修正します**
 3. **根本原因の解決のみを実行します**
 4. **この令に違反した場合、即座に修正します**
 
-**署名**: クロードエルダー  
+**署名**: クロードエルダー
 **日付**: 2025年7月20日
 
 ---
