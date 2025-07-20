@@ -208,6 +208,7 @@ async def execute_elder_flow_with_retry(
     auto_retry: bool = False,
     max_retries: int = 3,
     retry_interval: int = 5,
+    enable_quality_gate: bool = True,
 ) -> Dict[str, Any]:
     """
     Elder Flowをリトライ機能付きで実行（CLI用）
@@ -218,13 +219,34 @@ async def execute_elder_flow_with_retry(
         auto_retry: 自動リトライの有効/無効
         max_retries: 最大リトライ回数
         retry_interval: リトライ間隔（秒）
+        enable_quality_gate: 品質ゲート有効/無効
 
     Returns:
         実行結果
     """
+    # 品質ゲート前処理
+    if enable_quality_gate:
+        try:
+            from libs.elder_flow_quality_integration import get_elder_flow_quality_integration
+            quality_integration = await get_elder_flow_quality_integration()
+            
+            # 事前品質チェック
+            quality_check = await quality_integration.pre_execution_quality_check(task_name)
+            
+            if quality_check.get('gate_decision') == 'blocked':
+                return {
+                    "error": "Quality gate blocked execution",
+                    "quality_violations": quality_check.get('violations', []),
+                    "quality_score": quality_check.get('quality_score', 0),
+                    "recommendations": quality_check.get('recommendations', [])
+                }
+        except Exception as e:
+            logger.warning(f"⚠️ Quality gate check failed: {e}")
+    
     wrapper = ElderFlowRetryWrapper()
 
-    return await wrapper.execute_with_retry(
+    # Elder Flow実行
+    result = await wrapper.execute_with_retry(
         task_name=task_name,
         priority=priority,
         max_retries=max_retries,
@@ -232,6 +254,20 @@ async def execute_elder_flow_with_retry(
         auto_retry=auto_retry,
         interactive=not auto_retry,  # 自動リトライが無効なら対話的モード
     )
+    
+    # 品質ゲート後処理
+    if enable_quality_gate and 'error' not in result:
+        try:
+            quality_integration = await get_elder_flow_quality_integration()
+            
+            # 実行結果からの学習
+            await quality_integration.post_execution_quality_learning(
+                task_name, result, None
+            )
+        except Exception as e:
+            logger.warning(f"⚠️ Quality learning failed: {e}")
+    
+    return result
 
 
 # テスト用メイン関数

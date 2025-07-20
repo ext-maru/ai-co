@@ -72,6 +72,124 @@ RAG: 「最適解を発見しました」
 → 自動的に最良の解決策を実行
 ```
 
+## 🏛️ **エルダーズギルド最高品質保証システム** (2025/7/21実装完了)
+
+**エルダー評議会令第200号 - 自動品質保証システム標準化令**  
+**エルダー評議会令第201号 - マージ品質ゲート統合完了**
+
+### 🎯 **完全統合品質システム**
+**すべての開発プロセスに品質チェックが自動統合されました**
+
+#### ✅ **デフォルト有効機能**
+- **🌊 Elder Flow統合**: 実行時自動品質チェック・学習機能
+- **🔗 Git Hooks**: コミット前強制品質チェック（Iron Will遵守）
+- **🔀 Merge Quality Gates**: マージ前品質ゲート・ブランチ保護
+- **🧙‍♂️ 4賢者連携**: リアルタイム品質分析・改善提案
+- **📊 自動監視**: 継続的品質監視・トレンド分析・nWo報告
+- **📋 Issue生成**: 品質問題の自動GitHub Issue化
+
+#### 🚀 **1コマンドセットアップ**
+```bash
+# 全品質システム自動インストール・有効化
+./scripts/auto-install-quality-system
+```
+
+#### 💻 **日常使用コマンド**
+```bash
+# Elder Flow（品質チェック自動実行）
+elder-flow execute "新機能実装" --priority high
+
+# Git操作（品質ゲート自動実行）
+git commit -m "feat: 新機能"  # Pre-commit品質チェック
+git merge feature-branch      # Pre-merge品質ゲート
+
+# 個別品質分析
+elders-code-quality analyze myfile.py
+
+# プロジェクト品質レポート  
+elders-code-quality report /path/to/project
+
+# PR品質チェック
+./scripts/pr-quality-check <pr_number> <source_branch> <target_branch>
+
+# 品質学習（バグケース・パターン）
+elders-code-quality learn-bug bug_case.json
+elders-code-quality learn-pattern pattern.json
+
+# 品質監視・レポート確認
+ps aux | grep quality-monitor
+tail -f logs/quality_monitor.log
+ls data/merge_quality_reports/
+ls data/merge_approvals/
+```
+
+#### ⚙️ **品質基準（自動適用）**
+- **最低品質スコア**: 70/100
+- **Iron Will遵守**: 必須（TODO/FIXME禁止）
+- **セキュリティリスク**: レベル7以上で即座ブロック
+- **TDD互換性**: 推奨（テスト存在確認）
+
+#### 🛡️ **自動品質ゲート**
+1. **Elder Flow実行前**: 品質チェック・違反時停止
+2. **Git コミット前**: 品質基準未満でコミット阻止
+3. **Git マージ前**: マージ品質ゲート・ブランチ保護
+4. **PR作成時**: プルリクエスト品質分析・レポート生成
+5. **継続監視**: 1時間毎プロジェクト品質スキャン
+6. **学習機能**: 実行結果から自動でバグ・パターン学習
+
+#### 🚨 **緊急時バイパス（使用注意）**
+```bash
+# 環境変数でバイパス
+export ELDER_GUILD_BYPASS=1
+
+# Git hooks バイパス
+git commit --no-verify
+
+# Merge品質ゲートバイパス
+git merge --no-verify <branch>
+
+# Elder Flow 品質チェック無効
+elder-flow execute "緊急タスク" --no-quality
+```
+
+### 📊 **品質システム詳細**
+
+#### **🔍 品質分析エンジン機能**
+- **複雑度分析**: サイクロマティック複雑度・保守性指数
+- **アンチパターン検出**: God Class、Long Method、Magic Numbers
+- **セキュリティスキャン**: eval()、os.system()等危険コード検出
+- **Iron Will監視**: 回避策・TODO コメント検出
+- **TDD互換性**: テスト関連コード自動判定
+
+#### **🧙‍♂️ 4賢者品質連携**
+- **📚 ナレッジ賢者**: 品質パターン蓄積・ベストプラクティス管理
+- **🚨 インシデント賢者**: 品質問題即座検出・エスカレーション
+- **📋 タスク賢者**: 品質改善タスク優先順位付け・工数見積もり
+- **🔍 RAG賢者**: 類似品質問題・解決策ベクトル検索
+
+#### **📈 自動監視・報告**
+- **リアルタイム監視**: プロジェクト品質の継続スキャン
+- **トレンド分析**: 品質スコア変化の自動追跡
+- **日次レポート**: 品質状況のnWo評議会報告
+- **アラートシステム**: 閾値違反の即座通知・対応提案
+
+#### **📋 GitHub Issue自動生成**
+- **品質違反Issue**: エルダーズギルド標準準拠Issue作成
+- **実装計画**: 具体的改善手順・受け入れ基準
+- **4賢者推奨**: 各賢者の改善提案統合
+- **作業量見積もり**: 精密な工数・優先度計算
+
+### 📚 **品質システム設定ファイル**
+- **メイン設定**: `.elder-guild-quality.conf`
+- **Git hooks設定**: `.elder-guild-hooks.conf`
+- **マージ品質設定**: `.elder-guild-merge.conf`
+- **品質履歴**: `data/quality_metrics_history.json`
+- **監視ログ**: `logs/quality_monitor.log`
+- **マージレポート**: `data/merge_quality_reports/`
+- **マージ承認**: `data/merge_approvals/`
+
+**詳細ドキュメント**: [品質システム完全ガイド](docs/ELDERS_GUILD_QUALITY_SYSTEM.md)
+
 ## ⚡ XP (Extreme Programming) 開発手法（2025/7/19採用）
 
 **個人開発・実験プロジェクトに最適化されたXP手法を採用**
@@ -212,6 +330,56 @@ git push -u origin feature/issue-17-data-model
 - Feature Branch作成ツール: `scripts/git-feature`
 
 **違反時はエルダー評議会による是正指導対象**
+
+## 🏛️ **エルダーズギルド Issue作成品質標準** (2025/1/20制定)
+
+**エルダー評議会令第100号 - Issue作成品質標準確立令**
+
+### 📏 **品質基準概要**
+Auto Issue Processor A2Aで実証された高品質Issue作成基準を全プロジェクトの標準とします。
+
+#### 🔴 **Tier 1: 絶対必須項目 (Iron Will)**
+- ✅ **根本原因分析**: 表面的現象から技術的根本原因まで深掘り
+- ✅ **技術的詳細度**: 具体的な実装方法・技術スタック・変更範囲
+- ✅ **段階的実装計画**: Phase分割による現実的な計画
+- ✅ **定量的成功基準**: 具体的数値目標とパフォーマンス基準
+
+#### 🟡 **Tier 2: 高品質項目 (Elder Standard)**
+- ✅ **詳細工数見積もり**: 設計・実装・テスト・ドキュメント分解
+- ✅ **ビジネス価値明示**: 直接的価値と戦略的価値
+- ✅ **品質保証計画**: テスト戦略・コードレビュー基準
+- ✅ **リスク要因特定**: 技術・外部依存・リソースリスク
+
+#### 🟢 **Tier 3: 卓越性項目 (Grand Elder)**
+- ✅ **包括性確認**: 非機能要件・セキュリティ・拡張性
+- ✅ **将来拡張性**: スケーラビリティ・技術負債考慮
+- ✅ **システム影響評価**: 他コンポーネントとの相互作用
+
+### 🎯 **優先度別要件**
+- **Critical**: Tier 1 + Tier 2 + Tier 3 必須
+- **High**: Tier 1 + Tier 2 必須、Tier 3 推奨
+- **Medium**: Tier 1 必須、Tier 2 推奨
+- **Low**: Tier 1 必須
+
+### 🛠️ **実装ツール**
+```bash
+# GitHub Issue テンプレート使用
+# 🏛️ エルダーズギルド標準Issue または 🚨 Critical Issue
+
+# 品質自動検証
+python3 scripts/issue_quality_checker.py <issue_file> [priority]
+
+# 品質スコア目標
+# Tier 1達成率: 100% (絶対必須)
+# 平均品質スコア: 75点以上
+```
+
+### 📚 **詳細ガイド**
+- [エルダーズギルドIssue作成標準](knowledge_base/ELDERS_GUILD_ISSUE_CREATION_STANDARDS.md)
+- [GitHub Issue テンプレート](.github/ISSUE_TEMPLATE/)
+- [品質検証ツール](scripts/issue_quality_checker.py)
+
+**違反時はエルダー評議会による品質指導・Issue差し戻し対象**
 
 ## 🚨 GitHub Actions無効化ポリシー (2025/1/19制定)
 

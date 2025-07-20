@@ -1,0 +1,395 @@
+#!/bin/bash
+"""
+🏛️ Elder Guild Quality System Auto Installer
+エルダーズギルド品質システム自動インストーラー
+
+Features:
+- 全品質システムの自動セットアップ
+- デフォルト有効化設定
+- 監視デーモンの自動起動設定
+- Git hooks の自動インストール
+"""
+
+set -e
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m' # No Color
+
+# Project root
+PROJECT_ROOT="/home/aicompany/ai_co"
+
+print_header() {
+    echo -e "${PURPLE}${BOLD}"
+    echo "🏛️  ELDER GUILD QUALITY SYSTEM AUTO INSTALLER"
+    echo "    エルダーズギルド品質システム自動インストーラー"
+    echo "    Version: 1.0 - Complete Integration"
+    echo -e "${NC}"
+}
+
+print_status() {
+    echo -e "${CYAN}🔧 $1${NC}"
+}
+
+print_success() {
+    echo -e "${GREEN}✅ $1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}⚠️  $1${NC}"
+}
+
+print_error() {
+    echo -e "${RED}❌ $1${NC}"
+}
+
+check_prerequisites() {
+    print_status "Checking prerequisites..."
+    
+    # Check Python 3
+    if ! command -v python3 &> /dev/null; then
+        print_error "Python 3 is required but not installed"
+        exit 1
+    fi
+    print_success "Python 3 found"
+    
+    # Check PostgreSQL
+    if ! command -v psql &> /dev/null; then
+        print_warning "PostgreSQL not found. Database features may not work."
+    else
+        print_success "PostgreSQL found"
+    fi
+    
+    # Check Git
+    if ! command -v git &> /dev/null; then
+        print_error "Git is required but not installed"
+        exit 1
+    fi
+    print_success "Git found"
+    
+    # Check project structure
+    if [ ! -d "$PROJECT_ROOT" ]; then
+        print_error "Project root not found: $PROJECT_ROOT"
+        exit 1
+    fi
+    print_success "Project structure verified"
+}
+
+install_git_hooks() {
+    print_status "Installing Git quality hooks..."
+    
+    cd "$PROJECT_ROOT"
+    
+    if [ -f "scripts/install-quality-hooks" ]; then
+        bash scripts/install-quality-hooks
+        print_success "Git quality hooks installed"
+    else
+        print_warning "Git hooks installer not found, skipping"
+    fi
+}
+
+setup_quality_monitoring() {
+    print_status "Setting up quality monitoring daemon..."
+    
+    # Create systemd service file for quality monitoring
+    sudo tee /etc/systemd/system/elder-guild-quality-monitor.service > /dev/null << EOF
+[Unit]
+Description=Elder Guild Quality Monitor Daemon
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+Type=simple
+User=aicompany
+Group=aicompany
+WorkingDirectory=$PROJECT_ROOT
+Environment=PYTHONPATH=$PROJECT_ROOT
+ExecStart=$PROJECT_ROOT/scripts/quality-monitor-daemon
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    # Reload systemd and enable service
+    sudo systemctl daemon-reload
+    sudo systemctl enable elder-guild-quality-monitor.service
+    
+    print_success "Quality monitoring daemon configured"
+}
+
+setup_quality_cron() {
+    print_status "Setting up quality cron jobs..."
+    
+    # Create cron script for daily quality reports
+    cat > "$PROJECT_ROOT/scripts/daily-quality-report" << 'EOF'
+#!/bin/bash
+# Daily Quality Report Generator
+
+PROJECT_ROOT="/home/aicompany/ai_co"
+cd "$PROJECT_ROOT"
+
+# Generate project quality report
+python3 -c "
+import asyncio
+import sys
+sys.path.insert(0, '$PROJECT_ROOT')
+from libs.four_sages_quality_bridge import four_sages_project_assessment
+from pathlib import Path
+
+async def main():
+    files = []
+    for base_path in ['$PROJECT_ROOT/libs', '$PROJECT_ROOT/scripts']:
+        path = Path(base_path)
+        if path.exists():
+            for py_file in path.rglob('*.py'):
+                if '__pycache__' not in str(py_file):
+                    files.append(str(py_file))
+    
+    result = await four_sages_project_assessment(files[:30])
+    print('📊 Daily Quality Assessment Completed')
+    print(f'Files analyzed: {result[\"analyzed_files\"]}')
+    print(f'Quality distribution: {result[\"quality_distribution\"]}')
+
+asyncio.run(main())
+" >> /home/aicompany/ai_co/logs/daily_quality_$(date +%Y%m%d).log 2>&1
+EOF
+
+    chmod +x "$PROJECT_ROOT/scripts/daily-quality-report"
+    
+    # Add to crontab
+    (crontab -l 2>/dev/null; echo "0 9 * * * $PROJECT_ROOT/scripts/daily-quality-report") | crontab -
+    
+    print_success "Daily quality reports scheduled"
+}
+
+create_quality_config() {
+    print_status "Creating quality system configuration..."
+    
+    cat > "$PROJECT_ROOT/.elder-guild-quality.conf" << 'EOF'
+# Elder Guild Quality System Configuration
+# Created by Auto Installer
+
+[quality_engine]
+enabled=true
+database_host=localhost
+database_name=elders_guild_pgvector
+database_user=postgres
+minimum_quality_score=70.0
+iron_will_required=true
+
+[elder_flow_integration]
+enabled=true
+auto_quality_check=true
+block_on_violations=true
+learn_from_execution=true
+
+[git_hooks]
+enabled=true
+pre_commit_quality_check=true
+commit_message_validation=true
+bypass_env_var=ELDER_GUILD_BYPASS
+
+[monitoring]
+enabled=true
+scan_interval_hours=1
+daily_reports=true
+nwo_council_alerts=true
+
+[four_sages]
+enabled=true
+knowledge_sage=true
+incident_sage=true
+task_sage=true
+rag_sage=true
+
+[issue_generation]
+enabled=true
+auto_github_issues=false
+quality_threshold=60
+iron_will_violations=true
+security_risks=true
+
+# Quality thresholds
+[thresholds]
+minimum_quality_score=70
+iron_will_compliance_rate=0.95
+security_risk_level=7
+critical_incident_limit=3
+
+# File patterns to analyze
+[file_patterns]
+include=*.py
+exclude=__pycache__,test_*,*_test.py,.git
+
+# Integration settings
+[integrations]
+elder_flow=true
+git_hooks=true
+monitoring=true
+issue_generation=true
+EOF
+
+    print_success "Quality configuration created"
+}
+
+setup_default_aliases() {
+    print_status "Setting up quality command aliases..."
+    
+    # Add aliases to bashrc if not already present
+    if ! grep -q "elder-guild-quality" ~/.bashrc; then
+        cat >> ~/.bashrc << 'EOF'
+
+# Elder Guild Quality System Aliases
+alias quality='elders-code-quality'
+alias qcheck='elders-code-quality analyze'
+alias qreport='elders-code-quality report'
+alias qlearn='elders-code-quality learn-bug'
+alias qpattern='elders-code-quality learn-pattern'
+alias qstatus='ps aux | grep quality-monitor'
+
+# Elder Flow with Quality (default enabled)
+alias eflow='elder-flow execute'
+alias eflow-noquality='elder-flow execute --no-quality'
+EOF
+        print_success "Quality aliases added to .bashrc"
+    else
+        print_warning "Quality aliases already exist in .bashrc"
+    fi
+}
+
+start_quality_services() {
+    print_status "Starting quality services..."
+    
+    # Start quality monitoring daemon
+    if systemctl is-enabled elder-guild-quality-monitor.service &>/dev/null; then
+        sudo systemctl start elder-guild-quality-monitor.service
+        print_success "Quality monitoring daemon started"
+    else
+        print_warning "Quality monitoring daemon not enabled, starting manually..."
+        nohup "$PROJECT_ROOT/scripts/quality-monitor-daemon" > /dev/null 2>&1 &
+        print_success "Quality monitoring started manually"
+    fi
+}
+
+setup_merge_integration() {
+    print_status "Setting up merge quality integration..."
+    
+    if [ -f "$PROJECT_ROOT/scripts/setup-merge-quality-integration" ]; then
+        bash "$PROJECT_ROOT/scripts/setup-merge-quality-integration"
+        print_success "Merge quality integration configured"
+    else
+        print_warning "Merge quality integration script not found, skipping"
+    fi
+}
+
+verify_installation() {
+    print_status "Verifying installation..."
+    
+    # Test quality command
+    if [ -x "$PROJECT_ROOT/scripts/ai-commands/elders-code-quality" ]; then
+        print_success "Quality analysis command available"
+    else
+        print_error "Quality analysis command not found"
+    fi
+    
+    # Test Git hooks
+    if [ -x "$PROJECT_ROOT/.git/hooks/pre-commit" ]; then
+        print_success "Git pre-commit hook installed"
+    else
+        print_warning "Git pre-commit hook not found"
+    fi
+    
+    # Test configuration
+    if [ -f "$PROJECT_ROOT/.elder-guild-quality.conf" ]; then
+        print_success "Quality configuration file created"
+    else
+        print_error "Quality configuration file not found"
+    fi
+    
+    # Test database connection
+    if command -v psql &> /dev/null; then
+        if psql -h localhost -U postgres -d elders_guild_pgvector -c "SELECT 1;" &>/dev/null; then
+            print_success "Database connection verified"
+        else
+            print_warning "Database connection failed - some features may not work"
+        fi
+    fi
+}
+
+print_usage_info() {
+    echo ""
+    echo -e "${BLUE}${BOLD}📚 ELDER GUILD QUALITY SYSTEM READY!${NC}"
+    echo ""
+    echo -e "${CYAN}🔍 Quality Commands:${NC}"
+    echo "  quality analyze <file>          # Analyze file quality"
+    echo "  quality report <directory>      # Generate project report"
+    echo "  quality learn-bug <file.json>   # Learn from bug case"
+    echo "  quality learn-pattern <file>    # Learn quality pattern"
+    echo ""
+    echo -e "${CYAN}🌊 Elder Flow (Quality Enabled by Default):${NC}"
+    echo "  eflow 'implement feature'       # Run with quality checks"
+    echo "  elder-flow execute 'task'       # Full command"
+    echo "  elder-flow execute --no-quality # Disable quality checks"
+    echo ""
+    echo -e "${CYAN}📊 Monitoring:${NC}"
+    echo "  qstatus                         # Check quality daemon status"
+    echo "  sudo systemctl status elder-guild-quality-monitor"
+    echo "  tail -f logs/quality_monitor.log"
+    echo ""
+    echo -e "${CYAN}⚙️ Configuration:${NC}"
+    echo "  Edit: .elder-guild-quality.conf"
+    echo "  Git hooks: .git/hooks/pre-commit"
+    echo "  Logs: logs/quality_monitor.log"
+    echo ""
+    echo -e "${CYAN}🔀 Merge Quality Gates:${NC}"
+    echo "  git merge <branch>              # Triggers automatic quality gate"
+    echo "  ./scripts/pr-quality-check <pr> # PR quality analysis"
+    echo "  ls data/merge_quality_reports/  # View merge reports"
+    echo ""
+    echo -e "${CYAN}🚨 Emergency Bypass:${NC}"
+    echo "  export ELDER_GUILD_BYPASS=1     # Bypass quality checks"
+    echo "  git commit --no-verify          # Bypass Git hooks"
+    echo "  git merge --no-verify           # Bypass merge quality gate"
+    echo ""
+    echo -e "${GREEN}🎉 Quality system is now active and monitoring your code!${NC}"
+    echo -e "${YELLOW}💡 Reload your shell: source ~/.bashrc${NC}"
+}
+
+main() {
+    print_header
+    
+    # Change to project directory
+    cd "$PROJECT_ROOT"
+    
+    # Installation steps
+    check_prerequisites
+    install_git_hooks
+    setup_quality_monitoring
+    setup_quality_cron
+    create_quality_config
+    setup_default_aliases
+    start_quality_services
+    setup_merge_integration
+    verify_installation
+    print_usage_info
+    
+    echo ""
+    print_success "Elder Guild Quality System installation completed!"
+    echo -e "${PURPLE}🏛️ May the quality be with you, always.${NC}"
+}
+
+# Handle interrupts
+trap 'echo -e "\n${YELLOW}🛑 Installation interrupted${NC}"; exit 1' INT TERM
+
+# Run main function
+main "$@"
