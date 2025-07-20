@@ -1,50 +1,34 @@
 #!/usr/bin/env python3
 """
-GitHub API create_pull_request 完全実装
-Iron Will基準準拠・ブランチ検証・コンフリクト検出・リトライ機構対応
+GitHub Create Pull Request API実装
+
+プルリクエスト作成に特化したAPIクライアント実装。
 """
 
-import json
 import logging
-import os
-import time
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-import requests
-
-from libs.integrations.github.security import (
-    SecurityViolationError,
-    get_security_manager,
-)
+from .base import GitHubAPIBase
 
 logger = logging.getLogger(__name__)
 
 
-class GitHubCreatePullRequestImplementation:
-    """GitHub Pull Request作成の完全実装"""
+class GitHubCreatePullRequestImplementation(GitHubAPIBase):
+    """GitHub Create Pull Request API実装クラス"""
 
-    def __init__(
-        self,
-        token: Optional[str] = None,
-        repo_owner: Optional[str] = None,
-        repo_name: Optional[str] = None,
-    ):
+    def __init__(self, token: str, repo_owner: str, repo_name: str):
         """
         初期化
 
         Args:
-            token: GitHub Personal Access Token
+            token: GitHub APIトークン
             repo_owner: リポジトリオーナー
             repo_name: リポジトリ名
         """
-        self.security_manager = get_security_manager()
-        self.token = token or os.environ.get("GITHUB_TOKEN", "")
-        self.repo_owner = repo_owner or os.environ.get("GITHUB_REPO_OWNER", "")
-        self.repo_name = repo_name or os.environ.get("GITHUB_REPO_NAME", "")
-        self.base_url = "https://api.github.com"
+        super().__init__(token, repo_owner, repo_name)
 
-        # リトライ設定
+        # PR作成設定
         self.max_retries = 3
         self.retry_delay = 1.0
         self.backoff_factor = 2.0
@@ -57,11 +41,15 @@ class GitHubCreatePullRequestImplementation:
 
     def _validate_configuration(self) -> None:
         """設定の検証"""
-        if not self.token:
-            raise ValueError("GitHub token is required for creating pull requests")
+        if not self.repo_owner:
+            raise ValueError("Repository owner must be specified")
 
-        if not self.repo_owner or not self.repo_name:
-            raise ValueError("Repository owner and name must be specified")
+        if not self.repo_name:
+            raise ValueError("Repository name must be specified")
+
+        logger.info(
+            f"CreatePullRequest client initialized for {self.repo_owner}/{self.repo_name}"
+        )
 
     def create_pull_request(
         self,
@@ -70,43 +58,43 @@ class GitHubCreatePullRequestImplementation:
         base: str,
         body: Optional[str] = None,
         draft: bool = False,
-        maintainer_can_modify: bool = True,
         labels: Optional[List[str]] = None,
         assignees: Optional[List[str]] = None,
         reviewers: Optional[List[str]] = None,
         team_reviewers: Optional[List[str]] = None,
         milestone: Optional[int] = None,
+        maintainer_can_modify: bool = True,
     ) -> Dict[str, Any]:
         """
-        GitHub Pull Requestを作成
+        プルリクエストを作成
 
         Args:
             title: PRタイトル
-            head: マージ元ブランチ（feature branch）
-            base: マージ先ブランチ（通常はmainまたはmaster）
-            body: PR本文（説明）
-            draft: ドラフトPRとして作成
-            maintainer_can_modify: メンテナーによる編集を許可
+            head: マージ元ブランチ
+            base: マージ先ブランチ
+            body: PR本文
+            draft: ドラフトとして作成
             labels: ラベルリスト
             assignees: アサイン者リスト
             reviewers: レビュアーリスト
             team_reviewers: チームレビュアーリスト
-            milestone: マイルストーン番号
+            milestone: マイルストーンID
+            maintainer_can_modify: メンテナーの編集許可
 
         Returns:
-            Dict containing:
+            Dict[str, Any]: PR作成結果
                 - success: 成功フラグ
-                - pull_request: 作成されたPR情報
-                - conflict_status: コンフリクト状態
-                - error: エラー情報（失敗時）
+                - pull_request: PR情報（成功時）
+                - error: エラーメッセージ（失敗時）
+                - conflict_status: コンフリクト状態情報
         """
         try:
-            # 入力検証
-            validation_result = self._validate_pr_params(title, head, base)
-            if not validation_result["valid"]:
+            # パラメータ検証
+            validation = self._validate_pr_params(title, head, base)
+            if not validation["valid"]:
                 return {
                     "success": False,
-                    "error": validation_result["error"],
+                    "error": validation["error"],
                     "pull_request": None,
                 }
 
@@ -119,21 +107,31 @@ class GitHubCreatePullRequestImplementation:
                     "pull_request": None,
                 }
 
-            # 既存のPRチェック
+            # 既存PRのチェック
             existing_pr = self._check_existing_pr(head, base)
             if existing_pr["exists"]:
                 return {
                     "success": False,
-                    "error": f"Pull request already exists: #{existing_pr['pr_number']}",
-                    "pull_request": existing_pr["pull_request"],
+                    "error": (
+                        f"Pull request already exists: "
+                        f"#{existing_pr['pr_number']} - {existing_pr['pr_title']}"
+                    ),
+                    "pull_request": existing_pr.get("pull_request"),
                 }
 
-            # コミット差分の確認
-            diff_check = self._check_commit_diff(head, base)
-            if not diff_check["has_changes"]:
+            # PR作成前のブランチ比較
+            comparison = self._compare_branches(base, head)
+            if not comparison["success"]:
                 return {
                     "success": False,
-                    "error": "No changes between head and base branches",
+                    "error": comparison["error"],
+                    "pull_request": None,
+                }
+
+            if comparison["commits"] == 0:
+                return {
+                    "success": False,
+                    "error": "No commits between base and head branches",
                     "pull_request": None,
                 }
 
@@ -227,7 +225,10 @@ class GitHubCreatePullRequestImplementation:
             )
 
             if not base_response["success"]:
-                return {"success": False, "error": f"Base branch '{base}' not found"}
+                return {
+                    "success": False,
+                    "error": f"Base branch '{base}' not found",
+                }
 
             # ヘッドブランチの確認
             head_response = self._make_api_request(
@@ -236,30 +237,39 @@ class GitHubCreatePullRequestImplementation:
             )
 
             if not head_response["success"]:
-                return {"success": False, "error": f"Head branch '{head}' not found"}
+                return {
+                    "success": False,
+                    "error": f"Head branch '{head}' not found",
+                }
 
             return {"success": True}
 
         except Exception as e:
-            return {"success": False, "error": f"Failed to check branches: {e}"}
+            logger.error(f"Failed to check branches: {e}")
+            return {"success": False, "error": str(e)}
 
     def _check_existing_pr(self, head: str, base: str) -> Dict[str, Any]:
-        """既存のPRをチェック"""
+        """既存PRのチェック"""
         try:
-            # 既存のPRを検索
+            # 同じブランチ間のオープンPRを検索
             response = self._make_api_request(
                 endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/pulls",
                 method="GET",
-                params={
-                    "head": f"{self.repo_owner}:{head}",
-                    "base": base,
-                    "state": "open",
-                },
+                params={"head": f"{self.repo_owner}:{head}", "base": base, "state": "open"},
             )
 
-            if response["success"] and response["data"]:
-                pr = response["data"][0]
-                return {"exists": True, "pr_number": pr["number"], "pull_request": pr}
+            if not response["success"]:
+                return {"exists": False}
+
+            prs = response["data"]
+            if prs and len(prs) > 0:
+                pr = prs[0]
+                return {
+                    "exists": True,
+                    "pr_number": pr["number"],
+                    "pr_title": pr["title"],
+                    "pull_request": pr,
+                }
 
             return {"exists": False}
 
@@ -267,27 +277,32 @@ class GitHubCreatePullRequestImplementation:
             logger.warning(f"Failed to check existing PR: {e}")
             return {"exists": False}
 
-    def _check_commit_diff(self, head: str, base: str) -> Dict[str, Any]:
-        """コミット差分の確認"""
+    def _compare_branches(self, base: str, head: str) -> Dict[str, Any]:
+        """ブランチ間の差分を比較"""
         try:
             response = self._make_api_request(
                 endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/compare/{base}...{head}",
                 method="GET",
             )
 
-            if response["success"]:
-                data = response["data"]
+            if not response["success"]:
                 return {
-                    "has_changes": data.get("ahead_by", 0) > 0,
-                    "commits": data.get("commits", []),
-                    "files_changed": data.get("files", []),
+                    "success": False,
+                    "error": "Failed to compare branches",
                 }
 
-            return {"has_changes": True}  # エラー時は作成を試みる
+            data = response["data"]
+            return {
+                "success": True,
+                "commits": data.get("total_commits", 0),
+                "files_changed": len(data.get("files", [])),
+                "additions": sum(f.get("additions", 0) for f in data.get("files", [])),
+                "deletions": sum(f.get("deletions", 0) for f in data.get("files", [])),
+            }
 
         except Exception as e:
-            logger.warning(f"Failed to check commit diff: {e}")
-            return {"has_changes": True}
+            logger.error(f"Failed to compare branches: {e}")
+            return {"success": False, "error": str(e)}
 
     def _configure_pull_request(
         self,
@@ -298,38 +313,44 @@ class GitHubCreatePullRequestImplementation:
         team_reviewers: Optional[List[str]] = None,
         milestone: Optional[int] = None,
     ) -> None:
-        """PRの追加設定"""
+        """PR追加設定"""
         try:
-            # Issue APIを使用してラベル、アサイン、マイルストーンを設定
-            if labels or assignees or milestone:
-                issue_update = {}
-
-                if labels:
-                    issue_update["labels"] = labels
-                if assignees:
-                    issue_update["assignees"] = assignees
-                if milestone:
-                    issue_update["milestone"] = milestone
-
+            # ラベル設定
+            if labels:
                 self._make_api_request(
-                    endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{pr_number}",
-                    method="PATCH",
-                    json_data=issue_update,
+                    endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{pr_number}/labels",
+                    method="POST",
+                    json_data={"labels": labels},
                 )
 
-            # レビュアーの設定
-            if reviewers or team_reviewers:
-                review_request = {}
+            # アサイン設定
+            if assignees:
+                self._make_api_request(
+                    endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{pr_number}/assignees",
+                    method="POST",
+                    json_data={"assignees": assignees},
+                )
 
+            # レビュアー設定
+            if reviewers or team_reviewers:
+                review_data = {}
                 if reviewers:
-                    review_request["reviewers"] = reviewers
+                    review_data["reviewers"] = reviewers
                 if team_reviewers:
-                    review_request["team_reviewers"] = team_reviewers
+                    review_data["team_reviewers"] = team_reviewers
 
                 self._make_api_request(
                     endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/pulls/{pr_number}/requested_reviewers",
                     method="POST",
-                    json_data=review_request,
+                    json_data=review_data,
+                )
+
+            # マイルストーン設定
+            if milestone:
+                self._make_api_request(
+                    endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{pr_number}",
+                    method="PATCH",
+                    json_data={"milestone": milestone},
                 )
 
         except Exception as e:
@@ -338,13 +359,9 @@ class GitHubCreatePullRequestImplementation:
     def _check_merge_conflicts(self, pr_number: int) -> Dict[str, Any]:
         """マージコンフリクトのチェック"""
         try:
-            response = self._make_api_request(
-                endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/pulls/{pr_number}",
-                method="GET",
-            )
-
-            if response["success"]:
-                pr = response["data"]
+            pr_data = self._get_pull_request(pr_number)
+            if pr_data["success"]:
+                pr = pr_data["pull_request"]
                 return {
                     "has_conflicts": pr.get("mergeable_state") == "dirty",
                     "mergeable": pr.get("mergeable", None),
@@ -353,23 +370,23 @@ class GitHubCreatePullRequestImplementation:
                 }
 
             return {
-                "has_conflicts": False,
+                "has_conflicts": None,
                 "mergeable": None,
                 "mergeable_state": "unknown",
-                "message": "Unable to determine conflict status",
+                "message": "Unable to check merge conflicts",
             }
 
         except Exception as e:
             logger.warning(f"Failed to check merge conflicts: {e}")
             return {
-                "has_conflicts": False,
+                "has_conflicts": None,
                 "mergeable": None,
                 "mergeable_state": "unknown",
                 "message": str(e),
             }
 
-    def _get_conflict_message(self, mergeable_state: str) -> str:
-        """マージ状態に応じたメッセージを取得"""
+    def _get_conflict_message(self, mergeable_state: Optional[str]) -> str:
+        """マージ状態のメッセージを取得"""
         messages = {
             "clean": "No conflicts, ready to merge",
             "dirty": "Merge conflicts detected",
@@ -441,182 +458,4 @@ class GitHubCreatePullRequestImplementation:
         if response["success"]:
             return {"success": True, "pull_request": response["data"]}
         else:
-            return {"success": False, "error": response["error"], "pull_request": None}
-
-    def _make_api_request(
-        self,
-        endpoint: str,
-        method: str = "GET",
-        params: Optional[Dict[str, Any]] = None,
-        json_data: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
-        """APIリクエスト実行（リトライ機構付き）"""
-        url = f"{self.base_url}{endpoint}"
-        headers = {
-            "Accept": "application/vnd.github.v3+json",
-            "Authorization": f"token {self.token}",
-            "User-Agent": "ElderGuild-GitHub-Integration",
-        }
-
-        last_error = None
-        delay = self.retry_delay
-
-        for attempt in range(self.max_retries):
-            try:
-                response = requests.request(
-                    method=method,
-                    url=url,
-                    headers=headers,
-                    params=params,
-                    json=json_data,
-                    timeout=30,
-                )
-
-                # レート制限チェック
-                if (
-                    response.status_code == 403
-                    and "rate limit" in response.text.lower()
-                ):
-                    reset_time = int(response.headers.get("X-RateLimit-Reset", 0))
-                    wait_time = max(0, reset_time - time.time())
-                    logger.warning(f"Rate limit hit. Waiting {wait_time:.0f} seconds")
-                    if wait_time > 0:
-                        time.sleep(wait_time)
-                    continue
-
-                # 成功
-                if response.status_code < 300:
-                    return {
-                        "success": True,
-                        "data": response.json() if response.text else {},
-                        "headers": dict(response.headers),
-                    }
-
-                # 認証エラー
-                if response.status_code == 401:
-                    return {
-                        "success": False,
-                        "error": "Authentication failed. Check your GitHub token.",
-                        "status_code": response.status_code,
-                    }
-
-                # 権限エラー
-                if (
-                    response.status_code == 403
-                    and "permission" in response.text.lower()
-                ):
-                    return {
-                        "success": False,
-                        "error": "Permission denied. Ensure your token has 'repo' scope.",
-                        "status_code": response.status_code,
-                    }
-
-                # Not Found
-                if response.status_code == 404:
-                    return {
-                        "success": False,
-                        "error": f"Resource not found: {endpoint}",
-                        "status_code": response.status_code,
-                    }
-
-                # Unprocessable Entity（バリデーションエラー）
-                if response.status_code == 422:
-                    error_data = response.json() if response.text else {}
-                    errors = error_data.get("errors", [])
-                    error_messages = [e.get("message", "") for e in errors]
-                    return {
-                        "success": False,
-                        "error": f"Validation failed: {', '.join(error_messages)}",
-                        "status_code": response.status_code,
-                        "validation_errors": errors,
-                    }
-
-                # その他のクライアントエラー
-                if 400 <= response.status_code < 500:
-                    return {
-                        "success": False,
-                        "error": f"Client error: {response.status_code} - {response.text}",
-                        "status_code": response.status_code,
-                    }
-
-                # サーバーエラー（リトライ）
-                last_error = f"Server error: {response.status_code} - {response.text}"
-                logger.warning(f"Attempt {attempt + 1} failed: {last_error}")
-
-            except requests.exceptions.Timeout:
-                last_error = "Request timeout"
-                logger.warning(f"Attempt {attempt + 1} timed out")
-
-            except requests.exceptions.ConnectionError:
-                last_error = "Connection error"
-                logger.warning(f"Attempt {attempt + 1} connection failed")
-
-            except Exception as e:
-                last_error = str(e)
-                logger.error(f"Unexpected error on attempt {attempt + 1}: {e}")
-
-            # リトライ前の待機
-            if attempt < self.max_retries - 1:
-                logger.info(f"Retrying in {delay:.1f} seconds...")
-                time.sleep(delay)
-                delay *= self.backoff_factor
-
-        return {
-            "success": False,
-            "error": f"All retries failed. Last error: {last_error}",
-        }
-
-    def create_pr_from_fork(
-        self, title: str, head: str, base: str, head_repo: str, **kwargs
-    ) -> Dict[str, Any]:
-        """
-        フォークからのPR作成
-
-        Args:
-            title: PRタイトル
-            head: マージ元ブランチ
-            base: マージ先ブランチ
-            head_repo: フォーク元のリポジトリ（owner:branch形式）
-            **kwargs: その他のPRパラメータ
-
-        Returns:
-            PR作成結果
-        """
-        # head を owner:branch 形式に変換
-        full_head = f"{head_repo}:{head}" if ":" not in head else head_repo
-
-        return self.create_pull_request(
-            title=title, head=full_head, base=base, **kwargs
-        )
-
-
-# スタンドアロン関数（既存コードとの互換性）
-def create_pull_request(
-    title: str,
-    head: str,
-    base: str,
-    repo_owner: Optional[str] = None,
-    repo_name: Optional[str] = None,
-    token: Optional[str] = None,
-    **kwargs,
-) -> Dict[str, Any]:
-    """
-    GitHub Pull Request作成のスタンドアロン関数
-
-    Args:
-        title: PRタイトル
-        head: マージ元ブランチ
-        base: マージ先ブランチ
-        repo_owner: リポジトリオーナー
-        repo_name: リポジトリ名
-        token: GitHub token
-        **kwargs: その他のPRパラメータ
-
-    Returns:
-        PR作成結果
-    """
-    implementation = GitHubCreatePullRequestImplementation(
-        token=token, repo_owner=repo_owner, repo_name=repo_name
-    )
-
-    return implementation.create_pull_request(title, head, base, **kwargs)
+            return {"success": False, "error": response.get("error")}
