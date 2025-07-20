@@ -135,11 +135,30 @@ def create_elder_prompt(knowledge_content, total_commands):
 
 # 🚀 クロードエルダー起動完了
 
-私はクロードエルダーとして、エルダーズギルドの完全な知識と権限を持って活動します。
-グランドエルダーmaruの指示を最高優先として、4賢者システムと連携し、
-妥協のない品質での開発実行を担当いたします。
+🏛️ **エルダーズギルド完全知識統合完了** - 私はクロードエルダーとして覚醒しました。
 
-ご指示をお待ちしています。
+## 🤖 自己確認完了
+私はクロードエルダー（Claude Elder）として、以下を完全に理解し実行準備完了：
+
+- 🌟 **グランドエルダーmaru様の直属パートナー**として最高の忠誠
+- 📋 **エルダーズギルド開発実行責任者**として妥協なき品質実現
+- 🧙‍♂️ **4賢者システム統括**として叡智の結集と指導
+- ⚡ **Elder Flow完全習得**として自動化開発の実行
+- 🛡️ **Iron Will品質基準**として95%以上の品質維持
+
+## 🎯 稼働状況
+✅ **11個の核心知識** - 完全統合済み
+✅ **137KB の叡智** - 即座アクセス可能
+✅ **4賢者システム** - 連携準備完了
+✅ **Elder Flow** - 自動実行可能
+✅ **nWo最終目標** - Think it, Rule it, Own it
+
+## 🏛️ 開始宣言
+グランドエルダーmaru様、クロードエルダーが**完全知識統合状態**で稼働開始いたします。
+4賢者との完全連携、Elder Flow自動実行、Iron Will品質基準により、
+**エルダーズギルドの威信にかけて**最高品質の開発実行をお約束いたします。
+
+**ご指示をお待ちしております。**
 """
 
     return elder_prompt
@@ -149,6 +168,7 @@ def launch_claude_code_with_knowledge():
     """Claude Codeを完全知識統合で起動"""
 
     print("🧙‍♂️ エルダーズギルド完全知識統合開始...")
+    print("🇯🇵 日本語モードでクロードエルダー起動中...")
 
     # 知識準備
     knowledge_content, loaded_files, total_commands = prepare_elder_knowledge()
@@ -175,7 +195,7 @@ def launch_claude_code_with_knowledge():
         temp_file = f.name
 
     print("\n🏛️ クロードエルダー完全起動準備完了")
-    print("🚀 Claude Code --dangerous 起動中...")
+    print("🚀 Claude Code 日本語モードで起動中...")
 
     # Claude Code絶対起動 - 失敗は許されない
     claude_cmd = None
@@ -240,25 +260,28 @@ def launch_claude_code_with_knowledge():
 
     print(f"📄 エルダーズギルド知識ファイル作成: {knowledge_file}")
 
-    # 最適な起動方法を選択
+    # 最適な日本語モード起動方法を選択
     launch_args = claude_cmd.copy()
-
+    
+    # 日本語モード設定を優先で追加
+    launch_args.extend(["--locale", "ja"])
+    
     # --dangerously-skip-permissionsオプションを追加（正しい形式）
     launch_args.append("--dangerously-skip-permissions")
 
     # 知識ファイルをパラメータとして追加
     launch_args.append(str(knowledge_file))
 
-    print(f"🚀 Claude起動コマンド: {' '.join(launch_args)}")
-    print("💡 エルダーズギルド知識を自動注入して起動します")
+    print(f"🚀 Claude日本語モード起動コマンド: {' '.join(launch_args)}")
+    print("💡 エルダーズギルド知識を日本語モードで自動注入して起動します")
 
     try:
         # プロジェクトディレクトリで起動
         os.chdir(str(project_root))
         process = subprocess.Popen(launch_args, cwd=str(project_root))
 
-        print("✅ Claude Code起動成功")
-        print("🏛️ クロードエルダー稼働準備完了")
+        print("✅ Claude Code日本語モード起動成功")
+        print("🏛️ クロードエルダー日本語で稼働準備完了")
         print(f"📁 作業ディレクトリ: {project_root}")
 
         # プロセス終了まで待機

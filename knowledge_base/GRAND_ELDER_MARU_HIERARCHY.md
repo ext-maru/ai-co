@@ -73,7 +73,7 @@
 
 1. **セッション開始時チェック**
    ```bash
-   cat /home/aicompany/ai_co/.claude_hierarchy_reminder.md
+   cat .claude_hierarchy_reminder.md
    ```
 
 2. **定期的な確認**
@@ -87,7 +87,7 @@
 
 ## 📝 参照情報
 
-- **定義場所**: `/home/aicompany/ai_co/knowledge_base/maru_personal_knowledge.md`
+- **定義場所**: `knowledge_base/maru_personal_knowledge.md`
 - **更新履歴**: 2025年1月8日 - 忘却防止のため再定義
 - **承認者**: グランドエルダーmaru
 

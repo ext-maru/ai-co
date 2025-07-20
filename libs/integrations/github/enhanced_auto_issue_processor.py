@@ -46,6 +46,15 @@ except ImportError:
     RAGSage = None
     FOUR_SAGES_AVAILABLE = False
 
+# RAGManagerを直接インポート
+try:
+    from libs.rag_manager import RagManager
+
+    RAG_MANAGER_AVAILABLE = True
+except ImportError:
+    RagManager = None
+    RAG_MANAGER_AVAILABLE = False
+
 # 既存のAutoIssueProcessorをインポート
 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
 
@@ -58,41 +67,82 @@ class GitOperations:
         self.logger = logging.getLogger(__name__)
 
     async def create_feature_branch(self, issue_number: int, issue_title: str) -> str:
-        """フィーチャーブランチを作成"""
+        """フィーチャーブランチを作成（安定化版）"""
         try:
             # ブランチ名を生成（英数字とハイフンのみ）
             safe_title = re.sub(r"[^a-zA-Z0-9]+", "-", issue_title.lower())
-            safe_title = safe_title.strip("-")[:50]  # 最大50文字
-            branch_name = f"feature/issue-{issue_number}-{safe_title}"
+            safe_title = safe_title.strip("-")[:30]  # 最大30文字に短縮
+            branch_name = f"auto-fix/issue-{issue_number}-{safe_title}"
+
+            # 既存ブランチの確認と削除
+            existing_branches = subprocess.run(
+                ["git", "branch", "-r"],
+                cwd=self.repo_path,
+                capture_output=True,
+                text=True,
+            ).stdout
+
+            if f"origin/{branch_name}" in existing_branches:
+                self.logger.warning(f"既存ブランチを検出: {branch_name}")
+                # ローカルブランチを削除（エラーは無視）
+                subprocess.run(
+                    ["git", "branch", "-D", branch_name],
+                    cwd=self.repo_path,
+                    capture_output=True,
+                )
 
             # 現在のブランチを確認
-            current_branch = subprocess.run(
+            current_branch_result = subprocess.run(
                 ["git", "branch", "--show-current"],
                 cwd=self.repo_path,
                 capture_output=True,
                 text=True,
-                check=True,
-            ).stdout.strip()
-
-            # mainブランチに切り替え
-            subprocess.run(["git", "checkout", "main"], cwd=self.repo_path, check=True)
-
-            # 最新の状態に更新
-            subprocess.run(
-                ["git", "pull", "origin", "main"], cwd=self.repo_path, check=True
             )
+            current_branch = current_branch_result.stdout.strip()
+
+            # mainブランチに切り替え（すでにmainの場合はスキップ）
+            if current_branch != "main":
+                subprocess.run(
+                    ["git", "checkout", "main"], cwd=self.repo_path, check=True
+                )
+
+            # 最新の状態に更新（エラーハンドリング強化）
+            try:
+                subprocess.run(
+                    ["git", "pull", "origin", "main"],
+                    cwd=self.repo_path,
+                    check=True,
+                    timeout=30,
+                )
+            except subprocess.TimeoutExpired:
+                self.logger.warning("Git pull timeout - continuing without update")
+            except subprocess.CalledProcessError as e:
+                self.logger.warning(f"Git pull failed: {e} - continuing")
 
             # 新しいブランチを作成
             subprocess.run(
                 ["git", "checkout", "-b", branch_name], cwd=self.repo_path, check=True
             )
 
-            self.logger.info(f"Created feature branch: {branch_name}")
+            self.logger.info(f"✅ Created feature branch: {branch_name}")
             return branch_name
 
         except subprocess.CalledProcessError as e:
-            self.logger.error(f"Failed to create feature branch: {e}")
-            raise
+            self.logger.error(f"❌ Failed to create feature branch: {e}")
+            # フォールバック: タイムスタンプ付きブランチ名
+            fallback_branch = (
+                f"auto-fix/issue-{issue_number}-{datetime.now().strftime('%H%M%S')}"
+            )
+            try:
+                subprocess.run(
+                    ["git", "checkout", "-b", fallback_branch],
+                    cwd=self.repo_path,
+                    check=True,
+                )
+                self.logger.info(f"🔄 Fallback branch created: {fallback_branch}")
+                return fallback_branch
+            except:
+                raise e
 
     async def commit_changes(self, commit_message: str, issue_number: int) -> bool:
         """変更をコミット"""
@@ -277,115 +327,283 @@ Closes #{issue.number}
         implementation_details: Dict[str, Any],
         sage_advice: Optional[Dict[str, Any]] = None,
     ) -> Optional[PullRequest]:
-        """プルリクエストを作成"""
+        """プルリクエストを作成（重複防止強化版）"""
         try:
+            # 既存PR確認（重複防止）
+            existing_prs = list(self.repo.get_pulls(state="open", base="main"))
+            for existing_pr in existing_prs:
+                # イシュー番号で既存PRをチェック
+                if (
+                    f"#{issue.number}" in existing_pr.title
+                    or f"Closes #{issue.number}" in existing_pr.body
+                ):
+                    self.logger.warning(
+                        f"既存PR発見: #{existing_pr.number} for issue #{issue.number}"
+                    )
+                    return existing_pr
+
+                # ブランチ名で既存PRをチェック
+                if existing_pr.head.ref == branch_name:
+                    self.logger.warning(f"同一ブランチの既存PR発見: #{existing_pr.number}")
+                    return existing_pr
+
             # PR本文を生成
             pr_body = self._generate_pr_body(issue, implementation_details, sage_advice)
 
-            # PRタイトルを生成
+            # PRタイトルを生成（安定化）
             issue_type = self._classify_issue(issue)
             prefix_map = {
                 "bug_fix": "fix",
                 "feature": "feat",
                 "documentation": "docs",
                 "optimization": "perf",
+                "test": "test",
                 "general": "chore",
             }
             prefix = prefix_map.get(issue_type, "chore")
-            pr_title = f"{prefix}: {issue.title} (#{issue.number})"
 
-            # PRを作成
-            pr = self.repo.create_pull(
-                title=pr_title, body=pr_body, head=branch_name, base="main"
-            )
+            # タイトル長制限（GitHubの制限対応）
+            safe_title = issue.title[:60] if len(issue.title) > 60 else issue.title
+            pr_title = f"{prefix}: {safe_title} (#{issue.number})"
 
-            # ラベルを追加
-            pr.add_to_labels(*issue.labels)
-            pr.add_to_labels("auto-generated")
+            # PRを作成（エラーハンドリング強化）
+            try:
+                pr = self.repo.create_pull(
+                    title=pr_title, body=pr_body, head=branch_name, base="main"
+                )
+            except Exception as create_error:
+                # PR作成失敗時の詳細ログ
+                self.logger.error(f"PR作成失敗詳細: {create_error}")
 
-            self.logger.info(f"Created PR #{pr.number} for issue #{issue.number}")
+                # ブランチが存在しない場合の対処
+                if "branch not found" in str(create_error).lower():
+                    self.logger.error(f"ブランチが見つかりません: {branch_name}")
+                    return None
+
+                # 権限不足の場合の対処
+                if "permission" in str(create_error).lower():
+                    self.logger.error("PR作成権限不足")
+                    return None
+
+                raise create_error
+
+            # ラベルを追加（エラーハンドリング）
+            try:
+                # 既存ラベルをコピー
+                for label in issue.labels:
+                    try:
+                        pr.add_to_labels(label.name)
+                    except Exception as label_error:
+                        self.logger.warning(f"ラベル追加失敗 {label.name}: {label_error}")
+
+                # 自動生成ラベルを追加
+                pr.add_to_labels("auto-generated")
+
+            except Exception as label_error:
+                self.logger.warning(f"ラベル追加で非致命的エラー: {label_error}")
+
+            # 成功ログ
+            self.logger.info(f"✅ Created PR #{pr.number} for issue #{issue.number}")
+            self.logger.info(f"   PR URL: {pr.html_url}")
+
             return pr
 
         except Exception as e:
-            self.logger.error(f"Failed to create PR: {e}")
+            self.logger.error(f"❌ Failed to create PR: {e}")
+            self.logger.error(f"   Issue: #{issue.number}")
+            self.logger.error(f"   Branch: {branch_name}")
             return None
 
 
 class EnhancedFourSagesIntegration:
-    """4賢者システムとの統合"""
+    """4賢者システムとの統合（強化版）"""
 
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.sages_available = FOUR_SAGES_AVAILABLE
+        self.rag_manager_available = RAG_MANAGER_AVAILABLE
 
+        # 4賢者システム初期化
         if self.sages_available:
-            self.knowledge_sage = KnowledgeSage()
-            self.task_sage = TaskSage()
-            self.incident_sage = IncidentSage()
-            self.rag_sage = RAGSage()
-        else:
-            self.logger.warning("4賢者システムが利用できません")
+            try:
+                self.knowledge_sage = KnowledgeSage()
+                self.task_sage = TaskSage()
+                self.incident_sage = IncidentSage()
+                self.rag_sage = RAGSage()
+                self.logger.info("✅ 4賢者システム初期化完了")
+            except Exception as e:
+                self.logger.error(f"❌ 4賢者システム初期化エラー: {e}")
+                self.sages_available = False
+
+        # RAGManager初期化（フォールバック）
+        if self.rag_manager_available:
+            try:
+                self.rag_manager = RagManager()
+                self.logger.info("✅ RAGManager初期化完了")
+            except Exception as e:
+                self.logger.error(f"❌ RAGManager初期化エラー: {e}")
+                self.rag_manager_available = False
+
+        if not self.sages_available and not self.rag_manager_available:
+            self.logger.warning("⚠️ 4賢者システム、RAGManager両方とも利用不可")
 
     async def consult_on_issue(self, issue: Issue) -> Dict[str, Any]:
-        """イシューについて4賢者に相談"""
+        """イシューについて4賢者に相談（強化版）"""
         advice = {}
+        consultation_success = False
 
-        if not self.sages_available:
-            return {
-                "knowledge": {"advice": "知識ベース未接続", "confidence": 0.5},
-                "plan": {"advice": "タスク管理未接続", "steps": []},
-                "risks": {"advice": "リスク分析未接続", "level": "unknown"},
-                "solution": {"advice": "解決策検索未接続", "approach": "default"},
-            }
+        # デフォルトレスポンス
+        default_response = {
+            "knowledge": {"advice": "知識ベース検索中", "confidence": 0.3},
+            "plan": {"advice": "タスク分析中", "steps": [], "complexity": "medium"},
+            "risks": {"advice": "リスク評価中", "level": "medium"},
+            "solution": {"advice": "解決策検索中", "approach": "standard"},
+        }
 
-        try:
-            # ナレッジ賢者に相談
-            knowledge_request = {
-                "type": "search",
-                "query": f"issue {issue.number} {issue.title}",
-                "context": issue.body or "",
-            }
-            knowledge_response = await self.knowledge_sage.process_request(
-                knowledge_request
-            )
-            advice["knowledge"] = knowledge_response.get("data", {})
+        # 4賢者システムでの相談を試行
+        if self.sages_available:
+            try:
+                self.logger.info("🧙‍♂️ 4賢者システムで相談開始")
 
-            # タスク賢者に相談
-            task_request = {
-                "type": "plan",
-                "task": issue.title,
-                "description": issue.body or "",
-                "priority": "medium",
-            }
-            task_response = await self.task_sage.process_request(task_request)
-            advice["plan"] = task_response.get("data", {})
+                # ナレッジ賢者に相談
+                try:
+                    knowledge_request = {
+                        "type": "search",
+                        "query": f"issue {issue.number} {issue.title}",
+                        "context": issue.body or "",
+                    }
+                    knowledge_response = await self.knowledge_sage.process_request(
+                        knowledge_request
+                    )
+                    advice["knowledge"] = knowledge_response.get(
+                        "data", default_response["knowledge"]
+                    )
+                except Exception as e:
+                    self.logger.warning(f"ナレッジ賢者相談エラー: {e}")
+                    advice["knowledge"] = default_response["knowledge"]
 
-            # インシデント賢者に相談
-            incident_request = {
-                "type": "analyze",
-                "issue": issue.title,
-                "description": issue.body or "",
-                "labels": [label.name for label in issue.labels],
-            }
-            incident_response = await self.incident_sage.process_request(
-                incident_request
-            )
-            advice["risks"] = incident_response.get("data", {})
+                # タスク賢者に相談
+                try:
+                    task_request = {
+                        "type": "plan",
+                        "task": issue.title,
+                        "description": issue.body or "",
+                        "priority": "medium",
+                    }
+                    task_response = await self.task_sage.process_request(task_request)
+                    advice["plan"] = task_response.get("data", default_response["plan"])
+                except Exception as e:
+                    self.logger.warning(f"タスク賢者相談エラー: {e}")
+                    advice["plan"] = default_response["plan"]
 
-            # RAG賢者に相談
-            rag_request = {
-                "type": "search",
-                "query": issue.title,
-                "context": issue.body or "",
-                "limit": 5,
-            }
-            rag_response = await self.rag_sage.process_request(rag_request)
-            advice["solution"] = rag_response.get("data", {})
+                # インシデント賢者に相談
+                try:
+                    incident_request = {
+                        "type": "analyze",
+                        "issue": issue.title,
+                        "description": issue.body or "",
+                        "labels": [label.name for label in issue.labels],
+                    }
+                    incident_response = await self.incident_sage.process_request(
+                        incident_request
+                    )
+                    advice["risks"] = incident_response.get(
+                        "data", default_response["risks"]
+                    )
+                except Exception as e:
+                    self.logger.warning(f"インシデント賢者相談エラー: {e}")
+                    advice["risks"] = default_response["risks"]
 
-        except Exception as e:
-            self.logger.error(f"4賢者相談中にエラー: {e}")
+                # RAG賢者に相談
+                try:
+                    rag_request = {
+                        "type": "search",
+                        "query": issue.title,
+                        "context": issue.body or "",
+                        "limit": 5,
+                    }
+                    rag_response = await self.rag_sage.process_request(rag_request)
+                    advice["solution"] = rag_response.get(
+                        "data", default_response["solution"]
+                    )
+                except Exception as e:
+                    self.logger.warning(f"RAG賢者相談エラー: {e}")
+                    # RAGManagerでフォールバック
+                    advice["solution"] = await self._fallback_rag_consultation(issue)
+
+                consultation_success = True
+                self.logger.info("✅ 4賢者相談完了")
+
+            except Exception as e:
+                self.logger.error(f"❌ 4賢者相談総合エラー: {e}")
+
+        # RAGManagerでフォールバック相談
+        if not consultation_success and self.rag_manager_available:
+            try:
+                self.logger.info("🔍 RAGManagerでフォールバック相談")
+                rag_result = self.rag_manager.consult_on_issue(
+                    issue.title, issue.body or ""
+                )
+
+                advice = {
+                    "knowledge": {
+                        "advice": f"知識ベース検索完了: {len(rag_result.get('related_knowledge', []))}件",
+                        "confidence": 0.7,
+                    },
+                    "plan": {
+                        "advice": f"推奨アプローチ: {', '.join(rag_result.get('recommendations', []))}",
+                        "steps": rag_result.get("recommendations", []),
+                        "complexity": rag_result.get("issue_analysis", {}).get(
+                            "complexity", "medium"
+                        ),
+                    },
+                    "risks": {
+                        "advice": f"複雑度: {rag_result.get('issue_analysis', {}).get('complexity', 'medium')}",
+                        "level": rag_result.get("issue_analysis", {}).get(
+                            "complexity", "medium"
+                        ),
+                    },
+                    "solution": {
+                        "advice": f"関連知識からの解決策: {len(rag_result.get('related_knowledge', []))}件発見",
+                        "approach": "knowledge_base_guided",
+                        "tech_stack": rag_result.get("issue_analysis", {}).get(
+                            "tech_stack", []
+                        ),
+                    },
+                }
+                consultation_success = True
+                self.logger.info("✅ RAGManagerフォールバック相談完了")
+
+            except Exception as e:
+                self.logger.error(f"❌ RAGManagerフォールバック相談エラー: {e}")
+
+        # どちらも失敗した場合はデフォルトレスポンス
+        if not consultation_success:
+            self.logger.warning("⚠️ 全ての相談手段が失敗、デフォルトレスポンスを使用")
+            advice = default_response
 
         return advice
+
+    async def _fallback_rag_consultation(self, issue: Issue) -> Dict[str, Any]:
+        """RAGManagerを使用したフォールバック相談"""
+        if not self.rag_manager_available:
+            return {"advice": "RAGManager利用不可", "approach": "default"}
+
+        try:
+            rag_result = self.rag_manager.consult_on_issue(
+                issue.title, issue.body or ""
+            )
+            return {
+                "advice": f"RAGManager検索結果: {len(rag_result.get('related_knowledge', []))}件",
+                "approach": "rag_manager",
+                "tech_stack": rag_result.get("issue_analysis", {}).get(
+                    "tech_stack", []
+                ),
+                "recommendations": rag_result.get("recommendations", []),
+            }
+        except Exception as e:
+            self.logger.error(f"RAGManagerフォールバック相談エラー: {e}")
+            return {"advice": "RAGManager相談失敗", "approach": "default"}
 
     def should_auto_process(
         self, issue: Issue, advice: Dict[str, Any]

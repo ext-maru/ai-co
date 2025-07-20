@@ -2,12 +2,15 @@
 """
 PostgreSQL Claude Task Tracker - エルダーズギルド タスク管理システム
 タスク賢者のPostgreSQL実装 - 高性能・高信頼性タスク管理
+
+改修版: 新しい接続マネージャーを使用してasyncio問題を解決
 """
 
 import asyncio
 import json
 import logging
 import os
+import sys
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta
 from enum import Enum
@@ -15,7 +18,15 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 from uuid import uuid4
 
-import asyncpg
+# プロジェクトルートをパスに追加
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from libs.postgresql_asyncio_connection_manager import (
+    PostgreSQLConnectionManager,
+    EventLoopSafeWrapper,
+    get_postgres_manager,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -51,7 +62,7 @@ class TaskType(Enum):
 
 
 class PostgreSQLClaudeTaskTracker:
-    """PostgreSQL Claude タスクトラッカー - タスク賢者の実装"""
+    """PostgreSQL Claude タスクトラッカー - タスク賢者の実装（接続マネージャー使用）"""
 
     def __init__(
         self,
@@ -80,8 +91,8 @@ class PostgreSQLClaudeTaskTracker:
             "password": password or os.getenv("POSTGRES_PASSWORD", "elders_2025"),
         }
 
-        # 接続プール
-        self.pool = None
+        # 接続マネージャー（シングルトン）
+        self.connection_manager = None
 
         # タスク実行ロック（同時実行制御）
         self._task_locks = {}
@@ -93,10 +104,8 @@ class PostgreSQLClaudeTaskTracker:
     async def initialize(self):
         """データベース接続とテーブル初期化"""
         try:
-            # 接続プール作成
-            self.pool = await asyncpg.create_pool(
-                **self.config, min_size=2, max_size=10
-            )
+            # 接続マネージャー取得（シングルトン）
+            self.connection_manager = await get_postgres_manager(**self.config)
 
             # テーブル初期化
             await self._init_database()
@@ -108,14 +117,14 @@ class PostgreSQLClaudeTaskTracker:
             raise
 
     async def close(self):
-        """接続プールを閉じる"""
-        if self.pool:
-            await self.pool.close()
-            logger.info("PostgreSQL Task Tracker connections closed")
+        """接続マネージャーの参照を解除（シングルトンなので実際のクローズは管理される）"""
+        if self.connection_manager:
+            self.connection_manager = None
+            logger.info("PostgreSQL Task Tracker connection manager reference released")
 
     async def _init_database(self):
         """データベーステーブル初期化"""
-        async with self.pool.acquire() as conn:
+        async with self.connection_manager.get_connection() as conn:
             # task_sageテーブル（既存テーブル構造に合わせて更新のみ）
             # 必要に応じて新しいカラムを追加
             try:
@@ -224,7 +233,7 @@ class PostgreSQLClaudeTaskTracker:
     @asynccontextmanager
     async def _get_connection(self):
         """データベース接続コンテキストマネージャー"""
-        async with self.pool.acquire() as conn:
+        async with self.connection_manager.get_connection() as conn:
             yield conn
 
     async def create_task(

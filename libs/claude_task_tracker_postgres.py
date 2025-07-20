@@ -62,21 +62,9 @@ class ClaudeTaskTracker:
             self._initialized = True
 
     def _run_async(self, coro):
-        """非同期関数を同期的に実行"""
-        try:
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                # 既にイベントループが実行中の場合は新しいタスクとして実行
-                import concurrent.futures
-
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future = executor.submit(asyncio.run, coro)
-                    return future.result()
-            else:
-                return loop.run_until_complete(coro)
-        except RuntimeError:
-            # イベントループが存在しない場合は新しく作成
-            return asyncio.run(coro)
+        """非同期関数を同期的に実行（改良版）"""
+        from libs.postgresql_asyncio_connection_manager import EventLoopSafeWrapper
+        return EventLoopSafeWrapper.run_async(coro)
 
     async def _create_task_async(self, *args, **kwargs):
         """非同期タスク作成"""
@@ -266,12 +254,19 @@ class ClaudeTaskTracker:
             await self.postgres_tracker.close()
             self._initialized = False
 
+    def close_sync(self):
+        """同期的なクローズ処理"""
+        if self._initialized and self.postgres_tracker:
+            self._run_async(self.close())
+
     def __del__(self):
         """デストラクタ"""
         if self._initialized and self.postgres_tracker:
             try:
-                asyncio.create_task(self.close())
+                # 同期的なクローズを試行
+                self.close_sync()
             except:
+                # エラーが発生しても継続
                 pass
 
 

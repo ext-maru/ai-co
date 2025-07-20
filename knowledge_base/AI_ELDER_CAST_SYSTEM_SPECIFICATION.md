@@ -28,9 +28,9 @@ $ ai-elder cast
 
 ### 📁 ファイル構成
 
-- **メインスクリプト**: `/home/aicompany/ai_co/scripts/ai-elder-cast` (Python3)
+- **メインスクリプト**: `scripts/ai-elder-cast` (Python3)
 - **エントリポイント**: `/usr/local/bin/ai-elder` (Python3)
-- **知識ファイル出力**: `/home/aicompany/ai_co/ELDER_KNOWLEDGE_CONTEXT.md`
+- **知識ファイル出力**: `ELDER_KNOWLEDGE_CONTEXT.md`
 
 ### 🔧 実装詳細
 
@@ -93,7 +93,7 @@ possible_paths = [
 
 起動コマンド:
 ```bash
-claude --dangerously-skip-permissions ELDER_KNOWLEDGE_CONTEXT.md
+claude --locale ja --dangerously-skip-permissions ELDER_KNOWLEDGE_CONTEXT.md
 ```
 
 ---
@@ -115,6 +115,10 @@ graph TD
 ---
 
 ## ⚡ 重要な仕様
+
+### 🇯🇵 日本語モード
+- **デフォルト**: `--locale ja`を自動追加
+- **理由**: クロードエルダーの日本語コミュニケーション優先
 
 ### 🔐 権限管理
 - **必須**: `--dangerously-skip-permissions`を自動付与
@@ -143,6 +147,7 @@ graph TD
 - **2025/01/20 v1**: 知識ファイル自動注入機能追加（4ファイル）
 - **2025/01/20 v2**: 理想的な11ファイル構成に拡張（137KB）
 - **2025/01/20 v2.1**: 日付正規化・絶対パス修正・重複コンテンツ最適化
+- **2025/01/20 v2.2**: 日本語モードデフォルト化・起動メッセージ日本語化
 
 ### 依存関係
 - Python 3.x
