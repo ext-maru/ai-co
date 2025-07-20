@@ -124,8 +124,12 @@ class AutoIssueElderFlowEngine:
     ):
         """自動でPR作成"""
         try:
-            # ブランチ名を生成
-            branch_name = f"auto-fix-issue-{issue_number}"
+            # ブランチ名を生成（タイムスタンプ付きオプション）
+            if os.getenv("AUTO_ISSUE_USE_TIMESTAMP", "false").lower() == "true":
+                timestamp = datetime.now().strftime("%y%m%d-%H%M%S")
+                branch_name = f"auto-fix-issue-{issue_number}-{timestamp}"
+            else:
+                branch_name = f"auto-fix-issue-{issue_number}"
 
             # PR作成
             pr_result = self.pr_creator.create_pull_request(
@@ -480,6 +484,17 @@ class AutoIssueProcessor(EldersServiceLegacy):
     async def execute_auto_processing(self, issue: Issue) -> Dict[str, Any]:
         """Elder Flowを使用してイシューを自動処理"""
         try:
+            # 既存のPRがある場合はスキップ
+            existing_pr = await self._check_existing_pr_for_issue(issue.number)
+            if existing_pr:
+                logger.info(f"Issue #{issue.number} already has PR #{existing_pr.number}. Skipping.")
+                return {
+                    "status": "skipped",
+                    "message": f"既にPR #{existing_pr.number} が存在します",
+                    "pr_url": existing_pr.html_url,
+                    "pr_number": existing_pr.number
+                }
+
             # 処理記録
             await self.limiter.record_processing(issue.number)
 
@@ -642,6 +657,37 @@ class AutoIssueProcessor(EldersServiceLegacy):
 
         # デフォルトは低優先度
         return "low"
+
+    async def _check_existing_pr_for_issue(self, issue_number: int) -> Optional[Any]:
+        """指定されたイシューに関連する既存のPRをチェック"""
+        try:
+            # オープンなPRを取得
+            open_prs = self.repo.get_pulls(state="open")
+            
+            for pr in open_prs:
+                # PRのbodyまたはtitleにイシュー番号が含まれているかチェック
+                pr_body = pr.body or ""
+                pr_title = pr.title or ""
+                
+                # 一般的なパターンでイシュー番号をチェック
+                patterns = [
+                    f"#{issue_number}",
+                    f"Closes #{issue_number}",
+                    f"Fixes #{issue_number}",
+                    f"Resolves #{issue_number}",
+                    f"issue-{issue_number}",
+                    f"Issue #{issue_number}"
+                ]
+                
+                for pattern in patterns:
+                    if pattern.lower() in pr_body.lower() or pattern.lower() in pr_title.lower():
+                        return pr
+            
+            return None
+            
+        except Exception as e:
+            logger.warning(f"Error checking existing PRs: {str(e)}")
+            return None
 
 
 async def main():
