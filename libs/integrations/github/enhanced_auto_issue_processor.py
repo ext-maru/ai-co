@@ -1162,8 +1162,8 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
 
                 # 優先度を判定（メモリアクセス - 高速）
                 priority = self._determine_priority_from_cache(data)
-                if priority not in ["low", "medium"]:
-                    filtered_count["high_priority"] += 1
+                if priority in ["low"]:  # lowのみ除外、medium以上を処理
+                    filtered_count["low_priority_excluded"] += 1
                     continue
 
                 # 処理対象として追加

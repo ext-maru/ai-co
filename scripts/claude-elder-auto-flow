@@ -1,0 +1,317 @@
+#!/usr/bin/env python3
+"""
+Claude Elder Auto Flow CLI - クロードエルダー自動Elder Flow管理コマンド
+Created: 2025-01-20
+Author: Claude Elder
+
+クロードエルダーの自動Elder Flow適用システムを管理するCLIツール
+"""
+
+import argparse
+import asyncio
+import json
+import sys
+from pathlib import Path
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+from libs.claude_elder_auto_flow_interceptor import get_claude_elder_interceptor
+from libs.claude_elder_request_processor import get_claude_elder_processor
+
+
+def print_banner():
+    """バナー表示"""
+    print("🌊 Claude Elder Auto Flow Management System")
+    print("🏛️ クロードエルダー自動Elder Flow適用システム")
+    print("=" * 60)
+
+
+async def cmd_status(args):
+    """ステータス確認"""
+    print_banner()
+
+    processor = get_claude_elder_processor()
+    interceptor = get_claude_elder_interceptor()
+
+    print("📊 システム状態")
+    print("-" * 30)
+
+    # インターセプター状態
+    interceptor_status = interceptor.get_status()
+    print(f"🎛️  自動Elder Flow: {'🟢 有効' if interceptor_status['enabled'] else '🔴 無効'}")
+    print(f"📋 パターンカテゴリ: {interceptor_status['pattern_categories']}")
+    print(f"🔍 総パターン数: {interceptor_status['total_patterns']}")
+    print(f"⏭️  バイパスキーワード: {len(interceptor_status['bypass_keywords'])}")
+    print()
+
+    # 処理統計
+    stats = processor.get_processing_stats()
+    print("📈 処理統計")
+    print("-" * 30)
+    print(f"📥 総リクエスト数: {stats['total_requests']}")
+    print(
+        f"🌊 Elder Flow適用: {stats['elder_flow_applied']} ({stats['elder_flow_success_rate']:.1f}%)"
+    )
+    print(f"⏭️  バイパス: {stats['bypass_count']} ({stats['bypass_rate']:.1f}%)")
+    print(f"🔄 フォールバック: {stats['fallback_count']} ({stats['fallback_rate']:.1f}%)")
+    print(f"❌ エラー: {stats['error_count']} ({stats['error_rate']:.1f}%)")
+    print()
+
+    if args.verbose:
+        print("🔧 詳細設定")
+        print("-" * 30)
+        print(f"バイパスキーワード: {', '.join(interceptor_status['bypass_keywords'])}")
+        print()
+
+
+async def cmd_enable(args):
+    """自動Elder Flow有効化"""
+    print_banner()
+
+    interceptor = get_claude_elder_interceptor()
+    interceptor.enable_auto_flow()
+
+    print("✅ クロードエルダー自動Elder Flow適用が有効化されました")
+    print()
+    print("📋 適用条件:")
+    print("  - 実装系: implement, add, create, build, develop, 新機能, OAuth, API等")
+    print("  - 修正系: fix, bug, エラー, 問題, issue, バグ等")
+    print("  - 最適化系: optimize, refactor, improve, パフォーマンス等")
+    print("  - セキュリティ系: security, 認証, 脆弱性, 権限等")
+    print("  - テスト系: test, TDD, カバレッジ, 検証等")
+    print("  - 強制適用: elder flow, elder-flow, エルダーフロー等")
+    print()
+    print("⏭️  バイパス条件:")
+    print("  - help, status, explain, show, list, describe を含む文")
+
+
+async def cmd_disable(args):
+    """自動Elder Flow無効化"""
+    print_banner()
+
+    interceptor = get_claude_elder_interceptor()
+    interceptor.disable_auto_flow()
+
+    print("⏸️ クロードエルダー自動Elder Flow適用が無効化されました")
+    print("📝 すべてのリクエストが通常のClaude Elder処理で実行されます")
+
+
+async def cmd_test(args):
+    """パターンマッチングテスト"""
+    print_banner()
+
+    if args.input:
+        test_inputs = [args.input]
+    elif args.file:
+        with open(args.file, "r", encoding="utf-8") as f:
+            test_inputs = [line.strip() for line in f if line.strip()]
+    else:
+        test_inputs = [
+            "OAuth2.0認証システムを実装してください",
+            "APIのバグを修正してください",
+            "パフォーマンスを最適化したい",
+            "セキュリティ脆弱性を修正",
+            "テストカバレッジを向上させる",
+            "Elder Flowでユーザー管理機能を作成",
+            "help",
+            "現在の状況を説明してください",
+            "ドキュメントを更新してください",
+        ]
+
+    processor = get_claude_elder_processor()
+    result = await processor.test_request_processing(test_inputs)
+
+    print("🧪 パターンマッチングテスト結果")
+    print(f"📋 テスト数: {result['test_count']}")
+    print(f"🌊 Elder Flow適用予定: {result['summary']['would_apply_elder_flow']}")
+    print(f"⏭️  バイパス予定: {result['summary']['would_bypass']}")
+    print()
+
+    for test_result in result["results"]:
+        icon = "🌊" if test_result["would_apply_elder_flow"] else "⏭️"
+        print(f"{icon} {test_result['test_number']:2d}. {test_result['input']}")
+
+        if test_result["would_apply_elder_flow"] and test_result["flow_info"]:
+            info = test_result["flow_info"]
+            print(f"     📂 カテゴリ: {info['category']}")
+            print(f"     ⚡ 優先度: {info['priority']}")
+            print(f"     📊 信頼度: {info['confidence']:.2f}")
+            if info.get("force"):
+                print(f"     🔥 強制適用")
+        print()
+
+
+async def cmd_config(args):
+    """設定管理"""
+    print_banner()
+
+    processor = get_claude_elder_processor()
+
+    if args.action == "show":
+        interceptor = get_claude_elder_interceptor()
+        config = interceptor.get_status()
+
+        print("🔧 現在の設定")
+        print(json.dumps(config, indent=2, ensure_ascii=False))
+
+    elif args.action == "set":
+        if not args.config_file:
+            print("❌ --config-file オプションが必要です")
+            return 1
+
+        with open(args.config_file, "r", encoding="utf-8") as f:
+            config = json.load(f)
+
+        processor.configure_interceptor(config)
+        print("✅ 設定を更新しました")
+
+    elif args.action == "reset":
+        processor.reset_stats()
+        print("✅ 統計をリセットしました")
+
+
+async def cmd_add_bypass(args):
+    """バイパスキーワード追加"""
+    print_banner()
+
+    interceptor = get_claude_elder_interceptor()
+
+    for keyword in args.keywords:
+        interceptor.add_bypass_keyword(keyword)
+
+    print(f"✅ バイパスキーワードを追加しました: {', '.join(args.keywords)}")
+
+    # 現在のキーワード一覧表示
+    current_keywords = interceptor.get_status()["bypass_keywords"]
+    print(f"📋 現在のバイパスキーワード: {', '.join(current_keywords)}")
+
+
+async def cmd_remove_bypass(args):
+    """バイパスキーワード削除"""
+    print_banner()
+
+    interceptor = get_claude_elder_interceptor()
+
+    for keyword in args.keywords:
+        interceptor.remove_bypass_keyword(keyword)
+
+    print(f"✅ バイパスキーワードを削除しました: {', '.join(args.keywords)}")
+
+    # 現在のキーワード一覧表示
+    current_keywords = interceptor.get_status()["bypass_keywords"]
+    print(f"📋 現在のバイパスキーワード: {', '.join(current_keywords)}")
+
+
+def cmd_help(args):
+    """ヘルプ表示"""
+    print_banner()
+
+    print("🔧 Claude Elder Auto Flow Management Commands:")
+    print()
+    print("📊 状態確認:")
+    print("  status                    - システム状態と統計を表示")
+    print("    --verbose               - 詳細情報表示")
+    print()
+    print("🎛️  制御:")
+    print("  enable                    - 自動Elder Flow適用を有効化")
+    print("  disable                   - 自動Elder Flow適用を無効化")
+    print()
+    print("🧪 テスト:")
+    print("  test                      - パターンマッチングテスト（デフォルト例文使用）")
+    print("    --input <text>          - 指定したテキストでテスト")
+    print("    --file <path>           - ファイルからテスト例文を読み込み")
+    print()
+    print("🔧 設定:")
+    print("  config show               - 現在の設定を表示")
+    print("  config set --config-file  - 設定ファイルから設定を更新")
+    print("  config reset              - 統計をリセット")
+    print()
+    print("⏭️  バイパス管理:")
+    print("  add-bypass <keywords...>  - バイパスキーワードを追加")
+    print("  remove-bypass <keywords>  - バイパスキーワードを削除")
+    print()
+    print("  help                      - このヘルプを表示")
+    print()
+    print("📋 使用例:")
+    print("  claude-elder-auto-flow status")
+    print("  claude-elder-auto-flow enable")
+    print("  claude-elder-auto-flow test --input 'OAuth2.0認証を実装'")
+    print("  claude-elder-auto-flow add-bypass 調査 レポート")
+    print("  claude-elder-auto-flow config show")
+
+
+def main():
+    """メイン関数"""
+    parser = argparse.ArgumentParser(
+        description="Claude Elder Auto Flow Management System",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # status コマンド
+    parser_status = subparsers.add_parser("status", help="Show system status")
+    parser_status.add_argument(
+        "--verbose", "-v", action="store_true", help="Verbose output"
+    )
+    parser_status.set_defaults(func=cmd_status)
+
+    # enable コマンド
+    parser_enable = subparsers.add_parser("enable", help="Enable auto Elder Flow")
+    parser_enable.set_defaults(func=cmd_enable)
+
+    # disable コマンド
+    parser_disable = subparsers.add_parser("disable", help="Disable auto Elder Flow")
+    parser_disable.set_defaults(func=cmd_disable)
+
+    # test コマンド
+    parser_test = subparsers.add_parser("test", help="Test pattern matching")
+    parser_test.add_argument("--input", help="Test input text")
+    parser_test.add_argument("--file", help="Test input file")
+    parser_test.set_defaults(func=cmd_test)
+
+    # config コマンド
+    parser_config = subparsers.add_parser("config", help="Configuration management")
+    parser_config.add_argument(
+        "action", choices=["show", "set", "reset"], help="Config action"
+    )
+    parser_config.add_argument("--config-file", help="Configuration file path")
+    parser_config.set_defaults(func=cmd_config)
+
+    # add-bypass コマンド
+    parser_add_bypass = subparsers.add_parser("add-bypass", help="Add bypass keywords")
+    parser_add_bypass.add_argument("keywords", nargs="+", help="Keywords to add")
+    parser_add_bypass.set_defaults(func=cmd_add_bypass)
+
+    # remove-bypass コマンド
+    parser_remove_bypass = subparsers.add_parser(
+        "remove-bypass", help="Remove bypass keywords"
+    )
+    parser_remove_bypass.add_argument("keywords", nargs="+", help="Keywords to remove")
+    parser_remove_bypass.set_defaults(func=cmd_remove_bypass)
+
+    # help コマンド
+    parser_help = subparsers.add_parser("help", help="Show help")
+    parser_help.set_defaults(func=cmd_help)
+
+    args = parser.parse_args()
+
+    if not args.command:
+        cmd_help(args)
+        return 0
+
+    if args.command == "help":
+        cmd_help(args)
+        return 0
+
+    # 非同期コマンド実行
+    if asyncio.iscoroutinefunction(args.func):
+        return asyncio.run(args.func(args))
+    else:
+        return args.func(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

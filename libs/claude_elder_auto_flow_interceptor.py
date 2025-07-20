@@ -20,8 +20,7 @@ from typing import Any, Dict, List, Optional, Tuple
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from libs.elder_flow_retry_wrapper import execute_elder_flow_with_retry
-from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine
+# Elder Flow実行は軽量版で直接実装（依存関係最小化）
 
 logger = logging.getLogger("claude_elder_auto_flow")
 
