@@ -16,7 +16,39 @@ from typing import Dict, List, Optional, Any, Callable, Union
 from enum import Enum
 from dataclasses import dataclass, field
 from pathlib import Path
-import aiofiles
+try:
+    import aiofiles
+except ImportError:
+    # aiofilesが利用できない場合の代替実装
+    class aiofiles:
+        @staticmethod
+        def open(file_path, mode="r", encoding="utf-8"):
+            return AsyncFileContext(file_path, mode, encoding)
+
+class AsyncFileContext:
+    """aiofilesの代替実装"""
+    def __init__(self, file_path, mode="r", encoding="utf-8"):
+        self.file_path = file_path
+        self.mode = mode
+        self.encoding = encoding
+        self.file = None
+    
+    async def __aenter__(self):
+        self.file = open(self.file_path, self.mode, encoding=self.encoding)
+        return self
+    
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.file:
+            self.file.close()
+    
+    async def write(self, data):
+        if self.file:
+            self.file.write(data)
+    
+    async def read(self):
+        if self.file:
+            return self.file.read()
+        return ""
 import ast
 import black
 import isort

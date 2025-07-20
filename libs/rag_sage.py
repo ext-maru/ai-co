@@ -1,46 +1,26 @@
 """
-rag_sage - Placeholder implementation
+RAG Sage - RAG賢者システム
+
+既存のRAG Managerから実装をインポートして使用
 """
 
-import logging
+# 既存のRAG Managerから実装をインポート
+from libs.rag_manager import RagManager
 
-logger = logging.getLogger(__name__)
-
-
-class RAGSage:
-    """Placeholder class for RAG Sage"""
-
-    def __init__(self, *args, **kwargs):
-        logger.warning(f"Using placeholder for {self.__class__.__name__}")
-
-    async def process_request(self, request):
-        """Placeholder process_request method"""
-        logger.warning(
-            f"RAGSage.process_request called with: {request.get('type', 'unknown')}"
-        )
-        return {
-            "status": "placeholder",
-            "message": "RAG Sage not implemented",
-            "results": [],
-        }
-
-    def __getattr__(self, name):
-        logger.warning(f"Accessing placeholder attribute: {name}")
-        return lambda *args, **kwargs: None
+# RAGSageはRagManagerのエイリアス
+RAGSage = RagManager
 
 
-# Common function placeholders
+# 互換性のための関数
 def setup(*args, **kwargs):
-    """Placeholder setup function"""
-    logger.warning("Using placeholder setup function")
-    pass
+    """セットアップ関数"""
+    return RagManager()
 
 
 def main(*args, **kwargs):
-    """Placeholder main function"""
-    logger.warning("Using placeholder main function")
-    pass
+    """メイン関数"""
+    return RagManager()
 
 
 # Export
-__all__ = ["RagSage", "setup", "main"]
+__all__ = ["RAGSage", "setup", "main"]

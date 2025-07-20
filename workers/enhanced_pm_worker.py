@@ -613,26 +613,114 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
 
 ## 機能要件
 """
-        # TODO: 要件定義書の内容を実装
+        # 要件一覧を追加
+        for i, req in enumerate(requirements, 1):
+            doc_content += f"""
+### {i}. {req.get('title', 'Untitled Requirement')}
+
+**優先度**: {req.get('priority', 'Medium')}
+**ステータス**: {req.get('status', 'Draft')}
+
+**説明**: {req.get('description', '説明なし')}
+
+**受入条件**:
+{req.get('acceptance_criteria', '- 条件未定義')}
+
+---
+"""
+        
+        doc_content += f"""
+
+## 技術要件
+- プログラミング言語: Python 3.8+
+- フレームワーク: FastAPI, SQLAlchemy
+- データベース: PostgreSQL
+- テスト: pytest
+
+## 性能要件
+- レスポンスタイム: 500ms 以下
+- 同時アクセス: 100ユーザー
+- 稼働率: 99.9%
+
+## セキュリティ要件
+- JWT認証
+- HTTPS通信
+- データ暗号化
+
+---
+*作成日: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
+*作成者: Enhanced PM Worker*
+"""
         return doc_content
 
     def cleanup(self):
-        """TODO: cleanupメソッドを実装してください"""
-        pass
+        """ワーカーのクリーンアップ処理"""
+        try:
+            # Elder Tree に終了を通知
+            if self.elder_tree_initialized and self.four_sages:
+                self.four_sages.report_to_task_sage({
+                    "type": "worker_shutdown",
+                    "worker": "enhanced_pm_worker",
+                    "timestamp": datetime.now().isoformat()
+                })
+            
+            # プロジェクトデータの保存確認
+            if hasattr(self, 'projects') and self.projects:
+                self.logger.info(f"Saving {len(self.projects)} project(s) before shutdown")
+            
+            self.logger.info("Enhanced PM Worker cleanup completed")
+        except Exception as e:
+            self.logger.warning(f"Error during cleanup: {e}")
 
     def stop(self):
-        """TODO: stopメソッドを実装してください"""
-        pass
+        """ワーカーの停止処理"""
+        try:
+            self.cleanup()
+            super().stop()
+            self.logger.info("Enhanced PM Worker stopped successfully")
+        except Exception as e:
+            self.logger.error(f"Error stopping Enhanced PM Worker: {e}")
 
     def initialize(self) -> None:
         """ワーカーの初期化処理"""
-        # TODO: 初期化ロジックを実装してください
+        # 初期化処理の実装
+        try:
+            # Elder Tree システムの初期化
+            if not self.elder_tree_initialized:
+                self._initialize_elder_tree()
+            
+            # プロジェクトデータの初期化
+            if not hasattr(self, 'projects'):
+                self.projects = {}
+            
+            self.logger.info(f"{self.__class__.__name__} initialized successfully")
+        except Exception as e:
+            self.logger.error(f"Initialization error: {e}")
+            raise
         logger.info(f"{self.__class__.__name__} initialized")
         pass
 
-    def handle_error(self):
-        """TODO: handle_errorメソッドを実装してください"""
-        pass
+    def handle_error(self, error: Exception, context: str = "unknown"):
+        """エラーハンドリング処理"""
+        try:
+            error_details = {
+                "worker": "enhanced_pm_worker",
+                "context": context,
+                "error": str(error),
+                "error_type": type(error).__name__,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            # Incident Sage にエラー報告
+            if self.elder_tree_initialized and self.four_sages:
+                self.four_sages.consult_incident_sage({
+                    "type": "pm_processing_error",
+                    **error_details
+                })
+            
+            self.logger.error(f"Enhanced PM Worker error in {context}: {error}")
+        except Exception as e:
+            self.logger.critical(f"Error in error handler: {e}")
 
     def get_status(self) -> Dict[str, Any]:
         """ワーカーステータス取得"""
@@ -672,9 +760,27 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             self.logger.error(f"Status retrieval failed: {e}")
             return {"worker_id": self.worker_id, "status": "error", "error": str(e)}
 
-    def validate_config(self):
-        """TODO: validate_configメソッドを実装してください"""
-        pass
+    def validate_config(self) -> bool:
+        """設定の妥当性を検証"""
+        try:
+            # ベース設定の確認
+            if not hasattr(self, 'worker_id') or not self.worker_id:
+                self.logger.error("Worker ID not set")
+                return False
+            
+            # Elder Tree 設定の確認
+            if ELDER_TREE_AVAILABLE and not self.elder_tree_initialized:
+                self.logger.warning("Elder Tree not initialized")
+            
+            # プロジェクトデータの確認
+            if not hasattr(self, 'projects'):
+                self.projects = {}
+            
+            self.logger.info("Enhanced PM Worker config validation passed")
+            return True
+        except Exception as e:
+            self.logger.error(f"Config validation failed: {e}")
+            return False
 
     def _create_detailed_design(self, project_id: str, design_id: str, design: Dict):
         """詳細設計書を自動生成"""

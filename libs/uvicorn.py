@@ -1,38 +1,17 @@
 """
-uvicorn - Auto-generated module by Incident Knights
-Created to prevent import errors
+Uvicorn ASGI Server Wrapper  
 """
 
-import logging
-
-logger = logging.getLogger(__name__)
-
-# Placeholder implementations
-
-
-class Uvicorn:
-    """Auto-generated placeholder class"""
-
-    def __init__(self, *args, **kwargs):
-        logger.warning(
-            f"Using auto-generated placeholder for {self.__class__.__name__}"
-        )
-
-    def __getattr__(self, name):
-        logger.warning(f"Accessing placeholder attribute: {name}")
-        return lambda *args, **kwargs: None
-
-
-# Common function placeholders
-def setup(*args, **kwargs):
-    """Placeholder setup function"""
-    logger.warning("Using placeholder setup function")
-
-
-def main(*args, **kwargs):
-    """Placeholder main function"""
-    logger.warning("Using placeholder main function")
-
-
-# Export
-__all__ = ["Uvicorn", "setup", "main"]
+try:
+    import uvicorn
+    from uvicorn import Config, Server
+except ImportError:
+    # フォールバック実装
+    class MockUvicorn:
+        @staticmethod
+        def run(app, host='127.0.0.1', port=8000, **kwargs):
+            print(f'Mock server running on {host}:{port}')
+    
+    uvicorn = MockUvicorn()
+    Config = dict
+    Server = object

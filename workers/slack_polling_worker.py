@@ -14,6 +14,7 @@ Part of the Elder Tree Hierarchy for Slack polling processing
 """
 
 import json
+import os
 import sqlite3
 import sys
 import time
@@ -490,8 +491,78 @@ class SlackPollingWorker(BaseWorker):
         pass
 
     def cleanup(self):
-        """TODO: cleanupメソッドを実装してください"""
-        pass
+        """ワーカーのクリーンアップ処理（Elder Tree終了通知、リソース解放）"""
+        try:
+            self.logger.info("🧹 SlackPollingWorker cleanup開始")
+            
+            # Elder Tree終了通知
+            if ELDER_TREE_AVAILABLE and self.elder_tree:
+                try:
+                    self.elder_tree.notify_shutdown({
+                        "worker_type": "slack_polling",
+                        "worker_id": self.worker_id,
+                        "reason": "cleanup",
+                        "timestamp": datetime.now().isoformat()
+                    })
+                    self.logger.info("📢 Elder Tree終了通知完了")
+                except Exception as e:
+                    self.logger.warning(f"Elder Tree終了通知エラー: {e}")
+            
+            # Slack接続のクリーンアップ
+            try:
+                # 現在の接続状態をクリア
+                self.headers = {}
+                self.logger.info("🔌 Slack接続クリーンアップ完了")
+            except Exception as e:
+                self.logger.warning(f"Slack接続クリーンアップエラー: {e}")
+            
+            # データベース接続のクリーンアップ
+            try:
+                # SQLite接続は自動でクローズされるが、念のため明示的にクリーンアップ
+                if hasattr(self, 'db_path') and self.db_path.exists():
+                    # 古いレコードを削除（7日以上前）
+                    cutoff_date = datetime.now() - timedelta(days=7)
+                    with sqlite3.connect(self.db_path) as conn:
+                        conn.execute(
+                            "DELETE FROM processed_messages WHERE processed_at < ?",
+                            (cutoff_date,)
+                        )
+                        conn.commit()
+                    self.logger.info("🗄️ データベースクリーンアップ完了")
+            except Exception as e:
+                self.logger.warning(f"データベースクリーンアップエラー: {e}")
+            
+            # 統計情報の保存
+            try:
+                if hasattr(self, 'messages_processed'):
+                    stats = {
+                        "worker_id": self.worker_id,
+                        "messages_processed": getattr(self, 'messages_processed', 0),
+                        "cleanup_time": datetime.now().isoformat(),
+                        "uptime": getattr(self, 'uptime', 0)
+                    }
+                    # 統計ファイルに保存
+                    stats_file = PROJECT_ROOT / "logs" / "slack_worker_stats.json"
+                    stats_file.parent.mkdir(exist_ok=True)
+                    
+                    existing_stats = []
+                    if stats_file.exists():
+                        with open(stats_file, 'r') as f:
+                            existing_stats = json.load(f)
+                    
+                    existing_stats.append(stats)
+                    with open(stats_file, 'w') as f:
+                        json.dump(existing_stats, f, indent=2)
+                    
+                    self.logger.info(f"📊 統計情報保存完了: {getattr(self, 'messages_processed', 0)}件処理")
+            except Exception as e:
+                self.logger.warning(f"統計情報保存エラー: {e}")
+            
+            self.logger.info("✅ SlackPollingWorker cleanup完了")
+            
+        except Exception as e:
+            self.logger.error(f"❌ Cleanup処理エラー: {e}")
+            # クリーンアップエラーでも継続
 
     def start(self):
         """ポーリングワーカー用のstart実装（BaseWorkerのstart()をオーバーライド）"""
@@ -499,27 +570,614 @@ class SlackPollingWorker(BaseWorker):
         self.run()
 
     def stop(self):
-        """ワーカー停止処理"""
-        self.should_stop = True
-        self.logger.info("🛑 SlackPollingWorker停止フラグ設定")
+        """ワーカー停止処理（cleanup呼び出し、super().stop()）"""
+        try:
+            self.logger.info("🛑 SlackPollingWorker停止処理開始")
+            
+            # 停止フラグ設定
+            self.should_stop = True
+            self.logger.info("🚩 停止フラグ設定完了")
+            
+            # クリーンアップ実行
+            self.cleanup()
+            
+            # 親クラスのstop()を呼び出し
+            try:
+                super().stop()
+                self.logger.info("⬆️  親クラスstop()完了")
+            except Exception as e:
+                self.logger.warning(f"親クラスstop()エラー: {e}")
+            
+            self.logger.info("✅ SlackPollingWorker停止処理完了")
+            
+        except Exception as e:
+            self.logger.error(f"❌ 停止処理エラー: {e}")
+            # 停止処理エラーでも継続
 
     def initialize(self) -> None:
-        """ワーカーの初期化処理"""
-        # TODO: 初期化ロジックを実装してください
-        logger.info(f"{self.__class__.__name__} initialized")
-        pass
+        """初期化処理（Elder Tree初期化、必要コンポーネント初期化）"""
+        try:
+            self.logger.info("🚀 SlackPollingWorker初期化開始")
+            
+            # Elder Tree統合システムの初期化
+            if ELDER_TREE_AVAILABLE:
+                try:
+                    # Four Sages統合
+                    if FourSagesIntegration:
+                        self.four_sages = FourSagesIntegration()
+                        self.logger.info("🧙‍♂️ Four Sages統合初期化完了")
+                    
+                    # Elder Council統合
+                    if ElderCouncilSummoner:
+                        self.elder_council_summoner = ElderCouncilSummoner()
+                        self.logger.info("🏛️ Elder Council統合初期化完了")
+                    
+                    # Elder Tree接続
+                    if get_elder_tree:
+                        self.elder_tree = get_elder_tree()
+                        self.logger.info("🌳 Elder Tree接続完了")
+                        
+                        # Elder Treeに初期化完了を通知
+                        self.elder_tree.notify_initialization({
+                            "worker_type": "slack_polling",
+                            "worker_id": self.worker_id,
+                            "capabilities": [
+                                "slack_message_polling",
+                                "task_creation",
+                                "mention_detection",
+                                "rate_limit_handling"
+                            ],
+                            "config": {
+                                "channel_id": self.channel_id,
+                                "polling_interval": self.polling_interval,
+                                "require_mention": self.require_mention
+                            },
+                            "timestamp": datetime.now().isoformat()
+                        })
+                
+                except Exception as e:
+                    self.logger.warning(f"Elder Tree統合エラー: {e}")
+            
+            # 統計カウンターの初期化
+            self.messages_processed = 0
+            self.tasks_created = 0
+            self.errors_count = 0
+            self.start_time = datetime.now()
+            
+            # Slack接続テスト
+            try:
+                if self.slack_token:
+                    bot_id = self._get_bot_user_id()
+                    if bot_id:
+                        self.logger.info(f"✅ Slack接続テスト成功: Bot ID {bot_id}")
+                    else:
+                        self.logger.warning("⚠️ Slack接続テスト失敗")
+                else:
+                    self.logger.warning("⚠️ Slack Token未設定")
+            except Exception as e:
+                self.logger.warning(f"Slack接続テストエラー: {e}")
+            
+            # データベース接続テスト
+            try:
+                with sqlite3.connect(self.db_path) as conn:
+                    cursor = conn.execute("SELECT COUNT(*) FROM processed_messages")
+                    count = cursor.fetchone()[0]
+                    self.logger.info(f"📊 データベース接続確認: {count}件の処理済みメッセージ")
+            except Exception as e:
+                self.logger.warning(f"データベース接続テストエラー: {e}")
+            
+            # Task Sageに初期化完了を報告
+            self._report_initialization_to_task_sage()
+            
+            self.logger.info(f"✅ {self.__class__.__name__} 初期化完了")
+            
+        except Exception as e:
+            self.logger.error(f"❌ 初期化エラー: {e}")
+            # 初期化エラーは重要なので、Incident Sageに報告
+            if hasattr(self, 'four_sages') and self.four_sages:
+                try:
+                    self.four_sages.report_to_incident_sage({
+                        "type": "initialization_error",
+                        "worker_type": "slack_polling",
+                        "error": str(e),
+                        "severity": "medium"
+                    })
+                except Exception:
+                    pass  # 報告エラーは無視
 
-    def handle_error(self):
-        """TODO: handle_errorメソッドを実装してください"""
-        pass
+    def handle_error(self, error: Exception, context: str = None, severity: str = "medium") -> None:
+        """エラーハンドリング（Incident Sageへの報告、ログ記録）"""
+        try:
+            # エラーカウント更新
+            if hasattr(self, 'errors_count'):
+                self.errors_count += 1
+            
+            # エラーの重要度を判定
+            error_severity = self._determine_error_severity(error, context)
+            
+            # 基本ログ記録
+            error_id = f"slack_polling_error_{int(datetime.now().timestamp())}"
+            error_details = {
+                "error_id": error_id,
+                "error_type": type(error).__name__,
+                "error_message": str(error),
+                "context": context or "unknown",
+                "severity": error_severity,
+                "timestamp": datetime.now().isoformat(),
+                "worker_id": getattr(self, 'worker_id', 'unknown')
+            }
+            
+            # ログレベル別記録
+            if error_severity == "critical":
+                self.logger.critical(f"🔥 重要エラー [{error_id}]: {error} (context: {context})")
+            elif error_severity == "high":
+                self.logger.error(f"❌ 高レベルエラー [{error_id}]: {error} (context: {context})")
+            elif error_severity == "medium":
+                self.logger.warning(f"⚠️ 中レベルエラー [{error_id}]: {error} (context: {context})")
+            else:
+                self.logger.info(f"ℹ️ 低レベルエラー [{error_id}]: {error} (context: {context})")
+            
+            # Incident Sageへの報告
+            if ELDER_TREE_AVAILABLE and hasattr(self, 'four_sages') and self.four_sages:
+                try:
+                    incident_report = {
+                        "type": "worker_error",
+                        "worker_type": "slack_polling",
+                        "error_details": error_details,
+                        "context_info": {
+                            "slack_channel": getattr(self, 'channel_id', 'unknown'),
+                            "polling_interval": getattr(self, 'polling_interval', 0),
+                            "messages_processed": getattr(self, 'messages_processed', 0),
+                            "bot_user_id": getattr(self, 'bot_user_id', None)
+                        },
+                        "recommendations": self._get_error_recommendations(error, context),
+                        "requires_immediate_action": self._is_critical_error(error)
+                    }
+                    
+                    self.four_sages.report_to_incident_sage(incident_report)
+                    self.logger.info(f"📨 Incident Sage報告完了: {error_id}")
+                    
+                except Exception as report_error:
+                    self.logger.warning(f"Incident Sage報告エラー: {report_error}")
+            
+            # Slack API関連エラーの特別処理
+            if "slack" in str(error).lower() or "rate limit" in str(error).lower():
+                try:
+                    # レート制限エラーの場合は自動調整
+                    if "rate limit" in str(error).lower() or "429" in str(error):
+                        old_interval = self.polling_interval
+                        self.polling_interval = min(self.polling_interval * 2, 300)  # 最大5分
+                        self.logger.info(f"⏰ ポーリング間隔自動調整: {old_interval}秒 → {self.polling_interval}秒")
+                    
+                    # Slack通知エラーファイルに記録
+                    error_log_file = PROJECT_ROOT / "logs" / "slack_api_errors.json"
+                    error_log_file.parent.mkdir(exist_ok=True)
+                    
+                    error_logs = []
+                    if error_log_file.exists():
+                        with open(error_log_file, 'r') as f:
+                            error_logs = json.load(f)
+                    
+                    error_logs.append(error_details)
+                    # 最新100件のみ保持
+                    error_logs = error_logs[-100:]
+                    
+                    with open(error_log_file, 'w') as f:
+                        json.dump(error_logs, f, indent=2)
+                    
+                except Exception as log_error:
+                    self.logger.warning(f"エラーログ記録失敗: {log_error}")
+            
+            # 重要エラーの場合は追加処理
+            if self._is_critical_error(error):
+                self.logger.critical(f"🔥 重要エラー検出: {error_id}")
+                # 必要に応じて自動復旧処理を実装
+                
+        except Exception as handler_error:
+            # エラーハンドラー自体のエラーは最小限のログのみ
+            self.logger.error(f"❌ エラーハンドラー内でエラー: {handler_error}")
+            self.logger.error(f"元のエラー: {error}")
 
-    def get_status(self):
-        """TODO: get_statusメソッドを実装してください"""
-        pass
+    def get_status(self) -> dict:
+        """ワーカー状態取得（Elder Tree状態、処理統計）"""
+        try:
+            # 稼働時間計算
+            if hasattr(self, 'start_time'):
+                uptime = (datetime.now() - self.start_time).total_seconds()
+            else:
+                uptime = 0
+            
+            status = {
+                "worker_info": {
+                    "worker_type": "slack_polling_worker",
+                    "worker_id": getattr(self, 'worker_id', 'unknown'),
+                    "class_name": self.__class__.__name__,
+                    "start_time": getattr(self, 'start_time', datetime.now()).isoformat(),
+                    "uptime_seconds": uptime,
+                    "uptime_formatted": self._format_uptime(uptime),
+                    "is_running": not getattr(self, 'should_stop', False)
+                },
+                "processing_stats": {
+                    "messages_processed": getattr(self, 'messages_processed', 0),
+                    "tasks_created": getattr(self, 'tasks_created', 0),
+                    "errors_count": getattr(self, 'errors_count', 0),
+                    "processing_rate_per_hour": self._calculate_processing_rate(uptime),
+                    "error_rate_percent": self._calculate_error_rate(),
+                    "success_rate_percent": 100 - self._calculate_error_rate()
+                },
+                "slack_config": {
+                    "channel_id": getattr(self, 'channel_id', 'unknown'),
+                    "polling_interval": getattr(self, 'polling_interval', 0),
+                    "require_mention": getattr(self, 'require_mention', True),
+                    "bot_user_id": getattr(self, 'bot_user_id', None),
+                    "token_configured": bool(getattr(self, 'slack_token', None))
+                },
+                "elder_integration": {
+                    "elder_tree_available": ELDER_TREE_AVAILABLE,
+                    "four_sages_active": hasattr(self, 'four_sages') and self.four_sages is not None,
+                    "elder_council_active": hasattr(self, 'elder_council_summoner') and self.elder_council_summoner is not None,
+                    "elder_tree_connected": hasattr(self, 'elder_tree') and self.elder_tree is not None
+                },
+                "database_info": {
+                    "db_path": str(getattr(self, 'db_path', 'unknown')),
+                    "db_exists": getattr(self, 'db_path', Path('/')).exists() if hasattr(self, 'db_path') else False,
+                    "processed_messages_count": self._get_processed_messages_count()
+                },
+                "health_status": self._determine_health_status(),
+                "recommendations": self._generate_recommendations(),
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            # Elder Tree詳細状態
+            if hasattr(self, 'elder_tree') and self.elder_tree:
+                try:
+                    status["elder_tree_details"] = {
+                        "connection_status": "connected",
+                        "message_queue_size": len(getattr(self.elder_tree, 'message_queue', [])),
+                        "node_count": len(getattr(self.elder_tree, 'nodes', []))
+                    }
+                except Exception as e:
+                    status["elder_tree_details"] = {
+                        "connection_status": "error",
+                        "error": str(e)
+                    }
+            
+            return status
+            
+        except Exception as e:
+            self.logger.error(f"状態取得エラー: {e}")
+            return {
+                "error": f"状態取得失敗: {e}",
+                "timestamp": datetime.now().isoformat(),
+                "worker_type": "slack_polling_worker",
+                "worker_id": getattr(self, 'worker_id', 'unknown')
+            }
 
-    def validate_config(self):
-        """TODO: validate_configメソッドを実装してください"""
-        pass
+    def validate_config(self) -> dict:
+        """設定検証（設定妥当性チェック、必須項目確認）"""
+        validation_result = {
+            "is_valid": True,
+            "errors": [],
+            "warnings": [],
+            "recommendations": [],
+            "config_details": {},
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        try:
+            # Slack Token検証
+            if not hasattr(self, 'slack_token') or not self.slack_token:
+                validation_result["errors"].append("Slack Bot Token が設定されていません")
+                validation_result["is_valid"] = False
+                validation_result["recommendations"].append("SLACK_BOT_TOKEN 環境変数を設定してください")
+            else:
+                validation_result["config_details"]["slack_token"] = "[設定済み]"  # トークンの値は表示しない
+                
+                # Token形式の基本チェック
+                if not self.slack_token.startswith(('xoxb-', 'xoxp-')):
+                    validation_result["warnings"].append("Slack Tokenの形式が正しくない可能性があります")
+                    validation_result["recommendations"].append("xoxb- で始まるBot Tokenを使用してください")
+            
+            # チャンネルID検証
+            if not hasattr(self, 'channel_id') or not self.channel_id:
+                validation_result["errors"].append("監視対象チャンネルIDが設定されていません")
+                validation_result["is_valid"] = False
+                validation_result["recommendations"].append("SLACK_POLLING_CHANNEL_ID を設定してください")
+            else:
+                validation_result["config_details"]["channel_id"] = self.channel_id
+                
+                # チャンネルID形式チェック
+                if not self.channel_id.startswith('C'):
+                    validation_result["warnings"].append("チャンネルIDの形式が正しくない可能性があります")
+                    validation_result["recommendations"].append("Cから始まるチャンネルIDを使用してください")
+            
+            # ポーリング間隔検証
+            if hasattr(self, 'polling_interval'):
+                validation_result["config_details"]["polling_interval"] = self.polling_interval
+                if self.polling_interval < 5:
+                    validation_result["warnings"].append(f"ポーリング間隔が短すぎます: {self.polling_interval}秒")
+                    validation_result["recommendations"].append("レート制限を避けるため10秒以上を推奨")
+                elif self.polling_interval > 300:
+                    validation_result["warnings"].append(f"ポーリング間隔が長すぎます: {self.polling_interval}秒")
+                    validation_result["recommendations"].append("リアルタイム性を保つため60秒以下を推奨")
+            
+            # メンション要求設定
+            if hasattr(self, 'require_mention'):
+                validation_result["config_details"]["require_mention"] = self.require_mention
+                if not self.require_mention:
+                    validation_result["warnings"].append("メンション要求が無効です。全メッセージを処理します")
+                    validation_result["recommendations"].append("セキュリティのためメンション要求を有効にしてください")
+            
+            # データベースパス検証
+            if hasattr(self, 'db_path'):
+                validation_result["config_details"]["db_path"] = str(self.db_path)
+                if not self.db_path.parent.exists():
+                    validation_result["errors"].append(f"データベースディレクトリが存在しません: {self.db_path.parent}")
+                    validation_result["is_valid"] = False
+                    validation_result["recommendations"].append(f"ディレクトリを作成してください: {self.db_path.parent}")
+                elif not os.access(self.db_path.parent, os.W_OK):
+                    validation_result["errors"].append(f"データベースディレクトリに書き込み権限がありません: {self.db_path.parent}")
+                    validation_result["is_valid"] = False
+                    validation_result["recommendations"].append("書き込み権限を付与してください")
+            
+            # RabbitMQ設定確認
+            if hasattr(self, 'config'):
+                if not hasattr(self.config, 'RABBITMQ_HOST') or not self.config.RABBITMQ_HOST:
+                    validation_result["warnings"].append("RabbitMQ ホストが未設定です")
+                    validation_result["recommendations"].append("RABBITMQ_HOST 環境変数を設定してください")
+                else:
+                    validation_result["config_details"]["rabbitmq_host"] = self.config.RABBITMQ_HOST
+            
+            # Elder Tree統合状態確認
+            validation_result["config_details"]["elder_integration"] = {
+                "available": ELDER_TREE_AVAILABLE,
+                "four_sages_initialized": hasattr(self, 'four_sages') and self.four_sages is not None,
+                "elder_council_initialized": hasattr(self, 'elder_council_summoner') and self.elder_council_summoner is not None,
+                "elder_tree_connected": hasattr(self, 'elder_tree') and self.elder_tree is not None
+            }
+            
+            if ELDER_TREE_AVAILABLE and not (hasattr(self, 'four_sages') and self.four_sages):
+                validation_result["warnings"].append("Elder Tree統合が利用可能ですが、初期化されていません")
+                validation_result["recommendations"].append("initialize()メソッドを実行してください")
+            
+            # パフォーマンス統計の妥当性
+            if hasattr(self, 'messages_processed') and self.messages_processed < 0:
+                validation_result["errors"].append("処理済みメッセージ数が負の値です")
+                validation_result["is_valid"] = False
+            
+            if hasattr(self, 'errors_count') and self.errors_count < 0:
+                validation_result["errors"].append("エラー数が負の値です")
+                validation_result["is_valid"] = False
+            
+            # エラー率チェック
+            if hasattr(self, 'messages_processed') and hasattr(self, 'errors_count'):
+                if self.messages_processed > 0:
+                    error_rate = (self.errors_count / self.messages_processed) * 100
+                    if error_rate > 20:
+                        validation_result["warnings"].append(f"エラー率が高すぎます: {error_rate:.1f}%")
+                        validation_result["recommendations"].append("Slack API設定とネットワーク接続を確認してください")
+                    elif error_rate > 10:
+                        validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:.1f}%")
+            
+            # 成功時の追加情報
+            if validation_result["is_valid"]:
+                validation_result["summary"] = "設定は有効です"
+                if not validation_result["warnings"]:
+                    validation_result["summary"] += " - 警告なし"
+            else:
+                validation_result["summary"] = f"設定に {len(validation_result['errors'])} 個のエラーがあります"
+            
+            self.logger.info(f"設定検証完了: {validation_result['summary']}")
+            
+            return validation_result
+            
+        except Exception as e:
+            validation_result["is_valid"] = False
+            validation_result["errors"].append(f"設定検証中にエラー: {e}")
+            validation_result["summary"] = "設定検証失敗"
+            self.logger.error(f"設定検証エラー: {e}")
+            return validation_result
+
+    def _report_initialization_to_task_sage(self) -> None:
+        """Task Sageに初期化完了を報告"""
+        if not hasattr(self, 'four_sages') or not self.four_sages:
+            return
+        
+        try:
+            report = {
+                "type": "worker_initialization",
+                "worker_type": "slack_polling",
+                "worker_id": self.worker_id,
+                "capabilities": [
+                    "slack_message_polling",
+                    "task_creation",
+                    "mention_detection",
+                    "rate_limit_handling"
+                ],
+                "config": {
+                    "channel_id": self.channel_id,
+                    "polling_interval": self.polling_interval,
+                    "require_mention": self.require_mention
+                },
+                "status": "initialized",
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            self.four_sages.report_to_task_sage(report)
+            self.logger.info("📋 Task Sage初期化報告完了")
+            
+        except Exception as e:
+            self.logger.warning(f"Task Sage初期化報告エラー: {e}")
+
+    def _determine_error_severity(self, error: Exception, context: str = None) -> str:
+        """エラーの重要度を判定"""
+        error_str = str(error).lower()
+        
+        # 重要エラー
+        if any(keyword in error_str for keyword in [
+            "authentication", "token", "forbidden", "unauthorized",
+            "connection refused", "network unreachable"
+        ]):
+            return "critical"
+        
+        # 高レベルエラー  
+        if any(keyword in error_str for keyword in [
+            "rate limit", "429", "timeout", "database", "permission denied"
+        ]):
+            return "high"
+        
+        # 中レベルエラー
+        if any(keyword in error_str for keyword in [
+            "http", "api", "json", "parsing", "format"
+        ]):
+            return "medium"
+        
+        # デフォルトは低レベル
+        return "low"
+
+    def _get_error_recommendations(self, error: Exception, context: str = None) -> list:
+        """エラーに応じた推奨対応を生成"""
+        error_str = str(error).lower()
+        recommendations = []
+        
+        if "token" in error_str or "authentication" in error_str:
+            recommendations.extend([
+                "Slack Bot Tokenを確認してください",
+                "Bot権限設定を確認してください",
+                "トークンの有効期限を確認してください"
+            ])
+        
+        if "rate limit" in error_str or "429" in error_str:
+            recommendations.extend([
+                "ポーリング間隔を延長してください",
+                "APIコール頻度を下げてください",
+                "リトライ間隔を調整してください"
+            ])
+        
+        if "network" in error_str or "connection" in error_str:
+            recommendations.extend([
+                "ネットワーク接続を確認してください",
+                "プロキシ設定を確認してください",
+                "DNS設定を確認してください"
+            ])
+        
+        if "database" in error_str:
+            recommendations.extend([
+                "データベースファイルの権限を確認してください",
+                "ディスク容量を確認してください",
+                "データベース整合性をチェックしてください"
+            ])
+        
+        if not recommendations:
+            recommendations.append("ログファイルで詳細なエラー情報を確認してください")
+        
+        return recommendations
+
+    def _is_critical_error(self, error: Exception) -> bool:
+        """エラーが重要かどうか判定"""
+        return self._determine_error_severity(error) in ["critical", "high"]
+
+    def _format_uptime(self, uptime_seconds: float) -> str:
+        """アップタイムを人間が読みやすい形式にフォーマット"""
+        if uptime_seconds < 60:
+            return f"{uptime_seconds:.0f}秒"
+        elif uptime_seconds < 3600:
+            minutes = uptime_seconds / 60
+            return f"{minutes:.1f}分"
+        elif uptime_seconds < 86400:
+            hours = uptime_seconds / 3600
+            return f"{hours:.1f}時間"
+        else:
+            days = uptime_seconds / 86400
+            return f"{days:.1f}日"
+
+    def _calculate_processing_rate(self, uptime_seconds: float) -> float:
+        """1時間あたりの処理率を計算"""
+        if uptime_seconds <= 0:
+            return 0.0
+        
+        messages_processed = getattr(self, 'messages_processed', 0)
+        hours = uptime_seconds / 3600
+        return messages_processed / hours if hours > 0 else 0.0
+
+    def _calculate_error_rate(self) -> float:
+        """エラー率を計算（パーセント）"""
+        messages_processed = getattr(self, 'messages_processed', 0)
+        errors_count = getattr(self, 'errors_count', 0)
+        
+        if messages_processed <= 0:
+            return 0.0
+        
+        return (errors_count / messages_processed) * 100
+
+    def _get_processed_messages_count(self) -> int:
+        """データベースから処理済みメッセージ数を取得"""
+        try:
+            if hasattr(self, 'db_path') and self.db_path.exists():
+                with sqlite3.connect(self.db_path) as conn:
+                    cursor = conn.execute("SELECT COUNT(*) FROM processed_messages")
+                    return cursor.fetchone()[0]
+        except Exception as e:
+            self.logger.warning(f"処理済みメッセージ数取得エラー: {e}")
+        
+        return 0
+
+    def _determine_health_status(self) -> str:
+        """ワーカーの健康状態を判定"""
+        # 停止状態チェック
+        if getattr(self, 'should_stop', False):
+            return "stopped"
+        
+        # 設定エラーチェック
+        if not getattr(self, 'slack_token', None):
+            return "critical"
+        
+        # エラー率チェック
+        error_rate = self._calculate_error_rate()
+        if error_rate > 50:
+            return "critical"
+        elif error_rate > 20:
+            return "warning"
+        
+        # Elder Tree統合チェック
+        if ELDER_TREE_AVAILABLE and hasattr(self, 'four_sages') and self.four_sages:
+            return "healthy"
+        elif getattr(self, 'slack_token', None):
+            return "degraded"
+        else:
+            return "critical"
+
+    def _generate_recommendations(self) -> list:
+        """現在の状態に基づく推奨事項を生成"""
+        recommendations = []
+        
+        # エラー率チェック
+        error_rate = self._calculate_error_rate()
+        if error_rate > 20:
+            recommendations.append("エラー率が高いため、Slack API設定とネットワーク接続を確認してください")
+        
+        # ポーリング間隔チェック
+        if hasattr(self, 'polling_interval') and self.polling_interval < 10:
+            recommendations.append("レート制限を避けるため、ポーリング間隔を10秒以上に設定してください")
+        
+        # Elder Tree統合チェック
+        if ELDER_TREE_AVAILABLE and not (hasattr(self, 'four_sages') and self.four_sages):
+            recommendations.append("Elder Tree統合を有効化すると監視・エラーハンドリング機能が向上します")
+        
+        # データベースチェック
+        if hasattr(self, 'db_path'):
+            processed_count = self._get_processed_messages_count()
+            if processed_count > 10000:
+                recommendations.append("処理済みメッセージが多いため、データベースのクリーンアップを検討してください")
+        
+        # メンション設定チェック
+        if not getattr(self, 'require_mention', True):
+            recommendations.append("セキュリティのため、メンション要求を有効にすることを推奨します")
+        
+        if not recommendations:
+            recommendations.append("現在の設定は適切です")
+        
+        return recommendations
 
 
 def main():

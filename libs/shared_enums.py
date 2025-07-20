@@ -1,40 +1,23 @@
 """
-shared_enums - Auto-generated module by Incident Knights
-Created to prevent import errors
+Shared Enums - 共有列挙型定義
 """
 
-import logging
+from enum import Enum
 
-logger = logging.getLogger(__name__)
+class Priority(Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+    CRITICAL = "critical"
 
-# Placeholder implementations
+class Status(Enum):
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
+    FAILED = "failed"
 
-
-class SharedEnums:
-    """Auto-generated placeholder class"""
-
-    def __init__(self, *args, **kwargs):
-        logger.warning(
-            f"Using auto-generated placeholder for {self.__class__.__name__}"
-        )
-
-    def __getattr__(self, name):
-        logger.warning(f"Accessing placeholder attribute: {name}")
-        return lambda *args, **kwargs: None
-
-
-# Common function placeholders
-def setup(*args, **kwargs):
-    """Placeholder setup function"""
-    logger.warning("Using placeholder setup function")
-    pass
-
-
-def main(*args, **kwargs):
-    """Placeholder main function"""
-    logger.warning("Using placeholder main function")
-    pass
-
-
-# Export
-__all__ = ["SharedEnums", "setup", "main"]
+class TaskType(Enum):
+    FEATURE = "feature"
+    BUG = "bug"
+    ENHANCEMENT = "enhancement"
+    MAINTENANCE = "maintenance"
