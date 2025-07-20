@@ -796,6 +796,12 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
         self.logger.info("   → イシューキャッシュ初期化中...")
         self.issue_cache = IssueCache(ttl=600)  # 10分キャッシュ
         self.logger.info("   → イシューキャッシュ初期化完了")
+        
+        self.logger.info("   → スマートマージシステム初期化中...")
+        # 遅延初期化のためのフラグ
+        self.smart_merge_system = None
+        self.conflict_resolution_enabled = True
+        self.logger.info("   → スマートマージシステム初期化準備完了")
 
         self.pr_creator = None  # GitHubクライアント初期化後に設定
         self.metrics = {
