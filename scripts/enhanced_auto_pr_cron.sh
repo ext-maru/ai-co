@@ -56,8 +56,8 @@ if [ -z "$GITHUB_TOKEN" ]; then
     exit 1
 fi
 
-# プロセッサー実行
-python3 "$SCRIPT_DIR/libs/integrations/github/enhanced_auto_issue_processor.py" 2>&1 | while read line; do
+# プロセッサー実行（正しいモジュールパスで実行）
+cd "$SCRIPT_DIR" && python3 -m libs.integrations.github.enhanced_auto_issue_processor 2>&1 | while read line; do
     log "    $line"
 done
 
