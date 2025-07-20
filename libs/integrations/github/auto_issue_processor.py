@@ -43,6 +43,9 @@ class DummySage:
 
 
 class DummyPRCreator:
+    def __init__(self, token=None, repo_owner=None, repo_name=None):
+        pass  # Dummy implementation accepts but ignores arguments
+    
     def create_pull_request(self, **kwargs):
         return {"success": False, "error": "PR creation not implemented yet"}
 
