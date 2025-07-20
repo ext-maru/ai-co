@@ -213,6 +213,56 @@ git push -u origin feature/issue-17-data-model
 
 **違反時はエルダー評議会による是正指導対象**
 
+## 🏛️ **エルダーズギルド Issue作成品質標準** (2025/1/20制定)
+
+**エルダー評議会令第100号 - Issue作成品質標準確立令**
+
+### 📏 **品質基準概要**
+Auto Issue Processor A2Aで実証された高品質Issue作成基準を全プロジェクトの標準とします。
+
+#### 🔴 **Tier 1: 絶対必須項目 (Iron Will)**
+- ✅ **根本原因分析**: 表面的現象から技術的根本原因まで深掘り
+- ✅ **技術的詳細度**: 具体的な実装方法・技術スタック・変更範囲
+- ✅ **段階的実装計画**: Phase分割による現実的な計画
+- ✅ **定量的成功基準**: 具体的数値目標とパフォーマンス基準
+
+#### 🟡 **Tier 2: 高品質項目 (Elder Standard)**
+- ✅ **詳細工数見積もり**: 設計・実装・テスト・ドキュメント分解
+- ✅ **ビジネス価値明示**: 直接的価値と戦略的価値
+- ✅ **品質保証計画**: テスト戦略・コードレビュー基準
+- ✅ **リスク要因特定**: 技術・外部依存・リソースリスク
+
+#### 🟢 **Tier 3: 卓越性項目 (Grand Elder)**
+- ✅ **包括性確認**: 非機能要件・セキュリティ・拡張性
+- ✅ **将来拡張性**: スケーラビリティ・技術負債考慮
+- ✅ **システム影響評価**: 他コンポーネントとの相互作用
+
+### 🎯 **優先度別要件**
+- **Critical**: Tier 1 + Tier 2 + Tier 3 必須
+- **High**: Tier 1 + Tier 2 必須、Tier 3 推奨
+- **Medium**: Tier 1 必須、Tier 2 推奨
+- **Low**: Tier 1 必須
+
+### 🛠️ **実装ツール**
+```bash
+# GitHub Issue テンプレート使用
+# 🏛️ エルダーズギルド標準Issue または 🚨 Critical Issue
+
+# 品質自動検証
+python3 scripts/issue_quality_checker.py <issue_file> [priority]
+
+# 品質スコア目標
+# Tier 1達成率: 100% (絶対必須)
+# 平均品質スコア: 75点以上
+```
+
+### 📚 **詳細ガイド**
+- [エルダーズギルドIssue作成標準](knowledge_base/ELDERS_GUILD_ISSUE_CREATION_STANDARDS.md)
+- [GitHub Issue テンプレート](.github/ISSUE_TEMPLATE/)
+- [品質検証ツール](scripts/issue_quality_checker.py)
+
+**違反時はエルダー評議会による品質指導・Issue差し戻し対象**
+
 ## 🚨 GitHub Actions無効化ポリシー (2025/1/19制定)
 
 **重要: GitHub Actionsはグランドエルダーmaruの明示的許可があるまで完全無効化を維持**

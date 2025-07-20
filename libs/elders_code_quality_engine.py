@@ -163,15 +163,17 @@ class DatabaseManager:
         """Search for similar quality patterns"""
         try:
             cursor = self.connection.cursor()
+            # Convert embedding to pgvector format
+            embedding_str = '[' + ','.join(map(str, embedding)) + ']'
             query = """
             SELECT uuid, pattern_name, pattern_type, improved_code, description, 
-                   improvement_score, 1 - (embedding <=> %s) as similarity
+                   improvement_score, 1 - (embedding <=> %s::vector) as similarity
             FROM code_quality_patterns 
-            WHERE 1 - (embedding <=> %s) > %s
+            WHERE 1 - (embedding <=> %s::vector) > %s
             ORDER BY similarity DESC
             LIMIT %s;
             """
-            cursor.execute(query, (embedding, embedding, similarity_threshold, limit))
+            cursor.execute(query, (embedding_str, embedding_str, similarity_threshold, limit))
             results = cursor.fetchall()
             cursor.close()
             
@@ -195,15 +197,17 @@ class DatabaseManager:
         """Search for similar bug cases"""
         try:
             cursor = self.connection.cursor()
+            # Convert embedding to pgvector format
+            embedding_str = '[' + ','.join(map(str, embedding)) + ']'
             query = """
             SELECT uuid, bug_title, bug_category, fix_solution, prevention_tips,
-                   severity_level, 1 - (embedding <=> %s) as similarity
+                   severity_level, 1 - (embedding <=> %s::vector) as similarity
             FROM bug_learning_cases 
-            WHERE 1 - (embedding <=> %s) > %s
+            WHERE 1 - (embedding <=> %s::vector) > %s
             ORDER BY similarity DESC
             LIMIT %s;
             """
-            cursor.execute(query, (embedding, embedding, similarity_threshold, limit))
+            cursor.execute(query, (embedding_str, embedding_str, similarity_threshold, limit))
             results = cursor.fetchall()
             cursor.close()
             
@@ -633,9 +637,14 @@ class SmartCodingAssistant:
         # Generate embedding for similarity search
         embedding = await self.embedder.generate_embedding(code)
         
-        # Search for similar patterns and bugs
-        similar_patterns = await self.db.search_similar_patterns(embedding)
-        similar_bugs = await self.db.search_similar_bugs(embedding)
+        # Search for similar patterns and bugs (only if we have data)
+        similar_patterns = []
+        similar_bugs = []
+        try:
+            similar_patterns = await self.db.search_similar_patterns(embedding)
+            similar_bugs = await self.db.search_similar_bugs(embedding)
+        except Exception as e:
+            logger.warning(f"⚠️ Could not search similar patterns/bugs: {e}")
         
         # Generate AI-powered suggestions
         ai_suggestions = await self._generate_ai_suggestions(code, analysis, similar_patterns, similar_bugs)
