@@ -31,6 +31,7 @@ from libs.elders_harmony_system import (
     LightningCommitSystem,
     SageConsultationResult,
 )
+from libs.env_manager import EnvManager
 
 # ログ設定
 logging.basicConfig(
@@ -44,7 +45,7 @@ class CouncilCommitCLI:
 
     def __init__(self):
         self.lightning_system = LightningCommitSystem()
-        self.project_root = Path("/home/aicompany/ai_co")
+        self.project_root = EnvManager.get_project_root()
 
     def get_git_changes(self) -> dict:
         """Git変更状況を取得"""

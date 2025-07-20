@@ -6,6 +6,7 @@ Simple GitHub Issue Creation
 import os
 
 import requests
+from libs.env_manager import EnvManager
 
 # GitHub API設定
 token = os.getenv("GITHUB_TOKEN")
@@ -15,8 +16,8 @@ if not token:
     exit(1)
 
 # リポジトリ設定
-repo = os.getenv("GITHUB_REPO", "ext-maru/ai-co")
-url = f"https://api.github.com/repos/{repo}/issues"
+repo = f"{EnvManager.get_github_repo_owner()}/{EnvManager.get_github_repo_name()}"
+url = f"{EnvManager.get_github_api_base_url()}/repos/{repo}/issues"
 
 headers = {
     "Authorization": f"token {token}",

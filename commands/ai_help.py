@@ -10,6 +10,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 import subprocess
 
 from commands.base_command import BaseCommand, CommandResult
+from libs.env_manager import EnvManager
 
 
 class AIHelpCommand(BaseCommand):
@@ -70,7 +71,7 @@ class AIHelpCommand(BaseCommand):
     def _list_commands(self) -> CommandResult:
         """全コマンド一覧"""
         commands = []
-        bin_dir = Path("/home/aicompany/ai_co/bin")
+        bin_dir = EnvManager.get_project_root() / "bin"
 
         for cmd_file in sorted(bin_dir.glob("ai-*")):
             if cmd_file.is_file() and cmd_file.name != "ai_launcher.py":

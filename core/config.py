@@ -19,10 +19,10 @@ from .common_utils import get_project_paths, load_json_file, safe_get
 class RabbitMQConfig:
     """RabbitMQ設定"""
 
-    host: str = "localhost"
-    port: int = 5672
-    username: str = "guest"
-    password: str = "guest"
+    host: str = os.getenv("RABBITMQ_HOST", "localhost")
+    port: int = int(os.getenv("RABBITMQ_PORT", "5672"))
+    username: str = os.getenv("RABBITMQ_USER", "guest")
+    password: str = os.getenv("RABBITMQ_PASSWORD", "guest")
     heartbeat: int = 600
     blocked_connection_timeout: int = 300
 
@@ -33,7 +33,7 @@ class RabbitMQConfig:
             host=os.getenv("RABBITMQ_HOST", "localhost"),
             port=int(os.getenv("RABBITMQ_PORT", "5672")),
             username=os.getenv("RABBITMQ_USER", "guest"),
-            password=os.getenv("RABBITMQ_PASS", "guest"),
+            password=os.getenv("RABBITMQ_PASSWORD", "guest"),
             heartbeat=int(os.getenv("RABBITMQ_HEARTBEAT", "600")),
             blocked_connection_timeout=int(os.getenv("RABBITMQ_TIMEOUT", "300")),
         )

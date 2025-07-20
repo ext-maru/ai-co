@@ -56,12 +56,16 @@ services:
       redis:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://elder_admin:sage_wisdom_2025@postgres:5432/elders_guild
-      REDIS_URL: redis://redis:6379/0
-      ENV: development
-      LOG_LEVEL: INFO
+      DATABASE_URL: postgresql://${POSTGRES_USER:-elder_admin}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-elders_guild}
+      REDIS_URL: redis://redis:${REDIS_PORT:-6379}/${REDIS_DB:-0}
+      ENV: ${ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       PYTHONPATH: /app
+      PROJECT_ROOT: /app
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      GITHUB_REPO_OWNER: ${GITHUB_REPO_OWNER:-ext-maru}
+      GITHUB_REPO_NAME: ${GITHUB_REPO_NAME:-ai-co}
     ports:
       - "8001:8000"
     volumes:
@@ -91,11 +95,15 @@ services:
       redis:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://elder_admin:sage_wisdom_2025@postgres:5432/elders_guild
-      REDIS_URL: redis://redis:6379/0
-      ENV: development
-      LOG_LEVEL: INFO
+      DATABASE_URL: postgresql://${POSTGRES_USER:-elder_admin}:${POSTGRES_PASSWORD}@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DATABASE:-elders_guild}
+      REDIS_URL: redis://redis:${REDIS_PORT:-6379}/${REDIS_DB:-0}
+      ENV: ${ENV:-development}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
       WORKER_TYPE: event_bus
+      PROJECT_ROOT: /app
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      GITHUB_REPO_OWNER: ${GITHUB_REPO_OWNER:-ext-maru}
+      GITHUB_REPO_NAME: ${GITHUB_REPO_NAME:-ai-co}
     volumes:
       - ./libs:/app/libs
       - ./knowledge_base:/app/knowledge_base

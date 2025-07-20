@@ -7,6 +7,7 @@ import os
 import sys
 
 import requests
+from libs.env_manager import EnvManager
 
 # GitHub API設定
 token = os.getenv("GITHUB_TOKEN")
@@ -21,8 +22,8 @@ if len(sys.argv) < 2:
     exit(1)
 
 issue_number = int(sys.argv[1])
-repo = os.getenv("GITHUB_REPO", "ext-maru/ai-co")
-url = f"https://api.github.com/repos/{repo}/issues/{issue_number}"
+repo = f"{EnvManager.get_github_repo_owner()}/{EnvManager.get_github_repo_name()}"
+url = f"{EnvManager.get_github_api_base_url()}/repos/{repo}/issues/{issue_number}"
 
 headers = {
     "Authorization": f"token {token}",
@@ -47,7 +48,7 @@ except Exception as e:
     print(f"Error: {e}")
 
 # コメントを追加（オプション）
-comment_url = f"https://api.github.com/repos/{repo}/issues/{issue_number}/comments"
+comment_url = f"{EnvManager.get_github_api_base_url()}/repos/{repo}/issues/{issue_number}/comments"
 comment_data = {"body": "Issue closed via CLI tool."}
 
 try:

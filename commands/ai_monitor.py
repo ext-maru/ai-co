@@ -26,6 +26,7 @@ from rich.table import Table
 from rich.text import Text
 
 from commands.base_command import BaseCommand, CommandResult
+from libs.env_manager import EnvManager
 
 
 class AIMonitorCommand(BaseCommand):
@@ -305,7 +306,7 @@ class AIMonitorCommand(BaseCommand):
         """システムメトリクス取得"""
         cpu_percent = psutil.cpu_percent(interval=0.1)
         memory = psutil.virtual_memory()
-        disk = psutil.disk_usage("/home/aicompany/ai_co")
+        disk = psutil.disk_usage(str(EnvManager.get_project_root()))
 
         return {
             "cpu_percent": cpu_percent,
@@ -384,7 +385,7 @@ class AIMonitorCommand(BaseCommand):
 
     def _get_all_sages_data(self) -> Dict[str, Any]:
         """全賢者データ取得"""
-        kb_path = Path("/home/aicompany/ai_co/knowledge_base")
+        kb_path = EnvManager.get_knowledge_base_path()
         knowledge_count = (
             sum(1 for _ in kb_path.rglob("*.json*")) if kb_path.exists() else 0
         )

@@ -65,7 +65,7 @@ class PostgreSQLConnectionManager:
             ),
             "user": config.get("user", os.getenv("POSTGRES_USER", "elders_guild")),
             "password": config.get(
-                "password", os.getenv("POSTGRES_PASSWORD", "elders_2025")
+                "password", os.getenv("POSTGRES_PASSWORD", "")
             ),
         }
 

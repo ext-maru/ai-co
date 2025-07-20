@@ -9,6 +9,7 @@ import time
 from typing import Any, Dict, Optional
 
 import psutil
+from libs.env_manager import EnvManager
 from prometheus_client import (
     REGISTRY,
     Counter,
@@ -106,7 +107,7 @@ class PrometheusExporter:
 
         # アプリケーション情報設定
         app_info.info(
-            {"version": "1.0.0", "name": "ai-co", "environment": "development"}
+            {"version": "1.0.0", "name": EnvManager.get_github_repo_name(), "environment": EnvManager.get_env()}
         )
 
     def start(self):

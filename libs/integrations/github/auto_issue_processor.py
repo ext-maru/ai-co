@@ -24,6 +24,7 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from libs.core.elders_legacy import EldersServiceLegacy
+from libs.env_manager import EnvManager
 
 # 必要なモジュールのインポート
 from libs.rag_manager import RagManager
@@ -42,9 +43,9 @@ class AutoIssueElderFlowEngine:
         self.elder_flow = ElderFlowEngine()
         
         # GitHub設定の検証と初期化
-        github_token = os.getenv("GITHUB_TOKEN")
-        repo_owner = os.getenv("GITHUB_REPO_OWNER")
-        repo_name = os.getenv("GITHUB_REPO_NAME")
+        github_token = EnvManager.get_github_token()
+        repo_owner = EnvManager.get_github_repo_owner()
+        repo_name = EnvManager.get_github_repo_name()
 
         if not github_token:
             raise ValueError("GITHUB_TOKEN environment variable is required")
@@ -621,9 +622,9 @@ class AutoIssueProcessor(EldersServiceLegacy):
         self.service_name = "AutoIssueProcessor"
 
         # GitHub API初期化
-        github_token = os.getenv("GITHUB_TOKEN")
-        repo_owner = os.getenv("GITHUB_REPO_OWNER", "ext-maru")
-        repo_name = os.getenv("GITHUB_REPO_NAME", "ai-co")
+        github_token = EnvManager.get_github_token()
+        repo_owner = EnvManager.get_github_repo_owner()
+        repo_name = EnvManager.get_github_repo_name()
 
         if not github_token:
             raise ValueError("GITHUB_TOKEN environment variable not set")

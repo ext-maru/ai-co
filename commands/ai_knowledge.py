@@ -14,6 +14,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, "/root/ai_co")
 
 from core import EMOJI
+from libs.env_manager import EnvManager
 from libs.knowledge_consolidator import KnowledgeConsolidator
 from libs.knowledge_evolution_tracker import KnowledgeEvolutionTracker
 from workers.knowledge_scheduler_worker import KnowledgeManagementService
@@ -97,7 +98,7 @@ def main():
 
         elif args.command == "status":
             print(f"{EMOJI['info']} Knowledge Management Status")
-            kb_path = Path("/home/aicompany/ai_co/knowledge_base")
+            kb_path = EnvManager.get_knowledge_base_path()
 
             # 統計情報表示
             md_files = list(kb_path.glob("*.md"))

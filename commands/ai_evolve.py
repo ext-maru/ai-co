@@ -17,6 +17,7 @@ from typing import Any, Dict, List, Optional
 sys.path.append(str(Path(__file__).parent.parent))
 
 from commands.base_command import BaseCommand, CommandResult
+from libs.env_manager import EnvManager
 
 
 @dataclass
@@ -39,7 +40,7 @@ class AIEvolveCommand(BaseCommand):
             name="ai-evolve", description="Elder Council戦略的進化システム", version="2.0.0"
         )
         self.evolution_history = []
-        self.knowledge_base_path = Path("/home/aicompany/ai_co/knowledge_base")
+        self.knowledge_base_path = EnvManager.get_knowledge_base_path()
         self.knowledge_base_path.mkdir(exist_ok=True)
 
     def setup_arguments(self):

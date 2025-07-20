@@ -9,17 +9,18 @@ import sys
 from datetime import datetime
 
 import requests
+from libs.env_manager import EnvManager
 
 # GitHubトークンを環境変数から取得
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_TOKEN = EnvManager.get_github_token()
 if not GITHUB_TOKEN:
     print("❌ Error: GITHUB_TOKEN environment variable not set")
     sys.exit(1)
 
 # リポジトリ情報
-REPO_OWNER = "ext-maru"
-REPO_NAME = "ai-co"
-API_BASE_URL = f"https://api.github.com/repos/{REPO_OWNER}/{REPO_NAME}"
+REPO_OWNER = EnvManager.get_github_repo_owner()
+REPO_NAME = EnvManager.get_github_repo_name()
+API_BASE_URL = f"{EnvManager.get_github_api_base_url()}/repos/{REPO_OWNER}/{REPO_NAME}"
 
 # ヘッダー設定
 HEADERS = {

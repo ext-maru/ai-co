@@ -15,6 +15,7 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from commands.base_command import BaseCommand, CommandResult
 from libs.enhanced_rag_manager import EnhancedRAGManager
+from libs.env_manager import EnvManager
 from libs.rag_grimoire_integration import RagGrimoireConfig, RagGrimoireIntegration
 from libs.rag_manager import RAGManager
 
@@ -253,7 +254,7 @@ class AIRagCommand(BaseCommand):
         }
 
         # 知識ベースに追加
-        kb_path = Path("/home/aicompany/ai_co/knowledge_base/rag_learned")
+        kb_path = EnvManager.get_knowledge_base_path() / "rag_learned"
         kb_path.mkdir(parents=True, exist_ok=True)
 
         filename = f"knowledge_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
@@ -267,7 +268,7 @@ class AIRagCommand(BaseCommand):
 
     def _show_status(self) -> CommandResult:
         """RAG賢者ステータス表示"""
-        kb_path = Path("/home/aicompany/ai_co/knowledge_base")
+        kb_path = EnvManager.get_knowledge_base_path()
 
         # 知識エントリ数をカウント
         total_entries = sum(1 for _ in kb_path.rglob("*.json*"))

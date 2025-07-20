@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from .secure_github_client import SecureGitHubClient, get_secure_github_client
+from libs.env_manager import EnvManager
 
 
 class GitHubIssueMonitor:
@@ -22,8 +23,8 @@ class GitHubIssueMonitor:
 
     def __init__(
         self,
-        repo_owner: str = "ext-maru",
-        repo_name: str = "ai-co",
+        repo_owner: str = None,
+        repo_name: str = None,
         check_interval: int = 30,
         state_file: str = "logs/issue_monitor_state.json",
     ):
@@ -34,8 +35,8 @@ class GitHubIssueMonitor:
             check_interval: チェック間隔（秒）
             state_file: 状態保存ファイル
         """
-        self.repo_owner = repo_owner
-        self.repo_name = repo_name
+        self.repo_owner = repo_owner or EnvManager.get_github_repo_owner()
+        self.repo_name = repo_name or EnvManager.get_github_repo_name()
         self.check_interval = check_interval
         self.state_file = Path(state_file)
 
@@ -162,9 +163,9 @@ class GitHubIssueMonitor:
             import requests
 
             # GitHub API直接呼び出し（secure_clientに無いメソッド）
-            url = f"https://api.github.com/repos/{self.repo_owner}/{self.repo_name}/issues/{issue_number}/comments"
+            url = f"{EnvManager.get_github_api_base_url()}/repos/{self.repo_owner}/{self.repo_name}/issues/{issue_number}/comments"
             headers = {
-                "Authorization": f"token {os.getenv('GITHUB_TOKEN')}",
+                "Authorization": f"token {EnvManager.get_github_token()}",
                 "Accept": "application/vnd.github.v3+json",
             }
 

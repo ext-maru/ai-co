@@ -14,6 +14,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from libs.env_manager import EnvManager
+
 
 class RepositoryValidator:
     """リポジトリ検証・制限システム"""
@@ -51,13 +53,13 @@ class RepositoryValidator:
             default_config = {
                 "allowed_repositories": [
                     {
-                        "owner": "ext-maru",
-                        "name": "ai-co",
+                        "owner": EnvManager.get_github_repo_owner(),
+                        "name": EnvManager.get_github_repo_name(),
                         "description": "メインプロジェクトリポジトリ",
                         "is_primary": True,
                     }
                 ],
-                "default_repository": {"owner": "ext-maru", "name": "ai-co"},
+                "default_repository": {"owner": EnvManager.get_github_repo_owner(), "name": EnvManager.get_github_repo_name()},
                 "forbidden_repositories": [
                     {
                         "owner": "anthropics",
