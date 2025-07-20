@@ -2,7 +2,7 @@
 
 ## 📋 概要
 
-Auto Issue Processorは、GitHub Issueを自動的に処理してPull Requestを作成するシステムです。A2A（Agent to Agent）実装により、各Issueを独立したプロセスで処理し、コンテキストの蓄積とPIDロックの問題を解決します。
+Auto Issue Processorは、GitHub Issueを自動的に処理してPull Requestを作成するシステムです。**常にA2A（Agent to Agent）モードで動作し**、各Issueを独立したプロセスで処理することで、コンテキストの蓄積とPIDロックの問題を完全に解決します。
 
 ## 🔍 解決する問題
 
@@ -42,16 +42,14 @@ Auto Issue Processorは、GitHub Issueを自動的に処理してPull Requestを
 
 ## 🔧 実装詳細
 
-### 1. A2Aモードの有効化
+### 1. A2A並列度の設定
 ```python
-# 環境変数で設定
-export AUTO_ISSUE_A2A_MODE=true
-export AUTO_ISSUE_A2A_MAX_PARALLEL=5
+# 環境変数で並列度を設定（デフォルト: 5）
+export AUTO_ISSUE_A2A_MAX_PARALLEL=10
 
-# またはコード内で設定
+# Auto Issue Processorは常にA2Aモードで起動
 processor = AutoIssueProcessor()
-processor.enable_a2a_mode()
-processor.a2a_max_parallel = 5
+# a2a_max_parallel は環境変数から自動設定
 ```
 
 ### 2. 独立プロセス実行
@@ -132,18 +130,17 @@ task_name = f"Auto-fix Issue #{issue.number}: {issue.title}"
 
 ### CLIから実行
 ```bash
-# A2Aモードで実行
-AUTO_ISSUE_A2A_MODE=true python3 libs/integrations/github/auto_issue_processor.py
+# 通常実行（デフォルトでA2A）
+python3 libs/integrations/github/auto_issue_processor.py
 
-# 並列度を指定
-AUTO_ISSUE_A2A_MODE=true AUTO_ISSUE_A2A_MAX_PARALLEL=10 python3 libs/integrations/github/auto_issue_processor.py
+# 並列度を指定して実行
+AUTO_ISSUE_A2A_MAX_PARALLEL=10 python3 libs/integrations/github/auto_issue_processor.py
 ```
 
 ### プログラムから実行
 ```python
+# Auto Issue Processorは常にA2Aモードで動作
 processor = AutoIssueProcessor()
-processor.enable_a2a_mode()
-processor.a2a_max_parallel = 8
 
 # 自動処理開始
 result = await processor.process_request({
@@ -170,7 +167,6 @@ python3 -m pytest tests/unit/test_auto_issue_processor_a2a.py -v
 
 | 環境変数 | デフォルト | 説明 |
 |---------|-----------|------|
-| AUTO_ISSUE_A2A_MODE | false | A2Aモードの有効/無効 |
 | AUTO_ISSUE_A2A_MAX_PARALLEL | 5 | 最大並列実行数 |
 | GITHUB_TOKEN | - | GitHub APIトークン |
 | GITHUB_REPO_OWNER | ext-maru | リポジトリオーナー |

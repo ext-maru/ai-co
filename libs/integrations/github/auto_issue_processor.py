@@ -647,14 +647,9 @@ class AutoIssueProcessor(EldersServiceLegacy):
         # 処理履歴ファイル
         self.processing_history_file = "logs/auto_issue_processing.json"
         
-        # A2Aモード設定
-        self.a2a_enabled = os.getenv("AUTO_ISSUE_A2A_MODE", "false").lower() == "true"
+        # A2A設定（常に有効）
         self.a2a_max_parallel = int(os.getenv("AUTO_ISSUE_A2A_MAX_PARALLEL", "5"))
-        
-        if self.a2a_enabled:
-            logger.info(f"A2A mode is ENABLED with max parallel: {self.a2a_max_parallel}")
-        else:
-            logger.info("A2A mode is DISABLED (using sequential processing)")
+        logger.info(f"Auto Issue Processor initialized with A2A (max parallel: {self.a2a_max_parallel})")
 
     def get_capabilities(self) -> Dict[str, Any]:
         """サービスの機能を返す"""
@@ -725,49 +720,25 @@ class AutoIssueProcessor(EldersServiceLegacy):
                         "message": "No processable issues found.",
                     }
 
-                # A2Aモードの場合は並列処理
-                if self.a2a_enabled:
-                    logger.info("Processing issues in A2A mode (parallel isolated processes)")
-                    results = await self.process_issues_a2a(issues)
-                    
-                    # 成功したIssueを集計
-                    successful = [r for r in results if r.get("status") == "success"]
-                    failed = [r for r in results if r.get("status") == "error"]
-                    
-                    return {
-                        "status": "a2a_completed",
-                        "mode": "a2a",
-                        "total_issues": len(issues),
-                        "successful": len(successful),
-                        "failed": len(failed),
-                        "results": results,
-                        "message": f"A2A processing completed: {len(successful)}/{len(issues)} issues processed successfully"
-                    }
-                else:
-                    # 従来の順次処理モード
-                    for issue in issues:
-                        result = await self.execute_auto_processing(issue)
-                        
-                        # 既存PRがある場合はスキップして次へ
-                        if result.get("status") == "already_exists":
-                            logger.info(f"Issue #{issue.number} スキップ (既存PR有り) - 次のIssueを処理...")
-                            continue
-                        
-                        # 処理成功または失敗の場合は結果を返す
-                        return {
-                            "status": "success",
-                            "processed_issue": {
-                                "number": issue.number,
-                                "title": issue.title,
-                                "result": result,
-                            },
-                        }
-                    
-                    # すべてのIssueがスキップされた場合
-                    return {
-                        "status": "all_skipped",
-                        "message": f"All {len(issues)} processable issues were skipped (existing PRs)",
-                    }
+                # A2A並列処理実行
+                logger.info(f"Processing {len(issues)} issues in A2A mode (parallel isolated processes)")
+                results = await self.process_issues_a2a(issues)
+                
+                # 成功したIssueを集計
+                successful = [r for r in results if r.get("status") == "success"]
+                failed = [r for r in results if r.get("status") == "error"]
+                skipped = [r for r in results if r.get("status") == "already_exists"]
+                
+                return {
+                    "status": "completed",
+                    "mode": "a2a",
+                    "total_issues": len(issues),
+                    "successful": len(successful),
+                    "failed": len(failed),
+                    "skipped": len(skipped),
+                    "results": results,
+                    "message": f"A2A processing completed: {len(successful)}/{len(issues)} issues processed successfully"
+                }
 
             elif mode == "dry_run":
                 # ドライラン（実際には処理しない）
@@ -987,15 +958,6 @@ class AutoIssueProcessor(EldersServiceLegacy):
 
             return {"status": "error", "message": str(e)}
 
-    def enable_a2a_mode(self):
-        """A2Aモードを有効化"""
-        self.a2a_enabled = True
-        logger.info("A2A mode enabled for Auto Issue Processor")
-
-    def disable_a2a_mode(self):
-        """A2Aモードを無効化"""
-        self.a2a_enabled = False
-        logger.info("A2A mode disabled for Auto Issue Processor")
 
     async def process_issue_isolated(self, issue: Issue) -> Dict[str, Any]:
         """
@@ -1003,6 +965,17 @@ class AutoIssueProcessor(EldersServiceLegacy):
         コンテキストの分離とPIDロック回避のためのA2A実装
         """
         try:
+            # 既存PRのチェック
+            existing_pr = self._check_existing_pr(issue)
+            if existing_pr:
+                logger.info(f"Issue #{issue.number} already has PR: {existing_pr.html_url}")
+                return {
+                    "status": "already_exists",
+                    "issue_number": issue.number,
+                    "pr_url": existing_pr.html_url,
+                    "message": f"Issue already has PR #{existing_pr.number}"
+                }
+            
             # Claude CLI実行用のプロンプト作成
             prompt = f"""あなたはクロードエルダー（Claude Elder）です。
 
