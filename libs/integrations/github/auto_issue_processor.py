@@ -311,9 +311,9 @@ class ComplexityScore:
 class ProcessingLimiter:
     """処理制限を管理"""
 
-    MAX_ISSUES_PER_HOUR = 10  # 1時間あたり最大10イシューまで
-    MAX_CONCURRENT = 1
-    COOLDOWN_PERIOD = 300  # 5分
+    MAX_ISSUES_PER_HOUR = 30  # 1時間あたり最大30イシューまで
+    MAX_CONCURRENT = 3  # 同時に3つまで処理可能
+    COOLDOWN_PERIOD = 60  # 1分
 
     def __init__(self):
         self.processing_log_file = Path("logs/auto_issue_processing.json")
