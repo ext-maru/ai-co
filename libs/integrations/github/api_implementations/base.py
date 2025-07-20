@@ -77,3 +77,19 @@ class GitHubAPIBase:
                 
         except Exception as e:
             return {"success": False, "error": f"Request failed: {str(e)}"}
+    
+    def _make_api_request(self, endpoint: str, method: str, json_data: Optional[Dict] = None, params: Optional[Dict] = None) -> Dict[str, Any]:
+        """
+        GitHub APIリクエスト（create_pull_request.py互換インターフェース）
+        
+        Args:
+            endpoint: APIエンドポイント
+            method: HTTPメソッド
+            json_data: JSONリクエストデータ
+            params: クエリパラメータ
+            
+        Returns:
+            レスポンスデータ
+        """
+        data = json_data if method.upper() in ['POST', 'PUT', 'PATCH'] else params
+        return self._make_request(method, endpoint, data)

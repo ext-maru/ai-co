@@ -48,16 +48,30 @@ class DummyPRCreator:
 
 
 # 実際のクラスまたはダミーを使用
-# Elder Flow Engine実装
-from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine as ActualElderFlowEngine
+try:
+    from libs.elder_system.flow.elder_flow_engine import ElderFlowEngine as ActualElderFlowEngine
+except ImportError:
+    ActualElderFlowEngine = DummyElderFlowEngine
 
-# 実際の4賢者実装を使用
-from libs.knowledge_sage import KnowledgeSage as ActualKnowledgeSage
-from libs.task_sage import TaskSage as ActualTaskSage
-from libs.incident_sage import IncidentSage as ActualIncidentSage
+try:
+    from libs.knowledge_sage import KnowledgeSage as ActualKnowledgeSage
+except ImportError:
+    ActualKnowledgeSage = DummySage
 
-# GitHub PR作成実装
-from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
+try:
+    from libs.task_sage import TaskSage as ActualTaskSage
+except ImportError:
+    ActualTaskSage = DummySage
+
+try:
+    from libs.incident_sage import IncidentSage as ActualIncidentSage
+except ImportError:
+    ActualIncidentSage = DummySage
+
+try:
+    from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
+except ImportError:
+    GitHubCreatePullRequestImplementation = DummyPRCreator
 
 
 class AutoIssueElderFlowEngine:
