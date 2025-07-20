@@ -152,53 +152,28 @@ class AutoIssueElderFlowEngine:
     async def _create_pull_request(
         self, issue_number, issue_title, issue_body, task_name
     ):
-        """自動でPR作成"""
+        """自動でPR作成（安全なGit操作版）"""
         try:
-            # ブランチ名を生成（タイムスタンプオプション）
-            timestamp = datetime.now().strftime("%H%M%S")
-            use_timestamp = os.getenv("AUTO_ISSUE_USE_TIMESTAMP", "false").lower() == "true"
+            # 安全なGit操作をインポート
+            from .safe_git_operations import SafeGitOperations
             
-            if use_timestamp:
-                branch_name = f"auto-fix/issue-{issue_number}-{timestamp}"
-            else:
-                branch_name = f"auto-fix-issue-{issue_number}"
-
-            # まずブランチを作成してpush
-            import subprocess
+            safe_git = SafeGitOperations()
             
-            # 現在のブランチを保存
-            current_branch = subprocess.run(
-                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-                capture_output=True,
-                text=True,
-                check=True
-            ).stdout.strip()
+            # PR用ブランチ作成ワークフローを実行
+            pr_title = f"Auto-fix: {issue_title} (#{issue_number})"
+            workflow_result = safe_git.create_pr_branch_workflow(pr_title, "main", "auto-fix")
+            
+            if not workflow_result["success"]:
+                return {
+                    "success": False,
+                    "error": f"Failed to create PR branch: {workflow_result['error']}",
+                    "workflow_result": workflow_result
+                }
+            
+            branch_name = workflow_result["branch_name"]
+            original_branch = workflow_result["original_branch"]
             
             try:
-                # mainブランチに切り替え
-                subprocess.run(["git", "checkout", "main"], check=True)
-                
-                # 最新の状態を取得
-                subprocess.run(["git", "pull", "origin", "main"], check=True)
-                
-                # 既存のブランチを削除（存在する場合）
-                existing_branch = subprocess.run(
-                    ["git", "branch", "-l", branch_name],
-                    capture_output=True,
-                    text=True
-                ).stdout.strip()
-                
-                if existing_branch:
-                    subprocess.run(["git", "branch", "-D", branch_name], check=True)
-                    # リモートブランチも削除
-                    subprocess.run(
-                        ["git", "push", "origin", "--delete", branch_name],
-                        capture_output=True
-                    )  # エラーは無視
-                
-                # 新しいブランチを作成
-                subprocess.run(["git", "checkout", "-b", branch_name], check=True)
-                
                 # 修正ファイルを作成
                 fix_file_path = f"auto_fixes/issue_{issue_number}_fix.md"
                 os.makedirs("auto_fixes", exist_ok=True)
