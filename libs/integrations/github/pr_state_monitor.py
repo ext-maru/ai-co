@@ -91,17 +91,20 @@ class MonitoringConfig:
 class PRStateMonitor:
     """PR状態監視システム"""
     
-    def __init__(self, pr_api_client):
+    def __init__(self, pr_api_client, rate_limiter=None):
         """
         初期化
         
         Args:
             pr_api_client: PR操作用のAPIクライアント
+            rate_limiter: APIレート制限管理（オプション）
         """
         self.pr_api_client = pr_api_client
+        self.rate_limiter = rate_limiter
         self.active_monitors: Dict[int, asyncio.Task] = {}
         self.state_history: Dict[int, List[PRState]] = {}
         self.monitoring_configs: Dict[int, MonitoringConfig] = {}
+        self.last_comment_updates: Dict[int, datetime] = {}  # 追加
         
     async def start_monitoring(
         self, 
