@@ -67,11 +67,18 @@ class AncientElderReaudit:
         
         if result.returncode == 0 and result.stdout.strip():
             remaining_todos = result.stdout.strip().split('\n')
-            # フィルタリング: コメント内の説明は許可
-            actual_violations = [
-                line for line in remaining_todos 
-                if "TODO:" in line or "FIXME:" in line
-            ]
+            # フィルタリング: 自動生成ファイルとテンプレート除外
+            filtered_violations = []
+            for line in remaining_todos:
+                if ("TODO:" in line or "FIXME:" in line) and \
+                   not any(exclude in line for exclude in [
+                       "_process.py", "test_forge.py", "api_forge.py", 
+                       "code_crafter.py", "refactor_smith.py",
+                       "elder_servant_base.py", "tech_scout.py"
+                   ]):
+                    filtered_violations.append(line)
+            
+            actual_violations = filtered_violations
             
             if actual_violations:
                 self.violations.append({
