@@ -46,6 +46,10 @@ class CodeGenerationTemplateManager:
         self.issue_analyzer = IssueAnalyzer()
         self.requirement_extractor = RequirementExtractor()
         
+        # Phase 3: パターン学習とコンテキスト強化の初期化
+        self.pattern_learning_engine = PatternLearningEngine()
+        self.context_enhancer = ContextEnhancer(self.pattern_learning_engine)
+        
         # テクノロジースタック定義
         self.tech_stacks = {
             "aws": {
@@ -203,14 +207,15 @@ class CodeGenerationTemplateManager:
         
         return requirements
 
-    def create_context_from_issue(self, 
+    async def create_context_from_issue(self, 
                                  issue_number: int,
                                  issue_title: str,
                                  issue_body: str,
                                  tech_stack: Optional[str] = None,
-                                 use_advanced_analysis: bool = True) -> Dict[str, Any]:
+                                 use_advanced_analysis: bool = True,
+                                 use_pattern_learning: bool = True) -> Dict[str, Any]:
         """
-        Issue情報からテンプレートコンテキストを作成（Phase 2対応）
+        Issue情報からテンプレートコンテキストを作成（Phase 3対応）
         
         Args:
             issue_number: Issue番号
@@ -218,6 +223,7 @@ class CodeGenerationTemplateManager:
             issue_body: Issue本文
             tech_stack: 技術スタック（Noneの場合は自動検出）
             use_advanced_analysis: Phase 2の高度な分析を使用するか
+            use_pattern_learning: Phase 3のパターン学習を使用するか
             
         Returns:
             テンプレートコンテキスト
@@ -278,6 +284,15 @@ class CodeGenerationTemplateManager:
                 "intent": analyzed_issue.get('intent', {}),
                 "complexity": analyzed_issue.get('complexity', 'medium')
             }
+            
+            # Phase 3: パターン学習による強化
+            if use_pattern_learning:
+                try:
+                    context = await self.context_enhancer.enhance_context(context)
+                    logger.info("Context enhanced with learned patterns")
+                except Exception as e:
+                    logger.warning(f"Pattern learning enhancement failed: {e}")
+                    # エラーが発生してもPhase 2の結果は保持
         else:
             # Phase 1の処理（後方互換性）
             requirements = self.extract_requirements(issue_body)
