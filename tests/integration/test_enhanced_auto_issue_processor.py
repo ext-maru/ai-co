@@ -35,12 +35,12 @@ class TestGitOperations(unittest.TestCase):
     @patch("subprocess.run")
     def test_create_feature_branch_success(self, mock_run):
         """フィーチャーブランチ作成成功テスト"""
-        # モックの設定
+        # モックの設定 - 実際の実行順序
         mock_run.side_effect = [
-            Mock(stdout="main\n", returncode=0),  # current branch
-            Mock(returncode=0),  # checkout main
-            Mock(returncode=0),  # pull
-            Mock(returncode=0),  # checkout -b
+            Mock(stdout="", returncode=0),         # git branch -r (既存ブランチ確認)
+            Mock(stdout="main\n", returncode=0),   # git branch --show-current (現在ブランチ)
+            Mock(returncode=0),                    # git pull origin main (mainなのでcheckoutスキップ)
+            Mock(returncode=0),                    # git checkout -b auto-fix/issue-123-test-feature
         ]
 
         # テスト実行
@@ -51,7 +51,7 @@ class TestGitOperations(unittest.TestCase):
         )
 
         # 検証
-        self.assertEqual(result, "feature/issue-123-test-feature")
+        self.assertEqual(result, "auto-fix/issue-123-test-feature")
         self.assertEqual(mock_run.call_count, 4)
 
     @patch("subprocess.run")
