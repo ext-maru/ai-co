@@ -23,7 +23,6 @@ from libs.chaos_engineering_framework import (
 )
 
 
-@pytest.mark.asyncio
 class TestChaosScenario:
     """カオスシナリオのテスト"""
     
