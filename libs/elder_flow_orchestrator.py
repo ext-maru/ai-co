@@ -1039,7 +1039,8 @@ class ElderFlowOrchestrator:
             # SageCouncilSystemを使用
             return await self.sage_council.consult_sage(
                 sage_type="knowledge",
-                request=request
+                query=request.get("query", ""),
+                context=request
             )
         elif hasattr(self, 'knowledge_sage') and self.knowledge_sage:
             # 直接KnowledgeSageを使用
@@ -1059,7 +1060,8 @@ class ElderFlowOrchestrator:
             # SageCouncilSystemを使用
             return await self.sage_council.consult_sage(
                 sage_type="task",
-                request=request
+                query=request.get("query", ""),
+                context=request
             )
         elif hasattr(self, 'task_sage') and self.task_sage:
             # 直接TaskSageを使用
@@ -1079,7 +1081,8 @@ class ElderFlowOrchestrator:
             # SageCouncilSystemを使用
             return await self.sage_council.consult_sage(
                 sage_type="incident",
-                request=request
+                query=request.get("query", ""),
+                context=request
             )
         elif hasattr(self, 'incident_sage') and self.incident_sage:
             # 直接IncidentSageを使用
@@ -1099,7 +1102,8 @@ class ElderFlowOrchestrator:
             # SageCouncilSystemを使用
             return await self.sage_council.consult_sage(
                 sage_type="rag",
-                request=request
+                query=request.get("query", ""),
+                context=request
             )
         elif hasattr(self, 'rag_sage') and self.rag_sage:
             # 直接RagManagerを使用
