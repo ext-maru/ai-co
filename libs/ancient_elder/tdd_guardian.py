@@ -706,7 +706,7 @@ class TDDGuardian(AncientElderBase):
     """
     
     def __init__(self, project_root: Optional[Path] = None):
-        super().__init__("TDDGuardian")
+        super().__init__(specialty="tdd_guardian")
         
         # コンポーネント初期化
         self.cycle_tracker = TDDCycleTracker(project_root)
