@@ -354,13 +354,27 @@ class ElderScheduleDecorators:
     def scheduled(self, trigger: str, **trigger_args):
         """スケジュール済みジョブデコレータ"""
         def decorator(func: Callable):
-            self.scheduler.add_job(
-                func=func,
-                trigger=trigger,
-                id=f"{func.__module__}.{func.__name__}",
-                name=func.__name__,
-                **trigger_args
-            )
+            # Check if function is async
+            import inspect
+            if inspect.iscoroutinefunction(func):
+                # Use asyncio executor for async functions
+                self.scheduler.add_job(
+                    func=func,
+                    trigger=trigger,
+                    id=f"{func.__module__}.{func.__name__}",
+                    name=func.__name__,
+                    executor='asyncio',
+                    **trigger_args
+                )
+            else:
+                # Use default executor for sync functions
+                self.scheduler.add_job(
+                    func=func,
+                    trigger=trigger,
+                    id=f"{func.__module__}.{func.__name__}",
+                    name=func.__name__,
+                    **trigger_args
+                )
             return func
         return decorator
         

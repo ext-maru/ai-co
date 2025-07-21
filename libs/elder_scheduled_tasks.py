@@ -597,43 +597,33 @@ def _register_github_automation_tasks(self):
     """GitHub自動処理タスク登録"""
     
     @self.decorators.scheduled('interval', minutes=10)
-    def auto_issue_processor():
+    async def auto_issue_processor():
         """Auto Issue Processor実行（10分間隔）"""
         logger.info("🤖 Auto Issue Processor実行開始")
         try:
             import asyncio
             from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
             
-            async def run_processor():
-                processor = AutoIssueProcessor()
-                # スキャンして処理可能なイシューを確認
-                scan_result = await processor.process_request({"mode": "scan"})
-                
-                if scan_result.get("processable_issues", 0) > 0:
-                    logger.info(f"📊 処理可能なイシュー数: {scan_result['processable_issues']}")
-                    
-                    # 実際の処理を実行
-                    process_result = await processor.process_request({"mode": "process"})
-                    
-                    if process_result.get("status") == "success":
-                        processed = process_result.get("processed_issue", {})
-                        logger.info(f"✅ イシュー #{processed.get('number')} 処理完了: {processed.get('title', 'N/A')}")
-                    else:
-                        logger.warning(f"⚠️ イシュー処理結果: {process_result.get('status')}")
-                else:
-                    logger.info("📝 処理可能なイシューなし")
-                
-                return scan_result
+            processor = AutoIssueProcessor()
+            # スキャンして処理可能なイシューを確認
+            scan_result = await processor.process_request({"mode": "scan"})
             
-            # 非同期実行
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            try:
-                result = loop.run_until_complete(run_processor())
-                logger.info("✅ Auto Issue Processor完了")
-                return result
-            finally:
-                loop.close()
+            if scan_result.get("processable_issues", 0) > 0:
+                logger.info(f"📊 処理可能なイシュー数: {scan_result['processable_issues']}")
+                
+                # 実際の処理を実行
+                process_result = await processor.process_request({"mode": "process"})
+                
+                if process_result.get("status") == "success":
+                    processed = process_result.get("processed_issue", {})
+                    logger.info(f"✅ イシュー #{processed.get('number')} 処理完了: {processed.get('title', 'N/A')}")
+                else:
+                    logger.warning(f"⚠️ イシュー処理結果: {process_result.get('status')}")
+            else:
+                logger.info("📝 処理可能なイシューなし")
+            
+            logger.info("✅ Auto Issue Processor完了")
+            return scan_result
                 
         except Exception as e:
             logger.error(f"❌ Auto Issue Processor エラー: {e}")
@@ -782,9 +772,20 @@ if __name__ == "__main__":
     
     try:
         # 継続実行
-        import time
-        while True:
-            time.sleep(60)  # 1分間隔でチェック
+        logger.info("📊 スケジューラー情報:")
+        logger.info(f"  - タイプ: {type(task_system.scheduler.scheduler).__name__}")
+        logger.info(f"  - 実行中: {task_system.scheduler.scheduler.running}")
+        logger.info(f"  - ジョブ数: {len(task_system.scheduler.scheduler.get_jobs())}")
+        
+        # AsyncIOSchedulerの場合はイベントループが必要
+        if hasattr(task_system.scheduler.scheduler, '_eventloop'):
+            logger.info("⚡ AsyncIOScheduler detected - running event loop")
+            asyncio.get_event_loop().run_forever()
+        else:
+            logger.info("⏰ Standard scheduler - using sleep loop")
+            import time
+            while True:
+                time.sleep(60)  # 1分間隔でチェック
     except KeyboardInterrupt:
         logger.info("🛑 定期タスクシステム停止")
         task_system.scheduler.shutdown()
