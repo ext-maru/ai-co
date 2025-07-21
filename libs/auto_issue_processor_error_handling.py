@@ -171,44 +171,57 @@ class RecoveryResult:
 class ErrorClassifier:
     """エラー分類器"""
     
+    # エラー分類規則の定数定義（複雑度削減）
+    CLASSIFICATION_RULES = {
+        ErrorType.GITHUB_API_ERROR: {
+            'error_keywords': ["rate limit", "api", "github", "forbidden", "unauthorized"],
+            'type_keywords': []
+        },
+        ErrorType.GIT_OPERATION_ERROR: {
+            'error_keywords': ["git", "branch", "merge", "conflict", "repository"],
+            'type_keywords': []
+        },
+        ErrorType.NETWORK_ERROR: {
+            'error_keywords': ["network", "connection", "timeout", "dns", "socket"],
+            'type_keywords': ["connectionerror", "timeout", "urlerror"]
+        },
+        ErrorType.SYSTEM_RESOURCE_ERROR: {
+            'error_keywords': ["memory", "disk", "space", "resource", "permission"],
+            'type_keywords': ["memoryerror", "oserror", "permissionerror"]
+        },
+        ErrorType.TEMPLATE_ERROR: {
+            'error_keywords': ["template", "jinja", "render"],
+            'type_keywords': []
+        },
+        ErrorType.VALIDATION_ERROR: {
+            'error_keywords': ["validation", "invalid", "missing"],
+            'type_keywords': ["valueerror", "typeerror", "keyerror"]
+        },
+        ErrorType.TIMEOUT_ERROR: {
+            'error_keywords': ["timeout"],
+            'type_keywords': ["timeouterror"]
+        }
+    }
+    
     @staticmethod
     def classify_error(error: Exception, operation: str) -> ErrorType:
         """例外をエラータイプに分類"""
         error_str = str(error).lower()
         error_type_name = type(error).__name__.lower()
         
-        # GitHub API関連エラー
-        if any(keyword in error_str for keyword in ["rate limit", "api", "github", "forbidden", "unauthorized"]):
-            return ErrorType.GITHUB_API_ERROR
-        
-        # Git操作エラー
-        if any(keyword in error_str for keyword in ["git", "branch", "merge", "conflict", "repository"]):
-            return ErrorType.GIT_OPERATION_ERROR
-        
-        # ネットワークエラー
-        if any(keyword in error_str for keyword in ["network", "connection", "timeout", "dns", "socket"]) or \
-           any(err_type in error_type_name for err_type in ["connectionerror", "timeout", "urlerror"]):
-            return ErrorType.NETWORK_ERROR
-        
-        # システムリソースエラー
-        if any(keyword in error_str for keyword in ["memory", "disk", "space", "resource", "permission"]) or \
-           any(err_type in error_type_name for err_type in ["memoryerror", "oserror", "permissionerror"]):
-            return ErrorType.SYSTEM_RESOURCE_ERROR
-        
-        # テンプレートエラー
-        if any(keyword in error_str for keyword in ["template", "jinja", "render"]):
-            return ErrorType.TEMPLATE_ERROR
-        
-        # バリデーションエラー
-        if any(keyword in error_str for keyword in ["validation", "invalid", "missing"]) or \
-           any(err_type in error_type_name for err_type in ["valueerror", "typeerror", "keyerror"]):
-            return ErrorType.VALIDATION_ERROR
-        
-        # タイムアウトエラー
-        if "timeout" in error_str or "timeouterror" in error_type_name:
-            return ErrorType.TIMEOUT_ERROR
+        # 規則ベースの分類
+        for error_type, rules in ErrorClassifier.CLASSIFICATION_RULES.items():
+            if ErrorClassifier._matches_rules(error_str, error_type_name, rules):
+                return error_type
         
         return ErrorType.UNKNOWN_ERROR
+    
+    @staticmethod
+    def _matches_rules(error_str: str, error_type_name: str, rules: Dict[str, List[str]]) -> bool:
+        """分類規則にマッチするかチェック"""
+        error_match = any(keyword in error_str for keyword in rules['error_keywords'])
+        type_match = any(keyword in error_type_name for keyword in rules['type_keywords'])
+        return error_match or type_match
 
 
 class ResourceCleaner:
@@ -746,37 +759,41 @@ class ErrorReporter:
     
     def classify_error(self, error: Exception, operation: str) -> Tuple[ErrorCategory, ErrorSeverity]:
         """エラーを分類して重要度を判定"""
-        error_str = str(error).lower()
-        error_type_name = type(error).__name__.lower()
+        # ErrorClassifierを使用して分類
+        error_type = ErrorClassifier.classify_error(error, operation)
         
-        # カテゴリー判定
-        category = ErrorCategory.UNKNOWN
-        if any(keyword in error_str for keyword in ["rate limit", "api", "github", "forbidden", "unauthorized"]):
-            category = ErrorCategory.GITHUB_API
-        elif any(keyword in error_str for keyword in ["git", "branch", "merge", "conflict", "repository"]):
-            category = ErrorCategory.GIT
-        elif any(keyword in error_str for keyword in ["network", "connection", "timeout", "dns", "socket"]):
-            category = ErrorCategory.NETWORK
-        elif any(keyword in error_str for keyword in ["memory", "disk", "space", "resource", "permission"]):
-            category = ErrorCategory.SYSTEM
-        elif any(keyword in error_str for keyword in ["validation", "invalid", "missing"]) or \
-             any(err_type in error_type_name for err_type in ["valueerror", "typeerror", "keyerror"]):
-            category = ErrorCategory.VALIDATION
-        elif any(keyword in error_str for keyword in ["template", "jinja", "render"]):
-            category = ErrorCategory.TEMPLATE
+        # ErrorType から ErrorCategory への変換
+        type_to_category_map = {
+            ErrorType.GITHUB_API_ERROR: ErrorCategory.GITHUB_API,
+            ErrorType.GIT_OPERATION_ERROR: ErrorCategory.GIT,
+            ErrorType.NETWORK_ERROR: ErrorCategory.NETWORK,
+            ErrorType.SYSTEM_RESOURCE_ERROR: ErrorCategory.SYSTEM,
+            ErrorType.VALIDATION_ERROR: ErrorCategory.VALIDATION,
+            ErrorType.TEMPLATE_ERROR: ErrorCategory.TEMPLATE,
+            ErrorType.TIMEOUT_ERROR: ErrorCategory.NETWORK,
+            ErrorType.UNKNOWN_ERROR: ErrorCategory.UNKNOWN
+        }
         
-        # 重要度判定
-        severity = ErrorSeverity.MEDIUM
-        if category == ErrorCategory.GITHUB_API and "rate limit" in error_str:
-            severity = ErrorSeverity.HIGH
-        elif category == ErrorCategory.SYSTEM:
-            severity = ErrorSeverity.CRITICAL
-        elif category == ErrorCategory.VALIDATION:
-            severity = ErrorSeverity.LOW
-        elif "timeout" in error_str:
-            severity = ErrorSeverity.HIGH
+        category = type_to_category_map.get(error_type, ErrorCategory.UNKNOWN)
+        severity = self._determine_severity(error, category)
         
         return category, severity
+    
+    def _determine_severity(self, error: Exception, category: ErrorCategory) -> ErrorSeverity:
+        """エラーの重要度を判定"""
+        error_str = str(error).lower()
+        
+        # 重要度判定ルール
+        if category == ErrorCategory.SYSTEM:
+            return ErrorSeverity.CRITICAL
+        elif category == ErrorCategory.GITHUB_API and "rate limit" in error_str:
+            return ErrorSeverity.HIGH
+        elif "timeout" in error_str:
+            return ErrorSeverity.HIGH
+        elif category == ErrorCategory.VALIDATION:
+            return ErrorSeverity.LOW
+        else:
+            return ErrorSeverity.MEDIUM
     
     async def create_report(
         self,
