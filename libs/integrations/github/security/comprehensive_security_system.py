@@ -51,7 +51,7 @@ class EncryptionError(Exception):
     pass
 
 
-class GitHubSecurityManager:
+class ComprehensiveSecuritySystem:
     """
     🔒 Iron Will Compliant Security Manager
 
@@ -570,20 +570,23 @@ class GitHubSecurityManager:
 _security_manager = None
 
 
-def get_security_manager() -> GitHubSecurityManager:
+def get_security_manager() -> ComprehensiveSecuritySystem:
     """Get global security manager instance"""
     global _security_manager
     if _security_manager is None:
-        _security_manager = GitHubSecurityManager()
+        _security_manager = ComprehensiveSecuritySystem()
     return _security_manager
 
 
 # Export
 __all__ = [
-    "GitHubSecurityManager",
+    "ComprehensiveSecuritySystem",
+    "GitHubSecurityManager",  # Alias
     "get_security_manager",
     "SecurityViolationError",
     "AuthenticationError",
     "AuthorizationError",
     "EncryptionError",
 ]
+# Alias for compatibility
+GitHubSecurityManager = ComprehensiveSecuritySystem

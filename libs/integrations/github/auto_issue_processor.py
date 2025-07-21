@@ -775,9 +775,11 @@ class AutoIssueProcessor(EldersServiceLegacy):
     async def consult_four_sages(self, issue: Issue) -> Dict[str, Any]:
         """4賢者への相談"""
         sage_advice = {}
+        consultation_errors = []
 
+        # ナレッジ賢者: 過去の類似事例検索
         try:
-            # ナレッジ賢者: 過去の類似事例検索
+            logger.info(f"📚 Consulting Knowledge Sage for issue #{issue.number}")
             knowledge_response = await self.knowledge_sage.process_request(
                 {
                     "type": "search",
@@ -786,8 +788,15 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 }
             )
             sage_advice["knowledge"] = knowledge_response.get("entries", [])
+            logger.info(f"✅ Knowledge Sage responded with {len(sage_advice['knowledge'])} entries")
+        except Exception as e:
+            logger.error(f"❌ Knowledge Sage consultation failed: {str(e)}", exc_info=True)
+            consultation_errors.append(f"Knowledge Sage: {str(e)}")
+            sage_advice["knowledge"] = []
 
-            # タスク賢者: 実行計画立案
+        # タスク賢者: 実行計画立案
+        try:
+            logger.info(f"📋 Consulting Task Sage for issue #{issue.number}")
             task_response = await self.task_sage.process_request(
                 {
                     "type": "create_plan",
@@ -796,8 +805,15 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 }
             )
             sage_advice["plan"] = task_response
+            logger.info(f"✅ Task Sage created plan with confidence: {task_response.get('confidence', 'N/A')}")
+        except Exception as e:
+            logger.error(f"❌ Task Sage consultation failed: {str(e)}", exc_info=True)
+            consultation_errors.append(f"Task Sage: {str(e)}")
+            sage_advice["plan"] = {"status": "error", "message": str(e)}
 
-            # インシデント賢者: リスク評価
+        # インシデント賢者: リスク評価
+        try:
+            logger.info(f"🚨 Consulting Incident Sage for issue #{issue.number}")
             incident_response = await self.incident_sage.process_request(
                 {
                     "type": "evaluate_risk",
@@ -806,8 +822,15 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 }
             )
             sage_advice["risks"] = incident_response
+            logger.info(f"✅ Incident Sage evaluated risk level: {incident_response.get('risk_level', 'N/A')}")
+        except Exception as e:
+            logger.error(f"❌ Incident Sage consultation failed: {str(e)}", exc_info=True)
+            consultation_errors.append(f"Incident Sage: {str(e)}")
+            sage_advice["risks"] = {"status": "error", "message": str(e), "risk_level": "unknown"}
 
-            # RAG賢者: 最適解探索
+        # RAG賢者: 最適解探索
+        try:
+            logger.info(f"🔍 Consulting RAG Sage for issue #{issue.number}")
             rag_response = await self.rag_sage.process_request(
                 {
                     "type": "search",
@@ -816,10 +839,21 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 }
             )
             sage_advice["solution"] = rag_response.get("results", [])
-
+            logger.info(f"✅ RAG Sage found {len(sage_advice['solution'])} solutions")
         except Exception as e:
-            logger.warning(f"Sage consultation partial failure: {str(e)}")
+            logger.error(f"❌ RAG Sage consultation failed: {str(e)}", exc_info=True)
+            consultation_errors.append(f"RAG Sage: {str(e)}")
+            sage_advice["solution"] = []
 
+        # Log summary
+        if consultation_errors:
+            logger.warning(f"⚠️ 4 Sages consultation completed with {len(consultation_errors)} errors:")
+            for error in consultation_errors:
+                logger.warning(f"   - {error}")
+        else:
+            logger.info(f"✅ All 4 Sages consultation completed successfully for issue #{issue.number}")
+
+        sage_advice["consultation_errors"] = consultation_errors
         return sage_advice
 
     def _determine_priority(self, issue: Issue) -> str:

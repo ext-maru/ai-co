@@ -492,7 +492,7 @@ class FlowComplianceAuditor(AncientElderBase):
     """
     
     def __init__(self, log_directory: Optional[Path] = None):
-        super().__init__("FlowComplianceAuditor")
+        super().__init__(specialty="flow_compliance_auditor")
         
         # コンポーネント初期化
         self.flow_tracer = ElderFlowTracer(log_directory)
@@ -515,6 +515,228 @@ class FlowComplianceAuditor(AncientElderBase):
             FlowStage.COUNCIL_REPORT: timedelta(minutes=5),
             FlowStage.GIT_AUTOMATION: timedelta(minutes=5)
         }
+        
+    async def execute_audit(self, target_path: str, **kwargs) -> AuditResult:
+        """Flow Compliance監査を実行"""
+        start_time = datetime.now()
+        violations = []
+        metrics = {}
+        
+        try:
+            self.logger.info(f"🌊 Starting Flow Compliance audit for: {target_path}")
+            
+            # 時間窓を設定（デフォルト24時間）
+            time_window = timedelta(hours=kwargs.get("time_window_hours", 24))
+            task_id = kwargs.get("task_id")
+            
+            # フロー実行をトレース
+            trace_result = self.flow_tracer.trace_flow_execution(task_id, time_window)
+            
+            # 各フロー実行を監査
+            flow_executions = trace_result.get("flow_executions", {})
+            bypasses = trace_result.get("bypasses", [])
+            
+            if not flow_executions:
+                self.logger.warning(f"No Elder Flow executions found in {target_path}")
+                # 空の場合のAuditResultを正しく作成
+                empty_result = AuditResult()
+                empty_result.auditor_name = "FlowComplianceAuditor"
+                empty_result.violations = [{
+                    "type": FlowViolationType.INCOMPLETE_FLOW,
+                    "severity": "HIGH",
+                    "description": f"No Elder Flow executions found in the last {time_window}",
+                    "location": target_path
+                }]
+                empty_result.metrics = {
+                    "flow_executions_found": 0,
+                    "target_path": target_path,
+                    "recommendations": ["Execute Elder Flow for tasks"],
+                    "execution_time": (datetime.now() - start_time).total_seconds()
+                }
+                return empty_result
+                
+            # 各実行を詳細監査
+            for execution_id, execution in flow_executions.items():
+                execution_violations = await self._audit_single_flow_execution(execution_id, execution)
+                violations.extend(execution_violations)
+                
+            # バイパス違反を処理
+            for bypass in bypasses:
+                violations.append({
+                    "type": FlowViolationType.BYPASSED_QUALITY_GATE,
+                    "severity": "CRITICAL",
+                    "description": f"Unauthorized bypass: {bypass.get('log_line', '')}",
+                    "location": f"{bypass.get('log_file', '')}:{bypass.get('line_number', 0)}",
+                    "task_id": bypass.get("task_id"),
+                    "timestamp": bypass.get("timestamp", datetime.now()).isoformat()
+                })
+                
+            # 総合スコア計算
+            overall_score = self._calculate_overall_compliance_score(
+                len(flow_executions), violations, bypasses
+            )
+            
+            metrics["overall_compliance_score"] = overall_score
+            metrics["flow_executions_analyzed"] = len(flow_executions)
+            metrics["total_violations"] = len(violations)
+            metrics["bypass_count"] = len(bypasses)
+            metrics["logs_analyzed"] = trace_result.get("logs_analyzed", 0)
+            
+            # 改善提案生成
+            recommendations = self._generate_flow_improvement_recommendations(
+                flow_executions, violations, bypasses
+            )
+            
+            execution_time = (datetime.now() - start_time).total_seconds()
+            metrics["execution_time"] = execution_time
+            
+            self.logger.info(f"✅ Flow Compliance audit completed in {execution_time:.2f}s")
+            
+            # AuditResultを正しく作成
+            result = AuditResult()
+            result.auditor_name = "FlowComplianceAuditor"
+            result.violations = violations
+            result.metrics = metrics
+            result.metrics["target_path"] = target_path
+            result.metrics["recommendations"] = recommendations
+            result.metrics["execution_time"] = execution_time
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"❌ Flow Compliance audit failed: {e}")
+            # エラー時のAuditResultを正しく作成
+            error_result = AuditResult()
+            error_result.auditor_name = "FlowComplianceAuditor"
+            error_result.violations = [{
+                "type": "AUDIT_EXECUTION_FAILURE",
+                "severity": ViolationSeverity.HIGH.value,
+                "description": f"Flow Compliance audit execution failed: {str(e)}",
+                "location": target_path
+            }]
+            error_result.metrics = {
+                "error": str(e),
+                "target_path": target_path,
+                "recommendations": [],
+                "execution_time": (datetime.now() - start_time).total_seconds()
+            }
+            return error_result
+            
+    async def _audit_single_flow_execution(self, 
+                                         execution_id: str, 
+                                         execution: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """個別のフロー実行を監査"""
+        violations = []
+        stages = execution.get("stages", {})
+        task_id = execution.get("task_id", "unknown")
+        
+        # 必須段階の確認
+        missing_stages = [stage for stage in self.required_stages if stage not in stages]
+        
+        if missing_stages:
+            severity = "CRITICAL" if len(missing_stages) > 2 else "HIGH"
+            violations.append({
+                "type": FlowViolationType.INCOMPLETE_FLOW,
+                "severity": severity,
+                "description": f"Missing stages: {', '.join(missing_stages)}",
+                "location": f"execution_id:{execution_id}",
+                "execution_id": execution_id,
+                "task_id": task_id,
+                "missing_stages": missing_stages,
+                "completed_stages": list(stages.keys())
+            })
+            
+        # 4賢者会議の詳細検証
+        if FlowStage.SAGE_COUNCIL in stages:
+            sage_validation = self.sage_validator.validate_sage_consultation(execution)
+            for violation in sage_validation.get("violations", []):
+                violations.append({
+                    "type": violation["type"],
+                    "severity": violation["severity"],
+                    "description": violation["description"],
+                    "location": f"execution_id:{execution_id}",
+                    "execution_id": execution_id,
+                    "task_id": task_id,
+                    "sage_details": sage_validation
+                })
+                
+        # 品質ゲート監視
+        if FlowStage.QUALITY_GATE in stages:
+            quality_monitoring = self.quality_monitor.monitor_quality_gates(execution)
+            for violation in quality_monitoring.get("violations", []):
+                violations.append({
+                    "type": violation["type"],
+                    "severity": violation["severity"],
+                    "description": violation["description"],
+                    "location": f"execution_id:{execution_id}",
+                    "execution_id": execution_id,
+                    "task_id": task_id,
+                    "quality_details": quality_monitoring
+                })
+                
+        return violations
+        
+    def _calculate_overall_compliance_score(self,
+                                          total_executions: int,
+                                          violations: List[Dict[str, Any]],
+                                          bypasses: List[Dict[str, Any]]) -> float:
+        """総合コンプライアンススコアを計算"""
+        base_score = 100.0
+        
+        # 違反による減点
+        for violation in violations:
+            severity = violation.get("severity", "LOW")
+            if severity == "CRITICAL":
+                base_score -= 25
+            elif severity == "HIGH":
+                base_score -= 15
+            elif severity == "MEDIUM":
+                base_score -= 5
+            else:
+                base_score -= 1
+                
+        # バイパスによる重大減点
+        base_score -= len(bypasses) * 30
+        
+        return max(base_score, 0.0)
+        
+    def _generate_flow_improvement_recommendations(self,
+                                                 flow_executions: Dict[str, Any],
+                                                 violations: List[Dict[str, Any]],
+                                                 bypasses: List[Dict[str, Any]]) -> List[str]:
+        """フロー改善提案を生成"""
+        recommendations = []
+        
+        if not flow_executions:
+            recommendations.append("Start using Elder Flow for task execution")
+            
+        if bypasses:
+            recommendations.append("Remove unauthorized bypasses and follow proper Elder Flow")
+            
+        # 違反固有の提案
+        violation_types = set(v.get("type") for v in violations)
+        
+        if FlowViolationType.SKIPPED_SAGE_COUNCIL in violation_types:
+            recommendations.append("Always consult 4 sages before task execution")
+            
+        if FlowViolationType.BYPASSED_QUALITY_GATE in violation_types:
+            recommendations.append("Execute quality gates without bypassing")
+            
+        if FlowViolationType.INCOMPLETE_FLOW in violation_types:
+            recommendations.append("Complete all 5 stages of Elder Flow")
+            
+        if not recommendations:
+            recommendations.append("Continue following Elder Flow best practices")
+            
+        return recommendations
+        
+    def get_audit_scope(self) -> List[str]:
+        """監査対象スコープを返す"""
+        return [
+            "elder_flow_execution_compliance",
+            "sage_council_consultation",
+            "quality_gate_execution",
+            "flow_stage_completeness"
+        ]
         
     async def audit(self, target: Dict[str, Any]) -> AuditResult:
         """
