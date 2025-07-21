@@ -178,6 +178,21 @@ class SageCouncilSystem:
 
     def _integrate_sage_advice(self, council_results: Dict) -> Dict:
         """4賢者の助言を統合"""
+        # 🛠️ 簡単な修正: fallback_active状態をチェック
+        if council_results.get("fallback_active"):
+            return {
+                "execution_strategy": "Basic fallback processing",
+                "risk_level": "unknown",
+                "recommended_approach": "Standard processing without 4 Sages consultation",
+                "fallback_active": True,
+                "fallback_reason": council_results.get("fallback_message", "4 Sages system unavailable"),
+                "key_considerations": [
+                    "4賢者システムが一時的に利用不可",
+                    "基本的な処理規則を適用",
+                    "システム復旧後に再相談を推奨",
+                ],
+            }
+        
         return {
             "execution_strategy": "TDD with security focus",
             "risk_level": "medium",

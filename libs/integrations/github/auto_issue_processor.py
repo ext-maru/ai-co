@@ -35,6 +35,7 @@ from libs.integrations.github.api_implementations.create_pull_request import Git
 from libs.code_generation.template_manager import CodeGenerationTemplateManager
 from libs.integrations.github.safe_git_operations import SafeGitOperations
 from libs.auto_issue_processor_error_handling import AutoIssueProcessorErrorHandler, with_error_recovery
+from libs.four_sages_diagnostic_system import FourSagesDiagnosticSystem
 
 
 class AutoIssueElderFlowEngine:
@@ -491,6 +492,9 @@ class AutoIssueProcessor(EldersServiceLegacy):
 
         self.limiter = ProcessingLimiter()
         self.evaluator = ComplexityEvaluator()
+        
+        # 4賢者診断システム初期化
+        self.diagnostic_system = FourSagesDiagnosticSystem()
 
         # 処理対象の優先度（中以上）
         self.target_priorities = ["critical", "high", "medium"]
@@ -853,8 +857,146 @@ class AutoIssueProcessor(EldersServiceLegacy):
         else:
             logger.info(f"✅ All 4 Sages consultation completed successfully for issue #{issue.number}")
 
+        # 🛠️ 簡単な修正: 空応答時のフォールバック処理
+        all_empty = all(
+            not sage_advice.get(key) 
+            for key in ["knowledge", "plan", "risks", "solution"]
+        )
+        
+        if all_empty and consultation_errors:
+            logger.warning(f"🔄 All 4 Sages returned empty responses, applying diagnostic system for issue #{issue.number}")
+            
+            try:
+                # 4賢者診断システムを実行
+                logger.info(f"🔍 Running Four Sages diagnostic system for issue #{issue.number}")
+                diagnostic_result = await self.diagnostic_system.run_full_diagnosis()
+                
+                if diagnostic_result.get("status") == "success":
+                    # Auto-fixable な問題があるかチェック
+                    auto_fixable_issues = [
+                        issue for issue in diagnostic_result.get("issues", [])
+                        if issue.get("auto_fixable", False)
+                    ]
+                    
+                    if auto_fixable_issues:
+                        logger.info(f"🛠️ Found {len(auto_fixable_issues)} auto-fixable issues, applying fixes...")
+                        
+                        # Auto-fix を実行
+                        fix_result = await self.diagnostic_system.apply_auto_fixes(auto_fixable_issues)
+                        
+                        if fix_result.get("success"):
+                            logger.info(f"✅ Auto-fixes applied successfully, retrying 4 Sages consultation...")
+                            
+                            # 4賢者への再相談を試行
+                            retry_advice = await self._retry_sages_consultation(issue)
+                            
+                            if retry_advice:
+                                sage_advice.update(retry_advice)
+                                sage_advice["diagnostic_recovery"] = True
+                                sage_advice["recovery_message"] = (
+                                    f"🔧 診断システムにより{len(auto_fixable_issues)}件の問題を修復し、"
+                                    f"4賢者システムを復旧しました。"
+                                )
+                                return sage_advice
+                        
+                        sage_advice["diagnostic_attempted"] = True
+                        sage_advice["auto_fixes_applied"] = len(fix_result.get("applied_fixes", []))
+                    
+                    sage_advice["diagnostic_result"] = diagnostic_result
+                    logger.info(f"📊 Diagnostic system completed, found {len(diagnostic_result.get('issues', []))} issues")
+                
+            except Exception as diagnostic_error:
+                logger.error(f"❌ Diagnostic system failed: {str(diagnostic_error)}")
+                sage_advice["diagnostic_error"] = str(diagnostic_error)
+            
+            # フォールバック処理（既存ロジック）
+            sage_advice["fallback_active"] = True
+            sage_advice["fallback_message"] = (
+                f"🏛️ エルダーズギルド4賢者システムが一時的に利用できません。\n"
+                f"診断システムによる復旧を試行しましたが、基本的な処理規則で継続します。\n"
+                f"エラー数: {len(consultation_errors)}"
+            )
+            
+            # 基本的なフォールバック提案
+            sage_advice["fallback_plan"] = {
+                "step1": "Issue内容の基本分析を実行",
+                "step2": "ラベルに基づく優先度判定",
+                "step3": "標準的な処理手順を適用",
+                "step4": "4賢者システム復旧後に再相談を推奨"
+            }
+            
+            logger.info(f"✅ Fallback processing activated for issue #{issue.number}")
+
         sage_advice["consultation_errors"] = consultation_errors
         return sage_advice
+    
+    async def _retry_sages_consultation(self, issue: Issue) -> Optional[Dict[str, Any]]:
+        """4賢者システム修復後の再相談を試行"""
+        retry_advice = {}
+        successful_consultations = 0
+        
+        try:
+            # ナレッジ賢者への再相談
+            knowledge_response = await self.knowledge_sage.process_request({
+                "type": "search",
+                "query": f"similar issues to: {issue.title}",
+                "limit": 3,
+            })
+            if knowledge_response and knowledge_response.get("entries"):
+                retry_advice["knowledge"] = knowledge_response.get("entries", [])
+                successful_consultations += 1
+                
+        except Exception as e:
+            logger.warning(f"Retry Knowledge Sage consultation failed: {str(e)}")
+            
+        try:
+            # タスク賢者への再相談
+            task_response = await self.task_sage.process_request({
+                "type": "create_plan",
+                "title": issue.title,
+                "description": issue.body or "",
+            })
+            if task_response and task_response.get("status") == "success":
+                retry_advice["plan"] = task_response
+                successful_consultations += 1
+                
+        except Exception as e:
+            logger.warning(f"Retry Task Sage consultation failed: {str(e)}")
+            
+        try:
+            # インシデント賢者への再相談
+            incident_response = await self.incident_sage.process_request({
+                "type": "evaluate_risk",
+                "task": issue.title,
+                "context": issue.body or "",
+            })
+            if incident_response and incident_response.get("risk_level"):
+                retry_advice["risks"] = incident_response
+                successful_consultations += 1
+                
+        except Exception as e:
+            logger.warning(f"Retry Incident Sage consultation failed: {str(e)}")
+            
+        try:
+            # RAG賢者への再相談
+            rag_response = await self.rag_sage.process_request({
+                "type": "search",
+                "query": f"how to fix: {issue.title}",
+                "max_results": 3,
+            })
+            if rag_response and rag_response.get("results"):
+                retry_advice["solution"] = rag_response.get("results", [])
+                successful_consultations += 1
+                
+        except Exception as e:
+            logger.warning(f"Retry RAG Sage consultation failed: {str(e)}")
+        
+        if successful_consultations >= 2:  # 少なくとも2つの賢者が応答すれば成功とみなす
+            logger.info(f"✅ Retry consultation successful: {successful_consultations}/4 sages responded")
+            return retry_advice
+        else:
+            logger.warning(f"❌ Retry consultation failed: only {successful_consultations}/4 sages responded")
+            return None
 
     def _determine_priority(self, issue: Issue) -> str:
         """イシューの優先度を判定"""

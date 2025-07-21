@@ -13,6 +13,7 @@ RAG賢者 (Search Mystic) の完全実装
 作成日: 2025-07-19
 """
 
+import asyncio
 import hashlib
 import json
 import logging
@@ -769,6 +770,74 @@ class RagManager:
             List[SearchResult]: 検索結果リスト
         """
         return self.search_knowledge(query, category, limit)
+
+    async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        非同期リクエスト処理（4賢者連携用）
+
+        Args:
+            request: リクエストデータ
+
+        Returns:
+            Dict[str, Any]: 処理結果
+        """
+        try:
+            request_type = request.get("type", "search")
+            
+            if request_type == "search":
+                query = request.get("query", "")
+                max_results = request.get("max_results", 10)
+                category = request.get("category")
+                
+                # 非同期で検索実行（I/O操作を別スレッドで実行）
+                loop = asyncio.get_event_loop()
+                results = await loop.run_in_executor(
+                    None, self.search_knowledge, query, category, max_results
+                )
+                
+                return {
+                    "status": "success",
+                    "type": "search_results",
+                    "results": [
+                        {
+                            "content": r.content,
+                            "source": r.source,
+                            "relevance_score": r.relevance_score,
+                            "timestamp": r.timestamp.isoformat(),
+                            "metadata": r.metadata
+                        }
+                        for r in results
+                    ],
+                    "query": query,
+                    "count": len(results)
+                }
+            
+            elif request_type == "consult":
+                title = request.get("title", "")
+                body = request.get("body", "")
+                
+                # 非同期でコンサルテーション実行
+                loop = asyncio.get_event_loop()
+                result = await loop.run_in_executor(
+                    None, self.consult_on_issue, title, body
+                )
+                
+                return result
+            
+            else:
+                return {
+                    "status": "error",
+                    "error": f"Unknown request type: {request_type}",
+                    "sage": "RAG賢者 (Search Mystic)"
+                }
+                
+        except Exception as e:
+            logger.error(f"❌ RAG賢者非同期処理エラー: {e}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "sage": "RAG賢者 (Search Mystic)"
+            }
 
 
 # 互換性関数
