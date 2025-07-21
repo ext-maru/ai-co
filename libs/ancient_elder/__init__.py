@@ -6,11 +6,13 @@
 from .base import AncientElderBase
 from .audit_engine import AncientElderAuditEngine
 from .integrity_auditor import AncientElderIntegrityAuditor
+from .four_sages_overseer import FourSagesOverseer
 
 __all__ = [
     "AncientElderBase",
     "AncientElderAuditEngine", 
     "AncientElderIntegrityAuditor",
+    "FourSagesOverseer",
 ]
 
 # System version
