@@ -14,7 +14,7 @@ def test_ai_elder_cast():
     print("🧪 ai-elder-cast テスト開始")
 
     project_root = Path(__file__).parent.parent
-    medium_file = project_root / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
+    medium_file = project_root / "docs" / "technical" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
 
     # ファイル存在チェック
     if medium_file.exists():

@@ -88,7 +88,7 @@ def main():
     print()
     
     # 知識ファイルパス（中間版）
-    knowledge_file = project_root / "knowledge_base" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
+    knowledge_file = project_root / "docs" / "technical" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
     
     if not knowledge_file.exists():
         print_colored(f"❌ 知識ファイルが見つかりません: {knowledge_file}", "red")

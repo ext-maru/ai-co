@@ -187,7 +187,7 @@ def create_startup_knowledge(has_inherited_tasks: bool) -> str:
     content = []
     
     # 基本的な知識を読み込み
-    knowledge_file = project_root / "knowledge_base" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
+    knowledge_file = project_root / "docs" / "technical" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
     if knowledge_file.exists():
         with open(knowledge_file, 'r', encoding='utf-8') as f:
             content.append(f.read())

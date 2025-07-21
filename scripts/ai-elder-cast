@@ -248,7 +248,7 @@ def launch_claude_code_with_knowledge():
     print("🔍 Claude コマンドヘルプ確認完了")
 
     # 中間版を使用（8KB - 読み込み可能）
-    medium_file = project_root / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
+    medium_file = project_root / "docs" / "technical" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
 
     # 中間版が存在することを確認
     if medium_file.exists():
