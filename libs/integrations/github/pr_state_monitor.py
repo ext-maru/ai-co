@@ -155,14 +155,24 @@ class PRStateMonitor:
             return False
         
         task = self.active_monitors[pr_number]
-        task.cancel()
         
-        try:
-            await task
-        except asyncio.CancelledError:
-            pass
+        if not task.done():
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
         
-        del self.active_monitors[pr_number]
+        # クリーンアップ
+        if pr_number in self.active_monitors:
+            del self.active_monitors[pr_number]
+        if pr_number in self.monitoring_configs:
+            del self.monitoring_configs[pr_number]
+        if pr_number in self.state_history:
+            del self.state_history[pr_number]
+        if pr_number in self.last_comment_updates:
+            del self.last_comment_updates[pr_number]
+            
         logger.info(f"Stopped monitoring PR #{pr_number}")
         return True
     
@@ -232,14 +242,25 @@ class PRStateMonitor:
         try:
             pr_info = self.pr_api_client._get_pull_request(pr_number)
             if not pr_info["success"]:
-                return None
+                logger.warning(f"Failed to get PR #{pr_number}: {pr_info.get('error', 'Unknown error')}")
+                # エラー情報を含む部分的な状態を返す
+                return PRState(
+                    pr_number=pr_number,
+                    timestamp=datetime.now(),
+                    mergeable=None,
+                    mergeable_state="error",
+                    draft=False,
+                    state="unknown",
+                    ci_status="error",
+                    review_state="error"
+                )
             
             pr = pr_info["pull_request"]
             
-            # CI状態を取得
+            # CI状態を取得（エラーハンドリング付き）
             ci_status = await self._get_ci_status(pr_number)
             
-            # レビュー状態を取得
+            # レビュー状態を取得（エラーハンドリング付き）
             review_state = await self._get_review_state(pr_number)
             
             return PRState(
@@ -256,8 +277,18 @@ class PRStateMonitor:
             )
             
         except Exception as e:
-            logger.error(f"Error getting PR #{pr_number} state: {e}")
-            return None
+            logger.error(f"Error getting PR #{pr_number} state: {e}", exc_info=True)
+            # エラー状態を返す（監視を継続するため）
+            return PRState(
+                pr_number=pr_number,
+                timestamp=datetime.now(),
+                mergeable=None,
+                mergeable_state="error",
+                draft=False,
+                state="error",
+                ci_status="error",
+                review_state="error"
+            )
     
     async def _get_ci_status(self, pr_number: int) -> Optional[str]:
         """CI状態の取得"""
