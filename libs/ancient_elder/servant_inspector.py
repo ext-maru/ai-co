@@ -614,14 +614,17 @@ class ServantInspector(AncientElderBase):
             
             if not servant_files:
                 self.logger.warning(f"No servant files found in {target_path}")
-                return AuditResult(
-                    auditor_name="ServantInspector",
-                    target_path=target_path,
-                    violations=[],
-                    metrics={"servant_files_found": 0},
-                    recommendations=["Create elder servant implementations"],
-                    execution_time=(datetime.now() - start_time).total_seconds()
-                )
+                # 空の場合のAuditResultを正しく作成
+                empty_result = AuditResult()
+                empty_result.auditor_name = "ServantInspector"
+                empty_result.violations = []
+                empty_result.metrics = {
+                    "servant_files_found": 0,
+                    "target_path": target_path,
+                    "recommendations": ["Create elder servant implementations"],
+                    "execution_time": (datetime.now() - start_time).total_seconds()
+                }
+                return empty_result
             
             # 1. 各サーバントの実装品質分析
             implementation_results = []
@@ -653,30 +656,34 @@ class ServantInspector(AncientElderBase):
             
             self.logger.info(f"✅ Servant Inspector audit completed in {execution_time:.2f}s")
             
-            return AuditResult(
-                auditor_name="ServantInspector",
-                target_path=target_path,
-                violations=violations,
-                metrics=metrics,
-                recommendations=recommendations,
-                execution_time=execution_time
-            )
+            # AuditResultを正しく作成
+            result = AuditResult()
+            result.auditor_name = "ServantInspector"
+            result.violations = violations
+            result.metrics = metrics
+            result.metrics["target_path"] = target_path
+            result.metrics["recommendations"] = recommendations
+            result.metrics["execution_time"] = execution_time
+            return result
             
         except Exception as e:
             self.logger.error(f"❌ Servant Inspector audit failed: {e}")
-            return AuditResult(
-                auditor_name="ServantInspector",
-                target_path=target_path,
-                violations=[{
-                    "type": "AUDIT_EXECUTION_FAILURE",
-                    "severity": ViolationSeverity.HIGH,
-                    "description": f"Servant Inspector audit execution failed: {str(e)}",
-                    "location": target_path
-                }],
-                metrics={"error": str(e)},
-                recommendations=[],
-                execution_time=(datetime.now() - start_time).total_seconds()
-            )
+            # エラー時のAuditResultを正しく作成
+            error_result = AuditResult()
+            error_result.auditor_name = "ServantInspector"
+            error_result.violations = [{
+                "type": "AUDIT_EXECUTION_FAILURE",
+                "severity": ViolationSeverity.HIGH.value,
+                "description": f"Servant Inspector audit execution failed: {str(e)}",
+                "location": target_path
+            }]
+            error_result.metrics = {
+                "error": str(e),
+                "target_path": target_path,
+                "recommendations": [],
+                "execution_time": (datetime.now() - start_time).total_seconds()
+            }
+            return error_result
             
     def _discover_servant_files(self, target_path: str) -> List[str]:
         """サーバントファイルを発見"""
