@@ -98,11 +98,8 @@ def main():
     os.environ["LANG"] = "ja_JP.UTF-8"
     os.environ["LC_ALL"] = "ja_JP.UTF-8"
     
-    # タスク同期を実行（エラーが発生しても継続）
-    if os.environ.get("ELDER_CAST_SKIP_SYNC", "").lower() != "true":
-        print_colored("📋 タスク同期中...", "cyan")
-        asyncio.run(quick_task_sync())
-        print()
+    # タスク同期は明示的にtodoオプションを指定した場合のみ実行
+    # （デフォルトでは同期しない）
     
     # Claude Code起動
     try:
