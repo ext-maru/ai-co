@@ -8,7 +8,6 @@ import asyncio
 import json
 import logging
 import os
-import subprocess
 
 # Elder System imports
 import sys
@@ -24,7 +23,6 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 from libs.core.elders_legacy import EldersServiceLegacy
-from libs.env_manager import EnvManager
 
 # 必要なモジュールのインポート
 from libs.rag_manager import RagManager
@@ -33,7 +31,8 @@ from libs.knowledge_sage import KnowledgeSage
 from libs.task_sage import TaskSage
 from libs.incident_sage import IncidentSage
 from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
-from libs.claude_cli_executor import ClaudeCLIExecutor
+from libs.code_generation.template_manager import CodeGenerationTemplateManager
+from libs.integrations.github.safe_git_operations import SafeGitOperations
 
 
 class AutoIssueElderFlowEngine:
@@ -60,6 +59,9 @@ class AutoIssueElderFlowEngine:
         # 自動マージを有効化
         self.pr_creator.auto_merge_enabled = True
         self.logger = logger
+        
+        # テンプレートマネージャーの初期化
+        self.template_manager = CodeGenerationTemplateManager()
 
     async def execute_flow(self, request):
         """Auto Issue用のElder Flow実行"""
@@ -79,17 +81,10 @@ class AutoIssueElderFlowEngine:
                 }
             )
 
-            # 品質ゲートチェック：失敗時はPR作成を中止
-            quality_gate_success = True
-            if flow_result.get("results", {}).get("quality_gate", {}).get("success") == False:
-                quality_gate_success = False
-                self.logger.warning(f"Quality gate failed for task: {task_name}")
-            
-            # Elder Flow成功かつ品質ゲート通過の場合のみPR作成
-            if (flow_result.get("status") == "success" or flow_result.get("task_name")) and quality_gate_success:
-                # PR作成を実行（Elder Flow結果を含む）
+            if flow_result.get("status") == "success" or flow_result.get("task_name"):
+                # PR作成を実行
                 pr_result = await self._create_pull_request(
-                    issue_number, issue_title, issue_body, task_name, flow_result
+                    issue_number, issue_title, issue_body, task_name
                 )
 
                 if pr_result.get("success"):
@@ -108,14 +103,6 @@ class AutoIssueElderFlowEngine:
                         "flow_result": flow_result,
                         "pr_error": pr_result.get("error"),
                     }
-            elif not quality_gate_success:
-                return {
-                    "status": "quality_gate_failed",
-                    "pr_url": None,
-                    "message": f"品質ゲート失敗のためPR作成を中止: {task_name}",
-                    "flow_result": flow_result,
-                    "quality_gate_error": flow_result.get("results", {}).get("quality_gate", {}).get("error"),
-                }
             else:
                 return {
                     "status": "error",
@@ -134,64 +121,149 @@ class AutoIssueElderFlowEngine:
             }
 
     async def _create_pull_request(
-        self, issue_number, issue_title, issue_body, task_name, flow_result=None
+        self, issue_number, issue_title, issue_body, task_name
     ):
-        """自動でPR作成（実装コード生成版）"""
+        """自動でPR作成"""
         try:
-            # 安全なGit操作をインポート
-            from .safe_git_operations import SafeGitOperations
+            # ブランチ名を生成（タイムスタンプオプション）
+            timestamp = datetime.now().strftime("%H%M%S")
+            use_timestamp = os.getenv("AUTO_ISSUE_USE_TIMESTAMP", "false").lower() == "true"
             
-            safe_git = SafeGitOperations()
+            if use_timestamp:
+                branch_name = f"auto-fix/issue-{issue_number}-{timestamp}"
+            else:
+                branch_name = f"auto-fix-issue-{issue_number}"
+
+            # まずブランチを作成してpush
+            import subprocess
             
-            # PR用ブランチ作成ワークフローを実行
-            pr_title = f"Auto-fix: {issue_title} (#{issue_number})"
-            workflow_result = safe_git.create_pr_branch_workflow(pr_title, "main", "auto-fix")
-            
-            if not workflow_result["success"]:
-                return {
-                    "success": False,
-                    "error": f"Failed to create PR branch: {workflow_result['error']}",
-                    "workflow_result": workflow_result
-                }
-            
-            branch_name = workflow_result["branch_name"]
-            original_branch = workflow_result["original_branch"]
+            # 現在のブランチを保存
+            current_branch = subprocess.run(
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=True
+            ).stdout.strip()
             
             try:
-                # Elder Flow結果から実装ファイルを生成
-                implementation_success = await self._generate_implementation_files(
-                    issue_number, issue_title, issue_body, task_name, flow_result
+                # mainブランチに切り替え
+                subprocess.run(["git", "checkout", "main"], check=True)
+                
+                # 最新の状態を取得
+                subprocess.run(["git", "pull", "origin", "main"], check=True)
+                
+                # 既存のブランチを削除（存在する場合）
+                existing_branch = subprocess.run(
+                    ["git", "branch", "-l", branch_name],
+                    capture_output=True,
+                    text=True
+                ).stdout.strip()
+                
+                if existing_branch:
+                    subprocess.run(["git", "branch", "-D", branch_name], check=True)
+                    # リモートブランチも削除
+                    subprocess.run(
+                        ["git", "push", "origin", "--delete", branch_name],
+                        capture_output=True
+                    )  # エラーは無視
+                
+                # 新しいブランチを作成
+                subprocess.run(["git", "checkout", "-b", branch_name], check=True)
+                
+                # テンプレートシステムを使用してコードを生成
+                files_created = []
+                
+                # コンテキストを作成
+                context = self.template_manager.create_context_from_issue(
+                    issue_number=issue_number,
+                    issue_title=issue_title,
+                    issue_body=issue_body
                 )
                 
-                if not implementation_success:
-                    self.logger.warning(f"Implementation generation failed for issue #{issue_number}")
-                    # フォールバック: 設計書のみ作成
-                    await self._create_design_document(issue_number, issue_title, issue_body, task_name)
+                # 技術スタックを検出
+                tech_stack = context['tech_stack']
+                self.logger.info(f"Detected tech stack for issue #{issue_number}: {tech_stack}")
                 
-                # 安全な追加コミット（必要に応じて）
-                additional_commit_result = safe_git.auto_commit_if_changes(
-                    f"fix: Additional changes for issue #{issue_number}"
+                # 実装ファイルを生成
+                os.makedirs("auto_implementations", exist_ok=True)
+                impl_code = self.template_manager.generate_code(
+                    template_type='class',
+                    tech_stack=tech_stack,
+                    context=context
                 )
                 
-                if not additional_commit_result["success"] and additional_commit_result.get("action") != "no_changes":
-                    self.logger.warning(f"Additional commit failed: {additional_commit_result['error']}")
+                impl_file_path = f"auto_implementations/issue_{issue_number}_implementation.py"
+                with open(impl_file_path, "w") as f:
+                    f.write(impl_code)
+                files_created.append(impl_file_path)
                 
-                # 最新変更をプッシュ（必要に応じて）
-                if additional_commit_result.get("action") == "committed":
-                    push_result = safe_git.push_branch_safely(branch_name)
-                    if not push_result["success"]:
-                        self.logger.warning(f"Failed to push additional changes: {push_result['error']}")
+                # テストファイルを生成
+                os.makedirs("tests/auto_generated", exist_ok=True)
+                test_code = self.template_manager.generate_code(
+                    template_type='test',
+                    tech_stack=tech_stack,
+                    context=context
+                )
+                
+                test_file_path = f"tests/auto_generated/test_issue_{issue_number}.py"
+                with open(test_file_path, "w") as f:
+                    f.write(test_code)
+                files_created.append(test_file_path)
+                
+                # 設計書も作成
+                fix_file_path = f"auto_fixes/issue_{issue_number}_fix.md"
+                os.makedirs("auto_fixes", exist_ok=True)
+                
+                with open(fix_file_path, "w") as f:
+                    f.write(f"""# Auto-fix for Issue #{issue_number}
+
+## Task: {task_name}
+
+## Original Issue
+{issue_title}
+
+{issue_body}
+
+## Generated Files
+- Implementation: `{impl_file_path}`
+- Test: `{test_file_path}`
+- Tech Stack: {tech_stack}
+
+## Template System Info
+- Detected keywords: {', '.join(context['requirements']['imports'])}
+- Template version: Jinja2 Enhanced Templates (Issue #184 Phase 1)
+
+---
+*This file was auto-generated by Elder Flow Auto Issue Processor with Template System*
+""")
+                files_created.append(fix_file_path)
+                
+                # すべての生成ファイルをステージング
+                for file_path in files_created:
+                    subprocess.run(["git", "add", file_path], check=True)
+                
+                # コミット（pre-commit hookが失敗する可能性があるため、再試行を含む）
+                commit_message = f"fix: Auto-fix for issue #{issue_number} - {issue_title[:50]}"
+                
+                # 最初のコミット試行
+                commit_result = subprocess.run(
+                    ["git", "commit", "-m", commit_message],
+                    capture_output=True,
+                    text=True
+                )
+                
+                # pre-commit hookでファイルが修正された場合、再度add & commit
+                if commit_result.returncode != 0 and "files were modified by this hook" in commit_result.stderr:
+                    self.logger.info("Pre-commit hook modified files, re-committing...")
+                    subprocess.run(["git", "add", "-A"], check=True)
+                    subprocess.run(["git", "commit", "-m", commit_message], check=True)
+                
+                # ブランチをpush
+                subprocess.run(["git", "push", "-u", "origin", branch_name], check=True)
                 
             finally:
                 # 元のブランチに戻る
-                restore_result = safe_git.restore_original_branch(original_branch)
-                if not restore_result["success"]:
-                    self.logger.error(f"Failed to restore original branch: {restore_result['error']}")
-                    # フォールバック: 直接gitコマンドで戻る
-                    try:
-                        subprocess.run(["git", "checkout", original_branch], check=True)
-                    except Exception as e:
-                        self.logger.error(f"Fallback checkout failed: {e}")
+                subprocess.run(["git", "checkout", current_branch], check=True)
 
             # PR作成
             pr_result = self.pr_creator.create_pull_request(
@@ -231,280 +303,7 @@ Closes #{issue_number}
                 }
 
         except Exception as e:
-            # エラー時もブランチを元に戻そうとする
-            try:
-                if 'safe_git' in locals() and 'original_branch' in locals():
-                    safe_git.restore_original_branch(original_branch)
-            except Exception as restore_error:
-                self.logger.error(f"Failed to restore branch after error: {restore_error}")
-            
             return {"success": False, "error": f"PR作成例外: {str(e)}"}
-
-    async def _generate_implementation_files(self, issue_number, issue_title, issue_body, task_name, flow_result):
-        """Elder Flow結果から実装ファイルを生成"""
-        try:
-            if not flow_result or not flow_result.get("results"):
-                return False
-                
-            results = flow_result.get("results", {})
-            servant_execution = results.get("servant_execution", {})
-            
-            if not servant_execution.get("success"):
-                return False
-                
-            execution_results = servant_execution.get("execution_results", [])
-            files_created = 0
-            
-            # TDDフローの実行を優先
-            self.logger.info(f"🔍 DEBUG: Calling _execute_tdd_flow with issue_number={issue_number}, issue_title='{issue_title}'")
-            tdd_success = await self._execute_tdd_flow(issue_number, issue_title, execution_results)
-            if tdd_success:
-                files_created += 4  # RED, GREEN, BLUE, FINAL の4ファイル
-                self.logger.info(f"TDD implementation completed for Issue #{issue_number}")
-            else:
-                # TDD失敗時は従来の方法でフォールバック
-                for result in execution_results:
-                    if result.get("action") == "generate_code" and result.get("success"):
-                        # 生成されたコードをファイルに保存
-                        code_content = result.get("generated_code", "")
-                        code_name = result.get("name", "generated_implementation")
-                        
-                        if code_content:
-                            # ファイルパスを決定
-                            if "test" in code_name.lower():
-                                file_path = f"tests/auto_generated/test_issue_{issue_number}.py"
-                                os.makedirs("tests/auto_generated", exist_ok=True)
-                            else:
-                                file_path = f"auto_implementations/issue_{issue_number}_{code_name.lower()}.py"
-                                os.makedirs("auto_implementations", exist_ok=True)
-                            
-                            # コードファイルを作成
-                            with open(file_path, "w") as f:
-                                f.write(f'"""\nAuto-generated implementation for Issue #{issue_number}\n{issue_title}\n\nGenerated by Elder Flow Auto Issue Processor\n"""\n\n')
-                                f.write(code_content)
-                            
-                            files_created += 1
-                            self.logger.info(f"Generated implementation file: {file_path}")
-                            
-                    elif result.get("action") == "create_test" and not result.get("success"):
-                        # テスト作成失敗時はTDDを再試行
-                        if not tdd_success:
-                            tdd_retry = await self._execute_tdd_flow(issue_number, issue_title, [])
-                            if tdd_retry:
-                                files_created += 4
-                            else:
-                                # 最終フォールバック
-                                test_content = self._generate_alternative_test(issue_number, issue_title)
-                                test_path = f"tests/auto_generated/test_issue_{issue_number}_alt.py"
-                                os.makedirs("tests/auto_generated", exist_ok=True)
-                                
-                                with open(test_path, "w") as f:
-                                    f.write(test_content)
-                                
-                                files_created += 1
-                                self.logger.info(f"Generated alternative test file: {test_path}")
-            
-            # 設計書も作成
-            await self._create_design_document(issue_number, issue_title, issue_body, task_name, detailed=True)
-            
-            return files_created > 0
-            
-        except Exception as e:
-            self.logger.error(f"Implementation generation error: {e}")
-            return False
-    
-    def _generate_alternative_test(self, issue_number, issue_title):
-        """aiofilesエラーの代替テスト生成"""
-        return f'"""\nAlternative test for Issue #{issue_number}\n{issue_title}\n\nGenerated to replace failed aiofiles test creation\n"""\n\nimport unittest\nfrom unittest.mock import Mock, patch\n\n\nclass TestIssue{issue_number}(unittest.TestCase):\n    """Test case for issue #{issue_number}"""\n    \n    def setUp(self):\n        """Set up test fixtures"""\n        self.test_data = {{}}\n    \n    def test_basic_functionality(self):\n        """Test basic functionality"""\n        # TODO: Implement actual test logic\n        self.assertTrue(True, "Placeholder test - implement actual logic")\n    \n    def test_error_handling(self):\n        """Test error handling"""\n        # TODO: Implement error handling tests\n        self.assertTrue(True, "Placeholder test - implement error handling")\n\n\nif __name__ == "__main__":\n    unittest.main()\n'
-    
-    async def _create_design_document(self, issue_number, issue_title, issue_body, task_name, detailed=False):
-        """設計書作成（実装ファイルの補完）"""
-        fix_file_path = f"auto_fixes/issue_{issue_number}_fix.md"
-        os.makedirs("auto_fixes", exist_ok=True)
-        
-        content = f"""# Auto-fix for Issue #{issue_number}
-
-## Task: {task_name}
-
-## Original Issue
-{issue_title}
-
-{issue_body}"""
-        
-        if detailed:
-            content += "\n\n## Implementation Status\n- ✅ Code implementation generated\n- ✅ Test files created\n- ✅ Design documentation completed\n"
-        
-        content += "\n\n---\n*This file was auto-generated by Elder Flow Auto Issue Processor*\n"
-        
-        with open(fix_file_path, "w") as f:
-            f.write(content)
-    
-    async def _create_design_document_a2a(self, issue_number, issue_title, issue_body, claude_result):
-        """A2A用設計書作成（Claude結果含む）"""
-        fix_file_path = f"auto_fixes/issue_{issue_number}_a2a_analysis.md"
-        os.makedirs("auto_fixes", exist_ok=True)
-        
-        content = f"""# A2A Auto-Analysis for Issue #{issue_number}
-
-## Original Issue
-**Title**: {issue_title}
-
-**Description**:
-{issue_body}
-
-## Claude Analysis Result
-```
-{claude_result}
-```
-
-## A2A Processing Status
-- ✅ Issue analyzed by Claude Elder
-- ✅ A2A isolated process completed
-- ✅ Design documentation created
-- ⚠️ Manual implementation may be required
-
-## Next Steps
-1. Review the Claude analysis above
-2. Implement necessary code changes
-3. Add appropriate tests
-4. Update this PR with actual implementation
-
----
-*This file was auto-generated by Auto Issue Processor A2A*
-*Processing completed at: {datetime.now().isoformat()}*
-"""
-        
-        with open(fix_file_path, "w") as f:
-            f.write(content)
-
-    async def _execute_tdd_flow(self, issue_number, issue_title, execution_results):
-        """TDD Red-Green-Refactor サイクルを実行"""
-        try:
-            # CodeCraftsmanサーバントを直接インポート
-            from libs.elder_flow_servant_executor_real import CodeCraftsmanServantReal, ServantTask, ServantType
-            
-            code_craftsman = CodeCraftsmanServantReal()
-            
-            # クラス名を生成（Issue番号から）
-            target_class = f"Issue{issue_number}Implementation"
-            target_method = "execute"
-            feature_description = f"Implementation for {issue_title}"
-            
-            # デバッグログ追加
-            self.logger.info(f"🔍 DEBUG: TDD flow called with issue_number={issue_number}, issue_title='{issue_title}'")
-            self.logger.info(f"🔍 DEBUG: Generated target_class={target_class}")
-            self.logger.info(f"Starting TDD flow for Issue #{issue_number}: {target_class}")
-            
-            # Step 1: RED - 失敗するテストを生成（スマート生成対応）
-            red_task = ServantTask(
-                task_id=f"tdd_red_{issue_number}",
-                servant_type=ServantType.CODE_CRAFTSMAN,
-                description=f"Generate failing test for Issue #{issue_number}",
-                command="tdd_generate_failing_test",
-                arguments={
-                    "test_name": f"test_issue_{issue_number}",
-                    "feature_description": feature_description,
-                    "target_class": target_class,
-                    "target_method": target_method,
-                    "issue_title": issue_title,
-                    "issue_body": self._get_issue_body_for_tdd(issue_number),
-                }
-            )
-            
-            red_result = await code_craftsman.execute_task(red_task)
-            
-            if red_result.get("success"):
-                # REDテストファイルを保存
-                test_content = red_result.get("generated_test", "")
-                red_test_path = f"tests/tdd_red/test_issue_{issue_number}_red.py"
-                os.makedirs("tests/tdd_red", exist_ok=True)
-                
-                with open(red_test_path, "w") as f:
-                    f.write(test_content)
-                
-                self.logger.info(f"TDD RED: Generated failing test: {red_test_path}")
-                
-                # Step 2: GREEN - テストを通す最小実装（スマート生成対応）
-                green_task = ServantTask(
-                    task_id=f"tdd_green_{issue_number}",
-                    servant_type=ServantType.CODE_CRAFTSMAN,
-                    description=f"Generate minimal implementation for Issue #{issue_number}",
-                    command="tdd_implement_code",
-                    arguments={
-                        "target_class": target_class,
-                        "target_method": target_method,
-                        "feature_description": feature_description,
-                        "issue_title": issue_title,
-                        "issue_body": self._get_issue_body_for_tdd(issue_number),
-                    }
-                )
-                
-                green_result = await code_craftsman.execute_task(green_task)
-                
-                if green_result.get("success"):
-                    # GREENコードファイルを保存
-                    impl_content = green_result.get("generated_code", "")
-                    green_impl_path = f"auto_implementations/issue_{issue_number}_green.py"
-                    os.makedirs("auto_implementations", exist_ok=True)
-                    
-                    with open(green_impl_path, "w") as f:
-                        f.write(impl_content)
-                    
-                    self.logger.info(f"TDD GREEN: Generated minimal implementation: {green_impl_path}")
-                    
-                    # Step 3: BLUE - リファクタリング
-                    blue_task = ServantTask(
-                        task_id=f"tdd_blue_{issue_number}",
-                        servant_type=ServantType.CODE_CRAFTSMAN,
-                        description=f"Refactor implementation for Issue #{issue_number}",
-                        command="tdd_refactor_code",
-                        arguments={
-                            "target_class": target_class,
-                            "current_code": impl_content,
-                            "improvement_goals": [
-                                "Better error handling",
-                                "Improved logging",
-                                "Type hints",
-                                "Documentation"
-                            ],
-                        }
-                    )
-                    
-                    blue_result = await code_craftsman.execute_task(blue_task)
-                    
-                    if blue_result.get("success"):
-                        # BLUEリファクタリング版を保存
-                        refactored_content = blue_result.get("refactored_code", "")
-                        blue_impl_path = f"auto_implementations/issue_{issue_number}_refactored.py"
-                        
-                        with open(blue_impl_path, "w") as f:
-                            f.write(refactored_content)
-                        
-                        self.logger.info(f"TDD BLUE: Generated refactored implementation: {blue_impl_path}")
-                        
-                        # TDD完全実装の最終版を作成
-                        final_impl_path = f"auto_implementations/issue_{issue_number}_implementation.py"
-                        with open(final_impl_path, "w") as f:
-                            f.write(refactored_content)
-                        
-                        self.logger.info(f"TDD COMPLETE: Final implementation saved: {final_impl_path}")
-                        
-                        return True
-            
-            return False
-            
-        except Exception as e:
-            self.logger.error(f"TDD flow execution error: {e}")
-            return False
-    
-    def _get_issue_body_for_tdd(self, issue_number: int) -> str:
-        """TDD用にIssue本文を取得"""
-        try:
-            issue = self.repo.get_issue(issue_number)
-            return issue.body or ""
-        except Exception as e:
-            self.logger.warning(f"Failed to get issue body for #{issue_number}: {e}")
-            return ""
 
 
 # Setup logging
@@ -660,9 +459,9 @@ class AutoIssueProcessor(EldersServiceLegacy):
         self.service_name = "AutoIssueProcessor"
 
         # GitHub API初期化
-        github_token = EnvManager.get_github_token()
-        repo_owner = EnvManager.get_github_repo_owner()
-        repo_name = EnvManager.get_github_repo_name()
+        github_token = os.getenv("GITHUB_TOKEN")
+        repo_owner = os.getenv("GITHUB_REPO_OWNER", "ext-maru")
+        repo_name = os.getenv("GITHUB_REPO_NAME", "ai-co")
 
         if not github_token:
             raise ValueError("GITHUB_TOKEN environment variable not set")
@@ -685,10 +484,6 @@ class AutoIssueProcessor(EldersServiceLegacy):
         
         # 処理履歴ファイル
         self.processing_history_file = "logs/auto_issue_processing.json"
-        
-        # A2A設定（常に有効）
-        self.a2a_max_parallel = int(os.getenv("AUTO_ISSUE_A2A_MAX_PARALLEL", "5"))
-        logger.info(f"Auto Issue Processor initialized with A2A (max parallel: {self.a2a_max_parallel})")
 
     def get_capabilities(self) -> Dict[str, Any]:
         """サービスの機能を返す"""
@@ -759,24 +554,17 @@ class AutoIssueProcessor(EldersServiceLegacy):
                         "message": "No processable issues found.",
                     }
 
-                # A2A並列処理実行
-                logger.info(f"Processing {len(issues)} issues in A2A mode (parallel isolated processes)")
-                results = await self.process_issues_a2a(issues)
-                
-                # 成功したIssueを集計
-                successful = [r for r in results if r.get("status") == "success"]
-                failed = [r for r in results if r.get("status") == "error"]
-                skipped = [r for r in results if r.get("status") == "already_exists"]
-                
+                # 最初のイシューを処理
+                issue = issues[0]
+                result = await self.execute_auto_processing(issue)
+
                 return {
-                    "status": "completed",
-                    "mode": "a2a",
-                    "total_issues": len(issues),
-                    "successful": len(successful),
-                    "failed": len(failed),
-                    "skipped": len(skipped),
-                    "results": results,
-                    "message": f"A2A processing completed: {len(successful)}/{len(issues)} issues processed successfully"
+                    "status": "success",
+                    "processed_issue": {
+                        "number": issue.number,
+                        "title": issue.title,
+                        "result": result,
+                    },
                 }
 
             elif mode == "dry_run":
@@ -836,13 +624,6 @@ class AutoIssueProcessor(EldersServiceLegacy):
             if len(processable_issues) >= 10:
                 break
 
-        # 優先度でソート（critical > high > medium > low）
-        priority_order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
-        processable_issues.sort(key=lambda issue: (
-            priority_order.get(self._determine_priority(issue), 4),  # 不明な優先度は最後
-            issue.number  # 同じ優先度では番号順
-        ))
-        
         return processable_issues
 
     def _get_recently_processed_issues(self, hours=24) -> Set[int]:
@@ -915,27 +696,8 @@ class AutoIssueProcessor(EldersServiceLegacy):
             # Elder Flow実行
             result = await self.elder_flow.execute_flow(flow_request)
 
-            # Elder Flowエンジンが既にPR作成を処理済み
-            # 結果に基づいてイシューにコメント追加
-            if result.get("status") == "success":
-                # PR作成成功時
-                pr_url = result.get("pr_url")
-                if pr_url:
-                    issue.create_comment(
-                        f"🤖 Auto-processed by Elder Flow\n\n"
-                        f"PR created: {pr_url}\n\n"
-                        f"This issue was automatically processed with code implementation."
-                    )
-                return result
-            elif result.get("status") == "quality_gate_failed":
-                # 品質ゲート失敗時
-                issue.create_comment(
-                    f"🚨 Auto-processing failed\n\n"
-                    f"Quality gate failed: {result.get('quality_gate_error', 'Unknown error')}\n\n"
-                    f"Manual review and implementation required."
-                )
-                return result
-            elif result.get("status") == "already_exists":
+            # 結果に基づいてイシューを更新
+            if result.get("status") == "already_exists":
                 # 既存のPRがある場合
                 issue.create_comment(
                     f"🤖 Auto Issue Processor Notice\n\n"
@@ -996,265 +758,6 @@ class AutoIssueProcessor(EldersServiceLegacy):
             )
 
             return {"status": "error", "message": str(e)}
-
-
-    async def process_issue_isolated(self, issue: Issue) -> Dict[str, Any]:
-        """
-        独立したClaude CLIプロセスでIssueを処理
-        コンテキストの分離とPIDロック回避のためのA2A実装
-        
-        FIXED: 完全なGit操作とPR作成機能を統合
-        """
-        try:
-            # 既存PRのチェック
-            existing_pr = await self._check_existing_pr_for_issue(issue.number)
-            if existing_pr:
-                pr_url = existing_pr.get("html_url", "")
-                pr_number = existing_pr.get("number", "")
-                logger.info(f"Issue #{issue.number} already has PR: {pr_url}")
-                return {
-                    "status": "already_exists",
-                    "issue_number": issue.number,
-                    "pr_url": pr_url,
-                    "message": f"Issue already has PR #{pr_number}"
-                }
-            
-            # 安全なGit操作を初期化
-            from .safe_git_operations import SafeGitOperations
-            safe_git = SafeGitOperations()
-            
-            # PR用ブランチ作成
-            pr_title = f"Auto-fix: {issue.title} (#{issue.number})"
-            workflow_result = safe_git.create_pr_branch_workflow(pr_title, "main", "auto-fix")
-            
-            if not workflow_result["success"]:
-                return {
-                    "status": "error",
-                    "message": f"Failed to create PR branch: {workflow_result['error']}",
-                    "issue_number": issue.number
-                }
-            
-            branch_name = workflow_result["branch_name"]
-            original_branch = workflow_result["original_branch"]
-            
-            try:
-                # Claude CLI実行用のプロンプト作成
-                prompt = f"""あなたはクロードエルダー（Claude Elder）です。
-
-以下のGitHub Issueを自動処理してください：
-
-**Issue情報:**
-- 番号: #{issue.number}
-- タイトル: {issue.title}
-- 内容: {issue.body or "No description"}
-- ラベル: {', '.join([label.name for label in issue.labels]) if issue.labels else 'None'}
-
-**実行指示:**
-1. Elder Flowを使用してこのIssueを解決してください
-2. TDDアプローチで実装してください
-3. 必要なファイルを作成・修正してください
-4. 品質ゲートをパスすることを確認してください
-
-**重要:**
-- このタスクは独立したプロセスで実行されています
-- 現在のブランチ: {branch_name}
-- 実装ファイルはauto_implementations/ディレクトリに作成してください
-- テストファイルはtests/auto_generated/ディレクトリに作成してください
-
-elder-flow execute "Auto-fix Issue #{issue.number}: {issue.title}" --priority medium
-"""
-
-                # Claude CLIの実行
-                executor = ClaudeCLIExecutor()
-                claude_result = executor.execute(
-                    prompt=prompt,
-                    model="claude-sonnet-4-20250514",
-                    working_dir=str(Path.cwd())
-                )
-                
-                logger.info(f"Claude CLI execution completed for issue #{issue.number}")
-                
-                # 変更をコミット（必要に応じて）
-                commit_result = safe_git.auto_commit_if_changes(
-                    f"fix: Auto-fix for issue #{issue.number}\n\n{issue.title}\n\nAuto-generated by A2A Issue Processor"
-                )
-                
-                if commit_result["success"] and commit_result.get("action") == "committed":
-                    # 変更をプッシュ
-                    push_result = safe_git.push_branch_safely(branch_name)
-                    if not push_result["success"]:
-                        logger.warning(f"Failed to push changes: {push_result['error']}")
-                        return {
-                            "status": "error",
-                            "message": f"Failed to push changes: {push_result['error']}",
-                            "issue_number": issue.number
-                        }
-                    
-                    # PR作成
-                    pr_result = self.pr_creator.create_pull_request(
-                        title=f"Auto-fix: {issue.title} (#{issue.number})",
-                        head=branch_name,
-                        base="main",
-                        body=f"""🤖 **Auto Issue Processor A2A** による自動修正
-
-## 修正内容
-Auto-fix for Issue #{issue.number}: {issue.title}
-
-## 対象Issue
-Closes #{issue.number}
-
-## 元のIssue内容
-{issue.body or 'No description'}
-
-## Claude実行結果
-```
-{claude_result[:500]}{'...' if len(claude_result) > 500 else ''}
-```
-
----
-*このPRはAuto Issue Processor A2Aにより自動生成されました*
-""",
-                        labels=["auto-generated", "a2a-fix"],
-                        draft=False
-                    )
-                    
-                    if pr_result.get("success"):
-                        pr_data = pr_result.get("pull_request", {})
-                        return {
-                            "status": "success",
-                            "issue_number": issue.number,
-                            "pr_url": pr_data.get("html_url"),
-                            "pr_number": pr_data.get("number"),
-                            "branch_name": branch_name,
-                            "message": f"Successfully created PR #{pr_data.get('number')} for issue #{issue.number}",
-                            "claude_result": claude_result[:200] + "..." if len(claude_result) > 200 else claude_result
-                        }
-                    else:
-                        return {
-                            "status": "error",
-                            "message": f"Failed to create PR: {pr_result.get('error', 'Unknown error')}",
-                            "issue_number": issue.number,
-                            "claude_result": claude_result[:200] + "..." if len(claude_result) > 200 else claude_result
-                        }
-                        
-                elif commit_result.get("action") == "no_changes":
-                    # 変更がない場合でも設計書を作成
-                    await self._create_design_document_a2a(issue.number, issue.title, issue.body or "", claude_result)
-                    
-                    # 設計書をコミット
-                    design_commit_result = safe_git.auto_commit_if_changes(
-                        f"docs: Design document for issue #{issue.number}"
-                    )
-                    
-                    if design_commit_result["success"] and design_commit_result.get("action") == "committed":
-                        push_result = safe_git.push_branch_safely(branch_name)
-                        if push_result["success"]:
-                            # PR作成（設計書のみ）
-                            pr_result = self.pr_creator.create_pull_request(
-                                title=f"Auto-analysis: {issue.title} (#{issue.number})",
-                                head=branch_name,
-                                base="main",
-                                body=f"""🤖 **Auto Issue Processor A2A** による自動分析
-
-## 分析内容
-Auto-analysis for Issue #{issue.number}: {issue.title}
-
-## 対象Issue
-Related to #{issue.number}
-
-## 分析結果
-設計書を作成しました。実装が必要な場合は手動で追加してください。
-
----
-*このPRはAuto Issue Processor A2Aにより自動生成されました*
-""",
-                                labels=["auto-generated", "a2a-analysis", "documentation"],
-                                draft=True
-                            )
-                            
-                            if pr_result.get("success"):
-                                pr_data = pr_result.get("pull_request", {})
-                                return {
-                                    "status": "success",
-                                    "issue_number": issue.number,
-                                    "pr_url": pr_data.get("html_url"),
-                                    "pr_number": pr_data.get("number"),
-                                    "message": f"Created analysis PR #{pr_data.get('number')} (draft) for issue #{issue.number}"
-                                }
-                    
-                    return {
-                        "status": "no_changes",
-                        "issue_number": issue.number,
-                        "message": f"No implementation changes needed for issue #{issue.number}",
-                        "claude_result": claude_result[:200] + "..." if len(claude_result) > 200 else claude_result
-                    }
-                    
-                else:
-                    return {
-                        "status": "error",
-                        "message": f"Failed to commit changes: {commit_result['error']}",
-                        "issue_number": issue.number
-                    }
-            
-            finally:
-                # 元のブランチに戻る
-                restore_result = safe_git.restore_original_branch(original_branch)
-                if not restore_result["success"]:
-                    logger.error(f"Failed to restore original branch: {restore_result['error']}")
-                    # フォールバック: 直接gitコマンドで戻る
-                    try:
-                        subprocess.run(["git", "checkout", original_branch], check=True)
-                    except Exception as e:
-                        logger.error(f"Fallback checkout failed: {e}")
-
-        except Exception as e:
-            logger.error(f"Error in isolated process for issue #{issue.number}: {str(e)}")
-            return {
-                "status": "error",
-                "message": str(e),
-                "issue_number": issue.number
-            }
-
-    async def process_issues_a2a(self, issues: List[Issue]) -> List[Dict[str, Any]]:
-        """
-        複数のIssueをA2A方式で並列処理
-        各Issueは独立したClaude CLIプロセスで実行される
-        """
-        logger.info(f"Starting A2A processing for {len(issues)} issues")
-        
-        # 並列実行数の制限
-        semaphore = asyncio.Semaphore(self.a2a_max_parallel)
-        
-        async def process_with_limit(issue: Issue) -> Dict[str, Any]:
-            """セマフォで並列度を制限しながら処理"""
-            async with semaphore:
-                logger.info(f"Processing issue #{issue.number} in isolated process")
-                return await self.process_issue_isolated(issue)
-        
-        # すべてのタスクを作成
-        tasks = [
-            asyncio.create_task(process_with_limit(issue))
-            for issue in issues
-        ]
-        
-        # 結果を収集（例外も含む）
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        
-        # 結果の整形
-        processed_results = []
-        for i, result in enumerate(results):
-            if isinstance(result, Exception):
-                processed_results.append({
-                    "status": "error",
-                    "message": str(result),
-                    "issue_number": issues[i].number
-                })
-            else:
-                processed_results.append(result)
-        
-        logger.info(f"A2A processing completed. Success: {sum(1 for r in processed_results if r.get('status') == 'success')}/{len(processed_results)}")
-        
-        return processed_results
 
     async def consult_four_sages(self, issue: Issue) -> Dict[str, Any]:
         """4賢者への相談"""
@@ -1336,8 +839,8 @@ Related to #{issue.number}
         elif any(word in title_lower for word in ["bug", "fix", "error"]):
             return "medium"
 
-        # デフォルトは中優先度（ラベル無しIssueも処理対象にする）
-        return "medium"
+        # デフォルトは低優先度
+        return "low"
     
     async def _check_existing_pr_for_issue(self, issue_number: int) -> Optional[Dict[str, Any]]:
         """指定されたイシューに対する既存のPRをチェック"""

@@ -644,6 +644,136 @@ class PostgreSQLClaudeTaskTracker:
             logger.info(f"Task {action}: {task_id}")
         return deleted
 
+    async def sync_with_todo_list(self, todos: List[Dict]) -> int:
+        """
+        TodoListとの同期（PostgreSQL版）
+
+        Args:
+            todos: TodoListのデータ
+
+        Returns:
+            int: 同期したタスク数
+        """
+        synced_count = 0
+
+        for todo in todos:
+            try:
+                # 既存タスクチェック（external_idで検索）
+                async with self._get_connection() as conn:
+                    existing = await conn.fetchrow(
+                        "SELECT * FROM task_sage WHERE metadata->>'todo_id' = $1",
+                        todo["id"]
+                    )
+
+                if not existing:
+                    # 新規作成
+                    task_type = self._determine_task_type_from_content(todo["content"])
+                    priority = self._map_todo_priority(todo["priority"])
+
+                    await self.create_task(
+                        title=todo["content"],
+                        task_type=task_type,
+                        priority=priority,
+                        created_by="todo_sync",
+                        metadata={"todo_id": todo["id"], "source": "todo_list"},
+                    )
+                    synced_count += 1
+                    logger.info(f"Created task from todo: {todo['id']}")
+                else:
+                    # ステータス同期
+                    status = self._map_todo_status(todo["status"])
+                    await self.update_task(existing["task_id"], status=status)
+                    synced_count += 1
+                    logger.info(f"Updated task status from todo: {todo['id']}")
+
+            except Exception as e:
+                logger.error(f"Failed to sync todo {todo['id']}: {e}")
+
+        return synced_count
+
+    async def sync_tracker_to_todo_list(self) -> List[Dict]:
+        """
+        タスクトラッカーからTodoListへの同期
+
+        Returns:
+            List[Dict]: TodoList形式のデータ
+        """
+        # アクティブなタスクを取得
+        tasks = await self.list_tasks(
+            limit=20  # TodoListの適切なサイズに制限
+        )
+
+        todos = []
+        for task in tasks:
+            # ステータスがpendingまたはin_progressのもののみ
+            if task["status"] in ["pending", "in_progress"]:
+                todo = {
+                    "id": task.get("metadata", {}).get("todo_id") or f"task-{task['task_id']}",
+                    "content": task["title"],
+                    "status": self._map_status_to_todo(task["status"]),
+                    "priority": self._map_priority_to_todo(task["priority"])
+                }
+                todos.append(todo)
+
+        return todos
+
+    def _determine_task_type_from_content(self, content: str) -> TaskType:
+        """コンテンツからタスクタイプを推定"""
+        content_lower = content.lower()
+        if any(word in content_lower for word in ["実装", "implement", "add", "create"]):
+            return TaskType.FEATURE
+        elif any(word in content_lower for word in ["修正", "fix", "bug", "エラー"]):
+            return TaskType.BUG_FIX
+        elif any(word in content_lower for word in ["リファクタ", "refactor", "改善"]):
+            return TaskType.REFACTOR
+        elif any(word in content_lower for word in ["テスト", "test"]):
+            return TaskType.TEST
+        elif any(word in content_lower for word in ["ドキュメント", "doc", "文書"]):
+            return TaskType.DOCS
+        else:
+            return TaskType.FEATURE
+
+    def _map_todo_priority(self, priority: str) -> TaskPriority:
+        """TodoList優先度をTaskPriorityにマッピング"""
+        mapping = {
+            "high": TaskPriority.HIGH,
+            "medium": TaskPriority.MEDIUM,
+            "low": TaskPriority.LOW
+        }
+        return mapping.get(priority, TaskPriority.MEDIUM)
+
+    def _map_todo_status(self, status: str) -> TaskStatus:
+        """TodoListステータスをTaskStatusにマッピング"""
+        mapping = {
+            "pending": TaskStatus.PENDING,
+            "in_progress": TaskStatus.IN_PROGRESS,
+            "completed": TaskStatus.COMPLETED
+        }
+        return mapping.get(status, TaskStatus.PENDING)
+
+    def _map_status_to_todo(self, status: str) -> str:
+        """TaskStatusをTodoListステータスにマッピング"""
+        mapping = {
+            "pending": "pending",
+            "in_progress": "in_progress",
+            "completed": "completed",
+            "failed": "pending",  # failedはpendingに戻す
+            "cancelled": "completed",  # cancelledは完了扱い
+            "review": "in_progress",  # reviewは進行中
+            "blocked": "pending"  # blockedはpending
+        }
+        return mapping.get(status, "pending")
+
+    def _map_priority_to_todo(self, priority: str) -> str:
+        """TaskPriorityをTodoList優先度にマッピング"""
+        mapping = {
+            "critical": "high",
+            "high": "high",
+            "medium": "medium",
+            "low": "low"
+        }
+        return mapping.get(priority, "medium")
+
     async def health_check(self) -> Dict[str, Any]:
         """
         ヘルスチェック
