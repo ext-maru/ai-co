@@ -31,10 +31,11 @@ async def _create_pull_request_with_safegit(
         
         try:
             # PR用ブランチを作成（既存ブランチは自動削除される）
+            pr_title = f"Auto-fix: {issue_title} (#{issue_number})"
             branch_result = git_ops.create_pr_branch_workflow(
-                branch_name=branch_name,
-                commit_message=f"fix: Auto-fix for issue #{issue_number} - {issue_title[:50]}",
-                files_to_add=[]
+                pr_title=pr_title,
+                base_branch="main",
+                branch_prefix="auto-fix"
             )
             
             if not branch_result["success"]:
@@ -43,6 +44,9 @@ async def _create_pull_request_with_safegit(
                     "success": False,
                     "error": f"ブランチ作成エラー: {branch_result.get('error', 'Unknown error')}"
                 }
+            
+            # 作成されたブランチ名を取得
+            created_branch_name = branch_result.get("branch_name", branch_name)
             
             # テンプレートシステムを使用してコードを生成
             files_created = []
@@ -120,7 +124,7 @@ async def _create_pull_request_with_safegit(
             
             if commit_result["success"]:
                 # ブランチをpush
-                push_result = git_ops.push_branch_safely(branch_name)
+                push_result = git_ops.push_branch_safely(created_branch_name)
                 if not push_result["success"]:
                     self.logger.error(f"Failed to push branch: {push_result.get('error', 'Unknown error')}")
                     return {
@@ -142,7 +146,7 @@ async def _create_pull_request_with_safegit(
         # PR作成
         pr_result = self.pr_creator.create_pull_request(
             title=f"Auto-fix: {issue_title} (#{issue_number})",
-            head=branch_name,
+            head=created_branch_name,
             base="main",
             body=f"""🤖 **Auto Issue Processor** による自動修正
 
@@ -173,7 +177,7 @@ Closes #{issue_number}
                 "success": True,
                 "pr_url": pr_data.get("html_url"),
                 "pr_number": pr_data.get("number"),
-                "branch_name": branch_name,
+                "branch_name": created_branch_name,
             }
         else:
             return {
