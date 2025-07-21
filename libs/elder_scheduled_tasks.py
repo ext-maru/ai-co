@@ -596,9 +596,9 @@ def start_elder_scheduled_tasks():
 def _register_github_automation_tasks(self):
     """GitHub自動処理タスク登録"""
     
-    @self.decorators.scheduled('interval', minutes=10)
+    @self.decorators.scheduled('interval', minutes=5)
     async def auto_issue_processor():
-        """Enhanced Auto Issue Processor実行（10分間隔）"""
+        """Enhanced Auto Issue Processor実行（5分間隔）"""
         logger.info("🤖 Enhanced Auto Issue Processor実行開始")
         try:
             import asyncio
