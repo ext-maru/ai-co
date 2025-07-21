@@ -59,6 +59,7 @@ except ImportError:
 
 # 既存のAutoIssueProcessorをインポート
 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
+from libs.code_generation.template_manager import CodeGenerationTemplateManager
 
 
 def retry_on_github_error(max_retries=3, base_delay=1.0):
@@ -802,6 +803,10 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
         self.smart_merge_system = None
         self.conflict_resolution_enabled = True
         self.logger.info("   → スマートマージシステム初期化準備完了")
+        
+        self.logger.info("   → コード生成テンプレート管理システム初期化中...")
+        self.template_manager = CodeGenerationTemplateManager()
+        self.logger.info("   → コード生成テンプレート管理システム初期化完了")
 
         self.pr_creator = None  # GitHubクライアント初期化後に設定
         self.metrics = {
@@ -985,12 +990,11 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                 self.logger.info("🔧 スマートマージシステムを初期化中...")
                 from .enhanced_merge_system_v2 import EnhancedMergeSystemV2
                 
-                github_token = os.environ.get("GITHUB_TOKEN")
-                repo_parts = pr.base.repo.full_name.split("/")
+                # EnhancedMergeSystemV2は pr_api_client と github_client を期待
                 self.smart_merge_system = EnhancedMergeSystemV2(
-                    github_token=github_token,
-                    repo_owner=repo_parts[0],
-                    repo_name=repo_parts[1]
+                    pr_api_client=self.pr_creator,  # PR作成用のAPIクライアント
+                    github_client=self.github,      # GitHubクライアント
+                    repo_path=os.getcwd()          # リポジトリパス
                 )
                 self.logger.info("   → スマートマージシステム初期化完了")
             
@@ -1383,16 +1387,88 @@ This auto-generated documentation provides the foundation for addressing the doc
     async def _implement_general(
         self, issue: Issue, sage_advice: Dict[str, Any], impl_dir: Path
     ) -> List[str]:
-        """一般的な実装"""
+        """一般的な実装 - 実際のコードを生成"""
         files_created = []
-
-        general_path = impl_dir / f"solution_{issue.number}.md"
-        general_content = f"""# General Solution: {issue.title}
+        
+        try:
+            # テンプレートマネージャーを使用して実際のコードを生成
+            self.logger.info("🔧 テンプレート管理システムで実コード生成中...")
+            
+            # Issue分析
+            analysis_result = self.template_manager.analyze_issue({
+                'title': issue.title,
+                'body': issue.body or '',
+                'labels': [label.name for label in issue.labels],
+                'number': issue.number
+            })
+            
+            # 技術スタックの特定
+            tech_stack = analysis_result.get('tech_stack', 'base')
+            self.logger.info(f"   → 検出された技術スタック: {tech_stack}")
+            
+            # テスト生成（TDD原則）
+            test_code = self.template_manager.generate_test_code(
+                issue_number=issue.number,
+                issue_title=issue.title,
+                requirements=analysis_result.get('requirements', []),
+                tech_stack=tech_stack
+            )
+            
+            if test_code:
+                test_path = Path(f"tests/test_issue_{issue.number}.py")
+                test_path.parent.mkdir(parents=True, exist_ok=True)
+                test_path.write_text(test_code, encoding="utf-8")
+                files_created.append(str(test_path))
+                self.logger.info(f"   → テストコード生成: {test_path}")
+            
+            # 実装コード生成
+            impl_code = self.template_manager.generate_implementation_code(
+                issue_number=issue.number,
+                issue_title=issue.title,
+                requirements=analysis_result.get('requirements', []),
+                tech_stack=tech_stack,
+                sage_advice=sage_advice
+            )
+            
+            if impl_code:
+                # 適切な場所に実装を配置
+                if tech_stack == 'web':
+                    impl_path = Path(f"libs/web/issue_{issue.number}_implementation.py")
+                elif tech_stack == 'data':
+                    impl_path = Path(f"libs/data/issue_{issue.number}_processor.py")
+                elif tech_stack == 'aws':
+                    impl_path = Path(f"libs/aws/issue_{issue.number}_handler.py")
+                else:
+                    impl_path = Path(f"libs/issue_{issue.number}_solution.py")
+                
+                impl_path.parent.mkdir(parents=True, exist_ok=True)
+                impl_path.write_text(impl_code, encoding="utf-8")
+                files_created.append(str(impl_path))
+                self.logger.info(f"   → 実装コード生成: {impl_path}")
+            
+            # 設計書も生成（ドキュメントとして）
+            design_path = impl_dir / f"DESIGN_{issue.number}.md"
+            design_content = self.template_manager.generate_design_document(
+                issue=issue,
+                analysis_result=analysis_result,
+                sage_advice=sage_advice,
+                generated_files=files_created
+            )
+            design_path.write_text(design_content, encoding="utf-8")
+            files_created.append(str(design_path))
+            
+            self.logger.info(f"✅ 実コード生成完了: {len(files_created)}ファイル")
+            
+        except Exception as e:
+            self.logger.error(f"❌ テンプレート生成エラー: {e}")
+            # フォールバック: 従来の設計書のみ
+            general_path = impl_dir / f"solution_{issue.number}.md"
+            general_content = f"""# General Solution: {issue.title}
 
 ## Issue Details
 - **Issue Number**: #{issue.number}
 - **Type**: General
-- **Analysis**: {sage_advice.get('solution', {}).get('approach', 'standard')}
+- **Error**: {str(e)}
 
 ## Description
 {issue.body or '詳細なし'}
@@ -1400,17 +1476,11 @@ This auto-generated documentation provides the foundation for addressing the doc
 ## Sage Recommendations
 {self._format_sage_advice(sage_advice)}
 
-## Implementation Notes
-This is a general solution template for issue #{issue.number}. The specific implementation should be customized based on the exact requirements described in the issue.
-
-## Next Steps
-1. Review the issue requirements in detail
-2. Implement specific solution logic
-3. Add appropriate tests
-4. Update documentation as needed
+## Implementation Status
+テンプレート生成中にエラーが発生しました。手動での実装が必要です。
 """
-        general_path.write_text(general_content, encoding="utf-8")
-        files_created.append(str(general_path))
+            general_path.write_text(general_content, encoding="utf-8")
+            files_created.append(str(general_path))
 
         return files_created
 
