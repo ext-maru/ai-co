@@ -1,0 +1,3 @@
+#!/bin/bash
+# Quick quality check using optimized system
+python3 scripts/optimized_quality_daemon.py single
