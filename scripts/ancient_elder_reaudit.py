@@ -356,8 +356,8 @@ def main():
             print(f"   ⚠️ Pattern: {issue['pattern']}")
             print(f"      Severity: {issue['severity']}")
     
-    if report['performance_issues'] > 0:
-        print(f"\n⚡ PERFORMANCE ISSUES ({report['performance_issues']})")
+    if len(report['performance_issues']) > 0:
+        print(f"\n⚡ PERFORMANCE ISSUES ({len(report['performance_issues'])})")
         for issue in report['performance_issues']:
             print(f"   📊 File: {issue['file']}")
             print(f"      Issue: {issue['issue']}")
