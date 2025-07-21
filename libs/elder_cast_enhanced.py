@@ -71,6 +71,9 @@ class ElderCastEnhanced:
             "Elder Flow実行": "elder_flow_execute",
             "RAG検索": "rag_search",
             "拡張会議": "enhanced_council",
+            "タスク管理": "task_management",
+            "Todo統合": "todo_integration",
+            "Todo同期": "todo_sync",
         }
 
     async def cast_spell(
@@ -110,6 +113,12 @@ class ElderCastEnhanced:
             return await self._cast_rag_search(target, power)
         elif spell_type == "enhanced_council":
             return await self._cast_enhanced_four_sages_council(target)
+        elif spell_type == "task_management":
+            return await self._cast_task_management(target, power)
+        elif spell_type == "todo_integration":
+            return await self._cast_todo_integration(target, power)
+        elif spell_type == "todo_sync":
+            return await self._cast_todo_sync(target, power)
         else:
             return await self._cast_custom_spell_enhanced(spell_name, target, power)
 
@@ -281,6 +290,204 @@ class ElderCastEnhanced:
             "status": "completed",
             "enhanced": True,
         }
+
+    async def _cast_task_management(self, task_desc: str, power: str) -> Dict[str, Any]:
+        """タスク管理の術"""
+        print("📋 Enhanced Task Management召喚中...")
+        
+        try:
+            # TodoTrackerIntegrationを動的インポート
+            import sys
+            from pathlib import Path
+            project_root = Path(__file__).parent.parent
+            sys.path.insert(0, str(project_root))
+            
+            from libs.todo_tracker_integration import TodoTrackerIntegration
+            from libs.postgres_claude_task_tracker import TaskType, TaskPriority
+            
+            # 統合システム初期化
+            integration = TodoTrackerIntegration(
+                auto_sync=False,
+                user_id="claude_elder"
+            )
+            await integration.initialize()
+            
+            # 自分のタスク一覧取得
+            my_tasks = await integration.get_my_tasks()
+            
+            result = {
+                "spell_type": "task_management",
+                "task_desc": task_desc,
+                "power": power,
+                "status": "completed",
+                "my_tasks_count": len(my_tasks),
+                "pending_count": len([t for t in my_tasks if t["status"] == "pending"]),
+                "in_progress_count": len([t for t in my_tasks if t["status"] == "in_progress"]),
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            print(f"✨ タスク管理魔法 完了しました")
+            print(f"   🎯 現在のタスク状況:")
+            print(f"      📊 全体: {result['my_tasks_count']}個のタスク")
+            print(f"      📋 待機中: {result['pending_count']}個")
+            print(f"      🔄 実行中: {result['in_progress_count']}個")
+            if result['my_tasks_count'] > 0:
+                completed_count = result['my_tasks_count'] - result['pending_count'] - result['in_progress_count']
+                if completed_count > 0:
+                    print(f"      ✅ 完了済み: {completed_count}個")
+            
+            # クリーンアップ
+            if hasattr(integration.tracker, 'close'):
+                await integration.tracker.close()
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ タスク管理エラー: {e}")
+            return {
+                "spell_type": "task_management",
+                "task_desc": task_desc,
+                "status": "error",
+                "error": str(e),
+                "timestamp": datetime.now().isoformat()
+            }
+
+    async def _cast_todo_integration(self, target: str, power: str) -> Dict[str, Any]:
+        """Todo統合の術"""
+        print("🔗 Enhanced Todo Integration召喚中...")
+        
+        try:
+            # TodoTrackerIntegrationを動的インポート
+            import sys
+            from pathlib import Path
+            project_root = Path(__file__).parent.parent
+            sys.path.insert(0, str(project_root))
+            
+            from libs.todo_tracker_integration import TodoTrackerIntegration
+            
+            # 統合システム初期化
+            integration = TodoTrackerIntegration(
+                auto_sync=True,
+                user_id="claude_elder"
+            )
+            await integration.initialize()
+            
+            # 双方向同期実行
+            await integration.sync_both_ways(personal_only=True)
+            
+            # 同期状態確認
+            sync_status = await integration.get_sync_status()
+            
+            result = {
+                "spell_type": "todo_integration",
+                "target": target,
+                "power": power,
+                "status": "completed",
+                "sync_status": sync_status,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            print(f"✨ Todo統合魔法 完了しました")
+            print(f"   🎯 統合システム状況:")
+            print(f"      👤 担当者: {sync_status.get('user_id')} さん")
+            print(f"      📝 管理中Todo: {sync_status.get('todo_count', 0)}個")
+            print(f"      🔄 自動同期: {'🟢 有効' if sync_status.get('auto_sync_enabled') else '🔴 無効'}")
+            
+            # 個人タスク統計も表示
+            my_stats = sync_status.get('my_tasks_stats', {})
+            if my_stats.get('total', 0) > 0:
+                print(f"      🗂️ 個人タスク統計:")
+                print(f"         📊 総数: {my_stats.get('total', 0)}個")
+                print(f"         📋 待機: {my_stats.get('pending', 0)}個")
+                print(f"         🔄 実行中: {my_stats.get('in_progress', 0)}個")
+                print(f"         ✅ 完了: {my_stats.get('completed', 0)}個")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Todo統合エラー: {e}")
+            return {
+                "spell_type": "todo_integration",
+                "target": target,
+                "status": "error",
+                "error": str(e),
+                "timestamp": datetime.now().isoformat()
+            }
+
+    async def _cast_todo_sync(self, target: str, power: str) -> Dict[str, Any]:
+        """Todo同期の術"""
+        print("🔄 Enhanced Todo Sync召喚中...")
+        
+        try:
+            # TodoTrackerIntegrationを動的インポート
+            import sys
+            from pathlib import Path
+            project_root = Path(__file__).parent.parent
+            sys.path.insert(0, str(project_root))
+            
+            from libs.todo_tracker_integration import TodoTrackerIntegration
+            
+            # 統合システム初期化
+            integration = TodoTrackerIntegration(
+                auto_sync=False,
+                user_id="claude_elder"
+            )
+            await integration.initialize()
+            
+            # 前回セッションからの引き継ぎチェック
+            inherited_count = await integration.inherit_pending_tasks(confirm_prompt=False)
+            
+            # 手動同期実行
+            await integration.sync_both_ways(personal_only=True)
+            
+            # 現在のTodoを取得
+            current_todos = integration.get_current_todos()
+            
+            result = {
+                "spell_type": "todo_sync",
+                "target": target,
+                "power": power,
+                "status": "completed",
+                "inherited_tasks": inherited_count,
+                "current_todos_count": len(current_todos),
+                "todos": current_todos[:5],  # 最初の5個のみ表示
+                "timestamp": datetime.now().isoformat()
+            }
+            
+            print(f"✨ Todo同期魔法 完了しました")
+            print(f"   🎯 同期結果:")
+            
+            if inherited_count > 0:
+                print(f"      🔄 前回セッションから引き継ぎ: {inherited_count}個のタスク")
+            else:
+                print(f"      📭 引き継ぎタスクはありませんでした")
+                
+            print(f"      📝 現在管理中のTodo: {len(current_todos)}個")
+            
+            if current_todos:
+                print(f"   🗂️ アクティブなTodo（最新3件）:")
+                for i, todo in enumerate(current_todos[:3], 1):
+                    status_emoji = {"pending": "📋", "in_progress": "🔄", "completed": "✅"}.get(todo.get("status"), "❓")
+                    priority_emoji = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(todo.get("priority", "medium"), "⚪")
+                    content = todo.get('content', 'タイトルなし')
+                    print(f"      {i}. {status_emoji} {priority_emoji} {content}")
+                    
+                if len(current_todos) > 3:
+                    print(f"      ... 他 {len(current_todos) - 3} 件のTodo")
+            else:
+                print(f"   📭 現在アクティブなTodoはありません")
+            
+            return result
+            
+        except Exception as e:
+            print(f"❌ Todo同期エラー: {e}")
+            return {
+                "spell_type": "todo_sync",
+                "target": target,
+                "status": "error",
+                "error": str(e),
+                "timestamp": datetime.now().isoformat()
+            }
 
     def execute_elder_flow(self):
         """Elder Flow実行機能（同期版）"""

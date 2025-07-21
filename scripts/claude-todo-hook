@@ -123,6 +123,124 @@ async def test_integration():
     print("\n✅ Test completed!")
 
 
+async def get_system_status():
+    """システム状態を取得"""
+    print("🔍 Claude Todo フック システム 状態確認")
+    print("=" * 50)
+    
+    status = {
+        "timestamp": datetime.now().isoformat(),
+        "hook_files": {},
+        "integration_status": {},
+        "monitor_status": {}
+    }
+    
+    # 1. フックファイルの状態確認
+    print("\n1️⃣ フックファイル状態:")
+    hook_file = Path.home() / ".claude_todo_hook"
+    current_file = Path.home() / ".claude_todo_current.json"
+    monitor_pid = Path.home() / ".claude_todo_monitor.pid"
+    
+    files_to_check = {
+        "フックファイル": hook_file,
+        "現在のTodoファイル": current_file,
+        "監視プロセスPID": monitor_pid
+    }
+    
+    for name, file_path in files_to_check.items():
+        if file_path.exists():
+            stat = file_path.stat()
+            size = stat.st_size
+            modified = datetime.fromtimestamp(stat.st_mtime).isoformat()
+            status["hook_files"][name] = {
+                "exists": True,
+                "path": str(file_path),
+                "size": size,
+                "modified": modified
+            }
+            print(f"  ✅ {name}: {size}バイト (更新: {modified})")
+        else:
+            status["hook_files"][name] = {
+                "exists": False,
+                "path": str(file_path)
+            }
+            print(f"  ❌ {name}: 見つかりません")
+    
+    # 2. 統合システムの状態確認
+    print("\n2️⃣ 統合システム状態:")
+    try:
+        integration = TodoTrackerIntegration(
+            auto_sync=False,
+            user_id="claude_elder"
+        )
+        await integration.initialize()
+        
+        sync_status = await integration.get_sync_status()
+        status["integration_status"] = sync_status
+        
+        print(f"  ✅ PostgreSQL接続: 正常")
+        print(f"  👤 ユーザー: {sync_status.get('user_id')} さん")
+        print(f"  📋 管理中Todo: {sync_status.get('todo_count', 0)}個")
+        print(f"  🔄 自動同期: {'🟢 有効' if sync_status.get('auto_sync_enabled') else '🔴 無効'}")
+        print(f"  📊 個人タスク数: {sync_status.get('my_tasks_stats', {}).get('total', 0)}個")
+        
+        if hasattr(integration.tracker, 'close'):
+            await integration.tracker.close()
+            
+    except Exception as e:
+        status["integration_status"] = {"error": str(e)}
+        print(f"  ❌ Integration Error: {e}")
+    
+    # 3. モニタープロセスの状態
+    print("\n3️⃣ Monitor Process Status:")
+    if monitor_pid.exists():
+        try:
+            with open(monitor_pid, 'r') as f:
+                pid = int(f.read().strip())
+            
+            # プロセスの生存確認
+            import psutil
+            if psutil.pid_exists(pid):
+                process = psutil.Process(pid)
+                status["monitor_status"] = {
+                    "running": True,
+                    "pid": pid,
+                    "name": process.name(),
+                    "cpu_percent": process.cpu_percent(),
+                    "memory_percent": process.memory_percent()
+                }
+                print(f"  ✅ Monitor Running: PID {pid}")
+                print(f"  💾 Memory: {process.memory_percent():.1f}%")
+                print(f"  ⚡ CPU: {process.cpu_percent()}%")
+            else:
+                status["monitor_status"] = {"running": False, "stale_pid": pid}
+                print(f"  ❌ Monitor Not Running (stale PID: {pid})")
+                
+        except Exception as e:
+            status["monitor_status"] = {"error": str(e)}
+            print(f"  ❌ Monitor Check Error: {e}")
+    else:
+        status["monitor_status"] = {"running": False}
+        print(f"  ❌ Monitor PID file not found")
+    
+    # 4. 最近のTodo活動
+    print("\n4️⃣ Recent Todo Activity:")
+    if current_file.exists():
+        with open(current_file, 'r', encoding='utf-8') as f:
+            todos = json.load(f)
+        
+        print(f"  📋 Active Todos: {len(todos)}")
+        for i, todo in enumerate(todos[:3], 1):
+            status_emoji = {"pending": "📋", "in_progress": "🔄", "completed": "✅"}.get(todo.get("status"), "❓")
+            priority_emoji = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(todo.get("priority"), "⚪")
+            print(f"    {i}. {status_emoji} {priority_emoji} {todo.get('content', 'No content')[:50]}...")
+    else:
+        print(f"  📭 No active todos found")
+    
+    print(f"\n✅ Status check completed!")
+    return status
+
+
 def main():
     """メイン処理"""
     if len(sys.argv) < 2:
@@ -131,6 +249,7 @@ def main():
         print("  test     - Run integration test")
         print("  write    - Simulate TodoWrite (provide JSON via stdin)")
         print("  read     - Simulate TodoRead")
+        print("  status   - Show system status")
         sys.exit(1)
     
     command = sys.argv[1]
@@ -149,6 +268,9 @@ def main():
     
     elif command == "read":
         asyncio.run(simulate_todo_read())
+    
+    elif command == "status":
+        asyncio.run(get_system_status())
     
     else:
         print(f"❌ Unknown command: {command}")

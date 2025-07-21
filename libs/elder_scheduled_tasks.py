@@ -65,6 +65,12 @@ class ElderScheduledTasks:
         # レポート生成タスク
         self._register_reporting_tasks()
         
+        # GitHub自動処理タスク
+        self._register_github_automation_tasks()
+        
+        # レガシーcronタスク
+        self._register_legacy_cron_tasks()
+        
         logger.info("✅ 全ての定期タスク登録完了")
         
     def _register_system_maintenance_tasks(self):
@@ -584,6 +590,184 @@ def start_elder_scheduled_tasks():
     logger.info("✅ エルダーズギルド定期タスクシステム起動完了")
     
     return task_system
+
+
+# GitHub自動処理タスクメソッドを追加
+def _register_github_automation_tasks(self):
+    """GitHub自動処理タスク登録"""
+    
+    @self.decorators.scheduled('interval', minutes=10)
+    def auto_issue_processor():
+        """Auto Issue Processor実行（10分間隔）"""
+        logger.info("🤖 Auto Issue Processor実行開始")
+        try:
+            import asyncio
+            from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
+            
+            async def run_processor():
+                processor = AutoIssueProcessor()
+                # スキャンして処理可能なイシューを確認
+                scan_result = await processor.process_request({"mode": "scan"})
+                
+                if scan_result.get("processable_issues", 0) > 0:
+                    logger.info(f"📊 処理可能なイシュー数: {scan_result['processable_issues']}")
+                    
+                    # 実際の処理を実行
+                    process_result = await processor.process_request({"mode": "process"})
+                    
+                    if process_result.get("status") == "success":
+                        processed = process_result.get("processed_issue", {})
+                        logger.info(f"✅ イシュー #{processed.get('number')} 処理完了: {processed.get('title', 'N/A')}")
+                    else:
+                        logger.warning(f"⚠️ イシュー処理結果: {process_result.get('status')}")
+                else:
+                    logger.info("📝 処理可能なイシューなし")
+                
+                return scan_result
+            
+            # 非同期実行
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                result = loop.run_until_complete(run_processor())
+                logger.info("✅ Auto Issue Processor完了")
+                return result
+            finally:
+                loop.close()
+                
+        except Exception as e:
+            logger.error(f"❌ Auto Issue Processor エラー: {e}")
+            raise
+            
+    @self.decorators.hourly(minute=0)
+    def github_health_check():
+        """GitHub API接続ヘルスチェック（1時間毎）"""
+        logger.info("🔍 GitHub APIヘルスチェック開始")
+        try:
+            import os
+            from github import Github
+            
+            github_token = os.getenv("GITHUB_TOKEN")
+            if not github_token:
+                logger.error("❌ GITHUB_TOKEN環境変数が設定されていません")
+                return
+            
+            github = Github(github_token)
+            user = github.get_user()
+            rate_limit = github.get_rate_limit()
+            
+            logger.info(f"✅ GitHub API正常: ユーザー {user.login}")
+            logger.info(f"📊 API制限: {rate_limit.core.remaining}/{rate_limit.core.limit}")
+            
+            # API制限警告
+            if rate_limit.core.remaining < 100:
+                logger.warning(f"⚠️ GitHub API制限が少なくなっています: {rate_limit.core.remaining}")
+            
+        except Exception as e:
+            logger.error(f"❌ GitHub APIヘルスチェックエラー: {e}")
+            raise
+    
+    logger.info("🤖 GitHub自動処理タスク登録完了")
+
+# レガシーcronタスク移行メソッド
+def _register_legacy_cron_tasks(self):
+    """レガシーcronタスクをAPSchedulerに移行"""
+    
+    @self.decorators.daily(hour=2, minute=0)
+    def auto_summarize_task():
+        """自動要約タスク（毎日深夜2時）- cronから移行"""
+        logger.info("📝 自動要約タスク開始")
+        try:
+            import subprocess
+            result = subprocess.run([
+                "python3", f"{self.project_root}/scripts/auto_summarize.py"
+            ], capture_output=True, text=True)
+            
+            if result.returncode == 0:
+                logger.info("✅ 自動要約タスク完了")
+            else:
+                logger.error(f"❌ 自動要約タスクエラー: {result.stderr}")
+        except Exception as e:
+            logger.error(f"❌ 自動要約タスク実行エラー: {e}")
+            raise
+    
+    @self.decorators.daily(hour=1, minute=0)
+    def enhanced_pr_processor():
+        """Enhanced Auto PR Processor（毎日深夜1時）- cronから移行"""
+        logger.info("🔧 Enhanced PR Processor開始")
+        try:
+            import subprocess
+            result = subprocess.run([
+                "bash", f"{self.project_root}/scripts/enhanced_auto_pr_cron.sh"
+            ], capture_output=True, text=True)
+            
+            if result.returncode == 0:
+                logger.info("✅ Enhanced PR Processor完了")
+            else:
+                logger.warning(f"⚠️ Enhanced PR Processor警告: {result.stderr}")
+        except Exception as e:
+            logger.error(f"❌ Enhanced PR Processor実行エラー: {e}")
+            raise
+            
+    @self.decorators.weekly(day_of_week=0, hour=3, minute=0)
+    def unit_progress_analyzer():
+        """ユニット進捗分析（毎週日曜3時）- cronから移行"""
+        logger.info("📊 ユニット進捗分析開始")
+        try:
+            import subprocess
+            result = subprocess.run([
+                "bash", f"{self.project_root}/scripts/setup_unit_progress_cron.sh"
+            ], capture_output=True, text=True)
+            
+            if result.returncode == 0:
+                logger.info("✅ ユニット進捗分析完了")
+            else:
+                logger.error(f"❌ ユニット進捗分析エラー: {result.stderr}")
+        except Exception as e:
+            logger.error(f"❌ ユニット進捗分析実行エラー: {e}")
+            raise
+    
+    @self.decorators.daily(hour=4, minute=0)
+    def evolution_cron_task():
+        """進化システムタスク（毎日深夜4時）- cronから移行"""  
+        logger.info("🧬 進化システムタスク開始")
+        try:
+            import subprocess
+            result = subprocess.run([
+                "bash", f"{self.project_root}/scripts/setup_evolution_cron.sh"
+            ], capture_output=True, text=True)
+            
+            if result.returncode == 0:
+                logger.info("✅ 進化システムタスク完了")
+            else:
+                logger.error(f"❌ 進化システムタスクエラー: {result.stderr}")
+        except Exception as e:
+            logger.error(f"❌ 進化システムタスク実行エラー: {e}")
+            raise
+            
+    @self.decorators.scheduled('interval', hours=6)
+    def knowledge_monitoring():
+        """知識ベース監視（6時間間隔）- cronから移行"""
+        logger.info("📚 知識ベース監視開始") 
+        try:
+            import subprocess
+            result = subprocess.run([
+                "bash", f"{self.project_root}/scripts/setup_knowledge_monitoring.sh"
+            ], capture_output=True, text=True)
+            
+            if result.returncode == 0:
+                logger.info("✅ 知識ベース監視完了")
+            else:
+                logger.warning(f"⚠️ 知識ベース監視警告: {result.stderr}")
+        except Exception as e:
+            logger.error(f"❌ 知識ベース監視実行エラー: {e}")
+            raise
+    
+    logger.info("🔄 レガシーcronタスク移行完了")
+
+# ElderScheduledTasksクラスにメソッドを動的追加
+ElderScheduledTasks._register_github_automation_tasks = _register_github_automation_tasks
+ElderScheduledTasks._register_legacy_cron_tasks = _register_legacy_cron_tasks
 
 
 if __name__ == "__main__":

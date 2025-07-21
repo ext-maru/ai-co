@@ -20,6 +20,11 @@ log() {
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
 }
 
+# 環境変数の読み込み（プロジェクトの.envから）
+if [ -f "$PROJECT_ROOT/.env" ]; then
+    source "$PROJECT_ROOT/.env"
+fi
+
 # 環境変数の読み込み（~/.bashrcから）
 if [ -f ~/.bashrc ]; then
     source ~/.bashrc
