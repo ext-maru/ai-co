@@ -32,13 +32,10 @@ from libs.knowledge_sage import KnowledgeSage
 from libs.task_sage import TaskSage
 from libs.incident_sage import IncidentSage
 from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
-<<<<<<< Updated upstream
 from libs.code_generation.template_manager import CodeGenerationTemplateManager
 from libs.integrations.github.safe_git_operations import SafeGitOperations
 from libs.auto_issue_processor_error_handling import AutoIssueProcessorErrorHandler, with_error_recovery
 from libs.four_sages_diagnostic_system import FourSagesDiagnosticSystem
-=======
->>>>>>> Stashed changes
 
 
 class AutoIssueElderFlowEngine:

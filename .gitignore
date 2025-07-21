@@ -41,8 +41,7 @@ credentials/
 config/slack.conf
 config/github.conf
 
-# Test files
-test_*.py
+# Test files (shell scripts only)
 test_*.sh
 
 # Session files
