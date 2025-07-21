@@ -1,14 +1,14 @@
 #!/bin/bash
-"""
-🏛️ Elder Guild Pre-Merge Quality Gate
-エルダーズギルド マージ前品質ゲート
-
-Features:
-- マージ前の統合品質チェック
-- ブランチ間の品質比較分析
-- マージ品質レポート生成
-- 品質基準未満でのマージ阻止
-"""
+#
+# 🏛️ Elder Guild Pre-Merge Quality Gate
+# エルダーズギルド マージ前品質ゲート
+#
+# Features:
+# - マージ前の統合品質チェック
+# - ブランチ間の品質比較分析
+# - マージ品質レポート生成
+# - 品質基準未満でのマージ阻止
+#
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -62,7 +62,7 @@ print_error() {
 
 # Check if quality bypass is enabled
 check_bypass() {
-    if [[ "${ELDER_GUILD_BYPASS}" == "1" ]]; then
+    if [[ "${ELDER_GUILD_BYPASS:-}" == "1" ]]; then
         print_warning "Quality bypass enabled - skipping merge quality checks"
         exit 0
     fi
@@ -124,17 +124,23 @@ run_merge_quality_analysis() {
                 # セキュアな実行のため、Elder Guild Security Validatorを使用
                 QUALITY_RESULT=$(python3 -c "
 import sys
+import os
 sys.path.insert(0, '$PROJECT_ROOT')
 from libs.elder_guild_security_validator import execute_secure_python
+
+# 安全なファイルパス取得
+file_path = '$file'
 
 # セキュアなスクリプト
 secure_script = '''
 import asyncio
+import sys
+sys.path.insert(0, '/home/aicompany/ai_co')
 from libs.four_sages_quality_bridge import four_sages_analyze_file
 
 async def main():
     try:
-        result = await four_sages_analyze_file(file_path)
+        result = await four_sages_analyze_file({file_placeholder})
         if result and \"analysis\" in result:
             score = result[\"analysis\"].get(\"quality_score\", 0)
             print(f\"SCORE:{score}\")
@@ -152,16 +158,13 @@ async def main():
 asyncio.run(main())
 '''
 
-# ファイルパス変数追加
-script_with_file = secure_script.replace('file_path', '\"$file\"')
-
 # セキュア実行
-result = execute_secure_python(script_with_file, '$file', 60)
+result = execute_secure_python(secure_script, file_path, 60)
 if result['success']:
     print(result['stdout'])
 else:
     print('SCORE:70')
-    print(f'ERROR:{result.get(\"error\", \"Unknown error\")}')
+    print(f\"ERROR:{result.get('error', 'Unknown error')}\")
 " 2>/dev/null || echo "SCORE:70")
                 
                 # Extract score
@@ -201,19 +204,13 @@ else:
         print_status "Average quality score: $AVG_SCORE/100"
         
         # Generate merge quality report with secure temp file
-        create_secure_merge_report() {
-            local report_dir="$PROJECT_ROOT/data/merge_quality_reports"
-            mkdir -p "$report_dir"
-            chmod 700 "$report_dir"
-            
-            # セキュアな一時ファイル作成
-            local temp_report=$(mktemp "$report_dir/merge_report_XXXXXXXX.json")
-            chmod 600 "$temp_report"
-            
-            echo "$temp_report"
-        }
+        MERGE_REPORT_FILE="$PROJECT_ROOT/data/merge_quality_reports/merge_report_$(date +%Y%m%d_%H%M%S)_$$.json"
+        mkdir -p "$(dirname "$MERGE_REPORT_FILE")"
+        chmod 700 "$(dirname "$MERGE_REPORT_FILE")"
         
-        MERGE_REPORT_FILE=$(create_secure_merge_report)
+        # ファイル作成時に権限設定
+        touch "$MERGE_REPORT_FILE"
+        chmod 600 "$MERGE_REPORT_FILE"
         cat > "$MERGE_REPORT_FILE" << EOF
 {
     "timestamp": "$(date -Iseconds)",

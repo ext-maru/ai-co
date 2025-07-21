@@ -18,8 +18,10 @@ class AIConvInfoCommand(BaseCommand):
 
     def execute(self, args) -> CommandResult:
         """実行"""
-        # TODO: 実装
-        return CommandResult(success=True, message="会話詳細機能は開発中です")
+        return CommandResult(
+            success=False,
+            message="会話詳細機能は現在利用できません。"
+        )
 
 
 def main():

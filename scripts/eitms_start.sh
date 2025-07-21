@@ -2,6 +2,7 @@
 # EITMS System Startup Script
 # Version: 1.0.0
 # Last Updated: 2025-07-22
+# エルダーズギルド統合タスク管理システム起動スクリプト
 
 set -e
 
@@ -9,9 +10,34 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m'
+NC='\033[0m' # No Color
+
+# Paths
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+CONFIG_FILE="$PROJECT_ROOT/config/eitms_config.yaml"
+ENV_FILE="$PROJECT_ROOT/.env"
+LOG_DIR="$PROJECT_ROOT/logs"
+DATA_DIR="$PROJECT_ROOT/data"
+PID_DIR="$PROJECT_ROOT/run"
+
+# Create necessary directories
+mkdir -p "$LOG_DIR" "$DATA_DIR" "$PID_DIR"
 
 echo -e "${GREEN}=== EITMS System Startup ===${NC}"
+
+# Functions
+log_info() {
+    echo -e "${GREEN}[INFO]${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}[ERROR]${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
 
 # Check if running as aicompany user
 if [ "$USER" != "aicompany" ]; then
@@ -20,105 +46,175 @@ if [ "$USER" != "aicompany" ]; then
 fi
 
 # Load environment variables
-if [ -f "/home/aicompany/ai_co/.env" ]; then
-    export $(cat /home/aicompany/ai_co/.env | grep -v '^#' | xargs)
+if [ -f "$ENV_FILE" ]; then
+    export $(cat "$ENV_FILE" | grep -v '^#' | xargs)
 else
     echo -e "${YELLOW}Warning: .env file not found. Using default configuration.${NC}"
 fi
 
-# Function to check if service is running
-check_service() {
-    local service_name=$1
-    local port=$2
+check_prerequisites() {
+    log_info "Checking prerequisites..."
     
-    if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null ; then
-        echo -e "${GREEN} $service_name is running on port $port${NC}"
-        return 0
-    else
-        echo -e "${RED} $service_name is not running on port $port${NC}"
-        return 1
+    # Check Python
+    if ! command -v python3 &> /dev/null; then
+        log_error "Python 3 is not installed"
+        exit 1
     fi
+    
+    # Check environment file
+    if [ ! -f "$ENV_FILE" ]; then
+        log_warning "Environment file not found. Creating from template..."
+        if [ -f "$PROJECT_ROOT/config/eitms.env.example" ]; then
+            cp "$PROJECT_ROOT/config/eitms.env.example" "$ENV_FILE"
+            log_warning "Please edit $ENV_FILE with your actual values"
+        fi
+        exit 1
+    fi
+    
+    log_info "Prerequisites check completed"
 }
 
-# Function to start a module
-start_module() {
-    local module_name=$1
-    local module_path=$2
-    local port=$3
+init_database() {
+    log_info "Initializing database..."
     
-    echo -e "${YELLOW}Starting $module_name...${NC}"
-    
-    # Check if already running
-    if check_service "$module_name" "$port"; then
-        return 0
+    # SQLite database creation
+    if [ ! -f "$DATA_DIR/eitms.db" ]; then
+        log_info "Creating EITMS database..."
+        python3 << EOF
+import sqlite3
+import os
+
+db_path = "$DATA_DIR/eitms.db"
+os.makedirs(os.path.dirname(db_path), exist_ok=True)
+
+conn = sqlite3.connect(db_path)
+cursor = conn.cursor()
+
+# Create unified_tasks table
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS unified_tasks (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    task_type TEXT NOT NULL,
+    status TEXT NOT NULL,
+    priority TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    started_at TIMESTAMP,
+    completed_at TIMESTAMP,
+    time_estimated INTEGER,
+    time_spent INTEGER,
+    assigned_to TEXT,
+    dependencies TEXT,
+    sub_tasks TEXT,
+    github_issue_number INTEGER,
+    context TEXT
+)
+''')
+
+# Create indexes
+cursor.execute('CREATE INDEX IF NOT EXISTS idx_task_type ON unified_tasks(task_type)')
+cursor.execute('CREATE INDEX IF NOT EXISTS idx_status ON unified_tasks(status)')
+cursor.execute('CREATE INDEX IF NOT EXISTS idx_priority ON unified_tasks(priority)')
+cursor.execute('CREATE INDEX IF NOT EXISTS idx_created_at ON unified_tasks(created_at)')
+
+conn.commit()
+conn.close()
+
+print("Database initialized successfully")
+EOF
     fi
     
-    # Start the module
-    cd /home/aicompany/ai_co
-    nohup python3 "$module_path" > "logs/eitms_${module_name}.log" 2>&1 &
+    log_info "Database initialization completed"
+}
+
+start_services() {
+    log_info "Starting EITMS services..."
     
-    # Wait for startup
+    # Source environment variables
+    if [ -f "$ENV_FILE" ]; then
+        export $(grep -v '^#' "$ENV_FILE" | xargs)
+    fi
+    
+    # Start core services
+    cd "$PROJECT_ROOT"
+    
+    # 1. Unified Data Model Service
+    log_info "Starting Unified Data Model service..."
+    if [ -f "$PROJECT_ROOT/libs/eitms_unified_data_model.py" ]; then
+        nohup python3 -m libs.eitms_unified_data_model > "$LOG_DIR/unified_data_model.log" 2>&1 &
+        echo $! > "$PID_DIR/unified_data_model.pid"
+    else
+        log_warning "Unified Data Model module not found"
+    fi
+    
+    # Wait for services to start
     sleep 3
     
-    # Verify startup
-    if check_service "$module_name" "$port"; then
-        echo -e "${GREEN}$module_name started successfully${NC}"
+    log_info "EITMS services started"
+}
+
+check_status() {
+    log_info "Checking service status..."
+    
+    services=("unified_data_model")
+    all_running=true
+    
+    for service in "${services[@]}"; do
+        pid_file="$PID_DIR/${service}.pid"
+        if [ -f "$pid_file" ]; then
+            pid=$(cat "$pid_file")
+            if ps -p "$pid" > /dev/null 2>&1; then
+                log_info "✓ ${service} is running (PID: $pid)"
+            else
+                log_error "✗ ${service} is not running"
+                all_running=false
+            fi
+        else
+            log_warning "✗ ${service} PID file not found"
+            all_running=false
+        fi
+    done
+    
+    if $all_running; then
+        log_info "All EITMS services are running"
     else
-        echo -e "${RED}Failed to start $module_name${NC}"
-        return 1
+        log_error "Some services are not running"
     fi
 }
 
-# Create necessary directories
-mkdir -p /home/aicompany/ai_co/logs
-mkdir -p /home/aicompany/ai_co/data
-mkdir -p /home/aicompany/ai_co/backups/eitms
+# Main execution
+main() {
+    log_info "Starting EITMS (Elders Guild Integrated Task Management System)..."
+    
+    # Parse arguments
+    if [ "$1" == "--init-db" ]; then
+        check_prerequisites
+        init_database
+        exit 0
+    fi
+    
+    # Normal startup
+    check_prerequisites
+    
+    # Initialize database if needed
+    if [ ! -f "$DATA_DIR/eitms.db" ]; then
+        init_database
+    fi
+    
+    # Start services
+    start_services
+    
+    # Check status
+    sleep 2
+    check_status
+    
+    log_info "EITMS startup completed"
+    log_info "Logs are available in: $LOG_DIR"
+    log_info "To check status: $SCRIPT_DIR/eitms_status.sh"
+    log_info "To stop: $SCRIPT_DIR/eitms_stop.sh"
+}
 
-# Check database connection
-echo -e "${YELLOW}Checking database connection...${NC}"
-if pg_isready -h localhost -p 5432 > /dev/null 2>&1; then
-    echo -e "${GREEN} PostgreSQL is running${NC}"
-else
-    echo -e "${RED} PostgreSQL is not running. Please start PostgreSQL first.${NC}"
-    exit 1
-fi
-
-# Check Redis connection
-echo -e "${YELLOW}Checking Redis connection...${NC}"
-if redis-cli ping > /dev/null 2>&1; then
-    echo -e "${GREEN} Redis is running${NC}"
-else
-    echo -e "${RED} Redis is not running. Please start Redis first.${NC}"
-    exit 1
-fi
-
-# Initialize database if needed
-if [ "$1" == "--init-db" ]; then
-    echo -e "${YELLOW}Initializing database...${NC}"
-    psql -U postgres < /home/aicompany/ai_co/scripts/eitms_db_init.sql
-    echo -e "${GREEN}Database initialized${NC}"
-fi
-
-# Start EITMS modules
-echo -e "${YELLOW}Starting EITMS modules...${NC}"
-
-# Start each module
-start_module "github_connector" "libs/eitms_github_connector.py" 8001
-start_module "task_tracker_interface" "libs/eitms_task_tracker_interface.py" 8002
-start_module "todo_system_bridge" "libs/eitms_todo_system_bridge.py" 8003
-start_module "real_time_sync" "libs/eitms_real_time_sync_engine.py" 8004
-start_module "unified_query" "libs/eitms_unified_query_processor.py" 8006
-start_module "ai_optimization" "libs/eitms_ai_optimization_engine.py" 8007
-
-# Check overall system status
-echo -e "${GREEN}=== EITMS System Status ===${NC}"
-check_service "GitHub Connector" 8001
-check_service "Task Tracker Interface" 8002
-check_service "Todo System Bridge" 8003
-check_service "Real-time Sync Engine" 8004
-check_service "Unified Query Processor" 8006
-check_service "AI Optimization Engine" 8007
-
-echo -e "${GREEN}=== EITMS System Startup Complete ===${NC}"
-echo -e "Logs are available in: /home/aicompany/ai_co/logs/"
-echo -e "To stop EITMS, run: ./scripts/eitms_stop.sh"
+# Run main function
+main "$@"

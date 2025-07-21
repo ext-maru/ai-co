@@ -42,7 +42,7 @@ class ServantRegistry:
         }
 
     def register(
-        self, servant_class: Type[ElderServantBase], name: str, domain: ServantDomain
+        self, servant_class: Type["ElderServantBase"], name: str, domain: ServantDomain
     ) -> bool:
         """
         サーバントクラスをレジストリに登録

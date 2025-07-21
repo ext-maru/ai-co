@@ -175,7 +175,6 @@ class PRStateMonitor:
             del self.state_history[pr_number]
         if pr_number in self.last_comment_updates:
             del self.last_comment_updates[pr_number]
-            
         logger.info(f"Stopped monitoring PR #{pr_number}")
         return True
     
@@ -211,7 +210,7 @@ class PRStateMonitor:
                     
                     # イベントを発火
                     for event_type, event_data in events:
-                        await self._fire_event(pr_number, event_type, event_data)
+                        await self._fire_event(pr_number, event_type.value, event_data)
                 
                 # 状態履歴に追加（サイズ制限付き）
                 self.state_history[pr_number].append(current_state)
@@ -390,20 +389,24 @@ class PRStateMonitor:
         
         # イベントタイプに応じたコールバックを実行
         event_enum = None
-        try:
-            event_enum = StateChangeEvent(event_type)
-        except ValueError:
-            # カスタムイベントの場合はスキップ
-            pass
+        if isinstance(event_type, StateChangeEvent):
+            event_enum = event_type
+            event_type = event_type.value
+        else:
+            try:
+                event_enum = StateChangeEvent(event_type)
+            except ValueError:
+                # カスタムイベントの場合はスキップ
+                pass
         
         if event_enum and event_enum in config.event_callbacks:
             callbacks = config.event_callbacks[event_enum]
             for callback in callbacks:
                 try:
                     if asyncio.iscoroutinefunction(callback):
-                        await callback(pr_number, event_type, event_data)
+                        await callback(pr_number, event_enum, event_data)
                     else:
-                        callback(pr_number, event_type, event_data)
+                        callback(pr_number, event_enum, event_data)
                 except Exception as e:
                     logger.error(f"Event callback error: {e}")
         

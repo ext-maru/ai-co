@@ -39,8 +39,8 @@ integrations:
     api_url: "https://api.github.com"
     token: "${GITHUB_TOKEN}"
     webhook_secret: "${GITHUB_WEBHOOK_SECRET}"
-    default_owner: "aicompany"
-    default_repo: "ai_co"
+    default_owner: "ext-maru"
+    default_repo: "ai-co"
     
   # TaskTracker統合
   task_tracker:
