@@ -10,10 +10,14 @@ import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Callable
+from typing import Any, Dict, List, Optional, Callable, TypeVar, ParamSpec
 import random
+from functools import wraps
 
 logger = logging.getLogger(__name__)
+
+P = ParamSpec('P')
+T = TypeVar('T')
 
 
 class ErrorType(Enum):
@@ -35,6 +39,23 @@ class RecoveryAction(Enum):
     SKIP = "skip"
     ABORT = "abort"
     CIRCUIT_BREAK = "circuit_break"
+
+
+class CircuitState(Enum):
+    """サーキットブレーカーの状態"""
+    CLOSED = "closed"     # 正常状態（通過可能）
+    OPEN = "open"         # 障害状態（通過不可）
+    HALF_OPEN = "half_open"  # 回復試行状態
+
+
+class CircuitBreakerError(Exception):
+    """サーキットブレーカー関連のエラー"""
+    pass
+
+
+class CircuitBreakerOpenError(CircuitBreakerError):
+    """サーキットが開いているときのエラー"""
+    pass
 
 
 @dataclass
@@ -180,39 +201,133 @@ class ResourceCleaner:
 class CircuitBreaker:
     """サーキットブレーカーパターン実装"""
     
-    def __init__(self, failure_threshold: int = 5, recovery_timeout: float = 60.0):
+    def __init__(
+        self, 
+        failure_threshold: int = 5, 
+        recovery_timeout: float = 60.0,
+        expected_exception: type[Exception] = Exception,
+        exclude_exceptions: Optional[List[type[Exception]]] = None
+    ):
         self.failure_threshold = failure_threshold
         self.recovery_timeout = recovery_timeout
+        self.expected_exception = expected_exception
+        self.exclude_exceptions = exclude_exceptions or []
+        
+        # 状態管理
+        self._state = CircuitState.CLOSED
         self.failure_count = 0
-        self.last_failure_time = 0
-        self.state = "CLOSED"  # CLOSED, OPEN, HALF_OPEN
+        self.last_failure_time: Optional[float] = None
+        
+        # メトリクス
+        self.total_calls = 0
+        self.successful_calls = 0
+        self.failed_calls = 0
+        
+        # コールバック
+        self.on_success: Optional[Callable[[Any], None]] = None
+        self.on_failure: Optional[Callable[[Exception], None]] = None
+    
+    @property
+    def state(self) -> CircuitState:
+        """現在の状態を取得（HALF_OPEN遷移を含む）"""
+        if self._state == CircuitState.OPEN:
+            if self.last_failure_time and \
+               time.time() - self.last_failure_time > self.recovery_timeout:
+                self._state = CircuitState.HALF_OPEN
+        return self._state
         
     def can_execute(self) -> bool:
         """実行可能かチェック"""
-        if self.state == "CLOSED":
-            return True
-        elif self.state == "OPEN":
-            if time.time() - self.last_failure_time >= self.recovery_timeout:
-                self.state = "HALF_OPEN"
-                return True
-            return False
-        elif self.state == "HALF_OPEN":
-            return True
-        return False
+        return self.state != CircuitState.OPEN
+    
+    async def call(self, func: Callable[..., T], *args, **kwargs) -> T:
+        """関数を実行（サーキットブレーカー経由）"""
+        self.total_calls += 1
+        
+        # Circuit is open
+        if self.state == CircuitState.OPEN:
+            raise CircuitBreakerOpenError(
+                f"Circuit breaker is open. Last failure: {self.last_failure_time}"
+            )
+        
+        try:
+            # Execute the function
+            if asyncio.iscoroutinefunction(func):
+                result = await func(*args, **kwargs)
+            else:
+                result = func(*args, **kwargs)
+            
+            # Record success
+            self.record_success()
+            
+            # Call success callback
+            if self.on_success:
+                self.on_success(result)
+            
+            return result
+            
+        except Exception as e:
+            # Check if this exception should be ignored
+            if any(isinstance(e, exc_type) for exc_type in self.exclude_exceptions):
+                raise
+            
+            # Record failure
+            self.record_failure()
+            
+            # Call failure callback
+            if self.on_failure:
+                self.on_failure(e)
+            
+            raise
     
     def record_success(self):
         """成功を記録"""
-        self.failure_count = 0
-        self.state = "CLOSED"
+        self.successful_calls += 1
+        if self._state == CircuitState.HALF_OPEN:
+            # Half-open状態での成功はCircuitを閉じる
+            self.failure_count = 0
+            self._state = CircuitState.CLOSED
+            logger.info("Circuit breaker closed after successful call")
+        else:
+            self.failure_count = 0
         
     def record_failure(self):
         """失敗を記録"""
+        self.failed_calls += 1
         self.failure_count += 1
         self.last_failure_time = time.time()
         
-        if self.failure_count >= self.failure_threshold:
-            self.state = "OPEN"
+        if self._state == CircuitState.HALF_OPEN:
+            # Half-open状態での失敗は即座にOpenに戻る
+            self._state = CircuitState.OPEN
+            logger.warning("Circuit breaker reopened after failure in half-open state")
+        elif self.failure_count >= self.failure_threshold:
+            self._state = CircuitState.OPEN
             logger.warning(f"Circuit breaker opened after {self.failure_count} failures")
+    
+    def get_metrics(self) -> Dict[str, Any]:
+        """メトリクスを取得"""
+        return {
+            "total_calls": self.total_calls,
+            "successful_calls": self.successful_calls,
+            "failed_calls": self.failed_calls,
+            "success_rate": self.successful_calls / self.total_calls if self.total_calls > 0 else 0,
+            "current_state": self.state.value,
+            "failure_count": self.failure_count,
+            "last_failure_time": self.last_failure_time
+        }
+    
+    def decorator(self, func: Callable[..., T]) -> Callable[..., T]:
+        """デコレーターとして使用"""
+        @wraps(func)
+        async def async_wrapper(*args, **kwargs) -> T:
+            return await self.call(func, *args, **kwargs)
+        
+        @wraps(func)
+        def sync_wrapper(*args, **kwargs) -> T:
+            return asyncio.run(self.call(func, *args, **kwargs))
+        
+        return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
 
 
 class RetryStrategy:
