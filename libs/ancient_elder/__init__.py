@@ -7,12 +7,14 @@ from .base import AncientElderBase
 from .audit_engine import AncientElderAuditEngine
 from .integrity_auditor import AncientElderIntegrityAuditor
 from .four_sages_overseer import FourSagesOverseer
+from .git_chronicle import GitChronicle
 
 __all__ = [
     "AncientElderBase",
     "AncientElderAuditEngine", 
     "AncientElderIntegrityAuditor",
     "FourSagesOverseer",
+    "GitChronicle",
 ]
 
 # System version
