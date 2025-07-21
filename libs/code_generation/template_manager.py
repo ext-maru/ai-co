@@ -252,9 +252,14 @@ class CodeGenerationTemplateManager:
                 detected_stacks = analyzed_issue.get('tech_stack', {})
                 # 最も関連性の高い技術スタックを選択
                 if detected_stacks:
-                    # フレームワークを優先
+                    # フレームワークを優先し、webスタックに統一
                     if 'framework' in detected_stacks and detected_stacks['framework']:
-                        tech_stack = detected_stacks['framework'][0]
+                        framework = detected_stacks['framework'][0]
+                        # FastAPI, Flask, Django -> web に統一
+                        if framework in ['fastapi', 'flask', 'django']:
+                            tech_stack = 'web'
+                        else:
+                            tech_stack = framework
                     elif 'cloud' in detected_stacks and detected_stacks['cloud']:
                         tech_stack = 'aws' if 'aws' in detected_stacks['cloud'] else 'base'
                     else:
