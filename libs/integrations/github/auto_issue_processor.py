@@ -8,6 +8,7 @@ import asyncio
 import json
 import logging
 import os
+import subprocess
 
 # Elder System imports
 import sys
@@ -33,6 +34,7 @@ from libs.incident_sage import IncidentSage
 from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
 from libs.code_generation.template_manager import CodeGenerationTemplateManager
 from libs.integrations.github.safe_git_operations import SafeGitOperations
+from libs.auto_issue_processor_error_handling import AutoIssueProcessorErrorHandler, with_error_recovery
 
 
 class AutoIssueElderFlowEngine:
@@ -62,6 +64,9 @@ class AutoIssueElderFlowEngine:
         
         # テンプレートマネージャーの初期化
         self.template_manager = CodeGenerationTemplateManager()
+        
+        # エラーハンドラーの初期化
+        self.error_handler = AutoIssueProcessorErrorHandler()
 
     async def execute_flow(self, request):
         """Auto Issue用のElder Flow実行"""
@@ -123,7 +128,10 @@ class AutoIssueElderFlowEngine:
     async def _create_pull_request(
         self, issue_number, issue_title, issue_body, task_name
     ):
-        """自動でPR作成（SafeGitOperations使用）"""
+        """自動でPR作成（SafeGitOperations使用、エラーハンドリング付き）"""
+        files_created = []
+        branch_name = None
+        
         try:
             # SafeGitOperationsインスタンスを作成
             git_ops = SafeGitOperations()
@@ -164,7 +172,7 @@ class AutoIssueElderFlowEngine:
                 files_created = []
                 
                 # コンテキストを作成
-                context = self.template_manager.create_context_from_issue(
+                context = await self.template_manager.create_context_from_issue(
                     issue_number=issue_number,
                     issue_title=issue_title,
                     issue_body=issue_body

@@ -203,7 +203,7 @@ class PatternLearningEngine:
         
         logging_patterns = {
             "common_levels": [level for level, count in common_levels],
-            "preferred_style": "logger" if any("logger" in patterns.get("imports", [])) else "logging",
+            "preferred_style": "logger" if any("logger" in imp for imp in patterns.get("imports", [])) else "logging",
             "usage_frequency": len(logging_methods)
         }
         
