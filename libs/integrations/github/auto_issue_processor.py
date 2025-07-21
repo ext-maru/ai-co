@@ -130,6 +130,7 @@ class AutoIssueElderFlowEngine:
         self, issue_number, issue_title, issue_body, task_name
     ):
         """自動でPR作成（SafeGitOperations使用、エラーハンドリング付き）"""
+        self.logger.info(f"🔧 PR作成開始: Issue #{issue_number}")
         files_created = []
         branch_name = None
         
@@ -156,6 +157,7 @@ class AutoIssueElderFlowEngine:
             
             try:
                 # PR用ブランチを作成（既存ブランチは自動削除される）
+                self.logger.info(f"📌 ブランチ作成開始: {branch_name}")
                 branch_result = git_ops.create_pr_branch_workflow(
                     pr_title=f"Auto-fix for issue #{issue_number} - {issue_title[:50]}",
                     base_branch="main",
@@ -169,45 +171,72 @@ class AutoIssueElderFlowEngine:
                         "error": f"ブランチ作成エラー: {branch_result.get('error', 'Unknown error')}"
                     }
                 
+                # branch_resultからブランチ名を取得
+                if "branch_name" in branch_result:
+                    branch_name = branch_result["branch_name"]
+                    self.logger.info(f"✅ ブランチ作成成功: {branch_name}")
+                else:
+                    self.logger.warning(f"⚠️ branch_resultにbranch_nameがありません: {branch_result}")
+                    # フォールバックとして元のbranch_nameを使用
+                
                 # テンプレートシステムを使用してコードを生成
                 files_created = []
                 
-                # コンテキストを作成
-                context = await self.template_manager.create_context_from_issue(
-                    issue_number=issue_number,
-                    issue_title=issue_title,
-                    issue_body=issue_body
-                )
+                try:
+                    # コンテキストを作成
+                    context = await self.template_manager.create_context_from_issue(
+                        issue_number=issue_number,
+                        issue_title=issue_title,
+                        issue_body=issue_body
+                    )
+                except Exception as e:
+                    self.logger.warning(f"⚠️ テンプレートコンテキスト作成失敗: {e}")
+                    # フォールバックコンテキストを使用
+                    context = {
+                        'tech_stack': 'python',
+                        'requirements': {'imports': []},
+                        'issue_number': issue_number,
+                        'issue_title': issue_title,
+                        'issue_body': issue_body
+                    }
                 
                 # 技術スタックを検出
                 tech_stack = context['tech_stack']
                 self.logger.info(f"Detected tech stack for issue #{issue_number}: {tech_stack}")
                 
-                # 実装ファイルを生成
-                os.makedirs("auto_implementations", exist_ok=True)
-                impl_code = self.template_manager.generate_code(
-                    template_type='class',
-                    tech_stack=tech_stack,
-                    context=context
-                )
+                # 実装ファイルを生成（エラーハンドリング付き）
+                try:
+                    os.makedirs("auto_implementations", exist_ok=True)
+                    impl_code = self.template_manager.generate_code(
+                        template_type='class',
+                        tech_stack=tech_stack,
+                        context=context
+                    )
+                    
+                    impl_file_path = f"auto_implementations/issue_{issue_number}_implementation.py"
+                    with open(impl_file_path, "w") as f:
+                        f.write(impl_code)
+                    files_created.append(impl_file_path)
+                    self.logger.info(f"✅ 実装ファイル生成: {impl_file_path}")
+                except Exception as e:
+                    self.logger.warning(f"⚠️ 実装ファイル生成失敗: {e}")
                 
-                impl_file_path = f"auto_implementations/issue_{issue_number}_implementation.py"
-                with open(impl_file_path, "w") as f:
-                    f.write(impl_code)
-                files_created.append(impl_file_path)
-                
-                # テストファイルを生成
-                os.makedirs("tests/auto_generated", exist_ok=True)
-                test_code = self.template_manager.generate_code(
-                    template_type='test',
-                    tech_stack=tech_stack,
-                    context=context
-                )
-                
-                test_file_path = f"tests/auto_generated/test_issue_{issue_number}.py"
-                with open(test_file_path, "w") as f:
-                    f.write(test_code)
-                files_created.append(test_file_path)
+                # テストファイルを生成（エラーハンドリング付き）
+                try:
+                    os.makedirs("tests/auto_generated", exist_ok=True)
+                    test_code = self.template_manager.generate_code(
+                        template_type='test',
+                        tech_stack=tech_stack,
+                        context=context
+                    )
+                    
+                    test_file_path = f"tests/auto_generated/test_issue_{issue_number}.py"
+                    with open(test_file_path, "w") as f:
+                        f.write(test_code)
+                    files_created.append(test_file_path)
+                    self.logger.info(f"✅ テストファイル生成: {test_file_path}")
+                except Exception as e:
+                    self.logger.warning(f"⚠️ テストファイル生成失敗: {e}")
                 
                 # 設計書も作成
                 fix_file_path = f"auto_fixes/issue_{issue_number}_fix.md"
@@ -237,16 +266,21 @@ class AutoIssueElderFlowEngine:
 """)
                 files_created.append(fix_file_path)
                 
-                # すべての生成ファイルをステージング
-                for file_path in files_created:
-                    subprocess.run(["git", "add", file_path], check=True)
-                
-                # ファイルをコミット（SafeGitOperations使用）
-                commit_message = f"fix: Auto-fix for issue #{issue_number} - {issue_title[:50]}"
-                commit_result = git_ops.auto_commit_if_changes(
-                    files=files_created,
-                    commit_message=commit_message
-                )
+                # ファイルが生成された場合のみコミット
+                if files_created:
+                    # すべての生成ファイルをステージング
+                    for file_path in files_created:
+                        subprocess.run(["git", "add", file_path], check=True)
+                    
+                    # ファイルをコミット（SafeGitOperations使用）
+                    commit_message = f"fix: Auto-fix for issue #{issue_number} - {issue_title[:50]}"
+                    commit_result = git_ops.auto_commit_if_changes(
+                        files=files_created,
+                        commit_message=commit_message
+                    )
+                else:
+                    self.logger.info("⚠️ ファイルが生成されなかったため、コミットをスキップ")
+                    commit_result = {"success": True, "message": "No files to commit"}
                 
                 if commit_result["success"]:
                     # ブランチをpush
@@ -275,6 +309,15 @@ class AutoIssueElderFlowEngine:
             test_file_path = files_created[1] if len(files_created) > 1 else "N/A"
             tech_stack = context.get('tech_stack', 'Unknown') if 'context' in locals() else 'Unknown'
             
+            # branch_nameが設定されていない場合の対策
+            if not branch_name:
+                self.logger.error("❌ branch_nameが設定されていません")
+                return {
+                    "success": False,
+                    "error": "ブランチ名が設定されていません"
+                }
+            
+            self.logger.info(f"🔄 GitHubへのPR作成開始: branch={branch_name}")
             pr_result = self.pr_creator.create_pull_request(
                 title=f"Auto-fix: {issue_title} (#{issue_number})",
                 head=branch_name,
@@ -302,15 +345,21 @@ Closes #{issue_number}
                 draft=False,  # 通常のPRとして作成（自動マージ可能）
             )
 
+            self.logger.info(f"📊 PR作成結果: {pr_result}")
+            
             if pr_result.get("success"):
                 pr_data = pr_result.get("pull_request", {})
+                pr_url = pr_data.get("html_url")
+                pr_number = pr_data.get("number")
+                self.logger.info(f"✅ PR作成成功: #{pr_number} - {pr_url}")
                 return {
                     "success": True,
-                    "pr_url": pr_data.get("html_url"),
-                    "pr_number": pr_data.get("number"),
+                    "pr_url": pr_url,
+                    "pr_number": pr_number,
                     "branch_name": branch_name,
                 }
             else:
+                self.logger.error(f"❌ PR作成失敗: {pr_result.get('error', '不明なエラー')}")
                 return {
                     "success": False,
                     "error": pr_result.get("error", "不明なPR作成エラー"),
