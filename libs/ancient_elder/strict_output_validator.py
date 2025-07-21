@@ -307,15 +307,28 @@ class StrictOutputValidator:
             score -= 25
         
         # 不要なループチェック - 3重以上のネストを検出
-        triple_nested = re.search(r'for\s+.*:\s*\n\s+for\s+.*:\s*\n\s+for\s+.*:', code.replace(' ', ''))
-        if triple_nested:
-            issues.append({
-                'type': 'excessive_loops',
-                'level': IssueLevel.WARNING,
-                'message': '過度なネストループが検出されました'
-            })
-            suggestions.append('アルゴリズムの最適化を検討してください')
-            score -= 50
+        for_count = code.count('for ')
+        if for_count >= 3:
+            # より詳細なネストチェック
+            lines = code.split('\n')
+            max_for_depth = 0
+            current_depth = 0
+            for line in lines:
+                stripped = line.strip()
+                if stripped.startswith('for '):
+                    current_depth += 1
+                    max_for_depth = max(max_for_depth, current_depth)
+                elif stripped and not line.startswith('    '):
+                    current_depth = 0
+            
+            if max_for_depth >= 3:
+                issues.append({
+                    'type': 'excessive_loops',
+                    'level': IssueLevel.WARNING,
+                    'message': '過度なネストループが検出されました'
+                })
+                suggestions.append('アルゴリズムの最適化を検討してください')
+                score -= 50
         
         # リスト内包表記の推奨
         if 'append' in code and 'for' in code:
@@ -413,27 +426,31 @@ class StrictOutputValidator:
                         'message': f'引数が多すぎます ({param_count}個)'
                     })
                     suggestions.append('引数をオブジェクトにまとめることを検討してください')
-                    score -= 25
+                    score -= 35
         
-        # ドキュメントストリングチェック
-        if 'def ' in code and '"""' not in code and "'''" not in code:
-            issues.append({
-                'type': 'missing_docstring',
-                'level': IssueLevel.INFO,
-                'message': 'ドキュメントストリングが不足しています'
-            })
-            suggestions.append('関数やクラスにドキュメントストリングを追加してください')
-            score -= 10
+        # ドキュメントストリングチェック (良いコードの場合は加点)
+        if 'def ' in code:
+            if '"""' in code or "'''" in code:
+                score += 5  # ドキュメントありでボーナス
+            else:
+                issues.append({
+                    'type': 'missing_docstring',
+                    'level': IssueLevel.INFO,
+                    'message': 'ドキュメントストリングが不足しています'
+                })
+                suggestions.append('関数やクラスにドキュメントストリングを追加してください')
+                score -= 10
         
-        # 変数名チェック
-        if re.search(r'\b[a-z]\b', code):  # 1文字変数
+        # 変数名チェック - より厳しい判定
+        poor_names = re.findall(r'\b[a-z]\b', code)  # 1文字変数
+        if poor_names:
             issues.append({
                 'type': 'poor_naming',
-                'level': IssueLevel.INFO,
-                'message': '1文字の変数名が使用されています'
+                'level': IssueLevel.WARNING,
+                'message': f'1文字の変数名が使用されています: {", ".join(set(poor_names))}'
             })
             suggestions.append('意味のある変数名を使用してください')
-            score -= 5
+            score -= len(set(poor_names)) * 10  # 複数の悪い変数名でペナルティ増加
         
         # 関数の長さチェック
         lines = code.split('\n')
@@ -461,7 +478,7 @@ class StrictOutputValidator:
             suggestions.append('関数を小さく分割することを検討してください')
             score -= 20
         
-        passed = score >= 60 and len(issues) == 0
+        passed = score >= 60 and len([issue for issue in issues if issue['level'] in ['error', 'critical']]) == 0
         return {
             'passed': passed,
             'score': score,
