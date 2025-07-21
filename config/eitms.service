@@ -1,0 +1,39 @@
+[Unit]
+Description=EITMS - Elders Guild Integrated Task Management System
+Documentation=https://github.com/aicompany/ai_co/docs/EITMS_OPERATION_GUIDE.md
+After=network.target postgresql.service redis.service
+Wants=postgresql.service redis.service
+
+[Service]
+Type=forking
+User=aicompany
+Group=aicompany
+WorkingDirectory=/home/aicompany/ai_co
+
+# Environment
+EnvironmentFile=/home/aicompany/ai_co/.env
+Environment="PYTHONPATH=/home/aicompany/ai_co"
+
+# Start command
+ExecStart=/home/aicompany/ai_co/scripts/eitms_start.sh
+ExecStop=/home/aicompany/ai_co/scripts/eitms_stop.sh
+ExecReload=/bin/kill -HUP $MAINPID
+
+# Process management
+TimeoutStartSec=60
+TimeoutStopSec=30
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=4096
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

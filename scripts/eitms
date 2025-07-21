@@ -1,0 +1,296 @@
+#!/usr/bin/env python3
+"""
+EITMS Command Line Interface
+統合タスク管理システムの簡易CLIツール
+"""
+
+import os
+import sys
+import json
+import argparse
+import requests
+from datetime import datetime
+from tabulate import tabulate
+
+# API設定
+API_BASE_URL = os.getenv('EITMS_API_URL', 'http://localhost:8006')
+API_KEY = os.getenv('EITMS_API_KEY', '')
+
+def get_headers():
+    """APIヘッダーを取得"""
+    return {
+        'X-EITMS-API-Key': API_KEY,
+        'Content-Type': 'application/json'
+    }
+
+def format_datetime(dt_str):
+    """日時文字列をフォーマット"""
+    if not dt_str:
+        return '-'
+    try:
+        dt = datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
+        return dt.strftime('%Y-%m-%d %H:%M')
+    except:
+        return dt_str
+
+def list_tasks(args):
+    """タスク一覧を表示"""
+    params = {}
+    if args.status:
+        params['status'] = args.status
+    if args.assignee:
+        params['assignee'] = args.assignee
+    if args.priority:
+        params['priority'] = args.priority
+    
+    try:
+        response = requests.get(
+            f"{API_BASE_URL}/api/tasks",
+            headers=get_headers(),
+            params=params
+        )
+        response.raise_for_status()
+        
+        tasks = response.json()
+        
+        if not tasks:
+            print("No tasks found.")
+            return
+        
+        # テーブル形式で表示
+        table_data = []
+        for task in tasks:
+            table_data.append([
+                task.get('id', '')[:8],
+                task.get('title', '')[:50],
+                task.get('status', ''),
+                task.get('priority', ''),
+                task.get('assignee', '-'),
+                format_datetime(task.get('created_at'))
+            ])
+        
+        print(tabulate(
+            table_data,
+            headers=['ID', 'Title', 'Status', 'Priority', 'Assignee', 'Created'],
+            tablefmt='grid'
+        ))
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+def create_task(args):
+    """新規タスクを作成"""
+    task_data = {
+        'title': args.title,
+        'description': args.description or '',
+        'priority': args.priority,
+        'assignee': args.assignee
+    }
+    
+    if args.labels:
+        task_data['labels'] = args.labels.split(',')
+    
+    try:
+        response = requests.post(
+            f"{API_BASE_URL}/api/tasks",
+            headers=get_headers(),
+            json=task_data
+        )
+        response.raise_for_status()
+        
+        task = response.json()
+        print(f"Task created successfully!")
+        print(f"ID: {task['id']}")
+        print(f"Title: {task['title']}")
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"Response: {e.response.text}")
+        sys.exit(1)
+
+def update_task(args):
+    """タスクを更新"""
+    update_data = {}
+    
+    if args.status:
+        update_data['status'] = args.status
+    if args.priority:
+        update_data['priority'] = args.priority
+    if args.assignee:
+        update_data['assignee'] = args.assignee
+    if args.title:
+        update_data['title'] = args.title
+    
+    if not update_data:
+        print("No updates specified.")
+        return
+    
+    try:
+        response = requests.put(
+            f"{API_BASE_URL}/api/tasks/{args.task_id}",
+            headers=get_headers(),
+            json=update_data
+        )
+        response.raise_for_status()
+        
+        print("Task updated successfully!")
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+def search_tasks(args):
+    """タスクを検索"""
+    try:
+        response = requests.get(
+            f"{API_BASE_URL}/api/search",
+            headers=get_headers(),
+            params={'q': args.query}
+        )
+        response.raise_for_status()
+        
+        results = response.json()
+        
+        if not results:
+            print("No tasks found.")
+            return
+        
+        print(f"Found {len(results)} task(s):\n")
+        
+        for task in results:
+            print(f"ID: {task['id'][:8]}")
+            print(f"Title: {task['title']}")
+            print(f"Status: {task['status']} | Priority: {task['priority']}")
+            print(f"Score: {task.get('score', 0):.2f}")
+            print("-" * 50)
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+def optimize_tasks(args):
+    """タスクを最適化"""
+    endpoint = f"/api/optimize/{args.type}"
+    
+    try:
+        response = requests.post(
+            f"{API_BASE_URL}{endpoint}",
+            headers=get_headers()
+        )
+        response.raise_for_status()
+        
+        result = response.json()
+        print(f"Optimization complete: {args.type}")
+        
+        if 'suggestions' in result:
+            print("\nSuggestions:")
+            for suggestion in result['suggestions']:
+                print(f"- {suggestion}")
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")
+        sys.exit(1)
+
+def system_status(args):
+    """システムステータスを表示"""
+    services = [
+        ('GitHub Connector', 8001),
+        ('Task Tracker', 8002),
+        ('Todo Bridge', 8003),
+        ('Real-time Sync', 8004),
+        ('Query Processor', 8006),
+        ('AI Optimization', 8007)
+    ]
+    
+    print("=== EITMS System Status ===\n")
+    
+    all_healthy = True
+    for service_name, port in services:
+        try:
+            response = requests.get(
+                f"http://localhost:{port}/health",
+                timeout=2
+            )
+            if response.status_code == 200:
+                print(f"✓ {service_name}: Running")
+            else:
+                print(f"✗ {service_name}: Unhealthy")
+                all_healthy = False
+        except:
+            print(f"✗ {service_name}: Not responding")
+            all_healthy = False
+    
+    print(f"\nOverall Status: {'HEALTHY' if all_healthy else 'DEGRADED'}")
+
+def main():
+    """メイン関数"""
+    parser = argparse.ArgumentParser(
+        description='EITMS Command Line Interface',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  eitms list --status open --priority high
+  eitms create "New feature" --description "Add login functionality" --priority high
+  eitms update abc12345 --status in_progress --assignee john
+  eitms search "authentication bug"
+  eitms optimize priorities
+  eitms status
+        """
+    )
+    
+    subparsers = parser.add_subparsers(dest='command', help='Commands')
+    
+    # list command
+    list_parser = subparsers.add_parser('list', help='List tasks')
+    list_parser.add_argument('--status', help='Filter by status')
+    list_parser.add_argument('--assignee', help='Filter by assignee')
+    list_parser.add_argument('--priority', help='Filter by priority')
+    list_parser.set_defaults(func=list_tasks)
+    
+    # create command
+    create_parser = subparsers.add_parser('create', help='Create a new task')
+    create_parser.add_argument('title', help='Task title')
+    create_parser.add_argument('--description', '-d', help='Task description')
+    create_parser.add_argument('--priority', '-p', default='medium',
+                             choices=['low', 'medium', 'high', 'critical'])
+    create_parser.add_argument('--assignee', '-a', help='Assignee')
+    create_parser.add_argument('--labels', '-l', help='Comma-separated labels')
+    create_parser.set_defaults(func=create_task)
+    
+    # update command
+    update_parser = subparsers.add_parser('update', help='Update a task')
+    update_parser.add_argument('task_id', help='Task ID')
+    update_parser.add_argument('--status', '-s', help='New status')
+    update_parser.add_argument('--priority', '-p', help='New priority')
+    update_parser.add_argument('--assignee', '-a', help='New assignee')
+    update_parser.add_argument('--title', '-t', help='New title')
+    update_parser.set_defaults(func=update_task)
+    
+    # search command
+    search_parser = subparsers.add_parser('search', help='Search tasks')
+    search_parser.add_argument('query', help='Search query')
+    search_parser.set_defaults(func=search_tasks)
+    
+    # optimize command
+    optimize_parser = subparsers.add_parser('optimize', help='Optimize tasks')
+    optimize_parser.add_argument('type', choices=['priorities', 'assignments'],
+                               help='Optimization type')
+    optimize_parser.set_defaults(func=optimize_tasks)
+    
+    # status command
+    status_parser = subparsers.add_parser('status', help='Show system status')
+    status_parser.set_defaults(func=system_status)
+    
+    args = parser.parse_args()
+    
+    if not args.command:
+        parser.print_help()
+        sys.exit(1)
+    
+    # 実行
+    args.func(args)
+
+if __name__ == "__main__":
+    main()

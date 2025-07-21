@@ -13,13 +13,19 @@ PR状態の継続的監視とイベント発火システム
 
 import asyncio
 import logging
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Callable, Set
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Callable, Tuple
 from dataclasses import dataclass
 from enum import Enum
 import json
 
 logger = logging.getLogger(__name__)
+
+# 定数定義
+DEFAULT_POLLING_INTERVAL = 30  # 秒
+DEFAULT_MAX_MONITORING_DURATION = 1800  # 30分
+DEFAULT_MAX_HISTORY_SIZE = 1000  # 履歴の最大保持数
+HISTORY_TRIM_PERCENT = 0.1  # 履歴削除時の割合（10%）
 
 
 class StateChangeEvent(Enum):
@@ -71,8 +77,8 @@ class PRState:
 @dataclass
 class MonitoringConfig:
     """監視設定"""
-    polling_interval: int = 30  # 秒
-    max_monitoring_duration: int = 1800  # 30分
+    polling_interval: int = DEFAULT_POLLING_INTERVAL
+    max_monitoring_duration: int = DEFAULT_MAX_MONITORING_DURATION
     event_callbacks: Dict[StateChangeEvent, List[Callable]] = None
     auto_stop_on_merge: bool = True
     auto_stop_on_close: bool = True
@@ -167,10 +173,12 @@ class PRStateMonitor:
         try:
             while True:
                 # タイムアウトチェック
-                if (datetime.now() - start_time).total_seconds() > config.max_monitoring_duration:
-                    logger.info(f"Monitoring timeout for PR #{pr_number}")
+                elapsed_seconds = (datetime.now() - start_time).total_seconds()
+                if elapsed_seconds > config.max_monitoring_duration:
+                    logger.info(f"Monitoring timeout for PR #{pr_number} after {elapsed_seconds:.1f}s")
                     await self._fire_event(pr_number, "monitoring_timeout", {
-                        "duration": config.max_monitoring_duration,
+                        "duration": elapsed_seconds,
+                        "configured_max": config.max_monitoring_duration,
                         "reason": "timeout"
                     })
                     break
@@ -192,8 +200,15 @@ class PRStateMonitor:
                     for event_type, event_data in events:
                         await self._fire_event(pr_number, event_type, event_data)
                 
-                # 状態履歴に追加
+                # 状態履歴に追加（サイズ制限付き）
                 self.state_history[pr_number].append(current_state)
+                
+                # 履歴サイズを制限
+                if len(self.state_history[pr_number]) > DEFAULT_MAX_HISTORY_SIZE:
+                    # 古い履歴の一部を削除（10%）
+                    trim_count = int(DEFAULT_MAX_HISTORY_SIZE * HISTORY_TRIM_PERCENT)
+                    self.state_history[pr_number] = self.state_history[pr_number][trim_count:]
+                    logger.debug(f"Trimmed {trim_count} old history entries for PR #{pr_number}")
                 
                 # 自動停止条件をチェック
                 if self._should_auto_stop(current_state, config):
@@ -268,7 +283,7 @@ class PRStateMonitor:
         self, 
         previous: PRState, 
         current: PRState
-    ) -> List[tuple[StateChangeEvent, Dict[str, Any]]]:
+    ) -> List[Tuple[StateChangeEvent, Dict[str, Any]]]:
         """状態変化を検出してイベントを生成"""
         events = []
         
@@ -413,8 +428,8 @@ async def example_event_callback(pr_number: int, event_type: str, event_data: Di
 def create_monitoring_config_for_merge() -> MonitoringConfig:
     """マージ用の監視設定を作成"""
     return MonitoringConfig(
-        polling_interval=30,
-        max_monitoring_duration=1800,  # 30分
+        polling_interval=DEFAULT_POLLING_INTERVAL,
+        max_monitoring_duration=DEFAULT_MAX_MONITORING_DURATION,
         auto_stop_on_merge=True,
         auto_stop_on_close=True
     )

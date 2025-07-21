@@ -21,6 +21,13 @@ from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 
+# 定数定義
+DEFAULT_MAX_RETRIES = 3
+DEFAULT_BASE_DELAY = 30
+DEFAULT_MAX_DELAY = 300
+DEFAULT_BACKOFF_FACTOR = 2
+LINEAR_DELAY_INCREMENT = 30  # ADAPTIVE戦略での線形増加量
+
 
 class RetryStrategy(Enum):
     """リトライ戦略の種類"""
@@ -212,8 +219,13 @@ class SmartMergeRetryEngine:
                         "merge_result": merge_result
                     }
                 else:
-                    # マージ失敗
-                    retry_attempt.error_message = merge_result.get("error", "Unknown merge error")
+                    # マージ失敗（履歴は既に記録済み）
+                    pass
+            else:
+                # マージ不可能な状態の場合も履歴に記録
+                retry_attempt.state_after_attempt = mergeable_state
+                retry_attempt.error_message = f"Not mergeable: {mergeable_state}"
+                self.retry_history[pr_number].append(retry_attempt)
             
             # 最後の試行で失敗した場合
             if attempt >= config.max_retries:
@@ -287,7 +299,7 @@ class SmartMergeRetryEngine:
         else:  # ADAPTIVE
             # 簡単な適応型：試行回数に応じて線形増加
             delay = min(
-                config.base_delay + (attempt * 30),
+                config.base_delay + (attempt * LINEAR_DELAY_INCREMENT),
                 config.max_delay
             )
         
