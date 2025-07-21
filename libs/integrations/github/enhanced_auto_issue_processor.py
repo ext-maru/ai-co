@@ -1550,11 +1550,27 @@ This is a general solution template for issue #{issue.number}. The specific impl
             "timestamp": datetime.now().isoformat(),
         }
 
-    async def run_enhanced(self):
-        """拡張版の実行"""
+    async def run_enhanced(self, max_issues=1, priorities=None, enable_smart_merge=True, enable_four_sages=True, enable_analytics=False):
+        """拡張版の実行
+        
+        Args:
+            max_issues: 処理する最大イシュー数
+            priorities: 処理対象の優先度リスト
+            enable_smart_merge: スマートマージシステムの有効化
+            enable_four_sages: 4賢者システムの有効化
+            enable_analytics: 詳細分析の有効化
+        """
+        # デフォルト値設定
+        if priorities is None:
+            priorities = ["critical", "high", "medium", "low"]
         try:
             self.logger.info("🚀 Enhanced Auto Issue Processor 起動開始")
             self.logger.info("   → プロセスID: %s", os.getpid())
+            self.logger.info(f"   → 最大処理数: {max_issues}")
+            self.logger.info(f"   → 対象優先度: {priorities}")
+            self.logger.info(f"   → スマートマージ: {enable_smart_merge}")
+            self.logger.info(f"   → 4賢者システム: {enable_four_sages}")
+            self.logger.info(f"   → 詳細分析: {enable_analytics}")
             self.logger.info(
                 "   → 実行時刻: %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             )
@@ -1670,7 +1686,7 @@ This is a general solution template for issue #{issue.number}. The specific impl
 
                 # 優先度を判定（メモリアクセス - 高速）
                 priority = self._determine_priority_from_cache(data)
-                if priority in ["low"]:  # lowのみ除外、medium以上を処理
+                if priority not in priorities:  # 指定された優先度のみ処理
                     filtered_count["low_priority_excluded"] += 1
                     continue
 
@@ -1707,12 +1723,10 @@ This is a general solution template for issue #{issue.number}. The specific impl
                 priority_counts[priority] = priority_counts.get(priority, 0) + 1
             self.logger.info(f"   → 優先度内訳: {priority_counts}")
 
-            # configが存在しない場合のデフォルト値
-            max_issues = getattr(self, "config", {}).get(
-                "max_issues_per_run", 1
-            )  # 5→1に変更
+            # パラメータで指定されたmax_issuesを使用
 
             processed_count = 0
+            processed_issues = []  # 処理結果を記録
             for issue_data in processable_issues[:max_issues]:
                 processed_count += 1
                 self.logger.info(
@@ -1761,10 +1775,25 @@ This is a general solution template for issue #{issue.number}. The specific impl
                     if result["pr_number"]:
                         self.logger.info(f"   → PR番号: #{result['pr_number']}")
                         self.logger.info(f"   → PR URL: {result['pr_url']}")
+                    # 処理結果を記録
+                    processed_issues.append({
+                        "number": issue.number,
+                        "title": issue.title,
+                        "pr_created": True,
+                        "pr_number": result.get("pr_number"),
+                        "pr_url": result.get("pr_url")
+                    })
                 else:
                     self.logger.error(f"❌ イシュー #{issue.number} の処理に失敗")
                     self.logger.error(f"   → エラー: {result['error']}")
                     self.logger.error(f"   → 処理時間: {processing_time:.1f}秒")
+                    # 失敗も記録
+                    processed_issues.append({
+                        "number": issue.number,
+                        "title": issue.title,
+                        "pr_created": False,
+                        "error": result.get("error")
+                    })
 
                 # 次の処理まで待機（最後の処理後は待たない）
                 if processed_count < max_issues and processed_count < len(
@@ -1783,6 +1812,15 @@ This is a general solution template for issue #{issue.number}. The specific impl
                 f"   → 全体処理時間: {(datetime.now() - self.metrics['started_at']).total_seconds():.1f}秒"
             )
             self.logger.info("=" * 60)
+            
+            # 実行結果を返す
+            return {
+                "processed_count": processed_count,
+                "total_available": len(processable_issues),
+                "processed_issues": processed_issues,
+                "metrics": self.metrics,
+                "status": "success"
+            }
 
         except Exception as e:
             self.logger.error(f"拡張版実行中にエラー: {e}")
@@ -1790,6 +1828,14 @@ This is a general solution template for issue #{issue.number}. The specific impl
             import traceback
 
             self.logger.error(f"   → スタックトレース:\n{traceback.format_exc()}")
+            
+            # エラー時の結果を返す
+            return {
+                "processed_count": 0,
+                "total_available": 0,
+                "error": str(e),
+                "status": "error"
+            }
 
 
 async def main():
