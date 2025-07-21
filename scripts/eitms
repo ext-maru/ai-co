@@ -352,8 +352,131 @@ main() {
             log_warning "AI optimization feature requires running AI service"
             ;;
         sync)
-            log_info "Forcing synchronization..."
-            log_warning "Sync feature requires running sync services"
+            case "$2" in
+                github)
+                    log_info "GitHub → EITMS同期実行中..."
+                    python3 -c "
+import asyncio
+import sys
+sys.path.append('libs')
+from eitms_github_integration import EitmsGitHubIntegration
+
+class MockUnifiedManager:
+    def __init__(self):
+        self.tasks = {}
+    async def create_task(self, **kwargs):
+        task_id = f'github-sync-{len(self.tasks)}'
+        self.tasks[task_id] = kwargs
+        return task_id
+    async def update_task_status(self, task_id, status):
+        if task_id in self.tasks:
+            self.tasks[task_id]['status'] = status
+            return True
+        return False
+    @property
+    def db(self):
+        return type('MockDB', (), {
+            'get_task': lambda self, task_id: None,
+            'list_tasks': lambda self: []
+        })()
+
+async def main():
+    manager = MockUnifiedManager()
+    github_integration = EitmsGitHubIntegration(manager)
+    if github_integration.enabled:
+        stats = await github_integration.sync_from_github()
+        print(f'GitHub同期完了: {stats}')
+    else:
+        print('GitHub統合が無効です')
+
+asyncio.run(main())
+"
+                    ;;
+                *)
+                    log_info "同期オプション: github"
+                    log_warning "Sync feature requires running sync services"
+                    ;;
+            esac
+            ;;
+        github)
+            case "$2" in
+                sync)
+                    log_info "GitHub → EITMS同期実行中..."
+                    python3 libs/eitms_github_integration.py
+                    ;;
+                issues)
+                    log_info "GitHub Issues一覧表示"
+                    python3 -c "
+import asyncio
+import sys
+sys.path.append('libs')
+from eitms_github_integration import GitHubClient
+import os
+
+async def main():
+    token = os.getenv('GITHUB_TOKEN', '')
+    owner = os.getenv('GITHUB_REPO_OWNER', '')
+    repo = os.getenv('GITHUB_REPO_NAME', '')
+    
+    if not all([token, owner, repo]):
+        print('GitHub設定が不完全です')
+        return
+    
+    client = GitHubClient(token, owner, repo)
+    issues = await client.get_issues('open')
+    
+    print(f'GitHub Issues ({len(issues)}件):')
+    print('-' * 60)
+    for issue in issues[:10]:  # 最新10件表示
+        print(f'#{issue.number:3d} {issue.title[:50]}')
+        if issue.labels:
+            print(f'     Labels: {', '.join(issue.labels)}')
+        print()
+
+asyncio.run(main())
+"
+                    ;;
+                create)
+                    shift 2
+                    title="$1"
+                    if [ -z "$title" ]; then
+                        log_error "Issue title is required"
+                        exit 1
+                    fi
+                    log_info "GitHub Issue作成: $title"
+                    python3 -c "
+import asyncio
+import sys
+sys.path.append('libs')
+from eitms_github_integration import GitHubClient
+import os
+
+async def main():
+    token = os.getenv('GITHUB_TOKEN', '')
+    owner = os.getenv('GITHUB_REPO_OWNER', '')
+    repo = os.getenv('GITHUB_REPO_NAME', '')
+    
+    if not all([token, owner, repo]):
+        print('GitHub設定が不完全です')
+        return
+    
+    client = GitHubClient(token, owner, repo)
+    issue = await client.create_issue('$title', 'EITMS経由で作成されたIssue')
+    
+    if issue:
+        print(f'GitHub Issue作成完了: #{issue.number} - {issue.title}')
+        print(f'URL: {issue.html_url}')
+
+asyncio.run(main())
+"
+                    ;;
+                *)
+                    echo "GitHub操作:"
+                    echo "  eitms github sync     - GitHub → EITMS同期"
+                    echo "  eitms github issues   - GitHub Issues一覧"
+                    echo "  eitms github create <title> - GitHub Issue作成"
+                    ;;
+            esac
             ;;
         check)
             "$SCRIPT_DIR/eitms_status.sh" --verbose

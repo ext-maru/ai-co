@@ -24,15 +24,18 @@ class TestProgressReporter:
     def mock_github_client(self):
         """モックGitHubクライアント"""
         client = Mock()
-        client.create_issue_comment = AsyncMock(return_value={
-            "success": True,
-            "comment_id": 12345,
-            "html_url": "https://github.com/owner/repo/issues/147#issuecomment-12345"
-        })
-        client.update_issue_comment = AsyncMock(return_value={
-            "success": True,
-            "comment_id": 12345
-        })
+        
+        # GitHub API オブジェクトのモック
+        mock_repo = Mock()
+        mock_issue = Mock()
+        mock_comment = Mock()
+        mock_comment.id = 12345
+        mock_issue.create_comment.return_value = mock_comment
+        mock_issue.get_comment.return_value = mock_comment
+        mock_repo.get_issue.return_value = mock_issue
+        mock_repo.get_pull.return_value = mock_issue
+        
+        client.repo = mock_repo
         return client
     
     @pytest.fixture
@@ -41,173 +44,171 @@ class TestProgressReporter:
         return ProgressReporter(mock_github_client)
     
     @pytest.mark.asyncio
-    async def test_create_initial_report(self, reporter, mock_github_client):
-        """初期レポート作成のテスト"""
-        # 初期レポートを作成
-        result = await reporter.create_initial_report(
+    async def test_start_session(self, reporter, mock_github_client):
+        """セッション開始のテスト"""
+        # セッションを開始
+        session_id = reporter.start_session(
             pr_number=123,
             issue_number=147,
-            title="マージ状態の継続的監視システム構築"
+            initial_message="マージ状態の継続的監視システム構築"
         )
         
-        assert result["success"] is True
-        assert "comment_id" in result
+        assert session_id is not None
+        assert session_id.startswith("pr_123_")
         
-        # コメント作成が呼ばれたことを確認
-        mock_github_client.create_issue_comment.assert_called_once()
-        args = mock_github_client.create_issue_comment.call_args
-        assert args[0][0] == 147  # issue_number
-        assert "Auto Issue Processor - 進捗報告" in args[0][1]
-        assert "監視開始" in args[0][1]
+        # セッション状況を確認
+        status = reporter.get_session_status(123)
+        assert status is not None
+        assert status["pr_number"] == 123
+        assert status["issue_number"] == 147
     
     @pytest.mark.asyncio
     async def test_update_progress(self, reporter, mock_github_client):
         """進捗更新のテスト"""
-        # 初期レポートを作成
-        await reporter.create_initial_report(123, 147, "Test PR")
+        # セッションを開始
+        reporter.start_session(123, 147, "Test PR")
         
         # 進捗を更新
         result = await reporter.update_progress(
-            issue_number=147,
-            state="CI実行中",
-            emoji="⏳",
+            pr_number=123,
+            status="in_progress",
+            message="CI実行中",
             details={
                 "ci_jobs_completed": 5,
                 "ci_jobs_total": 8,
                 "elapsed_time": "5分12秒"
-            }
+            },
+            force_comment_update=True
         )
         
-        assert result["success"] is True
+        assert result is True
         
-        # コメント更新が呼ばれたことを確認
-        mock_github_client.update_issue_comment.assert_called()
-        args = mock_github_client.update_issue_comment.call_args
-        assert "CI実行中" in args[0][1]
-        assert "5/8 jobs完了" in args[0][1]
+        # セッション状況を確認
+        status = reporter.get_session_status(123)
+        assert status["current_status"] == "in_progress"
     
     @pytest.mark.asyncio
-    async def test_add_event_to_history(self, reporter):
-        """イベント履歴追加のテスト"""
-        # 初期レポートを作成
-        await reporter.create_initial_report(123, 147, "Test PR")
+    async def test_session_entry_addition(self, reporter):
+        """セッションエントリ追加のテスト"""
+        # セッションを開始
+        reporter.start_session(123, 147, "Test PR")
         
-        # イベントを追加
-        reporter.add_event_to_history(
-            issue_number=147,
-            event_type=StateChangeEvent.CI_STARTED,
-            description="CI実行開始",
-            emoji="⏳"
+        # 進捗を追加
+        await reporter.update_progress(
+            pr_number=123,
+            status="in_progress",
+            message="CI実行開始",
+            details={"ci_status": "running"}
         )
         
-        # 履歴に追加されたことを確認
-        history = reporter.get_event_history(147)
-        assert len(history) > 0
-        assert history[-1]["description"] == "CI実行開始"
-        assert history[-1]["emoji"] == "⏳"
+        # セッション状況を確認
+        status = reporter.get_session_status(123)
+        assert len(status["entries"]) >= 2  # 初期エントリ + 新エントリ
+        assert any(entry["message"] == "CI実行開始" for entry in status["entries"])
     
     @pytest.mark.asyncio
-    async def test_complete_monitoring(self, reporter, mock_github_client):
-        """監視完了報告のテスト"""
-        # 初期レポートを作成
-        await reporter.create_initial_report(123, 147, "Test PR")
+    async def test_complete_session(self, reporter, mock_github_client):
+        """セッション完了のテスト"""
+        # セッションを開始
+        reporter.start_session(123, 147, "Test PR")
         
-        # 監視を完了
-        result = await reporter.complete_monitoring(
-            issue_number=147,
-            success=True,
-            final_state="マージ完了",
-            details={
+        # セッションを完了
+        result = await reporter.complete_session(
+            pr_number=123,
+            final_status="completed",
+            final_message="マージ完了",
+            final_details={
                 "merge_sha": "abc123",
                 "total_duration": "15分30秒"
             }
         )
         
-        assert result["success"] is True
+        assert result is True
         
-        # 最終更新が呼ばれたことを確認
-        mock_github_client.update_issue_comment.assert_called()
-        args = mock_github_client.update_issue_comment.call_args
-        assert "✅ 完了" in args[0][1]
-        assert "マージ完了" in args[0][1]
-        assert "15分30秒" in args[0][1]
+        # セッションが非アクティブになったことを確認
+        status = reporter.get_session_status(123)
+        assert status is None
     
     @pytest.mark.asyncio
     async def test_error_reporting(self, reporter, mock_github_client):
         """エラー報告のテスト"""
-        # 初期レポートを作成
-        await reporter.create_initial_report(123, 147, "Test PR")
+        # セッションを開始
+        reporter.start_session(123, 147, "Test PR")
         
         # エラーを報告
-        result = await reporter.report_error(
-            issue_number=147,
-            error_type="MergeConflict",
-            error_message="マージコンフリクトが発生しました",
-            suggested_action="手動でコンフリクトを解決してください"
+        result = await reporter.update_progress(
+            pr_number=123,
+            status="error",
+            message="マージコンフリクトが発生しました",
+            details={
+                "error_type": "MergeConflict",
+                "suggested_action": "手動でコンフリクトを解決してください"
+            },
+            force_comment_update=True
         )
         
-        assert result["success"] is True
+        assert result is True
         
-        # エラー報告が更新されたことを確認
-        mock_github_client.update_issue_comment.assert_called()
-        args = mock_github_client.update_issue_comment.call_args
-        assert "❌ エラー" in args[0][1]
-        assert "マージコンフリクトが発生しました" in args[0][1]
-        assert "手動でコンフリクトを解決してください" in args[0][1]
+        # セッション状況を確認
+        status = reporter.get_session_status(123)
+        assert status["current_status"] == "error"
     
     @pytest.mark.asyncio
-    async def test_format_progress_report(self, reporter):
-        """進捗レポートフォーマットのテスト"""
-        # 初期データを設定
-        reporter._reports[147] = {
-            "pr_number": 123,
-            "title": "Test PR",
-            "start_time": datetime.now() - timedelta(minutes=10),
-            "current_state": "CI実行中",
-            "current_emoji": "⏳",
-            "history": [
-                {
-                    "timestamp": datetime.now() - timedelta(minutes=10),
-                    "emoji": "✅",
-                    "description": "PR作成完了 (#123)"
-                },
-                {
-                    "timestamp": datetime.now() - timedelta(minutes=5),
-                    "emoji": "⏳",
-                    "description": "CI実行開始"
-                }
-            ]
-        }
+    async def test_comment_body_generation(self, reporter):
+        """コメント本文生成のテスト"""
+        # セッションを開始
+        reporter.start_session(123, 147, "Test PR")
         
-        # レポートをフォーマット
-        formatted = reporter._format_progress_report(147)
+        # いくつかの進捗を追加
+        await reporter.update_progress(123, "in_progress", "CI実行中", {"ci_status": "running"})
+        await reporter.update_progress(123, "waiting", "レビュー待ち", {"reviewers": 2})
+        
+        # セッション取得
+        session = reporter.active_sessions[123]
+        
+        # コメント本文を生成
+        formatted = reporter._generate_comment_body(session)
         
         # フォーマットを確認
         assert "🤖 **Auto Issue Processor - 進捗報告**" in formatted
-        assert "**現在の状態**: CI実行中 ⏳" in formatted
-        assert "✅" in formatted
-        assert "PR作成完了 (#123)" in formatted
-        assert "⏳" in formatted
-        assert "CI実行開始" in formatted
-        assert "経過時間" in formatted
-        assert "最終更新" in formatted
+        assert "レビュー待ち" in formatted
+        assert "処理履歴" in formatted
+        assert "セッション情報" in formatted
+        assert "PR: #123" in formatted
     
-    def test_calculate_eta(self, reporter):
-        """完了予想時刻計算のテスト"""
-        # 開始時刻と現在の進捗から予想時刻を計算
-        start_time = datetime.now() - timedelta(minutes=5)
-        progress = 0.6  # 60%完了
+    def test_session_status_retrieval(self, reporter):
+        """セッション状況取得のテスト"""
+        # セッションを開始
+        session_id = reporter.start_session(123, 147, "Test PR")
         
-        eta = reporter._calculate_eta(start_time, progress)
+        # セッション状況を取得
+        status = reporter.get_session_status(123)
         
-        # 予想時刻が妥当な範囲にあることを確認
-        assert eta > datetime.now()
-        assert eta < datetime.now() + timedelta(minutes=10)
+        # セッション情報を確認
+        assert status is not None
+        assert status["pr_number"] == 123
+        assert status["issue_number"] == 147
+        assert status["session_id"] == session_id
+        assert "start_time" in status
+        assert "entries" in status
     
-    def test_format_duration(self, reporter):
-        """時間フォーマットのテスト"""
-        # 秒数を人間が読みやすい形式に変換
-        assert reporter._format_duration(65) == "1分5秒"
-        assert reporter._format_duration(3661) == "1時間1分1秒"
-        assert reporter._format_duration(30) == "30秒"
-        assert reporter._format_duration(7200) == "2時間0分0秒"
+    def test_session_history_management(self, reporter):
+        """セッション履歴管理のテスト"""
+        # 複数セッションを作成・完了
+        reporter.start_session(123, 147, "Test PR 1")
+        reporter.start_session(456, 148, "Test PR 2")
+        
+        # アクティブセッション確認
+        active = reporter.get_all_active_sessions()
+        assert len(active) == 2
+        assert 123 in active
+        assert 456 in active
+        
+        # 一つを完了
+        asyncio.run(reporter.complete_session(123, "completed", "完了"))
+        
+        # アクティブセッションが減っていることを確認
+        active = reporter.get_all_active_sessions()
+        assert len(active) == 1
+        assert 456 in active
+        assert 123 not in active

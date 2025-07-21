@@ -341,4 +341,4 @@ class AutoActionEngine:
         if pr_number is None:
             self.cooldown_periods.clear()
         elif pr_number in self.cooldown_periods:
-            del self.cooldown_periods[pr_number] < /dev/null
+            del self.cooldown_periods[pr_number]
