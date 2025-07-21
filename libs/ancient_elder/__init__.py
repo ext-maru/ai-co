@@ -8,6 +8,7 @@ from .audit_engine import AncientElderAuditEngine
 from .integrity_auditor import AncientElderIntegrityAuditor
 from .four_sages_overseer import FourSagesOverseer
 from .git_chronicle import GitChronicle
+from .servant_inspector import ServantInspector
 
 __all__ = [
     "AncientElderBase",
@@ -15,6 +16,7 @@ __all__ = [
     "AncientElderIntegrityAuditor",
     "FourSagesOverseer",
     "GitChronicle",
+    "ServantInspector",
 ]
 
 # System version
