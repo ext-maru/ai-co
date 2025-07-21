@@ -682,10 +682,8 @@ class EitmsAiEngine:
             'security': ['security', 'auth', 'encryption', 'vulnerability']
         }
         
-        skills = []
-        for skill, keywords in skill_keywords.items():
-            if any(keyword in text for keyword in keywords):
-                skills.append(skill)
+        skills = [skill for skill, keywords in skill_keywords.items() 
+                 if any(keyword in text for keyword in keywords)]
         
         return skills[:5]  # 最大5つまで
     
