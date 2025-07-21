@@ -34,6 +34,7 @@ from libs.integrations.github.api_implementations.create_pull_request import Git
 from libs.code_generation.template_manager import CodeGenerationTemplateManager
 from libs.auto_issue_processor_error_handling import AutoIssueProcessorErrorHandler, with_error_recovery
 from libs.four_sages_diagnostic_system import FourSagesDiagnosticSystem
+from libs.integrations.github.reopened_issue_tracker import ReopenedIssueTracker
 
 
 class AutoIssueElderFlowEngine:
@@ -425,6 +426,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
 
         self.limiter = ProcessingLimiter()
         self.evaluator = ComplexityEvaluator()
+        self.reopened_tracker = ReopenedIssueTracker(self.repo)
 
         # 処理対象の優先度（高い順に処理される）
         self.target_priorities = ["critical", "high", "medium", "low"]
@@ -538,7 +540,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
             return {"status": "error", "message": str(e)}
 
     async def scan_processable_issues(self) -> List[Issue]:
-        """処理可能なイシューをスキャン（重複処理防止機能付き）"""
+        """処理可能なイシューをスキャン（重複処理防止・再オープン対応）"""
         processable_issues = []
 
         # 最近処理されたイシューを確認（重複防止）
@@ -552,15 +554,22 @@ class AutoIssueProcessor(EldersServiceLegacy):
             if issue.pull_request:
                 continue
 
-            # 重複処理防止チェック
+            # 重複処理防止チェック（再オープンされた場合は例外）
             if issue.number in recently_processed:
-                logger.info(f"Issue #{issue.number} は最近処理済みのためスキップ")
-                continue
-
-            # 優先度チェック
-            priority = self._determine_priority(issue)
-            if priority not in self.target_priorities:
-                continue
+                # 再オープンされたかチェック
+                reopened_decision = await self.reopened_tracker.should_reprocess(issue.number)
+                if not reopened_decision['should_process']:
+                    logger.info(f"Issue #{issue.number} は最近処理済みのためスキップ")
+                    continue
+                else:
+                    logger.info(f"Issue #{issue.number} は再オープンされたため再処理対象: {reopened_decision['reason']}")
+                    # 再処理の場合は高優先度として扱う
+                    priority = "high"
+            else:
+                # 優先度チェック
+                priority = self._determine_priority(issue)
+                if priority not in self.target_priorities:
+                    continue
 
             # 複雑度評価
             complexity = await self.evaluator.evaluate(issue)
@@ -568,7 +577,8 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 processable_issues.append({
                     "issue": issue,
                     "priority": priority,
-                    "complexity": complexity
+                    "complexity": complexity,
+                    "reopened": issue.number in recently_processed
                 })
 
             # 最大10件まで
@@ -620,6 +630,27 @@ class AutoIssueProcessor(EldersServiceLegacy):
             existing_pr = await self._check_existing_pr_for_issue(issue.number)
             if existing_pr:
                 logger.info(f"PR already exists for issue #{issue.number}: PR #{existing_pr['number']}")
+                
+                # 再オープンされたIssueの場合、特別な処理
+                reopened_info = await self.reopened_tracker.check_if_reopened(issue.number)
+                if reopened_info['is_reopened']:
+                    await self.reopened_tracker.record_reprocessing(issue.number, {
+                        "status": "pr_exists",
+                        "pr_number": existing_pr['number'],
+                        "action": "monitoring_for_quality_fix"
+                    })
+                    
+                    # Issueにコメントを追加
+                    issue.create_comment(
+                        f"🔄 **再オープン検知**\\n\\n"
+                        f"このIssueは再オープンされましたが、既にPR #{existing_pr['number']} が存在します。\\n"
+                        f"品質問題の修正が必要な場合は、PRに対して修正を行ってください。\\n\\n"
+                        f"- 再オープン回数: {reopened_info['reopen_count']}\\n"
+                        f"- 再オープン日時: {reopened_info['reopened_at']}\\n"
+                        f"- 再オープン者: @{reopened_info['reopened_by']}\\n\\n"
+                        f"品質基準を満たすまで継続的に監視します。"
+                    )
+                
                 return {
                     "status": "already_exists",
                     "message": f"PR #{existing_pr['number']} already exists for this issue",
@@ -667,12 +698,30 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 message = result.get("message", "")
 
                 if pr_url:
-                    issue.create_comment(
-                        f"🤖 Auto-processed by Elder Flow\n\n"
-                        f"PR created: {pr_url}\n\n"
-                        f"This issue was automatically processed based on its complexity "
-                        f"and priority level."
-                    )
+                    # 再オープンされたIssueの再処理の場合は記録
+                    reopened_info = await self.reopened_tracker.check_if_reopened(issue.number)
+                    if reopened_info['is_reopened']:
+                        await self.reopened_tracker.record_reprocessing(issue.number, {
+                            "status": "reprocessed_successfully",
+                            "pr_url": pr_url,
+                            "pr_number": result.get("pr_number"),
+                            "action": "new_pr_created"
+                        })
+                        
+                        issue.create_comment(
+                            f"🔄 **再処理完了**\n\n"
+                            f"再オープンされたIssueを再処理し、新しいPRを作成しました: {pr_url}\n\n"
+                            f"- 再オープン回数: {reopened_info['reopen_count']}\n"
+                            f"- 品質基準を満たすよう実装されています\n\n"
+                            f"This issue was automatically reprocessed after being reopened."
+                        )
+                    else:
+                        issue.create_comment(
+                            f"🤖 Auto-processed by Elder Flow\n\n"
+                            f"PR created: {pr_url}\n\n"
+                            f"This issue was automatically processed based on its complexity "
+                            f"and priority level."
+                        )
                 elif message:
                     # PR URLがない場合はメッセージを表示
                     related_links = result.get("related_links", {})
