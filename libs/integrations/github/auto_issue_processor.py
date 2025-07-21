@@ -8,7 +8,6 @@ import asyncio
 import json
 import logging
 import os
-import subprocess
 
 # Elder System imports
 import sys
@@ -62,12 +61,6 @@ class AutoIssueElderFlowEngine:
         # 自動マージを有効化
         self.pr_creator.auto_merge_enabled = True
         self.logger = logger
-        
-        # テンプレートマネージャーの初期化
-        self.template_manager = CodeGenerationTemplateManager()
-        
-        # エラーハンドラーの初期化
-        self.error_handler = AutoIssueProcessorErrorHandler()
 
     async def execute_flow(self, request):
         """Auto Issue用のElder Flow実行"""
@@ -129,110 +122,54 @@ class AutoIssueElderFlowEngine:
     async def _create_pull_request(
         self, issue_number, issue_title, issue_body, task_name
     ):
-        """自動でPR作成（SafeGitOperations使用、エラーハンドリング付き）"""
-        self.logger.info(f"🔧 PR作成開始: Issue #{issue_number}")
-        files_created = []
-        branch_name = None
-        
+        """自動でPR作成"""
         try:
-            # SafeGitOperationsインスタンスを作成
-            git_ops = SafeGitOperations()
+            # ブランチ名を生成（タイムスタンプオプション）
+            timestamp = datetime.now().strftime("%H%M%S")
+            use_timestamp = os.getenv("AUTO_ISSUE_USE_TIMESTAMP", "false").lower() == "true"
+            
+            if use_timestamp:
+                branch_name = f"auto-fix/issue-{issue_number}-{timestamp}"
+            else:
+                branch_name = f"auto-fix-issue-{issue_number}"
+
+            # まずブランチを作成してpush
+            import subprocess
             
             # 現在のブランチを保存
-            current_branch = git_ops.get_current_branch()
-            
-            # 未コミットの変更を一時保存
-            stash_result = git_ops.stash_changes()
-            if not stash_result["success"]:
-                self.logger.warning(f"Failed to stash changes: {stash_result.get('error', 'Unknown error')}")
+            current_branch = subprocess.run(
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+                capture_output=True,
+                text=True,
+                check=True
+            ).stdout.strip()
             
             try:
-                # PR用ブランチを作成（既存ブランチは自動削除される）
-                self.logger.info(f"📌 ブランチ作成開始: Issue #{issue_number}")
-                branch_result = git_ops.create_pr_branch_workflow(
-                    pr_title=f"Auto-fix for issue #{issue_number} - {issue_title[:50]}",
-                    base_branch="main",
-                    branch_prefix="auto-fix"
-                )
+                # mainブランチに切り替え
+                subprocess.run(["git", "checkout", "main"], check=True)
                 
-                if not branch_result["success"]:
-                    self.logger.error(f"Failed to create branch: {branch_result.get('error', 'Unknown error')}")
-                    return {
-                        "success": False,
-                        "error": f"ブランチ作成エラー: {branch_result.get('error', 'Unknown error')}"
-                    }
+                # 最新の状態を取得
+                subprocess.run(["git", "pull", "origin", "main"], check=True)
                 
-                # branch_resultからブランチ名を取得
-                if "branch_name" in branch_result:
-                    branch_name = branch_result["branch_name"]
-                    self.logger.info(f"✅ ブランチ作成成功: {branch_name}")
-                else:
-                    self.logger.error(f"❌ branch_resultにbranch_nameがありません: {branch_result}")
-                    return {
-                        "success": False,
-                        "error": "ブランチ名が取得できませんでした"
-                    }
+                # 既存のブランチを削除（存在する場合）
+                existing_branch = subprocess.run(
+                    ["git", "branch", "-l", branch_name],
+                    capture_output=True,
+                    text=True
+                ).stdout.strip()
                 
-                # テンプレートシステムを使用してコードを生成
-                files_created = []
+                if existing_branch:
+                    subprocess.run(["git", "branch", "-D", branch_name], check=True)
+                    # リモートブランチも削除
+                    subprocess.run(
+                        ["git", "push", "origin", "--delete", branch_name],
+                        capture_output=True
+                    )  # エラーは無視
                 
-                try:
-                    # コンテキストを作成
-                    context = await self.template_manager.create_context_from_issue(
-                        issue_number=issue_number,
-                        issue_title=issue_title,
-                        issue_body=issue_body
-                    )
-                except Exception as e:
-                    self.logger.warning(f"⚠️ テンプレートコンテキスト作成失敗: {e}")
-                    # フォールバックコンテキストを使用
-                    context = {
-                        'tech_stack': 'python',
-                        'requirements': {'imports': []},
-                        'issue_number': issue_number,
-                        'issue_title': issue_title,
-                        'issue_body': issue_body
-                    }
+                # 新しいブランチを作成
+                subprocess.run(["git", "checkout", "-b", branch_name], check=True)
                 
-                # 技術スタックを検出
-                tech_stack = context['tech_stack']
-                self.logger.info(f"Detected tech stack for issue #{issue_number}: {tech_stack}")
-                
-                # 実装ファイルを生成（エラーハンドリング付き）
-                try:
-                    os.makedirs("auto_implementations", exist_ok=True)
-                    impl_code = self.template_manager.generate_code(
-                        template_type='class',
-                        tech_stack=tech_stack,
-                        context=context
-                    )
-                    
-                    impl_file_path = f"auto_implementations/issue_{issue_number}_implementation.py"
-                    with open(impl_file_path, "w") as f:
-                        f.write(impl_code)
-                    files_created.append(impl_file_path)
-                    self.logger.info(f"✅ 実装ファイル生成: {impl_file_path}")
-                except Exception as e:
-                    self.logger.warning(f"⚠️ 実装ファイル生成失敗: {e}")
-                
-                # テストファイルを生成（エラーハンドリング付き）
-                try:
-                    os.makedirs("tests/auto_generated", exist_ok=True)
-                    test_code = self.template_manager.generate_code(
-                        template_type='test',
-                        tech_stack=tech_stack,
-                        context=context
-                    )
-                    
-                    test_file_path = f"tests/auto_generated/test_issue_{issue_number}.py"
-                    with open(test_file_path, "w") as f:
-                        f.write(test_code)
-                    files_created.append(test_file_path)
-                    self.logger.info(f"✅ テストファイル生成: {test_file_path}")
-                except Exception as e:
-                    self.logger.warning(f"⚠️ テストファイル生成失敗: {e}")
-                
-                # 設計書も作成
+                # 修正ファイルを作成
                 fix_file_path = f"auto_fixes/issue_{issue_number}_fix.md"
                 os.makedirs("auto_fixes", exist_ok=True)
                 
@@ -246,72 +183,37 @@ class AutoIssueElderFlowEngine:
 
 {issue_body}
 
-## Generated Files
-- Implementation: `{impl_file_path}`
-- Test: `{test_file_path}`
-- Tech Stack: {tech_stack}
-
-## Template System Info
-- Detected keywords: {', '.join(context['requirements']['imports'])}
-- Template version: Jinja2 Enhanced Templates (Issue #184 Phase 1)
-
 ---
-*This file was auto-generated by Elder Flow Auto Issue Processor with Template System*
+*This file was auto-generated by Elder Flow Auto Issue Processor*
 """)
-                files_created.append(fix_file_path)
                 
-                # ファイルが生成された場合のみコミット
-                if files_created:
-                    # すべての生成ファイルをステージング
-                    for file_path in files_created:
-                        subprocess.run(["git", "add", file_path], check=True)
-                    
-                    # ファイルをコミット（SafeGitOperations使用）
-                    commit_message = f"fix: Auto-fix for issue #{issue_number} - {issue_title[:50]}"
-                    commit_result = git_ops.auto_commit_if_changes(
-                        files=files_created,
-                        commit_message=commit_message
-                    )
-                else:
-                    self.logger.info("⚠️ ファイルが生成されなかったため、コミットをスキップ")
-                    commit_result = {"success": True, "message": "No files to commit"}
+                # ファイルをステージング
+                subprocess.run(["git", "add", fix_file_path], check=True)
                 
-                if commit_result["success"]:
-                    # ブランチをpush
-                    push_result = git_ops.push_branch_safely(branch_name)
-                    if not push_result["success"]:
-                        self.logger.error(f"Failed to push branch: {push_result.get('error', 'Unknown error')}")
-                        return {
-                            "success": False,
-                            "error": f"ブランチのプッシュに失敗: {push_result.get('error', 'Unknown error')}"
-                        }
-                else:
-                    self.logger.info("No changes to commit or commit failed")
-                    # 変更がない場合でもPRは作成可能
-                    
+                # コミット（pre-commit hookが失敗する可能性があるため、再試行を含む）
+                commit_message = f"fix: Auto-fix for issue #{issue_number} - {issue_title[:50]}"
+                
+                # 最初のコミット試行
+                commit_result = subprocess.run(
+                    ["git", "commit", "-m", commit_message],
+                    capture_output=True,
+                    text=True
+                )
+                
+                # pre-commit hookでファイルが修正された場合、再度add & commit
+                if commit_result.returncode != 0 and "files were modified by this hook" in commit_result.stderr:
+                    self.logger.info("Pre-commit hook modified files, re-committing...")
+                    subprocess.run(["git", "add", "-A"], check=True)
+                    subprocess.run(["git", "commit", "-m", commit_message], check=True)
+                
+                # ブランチをpush
+                subprocess.run(["git", "push", "-u", "origin", branch_name], check=True)
+                
             finally:
                 # 元のブランチに戻る
-                git_ops.checkout_branch(current_branch)
-                
-                # stashした変更を復元
-                if stash_result["success"]:
-                    git_ops.stash_pop()
+                subprocess.run(["git", "checkout", current_branch], check=True)
 
             # PR作成
-            # 生成されたファイル情報を取得
-            impl_file_path = files_created[0] if len(files_created) > 0 else "N/A"
-            test_file_path = files_created[1] if len(files_created) > 1 else "N/A"
-            tech_stack = context.get('tech_stack', 'Unknown') if 'context' in locals() else 'Unknown'
-            
-            # branch_nameが設定されていない場合の対策
-            if not branch_name:
-                self.logger.error("❌ branch_nameが設定されていません")
-                return {
-                    "success": False,
-                    "error": "ブランチ名が設定されていません"
-                }
-            
-            self.logger.info(f"🔄 GitHubへのPR作成開始: branch={branch_name}")
             pr_result = self.pr_creator.create_pull_request(
                 title=f"Auto-fix: {issue_title} (#{issue_number})",
                 head=branch_name,
@@ -327,33 +229,22 @@ Closes #{issue_number}
 ## 元のIssue内容
 {issue_body}
 
-## 生成されたファイル
-- 実装: `{impl_file_path}`
-- テスト: `{test_file_path}`
-- 技術スタック: {tech_stack}
-
 ---
-*このPRはAuto Issue ProcessorによりSafeGitOperationsを使用して自動生成されました*
+*このPRはAuto Issue Processorにより自動生成されました*
 """,
                 labels=["auto-generated", "auto-fix"],
                 draft=False,  # 通常のPRとして作成（自動マージ可能）
             )
 
-            self.logger.info(f"📊 PR作成結果: {pr_result}")
-            
             if pr_result.get("success"):
                 pr_data = pr_result.get("pull_request", {})
-                pr_url = pr_data.get("html_url")
-                pr_number = pr_data.get("number")
-                self.logger.info(f"✅ PR作成成功: #{pr_number} - {pr_url}")
                 return {
                     "success": True,
-                    "pr_url": pr_url,
-                    "pr_number": pr_number,
+                    "pr_url": pr_data.get("html_url"),
+                    "pr_number": pr_data.get("number"),
                     "branch_name": branch_name,
                 }
             else:
-                self.logger.error(f"❌ PR作成失敗: {pr_result.get('error', '不明なエラー')}")
                 return {
                     "success": False,
                     "error": pr_result.get("error", "不明なPR作成エラー"),
@@ -535,9 +426,6 @@ class AutoIssueProcessor(EldersServiceLegacy):
 
         self.limiter = ProcessingLimiter()
         self.evaluator = ComplexityEvaluator()
-        
-        # 4賢者診断システム初期化
-        self.diagnostic_system = FourSagesDiagnosticSystem()
 
         # 処理対象の優先度（中以上）
         self.target_priorities = ["critical", "high", "medium"]
@@ -684,10 +572,6 @@ class AutoIssueProcessor(EldersServiceLegacy):
             if len(processable_issues) >= 10:
                 break
 
-        # 優先度でソート（critical > high > medium > low）
-        priority_order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
-        processable_issues.sort(key=lambda issue: priority_order.get(self._determine_priority(issue), 999))
-        
         return processable_issues
 
     def _get_recently_processed_issues(self, hours=24) -> Set[int]:
@@ -826,11 +710,9 @@ class AutoIssueProcessor(EldersServiceLegacy):
     async def consult_four_sages(self, issue: Issue) -> Dict[str, Any]:
         """4賢者への相談"""
         sage_advice = {}
-        consultation_errors = []
 
-        # ナレッジ賢者: 過去の類似事例検索
         try:
-            logger.info(f"📚 Consulting Knowledge Sage for issue #{issue.number}")
+            # ナレッジ賢者: 過去の類似事例検索
             knowledge_response = await self.knowledge_sage.process_request(
                 {
                     "type": "search",
@@ -839,15 +721,8 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 }
             )
             sage_advice["knowledge"] = knowledge_response.get("entries", [])
-            logger.info(f"✅ Knowledge Sage responded with {len(sage_advice['knowledge'])} entries")
-        except Exception as e:
-            logger.error(f"❌ Knowledge Sage consultation failed: {str(e)}", exc_info=True)
-            consultation_errors.append(f"Knowledge Sage: {str(e)}")
-            sage_advice["knowledge"] = []
 
-        # タスク賢者: 実行計画立案
-        try:
-            logger.info(f"📋 Consulting Task Sage for issue #{issue.number}")
+            # タスク賢者: 実行計画立案
             task_response = await self.task_sage.process_request(
                 {
                     "type": "create_plan",
@@ -856,15 +731,8 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 }
             )
             sage_advice["plan"] = task_response
-            logger.info(f"✅ Task Sage created plan with confidence: {task_response.get('confidence', 'N/A')}")
-        except Exception as e:
-            logger.error(f"❌ Task Sage consultation failed: {str(e)}", exc_info=True)
-            consultation_errors.append(f"Task Sage: {str(e)}")
-            sage_advice["plan"] = {"status": "error", "message": str(e)}
 
-        # インシデント賢者: リスク評価
-        try:
-            logger.info(f"🚨 Consulting Incident Sage for issue #{issue.number}")
+            # インシデント賢者: リスク評価
             incident_response = await self.incident_sage.process_request(
                 {
                     "type": "evaluate_risk",
@@ -873,15 +741,8 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 }
             )
             sage_advice["risks"] = incident_response
-            logger.info(f"✅ Incident Sage evaluated risk level: {incident_response.get('risk_level', 'N/A')}")
-        except Exception as e:
-            logger.error(f"❌ Incident Sage consultation failed: {str(e)}", exc_info=True)
-            consultation_errors.append(f"Incident Sage: {str(e)}")
-            sage_advice["risks"] = {"status": "error", "message": str(e), "risk_level": "unknown"}
 
-        # RAG賢者: 最適解探索
-        try:
-            logger.info(f"🔍 Consulting RAG Sage for issue #{issue.number}")
+            # RAG賢者: 最適解探索
             rag_response = await self.rag_sage.process_request(
                 {
                     "type": "search",
@@ -890,160 +751,11 @@ class AutoIssueProcessor(EldersServiceLegacy):
                 }
             )
             sage_advice["solution"] = rag_response.get("results", [])
-            logger.info(f"✅ RAG Sage found {len(sage_advice['solution'])} solutions")
+
         except Exception as e:
-            logger.error(f"❌ RAG Sage consultation failed: {str(e)}", exc_info=True)
-            consultation_errors.append(f"RAG Sage: {str(e)}")
-            sage_advice["solution"] = []
+            logger.warning(f"Sage consultation partial failure: {str(e)}")
 
-        # Log summary
-        if consultation_errors:
-            logger.warning(f"⚠️ 4 Sages consultation completed with {len(consultation_errors)} errors:")
-            for error in consultation_errors:
-                logger.warning(f"   - {error}")
-        else:
-            logger.info(f"✅ All 4 Sages consultation completed successfully for issue #{issue.number}")
-
-        # 🛠️ 簡単な修正: 空応答時のフォールバック処理
-        all_empty = all(
-            not sage_advice.get(key) 
-            for key in ["knowledge", "plan", "risks", "solution"]
-        )
-        
-        if all_empty and consultation_errors:
-            logger.warning(f"🔄 All 4 Sages returned empty responses, applying diagnostic system for issue #{issue.number}")
-            
-            try:
-                # 4賢者診断システムを実行
-                logger.info(f"🔍 Running Four Sages diagnostic system for issue #{issue.number}")
-                diagnostic_result = await self.diagnostic_system.run_full_diagnosis()
-                
-                if diagnostic_result.get("status") == "success":
-                    # Auto-fixable な問題があるかチェック
-                    auto_fixable_issues = [
-                        issue for issue in diagnostic_result.get("issues", [])
-                        if issue.get("auto_fixable", False)
-                    ]
-                    
-                    if auto_fixable_issues:
-                        logger.info(f"🛠️ Found {len(auto_fixable_issues)} auto-fixable issues, applying fixes...")
-                        
-                        # Auto-fix を実行
-                        fix_result = await self.diagnostic_system.apply_auto_fixes(auto_fixable_issues)
-                        
-                        if fix_result.get("success"):
-                            logger.info(f"✅ Auto-fixes applied successfully, retrying 4 Sages consultation...")
-                            
-                            # 4賢者への再相談を試行
-                            retry_advice = await self._retry_sages_consultation(issue)
-                            
-                            if retry_advice:
-                                sage_advice.update(retry_advice)
-                                sage_advice["diagnostic_recovery"] = True
-                                sage_advice["recovery_message"] = (
-                                    f"🔧 診断システムにより{len(auto_fixable_issues)}件の問題を修復し、"
-                                    f"4賢者システムを復旧しました。"
-                                )
-                                return sage_advice
-                        
-                        sage_advice["diagnostic_attempted"] = True
-                        sage_advice["auto_fixes_applied"] = len(fix_result.get("applied_fixes", []))
-                    
-                    sage_advice["diagnostic_result"] = diagnostic_result
-                    logger.info(f"📊 Diagnostic system completed, found {len(diagnostic_result.get('issues', []))} issues")
-                
-            except Exception as diagnostic_error:
-                logger.error(f"❌ Diagnostic system failed: {str(diagnostic_error)}")
-                sage_advice["diagnostic_error"] = str(diagnostic_error)
-            
-            # フォールバック処理（既存ロジック）
-            sage_advice["fallback_active"] = True
-            sage_advice["fallback_message"] = (
-                f"🏛️ エルダーズギルド4賢者システムが一時的に利用できません。\n"
-                f"診断システムによる復旧を試行しましたが、基本的な処理規則で継続します。\n"
-                f"エラー数: {len(consultation_errors)}"
-            )
-            
-            # 基本的なフォールバック提案
-            sage_advice["fallback_plan"] = {
-                "step1": "Issue内容の基本分析を実行",
-                "step2": "ラベルに基づく優先度判定",
-                "step3": "標準的な処理手順を適用",
-                "step4": "4賢者システム復旧後に再相談を推奨"
-            }
-            
-            logger.info(f"✅ Fallback processing activated for issue #{issue.number}")
-
-        sage_advice["consultation_errors"] = consultation_errors
         return sage_advice
-    
-    async def _retry_sages_consultation(self, issue: Issue) -> Optional[Dict[str, Any]]:
-        """4賢者システム修復後の再相談を試行"""
-        retry_advice = {}
-        successful_consultations = 0
-        
-        try:
-            # ナレッジ賢者への再相談
-            knowledge_response = await self.knowledge_sage.process_request({
-                "type": "search",
-                "query": f"similar issues to: {issue.title}",
-                "limit": 3,
-            })
-            if knowledge_response and knowledge_response.get("entries"):
-                retry_advice["knowledge"] = knowledge_response.get("entries", [])
-                successful_consultations += 1
-                
-        except Exception as e:
-            logger.warning(f"Retry Knowledge Sage consultation failed: {str(e)}")
-            
-        try:
-            # タスク賢者への再相談
-            task_response = await self.task_sage.process_request({
-                "type": "create_plan",
-                "title": issue.title,
-                "description": issue.body or "",
-            })
-            if task_response and task_response.get("status") == "success":
-                retry_advice["plan"] = task_response
-                successful_consultations += 1
-                
-        except Exception as e:
-            logger.warning(f"Retry Task Sage consultation failed: {str(e)}")
-            
-        try:
-            # インシデント賢者への再相談
-            incident_response = await self.incident_sage.process_request({
-                "type": "evaluate_risk",
-                "task": issue.title,
-                "context": issue.body or "",
-            })
-            if incident_response and incident_response.get("risk_level"):
-                retry_advice["risks"] = incident_response
-                successful_consultations += 1
-                
-        except Exception as e:
-            logger.warning(f"Retry Incident Sage consultation failed: {str(e)}")
-            
-        try:
-            # RAG賢者への再相談
-            rag_response = await self.rag_sage.process_request({
-                "type": "search",
-                "query": f"how to fix: {issue.title}",
-                "max_results": 3,
-            })
-            if rag_response and rag_response.get("results"):
-                retry_advice["solution"] = rag_response.get("results", [])
-                successful_consultations += 1
-                
-        except Exception as e:
-            logger.warning(f"Retry RAG Sage consultation failed: {str(e)}")
-        
-        if successful_consultations >= 2:  # 少なくとも2つの賢者が応答すれば成功とみなす
-            logger.info(f"✅ Retry consultation successful: {successful_consultations}/4 sages responded")
-            return retry_advice
-        else:
-            logger.warning(f"❌ Retry consultation failed: only {successful_consultations}/4 sages responded")
-            return None
 
     def _determine_priority(self, issue: Issue) -> str:
         """イシューの優先度を判定"""
