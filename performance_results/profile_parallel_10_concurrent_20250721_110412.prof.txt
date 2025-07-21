@@ -1,0 +1,58 @@
+         4463 function calls in 0.412 seconds
+
+   Ordered by: cumulative time
+   List reduced from 138 to 50 due to restriction <50>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       35    0.001    0.000    0.412    0.012 /usr/lib/python3.12/asyncio/base_events.py:1910(_run_once)
+       35    0.000    0.000    0.392    0.011 /usr/lib/python3.12/selectors.py:451(select)
+       35    0.392    0.011    0.392    0.011 {method 'poll' of 'select.epoll' objects}
+      105    0.000    0.000    0.017    0.000 /usr/lib/python3.12/asyncio/events.py:86(_run)
+      105    0.000    0.000    0.017    0.000 {method 'run' of '_contextvars.Context' objects}
+       55    0.000    0.000    0.013    0.000 /home/aicompany/ai_co/scripts/performance/benchmark_a2a.py:241(process_single_issue)
+       40    0.008    0.000    0.012    0.000 /home/aicompany/ai_co/scripts/performance/benchmark_a2a.py:327(_simulate_issue_processing)
+        5    0.000    0.000    0.003    0.001 /home/aicompany/ai_co/scripts/performance/benchmark_a2a.py:318(_monitor_resources)
+        5    0.000    0.000    0.003    0.001 /home/aicompany/ai_co/scripts/performance/benchmark_a2a.py:107(collect_sample)
+       30    0.001    0.000    0.002    0.000 {built-in method _io.open}
+        5    0.000    0.000    0.002    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1976(virtual_memory)
+        5    0.001    0.000    0.001    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/_pslinux.py:418(virtual_memory)
+        5    0.000    0.000    0.001    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1769(cpu_percent)
+       40    0.000    0.000    0.001    0.000 /usr/lib/python3.12/pathlib.py:447(__fspath__)
+       40    0.000    0.000    0.001    0.000 /usr/lib/python3.12/pathlib.py:437(__str__)
+       49    0.000    0.000    0.001    0.000 /usr/lib/python3.12/asyncio/tasks.py:653(sleep)
+       20    0.000    0.000    0.001    0.000 /usr/lib/python3.12/pathlib.py:551(drive)
+        5    0.000    0.000    0.001    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1670(cpu_times)
+        5    0.000    0.000    0.001    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/_pslinux.py:611(cpu_times)
+       20    0.000    0.000    0.001    0.000 /usr/lib/python3.12/pathlib.py:407(_load_parts)
+       30    0.001    0.000    0.001    0.000 {method '__exit__' of '_io._IOBase' objects}
+        1    0.000    0.000    0.001    0.001 /usr/lib/python3.12/asyncio/tasks.py:731(gather)
+      270    0.000    0.000    0.000    0.000 {method 'split' of 'bytes' objects}
+       25    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:743(call_later)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/pathlib.py:719(__truediv__)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/pathlib.py:711(joinpath)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/pathlib.py:1338(unlink)
+       20    0.000    0.000    0.000    0.000 {built-in method posix.unlink}
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/pathlib.py:387(_parse_path)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/pathlib.py:380(with_segments)
+       82    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:785(call_soon)
+       25    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:767(call_at)
+       82    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:814(_call_soon)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/pathlib.py:1159(__init__)
+        5    0.000    0.000    0.000    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1810(calculate)
+       40    0.000    0.000    0.000    0.000 {method 'set_result' of '_asyncio.Future' objects}
+       10    0.000    0.000    0.000    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/_common.py:798(open_binary)
+       24    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/futures.py:311(_set_result_unless_cancelled)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/pathlib.py:357(__init__)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/tasks.py:670(ensure_future)
+      105    0.000    0.000    0.000    0.000 {method 'popleft' of 'collections.deque' objects}
+       21    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:451(create_task)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/tasks.py:767(_done_callback)
+       35    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/locks.py:13(__aenter__)
+       20    0.000    0.000    0.000    0.000 <frozen posixpath>:71(join)
+        5    0.000    0.000    0.000    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1748(_cpu_times_deltas)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/locks.py:19(__aexit__)
+      107    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/events.py:36(__init__)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/locks.py:399(release)
+       35    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/locks.py:363(acquire)
+
+

@@ -1,0 +1,58 @@
+         3427 function calls in 1.012 seconds
+
+   Ordered by: cumulative time
+   List reduced from 109 to 50 due to restriction <50>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+       32    0.001    0.000    1.012    0.032 /usr/lib/python3.12/asyncio/base_events.py:1910(_run_once)
+       32    0.000    0.000    1.002    0.031 /usr/lib/python3.12/selectors.py:451(select)
+       32    1.002    0.031    1.002    0.031 {method 'poll' of 'select.epoll' objects}
+       71    0.000    0.000    0.008    0.000 /usr/lib/python3.12/asyncio/events.py:86(_run)
+       71    0.000    0.000    0.008    0.000 {method 'run' of '_contextvars.Context' objects}
+       11    0.000    0.000    0.006    0.001 /home/aicompany/ai_co/scripts/performance/benchmark_a2a.py:318(_monitor_resources)
+       11    0.000    0.000    0.005    0.000 /home/aicompany/ai_co/scripts/performance/benchmark_a2a.py:107(collect_sample)
+       11    0.000    0.000    0.003    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1769(cpu_percent)
+       11    0.000    0.000    0.003    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1976(virtual_memory)
+       11    0.001    0.000    0.003    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/_pslinux.py:418(virtual_memory)
+       11    0.000    0.000    0.002    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1670(cpu_times)
+       11    0.000    0.000    0.002    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/_pslinux.py:611(cpu_times)
+      594    0.001    0.000    0.001    0.000 {method 'split' of 'bytes' objects}
+       22    0.000    0.000    0.001    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/_common.py:798(open_binary)
+       29    0.000    0.000    0.001    0.000 /home/aicompany/ai_co/scripts/performance/benchmark_a2a.py:241(process_single_issue)
+       41    0.000    0.000    0.001    0.000 /usr/lib/python3.12/asyncio/tasks.py:653(sleep)
+       22    0.001    0.000    0.001    0.000 {built-in method _io.open}
+       11    0.000    0.000    0.001    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1810(calculate)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/futures.py:311(_set_result_unless_cancelled)
+       11    0.000    0.000    0.000    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1748(_cpu_times_deltas)
+       21    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:743(call_later)
+       30    0.000    0.000    0.000    0.000 {method 'set_result' of '_asyncio.Future' objects}
+       11    0.000    0.000    0.000    0.000 {method 'readline' of '_io.BufferedReader' objects}
+       52    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:785(call_soon)
+        1    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/tasks.py:731(gather)
+       20    0.000    0.000    0.000    0.000 /home/aicompany/ai_co/scripts/performance/benchmark_a2a.py:327(_simulate_issue_processing)
+       52    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:814(_call_soon)
+       21    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:767(call_at)
+       73    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/events.py:36(__init__)
+       10    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/tasks.py:670(ensure_future)
+       21    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/events.py:111(__init__)
+       11    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:451(create_task)
+      152    0.000    0.000    0.000    0.000 {built-in method builtins.max}
+       71    0.000    0.000    0.000    0.000 {method 'popleft' of 'collections.deque' objects}
+       19    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/locks.py:13(__aenter__)
+       20    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/events.py:155(cancel)
+       10    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/locks.py:19(__aexit__)
+       10    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/tasks.py:767(_done_callback)
+       11    0.000    0.000    0.000    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/_common.py:450(wrapper)
+       81    0.000    0.000    0.000    0.000 {method 'append' of 'collections.deque' objects}
+       10    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/locks.py:399(release)
+      162    0.000    0.000    0.000    0.000 {method 'append' of 'list' objects}
+       19    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/locks.py:363(acquire)
+       22    0.000    0.000    0.000    0.000 {method '__exit__' of '_io._IOBase' objects}
+       10    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/locks.py:408(_wake_up_next)
+       22    0.000    0.000    0.000    0.000 {built-in method builtins.round}
+       11    0.000    0.000    0.000    0.000 /usr/lib/python3.12/threading.py:1483(current_thread)
+       22    0.000    0.000    0.000    0.000 <string>:1(<lambda>)
+       63    0.000    0.000    0.000    0.000 /usr/lib/python3.12/asyncio/base_events.py:734(time)
+       22    0.000    0.000    0.000    0.000 /home/aicompany/.local/lib/python3.12/site-packages/psutil/__init__.py:1713(_cpu_tot_time)
+
+
