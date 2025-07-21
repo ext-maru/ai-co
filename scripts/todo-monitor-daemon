@@ -1,0 +1,151 @@
+#!/usr/bin/env python3
+"""
+Todo Monitor Daemon
+Claude CodeのTodoList変更を監視してPostgreSQLと同期するデーモン
+"""
+
+import asyncio
+import json
+import logging
+import os
+import signal
+import sys
+from datetime import datetime
+from pathlib import Path
+from typing import Optional
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+from libs.todo_tracker_integration import TodoTrackerIntegration
+from libs.todo_hook_system import TodoHookSystem
+
+# ロギング設定
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(project_root / 'logs' / 'todo_monitor_daemon.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# グローバル変数
+hook_system: Optional[TodoHookSystem] = None
+integration: Optional[TodoTrackerIntegration] = None
+
+
+async def shutdown(signal_name):
+    """グレースフルシャットダウン"""
+    logger.info(f"Received {signal_name}, shutting down...")
+    
+    if hook_system:
+        await hook_system.stop_monitoring()
+    
+    if integration and integration.tracker:
+        await integration.tracker.close()
+    
+    # PIDファイルを削除
+    pid_file = Path.home() / ".claude_todo_monitor.pid"
+    if pid_file.exists():
+        pid_file.unlink()
+    
+    logger.info("Shutdown complete")
+
+
+def handle_signal(signum, frame):
+    """シグナルハンドラー"""
+    signal_name = signal.Signals(signum).name
+    asyncio.create_task(shutdown(signal_name))
+
+
+async def inject_initial_todos(integration: TodoTrackerIntegration):
+    """初期Todoをインジェクト"""
+    initial_todos_file = Path.home() / ".claude_initial_todos.json"
+    
+    if not initial_todos_file.exists():
+        return
+    
+    try:
+        with open(initial_todos_file, 'r', encoding='utf-8') as f:
+            todos = json.load(f)
+        
+        logger.info(f"Injecting {len(todos)} initial todos")
+        
+        # TodoListに注入するためのフックファイルを作成
+        hook_file = Path.home() / ".claude_todo_hook"
+        with open(hook_file, 'w', encoding='utf-8') as f:
+            json.dump(todos, f, ensure_ascii=False, indent=2)
+        
+        # ファイルを削除
+        initial_todos_file.unlink()
+        
+        logger.info("Initial todos injected successfully")
+        
+    except Exception as e:
+        logger.error(f"Failed to inject initial todos: {e}")
+
+
+async def main():
+    """メイン処理"""
+    global hook_system, integration
+    
+    logger.info("Starting Todo Monitor Daemon")
+    
+    # シグナルハンドラー設定
+    signal.signal(signal.SIGINT, handle_signal)
+    signal.signal(signal.SIGTERM, handle_signal)
+    
+    # PIDファイルを作成
+    pid_file = Path.home() / ".claude_todo_monitor.pid"
+    with open(pid_file, 'w') as f:
+        f.write(str(os.getpid()))
+    
+    # ユーザーIDを取得
+    user_id = os.environ.get("CLAUDE_ELDER_USER", "claude_elder")
+    
+    try:
+        # タスクトラッカー統合を初期化
+        integration = TodoTrackerIntegration(
+            auto_sync=True,
+            sync_interval=300,  # 5分
+            user_id=user_id
+        )
+        await integration.initialize()
+        logger.info(f"Task tracker integration initialized for user: {user_id}")
+        
+        # 初期Todoを注入
+        await inject_initial_todos(integration)
+        
+        # TodoHookSystemを初期化
+        hook_system = TodoHookSystem(integration_module=integration)
+        
+        # 監視開始
+        await hook_system.start_monitoring()
+        logger.info("Todo monitoring started")
+        
+        # デーモンとして実行
+        while True:
+            await asyncio.sleep(60)  # 1分ごとにヘルスチェック
+            
+            # 統計情報をログ
+            try:
+                sync_status = await integration.get_sync_status()
+                my_stats = sync_status.get("my_tasks_stats", {})
+                logger.info(
+                    f"Status - Active: {my_stats.get('pending', 0) + my_stats.get('in_progress', 0)}, "
+                    f"Completed: {my_stats.get('completed', 0)}"
+                )
+            except Exception as e:
+                logger.error(f"Health check failed: {e}")
+    
+    except Exception as e:
+        logger.error(f"Fatal error: {e}", exc_info=True)
+        await shutdown("ERROR")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

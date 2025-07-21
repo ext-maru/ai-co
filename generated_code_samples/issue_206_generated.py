@@ -178,6 +178,11 @@ class Issue206Implementation:
             output_path = Path(self.output_path) / output_file
             file_extension = output_path.suffix.lower()
             
+            # Save based on file extension
+            if file_extension == '.csv' or not file_extension:
+                if not file_extension:
+                    output_path = output_path.with_suffix('.csv')
+                data.to_csv(output_path, index=False, encoding=self.encoding)
             else:
                 # Default to CSV
                 output_path = output_path.with_suffix('.csv')

@@ -129,18 +129,36 @@ class TodoTrackerIntegration:
     def get_current_todos(self) -> List[Dict]:
         """
         現在のTodoListを取得
-        注: 実際の実装では、Claude CodeのTodoReadからデータを取得
+        フックファイルから読み取るか、キャッシュから返す
         """
-        # デモ用: キャッシュから返す
+        # フックファイルをチェック
+        hook_file = Path.home() / ".claude_todo_current.json"
+        if hook_file.exists():
+            try:
+                with open(hook_file, 'r', encoding='utf-8') as f:
+                    todos = json.load(f)
+                self._todo_cache = todos
+                logger.info(f"Loaded {len(todos)} todos from hook file")
+            except Exception as e:
+                logger.error(f"Failed to read hook file: {e}")
+        
         return self._todo_cache
 
     def update_todo_list(self, todos: List[Dict]):
         """
         TodoListを更新
-        注: 実際の実装では、Claude CodeのTodoWriteにデータを送信
+        フックファイルに書き込んでClaude Codeに通知
         """
         self._todo_cache = todos
-        logger.info(f"Updated todo cache with {len(todos)} items")
+        
+        # フックファイルに書き込み
+        hook_file = Path.home() / ".claude_todo_hook"
+        try:
+            with open(hook_file, 'w', encoding='utf-8') as f:
+                json.dump(todos, f, ensure_ascii=False, indent=2)
+            logger.info(f"Updated todo hook file with {len(todos)} items")
+        except Exception as e:
+            logger.error(f"Failed to write hook file: {e}")
 
     async def create_task_with_todo_sync(self, **kwargs) -> str:
         """

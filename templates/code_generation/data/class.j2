@@ -335,18 +335,15 @@ class {{ class_name }}:
             output_path = Path(self.output_path) / output_file
             file_extension = output_path.suffix.lower()
             
-            {% if 'csv' in issue_body.lower() %}
+            # Save based on file extension
             if file_extension == '.csv' or not file_extension:
                 if not file_extension:
                     output_path = output_path.with_suffix('.csv')
                 data.to_csv(output_path, index=False, encoding=self.encoding)
-            {% endif %}
-            
             {% if 'excel' in issue_body.lower() or 'xlsx' in issue_body.lower() %}
             elif file_extension in ['.xlsx', '.xls']:
                 data.to_excel(output_path, index=False, engine='openpyxl')
             {% endif %}
-            
             {% if 'json' in issue_body.lower() %}
             elif file_extension == '.json':
                 data.to_json(
@@ -355,12 +352,10 @@ class {{ class_name }}:
                     lines=self.json_options.get('lines', False)
                 )
             {% endif %}
-            
             {% if 'parquet' in issue_body.lower() %}
             elif file_extension == '.parquet':
                 data.to_parquet(output_path, index=False)
             {% endif %}
-            
             else:
                 # Default to CSV
                 output_path = output_path.with_suffix('.csv')
