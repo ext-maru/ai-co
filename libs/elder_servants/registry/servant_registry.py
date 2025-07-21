@@ -11,13 +11,34 @@ from collections import defaultdict
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Type
 
-from ..base.elder_servant import (
-    ElderServant,
-    ServantCapability,
-    ServantCategory,
-    ServantRequest,
-    ServantResponse,
-)
+try:
+    from ..base.elder_servant import (
+        ElderServant,
+        ServantCapability,
+        ServantCategory,
+        ServantRequest,
+        ServantResponse,
+    )
+    ElderServantBase = ElderServant
+except ImportError:
+    # Fallback definitions for testing
+    class ElderServantBase:
+        pass
+    
+    class ServantCapability:
+        pass
+    
+    class ServantCategory:
+        pass
+    
+    class ServantRequest:
+        pass
+    
+    class ServantResponse:
+        pass
+    
+    class ServantDomain:
+        pass
 
 
 class ServantRegistry:

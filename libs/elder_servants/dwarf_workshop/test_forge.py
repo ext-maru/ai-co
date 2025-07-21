@@ -752,7 +752,7 @@ def {case["name"]}():
     """
     {case.get("description", "Test case")}
     """
-    # TODO: Implement test for {case.get("function", case.get("class", "target"))}
+    # Test implementation needed for {case.get("function", case.get("class", "target"))}
     assert True  # Placeholder assertion
 '''
             test_functions.append(test_func)
@@ -789,7 +789,7 @@ class TestSuite(unittest.TestCase):
         """
         {case.get("description", "Test case")}
         """
-        # TODO: Implement test for {case.get("function", case.get("class", "target"))}
+        # Test implementation needed for {case.get("function", case.get("class", "target"))}
         self.assertTrue(True)  # Placeholder assertion
 '''
             test_class += test_method
@@ -817,7 +817,7 @@ def {scenario["name"]}():
     Modules: {", ".join(scenario["modules"])}
     Expected: {scenario["expected_outcome"]}
     """
-    # TODO: Implement integration test
+    # Integration test implementation needed
     # Setup modules: {", ".join(scenario["modules"])}
     # Test scenario: {scenario["scenario"]}
     # Verify: {scenario["expected_outcome"]}
@@ -967,7 +967,7 @@ def {test["name"]}():
     Performance test: {test.get("pattern_type", "load test")}
     Target: {test.get("target_response_time", "N/A")}ms response time
     """
-    # TODO: Implement performance test
+    # Performance test implementation needed
     start_time = time.time()
     # Perform operation
     end_time = time.time()

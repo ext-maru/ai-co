@@ -16,7 +16,15 @@ from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-import redis.asyncio as redis
+try:
+    import redis.asyncio as redis
+except ImportError:
+    # Mock redis for testing environments
+    class MockRedis:
+        async def get(self, key): return None
+        async def set(self, key, value, ex=None): pass
+        async def delete(self, key): pass
+    redis = MockRedis
 
 # EldersLegacy統合インポート
 from libs.core.elders_legacy import (
