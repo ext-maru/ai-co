@@ -540,6 +540,12 @@ class KnowledgeSageStandaloneML:
             
             # Vectorize documents
             contents = [doc["content"] for doc in documents]
+            
+            # Ensure vectorizer is fitted
+            if not hasattr(self.vectorizers["content"], "vocabulary_"):
+                # Fit the vectorizer on the content
+                self.vectorizers["content"].fit(contents)
+            
             X = self.vectorizers["content"].transform(contents)
             
             # Reduce dimensionality for better clustering

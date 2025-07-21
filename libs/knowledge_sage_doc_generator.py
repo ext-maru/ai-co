@@ -145,7 +145,7 @@ class KnowledgeSageDocGenerator(KnowledgeSageStandaloneML):
 ## Executive Summary
 {{summary}}
 
-## System Architecture
+## Architecture
 {{architecture_description}}
 
 {% if architecture_diagram %}
@@ -323,7 +323,9 @@ All notable changes to this project will be documented in this file.
         title: str,
         target_audience: str = "users",
         include_examples: bool = True,
-        output_format: str = "markdown"
+        output_format: str = "markdown",
+        language: str = "en",
+        localize_content: bool = False
     ) -> Dict[str, Any]:
         """Generate user guide documentation"""
         try:

@@ -220,21 +220,21 @@ class TestKnowledgeSageAnalyticsAPI:
              patch.object(analytics_sage, 'incident_sage') as mock_incident_sage, \
              patch.object(analytics_sage, 'rag_sage') as mock_rag_sage:
             
-            # Configure mock responses
-            mock_task_sage.get_active_tasks.return_value = {
+            # Configure mock responses (use AsyncMock for async methods)
+            mock_task_sage.get_active_tasks = AsyncMock(return_value={
                 "success": True,
                 "tasks": [{"id": "task1", "priority": "high", "category": "development"}]
-            }
+            })
             
-            mock_incident_sage.get_recent_incidents.return_value = {
+            mock_incident_sage.get_recent_incidents = AsyncMock(return_value={
                 "success": True,
                 "incidents": [{"id": "inc1", "severity": "medium", "category": "performance"}]
-            }
+            })
             
-            mock_rag_sage.get_search_trends.return_value = {
+            mock_rag_sage.get_search_trends = AsyncMock(return_value={
                 "success": True,
                 "trends": ["python", "security", "api"]
-            }
+            })
             
             # Test cross-sage analytics
             result = await analytics_sage.get_cross_sage_analytics()
