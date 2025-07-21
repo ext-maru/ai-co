@@ -91,8 +91,9 @@ class AncientElderBase(BaseSoul, ABC):
             hierarchy_level=2,  # Ancient Elderは階層レベル2
             capabilities=[
                 SoulCapability.LEARNING,
-                SoulCapability.COLLABORATION,
-                SoulCapability.AUTONOMOUS_ACTION
+                SoulCapability.ANALYSIS,
+                SoulCapability.QUALITY_ASSURANCE,
+                SoulCapability.LEADERSHIP
             ],
             specializations=[specialty]
         )
