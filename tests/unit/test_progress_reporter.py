@@ -14,6 +14,10 @@ import os
 # テスト対象のインポート
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from libs.integrations.github.pr_state_monitor import StateChangeEvent
+<<<<<<< HEAD
+=======
+from libs.integrations.github.progress_reporter import ProgressReporter
+>>>>>>> main
 
 
 class TestProgressReporter:
@@ -37,7 +41,10 @@ class TestProgressReporter:
     @pytest.fixture
     def reporter(self, mock_github_client):
         """レポーターインスタンス"""
+<<<<<<< HEAD
         from libs.integrations.github.progress_reporter import ProgressReporter
+=======
+>>>>>>> main
         return ProgressReporter(mock_github_client)
     
     @pytest.mark.asyncio

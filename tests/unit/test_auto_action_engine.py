@@ -14,6 +14,10 @@ import os
 # テスト対象のインポート
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from libs.integrations.github.pr_state_monitor import StateChangeEvent
+<<<<<<< HEAD
+=======
+from libs.integrations.github.auto_action_engine import AutoActionEngine, ActionType
+>>>>>>> main
 
 
 class TestAutoActionEngine:
@@ -54,7 +58,10 @@ class TestAutoActionEngine:
     @pytest.fixture
     def engine(self, mock_pr_api_client, mock_conflict_resolver):
         """エンジンインスタンス"""
+<<<<<<< HEAD
         from libs.integrations.github.auto_action_engine import AutoActionEngine
+=======
+>>>>>>> main
         engine = AutoActionEngine(mock_pr_api_client)
         engine.conflict_resolver = mock_conflict_resolver
         return engine
