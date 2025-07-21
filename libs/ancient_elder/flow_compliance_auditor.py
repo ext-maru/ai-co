@@ -59,6 +59,7 @@ class ElderFlowTracer:
             ],
             FlowStage.SERVANT_EXECUTION: [
                 re.compile(r'elder.*servant.*execution', re.IGNORECASE),
+                re.compile(r'servant.*execution.*started', re.IGNORECASE),
                 re.compile(r'servant.*executing', re.IGNORECASE),
                 re.compile(r'code.*craftsman|test.*guardian|quality.*inspector', re.IGNORECASE),
                 re.compile(r'elder.*flow.*servant.*phase', re.IGNORECASE),
@@ -77,6 +78,7 @@ class ElderFlowTracer:
             ],
             FlowStage.GIT_AUTOMATION: [
                 re.compile(r'git.*automation.*started', re.IGNORECASE),
+                re.compile(r'git.*automation.*completed', re.IGNORECASE),
                 re.compile(r'elder.*flow.*git.*phase', re.IGNORECASE),
                 re.compile(r'conventional.*commits.*created', re.IGNORECASE),
                 re.compile(r'auto.*push.*completed', re.IGNORECASE),
@@ -224,23 +226,28 @@ class ElderFlowTracer:
         """ログ行からタイムスタンプを抽出"""
         # 一般的なログタイムスタンプパターン
         patterns = [
-            r'(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2})',
-            r'(\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2})',
-            r'(\d{2}-\d{2} \d{2}:\d{2}:\d{2})',
+            (r'(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2})', ['%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S']),
+            (r'(\d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2})', ['%m/%d/%Y %H:%M:%S']),
+            (r'(\d{2}-\d{2} \d{2}:\d{2}:\d{2})', ['%m-%d %H:%M:%S']),
         ]
         
-        for pattern in patterns:
+        for pattern, formats in patterns:
             match = re.search(pattern, line)
             if match:
                 try:
                     timestamp_str = match.group(1)
                     # 複数のフォーマットを試行
-                    for fmt in ['%Y-%m-%d %H:%M:%S', '%Y-%m-%dT%H:%M:%S', '%m/%d/%Y %H:%M:%S']:
+                    for fmt in formats:
                         try:
-                            return datetime.strptime(timestamp_str, fmt)
-                        except:
+                            if fmt == '%m-%d %H:%M:%S':
+                                # 年を追加
+                                timestamp_str_with_year = f"2025-{timestamp_str}"
+                                return datetime.strptime(timestamp_str_with_year, '%Y-%m-%d %H:%M:%S')
+                            else:
+                                return datetime.strptime(timestamp_str, fmt)
+                        except ValueError:
                             continue
-                except:
+                except Exception:
                     pass
                     
         return None
@@ -252,9 +259,9 @@ class ElderFlowTracer:
             
         # ログから実行IDを抽出するパターン
         patterns = [
-            r'task[_-]id[:\s]*([a-zA-Z0-9-]+)',
-            r'execution[_-]id[:\s]*([a-zA-Z0-9-]+)',
-            r'flow[_-]id[:\s]*([a-zA-Z0-9-]+)',
+            r'task[_-]id[:\s]*([a-zA-Z0-9_-]+)',
+            r'execution[_-]id[:\s]*([a-zA-Z0-9_-]+)',
+            r'flow[_-]id[:\s]*([a-zA-Z0-9_-]+)',
         ]
         
         for pattern in patterns:

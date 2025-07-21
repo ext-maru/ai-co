@@ -108,17 +108,26 @@ class CodeGenerationTemplateManager:
         logger.info("No specific tech stack detected, using base template")
         return "base"
 
-    def get_template(self, template_name: str, tech_stack: str = "base") -> Template:
+    def get_template(self, template_name: str, tech_stack: str = "base", use_enhanced: bool = True) -> Template:
         """
         指定された技術スタックのテンプレートを取得
         
         Args:
             template_name: テンプレート名
             tech_stack: 技術スタック名
+            use_enhanced: 強化版テンプレートを使用するか
             
         Returns:
             Jinja2テンプレート
         """
+        # 強化版テンプレートを優先使用
+        if use_enhanced:
+            enhanced_path = f"{tech_stack}/{template_name}_enhanced.j2"
+            if (self.template_dir / enhanced_path).exists():
+                logger.info(f"Using enhanced template: {enhanced_path}")
+                return self.env.get_template(enhanced_path)
+        
+        # 標準テンプレート
         template_path = f"{tech_stack}/{template_name}.j2"
         
         # フォールバック: 技術スタック固有のテンプレートがない場合はbaseを使用
@@ -130,7 +139,8 @@ class CodeGenerationTemplateManager:
     def generate_code(self, 
                      template_type: str,
                      tech_stack: str,
-                     context: Dict[str, Any]) -> str:
+                     context: Dict[str, Any],
+                     use_enhanced: bool = True) -> str:
         """
         テンプレートを使用してコードを生成
         
@@ -138,12 +148,13 @@ class CodeGenerationTemplateManager:
             template_type: テンプレートタイプ (class, function, test, etc.)
             tech_stack: 技術スタック
             context: テンプレートコンテキスト
+            use_enhanced: 強化版テンプレートを使用するか
             
         Returns:
             生成されたコード
         """
         try:
-            template = self.get_template(template_type, tech_stack)
+            template = self.get_template(template_type, tech_stack, use_enhanced)
             generated_code = template.render(context)
             
             # 後処理: 空行の調整など

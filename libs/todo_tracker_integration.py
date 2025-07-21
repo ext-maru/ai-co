@@ -251,13 +251,149 @@ class TodoTrackerIntegration:
         Returns:
             List[Dict]: タスクリスト
         """
-        filters = {"assigned_to": self.user_id}
+        tasks = await self.tracker.list_tasks(assigned_to=self.user_id)
+        
+        # ステータスフィルターがある場合は適用
         if status_filter:
-            filters["status__in"] = status_filter
+            filtered_tasks = []
+            for task in tasks:
+                if task.get("status") in status_filter:
+                    filtered_tasks.append(task)
+            tasks = filtered_tasks
             
-        tasks = await self.tracker.list_tasks(**filters)
         logger.info(f"Retrieved {len(tasks)} personal tasks for {self.user_id}")
         return tasks
+
+    async def get_pending_tasks_from_previous_sessions(self) -> List[Dict]:
+        """
+        前回のセッションから未完了タスクを取得
+        
+        Returns:
+            List[Dict]: 未完了タスクリスト
+        """
+        # 自分の未完了タスクを取得（現在のセッション以外）
+        all_my_tasks = await self.tracker.list_tasks(
+            assigned_to=self.user_id
+        )
+        
+        # pendingとin_progressのタスクのみフィルター
+        active_tasks = []
+        for task in all_my_tasks:
+            if task.get("status") in ["pending", "in_progress"]:
+                active_tasks.append(task)
+        
+        # 現在のセッション以外のタスクをフィルター
+        previous_tasks = []
+        for task in active_tasks:
+            task_tags = task.get("tags", [])
+            task_session = None
+            
+            # タスクのセッションIDを抽出
+            for tag in task_tags:
+                if tag.startswith("session-"):
+                    task_session = tag
+                    break
+            
+            # 現在のセッション以外のタスクを取得
+            if task_session and task_session != self.session_id:
+                previous_tasks.append(task)
+        
+        logger.info(f"Found {len(previous_tasks)} pending tasks from previous sessions")
+        return previous_tasks
+
+    async def inherit_pending_tasks(self, confirm_prompt: bool = True) -> int:
+        """
+        前回のセッションから未完了タスクを引き継ぎ
+        
+        Args:
+            confirm_prompt: 確認プロンプトを表示するか
+            
+        Returns:
+            int: 引き継いだタスク数
+        """
+        previous_tasks = await self.get_pending_tasks_from_previous_sessions()
+        
+        if not previous_tasks:
+            logger.info("No pending tasks from previous sessions")
+            return 0
+        
+        if confirm_prompt:
+            print(f"\n📋 前回のセッションから {len(previous_tasks)} 個の未完了タスクが見つかりました:")
+            for task in previous_tasks[:5]:  # 最大5件表示
+                status_emoji = "⏳" if task["status"] == "pending" else "🔄"
+                print(f"  {status_emoji} {task['title']}")
+            
+            if len(previous_tasks) > 5:
+                print(f"  ... 他 {len(previous_tasks) - 5} 件")
+            
+            response = input("\n引き継ぎますか？ (y/N): ").strip().lower()
+            if response not in ['y', 'yes']:
+                print("❌ 引き継ぎをキャンセルしました")
+                return 0
+        
+        # タスクを現在のセッションに移行
+        inherited_count = 0
+        for task in previous_tasks:
+            try:
+                # タグを更新（現在のセッションに変更）
+                current_tags = task.get("tags", [])
+                new_tags = []
+                
+                for tag in current_tags:
+                    if not tag.startswith("session-"):
+                        new_tags.append(tag)
+                
+                # 現在のセッションタグを追加
+                new_tags.append(self.session_id)
+                
+                # メタデータを更新
+                current_metadata = task.get("metadata", {})
+                current_metadata["session_id"] = self.session_id
+                current_metadata["inherited_from"] = task.get("metadata", {}).get("session_id")
+                current_metadata["inherited_at"] = datetime.now().isoformat()
+                
+                # タスクを更新（metadataをJSON文字列に変換）
+                await self.tracker.update_task(
+                    task["task_id"],
+                    tags=new_tags,
+                    metadata=json.dumps(current_metadata)
+                )
+                
+                inherited_count += 1
+                logger.info(f"Inherited task: {task['task_id']} - {task['title']}")
+                
+            except Exception as e:
+                logger.error(f"Failed to inherit task {task['task_id']}: {e}")
+        
+        if inherited_count > 0:
+            print(f"✅ {inherited_count} 個のタスクを現在のセッションに引き継ぎました")
+            
+            # TodoListを同期して引き継いだタスクを反映
+            await self.sync_both_ways(personal_only=True)
+        
+        return inherited_count
+
+    async def auto_inherit_if_pending(self) -> bool:
+        """
+        未完了タスクがある場合は自動で引き継ぎ提案
+        
+        Returns:
+            bool: 引き継ぎを実行したか
+        """
+        previous_tasks = await self.get_pending_tasks_from_previous_sessions()
+        
+        if not previous_tasks:
+            return False
+        
+        # 3個以下なら自動で提案、それ以上は明示的な操作を推奨
+        if len(previous_tasks) <= 3:
+            inherited = await self.inherit_pending_tasks(confirm_prompt=True)
+            return inherited > 0
+        else:
+            print(f"\n💡 前回のセッションから {len(previous_tasks)} 個の未完了タスクがあります")
+            print("   多くのタスクがあるため、以下のコマンドで引き継ぎを確認してください:")
+            print(f"   todo-tracker-sync resume --user {self.user_id}")
+            return False
 
     async def get_sync_status(self) -> Dict:
         """同期状態の取得"""
@@ -320,11 +456,13 @@ async def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="TodoList and Task Tracker Integration")
-    parser.add_argument("command", choices=["sync", "status", "import", "export", "daemon", "my-tasks"])
+    parser.add_argument("command", choices=["sync", "status", "import", "export", "daemon", "my-tasks", "resume"])
     parser.add_argument("--file", help="JSON file path for import/export")
     parser.add_argument("--interval", type=int, default=300, help="Sync interval in seconds")
     parser.add_argument("--user", default="claude_elder", help="User ID for personal tasks")
     parser.add_argument("--all", action="store_true", help="Sync all tasks, not just personal")
+    parser.add_argument("--auto-inherit", action="store_true", help="Auto inherit pending tasks on sync")
+    parser.add_argument("--force", action="store_true", help="Force inherit without confirmation")
     args = parser.parse_args()
 
     # ロギング設定
@@ -343,9 +481,17 @@ async def main():
 
     try:
         if args.command == "sync":
+            # 自動継承チェック
+            if args.auto_inherit:
+                await integration.auto_inherit_if_pending()
+            
             # 手動同期
             await integration.sync_both_ways(personal_only=not args.all)
             print(f"✅ Sync completed for user: {args.user}")
+            
+            # 初回同期時に継承提案（auto-inheritが指定されていない場合）
+            if not args.auto_inherit:
+                await integration.auto_inherit_if_pending()
 
         elif args.command == "status":
             # ステータス表示
@@ -378,6 +524,14 @@ async def main():
                 if task.get("tags"):
                     print(f"   🏷️  Tags: {', '.join(task['tags'])}")
             print()
+
+        elif args.command == "resume":
+            # セッション継承
+            inherited = await integration.inherit_pending_tasks(
+                confirm_prompt=not args.force
+            )
+            if inherited == 0:
+                print("📭 引き継ぐタスクはありませんでした")
 
         elif args.command == "import":
             # インポート
