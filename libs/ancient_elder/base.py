@@ -16,7 +16,7 @@ import sys
 project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from souls.base_soul import BaseSoul, ElderType
+from libs.base_soul import BaseSoul, ElderType, SoulIdentity, SoulCapability
 
 
 class ViolationSeverity(Enum):
@@ -83,13 +83,25 @@ class AncientElderBase(BaseSoul, ABC):
     """すべてのエンシェントエルダーの基底クラス"""
     
     def __init__(self, specialty: str):
-        super().__init__(
-            name=f"AncientElder_{specialty}",
+        # SoulIdentityを作成
+        identity = SoulIdentity(
+            soul_id=f"ancient_elder_{specialty.lower()}_{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            soul_name=f"AncientElder_{specialty}",
             elder_type=ElderType.ANCIENT_ELDER,
-            specialty=specialty
+            hierarchy_level=2,  # Ancient Elderは階層レベル2
+            capabilities=[
+                SoulCapability.LEARNING,
+                SoulCapability.COLLABORATION,
+                SoulCapability.AUTONOMOUS_ACTION
+            ],
+            specializations=[specialty]
         )
         
-        self.logger = logging.getLogger(f"AncientElder.{specialty}")
+        # BaseSoulの初期化
+        super().__init__(identity)
+        
+        self.specialty = specialty
+        self.name = identity.soul_name
         
         # 違反閾値の設定
         self.violation_threshold = {
@@ -101,6 +113,9 @@ class AncientElderBase(BaseSoul, ABC):
         
         # 監査履歴
         self.audit_history: List[AuditResult] = []
+        
+        # elder_typeプロパティ（互換性のため）
+        self.elder_type = ElderType.ANCIENT_ELDER
         
     @abstractmethod
     async def audit(self, target: Dict[str, Any]) -> AuditResult:
@@ -263,3 +278,62 @@ class AncientElderBase(BaseSoul, ABC):
             return False
             
         return True
+        
+    async def on_soul_awakening(self) -> Dict[str, Any]:
+        """
+        魂が覚醒した時の処理（BaseSoulインターフェース）
+        """
+        self.logger.info(f"{self.name} awakened as Ancient Elder")
+        return {
+            "status": "awakened",
+            "name": self.name,
+            "specialty": self.specialty
+        }
+        
+    async def on_autonomous_activity(self) -> Dict[str, Any]:
+        """
+        自律的な活動（BaseSoulインターフェース）
+        """
+        # Ancient Elderは定期的な監査を自律的に実行
+        return {
+            "activity": "periodic_audit",
+            "status": "monitoring"
+        }
+        
+    async def on_learning_cycle(self, experiences: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        学習サイクル（BaseSoulインターフェース）
+        """
+        # 過去の監査結果から学習
+        patterns_learned = []
+        for exp in experiences:
+            if exp.get("type") == "audit_result":
+                patterns_learned.append(exp.get("pattern", "unknown"))
+                
+        return {
+            "learned_patterns": patterns_learned,
+            "improvement_areas": self._analyze_improvement_areas()
+        }
+        
+    async def process_soul_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        魂リクエストの処理（BaseSoulインターフェース）
+        """
+        # process_requestに委譲
+        return await self.process_request(request)
+        
+    def _analyze_improvement_areas(self) -> List[str]:
+        """
+        改善領域を分析する内部メソッド
+        """
+        areas = []
+        if len(self.audit_history) > 0:
+            recent_violations = sum(
+                len(audit.violations) for audit in self.audit_history[-5:]
+            )
+            if recent_violations > 20:
+                areas.append("Increase audit frequency")
+            if recent_violations < 5:
+                areas.append("Focus on preventive measures")
+                
+        return areas

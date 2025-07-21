@@ -647,7 +647,7 @@ class ElderFlowOrchestrator:
             scores.append(quality_grade_score)
         if quality_results["security_scan"] == "passed":
             scores.append(100)
-        elif quality_results["security_issues"] < 5:
+        elif quality_results.get("security_issues", 0) < 5:
             scores.append(70)
         else:
             scores.append(40)
@@ -669,7 +669,7 @@ class ElderFlowOrchestrator:
             and quality_results.get("security_issues", 0) > 0
         ):
             task.add_log(
-                f"⚠️ Warning: Security issues detected: {quality_results['security_issues']}",
+                f"⚠️ Warning: Security issues detected: {quality_results.get('security_issues', 0)}",
                 "warning",
             )
 
