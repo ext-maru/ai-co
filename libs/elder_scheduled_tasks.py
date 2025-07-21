@@ -598,35 +598,40 @@ def _register_github_automation_tasks(self):
     
     @self.decorators.scheduled('interval', minutes=10)
     async def auto_issue_processor():
-        """Auto Issue Processor実行（10分間隔）"""
-        logger.info("🤖 Auto Issue Processor実行開始")
+        """Enhanced Auto Issue Processor実行（10分間隔）"""
+        logger.info("🤖 Enhanced Auto Issue Processor実行開始")
         try:
             import asyncio
-            from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
+            # Enhanced版を使用するように変更
+            from libs.integrations.github.enhanced_auto_issue_processor import EnhancedAutoIssueProcessor
             
-            processor = AutoIssueProcessor()
-            # スキャンして処理可能なイシューを確認
-            scan_result = await processor.process_request({"mode": "scan"})
+            processor = EnhancedAutoIssueProcessor()
             
-            if scan_result.get("processable_issues", 0) > 0:
-                logger.info(f"📊 処理可能なイシュー数: {scan_result['processable_issues']}")
-                
-                # 実際の処理を実行
-                process_result = await processor.process_request({"mode": "process"})
-                
-                if process_result.get("status") == "success":
-                    processed = process_result.get("processed_issue", {})
+            # Enhanced版の実行（10分ごとなので1件ずつ処理）
+            result = await processor.run_enhanced(
+                max_issues=1,  # 10分ごとの実行なので1件ずつ
+                priorities=["critical", "high", "medium", "low"],  # 全優先度対応
+                enable_smart_merge=True,  # スマートマージ有効
+                enable_four_sages=True    # 4賢者統合有効
+            )
+            
+            if result.get("processed_count", 0) > 0:
+                for processed in result.get("processed_issues", []):
                     logger.info(f"✅ イシュー #{processed.get('number')} 処理完了: {processed.get('title', 'N/A')}")
-                else:
-                    logger.warning(f"⚠️ イシュー処理結果: {process_result.get('status')}")
+                    if processed.get("pr_created"):
+                        logger.info(f"  → PR #{processed.get('pr_number')} 作成成功")
             else:
                 logger.info("📝 処理可能なイシューなし")
             
-            logger.info("✅ Auto Issue Processor完了")
-            return scan_result
+            # メトリクスログ
+            if result.get("metrics"):
+                logger.info(f"📊 処理メトリクス: {result['metrics']}")
+            
+            logger.info("✅ Enhanced Auto Issue Processor完了")
+            return result
                 
         except Exception as e:
-            logger.error(f"❌ Auto Issue Processor エラー: {e}")
+            logger.error(f"❌ Enhanced Auto Issue Processor エラー: {e}")
             raise
             
     @self.decorators.hourly(minute=0)
@@ -682,21 +687,44 @@ def _register_legacy_cron_tasks(self):
             raise
     
     @self.decorators.daily(hour=1, minute=0)
-    def enhanced_pr_processor():
-        """Enhanced Auto PR Processor（毎日深夜1時）- cronから移行"""
-        logger.info("🔧 Enhanced PR Processor開始")
+    async def enhanced_pr_processor():
+        """Enhanced Auto PR Processor バッチ処理（毎日深夜1時）"""
+        logger.info("🔧 Enhanced PR Processor バッチ処理開始")
         try:
-            import subprocess
-            result = subprocess.run([
-                "bash", f"{self.project_root}/scripts/enhanced_auto_pr_cron.sh"
-            ], capture_output=True, text=True)
+            import asyncio
+            from libs.integrations.github.enhanced_auto_issue_processor import EnhancedAutoIssueProcessor
             
-            if result.returncode == 0:
-                logger.info("✅ Enhanced PR Processor完了")
+            processor = EnhancedAutoIssueProcessor()
+            
+            # バッチ処理（深夜なので多めに処理）
+            result = await processor.run_enhanced(
+                max_issues=10,  # 深夜バッチなので10件まで処理
+                priorities=["medium", "low"],  # 中・低優先度を重点的に処理
+                enable_smart_merge=True,
+                enable_four_sages=True,
+                enable_analytics=True  # バッチ処理では詳細分析も有効
+            )
+            
+            # 処理結果のサマリー
+            if result.get("processed_count", 0) > 0:
+                logger.info(f"📊 バッチ処理完了: {result['processed_count']}件のイシューを処理")
+                success_count = sum(1 for p in result.get("processed_issues", []) if p.get("pr_created"))
+                logger.info(f"  → 成功: {success_count}件のPR作成")
+                
+                # 失敗したものがあれば報告
+                failed = [p for p in result.get("processed_issues", []) if not p.get("pr_created")]
+                if failed:
+                    logger.warning(f"  → 失敗: {len(failed)}件")
+                    for f in failed:
+                        logger.warning(f"    - Issue #{f.get('number')}: {f.get('error', '不明なエラー')}")
             else:
-                logger.warning(f"⚠️ Enhanced PR Processor警告: {result.stderr}")
+                logger.info("📝 バッチ処理対象のイシューなし")
+            
+            logger.info("✅ Enhanced PR Processor バッチ処理完了")
+            return result
+            
         except Exception as e:
-            logger.error(f"❌ Enhanced PR Processor実行エラー: {e}")
+            logger.error(f"❌ Enhanced PR Processor バッチ処理エラー: {e}")
             raise
             
     @self.decorators.weekly(day_of_week=0, hour=3, minute=0)
