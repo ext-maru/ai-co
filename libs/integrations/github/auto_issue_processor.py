@@ -32,10 +32,13 @@ from libs.knowledge_sage import KnowledgeSage
 from libs.task_sage import TaskSage
 from libs.incident_sage import IncidentSage
 from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
+<<<<<<< Updated upstream
 from libs.code_generation.template_manager import CodeGenerationTemplateManager
 from libs.integrations.github.safe_git_operations import SafeGitOperations
 from libs.auto_issue_processor_error_handling import AutoIssueProcessorErrorHandler, with_error_recovery
 from libs.four_sages_diagnostic_system import FourSagesDiagnosticSystem
+=======
+>>>>>>> Stashed changes
 
 
 class AutoIssueElderFlowEngine:
@@ -157,9 +160,9 @@ class AutoIssueElderFlowEngine:
             try:
                 # PR用ブランチを作成（既存ブランチは自動削除される）
                 branch_result = git_ops.create_pr_branch_workflow(
-                    branch_name=branch_name,
-                    commit_message=f"fix: Auto-fix for issue #{issue_number} - {issue_title[:50]}",
-                    files_to_add=[]
+                    pr_title=f"Auto-fix for issue #{issue_number} - {issue_title[:50]}",
+                    base_branch="main",
+                    branch_prefix="auto-fix"
                 )
                 
                 if not branch_result["success"]:
