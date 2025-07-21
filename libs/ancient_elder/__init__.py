@@ -5,12 +5,12 @@
 
 from .base import AncientElderBase
 from .audit_engine import AncientElderAuditEngine
-from .integrity_auditor import IntegrityAuditor
+from .integrity_auditor import AncientElderIntegrityAuditor
 
 __all__ = [
     "AncientElderBase",
     "AncientElderAuditEngine", 
-    "IntegrityAuditor",
+    "AncientElderIntegrityAuditor",
 ]
 
 # System version
