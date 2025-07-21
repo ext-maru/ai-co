@@ -417,13 +417,14 @@ class CodeGenerationTemplateManager:
 
     def generate_test_code(self, issue_number: int, issue_title: str, 
                           requirements: List[str], tech_stack: str = 'base',
-                          test_type: str = 'general') -> str:
+                          test_type: str = 'general', issue_body: str = '') -> str:
         """テストコード生成"""
         try:
             template = self.get_template('test', tech_stack)
             return template.render(
                 issue_number=issue_number,
                 issue_title=issue_title,
+                issue_body=issue_body,
                 requirements=requirements,
                 test_type=test_type,
                 class_name=f"Test{issue_number}",
@@ -449,17 +450,27 @@ if __name__ == "__main__":
     def generate_implementation_code(self, issue_number: int, issue_title: str, 
                                    requirements: List[str], tech_stack: str = 'base',
                                    sage_advice: Dict[str, Any] = None, 
-                                   code_type: str = 'general') -> str:
+                                   code_type: str = 'general', issue_body: str = '') -> str:
         """実装コード生成"""
         try:
             template = self.get_template('class', tech_stack)
+            # quality_improvements を生成
+            quality_improvements = [
+                "エラーハンドリングの強化",
+                "ログ出力の改善", 
+                "型ヒントの追加",
+                "ドキュメント文字列の充実"
+            ]
+            
             return template.render(
                 issue_number=issue_number,
                 issue_title=issue_title,
+                issue_body=issue_body,
                 requirements=requirements,
                 code_type=code_type,
                 class_name=f"Issue{issue_number}Implementation",
                 sage_advice=sage_advice or {},
+                quality_improvements=quality_improvements,
                 timestamp=datetime.now().isoformat()
             )
         except Exception as e:

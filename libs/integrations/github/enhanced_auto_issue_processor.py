@@ -1145,7 +1145,8 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                 issue_title=issue.title,
                 requirements=analysis_result.get('requirements', []),
                 tech_stack=tech_stack,
-                test_type='bug_fix'
+                test_type='bug_fix',
+                issue_body=issue.body or ''
             )
             
             if test_code:
@@ -1161,7 +1162,8 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                 requirements=analysis_result.get('requirements', []),
                 tech_stack=tech_stack,
                 sage_advice=sage_advice,
-                code_type='bug_fix'
+                code_type='bug_fix',
+                issue_body=issue.body or ''
             )
             
             if fix_code:
@@ -1403,7 +1405,8 @@ This auto-generated documentation provides the foundation for addressing the doc
                 issue_number=issue.number,
                 issue_title=issue.title,
                 requirements=analysis_result.get('requirements', []),
-                tech_stack=tech_stack
+                tech_stack=tech_stack,
+                issue_body=issue.body or ''
             )
             
             if test_code:
@@ -1419,7 +1422,8 @@ This auto-generated documentation provides the foundation for addressing the doc
                 issue_title=issue.title,
                 requirements=analysis_result.get('requirements', []),
                 tech_stack=tech_stack,
-                sage_advice=sage_advice
+                sage_advice=sage_advice,
+                issue_body=issue.body or ''
             )
             
             if impl_code:

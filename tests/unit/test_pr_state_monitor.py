@@ -133,7 +133,7 @@ class TestPRStateMonitor:
         
         # CI_PASSEDイベントが発火されたことを確認
         assert len(events_received) > 0
-        assert events_received[0][0] == StateChangeEvent.CI_PASSED.value
+        assert events_received[0][0] == StateChangeEvent.CI_PASSED
         
         # クリーンアップ
         await monitor.stop_monitoring(123)
@@ -188,7 +188,7 @@ class TestPRStateMonitor:
         
         # CONFLICTS_DETECTEDイベントが発火されたことを確認
         assert len(events_received) > 0
-        assert events_received[0][0] == StateChangeEvent.CONFLICTS_DETECTED.value
+        assert events_received[0][0] == StateChangeEvent.CONFLICTS_DETECTED
         
         await monitor.stop_monitoring(456)
     
