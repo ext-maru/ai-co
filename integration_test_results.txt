@@ -1,0 +1,135 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-8.4.1, pluggy-1.6.0
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /home/aicompany
+configfile: pytest.ini
+plugins: metadata-3.1.1, mock-3.14.0, asyncio-1.0.0, requests-mock-1.12.1, json-report-1.5.0, timeout-2.4.0, cov-6.2.1, anyio-4.9.0, html-4.1.1, benchmark-5.1.0
+asyncio: mode=Mode.AUTO, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 89 items / 10 errors
+
+==================================== ERRORS ====================================
+_ ERROR collecting ai_co/tests/integration/github/test_github_security_enhancement.py _
+ImportError while importing test module '/home/aicompany/ai_co/tests/integration/github/test_github_security_enhancement.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/github/test_github_security_enhancement.py:24: in <module>
+    from libs.github_security_enhancement import (
+libs/github_security_enhancement.py:37: in <module>
+    from core.elders_legacy import DomainBoundary, EldersServiceLegacy, enforce_boundary
+E   ModuleNotFoundError: No module named 'core.elders_legacy'
+_ ERROR collecting ai_co/tests/integration/system/test_integration_elder_legacy.py _
+ImportError while importing test module '/home/aicompany/ai_co/tests/integration/system/test_integration_elder_legacy.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/system/test_integration_elder_legacy.py:18: in <module>
+    from libs.rag_manager import RAGManager
+E   ImportError: cannot import name 'RAGManager' from 'libs.rag_manager' (/home/aicompany/ai_co/libs/rag_manager.py). Did you mean: 'rag_manager'?
+_____ ERROR collecting ai_co/tests/integration/test_elder_cache_manager.py _____
+ImportError while importing test module '/home/aicompany/ai_co/tests/integration/test_elder_cache_manager.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/test_elder_cache_manager.py:16: in <module>
+    from libs.elder_servants.integrations.performance.cache_manager import (
+libs/elder_servants/integrations/performance/cache_manager.py:19: in <module>
+    import redis.asyncio as redis
+E   ModuleNotFoundError: No module named 'redis.asyncio'; 'redis' is not a package
+_ ERROR collecting ai_co/tests/integration/test_elder_flow_complete_integration.py _
+tests/integration/test_elder_flow_complete_integration.py:34: in <module>
+    from libs.elder_servants.coordination.four_organizations_coordinator import (
+libs/elder_servants/coordination/four_organizations_coordinator.py:25: in <module>
+    from ..registry.servant_registry import ServantRegistry, get_registry
+libs/elder_servants/registry/__init__.py:5: in <module>
+    from .servant_registry import ServantRegistry, get_registry
+libs/elder_servants/registry/servant_registry.py:23: in <module>
+    class ServantRegistry:
+libs/elder_servants/registry/servant_registry.py:45: in ServantRegistry
+    self, servant_class: Type[ElderServantBase], name: str, domain: ServantDomain
+                              ^^^^^^^^^^^^^^^^
+E   NameError: name 'ElderServantBase' is not defined
+_ ERROR collecting ai_co/tests/integration/test_elder_servants_comprehensive.py _
+tests/integration/test_elder_servants_comprehensive.py:51: in <module>
+    from libs.elder_servants.registry.servant_registry import (
+libs/elder_servants/registry/__init__.py:5: in <module>
+    from .servant_registry import ServantRegistry, get_registry
+libs/elder_servants/registry/servant_registry.py:23: in <module>
+    class ServantRegistry:
+libs/elder_servants/registry/servant_registry.py:45: in ServantRegistry
+    self, servant_class: Type[ElderServantBase], name: str, domain: ServantDomain
+                              ^^^^^^^^^^^^^^^^
+E   NameError: name 'ElderServantBase' is not defined
+_ ERROR collecting ai_co/tests/integration/test_elder_servants_integration.py __
+tests/integration/test_elder_servants_integration.py:28: in <module>
+    from libs.elder_servants.registry.servant_registry import ServantRegistry, get_registry
+libs/elder_servants/registry/__init__.py:5: in <module>
+    from .servant_registry import ServantRegistry, get_registry
+libs/elder_servants/registry/servant_registry.py:23: in <module>
+    class ServantRegistry:
+libs/elder_servants/registry/servant_registry.py:45: in ServantRegistry
+    self, servant_class: Type[ElderServantBase], name: str, domain: ServantDomain
+                              ^^^^^^^^^^^^^^^^
+E   NameError: name 'ElderServantBase' is not defined
+_ ERROR collecting ai_co/tests/integration/test_four_organizations_coordination.py _
+tests/integration/test_four_organizations_coordination.py:21: in <module>
+    from libs.elder_servants.coordination.four_organizations_coordinator import (
+libs/elder_servants/coordination/four_organizations_coordinator.py:25: in <module>
+    from ..registry.servant_registry import ServantRegistry, get_registry
+libs/elder_servants/registry/__init__.py:5: in <module>
+    from .servant_registry import ServantRegistry, get_registry
+libs/elder_servants/registry/servant_registry.py:23: in <module>
+    class ServantRegistry:
+libs/elder_servants/registry/servant_registry.py:45: in ServantRegistry
+    self, servant_class: Type[ElderServantBase], name: str, domain: ServantDomain
+                              ^^^^^^^^^^^^^^^^
+E   NameError: name 'ElderServantBase' is not defined
+_ ERROR collecting ai_co/tests/integration/test_four_sages_rabbitmq_integration.py _
+ImportError while importing test module '/home/aicompany/ai_co/tests/integration/test_four_sages_rabbitmq_integration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/test_four_sages_rabbitmq_integration.py:27: in <module>
+    from libs.perfect_a2a.perfect_rabbitmq_manager import PerfectRabbitMQManager
+E   ModuleNotFoundError: No module named 'libs.perfect_a2a.perfect_rabbitmq_manager'
+__ ERROR collecting ai_co/tests/integration/test_rabbitmq_a2a_integration.py ___
+ImportError while importing test module '/home/aicompany/ai_co/tests/integration/test_rabbitmq_a2a_integration.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/test_rabbitmq_a2a_integration.py:26: in <module>
+    from libs.perfect_a2a.perfect_rabbitmq_manager import PerfectRabbitMQManager
+E   ModuleNotFoundError: No module named 'libs.perfect_a2a.perfect_rabbitmq_manager'
+__ ERROR collecting ai_co/tests/integration/test_rabbitmq_real_connection.py ___
+ImportError while importing test module '/home/aicompany/ai_co/tests/integration/test_rabbitmq_real_connection.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/integration/test_rabbitmq_real_connection.py:27: in <module>
+    from libs.perfect_a2a.perfect_rabbitmq_manager import PerfectRabbitMQManager
+E   ModuleNotFoundError: No module named 'libs.perfect_a2a.perfect_rabbitmq_manager'
+=========================== short test summary info ============================
+ERROR tests/integration/github/test_github_security_enhancement.py
+ERROR tests/integration/system/test_integration_elder_legacy.py
+ERROR tests/integration/test_elder_cache_manager.py
+ERROR tests/integration/test_elder_flow_complete_integration.py - NameError: ...
+ERROR tests/integration/test_elder_servants_comprehensive.py - NameError: nam...
+ERROR tests/integration/test_elder_servants_integration.py - NameError: name ...
+ERROR tests/integration/test_four_organizations_coordination.py - NameError: ...
+ERROR tests/integration/test_four_sages_rabbitmq_integration.py
+ERROR tests/integration/test_rabbitmq_a2a_integration.py
+ERROR tests/integration/test_rabbitmq_real_connection.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 10 errors during collection !!!!!!!!!!!!!!!!!!!
+============================== 10 errors in 1.85s ==============================
