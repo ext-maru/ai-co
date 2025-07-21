@@ -338,5 +338,17 @@ def main():
         traceback.print_exc()
 
 
+# グローバルインスタンス管理
+_global_tracker = None
+
+
+def get_task_tracker() -> ClaudeTaskTracker:
+    """タスクトラッカーのグローバルインスタンスを取得"""
+    global _global_tracker
+    if _global_tracker is None:
+        _global_tracker = ClaudeTaskTracker()
+    return _global_tracker
+
+
 if __name__ == "__main__":
     main()
