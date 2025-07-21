@@ -14,45 +14,43 @@ from libs.integrations.github.smart_merge_retry import (
     SmartMergeRetryEngine,
     MergeableState,
     RetryStrategy,
-    RetryStatus,
-    RETRY_STRATEGIES
+    RetryConfig,
+    RetryAttempt
 )
 
 
-class TestRetryStrategy:
-    """Test retry strategy configuration"""
+class TestRetryConfig:
+    """Test retry configuration"""
     
-    def test_default_strategies(self):
-        """Test default retry strategies are properly configured"""
-        # Test UNSTABLE strategy
-        unstable = RETRY_STRATEGIES[MergeableState.UNSTABLE]
+    def test_default_configs(self):
+        """Test default retry configurations are properly set"""
+        # Test UNSTABLE config
+        unstable = SmartMergeRetryEngine.DEFAULT_CONFIGS[MergeableState.UNSTABLE]
         assert unstable.max_retries == 10
         assert unstable.base_delay == 30
         assert unstable.max_delay == 300
-        assert unstable.exponential_backoff is True
+        assert unstable.timeout == 1800
         
-        # Test BEHIND strategy
-        behind = RETRY_STRATEGIES[MergeableState.BEHIND]
+        # Test BEHIND config
+        behind = SmartMergeRetryEngine.DEFAULT_CONFIGS[MergeableState.BEHIND]
         assert behind.max_retries == 3
-        assert behind.auto_update is True
+        assert behind.base_delay == 60
         
-        # Test DIRTY strategy
-        dirty = RETRY_STRATEGIES[MergeableState.DIRTY]
+        # Test DIRTY config
+        dirty = SmartMergeRetryEngine.DEFAULT_CONFIGS[MergeableState.DIRTY]
         assert dirty.max_retries == 0
-        assert dirty.notify_manual is True
     
-    def test_retry_strategy_dataclass(self):
-        """Test RetryStrategy dataclass initialization"""
-        strategy = RetryStrategy(
+    def test_retry_config_dataclass(self):
+        """Test RetryConfig dataclass initialization"""
+        config = RetryConfig(
             max_retries=5,
             base_delay=10,
             max_delay=100,
-            auto_update=True,
-            jitter=False
+            strategy=RetryStrategy.EXPONENTIAL_BACKOFF
         )
-        assert strategy.max_retries == 5
-        assert strategy.base_delay == 10
-        assert strategy.jitter is False
+        assert config.max_retries == 5
+        assert config.base_delay == 10
+        assert config.strategy == RetryStrategy.EXPONENTIAL_BACKOFF
 
 
 class TestSmartMergeRetryEngine:
