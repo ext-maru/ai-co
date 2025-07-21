@@ -1,14 +1,14 @@
 #!/bin/bash
-"""
-🏛️ Elder Guild Pre-Merge Quality Gate
-エルダーズギルド マージ前品質ゲート
-
-Features:
-- マージ前の統合品質チェック
-- ブランチ間の品質比較分析
-- マージ品質レポート生成
-- 品質基準未満でのマージ阻止
-"""
+#
+# 🏛️ Elder Guild Pre-Merge Quality Gate
+# エルダーズギルド マージ前品質ゲート
+#
+# Features:
+# - マージ前の統合品質チェック
+# - ブランチ間の品質比較分析
+# - マージ品質レポート生成
+# - 品質基準未満でのマージ阻止
+#
 
 set -euo pipefail
 IFS=$'\n\t'
@@ -62,7 +62,7 @@ print_error() {
 
 # Check if quality bypass is enabled
 check_bypass() {
-    if [[ "${ELDER_GUILD_BYPASS}" == "1" ]]; then
+    if [[ "${ELDER_GUILD_BYPASS:-}" == "1" ]]; then
         print_warning "Quality bypass enabled - skipping merge quality checks"
         exit 0
     fi

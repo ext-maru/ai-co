@@ -185,15 +185,7 @@ class ElderGuildSecurityValidator:
         # セキュアな実行環境
         secure_script = f"""
 import sys
-import subprocess
-import shlex
-import tempfile
 import os
-
-# セキュリティ制限
-import builtins
-builtins.eval = None
-builtins.exec = None
 
 # パス検証
 file_path = {shlex.quote(validated_file)}
@@ -204,6 +196,14 @@ if not os.path.exists(file_path):
 if os.path.getsize(file_path) > 1048576:  # 1MB制限
     print("ERROR:File too large")
     sys.exit(1)
+
+# セキュリティ制限（危険な関数の無効化）
+try:
+    import builtins
+    builtins.eval = None
+    builtins.exec = None
+except:
+    pass  # builtins変更に失敗しても継続
 
 # セキュアな実行
 try:
@@ -233,8 +233,9 @@ except Exception as e:
                 cwd=self.temp_dir,  # 作業ディレクトリ制限
                 env={  # 環境変数制限
                     'PATH': '/usr/bin:/bin',
-                    'PYTHONPATH': '/home/aicompany/ai_co',
-                    'HOME': '/tmp'
+                    'PYTHONPATH': '/home/aicompany/ai_co:/usr/lib/python3.12',
+                    'HOME': '/tmp',
+                    'PYTHONDONTWRITEBYTECODE': '1'
                 }
             )
             

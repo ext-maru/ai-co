@@ -44,7 +44,6 @@ class TestChaosScenario:
         assert scenario.probability == 1.0  # デフォルト値
 
 
-@pytest.mark.asyncio
 class TestChaosResult:
     """カオス結果のテスト"""
     
@@ -99,6 +98,7 @@ class TestChaosResult:
         result_high = ChaosResult(scenario=scenario_high, started_at=datetime.now())
         result_high.errors_caught = [Exception("test error")]
         assert result_high.passed
+
 
 
 @pytest.mark.asyncio
@@ -279,6 +279,7 @@ class TestChaosMonkey:
         assert not is_recovered
 
 
+
 @pytest.mark.asyncio
 class TestChaosTestRunner:
     """カオステストランナーのテスト"""
@@ -381,7 +382,7 @@ class TestChaosTestRunner:
         assert "CPU: 50.0% → 55.0%" in report
 
 
-@pytest.mark.asyncio
+
 class TestPresetScenarios:
     """プリセットシナリオのテスト"""
     
@@ -408,6 +409,7 @@ class TestPresetScenarios:
         # 複数の影響度が含まれている
         assert len(impacts) >= 2
     
+    @pytest.mark.asyncio
     async def test_preset_scenario_execution(self):
         """プリセットシナリオの実行テスト"""
         runner = ChaosTestRunner()
@@ -427,6 +429,7 @@ class TestPresetScenarios:
             assert result.scenario in test_scenarios
             assert result.started_at is not None
             assert result.ended_at is not None
+
 
 
 @pytest.mark.asyncio

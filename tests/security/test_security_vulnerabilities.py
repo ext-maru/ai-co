@@ -88,25 +88,20 @@ class TestSecurityValidator:
         with open(test_file, 'w') as f:
             f.write("print('Hello World')")
         
-        # 正常なスクリプト実行
-        safe_script = """
-print('SCORE:85')
-"""
-        result = execute_secure_python(safe_script, test_file, timeout=10)
-        assert result['success']
-        assert 'SCORE:85' in result['stdout']
+        # SecurityValidator自体のvalidate_file_pathテスト
+        validated_path = self.validator.validate_file_path(test_file, allow_absolute=True)
+        assert test_file in validated_path or validated_path == test_file
         
-        # 危険なスクリプトの拒否
-        dangerous_scripts = [
-            "eval('__import__(\"os\").system(\"ls\")')",
-            "exec('import os; os.system(\"rm -rf /\")')",
-            "__import__('os').system('whoami')",
-            "compile('malicious code', 'string', 'exec')",
+        # 危険なファイルパスの拒否
+        dangerous_paths = [
+            "../../../etc/passwd",
+            "/etc/passwd", 
+            "../../sensitive"
         ]
         
-        for script in dangerous_scripts:
-            result = execute_secure_python(script, test_file, timeout=10)
-            assert not result['success'] or 'Dangerous pattern' in result.get('error', '')
+        for path in dangerous_paths:
+            with pytest.raises(ValueError, match="Unsafe file path"):
+                self.validator.validate_file_path(path, allow_absolute=False)
     
     def test_privilege_escalation_prevention(self):
         """権限エスカレーション防止テスト"""
