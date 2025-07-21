@@ -134,7 +134,8 @@ class TodoHookSystem:
 class TodoCommandWrapper:
     """TodoList操作コマンドのラッパー"""
 
-    def __init__(self):
+    def __init__(self, user_id: str = "claude_elder"):
+        self.user_id = user_id
         self.commands = {
             "todo-add": self._add_todo,
             "todo-update": self._update_todo,
@@ -162,7 +163,7 @@ class TodoCommandWrapper:
         from libs.todo_tracker_integration import TodoTrackerIntegration
         from libs.postgres_claude_task_tracker import TaskType, TaskPriority
         
-        integration = TodoTrackerIntegration()
+        integration = TodoTrackerIntegration(user_id=self.user_id)
         await integration.initialize()
 
         # 優先度をEnumに変換
@@ -194,7 +195,7 @@ class TodoCommandWrapper:
         task_id = todo_id.replace("task-", "") if todo_id.startswith("task-") else todo_id
 
         from libs.todo_tracker_integration import TodoTrackerIntegration
-        integration = TodoTrackerIntegration()
+        integration = TodoTrackerIntegration(user_id=self.user_id)
         await integration.initialize()
 
         await integration.update_task_with_todo_sync(
@@ -215,7 +216,7 @@ class TodoCommandWrapper:
     async def _list_todos(self, args: List[str]):
         """Todo一覧"""
         from libs.todo_tracker_integration import TodoTrackerIntegration
-        integration = TodoTrackerIntegration()
+        integration = TodoTrackerIntegration(user_id=self.user_id)
         await integration.initialize()
 
         # タスクトラッカーから取得
@@ -245,7 +246,7 @@ class TodoCommandWrapper:
     async def _sync_todos(self, args: List[str]):
         """Todo同期"""
         from libs.todo_tracker_integration import TodoTrackerIntegration
-        integration = TodoTrackerIntegration()
+        integration = TodoTrackerIntegration(user_id=self.user_id)
         await integration.initialize()
 
         await integration.sync_both_ways()
@@ -260,12 +261,21 @@ async def main():
     import sys
 
     if len(sys.argv) < 2:
-        print("Usage: todo-hook <command> [args...]")
+        print("Usage: todo-hook <command> [args...] [--user USER_ID]")
         print("Commands: add, update, complete, list, sync")
         return
 
-    command = f"todo-{sys.argv[1]}"
+    # ユーザーオプションを解析
+    user_id = "claude_elder"
     args = sys.argv[2:]
+    if "--user" in args:
+        user_index = args.index("--user")
+        if user_index + 1 < len(args):
+            user_id = args[user_index + 1]
+            # --user と値を除去
+            args = args[:user_index] + args[user_index + 2:]
+
+    command = f"todo-{sys.argv[1]}"
 
     # ロギング設定
     logging.basicConfig(
@@ -273,7 +283,7 @@ async def main():
         format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
     )
 
-    wrapper = TodoCommandWrapper()
+    wrapper = TodoCommandWrapper(user_id=user_id)
     
     try:
         result = await wrapper.execute(command, args)

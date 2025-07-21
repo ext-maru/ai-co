@@ -14,6 +14,10 @@ import logging
 from .issue_analyzer import IssueAnalyzer
 from .requirement_extractor import RequirementExtractor
 
+# Phase 3 imports
+from .pattern_learning import PatternLearningEngine
+from .context_enhancer import ContextEnhancer
+
 logger = logging.getLogger(__name__)
 
 

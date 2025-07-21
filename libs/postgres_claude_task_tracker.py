@@ -324,25 +324,28 @@ class PostgreSQLClaudeTaskTracker:
             await conn.execute(
                 """
                 INSERT INTO task_sage (
-                    task_id, name, description, task_type, priority, status,
-                    assignee, estimated_duration,
-                    created_at, updated_at, tags, metadata
+                    task_id, name, title, description, task_type, priority, status,
+                    assignee, estimated_duration, created_by,
+                    created_at, updated_at, tags, metadata, context
                 ) VALUES (
-                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12
+                    $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15
                 )
                 """,
                 task_id,
-                title,  # nameフィールドにtitleを格納
+                title,  # nameフィールドにtitleを格納（互換性のため）
+                title,  # titleフィールドにも同じ値を格納
                 description,
                 task_type.value if hasattr(task_type, 'value') else task_type,
                 priority.value if hasattr(priority, 'value') else priority,
                 TaskStatus.PENDING.value,
                 assigned_to,  # assigneeフィールドに格納
                 estimated_duration_minutes,  # estimated_durationフィールドに格納
+                created_by,
                 now,
                 now,
                 tags,
                 json.dumps(metadata),
+                json.dumps(context),
             )
 
         logger.info(f"Created task: {task_id} - {title}")
@@ -371,8 +374,8 @@ class PostgreSQLClaudeTaskTracker:
             if task.get("context"):
                 task["context"] = json.loads(task["context"])
             
-            # nameフィールドをtitleとしても参照可能にする
-            if "name" in task and "title" not in task:
+            # titleフィールドの処理（NULLの場合はnameフィールドを使用）
+            if task.get("title") is None and "name" in task:
                 task["title"] = task["name"]
             
             return task
@@ -561,8 +564,8 @@ class PostgreSQLClaudeTaskTracker:
                 except:
                     task["context"] = {}
             
-            # nameフィールドをtitleとしても参照可能にする
-            if "name" in task and "title" not in task:
+            # titleフィールドの処理（NULLの場合はnameフィールドを使用）
+            if task.get("title") is None and "name" in task:
                 task["title"] = task["name"]
             
             tasks.append(task)
