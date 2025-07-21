@@ -370,6 +370,11 @@ class PostgreSQLClaudeTaskTracker:
                 task["metadata"] = json.loads(task["metadata"])
             if task.get("context"):
                 task["context"] = json.loads(task["context"])
+            
+            # nameフィールドをtitleとしても参照可能にする
+            if "name" in task and "title" not in task:
+                task["title"] = task["name"]
+            
             return task
         return None
 
@@ -555,6 +560,11 @@ class PostgreSQLClaudeTaskTracker:
                     task["context"] = json.loads(task["context"])
                 except:
                     task["context"] = {}
+            
+            # nameフィールドをtitleとしても参照可能にする
+            if "name" in task and "title" not in task:
+                task["title"] = task["name"]
+            
             tasks.append(task)
 
         return tasks

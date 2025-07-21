@@ -1030,6 +1030,90 @@ class ElderFlowOrchestrator:
         )
 
     # ==============================
+    # 賢者相談互換性メソッド（Issue #157対応）
+    # ==============================
+    
+    async def _consult_knowledge_sage(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """ナレッジ賢者への相談（互換性メソッド）"""
+        if hasattr(self, 'sage_council') and self.sage_council:
+            # SageCouncilSystemを使用
+            return await self.sage_council.consult_sage(
+                sage_type="knowledge",
+                request=request
+            )
+        elif hasattr(self, 'knowledge_sage') and self.knowledge_sage:
+            # 直接KnowledgeSageを使用
+            return await self.knowledge_sage.process_request(request)
+        else:
+            # フォールバック
+            self.logger.warning("Knowledge Sage not available, returning empty result")
+            return {
+                "status": "unavailable",
+                "message": "Knowledge Sage is not initialized",
+                "entries": []
+            }
+
+    async def _consult_task_sage(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """タスク賢者への相談（互換性メソッド）"""
+        if hasattr(self, 'sage_council') and self.sage_council:
+            # SageCouncilSystemを使用
+            return await self.sage_council.consult_sage(
+                sage_type="task",
+                request=request
+            )
+        elif hasattr(self, 'task_sage') and self.task_sage:
+            # 直接TaskSageを使用
+            return await self.task_sage.process_request(request)
+        else:
+            # フォールバック
+            self.logger.warning("Task Sage not available, returning empty result")
+            return {
+                "status": "unavailable",
+                "message": "Task Sage is not initialized",
+                "plan": {}
+            }
+
+    async def _consult_incident_sage(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """インシデント賢者への相談（互換性メソッド）"""
+        if hasattr(self, 'sage_council') and self.sage_council:
+            # SageCouncilSystemを使用
+            return await self.sage_council.consult_sage(
+                sage_type="incident",
+                request=request
+            )
+        elif hasattr(self, 'incident_sage') and self.incident_sage:
+            # 直接IncidentSageを使用
+            return await self.incident_sage.process_request(request)
+        else:
+            # フォールバック
+            self.logger.warning("Incident Sage not available, returning empty result")
+            return {
+                "status": "unavailable",
+                "message": "Incident Sage is not initialized",
+                "risks": []
+            }
+
+    async def _consult_rag_sage(self, request: Dict[str, Any]) -> Dict[str, Any]:
+        """RAG賢者への相談（互換性メソッド）"""
+        if hasattr(self, 'sage_council') and self.sage_council:
+            # SageCouncilSystemを使用
+            return await self.sage_council.consult_sage(
+                sage_type="rag",
+                request=request
+            )
+        elif hasattr(self, 'rag_sage') and self.rag_sage:
+            # 直接RagManagerを使用
+            return await self.rag_sage.process_request(request)
+        else:
+            # フォールバック
+            self.logger.warning("RAG Sage not available, returning empty result")
+            return {
+                "status": "unavailable",
+                "message": "RAG Sage is not initialized",
+                "results": []
+            }
+
+    # ==============================
     # Elder Flow Engine用公開API
     # ==============================
 
