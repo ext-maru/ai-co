@@ -640,16 +640,41 @@ class AutoIssueProcessor(EldersServiceLegacy):
                         "action": "monitoring_for_quality_fix"
                     })
                     
+                    # 再オープンの理由を推測（PRの状態から）
+                    reopen_reason = "品質基準未達成"
+                    if existing_pr['state'] == 'closed' and not existing_pr.get('merged'):
+                        reopen_reason = "PRが却下されたため再実装が必要"
+                    
+                    # 処理履歴から詳細を取得
+                    processing_history = await self.reopened_tracker.get_processing_history(issue.number)
+                    failed_prs = [pr for pr in processing_history.get('prs', []) if pr['state'] == 'closed' and not pr['merged']]
+                    
                     # Issueにコメントを追加
-                    issue.create_comment(
-                        f"🔄 **再オープン検知**\\n\\n"
-                        f"このIssueは再オープンされましたが、既にPR #{existing_pr['number']} が存在します。\\n"
-                        f"品質問題の修正が必要な場合は、PRに対して修正を行ってください。\\n\\n"
-                        f"- 再オープン回数: {reopened_info['reopen_count']}\\n"
-                        f"- 再オープン日時: {reopened_info['reopened_at']}\\n"
-                        f"- 再オープン者: @{reopened_info['reopened_by']}\\n\\n"
-                        f"品質基準を満たすまで継続的に監視します。"
-                    )
+                    comment_text = f"🔄 **再オープン検知**\\n\\n"
+                    comment_text += f"このIssueは再オープンされましたが、既にPR #{existing_pr['number']} が存在します。\\n\\n"
+                    
+                    comment_text += f"**推定される再オープン理由**: {reopen_reason}\\n\\n"
+                    
+                    if failed_prs:
+                        comment_text += "**過去の失敗PR**:\\n"
+                        for pr in failed_prs[-3:]:  # 最新3件まで
+                            comment_text += f"- PR #{pr['pr_number']}: {pr['title']}\\n"
+                        comment_text += "\\n"
+                    
+                    comment_text += f"**詳細情報**:\\n"
+                    comment_text += f"- 再オープン回数: {reopened_info['reopen_count']}\\n"
+                    comment_text += f"- 再オープン日時: {reopened_info['reopened_at']}\\n"
+                    comment_text += f"- 再オープン者: @{reopened_info['reopened_by']}\\n\\n"
+                    
+                    comment_text += "**次のアクション**:\\n"
+                    if reopened_info['reopen_count'] >= 3:
+                        comment_text += "- ⚠️ 複数回の再オープンが検出されました。人間レビューを推奨します\\n"
+                        comment_text += "- 根本的な設計見直しが必要かもしれません\\n"
+                    else:
+                        comment_text += "- 既存PRの品質問題を修正してください\\n"
+                        comment_text += "- または新しいアプローチでの再実装を検討してください\\n"
+                    
+                    issue.create_comment(comment_text)
                 
                 return {
                     "status": "already_exists",
