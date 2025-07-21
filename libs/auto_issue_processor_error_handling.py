@@ -10,9 +10,15 @@ import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, List, Optional, Callable, TypeVar, ParamSpec
+from typing import Any, Dict, List, Optional, Callable, TypeVar, ParamSpec, Tuple
 import random
 from functools import wraps
+import os
+import json
+from datetime import datetime
+from collections import defaultdict, Counter
+import uuid
+import traceback
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +36,25 @@ class ErrorType(Enum):
     VALIDATION_ERROR = "validation_error"
     TIMEOUT_ERROR = "timeout_error"
     UNKNOWN_ERROR = "unknown_error"
+
+
+class ErrorCategory(Enum):
+    """エラーカテゴリー"""
+    GITHUB_API = "github_api"
+    GIT = "git"
+    NETWORK = "network"
+    SYSTEM = "system"
+    VALIDATION = "validation"
+    TEMPLATE = "template"
+    UNKNOWN = "unknown"
+
+
+class ErrorSeverity(Enum):
+    """エラー重要度"""
+    CRITICAL = "critical"
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
 
 
 class RecoveryAction(Enum):
@@ -56,6 +81,58 @@ class CircuitBreakerError(Exception):
 class CircuitBreakerOpenError(CircuitBreakerError):
     """サーキットが開いているときのエラー"""
     pass
+
+
+@dataclass
+class ErrorReport:
+    """エラーレポート"""
+    error_id: str
+    timestamp: datetime
+    error_type: str
+    error_message: str
+    error_category: ErrorCategory
+    severity: ErrorSeverity
+    operation: str
+    issue_number: Optional[int] = None
+    branch_name: Optional[str] = None
+    stack_trace: Optional[str] = None
+    context: Optional[Dict[str, Any]] = None
+    recovery_attempted: bool = False
+    recovery_successful: bool = False
+    recovery_action: Optional[str] = None
+    recovery_time: Optional[float] = None
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """辞書形式に変換"""
+        return {
+            "error_id": self.error_id,
+            "timestamp": self.timestamp.isoformat(),
+            "error_type": self.error_type,
+            "error_message": self.error_message,
+            "error_category": self.error_category.value,
+            "severity": self.severity.value,
+            "operation": self.operation,
+            "issue_number": self.issue_number,
+            "branch_name": self.branch_name,
+            "stack_trace": self.stack_trace,
+            "context": self.context,
+            "recovery_attempted": self.recovery_attempted,
+            "recovery_successful": self.recovery_successful,
+            "recovery_action": self.recovery_action,
+            "recovery_time": self.recovery_time
+        }
+
+
+@dataclass
+class ErrorPattern:
+    """エラーパターン"""
+    error_type: str
+    error_category: ErrorCategory
+    count: int
+    first_occurrence: datetime
+    last_occurrence: datetime
+    operations: List[str]
+    recovery_success_rate: float
 
 
 @dataclass
