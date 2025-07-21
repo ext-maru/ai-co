@@ -1,0 +1,407 @@
+#!/usr/bin/env python3
+"""
+AI Elder Cast with Task Integration
+タスクトラッカーと統合されたクロードエルダー起動システム
+"""
+
+import argparse
+import asyncio
+import json
+import os
+import subprocess
+import sys
+import tempfile
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+from libs.todo_tracker_integration import TodoTrackerIntegration
+from libs.postgres_claude_task_tracker import TaskStatus, TaskPriority
+
+# 知識セクション定義（ai-elder-cast-modularから継承）
+KNOWLEDGE_SECTIONS = {
+    "core": {
+        "name": "コアアイデンティティ",
+        "files": ["ELDER_KNOWLEDGE_CONTEXT_OPTIMIZED.md"],
+        "description": "最小限の必須知識（4KB）",
+    },
+    "medium": {
+        "name": "中間版",
+        "files": ["ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"],
+        "description": "バランス版（8KB）",
+    },
+    "identity": {
+        "name": "アイデンティティ詳細",
+        "files": [
+            "knowledge_base/elder_knowledge_sections/02_claude_elder_identity.md",
+            "knowledge_base/elder_knowledge_sections/03_grand_elder_hierarchy.md",
+        ],
+        "description": "クロードエルダーの詳細定義",
+    },
+    "flow": {
+        "name": "Elder Flow",
+        "files": ["knowledge_base/elder_knowledge_sections/05_elder_flow_design.md"],
+        "description": "Elder Flow設計仕様",
+    },
+    "sages": {
+        "name": "4賢者システム",
+        "files": ["knowledge_base/elder_knowledge_sections/09_four_sages_wisdom.md"],
+        "description": "4賢者統合知恵システム",
+    },
+    "tdd": {
+        "name": "TDDガイド",
+        "files": ["knowledge_base/elder_knowledge_sections/11_claude_tdd_guide.md"],
+        "description": "テスト駆動開発ガイド",
+    },
+}
+
+
+def print_colored(text, color="cyan"):
+    """カラー出力"""
+    colors = {
+        "cyan": "\033[0;36m",
+        "green": "\033[0;32m",
+        "yellow": "\033[1;33m",
+        "purple": "\033[0;35m",
+        "red": "\033[0;31m",
+        "blue": "\033[0;34m",
+        "bold": "\033[1m",
+    }
+    reset = "\033[0m"
+    print(f"{colors.get(color, '')}{text}{reset}")
+
+
+def format_task_priority(priority: TaskPriority) -> str:
+    """タスク優先度を絵文字で表現"""
+    priority_map = {
+        TaskPriority.CRITICAL: "🔴",
+        TaskPriority.HIGH: "🟠",
+        TaskPriority.MEDIUM: "🟡",
+        TaskPriority.LOW: "🟢",
+    }
+    return priority_map.get(priority, "⚪")
+
+
+def format_task_status(status: TaskStatus) -> str:
+    """タスクステータスを絵文字で表現"""
+    status_map = {
+        TaskStatus.PENDING: "📋",
+        TaskStatus.IN_PROGRESS: "🔄",
+        TaskStatus.COMPLETED: "✅",
+        TaskStatus.CANCELLED: "❌",
+        TaskStatus.BLOCKED: "🚫",
+    }
+    return status_map.get(status, "❓")
+
+
+async def get_task_summary(integration: TodoTrackerIntegration) -> Dict:
+    """タスクサマリーを取得"""
+    try:
+        # 同期ステータスを取得
+        sync_status = await integration.get_sync_status()
+        my_stats = sync_status.get("my_tasks_stats", {})
+        
+        # 最近のタスクを取得
+        recent_tasks = await integration.tracker.list_tasks(
+            assigned_to=integration.user_id,
+            limit=10
+        )
+        
+        # 本日のタスクを取得
+        today = datetime.now().date()
+        today_tasks = [
+            task for task in recent_tasks
+            if task.created_at.date() == today or
+               (task.completed_at and task.completed_at.date() == today)
+        ]
+        
+        # 優先度別に分類
+        priority_tasks = {
+            "critical": [],
+            "high": [],
+            "medium": [],
+            "low": []
+        }
+        
+        for task in recent_tasks:
+            if task.status in [TaskStatus.PENDING, TaskStatus.IN_PROGRESS]:
+                priority_key = task.priority.value.lower()
+                if priority_key in priority_tasks:
+                    priority_tasks[priority_key].append(task)
+        
+        return {
+            "stats": my_stats,
+            "recent_tasks": recent_tasks[:5],
+            "today_tasks": today_tasks,
+            "priority_tasks": priority_tasks,
+            "total_active": my_stats.get("pending", 0) + my_stats.get("in_progress", 0)
+        }
+    except Exception as e:
+        print_colored(f"⚠️ タスクサマリー取得エラー: {e}", "yellow")
+        return {
+            "stats": {},
+            "recent_tasks": [],
+            "today_tasks": [],
+            "priority_tasks": {"critical": [], "high": [], "medium": [], "low": []},
+            "total_active": 0
+        }
+
+
+def format_task_knowledge(task_summary: Dict) -> str:
+    """タスク情報を知識形式にフォーマット"""
+    lines = [
+        "\n# 📊 現在のタスク状況\n",
+        f"**セッション開始時刻**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        f"**アクティブタスク数**: {task_summary['total_active']}件\n",
+    ]
+    
+    # 統計情報
+    stats = task_summary.get("stats", {})
+    if stats:
+        lines.append("## 📈 タスク統計")
+        lines.append(f"- **総タスク数**: {stats.get('total', 0)}件")
+        lines.append(f"- **未着手**: {stats.get('pending', 0)}件")
+        lines.append(f"- **進行中**: {stats.get('in_progress', 0)}件")
+        lines.append(f"- **完了**: {stats.get('completed', 0)}件")
+        lines.append(f"- **本日完了**: {stats.get('completed_today', 0)}件\n")
+    
+    # 優先度別タスク
+    priority_tasks = task_summary.get("priority_tasks", {})
+    has_priority_tasks = any(tasks for tasks in priority_tasks.values())
+    
+    if has_priority_tasks:
+        lines.append("## 🎯 優先度別アクティブタスク")
+        
+        for priority in ["critical", "high", "medium", "low"]:
+            tasks = priority_tasks.get(priority, [])
+            if tasks:
+                priority_obj = TaskPriority[priority.upper()]
+                emoji = format_task_priority(priority_obj)
+                lines.append(f"\n### {emoji} {priority.upper()} ({len(tasks)}件)")
+                
+                for task in tasks[:3]:  # 各優先度で最大3件表示
+                    status_emoji = format_task_status(task.status)
+                    created = task.created_at.strftime('%m/%d')
+                    lines.append(f"- {status_emoji} **{task.title}** (#{task.id[:8]}, {created})")
+                    if task.description:
+                        desc_preview = task.description[:50] + "..." if len(task.description) > 50 else task.description
+                        lines.append(f"  - {desc_preview}")
+    
+    # 本日のタスク
+    today_tasks = task_summary.get("today_tasks", [])
+    if today_tasks:
+        lines.append(f"\n## 📅 本日のタスク ({len(today_tasks)}件)")
+        for task in today_tasks[:5]:
+            status_emoji = format_task_status(task.status)
+            priority_emoji = format_task_priority(task.priority)
+            lines.append(f"- {status_emoji} {priority_emoji} **{task.title}** (#{task.id[:8]})")
+    
+    # 継承すべき前回のタスク
+    if task_summary.get("stats", {}).get("in_progress", 0) > 0:
+        lines.append("\n## ⚡ 継続中のタスク")
+        in_progress = [t for t in task_summary.get("recent_tasks", []) if t.status == TaskStatus.IN_PROGRESS]
+        for task in in_progress:
+            lines.append(f"- 🔄 **{task.title}** (#{task.id[:8]})")
+            lines.append(f"  - 開始: {task.created_at.strftime('%Y-%m-%d %H:%M')}")
+    
+    lines.append("\n---\n")
+    
+    return "\n".join(lines)
+
+
+async def inherit_previous_session(integration: TodoTrackerIntegration) -> Optional[str]:
+    """前回セッションの未完了タスクを確認"""
+    try:
+        # 前回のセッションから未完了タスクを確認
+        await integration.auto_inherit_if_pending()
+        
+        # 継承されたタスクがあるか確認
+        active_tasks = await integration.tracker.list_tasks(
+            assigned_to=integration.user_id,
+            status_filter=[TaskStatus.IN_PROGRESS, TaskStatus.PENDING],
+            limit=5
+        )
+        
+        if active_tasks:
+            message = f"\n🔄 前回セッションから{len(active_tasks)}件のアクティブタスクを継承しました。"
+            return message
+        
+        return None
+    except Exception as e:
+        print_colored(f"⚠️ セッション継承エラー: {e}", "yellow")
+        return None
+
+
+def load_sections(section_names: List[str]) -> str:
+    """指定されたセクションを読み込み"""
+    content = []
+    total_size = 0
+    
+    for section_name in section_names:
+        if section_name not in KNOWLEDGE_SECTIONS:
+            continue
+        
+        section = KNOWLEDGE_SECTIONS[section_name]
+        
+        for file_path in section["files"]:
+            full_path = project_root / file_path
+            if full_path.exists():
+                with open(full_path, "r", encoding="utf-8") as f:
+                    file_content = f.read()
+                    content.append(f"\n\n# === {section['name']} ===\n")
+                    content.append(file_content)
+                    total_size += len(file_content)
+    
+    return "\n".join(content)
+
+
+async def sync_and_prepare_knowledge(sections: List[str], no_sync: bool = False) -> Tuple[str, Optional[TodoTrackerIntegration]]:
+    """タスク同期を実行し、知識コンテンツを準備"""
+    # 基本知識を読み込み
+    knowledge_content = load_sections(sections)
+    
+    if no_sync:
+        return knowledge_content, None
+    
+    # タスクトラッカー統合を初期化
+    print_colored("📋 タスクトラッカー接続中...", "cyan")
+    
+    try:
+        # ユーザーIDを環境変数から取得（デフォルト: claude_elder）
+        user_id = os.environ.get("CLAUDE_ELDER_USER", "claude_elder")
+        
+        integration = TodoTrackerIntegration(
+            auto_sync=False,  # 起動時は手動同期のみ
+            user_id=user_id
+        )
+        await integration.initialize()
+        
+        # 前回セッションの継承
+        inherit_message = await inherit_previous_session(integration)
+        if inherit_message:
+            print_colored(inherit_message, "green")
+        
+        # 双方向同期を実行
+        print_colored("🔄 タスク同期実行中...", "cyan")
+        await integration.sync_both_ways(personal_only=True)
+        
+        # タスクサマリーを取得
+        task_summary = await get_task_summary(integration)
+        
+        # タスク情報を知識に追加
+        task_knowledge = format_task_knowledge(task_summary)
+        knowledge_content = knowledge_content + "\n\n" + task_knowledge
+        
+        print_colored("✅ タスク同期完了", "green")
+        print_colored(f"📊 アクティブタスク: {task_summary['total_active']}件", "blue")
+        
+        return knowledge_content, integration
+        
+    except Exception as e:
+        print_colored(f"⚠️ タスク同期エラー: {e}", "yellow")
+        print_colored("⚠️ タスク同期をスキップして続行します", "yellow")
+        return knowledge_content, None
+
+
+async def main():
+    parser = argparse.ArgumentParser(
+        description="AI Elder Cast with Task Integration - タスク統合版クロードエルダー",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用例:
+  ai-elder-cast-with-tasks                    # デフォルト（medium + タスク同期）
+  ai-elder-cast-with-tasks core              # コア版 + タスク同期
+  ai-elder-cast-with-tasks --no-sync         # タスク同期なし
+  ai-elder-cast-with-tasks --list            # セクション一覧
+        """,
+    )
+    
+    parser.add_argument(
+        "sections", nargs="*", default=["medium"], 
+        help="読み込むセクション（デフォルト: medium）"
+    )
+    
+    parser.add_argument(
+        "--list", "-l", action="store_true", 
+        help="利用可能なセクション一覧を表示"
+    )
+    
+    parser.add_argument(
+        "--no-sync", action="store_true",
+        help="タスク同期をスキップ"
+    )
+    
+    parser.add_argument(
+        "--daemon", action="store_true",
+        help="バックグラウンドでタスク同期デーモンを起動"
+    )
+    
+    args = parser.parse_args()
+    
+    # セクション一覧表示
+    if args.list:
+        print_colored("📚 利用可能な知識セクション:", "purple")
+        print()
+        for key, section in KNOWLEDGE_SECTIONS.items():
+            print(f"  {key:<10} - {section['name']:<20} {section['description']}")
+        print()
+        return
+    
+    print_colored("🔮 AI Elder Cast with Task Integration 起動", "purple")
+    print_colored("🏛️ エルダーズギルド タスク統合システム", "bold")
+    print()
+    
+    # タスク同期と知識準備
+    knowledge_content, integration = await sync_and_prepare_knowledge(
+        args.sections, 
+        no_sync=args.no_sync
+    )
+    
+    # デーモンモードの処理
+    if args.daemon and integration:
+        print_colored("🔄 タスク同期デーモンを起動します...", "cyan")
+        integration.auto_sync = True
+        integration.sync_interval = 300  # 5分間隔
+        await integration.start_auto_sync()
+        print_colored("✅ デーモン起動完了（5分間隔で自動同期）", "green")
+    
+    # 一時ファイルに保存
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", suffix=".md", delete=False
+    ) as tmp:
+        tmp.write(knowledge_content)
+        tmp_path = tmp.name
+    
+    # 日本語環境設定
+    os.environ["LANG"] = "ja_JP.UTF-8"
+    os.environ["LC_ALL"] = "ja_JP.UTF-8"
+    
+    # Claude Code起動
+    try:
+        print_colored("🏛️ クロードエルダー召喚中...", "green")
+        print()
+        
+        subprocess.run(["claude", "--dangerously-skip-permissions", tmp_path])
+        
+    finally:
+        # 一時ファイル削除
+        if os.path.exists(tmp_path):
+            os.unlink(tmp_path)
+        
+        # 統合クリーンアップ
+        if integration:
+            await integration.stop_auto_sync()
+            if integration.tracker:
+                await integration.tracker.close()
+    
+    print()
+    print_colored("🏛️ Elder Cast セッション完了", "green")
+
+
+if __name__ == "__main__":
+    # 非同期メイン関数を実行
+    asyncio.run(main())

@@ -17,12 +17,12 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from libs.ancient_elder.audit_engine import AncientElderAuditEngine
-from libs.ancient_elder.integrity_auditor import AncientElderIntegrityAuditor
-from libs.ancient_elder.tdd_guardian import TDDGuardian
-from libs.ancient_elder.flow_compliance_auditor import FlowComplianceAuditor
-from libs.ancient_elder.four_sages_overseer import FourSagesOverseer
-from libs.ancient_elder.git_chronicle import GitChronicle
-from libs.ancient_elder.servant_inspector import ServantInspector
+from libs.ancient_elder.integrity_auditor_wrapper import AncientElderIntegrityAuditor
+from libs.ancient_elder.tdd_guardian_wrapper import TDDGuardian
+from libs.ancient_elder.flow_compliance_wrapper import FlowComplianceAuditor
+from libs.ancient_elder.four_sages_wrapper import FourSagesOverseer
+from libs.ancient_elder.git_chronicle_wrapper import GitChronicle
+from libs.ancient_elder.servant_inspector_wrapper import ServantInspector
 
 # ロギング設定
 logging.basicConfig(
@@ -41,7 +41,7 @@ def cli():
 @click.option('--target', default='.', help='監査対象のパス')
 @click.option('--comprehensive', is_flag=True, help='包括的監査を実行')
 @click.option('--output', type=click.Path(), help='結果の出力ファイル')
-async def audit(target: str, comprehensive: bool, output: Optional[str]):
+def audit(target: str, comprehensive: bool, output: Optional[str]):
     """🔍 古代魔法による監査を実行"""
     try:
         click.echo("🏛️ Ancient Elder Audit System starting...")
@@ -71,7 +71,7 @@ async def audit(target: str, comprehensive: bool, output: Optional[str]):
         
         # 監査を実行
         click.echo(f"\n📋 Auditing target: {audit_target['path']}")
-        result = await engine.run_comprehensive_audit(audit_target)
+        result = asyncio.run(engine.run_comprehensive_audit(audit_target))
         
         # 結果を表示
         _display_audit_results(result)
@@ -93,7 +93,7 @@ async def audit(target: str, comprehensive: bool, output: Optional[str]):
     'integrity', 'tdd', 'flow', 'sages', 'git', 'servant'
 ]))
 @click.option('--target', default='.', help='監査対象のパス')
-async def single(magic_type: str, target: str):
+def single(magic_type: str, target: str):
     """🎯 特定の古代魔法を実行"""
     try:
         # 魔法タイプに応じた監査者を選択
@@ -115,7 +115,7 @@ async def single(magic_type: str, target: str):
             "path": str(Path(target).resolve())
         }
         
-        result = await auditor.audit(audit_target)
+        result = asyncio.run(auditor.audit(audit_target))
         
         # 結果を表示
         click.echo(f"\n📊 {auditor.name} Results:")
@@ -159,7 +159,7 @@ def list():
 
 @cli.command()
 @click.option('--days', default=7, help='分析期間（日数）')
-async def health(days: int):
+def health(days: int):
     """💚 エルダーズギルドの健康状態を診断"""
     try:
         click.echo("🏥 Diagnosing Elders Guild health...")
@@ -178,11 +178,15 @@ async def health(days: int):
         auditor = AncientElderIntegrityAuditor()
         engine.register_auditor("integrity", auditor)
         
-        result = await engine.run_comprehensive_audit(audit_target)
+        result = asyncio.run(engine.run_comprehensive_audit(audit_target))
         
         # 健康スコアを表示
         health_score = result.get('guild_health_score', 0)
         
+        # health_scoreが辞書の場合は0として扱う
+        if isinstance(health_score, dict):
+            health_score = 0
+            
         if health_score >= 90:
             status = "🟢 Excellent"
             emoji = "🎉"
@@ -269,17 +273,6 @@ def _display_audit_results(result: Dict[str, Any]):
 
 def main():
     """メインエントリーポイント"""
-    # 非同期コマンドを同期的に実行
-    def run_async(func):
-        def wrapper(*args, **kwargs):
-            return asyncio.run(func(*args, **kwargs))
-        return wrapper
-    
-    # 非同期コマンドをラップ
-    cli.command('audit')(run_async(audit))
-    cli.command('single')(run_async(single))
-    cli.command('health')(run_async(health))
-    
     cli()
 
 

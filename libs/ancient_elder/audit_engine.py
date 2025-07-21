@@ -117,6 +117,16 @@ class AncientElderAuditEngine:
             # 履歴に追加
             self.audit_history.append(comprehensive_result)
             
+            # 戻り値の形式を統一
+            comprehensive_result["all_violations"] = all_violations
+            comprehensive_result["statistics"] = {
+                "total_auditors": len(self.auditors),
+                "successful_audits": len(individual_results),
+                "failed_audits": len(failed_audits),
+                "total_violations": len(all_violations)
+            }
+            comprehensive_result["execution_time"] = comprehensive_result.pop("duration", 0)
+            
             return comprehensive_result
             
         except Exception as e:

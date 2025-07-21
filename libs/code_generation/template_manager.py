@@ -108,6 +108,31 @@ class CodeGenerationTemplateManager:
         logger.info("No specific tech stack detected, using base template")
         return "base"
 
+    def has_template(self, template_name: str, tech_stack: str = "base") -> bool:
+        """
+        指定されたテンプレートが存在するかチェック
+        
+        Args:
+            template_name: テンプレート名
+            tech_stack: 技術スタック名
+            
+        Returns:
+            テンプレートが存在するか
+        """
+        # 強化版テンプレートをチェック
+        enhanced_path = f"{tech_stack}/{template_name}_enhanced.j2"
+        if (self.template_dir / enhanced_path).exists():
+            return True
+        
+        # 標準テンプレートをチェック
+        template_path = f"{tech_stack}/{template_name}.j2"
+        if (self.template_dir / template_path).exists():
+            return True
+            
+        # baseテンプレートをチェック
+        base_path = f"base/{template_name}.j2"
+        return (self.template_dir / base_path).exists()
+
     def get_template(self, template_name: str, tech_stack: str = "base", use_enhanced: bool = True) -> Template:
         """
         指定された技術スタックのテンプレートを取得

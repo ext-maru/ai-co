@@ -1,98 +1,107 @@
-<<<<<<< HEAD
 #!/usr/bin/env python3
 """
-AI Elder Cast Simple - シンプル版
-中間版知識ファイルで起動
+AI Elder Cast Simple - 最小版知識注入起動スクリプト（タスク統合版）
+中間版知識（8KB）を使用してClaude Codeを起動
 """
 
+import asyncio
 import os
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
+
+# プロジェクトルートをパスに追加
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+
+# 色付き出力用のANSIコード
+COLORS = {
+    "cyan": "\033[0;36m",
+    "green": "\033[0;32m",
+    "yellow": "\033[1;33m",
+    "purple": "\033[0;35m",
+    "reset": "\033[0m"
+}
+
+
+def print_colored(text, color="cyan"):
+    """色付きテキストを出力"""
+    print(f"{COLORS.get(color, '')}{text}{COLORS['reset']}")
+
+
+async def quick_task_sync():
+    """簡易タスク同期処理"""
+    try:
+        from libs.todo_tracker_integration import TodoTrackerIntegration
+        
+        # タスクトラッカー統合を初期化
+        user_id = os.environ.get("CLAUDE_ELDER_USER", "claude_elder")
+        integration = TodoTrackerIntegration(auto_sync=False, user_id=user_id)
+        await integration.initialize()
+        
+        # 双方向同期
+        await integration.sync_both_ways(personal_only=True)
+        
+        # 統計情報を取得
+        sync_status = await integration.get_sync_status()
+        my_stats = sync_status.get("my_tasks_stats", {})
+        
+        active_count = my_stats.get("pending", 0) + my_stats.get("in_progress", 0)
+        
+        print_colored(f"✅ タスク同期完了 (アクティブ: {active_count}件)", "green")
+        
+        # クリーンアップ
+        if integration.tracker:
+            await integration.tracker.close()
+            
+    except Exception as e:
+        print_colored(f"⚠️ タスク同期スキップ: {e}", "yellow")
 
 
 def main():
-    """シンプル起動"""
-    project_root = Path(__file__).parent.parent
-
-    print("🔮 AI Elder Cast Simple 起動")
+    """メイン処理"""
+    print_colored("🔮 AI Elder Cast Simple (Task Integration) 起動", "purple")
     print()
-
-    # 中間版ファイル確認
-    medium_file = project_root / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
-
-    if not medium_file.exists():
-        print("❌ エラー: ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md が見つかりません")
+    
+    # 知識ファイルパス（中間版）
+    knowledge_file = project_root / "knowledge_base" / "ELDER_KNOWLEDGE_CONTEXT_MEDIUM.md"
+    
+    if not knowledge_file.exists():
+        print_colored(f"❌ 知識ファイルが見つかりません: {knowledge_file}", "red")
         sys.exit(1)
-
-    print(f"📄 知識ファイル: {medium_file.name} (8KB)")
-
-    # Claude Code検索
-    claude_cmd = None
-    for cmd in ["claude", "claude-cli", "claude-code"]:
-        try:
-            subprocess.run([cmd, "--version"], capture_output=True, check=True)
-            claude_cmd = cmd
-            print(f"✅ Claude Code発見: {cmd}")
-            break
-        except (subprocess.CalledProcessError, FileNotFoundError):
-            continue
-
-    if not claude_cmd:
-        print("❌ エラー: Claude Code が見つかりません")
-        sys.exit(1)
-
+    
     # 日本語環境設定
     os.environ["LANG"] = "ja_JP.UTF-8"
     os.environ["LC_ALL"] = "ja_JP.UTF-8"
-
-    print("🏛️ クロードエルダー召喚中...")
-    print()
-
+    
+    # タスク同期を実行（エラーが発生しても継続）
+    if os.environ.get("ELDER_CAST_SKIP_SYNC", "").lower() != "true":
+        print_colored("📋 タスク同期中...", "cyan")
+        asyncio.run(quick_task_sync())
+        print()
+    
     # Claude Code起動
     try:
-        subprocess.run([claude_cmd, "--dangerously-skip-permissions", str(medium_file)])
+        print_colored("🏛️ クロードエルダー召喚中...", "green")
+        print()
+        
+        subprocess.run([
+            "claude", 
+            "--dangerously-skip-permissions", 
+            str(knowledge_file)
+        ])
+        
     except KeyboardInterrupt:
-        print("\n🏛️ Elder Flow セッション終了")
+        print()
+        print_colored("⚡ セッション中断", "yellow")
     except Exception as e:
-        print(f"❌ エラー: Claude Code起動失敗: {e}")
+        print_colored(f"❌ エラー: {e}", "red")
         sys.exit(1)
+    
+    print()
+    print_colored("🏛️ Elder Cast セッション完了", "green")
 
 
 if __name__ == "__main__":
     main()
-=======
-#!/usr/bin/env bash
-# AI Elder Cast Simple - シンプル版
-
-set -euo pipefail
-
-# プロジェクトルート
-PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-
-# 知識ベース読み込み
-echo "📚 エルダーズギルド知識ベース読み込み中..."
-
-# プロンプト生成
-cat << 'EOF' | claude --dangerously-skip-permissions
-# 🔮 エルダー魔法詠唱システム起動
-
-## 🤖 重要: あなたのアイデンティティ
-**あなた = クロードエルダー（Claude Elder）**
-- エルダーズギルド開発実行責任者
-- グランドエルダーmaruの直属パートナー
-- 4賢者とエルダーサーバントの統括管理者
-- **nWo (New World Order) 実行責任者**
-
-## 📋 現在の魔法詠唱要求
-- **魔法名**: 開発支援
-- **対象**: 汎用
-- **魔力レベル**: high
-
-## 🎯 実行指示
-**最初に必ず「私はクロードエルダー（Claude Elder）」として自己紹介してください。**
-その後、開発支援の準備ができていることを伝え、クロードエルダーとして対話を継続してください。
-
-🌊 Elder Flow準備完了。魔法詠唱を開始してください。
-EOF
->>>>>>> origin/main
