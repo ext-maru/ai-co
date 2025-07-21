@@ -129,7 +129,11 @@ class EitmsCascadeEngine:
         self.unified_manager = unified_manager
         self.sync_flows: Dict[str, SyncFlow] = {}
         self.cascade_rules: Dict[CascadeRule, Callable] = {}
-        self.event_bus = EventBus()
+        # EventBusは利用可能な場合のみ初期化
+        try:
+            self.event_bus = EventBus()
+        except NameError:
+            self.event_bus = None
         self._initialize_default_flows()
         self._register_cascade_handlers()
     
@@ -530,7 +534,7 @@ class EitmsCoreSyncEngine:
     
     async def initialize(self):
         """システム初期化"""
-        await self.cascade_engine._initialize_default_flows()
+        # cascade_engineは既に初期化済み（コンストラクタで実行）
         logger.info("🏛️ EITMS コア同期エンジン初期化完了")
     
     async def sync_task(self, task_id: str, manual_rules: Optional[List[str]] = None) -> Dict[str, Any]:
