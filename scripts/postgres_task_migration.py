@@ -167,64 +167,105 @@ class PostgreSQLTaskMigration:
             return
 
         insert_sql = """
-        INSERT INTO task_sage (
-            task_id, name, description, status, priority, task_type,
-            assignee, created_at, updated_at, completed_at,
-            metadata, dependencies, results, error_message,
-            retry_count, tags, estimated_duration, actual_duration,
-            parent_task_id, is_archived
+        INSERT INTO tasks (
+            task_id, title, description, task_type, priority, status,
+            created_by, assigned_to, estimated_duration_minutes, 
+            actual_duration_minutes, created_at, updated_at, started_at,
+            completed_at, due_date, tags, metadata, context, progress,
+            dependencies, outputs, error_message, result, parent_task_id,
+            subtasks, retry_count, max_retries, is_background,
+            notification_sent, auto_start, auto_complete,
+            elder_approval_required, elder_approved, elder_approved_by,
+            elder_approved_at, elder_rejection_reason, created_from_issue,
+            github_pr_number, is_test_task
         ) VALUES (
             $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
-            $11, $12, $13, $14, $15, $16, $17, $18, $19, $20
+            $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+            $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
+            $31, $32, $33, $34, $35, $36, $37, $38, $39
         )
         ON CONFLICT (task_id) DO UPDATE SET
-            name = EXCLUDED.name,
+            title = EXCLUDED.title,
             description = EXCLUDED.description,
             status = EXCLUDED.status,
             priority = EXCLUDED.priority,
             task_type = EXCLUDED.task_type,
-            assignee = EXCLUDED.assignee,
+            assigned_to = EXCLUDED.assigned_to,
             updated_at = EXCLUDED.updated_at,
             completed_at = EXCLUDED.completed_at,
             metadata = EXCLUDED.metadata,
             dependencies = EXCLUDED.dependencies,
-            results = EXCLUDED.results,
+            outputs = EXCLUDED.outputs,
             error_message = EXCLUDED.error_message,
+            result = EXCLUDED.result,
             retry_count = EXCLUDED.retry_count,
-            tags = EXCLUDED.tags,
-            estimated_duration = EXCLUDED.estimated_duration,
-            actual_duration = EXCLUDED.actual_duration,
-            parent_task_id = EXCLUDED.parent_task_id,
-            is_archived = EXCLUDED.is_archived
+            progress = EXCLUDED.progress
         """
 
         inserted_count = 0
         for task in tasks:
             try:
+                # 日時フィールドの変換
+                def parse_datetime(dt_str):
+                    if not dt_str:
+                        return None
+                    try:
+                        return datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
+                    except:
+                        return None
+
+                # JSONフィールドの処理
+                def parse_json_field(field_value):
+                    if not field_value:
+                        return None
+                    if isinstance(field_value, str):
+                        try:
+                            return json.dumps(json.loads(field_value))
+                        except:
+                            return json.dumps({})
+                    return json.dumps(field_value)
+
                 # データ準備
                 values = (
-                    task.get(
-                        "task_id", task.get("id", f"task_{datetime.now().timestamp()}")
-                    ),
-                    task.get("name", "Unnamed Task"),
+                    task.get("task_id"),
+                    task.get("title", "Unnamed Task"),
                     task.get("description"),
-                    task.get("status", "pending"),
+                    task.get("task_type", "general"),
                     task.get("priority", "medium"),
-                    task.get("task_type", "feature"),
-                    task.get("assignee"),
-                    task.get("created_at", datetime.now()),
-                    task.get("updated_at", datetime.now()),
-                    task.get("completed_at"),
-                    json.dumps(task.get("metadata", {})),
-                    json.dumps(task.get("dependencies", {})),
-                    json.dumps(task.get("results", {})),
+                    task.get("status", "pending"),
+                    task.get("created_by"),
+                    task.get("assigned_to"),
+                    task.get("estimated_duration_minutes"),
+                    task.get("actual_duration_minutes"),
+                    parse_datetime(task.get("created_at")) or datetime.now(),
+                    parse_datetime(task.get("updated_at")) or datetime.now(),
+                    parse_datetime(task.get("started_at")),
+                    parse_datetime(task.get("completed_at")),
+                    parse_datetime(task.get("due_date")),
+                    parse_json_field(task.get("tags")),
+                    parse_json_field(task.get("metadata")),
+                    parse_json_field(task.get("context")),
+                    task.get("progress", 0.0),
+                    parse_json_field(task.get("dependencies")),
+                    parse_json_field(task.get("outputs")),
                     task.get("error_message"),
-                    task.get("retry_count", 0),
-                    task.get("tags", []),
-                    task.get("estimated_duration"),
-                    task.get("actual_duration"),
+                    parse_json_field(task.get("result")),
                     task.get("parent_task_id"),
-                    task.get("is_archived", False),
+                    parse_json_field(task.get("subtasks")),
+                    task.get("retry_count", 0),
+                    task.get("max_retries", 3),
+                    task.get("is_background", False),
+                    task.get("notification_sent", False),
+                    task.get("auto_start", False),
+                    task.get("auto_complete", False),
+                    task.get("elder_approval_required", False),
+                    task.get("elder_approved", False),
+                    task.get("elder_approved_by"),
+                    parse_datetime(task.get("elder_approved_at")),
+                    task.get("elder_rejection_reason"),
+                    task.get("created_from_issue"),
+                    task.get("github_pr_number"),
+                    task.get("is_test_task", False)
                 )
 
                 await conn.execute(insert_sql, *values)
@@ -233,6 +274,7 @@ class PostgreSQLTaskMigration:
             except Exception as e:
                 print(f"❌ タスク挿入エラー: {e}")
                 print(f"   タスクID: {task.get('task_id', 'unknown')}")
+                print(f"   タスクタイトル: {task.get('title', 'unknown')}")
 
         print(f"✅ {inserted_count}/{len(tasks)}件のタスクをPostgreSQLに挿入しました")
 
@@ -262,7 +304,7 @@ class PostgreSQLTaskMigration:
             await self.insert_tasks_to_postgres(conn, all_tasks)
 
             # 統計情報表示
-            count = await conn.fetchval("SELECT COUNT(*) FROM task_sage")
+            count = await conn.fetchval("SELECT COUNT(*) FROM tasks")
             print(f"\n📊 移行完了統計:")
             print(f"   総タスク数: {count}")
 
@@ -270,7 +312,7 @@ class PostgreSQLTaskMigration:
             status_stats = await conn.fetch(
                 """
                 SELECT status, COUNT(*) as count
-                FROM task_sage
+                FROM tasks
                 GROUP BY status
                 ORDER BY count DESC
             """
