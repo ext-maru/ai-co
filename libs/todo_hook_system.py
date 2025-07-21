@@ -160,13 +160,23 @@ class TodoCommandWrapper:
 
         # TodoTrackerIntegrationを使用してタスク作成
         from libs.todo_tracker_integration import TodoTrackerIntegration
+        from libs.postgres_claude_task_tracker import TaskType, TaskPriority
+        
         integration = TodoTrackerIntegration()
         await integration.initialize()
 
+        # 優先度をEnumに変換
+        priority_map = {
+            "high": TaskPriority.HIGH,
+            "medium": TaskPriority.MEDIUM,
+            "low": TaskPriority.LOW
+        }
+        priority_enum = priority_map.get(priority.lower(), TaskPriority.MEDIUM)
+
         task_id = await integration.create_task_with_todo_sync(
             title=content,
-            task_type="feature",
-            priority=priority,
+            task_type=TaskType.FEATURE,
+            priority=priority_enum,
             created_by="todo_command"
         )
 

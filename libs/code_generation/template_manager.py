@@ -10,6 +10,10 @@ from typing import Dict, Any, Optional, List
 from jinja2 import Environment, FileSystemLoader, select_autoescape, Template
 import logging
 
+# Phase 2 imports
+from .issue_analyzer import IssueAnalyzer
+from .requirement_extractor import RequirementExtractor
+
 logger = logging.getLogger(__name__)
 
 
@@ -33,6 +37,10 @@ class CodeGenerationTemplateManager:
             trim_blocks=True,
             lstrip_blocks=True
         )
+        
+        # Phase 2: 分析エンジンの初期化
+        self.issue_analyzer = IssueAnalyzer()
+        self.requirement_extractor = RequirementExtractor()
         
         # テクノロジースタック定義
         self.tech_stacks = {
@@ -195,45 +203,101 @@ class CodeGenerationTemplateManager:
                                  issue_number: int,
                                  issue_title: str,
                                  issue_body: str,
-                                 tech_stack: Optional[str] = None) -> Dict[str, Any]:
+                                 tech_stack: Optional[str] = None,
+                                 use_advanced_analysis: bool = True) -> Dict[str, Any]:
         """
-        Issue情報からテンプレートコンテキストを作成
+        Issue情報からテンプレートコンテキストを作成（Phase 2対応）
         
         Args:
             issue_number: Issue番号
             issue_title: Issueタイトル
             issue_body: Issue本文
             tech_stack: 技術スタック（Noneの場合は自動検出）
+            use_advanced_analysis: Phase 2の高度な分析を使用するか
             
         Returns:
             テンプレートコンテキスト
         """
-        # 要件抽出
-        requirements = self.extract_requirements(issue_body)
-        
-        # 技術スタック検出
-        if tech_stack is None:
-            tech_stack = self.detect_tech_stack(
-                f"{issue_title} {issue_body}",
-                requirements["imports"]
-            )
-        
-        # クラス名とモジュール名の生成
-        class_name = f"Issue{issue_number}Implementation"
-        module_name = f"issue_{issue_number}_solution"
-        
-        # コンテキスト作成
-        context = {
-            "issue_number": issue_number,
-            "issue_title": issue_title,
-            "issue_body": issue_body,
-            "class_name": class_name,
-            "module_name": module_name,
-            "tech_stack": tech_stack,
-            "requirements": requirements,
-            "imports": self._get_tech_stack_imports(tech_stack),
-            "timestamp": "2025-07-21"
-        }
+        # Phase 2: 高度な分析を実行
+        if use_advanced_analysis:
+            # Issue を分析
+            analyzed_issue = self.issue_analyzer.analyze(issue_title, issue_body)
+            
+            # 詳細な要件を抽出
+            detailed_requirements = self.requirement_extractor.extract_requirements(analyzed_issue)
+            
+            # 技術スタック検出（Phase 2の分析結果を使用）
+            if tech_stack is None:
+                detected_stacks = analyzed_issue.get('tech_stack', {})
+                # 最も関連性の高い技術スタックを選択
+                if detected_stacks:
+                    # フレームワークを優先
+                    if 'framework' in detected_stacks and detected_stacks['framework']:
+                        tech_stack = detected_stacks['framework'][0]
+                    elif 'cloud' in detected_stacks and detected_stacks['cloud']:
+                        tech_stack = 'aws' if 'aws' in detected_stacks['cloud'] else 'base'
+                    else:
+                        tech_stack = 'base'
+                else:
+                    tech_stack = self.detect_tech_stack(
+                        f"{issue_title} {issue_body}",
+                        []
+                    )
+            
+            # Phase 1の要件も保持（互換性のため）
+            simple_requirements = self.extract_requirements(issue_body)
+            
+            # クラス名とモジュール名の生成
+            class_name = f"Issue{issue_number}Implementation"
+            module_name = f"issue_{issue_number}_solution"
+            
+            # 拡張コンテキスト作成
+            context = {
+                "issue_number": issue_number,
+                "issue_title": issue_title,
+                "issue_body": issue_body,
+                "class_name": class_name,
+                "module_name": module_name,
+                "tech_stack": tech_stack,
+                "requirements": simple_requirements,  # Phase 1互換性
+                "imports": self._get_tech_stack_imports(tech_stack),
+                "timestamp": "2025-07-21",
+                # Phase 2拡張
+                "analyzed_issue": analyzed_issue,
+                "detailed_requirements": detailed_requirements,
+                "api_endpoints": detailed_requirements.get('api_endpoints', []),
+                "data_models": detailed_requirements.get('data_models', []),
+                "technical_requirements": detailed_requirements.get('technical_requirements', []),
+                "auth_requirements": detailed_requirements.get('auth_requirements', {}),
+                "business_rules": detailed_requirements.get('business_rules', []),
+                "implementation_notes": detailed_requirements.get('implementation_notes', []),
+                "intent": analyzed_issue.get('intent', {}),
+                "complexity": analyzed_issue.get('complexity', 'medium')
+            }
+        else:
+            # Phase 1の処理（後方互換性）
+            requirements = self.extract_requirements(issue_body)
+            
+            if tech_stack is None:
+                tech_stack = self.detect_tech_stack(
+                    f"{issue_title} {issue_body}",
+                    requirements["imports"]
+                )
+            
+            class_name = f"Issue{issue_number}Implementation"
+            module_name = f"issue_{issue_number}_solution"
+            
+            context = {
+                "issue_number": issue_number,
+                "issue_title": issue_title,
+                "issue_body": issue_body,
+                "class_name": class_name,
+                "module_name": module_name,
+                "tech_stack": tech_stack,
+                "requirements": requirements,
+                "imports": self._get_tech_stack_imports(tech_stack),
+                "timestamp": "2025-07-21"
+            }
         
         return context
 

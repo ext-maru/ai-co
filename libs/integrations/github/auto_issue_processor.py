@@ -123,8 +123,11 @@ class AutoIssueElderFlowEngine:
     async def _create_pull_request(
         self, issue_number, issue_title, issue_body, task_name
     ):
-        """自動でPR作成"""
+        """自動でPR作成（SafeGitOperations使用）"""
         try:
+            # SafeGitOperationsインスタンスを作成
+            git_ops = SafeGitOperations()
+            
             # ブランチ名を生成（タイムスタンプオプション）
             timestamp = datetime.now().strftime("%H%M%S")
             use_timestamp = os.getenv("AUTO_ISSUE_USE_TIMESTAMP", "false").lower() == "true"
@@ -134,41 +137,28 @@ class AutoIssueElderFlowEngine:
             else:
                 branch_name = f"auto-fix-issue-{issue_number}"
 
-            # まずブランチを作成してpush
-            import subprocess
-            
             # 現在のブランチを保存
-            current_branch = subprocess.run(
-                ["git", "rev-parse", "--abbrev-ref", "HEAD"],
-                capture_output=True,
-                text=True,
-                check=True
-            ).stdout.strip()
+            current_branch = git_ops.get_current_branch()
+            
+            # 未コミットの変更を一時保存
+            stash_result = git_ops.stash_changes()
+            if not stash_result["success"]:
+                self.logger.warning(f"Failed to stash changes: {stash_result.get('error', 'Unknown error')}")
             
             try:
-                # mainブランチに切り替え
-                subprocess.run(["git", "checkout", "main"], check=True)
+                # PR用ブランチを作成（既存ブランチは自動削除される）
+                branch_result = git_ops.create_pr_branch_workflow(
+                    branch_name=branch_name,
+                    commit_message=f"fix: Auto-fix for issue #{issue_number} - {issue_title[:50]}",
+                    files_to_add=[]
+                )
                 
-                # 最新の状態を取得
-                subprocess.run(["git", "pull", "origin", "main"], check=True)
-                
-                # 既存のブランチを削除（存在する場合）
-                existing_branch = subprocess.run(
-                    ["git", "branch", "-l", branch_name],
-                    capture_output=True,
-                    text=True
-                ).stdout.strip()
-                
-                if existing_branch:
-                    subprocess.run(["git", "branch", "-D", branch_name], check=True)
-                    # リモートブランチも削除
-                    subprocess.run(
-                        ["git", "push", "origin", "--delete", branch_name],
-                        capture_output=True
-                    )  # エラーは無視
-                
-                # 新しいブランチを作成
-                subprocess.run(["git", "checkout", "-b", branch_name], check=True)
+                if not branch_result["success"]:
+                    self.logger.error(f"Failed to create branch: {branch_result.get('error', 'Unknown error')}")
+                    return {
+                        "success": False,
+                        "error": f"ブランチ作成エラー: {branch_result.get('error', 'Unknown error')}"
+                    }
                 
                 # テンプレートシステムを使用してコードを生成
                 files_created = []
@@ -242,30 +232,40 @@ class AutoIssueElderFlowEngine:
                 for file_path in files_created:
                     subprocess.run(["git", "add", file_path], check=True)
                 
-                # コミット（pre-commit hookが失敗する可能性があるため、再試行を含む）
+                # ファイルをコミット（SafeGitOperations使用）
                 commit_message = f"fix: Auto-fix for issue #{issue_number} - {issue_title[:50]}"
-                
-                # 最初のコミット試行
-                commit_result = subprocess.run(
-                    ["git", "commit", "-m", commit_message],
-                    capture_output=True,
-                    text=True
+                commit_result = git_ops.auto_commit_if_changes(
+                    files=files_created,
+                    commit_message=commit_message
                 )
                 
-                # pre-commit hookでファイルが修正された場合、再度add & commit
-                if commit_result.returncode != 0 and "files were modified by this hook" in commit_result.stderr:
-                    self.logger.info("Pre-commit hook modified files, re-committing...")
-                    subprocess.run(["git", "add", "-A"], check=True)
-                    subprocess.run(["git", "commit", "-m", commit_message], check=True)
-                
-                # ブランチをpush
-                subprocess.run(["git", "push", "-u", "origin", branch_name], check=True)
-                
+                if commit_result["success"]:
+                    # ブランチをpush
+                    push_result = git_ops.push_branch_safely(branch_name)
+                    if not push_result["success"]:
+                        self.logger.error(f"Failed to push branch: {push_result.get('error', 'Unknown error')}")
+                        return {
+                            "success": False,
+                            "error": f"ブランチのプッシュに失敗: {push_result.get('error', 'Unknown error')}"
+                        }
+                else:
+                    self.logger.info("No changes to commit or commit failed")
+                    # 変更がない場合でもPRは作成可能
+                    
             finally:
                 # 元のブランチに戻る
-                subprocess.run(["git", "checkout", current_branch], check=True)
+                git_ops.checkout_branch(current_branch)
+                
+                # stashした変更を復元
+                if stash_result["success"]:
+                    git_ops.stash_pop()
 
             # PR作成
+            # 生成されたファイル情報を取得
+            impl_file_path = files_created[0] if len(files_created) > 0 else "N/A"
+            test_file_path = files_created[1] if len(files_created) > 1 else "N/A"
+            tech_stack = context.get('tech_stack', 'Unknown') if 'context' in locals() else 'Unknown'
+            
             pr_result = self.pr_creator.create_pull_request(
                 title=f"Auto-fix: {issue_title} (#{issue_number})",
                 head=branch_name,
@@ -281,8 +281,13 @@ Closes #{issue_number}
 ## 元のIssue内容
 {issue_body}
 
+## 生成されたファイル
+- 実装: `{impl_file_path}`
+- テスト: `{test_file_path}`
+- 技術スタック: {tech_stack}
+
 ---
-*このPRはAuto Issue Processorにより自動生成されました*
+*このPRはAuto Issue ProcessorによりSafeGitOperationsを使用して自動生成されました*
 """,
                 labels=["auto-generated", "auto-fix"],
                 draft=False,  # 通常のPRとして作成（自動マージ可能）
