@@ -514,7 +514,7 @@ def test_fake():
     def test_guardian_initialization(self):
         """ガーディアンの初期化テスト"""
         self.assertIsInstance(self.guardian, TDDGuardian)
-        self.assertEqual(self.guardian.name, "AncientElder_TDDGuardian")
+        self.assertEqual(self.guardian.name, "AncientElder_tdd_guardian")
         self.assertIsInstance(self.guardian.cycle_tracker, TDDCycleTracker)
         self.assertIsInstance(self.guardian.quality_analyzer, TestQualityAnalyzer)
         self.assertIsInstance(self.guardian.coverage_detector, CoverageManipulationDetector)

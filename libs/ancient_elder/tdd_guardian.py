@@ -725,6 +725,188 @@ class TDDGuardian(AncientElderBase):
             "minimum_assertion_per_test": 1.0
         }
         
+    async def execute_audit(self, target_path: str, **kwargs) -> AuditResult:
+        """TDD守護監査を実行"""
+        start_time = datetime.now()
+        violations = []
+        metrics = {}
+        
+        try:
+            self.logger.info(f"🧪 Starting TDD Guardian audit for: {target_path}")
+            
+            # テストファイルを発見
+            test_files = self._discover_test_files(target_path)
+            
+            if not test_files:
+                self.logger.warning(f"No test files found in {target_path}")
+                # 空の場合のAuditResultを正しく作成
+                empty_result = AuditResult()
+                empty_result.auditor_name = "TDDGuardian"
+                empty_result.violations = []
+                empty_result.metrics = {
+                    "test_files_found": 0,
+                    "target_path": target_path,
+                    "recommendations": ["Implement TDD with test files"],
+                    "execution_time": (datetime.now() - start_time).total_seconds()
+                }
+                return empty_result
+                
+            # 1. TDDサイクル分析
+            time_window = timedelta(days=30)
+            cycle_violations = 0
+            
+            for test_file in test_files:
+                cycle_analysis = self.cycle_tracker.analyze_tdd_cycle_compliance(
+                    str(test_file), time_window
+                )
+                violations.extend(cycle_analysis.get("violations", []))
+                cycle_violations += len(cycle_analysis.get("violations", []))
+                
+            # 2. テスト品質分析
+            quality_violations = 0
+            total_quality_score = 0.0
+            
+            for test_file in test_files:
+                quality_analysis = self.quality_analyzer.analyze_test_quality(str(test_file))
+                violations.extend(quality_analysis.get("violations", []))
+                quality_violations += len(quality_analysis.get("violations", []))
+                total_quality_score += quality_analysis.get("quality_score", 0.0)
+                
+            # 3. カバレッジ操作検出
+            coverage_analysis = self.coverage_detector.detect_coverage_manipulation()
+            violations.extend(coverage_analysis.get("violations", []))
+            coverage_violations = len(coverage_analysis.get("violations", []))
+            
+            # 4. 総合TDDスコア計算
+            avg_quality_score = total_quality_score / max(len(test_files), 1)
+            overall_score = self._calculate_overall_tdd_score(
+                avg_quality_score, cycle_violations, quality_violations, coverage_violations
+            )
+            
+            metrics["overall_tdd_score"] = overall_score
+            metrics["test_files_analyzed"] = len(test_files)
+            metrics["cycle_violations"] = cycle_violations
+            metrics["quality_violations"] = quality_violations
+            metrics["coverage_violations"] = coverage_violations
+            metrics["average_test_quality"] = avg_quality_score
+            
+            # 5. 改善提案生成
+            recommendations = self._generate_tdd_improvement_recommendations(
+                cycle_violations, quality_violations, coverage_violations, violations
+            )
+            
+            execution_time = (datetime.now() - start_time).total_seconds()
+            metrics["execution_time"] = execution_time
+            
+            self.logger.info(f"✅ TDD Guardian audit completed in {execution_time:.2f}s")
+            
+            # AuditResultを正しく作成
+            result = AuditResult()
+            result.auditor_name = "TDDGuardian"
+            result.violations = violations
+            result.metrics = metrics
+            result.metrics["target_path"] = target_path
+            result.metrics["recommendations"] = recommendations
+            result.metrics["execution_time"] = execution_time
+            return result
+            
+        except Exception as e:
+            self.logger.error(f"❌ TDD Guardian audit failed: {e}")
+            # エラー時のAuditResultを正しく作成
+            error_result = AuditResult()
+            error_result.auditor_name = "TDDGuardian"
+            error_result.violations = [{
+                "type": "AUDIT_EXECUTION_FAILURE",
+                "severity": ViolationSeverity.HIGH.value,
+                "description": f"TDD Guardian audit execution failed: {str(e)}",
+                "location": target_path
+            }]
+            error_result.metrics = {
+                "error": str(e),
+                "target_path": target_path,
+                "recommendations": [],
+                "execution_time": (datetime.now() - start_time).total_seconds()
+            }
+            return error_result
+            
+    def _discover_test_files(self, target_path: str) -> List[str]:
+        """テストファイルを発見"""
+        test_files = []
+        
+        # テストファイルパターン
+        test_patterns = [
+            "**/test_*.py",
+            "**/*_test.py", 
+            "**/tests/**/*.py",
+            "**/*Test.py"
+        ]
+        
+        target_dir = Path(target_path)
+        if target_dir.is_file():
+            target_dir = target_dir.parent
+            
+        for pattern in test_patterns:
+            test_files.extend([str(f) for f in target_dir.rglob(pattern)])
+            
+        # 重複除去
+        return list(set(test_files))
+        
+    def _calculate_overall_tdd_score(self, 
+                                   avg_quality: float,
+                                   cycle_violations: int,
+                                   quality_violations: int,
+                                   coverage_violations: int) -> float:
+        """総合TDDスコアを計算"""
+        base_score = avg_quality
+        
+        # 違反による減点
+        violation_penalty = (cycle_violations * 15 + 
+                           quality_violations * 10 + 
+                           coverage_violations * 20)
+        
+        final_score = base_score - violation_penalty
+        return max(min(final_score, 100.0), 0.0)
+        
+    def _generate_tdd_improvement_recommendations(self,
+                                                cycle_violations: int,
+                                                quality_violations: int,
+                                                coverage_violations: int,
+                                                violations: List[Dict[str, Any]]) -> List[str]:
+        """TDD改善提案を生成"""
+        recommendations = []
+        
+        if cycle_violations > 0:
+            recommendations.append("Follow proper TDD Red-Green-Refactor cycle")
+            
+        if quality_violations > 0:
+            recommendations.append("Improve test quality by adding meaningful assertions")
+            
+        if coverage_violations > 0:
+            recommendations.append("Remove coverage manipulation and write genuine tests")
+            
+        # 違反固有の提案
+        violation_types = set(v.get("type") for v in violations)
+        
+        if "NO_RED_PHASE" in violation_types:
+            recommendations.append("Always start with a failing test (Red phase)")
+            
+        if "POOR_TEST_QUALITY" in violation_types:
+            recommendations.append("Remove empty tests and add proper test logic")
+            
+        if "FAKE_TEST_IMPLEMENTATION" in violation_types:
+            recommendations.append("Replace fake test implementations with real tests")
+            
+        return recommendations
+        
+    def get_audit_scope(self) -> List[str]:
+        """監査対象スコープを返す"""
+        return [
+            "tdd_cycle_compliance",
+            "test_quality_assessment", 
+            "coverage_manipulation_detection",
+            "test_first_principle_validation"
+        ]
+        
     async def audit(self, target: Dict[str, Any]) -> AuditResult:
         """
         TDD守護監査を実行
