@@ -213,6 +213,122 @@ class TestChaosMonkey:
         assert result.scenario == scenario
         assert result.duration >= 0.5
     
+    async def test_cpu_spike_injection(self):
+        """CPU高負荷注入のテスト"""
+        monkey = ChaosMonkey()
+        scenario = ChaosScenario(
+            name="CPU高負荷テスト",
+            chaos_type=ChaosType.CPU_SPIKE,
+            impact=ChaosImpact.MEDIUM,
+            duration=0.2,
+            parameters={"cpu_percent": 80}
+        )
+        
+        result = await monkey.inject_chaos(scenario)
+        
+        assert result.scenario == scenario
+        assert result.duration >= 0.2
+    
+    async def test_disk_full_injection(self):
+        """ディスク容量逼迫注入のテスト"""
+        monkey = ChaosMonkey()
+        scenario = ChaosScenario(
+            name="ディスク容量テスト",
+            chaos_type=ChaosType.DISK_FULL,
+            impact=ChaosImpact.HIGH,
+            duration=0.2,
+            parameters={"size_mb": 1}  # 極小サイズでテスト
+        )
+        
+        result = await monkey.inject_chaos(scenario)
+        
+        assert result.scenario == scenario
+        assert result.duration >= 0.2
+    
+    async def test_process_kill_injection(self):
+        """プロセスキル注入のテスト"""
+        monkey = ChaosMonkey()
+        scenario = ChaosScenario(
+            name="プロセスキルテスト",
+            chaos_type=ChaosType.PROCESS_KILL,
+            impact=ChaosImpact.HIGH,
+            duration=0.1,
+            parameters={"process_name": "nonexistent_process"}
+        )
+        
+        result = await monkey.inject_chaos(scenario)
+        
+        assert result.scenario == scenario
+        assert result.duration >= 0.1
+    
+    async def test_dependency_failure_injection(self):
+        """依存関係障害注入のテスト"""
+        monkey = ChaosMonkey()
+        scenario = ChaosScenario(
+            name="依存関係障害テスト",
+            chaos_type=ChaosType.DEPENDENCY_FAILURE,
+            impact=ChaosImpact.MEDIUM,
+            duration=0.2,
+            parameters={"module": "nonexistent.module"}
+        )
+        
+        result = await monkey.inject_chaos(scenario)
+        
+        assert result.scenario == scenario
+        assert result.duration >= 0.2
+    
+    async def test_permission_denied_injection(self):
+        """権限拒否注入のテスト"""
+        monkey = ChaosMonkey()
+        scenario = ChaosScenario(
+            name="権限拒否テスト",
+            chaos_type=ChaosType.PERMISSION_DENIED,
+            impact=ChaosImpact.MEDIUM,
+            duration=0.2
+        )
+        
+        result = await monkey.inject_chaos(scenario)
+        
+        assert result.scenario == scenario
+        assert result.duration >= 0.2
+    
+    async def test_timeout_injection(self):
+        """タイムアウト注入のテスト"""
+        monkey = ChaosMonkey()
+        scenario = ChaosScenario(
+            name="タイムアウトテスト",
+            chaos_type=ChaosType.TIMEOUT,
+            impact=ChaosImpact.LOW,
+            duration=0.2,
+            parameters={"probability": 0.5}
+        )
+        
+        result = await monkey.inject_chaos(scenario)
+        
+        assert result.scenario == scenario
+        assert result.duration >= 0.2
+    
+    async def test_unsupported_chaos_type(self):
+        """未対応カオスタイプのテスト"""
+        monkey = ChaosMonkey()
+        
+        # 存在しないカオスタイプを強制作成
+        class UnsupportedChaosType(Enum):
+            UNKNOWN = "unknown"
+        
+        scenario = ChaosScenario(
+            name="未対応テスト", 
+            chaos_type=UnsupportedChaosType.UNKNOWN,
+            impact=ChaosImpact.LOW,
+            duration=0.1
+        )
+        
+        result = await monkey.inject_chaos(scenario)
+        
+        # エラーが捕捉されているはず
+        assert len(result.errors_caught) > 0
+        assert "未対応のカオスタイプ" in str(result.errors_caught[0])
+    
     @patch('builtins.open')
     async def test_file_corruption_injection(self, mock_open):
         """ファイル破損注入のテスト"""
