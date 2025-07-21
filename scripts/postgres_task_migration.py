@@ -28,6 +28,8 @@ class PostgreSQLTaskMigration:
     def __init__(self):
         # SQLiteデータベースパス
         self.sqlite_db_paths = [
+            PROJECT_ROOT / "data/claude_task_tracker.db",
+            PROJECT_ROOT / "data/task_history.db",
             PROJECT_ROOT / "libs/elder_system/flow/data/task_sage.db",
             PROJECT_ROOT / "db/task_history.db",
         ]
@@ -44,41 +46,59 @@ class PostgreSQLTaskMigration:
     async def create_task_sage_table(self, conn):
         """PostgreSQLにtask_sageテーブルを作成"""
         create_table_sql = """
-        CREATE TABLE IF NOT EXISTS task_sage (
-            id SERIAL PRIMARY KEY,
-            task_id VARCHAR(255) UNIQUE NOT NULL,
-            name TEXT NOT NULL,
+        CREATE TABLE IF NOT EXISTS tasks (
+            task_id VARCHAR(255) PRIMARY KEY,
+            title TEXT NOT NULL,
             description TEXT,
+            task_type VARCHAR(50) NOT NULL,
+            priority VARCHAR(50) NOT NULL,
             status VARCHAR(50) NOT NULL,
-            priority VARCHAR(50),
-            task_type VARCHAR(50),
-            assignee VARCHAR(255),
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_by VARCHAR(255),
+            assigned_to VARCHAR(255),
+            estimated_duration_minutes INTEGER,
+            actual_duration_minutes INTEGER,
+            created_at TIMESTAMP NOT NULL,
+            updated_at TIMESTAMP NOT NULL,
+            started_at TIMESTAMP,
             completed_at TIMESTAMP,
+            due_date TIMESTAMP,
+            tags JSONB,
             metadata JSONB,
+            context JSONB,
+            progress REAL DEFAULT 0.0,
             dependencies JSONB,
-            results JSONB,
+            outputs JSONB,
             error_message TEXT,
-            retry_count INTEGER DEFAULT 0,
-            tags TEXT[],
-            estimated_duration INTEGER,
-            actual_duration INTEGER,
+            result JSONB,
             parent_task_id VARCHAR(255),
-            is_archived BOOLEAN DEFAULT FALSE
+            subtasks JSONB,
+            retry_count INTEGER DEFAULT 0,
+            max_retries INTEGER DEFAULT 3,
+            is_background BOOLEAN DEFAULT FALSE,
+            notification_sent BOOLEAN DEFAULT FALSE,
+            auto_start BOOLEAN DEFAULT FALSE,
+            auto_complete BOOLEAN DEFAULT FALSE,
+            elder_approval_required BOOLEAN DEFAULT FALSE,
+            elder_approved BOOLEAN DEFAULT FALSE,
+            elder_approved_by VARCHAR(255),
+            elder_approved_at TIMESTAMP,
+            elder_rejection_reason TEXT,
+            created_from_issue INTEGER,
+            github_pr_number INTEGER,
+            is_test_task BOOLEAN DEFAULT FALSE
         );
 
         -- インデックス作成
-        CREATE INDEX IF NOT EXISTS idx_task_sage_status ON task_sage(status);
-        CREATE INDEX IF NOT EXISTS idx_task_sage_priority ON task_sage(priority);
-        CREATE INDEX IF NOT EXISTS idx_task_sage_created_at ON task_sage(created_at);
-        CREATE INDEX IF NOT EXISTS idx_task_sage_assignee ON task_sage(assignee);
-        CREATE INDEX IF NOT EXISTS idx_task_sage_tags ON task_sage USING GIN(tags);
-        CREATE INDEX IF NOT EXISTS idx_task_sage_metadata ON task_sage USING GIN(metadata);
+        CREATE INDEX IF NOT EXISTS idx_tasks_status ON tasks(status);
+        CREATE INDEX IF NOT EXISTS idx_tasks_priority ON tasks(priority);
+        CREATE INDEX IF NOT EXISTS idx_tasks_created_at ON tasks(created_at);
+        CREATE INDEX IF NOT EXISTS idx_tasks_assigned_to ON tasks(assigned_to);
+        CREATE INDEX IF NOT EXISTS idx_tasks_task_type ON tasks(task_type);
+        CREATE INDEX IF NOT EXISTS idx_tasks_metadata ON tasks USING GIN(metadata);
         """
 
         await conn.execute(create_table_sql)
-        print("✅ PostgreSQL task_sageテーブル作成完了")
+        print("✅ PostgreSQL tasksテーブル作成完了")
 
     def read_sqlite_tasks(self, db_path: Path) -> List[Dict[str, Any]]:
         """SQLiteからタスクデータを読み込み"""
