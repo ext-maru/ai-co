@@ -138,15 +138,6 @@ class AutoIssueElderFlowEngine:
             # SafeGitOperationsインスタンスを作成
             git_ops = SafeGitOperations()
             
-            # ブランチ名を生成（タイムスタンプオプション）
-            timestamp = datetime.now().strftime("%H%M%S")
-            use_timestamp = os.getenv("AUTO_ISSUE_USE_TIMESTAMP", "false").lower() == "true"
-            
-            if use_timestamp:
-                branch_name = f"auto-fix/issue-{issue_number}-{timestamp}"
-            else:
-                branch_name = f"auto-fix-issue-{issue_number}"
-
             # 現在のブランチを保存
             current_branch = git_ops.get_current_branch()
             
@@ -157,7 +148,7 @@ class AutoIssueElderFlowEngine:
             
             try:
                 # PR用ブランチを作成（既存ブランチは自動削除される）
-                self.logger.info(f"📌 ブランチ作成開始: {branch_name}")
+                self.logger.info(f"📌 ブランチ作成開始: Issue #{issue_number}")
                 branch_result = git_ops.create_pr_branch_workflow(
                     pr_title=f"Auto-fix for issue #{issue_number} - {issue_title[:50]}",
                     base_branch="main",
@@ -176,8 +167,11 @@ class AutoIssueElderFlowEngine:
                     branch_name = branch_result["branch_name"]
                     self.logger.info(f"✅ ブランチ作成成功: {branch_name}")
                 else:
-                    self.logger.warning(f"⚠️ branch_resultにbranch_nameがありません: {branch_result}")
-                    # フォールバックとして元のbranch_nameを使用
+                    self.logger.error(f"❌ branch_resultにbranch_nameがありません: {branch_result}")
+                    return {
+                        "success": False,
+                        "error": "ブランチ名が取得できませんでした"
+                    }
                 
                 # テンプレートシステムを使用してコードを生成
                 files_created = []
