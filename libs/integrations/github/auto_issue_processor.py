@@ -426,8 +426,8 @@ class AutoIssueProcessor(EldersServiceLegacy):
         self.limiter = ProcessingLimiter()
         self.evaluator = ComplexityEvaluator()
 
-        # 処理対象の優先度（中以上）
-        self.target_priorities = ["critical", "high", "medium"]
+        # 処理対象の優先度（高い順に処理される）
+        self.target_priorities = ["critical", "high", "medium", "low"]
         
         # 処理履歴ファイル
         self.processing_history_file = "logs/auto_issue_processing.json"
@@ -565,13 +565,22 @@ class AutoIssueProcessor(EldersServiceLegacy):
             # 複雑度評価
             complexity = await self.evaluator.evaluate(issue)
             if complexity.is_processable:
-                processable_issues.append(issue)
+                processable_issues.append({
+                    "issue": issue,
+                    "priority": priority,
+                    "complexity": complexity
+                })
 
             # 最大10件まで
             if len(processable_issues) >= 10:
                 break
 
-        return processable_issues
+        # 優先度順にソート（critical > high > medium > low）
+        priority_order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+        processable_issues.sort(key=lambda x: priority_order.get(x["priority"], 99))
+        
+        # Issueオブジェクトのリストを返す
+        return [item["issue"] for item in processable_issues]
 
     def _get_recently_processed_issues(self, hours=24) -> Set[int]:
         """指定時間内に処理されたイシュー番号を取得"""
