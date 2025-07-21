@@ -25,13 +25,16 @@ class TestStrictOutputValidator:
         self.validator = None
         
     def test_validator_initialization(self):
-        """🔴 Red: バリデーター初期化テスト"""
-        # 実装前なのでImportErrorが予想される
-        with pytest.raises(ImportError):
-            from libs.ancient_elder.strict_output_validator import StrictOutputValidator
+        """🟢 Green: バリデーター初期化テスト"""
+        # 実装完了後は正常にインポートできるはず
+        from libs.ancient_elder.strict_output_validator import StrictOutputValidator
+        validator = StrictOutputValidator()
+        assert validator is not None
+        assert hasattr(validator, 'validate_code_output')
+        assert hasattr(validator, 'validate_design_output')
             
     def test_validate_code_output_basic(self):
-        """🔴 Red: 基本的なコード検証テスト"""
+        """🟢 Green: 基本的なコード検証テスト"""
         # 簡単なコード例
         code_output = """
 def hello_world():
@@ -39,23 +42,38 @@ def hello_world():
     return True
 """
         
-        # 実装前なのでテストは失敗するはず
-        assert False, "StrictOutputValidator not implemented yet"
+        from libs.ancient_elder.strict_output_validator import StrictOutputValidator
+        validator = StrictOutputValidator()
+        result = validator.validate_code_output(code_output)
+        
+        # 基本的な検証結果のチェック
+        assert hasattr(result, 'is_valid')
+        assert hasattr(result, 'score')
+        assert hasattr(result, 'issues')
+        assert hasattr(result, 'suggestions')
+        assert isinstance(result.score, (int, float))
+        assert 0 <= result.score <= 100
         
     def test_syntax_perfection_check(self):
-        """🔴 Red: 構文完璧性チェックテスト"""
+        """🟢 Green: 構文完璧性チェックテスト"""
+        from libs.ancient_elder.strict_output_validator import StrictOutputValidator
+        validator = StrictOutputValidator()
+        
         test_cases = [
             # 正常なPythonコード
-            {"code": "x = 1 + 2", "expected": True},
+            {"code": "x = 1 + 2", "expected_pass": True},
             # 構文エラーのあるコード
-            {"code": "x = 1 +", "expected": False},
+            {"code": "x = 1 +", "expected_pass": False},
             # 不完全なif文
-            {"code": "if x > 0:", "expected": False},
+            {"code": "if x > 0:", "expected_pass": False},
         ]
         
         for case in test_cases:
-            # 実装後にテストロジックを追加
-            assert False, f"Syntax check not implemented: {case['code']}"
+            result = validator._syntax_perfection_check(case['code'])
+            assert 'passed' in result
+            assert result['passed'] == case['expected_pass']
+            assert 'score' in result
+            assert isinstance(result['score'], (int, float))
             
     def test_logic_consistency_check(self):
         """🔴 Red: 論理一貫性チェックテスト"""

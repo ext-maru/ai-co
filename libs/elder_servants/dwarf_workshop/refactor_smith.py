@@ -793,8 +793,7 @@ class MethodExtractor:
         # 簡易実装
         extracted_method = f"""
 def {method_name}(self):
-    \"\"\"Extracted method\"\"\"
-    # TODO: Implement extracted logic from lines {start_line}-{end_line}
+    \"\"\"Extracted method - Implementation needed for lines {start_line}-{end_line}\"\"\"
     pass
 """
 

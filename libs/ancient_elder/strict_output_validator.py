@@ -66,7 +66,18 @@ class StrictOutputValidator(AncientMagicBase):
     def __init__(self):
         """バリデーター初期化"""
         super().__init__()
-        self.quality_engine = EldersCodeQualityEngine() if EldersCodeQualityEngine else None
+        
+        # EldersCodeQualityEngineの安全な初期化
+        try:
+            if EldersCodeQualityEngine:
+                # デフォルトパラメータでの初期化を試行
+                self.quality_engine = EldersCodeQualityEngine({})
+            else:
+                self.quality_engine = None
+        except Exception as e:
+            logging.warning(f"Could not initialize EldersCodeQualityEngine: {e}")
+            self.quality_engine = None
+            
         self.security_patterns = self._load_security_patterns()
         self.performance_thresholds = self._load_performance_thresholds()
         
