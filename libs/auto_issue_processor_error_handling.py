@@ -248,7 +248,7 @@ class RetryStrategy:
             ErrorType.NETWORK_ERROR: 5,
             ErrorType.GIT_OPERATION_ERROR: 3,
             ErrorType.SYSTEM_RESOURCE_ERROR: 2,
-            ErrorType.TEMPLATE_ERROR: 2,
+            ErrorType.TEMPLATE_ERROR: 5,
             ErrorType.VALIDATION_ERROR: 1,
             ErrorType.TIMEOUT_ERROR: 2,
             ErrorType.UNKNOWN_ERROR: 2,

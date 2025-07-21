@@ -130,6 +130,8 @@ def main():
     )
 
     parser.add_argument("--list", "-l", action="store_true", help="利用可能なセクション一覧を表示")
+    
+    parser.add_argument("--todo", action="store_true", help="Todo同期機能付きで起動")
 
     args = parser.parse_args()
 
@@ -137,6 +139,29 @@ def main():
     if args.list:
         list_sections()
         return
+    
+    # Todo同期機能付きで起動
+    if args.todo:
+        print_colored("🔄 Todo同期機能付きで起動します...", "cyan")
+        print()
+        
+        # ai-elder-cast-with-todo-syncを実行
+        todo_sync_script = project_root / "scripts" / "ai-elder-cast-with-todo-sync"
+        if todo_sync_script.exists():
+            import subprocess
+            try:
+                subprocess.run([sys.executable, str(todo_sync_script)])
+                return
+            except KeyboardInterrupt:
+                print()
+                print_colored("⚡ セッション中断", "yellow")
+                return
+            except Exception as e:
+                print_colored(f"❌ エラー: {e}", "red")
+                sys.exit(1)
+        else:
+            print_colored("❌ Todo同期スクリプトが見つかりません", "red")
+            sys.exit(1)
 
     print_colored("🔮 AI Elder Cast Modular 起動", "purple")
     print()

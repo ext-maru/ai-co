@@ -4,6 +4,7 @@ AI Elder Cast - エルダーズギルド完全知識統合Claude Code起動シ�
 PERFECT IMPLEMENTATION - 妥協度0%
 """
 
+import argparse
 import os
 import subprocess
 import sys
@@ -316,7 +317,54 @@ def launch_claude_code_with_knowledge():
 
 def main():
     """メイン実行 - 完璧な実装"""
-    launch_claude_code_with_knowledge()
+    parser = argparse.ArgumentParser(
+        description="AI Elder Cast - エルダーズギルド完全知識統合システム",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用例:
+  ai-elder-cast              # 通常起動（完全知識統合）
+  ai-elder-cast todo         # Todo同期機能付き起動
+  ai-elder-cast help         # ヘルプ表示
+        """
+    )
+    
+    parser.add_argument(
+        "command",
+        nargs="?",
+        default="default",
+        choices=["default", "todo", "help"],
+        help="実行コマンド（default: 通常起動, todo: Todo同期付き）"
+    )
+    
+    args = parser.parse_args()
+    
+    if args.command == "help":
+        parser.print_help()
+        sys.exit(0)
+    
+    elif args.command == "todo":
+        # Todo同期機能付き起動
+        print("🔄 Todo同期機能付きで起動します...")
+        print()
+        
+        # ai-elder-cast-with-todo-syncを実行
+        todo_sync_script = project_root / "scripts" / "ai-elder-cast-with-todo-sync"
+        if todo_sync_script.exists():
+            try:
+                subprocess.run([sys.executable, str(todo_sync_script)])
+            except KeyboardInterrupt:
+                print("\n⚡ セッション中断")
+            except Exception as e:
+                print(f"❌ エラー: {e}")
+                sys.exit(1)
+        else:
+            print("❌ Todo同期スクリプトが見つかりません")
+            print(f"   期待されるパス: {todo_sync_script}")
+            sys.exit(1)
+    
+    else:
+        # 通常起動
+        launch_claude_code_with_knowledge()
 
 
 if __name__ == "__main__":

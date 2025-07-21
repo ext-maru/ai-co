@@ -61,6 +61,29 @@ async def quick_task_sync():
 
 def main():
     """メイン処理"""
+    # コマンドライン引数をチェック
+    if len(sys.argv) > 1 and sys.argv[1] == "todo":
+        # Todo同期機能付きで起動
+        print_colored("🔄 Todo同期機能付きで起動します...", "cyan")
+        print()
+        
+        # ai-elder-cast-with-todo-syncを実行
+        todo_sync_script = project_root / "scripts" / "ai-elder-cast-with-todo-sync"
+        if todo_sync_script.exists():
+            try:
+                subprocess.run([sys.executable, str(todo_sync_script)])
+                return
+            except KeyboardInterrupt:
+                print()
+                print_colored("⚡ セッション中断", "yellow")
+                return
+            except Exception as e:
+                print_colored(f"❌ エラー: {e}", "red")
+                sys.exit(1)
+        else:
+            print_colored("❌ Todo同期スクリプトが見つかりません", "red")
+            sys.exit(1)
+    
     print_colored("🔮 AI Elder Cast Simple (Task Integration) 起動", "purple")
     print()
     
