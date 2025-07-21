@@ -684,6 +684,10 @@ class AutoIssueProcessor(EldersServiceLegacy):
             if len(processable_issues) >= 10:
                 break
 
+        # 優先度でソート（critical > high > medium > low）
+        priority_order = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+        processable_issues.sort(key=lambda issue: priority_order.get(self._determine_priority(issue), 999))
+        
         return processable_issues
 
     def _get_recently_processed_issues(self, hours=24) -> Set[int]:
