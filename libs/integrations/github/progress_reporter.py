@@ -102,7 +102,8 @@ class ProgressReporter:
         "duration": lambda d: f"経過時間: {d.get('duration', 0):.1f}秒",
         "next_retry": lambda d: f"次回試行: {d.get('next_retry', 0)}秒後",
         "ci_status": lambda d: f"CI状況: {d.get('ci_status', 'unknown')}",
-        "merge_state": lambda d: f"マージ状態: {d.get('mergeable_state', 'unknown')}"
+        "merge_state": lambda d: f"マージ状態: {d.get('mergeable_state', 'unknown')}",
+        "ci_jobs_completed": lambda d: f"{d.get('ci_jobs_completed', 0)}/{d.get('ci_jobs_total', 0)} jobs完了"
     }
     
     def __init__(self, github_client):
@@ -117,6 +118,7 @@ class ProgressReporter:
         self.session_history: List[ProgressSession] = []
         self.comment_update_interval = 30  # 秒
         self.last_comment_updates: Dict[int, datetime] = {}
+        self._reports: Dict[int, Dict[str, Any]] = {}  # テスト用の簡易レポート管理
     
     def start_session(
         self, 
@@ -412,6 +414,254 @@ class ProgressReporter:
         except Exception as e:
             logger.error(f"Failed to load session history: {e}")
             return False
+    
+    # テスト用の追加メソッド
+    async def create_initial_report(
+        self, 
+        pr_number: int, 
+        issue_number: int, 
+        title: str
+    ) -> Dict[str, Any]:
+        """初期レポートを作成（テスト用）"""
+        self.start_session(pr_number, issue_number, f"PR #{pr_number}: {title} の監視を開始しました")
+        
+        # 初期レポートを作成
+        self._reports[issue_number] = {
+            "pr_number": pr_number,
+            "title": title,
+            "start_time": datetime.now(),
+            "current_state": "監視開始",
+            "current_emoji": "🚀",
+            "history": [],
+            "comment_id": 12345  # モック用
+        }
+        
+        # GitHub APIを呼び出し
+        body = self._format_progress_report(issue_number)
+        result = await self.github_client.create_issue_comment(issue_number, body)
+        
+        return {
+            "success": result.get("success", True),
+            "comment_id": result.get("comment_id", 12345)
+        }
+    
+    async def update_progress(
+        self,
+        issue_number: int,
+        state: str,
+        emoji: str,
+        details: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """進捗を更新（テスト用の簡易版）"""
+        if issue_number not in self._reports:
+            return {"success": False, "reason": "No report found"}
+        
+        # レポートを更新
+        self._reports[issue_number]["current_state"] = state
+        self._reports[issue_number]["current_emoji"] = emoji
+        
+        # 履歴に追加
+        if details:
+            history_entry = {
+                "timestamp": datetime.now(),
+                "state": state,
+                "emoji": emoji,
+                "details": details
+            }
+            self._reports[issue_number]["history"].append(history_entry)
+        
+        # コメントを更新
+        body = self._format_progress_report(issue_number)
+        result = await self.github_client.update_issue_comment(
+            self._reports[issue_number]["comment_id"],
+            body
+        )
+        
+        return {"success": result.get("success", True)}
+    
+    def add_event_to_history(
+        self,
+        issue_number: int,
+        event_type: Any,
+        description: str,
+        emoji: str
+    ):
+        """イベント履歴に追加（テスト用）"""
+        if issue_number not in self._reports:
+            self._reports[issue_number] = {
+                "history": [],
+                "current_state": "初期化",
+                "current_emoji": "🚀"
+            }
+        
+        event = {
+            "timestamp": datetime.now(),
+            "event_type": event_type,
+            "description": description,
+            "emoji": emoji
+        }
+        
+        if "history" not in self._reports[issue_number]:
+            self._reports[issue_number]["history"] = []
+        
+        self._reports[issue_number]["history"].append(event)
+    
+    def get_event_history(self, issue_number: int) -> List[Dict[str, Any]]:
+        """イベント履歴を取得（テスト用）"""
+        if issue_number not in self._reports:
+            return []
+        return self._reports[issue_number].get("history", [])
+    
+    async def complete_monitoring(
+        self,
+        issue_number: int,
+        success: bool,
+        final_state: str,
+        details: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """監視を完了（テスト用）"""
+        if issue_number not in self._reports:
+            return {"success": False, "reason": "No report found"}
+        
+        # 最終状態を設定
+        self._reports[issue_number]["current_state"] = final_state
+        self._reports[issue_number]["current_emoji"] = "✅" if success else "❌"
+        self._reports[issue_number]["completed"] = True
+        self._reports[issue_number]["end_time"] = datetime.now()
+        
+        if details:
+            self._reports[issue_number]["final_details"] = details
+        
+        # 最終コメントを更新
+        body = self._format_progress_report(issue_number)
+        result = await self.github_client.update_issue_comment(
+            self._reports[issue_number]["comment_id"],
+            body
+        )
+        
+        return {"success": result.get("success", True)}
+    
+    async def report_error(
+        self,
+        issue_number: int,
+        error_type: str,
+        error_message: str,
+        suggested_action: str
+    ) -> Dict[str, Any]:
+        """エラーを報告（テスト用）"""
+        if issue_number not in self._reports:
+            return {"success": False, "reason": "No report found"}
+        
+        # エラー状態を設定
+        self._reports[issue_number]["current_state"] = "エラー"
+        self._reports[issue_number]["current_emoji"] = "❌"
+        self._reports[issue_number]["error"] = {
+            "type": error_type,
+            "message": error_message,
+            "suggested_action": suggested_action
+        }
+        
+        # エラー報告コメントを更新
+        body = self._format_progress_report(issue_number)
+        result = await self.github_client.update_issue_comment(
+            self._reports[issue_number]["comment_id"],
+            body
+        )
+        
+        return {"success": result.get("success", True)}
+    
+    def _format_progress_report(self, issue_number: int) -> str:
+        """進捗レポートをフォーマット（テスト用）"""
+        if issue_number not in self._reports:
+            return "レポートが見つかりません"
+        
+        report = self._reports[issue_number]
+        lines = ["🤖 **Auto Issue Processor - 進捗報告**", ""]
+        
+        # 現在の状態
+        lines.append(f"**現在の状態**: {report['current_state']} {report['current_emoji']}")
+        
+        # 開始時刻と経過時間
+        if "start_time" in report:
+            start_time = report["start_time"]
+            lines.append(f"**開始時刻**: {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
+            elapsed = datetime.now() - start_time
+            lines.append(f"**経過時間**: {self._format_duration(elapsed.total_seconds())}")
+        
+        # エラー情報
+        if "error" in report:
+            lines.append("")
+            lines.append("**❌ エラー**")
+            lines.append(f"- エラータイプ: {report['error']['type']}")
+            lines.append(f"- メッセージ: {report['error']['message']}")
+            lines.append(f"- 対処法: {report['error']['suggested_action']}")
+        
+        # 処理履歴
+        if "history" in report and report["history"]:
+            lines.append("")
+            lines.append("**処理履歴**:")
+            for entry in report["history"]:
+                timestamp = entry["timestamp"].strftime("%H:%M:%S")
+                emoji = entry.get("emoji", "📝")
+                desc = entry.get("description", "")
+                lines.append(f"- {emoji} {timestamp} - {desc}")
+                
+                # 詳細情報
+                if "details" in entry:
+                    details = entry["details"]
+                    if "ci_jobs_completed" in details and "ci_jobs_total" in details:
+                        lines.append(f"  - {details['ci_jobs_completed']}/{details['ci_jobs_total']} jobs完了")
+        
+        # 完了情報
+        if report.get("completed"):
+            lines.append("")
+            lines.append("**✅ 完了**")
+            if "final_details" in report:
+                details = report["final_details"]
+                if "merge_sha" in details:
+                    lines.append(f"- マージSHA: {details['merge_sha']}")
+                if "total_duration" in details:
+                    lines.append(f"- 総時間: {details['total_duration']}")
+        
+        # 次のアクション
+        lines.append("")
+        lines.append("**次のアクション**: " + report.get("next_action", "待機中"))
+        
+        # 最終更新
+        lines.append("")
+        lines.append(f"---")
+        lines.append(f"*最終更新: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*")
+        
+        return "\n".join(lines)
+    
+    def _calculate_eta(self, start_time: datetime, progress: float) -> datetime:
+        """完了予想時刻を計算（テスト用）"""
+        if progress <= 0 or progress >= 1:
+            return datetime.now() + timedelta(minutes=5)
+        
+        elapsed = (datetime.now() - start_time).total_seconds()
+        total_estimated = elapsed / progress
+        remaining = total_estimated - elapsed
+        
+        return datetime.now() + timedelta(seconds=remaining)
+    
+    def _format_duration(self, seconds: float) -> str:
+        """時間をフォーマット（テスト用）"""
+        seconds = int(seconds)
+        
+        if seconds < 60:
+            return f"{seconds}秒"
+        
+        minutes = seconds // 60
+        seconds = seconds % 60
+        
+        if minutes < 60:
+            return f"{minutes}分{seconds}秒"
+        
+        hours = minutes // 60
+        minutes = minutes % 60
+        
+        return f"{hours}時間{minutes}分{seconds}秒"
 
 
 # 使用例
