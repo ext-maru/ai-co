@@ -39,11 +39,11 @@ crontab -l 2>/dev/null > /tmp/current_cron || true
 grep -v "auto_issue_processor" /tmp/current_cron > /tmp/new_cron || true
 
 # 新しいcronジョブを追加
-# 毎時0分と30分に実行（1日48回）
+# 10分ごとに実行（1日144回）
 cat >> /tmp/new_cron << EOF
 
-# Auto Issue Processor - 30分ごとに実行
-*/30 * * * * source $ENV_FILE && cd $PROJECT_ROOT && bash scripts/auto_issue_processor_cron.sh >> logs/cron_auto_issue.log 2>&1
+# Auto Issue Processor - 10分ごとに実行
+*/10 * * * * source $ENV_FILE && cd $PROJECT_ROOT && bash scripts/auto_issue_processor_cron.sh >> logs/cron_auto_issue.log 2>&1
 EOF
 
 # 新しいcrontabを設定
@@ -59,7 +59,7 @@ crontab -l | grep -A 1 -B 1 "auto_issue" || echo "（設定なし）"
 
 echo ""
 echo "🎯 設定完了！"
-echo "   - 実行間隔: 30分ごと"
+echo "   - 実行間隔: 10分ごと"
 echo "   - ログファイル: $PROJECT_ROOT/logs/cron_auto_issue.log"
 echo "   - 環境変数ファイル: $ENV_FILE"
 echo ""
