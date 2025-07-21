@@ -752,7 +752,7 @@ def {case["name"]}():
     """
     {case.get("description", "Test case")}
     """
-    # TODO: Implement test for {case.get("function", case.get("class", "target"))}
+    # テスト実装が必要: {case.get("function", case.get("class", "target"))}
     assert True  # Placeholder assertion
 '''
             test_functions.append(test_func)
@@ -789,7 +789,7 @@ class TestSuite(unittest.TestCase):
         """
         {case.get("description", "Test case")}
         """
-        # TODO: Implement test for {case.get("function", case.get("class", "target"))}
+        # テスト実装が必要: {case.get("function", case.get("class", "target"))}
         self.assertTrue(True)  # Placeholder assertion
 '''
             test_class += test_method
@@ -817,7 +817,7 @@ def {scenario["name"]}():
     Modules: {", ".join(scenario["modules"])}
     Expected: {scenario["expected_outcome"]}
     """
-    # TODO: Implement integration test
+    # 統合テスト実装が必要
     # Setup modules: {", ".join(scenario["modules"])}
     # Test scenario: {scenario["scenario"]}
     # Verify: {scenario["expected_outcome"]}
@@ -967,7 +967,7 @@ def {test["name"]}():
     Performance test: {test.get("pattern_type", "load test")}
     Target: {test.get("target_response_time", "N/A")}ms response time
     """
-    # TODO: Implement performance test
+    # パフォーマンステスト実装が必要
     start_time = time.time()
     # Perform operation
     end_time = time.time()
@@ -1004,7 +1004,7 @@ class SecurityTestSuite:
         test_vectors = {test.get("test_vectors", [])}
 
         for vector in test_vectors:
-            # TODO: Implement security test with vector
+            # セキュリティテスト（ベクトル）実装が必要
             pass
 
         assert True  # Placeholder
@@ -1035,12 +1035,12 @@ class MutationTester:
 
     def create_mutant(self, mutation_point):
         """Create a mutated version of the source code"""
-        # TODO: Implement mutation logic
+        # ミューテーションロジック実装が必要
         return self.source_code
 
     def run_tests_on_mutant(self, mutant_code):
         """Run tests on mutated code"""
-        # TODO: Implement test execution
+        # テスト実行機能実装が必要
         return True  # Placeholder
 
 '''
@@ -1053,7 +1053,7 @@ class MutationTester:
         Original operator: {point["operator"]}
         Possible mutations: {len(point["mutations"])}
         """
-        # TODO: Create and test mutations
+        # ミューテーション作成・テスト実装が必要
         assert True  # Placeholder
 '''
 

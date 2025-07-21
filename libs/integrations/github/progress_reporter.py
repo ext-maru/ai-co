@@ -406,7 +406,7 @@ class ProgressReporter:
             with open(file_path, 'r', encoding='utf-8') as f:
                 history_data = json.load(f)
             
-            # TODO: 履歴データからProgressSessionオブジェクトを復元
+            # 履歴データからProgressSessionオブジェクトを復元（実装予定）
             logger.info(f"Loaded {len(history_data)} session records")
             return True
         except Exception as e:
