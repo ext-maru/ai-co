@@ -15,7 +15,7 @@ import random
 from functools import wraps
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 from collections import defaultdict, Counter
 import uuid
 import traceback
@@ -728,3 +728,301 @@ def with_error_recovery(git_ops=None):
         
         return wrapper
     return decorator
+
+
+class ErrorReporter:
+    """エラーレポート機能"""
+    
+    def __init__(self, report_dir: str = "/tmp/error_reports"):
+        self.report_dir = report_dir
+        self.error_history: List[ErrorReport] = []
+        
+        # レポートディレクトリ作成
+        os.makedirs(report_dir, exist_ok=True)
+    
+    def generate_error_id(self) -> str:
+        """ユニークなエラーIDを生成"""
+        return f"ERR-{datetime.now().strftime('%Y%m%d-%H%M%S')}-{str(uuid.uuid4())[:8]}"
+    
+    def classify_error(self, error: Exception, operation: str) -> Tuple[ErrorCategory, ErrorSeverity]:
+        """エラーを分類して重要度を判定"""
+        error_str = str(error).lower()
+        error_type_name = type(error).__name__.lower()
+        
+        # カテゴリー判定
+        category = ErrorCategory.UNKNOWN
+        if any(keyword in error_str for keyword in ["rate limit", "api", "github", "forbidden", "unauthorized"]):
+            category = ErrorCategory.GITHUB_API
+        elif any(keyword in error_str for keyword in ["git", "branch", "merge", "conflict", "repository"]):
+            category = ErrorCategory.GIT
+        elif any(keyword in error_str for keyword in ["network", "connection", "timeout", "dns", "socket"]):
+            category = ErrorCategory.NETWORK
+        elif any(keyword in error_str for keyword in ["memory", "disk", "space", "resource", "permission"]):
+            category = ErrorCategory.SYSTEM
+        elif any(keyword in error_str for keyword in ["validation", "invalid", "missing"]) or \
+             any(err_type in error_type_name for err_type in ["valueerror", "typeerror", "keyerror"]):
+            category = ErrorCategory.VALIDATION
+        elif any(keyword in error_str for keyword in ["template", "jinja", "render"]):
+            category = ErrorCategory.TEMPLATE
+        
+        # 重要度判定
+        severity = ErrorSeverity.MEDIUM
+        if category == ErrorCategory.GITHUB_API and "rate limit" in error_str:
+            severity = ErrorSeverity.HIGH
+        elif category == ErrorCategory.SYSTEM:
+            severity = ErrorSeverity.CRITICAL
+        elif category == ErrorCategory.VALIDATION:
+            severity = ErrorSeverity.LOW
+        elif "timeout" in error_str:
+            severity = ErrorSeverity.HIGH
+        
+        return category, severity
+    
+    async def create_report(
+        self,
+        error: Exception,
+        operation: str,
+        issue_number: Optional[int] = None,
+        branch_name: Optional[str] = None,
+        context: Optional[Dict[str, Any]] = None,
+        recovery_attempted: bool = False,
+        recovery_successful: bool = False,
+        recovery_action: Optional[str] = None,
+        recovery_time: Optional[float] = None
+    ) -> ErrorReport:
+        """エラーレポートを作成"""
+        error_category, severity = self.classify_error(error, operation)
+        
+        report = ErrorReport(
+            error_id=self.generate_error_id(),
+            timestamp=datetime.now(),
+            error_type=type(error).__name__,
+            error_message=str(error),
+            error_category=error_category,
+            severity=severity,
+            operation=operation,
+            issue_number=issue_number,
+            branch_name=branch_name,
+            stack_trace=traceback.format_exc(),
+            context=context,
+            recovery_attempted=recovery_attempted,
+            recovery_successful=recovery_successful,
+            recovery_action=recovery_action,
+            recovery_time=recovery_time
+        )
+        
+        self.error_history.append(report)
+        return report
+    
+    async def save_report(self, report: ErrorReport) -> str:
+        """エラーレポートをファイルに保存"""
+        report_file = os.path.join(self.report_dir, f"{report.error_id}.json")
+        
+        with open(report_file, 'w', encoding='utf-8') as f:
+            json.dump(report.to_dict(), f, ensure_ascii=False, indent=2)
+        
+        logger.info(f"Error report saved: {report_file}")
+        return report_file
+    
+    async def get_error_patterns(self, min_occurrence: int = 2) -> List[ErrorPattern]:
+        """エラーパターンを分析"""
+        error_groups = defaultdict(list)
+        
+        # エラータイプごとにグループ化
+        for report in self.error_history:
+            key = f"{report.error_type}_{report.error_category.value}"
+            error_groups[key].append(report)
+        
+        patterns = []
+        for key, reports in error_groups.items():
+            if len(reports) >= min_occurrence:
+                error_type = reports[0].error_type
+                error_category = reports[0].error_category
+                
+                operations = list(set(r.operation for r in reports))
+                recovery_successful = sum(1 for r in reports if r.recovery_successful)
+                recovery_rate = recovery_successful / len(reports) if reports else 0
+                
+                pattern = ErrorPattern(
+                    error_type=error_type,
+                    error_category=error_category,
+                    count=len(reports),
+                    first_occurrence=min(r.timestamp for r in reports),
+                    last_occurrence=max(r.timestamp for r in reports),
+                    operations=operations,
+                    recovery_success_rate=recovery_rate
+                )
+                patterns.append(pattern)
+        
+        return sorted(patterns, key=lambda p: p.count, reverse=True)
+    
+    async def get_error_trends(self, hours: int = 24) -> Dict[str, Any]:
+        """エラートレンドを分析"""
+        cutoff_time = datetime.now() - timedelta(hours=hours)
+        recent_errors = [r for r in self.error_history if r.timestamp >= cutoff_time]
+        
+        if not recent_errors:
+            return {"total_errors": 0, "errors_by_category": {}, "errors_by_severity": {}}
+        
+        category_counts = Counter(r.error_category.value for r in recent_errors)
+        severity_counts = Counter(r.severity.value for r in recent_errors)
+        
+        return {
+            "total_errors": len(recent_errors),
+            "errors_by_category": dict(category_counts),
+            "errors_by_severity": dict(severity_counts),
+            "error_rate_per_hour": len(recent_errors) / hours,
+            "most_common_error": recent_errors[0].error_type if recent_errors else None
+        }
+    
+    async def generate_summary_report(self) -> Dict[str, Any]:
+        """サマリーレポートを生成"""
+        if not self.error_history:
+            return {"total_errors": 0, "message": "No errors recorded"}
+        
+        error_types = Counter(r.error_type for r in self.error_history)
+        categories = Counter(r.error_category.value for r in self.error_history)
+        severities = Counter(r.severity.value for r in self.error_history)
+        
+        recovery_attempts = sum(1 for r in self.error_history if r.recovery_attempted)
+        recovery_successes = sum(1 for r in self.error_history if r.recovery_successful)
+        recovery_rate = recovery_successes / recovery_attempts if recovery_attempts > 0 else 0
+        
+        # 推奨事項
+        recommendations = []
+        if categories.get("github_api", 0) > 5:
+            recommendations.append("Consider implementing more aggressive GitHub API rate limiting")
+        if severities.get("critical", 0) > 0:
+            recommendations.append("Address critical system errors immediately")
+        if recovery_rate < 0.5:
+            recommendations.append("Improve error recovery strategies")
+        
+        return {
+            "total_errors": len(self.error_history),
+            "unique_error_types": len(error_types),
+            "most_common_errors": dict(error_types.most_common(5)),
+            "errors_by_category": dict(categories),
+            "errors_by_severity": dict(severities),
+            "recovery_success_rate": recovery_rate,
+            "top_errors": [
+                {"type": error_type, "count": count}
+                for error_type, count in error_types.most_common(10)
+            ],
+            "recommendations": recommendations
+        }
+
+
+class ErrorAnalytics:
+    """エラー分析機能"""
+    
+    def __init__(self):
+        self.error_data: List[Dict[str, Any]] = []
+        self.recovery_data: List[Dict[str, Any]] = []
+    
+    async def add_error(self, error_type: str, timestamp: datetime, operation: str):
+        """エラーデータを追加"""
+        self.error_data.append({
+            "error_type": error_type,
+            "timestamp": timestamp,
+            "operation": operation
+        })
+    
+    async def record_recovery(self, error_id: str, recovery_time: float):
+        """回復時間を記録"""
+        self.recovery_data.append({
+            "error_id": error_id,
+            "recovery_time": recovery_time,
+            "timestamp": datetime.now()
+        })
+    
+    async def calculate_mttr(self) -> float:
+        """Mean Time To Recovery を計算"""
+        if not self.recovery_data:
+            return 0.0
+        
+        recovery_times = [r["recovery_time"] for r in self.recovery_data]
+        return sum(recovery_times) / len(recovery_times)
+    
+    async def identify_error_clusters(
+        self, 
+        time_window_minutes: int = 5, 
+        min_cluster_size: int = 3
+    ) -> List[Dict[str, Any]]:
+        """エラークラスターを特定"""
+        if len(self.error_data) < min_cluster_size:
+            return []
+        
+        # 時系列でソート
+        sorted_errors = sorted(self.error_data, key=lambda x: x["timestamp"])
+        clusters = []
+        
+        current_cluster = [sorted_errors[0]]
+        
+        for error in sorted_errors[1:]:
+            time_diff = (error["timestamp"] - current_cluster[-1]["timestamp"]).total_seconds() / 60
+            
+            if time_diff <= time_window_minutes:
+                current_cluster.append(error)
+            else:
+                if len(current_cluster) >= min_cluster_size:
+                    clusters.append({
+                        "start_time": current_cluster[0]["timestamp"],
+                        "end_time": current_cluster[-1]["timestamp"],
+                        "error_count": len(current_cluster),
+                        "error_types": list(set(e["error_type"] for e in current_cluster)),
+                        "operations": list(set(e["operation"] for e in current_cluster))
+                    })
+                current_cluster = [error]
+        
+        # 最後のクラスターをチェック
+        if len(current_cluster) >= min_cluster_size:
+            clusters.append({
+                "start_time": current_cluster[0]["timestamp"],
+                "end_time": current_cluster[-1]["timestamp"],
+                "error_count": len(current_cluster),
+                "error_types": list(set(e["error_type"] for e in current_cluster)),
+                "operations": list(set(e["operation"] for e in current_cluster))
+            })
+        
+        return clusters
+    
+    async def predict_error_likelihood(self, operation: str, error_type: str) -> float:
+        """エラー発生確率を予測"""
+        operation_errors = [e for e in self.error_data if e["operation"] == operation]
+        
+        if not operation_errors:
+            return 0.0
+        
+        specific_errors = [e for e in operation_errors if e["error_type"] == error_type]
+        return len(specific_errors) / len(operation_errors)
+    
+    async def get_error_correlations(self, min_correlation: float = 0.3) -> List[Dict[str, Any]]:
+        """エラー間の相関関係を分析"""
+        if len(self.error_data) < 10:
+            return []
+        
+        # エラータイプのペアを作成
+        error_types = list(set(e["error_type"] for e in self.error_data))
+        correlations = []
+        
+        for i, type1 in enumerate(error_types):
+            for type2 in error_types[i+1:]:
+                # 同じ操作で発生する頻度を計算
+                type1_operations = set(e["operation"] for e in self.error_data if e["error_type"] == type1)
+                type2_operations = set(e["operation"] for e in self.error_data if e["error_type"] == type2)
+                
+                common_operations = type1_operations.intersection(type2_operations)
+                total_operations = type1_operations.union(type2_operations)
+                
+                if total_operations:
+                    correlation = len(common_operations) / len(total_operations)
+                    
+                    if correlation >= min_correlation:
+                        correlations.append({
+                            "error_type_1": type1,
+                            "error_type_2": type2,
+                            "correlation_score": correlation,
+                            "common_operations": list(common_operations)
+                        })
+        
+        return sorted(correlations, key=lambda x: x["correlation_score"], reverse=True)

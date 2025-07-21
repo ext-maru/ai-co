@@ -160,7 +160,6 @@ class TestErrorReporter:
         
         for error in errors:
             report = await error_reporter.create_report(error, "test_op")
-            error_reporter.error_history.append(report)
         
         patterns = await error_reporter.get_error_patterns()
         
