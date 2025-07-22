@@ -263,13 +263,22 @@ async def main():
         if initial_todos_file.exists():
             os.environ["CLAUDE_INITIAL_TODOS"] = str(initial_todos_file)
         
-        # Todo同期メッセージを準備
+        # Todo同期メッセージを含む知識ファイルを準備
         sync_message = f"""📋 Todo同期システムが起動しました
 ⏰ セッション開始: {datetime.now().strftime('%Y/%m/%d %H:%M:%S')}
 🔄 PostgreSQLタスクトラッカーと連携中
 ✅ TodoRead/TodoWriteツールが自動的に同期されます
 
+---
+
 {knowledge_content}"""
+        
+        # 一時ファイルに保存
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", suffix=".md", delete=False
+        ) as tmp:
+            tmp.write(sync_message)
+            tmp_path = tmp.name
         
         # Claude Code起動
         try:
@@ -277,16 +286,12 @@ async def main():
             print_colored("🏛️ クロードエルダー召喚中...", "green")
             print()
             
-            # プロンプトモードで起動し、Todo同期メッセージを表示
-            subprocess.run([
-                "claude", 
-                "--dangerously-skip-permissions",
-                "-p", sync_message
-            ])
+            subprocess.run(["claude", "--dangerously-skip-permissions", tmp_path])
             
         finally:
-            # クリーンアップは不要（tmp_pathを使わないため）
-            pass
+            # クリーンアップ
+            if os.path.exists(tmp_path):
+                os.unlink(tmp_path)
             
             # 初期Todoファイルを削除
             if initial_todos_file.exists():
