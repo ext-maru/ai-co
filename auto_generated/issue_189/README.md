@@ -4,7 +4,7 @@
 - **Title**: [ARCHITECTURE] Auto Issue Processor A2A実行パス統合とワークフロー再設計
 - **Number**: #189
 - **Type**: general
-- **Created**: 2025-07-22T00:15:58.106349
+- **Created**: 2025-07-22T12:42:08.721230
 
 ## Description
 # Auto Issue Processor アーキテクチャ再設計
