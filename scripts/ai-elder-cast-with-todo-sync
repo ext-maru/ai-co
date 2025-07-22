@@ -69,12 +69,17 @@ def print_task(task, indent="  "):
 async def check_and_inherit_tasks(integration: TodoTrackerIntegration) -> bool:
     """前回の未完了タスクを確認して引き継ぎ"""
     try:
-        # 未完了タスクを取得
-        pending_tasks = await integration.tracker.list_tasks(
+        # 未完了タスクを取得（PostgreSQL版はstatusパラメーターを使用）
+        all_tasks = await integration.tracker.list_tasks(
             assigned_to=integration.user_id,
-            status_filter=[TaskStatus.PENDING, TaskStatus.IN_PROGRESS],
-            limit=20
+            limit=50
         )
+        
+        # クライアント側でフィルタリング
+        pending_tasks = [
+            task for task in all_tasks 
+            if task.get("status") in ["pending", "in_progress"]
+        ][:20]
         
         if not pending_tasks:
             return False
@@ -249,13 +254,6 @@ async def main():
         # 知識コンテンツを準備
         knowledge_content = create_startup_knowledge(has_inherited)
         
-        # 一時ファイルに保存
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", suffix=".md", delete=False
-        ) as tmp:
-            tmp.write(knowledge_content)
-            tmp_path = tmp.name
-        
         # 日本語環境設定
         os.environ["LANG"] = "ja_JP.UTF-8"
         os.environ["LC_ALL"] = "ja_JP.UTF-8"
@@ -265,18 +263,30 @@ async def main():
         if initial_todos_file.exists():
             os.environ["CLAUDE_INITIAL_TODOS"] = str(initial_todos_file)
         
+        # Todo同期メッセージを準備
+        sync_message = f"""📋 Todo同期システムが起動しました
+⏰ セッション開始: {datetime.now().strftime('%Y/%m/%d %H:%M:%S')}
+🔄 PostgreSQLタスクトラッカーと連携中
+✅ TodoRead/TodoWriteツールが自動的に同期されます
+
+{knowledge_content}"""
+        
         # Claude Code起動
         try:
             print()
             print_colored("🏛️ クロードエルダー召喚中...", "green")
             print()
             
-            subprocess.run(["claude", "--dangerously-skip-permissions", tmp_path])
+            # プロンプトモードで起動し、Todo同期メッセージを表示
+            subprocess.run([
+                "claude", 
+                "--dangerously-skip-permissions",
+                "-p", sync_message
+            ])
             
         finally:
-            # クリーンアップ
-            if os.path.exists(tmp_path):
-                os.unlink(tmp_path)
+            # クリーンアップは不要（tmp_pathを使わないため）
+            pass
             
             # 初期Todoファイルを削除
             if initial_todos_file.exists():
