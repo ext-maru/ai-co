@@ -1,7 +1,7 @@
-# 🏛️ Issue #301: Elder Flow設計書作成能力の強化
+# Issue #306: Elder Flow設計書作成能力の強化
 
 ## 親Issue
-[#300 Elder Flow改修計画](issue-300-elder-flow-improvement-plan.md)
+[#305 Elder Flow改修計画](elder-flow-improvement-plan.md)
 
 ## 問題定義
 

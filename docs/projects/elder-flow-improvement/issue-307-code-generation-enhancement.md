@@ -1,7 +1,7 @@
-# 🏛️ Issue #302: Elder Flowプログラム制作能力の強化
+# Issue #307: Elder Flowプログラム制作能力の強化
 
 ## 親Issue
-[#300 Elder Flow改修計画](issue-300-elder-flow-improvement-plan.md)
+[#305 Elder Flow改修計画](elder-flow-improvement-plan.md)
 
 ## 問題定義
 
