@@ -78,6 +78,28 @@ Claude Elder（私）の魂設計。Claude Codeとしての能力を活かしつ
 
 - [Claude Elder魂設計仕様書](https://github.com/ext-maru/ai-co/blob/main/docs/technical/CLAUDE_ELDER_SOUL_DESIGN.md)
 - [Task Sage README](/home/aicompany/elders_guild/task_sage/README.md)
+- [Task Sage開発 - 学習と知見](https://github.com/ext-maru/ai-co/blob/main/docs/technical/ELDER_TREE_TASK_SAGE_LESSONS_LEARNED.md)
+
+---
+
+## 💡 開発から得た知見
+
+### 成功要因
+1. **TDDの徹底** - テストファーストで仕様を明確化
+2. **段階的実装** - データモデル → コア機能 → 統合機能
+3. **既存資産活用** - BaseSoul、A2Aプロトコルの再利用
+
+### 技術的発見
+- 抽象基底クラスのメソッド実装忘れに注意
+- テストフィクスチャは各クラスに必要
+- データモデルのバリデーションが品質向上に貢献
+
+### 改善提案
+- 共通テストフィクスチャの定義
+- データ永続化層の早期実装
+- A2A通信の本格実装
+
+詳細は[学習と知見ドキュメント](https://github.com/ext-maru/ai-co/blob/main/docs/technical/ELDER_TREE_TASK_SAGE_LESSONS_LEARNED.md)を参照。
 
 ---
 

@@ -30,7 +30,8 @@ class ClaudeElderAutoFlowInterceptor:
 
     def __init__(self):
         self.auto_flow_patterns = self._load_auto_flow_patterns()
-        self.enabled = True
+        self.config_file = Path.home() / ".claude_elder_auto_flow_config.json"
+        self._load_config()
         self.bypass_keywords = ["help", "status", "explain", "show", "list", "describe"]
 
     def _load_auto_flow_patterns(self) -> List[Dict[str, Any]]:
@@ -192,11 +193,13 @@ class ClaudeElderAutoFlowInterceptor:
     def enable_auto_flow(self) -> None:
         """Elder Flow自動適用を有効化"""
         self.enabled = True
+        self._save_config()
         logger.info("🌊 Elder Flow自動適用が有効化されました")
 
     def disable_auto_flow(self) -> None:
         """Elder Flow自動適用を無効化"""
         self.enabled = False
+        self._save_config()
         logger.info("⏸️ Elder Flow自動適用が無効化されました")
 
     def add_bypass_keyword(self, keyword: str) -> None:
@@ -257,6 +260,27 @@ class ClaudeElderAutoFlowInterceptor:
                 )
 
         return results
+
+    def _load_config(self) -> None:
+        """設定ファイルから状態を読み込み"""
+        if self.config_file.exists():
+            try:
+                with open(self.config_file, 'r') as f:
+                    config = json.load(f)
+                    self.enabled = config.get('enabled', True)
+            except Exception as e:
+                logger.warning(f"設定ファイル読み込みエラー: {e}")
+                self.enabled = True
+        else:
+            self.enabled = True
+
+    def _save_config(self) -> None:
+        """設定ファイルに状態を保存"""
+        try:
+            with open(self.config_file, 'w') as f:
+                json.dump({'enabled': self.enabled}, f)
+        except Exception as e:
+            logger.error(f"設定ファイル保存エラー: {e}")
 
     async def _execute_elder_flow_lightweight(self, task_name: str, priority: str) -> Dict[str, Any]:
         """軽量版Elder Flow実行（依存関係最小化）"""
