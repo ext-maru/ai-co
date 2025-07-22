@@ -1,0 +1,14 @@
+# AI Company ナレッジベース自動更新 Cronジョブ
+# 適用方法: crontab -e で以下を追加
+
+# 毎日午前3時: ナレッジ統合
+0 3 * * * cd /home/aicompany/ai_co && ai-knowledge consolidate --quiet >> /home/aicompany/ai_co/logs/cron_knowledge.log 2>&1
+
+# 6時間ごと: 進化追跡
+0 */6 * * * cd /home/aicompany/ai_co && ai-knowledge evolve --quiet >> /home/aicompany/ai_co/logs/cron_knowledge.log 2>&1
+
+# 毎週月曜9時: 週次レポート
+0 9 * * 1 cd /home/aicompany/ai_co && /home/aicompany/ai_co/scripts/weekly_knowledge_report.sh >> /home/aicompany/ai_co/logs/cron_knowledge.log 2>&1
+
+# 毎月1日: 月次アーカイブ
+0 0 1 * * cd /home/aicompany/ai_co && /home/aicompany/ai_co/scripts/monthly_knowledge_archive.sh >> /home/aicompany/ai_co/logs/cron_knowledge.log 2>&1
