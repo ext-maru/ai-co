@@ -686,10 +686,208 @@ class TechScout(WizardServant):
 
     async def _store_research_knowledge(self, research_data: Dict[str, Any]) -> bool:
         """調査結果を知識ベースに保存"""
-        # TODO: 実際の知識ベースへの保存実装
-        # ここではログ出力のみ
-        self.logger.info(f"Storing research knowledge: {research_data['topic']}")
-        return True
+        try:
+            # Knowledge Sage連携による永続化実装
+            knowledge_item = {
+                "title": f"Tech Scout Research: {research_data['topic']}",
+                "content": {
+                    "topic": research_data["topic"],
+                    "research_results": research_data.get("results", []),
+                    "technologies": research_data.get("technologies", []),
+                    "recommendations": research_data.get("recommendations", []),
+                    "complexity_score": research_data.get("complexity_score", 0.0),
+                    "research_metadata": {
+                        "research_date": datetime.now().isoformat(),
+                        "research_depth": research_data.get("depth", "basic"),
+                        "sources_count": len(research_data.get("sources", [])),
+                        "confidence_level": research_data.get("confidence", 0.8)
+                    }
+                },
+                "category": "tech_research",
+                "source": "tech_scout",
+                "confidence_score": research_data.get("confidence", 0.8),
+                "tags": [
+                    "tech_scout",
+                    "technology_research", 
+                    research_data["topic"].lower().replace(" ", "_")
+                ] + research_data.get("technologies", [])
+            }
+            
+            # ローカル知識ベースファイルへの保存
+            knowledge_file = Path("data/tech_scout_knowledge.json")
+            knowledge_file.parent.mkdir(parents=True, exist_ok=True)
+            
+            # 既存知識ベースの読み込み
+            existing_knowledge = []
+            if knowledge_file.exists():
+                try:
+                    with open(knowledge_file, 'r', encoding='utf-8') as f:
+                        existing_knowledge = json.load(f)
+                except (json.JSONDecodeError, IOError):
+                    existing_knowledge = []
+            
+            # 重複チェック（同じトピックの場合は更新）
+            topic_key = research_data["topic"].lower()
+            updated = False
+            
+            for i, item in enumerate(existing_knowledge):
+                if (item.get("content", {}).get("topic", "").lower() == topic_key):
+                    # 既存エントリを更新
+                    existing_knowledge[i] = knowledge_item
+                    updated = True
+                    break
+            
+            if not updated:
+                # 新規追加
+                existing_knowledge.append(knowledge_item)
+            
+            # 知識ベースサイズ制限（最新1000件まで）
+            if len(existing_knowledge) > 1000:
+                existing_knowledge = existing_knowledge[-1000:]
+            
+            # ファイルに保存
+            with open(knowledge_file, 'w', encoding='utf-8') as f:
+                json.dump(existing_knowledge, f, ensure_ascii=False, indent=2)
+            
+            # Knowledge Sageへの送信（4賢者連携）
+            try:
+                await self._submit_to_knowledge_sage(knowledge_item)
+            except Exception as sage_error:
+                self.logger.warning(f"Failed to submit to Knowledge Sage: {sage_error}")
+                # Knowledge Sage連携失敗してもローカル保存は成功とみなす
+            
+            # 検索インデックス更新
+            await self._update_search_index(knowledge_item)
+            
+            self.logger.info(f"Successfully stored research knowledge: {research_data['topic']}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to store research knowledge: {e}")
+            return False
+    
+    async def _submit_to_knowledge_sage(self, knowledge_item: Dict[str, Any]):
+        """Knowledge Sageへの知識提出"""
+        # 実際の実装では4賢者システムのA2A通信を使用
+        # 現在は模擬実装
+        sage_submission = {
+            "action": "store_knowledge",
+            "knowledge_item": knowledge_item,
+            "source": "tech_scout",
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        self.logger.debug(f"Submitting knowledge to Knowledge Sage: {knowledge_item['title']}")
+        # 実際の実装では await knowledge_sage.handle_a2a_message(sage_submission)
+        
+    async def _update_search_index(self, knowledge_item: Dict[str, Any]):
+        """検索インデックス更新"""
+        try:
+            # 検索可能フィールドの抽出
+            searchable_content = {
+                "title": knowledge_item["title"],
+                "topic": knowledge_item["content"]["topic"],
+                "technologies": knowledge_item["content"].get("technologies", []),
+                "tags": knowledge_item["tags"],
+                "summary": " ".join(knowledge_item["content"].get("recommendations", [])[:3])
+            }
+            
+            # インメモリ検索インデックス更新
+            if not hasattr(self, 'search_index'):
+                self.search_index = {}
+            
+            topic_key = knowledge_item["content"]["topic"].lower()
+            self.search_index[topic_key] = {
+                "knowledge_item": knowledge_item,
+                "searchable_content": searchable_content,
+                "last_updated": datetime.now().isoformat()
+            }
+            
+            self.logger.debug(f"Updated search index for: {topic_key}")
+            
+        except Exception as e:
+            self.logger.warning(f"Failed to update search index: {e}")
+    
+    async def search_knowledge(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
+        """蓄積された知識の検索"""
+        try:
+            results = []
+            query_lower = query.lower()
+            
+            # インメモリインデックス検索
+            if hasattr(self, 'search_index'):
+                for topic_key, index_entry in self.search_index.items():
+                    searchable = index_entry["searchable_content"]
+                    
+                    # 検索マッチング
+                    relevance_score = 0.0
+                    
+                    if query_lower in searchable["title"].lower():
+                        relevance_score += 1.0
+                    if query_lower in searchable["topic"].lower():
+                        relevance_score += 0.8
+                    if any(query_lower in tech.lower() for tech in searchable["technologies"]):
+                        relevance_score += 0.6
+                    if any(query_lower in tag.lower() for tag in searchable["tags"]):
+                        relevance_score += 0.4
+                    if query_lower in searchable["summary"].lower():
+                        relevance_score += 0.3
+                    
+                    if relevance_score > 0:
+                        results.append({
+                            "knowledge_item": index_entry["knowledge_item"],
+                            "relevance_score": relevance_score,
+                            "last_updated": index_entry["last_updated"]
+                        })
+            
+            # ファイルベース検索（フォールバック）
+            if not results:
+                results = await self._search_knowledge_file(query, limit)
+            
+            # 関連度順でソート
+            results.sort(key=lambda x: x["relevance_score"], reverse=True)
+            
+            return results[:limit]
+            
+        except Exception as e:
+            self.logger.error(f"Knowledge search failed: {e}")
+            return []
+    
+    async def _search_knowledge_file(self, query: str, limit: int) -> List[Dict[str, Any]]:
+        """ファイルベース知識検索"""
+        try:
+            knowledge_file = Path("data/tech_scout_knowledge.json")
+            if not knowledge_file.exists():
+                return []
+            
+            with open(knowledge_file, 'r', encoding='utf-8') as f:
+                knowledge_base = json.load(f)
+            
+            results = []
+            query_lower = query.lower()
+            
+            for item in knowledge_base:
+                score = 0.0
+                title = item.get("title", "").lower()
+                topic = item.get("content", {}).get("topic", "").lower()
+                
+                if query_lower in title:
+                    score += 1.0
+                if query_lower in topic:
+                    score += 0.8
+                
+                if score > 0:
+                    results.append({
+                        "knowledge_item": item,
+                        "relevance_score": score,
+                        "last_updated": item.get("content", {}).get("research_metadata", {}).get("research_date", "")
+                    })
+            
+            return results
+            
+        except Exception as e:
+            self.logger.error(f"File-based knowledge search failed: {e}")
+            return []
 
     async def health_check(self) -> Dict[str, Any]:
         """ヘルスチェック"""
