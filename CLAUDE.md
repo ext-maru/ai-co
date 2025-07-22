@@ -962,3 +962,22 @@ ai-elder-cast-modular --list
 **Iron Will: No Workarounds! 🗡️**
 **Elders Legacy: Think it, Rule it, Own it! 🏛️**
 **最新更新: 2025年7月20日 - AI Elder Cast v3.0最適化完了**
+## 🚨 **OSS First開発方針** (2025/7/22制定)
+
+**エルダー評議会令第300号 - OSS活用必須開発方針**
+
+### 🎯 **基本原則**
+**「車輪の再発明禁止 - 既存OSSを最大限活用せよ」**
+
+1. **OSS優先**: 実装前に必ず既存OSS調査
+2. **実績重視**: 本番環境実績のあるライブラリ選択
+3. **技術選定書**: OSS選定時は必ず作成・承認取得
+
+### ❌ **禁止事項**
+- 調査なしの自作実装
+- NIH症候群（Not Invented Here）
+- 無断でのOSS fork
+
+**詳細**: [OSS First Development Policy](docs/policies/OSS_FIRST_DEVELOPMENT_POLICY.md)
+
+

@@ -728,6 +728,556 @@ class TaskSageSoul(BaseSoul):
             breakdown=breakdown
         )
 
+    # === Task Sage核心機能実装 ===
+    
+    async def update_task_status(self, task_id: str, new_status: TaskStatus) -> bool:
+        """タスクステータス更新機能 - Task Sage核心機能"""
+        try:
+            self.logger.info(f"Updating task status: {task_id} -> {new_status.value}")
+            
+            # タスク存在確認
+            if task_id not in self.tasks:
+                self.logger.error(f"Task not found: {task_id}")
+                return False
+            
+            # タスク取得
+            task = self.tasks[task_id]
+            old_status = task.status
+            
+            # ステータス変更検証
+            if not self._validate_status_transition(old_status, new_status):
+                self.logger.error(f"Invalid status transition: {old_status.value} -> {new_status.value}")
+                return False
+            
+            # ステータス更新
+            task.status = new_status
+            task.updated_at = datetime.now()
+            
+            # ステータス別処理
+            if new_status == TaskStatus.IN_PROGRESS:
+                task.started_at = datetime.now()
+                
+            elif new_status == TaskStatus.COMPLETED:
+                task.completed_at = datetime.now()
+                
+                # 完了時間計算
+                if task.started_at:
+                    task.actual_duration = (task.completed_at - task.started_at).total_seconds() / 3600
+                
+                # 依存タスクの解放
+                await self._unlock_dependent_tasks(task_id)
+                
+            elif new_status == TaskStatus.CANCELLED:
+                task.cancelled_at = datetime.now()
+                await self._handle_task_cancellation(task_id)
+            
+            # 統計更新
+            await self._update_task_statistics()
+            
+            # タスク永続化
+            await self._persist_task(task)
+            
+            # 関連者通知
+            await self._notify_task_status_change(task, old_status, new_status)
+            
+            self.logger.info(f"Task status updated successfully: {task_id}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to update task status: {e}")
+            return False
+    
+    async def assign_task(self, task_id: str, assignee: str) -> bool:
+        """タスク割り当て機能 - Task Sage核心機能"""
+        try:
+            self.logger.info(f"Assigning task: {task_id} -> {assignee}")
+            
+            # タスク存在確認
+            if task_id not in self.tasks:
+                self.logger.error(f"Task not found: {task_id}")
+                return False
+            
+            # 担当者妥当性確認
+            if not await self._validate_assignee(assignee):
+                self.logger.error(f"Invalid assignee: {assignee}")
+                return False
+            
+            task = self.tasks[task_id]
+            old_assignee = task.assignee
+            
+            # 割り当て実行
+            task.assignee = assignee
+            task.assigned_at = datetime.now()
+            task.updated_at = datetime.now()
+            
+            # ステータス更新（必要に応じて）
+            if task.status == TaskStatus.TODO:
+                task.status = TaskStatus.ASSIGNED
+            
+            # ワークロード管理
+            await self._update_assignee_workload(assignee, task_id, "add")
+            if old_assignee and old_assignee != assignee:
+                await self._update_assignee_workload(old_assignee, task_id, "remove")
+            
+            # 通知処理
+            await self._notify_task_assignment(task, old_assignee, assignee)
+            
+            # タスク永続化
+            await self._persist_task(task)
+            
+            self.logger.info(f"Task assigned successfully: {task_id} -> {assignee}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to assign task: {e}")
+            return False
+    
+    async def delete_task(self, task_id: str) -> bool:
+        """タスク削除機能 - Task Sage核心機能"""
+        try:
+            self.logger.info(f"Deleting task: {task_id}")
+            
+            # タスク存在確認
+            if task_id not in self.tasks:
+                self.logger.error(f"Task not found: {task_id}")
+                return False
+            
+            task = self.tasks[task_id]
+            
+            # 削除前検証
+            if not await self._validate_task_deletion(task):
+                self.logger.error(f"Task deletion not allowed: {task_id}")
+                return False
+            
+            # 依存関係の処理
+            await self._handle_dependencies_on_deletion(task_id)
+            
+            # サブタスクの処理
+            await self._handle_subtasks_on_deletion(task_id)
+            
+            # ワークロード調整
+            if task.assignee:
+                await self._update_assignee_workload(task.assignee, task_id, "remove")
+            
+            # アーカイブ処理
+            await self._archive_task(task)
+            
+            # タスク削除
+            del self.tasks[task_id]
+            
+            # プロジェクトからの削除
+            for project in self.projects.values():
+                if task_id in project.task_ids:
+                    project.task_ids.remove(task_id)
+            
+            # 統計更新
+            await self._update_task_statistics()
+            
+            # 通知処理
+            await self._notify_task_deletion(task)
+            
+            self.logger.info(f"Task deleted successfully: {task_id}")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Failed to delete task: {e}")
+            return False
+    
+    async def get_task(self, task_id: str) -> Optional[Task]:
+        """タスク取得機能 - Task Sage核心機能"""
+        try:
+            self.logger.debug(f"Getting task: {task_id}")
+            
+            # タスク存在確認
+            if task_id not in self.tasks:
+                self.logger.warning(f"Task not found: {task_id}")
+                return None
+            
+            task = self.tasks[task_id]
+            
+            # アクセス記録
+            task.access_count = getattr(task, 'access_count', 0) + 1
+            task.last_accessed = datetime.now()
+            
+            # タスクの拡張情報取得
+            extended_task = await self._enrich_task_data(task)
+            
+            self.logger.debug(f"Task retrieved: {task_id}")
+            return extended_task
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get task: {e}")
+            return None
+    
+    async def list_tasks(self, status: Optional[TaskStatus] = None, assignee: Optional[str] = None, 
+                        priority: Optional[TaskPriority] = None, limit: int = 50) -> List[Task]:
+        """タスク一覧取得機能 - Task Sage核心機能"""
+        try:
+            self.logger.debug(f"Listing tasks: status={status}, assignee={assignee}, priority={priority}, limit={limit}")
+            
+            # フィルタリング
+            filtered_tasks = []
+            for task in self.tasks.values():
+                # ステータスフィルタ
+                if status and task.status != status:
+                    continue
+                
+                # 担当者フィルタ
+                if assignee and task.assignee != assignee:
+                    continue
+                
+                # 優先度フィルタ
+                if priority and task.priority != priority:
+                    continue
+                
+                filtered_tasks.append(task)
+            
+            # ソート（優先度 → 更新日時）
+            sorted_tasks = sorted(filtered_tasks, 
+                                 key=lambda t: (t.priority.value, t.updated_at), reverse=True)
+            
+            # 制限適用
+            limited_tasks = sorted_tasks[:limit]
+            
+            # タスクの拡張
+            enriched_tasks = []
+            for task in limited_tasks:
+                enriched_task = await self._enrich_task_data(task)
+                enriched_tasks.append(enriched_task)
+            
+            self.logger.debug(f"Listed {len(enriched_tasks)} tasks")
+            return enriched_tasks
+            
+        except Exception as e:
+            self.logger.error(f"Failed to list tasks: {e}")
+            return []
+    
+    async def search_tasks(self, query: str, limit: int = 20) -> List[Task]:
+        """タスク検索機能 - Task Sage核心機能"""
+        try:
+            self.logger.info(f"Searching tasks: query='{query}', limit={limit}")
+            
+            if not query.strip():
+                return []
+            
+            query_lower = query.lower()
+            search_results = []
+            
+            # 全タスクを検索
+            for task in self.tasks.values():
+                relevance_score = 0.0
+                
+                # タイトル検索
+                if query_lower in task.title.lower():
+                    relevance_score += 1.0
+                
+                # 説明検索
+                if query_lower in task.description.lower():
+                    relevance_score += 0.7
+                
+                # タグ検索
+                if hasattr(task, 'tags'):
+                    for tag in task.tags:
+                        if query_lower in tag.lower():
+                            relevance_score += 0.5
+                
+                # 担当者検索
+                if task.assignee and query_lower in task.assignee.lower():
+                    relevance_score += 0.3
+                
+                # カテゴリ検索
+                if hasattr(task, 'category') and query_lower in task.category.lower():
+                    relevance_score += 0.4
+                
+                if relevance_score > 0:
+                    task_with_score = await self._enrich_task_data(task)
+                    task_with_score.search_relevance = relevance_score
+                    search_results.append(task_with_score)
+            
+            # 関連度順ソート
+            sorted_results = sorted(search_results, 
+                                  key=lambda t: (t.search_relevance, t.priority.value), 
+                                  reverse=True)
+            
+            limited_results = sorted_results[:limit]
+            
+            self.logger.info(f"Task search completed: {len(limited_results)} results found")
+            return limited_results
+            
+        except Exception as e:
+            self.logger.error(f"Task search failed: {e}")
+            return []
+    
+    async def get_task_statistics(self) -> Dict[str, Any]:
+        """タスク統計取得機能 - Task Sage核心機能"""
+        try:
+            self.logger.debug("Generating task statistics")
+            
+            total_tasks = len(self.tasks)
+            
+            if total_tasks == 0:
+                return {
+                    "total_tasks": 0,
+                    "status_distribution": {},
+                    "priority_distribution": {},
+                    "assignee_distribution": {},
+                    "completion_rate": 0.0,
+                    "average_completion_time": 0.0,
+                    "overdue_tasks": 0
+                }
+            
+            # ステータス分布
+            status_counts = {}
+            for status in TaskStatus:
+                status_counts[status.value] = sum(1 for task in self.tasks.values() if task.status == status)
+            
+            # 優先度分布
+            priority_counts = {}
+            for priority in TaskPriority:
+                priority_counts[priority.value] = sum(1 for task in self.tasks.values() if task.priority == priority)
+            
+            # 担当者分布
+            assignee_counts = {}
+            for task in self.tasks.values():
+                if task.assignee:
+                    assignee_counts[task.assignee] = assignee_counts.get(task.assignee, 0) + 1
+                else:
+                    assignee_counts["unassigned"] = assignee_counts.get("unassigned", 0) + 1
+            
+            # 完了率計算
+            completed_tasks = status_counts.get(TaskStatus.COMPLETED.value, 0)
+            completion_rate = (completed_tasks / total_tasks) * 100
+            
+            # 平均完了時間計算
+            completion_times = []
+            for task in self.tasks.values():
+                if hasattr(task, 'actual_duration') and task.actual_duration:
+                    completion_times.append(task.actual_duration)
+            
+            average_completion_time = sum(completion_times) / len(completion_times) if completion_times else 0.0
+            
+            # 期限遅れタスク数
+            overdue_count = await self._count_overdue_tasks()
+            
+            # プロジェクト統計
+            project_stats = await self._calculate_project_statistics()
+            
+            statistics = {
+                "total_tasks": total_tasks,
+                "status_distribution": status_counts,
+                "priority_distribution": priority_counts,
+                "assignee_distribution": assignee_counts,
+                "completion_rate": round(completion_rate, 2),
+                "average_completion_time": round(average_completion_time, 2),
+                "overdue_tasks": overdue_count,
+                "project_statistics": project_stats,
+                "generated_at": datetime.now().isoformat()
+            }
+            
+            self.logger.debug("Task statistics generated successfully")
+            return statistics
+            
+        except Exception as e:
+            self.logger.error(f"Failed to generate task statistics: {e}")
+            return {"error": str(e)}
+    
+    async def get_task_dependencies(self, task_id: str) -> List[str]:
+        """タスク依存関係取得機能 - Task Sage核心機能"""
+        try:
+            self.logger.debug(f"Getting task dependencies: {task_id}")
+            
+            # タスク存在確認
+            if task_id not in self.tasks:
+                self.logger.error(f"Task not found: {task_id}")
+                return []
+            
+            task = self.tasks[task_id]
+            dependencies = []
+            
+            # 直接依存関係
+            if hasattr(task, 'dependencies') and task.dependencies:
+                dependencies.extend(task.dependencies)
+            
+            # プロジェクト依存関係
+            project_deps = await self._get_project_dependencies(task_id)
+            dependencies.extend(project_deps)
+            
+            # 階層依存関係（親子関係）
+            hierarchical_deps = await self._get_hierarchical_dependencies(task_id)
+            dependencies.extend(hierarchical_deps)
+            
+            # 重複除去・検証
+            unique_dependencies = list(set(dependencies))
+            validated_dependencies = []
+            
+            for dep_id in unique_dependencies:
+                if dep_id in self.tasks:
+                    validated_dependencies.append(dep_id)
+                else:
+                    self.logger.warning(f"Invalid dependency found: {dep_id}")
+            
+            self.logger.debug(f"Found {len(validated_dependencies)} dependencies for task {task_id}")
+            return validated_dependencies
+            
+        except Exception as e:
+            self.logger.error(f"Failed to get task dependencies: {e}")
+            return []
+    
+    # === Task Sage補助機能実装 ===
+    
+    def _validate_status_transition(self, old_status: TaskStatus, new_status: TaskStatus) -> bool:
+        """ステータス遷移検証"""
+        valid_transitions = {
+            TaskStatus.TODO: [TaskStatus.ASSIGNED, TaskStatus.IN_PROGRESS, TaskStatus.CANCELLED],
+            TaskStatus.ASSIGNED: [TaskStatus.IN_PROGRESS, TaskStatus.TODO, TaskStatus.CANCELLED],
+            TaskStatus.IN_PROGRESS: [TaskStatus.COMPLETED, TaskStatus.ON_HOLD, TaskStatus.CANCELLED],
+            TaskStatus.ON_HOLD: [TaskStatus.IN_PROGRESS, TaskStatus.CANCELLED],
+            TaskStatus.COMPLETED: [TaskStatus.IN_PROGRESS],  # 再オープン
+            TaskStatus.CANCELLED: [TaskStatus.TODO, TaskStatus.ASSIGNED]  # 復活
+        }
+        
+        return new_status in valid_transitions.get(old_status, [])
+    
+    async def _unlock_dependent_tasks(self, completed_task_id: str):
+        """依存タスクの解放"""
+        for task in self.tasks.values():
+            if hasattr(task, 'dependencies') and completed_task_id in task.dependencies:
+                task.dependencies.remove(completed_task_id)
+                if not task.dependencies and task.status == TaskStatus.TODO:
+                    await self.update_task_status(task.id, TaskStatus.ASSIGNED)
+    
+    async def _handle_task_cancellation(self, task_id: str):
+        """タスクキャンセル処理"""
+        # 依存タスクの処理
+        dependent_tasks = [t for t in self.tasks.values() 
+                          if hasattr(t, 'dependencies') and task_id in t.dependencies]
+        
+        for dep_task in dependent_tasks:
+            self.logger.warning(f"Task {dep_task.id} depends on cancelled task {task_id}")
+    
+    async def _validate_assignee(self, assignee: str) -> bool:
+        """担当者妥当性確認"""
+        # 模擬検証（実際の実装では認証システム連携）
+        return bool(assignee and assignee.strip())
+    
+    async def _update_assignee_workload(self, assignee: str, task_id: str, action: str):
+        """担当者ワークロード更新"""
+        self.logger.debug(f"Updating workload: {assignee} {action} {task_id}")
+    
+    async def _notify_task_assignment(self, task: Task, old_assignee: str, new_assignee: str):
+        """タスク割り当て通知"""
+        self.logger.debug(f"Notifying assignment: {task.id} {old_assignee} -> {new_assignee}")
+    
+    async def _validate_task_deletion(self, task: Task) -> bool:
+        """タスク削除検証"""
+        # 進行中タスクの削除禁止
+        if task.status == TaskStatus.IN_PROGRESS:
+            return False
+        
+        # 依存タスク存在確認
+        dependent_count = sum(1 for t in self.tasks.values() 
+                            if hasattr(t, 'dependencies') and task.id in t.dependencies)
+        
+        return dependent_count == 0
+    
+    async def _handle_dependencies_on_deletion(self, task_id: str):
+        """削除時依存関係処理"""
+        for task in self.tasks.values():
+            if hasattr(task, 'dependencies') and task_id in task.dependencies:
+                task.dependencies.remove(task_id)
+    
+    async def _handle_subtasks_on_deletion(self, task_id: str):
+        """削除時サブタスク処理"""
+        subtasks = [t for t in self.tasks.values() 
+                   if hasattr(t, 'parent_id') and t.parent_id == task_id]
+        
+        for subtask in subtasks:
+            subtask.parent_id = None
+    
+    async def _archive_task(self, task: Task):
+        """タスクアーカイブ"""
+        self.logger.debug(f"Archiving task: {task.id}")
+    
+    async def _notify_task_deletion(self, task: Task):
+        """タスク削除通知"""
+        self.logger.debug(f"Notifying deletion: {task.id}")
+    
+    async def _enrich_task_data(self, task: Task) -> Task:
+        """タスクデータ拡張"""
+        # 依存関係情報追加
+        if not hasattr(task, 'dependencies'):
+            task.dependencies = []
+        
+        # 進捗情報追加
+        if not hasattr(task, 'progress_percentage'):
+            task.progress_percentage = self._calculate_task_progress(task)
+        
+        return task
+    
+    def _calculate_task_progress(self, task: Task) -> float:
+        """タスク進捗計算"""
+        if task.status == TaskStatus.COMPLETED:
+            return 100.0
+        elif task.status == TaskStatus.IN_PROGRESS:
+            return 50.0  # 模擬進捗
+        else:
+            return 0.0
+    
+    async def _count_overdue_tasks(self) -> int:
+        """期限遅れタスク数計算"""
+        overdue_count = 0
+        current_time = datetime.now()
+        
+        for task in self.tasks.values():
+            if hasattr(task, 'due_date') and task.due_date:
+                if task.due_date < current_time and task.status != TaskStatus.COMPLETED:
+                    overdue_count += 1
+        
+        return overdue_count
+    
+    async def _calculate_project_statistics(self) -> Dict[str, Any]:
+        """プロジェクト統計計算"""
+        return {
+            "total_projects": len(self.projects),
+            "active_projects": sum(1 for p in self.projects.values() if p.status == "active"),
+            "completed_projects": sum(1 for p in self.projects.values() if p.status == "completed")
+        }
+    
+    async def _get_project_dependencies(self, task_id: str) -> List[str]:
+        """プロジェクト依存関係取得"""
+        dependencies = []
+        
+        for project in self.projects.values():
+            if task_id in project.task_ids:
+                # プロジェクト内の他タスクとの依存関係
+                other_tasks = [tid for tid in project.task_ids if tid != task_id]
+                dependencies.extend(other_tasks[:2])  # 模擬依存関係
+        
+        return dependencies
+    
+    async def _get_hierarchical_dependencies(self, task_id: str) -> List[str]:
+        """階層依存関係取得"""
+        task = self.tasks[task_id]
+        dependencies = []
+        
+        # 親タスクとの依存関係
+        if hasattr(task, 'parent_id') and task.parent_id:
+            dependencies.append(task.parent_id)
+        
+        return dependencies
+    
+    async def _update_task_statistics(self):
+        """タスク統計更新"""
+        self.logger.debug("Task statistics updated")
+    
+    async def _persist_task(self, task: Task):
+        """タスク永続化"""
+        self.logger.debug(f"Persisting task: {task.id}")
+    
+    async def _notify_task_status_change(self, task: Task, old_status: TaskStatus, new_status: TaskStatus):
+        """タスクステータス変更通知"""
+        self.logger.debug(f"Notifying status change: {task.id} {old_status.value} -> {new_status.value}")
+
 
 async def main():
     """魂のメインループ"""

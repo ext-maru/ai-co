@@ -32,22 +32,34 @@ Elder Treeの分散AI通信基盤として、Google の `a2a-python` (Applicatio
 
 ---
 
-## 🔧 **a2a-pythonとは**
+## 🔧 **python-a2aとは** (修正: a2a-python → python-a2a)
+
+### 📦 **パッケージ詳細**
+- **正式名称**: python-a2a (PyPIでの名前)
+- **バージョン**: 0.5.9
+- **作者**: Manoj Desai
+- **ライセンス**: MIT
+- **GitHub**: https://github.com/themanojdesai/python-a2a
+- **対応**: OpenAI, Anthropic, Claude, HuggingFace, AWS Bedrock, LangChain
 
 ### 📋 **基本概念**
 ```python
-# a2a-pythonの基本使用例
-from a2a import Server, Client, Message
+# python-a2aの基本使用例
+from python_a2a import Agent, Message, Protocol
 
-# サーバー（受信側）
-server = Server(name="my_service", port=50051)
+# エージェント作成
+agent = Agent(name="my_agent", port=50051)
 
-@server.handler("greet")
+@agent.on_message("greet")
 async def handle_greet(message: Message) -> Message:
     return Message(data={"response": f"Hello, {message.data['name']}!"})
 
-# クライアント（送信側）
-client = Client()
+# クライアントとして他エージェントと通信
+response = await agent.send_message(
+    target="other_agent",
+    message_type="greet",
+    data={"name": "Elder"}
+)
 response = await client.call(
     service="my_service",
     method="greet", 
