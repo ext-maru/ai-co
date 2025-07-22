@@ -31,58 +31,14 @@ def print_colored(text, color="cyan"):
 
 
 async def quick_task_sync():
-    """簡易タスク同期処理"""
-    try:
-        from libs.todo_tracker_integration import TodoTrackerIntegration
-        
-        # タスクトラッカー統合を初期化
-        user_id = os.environ.get("CLAUDE_ELDER_USER", "claude_elder")
-        integration = TodoTrackerIntegration(auto_sync=False, user_id=user_id)
-        await integration.initialize()
-        
-        # 双方向同期
-        await integration.sync_both_ways(personal_only=True)
-        
-        # 統計情報を取得
-        sync_status = await integration.get_sync_status()
-        my_stats = sync_status.get("my_tasks_stats", {})
-        
-        active_count = my_stats.get("pending", 0) + my_stats.get("in_progress", 0)
-        
-        print_colored(f"✅ タスク同期完了 (アクティブ: {active_count}件)", "green")
-        
-        # クリーンアップ
-        if integration.tracker:
-            await integration.tracker.close()
-            
-    except Exception as e:
-        print_colored(f"⚠️ タスク同期スキップ: {e}", "yellow")
+    """タスク同期処理 - 完全無効化"""
+    # 同期処理を完全無効化 - 起動時の遅延とエラー回避のため
+    print_colored("🚫 タスク同期は無効化されています", "yellow")
+    return
 
 
 def main():
     """メイン処理"""
-    # コマンドライン引数をチェック
-    if len(sys.argv) > 1 and sys.argv[1] == "todo":
-        # Todo同期機能付きで起動
-        print_colored("🔄 Todo同期機能付きで起動します...", "cyan")
-        print()
-        
-        # ai-elder-cast-with-todo-syncを実行
-        todo_sync_script = project_root / "scripts" / "ai-elder-cast-with-todo-sync"
-        if todo_sync_script.exists():
-            try:
-                subprocess.run([sys.executable, str(todo_sync_script)])
-                return
-            except KeyboardInterrupt:
-                print()
-                print_colored("⚡ セッション中断", "yellow")
-                return
-            except Exception as e:
-                print_colored(f"❌ エラー: {e}", "red")
-                sys.exit(1)
-        else:
-            print_colored("❌ Todo同期スクリプトが見つかりません", "red")
-            sys.exit(1)
     
     print_colored("🔮 AI Elder Cast Simple (Task Integration) 起動", "purple")
     print()

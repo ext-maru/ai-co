@@ -911,41 +911,18 @@ ai_co/
 - クロードエルダーが即座に修正
 - 知識ベースに記録
 
-## 📋 Issue文書管理規則 (2025/7/19制定)
+## 📋 Issue管理標準 (2025/7/22簡素化)
 
-**エルダー評議会令第35号 - Issue文書管理標準化令**
+**エルダー評議会令第285号 - Issue管理システム簡素化令**
 
-### 🎯 基本原則
-1. **Issue化 = 専用ディレクトリ移動**
-   - GitHub Issue登録時に `/docs/issues/` へ移動
-   - 計画書の分散防止
+### 🎯 基本方針
+1. **GitHub Issue中心管理**: すべてのIssueをGitHub上で一元管理
+2. **情報統合**: Issue説明にMarkdown詳細を直接記載
+3. **検索性・コラボレーション重視**: GitHub標準機能を最大活用
 
-2. **命名規則**
-   - ディレクトリ: `issue-{番号}-{説明}`
-   - 単独文書: `issue-{番号}-{説明}.md`
-   - 例: `issue-93-oss-migration/`
-
-3. **文書整理タイミング**
-   - Issue作成時: 即座に移動
-   - 週次レビュー: 整理状況確認
-   - Issue完了時: `/docs/completed/` へアーカイブ
-
-### 📁 ディレクトリ構造
-```
-docs/issues/
-├── issue-93-oss-migration/     # 大規模プロジェクト
-│   ├── README.md              # 概要
-│   ├── progress.md            # 進捗
-│   └── *.md                   # 関連文書
-└── issue-5-subissues.md       # 単独文書
-```
-
-### ⚡ クロードエルダー必須対応
-1. Issue化確認時に自動で文書移動
-2. 重複文書の統合
-3. 定期的な整理状況レポート
-
-**詳細**: [Issue文書整理ガイド](docs/guides/ISSUE_DOCUMENT_ORGANIZATION_GUIDE.md)
+### ⚡ クロードエルダー義務
+- 重要事項は即座にGitHub Issue登録
+- プロジェクト文書は`docs/projects/`で適切に分類管理
 
 ## 🔮 AI Elder Cast - 知識注入起動システム (2025/7/20最適化)
 
