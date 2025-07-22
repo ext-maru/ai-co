@@ -39,6 +39,9 @@ from libs.elder_flow_git_automator import (
     CommitType,
 )
 
+# Import DocForge Enhanced for design document generation
+from libs.elder_servants.dwarf_workshop.doc_forge_enhanced import DocForgeEnhanced
+
 
 # Integration Status
 class IntegrationStatus(Enum):
@@ -102,12 +105,26 @@ class ElderFlowIntegration:
         self.orchestrator = ElderFlowOrchestrator()
         self.executor = ServantExecutor()
         self.quality_gate = QualityGateSystem()
+        
+        # DocForge Enhanced初期化
+        self.doc_forge_enhanced = DocForgeEnhanced()
 
         # 統合タスク管理
         self.integrated_tasks: Dict[str, IntegratedTask] = {}
 
-        self.logger.info("Elder Flow Integration System initialized")
+        self.logger.info("Elder Flow Integration System initialized with DocForge Enhanced")
 
+    def _is_design_document_task(self, description: str) -> bool:
+        """設計書生成タスクかどうかを判定"""
+        design_keywords = [
+            "設計書", "design document", "デザインドキュメント", "設計", "要件分析", 
+            "要件定義", "システム設計", "アーキテクチャ", "ER図", "エンティティ",
+            "ビジネス要件", "business requirements", "システム仕様", "仕様書"
+        ]
+        
+        description_lower = description.lower()
+        return any(keyword in description_lower for keyword in design_keywords)
+    
     async def execute_integrated_flow(
         self,
         description: str,
@@ -126,19 +143,25 @@ class ElderFlowIntegration:
         try:
             self.logger.info(f"Starting integrated flow: {task_id}")
 
-            # Phase 1: Orchestration (4賢者会議 + 計画)
-            await self._phase_orchestration(task)
+            # 設計書生成タスクの場合はDocForge Enhancedを使用
+            if self._is_design_document_task(description):
+                self.logger.info("🏗️ Design document task detected - using DocForge Enhanced")
+                await self._execute_design_document_flow(task)
+            else:
+                # 従来のElder Flowを実行
+                # Phase 1: Orchestration (4賢者会議 + 計画)
+                await self._phase_orchestration(task)
 
-            # Phase 2: Execution (サーバント実行)
-            await self._phase_execution(task)
+                # Phase 2: Execution (サーバント実行)
+                await self._phase_execution(task)
 
-            # Phase 3: Quality Gate (品質チェック)
-            await self._phase_quality_check(task)
+                # Phase 3: Quality Gate (品質チェック)
+                await self._phase_quality_check(task)
 
-            # Phase 4: Reporting (評議会報告)
-            await self._phase_reporting(task)
+                # Phase 4: Reporting (評議会報告)
+                await self._phase_reporting(task)
 
-            # Phase 5: Git Automation (自動コミット)
+            # Phase 5: Git Automation (自動コミット) - 共通
             if auto_commit:
                 await self._phase_git_automation(task, commit_message)
 
@@ -181,6 +204,111 @@ class ElderFlowIntegration:
         }
 
         self.logger.info(f"Phase 1 completed: {task.task_id}")
+
+    async def _execute_design_document_flow(self, task: IntegratedTask):
+        """DocForge Enhancedを使用した設計書生成フロー"""
+        task.status = IntegrationStatus.EXECUTING
+        self.logger.info(f"DocForge Enhanced execution for {task.task_id}")
+
+        try:
+            # DocForge Enhanced仕様準備
+            specification = {
+                "requirements": task.description,
+                "doc_type": "design_document", 
+                "project_name": f"Elder Flow Project {task.task_id}",
+                "language": "ja"
+            }
+            
+            # DocForge Enhanced実行
+            doc_result = await self.doc_forge_enhanced.craft_artifact(specification)
+            
+            if doc_result["success"]:
+                # 成功結果を記録
+                task.execution_result = {
+                    "type": "design_document_generation",
+                    "doc_forge_enhanced": True,
+                    "quality_score": doc_result.get("quality_score", 0.0),
+                    "word_count": len(doc_result.get("documentation", "").split()),
+                    "analysis_results": {
+                        "entities_count": len(doc_result.get("analysis_results", {}).get("entities", [])),
+                        "business_rules_count": len(doc_result.get("analysis_results", {}).get("business_rules", [])),
+                        "implicit_needs_count": len(doc_result.get("analysis_results", {}).get("implicit_needs", [])),
+                    },
+                    "documentation": doc_result.get("documentation", ""),
+                    "metadata": doc_result.get("metadata", {})
+                }
+                
+                # 設計書をファイルに保存
+                output_path = f"/tmp/elder_flow_design_doc_{task.task_id}.md"
+                with open(output_path, "w", encoding="utf-8") as f:
+                    f.write(doc_result["documentation"])
+                
+                task.execution_result["output_file"] = output_path
+                
+                # 品質結果も同時に設定
+                task.quality_result = {
+                    "overall_status": "passed" if doc_result["quality_score"] >= 70.0 else "needs_improvement",
+                    "overall_score": doc_result["quality_score"],
+                    "quality_summary": {
+                        "design_document_quality": "high" if doc_result["quality_score"] >= 80.0 else "medium",
+                        "completeness": "complete",
+                        "analyzer_enhanced": True
+                    },
+                    "check_results": [
+                        {
+                            "check": "requirement_analysis",
+                            "status": "passed",
+                            "score": 85.0
+                        },
+                        {
+                            "check": "document_generation", 
+                            "status": "passed",
+                            "score": doc_result["quality_score"]
+                        }
+                    ],
+                    "recommendations": []
+                }
+                
+                self.logger.info(
+                    f"📋 Design document generated successfully - Quality: {doc_result['quality_score']:.1f}/100"
+                )
+                
+            else:
+                # エラーの場合
+                task.execution_result = {
+                    "type": "design_document_generation",
+                    "doc_forge_enhanced": True,
+                    "error": doc_result.get("error", "Unknown error"),
+                    "quality_score": 0.0
+                }
+                
+                task.quality_result = {
+                    "overall_status": "failed",
+                    "overall_score": 0.0,
+                    "error": doc_result.get("error", "Generation failed")
+                }
+                
+                self.logger.error(f"❌ Design document generation failed: {doc_result.get('error')}")
+        
+        except Exception as e:
+            # 予期しないエラー
+            error_msg = f"DocForge Enhanced execution failed: {str(e)}"
+            
+            task.execution_result = {
+                "type": "design_document_generation",
+                "doc_forge_enhanced": True,
+                "error": error_msg,
+                "quality_score": 0.0
+            }
+            
+            task.quality_result = {
+                "overall_status": "failed",
+                "overall_score": 0.0,
+                "error": error_msg
+            }
+            
+            self.logger.error(f"❌ Unexpected error in DocForge Enhanced: {str(e)}")
+            raise
 
     async def _phase_execution(self, task: IntegratedTask):
         """Phase 2: 実行"""

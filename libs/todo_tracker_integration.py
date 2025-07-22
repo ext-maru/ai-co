@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 class TodoTrackerIntegration:
     """TodoListとタスクトラッカーの統合管理クラス"""
 
-    def __init__(self, auto_sync: bool = True, sync_interval: int = 300, user_id: str = "claude_elder"):
+    def __init__(self, auto_sync: bool = False, sync_interval: int = 300, user_id: str = "claude_elder"):
         """
         初期化
 
