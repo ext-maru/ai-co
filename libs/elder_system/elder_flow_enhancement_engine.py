@@ -138,7 +138,11 @@ class ElderFlowEnhancementEngine:
     
     def _extract_design_elements(self, issue_data: Dict[str, Any]) -> Dict[str, Any]:
         """設計要素を抽出"""
-        body = issue_data.get('body', '').lower()
+        body = issue_data.get('body', '')
+        if isinstance(body, str):
+            body = body.lower()
+        else:
+            body = str(body).lower()
         
         design_elements = {
             'has_architecture': any(keyword in body for keyword in 
