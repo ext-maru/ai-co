@@ -60,6 +60,7 @@ except ImportError:
 # 既存のAutoIssueProcessorをインポート
 from libs.integrations.github.auto_issue_processor import AutoIssueProcessor
 from libs.code_generation.template_manager import CodeGenerationTemplateManager
+from libs.issue_processing_lock import get_global_lock_manager
 
 
 def retry_on_github_error(max_retries=3, base_delay=1.0):
@@ -832,6 +833,13 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
             "error": None,
         }
 
+        # Issue処理ロックを取得
+        lock_manager = get_global_lock_manager()
+        if not lock_manager.acquire_lock(issue.number, "auto_issue_processing", 600):
+            self.logger.warning(f"⚠️ Issue #{issue.number} is already being processed or was processed recently")
+            result["error"] = "Issue is locked or processed recently"
+            return result
+
         try:
             # 処理開始時刻を記録
             start_time = datetime.now()
@@ -979,6 +987,11 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
 
         # 処理済みイシュー数を更新
         self.metrics["processed_issues"] += 1
+        
+        finally:
+            # Issue処理ロックを解除
+            lock_manager.release_lock(issue.number)
+            self.logger.info(f"🔓 Issue #{issue.number} ロック解除")
 
         return result
     

@@ -324,7 +324,16 @@ class CodeGenerationTemplateManager:
                 "business_rules": detailed_requirements.get('business_rules', []),
                 "implementation_notes": detailed_requirements.get('implementation_notes', []),
                 "intent": analyzed_issue.get('intent', {}),
-                "complexity": analyzed_issue.get('complexity', 'medium')
+                "complexity": analyzed_issue.get('complexity', 'medium'),
+                # Enhanced template用の必要変数を追加
+                "enhanced_imports": [],
+                "naming_guide": {
+                    "suggested_class_name": class_name,
+                    "suggested_function_names": ["execute", "process", "validate"]
+                },
+                "error_handling_guide": {
+                    "recommended_exceptions": ["ValueError", "RuntimeError", "ConnectionError"]
+                }
             }
             
             # Phase 3: パターン学習による強化
