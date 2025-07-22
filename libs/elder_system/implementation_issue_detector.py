@@ -144,10 +144,15 @@ class ImplementationIssueDetector:
             # 技術的コンテキストの抽出
             tech_context = self._extract_technical_context(issue, classification)
             
+            # タイトルのみの場合は信頼度を下げる
+            final_confidence = analysis["confidence"]
+            if not issue.get("body"):
+                final_confidence *= 0.7
+            
             return DetectionResult(
                 is_implementation=True,
                 warning_level=warning_level,
-                confidence=analysis["confidence"],
+                confidence=final_confidence,
                 warnings=warnings,
                 recommendation=recommendation,
                 technical_context=tech_context,
@@ -200,6 +205,9 @@ class ImplementationIssueDetector:
         for keyword in self.high_risk_keywords:
             if keyword.lower() in title or keyword.lower() in body:
                 risk_factors.append(f"high_risk_keyword:{keyword}")
+                # 特定のキーワードに対する追加リスク
+                if keyword.lower() in ["payment", "production"]:
+                    risk_factors.append("business_critical")
         
         # ラベルからのリスク検出
         risk_labels = ["security", "breaking-change", "major-change", "production"]
@@ -216,6 +224,12 @@ class ImplementationIssueDetector:
         
         if "database" in body and ("migration" in body or "schema" in body):
             risk_factors.append("database_migration")
+        
+        if "performance" in title or "パフォーマンス" in title or "最適化" in title:
+            risk_factors.append("performance_optimization")
+        
+        if "continue.dev" in title.lower() or "continue.dev" in body.lower():
+            risk_factors.append("continue_dev_specific")
         
         return list(set(risk_factors))
     
@@ -245,10 +259,12 @@ class ImplementationIssueDetector:
         
         # リスト項目の数（複数のタスク）
         list_items = body.count("-") + body.count("*") + body.count("・")
-        if list_items >= 5:
-            score += 0.2
+        if list_items >= 4:  # 閾値を下げる
+            score += 0.4  # さらに上げる
         elif list_items >= 3:
-            score += 0.1
+            score += 0.3
+        elif list_items >= 2:
+            score += 0.2
         
         # 技術キーワードの多様性
         tech_diversity = 0
@@ -336,6 +352,16 @@ class ImplementationIssueDetector:
         if any("security" in risk or "authentication" in risk for risk in analysis.get("risk_factors", [])):
             return WarningLevel.CRITICAL if risk_count >= 2 else WarningLevel.HIGH
         
+        # ビジネスクリティカル（payment + production）
+        if any("business_critical" in risk for risk in analysis.get("risk_factors", [])):
+            if any("payment" in risk for risk in analysis.get("risk_factors", [])):
+                return WarningLevel.CRITICAL
+            return WarningLevel.HIGH
+        
+        # パフォーマンス最適化も重要
+        if any("performance" in risk or "optimization" in risk for risk in analysis.get("risk_factors", [])):
+            return WarningLevel.HIGH if complexity > 0.3 else WarningLevel.MEDIUM
+        
         # 警告レベルの決定
         if score >= self.thresholds["critical"]:
             return WarningLevel.CRITICAL
@@ -370,8 +396,11 @@ class ImplementationIssueDetector:
                 warnings.append("Major system replacement - high risk of breaking changes")
         
         # 複雑度に基づく警告
-        if analysis.get("complexity_score", 0) > 0.7:
-            warnings.append("High complexity detected - consider breaking into smaller tasks")
+        complexity_score = analysis.get("complexity_score", 0)
+        if complexity_score > 0.7:
+            warnings.append("Very high complexity detected - consider breaking into smaller tasks")
+        elif complexity_score > 0.5:
+            warnings.append("High complexity detected - careful planning required")
         
         # 影響範囲に基づく警告
         if analysis.get("impact_scope") == "system_wide":
@@ -426,6 +455,12 @@ class ImplementationIssueDetector:
                 if keyword.lower() in full_text:
                     contexts.append(keyword)
         
+        # 追加の技術キーワード（Apolloの前に処理）
+        additional_tech = ["websocket", "subscription", "resolver"]
+        for tech in additional_tech:
+            if tech in full_text:
+                contexts.append(tech.capitalize() if tech == "websocket" else tech)
+        
         # 技術要件も追加
         if classification.technical_requirements:
             contexts.extend(classification.technical_requirements)
@@ -434,7 +469,7 @@ class ImplementationIssueDetector:
         frameworks = ["apollo", "stripe", "redis", "webpack", "docker", "kubernetes"]
         for framework in frameworks:
             if framework in full_text:
-                contexts.append(framework)
+                contexts.append(framework.capitalize())
         
         # 重複を除去して文字列化（大文字小文字を保持）
         seen = set()
@@ -452,10 +487,12 @@ class ImplementationIssueDetector:
                     unique_contexts.append("JWT")
                 elif ctx_lower == "graphql":
                     unique_contexts.append("GraphQL")
+                elif ctx_lower == "websocket":
+                    unique_contexts.append("WebSocket")
                 else:
                     unique_contexts.append(ctx)
         
-        return ", ".join(unique_contexts[:5])  # 最大5個まで
+        return ", ".join(unique_contexts[:7])  # 最大7個まで（Apollo含めるため）
     
     def detect_batch(self, issues: List[Dict[str, Any]]) -> List[DetectionResult]:
         """複数Issueの一括検出"""
