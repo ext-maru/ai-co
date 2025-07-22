@@ -211,7 +211,16 @@ class IssueTypeClassifierV2:
         # 基本情報の抽出
         title = issue.get("title", "").lower()
         body = (issue.get("body") or "").lower()
-        labels = [label.lower() for label in issue.get("labels", [])]
+        
+        # labelsの処理 - GitHub APIではlabelsは文字列または辞書の配列
+        raw_labels = issue.get("labels", [])
+        labels = []
+        for label in raw_labels:
+            if isinstance(label, str):
+                labels.append(label.lower())
+            elif isinstance(label, dict) and "name" in label:
+                labels.append(label["name"].lower())
+        
         full_text = f"{title} {body}"
         
         # 技術スタックの検出

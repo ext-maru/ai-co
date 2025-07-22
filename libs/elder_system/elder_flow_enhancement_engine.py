@@ -38,10 +38,18 @@ class ElderFlowEnhancementEngine:
     def __init__(self):
         self.issue_classifier = IssueTypeClassifierV2()
         self.requirements_extractor = TechnicalRequirementsExtractor()
+        self.logger = logging.getLogger(__name__)
         
     def analyze_issue(self, issue_data: Dict[str, Any]) -> Dict[str, Any]:
         """Issueを分析してElder Flow用のデータを生成"""
         try:
+            # デバッグ: issue_dataの構造を確認
+            self.logger.debug(f"Issue data keys: {list(issue_data.keys())}")
+            
+            # bodyフィールドがない場合は空文字を設定
+            if 'body' not in issue_data:
+                issue_data['body'] = ''
+            
             # 1. Issue種別を判定
             classification = self.issue_classifier.classify(issue_data)
             
@@ -138,25 +146,33 @@ class ElderFlowEnhancementEngine:
     
     def _extract_design_elements(self, issue_data: Dict[str, Any]) -> Dict[str, Any]:
         """設計要素を抽出"""
-        body = issue_data.get('body', '')
-        if isinstance(body, str):
-            body = body.lower()
-        else:
-            body = str(body).lower()
-        
-        design_elements = {
-            'has_architecture': any(keyword in body for keyword in 
-                                  ['architecture', 'design', 'structure', '設計']),
-            'has_documentation': any(keyword in body for keyword in 
-                                   ['document', 'docs', 'readme', 'guide']),
-            'has_diagrams': any(keyword in body for keyword in 
-                              ['diagram', 'chart', 'flow', 'uml']),
-            'has_api_design': any(keyword in body for keyword in 
-                                ['api design', 'endpoint design', 'interface design']),
-            'estimated_documents': self._estimate_document_count(body)
-        }
-        
-        return design_elements
+        try:
+            body = issue_data.get('body', '')
+            if body is None:
+                body = ''
+            if isinstance(body, str):
+                body = body.lower()
+            else:
+                body = str(body).lower()
+            
+            design_elements = {
+                'has_architecture': any(keyword in body for keyword in 
+                                      ['architecture', 'design', 'structure', '設計']),
+                'has_documentation': any(keyword in body for keyword in 
+                                       ['document', 'docs', 'readme', 'guide']),
+                'has_diagrams': any(keyword in body for keyword in 
+                                  ['diagram', 'chart', 'flow', 'uml']),
+                'has_api_design': any(keyword in body for keyword in 
+                                    ['api design', 'endpoint design', 'interface design']),
+                'estimated_documents': self._estimate_document_count(body)
+            }
+            
+            return design_elements
+        except Exception as e:
+            self.logger.error(f"Error in _extract_design_elements: {str(e)}")
+            self.logger.error(f"Issue data type: {type(issue_data)}")
+            self.logger.error(f"Issue data: {issue_data}")
+            raise
     
     def _estimate_document_count(self, body: str) -> int:
         """生成すべきドキュメント数を推定"""

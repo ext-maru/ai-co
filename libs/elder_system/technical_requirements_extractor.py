@@ -158,7 +158,15 @@ class TechnicalRequirementsExtractor:
             # 基本情報を取得
             title = issue_data.get('title', '')
             body = issue_data.get('body', '')
-            labels = issue_data.get('labels', [])
+            
+            # labelsの処理 - GitHub APIではlabelsは文字列または辞書の配列
+            raw_labels = issue_data.get('labels', [])
+            labels = []
+            for label in raw_labels:
+                if isinstance(label, str):
+                    labels.append(label)
+                elif isinstance(label, dict) and 'name' in label:
+                    labels.append(label['name'])
             
             # 全テキストを結合
             full_text = f"{title}\n{body}".lower()
