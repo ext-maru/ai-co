@@ -256,9 +256,9 @@ class ElderScheduledTasks:
     def _register_knowledge_tasks(self):
         """知識ベース管理タスク登録"""
         
-        @self.decorators.daily(hour=1, minute=0)
+        @self.decorators.daily(hour=0, minute=30)
         def knowledge_sync():
-            """知識ベース同期（日次・深夜1時）"""
+            """知識ベース同期（日次・深夜0:30）"""
             logger.info("📚 知識ベース同期開始")
             try:
                 # 知識ベース整合性確認
@@ -313,9 +313,9 @@ class ElderScheduledTasks:
             except Exception as e:
                 logger.error(f"❌ 日次レポート生成エラー: {e}")
                 
-        @self.decorators.weekly(day_of_week=0, hour=9, minute=0)
+        @self.decorators.weekly(day_of_week=0, hour=9, minute=30)
         def weekly_report():
-            """週次レポート生成（月曜9時）"""
+            """週次レポート生成（月曜9:30）"""
             logger.info("📊 週次レポート生成開始")
             try:
                 # 週次パフォーマンスレポート
@@ -596,9 +596,9 @@ def start_elder_scheduled_tasks():
 def _register_github_automation_tasks(self):
     """GitHub自動処理タスク登録"""
     
-    @self.decorators.scheduled('interval', minutes=5)
+    @self.decorators.scheduled('interval', minutes=7)
     async def auto_issue_processor():
-        """Enhanced Auto Issue Processor実行（5分間隔）"""
+        """Enhanced Auto Issue Processor実行（7分間隔）"""
         logger.info("🤖 Enhanced Auto Issue Processor実行開始")
         try:
             import asyncio
@@ -634,9 +634,9 @@ def _register_github_automation_tasks(self):
             logger.error(f"❌ Enhanced Auto Issue Processor エラー: {e}")
             raise
             
-    @self.decorators.hourly(minute=0)
+    @self.decorators.hourly(minute=30)
     def github_health_check():
-        """GitHub API接続ヘルスチェック（1時間毎）"""
+        """GitHub API接続ヘルスチェック（1時間毎・30分）"""
         logger.info("🔍 GitHub APIヘルスチェック開始")
         try:
             import os
@@ -668,9 +668,9 @@ def _register_github_automation_tasks(self):
 def _register_legacy_cron_tasks(self):
     """レガシーcronタスクをAPSchedulerに移行"""
     
-    @self.decorators.daily(hour=2, minute=0)
+    @self.decorators.daily(hour=2, minute=30)
     def auto_summarize_task():
-        """自動要約タスク（毎日深夜2時）- cronから移行"""
+        """自動要約タスク（毎日深夜2:30）- cronから移行"""
         logger.info("📝 自動要約タスク開始")
         try:
             import subprocess
@@ -686,9 +686,9 @@ def _register_legacy_cron_tasks(self):
             logger.error(f"❌ 自動要約タスク実行エラー: {e}")
             raise
     
-    @self.decorators.daily(hour=1, minute=0)
+    @self.decorators.daily(hour=1, minute=30)
     async def enhanced_pr_processor():
-        """Enhanced Auto PR Processor バッチ処理（毎日深夜1時）"""
+        """Enhanced Auto PR Processor バッチ処理（毎日深夜1:30）"""
         logger.info("🔧 Enhanced PR Processor バッチ処理開始")
         try:
             import asyncio
@@ -727,9 +727,9 @@ def _register_legacy_cron_tasks(self):
             logger.error(f"❌ Enhanced PR Processor バッチ処理エラー: {e}")
             raise
             
-    @self.decorators.weekly(day_of_week=0, hour=3, minute=0)
+    @self.decorators.weekly(day_of_week=0, hour=3, minute=30)
     def unit_progress_analyzer():
-        """ユニット進捗分析（毎週日曜3時）- cronから移行"""
+        """ユニット進捗分析（毎週日曜3:30）- cronから移行"""
         logger.info("📊 ユニット進捗分析開始")
         try:
             import subprocess
@@ -745,9 +745,9 @@ def _register_legacy_cron_tasks(self):
             logger.error(f"❌ ユニット進捗分析実行エラー: {e}")
             raise
     
-    @self.decorators.daily(hour=4, minute=0)
+    @self.decorators.daily(hour=4, minute=30)
     def evolution_cron_task():
-        """進化システムタスク（毎日深夜4時）- cronから移行"""  
+        """進化システムタスク（毎日深夜4:30）- cronから移行"""  
         logger.info("🧬 進化システムタスク開始")
         try:
             import subprocess
@@ -763,9 +763,9 @@ def _register_legacy_cron_tasks(self):
             logger.error(f"❌ 進化システムタスク実行エラー: {e}")
             raise
             
-    @self.decorators.scheduled('interval', hours=6)
+    @self.decorators.scheduled('interval', hours=8)
     def knowledge_monitoring():
-        """知識ベース監視（6時間間隔）- cronから移行"""
+        """知識ベース監視（8時間間隔）- cronから移行"""
         logger.info("📚 知識ベース監視開始") 
         try:
             import subprocess
