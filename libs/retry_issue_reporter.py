@@ -128,7 +128,7 @@ class RetryIssueReporter:
             issue = self.repo.get_issue(issue_number)
             
             # コメント内容生成
-            comment = self._generate_retry_comment(session, attempt_data)
+            comment = self._generate_retry_comment(session, attempt_data, session_id)
             
             # コメント投稿
             issue.create_comment(comment)
@@ -155,7 +155,7 @@ class RetryIssueReporter:
         except Exception as e:
             logger.error(f"Failed to post final retry comment to issue #{issue_number}: {e}")
     
-    def _generate_retry_comment(self, session: Dict[str, Any], attempt_data: Dict[str, Any]) -> str:
+    def _generate_retry_comment(self, session: Dict[str, Any], attempt_data: Dict[str, Any], session_id: str) -> str:
         """リトライ試行コメントを生成"""
         attempt = attempt_data["attempt"]
         timestamp = attempt_data["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
