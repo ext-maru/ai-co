@@ -428,6 +428,68 @@ class EnhancedRequirementAnalyzer:
                 confidence=0.85
             ))
         
+        # 金融システム特有のルール推論
+        if "金融" in text or "取引" in text:
+            # 不正検知ルール
+            if "不正" in text and "検知" in text:
+                rules.append(BusinessRule(
+                    condition="取引パターン異常検知時",
+                    action="不正取引アラート発生",
+                    entity="取引",
+                    priority="critical",
+                    confidence=0.9
+                ))
+            
+            # 認証ルール
+            if "認証" in text:
+                rules.append(BusinessRule(
+                    condition="取引実行前",
+                    action="多要素認証実施",
+                    entity="顧客",
+                    priority="high",
+                    confidence=0.85
+                ))
+            
+            # 報告書生成ルール
+            if "報告書" in text and "自動" in text:
+                rules.append(BusinessRule(
+                    condition="月末または監査要求時",
+                    action="規制当局向け報告書自動生成",
+                    entity="レポート",
+                    priority="high",
+                    confidence=0.8
+                ))
+            
+            # 高頻度取引処理ルール
+            if "秒間" in text and "件" in text:
+                rules.append(BusinessRule(
+                    condition="高頻度取引要求時",
+                    action="並列処理による性能確保",
+                    entity="システム",
+                    priority="high",
+                    confidence=0.8
+                ))
+        
+        # 医療システム特有のルール推論
+        if "医療" in text or "患者" in text:
+            if "診療記録" in text:
+                rules.append(BusinessRule(
+                    condition="診療完了時",
+                    action="診療記録自動保存・暗号化",
+                    entity="診療記録",
+                    priority="critical",
+                    confidence=0.9
+                ))
+            
+            if "予約" in text:
+                rules.append(BusinessRule(
+                    condition="予約申請時",
+                    action="医師スケジュールとの自動照合",
+                    entity="予約",
+                    priority="medium",
+                    confidence=0.8
+                ))
+        
         # ECサイト特有のルール推論
         if "ECサイト" in text:
             # 在庫連携ルール
@@ -545,6 +607,50 @@ class EnhancedRequirementAnalyzer:
                 description="リアルタイム同期機能が必要",
                 category="performance",
                 rationale="在庫情報の整合性確保",
+                importance="high"
+            ))
+        
+        # 金融システム特有の潜在ニーズ
+        if "金融" in text or "取引" in text:
+            # セキュリティニーズ
+            implicit_needs.append(ImplicitNeed(
+                description="金融取引用セキュリティ機能が必要",
+                category="security",
+                rationale="金融データの保護と不正取引防止",
+                importance="critical"
+            ))
+            
+            # コンプライアンスニーズ
+            implicit_needs.append(ImplicitNeed(
+                description="金融規制準拠機能が必要",
+                category="compliance",
+                rationale="監査要件とレポート義務",
+                importance="critical"
+            ))
+            
+            # 高可用性ニーズ
+            if "拠点" in text or "レプリケーション" in text:
+                implicit_needs.append(ImplicitNeed(
+                    description="災害復旧・高可用性システムが必要",
+                    category="availability",
+                    rationale="金融サービスの継続性確保",
+                    importance="critical"
+                ))
+            
+            # パフォーマンスニーズ
+            if "秒間" in text or "高頻度" in text:
+                implicit_needs.append(ImplicitNeed(
+                    description="高性能取引処理システムが必要",
+                    category="performance",
+                    rationale="大量取引の高速処理",
+                    importance="high"
+                ))
+            
+            # 監査ニーズ
+            implicit_needs.append(ImplicitNeed(
+                description="包括的監査ログ機能が必要",
+                category="compliance",
+                rationale="全取引の追跡可能性確保",
                 importance="high"
             ))
         
