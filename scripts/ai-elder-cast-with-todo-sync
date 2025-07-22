@@ -258,6 +258,9 @@ async def main():
         os.environ["LANG"] = "ja_JP.UTF-8"
         os.environ["LC_ALL"] = "ja_JP.UTF-8"
         
+        # Todo同期システム有効化フラグ
+        os.environ["CLAUDE_TODO_SYNC_ENABLED"] = "1"
+        
         # 初期Todoファイルがあれば環境変数に設定
         initial_todos_file = Path.home() / ".claude_initial_todos.json"
         if initial_todos_file.exists():

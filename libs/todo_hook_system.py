@@ -26,7 +26,9 @@ class TodoHookSystem:
         Args:
             integration_module: TodoTrackerIntegrationインスタンス
         """
-        self.integration = integration_module
+        # Todo同期が有効かどうかをチェック
+        self.sync_enabled = os.environ.get("CLAUDE_TODO_SYNC_ENABLED") == "1"
+        self.integration = integration_module if self.sync_enabled else None
         self.hook_file = Path.home() / ".claude_todo_hook"
         self.last_todos: List[Dict] = []
         self._monitor_task = None
@@ -70,6 +72,12 @@ class TodoHookSystem:
     async def _process_hook_file(self):
         """フックファイルの処理"""
         try:
+            # 同期が無効な場合はスキップ
+            if not self.sync_enabled:
+                if self.hook_file.exists():
+                    self.hook_file.unlink()  # ファイルだけ削除
+                return
+            
             with open(self.hook_file, 'r', encoding='utf-8') as f:
                 content = f.read()
 

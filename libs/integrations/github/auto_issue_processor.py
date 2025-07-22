@@ -35,6 +35,7 @@ from libs.code_generation.template_manager import CodeGenerationTemplateManager
 from libs.auto_issue_processor_error_handling import AutoIssueProcessorErrorHandler, with_error_recovery
 from libs.four_sages_diagnostic_system import FourSagesDiagnosticSystem
 from libs.integrations.github.reopened_issue_tracker import ReopenedIssueTracker
+from libs.retry_issue_reporter import RetryIssueReporter
 
 
 class AutoIssueElderFlowEngine:
@@ -427,6 +428,13 @@ class AutoIssueProcessor(EldersServiceLegacy):
         self.limiter = ProcessingLimiter()
         self.evaluator = ComplexityEvaluator()
         self.reopened_tracker = ReopenedIssueTracker(self.repo)
+        
+        # リトライレポーター初期化
+        self.retry_reporter = RetryIssueReporter(
+            github_token=github_token,
+            repo_owner=repo_owner,
+            repo_name=repo_name
+        )
 
         # 処理対象の優先度（高い順に処理される）
         self.target_priorities = ["critical", "high", "medium", "low"]
@@ -624,7 +632,48 @@ class AutoIssueProcessor(EldersServiceLegacy):
         return recently_processed
 
     async def execute_auto_processing(self, issue: Issue) -> Dict[str, Any]:
-        """Elder Flowを使用してイシューを自動処理"""
+        """Elder Flowを使用してイシューを自動処理（リトライ記録付き）"""
+        operation = f"Auto-fix Issue #{issue.number}: {issue.title[:50]}..."
+        session_id = self.retry_reporter.start_retry_session(issue.number, operation)
+        max_retries = 3
+        
+        for attempt in range(1, max_retries + 1):
+            try:
+                return await self._execute_single_processing_attempt(issue, session_id, attempt)
+                
+            except Exception as e:
+                if attempt < max_retries:
+                    # リトライ試行を記録
+                    retry_delay = 2 ** attempt  # 指数バックオフ
+                    await self.retry_reporter.record_retry_attempt(
+                        session_id=session_id,
+                        attempt_number=attempt,
+                        error=e,
+                        recovery_action="RETRY",
+                        recovery_message=f"処理に失敗しました。{retry_delay}秒後に再試行します（{max_retries - attempt}回残り）",
+                        retry_delay=retry_delay,
+                        context={
+                            "issue_title": issue.title,
+                            "labels": [label.name for label in issue.labels],
+                            "complexity_score": (await self.evaluator.evaluate(issue)).score if hasattr(self, 'evaluator') else None
+                        }
+                    )
+                    
+                    # 指数バックオフで待機
+                    await asyncio.sleep(retry_delay)
+                    logger.info(f"Retrying issue #{issue.number} processing (attempt {attempt + 1}/{max_retries})")
+                    
+                else:
+                    # 最終失敗を記録
+                    await self.retry_reporter.record_retry_failure(session_id, e)
+                    logger.error(f"Failed to process issue #{issue.number} after {max_retries} attempts: {e}")
+                    raise e
+        
+        # 通常はここには到達しない
+        raise Exception(f"Unexpected end of retry loop for issue #{issue.number}")
+    
+    async def _execute_single_processing_attempt(self, issue: Issue, session_id: str, attempt: int) -> Dict[str, Any]:
+        """単一の処理試行を実行"""
         try:
             # 既存のPRをチェック
             existing_pr = await self._check_existing_pr_for_issue(issue.number)
@@ -772,22 +821,14 @@ class AutoIssueProcessor(EldersServiceLegacy):
                     comment_text += f"- 処理基準: 複雑度 < 0.7 かつ 優先度 Medium/Low\n"
 
                     issue.create_comment(comment_text)
-
+            
+            # 成功を記録
+            await self.retry_reporter.record_retry_success(session_id, result)
             return result
 
         except Exception as e:
-            logger.error(f"Error in auto processing: {str(e)}")
-            # インシデント賢者に報告
-            await self.incident_sage.process_request(
-                {
-                    "type": "report_incident",
-                    "severity": "medium",
-                    "title": f"Auto-processing failed for issue #{issue.number}",
-                    "description": str(e),
-                }
-            )
-
-            return {"status": "error", "message": str(e)}
+            logger.error(f"Error in processing attempt {attempt}: {str(e)}")
+            raise e
 
     async def consult_four_sages(self, issue: Issue) -> Dict[str, Any]:
         """4賢者への相談"""
