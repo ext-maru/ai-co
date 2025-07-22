@@ -135,14 +135,173 @@ class TaskSageSoul(BaseSoul):
         return self._create_error_response(message, f"Unknown action: {action}")
         
     async def _handle_command(self, message: A2AMessage) -> A2AMessage:
-        """コマンド処理"""
-        # 実装予定
-        pass
+        """コマンド処理 - タスク操作・管理コマンド"""
+        try:
+            command = message.payload.get("command", "")
+            
+            if command == "create_task":
+                # タスク作成
+                task_spec_data = message.payload.get("task_spec", {})
+                
+                if not task_spec_data:
+                    return self._create_error_response(message, "task_spec parameter is required")
+                
+                task_spec = TaskSpec(
+                    title=task_spec_data.get("title", ""),
+                    description=task_spec_data.get("description", ""),
+                    priority=TaskPriority(task_spec_data.get("priority", "medium")),
+                    estimated_duration=task_spec_data.get("estimated_duration", 60),
+                    tags=task_spec_data.get("tags", []),
+                    dependencies=task_spec_data.get("dependencies", [])
+                )
+                
+                task = await self.create_task(task_spec)
+                return self._create_success_response(message, {
+                    "task_id": task.task_id,
+                    "status": "created",
+                    "task": task.to_dict()
+                })
+                
+            elif command == "update_task_status":
+                # タスクステータス更新
+                task_id = message.payload.get("task_id", "")
+                new_status = message.payload.get("status", "")
+                
+                if not task_id or not new_status:
+                    return self._create_error_response(message, "task_id and status parameters are required")
+                
+                result = await self.update_task_status(task_id, TaskStatus(new_status))
+                if result:
+                    return self._create_success_response(message, {
+                        "task_id": task_id,
+                        "status": "updated",
+                        "new_status": new_status
+                    })
+                else:
+                    return self._create_error_response(message, f"Failed to update task {task_id}")
+                
+            elif command == "assign_task":
+                # タスク割り当て
+                task_id = message.payload.get("task_id", "")
+                assignee = message.payload.get("assignee", "")
+                
+                if not task_id or not assignee:
+                    return self._create_error_response(message, "task_id and assignee parameters are required")
+                
+                result = await self.assign_task(task_id, assignee)
+                if result:
+                    return self._create_success_response(message, {
+                        "task_id": task_id,
+                        "assignee": assignee,
+                        "status": "assigned"
+                    })
+                else:
+                    return self._create_error_response(message, f"Failed to assign task {task_id}")
+                
+            elif command == "delete_task":
+                # タスク削除
+                task_id = message.payload.get("task_id", "")
+                
+                if not task_id:
+                    return self._create_error_response(message, "task_id parameter is required")
+                
+                result = await self.delete_task(task_id)
+                if result:
+                    return self._create_success_response(message, {
+                        "task_id": task_id,
+                        "status": "deleted"
+                    })
+                else:
+                    return self._create_error_response(message, f"Failed to delete task {task_id}")
+                
+            else:
+                return self._create_error_response(message, f"Unknown command: {command}")
+                
+        except Exception as e:
+            self.logger.error(f"Error handling command: {e}")
+            return self._create_error_response(message, f"Command execution failed: {str(e)}")
         
     async def _handle_query(self, message: A2AMessage) -> A2AMessage:
-        """クエリ処理"""
-        # 実装予定
-        pass
+        """クエリ処理 - タスク検索・統計情報取得"""
+        try:
+            query_type = message.payload.get("query_type", "")
+            
+            if query_type == "get_task":
+                # 個別タスク取得
+                task_id = message.payload.get("task_id", "")
+                
+                if not task_id:
+                    return self._create_error_response(message, "task_id parameter is required")
+                
+                task = await self.get_task(task_id)
+                if task:
+                    return self._create_success_response(message, {
+                        "task": task.to_dict()
+                    })
+                else:
+                    return self._create_error_response(message, f"Task {task_id} not found")
+                    
+            elif query_type == "list_tasks":
+                # タスク一覧取得
+                status = message.payload.get("status")
+                assignee = message.payload.get("assignee")
+                priority = message.payload.get("priority")
+                limit = message.payload.get("limit", 50)
+                
+                tasks = await self.list_tasks(
+                    status=TaskStatus(status) if status else None,
+                    assignee=assignee,
+                    priority=TaskPriority(priority) if priority else None,
+                    limit=limit
+                )
+                
+                return self._create_success_response(message, {
+                    "tasks": [task.to_dict() for task in tasks],
+                    "count": len(tasks)
+                })
+                
+            elif query_type == "search_tasks":
+                # タスク検索
+                query = message.payload.get("query", "")
+                limit = message.payload.get("limit", 20)
+                
+                if not query:
+                    return self._create_error_response(message, "query parameter is required")
+                
+                tasks = await self.search_tasks(query, limit)
+                return self._create_success_response(message, {
+                    "tasks": [task.to_dict() for task in tasks],
+                    "count": len(tasks),
+                    "query": query
+                })
+                
+            elif query_type == "get_statistics":
+                # 統計情報取得
+                stats = await self.get_task_statistics()
+                return self._create_success_response(message, {
+                    "statistics": stats,
+                    "timestamp": datetime.now().isoformat()
+                })
+                
+            elif query_type == "get_dependencies":
+                # 依存関係取得
+                task_id = message.payload.get("task_id", "")
+                
+                if not task_id:
+                    return self._create_error_response(message, "task_id parameter is required")
+                
+                dependencies = await self.get_task_dependencies(task_id)
+                return self._create_success_response(message, {
+                    "task_id": task_id,
+                    "dependencies": dependencies
+                })
+                
+            else:
+                return self._create_error_response(message, f"Unknown query type: {query_type}")
+                
+        except Exception as e:
+            self.logger.error(f"Error handling query: {e}")
+            return self._create_error_response(message, f"Query processing failed: {str(e)}")
     
     # ========== Core Task Management Functions ==========
     
