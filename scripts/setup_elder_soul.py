@@ -6,7 +6,7 @@ Elder Soul基本構造セットアップスクリプト
 
 import os
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Any
 
 ELDERS_GUILD_BASE = Path("/home/aicompany/elders_guild")
 
