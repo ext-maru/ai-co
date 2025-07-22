@@ -1,0 +1,66 @@
+# Auto Issue Processor 設定ファイル
+# この設定ファイルで統一された Auto Issue Processor の動作を制御します
+
+# 基本設定
+enabled: true              # プロセッサーの有効/無効
+dry_run: false            # ドライラン（実際の変更を行わない）
+
+# 機能フラグ
+features:
+  pr_creation: true              # PR自動作成
+  error_recovery: true           # エラーリカバリー
+  parallel_processing: false     # 並列処理（リソース使用量に注意）
+  smart_merge: false            # スマートマージ（実験的）
+  four_sages_integration: true   # 4賢者統合
+
+# GitHub設定
+github:
+  # token は環境変数 GITHUB_TOKEN から自動取得
+  # repo と owner は環境変数 GITHUB_REPOSITORY から自動取得
+  rate_limit_buffer: 100    # APIレート制限のバッファ
+  retry_attempts: 3         # リトライ回数
+  retry_delay: 1.0         # リトライ間隔（秒）
+
+# ロック設定
+lock:
+  backend: file            # ロックバックエンド (file, redis, memory)
+  lock_dir: ./.issue_locks # ファイルロックのディレクトリ
+  default_ttl: 300        # デフォルトTTL（秒）
+  cleanup_interval: 60    # クリーンアップ間隔（秒）
+  # redis_url: redis://localhost:6379  # Redis使用時のURL
+
+# 処理設定
+processing:
+  max_issues_per_run: 5          # 1回の実行で処理する最大Issue数
+  processing_timeout: 300        # 処理タイムアウト（秒）
+  priorities:                    # 優先度（順番に処理）
+    - critical
+    - high
+    - medium
+    - low
+  skip_labels:                   # スキップするラベル
+    - wontfix
+    - duplicate
+    - invalid
+    - manual-only
+  required_labels: []            # 必須ラベル（空の場合はチェックしない）
+  max_parallel_workers: 3        # 並列ワーカー数
+  parallel_batch_size: 10        # 並列バッチサイズ
+  use_enhanced_templates: false  # 拡張テンプレート使用（無効推奨）
+  # template_dir: ./templates    # カスタムテンプレートディレクトリ
+
+# ロギング設定
+logging:
+  level: INFO                              # ログレベル
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: logs/auto_issue_processor.log      # ログファイル
+  max_bytes: 10485760                      # 最大ファイルサイズ (10MB)
+  backup_count: 5                          # バックアップファイル数
+
+# スケジューラー設定
+scheduler:
+  enabled: true             # スケジューラーの有効/無効
+  interval_minutes: 10      # 実行間隔（分）
+  # start_time: "09:00"    # 開始時刻 (HH:MM形式)
+  timezone: Asia/Tokyo      # タイムゾーン
+  jitter: 0                # ランダム遅延（秒）

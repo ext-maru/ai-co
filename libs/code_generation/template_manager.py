@@ -166,7 +166,7 @@ class CodeGenerationTemplateManager:
                      template_type: str,
                      tech_stack: str,
                      context: Dict[str, Any],
-                     use_enhanced: bool = True) -> str:
+                     use_enhanced: bool = False) -> str:
         """
         テンプレートを使用してコードを生成
         
