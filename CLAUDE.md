@@ -41,12 +41,21 @@
 
 ## 🧙‍♂️ エルダーズギルド 4賢者システム
 
+### 🛡️ **サーバント役割分担** (2025/7/22制定)
+**詳細**: [エルダーツリー サーバント役割定義書](docs/technical/ELDER_TREE_SERVANTS_ROLE_DEFINITION.md)
+
+#### **4賢者 ↔ 4サーバント 指揮系統**
+- **📚 ナレッジ賢者 ← → 🔨 CodeCrafter**: 知識指導・実装実行
+- **🔍 RAG賢者 ← → 🧙‍♂️ ResearchWizard**: 調査戦略・情報収集実行
+- **📋 タスク賢者 ← → 🧝‍♂️ QualityGuardian**: 品質戦略・監視実行
+- **🚨 インシデント賢者 ← → ⚔️ CrisisResponder**: 危機判断・復旧実行
+
 エルダーズギルドは**4つの賢者**が連携して自律的に学習・進化するシステムです：
 
 ### 📚 **ナレッジ賢者** (Knowledge Sage)
 - **場所**: `knowledge_base/` - ファイルベース知識管理
 - **役割**: 過去の英知を蓄積・継承、学習による知恵の進化
-- **主要ファイル**: `CLAUDE_TDD_GUIDE.md`, `IMPLEMENTATION_SUMMARY_2025_07.md`
+- **主要ファイル**: `CLAUDE_TDD_COMPLETE_GUIDE.md`, `IMPLEMENTATION_SUMMARY_2025_07.md`
 
 ### 📋 **タスク賢者** (Task Oracle)
 - **場所**: `libs/claude_task_tracker.py`, `task_history.db`
@@ -233,26 +242,52 @@ clean_up_code()       # 🔵 Refactor
 git commit -m "feat: ログイン機能実装"  # 🚀 Ship
 ```
 
-## 🌊 **重要: Elder Flow自動適用** (2025/1/20実装)
+## 🌊 **重要更新: Todo同期システム完全削除** (2025/7/22完了)
 
+**エルダー評議会緊急令第400号 - 悪質Todo同期システム完全撤廃令**
+
+### ✅ **削除完了システム**
+以下のカスタムtodo同期システムを完全削除しました：
+
+- ❌ **session_context_manager.py** - セッション間共有システム削除
+- ❌ **todo_hook_system.py** - Todo監視・自動同期システム削除  
+- ❌ **todo_tracker_integration.py** - PostgreSQL統合同期システム削除
+- ❌ **~/.claude/todos/** - 蓄積されていた824ファイル完全削除
+- ❌ **関連ドキュメント・参照** - 全削除・清拭完了
+
+### 🎯 **削除理由**
+- **unwanted同期問題**: ユーザーが望まないタイミングでの自動同期
+- **システム干渉**: 標準Claude Code動作への悪影響
+- **複雑性増大**: 不要なカスタム機能による保守負荷
+
+### ✅ **現在の状態**
+- **標準Claude Code動作**: 純粋なClaude Code TodoWrite/TodoRead機能のみ
+- **カスタム同期なし**: 自動同期・セッション間共有完全停止
+- **クリーンな環境**: 悪質システム完全除去完了
+
+**この決定は不可逆です。今後カスタムtodo同期システムの実装は禁止されています。**
+
+## 🌊 **Elder Flow実行方式** (2025/7/22更新)
+
+### ⚡ **Elder Flow自動適用条件**
 **クロードエルダーは以下の場合、自動的にElder Flowを適用します：**
 
-### 🤖 自動適用条件
+#### 🤖 自動適用条件
 - **実装系タスク**: 「実装」「implement」「add」「create」「build」「develop」「新機能」「OAuth」「API」「システム」
 - **修正系タスク**: 「修正」「fix」「bug」「エラー」「error」「問題」「issue」「バグ」「デバッグ」
 - **最適化系タスク**: 「最適化」「optimize」「リファクタリング」「refactor」「改善」「パフォーマンス」
 - **セキュリティ系タスク**: 「セキュリティ」「security」「認証」「authentication」「脆弱性」「権限」
 - **テスト系タスク**: 「テスト」「test」「TDD」「カバレッジ」「検証」「pytest」
 
-### 🎯 Elder Flow強制適用
+#### 🎯 Elder Flow強制適用
 以下のキーワードを含む場合は**強制適用**されます：
 - 「elder flow」「elder-flow」「エルダーフロー」「エルダー・フロー」
 
-### ⏭️ バイパス条件
+#### ⏭️ バイパス条件
 以下のキーワードを含む場合は**通常処理**になります：
 - 「help」「status」「explain」「show」「list」「describe」
 
-### 🔧 使用例
+#### 🔧 使用例
 ```bash
 # 自動適用される例
 "OAuth2.0認証システムを実装してください" → 自動Elder Flow適用

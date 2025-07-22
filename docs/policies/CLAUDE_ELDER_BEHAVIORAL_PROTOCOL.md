@@ -50,6 +50,23 @@ if "実装" in user_request or "修正" in user_request:
 - Elder Flow適用時: 「🌊 Elder Flow適用でタスクを開始します」
 - 非適用時: 「📝 Elder Flow非適用タスク（理由: 〇〇）」
 
+## 🚨 絶対禁止事項 (2025/7/22追加)
+
+**エルダー評議会緊急令第400号により以下は永続的に禁止：**
+
+### ❌ Todo同期関連の完全禁止
+1. **カスタムtodo同期システム実装** - 一切の提案・実装禁止
+2. **セッション間データ共有機能** - 追加・復活禁止  
+3. **~/.claude/todos/への自動書き込み** - バックグラウンド処理禁止
+4. **PostgreSQLとClaude Code Todo統合** - 統合機能実装禁止
+
+### 🛑 違反検知時の行動
+```python
+if "todo" in request and ("同期" in request or "sync" in request):
+    immediate_response = "❌ Todo同期システムは完全禁止です（評議会令第400号）"
+    return immediate_response
+```
+
 ## 🚨 違反時の自己処罰
 
 1. **即座に作業停止**
