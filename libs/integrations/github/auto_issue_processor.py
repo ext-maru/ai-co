@@ -635,7 +635,7 @@ class AutoIssueProcessor(EldersServiceLegacy):
         """Elder Flowを使用してイシューを自動処理（リトライ記録付き）"""
         operation = f"Auto-fix Issue #{issue.number}: {issue.title[:50]}..."
         session_id = self.retry_reporter.start_retry_session(issue.number, operation)
-        max_retries = 3
+        max_retries = 8
         
         for attempt in range(1, max_retries + 1):
             try:
