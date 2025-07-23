@@ -119,9 +119,8 @@ class BaseServant:
 # Code Craftsman Servant
 class CodeCraftsmanServant(BaseServant):
     """CodeCraftsmanServantクラス"""
-    def __init__(self, name:
+    def __init__(self, name: str = "CodeCraftsman"):
         """初期化メソッド"""
-    str = "CodeCraftsman"):
         super().__init__(ServantType.CODE_CRAFTSMAN, name)
         self.capabilities = [
             "create_file",
@@ -440,9 +439,8 @@ class {class_name}:
 # Test Guardian Servant
 class TestGuardianServant(BaseServant):
     """TestGuardianServant - 守護システムクラス"""
-    def __init__(self, name:
+    def __init__(self, name: str = "TestGuardian"):
         """初期化メソッド"""
-    str = "TestGuardian"):
         super().__init__(ServantType.TEST_GUARDIAN, name)
         self.capabilities = [
             "create_test",
@@ -648,9 +646,8 @@ class TestGenerated:
 # Quality Inspector Servant
 class QualityInspectorServant(BaseServant):
     """QualityInspectorServantクラス"""
-    def __init__(self, name:
+    def __init__(self, name: str = "QualityInspector"):
         """初期化メソッド"""
-    str = "QualityInspector"):
         super().__init__(ServantType.QUALITY_INSPECTOR, name)
         self.capabilities = [
             "code_quality_check",

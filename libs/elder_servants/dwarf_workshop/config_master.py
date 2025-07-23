@@ -1091,8 +1091,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                             keyword in key.lower()
                             for keyword in ["password", "secret", "key", "token"]
                         ):
-                            if not (():
-                                continue  # Early return to reduce nesting
+                            # Check for secret values
                             # Reduced nesting - original condition satisfied
                             if (
                                 not value.startswith("{{") and len(value) < 50

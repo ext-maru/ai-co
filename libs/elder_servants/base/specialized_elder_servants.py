@@ -592,7 +592,6 @@ class IncidentKnightServant(EnhancedElderServant[TRequest, TResponse]):
     """
     
     def __init__(
-        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,
@@ -600,6 +599,7 @@ class IncidentKnightServant(EnhancedElderServant[TRequest, TResponse]):
         tier: ServantTier = ServantTier.EXPERT,  # 騎士は高レベル
         **config_kwargs
     ):
+        """初期化メソッド"""
         # 基底クラス初期化
         super().__init__(
             servant_id=servant_id,

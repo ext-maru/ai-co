@@ -59,9 +59,8 @@ class EldersLegacyBase(Generic[TRequest, TResponse], ABC):
     AI + Service + Flow + Entity統合の究極実装。
     """
 
-    def __init__(self, component_id:
+    def __init__(self, component_id: str, domain: EldersLegacyDomain):
         """初期化メソッド"""
-    str, domain: EldersLegacyDomain):
         self.component_id = component_id
         self.domain = domain
         self.created_at = datetime.now()
@@ -290,9 +289,8 @@ class EldersLegacyBase(Generic[TRequest, TResponse], ABC):
 class EldersAILegacy(EldersLegacyBase[TRequest, TResponse]):
     """AI専用(WISDOM域) - 学習・分析・予測特化"""
 
-    def __init__(self, component_id:
+    def __init__(self, component_id: str):
         """初期化メソッド"""
-    str):
         super().__init__(component_id, EldersLegacyDomain.WISDOM)
         self.learning_metrics = {
             "models_trained": 0,
@@ -304,9 +302,8 @@ class EldersAILegacy(EldersLegacyBase[TRequest, TResponse]):
 class EldersServiceLegacy(EldersLegacyBase[TRequest, TResponse]):
     """Service専用(EXECUTION域) - 実行・変換・処理特化"""
 
-    def __init__(self, component_id:
+    def __init__(self, component_id: str):
         """初期化メソッド"""
-    str):
         super().__init__(component_id, EldersLegacyDomain.EXECUTION)
         self.service_metrics = {
             "tasks_executed": 0,
@@ -318,9 +315,8 @@ class EldersServiceLegacy(EldersLegacyBase[TRequest, TResponse]):
 class EldersFlowLegacy(EldersLegacyBase[TRequest, TResponse]):
     """Flow専用(MONITORING域) - 監視・最適化・編成特化"""
 
-    def __init__(self, component_id:
+    def __init__(self, component_id: str):
         """初期化メソッド"""
-    str):
         super().__init__(component_id, EldersLegacyDomain.MONITORING)
         self.flow_metrics = {
             "workflows_orchestrated": 0,

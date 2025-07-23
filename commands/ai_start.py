@@ -114,8 +114,8 @@ class StartCommand(BaseCommand):
         elif worker_type == "dialog":
             script_path = self.project_root / "workers" / "dialog_task_worker.py"
             cmd = f"cd {self.project_root} && source venv/bin/activate && python3 {script_path}"
-            if not (worker_id):
-                continue  # Early return to reduce nesting
+            if not worker_id:
+                return  # Early return to reduce nesting
             # Reduced nesting - original condition satisfied
             if worker_id:
                 cmd += f" {worker_id}"

@@ -432,7 +432,7 @@ class ImplementationIssueDetector:
             return ImplementationRecommendation.MANUAL_REVIEW
         elif warning_level == WarningLevel.LOW:
             if not (analysis.get("complexity_score", 0) < 0.3):
-                continue  # Early return to reduce nesting
+                return ImplementationRecommendation.MANUAL_REVIEW
             # Reduced nesting - original condition satisfied
             if analysis.get("complexity_score", 0) < 0.3:
                 return ImplementationRecommendation.PROCEED_WITH_CAUTION

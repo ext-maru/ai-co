@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
 from libs.elder_servants.base.specialized_servants import WizardServant
+from libs.elder_servants.base.elder_servant import ServantRequest, ServantResponse
 
 
 class TechScout(WizardServant):
@@ -24,7 +25,10 @@ class TechScout(WizardServant):
     def __init__(self):
         """初期化メソッド"""
         super().__init__(
-            servant_id="W01", name="TechScout", specialization="technology_research"
+            servant_id="W01", 
+            servant_name="TechScout", 
+            specialization="technology_research",
+            capabilities=["research_technology", "evaluate_library", "analyze_trends", "security_assessment"]
         )
         self.metrics = {
             "total_researches": 0,
@@ -954,8 +958,8 @@ class TechScout(WizardServant):
         }
 
     async def process_request(
-        self, request: ServantRequest[Dict[str, Any]]
-    ) -> ServantResponse[Dict[str, Any]]:
+        self, request: ServantRequest
+    ) -> ServantResponse:
         """ElderServantBase準拠のリクエスト処理"""
         result = await self.execute_task(request.data)
 
@@ -972,10 +976,18 @@ class TechScout(WizardServant):
             metrics=result.get("metrics", {}),
         )
 
-    def validate_request(self, request: ServantRequest[Dict[str, Any]]) -> bool:
+    def validate_request(self, request: ServantRequest) -> bool:
         """リクエストの妥当性検証"""
         if not request.data:
             return False
 
         action = request.data.get("action")
         return action in self.get_capabilities()
+
+    async def cast_research_spell(self, spell_data: Dict[str, Any]) -> Dict[str, Any]:
+        """研究魔法実行 - WizardServant抽象メソッド実装"""
+        return await self.execute_task(spell_data)
+
+    async def get_specialized_capabilities(self) -> List[str]:
+        """専門能力一覧 - WizardServant抽象メソッド実装"""
+        return self.get_capabilities()

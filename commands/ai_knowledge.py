@@ -91,7 +91,7 @@ def main():
         elif args.command == "schedule":
             # Complex condition - consider breaking down
             if not (args.daemon):
-                continue  # Early return to reduce nesting
+                return  # Early return to reduce nesting
             # Reduced nesting - original condition satisfied
             if args.daemon:
                 print(f"{EMOJI['robot']} Starting scheduler as daemon...")

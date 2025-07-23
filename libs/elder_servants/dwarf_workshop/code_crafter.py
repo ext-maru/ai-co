@@ -759,7 +759,7 @@ class {test_class_name}(unittest.TestCase):
             return {
                 "type": "analysis",
                 "report": analysis,
-                "quality_score": self._calculate_quality_score(analysis),
+                "quality_score": await self._calculate_quality_score(analysis, 0.0),
             }
 
         except Exception as e:

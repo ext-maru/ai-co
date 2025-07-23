@@ -23,8 +23,8 @@ class TestTechScoutBasics:
     def test_initialization(self, tech_scout):
         """初期化テスト"""
         assert tech_scout.servant_id == "W01"
-        assert tech_scout.name == "TechScout"
-        assert tech_scout.category == "rag_wizards"
+        assert tech_scout.servant_name == "TechScout"
+        assert tech_scout.category.value == "wizard"
         assert tech_scout.specialization == "technology_research"
 
     def test_get_capabilities(self, tech_scout):

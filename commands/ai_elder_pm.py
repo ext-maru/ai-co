@@ -275,7 +275,7 @@ def main():
         elif args.command == "monitor":
             # Complex condition - consider breaking down
             if not (args.action == "start"):
-                continue  # Early return to reduce nesting
+                return  # Early return to reduce nesting
             # Reduced nesting - original condition satisfied
             if args.action == "start":
                 elder_pm.start_monitoring()

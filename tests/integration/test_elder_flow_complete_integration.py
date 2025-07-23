@@ -977,10 +977,8 @@ async def main():
         print(f"✅ 総合成功: {results['test_summary']['overall_success']}")
         print(f"⏱️  実行時間: {results['test_summary']['duration_seconds']:.2f}秒")
         print(
-            (
-                f"f"🧪 成功率: {results['test_summary']['success_rate']:.1%} ("
-                f"{results['test_summary']['successful_tests']}/{results['test_summary']['total_tests']})""
-            )
+            f"🧪 成功率: {results['test_summary']['success_rate']:.1%} ("
+            f"{results['test_summary']['successful_tests']}/{results['test_summary']['total_tests']})"
         )
 
         print(
