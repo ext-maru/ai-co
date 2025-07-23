@@ -166,9 +166,15 @@ class MonitoringDashboard:
         <head>
             <title>{dashboard_config.get('name', 'Dashboard')}</title>
             <style>
-                .dashboard {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }}
+                .dashboard {{ display: grid; grid-template-columns: repeat(
+                    auto-fit,
+                    minmax(300px, 1fr)
+                ); gap: 20px; }}
                 .widget {{ border: 1px solid #ccc; padding: 20px; border-radius: 5px; }}
-                .{dashboard_config.get('theme', 'light')} {{ background: {'#333' if dashboard_config.get('theme') == 'dark' else '#fff'}; }}
+                .{dashboard_config.get(
+                    'theme',
+                    'light')} {{ background: {'#333' if dashboard_config.get('theme'
+                ) == 'dark' else '#fff'}; }}
             </style>
         </head>
         <body class="{dashboard_config.get('theme', 'light')}">

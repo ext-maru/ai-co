@@ -14,6 +14,7 @@ class AIWorkerRmCommand(BaseCommand):
     """ワーカー削除"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-worker-rm", description="ワーカー削除", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -45,6 +46,7 @@ class AIWorkerRmCommand(BaseCommand):
             
             # 稼働中のワーカーの確認
             if config.get("status") == "active" and not force:
+                # Complex condition - consider breaking down
                 return CommandResult(
                     success=False,
                     message=f"❌ ワーカー '{worker_name}' は稼働中です。"
@@ -66,6 +68,7 @@ class AIWorkerRmCommand(BaseCommand):
             )
             
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(
                 success=False, 
                 message=f"❌ ワーカー削除エラー: {e}"
@@ -73,6 +76,7 @@ class AIWorkerRmCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIWorkerRmCommand()
     sys.exit(command.run())
 

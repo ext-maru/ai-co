@@ -11,7 +11,7 @@ import sys
 import os
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath('./../../..'))))
 
 BASE_URL = "http://localhost:8000"
 
@@ -197,7 +197,10 @@ async def test_adapter_startup():
     """Quick test to see if adapter is running"""
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"{BASE_URL}/", timeout=aiohttp.ClientTimeout(total=2)) as response:
+            async with session.get(
+                f"{BASE_URL}/",
+                timeout=aiohttp.ClientTimeout(total=2)
+            ) as response:
                 return response.status == 200
     except:
         return False

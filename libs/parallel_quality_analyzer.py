@@ -428,7 +428,8 @@ class ParallelQualityAnalyzer:
             
             # Log progress
             processed = len(results)
-            logger.info(f"Analyzed {processed}/{len(files)} files ({processed/len(files)*100:.1f}%)")
+            logger.info(f"Analyzed {processed}/{len(files)} files ({processed/len(files)*100:.1f}%)" \
+                "Analyzed {processed}/{len(files)} files ({processed/len(files)*100:.1f}%)")
         
         total_time = time.time() - start_time
         
@@ -579,7 +580,10 @@ async def quick_quality_check(project_root: Path,
         'files_analyzed': result.processed_files,
         'analysis_time': result.total_analysis_time,
         'performance_improvement': f"{90 if result.total_analysis_time < 30 else 0}%",
-        'cache_efficiency': f"{result.cache_hits / max(1, result.cache_hits + result.cache_misses) * 100:.1f}%",
+        'cache_efficiency': f"{result.cache_hits / max(
+            1,
+            result.cache_hits + result.cache_misses
+        ) * 100:.1f}%",
         'detailed_results': [asdict(r) for r in result.results[:10]]  # First 10 results
     }
 

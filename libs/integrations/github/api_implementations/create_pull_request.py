@@ -357,7 +357,8 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
             # アサイン設定
             if assignees:
                 self._make_api_request(
-                    endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{pr_number}/assignees",
+                    endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{pr_number}/assignees" \
+                        "/repos/{self.repo_owner}/{self.repo_name}/issues/{pr_number}/assignees",
                     method="POST",
                     json_data={"assignees": assignees},
                 )
@@ -442,7 +443,8 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
             mergeable = pr.get("mergeable")
             if mergeable is None:
                 # GitHubがまだ計算中の場合、少し待つ
-                logger.info(f"PR #{pr_number} mergeable status is still being calculated, waiting...")
+                logger.info(f"PR #{pr_number} mergeable status is still being calculated, waiting..." \
+                    "PR #{pr_number} mergeable status is still being calculated, waiting...")
                 import time
                 time.sleep(2)
                 # 再度取得
@@ -463,7 +465,10 @@ class GitHubCreatePullRequestImplementation(GitHubAPIBase):
                 method="PUT",
                 json_data={
                     "commit_title": f"Auto-merge PR #{pr_number}",
-                    "commit_message": f"Automatically merged by Auto Issue Processor\n\nCloses #{pr.get('number', pr_number)}",
+                    "commit_message": f"Automatically merged by Auto Issue Processor\n\nCloses #{pr.get(
+                        'number',
+                        pr_number
+                    )}",
                     "merge_method": "merge"  # merge, squash, rebase から選択
                 }
             )

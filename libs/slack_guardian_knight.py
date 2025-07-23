@@ -126,7 +126,8 @@ class SlackGuardianKnight(IncidentKnight):
                                         category=IssueCategory.CONFIG_ERROR,
                                         severity=IssueSeverity.CRITICAL,
                                         title="Slack API permissions insufficient",
-                                        description="Bot token missing required scopes: channels:read, groups:read, mpim:read, im:read, channels:history",
+                                        description="Bot token missing required scopes: channels:read, " \
+                                            "groups:read, mpim:read, im:read, channels:history",
                                         affected_component="slack_api",
                                         detected_at=datetime.now(),
                                         metadata={
@@ -174,11 +175,15 @@ class SlackGuardianKnight(IncidentKnight):
                     if "AutoRepairedComponent" in content:
                         issues.append(
                             Issue(
-                                id=f"slack_worker_broken_{worker_path.replace('/', '_')}_{int(datetime.now().timestamp())}",
+                                id=f"slack_worker_broken_{worker_path.replace(
+                                    '/',
+                                    '_')}_{int(datetime.now().timestamp()
+                                )}",
                                 category=IssueCategory.SYSTEM_FAILURE,
                                 severity=IssueSeverity.CRITICAL,
                                 title=f"Slack worker replaced with placeholder: {worker_path}",
-                                description=f"Worker {worker_path} was auto-repaired with placeholder, needs full restoration",
+                                description=f"Worker {worker_path} was auto-repaired with placeholder, " \
+                                    "needs full restoration",
                                 affected_component=worker_path,
                                 detected_at=datetime.now(),
                                 metadata={
@@ -193,7 +198,10 @@ class SlackGuardianKnight(IncidentKnight):
                     if "import re" not in content and "re." in content:
                         issues.append(
                             Issue(
-                                id=f"slack_import_missing_{worker_path.replace('/', '_')}_{int(datetime.now().timestamp())}",
+                                id=f"slack_import_missing_{worker_path.replace(
+                                    '/',
+                                    '_')}_{int(datetime.now().timestamp()
+                                )}",
                                 category=IssueCategory.CODE_QUALITY,
                                 severity=IssueSeverity.HIGH,
                                 title=f"Missing import in {worker_path}",
@@ -213,7 +221,10 @@ class SlackGuardianKnight(IncidentKnight):
             else:
                 issues.append(
                     Issue(
-                        id=f"slack_worker_missing_{worker_path.replace('/', '_')}_{int(datetime.now().timestamp())}",
+                        id=f"slack_worker_missing_{worker_path.replace(
+                            '/',
+                            '_')}_{int(datetime.now().timestamp()
+                        )}",
                         category=IssueCategory.SYSTEM_FAILURE,
                         severity=IssueSeverity.HIGH,
                         title=f"Slack worker missing: {worker_path}",
@@ -248,11 +259,15 @@ class SlackGuardianKnight(IncidentKnight):
                     if "RabbitMQ" in content and "import pika" not in content:
                         issues.append(
                             Issue(
-                                id=f"slack_pm_rabbitmq_{pm_file.replace('/', '_')}_{int(datetime.now().timestamp())}",
+                                id=f"slack_pm_rabbitmq_{pm_file.replace(
+                                    '/',
+                                    '_')}_{int(datetime.now().timestamp()
+                                )}",
                                 category=IssueCategory.DEPENDENCY_MISSING,
                                 severity=IssueSeverity.HIGH,
                                 title=f"RabbitMQ integration issue in {pm_file}",
-                                description=f"RabbitMQ functionality referenced but import missing in {pm_file}",
+                                description=f"RabbitMQ functionality referenced but import missing in " \
+                                    "{pm_file}",
                                 affected_component=pm_file,
                                 detected_at=datetime.now(),
                                 metadata={
@@ -336,7 +351,8 @@ class SlackGuardianKnight(IncidentKnight):
                         category=IssueCategory.RESOURCE_CONFLICT,
                         severity=IssueSeverity.MEDIUM,
                         title="RabbitMQ port conflict detected",
-                        description="RabbitMQ service has port conflicts: dist_port_already_used,25672",
+                        description="RabbitMQ service has port conflicts: dist_port_already_used,25672" \
+                            "RabbitMQ service has port conflicts: dist_port_already_used,25672",
                         affected_component="rabbitmq",
                         detected_at=datetime.now(),
                         metadata={

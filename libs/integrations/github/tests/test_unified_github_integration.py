@@ -52,7 +52,8 @@ class TestUnifiedGitHubManager:
         coverage = self.manager._calculate_api_coverage()
         assert coverage == 80.0  # 8/10 メソッド実装
     
-    @patch('libs.integrations.github.api_implementations.get_issues.GitHubGetIssuesImplementation.get_issues')
+    @patch('libs.integrations.github.api_implementations.get_issues.GitHubGetIssuesImplementation.' \
+        'get_issues')
     def test_get_issues_with_rate_limiting(self, mock_get_issues):
         """レート制限付きIssue取得テスト"""
         mock_get_issues.return_value = {
@@ -74,7 +75,8 @@ class TestUnifiedGitHubManager:
         assert self.manager.statistics["api_calls"] == 1
         assert self.manager.statistics["successful_operations"] == 1
     
-    @patch('libs.integrations.github.api_implementations.update_issue.GitHubUpdateIssueImplementation.update_issue')
+    @patch('libs.integrations.github.api_implementations.update_issue.' \
+        'GitHubUpdateIssueImplementation.update_issue')
     def test_update_issue_with_notification(self, mock_update):
         """通知付きIssue更新テスト"""
         mock_update.return_value = {
@@ -108,7 +110,8 @@ class TestUnifiedGitHubManager:
             assert result["success"] is True
             mock_report.assert_called_once()
     
-    @patch('libs.integrations.github.api_implementations.create_pull_request.GitHubCreatePullRequestImplementation.create_pull_request')
+    @patch('libs.integrations.github.api_implementations.create_pull_request.' \
+        'GitHubCreatePullRequestImplementation.create_pull_request')
     def test_create_pull_request_full_features(self, mock_create_pr):
         """完全機能付きPR作成テスト"""
         mock_create_pr.return_value = {
@@ -138,7 +141,8 @@ class TestUnifiedGitHubManager:
         assert result["pull_request"]["number"] == 789
         assert not result["conflict_status"]["has_conflicts"]
     
-    @patch('libs.integrations.github.api_implementations.get_pull_requests.GitHubGetPullRequestsImplementation.get_pull_requests')
+    @patch('libs.integrations.github.api_implementations.get_pull_requests.' \
+        'GitHubGetPullRequestsImplementation.get_pull_requests')
     def test_get_pull_requests_with_statistics(self, mock_get_prs):
         """統計付きPR取得テスト"""
         mock_get_prs.return_value = {
@@ -441,9 +445,12 @@ class TestUnifiedGitHubManagerPerformance:
     @pytest.mark.asyncio
     async def test_performance_components_initialization(self):
         """パフォーマンスコンポーネント初期化テスト"""
-        with patch('libs.integrations.github.unified_github_manager.create_github_cache_manager') as mock_cache:
-            with patch('libs.integrations.github.unified_github_manager.create_github_performance_optimizer') as mock_optimizer:
-                with patch('libs.integrations.github.unified_github_manager.create_github_async_manager') as mock_async:
+        with patch('libs.integrations.github.unified_github_manager.create_github_cache_manager' \
+            'libs.integrations.github.unified_github_manager.create_github_cache_manager') as mock_cache:
+            with patch('libs.integrations.github.unified_github_manager.' \
+                'create_github_performance_optimizer') as mock_optimizer:
+                with patch('libs.integrations.github.unified_github_manager.' \
+                    'create_github_async_manager') as mock_async:
                     # モックを設定
                     mock_cache.return_value = Mock()
                     mock_optimizer.return_value = Mock()

@@ -499,7 +499,8 @@ class ParallelExecutionEngine:
         self.results = {}
 
         self.logger.info(
-            f"⚡ Parallel Engine initialized: {max_classical_workers} classical + {max_quantum_workers} quantum workers"
+            f"⚡ Parallel Engine initialized: {max_classical_workers} classical + " \
+                "{max_quantum_workers} quantum workers"
         )
 
     def _setup_logger(self) -> logging.Logger:

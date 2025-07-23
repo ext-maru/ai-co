@@ -250,7 +250,12 @@ class ResourceCleaner:
             if context.branch_name and self.git_ops:
                 try:
                     # ローカルブランチを削除
-                    result = self.git_ops._run_git_command(["branch", "-D", context.branch_name], check=False)
+                    result = self.git_ops._run_git_command(
+                        ["branch",
+                        "-D",
+                        context.branch_name],
+                        check=False
+                    )
                     if result["success"]:
                         cleaned.append(f"local_branch:{context.branch_name}")
                         logger.info(f"Cleaned up local branch: {context.branch_name}")
@@ -544,8 +549,19 @@ class GitOperationRecoveryStrategy(RecoveryStrategy):
             # 既存ブランチを削除してリトライ
             if self.git_ops and context.branch_name:
                 try:
-                    self.git_ops._run_git_command(["branch", "-D", context.branch_name], check=False)
-                    self.git_ops._run_git_command(["push", "origin", "--delete", context.branch_name], check=False)
+                    self.git_ops._run_git_command(
+                        ["branch",
+                        "-D",
+                        context.branch_name],
+                        check=False
+                    )
+                    self.git_ops._run_git_command(
+                        ["push",
+                        "origin",
+                        "--delete",
+                        context.branch_name],
+                        check=False
+                    )
                     
                     return RecoveryResult(
                         success=True,
@@ -735,7 +751,8 @@ def with_error_recovery(git_ops=None):
                     else:
                         # 回復不可能または中止
                         logger.error(f"Operation {operation} failed: {recovery_result.message}")
-                        raise Exception(f"Operation failed after recovery: {recovery_result.message}")
+                        raise Exception(f"Operation failed after recovery: {recovery_result.message}" \
+                            "Operation failed after recovery: {recovery_result.message}")
             
             raise Exception(f"Operation {operation} failed after {max_retries} retries")
         
@@ -757,7 +774,11 @@ class ErrorReporter:
         """ユニークなエラーIDを生成"""
         return f"ERR-{datetime.now().strftime('%Y%m%d-%H%M%S')}-{str(uuid.uuid4())[:8]}"
     
-    def classify_error(self, error: Exception, operation: str) -> Tuple[ErrorCategory, ErrorSeverity]:
+    def classify_error(
+        self,
+        error: Exception,
+        operation: str
+    ) -> Tuple[ErrorCategory, ErrorSeverity]:
         """エラーを分類して重要度を判定"""
         # ErrorClassifierを使用して分類
         error_type = ErrorClassifier.classify_error(error, operation)

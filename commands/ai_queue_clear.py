@@ -14,6 +14,7 @@ class AIQueueClearCommand(BaseCommand):
     """キュークリア"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-queue-clear", description="キュークリア", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AIQueueClearCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIQueueClearCommand()
     sys.exit(command.run())
 

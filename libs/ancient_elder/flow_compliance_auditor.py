@@ -242,7 +242,8 @@ class ElderFlowTracer:
                             if fmt == '%m-%d %H:%M:%S':
                                 # 年を追加
                                 timestamp_str_with_year = f"2025-{timestamp_str}"
-                                return datetime.strptime(timestamp_str_with_year, '%Y-%m-%d %H:%M:%S')
+                                return datetime.strptime(timestamp_str_with_year, '%Y-%m-%d %H:%M:%S' \
+                                    '%Y-%m-%d %H:%M:%S')
                             else:
                                 return datetime.strptime(timestamp_str, fmt)
                         except ValueError:
@@ -557,7 +558,10 @@ class FlowComplianceAuditor(AncientElderBase):
                 
             # 各実行を詳細監査
             for execution_id, execution in flow_executions.items():
-                execution_violations = await self._audit_single_flow_execution(execution_id, execution)
+                execution_violations = await self._audit_single_flow_execution(
+                    execution_id,
+                    execution
+                )
                 violations.extend(execution_violations)
                 
             # バイパス違反を処理

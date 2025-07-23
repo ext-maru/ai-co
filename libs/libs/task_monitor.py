@@ -14,6 +14,7 @@ class TaskMonitor:
     """Auto-generated placeholder class"""
 
     def __init__(self, *args, **kwargs):
+        """初期化メソッド"""
         logger.warning(
             f"Using auto-generated placeholder for {self.__class__.__name__}"
         )

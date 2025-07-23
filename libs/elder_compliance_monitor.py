@@ -314,7 +314,8 @@ class ElderComplianceMonitor:
                     ComplianceViolation(
                         violation_type=ViolationType.NO_REPORTING,
                         severity=ComplianceLevel.WARNING,
-                        description=f"No progress report in {time_since_report.total_seconds()//60} minutes",
+                        description=f"No progress report in {time_since_report.total_seconds()//60} " \
+                            "minutes",
                         detected_at=datetime.now(),
                         elder_instance=elder_instance,
                         evidence={"last_report": last_report.isoformat()},

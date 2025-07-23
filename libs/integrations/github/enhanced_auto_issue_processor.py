@@ -233,7 +233,8 @@ class GitOperations:
             subprocess.run(["git", "add", "-A"], cwd=self.repo_path, check=True)
 
             # コミット（最大2回試行：pre-commitフックによる自動修正対応）
-            full_message = f"{commit_message}\n\nCloses #{issue_number}\n\n🤖 Generated with Claude Code"
+            full_message = f"{commit_message}\n\nCloses #{issue_number}\n\n🤖 Generated with Claude Code" \
+                "{commit_message}\n\nCloses #{issue_number}\n\n🤖 Generated with Claude Code"
 
             for attempt in range(2):
                 try:
@@ -689,7 +690,11 @@ class EnhancedFourSagesIntegration:
                         ),
                     },
                     "risks": {
-                        "advice": f"複雑度: {rag_result.get('issue_analysis', {}).get('complexity', 'medium')}",
+                        "advice": f"複雑度: {rag_result.get(
+                            'issue_analysis',
+                            {}).get('complexity',
+                            'medium'
+                        )}",
                         "level": rag_result.get("issue_analysis", {}).get(
                             "complexity", "medium"
                         ),
@@ -943,7 +948,11 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
                         f"- 変更ファイル数: {len(implementation_details['files_modified'])}件\n\n"
                         f"**4賢者の助言**:\n"
                         f"- リスクレベル: {sage_advice.get('risks', {}).get('level', 'unknown')}\n"
-                        f"- 推奨アプローチ: {sage_advice.get('solution', {}).get('approach', 'standard')}\n\n"
+                        f"- 推奨アプローチ: {sage_advice.get(
+                            'solution',
+                            {}).get('approach',
+                            'standard'
+                        )}\n\n"
                         f"**スマートマージ**: 自動マージを試行中...\n\n"
                         f"レビューをお願いします。",
                     )
@@ -1616,7 +1625,14 @@ This auto-generated documentation provides the foundation for addressing the doc
             "timestamp": datetime.now().isoformat(),
         }
 
-    async def run_enhanced(self, max_issues=1, priorities=None, enable_smart_merge=True, enable_four_sages=True, enable_analytics=False):
+    async def run_enhanced(
+        self,
+        max_issues=1,
+        priorities=None,
+        enable_smart_merge=True,
+        enable_four_sages=True,
+        enable_analytics=False
+    ):
         """拡張版の実行
         
         Args:

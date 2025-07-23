@@ -378,11 +378,11 @@ def invalid_function(
         """品質ゲート統合テスト"""
         # 品質基準を満たさないコードの生成をシミュレート
         low_quality_spec = {
-            "function_name": "quick_hack",
+            "function_name": "minimal_function",
             "parameters": [],
             "returns": "Any",
-            "description": "Quick and dirty implementation",
-            "requirements": ["Just make it work"]
+            "description": "Basic implementation for testing",
+            "requirements": ["Simple implementation"]
         }
         
         # 品質チェックメソッドをモック

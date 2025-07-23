@@ -31,6 +31,7 @@ class DLQManager:
     """Dead Letter Queue Manager"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.dlq_name = "dead_letter_queue"
 
     def get_stats(self):
@@ -54,6 +55,7 @@ class DLQManager:
     """Dead Letter Queue Manager"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.dlq_name = "dead_letter_queue"
 
     def get_stats(self):
@@ -77,6 +79,7 @@ class DLQManager:
     """Dead Letter Queue Manager"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.dlq_name = "dead_letter_queue"
 
     def get_stats(self):
@@ -100,6 +103,7 @@ class DeadLetterQueueMixin:
     """Mixin for Dead Letter Queue functionality"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.dlq_enabled = True
 
     def setup_dlq(self):

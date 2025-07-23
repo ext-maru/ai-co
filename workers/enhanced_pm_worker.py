@@ -143,6 +143,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
 
             # プロジェクトタイプを判定
             if body.get("project_mode", False) or self._is_complex_task(body):
+                # Complex condition - consider breaking down
                 # プロジェクトモードで処理
                 self._handle_project_mode(body)
             else:
@@ -152,6 +153,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
         except Exception as e:
+            # Handle specific exception case
             context = {
                 "operation": "process_message",
                 "task_id": body.get("task_id"),
@@ -295,6 +297,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
         requirements = self._extract_requirements(body.get("prompt", ""))
 
         for req in requirements:
+            # Process each item in collection
             self.project_manager.add_requirement(
                 project_id=project_id,
                 type=req["type"],
@@ -367,6 +370,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
         placed_files = []
 
         for file_path in files_created:
+            # Process each item in collection
             source = self.output_dir / file_path
             if source.exists():
                 # 開発タスク作成
@@ -425,6 +429,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
         placed_files = body.get("placed_files", [])
 
         if self.se_testing_enabled and placed_files:
+            # Complex condition - consider breaking down
             # SE-Testerワーカーに送信
             self.logger.info(
                 f"Sending to SE-Tester for testing: {len(placed_files)} files"
@@ -493,6 +498,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
 
         placed_files = []
         for file_path in files_created:
+            # Process each item in collection
             source = self.output_dir / file_path
             if source.exists():
                 try:
@@ -516,6 +522,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
 
         # 結果を次のワーカーへ
         if self.se_testing_enabled and placed_files:
+            # Complex condition - consider breaking down
             # SE-Testerへ
             test_task = {
                 "task_id": task_id,
@@ -560,6 +567,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
 
         # 非機能要件
         if any(word in prompt for word in ["性能", "パフォーマンス", "高速"]):
+            # Complex condition - consider breaking down
             requirements.append(
                 {
                     "type": "non_functional",
@@ -658,6 +666,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
         try:
             # Elder Tree に終了を通知
             if self.elder_tree_initialized and self.four_sages:
+                # Complex condition - consider breaking down
                 self.four_sages.report_to_task_sage({
                     "type": "worker_shutdown",
                     "worker": "enhanced_pm_worker",
@@ -666,10 +675,12 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             
             # プロジェクトデータの保存確認
             if hasattr(self, 'projects') and self.projects:
+                # Complex condition - consider breaking down
                 self.logger.info(f"Saving {len(self.projects)} project(s) before shutdown")
             
             self.logger.info("Enhanced PM Worker cleanup completed")
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Error during cleanup: {e}")
 
     def stop(self):
@@ -679,6 +690,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             super().stop()
             self.logger.info("Enhanced PM Worker stopped successfully")
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error stopping Enhanced PM Worker: {e}")
 
     def initialize(self) -> None:
@@ -695,6 +707,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             
             self.logger.info(f"{self.__class__.__name__} initialized successfully")
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Initialization error: {e}")
             raise
         logger.info(f"{self.__class__.__name__} initialized")
@@ -713,6 +726,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             
             # Incident Sage にエラー報告
             if self.elder_tree_initialized and self.four_sages:
+                # Complex condition - consider breaking down
                 self.four_sages.consult_incident_sage({
                     "type": "pm_processing_error",
                     **error_details
@@ -720,6 +734,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             
             self.logger.error(f"Enhanced PM Worker error in {context}: {error}")
         except Exception as e:
+            # Handle specific exception case
             self.logger.critical(f"Error in error handler: {e}")
 
     def get_status(self) -> Dict[str, Any]:
@@ -757,6 +772,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Status retrieval failed: {e}")
             return {"worker_id": self.worker_id, "status": "error", "error": str(e)}
 
@@ -765,11 +781,13 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
         try:
             # ベース設定の確認
             if not hasattr(self, 'worker_id') or not self.worker_id:
+                # Complex condition - consider breaking down
                 self.logger.error("Worker ID not set")
                 return False
             
             # Elder Tree 設定の確認
             if ELDER_TREE_AVAILABLE and not self.elder_tree_initialized:
+                # Complex condition - consider breaking down
                 self.logger.warning("Elder Tree not initialized")
             
             # プロジェクトデータの確認
@@ -779,6 +797,7 @@ class EnhancedPMWorker(BaseWorker, CommunicationMixin, KnowledgeAwareMixin):
             self.logger.info("Enhanced PM Worker config validation passed")
             return True
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Config validation failed: {e}")
             return False
 
@@ -827,6 +846,7 @@ EOF""",
             evaluated_files = 0
 
             for file_path in files_created:
+                # Process each item in collection
                 try:
                     file_data = {
                         "files_created": [file_path],
@@ -995,6 +1015,7 @@ EOF""",
 
             # Slack通知
             if hasattr(self, "slack") and self.slack:
+                # Complex condition - consider breaking down
                 self._send_retry_notification(
                     task_id, issues, suggestions, iteration + 1
                 )
@@ -1061,6 +1082,7 @@ EOF""",
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Four Sages consultation failed: {e}")
             return {"recommendation": None}
 
@@ -1095,6 +1117,7 @@ EOF""",
             self.logger.info(f"Progress reported to Elder Tree: {project_id} - {phase}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder progress report failed: {e}")
 
     def _escalate_critical_issue_to_grand_elder(
@@ -1119,6 +1142,7 @@ EOF""",
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Grand Elder escalation failed: {e}")
             return False
 
@@ -1158,6 +1182,7 @@ EOF""",
                 self.logger.info(f"Elder Council summoned for: {decision_type}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder Council request failed: {e}")
 
     def _coordinate_with_four_sages(
@@ -1179,6 +1204,7 @@ EOF""",
                 return {"coordinated": False, "reason": "Unknown coordination type"}
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Four Sages coordination failed: {e}")
             return {"coordinated": False, "error": str(e)}
 
@@ -1206,6 +1232,7 @@ EOF""",
             return status
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder Tree status retrieval failed: {e}")
             return {"error": str(e)}
 
@@ -1269,6 +1296,7 @@ EOF""",
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report error to Elder: {e}")
 
     def _assess_decision_urgency(

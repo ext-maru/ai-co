@@ -35,6 +35,7 @@ try:
 
     ELDER_SYSTEM_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logging.warning(f"Elder system not available: {e}")
     ELDER_SYSTEM_AVAILABLE = False
     FourSagesIntegration = None
@@ -91,6 +92,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
             self.elder_systems_initialized = True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to initialize Elder systems: {e}")
             self.four_sages = None
             self.council_summoner = None
@@ -117,6 +119,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
                 raise ValueError(f"Unsupported message type: {message_type}")
 
         except Exception as e:
+            # Handle specific exception case
             if self.elder_systems_initialized:
                 await self._report_error_to_incident_sage(e, message)
             raise
@@ -209,6 +212,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
             # AST解析で構文チェック
             ast.parse(code)
         except SyntaxError as e:
+            # Handle specific exception case
             issues.append(
                 {
                     "line": e.lineno or 0,
@@ -224,6 +228,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
         for i, line in enumerate(lines, 1):
             # docstringチェック
             if line.strip().startswith("def ") and "def __" not in line:
+                # Complex condition - consider breaking down
                 # 次の行がdocstringでない場合
                 if (
                     i < len(lines)
@@ -250,6 +255,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
         for i, line in enumerate(lines, 1):
             # 短い変数名チェック
             if "def " in line and "(" in line:
+                # Complex condition - consider breaking down
                 # 関数定義から引数を抽出
                 func_match = re.search(r"def\s+\w+\s*\(([^)]*)\)", line)
                 if func_match:
@@ -261,7 +267,9 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
                         if p.strip()
                     ]
                     for param in param_names:
+                        # Process each item in collection
                         if len(param) == 1 and param.isalpha():
+                            # Complex condition - consider breaking down
                             issues.append(
                                 {
                                     "line": i,
@@ -274,6 +282,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
 
             # 未使用変数チェック（簡易版）
             if " = " in line and "=" not in line.replace(" = ", ""):
+                # Complex condition - consider breaking down
                 var_match = re.search(r"(\w+)\s*=", line)
                 if var_match:
                     var_name = var_match.group(1)
@@ -298,6 +307,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
         for i, line in enumerate(lines, 1):
             # 非効率的な文字列結合チェック
             if '" + ' in line or "' + " in line:
+                # Complex condition - consider breaking down
                 issues.append(
                     {
                         "line": i,
@@ -353,7 +363,9 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
 
         lines = code.split("\n")
         for i, line in enumerate(lines, 1):
+            # Process each item in collection
             for pattern, issue_type, severity, message in security_patterns:
+                # Process each item in collection
                 if re.search(pattern, line):
                     issues.append(
                         {
@@ -379,8 +391,11 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
         complexity_keywords = ["if", "elif", "for", "while", "try", "except"]
         complexity_score = 1  # 基本複雑度
         for line in lines:
+            # Process each item in collection
             for keyword in complexity_keywords:
+                # Process each item in collection
                 if f" {keyword} " in line or line.strip().startswith(keyword + " "):
+                    # Complex condition - consider breaking down
                     complexity_score += 1
 
         # 保守性指数（簡易計算）
@@ -419,6 +434,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
                 total_issues += len(issues)
 
                 for issue in issues:
+                    # Process each item in collection
                     issue_type = issue.get("type", "unknown")
                     issue_types[issue_type] = issue_types.get(issue_type, 0) + 1
 
@@ -437,6 +453,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
             self.four_sages.store_knowledge("analysis_patterns", pattern_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"Failed to report analysis patterns to Knowledge Sage: {e}"
             )
@@ -461,6 +478,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
             self.four_sages.consult_incident_sage(incident_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report error to Incident Sage: {e}")
 
     def get_elder_analysis_status(self) -> Dict[str, Any]:
@@ -507,6 +525,7 @@ async def main():
             await asyncio.sleep(10)
             print("💓 CodeReview TaskWorker heartbeat")
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n🛑 CodeReview TaskWorker stopping...")
         await worker.shutdown()
         print("✅ CodeReview TaskWorker stopped")

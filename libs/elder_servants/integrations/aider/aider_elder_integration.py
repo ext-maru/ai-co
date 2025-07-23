@@ -35,6 +35,7 @@ class AiderElderIntegration:
     """Integration layer between Aider and Elder Servants"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.git_keeper = None
         self.quality_inspector = None
         self._initialize_servants()
@@ -358,6 +359,7 @@ class AiderElderCLI:
     """CLI wrapper for using Aider with Elder Servants"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.integration = AiderElderIntegration()
 
     def run_aider_with_elder(self, *aider_args):

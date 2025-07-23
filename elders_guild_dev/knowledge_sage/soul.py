@@ -48,7 +48,9 @@ class KnowledgeSage(BaseSoul):
         super().__init__(soul_type="knowledge_sage", domain="knowledge_management")
         
         # 知識ベースの設定
-        self.knowledge_base_path = knowledge_base_path or Path("/home/aicompany/ai_co/knowledge_base")
+        self.knowledge_base_path = knowledge_base_path or Path("/home/aicompany/ai_co/knowledge_base" \
+            "/home/aicompany/ai_co/knowledge_base" \
+            "/home/aicompany/ai_co/knowledge_base")
         self.knowledge_base_path.mkdir(parents=True, exist_ok=True)
         
         # データストレージ設定
@@ -72,7 +74,9 @@ class KnowledgeSage(BaseSoul):
         # 起動時にデータロード
         self._load_all_data()
         
-        self.logger.info(f"Knowledge Sage initialized with {len(self._knowledge_items)} knowledge items")
+        self.logger.info(f"Knowledge Sage initialized with {len(self._knowledge_items)} knowledge items" \
+            "Knowledge Sage initialized with {len(self._knowledge_items)} knowledge items" \
+            "Knowledge Sage initialized with {len(self._knowledge_items)} knowledge items")
     
     async def initialize(self) -> bool:
         """BaseSoulの抽象メソッド実装"""
@@ -100,7 +104,10 @@ class KnowledgeSage(BaseSoul):
             if action == "search_knowledge":
                 query = message.get("query", "")
                 results = self.search_knowledge(query)
-                return self._create_success_response(message, {"results": [item.to_dict() for item in results]})
+                return self._create_success_response(
+                    message,
+                    {"results": [item.to_dict() for item in results]}
+                )
             
             elif action == "store_knowledge":
                 knowledge_data = message.get("knowledge")
@@ -356,7 +363,9 @@ class KnowledgeSage(BaseSoul):
         elif query.sort_by == "date":
             results.sort(key=lambda x: x.item.created_at, reverse=(query.sort_order == "desc"))
         elif query.sort_by == "confidence":
-            results.sort(key=lambda x: x.item.confidence_score, reverse=(query.sort_order == "desc"))
+            results.sort(key=lambda x: x.item.confidence_score, reverse=(query.sort_order == "desc" \
+                "desc" \
+                "desc"))
         elif query.sort_by == "access_count":
             results.sort(key=lambda x: x.item.access_count, reverse=(query.sort_order == "desc"))
         
@@ -466,10 +475,17 @@ class KnowledgeSage(BaseSoul):
             "key_points": key_points[:5],  # 上位5つのポイント
             "related_items": [item.id for item in related_items],
             "synthesis_method": "basic_aggregation",
-            "confidence": min(sum(item.confidence_score for item in related_items) / len(related_items), 1.0)
+            "confidence": min(
+                sum(item.confidence_score for item in related_items) / len(related_items),
+                1.0
+            )
         }
     
-    def recommend_knowledge(self, context: str, user_expertise: str = "intermediate") -> List[Dict[str, Any]]:
+    def recommend_knowledge(
+        self,
+        context: str,
+        user_expertise: str = "intermediate"
+    ) -> List[Dict[str, Any]]:
         """知識推奨"""
         # コンテキストベースの推奨（簡易実装）
         related_items = self.search_knowledge(context, limit=5)
@@ -594,7 +610,12 @@ class KnowledgeSage(BaseSoul):
         
         return min(score, 1.0)
     
-    def _calculate_recommendation_score(self, item: KnowledgeItem, context: str, expertise: str) -> float:
+    def _calculate_recommendation_score(
+        self,
+        item: KnowledgeItem,
+        context: str,
+        expertise: str
+    ) -> float:
         """推奨スコア計算"""
         base_score = self._calculate_relevance(item, context)
         

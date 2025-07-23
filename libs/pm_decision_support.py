@@ -246,7 +246,8 @@ class PMDecisionSupport(BaseManager):
 
             # インデックス作成
             conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_decisions_project ON decision_recommendations(project_id)"
+                "CREATE INDEX IF NOT EXISTS idx_decisions_project ON " \
+                    "decision_recommendations(project_id)"
             )
             conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_metrics_project ON project_metrics(project_id)"

@@ -400,7 +400,8 @@ class ElderCouncilSummoner:
                     TriggerCategory.EVOLUTION_OPPORTUNITY,
                     UrgencyLevel.MEDIUM,
                     "System Evolution Opportunity",
-                    f"Learning velocity decreased, evolution opportunity score: {evolution_score:.2%}",
+                    f"Learning velocity decreased, evolution opportunity score: " \
+                        "{evolution_score:.2%}",
                     metrics,
                     ["ai_evolution", "learning_systems"],
                     [

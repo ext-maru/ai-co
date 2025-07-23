@@ -37,6 +37,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logging.warning(f"Elder Tree integration not available: {e}")
     FourSagesIntegration = None
     ElderCouncilSummoner = None
@@ -97,6 +98,7 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder Tree initialization failed: {e}")
             self.elder_integration_enabled = False
 
@@ -121,6 +123,7 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
             else:
                 # Elder Council エスカレーション
                 if self.elder_integration_enabled and self.elder_council_summoner:
+                    # Complex condition - consider breaking down
                     await self._escalate_to_elder_council(
                         {
                             "issue_type": "unsupported_message",
@@ -130,6 +133,7 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
                     )
                 raise ValueError(f"Unsupported message type: {message_type}")
         except Exception as e:
+            # Handle specific exception case
             if self.elder_integration_enabled:
                 await self._handle_elder_error(e, message)
             raise
@@ -147,6 +151,7 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
                     f"🏛️ Issue escalated to Elder Council: {issue['issue_type']}"
                 )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to escalate to Elder Council: {e}")
 
     async def _handle_elder_error(self, error: Exception, context: Dict[str, Any]):
@@ -161,6 +166,7 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
                 }
             )
         except Exception as escalation_error:
+            # Handle specific exception case
             self.logger.error(f"Failed to handle elder error: {escalation_error}")
 
     async def _consult_four_sages(
@@ -176,6 +182,7 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
             )
             return {"consulted": True, "wisdom": wisdom}
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Four Sages consultation failed: {e}")
             return {"consulted": False, "wisdom": None, "error": str(e)}
 
@@ -339,7 +346,10 @@ class CodeReviewResultWorker(AsyncBaseWorkerV2):
     ) -> Dict[str, Any]:
         """詳細レポートの生成"""
         # サマリーの生成
-        summary = f"Code review completed with quality score improvement from {quality_improvement['before']:.1f} to {quality_improvement['after']:.1f}"
+        summary = f"Code review completed with quality score improvement from {quality_improvement[" \
+            "Code review completed with quality score improvement from {quality_improvement[" \
+            "Code review completed with quality score improvement from " \
+                "{quality_improvement["before']:.1f} to {quality_improvement['after']:.1f}"
 
         # 改善点の整理
         improvements = payload.get("improvement_summary", {}).get(
@@ -540,6 +550,7 @@ async def main():
             await asyncio.sleep(10)
             print("💓 CodeReview ResultWorker heartbeat")
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n🛑 CodeReview ResultWorker stopping...")
         await worker.shutdown()
         print("✅ CodeReview ResultWorker stopped")

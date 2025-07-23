@@ -31,6 +31,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "extract_method",
@@ -192,6 +193,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Refactoring failed for task {task_id}: {str(e)}")
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
 
@@ -260,6 +262,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Method extraction failed: {e}")
             return {
                 "refactored_code": source_code,
@@ -273,6 +276,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     ) -> Dict[str, Any]:
         """変数・関数名リネーミング"""
         if not source_code or not rename_mapping:
+            # Complex condition - consider breaking down
             return {
                 "refactored_code": source_code,
                 "refactoring_type": "rename_variables",
@@ -294,6 +298,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             try:
                 ast.parse(refactored_code)
             except SyntaxError:
+                # Handle specific exception case
                 raise ValueError("Renaming resulted in syntax errors")
 
             return {
@@ -309,6 +314,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Variable renaming failed: {e}")
             return {
                 "refactored_code": source_code,
@@ -342,6 +348,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             duplications_removed = 0
 
             for duplication in duplications:
+                # Process each item in collection
                 if duplication["severity"] >= 0.7:  # 重要な重複のみ処理
                     extract_result = await self._extract_common_code(
                         refactored_code, duplication
@@ -366,6 +373,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Duplication elimination failed: {e}")
             return {
                 "refactored_code": source_code,
@@ -411,6 +419,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             ):
                 complex_methods = self._find_complex_methods(tree)
                 for method_info in complex_methods:
+                    # Process each item in collection
                     improvements_applied.append(
                         f"Reduced complexity of: {method_info['name']}"
                     )
@@ -439,6 +448,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Structure improvement failed: {e}")
             return {
                 "refactored_code": source_code,
@@ -466,11 +476,14 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             for line in lines:
                 stripped = line.strip()
                 if stripped.startswith(("import ", "from ")) and in_imports:
+                    # Complex condition - consider breaking down
                     import_lines.append(line)
                 elif stripped == "" and in_imports:
+                    # Complex condition - consider breaking down
                     import_lines.append(line)
                 else:
                     if in_imports and stripped:
+                        # Complex condition - consider breaking down
                         in_imports = False
                     other_lines.append(line)
 
@@ -495,6 +508,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Import optimization failed: {e}")
             return {
                 "optimized_code": source_code,
@@ -551,6 +565,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Syntax modernization failed: {e}")
             return {
                 "modernized_code": source_code,
@@ -590,6 +605,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                     quality_score += 10.0
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Refactoring quality validation error: {e}")
             quality_score = max(quality_score - 10.0, 0.0)
 
@@ -613,6 +629,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         long_methods = []
 
         for node in ast.walk(tree):
+            # Process each item in collection
             if isinstance(node, ast.FunctionDef):
                 method_length = len(node.body)
                 if method_length > self.quality_metrics["method_length_threshold"]:
@@ -631,6 +648,7 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         complex_methods = []
 
         for node in ast.walk(tree):
+            # Process each item in collection
             if isinstance(node, ast.FunctionDef):
                 complexity = self.complexity_analyzer.calculate_complexity(node)
                 if complexity > self.quality_metrics["cyclomatic_complexity_threshold"]:
@@ -651,11 +669,13 @@ class RefactorSmith(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         local_imports = []
 
         for line in import_lines:
+            # Process each item in collection
             stripped = line.strip()
             if not stripped:
                 continue
 
             if stripped.startswith("from .") or stripped.startswith("import ."):
+                # Complex condition - consider breaking down
                 local_imports.append(line)
             elif any(
                 stdlib in stripped
@@ -717,6 +737,7 @@ class ComplexityAnalyzer:
         complexity = 1  # 基本パス
 
         for child in ast.walk(node):
+            # Process each item in collection
             if isinstance(
                 child, (ast.If, ast.While, ast.For, ast.ExceptHandler, ast.With)
             ):
@@ -765,6 +786,7 @@ class NamingAnalyzer:
         }
 
         for node in ast.walk(tree):
+            # Process each item in collection
             if isinstance(node, ast.FunctionDef):
                 analysis["total_identifiers"] += 1
                 if self._is_well_named_function(node.name):

@@ -290,8 +290,16 @@ class UnifiedInterfaceSystem:
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
         .container { max-width: 1200px; margin: 0 auto; }
         .header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .card { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; box-shadow: 0 2px 4px rgba(
+            0,
+            0,
+            0,
+            0.1
+        ); }
+        .stats { display: grid; grid-template-columns: repeat(
+            auto-fit,
+            minmax(200px, 1fr)
+        ); gap: 20px; }
         .stat-card { background: #ecf0f1; padding: 15px; border-radius: 5px; text-align: center; }
         .nav { display: flex; gap: 10px; margin: 20px 0; }
         .nav a { padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; }
@@ -388,7 +396,12 @@ class UnifiedInterfaceSystem:
         body {{ font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }}
         .container {{ max-width: 1200px; margin: 0 auto; }}
         .header {{ background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }}
-        .card {{ background: white; padding: 20px; border-radius: 8px; margin: 10px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }}
+        .card {{ background: white; padding: 20px; border-radius: 8px; margin: 10px 0; box-shadow: 0 2px 4px rgba(
+            0,
+            0,
+            0,
+            0.1
+        ); }}
         .nav {{ display: flex; gap: 10px; margin: 20px 0; }}
         .nav a {{ padding: 10px 20px; background: #3498db; color: white; text-decoration: none; border-radius: 5px; }}
         .nav a:hover {{ background: #2980b9; }}

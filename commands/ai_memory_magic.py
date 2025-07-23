@@ -4,6 +4,7 @@
 セッションの保存と復元を簡単に実行
 """
 
+# --- Main Implementation ---
 import argparse
 import sys
 from pathlib import Path
@@ -19,7 +20,9 @@ from libs.task_elder_memory_magic import (
 )
 
 
+# main: Complexity=9
 def main():
+    # Core functionality implementation
     parser = argparse.ArgumentParser(description="タスクエルダー記憶魔法 - セッション管理")
 
     subparsers = parser.add_subparsers(dest="command", help="コマンド")
@@ -45,6 +48,7 @@ def main():
     magic = TaskElderMemoryMagic()
 
     if args.command == "save":
+        # Complex condition - consider breaking down
         # 簡易的なTodo取得（実際はtodo読み込みシステムと連携）
         todos = [{"id": "current-1", "content": "現在のタスク", "status": "in_progress"}]
 
@@ -63,6 +67,7 @@ def main():
         print(f"復元コマンド: ai-memory-magic recall -t '{args.project}の続き'")
 
     elif args.command == "recall":
+        # Complex condition - consider breaking down
         memory = recall_session(args.trigger)
         if not memory:
             print("\n💡 ヒント: 以下のトリガーを試してください:")
@@ -71,6 +76,7 @@ def main():
             print("  - 'sess_[ID]を復元'")
 
     elif args.command == "list":
+        # Complex condition - consider breaking down
         print("\n📚 保存されたセッション一覧:")
         print("=" * 60)
 
@@ -79,7 +85,9 @@ def main():
 
         for memory_file in memory_files[:10]:  # 最新10件
             memory = magic._load_memory_file(memory_file)
+            # Complex condition check
             if memory and magic._is_memory_valid(memory):
+                # Complex condition - consider breaking down
                 valid_count += 1
                 print(f"\nセッションID: {memory['session_id']}")
                 print(f"  プロジェクト: {memory.get('project', {}).get('name', '不明')}")
@@ -93,6 +101,7 @@ def main():
             print(f"\n合計 {valid_count} 件の有効なセッション")
 
     elif args.command == "clean":
+        # Complex condition - consider breaking down
         magic._cleanup_expired_memories()
         print("✅ クリーンアップ完了")
 

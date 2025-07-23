@@ -198,7 +198,11 @@ class TestIntegrationScenarios:
         mock_report.return_value = True
         
         # エラー通知送信
-        with patch.object(manager.integration_manager, 'send_error_notification', return_value=True):
+        with patch.object(
+            manager.integration_manager,
+            'send_error_notification',
+            return_value=True
+        ):
             error_result = manager.send_error_notification(
                 "task-789",
                 "Critical error occurred",

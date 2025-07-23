@@ -314,7 +314,12 @@ class ElfForestDashboard:
 📊 テスト実行状況
 - 総テスト数: {self.dashboard_data.get('test_status', {}).get('total_tests', 0)}
 - 収集エラー: {self.dashboard_data.get('test_status', {}).get('collection_errors', 0)}
-- カバレッジ: {self.dashboard_data.get('test_status', {}).get('coverage', {}).get('total_coverage', 0):.1f}%
+- カバレッジ: {self.dashboard_data.get(
+    'test_status',
+    {}).get('coverage',
+    {}).get('total_coverage',
+    0
+):.1f}%
 
 🏛️ Phase 1.5作戦進捗
 - 全体進捗: {self.dashboard_data.get('phase_progress', {}).get('overall_progress', 0):.1f}%
@@ -331,7 +336,11 @@ class ElfForestDashboard:
                 if team_data.get("status") == "completed"
                 else "🔄" if team_data.get("status") == "in_progress" else "❌"
             )
-            report += f"  {status_emoji} {team_data.get('name', team_id)}: {team_data.get('progress', 0):.1f}%\n"
+            report += f"  {status_emoji} {team_data.get(
+                'name',
+                team_id)}: {team_data.get('progress',
+                0
+            ):.1f}%\n"
 
         # システムメトリクス
         metrics = self.dashboard_data.get("system_metrics", {})

@@ -22,6 +22,7 @@ class ElderInterpretationCheckCommand(BaseCommand):
     """クロードエルダー解釈確認コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="elder-interpretation-check",
             description="🧠 クロードエルダー解釈確認システム"
@@ -100,7 +101,11 @@ class ElderInterpretationCheckCommand(BaseCommand):
 
         # 自動修正の実行（必要に応じて）
         if args.auto_fix and interpretation_assessment["needs_correction"]:
-            corrected_interpretation = self.auto_correct_interpretation(check_record, sage_verifications)
+            # Complex condition - consider breaking down
+            corrected_interpretation = self.auto_correct_interpretation(
+                check_record,
+                sage_verifications
+            )
             self.display_corrected_interpretation(corrected_interpretation)
 
         # 結果の保存
@@ -173,9 +178,11 @@ class ElderInterpretationCheckCommand(BaseCommand):
 
         issues = []
         if "実装" in task and "計画" not in interpretation:
+            # Complex condition - consider breaking down
             issues.append("実装前の計画段階が不足している可能性があります")
 
         if "システム" in task and "既存" not in interpretation:
+            # Complex condition - consider breaking down
             issues.append("既存システムとの連携考慮が不足している可能性があります")
 
         return {
@@ -192,9 +199,11 @@ class ElderInterpretationCheckCommand(BaseCommand):
 
         issues = []
         if "管理" in task and "ダッシュボード" not in interpretation:
+            # Complex condition - consider breaking down
             issues.append("管理機能にはダッシュボードが重要です")
 
         if "システム" in task and "段階的" not in interpretation:
+            # Complex condition - consider breaking down
             issues.append("段階的な実装計画が明確でない可能性があります")
 
         return {
@@ -211,9 +220,11 @@ class ElderInterpretationCheckCommand(BaseCommand):
 
         issues = []
         if "セキュリティ" in task and "テスト" not in interpretation:
+            # Complex condition - consider breaking down
             issues.append("セキュリティ機能のテストが不足している可能性があります")
 
         if "システム" in task and "バックアップ" not in interpretation:
+            # Complex condition - consider breaking down
             issues.append("変更時のバックアップ計画が不足している可能性があります")
 
         return {
@@ -230,9 +241,11 @@ class ElderInterpretationCheckCommand(BaseCommand):
 
         issues = []
         if "管理" in task and "API" not in interpretation:
+            # Complex condition - consider breaking down
             issues.append("管理機能にはAPI設計が重要です")
 
         if "システム" in task and "モニタリング" not in interpretation:
+            # Complex condition - consider breaking down
             issues.append("システムにはモニタリング機能が必要です")
 
         return {
@@ -286,7 +299,12 @@ class ElderInterpretationCheckCommand(BaseCommand):
         """ベストプラクティスの提案"""
         return ["コードレビュー", "自動テスト", "継続的統合"]
 
-    def assess_interpretation(self, sage_verifications: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+    def assess_interpretation(
+        self,
+        sage_verifications: Dict[str,
+        Dict[str,
+        Any]]
+    ) -> Dict[str, Any]:
         """解釈適性の評価"""
         total_score = 0
         total_weight = 0
@@ -336,10 +354,12 @@ class ElderInterpretationCheckCommand(BaseCommand):
         corrections = []
 
         for sage_id, verification in sage_verifications.items():
+            # Process each item in collection
             issues = verification["verification"].get("issues", [])
             suggestions = verification.get("suggestions", [])
 
             for issue in issues:
+                # Process each item in collection
                 if "計画" in issue:
                     corrections.append("詳細な実装計画の策定を含める")
                 elif "テスト" in issue:
@@ -373,13 +393,17 @@ class ElderInterpretationCheckCommand(BaseCommand):
             self.info(f"    📊 信頼度: {verification['confidence']:.1%}")
 
             if "issues" in sage_data and sage_data["issues"]:
+                # Complex condition - consider breaking down
                 self.info("    ⚠️ 指摘事項:")
                 for issue in sage_data["issues"]:
+                    # Process each item in collection
                     self.info(f"      • {issue}")
 
             if "suggestions" in verification and verification["suggestions"]:
+                # Complex condition - consider breaking down
                 self.info("    💡 提案:")
                 for suggestion in verification["suggestions"]:
+                    # Process each item in collection
                     self.info(f"      • {suggestion}")
             self.info("")
 
@@ -396,6 +420,7 @@ class ElderInterpretationCheckCommand(BaseCommand):
         if interpretation_assessment["all_issues"]:
             self.info("  🔍 改善すべき点:")
             for issue in interpretation_assessment["all_issues"]:
+                # Process each item in collection
                 self.info(f"    • {issue}")
 
     def display_corrected_interpretation(self, corrected_interpretation: Dict[str, Any]):
@@ -407,6 +432,7 @@ class ElderInterpretationCheckCommand(BaseCommand):
         self.info("")
         self.info("  ✨ 適用された修正:")
         for correction in corrected_interpretation["corrections_applied"]:
+            # Process each item in collection
             self.info(f"    • {correction}")
 
     def save_check_results(self, check_record: Dict[str, Any],

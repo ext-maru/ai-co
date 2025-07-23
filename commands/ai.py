@@ -14,6 +14,7 @@ class AICommand(BaseCommand):
     """Elders Guild メインコマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai", description="Elders Guild インタラクティブメニュー", version="1.0.0"
         )
@@ -65,10 +66,12 @@ class AICommand(BaseCommand):
                 message=result.stdout if result.returncode == 0 else result.stderr,
             )
         except FileNotFoundError:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"コマンドが見つかりません: ai-{command}")
 
 
 def main():
+    # Core functionality implementation
     command = AICommand()
     sys.exit(command.run())
 

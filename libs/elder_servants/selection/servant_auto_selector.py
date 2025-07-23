@@ -102,6 +102,7 @@ class ServantAutoSelector:
     """
 
     def __init__(self, registry: Optional[ServantRegistry] = None):
+        """初期化メソッド"""
         self.logger = logging.getLogger("elder_servants.auto_selector")
         self.registry = registry or get_registry()
 
@@ -213,11 +214,13 @@ class ServantAutoSelector:
             self._update_selection_stats(criteria, best_score)
 
             self.logger.info(
-                f"Selected servant: {best_servant.name} (score: {best_score:.3f}, confidence: {confidence:.3f})"
+                f"Selected servant: {best_servant.name} (score: {best_score:.3f}, confidence:" \
+                    " {confidence:.3f})"
             )
             return selection_result
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"Servant selection failed for task {task_profile.task_id}: {str(e)}"
             )
@@ -239,6 +242,7 @@ class ServantAutoSelector:
         all_servants_info = self.registry.list_all_servants()
 
         for servant_info in all_servants_info:
+            # Process each item in collection
             servant = self.registry.get_servant(servant_info["name"])
             if not servant:
                 continue
@@ -398,6 +402,7 @@ class ServantAutoSelector:
                 task_profile.preferred_domain
             )
             for servant in domain_servants:
+                # Process each item in collection
                 if servant.name in self.servant_profiles_cache:
                     candidates.append(self.servant_profiles_cache[servant.name])
         else:
@@ -405,6 +410,7 @@ class ServantAutoSelector:
             for capability in task_profile.required_capabilities:
                 capability_servants = self.registry.find_by_capability(capability)
                 for servant in capability_servants:
+                    # Process each item in collection
                     if servant.name in self.servant_profiles_cache:
                         profile = self.servant_profiles_cache[servant.name]
                         if profile not in candidates:
@@ -435,6 +441,7 @@ class ServantAutoSelector:
         scored_candidates = []
 
         for profile in candidates:
+            # Process each item in collection
             score = await self._calculate_individual_score(
                 task_profile, profile, criteria
             )
@@ -531,6 +538,7 @@ class ServantAutoSelector:
         total_weight = 0.0
 
         for metric, weight in weights.items():
+            # Process each item in collection
             if metric in quality_scores:
                 weighted_quality += (quality_scores[metric] / 100.0) * weight
                 total_weight += weight
@@ -544,6 +552,7 @@ class ServantAutoSelector:
         expertise_scores = []
 
         for capability in task_profile.required_capabilities:
+            # Process each item in collection
             score = profile.specialization_score.get(capability, 0.0)
             expertise_scores.append(score)
 
@@ -612,6 +621,7 @@ class ServantAutoSelector:
         weighted_score = 0.0
 
         for factor, weight in self.model_weights.items():
+            # Process each item in collection
             factor_name = factor.replace("_weight", "")
             score = scores.get(factor_name, 0.0)
             weighted_score += score * weight
@@ -749,6 +759,7 @@ class ServantAutoSelector:
                 reasoning["considerations"].append("現在の負荷が高め")
 
             if profile.cost_factor > 1.2:
+                # Complex condition - consider breaking down
                 reasoning["considerations"].append("相対的にコストが高い")
 
         return reasoning
@@ -885,5 +896,6 @@ def get_auto_selector() -> ServantAutoSelector:
     """グローバル自動選択インスタンスを取得"""
     global _global_selector
     if _global_selector is None:
+        # Complex condition - consider breaking down
         _global_selector = ServantAutoSelector()
     return _global_selector

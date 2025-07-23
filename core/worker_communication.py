@@ -8,6 +8,7 @@ class CommunicationMixin:
     """ワーカー間通信のMixin"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.communication_routes = {}
 
     def register_route(self, target_worker: str, message_type: str):
@@ -54,6 +55,7 @@ class WorkerCommunicationMixin:
     """Mixin for worker communication"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.communication_enabled = True
 
     def send_message(self, target_worker, message):

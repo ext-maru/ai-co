@@ -14,6 +14,7 @@ class TemplateRegistry:
     """テンプレートレジストリ"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.templates = {}
         self.template_dir = Path(__file__).parent
         self._load_templates()

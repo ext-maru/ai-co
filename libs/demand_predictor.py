@@ -17,7 +17,7 @@ from dataclasses import dataclass, asdict
 from enum import Enum
 from pathlib import Path
 import logging
-import pickle
+# import pickle  # セキュリティ: pickleの使用を廃止
 import re
 from collections import defaultdict
 
@@ -259,11 +259,12 @@ class DemandPredictorAI:
         }
 
     def _load_or_create_model(self) -> Dict:
-        """モデル読み込みまたは作成"""
+        """モデル読み込みまたは作成（セキュア版）"""
         if self.model_path.exists():
             try:
-                with open(self.model_path, "rb") as f:
-                    model = pickle.load(f)
+                import json
+                with open(self.model_path, "r") as f:
+                    model = json.load(f)
                 self.logger.info("📦 Existing model loaded")
                 return model
             except Exception as e:
@@ -452,8 +453,9 @@ class DemandPredictorAI:
     def _save_model(self):
         """モデル保存"""
         try:
-            with open(self.model_path, "wb") as f:
-                pickle.dump(self.model, f)
+            import json
+            with open(self.model_path, "w") as f:
+                json.dump(self.model, f, indent=2, default=str)  # default=strで日付等を処理
             self.logger.info(f"💾 Model saved: {self.model_path}")
         except Exception as e:
             self.logger.error(f"Model save error: {e}")

@@ -82,6 +82,7 @@ class DeploymentForge(DwarfServant):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "safe_deployment",
@@ -216,6 +217,7 @@ class DeploymentForge(DwarfServant):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             return TaskResult(
                 task_id=task.get("task_id", ""),
                 status=TaskStatus.FAILED,
@@ -247,6 +249,7 @@ class DeploymentForge(DwarfServant):
             return result
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Artifact crafting failed: {e}")
             return {
                 "success": False,
@@ -281,6 +284,7 @@ class DeploymentForge(DwarfServant):
                 raise ValueError(f"Unknown deployment operation: {operation}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Workshop craft error: {e}")
             return {
                 "success": False,
@@ -417,6 +421,7 @@ class DeploymentForge(DwarfServant):
                     await self._emergency_rollback(deployment_id)
                     recovery_attempted = True
                 except Exception as rollback_error:
+                    # Handle specific exception case
                     self.logger.error(f"Emergency rollback failed: {rollback_error}")
 
             return {
@@ -486,6 +491,7 @@ class DeploymentForge(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": {"type": "rollback_failed", "message": str(e)},
@@ -520,6 +526,7 @@ class DeploymentForge(DwarfServant):
             return result
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": {"type": "health_check_failed", "message": str(e)},
@@ -569,6 +576,7 @@ class DeploymentForge(DwarfServant):
             return {"success": True, "data": {"security_report": security_report}}
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": {"type": "security_scan_failed", "message": str(e)},
@@ -618,6 +626,7 @@ class DeploymentForge(DwarfServant):
 
         try:
             if deployment_id and deployment_id in self.deployment_history:
+                # Complex condition - consider breaking down
                 # 特定デプロイメントのクリーンアップ
                 if cleanup_strategy == "aggressive":
                     # より積極的なクリーンアップ
@@ -647,6 +656,7 @@ class DeploymentForge(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": {"type": "cleanup_failed", "message": str(e)},
@@ -683,6 +693,7 @@ class DeploymentForge(DwarfServant):
         # 環境検証
         environment = config.get("environment", "")
         if environment and environment not in ["development", "staging", "production"]:
+            # Complex condition - consider breaking down
             errors.setdefault("invalid_values", []).append(
                 "environment must be development, staging, or production"
             )
@@ -690,6 +701,7 @@ class DeploymentForge(DwarfServant):
         # バージョン検証
         version = config.get("version", "")
         if version and not version.replace(".", "").replace("-", "").isalnum():
+            # Complex condition - consider breaking down
             errors.setdefault("invalid_values", []).append("version format invalid")
 
         # プラットフォーム検証
@@ -702,6 +714,7 @@ class DeploymentForge(DwarfServant):
         replicas = config.get("replicas")
         if replicas is not None:
             if not isinstance(replicas, int) or replicas < 0:
+                # Complex condition - consider breaking down
                 errors.setdefault("invalid_values", []).append(
                     "replicas must be a non-negative integer"
                 )
@@ -729,6 +742,7 @@ class DeploymentForge(DwarfServant):
         # リソース制限チェック
         resources = config.get("resources")
         if environment == "production" and not resources:
+            # Complex condition - consider breaking down
             violations.append("no_resource_limits_production")
 
         # ヘルスチェック設定チェック

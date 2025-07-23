@@ -310,7 +310,8 @@ class GitHubIssueMonitor:
         comment_author = comment["user"]["login"]
 
         # 簡単な返信
-        response = f"🤖 **Claude Elder**: @{comment_author} さん、コメントを確認しました。\n\n何か実行すべきタスクがあれば、具体的な指示をお願いします。"
+        response = f"🤖 **Claude Elder**: @{comment_author} " \
+            "さん、コメントを確認しました。\n\n何か実行すべきタスクがあれば、具体的な指示をお願いします。"
 
         await self._post_comment(issue_number, response)
 

@@ -400,14 +400,23 @@ class ElderCouncilReporter:
         vulnerabilities = security_results.get("vulnerabilities", [])
         high_vuln = len([v for v in vulnerabilities if v.get("severity") == "high"])
 
-        report.summary = f"Security audit completed. Found {len(vulnerabilities)} vulnerabilities ({high_vuln} high severity)."
+        report.summary = f"Security audit completed. Found {len(vulnerabilities)} vulnerabilities " \
+            "({high_vuln} high severity)."
 
         # 脆弱性セクション
         if vulnerabilities:
             vuln_content = "Vulnerabilities found:\n"
             for vuln in vulnerabilities:
-                vuln_content += f"- {vuln.get('type', 'Unknown')}: {vuln.get('severity', 'unknown')} severity "
-                vuln_content += f"in {vuln.get('file', 'unknown')} line {vuln.get('line', 'unknown')}\n"
+                vuln_content += f"- {vuln.get(
+                    'type',
+                    'Unknown')}: {vuln.get('severity',
+                    'unknown'
+                )} severity "
+                vuln_content += f"in {vuln.get(
+                    'file',
+                    'unknown')} line {vuln.get('line',
+                    'unknown'
+                )}\n"
 
             report.add_section("Vulnerabilities", vuln_content, ReportPriority.HIGH)
 
@@ -467,7 +476,11 @@ class ElderCouncilReporter:
         if incident_data.get("response_history"):
             history_content = "Response History:\n"
             for entry in incident_data["response_history"]:
-                history_content += f"- {entry.get('timestamp', 'unknown')}: {entry.get('action', 'unknown')}\n"
+                history_content += f"- {entry.get(
+                    'timestamp',
+                    'unknown')}: {entry.get('action',
+                    'unknown'
+                )}\n"
 
             report.add_section("Response History", history_content, ReportPriority.HIGH)
 

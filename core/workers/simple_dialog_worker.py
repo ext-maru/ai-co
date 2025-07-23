@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 class SimpleDialogWorker:
     def __init__(self):
+        """初期化メソッド"""
         self.conversation_manager = ConversationManager()
         logger.info("SimpleDialogWorker初期化")
 

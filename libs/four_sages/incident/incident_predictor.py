@@ -291,7 +291,8 @@ class IncidentPredictor(EldersAILegacy):
             self.training_history.append(training_result)
 
             logger.info(
-                f"✅ Model training completed - Category: {cat_accuracy:.2%}, Severity: {sev_accuracy:.2%}"
+                f"✅ Model training completed - Category: {cat_accuracy:.2%}, Severity: " \
+                    "{sev_accuracy:.2%}"
             )
 
             return {"success": True, "training_result": training_result}

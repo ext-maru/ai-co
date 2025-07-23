@@ -650,7 +650,8 @@ class AutoIssueProcessor(EldersServiceLegacy):
                         attempt_number=attempt,
                         error=e,
                         recovery_action="RETRY",
-                        recovery_message=f"処理に失敗しました。{retry_delay}秒後に再試行します（{max_retries - attempt}回残り）",
+                        recovery_message=f"処理に失敗しました。{retry_delay}秒後に再試行します（{max_retries - attempt}回残り）" \
+                            "処理に失敗しました。{retry_delay}秒後に再試行します（{max_retries - attempt}回残り）",
                         retry_delay=retry_delay,
                         context={
                             "issue_title": issue.title,
@@ -661,24 +662,32 @@ class AutoIssueProcessor(EldersServiceLegacy):
                     
                     # 指数バックオフで待機
                     await asyncio.sleep(retry_delay)
-                    logger.info(f"Retrying issue #{issue.number} processing (attempt {attempt + 1}/{max_retries})")
+                    logger.info(f"Retrying issue #{issue.number} processing (attempt {attempt + " \
+                        "1}/{max_retries})")
                     
                 else:
                     # 最終失敗を記録
                     await self.retry_reporter.record_retry_failure(session_id, e)
-                    logger.error(f"Failed to process issue #{issue.number} after {max_retries} attempts: {e}")
+                    logger.error(f"Failed to process issue #{issue.number} after {max_retries} attempts: " \
+                        "{e}")
                     raise e
         
         # 通常はここには到達しない
         raise Exception(f"Unexpected end of retry loop for issue #{issue.number}")
     
-    async def _execute_single_processing_attempt(self, issue: Issue, session_id: str, attempt: int) -> Dict[str, Any]:
+    async def _execute_single_processing_attempt(
+        self,
+        issue: Issue,
+        session_id: str,
+        attempt: int
+    ) -> Dict[str, Any]:
         """単一の処理試行を実行"""
         try:
             # 既存のPRをチェック
             existing_pr = await self._check_existing_pr_for_issue(issue.number)
             if existing_pr:
-                logger.info(f"PR already exists for issue #{issue.number}: PR #{existing_pr['number']}")
+                logger.info(f"PR already exists for issue #{issue.number}: PR #{existing_pr[" \
+                    "PR already exists for issue #{issue.number}: PR #{existing_pr["number']}")
                 
                 # 再オープンされたIssueの場合、特別な処理
                 reopened_info = await self.reopened_tracker.check_if_reopened(issue.number)
@@ -696,7 +705,10 @@ class AutoIssueProcessor(EldersServiceLegacy):
                     
                     # 処理履歴から詳細を取得
                     processing_history = await self.reopened_tracker.get_processing_history(issue.number)
-                    failed_prs = [pr for pr in processing_history.get('prs', []) if pr['state'] == 'closed' and not pr['merged']]
+                    failed_prs = [pr for pr in processing_history.get(
+                        'prs',
+                        []
+                    ) if pr['state'] == 'closed' and not pr['merged']]
                     
                     # Issueにコメントを追加
                     comment_text = f"🔄 **再オープン検知**\\n\\n"

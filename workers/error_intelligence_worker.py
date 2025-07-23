@@ -33,6 +33,7 @@ class ErrorIntelligenceWorker:
             return result
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"❌ Error analysis failed: {e}")
             return {"error": str(e)}
 

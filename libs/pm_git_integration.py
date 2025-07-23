@@ -11,6 +11,7 @@ class PMGitIntegration:
     """PMWorker用のGit統合機能（GitHub Flow対応版）"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.git_manager = GitHubFlowManager()
         self.project_dir = Path(__file__).parent.parent

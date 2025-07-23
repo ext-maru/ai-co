@@ -156,6 +156,7 @@ class ScheduledWorker:
     """スケジューリング機能を持つワーカー基底クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.scheduled_tasks: List[ScheduledTask] = []
         self.scheduler_thread = None
         self.stop_event = Event()
@@ -246,6 +247,7 @@ class ScheduleManager:
     """全体のスケジュール管理"""
 
     def __init__(self, db_path: Optional[Path] = None):
+        """初期化メソッド"""
         self.db_path = db_path or Path("/home/aicompany/ai_co/db/schedules.db")
         self.logger = logging.getLogger(__name__)
         self._init_db()
@@ -391,6 +393,7 @@ class schedule:
 
         class IntervalSchedule:
             def __init__(self, interval):
+                """初期化メソッド"""
                 self.interval = interval
 
             def seconds(self):

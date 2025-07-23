@@ -303,7 +303,8 @@ class RagManager:
 
                     # アクセス回数を増加
                     cursor.execute(
-                        "UPDATE knowledge_items SET access_count = access_count + 1 WHERE content = ? AND source = ?",
+                        "UPDATE knowledge_items SET access_count = access_count + 1 WHERE " \
+                            "content = ? AND source = ?",
                         (content, source),
                     )
 

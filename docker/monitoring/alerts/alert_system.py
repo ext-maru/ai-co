@@ -74,6 +74,7 @@ class AlertConditionEvaluator:
     """アラート条件評価エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.metrics_history = defaultdict(lambda: deque(maxlen=300))  # 5分間の履歴
         self.condition_cache = {}
 
@@ -235,6 +236,7 @@ class AlertManager:
     """アラート管理システム"""
 
     def __init__(self, config_path: str):
+        """初期化メソッド"""
         self.config = self._load_config(config_path)
         self.evaluator = AlertConditionEvaluator()
         self.active_alerts: Dict[str, Alert] = {}

@@ -934,69 +934,119 @@ class ThreatDetector:
 
         return results
 
-    def assess_threat_level(self, threat_data: Dict[str, Any]) -> Dict[str, Any]:
-        """脅威レベル評価"""
+    def _calculate_anomaly_score(self, anomalies: List[Dict[str, Any]]) -> Tuple[int, List[str]]:
+        """異常によるスコア計算"""
         score = 0
         risk_factors = []
-
-        # 異常による加点
-        anomalies = threat_data.get("anomalies", [])
+        severity_scores = {"critical": 30, "high": 20, "medium": 10, "low": 0}
+        
         for anomaly in anomalies:
             severity = anomaly.get("severity", "low")
-            if severity == "critical":
-                score += 30
-                risk_factors.append(f"Critical anomaly: {anomaly.get('type')}")
-            elif severity == "high":
-                score += 20
-                risk_factors.append(f"High severity anomaly: {anomaly.get('type')}")
-            elif severity == "medium":
-                score += 10
+            points = severity_scores.get(severity, 0)
+            score += points
+            
+            if severity in ["critical", "high"]:
+                risk_factors.append(f"{severity.capitalize()} anomaly: {anomaly.get('type')}")
+                
+        return score, risk_factors
 
-        # 侵入による加点
-        intrusions = threat_data.get("intrusions", [])
+    def _calculate_intrusion_score(self, intrusions: List[Dict[str, Any]]) -> Tuple[int, List[str]]:
+        """侵入によるスコア計算"""
+        score = 0
+        risk_factors = []
+        severity_scores = {"high": 25, "medium": 15, "low": 5}
+        
         for intrusion in intrusions:
             severity = intrusion.get("severity", "low")
-            if severity == "high":
-                score += 25
-                risk_factors.append(f"High severity intrusion: {intrusion.get('type')}")
-            elif severity == "medium":
-                score += 15
+            points = severity_scores.get(severity, 0)
+            score += points
+            
+            if severity in ["high", "medium"]:
+                risk_factors.append(f"{severity.capitalize()} severity intrusion: {intrusion.get('type')}")
+                
+        return score, risk_factors
 
-        # 脆弱性による加点
-        vulnerabilities = threat_data.get("vulnerabilities", {})
+    def _calculate_vulnerability_score(
+        self,
+        vulnerabilities: Dict[str,
+        int]
+    ) -> Tuple[int, List[str]]:
+        """脆弱性によるスコア計算"""
+        score = 0
+        risk_factors = []
+        
         critical_vulns = vulnerabilities.get("critical", 0)
         if critical_vulns > 0:
             score += critical_vulns * 20
             risk_factors.append(f"{critical_vulns} critical vulnerabilities")
+            
+        high_vulns = vulnerabilities.get("high", 0)
+        if high_vulns > 0:
+            score += high_vulns * 10
+            risk_factors.append(f"{high_vulns} high vulnerabilities")
+            
+        return score, risk_factors
 
-        # 脅威レベル決定
+    def _determine_threat_level(self, score: int) -> str:
+        """スコアから脅威レベルを判定"""
         if score >= 80:
-            threat_level = "critical"
+            return "critical"
         elif score >= 60:
-            threat_level = "high"
+            return "high"
         elif score >= 30:
-            threat_level = "medium"
+            return "medium"
         else:
-            threat_level = "low"
+            return "low"
 
-        # 即座に必要なアクション
-        immediate_actions = []
-        if threat_level == "critical":
-            immediate_actions = [
+    def _get_immediate_actions(self, threat_level: str) -> List[Dict[str, str]]:
+        """脅威レベルに応じた即座アクションを取得"""
+        actions_map = {
+            "critical": [
                 {"action": "Activate incident response team", "priority": "immediate"},
                 {"action": "Isolate affected systems", "priority": "immediate"},
                 {"action": "Patch critical vulnerabilities", "priority": "urgent"},
-            ]
-        elif threat_level == "high":
-            immediate_actions = [
+            ],
+            "high": [
                 {"action": "Review security logs", "priority": "urgent"},
                 {"action": "Update security rules", "priority": "high"},
-            ]
+            ],
+            "medium": [
+                {"action": "Schedule security review", "priority": "medium"},
+            ],
+            "low": [],
+        }
+        return actions_map.get(threat_level, [])
 
+    def assess_threat_level(self, threat_data: Dict[str, Any]) -> Dict[str, Any]:
+        """脅威レベル評価"""
+        total_score = 0
+        all_risk_factors = []
+        
+        # 各種脅威のスコア計算
+        anomaly_score, anomaly_factors = self._calculate_anomaly_score(
+            threat_data.get("anomalies", [])
+        )
+        intrusion_score, intrusion_factors = self._calculate_intrusion_score(
+            threat_data.get("intrusions", [])
+        )
+        vuln_score, vuln_factors = self._calculate_vulnerability_score(
+            threat_data.get("vulnerabilities", {})
+        )
+        
+        # 合計スコアとリスク要因
+        total_score = anomaly_score + intrusion_score + vuln_score
+        all_risk_factors.extend(anomaly_factors)
+        all_risk_factors.extend(intrusion_factors)
+        all_risk_factors.extend(vuln_factors)
+        
+        # 脅威レベルとアクションを決定
+        threat_level = self._determine_threat_level(total_score)
+        immediate_actions = self._get_immediate_actions(threat_level)
+        
         return {
             "overall_threat_level": threat_level,
-            "threat_score": min(score, 100),
-            "risk_factors": risk_factors,
+            "threat_score": min(total_score, 100),
+            "risk_factors": all_risk_factors,
             "immediate_actions": immediate_actions,
         }
 

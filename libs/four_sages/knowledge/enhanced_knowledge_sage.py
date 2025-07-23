@@ -385,7 +385,8 @@ class EnhancedKnowledgeSage(KnowledgeSage):
         """Get knowledge entry by ID"""
         with sqlite3.connect(self.db_path) as conn:
             cursor = conn.execute(
-                "SELECT id, title, content, category, tags, created_at, access_count FROM knowledge_entries WHERE id = ?",
+                "SELECT id, title, content, category, tags, created_at, access_count FROM " \
+                    "knowledge_entries WHERE id = ?",
                 (int(knowledge_id),),
             )
             row = cursor.fetchone()
@@ -571,7 +572,8 @@ class EnhancedKnowledgeSage(KnowledgeSage):
 
             # Access patterns (simplified)
             cursor = conn.execute(
-                "SELECT title, access_count FROM knowledge_entries ORDER BY access_count DESC LIMIT 10"
+                "SELECT title, access_count FROM knowledge_entries ORDER BY access_count " \
+                    "DESC LIMIT 10"
             )
             top_accessed = cursor.fetchall()
 

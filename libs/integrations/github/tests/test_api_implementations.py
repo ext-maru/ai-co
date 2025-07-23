@@ -94,7 +94,11 @@ class TestGitHubGetIssuesImplementation:
             "headers": {}
         }
         
-        with patch.object(self.implementation, '_make_api_request', return_value=mock_response) as mock_request:
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            return_value=mock_response
+        ) as mock_request:
             result = self.implementation.get_issues(
                 state="closed",
                 labels=["bug", "enhancement"],
@@ -149,7 +153,13 @@ class TestGitHubGetIssuesImplementation:
             "headers": {}
         }
         
-        with patch.object(self.implementation, '_make_api_request', side_effect=[first_page, second_page, last_page]):
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            side_effect=[first_page,
+            second_page,
+            last_page]
+        ):
             result = self.implementation.get_issues()
             
             assert result["success"] is True
@@ -228,7 +238,11 @@ class TestGitHubGetIssuesImplementation:
     
     def test_get_issues_exception_handling(self):
         """例外処理テスト"""
-        with patch.object(self.implementation, '_make_api_request', side_effect=Exception("Network error")):
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            side_effect=Exception("Network error")
+        ):
             result = self.implementation.get_issues()
             
             assert result["success"] is False
@@ -291,7 +305,11 @@ class TestGitHubGetIssuesImplementation:
             "data": {"items": [], "total_count": 0}
         }
         
-        with patch.object(self.implementation, '_make_api_request', return_value=mock_response) as mock_request:
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            return_value=mock_response
+        ) as mock_request:
             result = self.implementation.search_issues(
                 "bug",
                 per_page=50,
@@ -505,7 +523,12 @@ class TestGitHubUpdateIssueImplementation:
             }
         }
         
-        with patch.object(self.implementation, '_make_api_request', side_effect=[current_issue_response, updated_issue_response]):
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            side_effect=[current_issue_response,
+            updated_issue_response]
+        ):
             with patch.object(self.implementation, '_log_audit_event'):
                 result = self.implementation.update_issue(
                     issue_number=123,
@@ -551,7 +574,11 @@ class TestGitHubUpdateIssueImplementation:
             "data": {"number": 123, "title": "Test"}
         }
         
-        with patch.object(self.implementation, '_make_api_request', return_value=current_issue_response):
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            return_value=current_issue_response
+        ):
             result = self.implementation.update_issue(issue_number=123)
             
             assert result["success"] is False
@@ -564,7 +591,11 @@ class TestGitHubUpdateIssueImplementation:
             "error": "Issue not found"
         }
         
-        with patch.object(self.implementation, '_make_api_request', return_value=current_issue_response):
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            return_value=current_issue_response
+        ):
             result = self.implementation.update_issue(
                 issue_number=123,
                 title="New Title"
@@ -585,7 +616,12 @@ class TestGitHubUpdateIssueImplementation:
             "error": "API Error"
         }
         
-        with patch.object(self.implementation, '_make_api_request', side_effect=[current_issue_response, update_response]):
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            side_effect=[current_issue_response,
+            update_response]
+        ):
             result = self.implementation.update_issue(
                 issue_number=123,
                 title="New Title"
@@ -823,7 +859,12 @@ class TestGitHubUpdateIssueImplementation:
             "data": [{"name": "bug"}]
         }
         
-        with patch.object(self.implementation, '_make_api_request', side_effect=[delete_response, labels_response]):
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            side_effect=[delete_response,
+            labels_response]
+        ):
             result = self.implementation.remove_label(123, "enhancement")
             
             assert result["success"] is True
@@ -968,7 +1009,11 @@ class TestGitHubCreatePullRequestImplementation:
         """ブランチ未発見テスト"""
         base_branch_response = {"success": False, "error": "Branch not found"}
         
-        with patch.object(self.implementation, '_make_api_request', return_value=base_branch_response):
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            return_value=base_branch_response
+        ):
             result = self.implementation.create_pull_request(
                 title="Test PR",
                 head="feature",
@@ -1220,7 +1265,11 @@ class TestGitHubGetPullRequestsImplementation:
             "headers": {}
         }
         
-        with patch.object(self.implementation, '_make_api_request', return_value=mock_response) as mock_request:
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            return_value=mock_response
+        ) as mock_request:
             result = self.implementation.get_pull_requests(
                 state="closed",
                 labels=["bug"],
@@ -1517,7 +1566,13 @@ class TestGitHubGetPullRequestsImplementation:
             ]
         }
         
-        with patch.object(self.implementation, '_make_api_request', side_effect=[pr_response, reviews_response, comments_response]):
+        with patch.object(
+            self.implementation,
+            '_make_api_request',
+            side_effect=[pr_response,
+            reviews_response,
+            comments_response]
+        ):
             result = self.implementation.get_pull_request_by_number(123)
             
             assert result["success"] is True

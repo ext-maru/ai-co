@@ -167,8 +167,12 @@ def get_document_categories(contract_type: ContractType) -> List[DocumentCategor
         return [DocumentCategory(name="必要書類", documents=requirements)]
     else:  # CORPORATE
         # 法人書類と代表者書類を分ける
-        corporate_docs = [req for req in requirements if not req.document_type.value.startswith("rep_")]
-        representative_docs = [req for req in requirements if req.document_type.value.startswith("rep_")]
+        corporate_docs = [req for req in requirements if not req.document_type.value.startswith("rep_" \
+            "rep_" \
+            "rep_")]
+        representative_docs = [req for req in requirements if req.document_type.value.startswith("rep_" \
+            "rep_" \
+            "rep_")]
 
         return [
             DocumentCategory(name="法人本体の書類", documents=corporate_docs),

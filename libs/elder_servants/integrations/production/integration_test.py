@@ -241,6 +241,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Integration test execution failed: {e}")
             return {
                 "status": "failed",
@@ -286,6 +287,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             self.logger.info("Test environment prepared successfully")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Test environment preparation failed: {e}")
             raise
 
@@ -302,6 +304,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
         errors = 0
 
         for i in range(self.test_config["sample_size"]):
+            # Process each item in collection
             try:
                 op_start = time.time()
 
@@ -313,6 +316,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                 latencies.append((op_end - op_start) * 1000)
 
             except Exception as e:
+                # Handle specific exception case
                 errors += 1
 
         end_time = time.time()
@@ -396,6 +400,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                 latencies.append((op_end - op_start) * 1000)
 
             except Exception as e:
+                # Handle specific exception case
                 errors += 1
 
         end_time = time.time()
@@ -464,12 +469,14 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
             for result in results:
+                # Process each item in collection
                 if isinstance(result, Exception):
                     errors += 1
                 else:
                     latencies.append(result)
 
         except Exception as e:
+            # Handle specific exception case
             errors += 100
 
         end_time = time.time()
@@ -527,6 +534,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                 latencies.append((op_end - op_start) * 1000)
 
             except Exception as e:
+                # Handle specific exception case
                 errors += 1
 
         end_time = time.time()
@@ -601,6 +609,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                     successful_recoveries += 1
 
             except Exception as e:
+                # Handle specific exception case
                 errors.append(str(e))
 
         end_time = time.time()
@@ -660,6 +669,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                     healthy_results += 1
 
             except Exception as e:
+                # Handle specific exception case
                 errors.append(str(e))
 
         end_time = time.time()
@@ -752,6 +762,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                 latencies.append((op_end - op_start) * 1000)
 
             except Exception as e:
+                # Handle specific exception case
                 errors += 1
                 if len(str(e)) < 100:  # 短いエラーメッセージのみ記録
                     self.logger.debug(f"Integration test error {i}: {e}")
@@ -832,6 +843,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
                     user_latencies.append((op_end - op_start) * 1000)
 
                 except Exception:
+                    # Handle specific exception case
                     user_errors += 1
 
             return user_latencies, user_errors
@@ -848,6 +860,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
         total_errors = 0
 
         for result in user_results:
+            # Process each item in collection
             if isinstance(result, Exception):
                 total_errors += 10  # ユーザー全操作失敗
             else:
@@ -919,9 +932,14 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
 
         # 分析結果
         if meets_target:
-            analysis = f"🎉 SUCCESS: {overall_improvement:.1f}% improvement achieved (target: {self.test_config['target_improvement']}%)"
+            analysis = f"🎉 SUCCESS: {overall_improvement:.1f}% improvement achieved (target: {self." \
+                "🎉 SUCCESS: {overall_improvement:.1f}% improvement achieved (target: {self." \
+                "test_config["target_improvement']}%)"
         else:
-            analysis = f"⚠️ PARTIAL: {overall_improvement:.1f}% improvement (target: {self.test_config['target_improvement']}%)"
+            analysis = f"⚠️ PARTIAL: {overall_improvement:.1f}% improvement (target: {self.test_config[" \
+                "⚠️ PARTIAL: {overall_improvement:.1f}% improvement (target: {self.test_config[" \
+                "⚠️ PARTIAL: {overall_improvement:.1f}% improvement (target: {self." \
+                    "test_config["target_improvement']}%)"
 
         return PerformanceComparison(
             baseline_result=baseline,
@@ -993,6 +1011,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
         recommendations = []
 
         if self.performance_comparison and not self.performance_comparison.meets_target:
+            # Complex condition - consider breaking down
             recommendations.append(
                 "Consider additional caching strategies for better performance"
             )
@@ -1032,7 +1051,11 @@ async def main():
     print("🧪 Elder Servants Integration Test Results")
     print("=" * 50)
     print(
-        f"Overall Performance Improvement: {result.get('performance_comparison', {}).get('improvement_percentage', 0):.1f}%"
+        f"Overall Performance Improvement: {result.get(
+            'performance_comparison',
+            {}).get('improvement_percentage',
+            0
+        ):.1f}%"
     )
     print(
         f"Target Achievement: {'✅ PASS' if result.get('meets_target') else '⚠️ PARTIAL'}"
@@ -1041,7 +1064,11 @@ async def main():
         f"Tests Executed: {result.get('test_execution_summary', {}).get('total_tests', 0)}"
     )
     print(
-        f"Success Rate: {result.get('test_execution_summary', {}).get('overall_success_rate', 0):.1f}%"
+        f"Success Rate: {result.get(
+            'test_execution_summary',
+            {}).get('overall_success_rate',
+            0
+        ):.1f}%"
     )
 
     # 詳細結果をJSONファイルに保存

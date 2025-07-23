@@ -33,7 +33,8 @@ def fix_ai_tasks():
         # Provide fix suggestion
         print("\n📋 Suggested fixes:")
         print(
-            "1. Update the command implementation to use argparse.add_argument instead of add_option"
+            "1. Update the command implementation to use argparse.add_argument instead of " \
+                "add_option"
         )
         print("2. Or switch to click library if using that framework")
         print("3. Check if AITasksCommand inherits from the correct base class")

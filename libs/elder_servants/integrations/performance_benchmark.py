@@ -27,6 +27,7 @@ class PerformanceBenchmark:
     """Performance benchmark suite for Elder + OSS integration"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.results = []
         self.baseline_metrics = {}
         self.integration_metrics = {}
@@ -425,7 +426,8 @@ def another_function() -> None:
             )
         else:
             recommendations.append(
-                f"⚠️ Integration adds {abs(performance_improvement):.1f}% overhead - consider optimization"
+                f"⚠️ Integration adds {abs(performance_improvement):.1f}% overhead - " \
+                    "consider optimization"
             )
 
         if quality["overall"]["iron_will_compliance_rate"] >= 80:

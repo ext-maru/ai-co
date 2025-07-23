@@ -368,7 +368,11 @@ class FourSagesCoordinator:
         """RAG賢者評価要求"""
         try:
             # 関連情報検索
-            search_query = f"{incident_data.get('category', '')} {incident_data.get('description', '')}"
+            search_query = f"{incident_data.get(
+                'category',
+                '')} {incident_data.get('description',
+                ''
+            )}"
 
             # 技術的解決策検索
             technical_solutions = await self._search_technical_solutions(search_query)

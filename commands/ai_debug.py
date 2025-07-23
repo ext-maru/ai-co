@@ -14,6 +14,7 @@ class AIDebugCommand(BaseCommand):
     """デバッグモード"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-debug", description="デバッグモード", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AIDebugCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIDebugCommand()
     sys.exit(command.run())
 

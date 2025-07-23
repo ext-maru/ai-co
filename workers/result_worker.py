@@ -47,6 +47,7 @@ try:
 
     ELDER_INTEGRATION_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     print(f"Elder integration not available: {e}")
     ELDER_INTEGRATION_AVAILABLE = False
 
@@ -104,6 +105,7 @@ class ResultWorkerV2(BaseWorker):
                 self._verify_elder_connections()
 
             except Exception as e:
+                # Handle specific exception case
                 error_msg = f"エルダーズギルド統合初期化エラー: {e}"
                 self.logger.warning(error_msg)
                 self.elder_integration_status["initialization_errors"].append(error_msg)
@@ -163,6 +165,7 @@ class ResultWorkerV2(BaseWorker):
                     self.logger.warning("⚠️ Elder Tree appears empty")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder connections verification failed: {e}")
             self.elder_integration_status["initialization_errors"].append(
                 f"Verification error: {e}"
@@ -171,6 +174,7 @@ class ResultWorkerV2(BaseWorker):
     async def report_to_knowledge_sage(self, task_result: Dict[str, Any]) -> bool:
         """Knowledge Sageにタスク結果を報告して学習データとして活用"""
         if not self.four_sages or not self.elder_tree:
+            # Complex condition - consider breaking down
             return False
 
         try:
@@ -204,18 +208,23 @@ class ResultWorkerV2(BaseWorker):
 
                 self.stats["sage_consultations"] += 1
                 self.logger.info(
-                    f"📚 Knowledge Sage: Learning data submitted for task {task_result.get('task_id', 'unknown')}"
+                    f"📚 Knowledge Sage: Learning data submitted for task {task_result.get(
+                        'task_id',
+                        'unknown'
+                    )}"
                 )
 
             return success
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Knowledge Sage report failed: {e}")
             return False
 
     async def escalate_to_incident_sage(self, task_result: Dict[str, Any]) -> bool:
         """Incident Sageに失敗タスクをエスカレーション"""
         if not self.four_sages or not self.elder_tree:
+            # Complex condition - consider breaking down
             return False
 
         try:
@@ -250,12 +259,16 @@ class ResultWorkerV2(BaseWorker):
 
                 self.stats["elder_escalations"] += 1
                 self.logger.warning(
-                    f"🚨 Incident Sage: Task failure escalated {task_result.get('task_id', 'unknown')}"
+                    f"🚨 Incident Sage: Task failure escalated {task_result.get(
+                        'task_id',
+                        'unknown'
+                    )}"
                 )
 
             return success
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Incident Sage escalation failed: {e}")
             return False
 
@@ -264,6 +277,7 @@ class ResultWorkerV2(BaseWorker):
     ) -> Optional[Dict[str, Any]]:
         """RAG Sageにエラー分析を依頼"""
         if not self.four_sages or not self.elder_tree:
+            # Complex condition - consider breaking down
             return None
 
         try:
@@ -295,19 +309,24 @@ class ResultWorkerV2(BaseWorker):
                     analysis = await self.four_sages.rag_sage_analyze_error(task_result)
                     self.stats["sage_consultations"] += 1
                     self.logger.info(
-                        f"🔍 RAG Sage: Error analysis completed for {task_result.get('task_id', 'unknown')}"
+                        f"🔍 RAG Sage: Error analysis completed for {task_result.get(
+                            'task_id',
+                            'unknown'
+                        )}"
                     )
                     return analysis
 
             return None
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"RAG Sage consultation failed: {e}")
             return None
 
     async def request_elder_council(self, pattern_data: Dict[str, Any]) -> bool:
         """Elder Councilに重要な結果パターンを報告"""
         if not self.elder_council or not self.elder_tree:
+            # Complex condition - consider breaking down
             return False
 
         try:
@@ -345,12 +364,16 @@ class ResultWorkerV2(BaseWorker):
 
                 self.stats["council_requests"] += 1
                 self.logger.info(
-                    f"🏛️ Elder Council: Pattern analysis requested - {pattern_data.get('pattern_type', 'unknown')}"
+                    f"🏛️ Elder Council: Pattern analysis requested - {pattern_data.get(
+                        'pattern_type',
+                        'unknown'
+                    )}"
                 )
 
             return success
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder Council request failed: {e}")
             return False
 
@@ -372,6 +395,7 @@ class ResultWorkerV2(BaseWorker):
 
             # Failure case - Escalate to Incident Sage
             elif status == "failed" or task_result.get("error"):
+                # Complex condition - consider breaking down
                 # First get RAG Sage analysis
                 rag_analysis = await self.consult_rag_sage(task_result)
 
@@ -398,6 +422,7 @@ class ResultWorkerV2(BaseWorker):
                     await self.request_elder_council(pattern_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder guidance processing failed: {e}")
 
     def _should_notify_council(self, task_result: Dict[str, Any]) -> bool:
@@ -422,6 +447,7 @@ class ResultWorkerV2(BaseWorker):
             return False
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Council notification check failed: {e}")
             return False
 
@@ -451,6 +477,7 @@ class ResultWorkerV2(BaseWorker):
             return pattern_data
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Pattern analysis failed: {e}")
             return None
 
@@ -477,6 +504,7 @@ class ResultWorkerV2(BaseWorker):
             ]
 
             for pattern in critical_patterns:
+                # Process each item in collection
                 if pattern in error:
                     return True
 
@@ -487,6 +515,7 @@ class ResultWorkerV2(BaseWorker):
             return False
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Critical failure pattern check failed: {e}")
             return False
 
@@ -533,6 +562,7 @@ class ResultWorkerV2(BaseWorker):
 
             # Failure case insights
             elif task_result.get("status") == "failed" or task_result.get("error"):
+                # Complex condition - consider breaking down
                 insights["recommendations"].append(
                     "🚨 Task failure escalated to Incident Sage"
                 )
@@ -574,6 +604,7 @@ class ResultWorkerV2(BaseWorker):
             return insights
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder insights generation failed: {e}")
             return None
 
@@ -660,6 +691,7 @@ class ResultWorkerV2(BaseWorker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.handle_error(e, "process_message", {"task_id": task_id})
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
@@ -690,15 +722,18 @@ class ResultWorkerV2(BaseWorker):
 
             # スレッドに詳細情報を送信
             if result and "ts" in result and thread_messages:
+                # Complex condition - consider breaking down
                 channel = result.get("channel", self.config.get("slack.channel"))
                 thread_ts = result["ts"]
 
                 for thread_msg in thread_messages:
+                    # Process each item in collection
                     self.slack_notifier.send_thread_message(
                         channel=channel, thread_ts=thread_ts, message=thread_msg
                     )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Slack notification failed: {str(e)}")
 
     def _format_success_notification(self, **kwargs) -> tuple:
@@ -735,6 +770,7 @@ class ResultWorkerV2(BaseWorker):
 
         # Elder統合情報を追加
         if elder_insights and elder_insights.get("recommendations"):
+            # Complex condition - consider breaking down
             main_parts.append("")
             main_parts.append("🌳 **エルダー洞察:**")
             for rec in elder_insights["recommendations"][:2]:  # 最初の2つだけメインに表示
@@ -744,6 +780,7 @@ class ResultWorkerV2(BaseWorker):
 
         # 実行可能なアクション
         if files_count > 0 or kwargs.get("output_file"):
+            # Complex condition - consider breaking down
             main_parts.extend(["", "```bash", "# 詳細確認", f"ai-logs {task_id}", "```"])
 
         main_message = "\n".join(main_parts)
@@ -810,6 +847,7 @@ class ResultWorkerV2(BaseWorker):
 
         # Elder統合情報を追加
         if elder_insights and elder_insights.get("recommendations"):
+            # Complex condition - consider breaking down
             main_parts.append("🌳 **エルダー対応:**")
             for rec in elder_insights["recommendations"][:2]:  # 最初の2つだけメインに表示
                 main_parts.append(f"  • {rec}")
@@ -890,6 +928,7 @@ ai-error search "{error_summary}"
         # 単語の途中で切らないように調整
         cutoff = text[:max_length].rfind(" ")
         if cutoff == -1 or cutoff < max_length * 0.7:
+            # Complex condition - consider breaking down
             cutoff = max_length
 
         return f"{text[:cutoff]}..."
@@ -997,18 +1036,21 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             if elder_insights.get("recommendations"):
                 parts.append("• **推奨事項:**")
                 for rec in elder_insights["recommendations"]:
+                    # Process each item in collection
                     parts.append(f"  - {rec}")
 
             # Escalation information
             if elder_insights.get("escalation_info"):
                 parts.append("• **エスカレーション:**")
                 for key, value in elder_insights["escalation_info"].items():
+                    # Process each item in collection
                     parts.append(f"  - {key}: {value}")
 
             # Learning status
             if elder_insights.get("learning_status"):
                 parts.append("• **学習状況:**")
                 for key, value in elder_insights["learning_status"].items():
+                    # Process each item in collection
                     parts.append(f"  - {key}: {value}")
 
             # Performance metrics
@@ -1037,11 +1079,13 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                 if status.get("initialization_errors"):
                     parts.append("  - 初期化エラー:")
                     for error in status["initialization_errors"]:
+                        # Process each item in collection
                         parts.append(f"    • {error}")
 
             return "\n".join(parts)
 
         except Exception as e:
+            # Handle specific exception case
             return f"🌳 **エルダー統合詳細:** エラー - {e}"
 
     def _format_performance_details(self) -> str:
@@ -1140,6 +1184,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             return stats
 
         except Exception as e:
+            # Handle specific exception case
             return [f"• エラー: {e}"]
 
     def get_elder_status_report(self) -> Dict[str, Any]:
@@ -1199,6 +1244,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             return report
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "timestamp": datetime.now().isoformat(),
                 "error": f"Status report generation failed: {e}",
@@ -1209,6 +1255,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
         """Elder Tree階層の深さを計算"""
         try:
             if not self.elder_tree or not self.elder_tree.root:
+                # Complex condition - consider breaking down
                 return 0
 
             def get_depth(node):
@@ -1219,6 +1266,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             return get_depth(self.elder_tree.root)
 
         except Exception:
+            # Handle specific exception case
             return 0
 
     def _generate_elder_recommendations(self) -> List[str]:
@@ -1241,9 +1289,11 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                 recommendations.append("エラー率が高い - インシデント分析を強化")
 
             if self.stats["sage_consultations"] == 0 and self.stats["total_tasks"] > 50:
+                # Complex condition - consider breaking down
                 recommendations.append("賢者相談の活用を検討")
 
             if self.stats["council_requests"] == 0 and self.stats["total_tasks"] > 100:
+                # Complex condition - consider breaking down
                 recommendations.append("重要パターンの評議会報告を検討")
 
             # 初期化エラー対応
@@ -1254,6 +1304,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                 recommendations.append("Elder統合は良好に動作中")
 
         except Exception as e:
+            # Handle specific exception case
             recommendations.append(f"推奨事項生成エラー: {e}")
 
         return recommendations
@@ -1265,6 +1316,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             
             # Elder Tree終了通知
             if ELDER_INTEGRATION_AVAILABLE and self.elder_tree:
+                # Complex condition - consider breaking down
                 try:
                     message = ElderMessage(
                         sender_rank=ElderRank.SERVANT,
@@ -1293,6 +1345,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                         pass
                     self.logger.info("🌳 Elder Tree終了通知送信完了")
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Elder Tree終了通知失敗: {e}")
             
             # Slack通知システムのクリーンアップ
@@ -1302,12 +1355,17 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                     self.slack_notifier.send_message(
                         f"📊 **Result Worker 停止通知** `{datetime.now().strftime('%H:%M:%S')}`\n\n"
                         f"・ 総タスク数: {self.stats.get('total_tasks', 0)}\n"
-                        f"・ 成功率: {(self.stats.get('successful_tasks', 0) / max(1, self.stats.get('total_tasks', 1))) * 100:.1f}%\n"
+                        f"・ 成功率: {(self.stats.get(
+                            'successful_tasks',
+                            0) / max(1,
+                            self.stats.get('total_tasks', 1))
+                        ) * 100:.1f}%\n"
                         f"・ Elderエスカレーション: {self.stats.get('elder_escalations', 0)}\n"
                         f"・ 評議会要請: {self.stats.get('council_requests', 0)}"
                     )
                     self.logger.info("📲 Slack停止通知送信完了")
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Slack停止通知失敗: {e}")
             
             # 統計情報の保存
@@ -1323,11 +1381,13 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                 stats_file.write_text(json.dumps(final_stats, indent=2, ensure_ascii=False))
                 self.logger.info(f"📁 統計情報保存: {stats_file}")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"統計情報保存失敗: {e}")
             
             self.logger.info(f"✅ {self.__class__.__name__} cleanup完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ Cleanup処理中にエラー: {e}")
             import traceback
             self.logger.error(f"エラー詳細: {traceback.format_exc()}")
@@ -1346,11 +1406,13 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             self.logger.info(f"✅ {self.__class__.__name__} 停止完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ 停止処理中にエラー: {e}")
             # エラーが発生してもベースクラスの停止は実行
             try:
                 super().stop()
             except Exception as base_error:
+                # Handle specific exception case
                 self.logger.error(f"❌ ベースクラス停止エラー: {base_error}")
 
     def initialize(self) -> None:
@@ -1366,6 +1428,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                         self.elder_integration_status["four_sages"] = True
                         self.logger.info("🧙‍♂️ Four Sages Integration 初期化成功")
                     except Exception as e:
+                        # Handle specific exception case
                         self.logger.warning(f"Four Sages 初期化失敗: {e}")
                 
                 if not self.elder_council:
@@ -1374,6 +1437,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                         self.elder_integration_status["elder_council"] = True
                         self.logger.info("🏰 Elder Council Summoner 初期化成功")
                     except Exception as e:
+                        # Handle specific exception case
                         self.logger.warning(f"Elder Council 初期化失敗: {e}")
                 
                 if not self.elder_tree:
@@ -1382,6 +1446,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                         self.elder_integration_status["elder_tree"] = True
                         self.logger.info("🌳 Elder Tree Hierarchy 初期化成功")
                     except Exception as e:
+                        # Handle specific exception case
                         self.logger.warning(f"Elder Tree 初期化失敗: {e}")
             
             # Slack通知システムの初期化確認
@@ -1391,6 +1456,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                     self.slack_notifier = SlackNotifier()
                     self.logger.info("📲 Slack Notifier 初期化成功")
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Slack Notifier 初期化失敗: {e}")
             
             # AI Command Helperの初期化確認
@@ -1400,6 +1466,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                     self.ai_helper = AICommandHelper()
                     self.logger.info("🤖 AI Command Helper 初期化成功")
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"AI Command Helper 初期化失敗: {e}")
             
             # 統計初期化
@@ -1416,6 +1483,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             
             # Elder Tree初期化完了通知
             if ELDER_INTEGRATION_AVAILABLE and self.four_sages:
+                # Complex condition - consider breaking down
                 try:
                     self.four_sages.report_to_task_sage({
                         "type": "worker_initialization",
@@ -1428,6 +1496,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                         "timestamp": datetime.now().isoformat()
                     })
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Elder Tree初期化通知失敗: {e}")
             
             self.logger.info(f"✅ {self.__class__.__name__} 初期化完了")
@@ -1436,10 +1505,16 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             self.logger.info(f"   - AI Helper統合: {self.ai_helper is not None}")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ 初期化処理中にエラー: {e}")
             raise RuntimeError(f"ResultWorker初期化失敗: {e}")
 
-    def handle_error(self, error: Exception, context: str = "unknown", task_data: dict = None) -> None:
+    def handle_error(
+        self,
+        error: Exception,
+        context: str = "unknown",
+        task_data: dict = None
+    ) -> None:
         """エラーハンドリング（Incident Sageへの報告、ログ記録）"""
         try:
             import time
@@ -1471,6 +1546,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             
             # Incident Sageへの報告
             if ELDER_INTEGRATION_AVAILABLE and self.four_sages:
+                # Complex condition - consider breaking down
                 try:
                     incident_data = {
                         "type": "result_processing_error",
@@ -1487,10 +1563,12 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                     self.logger.info(f"🚨 Incident Sage報告送信: {error_id}")
                     
                 except Exception as sage_error:
+                    # Handle specific exception case
                     self.logger.error(f"Incident Sage報告失敗: {sage_error}")
             
             # Slackエラー通知
             if self.slack_notifier and self._is_critical_error(error):
+                # Complex condition - consider breaking down
                 try:
                     error_notification = (
                         f"🚨 **Result Worker 重要エラー** `{error_id}`\n\n"
@@ -1501,6 +1579,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                     self.slack_notifier.send_message(error_notification)
                     self.logger.info(f"📲 Slackエラー通知送信: {error_id}")
                 except Exception as slack_error:
+                    # Handle specific exception case
                     self.logger.warning(f"Slackエラー通知失敗: {slack_error}")
             
             # エラーファイルに保存
@@ -1522,6 +1601,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                 error_file.write_text(json.dumps(errors, indent=2, ensure_ascii=False))
                 
             except Exception as file_error:
+                # Handle specific exception case
                 self.logger.warning(f"エラーファイル保存失敗: {file_error}")
             
             # 重要エラーの場合は追加処理
@@ -1570,6 +1650,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                         "connection_status": "connected"
                     }
                 except Exception as e:
+                    # Handle specific exception case
                     status["elder_tree_details"] = {
                         "connection_status": "error",
                         "error": str(e)
@@ -1586,6 +1667,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             return status
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"状態取得エラー: {e}")
             return {
                 "error": f"状態取得失敗: {e}",
@@ -1607,6 +1689,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
         try:
             # 基本設定確認
             if not hasattr(self, 'config') or not self.config:
+                # Complex condition - consider breaking down
                 validation_result["warnings"].append("設定オブジェクトが初期化されていません")
             else:
                 validation_result["config_details"]["config_available"] = True
@@ -1651,7 +1734,9 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                 validation_result["config_details"]["stats"] = self.stats.copy()
                 
                 for key, value in self.stats.items():
+                    # Process each item in collection
                     if isinstance(value, (int, float)) and value < 0:
+                        # Complex condition - consider breaking down
                         validation_result["errors"].append(f"統計項目 '{key}' が負の値です: {value}")
                         validation_result["is_valid"] = False
                 
@@ -1665,8 +1750,12 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                         validation_result["warnings"].append(f"エラー率がやや高めです: {error_rate:.1f}%")
             
             # 初期化エラーチェック
-            if hasattr(self, 'elder_integration_status') and self.elder_integration_status.get("initialization_errors"):
+            if hasattr(
+                self,
+                'elder_integration_status') and self.elder_integration_status.get("initialization_errors"
+            ):
                 for error in self.elder_integration_status["initialization_errors"]:
+                    # Process each item in collection
                     validation_result["warnings"].append(f"初期化エラー: {error}")
             
             # 成功時の追加情報
@@ -1682,6 +1771,7 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
             return validation_result
             
         except Exception as e:
+            # Handle specific exception case
             validation_result["is_valid"] = False
             validation_result["errors"].append(f"設定検証中にエラー: {e}")
             validation_result["summary"] = "設定検証失敗"

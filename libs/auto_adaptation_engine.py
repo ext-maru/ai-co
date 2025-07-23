@@ -389,7 +389,8 @@ class AutoAdaptationEngine:
                         )
                         if degradation > abs(threshold):  # 閾値の絶対値で比較
                             rollback_reasons.append(
-                                f"performance_degradation: {metric_name} degraded by {degradation*100:.1f}%"
+                                f"performance_degradation: {metric_name} degraded by " \
+                                    "{degradation*100:.1f}%"
                             )
 
             # ロールバック実行判定

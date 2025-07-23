@@ -262,7 +262,10 @@ class EnhancedMergeSystem:
             await self._setup_monitoring_callbacks(pr_number, monitoring_config)
             
             # 監視開始
-            monitor_started = await self.state_monitor.start_monitoring(pr_number, monitoring_config)
+            monitor_started = await self.state_monitor.start_monitoring(
+                pr_number,
+                monitoring_config
+            )
             
             if not monitor_started:
                 await self.progress_reporter.complete_session(

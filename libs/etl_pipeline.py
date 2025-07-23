@@ -250,7 +250,14 @@ class DataTransformer:
 
         for field_name, expression in derived_fields.items():
             try:
-                df[field_name] = eval(expression, {"df": df, "pd": pd, "np": np})
+                # セキュリティ修正: evalを使わない安全な実装
+                # サポートする演算を制限
+                if expression.startswith("df[") and "]" in expression:
+                    # 単純なカラム参照
+                    col_name = expression[3:expression.index("]")].strip("'\"")
+                    df[field_name] = df[col_name]
+                else:
+                    logger.warning(f"⚠️ 派生フィールド{field_name}の式がサポートされていません: {expression}")
             except Exception as e:
                 logger.warning(f"⚠️ 派生フィールド{field_name}の作成失敗: {e}")
 

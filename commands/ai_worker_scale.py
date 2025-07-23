@@ -21,6 +21,7 @@ class AIWorkerScaleCommand(BaseCommand):
     """ワーカースケーリング管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="worker-scale", description="AI Worker 動的スケーリング管理", version="2.0.0"
         )
@@ -99,6 +100,7 @@ class AIWorkerScaleCommand(BaseCommand):
                 else 0,
             }
         except Exception as e:
+            # Handle specific exception case
             self.error(f"システムメトリクス取得エラー: {e}")
             return {}
 
@@ -117,12 +119,14 @@ class AIWorkerScaleCommand(BaseCommand):
             queue_info = {}
 
             for queue_name in queues:
+                # Process each item in collection
                 try:
                     method = channel.queue_declare(
                         queue=queue_name, durable=True, passive=True
                     )
                     queue_info[queue_name] = method.method.message_count
                 except Exception:
+                    # Handle specific exception case
                     queue_info[queue_name] = 0
 
             conn.close()
@@ -131,6 +135,7 @@ class AIWorkerScaleCommand(BaseCommand):
             return {"queues": queue_info, "total_messages": total_messages}
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"キュー状態取得エラー: {e}")
             return {"error": str(e)}
 
@@ -186,6 +191,7 @@ class AIWorkerScaleCommand(BaseCommand):
                     cmd = ["python3", f"workers/{worker_type}_worker.py"]
                     result = self.run_command(cmd)
                     if not result or result.returncode != 0:
+                        # Complex condition - consider breaking down
                         return CommandResult(
                             success=False,
                             message=f"{worker_type} ワーカー起動失敗: {i+1}/{count}",
@@ -223,6 +229,7 @@ class AIWorkerScaleCommand(BaseCommand):
                         pid = workers[i]["pid"]
                         kill_result = self.run_command(["kill", "-TERM", pid])
                         if kill_result and kill_result.returncode == 0:
+                            # Complex condition - consider breaking down
                             self.info(f"PID {pid} のワーカーを停止しました")
                         time.sleep(0.5)
 
@@ -237,6 +244,7 @@ class AIWorkerScaleCommand(BaseCommand):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"スケーリングエラー: {e}")
 
     def auto_scale(self, interval: int, dry_run: bool = False) -> CommandResult:
@@ -271,8 +279,10 @@ class AIWorkerScaleCommand(BaseCommand):
                 time.sleep(interval)
 
         except KeyboardInterrupt:
+            # Handle specific exception case
             return CommandResult(success=True, message="自動スケーリングを停止しました")
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"自動スケーリングエラー: {e}")
 
     def execute(self, args) -> CommandResult:
@@ -302,6 +312,7 @@ class AIWorkerScaleCommand(BaseCommand):
             queue_status = status["queue_status"]
             if "queues" in queue_status:
                 for queue_name, count in queue_status["queues"].items():
+                    # Process each item in collection
                     self.info(f"{queue_name}: {count} メッセージ")
 
             return CommandResult(success=True, data=status)
@@ -329,6 +340,7 @@ class AIWorkerScaleCommand(BaseCommand):
             else:
                 self.section("スケーリング設定")
                 for key, value in config.items():
+                    # Process each item in collection
                     self.info(f"{key}: {value}")
 
             return CommandResult(success=True, data=config)
@@ -338,6 +350,7 @@ class AIWorkerScaleCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIWorkerScaleCommand()
     sys.exit(command.run())
 

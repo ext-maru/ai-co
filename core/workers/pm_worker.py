@@ -33,6 +33,7 @@ logger = logging.getLogger("PMWorker")
 
 class PMWorker:
     def __init__(self):
+        """初期化メソッド"""
         self.model = "claude-opus-4-20250514"
         # 動的管理関連
         self.monitor = WorkerMonitor()

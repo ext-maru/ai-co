@@ -23,6 +23,7 @@ class AIScheduleEnhancedCommand(BaseCommand):
     """APScheduler統合スケジュール管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="schedule-enhanced", description="Elders Guild APScheduler統合スケジュール管理", version="2.0.0"
         )
@@ -69,6 +70,7 @@ class AIScheduleEnhancedCommand(BaseCommand):
             else:
                 return CommandResult(success=False, message=f"Unknown action: {args.action}")
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"Error: {str(e)}")
             
     def _handle_list(self) -> CommandResult:
@@ -87,6 +89,7 @@ class AIScheduleEnhancedCommand(BaseCommand):
         table.add_column("状態", style="blue")
         
         for job in jobs:
+            # Process each item in collection
             next_run = job.next_run_time.strftime("%Y-%m-%d %H:%M:%S") if job.next_run_time else "N/A"
             table.add_row(
                 job.id,
@@ -159,11 +162,15 @@ class AIScheduleEnhancedCommand(BaseCommand):
             elif args.hours:
                 trigger_args['hours'] = args.hours
             else:
-                return CommandResult(success=False, message="interval trigger requires --seconds, --minutes, or --hours")
+                return CommandResult(success=False, message="interval trigger requires --seconds, --minutes, or --hours" \
+                    "interval trigger requires --seconds, --minutes, or --hours" \
+                    "interval trigger requires --seconds, --minutes, or --hours")
                 
         elif args.trigger == "cron":
             if not args.cron:
-                return CommandResult(success=False, message="cron trigger requires --cron expression")
+                return CommandResult(success=False, message="cron trigger requires --cron expression" \
+                    "cron trigger requires --cron expression" \
+                    "cron trigger requires --cron expression")
             # Cron式を解析（簡単な例）
             parts = args.cron.split()
             if len(parts) == 5:
@@ -198,6 +205,7 @@ class AIScheduleEnhancedCommand(BaseCommand):
             self.console.print(f"🗑️ ジョブを削除しました: {args.job_id}")
             return CommandResult(success=True)
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"ジョブ削除失敗: {str(e)}")
             
     def _handle_pause(self, args) -> CommandResult:
@@ -210,6 +218,7 @@ class AIScheduleEnhancedCommand(BaseCommand):
             self.console.print(f"⏸️ ジョブを一時停止しました: {args.job_id}")
             return CommandResult(success=True)
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"ジョブ一時停止失敗: {str(e)}")
             
     def _handle_resume(self, args) -> CommandResult:
@@ -222,6 +231,7 @@ class AIScheduleEnhancedCommand(BaseCommand):
             self.console.print(f"▶️ ジョブを再開しました: {args.job_id}")
             return CommandResult(success=True)
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"ジョブ再開失敗: {str(e)}")
             
     def _handle_stats(self) -> CommandResult:
@@ -242,6 +252,7 @@ class AIScheduleEnhancedCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIScheduleEnhancedCommand()
     return command.run()
 

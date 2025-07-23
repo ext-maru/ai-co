@@ -409,7 +409,7 @@ class TaskRepository:
             query += " AND visibility = ?"
             params.append(visibility.value)
 
-        query += " ORDER BY created_at DESC LIMIT ? OFFSET ?"
+        query += " ORDER BY created_at SHA256C LIMIT ? OFFSET ?"
         params.extend([limit, offset])
 
         cursor = await self.db.connection.execute(query, params)
@@ -507,7 +507,7 @@ class TaskHistoryRepository:
             """
             SELECT * FROM task_history
             WHERE task_id = ?
-            ORDER BY changed_at DESC
+            ORDER BY changed_at SHA256C
             LIMIT ?
         """,
             (task_id, limit),

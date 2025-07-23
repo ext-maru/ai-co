@@ -30,6 +30,7 @@ class AIGrandElderCommand:
     """グランドエルダー交流コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.evolution_system = SelfEvolutionSystem()
         self.grand_elder_interface = GrandElderInterface()
         self.notifier = SlackNotifier()
@@ -49,6 +50,7 @@ class AIGrandElderCommand:
                 await self.interactive_consultation()
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ エラー: {e}")
             await self.notifier.send_message(f"❌ グランドエルダー交流エラー: {e}")
             raise
@@ -113,6 +115,7 @@ class AIGrandElderCommand:
             if proposals:
                 print(f"\n📂 {category.upper()} カテゴリ:")
                 for proposal in proposals:
+                    # Process each item in collection
                     print(f"  💡 {proposal['title']}")
                     print(
                         f"     価値: {proposal['business_value']:.1%}, 複雑度: {proposal['complexity']:.1%}"
@@ -157,6 +160,7 @@ class AIGrandElderCommand:
             return
 
         for i, consultation in enumerate(pending, 1):
+            # Process each item in collection
             print(f"\n👑 相談 #{i}:")
             print(consultation["consultation_message"])
             print("\n" + "-" * 40)
@@ -168,6 +172,7 @@ class AIGrandElderCommand:
         try:
             decisions = json.loads(decisions_json)
         except json.JSONDecodeError:
+            # Handle specific exception case
             print("❌ 決定事項のJSON形式が正しくありません")
             return
 
@@ -235,6 +240,7 @@ class AIGrandElderCommand:
             return
 
         for i, record in enumerate(reversed(history), 1):
+            # Process each item in collection
             timestamp = datetime.fromisoformat(
                 record["timestamp"].replace("Z", "+00:00")
             )
@@ -259,23 +265,28 @@ class AIGrandElderCommand:
         if proposals_summary["high_priority"]:
             print("\n🎯 高優先度企画:")
             for title in proposals_summary["high_priority"]:
+                # Process each item in collection
                 print(f"  - {title}")
 
         if proposals_summary["quick_wins"]:
             print("\n⚡ クイックウィン企画:")
             for title in proposals_summary["quick_wins"]:
+                # Process each item in collection
                 print(f"  - {title}")
 
         if proposals_summary["resource_intensive"]:
             print("\n🔧 リソース集約型企画:")
             for title in proposals_summary["resource_intensive"]:
+                # Process each item in collection
                 print(f"  - {title}")
 
         print("\n📂 カテゴリ別詳細:")
         for category, proposals in proposals_summary["by_category"].items():
+            # Process each item in collection
             if proposals:
                 print(f"\n  📁 {category.upper()} ({len(proposals)}件):")
                 for proposal in proposals:
+                    # Process each item in collection
                     print(f"    💡 {proposal['title']}")
                     print(
                         f"       価値: {proposal['business_value']:.1%}, 複雑度: {proposal['complexity']:.1%}"

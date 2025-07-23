@@ -48,7 +48,12 @@ class PgVectorSearch:
         """ベクトルをPostgreSQL形式に変換"""
         return '[' + ','.join(f'{v:.6f}' for v in vector) + ']'
     
-    def similarity_search(self, query: str, limit: int = 10, threshold: float = 0.5) -> List[Dict[str, Any]]:
+    def similarity_search(
+        self,
+        query: str,
+        limit: int = 10,
+        threshold: float = 0.5
+    ) -> List[Dict[str, Any]]:
         """ベクトル類似性検索"""
         logger.info(f"🔍 ベクトル検索: '{query}' (limit: {limit}, threshold: {threshold})")
         

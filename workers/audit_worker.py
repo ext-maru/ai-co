@@ -196,6 +196,7 @@ class AuditWorker(ElderAwareBaseWorker):
             self.audit_logger = self._create_audit_logger()
 
         except ImportError as e:
+            # Handle specific exception case
             self.logger.warning(f"Elder integration modules not available: {e}")
 
         # 監査システム初期化完了
@@ -213,6 +214,7 @@ class AuditWorker(ElderAwareBaseWorker):
                 enable_device_tracking=True,
             )
         except ImportError:
+            # Handle specific exception case
             return None
 
     def _create_audit_logger(self):
@@ -220,6 +222,7 @@ class AuditWorker(ElderAwareBaseWorker):
 
         # 簡略監査ログシステム
         class SimpleAuditLogger:
+            # Main class implementation
             def __init__(self, logger):
                 self.logger = logger
 
@@ -341,11 +344,13 @@ class AuditWorker(ElderAwareBaseWorker):
             self.stats["processed_count"] += 1
 
         except json.JSONDecodeError as e:
+            # Handle specific exception case
             self.logger.error(f"{AUDIT_EMOJI['error']} JSON decode error: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
             self.stats["error_count"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{AUDIT_EMOJI['error']} Message processing error: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
             self.stats["error_count"] += 1
@@ -355,7 +360,10 @@ class AuditWorker(ElderAwareBaseWorker):
         try:
             # メッセージログ
             self.logger.info(
-                f"{AUDIT_EMOJI['audit']} Processing audit event: {message_data.get('event_type', 'unknown')}"
+                f"{AUDIT_EMOJI['audit']} Processing audit event: {message_data.get(
+                    'event_type',
+                    'unknown'
+                )}"
             )
 
             # 統計更新
@@ -374,6 +382,7 @@ class AuditWorker(ElderAwareBaseWorker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Audit event processing failed: {e}"
             )
@@ -383,7 +392,10 @@ class AuditWorker(ElderAwareBaseWorker):
         """セキュリティアラートメッセージ処理"""
         try:
             self.logger.warning(
-                f"{AUDIT_EMOJI['alert']} Security alert: {message_data.get('alert_type', 'unknown')}"
+                f"{AUDIT_EMOJI['alert']} Security alert: {message_data.get(
+                    'alert_type',
+                    'unknown'
+                )}"
             )
 
             # セキュリティ統計更新
@@ -397,6 +409,7 @@ class AuditWorker(ElderAwareBaseWorker):
                 self.elder_integration_status["elder_escalations"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Security alert processing failed: {e}"
             )
@@ -406,7 +419,10 @@ class AuditWorker(ElderAwareBaseWorker):
         """コンプライアンスチェックメッセージ処理"""
         try:
             self.logger.info(
-                f"{AUDIT_EMOJI['compliance']} Compliance check: {message_data.get('check_type', 'unknown')}"
+                f"{AUDIT_EMOJI['compliance']} Compliance check: {message_data.get(
+                    'check_type',
+                    'unknown'
+                )}"
             )
 
             # コンプライアンス統計更新
@@ -415,6 +431,7 @@ class AuditWorker(ElderAwareBaseWorker):
                 self.audit_stats["compliance_violations"] += len(violations)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Compliance check processing failed: {e}"
             )
@@ -427,18 +444,21 @@ class AuditWorker(ElderAwareBaseWorker):
             self.logger.info(f"{AUDIT_EMOJI['elder']} Elder command: {command}")
 
             if command == "start_security_monitoring":
+                # Complex condition - consider breaking down
                 self.logger.info(
                     f"{AUDIT_EMOJI['shield']} Starting Elder security monitoring"
                 )
                 # モニタリング開始処理
 
             elif command == "generate_security_report":
+                # Complex condition - consider breaking down
                 self.logger.info(
                     f"{AUDIT_EMOJI['report']} Generating Elder security report"
                 )
                 # レポート生成処理
 
             elif command == "health_check":
+                # Complex condition - consider breaking down
                 self.logger.info(
                     f"{AUDIT_EMOJI['investigate']} Elder system health check"
                 )
@@ -448,6 +468,7 @@ class AuditWorker(ElderAwareBaseWorker):
             self.elder_integration_status["sage_consultations"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder command processing failed: {e}"
             )
@@ -457,13 +478,17 @@ class AuditWorker(ElderAwareBaseWorker):
         """一般メッセージ処理"""
         try:
             self.logger.info(
-                f"{AUDIT_EMOJI['audit']} Processing general message: {message_data.get('type', 'unknown')}"
+                f"{AUDIT_EMOJI['audit']} Processing general message: {message_data.get(
+                    'type',
+                    'unknown'
+                )}"
             )
 
             # 一般メッセージ統計更新
             self.audit_stats["total_events"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} General message processing failed: {e}"
             )
@@ -501,6 +526,7 @@ class AuditWorker(ElderAwareBaseWorker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder systems initialization failed: {e}"
             )
@@ -525,6 +551,7 @@ class AuditWorker(ElderAwareBaseWorker):
         try:
             # イベントタイプ別処理
             if event_type in [e.value for e in AuditEventType]:
+                # Complex condition - consider breaking down
                 result = await self._process_audit_event(elder_context, audit_data)
             elif event_type == "compliance_check":
                 result = await self._perform_compliance_check(elder_context, audit_data)
@@ -891,11 +918,13 @@ class AuditWorker(ElderAwareBaseWorker):
             prev_role = audit_data.get("previous_role")
             new_role = audit_data.get("new_role")
             if prev_role == "servant" and new_role == "grand_elder":
+                # Complex condition - consider breaking down
                 anomaly_score += 0.5  # 極端な昇格
 
         # 地理的異常（IPアドレスベース）
         ip_address = audit_data.get("ip_address")
         if ip_address and self._is_suspicious_location(ip_address):
+            # Complex condition - consider breaking down
             anomaly_score += 0.3
 
         # ユーザー別異常スコア更新
@@ -915,6 +944,7 @@ class AuditWorker(ElderAwareBaseWorker):
             mfa_used = audit_data.get("mfa_used", False)
 
             if user_role in ["grand_elder", "claude_elder"] and not mfa_used:
+                # Complex condition - consider breaking down
                 violations.append(
                     {
                         "rule": ComplianceRule.MFA_REQUIRED_FOR_ELDERS.value,
@@ -982,6 +1012,7 @@ class AuditWorker(ElderAwareBaseWorker):
                     message=alert_message, channel=channel, priority="high"
                 )
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Failed to send alert to {channel}: {e}")
 
         self.audit_stats["alerts_sent"] += 1
@@ -1185,6 +1216,7 @@ Overall system security posture: GOOD
         """推奨事項生成"""
         recommendations = []
         for finding in findings:
+            # Process each item in collection
             if finding.get("recommendation"):
                 recommendations.append(finding["recommendation"])
         return recommendations
@@ -1283,7 +1315,10 @@ Overall system security posture: GOOD
             self.audit_logger.log_elder_action(
                 context,
                 "incident_sage_consultation",
-                f"Consulted Incident Sage for security event: {security_event.get('type', 'unknown')}",
+                f"Consulted Incident Sage for security event: {security_event.get(
+                    'type',
+                    'unknown'
+                )}",
             )
 
             return {
@@ -1294,6 +1329,7 @@ Overall system security posture: GOOD
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Incident Sage consultation failed: {e}"
             )
@@ -1338,7 +1374,10 @@ Overall system security posture: GOOD
             self.audit_logger.log_elder_action(
                 context,
                 "knowledge_sage_report",
-                f"Reported audit findings to Knowledge Sage: {audit_findings.get('type', 'unknown')}",
+                f"Reported audit findings to Knowledge Sage: {audit_findings.get(
+                    'type',
+                    'unknown'
+                )}",
             )
 
             return {
@@ -1348,6 +1387,7 @@ Overall system security posture: GOOD
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Knowledge Sage reporting failed: {e}"
             )
@@ -1391,8 +1431,13 @@ Overall system security posture: GOOD
                 await self.elder_council_summoner.trigger_council_meeting(
                     category=TriggerCategory.SYSTEM_FAILURE,
                     urgency=UrgencyLevel.CRITICAL,
-                    title=f"Critical Security Issue: {critical_security_issue.get('type', 'Unknown')}",
-                    description=f"Security audit detected critical issue requiring immediate attention",
+                    title=f"Critical Security Issue: {critical_security_issue.get(
+                        'type',
+                        'Unknown'
+                    )}",
+                    description=f"Security audit detected critical issue requiring immediate attention" \
+                        "Security audit detected critical issue requiring immediate attention" \
+                        "Security audit detected critical issue requiring immediate attention",
                     affected_systems=["security_system", "audit_system"],
                     metrics=critical_security_issue,
                 )
@@ -1404,7 +1449,8 @@ Overall system security posture: GOOD
             self.audit_logger.log_elder_action(
                 context,
                 "grand_elder_escalation",
-                f"Escalated critical security issue to Grand Elder: {critical_security_issue.get('type', 'unknown')}",
+                f"Escalated critical security issue to Grand Elder: {critical_security_issue." \
+                    "get("type', 'unknown')}",
             )
 
             return {
@@ -1416,6 +1462,7 @@ Overall system security posture: GOOD
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Grand Elder escalation failed: {e}"
             )
@@ -1479,6 +1526,7 @@ Overall system security posture: GOOD
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} RAG Sage consultation failed: {e}"
             )
@@ -1534,6 +1582,7 @@ Overall system security posture: GOOD
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder Tree escalation failed: {e}"
             )
@@ -1599,6 +1648,7 @@ Overall system security posture: GOOD
             return elder_status
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder security status report generation failed: {e}"
             )
@@ -1647,6 +1697,7 @@ Overall system security posture: GOOD
                 "last_check": datetime.now().isoformat(),
             }
         except Exception as e:
+            # Handle specific exception case
             return {"status": "error", "error": str(e)}
 
     async def _check_elder_tree_connectivity(self) -> Dict[str, Any]:
@@ -1661,6 +1712,7 @@ Overall system security posture: GOOD
                 "last_check": datetime.now().isoformat(),
             }
         except Exception as e:
+            # Handle specific exception case
             return {"status": "error", "error": str(e)}
 
     async def _check_council_summoner_status(self) -> Dict[str, Any]:
@@ -1675,6 +1727,7 @@ Overall system security posture: GOOD
                 "last_check": datetime.now().isoformat(),
             }
         except Exception as e:
+            # Handle specific exception case
             return {"status": "error", "error": str(e)}
 
     def _calculate_current_threat_level(self) -> str:
@@ -1684,8 +1737,10 @@ Overall system security posture: GOOD
         anomalies = self.audit_stats.get("anomalies_detected", 0)
 
         if recent_critical_events > 10 or anomalies > 5:
+            # Complex condition - consider breaking down
             return "high"
         elif recent_critical_events > 5 or anomalies > 2:
+            # Complex condition - consider breaking down
             return "medium"
         else:
             return "low"
@@ -1732,6 +1787,7 @@ Overall system security posture: GOOD
             ]
 
             if event_type in security_events or severity in ["high", "critical"]:
+                # Complex condition - consider breaking down
                 incident_sage_response = await self.consult_incident_sage(
                     context,
                     {
@@ -1776,6 +1832,7 @@ Overall system security posture: GOOD
             await self._perform_elder_health_check()
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder guidance processing failed: {e}"
             )
@@ -1812,6 +1869,7 @@ Overall system security posture: GOOD
                 self.elder_integration_status["last_health_check"] = current_time
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{AUDIT_EMOJI['error']} Elder health check failed: {e}")
 
     async def _update_elder_security_monitoring(
@@ -1840,6 +1898,7 @@ Overall system security posture: GOOD
                 await self._send_elder_council_security_alert(monitoring_record)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder security monitoring update failed: {e}"
             )
@@ -1873,6 +1932,7 @@ Overall system security posture: GOOD
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder security dashboard notification failed: {e}"
             )
@@ -1917,6 +1977,7 @@ Overall system security posture: GOOD
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder council security alert failed: {e}"
             )
@@ -1963,6 +2024,7 @@ Overall system security posture: GOOD
             return monitoring_report
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder Tree security monitoring failed: {e}"
             )
@@ -2072,6 +2134,7 @@ Overall system security posture: GOOD
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{AUDIT_EMOJI['error']} Elder security monitoring start failed: {e}"
             )
@@ -2215,7 +2278,8 @@ async def demo_audit_worker():
             f"  The audit worker is now the security guardian of the Elder Tree hierarchy system."
         )
         print(
-            f"  All security events will be escalated through the Elder Tree for wisdom and guidance."
+            f"  All security events will be escalated through the Elder Tree for wisdom and " \
+                "guidance."
         )
 
     else:

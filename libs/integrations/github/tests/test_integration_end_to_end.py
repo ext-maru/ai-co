@@ -99,7 +99,11 @@ class TestEndToEndIssueWorkflow:
                 }
             }
         
-        with patch.object(self.manager.update_issue_api, 'update_issue', side_effect=failing_then_success):
+        with patch.object(
+            self.manager.update_issue_api,
+            'update_issue',
+            side_effect=failing_then_success
+        ):
             with patch.object(self.manager.error_handler, 'retry_with_backoff') as mock_retry:
                 mock_retry.side_effect = lambda func, *args, **kwargs: func(*args, **kwargs)
                 
@@ -139,7 +143,10 @@ class TestEndToEndIssueWorkflow:
                 }
                 
                 # レート制限ヘッダーを更新
-                with patch.object(self.manager.rate_limit_manager, 'update_from_headers') as mock_update:
+                with patch.object(
+                    self.manager.rate_limit_manager,
+                    'update_from_headers'
+                ) as mock_update:
                     result = self.manager.get_issues(state="open")
                     
                     # 検証
@@ -166,7 +173,11 @@ class TestEndToEndIssueWorkflow:
                 "issues": [{"number": issue_num, "title": f"Issue {issue_num}"}]
             }
         
-        with patch.object(self.manager.issues_api, 'get_issues', side_effect=mock_get_issues_side_effect):
+        with patch.object(
+            self.manager.issues_api,
+            'get_issues',
+            side_effect=mock_get_issues_side_effect
+        ):
             with patch.object(self.manager.error_handler, 'handle_error') as mock_handle_error:
                 mock_handle_error.return_value = {
                     "handled": True,
@@ -265,7 +276,10 @@ class TestEndToEndPullRequestWorkflow:
             }
             
             # エラー通知のモック
-            with patch.object(self.manager.notifier, 'send_error_notification') as mock_error_notify:
+            with patch.object(
+                self.manager.notifier,
+                'send_error_notification'
+            ) as mock_error_notify:
                 mock_error_notify.return_value = True
                 
                 result = self.manager.create_pull_request(
@@ -556,7 +570,10 @@ class TestEndToEndIntegrationScenarios:
             }
             
             # Step 2: 緊急通知送信
-            with patch.object(self.manager.notifier, 'send_error_notification') as mock_error_notify:
+            with patch.object(
+                self.manager.notifier,
+                'send_error_notification'
+            ) as mock_error_notify:
                 mock_error_notify.return_value = True
                 
                 # Step 3: 開発者アサイン
@@ -570,7 +587,10 @@ class TestEndToEndIntegrationScenarios:
                     }
                     
                     # Step 4: 修正PR作成
-                    with patch.object(self.manager.pull_request_api, 'create_pull_request') as mock_pr:
+                    with patch.object(
+                        self.manager.pull_request_api,
+                        'create_pull_request'
+                    ) as mock_pr:
                         mock_pr.return_value = {
                             "success": True,
                             "pull_request": {
@@ -638,12 +658,19 @@ class TestEndToEndIntegrationScenarios:
                 }
                 
                 # Step 3: チーム通知
-                with patch.object(self.manager.notifier, 'send_elder_council_report') as mock_report:
+                with patch.object(
+                    self.manager.notifier,
+                    'send_elder_council_report'
+                ) as mock_report:
                     mock_report.return_value = True
                     
                     # ワークフロー実行
                     # 1. 準備中のPR取得
-                    prs_result = self.manager.get_pull_requests(state="open", labels=["feature", "bugfix"])
+                    prs_result = self.manager.get_pull_requests(
+                        state="open",
+                        labels=["feature",
+                        "bugfix"]
+                    )
                     
                     # 2. リリースノート作成
                     release_body = "Release v1.2.0\n\nFeatures:\n- New API\n\nBug Fixes:\n- Bug fix"
@@ -684,7 +711,10 @@ class TestEndToEndIntegrationScenarios:
                 mock_emergency.return_value = True
                 
                 # Step 3: 修正PR作成（高優先度）
-                with patch.object(self.manager.pull_request_api, 'create_pull_request') as mock_security_pr:
+                with patch.object(
+                    self.manager.pull_request_api,
+                    'create_pull_request'
+                ) as mock_security_pr:
                     mock_security_pr.return_value = {
                         "success": True,
                         "pull_request": {

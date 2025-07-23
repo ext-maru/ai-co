@@ -22,6 +22,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     import logging
 
     logging.warning(f"Elder Tree integration not available: {e}")

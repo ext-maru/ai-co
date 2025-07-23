@@ -14,6 +14,7 @@ class AICleanCommand(BaseCommand):
     """クリーンアップ"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-clean", description="クリーンアップ", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -40,6 +41,7 @@ class AICleanCommand(BaseCommand):
             ]
             
             for category, pattern in cleanup_targets:
+                # Process each item in collection
                 import glob
                 
                 # パターンに応じてファイルを検索
@@ -51,6 +53,7 @@ class AICleanCommand(BaseCommand):
                     files = list(project_root.glob(pattern))
                 
                 for file_path in files:
+                    # Process each item in collection
                     if file_path.is_file():
                         size = file_path.stat().st_size
                         
@@ -65,6 +68,7 @@ class AICleanCommand(BaseCommand):
                         total_size += size
                     
                     elif file_path.is_dir() and not any(file_path.iterdir()):
+                        # Complex condition - consider breaking down
                         # 空のディレクトリも削除
                         if not dry_run:
                             file_path.rmdir()
@@ -103,6 +107,7 @@ class AICleanCommand(BaseCommand):
             message = f"{action}完了:\n\n"
             
             for category, stats in categories.items():
+                # Process each item in collection
                 message += f"  📁 {category}: {stats['count']}個 ({human_readable_size(stats['size'])})\n"
             
             message += f"\n📊 合計: {len(cleaned_items)}個のアイテム ({human_readable_size(total_size)})"
@@ -113,6 +118,7 @@ class AICleanCommand(BaseCommand):
             return CommandResult(success=True, message=message)
             
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(
                 success=False, 
                 message=f"❌ クリーンアップエラー: {e}"
@@ -120,6 +126,7 @@ class AICleanCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AICleanCommand()
     sys.exit(command.run())
 

@@ -207,7 +207,8 @@ class SmartCodeGenerator:
                 self.logger.info(f"Issue intelligence analysis completed:")
                 self.logger.info(f"  Primary domain: {intelligence.primary_domain}")
                 self.logger.info(f"  Tech requirements: {len(intelligence.tech_requirements)}")
-                self.logger.info(f"  Feature requirements: {len(intelligence.feature_requirements)}")
+                self.logger.info(f"  Feature requirements: {len(intelligence.feature_requirements)}" \
+                    "  Feature requirements: {len(intelligence.feature_requirements)}")
                 self.logger.info(f"  Estimated effort: {intelligence.estimated_effort}")
             except Exception as e:
                 self.logger.warning(f"Issue intelligence analysis failed: {e}")
@@ -222,7 +223,10 @@ class SmartCodeGenerator:
                 # 技術スタックに基づいてコードベース分析
                 enhanced_tech_stack = {
                     'primary_stack': intelligence.primary_domain,
-                    'services': [req.name.split('_', 1)[1] for req in intelligence.tech_requirements 
+                    'services': [req.name.split(
+                        '_',
+                        1
+                    )[1] for req in intelligence.tech_requirements 
                                if req.category == intelligence.primary_domain and '_' in req.name][:5]
                 }
                 
@@ -290,7 +294,8 @@ class SmartCodeGenerator:
                     intelligent_tests = self.test_generator.generate_comprehensive_tests(
                         implementation_code, intelligence_dict, codebase_intelligence
                     )
-                    self.logger.info(f"Intelligent tests generated: {len(intelligent_tests.unit_tests)} unit, "
+                    self.logger.info(f"Intelligent tests generated: {len(intelligent_tests.unit_tests)} unit, " \
+                        "Intelligent tests generated: {len(intelligent_tests.unit_tests)} unit, "
                                    f"{len(intelligent_tests.integration_tests)} integration, "
                                    f"{len(intelligent_tests.property_tests)} property")
                 except Exception as e:
@@ -307,7 +312,10 @@ class SmartCodeGenerator:
                     "primary_domain": intelligence.primary_domain if intelligence else "unknown",
                     "estimated_effort": intelligence.estimated_effort if intelligence else "medium",
                     "implementation_hints": intelligence.implementation_hints if intelligence else [],
-                    "complexity_score": sum(intelligence.complexity_indicators.values()) / max(1, len(intelligence.complexity_indicators)) if intelligence else 0.5
+                    "complexity_score": sum(
+                        intelligence.complexity_indicators.values()) / max(1,
+                        len(intelligence.complexity_indicators)
+                    ) if intelligence else 0.5
                 },
                 "codebase_learning": {
                     "import_patterns_found": len(codebase_intelligence.import_patterns) if codebase_intelligence else 0,
@@ -424,7 +432,10 @@ class SmartCodeGenerator:
                 })
             
             # 複雑度に基づく設定調整
-            complexity_score = sum(intelligence.complexity_indicators.values()) / max(1, len(intelligence.complexity_indicators))
+            complexity_score = sum(
+                intelligence.complexity_indicators.values()) / max(1,
+                len(intelligence.complexity_indicators)
+            )
             context['complexity_level'] = 'high' if complexity_score > 0.6 else 'medium' if complexity_score > 0.3 else 'low'
             context['include_monitoring'] = complexity_score > 0.4
             context['include_caching'] = 'performance' in intelligence.complexity_indicators and intelligence.complexity_indicators['performance'] > 0.3

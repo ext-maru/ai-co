@@ -82,6 +82,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
     """
 
     def __init__(self, name: str, domain: ServantDomain):
+        # Core functionality implementation
         self.name = name
         self.domain = domain
         self.logger = logging.getLogger(f"elder_servant.{name}")
@@ -166,6 +167,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
             return response
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error processing task {request.task_id}: {str(e)}")
             self._update_metrics(False, (datetime.now() - start_time).total_seconds())
 
@@ -190,6 +192,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
         }
 
         for metric, threshold in criteria.items():
+            # Process each item in collection
             if self._quality_scores.get(metric, 0) < threshold:
                 self.logger.warning(
                     f"{metric} score {self._quality_scores[metric]} below threshold {threshold}"
@@ -269,6 +272,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
                     connection_results[sage_name] = result
                     
                 except asyncio.TimeoutError:
+                    # Handle specific exception case
                     connection_results[sage_name] = {
                         "status": "timeout",
                         "error": "Connection timeout after 5 seconds",
@@ -277,6 +281,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
                     self.logger.warning(f"Connection to {sage_name} timed out")
                     
                 except Exception as e:
+                    # Handle specific exception case
                     connection_results[sage_name] = {
                         "status": "failed",
                         "error": str(e),
@@ -290,6 +295,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
             successful_connections = 0
             
             for sage_name, result in connection_results.items():
+                # Process each item in collection
                 if result.get("status") == "connected":
                     connected_sages.append(sage_name)
                     successful_connections += 1
@@ -300,9 +306,16 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
             average_response_time = total_response_time / successful_connections if successful_connections > 0 else 0
             
             # 接続品質評価
-            connection_quality = self._evaluate_connection_quality(success_rate, average_response_time)
+            connection_quality = self._evaluate_connection_quality(
+                success_rate,
+                average_response_time
+            )
             
-            self.logger.info(f"4 Sages connection completed: {successful_connections}/{len(sage_clients)} "
+            self.logger.info(f"4 Sages connection completed: {successful_connections}/{len(sage_clients)} " \
+                "4 Sages connection completed: {successful_connections}/{len(sage_clients)} " \
+                "4 Sages connection completed: {successful_connections}/{len(sage_clients)} " \
+                "4 Sages connection completed: {successful_connections}/{len(sage_clients)} " \
+                "4 Sages connection completed: {successful_connections}/{len(sage_clients)} "
                            f"({success_rate:.1%} success rate, avg {average_response_time:.2f}s, "
                            f"quality: {connection_quality})")
             
@@ -315,13 +328,22 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
             is_connected = success_rate >= min_success_rate
             
             if is_connected:
-                self.logger.info(f"Successfully connected to 4 Sages system (quality: {connection_quality})")
+                self.logger.info(f"Successfully connected to 4 Sages system (quality: {connection_quality})" \
+                    "Successfully connected to 4 Sages system (quality: {connection_quality})" \
+                    "Successfully connected to 4 Sages system (quality: {connection_quality})" \
+                    "Successfully connected to 4 Sages system (quality: {connection_quality})" \
+                    "Successfully connected to 4 Sages system (quality: {connection_quality})")
             else:
-                self.logger.warning(f"Insufficient connection to 4 Sages system: {success_rate:.1%} < {min_success_rate:.1%}")
+                self.logger.warning(f"Insufficient connection to 4 Sages system: {success_rate:.1%} < " \
+                    "Insufficient connection to 4 Sages system: {success_rate:.1%} < " \
+                    "Insufficient connection to 4 Sages system: {success_rate:.1%} < " \
+                    "Insufficient connection to 4 Sages system: {success_rate:.1%} < " \
+                    "{min_success_rate:.1%}")
             
             return is_connected
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Critical failure connecting to 4 Sages system: {e}")
             return False
 
@@ -359,6 +381,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
             self.logger.info(f"Elder Council report submitted successfully")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report to Elder Council: {e}")
             # 失敗時はローカルログに記録
             self.logger.critical(f"ELDER_COUNCIL_REPORT_BACKUP: {report}")
@@ -393,6 +416,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
             self.logger.info(f"Knowledge Sage A2A message sent: {knowledge_item['title']}")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to submit report to Knowledge Sage via A2A: {e}")
     
     async def _escalate_to_incident_sage(self, report: Dict[str, Any]):
@@ -430,9 +454,14 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
             )
             
             # 実際の送信処理（暫定的にローカル処理）
-            self.logger.info(f"Incident Sage escalation A2A message sent: severity={incident_alert['severity']}")
+            self.logger.info(f"Incident Sage escalation A2A message sent: severity={incident_alert[" \
+                "Incident Sage escalation A2A message sent: severity={incident_alert[" \
+                "Incident Sage escalation A2A message sent: severity={incident_alert[" \
+                "Incident Sage escalation A2A message sent: severity={incident_alert[" \
+                "Incident Sage escalation A2A message sent: severity={incident_alert["severity']}")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to escalate to Incident Sage via A2A: {e}")
     
     async def _create_followup_tasks(self, report: Dict[str, Any]):
@@ -451,7 +480,10 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
                     "due_date": recommendation.get("due_date"),
                     "related_report": report['reporter']['servant_name'],
                     "task_type": "elder_council_followup",
-                    "source_report_id": report.get("report_id", f"report_{int(datetime.now().timestamp())}")
+                    "source_report_id": report.get(
+                        "report_id",
+                        f"report_{int(datetime.now().timestamp())}"
+                    )
                 }
                 
                 # Task SageへのA2Aメッセージ作成・送信
@@ -471,9 +503,14 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
                 # 実際の送信処理（暫定的にローカル処理）
                 self.logger.info(f"Task Sage task creation A2A message sent: {task_spec['title']}")
             
-            self.logger.info(f"Created {len(created_tasks)} follow-up tasks from Elder Council report")
+            self.logger.info(f"Created {len(created_tasks)} follow-up tasks from Elder Council report" \
+                "Created {len(created_tasks)} follow-up tasks from Elder Council report" \
+                "Created {len(created_tasks)} follow-up tasks from Elder Council report" \
+                "Created {len(created_tasks)} follow-up tasks from Elder Council report" \
+                "Created {len(created_tasks)} follow-up tasks from Elder Council report")
                 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to create follow-up tasks via A2A: {e}")
 
     def __repr__(self):
@@ -541,6 +578,7 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
                     collaboration_results[sage_name] = result
                     
                 except asyncio.TimeoutError:
+                    # Handle specific exception case
                     collaboration_results[sage_name] = {
                         "status": "timeout",
                         "error": f"Collaboration with {sage_name} timed out after 30 seconds"
@@ -548,6 +586,7 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
                     self.logger.warning(f"Collaboration timeout: {sage_name}")
                     
                 except Exception as e:
+                    # Handle specific exception case
                     collaboration_results[sage_name] = {
                         "status": "error",
                         "error": str(e)
@@ -568,8 +607,16 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
                 "successful_consultations": successful_collaborations,
                 "consultation_success_rate": success_rate,
                 "key_recommendations": [],
-                "estimated_effort": collaboration_results.get("task_sage", {}).get("total_estimated_hours", 0),
-                "risk_level": collaboration_results.get("incident_sage", {}).get("risk_assessment", "unknown"),
+                "estimated_effort": collaboration_results.get(
+                    "task_sage",
+                    {}).get("total_estimated_hours",
+                    0
+                ),
+                "risk_level": collaboration_results.get(
+                    "incident_sage",
+                    {}).get("risk_assessment",
+                    "unknown"
+                ),
                 "timestamp": datetime.now().isoformat()
             }
             
@@ -579,7 +626,8 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
                 if recommendations:
                     collaboration_summary["key_recommendations"].extend(recommendations)
             
-            self.logger.info(f"4 Sages collaboration completed: {successful_collaborations}/{total_collaborations} successful")
+            self.logger.info(f"4 Sages collaboration completed: " \
+                "{successful_collaborations}/{total_collaborations} successful")
             
             return {
                 "collaboration_summary": collaboration_summary,
@@ -588,6 +636,7 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
             }
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"4賢者協調でクリティカルエラー発生: {e}")
             return {
                 "collaboration_summary": {"status": "critical_failure", "error": str(e)},
@@ -636,6 +685,7 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
             }
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Knowledge Sage collaboration failed: {e}")
             return {"status": "error", "error": str(e)}
     
@@ -693,6 +743,7 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
             }
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Task Sage collaboration failed: {e}")
             return {"status": "error", "error": str(e)}
     
@@ -755,6 +806,7 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
             }
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Incident Sage collaboration failed: {e}")
             return {"status": "error", "error": str(e)}
     
@@ -799,6 +851,7 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
             }
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"RAG Sage collaboration failed: {e}")
             return {"status": "error", "error": str(e)}
     
@@ -831,6 +884,7 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
             }
             
         except Exception as e:
+            # Handle specific exception case
             return {
                 "status": "failed",
                 "error": str(e),
@@ -841,10 +895,13 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
     def _evaluate_connection_quality(self, success_rate: float, avg_response_time: float) -> str:
         """接続品質評価"""
         if success_rate >= 0.9 and avg_response_time <= 0.1:
+            # Complex condition - consider breaking down
             return "excellent"
         elif success_rate >= 0.75 and avg_response_time <= 0.2:
+            # Complex condition - consider breaking down
             return "good"
         elif success_rate >= 0.5 and avg_response_time <= 0.5:
+            # Complex condition - consider breaking down
             return "acceptable"
         else:
             return "poor"

@@ -901,7 +901,11 @@ All notable changes to this project will be documented in this file.
         return list(set(recommendations))  # Remove duplicates
 
     # Content generation methods
-    async def _generate_api_content(self, knowledge_entries: List[Dict[str, Any]]) -> Dict[str, Any]:
+    async def _generate_api_content(
+        self,
+        knowledge_entries: List[Dict[str,
+        Any]]
+    ) -> Dict[str, Any]:
         """Generate API-specific content"""
         api_entries = [e for e in knowledge_entries if "api" in e.get("tags", [])]
         
@@ -1172,7 +1176,8 @@ All notable changes to this project will be documented in this file.
         html = re.sub(r'\*(.+?)\*', r'<em>\1</em>', html)
         html = re.sub(r'`(.+?)`', r'<code>\1</code>', html)
         html = html.replace('\n\n', '</p><p>')
-        html = f"<!DOCTYPE html><html><head><title>Document</title></head><body><p>{html}</p></body></html>"
+        html = f"<!DOCTYPE " \
+            "html><html><head><title>Document</title></head><body><p>{html}</p></body></html>"
         return html
 
     async def _format_rst(self, content: str) -> str:

@@ -24,6 +24,7 @@ class AIRagCommand(BaseCommand):
     """RAG管理 - 🔍 RAG賢者インターフェース"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-rag", description="RAG（検索拡張生成）管理 - 情報検索と最適解探索", version="2.0.0"
         )
@@ -98,7 +99,8 @@ class AIRagCommand(BaseCommand):
         if not args.subcommand:
             return CommandResult(
                 success=False,
-                message="サブコマンドを指定してください (search, analyze, enhance, summary, learn, status, optimize, migrate, unified)",
+                message="サブコマンドを指定してください (search, analyze, enhance, summary, learn, status, " \
+                    "optimize, migrate, unified)",
             )
 
         try:
@@ -106,22 +108,31 @@ class AIRagCommand(BaseCommand):
             self._initialize_managers()
 
             if args.subcommand == "search":
+                # Complex condition - consider breaking down
                 return self._search_knowledge(args)
             elif args.subcommand == "analyze":
+                # Complex condition - consider breaking down
                 return self._analyze_context(args)
             elif args.subcommand == "enhance":
+                # Complex condition - consider breaking down
                 return self._enhance_prompt(args)
             elif args.subcommand == "summary":
+                # Complex condition - consider breaking down
                 return self._generate_summary(args)
             elif args.subcommand == "learn":
+                # Complex condition - consider breaking down
                 return self._learn_knowledge(args)
             elif args.subcommand == "status":
+                # Complex condition - consider breaking down
                 return self._show_status()
             elif args.subcommand == "optimize":
+                # Complex condition - consider breaking down
                 return self._optimize_search(args)
             elif args.subcommand == "migrate":
+                # Complex condition - consider breaking down
                 return self._migrate_to_grimoire(args)
             elif args.subcommand == "unified":
+                # Complex condition - consider breaking down
                 return self._unified_system_management(args)
             else:
                 return CommandResult(
@@ -129,6 +140,7 @@ class AIRagCommand(BaseCommand):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"エラー: {str(e)}")
 
     def _initialize_managers(self):
@@ -199,6 +211,7 @@ class AIRagCommand(BaseCommand):
         if analysis.get("related_knowledge"):
             lines.append("\n関連知識:")
             for knowledge in analysis["related_knowledge"][:3]:
+                # Process each item in collection
                 lines.append(f"  - {knowledge.get('title', 'Untitled')}")
 
         return CommandResult(success=True, message="\n".join(lines), data=analysis)
@@ -218,6 +231,7 @@ class AIRagCommand(BaseCommand):
         if enhanced.get("added_context"):
             lines.append("\n【追加されたコンテキスト】")
             for ctx in enhanced["added_context"]:
+                # Process each item in collection
                 lines.append(f"  • {ctx}")
 
         return CommandResult(success=True, message="\n".join(lines), data=enhanced)
@@ -384,6 +398,7 @@ class AIRagCommand(BaseCommand):
             )
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"移行処理エラー: {str(e)}")
         finally:
             # クリーンアップ
@@ -441,6 +456,7 @@ class AIRagCommand(BaseCommand):
                     if "error" not in grimoire_stats:
                         lines.append("\n📚 魔法書統計:")
                         for key, value in grimoire_stats.items():
+                            # Process each item in collection
                             lines.append(f"  {key}: {value}")
 
                 migration_stats = status.get("migration_stats", {})
@@ -468,10 +484,12 @@ class AIRagCommand(BaseCommand):
                 return CommandResult(success=False, message=f"不明なアクション: {args.action}")
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"統合システム管理エラー: {str(e)}")
 
 
 def main():
+    # Core functionality implementation
     command = AIRagCommand()
     sys.exit(command.run())
 

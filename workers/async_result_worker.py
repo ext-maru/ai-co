@@ -46,6 +46,7 @@ try:
 
     ELDER_SYSTEM_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logger = structlog.get_logger(__name__)
     logger.warning(f"Elder system not available: {e}")
     ELDER_SYSTEM_AVAILABLE = False
@@ -143,6 +144,7 @@ class AsyncResultWorker(AsyncBaseWorker):
             self.logger.info("Elder systems initialized successfully")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to initialize Elder systems: {e}")
             self.elder_systems_initialized = False
 
@@ -186,6 +188,7 @@ class AsyncResultWorker(AsyncBaseWorker):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.stats["notifications_failed"] += 1
             self.logger.error(
                 "Failed to process result message", task_id=task_id, error=str(e)
@@ -330,6 +333,7 @@ class AsyncResultWorker(AsyncBaseWorker):
 
             # 追加メッセージがある場合は スレッドで送信
             if len(messages) > 1 and main_response.get("ts"):
+                # Complex condition - consider breaking down
                 for additional_message in messages[1:]:
                     await asyncio.sleep(0.5)  # 短い間隔
                     await self.slack_notifier.send_thread_reply(
@@ -344,6 +348,7 @@ class AsyncResultWorker(AsyncBaseWorker):
                 self.stats["messages_split"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             self.stats["notifications_failed"] += 1
             self.logger.error(
                 "Slack notification failed", task_id=task_id, error=str(e)
@@ -448,6 +453,7 @@ class AsyncResultWorker(AsyncBaseWorker):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error("Failed to save statistics", error=str(e))
 
     async def get_statistics(self) -> Dict[str, Any]:
@@ -457,6 +463,7 @@ class AsyncResultWorker(AsyncBaseWorker):
     async def _report_to_result_sage(self, message: str, event_type: str):
         """Report to Result/Incident Sage in Elder Tree hierarchy"""
         if not self.elder_systems_initialized or not self.four_sages:
+            # Complex condition - consider breaking down
             return
 
         try:
@@ -472,6 +479,7 @@ class AsyncResultWorker(AsyncBaseWorker):
                 sage_type=SageType.INCIDENT, message=elder_message
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to report to Result Sage: {e}")
 
     async def _report_result_processed(self, task_id: str, status: str):
@@ -506,6 +514,7 @@ class AsyncResultWorker(AsyncBaseWorker):
         }
 
         if self.elder_systems_initialized and self.four_sages:
+            # Complex condition - consider breaking down
             try:
                 sage_status = await self.four_sages.get_sage_status(SageType.INCIDENT)
                 status["sage_connection"] = sage_status
@@ -527,6 +536,7 @@ class AsyncResultWorker(AsyncBaseWorker):
                     await self.elder_council.cleanup()
                 self.logger.info("Elder systems cleaned up")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Error during Elder cleanup: {e}")
 
         # Call parent cleanup if available
@@ -550,6 +560,7 @@ class PeriodicReporter:
                 await asyncio.sleep(3600)  # 1時間待機
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error("Periodic report error", error=str(e))
                 await asyncio.sleep(300)  # エラー時は5分待機
 

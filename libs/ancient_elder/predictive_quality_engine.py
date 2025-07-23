@@ -75,7 +75,11 @@ class PredictiveQualityEngine(AncientMagicBase):
         # 予測統計
         self.prediction_history = []
         
-    def predict_quality_issues(self, code: str, metadata: Optional[Dict] = None) -> PredictionResult:
+    def predict_quality_issues(
+        self,
+        code: str,
+        metadata: Optional[Dict] = None
+    ) -> PredictionResult:
         """品質問題の予測分析
         
         Args:
@@ -277,7 +281,11 @@ class PredictiveQualityEngine(AncientMagicBase):
                 sec_risk += 0.3
             
             # ハードコードされた認証情報
-            if re.search(r'password\s*=\s*["\'][^"\']+["\']|api_key\s*=\s*["\'][^"\']+["\']', code, re.IGNORECASE):
+            if re.search(
+                r'password\s*=\s*["\'][^"\']+["\']|api_key\s*=\s*["\'][^"\']+["\']',
+                code,
+                re.IGNORECASE
+            ):
                 sec_risk += 0.4
             
             # ファイルパス操作のリスク
@@ -286,7 +294,8 @@ class PredictiveQualityEngine(AncientMagicBase):
             
             # 入力検証の不足
             functions = features.get("functions", 0)
-            if functions > 0 and not re.search(r'isinstance\s*\(|len\s*\(.*\)\s*[<>]|validate', code):
+            if functions > 0 and not re.search(r'isinstance\s*\(|len\s*\(.*\)\s*[<>]|validate' \
+                'isinstance\s*\(|len\s*\(.*\)\s*[<>]|validate', code):
                 sec_risk += 0.2
             
             return min(sec_risk, 1.0)

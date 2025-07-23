@@ -293,7 +293,10 @@ class ASTAnalyzer:
             if isinstance(decorator, ast.Name):
                 return decorator.id
             elif isinstance(decorator, ast.Attribute):
-                return f"{decorator.value.id}.{decorator.attr}" if hasattr(decorator.value, 'id') else decorator.attr
+                return f"{decorator.value.id}.{decorator.attr}" if hasattr(
+                    decorator.value,
+                    'id'
+                ) else decorator.attr
             elif isinstance(decorator, ast.Call):
                 func_name = self._get_decorator_name(decorator.func)
                 return f"{func_name}(...)"
@@ -318,7 +321,10 @@ class ASTAnalyzer:
             if isinstance(exc_type, ast.Name):
                 return exc_type.id
             elif isinstance(exc_type, ast.Attribute):
-                return f"{exc_type.value.id}.{exc_type.attr}" if hasattr(exc_type.value, 'id') else exc_type.attr
+                return f"{exc_type.value.id}.{exc_type.attr}" if hasattr(
+                    exc_type.value,
+                    'id'
+                ) else exc_type.attr
             return f"<{type(exc_type).__name__}>"
         except Exception:
             return "<exception_error>"
@@ -424,7 +430,8 @@ class PatternExtractor:
         for analysis in analyses:
             file_path = analysis.get('file_path', 'unknown')
             tech_indicators = analysis.get('tech_indicators', {})
-            primary_tech = max(tech_indicators.items(), key=lambda x: x[1])[0] if tech_indicators else 'general'
+            primary_tech = max(tech_indicators.items(), key=lambda x: x[1])[0] if tech_indicators else 'general' \
+                'general'
             
             for cls in analysis.get('classes', []):
                 patterns.append(ClassPattern(
@@ -564,7 +571,8 @@ class CodebaseAnalysisEngine:
         file_structure = self._analyze_file_structure(python_files)
         
         self.logger.info(f"Analysis complete: {len(import_patterns)} import patterns, "
-                        f"{len(class_patterns)} class patterns, {len(method_patterns)} method patterns")
+                        f"{len(class_patterns)} class patterns, {len(method_patterns)} " \
+                            "method patterns")
         
         return CodebaseIntelligence(
             import_patterns=import_patterns,

@@ -232,7 +232,11 @@ class RetryIssueReporter:
                 comment += f"- **💬 メッセージ**: {result['message']}\n"
         else:
             comment += "**🚨 失敗詳細**:\n"
-            comment += f"- **❌ 最終エラー**: `{final_error.get('type', 'Unknown')}` - {final_error.get('message', 'No details')}\n"
+            comment += f"- **❌ 最終エラー**: `{final_error.get(
+                'type',
+                'Unknown')}` - {final_error.get('message',
+                'No details'
+            )}\n"
             comment += f"- **📋 推奨アクション**: 手動レビューが必要です\n"
         
         # 試行履歴の要約
@@ -298,7 +302,10 @@ class RetryIssueReporter:
             "issue_number": session["issue_number"],
             "operation": session["operation"],
             "start_time": session["start_time"].isoformat(),
-            "end_time": session.get("end_time", {}).isoformat() if session.get("end_time") else None,
+            "end_time": session.get(
+                "end_time",
+                {}).isoformat() if session.get("end_time"
+            ) else None,
             "attempt_count": len(session["attempts"]),
             "final_status": session.get("final_status"),
             "duration_seconds": (session["end_time"] - session["start_time"]).total_seconds() if session.get("end_time") else None

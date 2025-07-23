@@ -220,7 +220,10 @@ class SelfHealingOrchestrator(BaseManager):
 
     async def handle_error_incident(self, error_info: Dict) -> Dict:
         """エラーインシデントを処理"""
-        incident_id = f"incident_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{error_info.get('error_type', 'unknown')}"
+        incident_id = f"incident_{datetime.now(
+            ).strftime('%Y%m%d_%H%M%S')}_{error_info.get('error_type',
+            'unknown'
+        )}"
 
         self.healing_metrics["total_incidents"] += 1
 

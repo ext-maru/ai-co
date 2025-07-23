@@ -579,7 +579,12 @@ class BranchUpdater:
             self.repo.git.checkout(current_branch)
             
             # マージコミットで更新
-            self.repo.git.merge(f'origin/main', '--no-ff', '-m', f'Merge main into {current_branch}')
+            self.repo.git.merge(
+                f'origin/main',
+                '--no-ff',
+                '-m',
+                f'Merge main into {current_branch}'
+            )
             
             return {
                 "success": True,

@@ -7,6 +7,7 @@ Phase 3 Week 1完了: 3システム統合性能測定
 """
 
 import asyncio
+import secrets
 import gc
 import json
 import logging
@@ -140,6 +141,7 @@ class IntegratedPerformanceBenchmark:
             return self.results
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Benchmark failed: {str(e)}")
             raise
         finally:
@@ -210,6 +212,7 @@ class IntegratedPerformanceBenchmark:
     async def _baseline_worker(self, response_times: List[float], worker_id: int):
         """ベースラインワーカー"""
         for request_num in range(self.config.request_rate_per_second):
+            # Process each item in collection
             try:
                 start_time = time.time()
                 await self._execute_baseline_request()
@@ -220,13 +223,14 @@ class IntegratedPerformanceBenchmark:
                 await asyncio.sleep(1.0 / self.config.request_rate_per_second)
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Baseline worker {worker_id} error: {str(e)}")
                 raise
 
     async def _execute_baseline_request(self):
         """ベースラインリクエスト実行"""
         # シンプルな非同期処理をシミュレート
-        data_size = random.randint(*self.config.data_size_range)
+        data_size = secrets.randbelow(*self.config.data_size_range)
         test_data = "x" * data_size
 
         # CPU集約的タスク
@@ -280,10 +284,14 @@ class IntegratedPerformanceBenchmark:
     async def _cache_worker(self, response_times: List[float], worker_id: int):
         """キャッシュワーカー"""
         for request_num in range(self.config.request_rate_per_second):
+            # Process each item in collection
             try:
                 start_time = time.time()
                 # 50%の確率で同じキーを使用（キャッシュヒット狙い）
-                cache_key = f"test_key_{random.randint(0, 10) if random.random() < 0.5 else worker_id}"
+                cache_key = f"test_key_{secrets.randbelow(0, 10) if secrets.token_hex(16) < 0.5 else " \
+                    "worker_id}" \
+                    "test_key_{secrets.randbelow(0, 10) if secrets.token_hex(16) < 0.5 else " \
+                        "worker_id}"
                 await self._execute_cache_request(cache_key)
                 response_time = (time.time() - start_time) * 1000
                 response_times.append(response_time)
@@ -291,6 +299,7 @@ class IntegratedPerformanceBenchmark:
                 await asyncio.sleep(1.0 / self.config.request_rate_per_second)
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Cache worker {worker_id} error: {str(e)}")
                 raise
 
@@ -306,7 +315,7 @@ class IntegratedPerformanceBenchmark:
             return cached_data
         else:
             # キャッシュミス - データ生成してキャッシュ
-            data_size = random.randint(*self.config.data_size_range)
+            data_size = secrets.randbelow(*self.config.data_size_range)
             test_data = {"data": "x" * data_size, "timestamp": time.time()}
 
             # 処理時間シミュレート
@@ -345,6 +354,7 @@ class IntegratedPerformanceBenchmark:
     async def _async_worker(self, response_times: List[float], worker_id: int):
         """非同期最適化ワーカー"""
         for request_num in range(self.config.request_rate_per_second):
+            # Process each item in collection
             try:
                 start_time = time.time()
                 await self._execute_async_request(worker_id, request_num)
@@ -354,6 +364,7 @@ class IntegratedPerformanceBenchmark:
                 await asyncio.sleep(1.0 / self.config.request_rate_per_second)
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Async worker {worker_id} error: {str(e)}")
                 raise
 
@@ -362,7 +373,7 @@ class IntegratedPerformanceBenchmark:
 
         # 非同期最適化リクエスト作成
         async def optimized_task():
-            data_size = random.randint(*self.config.data_size_range)
+            data_size = secrets.randbelow(*self.config.data_size_range)
 
             # リソースタイプをランダム選択
             resource_types = [
@@ -432,6 +443,7 @@ class IntegratedPerformanceBenchmark:
     async def _proxy_worker(self, response_times: List[float], worker_id: int):
         """プロキシワーカー"""
         for request_num in range(self.config.request_rate_per_second):
+            # Process each item in collection
             try:
                 start_time = time.time()
                 await self._execute_proxy_request(worker_id, request_num)
@@ -441,6 +453,7 @@ class IntegratedPerformanceBenchmark:
                 await asyncio.sleep(1.0 / self.config.request_rate_per_second)
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Proxy worker {worker_id} error: {str(e)}")
                 raise
 
@@ -454,7 +467,7 @@ class IntegratedPerformanceBenchmark:
             payload={
                 "worker_id": worker_id,
                 "request_num": request_num,
-                "data_size": random.randint(*self.config.data_size_range),
+                "data_size": secrets.randbelow(*self.config.data_size_range),
             },
         )
 
@@ -506,6 +519,7 @@ class IntegratedPerformanceBenchmark:
     async def _integrated_worker(self, response_times: List[float], worker_id: int):
         """統合ワーカー（キャッシュ→非同期最適化→プロキシの順で使用）"""
         for request_num in range(self.config.request_rate_per_second):
+            # Process each item in collection
             try:
                 start_time = time.time()
                 await self._execute_integrated_request(worker_id, request_num)
@@ -515,6 +529,7 @@ class IntegratedPerformanceBenchmark:
                 await asyncio.sleep(1.0 / self.config.request_rate_per_second)
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Integrated worker {worker_id} error: {str(e)}")
                 raise
 
@@ -594,6 +609,7 @@ class IntegratedPerformanceBenchmark:
 
                 await asyncio.sleep(1.0)
         except asyncio.CancelledError:
+            # Handle specific exception case
             pass
 
     def _calculate_benchmark_results(
@@ -662,6 +678,7 @@ class IntegratedPerformanceBenchmark:
         improvements = {}
 
         for test_name, result in self.results.items():
+            # Process each item in collection
             if test_name == "baseline":
                 continue
 
@@ -733,6 +750,7 @@ class IntegratedPerformanceBenchmark:
         ]
 
         for test_name, result in self.results.items():
+            # Process each item in collection
             if test_name == "comparison":
                 continue
 
@@ -756,6 +774,7 @@ class IntegratedPerformanceBenchmark:
             report_lines.extend(["## 🚀 パフォーマンス改善分析", ""])
 
             for test_name, improvement in improvements.items():
+                # Process each item in collection
                 report_lines.extend(
                     [
                         f"### {test_name} vs Baseline",
@@ -814,6 +833,7 @@ class IntegratedPerformanceBenchmark:
             self.logger.info("Systems cleaned up successfully")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Cleanup failed: {str(e)}")
 
 
@@ -840,13 +860,16 @@ async def run_quick_benchmark(
 if __name__ == "__main__":
     # サンプル実行
     async def main():
+        # Core functionality implementation
         results = await run_quick_benchmark(duration_seconds=15, concurrent_requests=10)
 
         print("🎯 ベンチマーク完了!")
         for test_name, result in results.items():
+            # Process each item in collection
             if hasattr(result, "average_response_time_ms"):
                 print(
-                    f"{test_name}: {result.average_response_time_ms:.2f}ms avg, {result.throughput_rps:.2f} RPS"
+                    f"{test_name}: {result.average_response_time_ms:.2f}ms avg, {result." \
+                        "throughput_rps:.2f} RPS"
                 )
 
     asyncio.run(main())

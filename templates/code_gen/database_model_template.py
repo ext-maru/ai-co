@@ -11,6 +11,7 @@ class DatabaseModelTemplate:
     """データベースモデルテンプレート"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.template_info = {
             "name": "Database Model",
             "version": "1.0.0",
@@ -116,16 +117,25 @@ class {model_name}(Base):
                 back_populates = rel.get("back_populates", f"{model_name.lower()}s")
 
                 if rel_type == "one-to-many":
-                    content += f"    {target.lower()}s = relationship('{target}', back_populates='{model_name.lower()}')\n"
+                    content += f"    {target.lower(
+                        )}s = relationship('{target}',
+                        back_populates='{model_name.lower()}'
+                    )\n"
                 elif rel_type == "many-to-one":
-                    content += f"    {target.lower()} = relationship('{target}', back_populates='{model_name.lower()}s')\n"
+                    content += f"    {target.lower(
+                        )} = relationship('{target}',
+                        back_populates='{model_name.lower()}s'
+                    )\n"
 
         # Add indexes
         if indexes:
             content += "\n    # Indexes\n"
             for idx, index_fields in enumerate(indexes):
                 index_name = f"idx_{model_name.lower()}_{'_'.join(index_fields)}"
-                content += f"    __table_args__ = (Index('{index_name}', {', '.join(repr(f) for f in index_fields)}),)\n"
+                content += f"    __table_args__ = (Index(
+                    '{index_name}',
+                    {', '.join(repr(f) for f in index_fields)}),
+                )\n"
 
         # Add validation
         if any(f == "email" for f in fields.keys()):
@@ -185,6 +195,7 @@ class {model_name}CRUD:
     """CRUD operations for {model_name}"""
 
     def __init__(self, db: Session):
+        """初期化メソッド"""
         self.db = db
 
     def create(self, **kwargs) -> {model_name}:
@@ -318,18 +329,33 @@ def upgrade():
             elif field_type == "datetime":
                 content += f"        sa.Column('{field_name}', sa.DateTime(), nullable=True),\n"
 
-        content += """        sa.Column('created_at', sa.DateTime(), server_default=sa.func.now(), nullable=False),
+        content += """        sa.Column(
+            'created_at',
+            sa.DateTime(),
+            server_default=sa.func.now(),
+            nullable=False
+        ),
         sa.Column('updated_at', sa.DateTime(), server_default=sa.func.now(), nullable=False),
 """
 
         if soft_delete:
-            content += """        sa.Column('is_deleted', sa.Boolean(), nullable=False, default=False),
+            content += """        sa.Column(
+                'is_deleted',
+                sa.Boolean(),
+                nullable=False,
+                default=False
+            ),
         sa.Column('deleted_at', sa.DateTime(), nullable=True),
 """
 
         content += f'''        sa.PrimaryKeyConstraint('id')
     )
-    op.create_index(op.f('ix_{model_name.lower()}s_id'), '{model_name.lower()}s', ['id'], unique=False)
+    op.create_index(
+        op.f('ix_{model_name.lower()}s_id'),
+        '{model_name.lower()}s',
+        ['id'],
+        unique=False
+    )
 
 def downgrade():
     """Drop {model_name} table"""

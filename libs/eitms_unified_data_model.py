@@ -262,7 +262,8 @@ class EitmsUnifiedDatabase:
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_status ON unified_tasks (status)')
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_priority ON unified_tasks (priority)')
         cursor.execute('CREATE INDEX IF NOT EXISTS idx_created_at ON unified_tasks (created_at)')
-        cursor.execute('CREATE INDEX IF NOT EXISTS idx_github_issue ON unified_tasks (github_issue_number)')
+        cursor.execute('CREATE INDEX IF NOT EXISTS idx_github_issue ON unified_tasks (github_issue_number)' \
+            'CREATE INDEX IF NOT EXISTS idx_github_issue ON unified_tasks (github_issue_number)')
         
         self._connection.commit()
         logger.info("📋 データベーステーブル作成完了")

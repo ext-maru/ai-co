@@ -16,7 +16,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath("./../../.." \
+    "./../../.."))))
 
 from libs.elder_flow_integration import execute_elder_flow
 from libs.elder_flow_servant_executor_real import (
@@ -51,26 +52,31 @@ app.add_middleware(
 
 # Request/Response models
 class TaskRequest(BaseModel):
+    # Main class implementation
     type: str
     task: Dict[str, Any]
 
 
 class ElderFlowRequest(BaseModel):
+    # Main class implementation
     query: str
     context: Dict[str, Any]
 
 
 class SageConsultRequest(BaseModel):
+    # Main class implementation
     question: str
     context: Optional[Dict[str, Any]] = {}
 
 
 class QualityCheckRequest(BaseModel):
+    # Main class implementation
     file_path: str
     content: str
 
 
 class KnowledgeSearchRequest(BaseModel):
+    # Main class implementation
     query: str
     limit: Optional[int] = 10
 
@@ -86,6 +92,7 @@ async def initialize_servants():
     ]
 
     for servant in servants:
+        # Process each item in collection
         servant_registry.register_servant(servant)
 
     logger.info(f"Initialized {len(servants)} Elder Servants")
@@ -135,6 +142,7 @@ async def execute_servant_task(servant_id: str, request: TaskRequest):
         return {"success": True, "servant_id": servant_id, "result": result.to_dict()}
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error executing servant task: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -155,6 +163,7 @@ async def execute_elder_flow_endpoint(request: ElderFlowRequest):
         }
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error executing Elder Flow: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -188,6 +197,7 @@ async def consult_sages(request: SageConsultRequest):
         }
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error consulting sages: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -234,6 +244,7 @@ async def check_iron_will_quality(request: QualityCheckRequest):
         }
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error checking Iron Will quality: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -267,6 +278,7 @@ async def search_knowledge_base(request: KnowledgeSearchRequest):
         return {"success": True, "items": items, "total": len(items)}
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error searching knowledge base: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -300,6 +312,7 @@ async def get_active_tasks():
         return formatted_tasks
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error getting active tasks: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -310,6 +323,7 @@ async def list_servants():
     servants_info = []
 
     for servant_id, servant in servant_registry.servants.items():
+        # Process each item in collection
         health = await servant.health_check()
         servants_info.append(
             {
@@ -333,7 +347,9 @@ from fastapi import WebSocket
 
 
 class ConnectionManager:
+    # Main class implementation
     def __init__(self):
+        """初期化メソッド"""
         self.active_connections: Set[WebSocket] = set()
 
     async def connect(self, websocket: WebSocket):
@@ -345,6 +361,7 @@ class ConnectionManager:
 
     async def broadcast(self, message: dict):
         for connection in self.active_connections:
+            # Process each item in collection
             try:
                 await connection.send_json(message)
             except:

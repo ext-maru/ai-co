@@ -62,6 +62,7 @@ class CommitMessageGenerator:
     }
 
     def __init__(self, config: ConventionalCommitConfig = None):
+        """初期化メソッド"""
         self.config = config or ConventionalCommitConfig()
         self.logger = logging.getLogger(__name__)
 
@@ -202,10 +203,28 @@ class CommitMessageGenerator:
 
         return self.generate_conventional_commit(analysis)
 
-    def _analyze_files_for_commit(
-        self, files: List[str], changes_summary: Dict[str, Any] = None
-    ) -> Dict[str, Any]:
-        """ファイル変更を分析してコミット情報を推定"""
+    def _categorize_file(self, file: str) -> str:
+        """ファイルをカテゴリに分類"""
+        file_lower = file.lower()
+        
+        if file_lower.endswith((".py", ".js", ".ts", ".java", ".cpp", ".c", ".go")):
+            if "test" in file_lower or file_lower.startswith("test_"):
+                return "test"
+            return "source"
+        elif file_lower.endswith((".md", ".rst", ".txt")):
+            return "docs"
+        elif file_lower in ("dockerfile", "requirements.txt", "package.json"):
+            return "build"
+        elif file_lower.endswith((".yml", ".yaml")) and (
+            "ci" in file_lower or ".github" in file
+        ):
+            return "ci"
+        elif file_lower.endswith((".json", ".toml", ".yaml", ".yml", ".ini")):
+            return "config"
+        return "other"
+
+    def _categorize_files(self, files: List[str]) -> Dict[str, List[str]]:
+        """ファイルリストをカテゴリ別に分類"""
         file_categories = {
             "source": [],
             "test": [],
@@ -215,70 +234,68 @@ class CommitMessageGenerator:
             "ci": [],
             "other": [],
         }
-
-        # ファイル分類
+        
         for file in files:
-            file_lower = file.lower()
+            category = self._categorize_file(file)
+            file_categories[category].append(file)
+            
+        return file_categories
 
-            if file_lower.endswith((".py", ".js", ".ts", ".java", ".cpp", ".c", ".go")):
-                if "test" in file_lower or file_lower.startswith("test_"):
-                    file_categories["test"].append(file)
-                else:
-                    file_categories["source"].append(file)
-            elif file_lower.endswith((".md", ".rst", ".txt")):
-                file_categories["docs"].append(file)
-            elif file_lower in ("dockerfile", "requirements.txt", "package.json"):
-                file_categories["build"].append(file)
-            elif file_lower.endswith((".yml", ".yaml")) and (
-                "ci" in file_lower or ".github" in file
-            ):
-                file_categories["ci"].append(file)
-            elif file_lower.endswith((".json", ".toml", ".yaml", ".yml", ".ini")):
-                file_categories["config"].append(file)
-            else:
-                file_categories["other"].append(file)
-
-        # コミットタイプ決定
-        commit_type = "chore"
-        confidence = 0.3
-
+    def _determine_commit_type(
+        self, file_categories: Dict[str, List[str]], changes_summary: Dict[str, Any] = None
+    ) -> tuple[str, float]:
+        """ファイルカテゴリから適切なコミットタイプを決定"""
         if file_categories["test"]:
-            commit_type = "test"
-            confidence = 0.8
+            return "test", 0.8
         elif file_categories["docs"]:
-            commit_type = "docs"
-            confidence = 0.7
+            return "docs", 0.7
         elif file_categories["build"] or file_categories["ci"]:
-            commit_type = "build"
-            confidence = 0.6
+            return "build", 0.6
         elif file_categories["source"]:
             # 変更量で判定
             if changes_summary and changes_summary.get("total_lines_added", 0) > 50:
-                commit_type = "feat"
-                confidence = 0.6
+                return "feat", 0.6
             else:
-                commit_type = "fix"
-                confidence = 0.5
+                return "fix", 0.5
+        return "chore", 0.3
 
-        # スコープ推定
-        scope = None
+    def _extract_scope(self, files: List[str]) -> Optional[str]:
+        """ファイルパスからスコープを推定"""
         scopes = []
         for file in files:
             parts = file.split("/")
             if len(parts) > 1 and parts[0] in ["libs", "workers", "commands", "tests"]:
                 scopes.append(parts[0])
-
+        
         if scopes:
-            scope = max(set(scopes), key=scopes.count)
+            return max(set(scopes), key=scopes.count)
+        return None
 
-        # 説明生成
+    def _generate_description(self, files: List[str]) -> str:
+        """ファイルリストから説明文を生成"""
         if len(files) == 1:
-            description = f"update {files[0].split('/')[-1]}"
+            return f"update {files[0].split('/')[-1]}"
         elif len(files) <= 3:
             file_names = [f.split("/")[-1] for f in files]
-            description = f"update {', '.join(file_names)}"
+            return f"update {', '.join(file_names)}"
         else:
-            description = f"update {len(files)} files"
+            return f"update {len(files)} files"
+
+    def _analyze_files_for_commit(
+        self, files: List[str], changes_summary: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
+        """ファイル変更を分析してコミット情報を推定"""
+        # ファイル分類
+        file_categories = self._categorize_files(files)
+        
+        # コミットタイプ決定
+        commit_type, confidence = self._determine_commit_type(file_categories, changes_summary)
+        
+        # スコープ推定
+        scope = self._extract_scope(files)
+        
+        # 説明生成
+        description = self._generate_description(files)
 
         return {
             "commit_type": commit_type,

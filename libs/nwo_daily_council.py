@@ -86,6 +86,7 @@ class nWoDailyCouncil:
     """nWo日次評議会システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.council_db = self._initialize_council_db()
         self.logger = logging.getLogger("nWoDailyCouncil")
         self.logger.setLevel(logging.INFO)
@@ -255,6 +256,7 @@ class nWoDailyCouncil:
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"🚨 nWo Council エラー: {e}")
             council_results["error"] = str(e)
 
@@ -272,6 +274,7 @@ class nWoDailyCouncil:
 
         total_progress = 0.0
         for pillar, progress in self.nwo_progress.items():
+            # Process each item in collection
             pillar_data = {
                 "current_level": progress.current_level,
                 "target_level": progress.target_level,
@@ -519,6 +522,7 @@ class nWoDailyCouncil:
             if proposal.priority == ImplementationPriority.EMPEROR_COMMAND:
                 decisions.append(f"✅ 即座実装承認: {proposal.title}")
             elif proposal.estimated_impact > 80 and proposal.technical_feasibility > 60:
+                # Complex condition - consider breaking down
                 decisions.append(f"🎯 優先実装承認: {proposal.title}")
 
         return decisions
@@ -687,20 +691,24 @@ async def execute_nwo_daily_council():
         print(f"  全体進捗: {progress['overall_progress']:.1f}%")
 
         for pillar, data in progress["pillar_progress"].items():
+            # Process each item in collection
             print(
                 f"  {pillar}: {data['current_level']:.1f}% (目標: {data['target_level']:.1f}%)"
             )
 
         print(f"\n💡 新規提案: {len(results['new_proposals'])} 件")
         for proposal in results["new_proposals"]:
+            # Process each item in collection
             print(f"  ✨ {proposal.title} (影響度: {proposal.estimated_impact}%)")
 
         print(f"\n🎯 戦略的決定: {len(results['strategic_decisions'])} 件")
         for decision in results["strategic_decisions"][:3]:
+            # Process each item in collection
             print(f"  📋 {decision}")
 
         print(f"\n⚡ 即座実行アクション: {len(results['immediate_actions'])} 件")
         for action in results["immediate_actions"][:3]:
+            # Process each item in collection
             print(f"  🚀 {action}")
 
         print("\n👑 Emperor Briefing:")
@@ -716,6 +724,7 @@ async def execute_nwo_daily_council():
         return results
 
     except Exception as e:
+        # Handle specific exception case
         print(f"🚨 nWo Council エラー: {e}")
         return {"error": str(e)}
 

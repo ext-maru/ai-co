@@ -29,6 +29,7 @@ class AIStatusCommand(BaseCommand):
     """システム状態確認コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="status", description="Elders Guild システムの状態を確認")
 
     def setup_arguments(self):
@@ -50,6 +51,7 @@ class AIStatusCommand(BaseCommand):
                 self._show_status()
             return CommandResult(success=True)
         except Exception as e:
+            # Handle specific exception case
             if args.debug:
                 import traceback
 
@@ -103,8 +105,10 @@ class AIStatusCommand(BaseCommand):
                     time.sleep(interval)
 
                 except KeyboardInterrupt:
+                    # Handle specific exception case
                     break
                 except Exception as e:
+                    # Handle specific exception case
                     console.print(f"[red]エラー: {str(e)}[/red]")
                     break
 
@@ -139,6 +143,7 @@ CPU使用率: {cpu_percent:.1f}%
         table.add_column("メモリ", justify="right", width=10)
 
         for worker_name, script_name in workers:
+            # Process each item in collection
             status, pid, cpu, mem = self._check_worker_process(script_name)
 
             if status == "稼働中":
@@ -170,9 +175,11 @@ CPU使用率: {cpu_percent:.1f}%
                         mem = proc.memory_info().rss / 1024 / 1024  # MB
                         return "稼働中", proc.pid, cpu, mem
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    # Handle specific exception case
                     continue
             return "停止", None, None, None
         except Exception:
+            # Handle specific exception case
             return "不明", None, None, None
 
     def _get_queue_status(self):
@@ -187,6 +194,7 @@ CPU使用率: {cpu_percent:.1f}%
             table.add_column("コンシューマー数", justify="right", width=18)
 
             for queue_name, info in queue_info.items():
+                # Process each item in collection
                 table.add_row(
                     queue_name,
                     str(info.get("messages", 0)),
@@ -196,6 +204,7 @@ CPU使用率: {cpu_percent:.1f}%
             return table
 
         except Exception as e:
+            # Handle specific exception case
             return f"[red]キュー情報取得エラー: {str(e)}[/red]"
 
 

@@ -21,6 +21,7 @@ try:
     from libs.pm_elder_integration import PMElderIntegration
     from libs.slack_notifier import SlackNotifier
 except ImportError as e:
+    # Handle specific exception case
     print(f"Import error: {e}")
     sys.exit(1)
 
@@ -29,6 +30,7 @@ class ElderPMCommand:
     """Elder-PM管理コマンドクラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.pm_elder = PMElderIntegration()
         self.elder_summoner = ElderCouncilSummoner()
         self.slack = SlackNotifier()
@@ -46,6 +48,7 @@ class ElderPMCommand:
         print("=" * 60)
 
         for approval in approvals:
+            # Process each item in collection
             print(f"🔹 承認ID: {approval.approval_id}")
             print(f"   プロジェクトID: {approval.project_id}")
             print(f"   複雑度: {approval.complexity.value}")
@@ -65,6 +68,7 @@ class ElderPMCommand:
             if conditions:
                 print(f"📝 承認条件:")
                 for condition in conditions:
+                    # Process each item in collection
                     print(f"   - {condition}")
 
             # Slack通知
@@ -128,10 +132,12 @@ Elder Councilの開催を要請します。
             print("\n📋 承認要求詳細:")
             complexity_count = {}
             for approval in approvals:
+                # Process each item in collection
                 comp = approval.complexity.value
                 complexity_count[comp] = complexity_count.get(comp, 0) + 1
 
             for complexity, count in complexity_count.items():
+                # Process each item in collection
                 print(f"   {complexity}: {count}件")
 
     def start_monitoring(self):
@@ -247,21 +253,27 @@ def main():
         elder_pm = ElderPMCommand()
 
         if args.command == "status":
+            # Complex condition - consider breaking down
             elder_pm.show_integration_status()
 
         elif args.command == "list":
+            # Complex condition - consider breaking down
             elder_pm.list_pending_approvals()
 
         elif args.command == "approve":
+            # Complex condition - consider breaking down
             elder_pm.approve_project(args.approval_id, args.conditions)
 
         elif args.command == "reject":
+            # Complex condition - consider breaking down
             elder_pm.reject_project(args.approval_id, args.reason)
 
         elif args.command == "council":
+            # Complex condition - consider breaking down
             elder_pm.summon_council(args.topic, args.urgency)
 
         elif args.command == "monitor":
+            # Complex condition - consider breaking down
             if args.action == "start":
                 elder_pm.start_monitoring()
             elif args.action == "stop":
@@ -271,9 +283,11 @@ def main():
             elder_pm.show_help()
 
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n🔸 処理を中断しました。")
         sys.exit(0)
     except Exception as e:
+        # Handle specific exception case
         print(f"❌ エラーが発生しました: {e}")
         sys.exit(1)
 

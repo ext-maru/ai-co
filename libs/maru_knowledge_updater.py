@@ -17,6 +17,7 @@ class MaruKnowledgeUpdater:
     """maruさんナレッジ自動更新システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.knowledge_file = (
             "/home/aicompany/ai_co/knowledge_base/maru_personal_knowledge.md"
         )

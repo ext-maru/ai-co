@@ -1312,7 +1312,10 @@ class FeedbackLoopSystem:
                 actions.append(
                     {
                         "action_type": "bottleneck_resolution",
-                        "description": f'Address {bottleneck.get("component", "system")} bottleneck',
+                        "description": f'Address {bottleneck.get(
+                            "component",
+                            "system"
+                        )} bottleneck',
                         "implementation_effort": "medium",
                         "expected_impact": bottleneck.get("impact", 0.2),
                     }

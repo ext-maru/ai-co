@@ -37,6 +37,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logging.warning(f"Elder Tree integration not available: {e}")
     FourSagesIntegration = None
     ElderCouncilSummoner = None
@@ -94,6 +95,7 @@ class DialogTaskWorker(BaseWorker):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder Tree initialization failed: {e}")
             self.elder_integration_enabled = False
 
@@ -143,6 +145,7 @@ class DialogTaskWorker(BaseWorker):
                     if rag_results:
                         rag_context = "\n\n## Related Knowledge:\n"
                         for result in rag_results:
+                            # Process each item in collection
                             rag_context += f"- {result['content'][:150]}...\n"
                         enhanced_prompt += rag_context
                 else:
@@ -151,10 +154,12 @@ class DialogTaskWorker(BaseWorker):
                         enhanced_prompt
                     )
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"RAG適用失敗: {e}")
 
             # 処理実行
             if "詳細" in instruction or "？" in instruction:
+                # Complex condition - consider breaking down
                 # 追加情報が必要
                 response = {
                     "conversation_id": conversation_id,
@@ -240,6 +245,7 @@ class DialogTaskWorker(BaseWorker):
             loop.close()
             self.logger.info("💬 RAG Grimoire Integration initialized for dialog worker")
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to initialize RAG Grimoire Integration: {e}")
             self.rag_integration = None
 
@@ -248,6 +254,7 @@ class DialogTaskWorker(BaseWorker):
     ):
         """Store conversation knowledge in unified RAG system"""
         if not self.rag_integration or response.get("status") != "progress":
+            # Complex condition - consider breaking down
             return
 
         try:
@@ -284,6 +291,7 @@ class DialogTaskWorker(BaseWorker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to store dialog knowledge: {e}")
 
     def cleanup(self):
@@ -298,6 +306,7 @@ class DialogTaskWorker(BaseWorker):
                 loop.close()
                 self.logger.info("💬 RAG Grimoire Integration cleaned up")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Error during RAG cleanup: {e}")
         pass
 
@@ -308,6 +317,7 @@ class DialogTaskWorker(BaseWorker):
             
             # Elder Tree に終了を通知
             if self.elder_tree_initialized and self.four_sages:
+                # Complex condition - consider breaking down
                 self.four_sages.report_to_task_sage({
                     "type": "worker_shutdown",
                     "worker": "dialog_task_worker",
@@ -319,6 +329,7 @@ class DialogTaskWorker(BaseWorker):
             
             self.logger.info("DialogTaskWorker stopped successfully")
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error stopping DialogTaskWorker: {e}")
 
     def initialize(self) -> None:
@@ -338,6 +349,7 @@ class DialogTaskWorker(BaseWorker):
             
             self.logger.info(f"{self.__class__.__name__} initialized successfully")
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Initialization error: {e}")
             raise
 
@@ -354,6 +366,7 @@ class DialogTaskWorker(BaseWorker):
             
             # Incident Sage にエラー報告
             if self.elder_tree_initialized and self.four_sages:
+                # Complex condition - consider breaking down
                 self.four_sages.consult_incident_sage({
                     "type": "dialog_processing_error",
                     **error_details
@@ -361,6 +374,7 @@ class DialogTaskWorker(BaseWorker):
             
             self.logger.error(f"DialogTaskWorker error in {context}: {error}")
         except Exception as e:
+            # Handle specific exception case
             self.logger.critical(f"Error in error handler: {e}")
 
     def get_status(self) -> dict:
@@ -389,20 +403,24 @@ class DialogTaskWorker(BaseWorker):
         try:
             # ベース設定の確認
             if not hasattr(self, 'worker_id') or not self.worker_id:
+                # Complex condition - consider breaking down
                 self.logger.error("Worker ID not set")
                 return False
             
             # Elder Tree 設定の確認
             if ELDER_TREE_AVAILABLE and not self.elder_tree_initialized:
+                # Complex condition - consider breaking down
                 self.logger.warning("Elder Tree not initialized")
             
             # RAG システムの確認
             if not self.rag_manager and not self.rag_grimoire:
+                # Complex condition - consider breaking down
                 self.logger.warning("No RAG system available")
             
             self.logger.info("DialogTaskWorker config validation passed")
             return True
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Config validation failed: {e}")
             return False
 

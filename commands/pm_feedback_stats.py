@@ -19,6 +19,7 @@ class PMFeedbackStatsCommand(BaseCommand):
     """PMフィードバック統計情報を取得"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="pm-feedback-stats", description="PMフィードバック統計情報を取得", version="1.0.0"
         )
@@ -43,6 +44,7 @@ class PMFeedbackStatsCommand(BaseCommand):
                 return CommandResult(success=False, message="❌ PMフィードバック統計要求の送信に失敗しました")
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"❌ エラー: {str(e)}")
 
     def _send_pm_command(self, task_data: dict) -> bool:
@@ -65,11 +67,13 @@ class PMFeedbackStatsCommand(BaseCommand):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ RabbitMQ送信エラー: {e}")
             return False
 
 
 def main():
+    # Core functionality implementation
     command = PMFeedbackStatsCommand()
     sys.exit(command.run())
 

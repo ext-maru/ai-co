@@ -45,7 +45,7 @@ class ElderFlowUltimateEvolution:
             {
                 "phase": 4,
                 "name": "グローバル展開システム実装",
-                "request": "多言語対応(Python,TypeScript,Go,Rust)、クラウド分散実行、企業向けスケール対応のグローバル展開システムを実装してください",
+                "request": "多言語対応(Python, TypeScript, Go, Rust)、クラウド分散実行、企業向けスケール対応のグローバル展開システムを実装してください",
                 "priority": "世界制覇",
             },
         ]
@@ -100,7 +100,11 @@ class ElderFlowUltimateEvolution:
         print(f"⚡ 実行時間: {session_info['total_time']:.2f}秒")
         print(f"📊 並列効率: {execution_results.get('parallel_efficiency', 0):.1f}%")
         print(
-            f"🎯 成功率: {(execution_results.get('completed', 0) / max(execution_results.get('total_tasks', 1), 1)) * 100:.1f}%"
+            f"🎯 成功率: {(execution_results.get(
+                'completed',
+                0) / max(execution_results.get('total_tasks', 1),
+                1)
+            ) * 100:.1f}%"
         )
 
         print(f"\n🧙‍♂️ 4賢者活動:")

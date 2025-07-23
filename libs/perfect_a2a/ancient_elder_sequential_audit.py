@@ -140,7 +140,10 @@ class AncientElderAuditor:
             audit_result["iron_will_compliance"] = iron_will_compliance
 
             logger.info(
-                f"✅ {self.name} completed audit - Verdict: {verdict}, Score: {metrics.get('weighted_score', 0):.2%}"
+                f"✅ {self.name} completed audit - Verdict: {verdict}, Score: {metrics.get(
+                    'weighted_score',
+                    0
+                ):.2%}"
             )
 
         except Exception as e:
@@ -514,7 +517,8 @@ class AncientElderAuditor:
         ]
 
         logger.info(
-            f"📊 Found {len(test_files)} test files and {len(implementation_files)} implementation files"
+            f"📊 Found {len(test_files)} test files and {len(implementation_files)} " \
+                "implementation files"
         )
 
         # テストカバレッジ推定
@@ -735,7 +739,10 @@ class AncientElderAuditor:
                     )
                 elif finding["type"] == "error_handling":
                     recommendations.append(
-                        f"CRITICAL: Implement comprehensive error handling in {finding.get('file', 'unknown')}"
+                        f"CRITICAL: Implement comprehensive error handling in {finding.get(
+                            'file',
+                            'unknown'
+                        )}"
                     )
                 elif finding["type"] == "test_coverage":
                     recommendations.append(
@@ -1027,7 +1034,11 @@ def generate_markdown_report(results: Dict[str, Any], timestamp: str) -> None:
         f.write("## 📊 Consensus Results\n\n")
         f.write(f"- **Average Score**: {consensus.get('average_score', 0):.2%}\n")
         f.write(
-            f"- **Score Range**: {consensus.get('min_score', 0):.2%} - {consensus.get('max_score', 0):.2%}\n"
+            f"- **Score Range**: {consensus.get(
+                'min_score',
+                0):.2%} - {consensus.get('max_score',
+                0
+            ):.2%}\n"
         )
         f.write(
             f"- **Iron Will Average**: {consensus.get('iron_will_average', 0):.2%}\n"
@@ -1041,7 +1052,12 @@ def generate_markdown_report(results: Dict[str, Any], timestamp: str) -> None:
         for audit in results.get("elder_audits", []):
             score = audit.get("metrics", {}).get("weighted_score", 0)
             f.write(
-                f"| {audit.get('elder_name', 'Unknown')} | {audit.get('specialization', 'N/A')} | {audit.get('verdict', 'ERROR')} | {score:.2%} |\n"
+                f"| {audit.get(
+                    'elder_name',
+                    'Unknown')} | {audit.get('specialization',
+                    'N/A')} | {audit.get('verdict',
+                    'ERROR'
+                )} | {score:.2%} |\n"
             )
         f.write("\n")
 
@@ -1060,7 +1076,11 @@ def generate_markdown_report(results: Dict[str, Any], timestamp: str) -> None:
             f.write(f"- **Tests Passed**: {test.get('tests_passed', 0)}\n")
             f.write(f"- **Tests Failed**: {test.get('tests_failed', 0)}\n")
             f.write(
-                f"- **Success Rate**: {(test.get('tests_passed', 0) / max(test.get('tests_run', 1), 1) * 100):.1f}%\n\n"
+                f"- **Success Rate**: {(test.get(
+                    'tests_passed',
+                    0) / max(test.get('tests_run', 1),
+                    1) * 100
+                ):.1f}%\n\n"
             )
 
         # 推奨事項

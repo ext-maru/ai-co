@@ -11,7 +11,9 @@ from ai_send import SendCommand
 
 
 class CodeCommand(SendCommand):
+    # Main class implementation
     def __init__(self):
+        """初期化メソッド"""
         # SendCommandを継承して初期化
         super().__init__()
         self.name = "code"
@@ -39,6 +41,7 @@ class CodeCommand(SendCommand):
         self.parser.add_argument("--json", action="store_true", help="JSON形式で結果を出力")
 
     def execute(self, args):
+        # Core functionality implementation
         # タイプを'code'に固定
         args.type = "code"
         # 親クラスのexecuteを呼び出し
@@ -46,6 +49,7 @@ class CodeCommand(SendCommand):
 
 
 def main():
+    # Core functionality implementation
     cmd = CodeCommand()
     return cmd.run()
 

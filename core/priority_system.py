@@ -5,6 +5,7 @@ class PriorityMixin:
     """優先度管理のMixin"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.priority_levels = {"critical": 10, "high": 7, "normal": 5, "low": 3}
 
     def get_priority(self, level="normal"):
@@ -66,6 +67,7 @@ class PriorityAwareBaseWorker(BaseWorker):
     """Base worker with priority support"""
 
     def __init__(self, worker_type, worker_id=None):
+        """初期化メソッド"""
         super().__init__(worker_type, worker_id)
         self.priority_enabled = True
 

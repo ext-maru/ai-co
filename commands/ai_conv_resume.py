@@ -14,6 +14,7 @@ class AIConvResumeCommand(BaseCommand):
     """会話再開"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-conv-resume", description="会話再開", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AIConvResumeCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIConvResumeCommand()
     sys.exit(command.run())
 

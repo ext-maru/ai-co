@@ -14,6 +14,7 @@ class AILearnCommand(BaseCommand):
     """学習実行"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-learn", description="学習実行", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AILearnCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AILearnCommand()
     sys.exit(command.run())
 

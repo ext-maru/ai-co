@@ -18,6 +18,7 @@ class AIPluginCommand(BaseCommand):
     """プラグイン管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="plugin", description="Elders Guild プラグイン管理", version="1.0.0"
         )
@@ -51,6 +52,7 @@ class AIPluginCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIPluginCommand()
     return command.run()
 

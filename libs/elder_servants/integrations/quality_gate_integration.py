@@ -19,7 +19,8 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath("./../../.." \
+    "./../../.."))))
 
 try:
     from libs.elder_servants.integrations.oss_adapter_framework import (
@@ -29,16 +30,22 @@ try:
 except ImportError:
     # Fallback for simplified testing
     class MockAdapterRequest:
+        # Main class implementation
         def __init__(self, tool_name, operation, data, context):
+            """初期化メソッド"""
             self.tool_name = tool_name
             self.operation = operation
             self.data = data
             self.context = context
 
     class MockFramework:
+        # Main class implementation
         async def execute_with_fallback(self, request):
+            # Core functionality implementation
             class MockResponse:
+                # Main class implementation
                 def __init__(self):
+                    """初期化メソッド"""
                     self.success = True
                     self.data = {
                         "issue_count": 0,
@@ -147,6 +154,7 @@ class QualityGateIntegration:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.gate_id_prefix = "QG"
         self.oss_framework = create_oss_adapter_framework()
 
@@ -241,6 +249,7 @@ class QualityGateIntegration:
             )
 
         except Exception as e:
+            # Handle specific exception case
             execution_time_ms = (time.time() - start_time) * 1000
             return QualityGateResult(
                 gate_id=gate_id,
@@ -412,6 +421,7 @@ class QualityGateIntegration:
         ]
 
         for pattern, points in patterns:
+            # Process each item in collection
             if pattern.lower() in code.lower():
                 score += points
 
@@ -434,10 +444,12 @@ class QualityGateIntegration:
 
         # 品質閾値設定チェック
         if "0.95" in code or "95" in code:
+            # Complex condition - consider breaking down
             score += 30.0
 
         # 品質バリデーション関数
         if "validate" in code.lower() and "quality" in code.lower():
+            # Complex condition - consider breaking down
             score += 20.0
 
         return min(100.0, score)
@@ -450,12 +462,14 @@ class QualityGateIntegration:
         except_count = code.count("except")
 
         if try_count > 0 and except_count >= try_count:
+            # Complex condition - consider breaking down
             score += 60.0
 
         if "Exception" in code:
             score += 20.0
 
         if "logging.error" in code or "logger.error" in code:
+            # Complex condition - consider breaking down
             score += 20.0
 
         return min(100.0, score)
@@ -486,6 +500,7 @@ class QualityGateIntegration:
 
         monitoring_keywords = ["logging", "logger", "metrics", "monitor", "tracking"]
         for keyword in monitoring_keywords:
+            # Process each item in collection
             if keyword in code.lower():
                 score += 20.0
 
@@ -601,6 +616,7 @@ class QualityGateIntegration:
         ]
 
         for pattern, penalty in inefficient_patterns:
+            # Process each item in collection
             import re
 
             if re.search(pattern, code):
@@ -610,6 +626,7 @@ class QualityGateIntegration:
         efficient_patterns = [("async", 10), ("await", 5), ("comprehension", 5)]
 
         for pattern, bonus in efficient_patterns:
+            # Process each item in collection
             if pattern in code.lower():
                 score += bonus
 
@@ -651,6 +668,7 @@ class QualityGateIntegration:
     def _determine_quality_level(self, score: float) -> QualityLevel:
         """品質レベル判定"""
         for level, threshold in self.quality_thresholds.items():
+            # Process each item in collection
             if score >= threshold:
                 return level
         return QualityLevel.UNACCEPTABLE
@@ -728,6 +746,7 @@ class QualityGateIntegration:
 
         # 成功メッセージ
         if overall_score >= self.iron_will_threshold and not critical_metrics:
+            # Complex condition - consider breaking down
             recommendations.append(
                 "✅ Code meets Iron Will standards - ready for deployment"
             )
@@ -759,6 +778,7 @@ class ElderQualitySystem:
     """Elder Guild quality system with Iron Will compliance"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.quality_threshold = 0.95  # Iron Will standard
         self.logger = logging.getLogger(__name__)
 
@@ -777,6 +797,7 @@ class ElderQualitySystem:
                 raise ValueError("Quality below Iron Will standard")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Quality validation failed: {e}")
             raise
 
@@ -825,10 +846,12 @@ def elder_function():
         result = process_data()
         return result
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error: {e}")
         return None
 
 def process_data():
+    # Core functionality implementation
     return {"status": "success", "quality_score": 0.88}
 '''
 

@@ -84,7 +84,11 @@ class WorkflowComponent(ABC):
         self.is_required = True
     
     @abstractmethod
-    async def execute(self, context: WorkflowContext, previous_results: List[ComponentResult]) -> ComponentResult:
+    async def execute(
+        self,
+        context: WorkflowContext,
+        previous_results: List[ComponentResult]
+    ) -> ComponentResult:
         """コンポーネント実行"""
         pass
     
@@ -104,7 +108,11 @@ class SecurityValidationComponent(WorkflowComponent):
         super().__init__(ComponentType.SECURITY_MANAGER)
         self.is_required = True
     
-    async def execute(self, context: WorkflowContext, previous_results: List[ComponentResult]) -> ComponentResult:
+    async def execute(
+        self,
+        context: WorkflowContext,
+        previous_results: List[ComponentResult]
+    ) -> ComponentResult:
         """セキュリティ検証実行"""
         start_time = time.time()
         
@@ -173,7 +181,11 @@ class ElderFlowComponent(WorkflowComponent):
         super().__init__(ComponentType.ELDER_FLOW)
         self.dependencies = [ComponentType.SECURITY_MANAGER]
     
-    async def execute(self, context: WorkflowContext, previous_results: List[ComponentResult]) -> ComponentResult:
+    async def execute(
+        self,
+        context: WorkflowContext,
+        previous_results: List[ComponentResult]
+    ) -> ComponentResult:
         """Elder Flow実行"""
         start_time = time.time()
         
@@ -244,7 +256,11 @@ class A2AProcessorComponent(WorkflowComponent):
         super().__init__(ComponentType.A2A_PROCESSOR)
         self.dependencies = [ComponentType.SECURITY_MANAGER]
     
-    async def execute(self, context: WorkflowContext, previous_results: List[ComponentResult]) -> ComponentResult:
+    async def execute(
+        self,
+        context: WorkflowContext,
+        previous_results: List[ComponentResult]
+    ) -> ComponentResult:
         """A2A処理実行"""
         start_time = time.time()
         
@@ -314,7 +330,11 @@ class QualityGateComponent(WorkflowComponent):
         self.dependencies = [ComponentType.ELDER_FLOW, ComponentType.A2A_PROCESSOR]
         self.is_required = False  # どちらか一つが成功すればOK
     
-    async def execute(self, context: WorkflowContext, previous_results: List[ComponentResult]) -> ComponentResult:
+    async def execute(
+        self,
+        context: WorkflowContext,
+        previous_results: List[ComponentResult]
+    ) -> ComponentResult:
         """品質ゲート実行"""
         start_time = time.time()
         
@@ -367,7 +387,8 @@ class QualityGateComponent(WorkflowComponent):
                 return ComponentResult(
                     component_type=self.component_type,
                     status=WorkflowStatus.FAILED,
-                    error=f"Quality gate failed: score {quality_score} < threshold {quality_threshold}",
+                    error=f"Quality gate failed: score {quality_score} < threshold " \
+                        "{quality_threshold}",
                     data={
                         "quality_score": quality_score,
                         "threshold": quality_threshold,
@@ -385,7 +406,11 @@ class QualityGateComponent(WorkflowComponent):
                 execution_time=time.time() - start_time
             )
     
-    async def _calculate_quality_score(self, component_result: ComponentResult, context: WorkflowContext) -> float:
+    async def _calculate_quality_score(
+        self,
+        component_result: ComponentResult,
+        context: WorkflowContext
+    ) -> float:
         """品質スコア計算"""
         score = 0.0
         
@@ -468,7 +493,8 @@ class UnifiedWorkflowEngine:
                         elif self.components[result.component_type].is_required:
                             # 必須コンポーネントが失敗した場合はワークフロー停止
                             workflow_result.status = WorkflowStatus.FAILED
-                            workflow_result.error = f"Required component failed: {result.component_type.value}"
+                            workflow_result.error = f"Required component failed: {result.component_type.value}" \
+                                "Required component failed: {result.component_type.value}"
                             break
                 
                 if workflow_result.status == WorkflowStatus.FAILED:
@@ -485,7 +511,8 @@ class UnifiedWorkflowEngine:
             # 実行履歴に記録
             self.execution_history.append(workflow_result)
             
-            logger.info(f"Workflow completed for issue #{context.issue_number}: {workflow_result.status.value}")
+            logger.info(f"Workflow completed for issue #{context.issue_number}: {workflow_result.status." \
+                "value}")
             
             return workflow_result
         
@@ -567,7 +594,8 @@ class UnifiedWorkflowEngine:
         
         return aggregated
     
-    async def execute_auto_issue_workflow(self, issue_data: Dict[str, Any], execution_mode: str = "hybrid") -> WorkflowResult:
+    async def execute_auto_issue_workflow(self, issue_data: Dict[str, Any], execution_mode: str = "hybrid" \
+        "hybrid") -> WorkflowResult:
         """Auto Issue用ワークフロー実行（外部API）"""
         context = WorkflowContext(
             workflow_id=f"auto_issue_{issue_data['number']}_{int(time.time())}",

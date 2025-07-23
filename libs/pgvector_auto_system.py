@@ -314,7 +314,10 @@ class PgVectorAutoSystem:
         # statsのdatetimeオブジェクトをISO文字列に変換
         if isinstance(alert_data['stats'].get('start_time'), datetime):
             alert_data['stats']['start_time'] = alert_data['stats']['start_time'].isoformat()
-        if alert_data['stats'].get('last_update') and isinstance(alert_data['stats']['last_update'], datetime):
+        if alert_data['stats'].get(
+            'last_update') and isinstance(alert_data['stats']['last_update'],
+            datetime
+        ):
             alert_data['stats']['last_update'] = alert_data['stats']['last_update'].isoformat()
         
         # ログファイルに記録

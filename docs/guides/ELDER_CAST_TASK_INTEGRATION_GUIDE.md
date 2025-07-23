@@ -154,7 +154,7 @@ todo-tracker-sync sync --user claude_elder
 ## 📚 関連ドキュメント
 
 - [TodoTrackerIntegration仕様](../technical/TODO_TRACKER_INTEGRATION_SPEC.md)
-- [AI Elder Cast完全仕様書](../../knowledge_base/AI_ELDER_CAST_COMPLETE_SPECIFICATION.md)
+- [AI Elder Cast統一仕様書](../../knowledge_base/core/protocols/AI_ELDER_CAST_UNIFIED_SPECIFICATION.md)
 - [タスクトラッカー運用ガイド](TASK_TRACKER_OPERATION_GUIDE.md)
 
 ## 🔮 今後の拡張予定

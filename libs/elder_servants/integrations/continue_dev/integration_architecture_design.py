@@ -12,13 +12,15 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath("./../../.." \
+    "./../../.."))))
 
 
 class IntegrationArchitectureDesign:
     """エルダーズギルド + OSS統合アーキテクチャ設計"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.architecture = {}
         self.design_principles = []
         self.integration_patterns = {}
@@ -529,7 +531,7 @@ OSS失敗時のElderシステムフォールバックパターン
         """アーキテクチャドキュメントの保存"""
         if output_path is None:
             output_path = (
-                "/home/aicompany/ai_co/docs/PHASE2_INTEGRATION_ARCHITECTURE_DESIGN.md"
+                "/home/aicompany/ai_co/docs/PHASE2_INTEGRATION_ARCHITECTURE_SHA256IGN.md"
             )
 
         document = self.generate_architecture_document()
@@ -598,6 +600,7 @@ OSS失敗時のElderシステムフォールバックパターン
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"error": str(e)}
 
 

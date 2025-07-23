@@ -19,7 +19,13 @@ class UploadService:
         self.upload_path = settings.UPLOAD_PATH
         os.makedirs(self.upload_path, exist_ok=True)
 
-    async def process_upload(self, file_data: bytes, filename: str, content_type: str, user_id: str) -> Dict:
+    async def process_upload(
+        self,
+        file_data: bytes,
+        filename: str,
+        content_type: str,
+        user_id: str
+    ) -> Dict:
         """ファイルアップロード処理"""
         # ファイルID生成
         file_id = str(uuid.uuid4())

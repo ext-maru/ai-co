@@ -37,6 +37,7 @@ class SecureTaskExecutor:
     """
 
     def __init__(self, config: Dict = None):
+        """初期化メソッド"""
         self.config = config or {}
         self.logger = get_logger("security_module")
 
@@ -429,6 +430,7 @@ class SecurityModule:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = get_logger("security_module")
         self.executor = SecureTaskExecutor()
         self.sanitizer = InputSanitizer()

@@ -178,7 +178,8 @@ async def main():
     for worker_id in monitor.get_tracked_workers():
         state = monitor.get_worker_state(worker_id)
         logger.info(
-            f"  - {worker_id}: {state.status.value} (failures: {state.consecutive_failures}, recoveries: {state.recovery_attempts})"
+            f"  - {worker_id}: {state.status.value} (failures: {state.consecutive_failures}, " \
+                "recoveries: {state.recovery_attempts})"
         )
 
     # Show recovery events

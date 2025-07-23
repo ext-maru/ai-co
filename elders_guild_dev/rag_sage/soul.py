@@ -144,7 +144,9 @@ class RAGSageSoul(BaseSoul):
             conn.execute('CREATE INDEX IF NOT EXISTS idx_documents_content ON documents(content)')
             conn.execute('CREATE INDEX IF NOT EXISTS idx_documents_category ON documents(category)')
             conn.execute('CREATE INDEX IF NOT EXISTS idx_documents_source ON documents(source)')
-            conn.execute('CREATE INDEX IF NOT EXISTS idx_documents_indexed_at ON documents(indexed_at)')
+            conn.execute('CREATE INDEX IF NOT EXISTS idx_documents_indexed_at ON documents(indexed_at)' \
+                'CREATE INDEX IF NOT EXISTS idx_documents_indexed_at ON documents(indexed_at)' \
+                'CREATE INDEX IF NOT EXISTS idx_documents_indexed_at ON documents(indexed_at)')
             
             conn.commit()
         finally:
@@ -819,9 +821,16 @@ class RAGSageSoul(BaseSoul):
             formatted_results = []
             for i, result in enumerate(ranked_results[:limit]):
                 formatted_result = {
-                    "document_id": result.get("id", f"doc_{hashlib.md5(str(i).encode()).hexdigest()[:8]}"),
+                    "document_id": result.get(
+                        "id",
+                        f"doc_{hashlib.md5(str(i).encode()).hexdigest()[:8]}"
+                    ),
                     "title": result.get("title", "Untitled Document"),
-                    "content": result.get("content", "")[:500] + "..." if len(result.get("content", "")) > 500 else result.get("content", ""),
+                    "content": result.get(
+                        "content",
+                        "")[:500] + "..." if len(result.get("content", "")) > 500 else result.get("content",
+                        ""
+                    ),
                     "relevance_score": result.get("relevance_score", 0.7 + (i * 0.05)),
                     "metadata": {
                         "source": result.get("source", "internal"),
@@ -844,7 +853,8 @@ class RAGSageSoul(BaseSoul):
             self.logger.error(f"Document search failed: {e}")
             return []
     
-    async def analyze_documents(self, documents: List[Dict], analysis_type: str = "similarity") -> Dict[str, Any]:
+    async def analyze_documents(self, documents: List[Dict], analysis_type: str = "similarity" \
+        "similarity") -> Dict[str, Any]:
         """ドキュメント分析機能 - RAG Sage核心機能"""
         try:
             from uuid import uuid4
@@ -883,7 +893,11 @@ class RAGSageSoul(BaseSoul):
                 analysis_results.update({
                     "topics": topics,
                     "topic_distribution": topic_distribution,
-                    "dominant_topics": sorted(topics, key=lambda x: x.get("weight", 0), reverse=True)[:5],
+                    "dominant_topics": sorted(
+                        topics,
+                        key=lambda x: x.get("weight", 0),
+                        reverse=True
+                    )[:5],
                     "document_topic_mapping": self._map_documents_to_topics(documents, topics)
                 })
                 
@@ -910,7 +924,9 @@ class RAGSageSoul(BaseSoul):
             # 分析統計更新
             await self._update_analysis_statistics(analysis_type, len(documents))
             
-            self.logger.info(f"Document analysis completed: {analysis_type} on {len(documents)} documents")
+            self.logger.info(f"Document analysis completed: {analysis_type} on {len(documents)} documents" \
+                "Document analysis completed: {analysis_type} on {len(documents)} documents" \
+                "Document analysis completed: {analysis_type} on {len(documents)} documents")
             return analysis_results
             
         except Exception as e:
@@ -1014,7 +1030,11 @@ class RAGSageSoul(BaseSoul):
             matrix.append(row)
         return matrix
     
-    def _cluster_similar_documents(self, documents: List[Dict], similarity_matrix: List[List[float]]) -> List[List[int]]:
+    def _cluster_similar_documents(
+        self,
+        documents: List[Dict],
+        similarity_matrix: List[List[float]]
+    ) -> List[List[int]]:
         """類似文書クラスタリング"""
         clusters = []
         for i in range(len(documents)):
@@ -1032,7 +1052,11 @@ class RAGSageSoul(BaseSoul):
         count = len(matrix) * len(matrix[0])
         return total / count if count > 0 else 0.0
     
-    def _find_most_similar_pair(self, documents: List[Dict], matrix: List[List[float]]) -> Dict[str, Any]:
+    def _find_most_similar_pair(
+        self,
+        documents: List[Dict],
+        matrix: List[List[float]]
+    ) -> Dict[str, Any]:
         """最類似ペア発見"""
         max_sim = 0
         pair = [0, 1]
@@ -1061,14 +1085,22 @@ class RAGSageSoul(BaseSoul):
         ]
         return topics
     
-    def _analyze_topic_distribution(self, documents: List[Dict], topics: List[Dict]) -> Dict[str, float]:
+    def _analyze_topic_distribution(
+        self,
+        documents: List[Dict],
+        topics: List[Dict]
+    ) -> Dict[str, float]:
         """トピック分布分析"""
         distribution = {}
         for topic in topics:
             distribution[topic["name"]] = topic["weight"]
         return distribution
     
-    def _map_documents_to_topics(self, documents: List[Dict], topics: List[Dict]) -> Dict[int, List[int]]:
+    def _map_documents_to_topics(
+        self,
+        documents: List[Dict],
+        topics: List[Dict]
+    ) -> Dict[int, List[int]]:
         """文書-トピックマッピング"""
         mapping = {}
         for i, doc in enumerate(documents):

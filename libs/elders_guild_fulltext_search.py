@@ -447,7 +447,10 @@ class FullTextSearchEngine:
                 SELECT id, title, content, content_type, embedding, metadata, category, tags,
                        quality_score, parent_id, created_at, updated_at, created_by, updated_by,
                        version, access_count, last_accessed,
-                       ts_rank(search_vector, plainto_tsquery('{search_config}', $1)) as relevance_score
+                       ts_rank(
+                           search_vector,
+                           plainto_tsquery('{search_config}', $1)
+                       ) as relevance_score
                 FROM knowledge_sage.knowledge_entities
                 WHERE search_vector @@ plainto_tsquery('{search_config}', $1)
                 AND ts_rank(search_vector, plainto_tsquery('{search_config}', $1)) > $2
@@ -722,7 +725,11 @@ class FullTextSearchEngine:
                        version, access_count, last_accessed,
                        ({combined_score}) as advanced_score
                 FROM knowledge_sage.knowledge_entities
-                WHERE search_vector @@ (plainto_tsquery('japanese', $1) || plainto_tsquery('english', $1))
+                WHERE search_vector @@ (plainto_tsquery(
+                    'japanese',
+                    $1) || plainto_tsquery('english',
+                    $1)
+                )
                 AND ({combined_score}) > $2
                 ORDER BY advanced_score DESC
                 LIMIT $3
@@ -806,7 +813,8 @@ class FullTextSearchEngine:
 
             # 検索ベクターが設定されている文書数
             indexed_docs = await conn.fetchval(
-                "SELECT COUNT(*) FROM knowledge_sage.knowledge_entities WHERE search_vector IS NOT NULL"
+                "SELECT COUNT(*) FROM knowledge_sage.knowledge_entities WHERE search_vector " \
+                    "IS NOT NULL"
             )
             stats["indexed_documents"] = indexed_docs
 
@@ -874,7 +882,8 @@ async def main():
 
         for result in results:
             print(
-                f"- {result.knowledge.title} (score: {result.relevance_score:.3f}, lang: {result.language.value})"
+                f"- {result.knowledge.title} (score: {result.relevance_score:.3f}, lang: " \
+                    "{result.language.value})"
             )
 
         # 英語検索

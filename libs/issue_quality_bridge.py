@@ -224,7 +224,9 @@ This issue addresses critical security concerns under Elder Guild Security Proto
         issue_id = f"QI_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{issue_category}_{hash(file_path) % 10000}"
         
         # テンプレート選択
-        template = self.issue_templates.get(issue_category, self.issue_templates['quality_improvement'])
+        template = self.issue_templates.get(issue_category, self.issue_templates['quality_improvement' \
+            'quality_improvement' \
+            'quality_improvement'])
         
         # Issue内容生成
         issue_content = await self._generate_issue_content(
@@ -322,7 +324,10 @@ This issue addresses critical security concerns under Elder Guild Security Proto
             suggestions_list=suggestions_list,
             security_details=security_details,
             violation_details=violation_details,
-            implementation_steps='\n'.join([f"{i+1}. {step}" for i, step in enumerate(implementation_plan)]),
+            implementation_steps='\n'.join(
+                [f"{i+1}. {step}" for i,
+                step in enumerate(implementation_plan)]
+            ),
             acceptance_criteria='\n'.join([f"- [ ] {criteria}" for criteria in acceptance_criteria]),
             max_risk_level=max([risk.get('risk_level', 0) for risk in bug_risks], default=0),
             vulnerability_count=len(bug_risks),
@@ -406,7 +411,11 @@ This issue addresses critical security concerns under Elder Guild Security Proto
         
     def _format_violation_details(self, issues: List[Dict]) -> str:
         """違反詳細フォーマット"""
-        violations = [i for i in issues if 'TODO' in i.get('description', '') or 'FIXME' in i.get('description', '')]
+        violations = [i for i in issues if 'TODO' in i.get(
+            'description',
+            '') or 'FIXME' in i.get('description',
+            ''
+        )]
         
         if not violations:
             return "No Iron Will violations detected."
@@ -414,7 +423,11 @@ This issue addresses critical security concerns under Elder Guild Security Proto
         formatted_violations = []
         for i, violation in enumerate(violations, 1):
             formatted_violations.append(
-                f"{i}. **Line {violation.get('line_start', 'Unknown')}**: {violation.get('code_snippet', 'Unknown code')}\n"
+                f"{i}. **Line {violation.get(
+                    'line_start',
+                    'Unknown')}**: {violation.get('code_snippet',
+                    'Unknown code'
+                )}\n"
                 f"   - Issue: {violation.get('description', 'No description')}"
             )
             
@@ -571,16 +584,22 @@ This issue addresses critical security concerns under Elder Guild Security Proto
         # 品質改善の価値
         if quality_score < 70:
             values.append("**Direct Value:** Reduces technical debt and maintenance costs")
-            values.append("**Strategic Value:** Improves code maintainability and developer productivity")
+            values.append("**Strategic Value:** Improves code maintainability and developer productivity" \
+                "**Strategic Value:** Improves code maintainability and developer productivity" \
+                "**Strategic Value:** Improves code maintainability and developer productivity")
             
         # Iron Will遵守の価値
         if not iron_will_compliance:
-            values.append("**Policy Value:** Ensures compliance with Elder Guild Iron Will standards")
+            values.append("**Policy Value:** Ensures compliance with Elder Guild Iron Will standards" \
+                "**Policy Value:** Ensures compliance with Elder Guild Iron Will standards" \
+                "**Policy Value:** Ensures compliance with Elder Guild Iron Will standards")
             values.append("**Long-term Value:** Prevents accumulation of technical debt")
             
         # セキュリティの価値
         if security_risks > 0:
-            values.append("**Security Value:** Reduces risk of security breaches and vulnerabilities")
+            values.append("**Security Value:** Reduces risk of security breaches and vulnerabilities" \
+                "**Security Value:** Reduces risk of security breaches and vulnerabilities" \
+                "**Security Value:** Reduces risk of security breaches and vulnerabilities")
             values.append("**Compliance Value:** Meets security and regulatory requirements")
             
         # 一般的な価値
@@ -824,7 +843,10 @@ priority: {issue.priority}
         return github_issue
 
 # 便利関数
-async def generate_quality_issues_for_project(project_paths: List[str], output_dir: str = None) -> List[QualityIssue]:
+async def generate_quality_issues_for_project(
+    project_paths: List[str],
+    output_dir: str = None
+) -> List[QualityIssue]:
     """プロジェクト全体の品質Issue生成"""
     bridge = IssueQualityBridge()
     await bridge.initialize()

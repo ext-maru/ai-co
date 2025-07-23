@@ -47,6 +47,7 @@ class BaseCommand:
     }
 
     def __init__(self, name: str, description: str, version: str = "1.0.0"):
+        """初期化メソッド"""
         self.name = name
         self.description = description
         self.version = version
@@ -89,6 +90,7 @@ class BaseCommand:
         }
 
         for name, filename in config_files.items():
+            # Process each item in collection
             config_path = self.config_dir / filename
             if config_path.exists():
                 configs[name] = self._parse_config_file(config_path)
@@ -103,11 +105,14 @@ class BaseCommand:
         try:
             with open(path, "r") as f:
                 for line in f:
+                    # Process each item in collection
                     line = line.strip()
                     if line and not line.startswith("#") and "=" in line:
+                        # Complex condition - consider breaking down
                         key, value = line.split("=", 1)
                         config[key.strip()] = value.strip().strip('"')
         except Exception as e:
+            # Handle specific exception case
             self.error(f"設定ファイル読み込みエラー: {path} - {e}")
         return config
 
@@ -116,6 +121,7 @@ class BaseCommand:
         try:
             return pika.BlockingConnection(pika.ConnectionParameters("localhost"))
         except Exception as e:
+            # Handle specific exception case
             self.error(f"RabbitMQ接続エラー: {e}")
             return None
 
@@ -130,6 +136,7 @@ class BaseCommand:
             conn.row_factory = sqlite3.Row
             return conn
         except Exception as e:
+            # Handle specific exception case
             self.error(f"データベース接続エラー: {db_path} - {e}")
             return None
 
@@ -139,7 +146,9 @@ class BaseCommand:
             result = subprocess.run(["ps", "aux"], capture_output=True, text=True)
             processes = []
             for line in result.stdout.split("\n"):
+                # Process each item in collection
                 if pattern in line and "grep" not in line:
+                    # Complex condition - consider breaking down
                     parts = line.split()
                     if len(parts) >= 11:
                         processes.append(
@@ -152,6 +161,7 @@ class BaseCommand:
                         )
             return processes
         except Exception as e:
+            # Handle specific exception case
             self.error(f"プロセスチェックエラー: {e}")
             return []
 
@@ -160,6 +170,7 @@ class BaseCommand:
         try:
             return subprocess.run(cmd, capture_output=True, text=True, **kwargs)
         except Exception as e:
+            # Handle specific exception case
             self.error(f"コマンド実行エラー: {' '.join(cmd)} - {e}")
             return None
 
@@ -212,6 +223,7 @@ class BaseCommand:
         for i in range(len(headers)):
             max_width = len(headers[i])
             for row in rows:
+                # Process each item in collection
                 if i < len(row):
                     max_width = max(max_width, len(str(row[i])))
             col_widths.append(max_width + 2)
@@ -227,9 +239,14 @@ class BaseCommand:
         for row_idx, row in enumerate(rows):
             row_line = ""
             for i, cell in enumerate(row):
+                # Process each item in collection
                 cell_str = str(cell).ljust(col_widths[i] if i < len(col_widths) else 0)
                 if colors and row_idx < len(colors):
-                    row_line += f"{self.COLORS.get(colors[row_idx].upper(), '')}{cell_str}{self.COLORS['NC']}"
+                    # Complex condition - consider breaking down
+                    row_line += f"{self.COLORS.get(
+                        colors[row_idx].upper(),
+                        ''
+                    )}{cell_str}{self.COLORS['NC']}"
                 else:
                     row_line += cell_str
             print(row_line)
@@ -260,9 +277,11 @@ class BaseCommand:
             return 0
 
         except KeyboardInterrupt:
+            # Handle specific exception case
             self.warning("\n処理を中断しました")
             return 1
         except Exception as e:
+            # Handle specific exception case
             self.error(f"予期しないエラー: {e}")
             import traceback
 

@@ -158,7 +158,14 @@ class PatternLearningEngine:
                 categorized_imports["logging_imports"].append(import_stmt)
             elif import_stmt.startswith("from libs.") or import_stmt.startswith("from workers."):
                 categorized_imports["local_imports"].append(import_stmt)
-            elif any(lib in import_stmt for lib in ["os", "sys", "json", "re", "pathlib", "datetime"]):
+            elif any(
+                lib in import_stmt for lib in ["os",
+                "sys",
+                "json",
+                "re",
+                "pathlib",
+                "datetime"]
+            ):
                 categorized_imports["standard_library"].append(import_stmt)
             else:
                 categorized_imports["third_party"].append(import_stmt)
@@ -183,7 +190,10 @@ class PatternLearningEngine:
                 "specific_count": sum(1 for exc, _ in common_exceptions if exc != "Exception"),
                 "general_count": error_counter.get("Exception", 0)
             },
-            "recommended_pattern": "specific_exceptions" if error_counter.get("Exception", 0) < len(errors) / 2 else "general_exceptions"
+            "recommended_pattern": "specific_exceptions" if error_counter.get(
+                "Exception",
+                0) < len(errors
+            ) / 2 else "general_exceptions"
         }
         
         self.learned_patterns["error_handling"] = error_patterns

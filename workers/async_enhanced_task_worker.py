@@ -52,6 +52,7 @@ try:
 
     ELDER_SYSTEM_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logger = get_logger("async_enhanced_task_worker")
     logger.warning(f"Elder system not available: {e}")
     ELDER_SYSTEM_AVAILABLE = False
@@ -149,11 +150,13 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
 
         if template_dir.exists():
             for template_file in template_dir.glob("*.txt"):
+                # Process each item in collection
                 template_name = template_file.stem
                 try:
                     with open(template_file, "r", encoding="utf-8") as f:
                         templates[template_name] = f.read()
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.error(
                         "Failed to load template", template=template_name, error=str(e)
                     )
@@ -167,6 +170,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
             await self.rag_integration.initialize()
             self.logger.info("RAG Grimoire Integration initialized successfully")
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to initialize RAG Grimoire Integration: {e}")
             self.rag_integration = None
 
@@ -198,6 +202,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
             self.logger.info("Elder systems initialized successfully")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to initialize Elder systems: {e}")
             self.elder_systems_initialized = False
 
@@ -295,7 +300,9 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
         }
 
         for template_name, keywords in keyword_mapping.items():
+            # Process each item in collection
             if any(keyword in prompt for keyword in keywords):
+                # Complex condition - consider breaking down
                 if template_name in self.templates:
                     return template_name
 
@@ -309,6 +316,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
         # RAG検索 using unified grimoire integration
         rag_context = ""
         if self.config.get("enable_rag", True) and self.rag_integration:
+            # Complex condition - consider breaking down
             try:
                 search_query = str(sanitized_prompt)[:200]
                 rag_results = await self.rag_integration.search_unified(
@@ -320,9 +328,11 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
                 if rag_results:
                     rag_context = "\n\n## 関連知識:\n"
                     for result in rag_results:
+                        # Process each item in collection
                         rag_context += f"- {result['content'][:200]}...\n"
                         rag_context += f"  Source: {result['source']} (Score: {result['similarity_score']:.2f})\n"
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning("RAG search failed", error=str(e))
 
         # テンプレート適用
@@ -340,6 +350,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
         try:
             final_prompt = template.format(**variables)
         except KeyError as e:
+            # Handle specific exception case
             self.logger.warning(
                 "Template variable missing", template=template_name, missing_var=str(e)
             )
@@ -408,6 +419,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
         ]
 
         for watch_dir in watch_dirs:
+            # Process each item in collection
             if watch_dir.exists():
                 observer.schedule(handler, str(watch_dir), recursive=True)
 
@@ -447,9 +459,11 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
 
         # Store knowledge in RAG integration if available
         if self.rag_integration and result.get("created_files"):
+            # Complex condition - consider breaking down
             try:
                 await self._store_task_knowledge(result)
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Failed to store task knowledge: {e}")
 
     async def _handle_failure(
@@ -507,11 +521,13 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
             self.logger.info(f"Task knowledge stored for task {task_id}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error storing task knowledge: {e}")
 
     async def _report_to_task_sage(self, message: str, event_type: str):
         """Report to Task Sage in Elder Tree hierarchy"""
         if not self.elder_systems_initialized or not self.four_sages:
+            # Complex condition - consider breaking down
             return
 
         try:
@@ -527,6 +543,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
                 sage_type=SageType.TASK, message=elder_message
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to report to Task Sage: {e}")
 
     async def _report_task_completion(self, task_id: str, result: Dict[str, Any]):
@@ -562,6 +579,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
         }
 
         if self.elder_systems_initialized and self.four_sages:
+            # Complex condition - consider breaking down
             try:
                 sage_status = await self.four_sages.get_sage_status(SageType.TASK)
                 status["sage_connection"] = sage_status
@@ -577,6 +595,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
                 await self.rag_integration.cleanup()
                 self.logger.info("RAG Grimoire Integration cleaned up")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Error during RAG cleanup: {e}")
 
         # Cleanup Elder systems
@@ -591,6 +610,7 @@ class AsyncEnhancedTaskWorker(AsyncBaseWorkerV2):
                     await self.elder_council.cleanup()
                 self.logger.info("Elder systems cleaned up")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Error during Elder cleanup: {e}")
 
         # Call parent cleanup if available

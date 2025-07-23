@@ -119,6 +119,7 @@ class HealthChecker:
     """ヘルスチェッカー基底クラス"""
 
     def __init__(self, component_name: str, component_type: ComponentType):
+        """初期化メソッド"""
         self.component_name = component_name
         self.component_type = component_type
         self.logger = logging.getLogger(f"health_checker.{component_name}")
@@ -132,6 +133,7 @@ class SystemHealthChecker(HealthChecker):
     """システムヘルスチェッカー"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("system", ComponentType.SYSTEM)
         self.thresholds = {
             "cpu_warning": 80.0,
@@ -213,6 +215,7 @@ class SystemHealthChecker(HealthChecker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             execution_time = (time.time() - start_time) * 1000
             return HealthCheckResult(
                 component_name=self.component_name,
@@ -229,6 +232,7 @@ class ServiceHealthChecker(HealthChecker):
     """サービスヘルスチェッカー"""
 
     def __init__(self, service_name: str, service_obj: Any):
+        """初期化メソッド"""
         super().__init__(service_name, ComponentType.SERVICE)
         self.service_ref = weakref.ref(service_obj) if service_obj else None
         self.response_time_threshold = 5000  # 5秒
@@ -292,6 +296,7 @@ class ServiceHealthChecker(HealthChecker):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             execution_time = (time.time() - start_time) * 1000
             return HealthCheckResult(
                 component_name=self.component_name,
@@ -308,6 +313,7 @@ class NetworkHealthChecker(HealthChecker):
     """ネットワークヘルスチェッカー"""
 
     def __init__(self, target_hosts: List[Tuple[str, int]] = None):
+        """初期化メソッド"""
         super().__init__("network", ComponentType.NETWORK)
         self.target_hosts = target_hosts or [
             ("8.8.8.8", 53),  # Google DNS
@@ -324,6 +330,7 @@ class NetworkHealthChecker(HealthChecker):
             connectivity_results = []
 
             for host, port in self.target_hosts:
+                # Process each item in collection
                 conn_start = time.time()
                 try:
                     # 非同期ソケット接続テスト
@@ -344,6 +351,7 @@ class NetworkHealthChecker(HealthChecker):
                     )
 
                 except Exception as e:
+                    # Handle specific exception case
                     connectivity_results.append(
                         {
                             "host": host,
@@ -398,6 +406,7 @@ class NetworkHealthChecker(HealthChecker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             execution_time = (time.time() - start_time) * 1000
             return HealthCheckResult(
                 component_name=self.component_name,
@@ -414,6 +423,7 @@ class FilesystemHealthChecker(HealthChecker):
     """ファイルシステムヘルスチェッカー"""
 
     def __init__(self, paths_to_check: List[str] = None):
+        """初期化メソッド"""
         super().__init__("filesystem", ComponentType.FILESYSTEM)
         self.paths_to_check = paths_to_check or ["/", "/tmp", "/var/log"]
         self.write_test_enabled = True
@@ -426,6 +436,7 @@ class FilesystemHealthChecker(HealthChecker):
             filesystem_results = []
 
             for path in self.paths_to_check:
+                # Process each item in collection
                 path_result = {"path": path}
 
                 try:
@@ -471,6 +482,7 @@ class FilesystemHealthChecker(HealthChecker):
                         path_result["exists"] = False
 
                 except Exception as e:
+                    # Handle specific exception case
                     path_result["error"] = str(e)
 
                 filesystem_results.append(path_result)
@@ -480,6 +492,7 @@ class FilesystemHealthChecker(HealthChecker):
             warnings = []
 
             for result in filesystem_results:
+                # Process each item in collection
                 if not result.get("exists", False):
                     critical_issues.append(f"Path {result['path']} does not exist")
                 elif not result.get("readable", False):
@@ -528,6 +541,7 @@ class FilesystemHealthChecker(HealthChecker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             execution_time = (time.time() - start_time) * 1000
             return HealthCheckResult(
                 component_name=self.component_name,
@@ -544,6 +558,7 @@ class SelfHealingEngine:
     """自己修復エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger("self_healing_engine")
         self.healing_handlers: Dict[HealingAction, Callable] = {}
         self.healing_history: List[HealingActionResult] = []
@@ -623,6 +638,7 @@ class SelfHealingEngine:
             return healing_result
 
         except Exception as e:
+            # Handle specific exception case
             execution_time = (time.time() - start_time) * 1000
 
             healing_result = HealingActionResult(
@@ -654,7 +670,9 @@ class SelfHealingEngine:
                     cutoff_time = time.time() - (24 * 3600)
 
                     for root, dirs, files in os.walk(temp_dir):
+                        # Process each item in collection
                         for file in files:
+                            # Process each item in collection
                             file_path = os.path.join(root, file)
                             try:
                                 stat = os.stat(file_path)
@@ -674,6 +692,7 @@ class SelfHealingEngine:
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "message": f"Cleanup failed: {str(e)}"}
 
     async def _clear_cache(
@@ -691,6 +710,7 @@ class SelfHealingEngine:
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "message": f"Cache clear failed: {str(e)}"}
 
     async def _restart_connection(
@@ -710,6 +730,7 @@ class SelfHealingEngine:
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "message": f"Connection restart failed: {str(e)}"}
 
     async def _graceful_degrade(
@@ -734,6 +755,7 @@ class SelfHealingEngine:
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "message": f"Graceful degradation failed: {str(e)}",
@@ -795,6 +817,7 @@ class ElderIntegrationHealthChecker(
     """
 
     def __init__(self):
+        """初期化メソッド"""
         # EldersServiceLegacy初期化 (MONITORING域)
         super().__init__("elder_integration_health_checker")
 
@@ -891,6 +914,7 @@ class ElderIntegrationHealthChecker(
                 current_time = time.time()
 
                 for checker_name, checker in self.health_checkers.items():
+                    # Process each item in collection
                     interval = self.check_intervals.get(checker_name, 60)
                     last_check = last_check_times.get(checker_name, 0)
 
@@ -902,6 +926,7 @@ class ElderIntegrationHealthChecker(
                             last_check_times[checker_name] = current_time
 
                         except Exception as e:
+                            # Handle specific exception case
                             self.logger.error(
                                 f"Health check failed for {checker_name}: {str(e)}"
                             )
@@ -910,6 +935,7 @@ class ElderIntegrationHealthChecker(
                 await asyncio.sleep(10)
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Health monitoring loop error: {str(e)}")
                 await asyncio.sleep(60)  # エラー時は1分待機
 
@@ -1056,6 +1082,7 @@ class ElderIntegrationHealthChecker(
                 return {"error": f"Unknown request type: {request_type}"}
 
         except Exception as e:
+            # Handle specific exception case
             await log_error(f"Health check request processing failed: {str(e)}")
             return {"error": str(e)}
 
@@ -1066,6 +1093,7 @@ class ElderIntegrationHealthChecker(
         component_name = request.get("component")
 
         if component_name and component_name in self.health_checkers:
+            # Complex condition - consider breaking down
             # 特定コンポーネントのヘルスチェック
             checker = self.health_checkers[component_name]
             result = await checker.check_health()
@@ -1084,6 +1112,7 @@ class ElderIntegrationHealthChecker(
             results = {}
 
             for name, checker in self.health_checkers.items():
+                # Process each item in collection
                 try:
                     result = await checker.check_health()
                     results[name] = {
@@ -1093,6 +1122,7 @@ class ElderIntegrationHealthChecker(
                         "timestamp": result.timestamp.isoformat(),
                     }
                 except Exception as e:
+                    # Handle specific exception case
                     results[name] = {
                         "status": "error",
                         "error": str(e),
@@ -1143,8 +1173,10 @@ class ElderIntegrationHealthChecker(
             }
 
         except ValueError:
+            # Handle specific exception case
             return {"error": f"Unknown healing action: {action_name}"}
         except Exception as e:
+            # Handle specific exception case
             return {"error": f"Healing action failed: {str(e)}"}
 
     async def _handle_statistics_request(
@@ -1179,10 +1211,12 @@ class ElderIntegrationHealthChecker(
         recent_by_component = defaultdict(list)
 
         for result in recent_results:
+            # Process each item in collection
             recent_by_component[result.component_name].append(result)
 
         component_health = {}
         for component, results in recent_by_component.items():
+            # Process each item in collection
             healthy_count = len(
                 [r for r in results if r.status == HealthStatus.HEALTHY]
             )
@@ -1248,6 +1282,7 @@ class ElderIntegrationHealthChecker(
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Health check failed: {str(e)}")
             return {"success": False, "status": "error", "error": str(e)}
 
@@ -1260,6 +1295,7 @@ class ElderIntegrationHealthChecker(
             try:
                 await self.monitoring_task
             except asyncio.CancelledError:
+                # Handle specific exception case
                 pass
 
         await log_info("Elder Integration Health Checker shutting down")

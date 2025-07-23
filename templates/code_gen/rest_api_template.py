@@ -11,6 +11,7 @@ class RestApiTemplate:
     """REST APIエンドポイントテンプレート"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.template_info = {
             "name": "REST API Endpoint",
             "version": "1.0.0",

@@ -30,6 +30,7 @@ class AIStatsCommand(BaseCommand):
     """統計情報表示コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="stats", description="Elders Guild システムの統計情報を表示")
 
     def setup_arguments(self):
@@ -76,6 +77,7 @@ class AIStatsCommand(BaseCommand):
             return CommandResult(success=True)
 
         except Exception as e:
+            # Handle specific exception case
             if args.debug:
                 import traceback
 
@@ -142,6 +144,7 @@ class AIStatsCommand(BaseCommand):
                 }
 
         except Exception as e:
+            # Handle specific exception case
             console.print(f"[yellow]⚠️  統計取得エラー: {str(e)}[/yellow]")
             return {
                 "total_tasks": 0,

@@ -52,6 +52,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logger.warning(f"Elder Tree components not available: {e}")
     ELDER_TREE_AVAILABLE = False
     FourSagesIntegration = None
@@ -501,6 +502,7 @@ class AuthenticationWorker(ElderAwareBaseWorker):
         mfa_token = auth_data.get("mfa_token")
 
         if not user_id or not mfa_token:
+            # Complex condition - consider breaking down
             raise ValueError("User ID and MFA token required")
 
         # ユーザー取得
@@ -827,6 +829,7 @@ class AuthenticationWorker(ElderAwareBaseWorker):
                 self.logger.warning("Elder Council Summoner not available")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to initialize Elder systems: {e}")
             self.elder_tree = None
             self.four_sages = None
@@ -860,6 +863,7 @@ class AuthenticationWorker(ElderAwareBaseWorker):
             self.logger.info(f"Reported {event_type} to Incident Sage")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report to Incident Sage: {e}")
 
     async def _store_security_pattern(
@@ -888,6 +892,7 @@ class AuthenticationWorker(ElderAwareBaseWorker):
             self.logger.info(f"Stored security pattern: {pattern_type}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to store security pattern: {e}")
 
     async def _analyze_auth_patterns(
@@ -927,6 +932,7 @@ class AuthenticationWorker(ElderAwareBaseWorker):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to analyze auth patterns: {e}")
             return {"error": str(e)}
 
@@ -967,6 +973,7 @@ class AuthenticationWorker(ElderAwareBaseWorker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to escalate critical breach: {e}")
 
     async def _request_security_council(self, issue_type: str, details: Dict[str, Any]):
@@ -993,6 +1000,7 @@ class AuthenticationWorker(ElderAwareBaseWorker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to request security council: {e}")
 
     async def _get_elder_security_status(self) -> Dict[str, Any]:
@@ -1016,6 +1024,7 @@ class AuthenticationWorker(ElderAwareBaseWorker):
                 sage_analysis = await self._request_sage_security_analysis()
                 status["sage_security_analysis"] = sage_analysis
             except Exception as e:
+                # Handle specific exception case
                 status["sage_security_analysis"] = {"error": str(e)}
 
         return status
@@ -1205,6 +1214,7 @@ class AuthenticationWorker(ElderAwareBaseWorker):
         # グランドエルダーは無効化不可
         user = self.auth_provider.users.get(user_id)
         if user and user.elder_role == ElderRole.GRAND_ELDER:
+            # Complex condition - consider breaking down
             raise PermissionError("Cannot deactivate Grand Elder")
 
         # 無効化実行

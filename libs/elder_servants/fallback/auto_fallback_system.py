@@ -186,8 +186,8 @@ class AutoFallbackSystem:
             self._record_failure(failure_context)
 
             # サーキットブレーカーチェック
-            if self._is_circuit_open(failure_context.failed_component):
-                return await self._handle_circuit_breaker_open(failure_context)
+            if self._is_circuit_open(failure_context.failed_component, encoding="utf-8"):
+                return await self._handle_circuit_breaker_open(failure_context, encoding="utf-8")
 
             # フォールバック計画生成
             fallback_plan = await self._generate_fallback_plan(failure_context)
@@ -204,6 +204,7 @@ class AutoFallbackSystem:
             return result
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.critical(f"Fallback system failure: {str(e)}")
             # 緊急フォールバック
             return await self._emergency_fallback(failure_context, str(e))
@@ -351,7 +352,7 @@ class AutoFallbackSystem:
             for servant in domain_servants:
                 if servant.name != failed_servant_name:
                     # 健全性チェック
-                    if not self._is_circuit_open(servant.name):
+                    if not self._is_circuit_open(servant.name, encoding="utf-8"):
                         alternatives.append(
                             {
                                 "type": "alternative_servant",
@@ -370,13 +371,15 @@ class AutoFallbackSystem:
             if failed_servant:
                 capabilities = failed_servant.get_capabilities()
                 for capability in capabilities:
+                    # Process each item in collection
                     cross_domain_servants = self.registry.find_by_capability(capability)
 
                     for servant in cross_domain_servants:
+                        # Process each item in collection
                         if (
                             servant.name != failed_servant_name
                             and servant.domain != failed_servant.domain
-                            and not self._is_circuit_open(servant.name)
+                            and not self._is_circuit_open(servant.name, encoding="utf-8")
                         ):
                             alternatives.append(
                                 {
@@ -394,6 +397,7 @@ class AutoFallbackSystem:
                             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error finding alternative servants: {str(e)}")
 
         return alternatives
@@ -533,6 +537,7 @@ class AutoFallbackSystem:
             return fallback_result
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Fallback execution failed: {str(e)}")
             return FallbackResult(
                 fallback_id=plan.plan_id,
@@ -586,6 +591,7 @@ class AutoFallbackSystem:
             return {"success": False, "error": "Component not available for retry"}
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def _execute_alternative_servant(self, plan: FallbackPlan) -> Dict[str, Any]:
@@ -604,11 +610,13 @@ class AutoFallbackSystem:
         )
 
         for alternative in sorted_alternatives:
+            # Process each item in collection
             try:
                 servant_name = alternative["servant_name"]
                 servant = self.registry.get_servant(servant_name)
 
-                if servant and not self._is_circuit_open(servant_name):
+                if servant and not self._is_circuit_open(servant_name, encoding="utf-8"):
+                    # Complex condition - consider breaking down
                     # 元のリクエスト実行
                     original_req = plan.failure_context.original_request
                     request = ServantRequest(
@@ -639,6 +647,7 @@ class AutoFallbackSystem:
                         )
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(
                     f"Alternative servant {alternative.get('servant_name')} error: {str(e)}"
                 )
@@ -680,6 +689,7 @@ class AutoFallbackSystem:
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": f"Degraded mode execution failed: {str(e)}",
@@ -691,6 +701,7 @@ class AutoFallbackSystem:
         quality_steps = self.fallback_config["quality_degradation_steps"]
 
         for quality_level in quality_steps:
+            # Process each item in collection
             try:
                 self.logger.info(
                     f"Attempting graceful degradation with quality level {quality_level}"
@@ -718,6 +729,7 @@ class AutoFallbackSystem:
                 }
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(
                     f"Graceful degradation at level {quality_level} failed: {str(e)}"
                 )
@@ -769,6 +781,7 @@ class AutoFallbackSystem:
             return {"success": False, "error": "No alternative route available"}
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": f"Circuit breaker execution failed: {str(e)}",
@@ -793,6 +806,7 @@ class AutoFallbackSystem:
             return {"success": True, "emergency_result": essential_result}
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": f"Emergency bypass failed: {str(e)}"}
 
     # === サーキットブレーカー管理 ===
@@ -921,7 +935,8 @@ class AutoFallbackSystem:
 
         if final_status == "success":
             lessons.append(
-                f"Strategy {plan.strategy.value} successful for {plan.failure_context.failure_type.value}"
+                f"Strategy {plan.strategy.value} successful for {plan.failure_context." \
+                    "failure_type.value}"
             )
 
             if result.get("alternative_used"):
@@ -930,7 +945,8 @@ class AutoFallbackSystem:
                 )
         else:
             lessons.append(
-                f"Strategy {plan.strategy.value} failed for {plan.failure_context.failure_type.value}"
+                f"Strategy {plan.strategy.value} failed for {plan.failure_context." \
+                    "failure_type.value}"
             )
 
             if "error" in result:
@@ -1055,9 +1071,11 @@ class AutoFallbackSystem:
         }
 
         for callback in self.alert_callbacks:
+            # Process each item in collection
             try:
                 await callback(alert_data)
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Alert callback failed: {str(e)}")
 
     def add_alert_callback(self, callback: Callable):

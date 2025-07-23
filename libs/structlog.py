@@ -10,6 +10,7 @@ except ImportError:
     # フォールバック実装
     class StructlogFallback:
         def __init__(self):
+            """初期化メソッド"""
             self.logger = logging.getLogger(__name__)
         
         def info(self, msg, **kwargs):

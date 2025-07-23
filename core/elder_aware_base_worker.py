@@ -79,6 +79,7 @@ class ElderAuditLogger:
     """Elder階層専用監査ログ"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger("elder_audit")
         self.events = []
 
@@ -151,6 +152,7 @@ class ElderAuthIntegration:
     """Elder階層認証統合システム"""
 
     def __init__(self, auth_provider: UnifiedAuthProvider):
+        """初期化メソッド"""
         self.auth_provider = auth_provider
         self.audit_logger = ElderAuditLogger()
 
@@ -260,6 +262,7 @@ class ElderAwareBaseWorker(BaseWorker):
     """
 
     def __init__(
+        """初期化メソッド"""
         self,
         auth_provider: Optional[UnifiedAuthProvider] = None,
         required_elder_role: ElderRole = ElderRole.SERVANT,

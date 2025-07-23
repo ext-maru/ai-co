@@ -14,6 +14,7 @@ class AIConvInfoCommand(BaseCommand):
     """会話詳細"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-conv-info", description="会話詳細", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -25,6 +26,7 @@ class AIConvInfoCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIConvInfoCommand()
     sys.exit(command.run())
 

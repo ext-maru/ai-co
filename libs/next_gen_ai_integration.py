@@ -348,7 +348,8 @@ class NextGenAIIntegration:
             coordination_bonus = self._calculate_coordination_bonus(available_sages)
 
             print(
-                f"   📋 {stage.capitalize()}: {task.progress:.0f}% (協調ボーナス: +{coordination_bonus:.1f}%)"
+                f"   📋 {stage.capitalize()}: {task.progress:.0f}% (協調ボーナス: " \
+                    "+{coordination_bonus:.1f}%)"
             )
             time.sleep(0.5)  # 実行シミュレーション
 

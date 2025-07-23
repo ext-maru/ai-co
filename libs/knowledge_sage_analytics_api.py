@@ -523,7 +523,11 @@ class KnowledgeSageAnalyticsAPI(KnowledgeSageDocGenerator):
                 relevance_score += doc.get("quality_score", 0.5) * 0.3
                 
                 if relevance_score > 0:
-                    reason = self._generate_recommendation_reason(doc, user_interests, recent_queries)
+                    reason = self._generate_recommendation_reason(
+                        doc,
+                        user_interests,
+                        recent_queries
+                    )
                     scored_docs.append({
                         "id": doc["id"],
                         "title": doc.get("title", "Untitled"),
@@ -1198,7 +1202,11 @@ class KnowledgeSageAnalyticsAPI(KnowledgeSageDocGenerator):
         except:
             return datetime.now()
 
-    async def _calculate_growth_trends(self, documents: List[Dict], time_period: str) -> Dict[str, Any]:
+    async def _calculate_growth_trends(
+        self,
+        documents: List[Dict],
+        time_period: str
+    ) -> Dict[str, Any]:
         """Calculate knowledge growth trends"""
         # Simple growth trend calculation
         return {
@@ -1262,7 +1270,12 @@ class KnowledgeSageAnalyticsAPI(KnowledgeSageDocGenerator):
         
         return recommendations
 
-    def _generate_recommendation_reason(self, doc: Dict, interests: List[str], queries: List[str]) -> str:
+    def _generate_recommendation_reason(
+        self,
+        doc: Dict,
+        interests: List[str],
+        queries: List[str]
+    ) -> str:
         """Generate reason for recommendation"""
         reasons = []
         

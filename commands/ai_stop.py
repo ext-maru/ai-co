@@ -9,7 +9,9 @@ from commands.base_command import BaseCommand
 
 
 class StopCommand(BaseCommand):
+    # Main class implementation
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="stop", description="Elders Guild システムを停止します")
 
     def setup_arguments(self):
@@ -24,6 +26,7 @@ class StopCommand(BaseCommand):
         """tmuxセッション停止"""
         result = self.run_command(["tmux", "has-session", "-t", "elders_guild"])
         if result and result.returncode == 0:
+            # Complex condition - consider breaking down
             self.info("tmuxセッション停止中...")
             self.run_command(["tmux", "kill-session", "-t", "elders_guild"])
             self.success("tmuxセッション停止完了")
@@ -50,12 +53,14 @@ class StopCommand(BaseCommand):
                     self.success(f"Command Executor停止 (PID: {pid})")
                     stopped = True
             except Exception as e:
+                # Handle specific exception case
                 self.warning(f"PIDファイルからの停止失敗: {e}")
 
         # プロセスを直接検索
         if not stopped:
             processes = self.check_process("command_executor_worker")
             for proc in processes:
+                # Process each item in collection
                 self.run_command(["kill", proc["pid"]])
                 self.success(f"Command Executor停止 (PID: {proc['pid']})")
 
@@ -71,8 +76,10 @@ class StopCommand(BaseCommand):
 
         killed_count = 0
         for pattern in patterns:
+            # Process each item in collection
             processes = self.check_process(pattern)
             for proc in processes:
+                # Process each item in collection
                 self.run_command(["kill", "-9", proc["pid"]])
                 killed_count += 1
 
@@ -102,12 +109,14 @@ class StopCommand(BaseCommand):
 
             cleared = 0
             for queue in queues:
+                # Process each item in collection
                 try:
                     method = channel.queue_purge(queue)
                     if method.message_count > 0:
                         self.info(f"{queue}: {method.message_count} メッセージ削除")
                         cleared += method.message_count
                 except Exception:
+                    # Handle specific exception case
                     pass
 
             if cleared > 0:
@@ -117,6 +126,7 @@ class StopCommand(BaseCommand):
 
             conn.close()
         except Exception as e:
+            # Handle specific exception case
             self.error(f"キュークリアエラー: {e}")
 
     def show_status_before_stop(self):
@@ -127,6 +137,7 @@ class StopCommand(BaseCommand):
         all_processes = []
         patterns = ["task_worker", "pm_worker", "result_worker", "dialog"]
         for pattern in patterns:
+            # Process each item in collection
             all_processes.extend(self.check_process(pattern))
 
         if all_processes:
@@ -139,6 +150,7 @@ class StopCommand(BaseCommand):
                 channel = conn.channel()
                 queue_info = []
                 for queue in ["task_queue", "result_queue", "pm_queue"]:
+                    # Process each item in collection
                     try:
                         method = channel.queue_declare(queue=queue, passive=True)
                         if method.method.message_count > 0:

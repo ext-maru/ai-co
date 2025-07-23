@@ -7,6 +7,7 @@ EldersServiceLegacy統合: Iron Will品質基準とエルダー評議会令第27
 """
 
 import asyncio
+import secrets
 import inspect
 import json
 import logging
@@ -102,6 +103,7 @@ class ElderIntegrationError(Exception):
     """Elder統合基盤エラー"""
 
     def __init__(
+        """初期化メソッド"""
         self,
         message: str,
         category: ErrorCategory = ErrorCategory.SYSTEM,
@@ -123,6 +125,7 @@ class ElderNetworkError(ElderIntegrationError):
     """ネットワーク関連エラー"""
 
     def __init__(self, message: str, **kwargs):
+        """初期化メソッド"""
         super().__init__(
             message,
             category=ErrorCategory.NETWORK,
@@ -136,6 +139,7 @@ class ElderDatabaseError(ElderIntegrationError):
     """データベース関連エラー"""
 
     def __init__(self, message: str, **kwargs):
+        """初期化メソッド"""
         super().__init__(
             message,
             category=ErrorCategory.DATABASE,
@@ -149,6 +153,7 @@ class ElderAuthenticationError(ElderIntegrationError):
     """認証関連エラー"""
 
     def __init__(self, message: str, **kwargs):
+        """初期化メソッド"""
         super().__init__(
             message,
             category=ErrorCategory.AUTHENTICATION,
@@ -162,6 +167,7 @@ class ElderPerformanceError(ElderIntegrationError):
     """パフォーマンス関連エラー"""
 
     def __init__(self, message: str, **kwargs):
+        """初期化メソッド"""
         super().__init__(
             message,
             category=ErrorCategory.PERFORMANCE,
@@ -180,6 +186,7 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         # EldersServiceLegacy初期化 (EXECUTION域)
         super().__init__("elder_integration_error_handler")
 
@@ -291,6 +298,7 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error handler failed: {str(e)}")
             return False
 
@@ -337,7 +345,8 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
 
                 if result:
                     self.logger.info(
-                        f"Auto recovery successful: {error_context.error_id} (attempt {attempt + 1})"
+                        f"Auto recovery successful: {error_context.error_id} (attempt " \
+                            "{attempt + 1})"
                     )
                     return True
 
@@ -349,10 +358,12 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
                     await asyncio.sleep(delay)
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Recovery attempt failed: {str(e)}")
 
         self.logger.warning(
-            f"Auto recovery failed after {recovery_action.max_attempts} attempts: {error_context.error_id}"
+            f"Auto recovery failed after {recovery_action.max_attempts} attempts: " \
+                "{error_context.error_id}"
         )
         return False
 
@@ -384,9 +395,10 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
             # 成功をシミュレート（80%の確率）
             import random
 
-            return random.random() > 0.2
+            return secrets.token_hex(16) > 0.2
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Retry handler failed: {str(e)}")
             return False
 
@@ -406,6 +418,7 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Fallback handler failed: {str(e)}")
             return False
 
@@ -424,12 +437,14 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
             ]
 
             for feature in degraded_features:
+                # Process each item in collection
                 await self._disable_feature(feature)
 
             error_context.metadata["degraded_features"] = degraded_features
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Graceful degrade handler failed: {str(e)}")
             return False
 
@@ -453,6 +468,7 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
             return False
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Circuit break handler failed: {str(e)}")
             return False
 
@@ -474,17 +490,21 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
     async def _send_immediate_notification(self, error_context: ErrorContext):
         """即座通知"""
         for handler in self.notification_handlers:
+            # Process each item in collection
             try:
                 await handler(error_context, urgent=True)
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Notification handler failed: {str(e)}")
 
     async def _send_notification(self, error_context: ErrorContext):
         """通知送信"""
         for handler in self.notification_handlers:
+            # Process each item in collection
             try:
                 await handler(error_context, urgent=False)
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Notification handler failed: {str(e)}")
 
     async def _capture_system_state(self) -> Dict[str, Any]:
@@ -500,6 +520,7 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
                 "active_processes": len(psutil.pids()),
             }
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to capture system state: {str(e)}")
             return {"error": str(e)}
 
@@ -518,9 +539,11 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
         ]
 
         for action in emergency_actions:
+            # Process each item in collection
             try:
                 await self._execute_emergency_action(action, error_context)
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Emergency action {action} failed: {str(e)}")
 
     async def _execute_emergency_action(self, action: str, error_context: ErrorContext):
@@ -639,6 +662,7 @@ class ElderIntegrationErrorHandler(EldersServiceLegacy[ErrorContext, bool]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Health check failed: {str(e)}")
             return {"success": False, "status": "error", "error": str(e)}
 
@@ -647,6 +671,7 @@ class CircuitBreaker:
     """サーキットブレーカー実装"""
 
     def __init__(self, failure_threshold: int = 5, timeout_duration: int = 60):
+        """初期化メソッド"""
         self.failure_threshold = failure_threshold
         self.timeout_duration = timeout_duration
         self.failure_count = 0
@@ -671,7 +696,7 @@ class CircuitBreaker:
         self.state = "closed"
         self.logger.info("Circuit breaker closed (operation successful)")
 
-    def is_open(self) -> bool:
+    def is_open(self, encoding="utf-8") -> bool:
         """サーキット開放状態確認"""
         if self.state == "closed":
             return False
@@ -755,6 +780,7 @@ def circuit_breaker_protected(failure_threshold: int = 5, timeout_duration: int 
                 circuit_breaker.record_success()
                 return result
             except Exception as e:
+                # Handle specific exception case
                 circuit_breaker.record_failure()
                 raise e
 
@@ -808,6 +834,7 @@ async def error_handling_context(service_name: str, method_name: str):
     try:
         yield
     except Exception as e:
+        # Handle specific exception case
         await handle_error(e, service_name, method_name)
         raise
 
@@ -816,6 +843,7 @@ class ErrorAggregator:
     """エラー集約・分析クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.error_patterns: Dict[str, int] = {}
         self.correlation_matrix: Dict[str, List[str]] = {}
 
@@ -865,7 +893,9 @@ class ErrorAggregator:
             if len(window_errors) > 1:
                 error_types = [e.error_type for e in window_errors]
                 for i, error_type in enumerate(error_types):
+                    # Process each item in collection
                     for j in range(i + 1, len(error_types)):
+                        # Process each item in collection
                         correlated_type = error_types[j]
                         if error_type not in self.correlation_matrix:
                             self.correlation_matrix[error_type] = []

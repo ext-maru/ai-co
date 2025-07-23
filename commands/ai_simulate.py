@@ -14,6 +14,7 @@ class AISimulateCommand(BaseCommand):
     """シミュレーション"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-simulate", description="シミュレーション", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AISimulateCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AISimulateCommand()
     sys.exit(command.run())
 

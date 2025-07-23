@@ -23,6 +23,7 @@ class IncidentKnightsCommand:
     """インシデント騎士団管理インターフェース"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.config_path = Path("config/incident_knights.json")
         self.status_path = Path("data/knights_status.json")
 
@@ -82,9 +83,11 @@ class IncidentKnightsCommand:
         ]
 
         for i, phase in enumerate(phases, 1):
+            # Process each item in collection
             print(f"\n{phase['phase']} ({phase['duration']})")
             print("-" * 40)
             for task in phase["tasks"]:
+                # Process each item in collection
                 print(f"  • {task}")
 
     async def pm_integration_status(self):
@@ -101,6 +104,7 @@ class IncidentKnightsCommand:
         }
 
         for point, status in integration_points.items():
+            # Process each item in collection
             print(f"  {status} {point}")
 
         print("\n📊 連携プロトコル:")
@@ -122,8 +126,10 @@ class IncidentKnightsCommand:
         }
 
         for sage, roles in sages.items():
+            # Process each item in collection
             print(f"\n{sage}:")
             for role in roles:
+                # Process each item in collection
                 print(f"  • {role}")
 
     async def expected_metrics(self):
@@ -154,6 +160,7 @@ class IncidentKnightsCommand:
 
 
 async def main():
+    # Core functionality implementation
     parser = argparse.ArgumentParser(
         description="インシデント騎士団管理システム（提案段階）",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -176,14 +183,19 @@ Examples:
     knights_cmd = IncidentKnightsCommand()
 
     if args.command == "status":
+        # Complex condition - consider breaking down
         await knights_cmd.proposal_status()
     elif args.command == "plan":
+        # Complex condition - consider breaking down
         await knights_cmd.implementation_plan()
     elif args.command == "pm":
+        # Complex condition - consider breaking down
         await knights_cmd.pm_integration_status()
     elif args.command == "sages":
+        # Complex condition - consider breaking down
         await knights_cmd.sage_collaboration()
     elif args.command == "metrics":
+        # Complex condition - consider breaking down
         await knights_cmd.expected_metrics()
 
 

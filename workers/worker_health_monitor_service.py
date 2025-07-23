@@ -40,6 +40,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     import logging
 
     logging.warning(f"Elder Tree integration not available: {e}")
@@ -120,6 +121,7 @@ class WorkerHealthMonitorService:
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder Tree initialization failed: {e}")
             self.elder_integration_enabled = False
 
@@ -161,6 +163,7 @@ class WorkerHealthMonitorService:
                 time.sleep(self.check_interval)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} Service error: {str(e)}")
             self._send_critical_alert("Service error", str(e))
         finally:
@@ -190,6 +193,7 @@ class WorkerHealthMonitorService:
                 self.logger.debug(f"{EMOJI['success']} System health OK")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} Health check failed: {str(e)}")
 
     def _perform_performance_analysis(self):
@@ -214,6 +218,7 @@ class WorkerHealthMonitorService:
                 self._handle_performance_issues(bottlenecks)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} Performance analysis failed: {str(e)}")
 
     def _perform_scaling_analysis(self):
@@ -256,10 +261,12 @@ class WorkerHealthMonitorService:
                 self._handle_scaling_recommendations(recommendations)
 
         except AttributeError as e:
+            # Handle specific exception case
             self.logger.warning(
                 f"{EMOJI['warning']} Scaling feature not available: {e}"
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} Scaling analysis failed: {str(e)}")
 
     def _handle_unhealthy_system(self, metrics: Dict[str, Any]):
@@ -267,6 +274,7 @@ class WorkerHealthMonitorService:
         unhealthy_workers = []
 
         for worker_name, worker_metrics in metrics.get("workers", {}).items():
+            # Process each item in collection
             if worker_metrics.get("status") != "running":
                 unhealthy_workers.append(worker_name)
 
@@ -330,6 +338,7 @@ class WorkerHealthMonitorService:
     def _handle_performance_issues(self, bottlenecks: Dict[str, Any]):
         """パフォーマンス問題の対処"""
         for worker_name, issue in bottlenecks.items():
+            # Process each item in collection
             issue_type = issue.get("type")
 
             if issue_type == "queue_overload":
@@ -342,6 +351,7 @@ class WorkerHealthMonitorService:
     def _handle_scaling_recommendations(self, recommendations: Dict[str, Any]):
         """スケーリング推奨の対処"""
         for worker_name, rec in recommendations.items():
+            # Process each item in collection
             action = rec.get("action")
             current_count = rec.get("current_count", 1)
             recommended_count = rec.get("recommended_count", 1)
@@ -385,6 +395,7 @@ class WorkerHealthMonitorService:
 
         recent_metrics = []
         for metric in reversed(self.metrics_history):
+            # Process each item in collection
             timestamp_str = metric.get("timestamp")
             if timestamp_str:
                 try:
@@ -392,6 +403,7 @@ class WorkerHealthMonitorService:
                     if timestamp >= cutoff_time:
                         recent_metrics.append(metric)
                 except ValueError:
+                    # Handle specific exception case
                     continue
 
         return recent_metrics
@@ -401,8 +413,10 @@ class WorkerHealthMonitorService:
         worker_metrics = {}
 
         for metrics in metrics_list:
+            # Process each item in collection
             workers = metrics.get("workers", {})
             for worker_name, worker_data in workers.items():
+                # Process each item in collection
                 if worker_name not in worker_metrics:
                     worker_metrics[worker_name] = {
                         "queue_length": 50,  # 実際にはキューから取得
@@ -415,30 +429,40 @@ class WorkerHealthMonitorService:
     def _send_critical_alert(self, title: str, message: str):
         """クリティカルアラート送信"""
         try:
-            alert_message = f"🚨 CRITICAL: {title}\n{message}\nTimestamp: {datetime.now().isoformat()}"
+            alert_message = f"🚨 CRITICAL: {title}\n{message}\nTimestamp: {datetime.now().isoformat()}" \
+                "🚨 CRITICAL: {title}\n{message}\nTimestamp: {datetime.now().isoformat()}" \
+                "🚨 CRITICAL: {title}\n{message}\nTimestamp: {datetime.now().isoformat()}"
             self.slack.send_message(alert_message)
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to send critical alert: {e}")
 
     def _send_performance_alert(self, worker_name: str, message: str):
         """パフォーマンスアラート送信"""
         try:
-            alert_message = f"⚠️ PERFORMANCE: {worker_name}\n{message}\nTimestamp: {datetime.now().isoformat()}"
+            alert_message = f"⚠️ PERFORMANCE: {worker_name}\n{message}\nTimestamp: {datetime.now()." \
+                "⚠️ PERFORMANCE: {worker_name}\n{message}\nTimestamp: {datetime.now()." \
+                "isoformat()}"
             self.slack.send_message(alert_message)
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to send performance alert: {e}")
 
     def _send_scaling_alert(self, worker_name: str, message: str):
         """スケーリングアラート送信"""
         try:
-            alert_message = f"📈 SCALING: {worker_name}\n{message}\nTimestamp: {datetime.now().isoformat()}"
+            alert_message = f"📈 SCALING: {worker_name}\n{message}\nTimestamp: {datetime.now().isoformat()}" \
+                "📈 SCALING: {worker_name}\n{message}\nTimestamp: {datetime.now().isoformat()}" \
+                "📈 SCALING: {worker_name}\n{message}\nTimestamp: {datetime.now().isoformat()}"
             self.slack.send_message(alert_message)
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to send scaling alert: {e}")
 
     def _report_elder_status_to_incident_sage(self, status_data: Dict[str, Any]):
         """Incident Sageにステータス報告"""
         if not self.elder_integration_enabled or not self.four_sages:
+            # Complex condition - consider breaking down
             return
 
         try:
@@ -465,11 +489,13 @@ class WorkerHealthMonitorService:
             self.logger.info("📊 Health status reported to Incident Sage")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Incident Sage status reporting failed: {e}")
 
     def _report_to_knowledge_sage(self, report_data: Dict[str, Any]):
         """Knowledge Sageに知識報告"""
         if not self.elder_integration_enabled or not self.four_sages:
+            # Complex condition - consider breaking down
             return
 
         try:
@@ -489,16 +515,19 @@ class WorkerHealthMonitorService:
                     self.four_sages.report_to_knowledge_sage(knowledge_report)
                 )
             except RuntimeError:
+                # Handle specific exception case
                 asyncio.run(self.four_sages.report_to_knowledge_sage(knowledge_report))
 
             self.logger.info("📚 Knowledge reported to Knowledge Sage")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Knowledge Sage reporting failed: {e}")
 
     def _escalate_to_incident_sage(self, incident_data: Dict[str, Any]):
         """Incident Sageに重大問題をエスカレーション"""
         if not self.elder_integration_enabled or not self.four_sages:
+            # Complex condition - consider breaking down
             return
 
         try:
@@ -519,11 +548,13 @@ class WorkerHealthMonitorService:
                     self.four_sages.escalate_to_incident_sage(incident_report)
                 )
             except RuntimeError:
+                # Handle specific exception case
                 asyncio.run(self.four_sages.escalate_to_incident_sage(incident_report))
 
             self.logger.warning("🚨 Critical incident escalated to Incident Sage")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Incident Sage escalation failed: {e}")
 
 

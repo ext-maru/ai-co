@@ -354,7 +354,7 @@ class ElderTreeEnforcement:
             else:
                 # 猶予期間内 - 再警告
                 self.logger.warning(
-                    f"⏰ Grace period remaining for {process_name}: {self.enforcement_config['grace_period'] - elapsed:.0f}s"
+                    f"Grace period remaining for {process_name}: {self.enforcement_config['grace_period'] - elapsed:.0f}s"
                 )
         else:
             # 初回警告

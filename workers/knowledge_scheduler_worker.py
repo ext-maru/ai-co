@@ -40,6 +40,7 @@ class KnowledgeSchedulerWorker:
         now = datetime.now()
 
         for task in self.scheduled_tasks:
+            # Process each item in collection
             if now >= task["next_run"]:
                 logger.info(f"⚙️ Processing scheduled task: {task['type']}")
                 processed.append(task)

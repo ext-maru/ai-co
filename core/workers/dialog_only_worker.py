@@ -31,6 +31,7 @@ logger = logging.getLogger("DialogOnly")
 
 class DialogOnlyWorker:
     def __init__(self, worker_id="dialog-only-1"):
+        """初期化メソッド"""
         self.worker_id = worker_id
         self.conversation_manager = ConversationManager()
         logger.info(f"{worker_id} 初期化")

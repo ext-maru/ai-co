@@ -261,7 +261,10 @@ class APIIntegrationKnight(IncidentKnight):
                         if "except" not in content or "APIError" not in content:
                             issues.append(
                                 Issue(
-                                    issue_id=f"worker_error_handling_{worker_file.replace('/', '_')}",
+                                    issue_id=f"worker_error_handling_{worker_file.replace(
+                                        '/',
+                                        '_'
+                                    )}",
                                     title=f"{worker_file}: API例外処理が不十分",
                                     description="API呼び出しに対する適切な例外処理が実装されていません",
                                     severity="medium",
@@ -554,7 +557,8 @@ CLAUDE_API_BASE_URL=https://api.anthropic.com/v1/messages
 
             if "ANTHROPIC_API_KEY" not in content:
                 content += "\n# Claude API Configuration\n"
-                content += "ANTHROPIC_API_KEY=sk-ant-api03-placeholder-key-please-replace-with-real-key\n"
+                content += "ANTHROPIC_API_KEY=sk-ant-api03-placeholder-key-please-replace-with-real-ke" \
+                    "y\n"
                 content += "CLAUDE_API_TIMEOUT=30\n"
                 content += "CLAUDE_API_RETRY_COUNT=3\n"
 

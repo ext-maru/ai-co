@@ -78,7 +78,10 @@ class ClaudeCommandWrapper:
             "total_commands": self.blocked_count + self.safe_count,
             "blocked_commands": self.blocked_count,
             "safe_commands": self.safe_count,
-            "block_rate": f"{(self.blocked_count / max(1, self.blocked_count + self.safe_count) * 100):.1f}%",
+            "block_rate": f"{(self.blocked_count / max(
+                1,
+                self.blocked_count + self.safe_count) * 100
+            ):.1f}%",
         }
 
 

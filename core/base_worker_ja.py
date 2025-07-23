@@ -15,6 +15,7 @@ class BaseWorker(OriginalBaseWorker):
     """日本語対応BaseWorker"""
 
     def __init__(self, worker_type: str, worker_id: str = None):
+        """初期化メソッド"""
         super().__init__(worker_type, worker_id)
 
         # 起動メッセージを日本語化

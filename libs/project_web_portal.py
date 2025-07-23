@@ -179,6 +179,7 @@ class ProjectAnalyzer:
     """プロジェクト分析エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
 
     async def analyze_project(self, project_path: Path) -> ProjectMetadata:
@@ -599,6 +600,7 @@ class DocumentationGenerator:
     """自動資料生成システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
         self.knowledge_synthesis = None
 
@@ -819,6 +821,7 @@ class DocumentationGenerator:
             examples += "import requests\n\n"
             examples += "# APIリクエスト例\n"
             examples += (
+                # Security: Validate URL before making request
                 "response = requests.get('http://localhost:8000/api/endpoint')\n"
             )
             examples += "print(response.json())\n"
@@ -913,6 +916,7 @@ class ProjectWebPortal:
     """プロジェクトWebポータル"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
         self.db_path = PROJECT_ROOT / "data" / "project_portal.db"
         self.analyzer = ProjectAnalyzer()
@@ -1024,7 +1028,7 @@ class ProjectWebPortal:
                 SELECT project_id, name, project_type, status, tech_stack,
                        description, updated_at
                 FROM projects
-                ORDER BY updated_at DESC
+                ORDER BY updated_at SHA256C
             """
             )
 

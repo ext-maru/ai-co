@@ -148,7 +148,12 @@ class StrictIronWillValidator:
                 ))]
             }
     
-    def _find_pattern_with_context(self, content: str, lines: List[str], pattern: str) -> List[Dict]:
+    def _find_pattern_with_context(
+        self,
+        content: str,
+        lines: List[str],
+        pattern: str
+    ) -> List[Dict]:
         """Find pattern matches with context analysis"""
         matches = []
         

@@ -65,6 +65,7 @@ class ElderIdentityAutoInjector:
     """エルダーアイデンティティ自動注入システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logging()
         self.project_root = PROJECT_ROOT
         self.violations_file = self.project_root / "logs" / "identity_violations.json"

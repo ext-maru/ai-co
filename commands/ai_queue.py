@@ -18,6 +18,7 @@ class AIQueueCommand(BaseCommand):
     """キュー状態確認コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-queue", description="キュー状態確認", version="1.0.0")
         self.console = Console()
 
@@ -45,6 +46,7 @@ class AIQueueCommand(BaseCommand):
 
             queue_info = {}
             for queue_name in queues:
+                # Process each item in collection
                 try:
                     method = channel.queue_declare(queue=queue_name, passive=True)
                     queue_info[queue_name] = {
@@ -52,6 +54,7 @@ class AIQueueCommand(BaseCommand):
                         "consumers": method.method.consumer_count,
                     }
                 except Exception:
+                    # Handle specific exception case
                     queue_info[queue_name] = {"messages": 0, "consumers": 0}
 
             connection.close()
@@ -70,6 +73,7 @@ class AIQueueCommand(BaseCommand):
             table.add_column("コンシューマー数", justify="right", style="green")
 
             for queue_name, info in queue_info.items():
+                # Process each item in collection
                 table.add_row(queue_name, str(info["messages"]), str(info["consumers"]))
 
             self.console.print(table)
@@ -86,10 +90,12 @@ class AIQueueCommand(BaseCommand):
             return CommandResult(success=True)
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"キュー情報の取得に失敗: {str(e)}")
 
 
 def main():
+    # Core functionality implementation
     command = AIQueueCommand()
     sys.exit(command.run())
 

@@ -14,6 +14,7 @@ class AIConvExportCommand(BaseCommand):
     """会話エクスポート"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-conv-export", description="会話エクスポート", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AIConvExportCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIConvExportCommand()
     sys.exit(command.run())
 

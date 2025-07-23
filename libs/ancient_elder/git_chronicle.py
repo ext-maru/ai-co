@@ -145,7 +145,10 @@ class GitBranchAnalyzer:
                 text=True
             )
             
-            local_branches = [b.strip().replace("* ", "") for b in local_result.stdout.split('\n') if b.strip()]
+            local_branches = [b.strip(
+                ).replace("* ",
+                "") for b in local_result.stdout.split('\n') if b.strip(
+            )]
             remote_branches = [b.strip() for b in remote_result.stdout.split('\n') if b.strip() and not b.startswith("origin/HEAD")]
             current_branch = current_result.stdout.strip()
             
@@ -352,7 +355,8 @@ class GitCommitAnalyzer:
                 r'^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .+$'
             ),
             "angular": re.compile(
-                r'^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .{1,50}$'
+                r'^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?: .' \
+                    '{1,50}$'
             ),
             "gitmoji": re.compile(r'^(:\w+:|[🎉✨🐛📝💄♻️⚡🔥💥🚀🔒➕➖📌👷📈🐧🍏🚩💚👌🔇🔊🔀💼🗃️🏷️🌱🚚📱💫🗑️♿💡🍻💬📄⚖️🩹🧐⛑️🙈📸⚗️🏁🥅🧱🧑‍💻])\s*'),
         }
@@ -468,7 +472,10 @@ class GitCommitAnalyzer:
             
         return {
             "matches": matches,
-            "best_match": max(matches.items(), key=lambda x: x[1])[0] if any(matches.values()) else None,
+            "best_match": max(
+                matches.items(),
+                key=lambda x: x[1])[0] if any(matches.values()
+            ) else None,
             "compliant": any(matches.values())
         }
         
@@ -509,7 +516,11 @@ class GitCommitAnalyzer:
             
         return max(score, 0.0)
         
-    def _evaluate_convention_compliance(self, commit_analysis: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def _evaluate_convention_compliance(
+        self,
+        commit_analysis: List[Dict[str,
+        Any]]
+    ) -> Dict[str, Any]:
         """規約遵守状況を評価"""
         total_commits = len(commit_analysis)
         if total_commits == 0:
@@ -532,10 +543,17 @@ class GitCommitAnalyzer:
             "compliant_commits": compliant_commits,
             "total_commits": total_commits,
             "convention_rates": convention_rates,
-            "recommended_convention": max(convention_rates.items(), key=lambda x: x[1])[0] if convention_rates else None
+            "recommended_convention": max(
+                convention_rates.items(),
+                key=lambda x: x[1]
+            )[0] if convention_rates else None
         }
         
-    def _detect_commit_quality_violations(self, commit_analysis: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _detect_commit_quality_violations(
+        self,
+        commit_analysis: List[Dict[str,
+        Any]]
+    ) -> List[Dict[str, Any]]:
         """コミット品質違反を検出"""
         violations = []
         

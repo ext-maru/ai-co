@@ -224,7 +224,8 @@ class RAGSage(BaseSage):
                 "CREATE INDEX IF NOT EXISTS idx_search_hash ON search_queries(query_hash)"
             )
             conn.execute(
-                "CREATE UNIQUE INDEX IF NOT EXISTS idx_keyword_document_unique ON keywords(keyword, document_id, chunk_id)"
+                "CREATE UNIQUE INDEX IF NOT EXISTS idx_keyword_document_unique ON " \
+                    "keywords(keyword, document_id, chunk_id)"
             )
 
     async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
@@ -656,7 +657,10 @@ class RAGSage(BaseSage):
                     SELECT COUNT(DISTINCT k.document_id)
                     FROM keywords k
                     JOIN documents d ON k.document_id = d.id
-                    WHERE k.keyword = ?{where_clause.replace('WHERE', ' AND') if where_clause else ''}
+                    WHERE k.keyword = ?{where_clause.replace(
+                        'WHERE',
+                        ' AND'
+                    ) if where_clause else ''}
                 """,
                     keyword_params,
                 )
@@ -675,7 +679,10 @@ class RAGSage(BaseSage):
                     SELECT k.document_id, k.tf_score
                     FROM keywords k
                     JOIN documents d ON k.document_id = d.id
-                    WHERE k.keyword = ? AND k.chunk_id IS NULL{where_clause.replace('WHERE', ' AND') if where_clause else ''}
+                    WHERE k.keyword = ? AND k.chunk_id IS NULL{where_clause.replace(
+                        'WHERE',
+                        ' AND'
+                    ) if where_clause else ''}
                 """,
                     keyword_params,
                 )

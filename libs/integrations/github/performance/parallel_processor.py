@@ -67,7 +67,8 @@ class ParallelProcessor:
             "current_concurrency": 0
         }
         
-        logger.info(f"ParallelProcessor initialized: workers={max_workers}, threads={max_threads}, processes={max_processes}")
+        logger.info(f"ParallelProcessor initialized: workers={max_workers}, threads={max_threads}, " \
+            "processes={max_processes}")
     
     async def map_async(
         self,
@@ -115,7 +116,12 @@ class ParallelProcessor:
                 # 進捗通知
                 if progress_callback:
                     progress = (i + j + 1) / len(items) * 100
-                    await self._call_progress_callback(progress_callback, progress, i + j + 1, len(items))
+                    await self._call_progress_callback(
+                        progress_callback,
+                        progress,
+                        i + j + 1,
+                        len(items)
+                    )
         
         # 統計更新
         elapsed = time.time() - start_time
@@ -144,7 +150,13 @@ class ParallelProcessor:
             finally:
                 self.stats["current_concurrency"] -= 1
     
-    async def _call_progress_callback(self, callback: Callable, progress: float, current: int, total: int):
+    async def _call_progress_callback(
+        self,
+        callback: Callable,
+        progress: float,
+        current: int,
+        total: int
+    ):
         """進捗コールバック呼び出し"""
         try:
             if asyncio.iscoroutinefunction(callback):
@@ -351,7 +363,10 @@ class ParallelProcessor:
         return {
             **self.stats,
             "success_rate": f"{success_rate:.2f}%",
-            "throughput": f"{self.stats['completed_tasks'] / max(self.stats['total_time'], 1):.2f} tasks/sec"
+            "throughput": f"{self.stats['completed_tasks'] / max(
+                self.stats['total_time'],
+                1
+            ):.2f} tasks/sec"
         }
     
     def shutdown(self):

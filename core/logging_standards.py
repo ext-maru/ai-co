@@ -55,6 +55,7 @@ class ProfessionalLogger:
     """プロフェッショナルなログ出力を行うロガー"""
 
     def __init__(self, component_name: str):
+        """初期化メソッド"""
         self.component = component_name
         self.logger = logging.getLogger(component_name)
         self.start_times: Dict[str, datetime] = {}

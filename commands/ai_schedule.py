@@ -18,6 +18,7 @@ class AIScheduleCommand(BaseCommand):
     """スケジュール管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="schedule", description="Elders Guild スケジュール管理", version="1.0.0"
         )
@@ -47,6 +48,7 @@ class AIScheduleCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIScheduleCommand()
     return command.run()
 

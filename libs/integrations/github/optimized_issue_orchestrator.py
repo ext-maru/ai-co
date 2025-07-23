@@ -115,7 +115,11 @@ class OptimizedIssueOrchestrator:
             if github_token:
                 self.github = Github(github_token)
                 self.repo = self.github.get_repo(
-                    f"{os.getenv('GITHUB_REPO_OWNER', 'ext-maru')}/{os.getenv('GITHUB_REPO_NAME', 'ai-co')}"
+                    f"{os.getenv(
+                        'GITHUB_REPO_OWNER',
+                        'ext-maru')}/{os.getenv('GITHUB_REPO_NAME',
+                        'ai-co'
+                    )}"
                 )
             else:
                 logger.error("GITHUB_TOKEN環境変数が設定されていません")

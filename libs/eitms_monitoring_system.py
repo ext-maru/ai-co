@@ -201,7 +201,10 @@ class DataConsistencyChecker:
                 check_duration=(datetime.now(timezone.utc) - start_time).total_seconds()
             )
     
-    async def _check_task_status_consistency(self, tasks: List[UnifiedTask]) -> Tuple[List[Dict], int]:
+    async def _check_task_status_consistency(
+        self,
+        tasks: List[UnifiedTask]
+    ) -> Tuple[List[Dict], int]:
         """タスクステータス整合性チェック"""
         inconsistencies = []
         fixed = 0

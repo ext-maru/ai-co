@@ -1023,7 +1023,11 @@ class LearningOptimizer(BaseManager):
         for exec_data in executions:
             context = json.loads(exec_data["error_context"])
             # 簡易的なグループ化キー
-            group_key = f"{context.get('worker_type', 'unknown')}_{context.get('hour_of_day', 0) // 6}"
+            group_key = f"{context.get(
+                'worker_type',
+                'unknown')}_{context.get('hour_of_day',
+                0
+            ) // 6}"
             context_groups[group_key].append(
                 {
                     "context": context,

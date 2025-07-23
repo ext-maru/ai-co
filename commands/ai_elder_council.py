@@ -83,6 +83,7 @@ def start(daemon, interval):
                     )
 
         except KeyboardInterrupt:
+            # Handle specific exception case
             console.print("\n[red]Stopping monitoring...[/red]")
             summoner.stop_monitoring()
 
@@ -149,6 +150,7 @@ def status():
         }
 
         for level, count in status["urgency_distribution"].items():
+            # Process each item in collection
             if count > 0:
                 urgency_table.add_row(
                     level.upper(),
@@ -213,6 +215,7 @@ def triggers():
         console.print(triggers_table)
 
     except Exception as e:
+        # Handle specific exception case
         console.print(f"[red]Error reading triggers: {e}[/red]")
 
 
@@ -295,6 +298,7 @@ def show(council_id):
         )
 
     except Exception as e:
+        # Handle specific exception case
         console.print(f"[red]Error reading council request: {e}[/red]")
 
 
@@ -369,6 +373,7 @@ def metrics():
         ]
 
         for metric, value, status in metrics_info:
+            # Process each item in collection
             metrics_table.add_row(metric, value, status)
 
         console.print(metrics_table)
@@ -378,6 +383,7 @@ def metrics():
         console.print(f"[dim]Last updated: {timestamp}[/dim]")
 
     except Exception as e:
+        # Handle specific exception case
         console.print(f"[red]Error reading metrics: {e}[/red]")
 
 

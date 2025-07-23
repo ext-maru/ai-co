@@ -265,7 +265,10 @@ class EnhancedMergeSystemV2:
                             {"failed_files": resolution_result["failed_files"]}
                         )
             
-            return {"success": True, "conflicts_resolved": conflict_result.get("auto_resolvable_count", 0)}
+            return {"success": True, "conflicts_resolved": conflict_result.get(
+                "auto_resolvable_count",
+                0
+            )}
             
         except Exception as e:
             logger.error(f"Branch preparation failed: {e}")
@@ -382,7 +385,12 @@ class EnhancedMergeSystemV2:
             )
             return {"success": False, "error": str(e)}
     
-    async def _handle_pr_conflicts(self, pr_number: int, pr_result: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_pr_conflicts(
+        self,
+        pr_number: int,
+        pr_result: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """PRのコンフリクト処理"""
         try:
             await self.progress_reporter.update_progress(
@@ -394,7 +402,10 @@ class EnhancedMergeSystemV2:
             base_branch = pr_result["pull_request"]["base"]["ref"]
             
             # コンフリクト分析
-            conflict_result = self.conflict_analyzer.analyze_merge_conflicts(base_branch, head_branch)
+            conflict_result = self.conflict_analyzer.analyze_merge_conflicts(
+                base_branch,
+                head_branch
+            )
             
             if not conflict_result["conflicts_found"]:
                 return {"handled": False, "resolved": 0}
@@ -467,7 +478,10 @@ class EnhancedMergeSystemV2:
             await self._setup_monitoring_callbacks(pr_number, monitoring_config)
             
             # 監視開始
-            monitor_started = await self.state_monitor.start_monitoring(pr_number, monitoring_config)
+            monitor_started = await self.state_monitor.start_monitoring(
+                pr_number,
+                monitoring_config
+            )
             
             if not monitor_started:
                 await self.progress_reporter.complete_session(

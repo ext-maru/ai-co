@@ -35,7 +35,12 @@ class GitHubAPIBase:
         }
         self.logger = logger
         
-    def _make_request(self, method: str, endpoint: str, data: Optional[Dict] = None) -> Dict[str, Any]:
+    def _make_request(
+        self,
+        method: str,
+        endpoint: str,
+        data: Optional[Dict] = None
+    ) -> Dict[str, Any]:
         """
         GitHub APIリクエストを実行
         
@@ -78,7 +83,13 @@ class GitHubAPIBase:
         except Exception as e:
             return {"success": False, "error": f"Request failed: {str(e)}"}
     
-    def _make_api_request(self, endpoint: str, method: str, json_data: Optional[Dict] = None, params: Optional[Dict] = None) -> Dict[str, Any]:
+    def _make_api_request(
+        self,
+        endpoint: str,
+        method: str,
+        json_data: Optional[Dict] = None,
+        params: Optional[Dict] = None
+    ) -> Dict[str, Any]:
         """
         GitHub APIリクエスト（create_pull_request.py互換インターフェース）
         

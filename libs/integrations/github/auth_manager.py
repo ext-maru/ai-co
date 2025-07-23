@@ -89,7 +89,10 @@ class GitHubAuthManager:
                             )
 
                         logger.info(
-                            f"Authentication successful for user: {user_data.get('login', 'unknown')}"
+                            f"Authentication successful for user: {user_data.get(
+                                'login',
+                                'unknown'
+                            )}"
                         )
                         return True
                     else:

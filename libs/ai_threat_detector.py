@@ -11,6 +11,7 @@ from pathlib import Path
 
 class AIThreatDetector:
     def __init__(self):
+        """初期化メソッド"""
         self.threat_patterns = [
             r"rm\s+-rf\s+/",
             r"chmod\s+777",
@@ -112,6 +113,7 @@ class AIThreatDetector:
 # ゼロトラスト認証システム
 class ZeroTrustAuth:
     def __init__(self):
+        """初期化メソッド"""
         self.verified_entities = {}
         self.access_logs = []
 

@@ -86,7 +86,11 @@ class PgVectorKnowledgeReconstructor:
         path = Path(filepath)
         
         # 超高優先度 (1)
-        if any(x in str(path) for x in ['MASTER_KB', 'CLAUDE_ELDER_IDENTITY', 'ELDER_KNOWLEDGE_MINIMAL']):
+        if any(
+            x in str(path) for x in ['MASTER_KB',
+            'CLAUDE_ELDER_IDENTITY',
+            'ELDER_KNOWLEDGE_MINIMAL']
+        ):
             return 1
             
         # 高優先度 (2) - コア知識
@@ -160,7 +164,7 @@ class PgVectorKnowledgeReconstructor:
                 
             # メタデータ生成
             relative_path = os.path.relpath(filepath, KNOWLEDGE_BASE_PATH)
-            file_hash = hashlib.md5(content.encode()).hexdigest()
+            file_hash = hashlib.sha256(content.encode()).hexdigest()
             priority = self.get_file_priority(filepath)
             category = self.categorize_file(filepath)
             

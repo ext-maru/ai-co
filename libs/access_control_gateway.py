@@ -545,7 +545,8 @@ class AccessControlGateway:
                         if not met:
                             matched = False
                             reasons.append(
-                                f"Resource usage {cpu_usage:.2f} exceeds threshold {condition_value}"
+                                f"Resource usage {cpu_usage:.2f} exceeds threshold " \
+                                    "{condition_value}"
                             )
                     else:
                         conditions_met[condition_key] = True

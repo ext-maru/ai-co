@@ -16,6 +16,7 @@ class AIConfigEditCommand(BaseCommand):
     """設定編集"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-config-edit", description="設定編集", version="1.0.0")
 
     def add_arguments(self, parser: argparse.ArgumentParser):
@@ -91,10 +92,12 @@ class AIConfigEditCommand(BaseCommand):
             )
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"設定編集エラー: {str(e)}")
 
 
 def main():
+    # Core functionality implementation
     command = AIConfigEditCommand()
     sys.exit(command.run())
 

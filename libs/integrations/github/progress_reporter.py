@@ -103,7 +103,11 @@ class ProgressReporter:
         "next_retry": lambda d: f"次回試行: {d.get('next_retry', 0)}秒後",
         "ci_status": lambda d: f"CI状況: {d.get('ci_status', 'unknown')}",
         "merge_state": lambda d: f"マージ状態: {d.get('mergeable_state', 'unknown')}",
-        "ci_jobs_completed": lambda d: f"{d.get('ci_jobs_completed', 0)}/{d.get('ci_jobs_total', 0)} jobs完了"
+        "ci_jobs_completed": lambda d: f"{d.get(
+            'ci_jobs_completed',
+            0)}/{d.get('ci_jobs_total',
+            0
+        )} jobs完了"
     }
     
     def __init__(self, github_client):

@@ -100,6 +100,7 @@ class ProxyRequest(Generic[T]):
     """プロキシリクエスト"""
 
     def __init__(
+        """初期化メソッド"""
         self,
         request_id: str,
         target_service: str,
@@ -120,6 +121,7 @@ class ProxyResponse(Generic[T]):
     """プロキシレスポンス"""
 
     def __init__(
+        """初期化メソッド"""
         self,
         request_id: str,
         success: bool,
@@ -152,6 +154,7 @@ class LightweightElderProxy(EldersServiceLegacy[ProxyRequest, ProxyResponse]):
     """
 
     def __init__(self, config: ProxyConfig = None):
+        """初期化メソッド"""
         # EldersServiceLegacy初期化 (EXECUTION域)
         super().__init__("lightweight_elder_proxy")
 
@@ -240,6 +243,7 @@ class LightweightElderProxy(EldersServiceLegacy[ProxyRequest, ProxyResponse]):
             return response
 
         except Exception as e:
+            # Handle specific exception case
             processing_time = (time.time() - start_time) * 1000
             self.logger.error(
                 f"Proxy processing failed for {request.request_id}: {str(e)}"
@@ -417,6 +421,7 @@ class LightweightElderProxy(EldersServiceLegacy[ProxyRequest, ProxyResponse]):
 
         # 遅延ワーカーが未起動の場合は起動
         if self._lazy_worker_task is None or self._lazy_worker_task.done():
+            # Complex condition - consider breaking down
             self._lazy_worker_task = asyncio.create_task(self._lazy_worker())
 
         # 遅延実行指示レスポンス
@@ -443,12 +448,14 @@ class LightweightElderProxy(EldersServiceLegacy[ProxyRequest, ProxyResponse]):
                     response = await self._process_direct(request)
                     future.set_result(response)
                 except Exception as e:
+                    # Handle specific exception case
                     future.set_exception(e)
 
             except asyncio.TimeoutError:
                 # タイムアウト - ワーカー終了
                 break
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Lazy worker error: {str(e)}")
 
     def _generate_cache_key(self, request: ProxyRequest) -> str:
@@ -464,10 +471,13 @@ class LightweightElderProxy(EldersServiceLegacy[ProxyRequest, ProxyResponse]):
         """リソースタイプ決定"""
         # サービス・メソッド名からリソースタイプを推定
         if "cpu" in request.method.lower() or "compute" in request.method.lower():
+            # Complex condition - consider breaking down
             return ResourceType.CPU_BOUND
         elif "io" in request.method.lower() or "file" in request.method.lower():
+            # Complex condition - consider breaking down
             return ResourceType.IO_BOUND
         elif "network" in request.method.lower() or "api" in request.method.lower():
+            # Complex condition - consider breaking down
             return ResourceType.NETWORK_BOUND
         else:
             return ResourceType.IO_BOUND  # デフォルト
@@ -493,6 +503,7 @@ class LightweightElderProxy(EldersServiceLegacy[ProxyRequest, ProxyResponse]):
             return compressed
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Compression failed: {str(e)}")
             # 圧縮失敗時は元データをJSON化して返す
             return json.dumps(data, ensure_ascii=False).encode("utf-8")
@@ -634,6 +645,7 @@ class LightweightElderProxy(EldersServiceLegacy[ProxyRequest, ProxyResponse]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Health check failed: {str(e)}")
             return {"success": False, "status": "error", "error": str(e)}
 
@@ -641,10 +653,12 @@ class LightweightElderProxy(EldersServiceLegacy[ProxyRequest, ProxyResponse]):
         """リソースクリーンアップ"""
         # 遅延ワーカー停止
         if self._lazy_worker_task and not self._lazy_worker_task.done():
+            # Complex condition - consider breaking down
             self._lazy_worker_task.cancel()
             try:
                 await self._lazy_worker_task
             except asyncio.CancelledError:
+                # Handle specific exception case
                 pass
 
         # キャッシュクリア

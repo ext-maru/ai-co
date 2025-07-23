@@ -109,6 +109,7 @@ class FourOrganizationsCoordinator:
     """
 
     def __init__(self, registry: Optional[ServantRegistry] = None):
+        """初期化メソッド"""
         self.logger = logging.getLogger("elder_servants.coordination")
         self.registry = registry or get_registry()
 

@@ -31,6 +31,7 @@ try:
 except ImportError:
     # Mock Elder Council for testing
     class ElderCouncil:
+        # Main class implementation
         def __init__(self, prophecy_engine=None):
             pass
         async def emergency_report(self, title, message, priority):
@@ -39,6 +40,7 @@ except ImportError:
             print(f"[Elder Council] {level}: {title} - {message}")
 
     class ProphecyEngine:
+        # Main class implementation
         def __init__(self):
             pass
 
@@ -49,6 +51,7 @@ try:
 except ImportError:
     # Mock nWo Daily Council for testing
     class nWoDailyCouncil:
+        # Main class implementation
         def __init__(self):
             pass
         async def report_strategic_update(self, libraries):
@@ -67,6 +70,7 @@ class nWoLibraryUpdateCommand:
                 prophecy_engine = ProphecyEngine()
                 self.elder_council = ElderCouncil(prophecy_engine)
             except Exception:
+                # Handle specific exception case
                 self.elder_council = ElderCouncil()
         else:
             self.elder_council = ElderCouncil()
@@ -178,6 +182,7 @@ class nWoLibraryUpdateCommand:
         print(f"\n📋 アップデート計画: {len(plans)} 件")
 
         for plan in plans:
+            # Process each item in collection
             lib = plan.library
             print(f"""
 🔄 {lib.name}
@@ -264,6 +269,7 @@ async def main():
             await command.run_full_cycle()
 
     except Exception as e:
+        # Handle specific exception case
         print(f"❌ エラー: {e}")
         sys.exit(1)
 

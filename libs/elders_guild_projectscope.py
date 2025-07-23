@@ -219,12 +219,14 @@ class AICompanyProjectScope:
             <h2>🤖 Elders Guild Specific Analysis</h2>
 
             <h3>Workers ({len(analysis['ai_company']['workers'])})</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); " \
+                "gap: 10px;">
                 {"".join(f'<div class="tag">{w}</div>' for w in analysis['ai_company']['workers'].keys())}
             </div>
 
             <h3>Managers ({len(analysis['ai_company']['managers'])})</h3>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); " \
+                "gap: 10px;">
                 {"".join(f'<div class="tag">{m}</div>' for m in analysis['ai_company']['managers'].keys())}
             </div>
 

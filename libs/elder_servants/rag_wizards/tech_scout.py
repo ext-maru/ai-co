@@ -22,6 +22,7 @@ class TechScout(WizardServant):
     """技術調査専門サーバント"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             servant_id="W01", name="TechScout", specialization="technology_research"
         )
@@ -108,6 +109,7 @@ class TechScout(WizardServant):
 
             # 4賢者との協調（必要な場合）
             if task.get("consult_sages") and result.get("status") == "success":
+                # Complex condition - consider breaking down
                 sage_advice = await self.collaborate_with_sages(
                     {
                         "request_type": "technology_research",
@@ -120,6 +122,7 @@ class TechScout(WizardServant):
             return result
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "status": "error",
                 "error": str(e),
@@ -343,6 +346,7 @@ class TechScout(WizardServant):
             for criterion in comparison_criteria:
                 # スコア生成（実際の実装では詳細な比較を行う）
                 if solution == "FastAPI" and use_case == "REST API development":
+                    # Complex condition - consider breaking down
                     criterion_scores = {
                         "performance": 95,
                         "ease_of_use": 90,
@@ -444,6 +448,7 @@ class TechScout(WizardServant):
             base_scores = {"asyncio": 85, "threading": 80, "multiprocessing": 75}
 
         for tech in technologies:
+            # Process each item in collection
             benchmark_results[tech] = {
                 "score": base_scores.get(tech, 70),
                 "throughput": base_scores.get(tech, 70) * 100,  # req/s
@@ -589,6 +594,7 @@ class TechScout(WizardServant):
 
         complexity_score = 0
         for term, factor in complexity_factors.items():
+            # Process each item in collection
             if term in from_technology.lower():
                 complexity_score += factor
             if term in to_technology.lower():
@@ -667,7 +673,7 @@ class TechScout(WizardServant):
             json.dumps(task.get("criteria", []), sort_keys=True),
         ]
         key_string = "|".join(str(part) for part in key_parts)
-        return hashlib.md5(key_string.encode()).hexdigest()
+        return hashlib.sha256(key_string.encode()).hexdigest()
 
     def _get_from_cache(self, cache_key: str) -> Optional[Dict[str, Any]]:
         """キャッシュから取得"""
@@ -724,6 +730,7 @@ class TechScout(WizardServant):
                     with open(knowledge_file, 'r', encoding='utf-8') as f:
                         existing_knowledge = json.load(f)
                 except (json.JSONDecodeError, IOError):
+                    # Handle specific exception case
                     existing_knowledge = []
             
             # 重複チェック（同じトピックの場合は更新）
@@ -753,6 +760,7 @@ class TechScout(WizardServant):
             try:
                 await self._submit_to_knowledge_sage(knowledge_item)
             except Exception as sage_error:
+                # Handle specific exception case
                 self.logger.warning(f"Failed to submit to Knowledge Sage: {sage_error}")
                 # Knowledge Sage連携失敗してもローカル保存は成功とみなす
             
@@ -763,6 +771,7 @@ class TechScout(WizardServant):
             return True
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to store research knowledge: {e}")
             return False
     
@@ -806,6 +815,7 @@ class TechScout(WizardServant):
             self.logger.debug(f"Updated search index for: {topic_key}")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to update search index: {e}")
     
     async def search_knowledge(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
@@ -827,8 +837,10 @@ class TechScout(WizardServant):
                     if query_lower in searchable["topic"].lower():
                         relevance_score += 0.8
                     if any(query_lower in tech.lower() for tech in searchable["technologies"]):
+                        # Complex condition - consider breaking down
                         relevance_score += 0.6
                     if any(query_lower in tag.lower() for tag in searchable["tags"]):
+                        # Complex condition - consider breaking down
                         relevance_score += 0.4
                     if query_lower in searchable["summary"].lower():
                         relevance_score += 0.3
@@ -850,6 +862,7 @@ class TechScout(WizardServant):
             return results[:limit]
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Knowledge search failed: {e}")
             return []
     
@@ -867,6 +880,7 @@ class TechScout(WizardServant):
             query_lower = query.lower()
             
             for item in knowledge_base:
+                # Process each item in collection
                 score = 0.0
                 title = item.get("title", "").lower()
                 topic = item.get("content", {}).get("topic", "").lower()
@@ -880,12 +894,18 @@ class TechScout(WizardServant):
                     results.append({
                         "knowledge_item": item,
                         "relevance_score": score,
-                        "last_updated": item.get("content", {}).get("research_metadata", {}).get("research_date", "")
+                        "last_updated": item.get(
+                            "content",
+                            {}).get("research_metadata",
+                            {}).get("research_date",
+                            ""
+                        )
                     })
             
             return results
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"File-based knowledge search failed: {e}")
             return []
 

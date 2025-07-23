@@ -153,6 +153,7 @@ class CICDBuilder(DwarfServant):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 name="automation_orchestration",
@@ -293,6 +294,7 @@ class CICDBuilder(DwarfServant):
                 }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error processing request: {e}")
             return {
                 "status": "error",
@@ -338,6 +340,7 @@ class CICDBuilder(DwarfServant):
             )
 
         except Exception as e:
+            # Handle specific exception case
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
             return TaskResult(
                 task_id=task.get("task_id", str(uuid.uuid4())),
@@ -410,15 +413,18 @@ class CICDBuilder(DwarfServant):
             if isinstance(config, dict):
                 config = self._dict_to_pipeline_config(config)
             elif hasattr(config, "platform") and isinstance(config.platform, str):
+                # Complex condition - consider breaking down
                 # Convert string platform to enum
                 config.platform = CICDPlatform(config.platform)
         except KeyError as e:
+            # Handle specific exception case
             return {
                 "status": "error",
                 "error": f"Pipeline configuration validation failed: "
                 f"Missing required field {e}",
             }
         except Exception as e:
+            # Handle specific exception case
             return {
                 "status": "error",
                 "error": f"Pipeline configuration validation failed: {str(e)}",
@@ -485,6 +491,7 @@ class CICDBuilder(DwarfServant):
         enforce_quality_gates = request.get("enforce_quality_gates", False)
 
         if not pipeline_id or pipeline_id not in self.pipeline_registry:
+            # Complex condition - consider breaking down
             return {"status": "error", "error": "Pipeline not found"}
 
         execution_id = f"exec-{uuid.uuid4().hex[:8]}"
@@ -532,6 +539,7 @@ class CICDBuilder(DwarfServant):
             return {"status": "success", "execution_status": status}
 
         except asyncio.TimeoutError:
+            # Handle specific exception case
             return {"status": "error", "error": "Pipeline monitoring request timed out"}
 
     async def _handle_manage_artifacts(self, request: Dict[str, Any]) -> Dict[str, Any]:
@@ -544,6 +552,7 @@ class CICDBuilder(DwarfServant):
             stored_artifacts = []
 
             for artifact_data in artifacts:
+                # Process each item in collection
                 artifact_id = f"artifact-{uuid.uuid4().hex[:8]}"
                 artifact = BuildArtifact(
                     id=artifact_id,
@@ -551,7 +560,7 @@ class CICDBuilder(DwarfServant):
                     path=artifact_data["path"],
                     type=artifact_data["type"],
                     size=artifact_data["size"],
-                    checksum=hashlib.md5(
+                    checksum=hashlib.sha256(
                         artifact_data["name"].encode(), usedforsecurity=False
                     ).hexdigest(),
                     created_at=datetime.now(),
@@ -676,10 +685,14 @@ class CICDBuilder(DwarfServant):
         warnings = []
         if hasattr(config, "stages"):
             for stage in config.stages:
+                # Process each item in collection
                 for job in stage.jobs:
+                    # Process each item in collection
                     if hasattr(job, "resources") and job.resources:
+                        # Complex condition - consider breaking down
                         cpu = job.resources.get("cpu", "")
                         if cpu and int(cpu.replace("GB", "").replace("MB", "")) > 8:
+                            # Complex condition - consider breaking down
                             warnings.append(
                                 f"High resource requirement detected for job {job.name}"
                             )
@@ -730,6 +743,7 @@ class CICDBuilder(DwarfServant):
 
         configured_notifications = []
         for notification in notifications:
+            # Process each item in collection
             configured_notifications.append(
                 {
                     "id": f"notif-{uuid.uuid4().hex[:8]}",
@@ -883,11 +897,14 @@ class CICDBuilder(DwarfServant):
         jenkinsfile += "    stages {\n"
 
         for stage in config.stages:
+            # Process each item in collection
             jenkinsfile += f"        stage('{stage.name}') {{\n"
             jenkinsfile += "            steps {\n"
 
             for job in stage.jobs:
+                # Process each item in collection
                 for script_line in job.script:
+                    # Process each item in collection
                     jenkinsfile += f"                sh '{script_line}'\n"
 
             jenkinsfile += "            }\n"
@@ -909,9 +926,11 @@ class CICDBuilder(DwarfServant):
         }
 
         for stage in config.stages:
+            # Process each item in collection
             stage_config = {"stage": stage.name, "jobs": []}
 
             for job in stage.jobs:
+                # Process each item in collection
                 job_config = {
                     "job": job.name,
                     "steps": [{"script": script} for script in job.script],
@@ -933,7 +952,9 @@ class CICDBuilder(DwarfServant):
         }
 
         for stage in config.stages:
+            # Process each item in collection
             for job in stage.jobs:
+                # Process each item in collection
                 circle_config["jobs"][job.name] = {
                     "docker": [{"image": "ubuntu:latest"}],
                     "steps": ["checkout", *[{"run": script} for script in job.script]],
@@ -949,8 +970,10 @@ class CICDBuilder(DwarfServant):
         pipeline_config = {"version": 1, "phases": {}}
 
         for stage in config.stages:
+            # Process each item in collection
             stage_commands = []
             for job in stage.jobs:
+                # Process each item in collection
                 stage_commands.extend(job.script)
 
             pipeline_config["phases"][stage.name] = {"commands": stage_commands}
@@ -966,6 +989,7 @@ class CICDBuilder(DwarfServant):
         for stage_data in config_dict.get("stages", []):
             jobs = []
             for job_data in stage_data.get("jobs", []):
+                # Process each item in collection
                 job = PipelineJob(
                     name=job_data["name"],
                     script=job_data.get("script", []),
@@ -1021,6 +1045,7 @@ class CICDBuilder(DwarfServant):
             errors.append("At least one stage is required")
 
         for stage in config.stages:
+            # Process each item in collection
             if not stage.jobs:
                 errors.append(f"Stage '{stage.name}' must have at least one job")
 
@@ -1032,7 +1057,9 @@ class CICDBuilder(DwarfServant):
         job_deps = {}
 
         for stage in config.stages:
+            # Process each item in collection
             for job in stage.jobs:
+                # Process each item in collection
                 job_deps[job.name] = job.depends_on
 
         # Check for circular dependencies using DFS
@@ -1049,6 +1076,7 @@ class CICDBuilder(DwarfServant):
             rec_stack.add(job_name)
 
             for dep in job_deps.get(job_name, []):
+                # Process each item in collection
                 if has_cycle(dep):
                     return True
 
@@ -1056,6 +1084,7 @@ class CICDBuilder(DwarfServant):
             return False
 
         for job_name in job_deps:
+            # Process each item in collection
             if has_cycle(job_name):
                 return True
 

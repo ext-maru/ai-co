@@ -188,7 +188,10 @@ class ContractUploadService:
         # 既存ファイル数確認
         existing_count = (
             self.db.query(Upload)
-            .filter(Upload.contract_upload_id == contract_upload_id, Upload.document_type == document_type.value)
+            .filter(
+                Upload.contract_upload_id == contract_upload_id,
+                Upload.document_type == document_type.value
+            )
             .count()
         )
 
@@ -261,7 +264,11 @@ class ContractUploadService:
 
         return DocumentValidationResult(is_valid=len(errors) == 0, errors=errors, warnings=warnings)
 
-    async def submit_contract_upload(self, contract_upload_id: str, user_id: str) -> ContractUploadResponse:
+    async def submit_contract_upload(
+        self,
+        contract_upload_id: str,
+        user_id: str
+    ) -> ContractUploadResponse:
         """契約書類提出"""
         contract_upload = (
             self.db.query(ContractUpload)

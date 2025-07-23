@@ -19,6 +19,7 @@ class SimpleA2ACommand:
     """シンプルA2A通信管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.command_name = "ai_a2a_simple"
 
     async def send_message(self, recipient: str, message: str, priority: str = "normal"):
@@ -56,6 +57,7 @@ class SimpleA2ACommand:
 
         print(f"📬 {len(messages)} messages for {agent_id}:")
         for message in messages:
+            # Process each item in collection
             print(f"  📩 From: {message.sender}")
             print(f"     Type: {message.message_type.value}")
             print(f"     Priority: {message.priority.value}")
@@ -76,9 +78,11 @@ class SimpleA2ACommand:
 
             print("\n📊 Consultation Results:")
             for sage, result in results.items():
+                # Process each item in collection
                 print(f"  🧙‍♂️ {sage}:")
                 if isinstance(result, dict):
                     for key, value in result.items():
+                        # Process each item in collection
                         print(f"     {key}: {value}")
                 else:
                     print(f"     {result}")
@@ -124,6 +128,7 @@ class SimpleA2ACommand:
             inbox_dir = A2A_STORAGE_DIR / "inbox"
             if inbox_dir.exists():
                 for agent_dir in inbox_dir.iterdir():
+                    # Process each item in collection
                     if agent_dir.is_dir():
                         message_count = len(list(agent_dir.glob("*.json")))
                         print(f"   📬 {agent_dir.name}: {message_count} messages")
@@ -137,6 +142,7 @@ class SimpleA2ACommand:
         print("   - RAG Sage: Available")
 
 async def main():
+    # Core functionality implementation
     parser = argparse.ArgumentParser(description="Simple A2A Communication Command")
     subparsers = parser.add_subparsers(dest='action', help='Available actions')
 

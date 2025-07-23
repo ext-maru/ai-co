@@ -248,7 +248,8 @@ class FileLockManager:
             
             # 所有権確認
             if lock_info.processor_id != processor_id:
-                logger.warning(f"Lock owned by different processor: {lock_info.processor_id} vs {processor_id}")
+                logger.warning(f"Lock owned by different processor: {lock_info.processor_id} vs " \
+                    "{processor_id}")
                 return False
             
             # ハートビート停止

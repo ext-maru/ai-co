@@ -97,6 +97,7 @@ if __name__ == "__main__":
 
     class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         def __init__(self):
+            """初期化メソッド"""
             BaseWorker.__init__(self, worker_type="task")
             PromptTemplateMixin.__init__(self)
 

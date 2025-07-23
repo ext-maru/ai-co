@@ -526,7 +526,8 @@ class ElderCouncilReviewer:
             reason = f"総合評価: {overall_score:.2f}, 4賢者合意: {sages_consensus:.2f}"
         else:
             status = "rejected"
-            reason = f"基準未達: 総合評価{overall_score:.2f}(要{self.approval_threshold}), 4賢者合意{sages_consensus:.2f}(要0.7)"
+            reason = f"基準未達: 総合評価{overall_score:.2f}(要{self.approval_threshold}), " \
+                "4賢者合意{sages_consensus:.2f}(要0.7)"
 
         return {
             "status": status,
@@ -1023,7 +1024,10 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from commands.ai_{proposal.proposal_id.split("_")[-1]} import {proposal.proposal_id.split("_")[-1].title().replace('_', '')}Command
+from commands.ai_{proposal.proposal_id.split(
+    "_")[-1]} import {proposal.proposal_id.split("_")[-1].title().replace('_',
+    ''
+)}Command
 
 class {test_class_name}:
     """Test suite for {proposal.title}"""

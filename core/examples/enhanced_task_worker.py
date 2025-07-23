@@ -30,6 +30,7 @@ class EnhancedTaskWorker(BaseWorker):
     """改良版TaskWorker - 基底クラスを活用"""
 
     def __init__(self, worker_id: Optional[str] = None):
+        """初期化メソッド"""
         # 基底クラスの初期化
         super().__init__(worker_type="task", worker_id=worker_id)
 

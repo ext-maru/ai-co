@@ -598,7 +598,8 @@ class SimpleHybridQualityInspector:
 
         if not iron_will_compliant:
             recommendations.append(
-                f"Improve code quality to meet Iron Will standard (current: {final_score:.1f}%, target: 95%+)"
+                f"Improve code quality to meet Iron Will standard (current: {final_score:." \
+                    "1f}%, target: 95%+)"
             )
 
         if final_score >= 90:

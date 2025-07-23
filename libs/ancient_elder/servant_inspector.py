@@ -71,7 +71,10 @@ class ServantImplementationAnalyzer:
         self.stub_patterns = {
             "pass_only": re.compile(r'^\s*pass\s*$', re.MULTILINE),
             "todo_comment": re.compile(r'#\s*TODO|#\s*FIXME|#\s*XXX', re.IGNORECASE),
-            "not_implemented": re.compile(r'raise\s+NotImplementedError|NotImplemented', re.IGNORECASE),
+            "not_implemented": re.compile(
+                r'raise\s+NotImplementedError|NotImplemented',
+                re.IGNORECASE
+            ),
             "placeholder": re.compile(r'placeholder|dummy|mock|fake', re.IGNORECASE),
             "empty_function": re.compile(r'def\s+\w+\([^)]*\):\s*pass', re.MULTILINE),
         }
@@ -131,10 +134,16 @@ class ServantImplementationAnalyzer:
             source_analysis = self._analyze_source_code(file_path)
             
             # スタブ実装検出
-            stub_violations = self._detect_stub_implementations(source_analysis["content"], file_path)
+            stub_violations = self._detect_stub_implementations(
+                source_analysis["content"],
+                file_path
+            )
             
             # 手抜き実装検出
-            lazy_violations = self._detect_lazy_implementations(source_analysis["content"], file_path)
+            lazy_violations = self._detect_lazy_implementations(
+                source_analysis["content"],
+                file_path
+            )
             
             # 役割遵守チェック
             role_compliance = self._check_role_compliance(source_analysis, servant_type, file_path)
@@ -640,11 +649,17 @@ class ServantInspector(AncientElderBase):
             violations.extend(collaboration_result.get("collaboration_violations", []))
             
             # 3. 総合サーバントスコア計算
-            overall_score = self._calculate_overall_servant_score(implementation_results, collaboration_result)
+            overall_score = self._calculate_overall_servant_score(
+                implementation_results,
+                collaboration_result
+            )
             metrics["overall_servant_score"] = overall_score
             metrics["servant_files_analyzed"] = len(servant_files)
             metrics["implementation_quality"] = self._calculate_average_implementation_score(implementation_results)
-            metrics["collaboration_score"] = collaboration_result.get("overall_collaboration_score", 0)
+            metrics["collaboration_score"] = collaboration_result.get(
+                "overall_collaboration_score",
+                0
+            )
             
             # 4. 改善提案生成
             recommendations = self._generate_servant_improvement_recommendations(
@@ -726,7 +741,11 @@ class ServantInspector(AncientElderBase):
         overall_score = implementation_score + collaboration_score
         return min(overall_score, 100.0)
         
-    def _calculate_average_implementation_score(self, implementation_results: List[Dict[str, Any]]) -> float:
+    def _calculate_average_implementation_score(
+        self,
+        implementation_results: List[Dict[str,
+        Any]]
+    ) -> float:
         """平均実装スコアを計算"""
         if not implementation_results:
             return 0.0
@@ -762,9 +781,11 @@ class ServantInspector(AncientElderBase):
             recommendations.append("Replace all stub implementations with actual functionality")
             
         if ServantViolationType.ROLE_VIOLATION in violation_types:
-            recommendations.append("Ensure servants follow their designated roles and responsibilities")
+            recommendations.append("Ensure servants follow their designated roles and responsibilities" \
+                "Ensure servants follow their designated roles and responsibilities")
             
         if ServantViolationType.LAZY_IMPLEMENTATION in violation_types:
-            recommendations.append("Improve implementation quality by adding proper error handling and logic")
+            recommendations.append("Improve implementation quality by adding proper error handling and logic" \
+                "Improve implementation quality by adding proper error handling and logic")
             
         return recommendations

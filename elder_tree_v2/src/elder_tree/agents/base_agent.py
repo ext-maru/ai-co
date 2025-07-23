@@ -3,20 +3,21 @@ Elder Tree Base Agent
 python-a2aを継承した基底エージェント実装
 """
 
-from python_a2a import Agent, Message, Protocol
 from typing import Dict, Any, Optional
 import structlog
 from prometheus_client import Counter, Histogram, Gauge
 import time
+import asyncio
+from flask import Flask, jsonify, request
 
 
-class ElderTreeAgent(Agent):
+class ElderTreeAgent:
     """
     Elder Tree用基底エージェント
-    python-a2aのAgentクラスを拡張
+    Flaskベースのシンプルな実装
     """
     
-    def __init__(self, name: str, domain: str, port: Optional[int] = None, **kwargs):
+    def __init__(self, name: str, domain: str, port: Optional[int] = None):
         """
         初期化
         
@@ -25,9 +26,9 @@ class ElderTreeAgent(Agent):
             domain: ドメイン（knowledge, task, incident, rag）
             port: ポート番号（オプション）
         """
-        super().__init__(name=name, port=port, **kwargs)
-        
+        self.name = name
         self.domain = domain
+        self.port = port or 50000  # デフォルトポート
         self.start_time = time.time()
         
         # 構造化ログ
@@ -46,71 +47,105 @@ class ElderTreeAgent(Agent):
     
     def _setup_metrics(self):
         """Prometheusメトリクス設定"""
+        agent_name = getattr(self, 'name', f'elder_agent_{id(self)}')
+        
         self.message_counter = Counter(
-            'elder_tree_agent_messages_total',
+            f'elder_tree_{agent_name}_messages_total',
             'Total messages processed',
-            ['agent_name', 'message_type', 'status']
+            ['message_type', 'status']
         )
         
         self.message_duration = Histogram(
-            'elder_tree_agent_message_duration_seconds',
+            f'elder_tree_{agent_name}_duration_seconds',
             'Message processing duration',
-            ['agent_name', 'message_type']
+            ['message_type']
         )
         
         self.active_connections = Gauge(
-            'elder_tree_agent_active_connections',
-            'Number of active connections',
-            ['agent_name']
+            f'elder_tree_{agent_name}_connections',
+            'Number of active connections'
         )
     
     def _register_base_handlers(self):
         """基本メッセージハンドラー登録"""
-        
-        @self.on_message("health_check")
-        async def handle_health_check(message: Message) -> Dict[str, Any]:
-            """ヘルスチェック処理"""
-            uptime = time.time() - self.start_time
-            
-            return {
-                "status": "healthy",
-                "agent": self.name,
-                "domain": self.domain,
-                "uptime_seconds": uptime,
-                "version": "2.0.0"
-            }
-        
-        @self.on_message("get_metrics")
-        async def handle_get_metrics(message: Message) -> Dict[str, Any]:
-            """メトリクス取得"""
-            return {
-                "agent": self.name,
-                "metrics_endpoint": "/metrics",
-                "total_messages": self.message_counter._value.get()
-            }
+        pass  # A2AServerでは直接ハンドラー登録方法が異なる
     
-    async def process_message(self, message: Message) -> Any:
+    def create_app(self) -> Flask:
+        """Flask appを作成"""
+        app = Flask(self.name)
+        
+        # ヘルスチェックエンドポイント
+        @app.route('/health')
+        def health():
+            return jsonify(self.get_health_status())
+        
+        # メトリクスエンドポイント
+        @app.route('/metrics')
+        def metrics():
+            return jsonify(self.get_metrics_info())
+        
+        # メッセージ受信エンドポイント
+        @app.route('/message', methods=['POST'])
+        def receive_message():
+            data = request.get_json()
+            result = self.handle_message(data)
+            return jsonify(result)
+        
+        return app
+    
+    def handle_message(self, data: Dict[str, Any]) -> Dict[str, Any]:
+        """メッセージハンドラー"""
+        message_type = data.get('type', 'unknown')
+        
+        if message_type == "health_check":
+            return self.get_health_status()
+        elif message_type == "get_metrics":
+            return self.get_metrics_info()
+        else:
+            return {"status": "error", "message": f"Unknown message type: {message_type}"}
+    
+    def get_health_status(self) -> Dict[str, Any]:
+        """ヘルスチェック処理"""
+        uptime = time.time() - self.start_time
+        
+        return {
+            "status": "healthy",
+            "agent": self.name,
+            "domain": self.domain,
+            "uptime_seconds": uptime,
+            "version": "2.0.0"
+        }
+    
+    def get_metrics_info(self) -> Dict[str, Any]:
+        """メトリクス取得"""
+        return {
+            "agent": self.name,
+            "metrics_endpoint": "/metrics",
+            "active": True
+        }
+    
+    def process_message_with_metrics(self, data: Dict[str, Any]) -> Any:
         """
         メッセージ処理（メトリクス記録付き）
         
         Args:
-            message: 処理するメッセージ
+            data: 処理するメッセージデータ
             
         Returns:
             処理結果
         """
+        message_type = data.get('type', 'unknown')
+        
         with self.message_duration.labels(
-            agent_name=self.name,
-            message_type=message.message_type
+            message_type=message_type
         ).time():
             try:
-                # 親クラスのprocess_message呼び出し
-                result = await super().process_message(message)
+                # メッセージハンドラー呼び出し
+                result = self.handle_message(data)
                 
                 # 成功カウント
                 self.message_counter.labels(
-                    agent_name=self.name,
-                    message_type=message.message_type,
+                    message_type=message_type,
                     status="success"
                 ).inc()
                 
@@ -119,19 +154,18 @@ class ElderTreeAgent(Agent):
             except Exception as e:
                 # エラーカウント
                 self.message_counter.labels(
-                    agent_name=self.name,
-                    message_type=message.message_type,
+                    message_type=message_type,
                     status="error"
                 ).inc()
                 
                 self.logger.error(
                     "Message processing failed",
-                    message_type=message.message_type,
+                    message_type=message_type,
                     error=str(e)
                 )
                 raise
     
-    async def collaborate_with_sage(self, sage_name: str, request: Dict[str, Any]) -> Message:
+    def collaborate_with_sage(self, sage_name: str, request: Dict[str, Any]) -> Dict[str, Any]:
         """
         他の賢者との協調
         
@@ -140,15 +174,16 @@ class ElderTreeAgent(Agent):
             request: リクエストデータ
             
         Returns:
-            応答メッセージ
+            応答データ
         """
         self.logger.info(
             "Collaborating with sage",
             target_sage=sage_name
         )
         
-        return await self.send_message(
-            target=sage_name,
-            message_type="collaboration_request",
-            data=request
-        )
+        # 実際の送信は実装する各賢者で個別に処理
+        return {
+            "status": "collaboration_initiated",
+            "target": sage_name,
+            "request": request
+        }

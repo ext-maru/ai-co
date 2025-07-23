@@ -159,7 +159,12 @@ class DatabaseManager:
             self.connection.rollback()
             raise
             
-    async def search_similar_patterns(self, embedding: List[float], similarity_threshold: float = 0.8, limit: int = 5) -> List[Dict]:
+    async def search_similar_patterns(
+        self,
+        embedding: List[float],
+        similarity_threshold: float = 0.8,
+        limit: int = 5
+    ) -> List[Dict]:
         """Search for similar quality patterns"""
         try:
             cursor = self.connection.cursor()
@@ -193,7 +198,12 @@ class DatabaseManager:
             logger.error(f"❌ Failed to search patterns: {e}")
             return []
             
-    async def search_similar_bugs(self, embedding: List[float], similarity_threshold: float = 0.8, limit: int = 5) -> List[Dict]:
+    async def search_similar_bugs(
+        self,
+        embedding: List[float],
+        similarity_threshold: float = 0.8,
+        limit: int = 5
+    ) -> List[Dict]:
         """Search for similar bug cases"""
         try:
             cursor = self.connection.cursor()
@@ -647,14 +657,23 @@ class SmartCodingAssistant:
             logger.warning(f"⚠️ Could not search similar patterns/bugs: {e}")
         
         # Generate AI-powered suggestions
-        ai_suggestions = await self._generate_ai_suggestions(code, analysis, similar_patterns, similar_bugs)
+        ai_suggestions = await self._generate_ai_suggestions(
+            code,
+            analysis,
+            similar_patterns,
+            similar_bugs
+        )
         
         return {
             'analysis': asdict(analysis),
             'similar_patterns': similar_patterns,
             'similar_bugs': similar_bugs,
             'ai_suggestions': ai_suggestions,
-            'overall_recommendation': self._generate_overall_recommendation(analysis, similar_patterns, similar_bugs)
+            'overall_recommendation': self._generate_overall_recommendation(
+                analysis,
+                similar_patterns,
+                similar_bugs
+            )
         }
         
     async def _generate_ai_suggestions(self, code: str, analysis: CodeAnalysisResult, 
@@ -801,7 +820,12 @@ class EldersCodeQualityEngine:
         return await self.assistant.learn_from_pattern(pattern)
 
 # Convenience functions for quick usage
-async def quick_analyze(code: str, db_params: Dict[str, str], openai_key: Optional[str] = None) -> Dict[str, Any]:
+async def quick_analyze(
+    code: str,
+    db_params: Dict[str,
+    str],
+    openai_key: Optional[str] = None
+) -> Dict[str, Any]:
     """Quick code analysis"""
     engine = EldersCodeQualityEngine(db_params, openai_key)
     await engine.initialize()

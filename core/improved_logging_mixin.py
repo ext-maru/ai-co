@@ -14,6 +14,7 @@ class ImprovedLoggingMixin:
     """改善されたログ出力を提供するMixin"""
 
     def __init__(self):
+        """初期化メソッド"""
         # タスクの開始時刻を記録
         self._task_start_times: Dict[str, float] = {}
         self._task_metrics: Dict[str, Dict[str, Any]] = {}
@@ -128,6 +129,7 @@ class ExampleWorker(ImprovedLoggingMixin):
     """改善されたログを使用するワーカーの例"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.logger = logging.getLogger(self.__class__.__name__)
 

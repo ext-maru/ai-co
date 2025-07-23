@@ -28,6 +28,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logging.warning(f"Elder Tree integration not available: {e}")
     FourSagesIntegration = None
     ElderCouncilSummoner = None
@@ -94,6 +95,7 @@ class LargeTestWorker:
                 )
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Elder Tree initialization failed: {e}")
             self.elder_integration_enabled = False
 
@@ -113,6 +115,7 @@ class LargeTestWorker:
             return True
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"RabbitMQ connection failed: {e}")
             return False
 
@@ -161,12 +164,14 @@ class LargeTestWorker:
 
             # Store test patterns in Knowledge Sage
             if self.elder_integration_enabled and result.get("status") == "completed":
+                # Complex condition - consider breaking down
                 self._store_test_patterns_in_knowledge_sage(task_data, result)
 
             self.test_results.append(result)
             return result
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Test processing failed: {e}")
             self.test_metrics["failed_tests"] += 1
 
@@ -263,6 +268,7 @@ class LargeTestWorker:
             self.test_metrics["task_sage_consultations"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to report test start to Task Sage: {e}")
 
     def _report_test_completion_to_task_sage(
@@ -285,6 +291,7 @@ class LargeTestWorker:
             self.four_sages.report_to_task_sage(report)
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to report test completion to Task Sage: {e}")
 
     def _report_test_error_to_task_sage(
@@ -307,6 +314,7 @@ class LargeTestWorker:
             self.four_sages.consult_incident_sage(incident_data)
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to report test error to Task Sage: {e}")
 
     def _store_test_patterns_in_knowledge_sage(
@@ -329,6 +337,7 @@ class LargeTestWorker:
             self.test_metrics["knowledge_sage_learnings"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to store test patterns in Knowledge Sage: {e}")
 
     def _escalate_critical_failure(
@@ -336,6 +345,7 @@ class LargeTestWorker:
     ):
         """Escalate critical test failures to Claude Elder"""
         if not self.elder_tree or not ElderMessage or not ElderRank:
+            # Complex condition - consider breaking down
             return
 
         try:
@@ -371,6 +381,7 @@ class LargeTestWorker:
                 )
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to escalate critical failure: {e}")
 
     def get_elder_test_status(self) -> Dict[str, Any]:
@@ -412,6 +423,7 @@ class LargeTestWorker:
                 ch.basic_ack(delivery_tag=method.delivery_tag)
 
             except Exception as e:
+                # Handle specific exception case
                 logger.error(f"Callback error: {e}")
                 ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
@@ -425,6 +437,7 @@ class LargeTestWorker:
         try:
             self.channel.start_consuming()
         except KeyboardInterrupt:
+            # Handle specific exception case
             logger.info("🛑 Stopping Large Test Worker...")
             self.channel.stop_consuming()
             if self.connection:

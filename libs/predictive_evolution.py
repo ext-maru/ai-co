@@ -1284,7 +1284,10 @@ class ProactiveOptimizer:
 
                 actions.append(
                     {
-                        "action_id": f"preempt_{bottleneck.get('component', 'unknown')}_{uuid.uuid4().hex[:8]}",
+                        "action_id": f"preempt_{bottleneck.get(
+                            'component',
+                            'unknown')}_{uuid.uuid4(
+                        ).hex[:8]}",
                         "target_challenge": bottleneck.get("component"),
                         "action_type": "performance_scaling",
                         "scheduled_execution": action_date,

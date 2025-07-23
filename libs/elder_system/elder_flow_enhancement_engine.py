@@ -189,7 +189,11 @@ class ElderFlowEnhancementEngine:
         
         return max(1, min(count, 10))  # 1-10の範囲
     
-    def _generate_elder_flow_config(self, classification, technical_analysis: Optional[Dict]) -> Dict[str, Any]:
+    def _generate_elder_flow_config(
+        self,
+        classification,
+        technical_analysis: Optional[Dict]
+    ) -> Dict[str, Any]:
         """Elder Flow実行用の設定を生成"""
         config = {
             'mode': self._determine_flow_mode(classification),

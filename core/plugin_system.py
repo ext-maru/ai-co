@@ -39,6 +39,7 @@ class PluginManager:
     """プラグインマネージャー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.plugins: Dict[str, Plugin] = {}
         self.logger = logging.getLogger(__name__)
 

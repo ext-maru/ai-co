@@ -15,7 +15,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath("./../../.." \
+    "./../../.."))))
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -40,21 +41,25 @@ app.add_middleware(
 
 # Request models
 class TaskRequest(BaseModel):
+    # Main class implementation
     type: str
     task: Dict[str, Any]
 
 
 class SageConsultRequest(BaseModel):
+    # Main class implementation
     question: str
     context: Optional[Dict[str, Any]] = {}
 
 
 class QualityCheckRequest(BaseModel):
+    # Main class implementation
     file_path: str
     content: str
 
 
 class KnowledgeSearchRequest(BaseModel):
+    # Main class implementation
     query: str
     limit: Optional[int] = 10
 
@@ -150,6 +155,7 @@ async def execute_servant_task(servant_id: str, request: TaskRequest):
         }
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error executing servant task: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -182,6 +188,7 @@ async def consult_sages(request: SageConsultRequest):
         }
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error consulting sages: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -228,6 +235,7 @@ async def check_iron_will_quality(request: QualityCheckRequest):
         }
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error checking Iron Will quality: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -270,6 +278,7 @@ async def search_knowledge_base(request: KnowledgeSearchRequest):
         return {"success": True, "items": limited_items, "total": len(limited_items)}
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error searching knowledge base: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -301,6 +310,7 @@ async def get_active_tasks():
         return mock_tasks
 
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"Error getting active tasks: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -25,6 +25,7 @@ class AIWorkersCommand(BaseCommand):
     """ワーカー管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="workers", description="Elders Guild ワーカーの管理")
 
     def setup_arguments(self):
@@ -53,6 +54,7 @@ class AIWorkersCommand(BaseCommand):
             else:
                 return self._show_workers()
         except Exception as e:
+            # Handle specific exception case
             if args.debug:
                 import traceback
 
@@ -79,6 +81,7 @@ class AIWorkersCommand(BaseCommand):
         table.add_column("キュー", style="magenta", width=20)
 
         for worker_name, script_name, queue_name in workers:
+            # Process each item in collection
             status, pid, cpu, mem = self._check_worker_process(script_name)
 
             if status == "稼働中":
@@ -113,9 +116,11 @@ class AIWorkersCommand(BaseCommand):
                         mem = proc.memory_info().rss / 1024 / 1024  # MB
                         return "稼働中", proc.pid, cpu, mem
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    # Handle specific exception case
                     continue
             return "停止", None, None, None
         except Exception:
+            # Handle specific exception case
             return "不明", None, None, None
 
     def _restart_workers(self, target):
@@ -166,12 +171,14 @@ class AIWorkersCommand(BaseCommand):
             if target in worker_scripts:
                 script_name = worker_scripts[target]
                 for proc in psutil.process_iter(["pid", "cmdline"]):
+                    # Process each item in collection
                     try:
                         if proc.info["cmdline"] and script_name in " ".join(
                             proc.info["cmdline"]
                         ):
                             proc.terminate()
                     except (psutil.NoSuchProcess, psutil.AccessDenied):
+                        # Handle specific exception case
                         continue
 
         return CommandResult(success=True)

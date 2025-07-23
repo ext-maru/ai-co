@@ -17,6 +17,7 @@ class AIHelpCommand(BaseCommand):
     """ヘルプコマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-help", description="ヘルプ表示", version="1.0.0")
 
     def setup_arguments(self):
@@ -74,11 +75,14 @@ class AIHelpCommand(BaseCommand):
         bin_dir = EnvManager.get_project_root() / "bin"
 
         for cmd_file in sorted(bin_dir.glob("ai-*")):
+            # Process each item in collection
             if cmd_file.is_file() and cmd_file.name != "ai_launcher.py":
+                # Complex condition - consider breaking down
                 commands.append(cmd_file.name)
 
         message = "利用可能なコマンド一覧:\n\n"
         for cmd in commands:
+            # Process each item in collection
             message += f"  {cmd}\n"
 
         return CommandResult(success=True, message=message)
@@ -92,10 +96,12 @@ class AIHelpCommand(BaseCommand):
             result = subprocess.run([command, "--help"], capture_output=True, text=True)
             return CommandResult(success=True, message=result.stdout)
         except FileNotFoundError:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"コマンドが見つかりません: {command}")
 
 
 def main():
+    # Core functionality implementation
     command = AIHelpCommand()
     sys.exit(command.run())
 

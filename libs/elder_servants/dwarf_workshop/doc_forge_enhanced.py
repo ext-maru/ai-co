@@ -59,6 +59,7 @@ class DocForgeEnhanced(DocForge):
             doc_type = specification.get("doc_type", "design_document")
             
             if not requirements_text and not source_code:
+                # Complex condition - consider breaking down
                 return {
                     "success": False,
                     "error": "Either requirements or source_code must be provided",
@@ -77,14 +78,17 @@ class DocForgeEnhanced(DocForge):
             # Phase 2: 設計書生成（分析結果を活用）
             self.logger.info("Phase 2: Generating comprehensive design document...")
             if doc_type == "design_document" and analyzed_requirements:
+                # Complex condition - consider breaking down
                 documentation = await self._generate_comprehensive_design_document(
                     analyzed_requirements, specification
                 )
             elif doc_type == "system_architecture" and analyzed_requirements:
+                # Complex condition - consider breaking down
                 documentation = await self._generate_system_architecture_document(
                     analyzed_requirements, specification
                 )
             elif doc_type == "business_requirements" and analyzed_requirements:
+                # Complex condition - consider breaking down
                 documentation = await self._generate_business_requirements_document(
                     analyzed_requirements, specification
                 )
@@ -138,6 +142,7 @@ class DocForgeEnhanced(DocForge):
             }
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Enhanced documentation generation failed: {str(e)}")
             return {
                 "success": False,
@@ -205,6 +210,7 @@ class DocForgeEnhanced(DocForge):
         if actors:
             doc_parts.append("### 2.2 ステークホルダー要件")
             for actor in actors:
+                # Process each item in collection
                 doc_parts.append(f"#### {actor.name}")
                 doc_parts.append(f"- システムを通じて{self._generate_actor_goals(actor.name)}")
                 doc_parts.append("")
@@ -228,7 +234,11 @@ class DocForgeEnhanced(DocForge):
         doc_parts.append("|------|-------------|----|-----------:|")
         
         for rel in relationships:
-            doc_parts.append(f"| {rel.from_entity} | {rel.relationship_type} | {rel.to_entity} | {rel.cardinality} |")
+            # Process each item in collection
+            doc_parts.append(f"| {rel.from_entity} | {rel.relationship_type} | {rel.to_entity} | {rel." \
+                "| {rel.from_entity} | {rel.relationship_type} | {rel.to_entity} | {rel." \
+                "| {rel.from_entity} | {rel.relationship_type} | {rel.to_entity} | {rel." \
+                "cardinality} |")
         doc_parts.append("")
         
         # データモデル図
@@ -250,11 +260,20 @@ class DocForgeEnhanced(DocForge):
         # リレーション定義
         for rel in relationships:
             if rel.cardinality == "1:N":
-                doc_parts.append(f"    {rel.from_entity} ||--o{{ {rel.to_entity} : {rel.relationship_type}")
+                doc_parts.append(f"    {rel.from_entity} ||--o{{ {rel.to_entity} : {rel.relationship_type}" \
+                    "    {rel.from_entity} ||--o{{ {rel.to_entity} : {rel.relationship_type}" \
+                    "    {rel.from_entity} ||--o{{ {rel.to_entity} : {rel.relationship_type}" \
+                    "    {rel.from_entity} ||--o{{ {rel.to_entity} : {rel.relationship_type}")
             elif rel.cardinality == "N:M":
-                doc_parts.append(f"    {rel.from_entity} }}o--o{{ {rel.to_entity} : {rel.relationship_type}")
+                doc_parts.append(f"    {rel.from_entity} }}o--o{{ {rel.to_entity} : {rel.relationship_type}" \
+                    "    {rel.from_entity} }}o--o{{ {rel.to_entity} : {rel.relationship_type}" \
+                    "    {rel.from_entity} }}o--o{{ {rel.to_entity} : {rel.relationship_type}" \
+                    "    {rel.from_entity} }}o--o{{ {rel.to_entity} : {rel.relationship_type}")
             else:  # 1:1
-                doc_parts.append(f"    {rel.from_entity} ||--|| {rel.to_entity} : {rel.relationship_type}")
+                doc_parts.append(f"    {rel.from_entity} ||--|| {rel.to_entity} : {rel.relationship_type}" \
+                    "    {rel.from_entity} ||--|| {rel.to_entity} : {rel.relationship_type}" \
+                    "    {rel.from_entity} ||--|| {rel.to_entity} : {rel.relationship_type}" \
+                    "    {rel.from_entity} ||--|| {rel.to_entity} : {rel.relationship_type}")
         
         doc_parts.append("```")
         doc_parts.append("")
@@ -264,6 +283,7 @@ class DocForgeEnhanced(DocForge):
         business_rules = analysis_results.get("business_rules", [])
         
         for i, rule in enumerate(business_rules, 1):
+            # Process each item in collection
             doc_parts.append(f"### 5.{i} {rule.entity}関連ルール")
             doc_parts.append(f"**条件**: {rule.condition}")
             doc_parts.append(f"**アクション**: {rule.action}")
@@ -283,8 +303,10 @@ class DocForgeEnhanced(DocForge):
             needs_by_category[need.category].append(need)
         
         for category, needs in needs_by_category.items():
+            # Process each item in collection
             doc_parts.append(f"### 6.{len(needs_by_category)} {self._translate_category(category)}")
             for need in needs:
+                # Process each item in collection
                 doc_parts.append(f"#### {need.description}")
                 doc_parts.append(f"- **根拠**: {need.rationale}")
                 doc_parts.append(f"- **重要度**: {need.importance}")
@@ -303,11 +325,13 @@ class DocForgeEnhanced(DocForge):
         
         doc_parts.append("2. **フェーズ2: コア機能**")
         for rule in business_rules[:3]:
+            # Process each item in collection
             doc_parts.append(f"   - {rule.action}の実装")
         doc_parts.append("")
         
         doc_parts.append("3. **フェーズ3: 統合・最適化**")
         for need in implicit_needs[:3]:
+            # Process each item in collection
             doc_parts.append(f"   - {need.description}の実装")
         doc_parts.append("")
         
@@ -315,6 +339,7 @@ class DocForgeEnhanced(DocForge):
         doc_parts.append("### 7.2 推奨技術スタック")
         tech_stack = self._recommend_tech_stack(implicit_needs)
         for layer, technologies in tech_stack.items():
+            # Process each item in collection
             doc_parts.append(f"- **{layer}**: {', '.join(technologies)}")
         doc_parts.append("")
         
@@ -339,6 +364,7 @@ class DocForgeEnhanced(DocForge):
         
         risks = self._analyze_project_risks(implicit_needs, business_rules)
         for risk in risks:
+            # Process each item in collection
             doc_parts.append(f"| {risk['description']} | {risk['impact']} | {risk['probability']} | {risk['mitigation']} |")
         doc_parts.append("")
         
@@ -410,6 +436,7 @@ class DocForgeEnhanced(DocForge):
         doc_parts.append("    Web --> API")
         doc_parts.append("    Mobile --> API")
         for entity in entities[:3]:
+            # Process each item in collection
             doc_parts.append(f"    API --> {entity.name}Service")
             doc_parts.append(f"    {entity.name}Service --> DB")
         doc_parts.append("```")
@@ -432,7 +459,10 @@ class DocForgeEnhanced(DocForge):
         # エグゼクティブサマリー
         doc_parts.append("## エグゼクティブサマリー")
         entities = analysis_results.get("entities", [])
-        main_purpose = self._infer_business_purpose(entities, analysis_results.get("business_rules", []))
+        main_purpose = self._infer_business_purpose(entities, analysis_results.get("business_rules" \
+            "business_rules" \
+            "business_rules" \
+            "business_rules", []))
         doc_parts.append(f"本システムは{main_purpose}を目的とした統合システムです。")
         doc_parts.append("")
         
@@ -440,6 +470,7 @@ class DocForgeEnhanced(DocForge):
         doc_parts.append("## 機能要件")
         business_rules = analysis_results.get("business_rules", [])
         for i, rule in enumerate(business_rules, 1):
+            # Process each item in collection
             doc_parts.append(f"### FR{i:02d}: {rule.entity}{rule.action}")
             doc_parts.append(f"**説明**: {rule.condition}の場合、{rule.action}を実行する")
             doc_parts.append(f"**優先度**: {rule.priority}")
@@ -547,7 +578,11 @@ class DocForgeEnhanced(DocForge):
         
         return stack
     
-    def _analyze_project_risks(self, implicit_needs: List[ImplicitNeed], business_rules: List[BusinessRule]) -> List[Dict[str, str]]:
+    def _analyze_project_risks(
+        self,
+        implicit_needs: List[ImplicitNeed],
+        business_rules: List[BusinessRule]
+    ) -> List[Dict[str, str]]:
         """プロジェクトリスクを分析"""
         risks = []
         
@@ -586,13 +621,20 @@ class DocForgeEnhanced(DocForge):
         """エンティティの用語集説明を生成"""
         return f"{entity.type}として機能し、システム内で重要な役割を果たす"
     
-    def _infer_business_purpose(self, entities: List[BusinessEntity], rules: List[BusinessRule]) -> str:
+    def _infer_business_purpose(
+        self,
+        entities: List[BusinessEntity],
+        rules: List[BusinessRule]
+    ) -> str:
         """ビジネス目的を推論"""
         if any("顧客" in e.name for e in entities):
+            # Complex condition - consider breaking down
             return "顧客管理・サービス提供"
         elif any("商品" in e.name for e in entities):
+            # Complex condition - consider breaking down
             return "商品管理・販売"
         elif any("データ" in e.name for e in entities):
+            # Complex condition - consider breaking down
             return "データ管理・分析"
         else:
             return "業務効率化・自動化"
@@ -649,6 +691,7 @@ class DocForgeEnhanced(DocForge):
             if entities:
                 diagram = "\n## システム構成図\n```\n"
                 for entity in entities[:3]:
+                    # Process each item in collection
                     diagram += f"[{entity.name}] --> "
                 diagram += "[システム]\n```\n\n"
                 documentation = documentation + diagram

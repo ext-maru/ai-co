@@ -48,6 +48,7 @@ class AITestCommand(BaseCommand):
 
         # テストターゲットを追加
         if hasattr(args, "test_target") and args.test_target:
+            # Complex condition - consider breaking down
             # patternオプションの場合は特別処理
             if args.pattern:
                 cmd.extend(["-p", args.pattern])
@@ -56,6 +57,7 @@ class AITestCommand(BaseCommand):
 
         # verboseオプション
         if hasattr(args, "verbose") and args.verbose:
+            # Complex condition - consider breaking down
             cmd.append("-v")
 
         # 残りの引数を追加（重複を避ける）
@@ -67,9 +69,11 @@ class AITestCommand(BaseCommand):
                 continue
             if arg in ["-p", "--pattern", "-v", "--verbose"]:
                 if arg in ["-p", "--pattern"] and i + 1 < len(sys.argv[2:]):
+                    # Complex condition - consider breaking down
                     skip_next = True
                 continue
             if arg not in cmd and arg != args.test_target:
+                # Complex condition - consider breaking down
                 remaining_args.append(arg)
 
         cmd.extend(remaining_args)
@@ -83,10 +87,12 @@ class AITestCommand(BaseCommand):
             )
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"テスト実行中にエラーが発生しました: {str(e)}")
 
 
 def main():
+    # Core functionality implementation
     command = AITestCommand()
     return command.run()
 

@@ -266,7 +266,13 @@ class TestGitHubAsyncManager:
             data=[]  # 空のページで終了
         )
         
-        with patch.object(self.manager, 'get_issues_async', side_effect=[page1_result, page2_result, page3_result]):
+        with patch.object(
+            self.manager,
+            'get_issues_async',
+            side_effect=[page1_result,
+            page2_result,
+            page3_result]
+        ):
             issues = []
             async for issue in self.manager.stream_all_issues_async():
                 issues.append(issue)
@@ -283,9 +289,21 @@ class TestGitHubAsyncManager:
         
         with patch.object(self.manager, 'get_repository_async', return_value=mock_repo):
             with patch.object(self.manager, 'get_issues_async', return_value=mock_issues):
-                with patch.object(self.manager, 'get_pull_requests_async', return_value=mock_issues):
-                    with patch.object(self.manager, 'stream_all_issues_async', return_value=iter([{"number": 1}])):
-                        with patch.object(self.manager, 'stream_all_pull_requests_async', return_value=iter([{"number": 1}])):
+                with patch.object(
+                    self.manager,
+                    'get_pull_requests_async',
+                    return_value=mock_issues
+                ):
+                    with patch.object(
+                        self.manager,
+                        'stream_all_issues_async',
+                        return_value=iter([{"number": 1}])
+                    ):
+                        with patch.object(
+                            self.manager,
+                            'stream_all_pull_requests_async',
+                            return_value=iter([{"number": 1}])
+                        ):
                             result = await self.manager.get_repository_analytics_async()
                             
                             assert result.success is True
@@ -321,7 +339,8 @@ class TestGitHubAsyncManager:
         """コンテキストマネージャーテスト"""
         mock_pool = AsyncMock()
         
-        with patch('libs.integrations.github.performance.github_performance_optimizer.ConnectionPool', return_value=mock_pool):
+        with patch('libs.integrations.github.performance.github_performance_optimizer.ConnectionPool' \
+            'libs.integrations.github.performance.github_performance_optimizer.ConnectionPool', return_value=mock_pool):
             async with self.manager as mgr:
                 assert mgr is self.manager
                 assert mgr._connection_pool is not None
@@ -693,9 +712,18 @@ class TestGitHubCacheManager:
         )
         
         assert warmed_count == 3
-        assert self.cache_manager.get("test_category", "item1") == {"id": "item1", "data": "data_item1"}
-        assert self.cache_manager.get("test_category", "item2") == {"id": "item2", "data": "data_item2"}
-        assert self.cache_manager.get("test_category", "item3") == {"id": "item3", "data": "data_item3"}
+        assert self.cache_manager.get(
+            "test_category",
+            "item1"
+        ) == {"id": "item1", "data": "data_item1"}
+        assert self.cache_manager.get(
+            "test_category",
+            "item2"
+        ) == {"id": "item2", "data": "data_item2"}
+        assert self.cache_manager.get(
+            "test_category",
+            "item3"
+        ) == {"id": "item3", "data": "data_item3"}
     
     def test_get_cache_statistics(self):
         """キャッシュ統計取得テスト"""

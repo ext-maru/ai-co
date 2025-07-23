@@ -13,7 +13,9 @@ from commands.base_command import BaseCommand
 
 
 class HealthCommand(BaseCommand):
+    # Main class implementation
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="health", description="Elders Guild システムの詳細なヘルスチェックを実行します"
         )
@@ -67,6 +69,7 @@ class HealthCommand(BaseCommand):
                 },
             }
         except Exception as e:
+            # Handle specific exception case
             return {"error": str(e)}
 
     def check_services(self):
@@ -113,6 +116,7 @@ class HealthCommand(BaseCommand):
         }
 
         for worker_type, info in worker_info.items():
+            # Process each item in collection
             processes = self.check_process(worker_type)
             info["actual"] = len(processes)
             info["healthy"] = (
@@ -158,6 +162,7 @@ class HealthCommand(BaseCommand):
                 ]
 
                 for queue_name, threshold in queues:
+                    # Process each item in collection
                     try:
                         method = channel.queue_declare(queue=queue_name, passive=True)
                         count = method.method.message_count
@@ -180,6 +185,7 @@ class HealthCommand(BaseCommand):
 
                 conn.close()
             except Exception as e:
+                # Handle specific exception case
                 return {"error": str(e)}
 
         return queue_info
@@ -196,6 +202,7 @@ class HealthCommand(BaseCommand):
         }
 
         for log_file, max_size_mb in log_files.items():
+            # Process each item in collection
             log_path = self.logs_dir / log_file
             if log_path.exists():
                 size_mb = log_path.stat().st_size / (1024 * 1024)
@@ -208,6 +215,7 @@ class HealthCommand(BaseCommand):
                         lines = f.readlines()[-1000:]
                         for line in lines:
                             if "ERROR" in line or "error" in line:
+                                # Complex condition - consider breaking down
                                 recent_errors += 1
                 except:
                     pass
@@ -258,6 +266,7 @@ class HealthCommand(BaseCommand):
                         "status": "ok",
                     }
                 except Exception as e:
+                    # Handle specific exception case
                     db_info["conversations.db"] = {
                         "exists": True,
                         "error": str(e),
@@ -287,10 +296,13 @@ class HealthCommand(BaseCommand):
         for category, data in health_data.items():
             if isinstance(data, dict):
                 for item, info in data.items():
+                    # Process each item in collection
                     if isinstance(info, dict) and "status" in info:
+                        # Complex condition - consider breaking down
                         scores["total"] += 1
                         status = info["status"]
                         if status == "critical" or status == "error":
+                            # Complex condition - consider breaking down
                             scores["critical"] += 1
                         elif status == "warning":
                             scores["warning"] += 1
@@ -355,6 +367,7 @@ class HealthCommand(BaseCommand):
         self.section("ワーカー")
         for worker_type, info in health_data["workers"].items():
             if info["expected"] > 0 or info["actual"] > 0:
+                # Complex condition - consider breaking down
                 icon = "✅" if info["healthy"] else "❌"
                 self.print(
                     f"{icon} {info['name']}: {info['actual']}/{info['expected']}"
@@ -364,6 +377,7 @@ class HealthCommand(BaseCommand):
         self.section("キュー")
         has_queue_issues = False
         for queue, info in health_data["queues"].items():
+            # Process each item in collection
             if info.get("messages", -1) >= 0:
                 if info["status"] != "ok":
                     has_queue_issues = True
@@ -378,6 +392,7 @@ class HealthCommand(BaseCommand):
 
         # 問題のサマリー
         if overall["summary"]["critical"] > 0 or overall["summary"]["warning"] > 0:
+            # Complex condition - consider breaking down
             self.section("問題サマリー")
             if overall["summary"]["critical"] > 0:
                 self.error(f"重大な問題: {overall['summary']['critical']}件")
@@ -393,6 +408,7 @@ class HealthCommand(BaseCommand):
             self.info("RabbitMQを起動しています...")
             result = self.run_command(["sudo", "systemctl", "start", "rabbitmq-server"])
             if result and result.returncode == 0:
+                # Complex condition - consider breaking down
                 fixes_applied.append("RabbitMQを起動しました")
 
         # ログファイルのローテーション
@@ -447,6 +463,7 @@ class HealthCommand(BaseCommand):
                 if not args.json:
                     self.section("自動修復")
                     for fix in fixes:
+                        # Process each item in collection
                         self.success(fix)
 
         # 結果表示

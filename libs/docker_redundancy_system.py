@@ -719,7 +719,8 @@ class FailoverManager:
         # 閾値チェック
         if consecutive_failures >= self.config.failover_threshold:
             logger.warning(
-                f"Service {service} exceeded failure threshold ({consecutive_failures} >= {self.config.failover_threshold})"
+                f"Service {service} exceeded failure threshold ({consecutive_failures} >= " \
+                    "{self.config.failover_threshold})"
             )
             return True
 

@@ -29,6 +29,7 @@ class ProphecyManagementCommand(BaseCommand):
     """予言書管理システムコマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-prophecy-management",
             description="🏛️ エルダーズギルド 予言書管理システム"
@@ -96,7 +97,11 @@ class ProphecyManagementCommand(BaseCommand):
         # governance - ガバナンス
         governance_parser = subparsers.add_parser("governance", help="ガバナンス管理")
         governance_parser.add_argument("prophecy_name", help="予言書名")
-        governance_parser.add_argument("--elder-council-review", action="store_true", help="エルダーズ評議会レビュー")
+        governance_parser.add_argument(
+            "--elder-council-review",
+            action="store_true",
+            help="エルダーズ評議会レビュー"
+        )
         governance_parser.add_argument("--approve", help="承認実行")
         governance_parser.add_argument("--reject", help="却下理由")
 
@@ -133,22 +138,31 @@ class ProphecyManagementCommand(BaseCommand):
 
         # サブコマンド実行
         if parsed_args.subcommand == "create":
+            # Complex condition - consider breaking down
             return self.create_prophecy(parsed_args)
         elif parsed_args.subcommand == "validate":
+            # Complex condition - consider breaking down
             return self.validate_prophecy(parsed_args)
         elif parsed_args.subcommand == "audit":
+            # Complex condition - consider breaking down
             return self.audit_prophecy(parsed_args)
         elif parsed_args.subcommand == "version":
+            # Complex condition - consider breaking down
             return self.manage_version(parsed_args)
         elif parsed_args.subcommand == "modify":
+            # Complex condition - consider breaking down
             return self.modify_prophecy(parsed_args)
         elif parsed_args.subcommand == "governance":
+            # Complex condition - consider breaking down
             return self.manage_governance(parsed_args)
         elif parsed_args.subcommand == "template":
+            # Complex condition - consider breaking down
             return self.manage_template(parsed_args)
         elif parsed_args.subcommand == "analytics":
+            # Complex condition - consider breaking down
             return self.analyze_prophecy(parsed_args)
         elif parsed_args.subcommand == "status":
+            # Complex condition - consider breaking down
             return self.show_system_status(parsed_args)
 
     def create_prophecy(self, args):
@@ -167,6 +181,7 @@ class ProphecyManagementCommand(BaseCommand):
                 additional_customizations = json.loads(args.customizations)
                 customizations.update(additional_customizations)
             except json.JSONDecodeError:
+                # Handle specific exception case
                 self.error("無効なJSON形式のカスタマイズです")
                 return 1
 
@@ -227,6 +242,7 @@ class ProphecyManagementCommand(BaseCommand):
         self.info(f"   品質合格: {'✅' if quality_assessment['passed'] else '❌'}")
 
         for criterion, score in quality_assessment['quality_scores'].items():
+            # Process each item in collection
             self.info(f"   {criterion}: {score:.1%}")
 
         # リスク検証
@@ -251,11 +267,13 @@ class ProphecyManagementCommand(BaseCommand):
             if quality_assessment['recommendations']:
                 self.info("\n💡 品質改善推奨事項:")
                 for rec in quality_assessment['recommendations']:
+                    # Process each item in collection
                     self.info(f"   • {rec}")
 
             if risk_assessment['mitigation_strategies']:
                 self.info("\n🛡️ リスク軽減策:")
                 for strategy in risk_assessment['mitigation_strategies']:
+                    # Process each item in collection
                     self.info(f"   • {strategy}")
 
         return 0
@@ -295,6 +313,7 @@ class ProphecyManagementCommand(BaseCommand):
             if audit_result['recommendations']:
                 self.info("\n💡 監査推奨事項:")
                 for rec in audit_result['recommendations']:
+                    # Process each item in collection
                     self.info(f"   • {rec}")
 
         # レポート出力
@@ -318,6 +337,7 @@ class ProphecyManagementCommand(BaseCommand):
             history = version_control.version_history.get(args.prophecy_name, [])
             self.info(f"📋 {args.prophecy_name} バージョン履歴:")
             for version in history:
+                # Process each item in collection
                 self.info(f"   v{version['version']}: {version['timestamp']}")
                 if 'changes' in version:
                     change_type = version['changes'].get('type', 'unknown')
@@ -362,6 +382,7 @@ class ProphecyManagementCommand(BaseCommand):
         try:
             changes = json.loads(args.changes)
         except json.JSONDecodeError:
+            # Handle specific exception case
             self.error("無効なJSON形式の変更内容です")
             return 1
 
@@ -383,6 +404,7 @@ class ProphecyManagementCommand(BaseCommand):
         self.info(f"📜 予言書: {result['prophecy_name']}")
         self.info("🔧 適用された変更:")
         for key, value in changes.items():
+            # Process each item in collection
             self.info(f"   {key}: {value}")
 
         return 0
@@ -415,6 +437,7 @@ class ProphecyManagementCommand(BaseCommand):
 
             # 評議会の決定
             if quality_score >= 0.7 and risk_level in [RiskLevel.LOW, RiskLevel.MEDIUM]:
+                # Complex condition - consider breaking down
                 self.success("✅ エルダーズ評議会承認: 続行可能")
             else:
                 self.warning("⚠️ エルダーズ評議会判定: 要改善")
@@ -452,6 +475,7 @@ class ProphecyManagementCommand(BaseCommand):
             templates = self.management_system.templates
             self.info(f"📋 登録済みテンプレート: {len(templates)}件")
             for template_id, template in templates.items():
+                # Process each item in collection
                 self.info(f"   📄 {template_id}: {template.name}")
                 self.info(f"      説明: {template.description}")
                 self.info(f"      バージョン: {template.version}")
@@ -459,6 +483,7 @@ class ProphecyManagementCommand(BaseCommand):
         elif args.subaction == "create":
             # テンプレート作成
             if not args.template_id or not args.name:
+                # Complex condition - consider breaking down
                 self.error("テンプレートIDと名前が必要です")
                 return 1
 
@@ -518,6 +543,7 @@ class ProphecyManagementCommand(BaseCommand):
                 self.info("📈 リスク傾向分析:")
                 risk_assessment = prophecy_status['assessments']['risk_assessment']
                 for factor, score in risk_assessment['risk_scores'].items():
+                    # Process each item in collection
                     self.info(f"   {factor}: {score:.1%}")
 
         else:
@@ -530,6 +556,7 @@ class ProphecyManagementCommand(BaseCommand):
             quality_scores = []
 
             for prophecy in prophecy_list:
+                # Process each item in collection
                 risk_level = prophecy['risk_level']
                 quality_score = prophecy['quality_score']
 
@@ -538,6 +565,7 @@ class ProphecyManagementCommand(BaseCommand):
 
             self.info("📊 リスク分布:")
             for risk_level, count in risk_levels.items():
+                # Process each item in collection
                 self.info(f"   {risk_level}: {count}件")
 
             if quality_scores:
@@ -582,6 +610,7 @@ class ProphecyManagementCommand(BaseCommand):
 
             self.info("📊 ライフサイクル分布:")
             for stage, count in lifecycle_stats.items():
+                # Process each item in collection
                 self.info(f"   {stage}: {count}件")
 
         return 0

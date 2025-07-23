@@ -14,6 +14,7 @@ class AIEvolveTestCommand(BaseCommand):
     """自己進化テスト"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-evolve-test", description="自己進化テスト", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AIEvolveTestCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIEvolveTestCommand()
     sys.exit(command.run())
 

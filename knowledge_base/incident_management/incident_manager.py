@@ -479,7 +479,8 @@ if __name__ == "__main__":
             ]
         ):
             print(
-                "エラー: create には --category, --priority, --title, --description, --components, --impact が必要です"
+                "エラー: create には --category, --priority, --title, --description, " \
+                    "--components, --impact が必要です"
             )
             sys.exit(1)
 

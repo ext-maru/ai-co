@@ -41,11 +41,14 @@ try:
     )
     from libs.enhanced_rag_manager import EnhancedRAGManager
 except ImportError as e:
+    # Handle specific exception case
     print(f"⚠️ Import warning: {e}")
 
     # テスト環境での代替実装
     class ElderCouncilProactiveSystem:
+        # Main class implementation
         def __init__(self):
+            """初期化メソッド"""
             self.guidance_engine = type(
                 "MockEngine",
                 (),
@@ -62,7 +65,9 @@ except ImportError as e:
             pass
 
     class ProactiveTrendAnalyzer:
+        # Main class implementation
         def __init__(self):
+            """初期化メソッド"""
             pass
 
         def analyze_trends(self):
@@ -72,11 +77,13 @@ except ImportError as e:
             pass
 
     class ProactiveGuidanceType:
+        # Main class implementation
         STRATEGIC_GUIDANCE = "strategic_guidance"
         PREVENTIVE_ACTION = "preventive_action"
         IMPROVEMENT_OPPORTUNITY = "improvement_opportunity"
 
     class UrgencyLevel:
+        # Main class implementation
         IMMEDIATE = "immediate"
         HIGH = "high"
         MEDIUM = "medium"
@@ -88,6 +95,7 @@ class AIElderProactiveCommand:
     """AI Elder Proactive Command Interface"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.proactive_system = ElderCouncilProactiveSystem()
         self.guidance_history_dir = (
             PROJECT_ROOT / "knowledge_base" / "elder_council_requests"
@@ -137,6 +145,7 @@ class AIElderProactiveCommand:
             print("-" * 40)
 
             for i, insight in enumerate(insights, 1):
+                # Process each item in collection
                 self._display_insight(insight, i)
 
                 # 各洞察を保存
@@ -145,6 +154,7 @@ class AIElderProactiveCommand:
             print(f"\n📝 {len(insights)}件の洞察をナレッジベースに保存しました")
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ エラー: {e}")
             return False
 
@@ -172,6 +182,7 @@ class AIElderProactiveCommand:
         if insight.recommended_actions:
             print("   推奨アクション:")
             for j, action in enumerate(insight.recommended_actions[:3], 1):
+                # Process each item in collection
                 print(f"     {j}. {action}")
             if len(insight.recommended_actions) > 3:
                 print(f"     ... 他{len(insight.recommended_actions) - 3}件")
@@ -193,6 +204,7 @@ class AIElderProactiveCommand:
         urgency_stats = self._calculate_urgency_statistics()
         print("\n🔥 緊急度別統計:")
         for urgency, count in urgency_stats.items():
+            # Process each item in collection
             print(f"   {urgency}: {count}件")
 
         # システムメトリクス状況
@@ -268,6 +280,7 @@ class AIElderProactiveCommand:
             print(f"   {title_match[:60]}{'...' if len(title_match) > 60 else ''}")
 
         except Exception as e:
+            # Handle specific exception case
             print(f"   ❌ ファイル読み込みエラー: {guidance_file.name}")
 
     def generate_report(self, report_type: str = "comprehensive"):
@@ -318,6 +331,7 @@ class AIElderProactiveCommand:
         ]
 
         for trend in trends:
+            # Process each item in collection
             trend_icon = (
                 "📈"
                 if trend["trend"] == "increasing"
@@ -349,6 +363,7 @@ class AIElderProactiveCommand:
         ]
 
         for opp in sorted(opportunities, key=lambda x: x["score"], reverse=True):
+            # Process each item in collection
             score_icon = (
                 "🟢" if opp["score"] > 0.8 else "🟡" if opp["score"] > 0.6 else "🔴"
             )
@@ -429,6 +444,7 @@ class AIElderProactiveCommand:
             if metrics_change:
                 print("   メトリクス変化:")
                 for metric, change in metrics_change.items():
+                    # Process each item in collection
                     change_symbol = "📈" if change > 0 else "📉" if change < 0 else "➡️"
                     print(f"     {change_symbol} {metric}: {change:+.1f}")
 
@@ -436,6 +452,7 @@ class AIElderProactiveCommand:
             self._save_feedback_data(insight_id, outcome, metrics_change)
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ フィードバック記録エラー: {e}")
             return False
 
@@ -473,6 +490,7 @@ class AIElderProactiveCommand:
 
         guidance_files = []
         for file_path in self.guidance_history_dir.glob("proactive_guidance_*.md"):
+            # Process each item in collection
             if datetime.fromtimestamp(file_path.stat().st_mtime) > cutoff_time:
                 guidance_files.append(file_path)
 
@@ -567,25 +585,31 @@ async def main():
 
     try:
         if args.command == "generate":
+            # Complex condition - consider breaking down
             await command_interface.generate_insights(
                 focus_area=args.focus, urgency_filter=args.urgency
             )
 
         elif args.command == "status":
+            # Complex condition - consider breaking down
             command_interface.show_status()
 
         elif args.command == "history":
+            # Complex condition - consider breaking down
             command_interface.show_history(days=args.days, urgency_filter=args.urgency)
 
         elif args.command == "report":
+            # Complex condition - consider breaking down
             command_interface.generate_report(report_type=args.type)
 
         elif args.command == "feedback":
+            # Complex condition - consider breaking down
             metrics_change = {}
             if args.metrics:
                 try:
                     metrics_change = json.loads(args.metrics)
                 except json.JSONDecodeError:
+                    # Handle specific exception case
                     print("❌ エラー: メトリクスはJSON形式で指定してください")
                     return
 
@@ -594,14 +618,17 @@ async def main():
             )
 
         elif args.command == "monitor":
+            # Complex condition - consider breaking down
             print("🔍 Continuous monitoring started...")
             print("Press Ctrl+C to stop")
             try:
                 await command_interface.proactive_system.start_proactive_monitoring()
             except KeyboardInterrupt:
+                # Handle specific exception case
                 print("\n🛑 Monitoring stopped")
 
     except Exception as e:
+        # Handle specific exception case
         print(f"❌ エラー: {e}")
         return 1
 

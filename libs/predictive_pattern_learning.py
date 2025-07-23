@@ -234,7 +234,8 @@ class PredictivePatternLearningSystem:
                 "CREATE INDEX IF NOT EXISTS idx_complexity ON task_execution_records(complexity);"
             )
             cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_execution_pattern ON task_execution_records(execution_pattern);"
+                "CREATE INDEX IF NOT EXISTS idx_execution_pattern ON " \
+                    "task_execution_records(execution_pattern);"
             )
             cursor.execute(
                 "CREATE INDEX IF NOT EXISTS idx_success ON task_execution_records(success);"

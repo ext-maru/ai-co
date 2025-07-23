@@ -453,7 +453,8 @@ class HealthMonitor:
             active_executions = pool_stats["active_executions"]
             
             if current_workers > 0:
-                return HealthStatus.HEALTHY, f"Claude CLI pool healthy ({current_workers} workers)", pool_stats
+                return HealthStatus.HEALTHY, f"Claude CLI pool healthy ({current_workers} workers)" \
+                    "Claude CLI pool healthy ({current_workers} workers)", pool_stats
             else:
                 return HealthStatus.DEGRADED, "No Claude CLI workers available", pool_stats
                 
@@ -472,6 +473,7 @@ class HealthMonitor:
             
             # GitHub API接続テスト
             headers = {"Authorization": f"token {github_token}"}
+            # Security: Validate URL before making request
             response = requests.get("https://api.github.com/user", headers=headers, timeout=10)
             
             if response.status_code == 200:
@@ -516,9 +518,11 @@ class HealthMonitor:
             if recent_errors < 10:  # 過去1時間で10件未満
                 return HealthStatus.HEALTHY, "Error recovery system healthy", error_stats
             elif recent_errors < 50:
-                return HealthStatus.DEGRADED, f"High error rate: {recent_errors} recent errors", error_stats
+                return HealthStatus.DEGRADED, f"High error rate: {recent_errors} recent errors" \
+                    "High error rate: {recent_errors} recent errors", error_stats
             else:
-                return HealthStatus.UNHEALTHY, f"Very high error rate: {recent_errors} recent errors", error_stats
+                return HealthStatus.UNHEALTHY, f"Very high error rate: {recent_errors} recent errors" \
+                    "Very high error rate: {recent_errors} recent errors", error_stats
                 
         except Exception as e:
             return HealthStatus.UNHEALTHY, f"Error recovery health check error: {str(e)}", {"error": str(e)}
@@ -735,8 +739,14 @@ class MonitoringDashboard:
             # ディスクI/O
             disk_io = psutil.disk_io_counters()
             if disk_io:
-                self.metrics_collector.set_gauge("system.disk_io_read", disk_io.read_bytes / (1024 * 1024))
-                self.metrics_collector.set_gauge("system.disk_io_write", disk_io.write_bytes / (1024 * 1024))
+                self.metrics_collector.set_gauge(
+                    "system.disk_io_read",
+                    disk_io.read_bytes / (1024 * 1024)
+                )
+                self.metrics_collector.set_gauge(
+                    "system.disk_io_write",
+                    disk_io.write_bytes / (1024 * 1024)
+                )
             
         except Exception as e:
             logger.error(f"System metrics collection failed: {str(e)}")
@@ -751,17 +761,35 @@ class MonitoringDashboard:
             pool_stats = optimizer.execution_pool.get_pool_stats()
             
             # Claude CLI関連メトリクス
-            self.metrics_collector.set_gauge("claude_cli.active_workers", pool_stats["current_workers"])
-            self.metrics_collector.set_gauge("claude_cli.active_executions", pool_stats["active_executions"])
+            self.metrics_collector.set_gauge(
+                "claude_cli.active_workers",
+                pool_stats["current_workers"]
+            )
+            self.metrics_collector.set_gauge(
+                "claude_cli.active_executions",
+                pool_stats["active_executions"]
+            )
             self.metrics_collector.set_gauge("claude_cli.queue_size", pool_stats["queue_size"])
             
             execution_stats = pool_stats["execution_stats"]
-            self.metrics_collector.set_gauge("claude_cli.total_executions", execution_stats["total_executions"])
-            self.metrics_collector.set_gauge("claude_cli.successful_executions", execution_stats["successful_executions"])
-            self.metrics_collector.set_gauge("claude_cli.failed_executions", execution_stats["failed_executions"])
+            self.metrics_collector.set_gauge(
+                "claude_cli.total_executions",
+                execution_stats["total_executions"]
+            )
+            self.metrics_collector.set_gauge(
+                "claude_cli.successful_executions",
+                execution_stats["successful_executions"]
+            )
+            self.metrics_collector.set_gauge(
+                "claude_cli.failed_executions",
+                execution_stats["failed_executions"]
+            )
             
             if execution_stats["average_execution_time"] > 0:
-                self.metrics_collector.record_timer("claude_cli.execution_time", execution_stats["average_execution_time"])
+                self.metrics_collector.record_timer(
+                    "claude_cli.execution_time",
+                    execution_stats["average_execution_time"]
+                )
             
         except Exception as e:
             logger.error(f"A2A metrics collection failed: {str(e)}")

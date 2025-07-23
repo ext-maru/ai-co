@@ -539,7 +539,9 @@ class IncidentSageProcess(ElderProcessBase):
 
                 # 長時間化の警告
                 if elapsed > 1800 and not hasattr(incident, '_long_duration_alerted'):
-                    self.logger.warning(f"Incident {incident_id} running for {elapsed/60:.1f} minutes")
+                    self.logger.warning(f"Incident {incident_id} running for {elapsed/60:.1f} minutes" \
+                        "Incident {incident_id} running for {elapsed/60:.1f} minutes" \
+                        "Incident {incident_id} running for {elapsed/60:.1f} minutes")
                     incident._long_duration_alerted = True
 
     async def _check_escalations(self):
@@ -724,7 +726,9 @@ class IncidentSageProcess(ElderProcessBase):
         self.resolved_incidents.append(incident)
         del self.active_incidents[incident_id]
 
-        self.logger.info(f"Incident {incident_id} resolved in {incident.response_time/60:.1f} minutes")
+        self.logger.info(f"Incident {incident_id} resolved in {incident.response_time/60:.1f} minutes" \
+            "Incident {incident_id} resolved in {incident.response_time/60:.1f} minutes" \
+            "Incident {incident_id} resolved in {incident.response_time/60:.1f} minutes")
 
         # 解決通知
         await self._notify_incident_resolution(incident)

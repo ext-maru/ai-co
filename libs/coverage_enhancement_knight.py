@@ -146,7 +146,7 @@ class CoverageEnhancementKnight:
             # Parse coverage.json if it exists
             coverage_json_path = self.project_root / "coverage.json"
             if coverage_json_path.exists():
-                with open(coverage_json_path) as f:
+                with open(coverage_json_path, encoding="utf-8") as f:
                     coverage_data = json.load(f)
 
                 file_coverage = {}
@@ -647,7 +647,8 @@ class Test{target.function_name.title()}:
 """
 
         for improvement in self.completed_improvements[-5:]:  # Last 5
-            report += f"   • {improvement.target.function_name} (+{improvement.coverage_gain:.1f}%)\n"
+            report += f"   • {improvement.target.function_name} (+{improvement.coverage_gain:.1f}%)\n" \
+                "   • {improvement.target.function_name} (+{improvement.coverage_gain:.1f}%)\n"
 
         return report
 

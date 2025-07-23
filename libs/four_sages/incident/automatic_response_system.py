@@ -375,7 +375,10 @@ class AutomaticResponseSystem(EldersServiceLegacy):
 
                         if not result["success"]:
                             execution.error_messages.append(
-                                f"Action {action_name} failed: {result.get('error', 'Unknown error')}"
+                                f"Action {action_name} failed: {result.get(
+                                    'error',
+                                    'Unknown error'
+                                )}"
                             )
                     else:
                         logger.warning(f"⚠️ Unknown action: {action_name}")
@@ -434,7 +437,8 @@ class AutomaticResponseSystem(EldersServiceLegacy):
         """インシデントに対応記録を追加"""
         try:
             action_description = f"Automatic response executed: {rule.rule_name}"
-            action_result = f"Status: {execution.status.value}, Actions: {len(execution.actions_executed)}"
+            action_result = f"Status: {execution.status.value}, Actions: {len(execution.actions_executed)}" \
+                "Status: {execution.status.value}, Actions: {len(execution.actions_executed)}"
 
             response = await self.incident_sage.process_request(
                 {

@@ -29,6 +29,7 @@ class DwarfServant(ElderServant, Generic[T_Request, T_Response]):
     """
 
     def __init__(
+        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,
@@ -80,6 +81,7 @@ class DwarfServant(ElderServant, Generic[T_Request, T_Response]):
 
                 # 完全性チェック
                 if "result" in artifact or "data" in artifact:
+                    # Complex condition - consider breaking down
                     quality_score += 15.0
 
                 # エラーなしチェック
@@ -91,6 +93,7 @@ class DwarfServant(ElderServant, Generic[T_Request, T_Response]):
                 quality_score = min(100.0, quality_score + 5.0)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Quality validation error: {e}")
             quality_score = 0.0
 
@@ -113,6 +116,7 @@ class WizardServant(ElderServant, Generic[T_Request, T_Response]):
     """
 
     def __init__(
+        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,
@@ -174,6 +178,7 @@ class WizardServant(ElderServant, Generic[T_Request, T_Response]):
                     quality_score = min(100.0, quality_score + 5.0)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Research quality validation error: {e}")
             quality_score = 0.0
 
@@ -207,6 +212,7 @@ class WizardServant(ElderServant, Generic[T_Request, T_Response]):
         """キャッシュされた研究結果取得"""
         cached = self.research_cache.get(query_hash)
         if cached and cached["expiry"] > datetime.now().timestamp():
+            # Complex condition - consider breaking down
             return cached["result"]
         elif cached:
             # 期限切れキャッシュを削除
@@ -221,6 +227,7 @@ class ElfServant(ElderServant, Generic[T_Request, T_Response]):
     """
 
     def __init__(
+        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,
@@ -282,6 +289,7 @@ class ElfServant(ElderServant, Generic[T_Request, T_Response]):
                     quality_score = min(100.0, quality_score + 5.0)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Harmony quality validation error: {e}")
             quality_score = 0.0
 
@@ -335,6 +343,7 @@ class ElfServant(ElderServant, Generic[T_Request, T_Response]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Healing application failed: {e}")
             return {"success": False, "error": str(e)}
 

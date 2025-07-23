@@ -211,9 +211,20 @@ class PgVectorComprehensiveTest:
             if result.returncode == 0:
                 health_data = json.loads(result.stdout)
                 
-                results['connection_status'] = health_data.get('postgresql', {}).get('status') == 'healthy'
-                results['pgvector_extension'] = health_data.get('postgresql', {}).get('pgvector_available', False)
-                results['table_exists'] = health_data.get('postgresql', {}).get('table_exists', False)
+                results['connection_status'] = health_data.get(
+                    'postgresql',
+                    {}).get('status'
+                ) == 'healthy'
+                results['pgvector_extension'] = health_data.get(
+                    'postgresql',
+                    {}).get('pgvector_available',
+                    False
+                )
+                results['table_exists'] = health_data.get(
+                    'postgresql',
+                    {}).get('table_exists',
+                    False
+                )
                 results['record_count'] = health_data.get('postgresql', {}).get('record_count', 0)
                 
                 # スコア計算
@@ -336,8 +347,14 @@ class PgVectorComprehensiveTest:
             }
             
             # スコア計算
-            text_score = min(results['text_search']['successful_queries'] / len(test_queries) * 60, 60)
-            vector_score = min(results['vector_search']['successful_queries'] / len(test_queries) * 40, 40)
+            text_score = min(
+                results['text_search']['successful_queries'] / len(test_queries) * 60,
+                60
+            )
+            vector_score = min(
+                results['vector_search']['successful_queries'] / len(test_queries) * 40,
+                40
+            )
             
             results['score'] = int(text_score + vector_score)
             
@@ -483,7 +500,10 @@ class PgVectorComprehensiveTest:
             print(f"  🔍 平均検索速度: {results['search_speed']['average_time']:.3f}秒")
             
             # スコア計算
-            speed_score = 100 if results['search_speed']['average_time'] < 0.1 else max(0, 100 - (results['search_speed']['average_time'] * 100))
+            speed_score = 100 if results['search_speed']['average_time'] < 0.1 else max(
+                0,
+                100 - (results['search_speed']['average_time'] * 100)
+            )
             size_score = 100 if results['database_size']['size_mb'] > 1 else 50
             
             results['score'] = int((speed_score + size_score) / 2)

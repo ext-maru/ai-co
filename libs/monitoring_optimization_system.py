@@ -220,7 +220,8 @@ class SystemMonitor:
 
             # キャッシュヒット率
             cache_stats = await conn.fetchrow(
-                "SELECT sum(heap_blks_hit) as hits, sum(heap_blks_read) as reads FROM pg_statio_user_tables"
+                "SELECT sum(heap_blks_hit) as hits, sum(heap_blks_read) as reads FROM " \
+                    "pg_statio_user_tables"
             )
 
             if cache_stats["reads"] > 0:

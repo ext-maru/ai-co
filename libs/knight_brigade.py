@@ -1124,7 +1124,8 @@ class WeaponryManager:
         self.workshop_connection["last_delivery"] = datetime.now()
 
         logger.info(
-            f"⚔️ Received {len(received_items)} weapons/tools from workshop (Quality: {avg_quality:.2f})"
+            f"⚔️ Received {len(received_items)} weapons/tools from workshop (Quality: " \
+                "{avg_quality:.2f})"
         )
 
         return {
@@ -1196,7 +1197,8 @@ class WeaponryManager:
         estimated_effectiveness = effectiveness * mission_compatibility
 
         logger.info(
-            f"⚔️ Deployed {weapon_type} to squad {squad_id} (Effectiveness: {estimated_effectiveness:.2f})"
+            f"⚔️ Deployed {weapon_type} to squad {squad_id} (Effectiveness: " \
+                "{estimated_effectiveness:.2f})"
         )
 
         return {
@@ -1463,7 +1465,8 @@ class TacticalCoordinator:
         self.active_operations[operation_id] = response_plan
 
         logger.info(
-            f"🎯 Coordinated response planned: {operation_id} (Success rate: {success_probability:.2f})"
+            f"🎯 Coordinated response planned: {operation_id} (Success rate: " \
+                "{success_probability:.2f})"
         )
 
         return response_plan
@@ -1526,7 +1529,8 @@ class TacticalCoordinator:
             del self.active_operations[operation_id]
 
         logger.info(
-            f"🎯 Multi-squad operation completed: {len(objectives_achieved)}/{len(objectives)} objectives"
+            f"🎯 Multi-squad operation completed: " \
+                "{len(objectives_achieved)}/{len(objectives)} objectives"
         )
 
         coordination_success = (

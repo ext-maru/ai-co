@@ -33,6 +33,7 @@ class DockerPermissionManager:
     """Docker権限管理システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.user = os.getenv("USER", "unknown")
         self.docker_socket = "/var/run/docker.sock"
         self.logger = logging.getLogger(__name__)

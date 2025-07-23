@@ -362,7 +362,8 @@ class A2ACommunicationProtocol:
             asyncio.create_task(self._discovery_loop())
 
             self.logger.info(
-                f"🌟 A2A Protocol started for {self.soul_identity.soul_id} on {self.host}:{self.port}"
+                f"🌟 A2A Protocol started for {self.soul_identity.soul_id} on {self.host}:" \
+                    "{self.port}"
             )
             return True
 
@@ -552,7 +553,8 @@ class A2ACommunicationProtocol:
                 success_count += 1
 
         self.logger.info(
-            f"📡 Multicast sent to {success_count}/{len(group_members)} souls in group {message.target_group}"
+            f"📡 Multicast sent to {success_count}/{len(group_members)} souls in group " \
+                "{message.target_group}"
         )
         return success_count > 0
 
@@ -681,7 +683,10 @@ class A2ACommunicationProtocol:
     async def _handle_request(self, message: A2AMessage):
         """リクエストハンドラー"""
         self.logger.info(
-            f"📨 Received request from {message.sender_soul_id}: {message.payload.get('type', 'unknown')}"
+            f"📨 Received request from {message.sender_soul_id}: {message.payload.get(
+                'type',
+                'unknown'
+            )}"
         )
 
         # リクエストに対するレスポンス（実装は各魂で行う）
@@ -802,7 +807,10 @@ class A2ACommunicationProtocol:
     async def _handle_error(self, message: A2AMessage):
         """エラーハンドラー"""
         self.logger.error(
-            f"💥 Error from {message.sender_soul_id}: {message.payload.get('error', 'Unknown error')}"
+            f"💥 Error from {message.sender_soul_id}: {message.payload.get(
+                'error',
+                'Unknown error'
+            )}"
         )
 
     async def _handle_shutdown(self, message: A2AMessage):

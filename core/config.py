@@ -404,7 +404,8 @@ class EldersGuildConfig:
 
     def __repr__(self) -> str:
         """設定の文字列表現"""
-        return f"EldersGuildConfig(rabbitmq={self.rabbitmq.host}, slack_enabled={self.slack.enabled}, workers={self.worker.min_workers}-{self.worker.max_workers})"
+        return f"EldersGuildConfig(rabbitmq={self.rabbitmq.host}, slack_enabled={self.slack." \
+            "enabled}, workers={self.worker.min_workers}-{self.worker.max_workers})"
 
 
 # グローバル設定インスタンス（シングルトン）

@@ -105,7 +105,9 @@ class IncidentSageSoul(BaseSoul):
             # 初期データロード確認
             self._update_operational_metrics()
             
-            self.logger.info(f"Incident Sage initialized successfully with {len(abilities)} abilities")
+            self.logger.info(f"Incident Sage initialized successfully with {len(abilities)} abilities" \
+                "Incident Sage initialized successfully with {len(abilities)} abilities" \
+                "Incident Sage initialized successfully with {len(abilities)} abilities")
             return True
             
         except Exception as e:
@@ -391,7 +393,12 @@ class IncidentSageSoul(BaseSoul):
             ))
             conn.commit()
     
-    async def assess_quality(self, standard_id: str, assessment_data: Dict[str, Any]) -> QualityAssessment:
+    async def assess_quality(
+        self,
+        standard_id: str,
+        assessment_data: Dict[str,
+        Any]
+    ) -> QualityAssessment:
         """品質評価実行"""
         if standard_id not in self.quality_standards:
             raise ValueError(f"Quality standard not found: {standard_id}")
@@ -831,7 +838,8 @@ class IncidentSageSoul(BaseSoul):
         value = anomaly_data.get('value', 'N/A')
         threshold = anomaly_data.get('threshold', 'N/A')
         
-        return f"Anomalous {metric} detected in {component}. Current value: {value}, Threshold: {threshold}"
+        return f"Anomalous {metric} detected in {component}. Current value: {value}, Threshold: " \
+            "{threshold}"
     
     def _extract_tags(self, anomaly_data: Dict[str, Any]) -> List[str]:
         """タグ抽出"""
@@ -847,12 +855,19 @@ class IncidentSageSoul(BaseSoul):
     async def _trigger_automatic_response(self, incident: Incident):
         """自動対応トリガー"""
         # 重要インシデントの場合は即座に対応開始
-        self.logger.info(f"Triggering automatic response for critical incident: {incident.incident_id}")
+        self.logger.info(f"Triggering automatic response for critical incident: {incident.incident_id}" \
+            "Triggering automatic response for critical incident: {incident.incident_id}" \
+            "Triggering automatic response for critical incident: {incident.incident_id}")
         
         # バックグラウンドで対応実行
         asyncio.create_task(self.respond_to_incident(incident.incident_id))
     
-    def _calculate_overall_score(self, metric_scores: Dict[str, float], standard: QualityStandard) -> float:
+    def _calculate_overall_score(
+        self,
+        metric_scores: Dict[str,
+        float],
+        standard: QualityStandard
+    ) -> float:
         """総合スコア計算"""
         if not metric_scores:
             return 0.0
@@ -883,7 +898,9 @@ class IncidentSageSoul(BaseSoul):
         """品質問題インシデント生成"""
         incident = Incident(
             title=f"Quality Standard Violation: {assessment.target_component}",
-            description=f"Component {assessment.target_component} failed quality assessment with score {assessment.overall_score:.1f}%",
+            description=f"Component {assessment.target_component} failed quality assessment with score " \
+                "Component {assessment.target_component} failed quality assessment with score " \
+                "{assessment.overall_score:.1f}%",
             severity=IncidentSeverity.MEDIUM,
             category=IncidentCategory.QUALITY,
             affected_components=[assessment.target_component],
@@ -970,7 +987,12 @@ class IncidentSageSoul(BaseSoul):
         
         return False
     
-    async def _create_alert_incident(self, rule: AlertRule, metric_data: Dict[str, Any]) -> Incident:
+    async def _create_alert_incident(
+        self,
+        rule: AlertRule,
+        metric_data: Dict[str,
+        Any]
+    ) -> Incident:
         """アラートインシデント生成"""
         incident = Incident(
             title=f"Alert: {rule.name}",
@@ -1302,7 +1324,9 @@ class IncidentSageSoul(BaseSoul):
                 })
             
             else:
-                return self._create_error_response(message, f"Unknown consultation type: {consultation_type}")
+                return self._create_error_response(message, f"Unknown consultation type: {consultation_type}" \
+                    "Unknown consultation type: {consultation_type}" \
+                    "Unknown consultation type: {consultation_type}")
                 
         except Exception as e:
             return self._create_error_response(message, str(e))

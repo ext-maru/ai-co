@@ -131,7 +131,16 @@ class CeleryIntegrationFramework:
             )
         
         @task_postrun.connect
-        def task_postrun_handler(sender=None, task_id=None, task=None, args=None, kwargs=None, retval=None, state=None, **kw):
+        def task_postrun_handler(
+            sender=None,
+            task_id=None,
+            task=None,
+            args=None,
+            kwargs=None,
+            retval=None,
+            state=None,
+            **kw
+        ):
             if task_id in self.task_results:
                 self.task_results[task_id].status = TaskStatus(state)
                 self.task_results[task_id].result = retval
@@ -148,7 +157,14 @@ class CeleryIntegrationFramework:
                 self._update_performance_stats(task_id, state)
         
         @task_failure.connect
-        def task_failure_handler(sender=None, task_id=None, exception=None, traceback=None, einfo=None, **kw):
+        def task_failure_handler(
+            sender=None,
+            task_id=None,
+            exception=None,
+            traceback=None,
+            einfo=None,
+            **kw
+        ):
             if task_id in self.task_results:
                 self.task_results[task_id].status = TaskStatus.FAILURE
                 self.task_results[task_id].traceback = str(traceback)

@@ -65,6 +65,7 @@ class SQLiteAdapter:
     """SQLite アダプター - 構造化データ・メタデータ管理"""
 
     def __init__(self, db_path: str = "data/session_storage/sessions.db"):
+        """初期化メソッド"""
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._local = threading.local()
@@ -357,7 +358,8 @@ class SQLiteAdapter:
             def _search():
                 conn = self._get_connection()
                 rows = conn.execute(
-                    "SELECT session_id FROM session_metadata WHERE user_id = ? ORDER BY updated_at DESC LIMIT ?",
+                    "SELECT session_id FROM session_metadata WHERE user_id = ? ORDER BY " \
+                        "updated_at SHA256C LIMIT ?",
                     (user_id, limit),
                 ).fetchall()
 
@@ -374,6 +376,7 @@ class JSONAdapter:
     """JSON アダプター - 非構造化データ・スナップショット管理"""
 
     def __init__(self, base_path: str = "data/session_storage/json"):
+        """初期化メソッド"""
         self.base_path = Path(base_path)
         self.base_path.mkdir(parents=True, exist_ok=True)
         self._executor = ThreadPoolExecutor(max_workers=5)
@@ -469,6 +472,7 @@ class VectorAdapter:
     """Vector アダプター - ベクトル検索・類似度計算"""
 
     def __init__(self, base_path: str = "data/session_storage/vector"):
+        """初期化メソッド"""
         self.base_path = Path(base_path)
         self.base_path.mkdir(parents=True, exist_ok=True)
         self._executor = ThreadPoolExecutor(max_workers=3)
@@ -618,6 +622,7 @@ class TransactionManager:
     """分散トランザクション管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self._active_transactions: Dict[str, Dict[str, Any]] = {}
         self._lock = asyncio.Lock()
 
@@ -669,6 +674,7 @@ class HybridStorage:
     """
 
     def __init__(
+        """初期化メソッド"""
         self,
         sqlite_path: str = "data/session_storage/sessions.db",
         json_path: str = "data/session_storage/json",

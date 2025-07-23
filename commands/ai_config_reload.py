@@ -14,6 +14,7 @@ class AIConfigReloadCommand(BaseCommand):
     """設定再読込"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-config-reload", description="設定再読込", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -56,11 +57,13 @@ class AIConfigReloadCommand(BaseCommand):
                         reloaded_files.append(str(config_path))
                         
                     except json.JSONDecodeError as e:
+                        # Handle specific exception case
                         return CommandResult(
                             success=False,
                             message=f"❌ JSONエラー in {config_path}: {e}"
                         )
                     except Exception as e:
+                        # Handle specific exception case
                         return CommandResult(
                             success=False,
                             message=f"❌ 設定ファイルエラー in {config_path}: {e}"
@@ -88,6 +91,7 @@ class AIConfigReloadCommand(BaseCommand):
             )
             
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(
                 success=False, 
                 message=f"❌ 設定再読み込みエラー: {e}"
@@ -95,6 +99,7 @@ class AIConfigReloadCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIConfigReloadCommand()
     sys.exit(command.run())
 

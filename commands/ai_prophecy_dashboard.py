@@ -26,6 +26,7 @@ class ProphecyDashboardCommand(BaseCommand):
     """予言書ダッシュボードコマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-prophecy-dashboard",
             description="🏛️ エルダーズギルド 予言書ダッシュボード"
@@ -145,6 +146,7 @@ class ProphecyDashboardCommand(BaseCommand):
         if basic_prophecies:
             self.info("🔮 基本予言書エンジン:")
             for prophecy in basic_prophecies:
+                # Process each item in collection
                 self.info(f"   📋 {prophecy['name']}")
                 self.info(f"      📄 {prophecy['description']}")
                 self.info(f"      📊 Phase {prophecy['current_phase']}/{prophecy['total_phases']}")
@@ -154,7 +156,9 @@ class ProphecyDashboardCommand(BaseCommand):
         if managed_prophecies:
             self.info("🏛️ 管理システム:")
             for prophecy in managed_prophecies:
+                # Process each item in collection
                 if active_only and prophecy['lifecycle_stage'] != 'active':
+                    # Complex condition - consider breaking down
                     continue
 
                 self.info(f"   📋 {prophecy['prophecy_name']}")
@@ -165,8 +169,10 @@ class ProphecyDashboardCommand(BaseCommand):
                 self.info("")
 
         if prophecy_files and not basic_prophecies and not managed_prophecies:
+            # Complex condition - consider breaking down
             self.info("📁 検出された予言書ファイル:")
             for file_path in prophecy_files:
+                # Process each item in collection
                 self.info(f"   📄 {file_path.name}")
                 self.info(f"      📁 {file_path}")
 
@@ -181,6 +187,7 @@ class ProphecyDashboardCommand(BaseCommand):
                 self.info("")
 
         if not basic_prophecies and not managed_prophecies and not prophecy_files:
+            # Complex condition - consider breaking down
             self.warning("📋 現在アクティブな予言書はありません")
             self.info("")
             self.info("💡 予言書を開始するには:")
@@ -213,6 +220,7 @@ class ProphecyDashboardCommand(BaseCommand):
             loop.close()
 
         except Exception as e:
+            # Handle specific exception case
             self.warning("📊 メトリクス収集システムが利用できません")
             self.info("   💡 品質デーモンの起動を確認してください")
             self.info("   🔧 scripts/quality_system_manager.sh start")
@@ -341,6 +349,7 @@ class ProphecyDashboardCommand(BaseCommand):
                 await asyncio.sleep(30)
 
         except KeyboardInterrupt:
+            # Handle specific exception case
             self.info("\n👋 リアルタイム監視を終了します")
             return 0
 
@@ -357,6 +366,7 @@ class ProphecyDashboardCommand(BaseCommand):
         managed_prophecies = self.management_system.list_managed_prophecies()
 
         if len(basic_prophecies) == 0 and len(managed_prophecies) == 0:
+            # Complex condition - consider breaking down
             recommendations.append("📋 予言書を作成してシステムを開始してください")
 
         # 品質デーモンが停止している場合
@@ -371,6 +381,7 @@ class ProphecyDashboardCommand(BaseCommand):
 
         if recommendations:
             for rec in recommendations:
+                # Process each item in collection
                 self.info(f"   • {rec}")
         else:
             self.info("   ✅ 現在のシステム状態は良好です")

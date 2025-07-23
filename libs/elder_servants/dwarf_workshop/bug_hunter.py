@@ -32,6 +32,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "static_analysis",
@@ -198,6 +199,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Bug hunting failed for task {task_id}: {str(e)}")
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
 
@@ -282,6 +284,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except SyntaxError as e:
+            # Handle specific exception case
             return {
                 "analysis_report": {"syntax_error": str(e)},
                 "issues": [
@@ -291,6 +294,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 "code_quality_score": 0.0,
             }
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Static analysis failed: {e}")
             return {
                 "analysis_report": {"error": str(e)},
@@ -315,6 +319,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             for pattern_name, pattern_info in self.bug_patterns.items():
                 matches = self.pattern_matcher.find_pattern_matches(tree, pattern_info)
                 for match in matches:
+                    # Process each item in collection
                     bugs_found.append(
                         {
                             "bug_type": pattern_name,
@@ -354,6 +359,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Bug detection failed: {e}")
             return {
                 "bug_report": {"error": str(e)},
@@ -367,6 +373,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     ) -> Dict[str, Any]:
         """自動修正提案"""
         if not source_code or not bug_report:
+            # Complex condition - consider breaking down
             return {
                 "fix_suggestions": [],
                 "analysis_type": "auto_fix",
@@ -378,6 +385,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             fix_suggestions = []
 
             for bug in bugs:
+                # Process each item in collection
                 bug_type = bug.get("bug_type", "")
                 line = bug.get("line", 0)
 
@@ -403,6 +411,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Auto fix suggestion failed: {e}")
             return {
                 "fix_suggestions": [],
@@ -425,6 +434,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             for smell_name, smell_pattern in self.code_smell_patterns.items():
                 smell_instances = self._detect_code_smell(tree, smell_pattern)
                 for instance in smell_instances:
+                    # Process each item in collection
                     smells_detected.append(
                         {
                             "smell_type": smell_name,
@@ -455,6 +465,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Code smell detection failed: {e}")
             return {
                 "smell_report": {"error": str(e)},
@@ -479,6 +490,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                     tree, vuln_pattern
                 )
                 for match in matches:
+                    # Process each item in collection
                     vulnerabilities.append(
                         {
                             "vulnerability_type": vuln_name,
@@ -511,6 +523,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Vulnerability scan failed: {e}")
             return {
                 "vulnerability_report": {"error": str(e)},
@@ -583,6 +596,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Quality metrics calculation failed: {e}")
             return {
                 "quality_metrics": {},
@@ -614,6 +628,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
             # 修正提案がある場合の加点
             if result_data.get("fix_suggestions") or result_data.get("recommendations"):
+                # Complex condition - consider breaking down
                 quality_score += 15.0
 
             # エラーなしボーナス
@@ -621,6 +636,7 @@ class BugHunter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 quality_score += 10.0
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Bug hunting quality validation error: {e}")
             quality_score = max(quality_score - 10.0, 0.0)
 
@@ -762,6 +778,7 @@ class SecurityScanner:
         # 簡易実装: 危険な関数呼び出しの検出
         for node in ast.walk(tree):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+                # Complex condition - consider breaking down
                 if node.func.id in ["eval", "exec", "compile"]:
                     matches.append(
                         {
@@ -785,6 +802,7 @@ class PatternMatcher:
         # 簡易実装: 基本的なパターンマッチング
         for node in ast.walk(tree):
             if isinstance(node, ast.Name) and not hasattr(node.ctx, "__class__"):
+                # Complex condition - consider breaking down
                 matches.append({"line": getattr(node, "lineno", 0), "name": node.id})
 
         return matches

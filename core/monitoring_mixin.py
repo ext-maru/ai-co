@@ -15,6 +15,7 @@ class MonitoringMixin:
     """ワーカーにモニタリング機能を追加するミックスイン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.metrics = {
             "processed_count": 0,
             "error_count": 0,

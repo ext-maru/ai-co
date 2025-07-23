@@ -399,7 +399,13 @@ def test_{class_name.lower()}_initialization():
             priority="high"
         )
     
-    def _generate_method_test(self, class_name: str, method_info: Dict[str, Any], intelligence) -> TestCase:
+    def _generate_method_test(
+        self,
+        class_name: str,
+        method_info: Dict[str,
+        Any],
+        intelligence
+    ) -> TestCase:
         """メソッドテストを生成"""
         method_name = method_info['name']
         
@@ -414,7 +420,13 @@ def test_{class_name.lower()}_initialization():
             priority="high" if method_info.get('calls_external') else "medium"
         )
     
-    def _generate_method_test_code(self, class_name: str, method_info: Dict[str, Any], intelligence) -> str:
+    def _generate_method_test_code(
+        self,
+        class_name: str,
+        method_info: Dict[str,
+        Any],
+        intelligence
+    ) -> str:
         """メソッドテストコードを生成"""
         method_name = method_info['name']
         args = method_info.get('args', [])
@@ -545,7 +557,12 @@ class PropertyTestGenerator:
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
     
-    def generate_property_tests(self, analysis: Dict[str, Any], intelligence=None) -> List[TestCase]:
+    def generate_property_tests(
+        self,
+        analysis: Dict[str,
+        Any],
+        intelligence=None
+    ) -> List[TestCase]:
         """プロパティベーステストを生成"""
         if not HYPOTHESIS_AVAILABLE:
             self.logger.warning("Hypothesis not available, skipping property tests")
@@ -617,7 +634,12 @@ class IntegrationTestGenerator:
     def __init__(self):
         self.logger = logging.getLogger(self.__class__.__name__)
     
-    def generate_integration_tests(self, analysis: Dict[str, Any], intelligence=None) -> List[TestCase]:
+    def generate_integration_tests(
+        self,
+        analysis: Dict[str,
+        Any],
+        intelligence=None
+    ) -> List[TestCase]:
         """統合テストを生成"""
         tests = []
         
@@ -755,7 +777,10 @@ class IntelligentTestGenerator:
         self.logger.info(f"Generated {len(property_tests)} property tests")
         
         # 4. 統合テスト生成
-        integration_tests = self.integration_generator.generate_integration_tests(analysis, intelligence)
+        integration_tests = self.integration_generator.generate_integration_tests(
+            analysis,
+            intelligence
+        )
         self.logger.info(f"Generated {len(integration_tests)} integration tests")
         
         # 5. モック設定・フィクスチャ生成
@@ -770,7 +795,12 @@ class IntelligentTestGenerator:
             fixtures=fixtures
         )
     
-    def _generate_mock_configurations(self, analysis: Dict[str, Any], intelligence) -> Dict[str, Any]:
+    def _generate_mock_configurations(
+        self,
+        analysis: Dict[str,
+        Any],
+        intelligence
+    ) -> Dict[str, Any]:
         """モック設定を生成"""
         mock_configs = {}
         
@@ -799,7 +829,13 @@ class IntelligentTestGenerator:
         
         return mock_configs
     
-    def _generate_fixtures(self, analysis: Dict[str, Any], intelligence, codebase_intelligence) -> List[str]:
+    def _generate_fixtures(
+        self,
+        analysis: Dict[str,
+        Any],
+        intelligence,
+        codebase_intelligence
+    ) -> List[str]:
         """テストフィクスチャを生成"""
         fixtures = []
         

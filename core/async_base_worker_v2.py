@@ -25,6 +25,7 @@ class SimpleMetrics:
     """軽量メトリクス実装（Prometheus代替）"""
 
     def __init__(self, worker_name: str):
+        """初期化メソッド"""
         self.worker_name = worker_name
         self.counters = {}
         self.gauges = {}
@@ -72,6 +73,7 @@ class SimpleMetrics:
 
 class SimpleCounter:
     def __init__(self, storage: Dict, key: str):
+        """初期化メソッド"""
         self.storage = storage
         self.key = key
 
@@ -88,6 +90,7 @@ class SimpleCounter:
 
 class SimpleGauge:
     def __init__(self, storage: Dict, key: str):
+        """初期化メソッド"""
         self.storage = storage
         self.key = key
 
@@ -109,6 +112,7 @@ class SimpleGauge:
 
 class SimpleHistogram:
     def __init__(self, storage: Dict, key: str):
+        """初期化メソッド"""
         self.storage = storage
         self.key = key
 
@@ -124,6 +128,7 @@ class SimpleCircuitBreaker:
     """軽量サーキットブレーカー実装"""
 
     def __init__(self, failure_threshold: int = 5, timeout: int = 60):
+        """初期化メソッド"""
         self.failure_threshold = failure_threshold
         self.timeout = timeout
         self.failure_count = 0
@@ -166,6 +171,7 @@ class AsyncBaseWorkerV2(ABC, LoggingMixin):
     """
 
     def __init__(
+        """初期化メソッド"""
         self,
         worker_name: str,
         config: Dict[str, Any],
@@ -367,6 +373,7 @@ class TestWorkerV2(AsyncBaseWorkerV2):
     """テスト用ワーカー"""
 
     def __init__(self, config):
+        """初期化メソッド"""
         super().__init__(
             worker_name="test_worker_v2",
             config=config,

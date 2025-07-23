@@ -34,6 +34,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "design_database_schema",
@@ -229,6 +230,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Database shaping failed for task {task_id}: {str(e)}")
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
 
@@ -314,6 +316,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Database schema design failed: {e}")
             return {"database_schema": {}, "error": str(e), "table_count": 0}
 
@@ -380,6 +383,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Database performance optimization failed: {e}")
             return {"optimization_plan": {}, "error": str(e), "strategies_count": 0}
 
@@ -453,6 +457,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Migration generation failed: {e}")
             return {
                 "migration_scripts": {},
@@ -472,6 +477,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             index_recommendations = []
 
             for table in table_schemas:
+                # Process each item in collection
                 table_name = table.get("name", "")
                 table_queries = [
                     q for q in query_patterns if table_name in q.get("tables", [])
@@ -528,6 +534,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Indexing strategy design failed: {e}")
             return {"indexing_plan": {}, "error": str(e), "index_count": 0}
 
@@ -539,6 +546,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             partitioning_implementations = []
 
             for table in large_tables:
+                # Process each item in collection
                 table_name = table.get("name", "")
                 table_size = table.get("size_estimate", 0)
 
@@ -595,6 +603,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Data partitioning implementation failed: {e}")
             return {
                 "partitioning_implementation": {},
@@ -618,6 +627,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             tables = database_schema.get("tables", [])
 
             for table in tables:
+                # Process each item in collection
                 model_code = model_generator.generate_model(table)
                 orm_models.append(
                     {
@@ -659,6 +669,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"ORM model generation failed: {e}")
             return {"orm_models": {}, "error": str(e), "orm_framework": orm_framework}
 
@@ -681,6 +692,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             if isinstance(design_quality, dict):
                 quality_metrics = ["normalization", "consistency", "performance"]
                 for metric in quality_metrics:
+                    # Process each item in collection
                     score = design_quality.get(metric, 0)
                     quality_score += score * 0.1
 
@@ -704,6 +716,7 @@ class DatabaseShaper(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 quality_score += 15.0
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Database design quality validation error: {e}")
             quality_score = max(quality_score - 10.0, 0.0)
 
@@ -884,6 +897,7 @@ class SchemaDesigner:
         indexes = []
 
         for table in tables:
+            # Process each item in collection
             table_name = table.get("name", "")
 
             # 外部キーインデックス
@@ -924,6 +938,7 @@ class PerformanceOptimizer:
         }
 
         for query in query_patterns:
+            # Process each item in collection
             query_type = query.get("type", "unknown")
             analysis["query_types"][query_type] = (
                 analysis["query_types"].get(query_type, 0) + 1
@@ -1039,11 +1054,13 @@ class IndexArchitect:
         for query in queries:
             where_conditions = query.get("where_conditions", [])
             for condition in where_conditions:
+                # Process each item in collection
                 column = condition.get("column", "")
                 if column:
                     frequent_columns.add(column)
 
         for column in frequent_columns:
+            # Process each item in collection
             indexes.append(
                 {
                     "table": table.get("name", ""),
@@ -1076,6 +1093,7 @@ class IndexArchitect:
         seen_combinations = set()
 
         for index in indexes:
+            # Process each item in collection
             combination = (index.get("table", ""), tuple(index.get("columns", [])))
             if combination not in seen_combinations:
                 unique_indexes.append(index)

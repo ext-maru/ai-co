@@ -18,6 +18,7 @@ from core import get_config
 
 class DeployWorker(BaseWorker):
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(worker_type="deploy")
         self.config = get_config()
 

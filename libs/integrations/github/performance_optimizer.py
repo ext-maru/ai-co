@@ -220,7 +220,8 @@ class ClaudeCLIExecutionPool:
             # プロセスプールは必要に応じて作成
             # self.process_pool = ProcessPoolExecutor(max_workers=2)
             
-            logger.info(f"Claude CLI execution pool initialized with {self.current_workers} workers")
+            logger.info(f"Claude CLI execution pool initialized with {self.current_workers} workers" \
+                "Claude CLI execution pool initialized with {self.current_workers} workers")
             
         except Exception as e:
             logger.error(f"Failed to setup execution pools: {str(e)}")
@@ -440,7 +441,12 @@ class DynamicScaler:
             logger.error(f"Auto-scaling error: {str(e)}")
             return optimizations
     
-    def _analyze_scaling_need(self, metrics: ResourceMetrics, pool_stats: Dict[str, Any]) -> Dict[str, Any]:
+    def _analyze_scaling_need(
+        self,
+        metrics: ResourceMetrics,
+        pool_stats: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """スケーリング必要性分析"""
         decision = {
             "action": "no_action",
@@ -517,7 +523,10 @@ class DynamicScaler:
             logger.error(f"Scaling execution failed: {str(e)}")
             return None
     
-    async def _optimize_memory_usage(self, metrics: ResourceMetrics) -> Optional[OptimizationResult]:
+    async def _optimize_memory_usage(
+        self,
+        metrics: ResourceMetrics
+    ) -> Optional[OptimizationResult]:
         """メモリ使用量最適化"""
         try:
             if metrics.memory_percent > self.performance_target.max_memory_percent:

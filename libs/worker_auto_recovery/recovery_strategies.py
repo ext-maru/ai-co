@@ -329,7 +329,11 @@ class RecoveryStrategies:
             # メッセージが多すぎる場合
             if messages > 1000:
                 # DLQに移動
-                cmd = f'sudo rabbitmqctl eval \'rabbit_amqqueue:delete(rabbit_misc:r(<<"/">>, queue, <<"{queue_name}_dlq">>), false, false).\''
+                cmd = f'sudo rabbitmqctl eval \'rabbit_amqqueue:delete(
+                    rabbit_misc:r(<<"/">>, queue, <<"{queue_name}_dlq">>),
+                    false,
+                    false
+                ).\''
                 subprocess.run(cmd, shell=True)
 
                 return {

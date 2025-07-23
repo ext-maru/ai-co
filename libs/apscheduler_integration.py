@@ -42,7 +42,10 @@ class ElderSchedulerConfig:
         
         # ジョブストア設定
         self.use_redis = os.getenv('SCHEDULER_USE_REDIS', 'false').lower() == 'true'
-        self.use_postgres = os.getenv('SCHEDULER_USE_POSTGRES', 'false').lower() == 'true'  # デフォルトはメモリ使用
+        self.use_postgres = os.getenv(
+            'SCHEDULER_USE_POSTGRES',
+            'false').lower(
+        ) == 'true'  # デフォルトはメモリ使用
         
         # ログ設定
         self.log_level = os.getenv('SCHEDULER_LOG_LEVEL', 'INFO')

@@ -417,7 +417,12 @@ class SituationStrategyEngine:
         """CI失敗の分析"""
         return {"auto_fixable": False, "summary": "CI failure analysis placeholder"}
     
-    async def _attempt_auto_fix(self, context: StrategyContext, failure_analysis: Dict[str, Any]) -> Dict[str, Any]:
+    async def _attempt_auto_fix(
+        self,
+        context: StrategyContext,
+        failure_analysis: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """自動修正の試行"""
         return {"success": False, "actions": ["Auto-fix placeholder"], "error": "Not implemented"}
     
@@ -457,7 +462,11 @@ class SituationStrategyEngine:
             "summary": "Conflict analysis placeholder"
         }
     
-    async def _resolve_safe_conflicts(self, context: StrategyContext, auto_resolvable: List[str]) -> Dict[str, Any]:
+    async def _resolve_safe_conflicts(
+        self,
+        context: StrategyContext,
+        auto_resolvable: List[str]
+    ) -> Dict[str, Any]:
         """安全なコンフリクトの解決"""
         return {"success": False, "actions": ["Conflict resolution placeholder"]}
     

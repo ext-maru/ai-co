@@ -59,6 +59,7 @@ class ElderFlowQualityGateOptimizer:
     """Elder Flow品質ゲート最適化システム"""
 
     def __init__(self, config_path: str = "config/elder_flow_quality.json"):
+        """初期化メソッド"""
         self.config_path = Path(config_path)
         self.logger = logging.getLogger(__name__)
         self.base_metrics = QualityMetrics()

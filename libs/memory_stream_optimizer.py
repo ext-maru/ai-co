@@ -360,7 +360,10 @@ class MemoryStreamOptimizer:
         if HAS_LZ4:
             compressions[CompressionType.LZ4] = await self.compress_data(data, CompressionType.LZ4)
         if HAS_ZSTD:
-            compressions[CompressionType.ZSTD] = await self.compress_data(data, CompressionType.ZSTD)
+            compressions[CompressionType.ZSTD] = await self.compress_data(
+                data,
+                CompressionType.ZSTD
+            )
         
         # Select best compression
         best_type = CompressionType.GZIP  # Default

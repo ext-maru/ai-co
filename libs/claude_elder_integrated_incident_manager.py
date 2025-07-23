@@ -200,7 +200,8 @@ class ClaudeElderIntegratedIncidentManager(IncidentManager):
 
         # インシデントデータを構築
         title = f"Claude Elder Error: {error_type}"
-        description = f"Error Message: {error_message}\n\nContext: {json.dumps(context or {}, indent=2)}"
+        description = f"Error Message: {error_message}\n\nContext: {json.dumps(context or {}, indent=2)}" \
+            "Error Message: {error_message}\n\nContext: {json.dumps(context or {}, indent=2)}"
 
         # 優先度判定
         priority = self._determine_priority_from_error(error_type, context)

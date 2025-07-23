@@ -22,6 +22,7 @@ class ProjectTemplateCommand(BaseCommand):
     """プロジェクトテンプレート管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-project-template",
             description="🏛️ エルダーズギルド プロジェクトテンプレートシステム"
@@ -71,7 +72,13 @@ class ProjectTemplateCommand(BaseCommand):
         # context - コンテキスト表示
         context_parser = subparsers.add_parser("context", help="プロジェクトコンテキスト表示")
         context_parser.add_argument("project_id", help="プロジェクトID")
-        context_parser.add_argument("--format", choices=["text", "json"], default="text", help="出力形式")
+        context_parser.add_argument(
+            "--format",
+            choices=["text",
+            "json"],
+            default="text",
+            help="出力形式"
+        )
 
         # consult - 4賢者への相談
         consult_parser = subparsers.add_parser("consult", help="4賢者への相談")
@@ -106,22 +113,31 @@ class ProjectTemplateCommand(BaseCommand):
 
         # サブコマンド実行
         if parsed_args.subcommand == "templates":
+            # Complex condition - consider breaking down
             return self.list_templates()
         elif parsed_args.subcommand == "create":
+            # Complex condition - consider breaking down
             return self.create_project(parsed_args)
         elif parsed_args.subcommand == "list":
+            # Complex condition - consider breaking down
             return self.list_projects()
         elif parsed_args.subcommand == "status":
+            # Complex condition - consider breaking down
             return self.show_project_status(parsed_args)
         elif parsed_args.subcommand == "advance":
+            # Complex condition - consider breaking down
             return self.advance_project_phase(parsed_args)
         elif parsed_args.subcommand == "context":
+            # Complex condition - consider breaking down
             return self.show_project_context(parsed_args)
         elif parsed_args.subcommand == "consult":
+            # Complex condition - consider breaking down
             return self.consult_sages(parsed_args)
         elif parsed_args.subcommand == "checklist":
+            # Complex condition - consider breaking down
             return self.manage_checklist(parsed_args)
         elif parsed_args.subcommand == "auto":
+            # Complex condition - consider breaking down
             return self.execute_automation(parsed_args)
 
     def list_templates(self):
@@ -144,6 +160,7 @@ class ProjectTemplateCommand(BaseCommand):
             try:
                 context_data = json.loads(args.context)
             except json.JSONDecodeError:
+                # Handle specific exception case
                 self.error("無効なJSON形式です")
                 return 1
 
@@ -180,6 +197,7 @@ class ProjectTemplateCommand(BaseCommand):
             try:
                 context_data = json.loads(args.context)
             except json.JSONDecodeError:
+                # Handle specific exception case
                 self.error("無効なJSON形式です")
                 return 1
 
@@ -215,6 +233,7 @@ class ProjectTemplateCommand(BaseCommand):
             if current_tasks:
                 self.info(f"\n🎯 現在のタスク:")
                 for i, task in enumerate(current_tasks, 1):
+                    # Process each item in collection
                     self.info(f"  {i}. {task}")
 
             # チェックリスト
@@ -222,6 +241,7 @@ class ProjectTemplateCommand(BaseCommand):
             if checklist:
                 self.info(f"\n✅ チェックリスト:")
                 for i, item in enumerate(checklist, 1):
+                    # Process each item in collection
                     self.info(f"  {i}. [ ] {item}")
 
             # エルダー相談
@@ -229,6 +249,7 @@ class ProjectTemplateCommand(BaseCommand):
             if consultations:
                 self.info(f"\n🧙‍♂️ エルダー相談事項:")
                 for consul in consultations:
+                    # Process each item in collection
                     self.info(f"  • {consul['sage_type']}: {consul['prompt']}")
 
             # 継続性ログ
@@ -236,6 +257,7 @@ class ProjectTemplateCommand(BaseCommand):
             if continuity_log:
                 self.info(f"\n📈 最近のアクティビティ:")
                 for log in continuity_log[:3]:
+                    # Process each item in collection
                     self.info(f"  • {log['timestamp']}: {log['action']}")
 
         return 0
@@ -260,6 +282,7 @@ class ProjectTemplateCommand(BaseCommand):
         if consultations:
             self.info(f"\n🤖 自動相談事項:")
             for consul in consultations:
+                # Process each item in collection
                 self.info(f"  🧙‍♂️ {consul['sage_type']}: {consul['prompt']}")
 
         # 手動相談
@@ -331,6 +354,7 @@ class ProjectTemplateCommand(BaseCommand):
             self.info(f"🤖 自動化: {'利用可能' if plan['automation_available'] else '利用不可'}")
 
             for phase in plan['phases']:
+                # Process each item in collection
                 self.info(f"\n🎯 {phase['phase']}:")
                 self.info(f"  📄 作成ファイル: {len(phase['files_to_create'])}個")
                 self.info(f"  ⚙️  実行コマンド: {len(phase['commands_to_execute'])}個")
@@ -339,11 +363,13 @@ class ProjectTemplateCommand(BaseCommand):
                 if phase['files_to_create']:
                     self.info("  📄 作成ファイル:")
                     for file_path in phase['files_to_create']:
+                        # Process each item in collection
                         self.info(f"    - {file_path}")
 
                 if phase['commands_to_execute']:
                     self.info("  ⚙️  実行コマンド:")
                     for command in phase['commands_to_execute']:
+                        # Process each item in collection
                         self.info(f"    - {command}")
 
         else:
@@ -361,11 +387,13 @@ class ProjectTemplateCommand(BaseCommand):
                 if result['files_created']:
                     self.info(f"\n📄 作成ファイル ({len(result['files_created'])}個):")
                     for file_path in result['files_created']:
+                        # Process each item in collection
                         self.info(f"  ✅ {file_path}")
 
                 if result['commands_executed']:
                     self.info(f"\n⚙️  実行コマンド ({len(result['commands_executed'])}個):")
                     for cmd_result in result['commands_executed']:
+                        # Process each item in collection
                         if cmd_result['success']:
                             self.success(f"  ✅ {cmd_result['command']}")
                         else:

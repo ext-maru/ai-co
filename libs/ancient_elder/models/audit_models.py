@@ -174,7 +174,10 @@ class AuditThreshold(Base):
     # 制約
     __table_args__ = (
         UniqueConstraint('auditor_name', 'severity', name='uq_auditor_severity'),
-        CheckConstraint("severity IN ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW')", name='check_threshold_severity'),
+        CheckConstraint(
+            "severity IN ('CRITICAL', 'HIGH', 'MEDIUM', 'LOW')",
+            name='check_threshold_severity'
+        ),
     )
 
 

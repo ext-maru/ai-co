@@ -98,6 +98,7 @@ class AsyncOptimizationRequest:
     """非同期最適化リクエスト"""
 
     def __init__(
+        """初期化メソッド"""
         self,
         task_id: str,
         coroutine_func: Callable,
@@ -121,6 +122,7 @@ class AsyncOptimizationResponse:
     """非同期最適化レスポンス"""
 
     def __init__(
+        """初期化メソッド"""
         self,
         task_id: str,
         success: bool,
@@ -147,6 +149,7 @@ class AsyncWorkerOptimizer(
     """
 
     def __init__(self, profile: OptimizationProfile = None):
+        """初期化メソッド"""
         # EldersServiceLegacy初期化 (EXECUTION域)
         super().__init__("async_worker_optimizer")
 
@@ -227,6 +230,7 @@ class AsyncWorkerOptimizer(
             )
 
         except Exception as e:
+            # Handle specific exception case
             metrics.end_time = datetime.now()
             metrics.execution_time_ms = (time.time() - start_time) * 1000
             metrics.success = False
@@ -307,6 +311,7 @@ class AsyncWorkerOptimizer(
             result = await asyncio.wait_for(coroutine, timeout=request.timeout_s)
             return result
         except asyncio.TimeoutError:
+            # Handle specific exception case
             raise Exception(
                 f"Task {request.task_id} timed out after {request.timeout_s}s"
             )
@@ -329,6 +334,7 @@ class AsyncWorkerOptimizer(
             return result
 
         except asyncio.TimeoutError:
+            # Handle specific exception case
             raise Exception(
                 f"Task {request.task_id} timed out after {request.timeout_s}s"
             )
@@ -364,6 +370,7 @@ class AsyncWorkerOptimizer(
             return result
 
         except asyncio.TimeoutError:
+            # Handle specific exception case
             raise Exception(
                 f"Task {request.task_id} timed out after {request.timeout_s}s"
             )
@@ -474,6 +481,7 @@ class AsyncWorkerOptimizer(
         """リソースタイプ別グルーピング"""
         groups = {}
         for request in requests:
+            # Process each item in collection
             if request.resource_type not in groups:
                 groups[request.resource_type] = []
             groups[request.resource_type].append(request)
@@ -620,6 +628,7 @@ class AsyncWorkerOptimizer(
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Health check failed: {str(e)}")
             return {"success": False, "status": "error", "error": str(e)}
 
@@ -628,10 +637,12 @@ class ResourceMonitor:
     """リソース監視クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger("elder_servants.resource_monitor")
 
     @dataclass
     class ResourceUsage:
+        # Main class implementation
         cpu_percent: float
         memory_percent: float
         memory_mb: float
@@ -658,6 +669,7 @@ class ResourceMonitor:
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to get resource usage: {str(e)}")
             return self.ResourceUsage(
                 cpu_percent=0.0,
@@ -678,6 +690,7 @@ class ConnectionPoolManager:
     """接続プール管理"""
 
     def __init__(self, default_pool_size: int = 20):
+        """初期化メソッド"""
         self.default_pool_size = default_pool_size
         self.pools: Dict[str, Any] = {}
         self.logger = logging.getLogger("elder_servants.connection_pool")
@@ -711,6 +724,7 @@ class ConnectionPoolManager:
                     await pool.close()
                 self.logger.info(f"Cleaned up connection pool: {pool_name}")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Failed to cleanup pool {pool_name}: {str(e)}")
 
         self.pools.clear()
@@ -720,6 +734,7 @@ class AdaptiveController:
     """適応制御システム"""
 
     def __init__(self, profile: OptimizationProfile):
+        """初期化メソッド"""
         self.profile = profile
         self.learning_history: List[TaskMetrics] = []
         self.logger = logging.getLogger("elder_servants.adaptive_controller")

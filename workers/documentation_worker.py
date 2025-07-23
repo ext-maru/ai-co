@@ -120,6 +120,7 @@ class DocumentationWorker(AsyncBaseWorkerV2):
 
         # カスタムテンプレートの確認
         if self.custom_template and "readme" in self.custom_template:
+            # Complex condition - consider breaking down
             return await self._generate_custom_readme(project_data)
 
         # 基本的なREADME生成
@@ -185,6 +186,7 @@ print(result)
         api_content = f"# {project_name} API Reference\n\n## Functions\n\n"
 
         for func in functions:
+            # Process each item in collection
             name = func.get("name", "unknown_function")
             description = func.get("description", "No description available")
             parameters = func.get("parameters", [])
@@ -196,6 +198,7 @@ print(result)
             if parameters:
                 api_content += "**Parameters:**\n"
                 for param in parameters:
+                    # Process each item in collection
                     param_name = param.get("name", "param")
                     param_type = param.get("type", "Any")
                     param_desc = param.get("description", "No description")
@@ -212,7 +215,9 @@ print(result)
                 param_examples = ", ".join(
                     [p.get("name", "value") for p in parameters[:2]]
                 )
-                api_content += f"**Example:**\n```python\nresult = {name}({param_examples})\n```\n\n"
+                api_content += f"**Example:**\n```python\nresult = {name}({param_examples})\n```\n\n" \
+                    "**Example:**\n```python\nresult = {name}({param_examples})\n```\n\n" \
+                    "**Example:**\n```python\nresult = {name}({param_examples})\n```\n\n"
             else:
                 api_content += f"**Example:**\n```python\nresult = {name}()\n```\n\n"
 
@@ -231,6 +236,7 @@ print(result)
         if file_structure:
             arch_content += "## コンポーネント\n\n"
             for filename, info in file_structure.items():
+                # Process each item in collection
                 functions_count = info.get("functions", 0)
                 classes_count = info.get("classes", 0)
                 lines = info.get("lines", 0)
@@ -245,6 +251,7 @@ print(result)
         if classes:
             arch_content += "## クラス設計\n\n"
             for cls in classes:
+                # Process each item in collection
                 class_name = cls.get("name", "UnknownClass")
                 methods = cls.get("methods", [])
                 description = cls.get("description", "クラスの説明")
@@ -255,6 +262,7 @@ print(result)
                 if methods:
                     arch_content += "**メソッド:**\n"
                     for method in methods:
+                        # Process each item in collection
                         arch_content += f"- `{method}()`\n"
                     arch_content += "\n"
 
@@ -264,6 +272,7 @@ print(result)
             arch_content += "## 依存関係\n\n"
             arch_content += "このプロジェクトは以下のライブラリに依存しています：\n\n"
             for imp in imports:
+                # Process each item in collection
                 arch_content += f"- {imp}\n"
             arch_content += "\n"
 
@@ -348,11 +357,13 @@ print(result)
             class_diagram_content = "```mermaid\nclassDiagram\n"
 
             for cls in classes:
+                # Process each item in collection
                 class_name = cls.get("name", "UnknownClass")
                 methods = cls.get("methods", [])
 
                 class_diagram_content += f"    class {class_name} {{\n"
                 for method in methods:
+                    # Process each item in collection
                     class_diagram_content += f"        +{method}()\n"
                 class_diagram_content += "    }\n"
 
@@ -477,7 +488,10 @@ print(result)
 
         if style == "minimal":
             # ミニマルスタイル
-            return f"# {project_name}\n\n{project_data.get('project_description', 'A minimal project.')}\n\n## Usage\nSee documentation.\n"
+            return f"# {project_name}\n\n{project_data.get(
+                'project_description',
+                'A minimal project.'
+            )}\n\n## Usage\nSee documentation.\n"
 
         # 標準スタイル
         return await self.generate_readme(project_data)
@@ -497,10 +511,13 @@ print(result)
 
         # 最終調整
         if "<h1>" in html_content and not html_content.endswith("</h1>"):
+            # Complex condition - consider breaking down
             html_content += "</h1>"
         if "<h2>" in html_content and not html_content.endswith("</h2>"):
+            # Complex condition - consider breaking down
             html_content += "</h2>"
         if "<h3>" in html_content and not html_content.endswith("</h3>"):
+            # Complex condition - consider breaking down
             html_content += "</h3>"
 
         return f"<!DOCTYPE html>\n<html>\n<body>\n{html_content}\n</body>\n</html>"
@@ -567,6 +584,7 @@ print(result)
                 return guidance
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to consult Knowledge Sage: {e}")
 
         return None
@@ -614,6 +632,7 @@ print(result)
                 return enhancements
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to use RAG Sage for enhancement: {e}")
 
         return None
@@ -657,6 +676,7 @@ print(result)
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report to Knowledge Sage: {e}")
 
     async def _check_critical_documentation_gaps(
@@ -685,6 +705,7 @@ print(result)
                 self.documentation_metrics["critical_gaps_escalated"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to check critical gaps: {e}")
 
     async def _escalate_to_claude_elder(self, issue_type: str, details: Dict[str, Any]):
@@ -720,6 +741,7 @@ print(result)
                 self.logger.error(f"Failed to escalate to Claude Elder: {issue_type}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to escalate to Claude Elder: {e}")
 
     async def get_elder_documentation_status(self) -> Dict[str, Any]:
@@ -745,6 +767,7 @@ print(result)
             return status
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to get Elder documentation status: {e}")
             return {
                 "error": str(e),
@@ -776,6 +799,7 @@ print(result)
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to get Elder hierarchy health: {e}")
             return {"status": "error", "error": str(e)}
 
@@ -833,6 +857,7 @@ The Documentation Worker serves as the **Knowledge Recorder** of the Elder Tree 
             return report
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to generate Elder documentation report: {e}")
             return (
                 f"# Elder Tree Documentation Report\\n\\nError generating report: {e}"
@@ -902,6 +927,7 @@ async def main():
                 )
 
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n🛑 Documentation Worker stopping...")
 
         # Final Elder Tree status report

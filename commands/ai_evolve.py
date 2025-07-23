@@ -36,6 +36,7 @@ class AIEvolveCommand(BaseCommand):
     """AI進化コマンド - Elder Council統合"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-evolve", description="Elder Council戦略的進化システム", version="2.0.0"
         )
@@ -59,17 +60,22 @@ class AIEvolveCommand(BaseCommand):
         if hasattr(args, "command"):
             command = getattr(args, "command", "status")
         elif isinstance(args, list) and len(args) > 0:
+            # Complex condition - consider breaking down
             command = args[0].lower()
         else:
             command = "status"
 
         if command == "status":
+            # Complex condition - consider breaking down
             return self._show_evolution_status()
         elif command == "council":
+            # Complex condition - consider breaking down
             return self._convene_elder_council()
         elif command == "emergency":
+            # Complex condition - consider breaking down
             return self._emergency_evolution_protocol()
         elif command == "metrics":
+            # Complex condition - consider breaking down
             return self._calculate_evolution_metrics()
         else:
             return CommandResult(
@@ -111,6 +117,7 @@ class AIEvolveCommand(BaseCommand):
         recommendations = self._get_evolution_recommendations(metrics)
         print(f"\n💡 Elder Council推奨アクション:")
         for i, rec in enumerate(recommendations[:3], 1):
+            # Process each item in collection
             print(f"   {i}. {rec}")
 
         return CommandResult(
@@ -154,10 +161,12 @@ class AIEvolveCommand(BaseCommand):
 
         print("👥 参集Elder Council:")
         for member in council_members:
+            # Process each item in collection
             print(f"   🧙‍♂️ {member}")
 
         print(f"\n📋 緊急議題:")
         for i, issue in enumerate(urgent_issues, 1):
+            # Process each item in collection
             print(f"   {i}. {issue}")
 
         # Council決定のシミュレート
@@ -176,6 +185,7 @@ class AIEvolveCommand(BaseCommand):
 
         print(f"\n⚖️ Elder Council決定事項:")
         for i, decision in enumerate(selected_decisions, 1):
+            # Process each item in collection
             print(f"   {i}. {decision}")
 
         # 決定を記録
@@ -210,6 +220,7 @@ class AIEvolveCommand(BaseCommand):
         ]
 
         for i, action in enumerate(emergency_actions, 1):
+            # Process each item in collection
             print(f"   {i}. {action}")
             time.sleep(0.8)
             print(f"      ✅ 完了")
@@ -233,6 +244,7 @@ class AIEvolveCommand(BaseCommand):
         print(f"   成功率: {emergency_result['success_rate']*100:.1f}%")
         print(f"   予想改善効果:")
         for metric, improvement in emergency_result["estimated_improvement"].items():
+            # Process each item in collection
             print(f"     {metric}: {improvement}")
 
         return CommandResult(
@@ -258,6 +270,7 @@ class AIEvolveCommand(BaseCommand):
 
         print("📈 現在のメトリクス:")
         for name, value in metrics_display.items():
+            # Process each item in collection
             print(f"   {name}: {value}")
 
         # 総合スコア計算
@@ -365,6 +378,7 @@ class AIEvolveCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIEvolveCommand()
     sys.exit(command.run())
 

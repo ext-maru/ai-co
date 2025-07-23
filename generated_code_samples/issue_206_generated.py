@@ -94,7 +94,10 @@ class Issue206Implementation:
                 'success': True,
                 'result': {
                     'input_shape': data.shape if hasattr(data, 'shape') else len(data),
-                    'output_shape': processed_data.shape if hasattr(processed_data, 'shape') else len(processed_data),
+                    'output_shape': processed_data.shape if hasattr(
+                        processed_data,
+                        'shape') else len(processed_data
+                    ),
                     'output_file': save_result['file_path'],
                     'summary': summary
                 },

@@ -12,6 +12,7 @@ Phase: 3 (完全自律化)
 """
 
 import asyncio
+import secrets
 import hashlib
 import json
 import logging
@@ -143,6 +144,7 @@ class FullyAutonomousSystem:
     """完全自律システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
         self.db_path = PROJECT_ROOT / "data" / "fully_autonomous_system.db"
         self.learning_system = None
@@ -241,6 +243,7 @@ class FullyAutonomousSystem:
             if AdvancedKnowledgeSynthesisSystem:
                 self.knowledge_synthesis = AdvancedKnowledgeSynthesisSystem()
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"サブシステム初期化エラー: {e}")
 
     def _init_decision_engines(self):
@@ -253,7 +256,9 @@ class FullyAutonomousSystem:
         """意思決定エンジン作成"""
 
         class DecisionEngine:
+            # Main class implementation
             def __init__(self, component):
+                """初期化メソッド"""
                 self.component = component
                 self.model = RandomForestClassifier(n_estimators=100)
                 self.is_trained = False
@@ -270,6 +275,7 @@ class FullyAutonomousSystem:
                 evaluated_options = []
 
                 for option in options:
+                    # Process each item in collection
                     score = self._evaluate_option(option, features)
                     evaluated_options.append(
                         {
@@ -480,6 +486,7 @@ class FullyAutonomousSystem:
     async def _execute_evolution_plan(self, steps: List[Dict[str, Any]]):
         """進化計画実行"""
         for step in steps:
+            # Process each item in collection
             self.logger.info(
                 f"進化フェーズ {step['phase']} 開始: {step['description']}"
             )
@@ -771,6 +778,7 @@ class FullyAutonomousSystem:
         ]
 
         for scenario in scenarios:
+            # Process each item in collection
             decision = await self.make_autonomous_decision(
                 scenario["component"], scenario["context"]
             )
@@ -816,7 +824,7 @@ class FullyAutonomousSystem:
         )
 
         # 実際の実行（シミュレーション）
-        success = np.random.random() > 0.1  # 90%成功率
+        success = np.secrets.token_hex(16) > 0.1  # 90%成功率
 
         decision.actual_outcome = {
             "executed_at": datetime.now().isoformat(),
@@ -908,6 +916,7 @@ async def main():
     demo_results = await system.demonstrate_full_autonomy()
 
     for demo in demo_results["demonstrations"]:
+        # Process each item in collection
         print(f"\n📌 {demo['demo_type']}:")
         if demo["demo_type"] == "autonomous_problem_solving":
             print(

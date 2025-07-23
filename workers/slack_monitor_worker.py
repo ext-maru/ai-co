@@ -26,6 +26,7 @@ try:
 
     ELDER_INTEGRATION_AVAILABLE = True
 except ImportError:
+    # Handle specific exception case
     ELDER_INTEGRATION_AVAILABLE = False
     logger.warning("Elder Tree integration not available")
 
@@ -71,6 +72,7 @@ class SlackMonitorWorker:
             )
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to initialize Elder integration: {e}")
 
     def _report_to_elders(self, report_type: str, data: Dict[str, Any]):
@@ -94,6 +96,7 @@ class SlackMonitorWorker:
             asyncio.create_task(self.elder_tree.send_message(message))
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to report to Elders: {e}")
 
     def monitor_channel(self, channel_id: str) -> Dict:
@@ -128,6 +131,7 @@ class SlackMonitorWorker:
 
         # Four Sages協調分析
         if self.four_sages and self.message_count % 10 == 0:
+            # Complex condition - consider breaking down
             analysis_request = {
                 "type": "pattern_analysis",
                 "data": {
@@ -177,6 +181,7 @@ class SlackMonitorWorker:
                 logger.info(f"🧙‍♂️ Four Sages notified: {notification_type}")
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to notify Four Sages: {e}")
 
     def _request_sage_analysis(self, request: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -198,6 +203,7 @@ class SlackMonitorWorker:
                 return None
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Sage analysis failed: {e}")
             return None
 
@@ -213,7 +219,10 @@ class SlackMonitorWorker:
                 "type": "unusual_activity",
                 "severity": "medium",
                 "channel_count": len(self.monitored_channels),
-                "message_rate": self.message_count / max((datetime.now() - datetime.now()).seconds, 1),
+                "message_rate": self.message_count / max(
+                    (datetime.now() - datetime.now()).seconds,
+                    1
+                ),
                 "timestamp": datetime.now().isoformat(),
             }
 
@@ -278,6 +287,7 @@ class SlackMonitorWorker:
                 logger.info(f"🧙‍♂️ Four Sages integration: {init_result['integration_status']}")
 
             except Exception as e:
+                # Handle specific exception case
                 logger.error(f"Failed to sync with Four Sages: {e}")
 
     def stop(self):
@@ -316,6 +326,7 @@ class SlackMonitorWorker:
                 await asyncio.sleep(1)
 
             except Exception as e:
+                # Handle specific exception case
                 logger.error(f"Error in async loop: {e}")
                 await asyncio.sleep(5)
 
@@ -410,5 +421,6 @@ if __name__ == "__main__":
             # 非同期実行
             asyncio.run(worker.run_async())
         except KeyboardInterrupt:
+            # Handle specific exception case
             logger.info("\n⚡ Interrupted by user")
             worker.stop()

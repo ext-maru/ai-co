@@ -107,6 +107,7 @@ class SlackPMWorker(EnhancedBaseWorker):
             self.channel.queue_declare(queue="slack_pm_tasks", durable=True)
             logger.info("📡 RabbitMQ接続成功")
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"RabbitMQ接続失敗: {e}")
             return
 
@@ -117,6 +118,7 @@ class SlackPMWorker(EnhancedBaseWorker):
             rtm_thread.start()
             logger.info("📱 Slack RTM開始")
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Slack RTM開始失敗: {e}")
 
         # 進捗監視スレッド開始
@@ -140,6 +142,7 @@ class SlackPMWorker(EnhancedBaseWorker):
             self.channel.start_consuming()
 
         except KeyboardInterrupt:
+            # Handle specific exception case
             logger.info("🛑 ワーカー停止中...")
             self.stop()
 
@@ -151,12 +154,14 @@ class SlackPMWorker(EnhancedBaseWorker):
         try:
             self.slack_pm.stop_rtm()
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Slack PM停止エラー: {e}")
 
         # キュープロセッサー停止
         try:
             self.queue_processor.stop_processing()
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Queue Processor停止エラー: {e}")
 
         # RabbitMQ停止
@@ -164,8 +169,10 @@ class SlackPMWorker(EnhancedBaseWorker):
             if self.channel:
                 self.channel.stop_consuming()
             if self.connection and not self.connection.is_closed:
+                # Complex condition - consider breaking down
                 self.connection.close()
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"RabbitMQ停止エラー: {e}")
 
         # スレッド終了待機
@@ -198,6 +205,7 @@ class SlackPMWorker(EnhancedBaseWorker):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Elder Tree initialization failed: {e}")
             self.elder_integration_enabled = False
 
@@ -217,6 +225,7 @@ class SlackPMWorker(EnhancedBaseWorker):
                 logger.info(f"📋 Slack task created: {task_id}")
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Task creation failed: {e}")
             if self.elder_integration_enabled:
                 self._report_slack_error_to_task_sage(task_data, e)
@@ -233,6 +242,7 @@ class SlackPMWorker(EnhancedBaseWorker):
             logger.info(f"📋 Slack approval request: {approval_id}")
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Approval request failed: {e}")
             if self.elder_integration_enabled:
                 self._report_slack_error_to_task_sage(approval_data, e)
@@ -247,6 +257,7 @@ class SlackPMWorker(EnhancedBaseWorker):
             # 既存のタスク完了ロジック
             task_id = completion_data.get("task_id")
             if task_id and task_id in self.active_tasks:
+                # Complex condition - consider breaking down
                 self.task_results[task_id] = completion_data
                 del self.active_tasks[task_id]
                 self.slack_pm_metrics["successful_slack_tasks"] += 1
@@ -257,6 +268,7 @@ class SlackPMWorker(EnhancedBaseWorker):
                 self._store_slack_patterns_in_knowledge_sage(completion_data)
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Task completion failed: {e}")
             self.slack_pm_metrics["failed_slack_tasks"] += 1
             if self.elder_integration_enabled:
@@ -281,6 +293,7 @@ class SlackPMWorker(EnhancedBaseWorker):
             self.slack_pm_metrics["task_sage_consultations"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to report Slack task to Task Sage: {e}")
 
     def _report_slack_approval_to_task_sage(self, approval_data: Dict[str, Any]):
@@ -300,6 +313,7 @@ class SlackPMWorker(EnhancedBaseWorker):
             self.four_sages.report_to_task_sage(report)
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to report Slack approval to Task Sage: {e}")
 
     def _report_slack_error_to_task_sage(
@@ -322,6 +336,7 @@ class SlackPMWorker(EnhancedBaseWorker):
             self.four_sages.consult_incident_sage(incident_data)
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to report Slack error to Task Sage: {e}")
 
     def _store_slack_patterns_in_knowledge_sage(self, completion_data: Dict[str, Any]):
@@ -341,6 +356,7 @@ class SlackPMWorker(EnhancedBaseWorker):
             self.slack_pm_metrics["knowledge_sage_learnings"] += 1
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to store Slack patterns in Knowledge Sage: {e}")
 
     def get_elder_slack_pm_status(self) -> Dict[str, Any]:
@@ -381,6 +397,7 @@ if __name__ == "__main__":
     try:
         worker.start()
     except KeyboardInterrupt:
+        # Handle specific exception case
         logger.info("キーボード割り込み受信")
     finally:
         worker.stop()

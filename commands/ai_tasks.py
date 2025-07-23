@@ -36,6 +36,7 @@ class AITasksCommand(BaseCommand):
     """タスク管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="tasks", description="Elders Guild タスクの管理")
 
     def setup_arguments(self):
@@ -69,6 +70,7 @@ class AITasksCommand(BaseCommand):
                 # 旧SQLite版タスクトラッカー使用
                 return self._execute_sqlite(args)
         except Exception as e:
+            # Handle specific exception case
             console.print(f"❌ エラー: {e}", style="red")
             return CommandResult(success=False, message=str(e))
 
@@ -77,6 +79,7 @@ class AITasksCommand(BaseCommand):
         import asyncio
         
         async def async_execute():
+            # Core functionality implementation
             from libs.postgres_claude_task_tracker import create_postgres_task_tracker
             
             tracker = await create_postgres_task_tracker()
@@ -96,7 +99,10 @@ class AITasksCommand(BaseCommand):
                     
                     # 検索フィルタ
                     if args.search:
-                        tasks = [t for t in tasks if args.search.lower() in t.get('name', '').lower() 
+                        tasks = [t for t in tasks if args.search.lower(
+                            ) in t.get('name',
+                            '').lower(
+                        ) 
                                 or args.search.lower() in t.get('description', '').lower()]
                     
                     # タイプフィルタ
@@ -150,6 +156,7 @@ class AITasksCommand(BaseCommand):
         table.add_column("プロンプト", style="white", width=40)
 
         for task in tasks:
+            # Process each item in collection
             status = task.get("status", "unknown")
             if status == "completed":
                 status_text = "[green]✅[/green]"
@@ -204,6 +211,7 @@ class AITasksCommand(BaseCommand):
         table.add_column("作成日時", style="white", width=16)
 
         for task in tasks:
+            # Process each item in collection
             status = task.get("status", "unknown")
             if status == "completed":
                 status_text = "[green]✅ 完了[/green]"
@@ -307,6 +315,7 @@ class AITasksCommand(BaseCommand):
     def _show_tasks_detail(self, tasks):
         """タスク詳細表示"""
         for task in tasks:
+            # Process each item in collection
             self._display_task_panel(task)
             console.print()
 
@@ -340,6 +349,7 @@ class AITasksCommand(BaseCommand):
         # 要約があれば表示
         summary = task.get("summary", "要約なし")
         if summary == "None" or not summary:
+            # Complex condition - consider breaking down
             summary = "要約なし"
 
         # 応答を短縮

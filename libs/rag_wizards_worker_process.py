@@ -28,6 +28,7 @@ class RagWizardsWorkerProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="rag_wizards_worker",
             elder_role=ElderRole.SERVANT,  # TODO: Adjust as needed

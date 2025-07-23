@@ -21,6 +21,7 @@ try:
 except ImportError:
     # Mock redis for testing environments
     class MockRedis:
+        # Main class implementation
         async def get(self, key): return None
         async def set(self, key, value, ex=None): pass
         async def delete(self, key): pass
@@ -82,6 +83,7 @@ class CacheRequest:
     """キャッシュリクエスト"""
 
     def __init__(
+        """初期化メソッド"""
         self,
         key_type: CacheKeyType,
         data: Dict[str, Any],
@@ -99,6 +101,7 @@ class CacheResponse:
     """キャッシュレスポンス"""
 
     def __init__(
+        """初期化メソッド"""
         self,
         success: bool,
         data: Optional[Dict[str, Any]] = None,
@@ -123,6 +126,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
     """
 
     def __init__(
+        """初期化メソッド"""
         self,
         redis_url: str = "redis://localhost:6379",
         strategy: CacheStrategy = CacheStrategy.BALANCED,
@@ -192,6 +196,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
                 self.logger.info("Redis connection established successfully")
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Redis connection failed: {str(e)}")
                 # フォールバック: インメモリキャッシュ
                 self.redis_client = None
@@ -277,6 +282,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.stats.errors += 1
             self.logger.error(f"Cache processing failed: {str(e)}")
 
@@ -298,6 +304,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
             return None
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Cache get failed for key {key}: {str(e)}")
             return None
 
@@ -312,6 +319,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
                 self.stats.total_size_bytes += len(data_json.encode())
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Cache set failed for key {key}: {str(e)}")
 
     def validate_request(self, request: CacheRequest) -> bool:
@@ -321,6 +329,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
         if not isinstance(request.data, dict):
             return False
         if request.ttl_seconds and request.ttl_seconds <= 0:
+            # Complex condition - consider breaking down
             return False
         return True
 
@@ -423,6 +432,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
             return 0
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"Cache invalidation failed for pattern {pattern}: {str(e)}"
             )
@@ -442,6 +452,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
                     "maxmemory": info.get("maxmemory", 0),
                 }
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Failed to get Redis memory info: {str(e)}")
 
         return {
@@ -469,6 +480,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
             return 0
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Cache cleanup failed: {str(e)}")
             return 0
 
@@ -504,6 +516,7 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Health check failed: {str(e)}")
             return {"success": False, "status": "error", "error": str(e)}
 

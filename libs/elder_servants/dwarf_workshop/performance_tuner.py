@@ -35,6 +35,7 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "profile_code",
@@ -209,6 +210,7 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Performance tuning failed for task {task_id}: {str(e)}")
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
 
@@ -273,6 +275,7 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Code profiling failed: {e}")
             return {
                 "profile_report": {},
@@ -342,6 +345,7 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Algorithm optimization failed: {e}")
             return {
                 "optimized_code": source_code,
@@ -400,6 +404,7 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Memory optimization failed: {e}")
             return {
                 "optimized_code": source_code,
@@ -456,6 +461,7 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Async optimization failed: {e}")
             return {
                 "async_optimized_code": source_code,
@@ -508,6 +514,7 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Database query optimization failed: {e}")
             return {
                 "optimized_queries": query_code,
@@ -569,6 +576,7 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Caching strategy implementation failed: {e}")
             return {
                 "cached_code": source_code,
@@ -607,6 +615,7 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 quality_score += 10.0
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Performance optimization quality validation error: {e}")
             quality_score = max(quality_score - 10.0, 0.0)
 
@@ -657,7 +666,9 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         # 簡易実装: リストをセットに変換提案
         for node in ast.walk(tree):
             if isinstance(node, ast.Compare) and isinstance(node.left, ast.Name):
+                # Complex condition - consider breaking down
                 if any(isinstance(comp, ast.In) for comp in node.ops):
+                    # Complex condition - consider breaking down
                     optimizations.append("Suggested using set for membership testing")
 
         return optimizations
@@ -709,7 +720,9 @@ class PerformanceTuner(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         total_improvement = 0
         for opt in optimizations:
+            # Process each item in collection
             for keyword, weight in improvement_weights.items():
+                # Process each item in collection
                 if keyword in opt.lower():
                     total_improvement += weight
                     break
@@ -747,6 +760,7 @@ class CodeProfiler:
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "total_time": 0,
                 "function_calls": 0,
@@ -766,6 +780,7 @@ class MemoryAnalyzer:
         large_structures = []
         for node in ast.walk(tree):
             if isinstance(node, ast.List) and len(getattr(node, "elts", [])) > 100:
+                # Complex condition - consider breaking down
                 large_structures.append(node)
 
         if large_structures:
@@ -775,6 +790,7 @@ class MemoryAnalyzer:
         open_calls = []
         for node in ast.walk(tree):
             if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+                # Complex condition - consider breaking down
                 if node.func.id == "open":
                     open_calls.append(node)
 

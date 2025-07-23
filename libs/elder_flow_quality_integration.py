@@ -139,7 +139,11 @@ class ElderFlowQualityGate:
         
         return results
         
-    async def enforce_quality_gate(self, task_description: str, file_paths: List[str]) -> Dict[str, Any]:
+    async def enforce_quality_gate(
+        self,
+        task_description: str,
+        file_paths: List[str]
+    ) -> Dict[str, Any]:
         """品質ゲート強制実行"""
         logger.info(f"🛡️ Enforcing quality gate for: {task_description}")
         
@@ -377,15 +381,26 @@ async def get_elder_flow_quality_integration():
         await _quality_integration.initialize()
     return _quality_integration
 
-async def elder_flow_quality_check(task_description: str, target_files: Optional[List[str]] = None) -> Dict[str, Any]:
+async def elder_flow_quality_check(
+    task_description: str,
+    target_files: Optional[List[str]] = None
+) -> Dict[str, Any]:
     """Elder Flow品質チェック便利関数"""
     integration = await get_elder_flow_quality_integration()
     return await integration.pre_execution_quality_check(task_description, target_files)
 
-async def elder_flow_quality_learn(task_description: str, execution_result: Dict, error_info: Optional[Dict] = None):
+async def elder_flow_quality_learn(
+    task_description: str,
+    execution_result: Dict,
+    error_info: Optional[Dict] = None
+):
     """Elder Flow品質学習便利関数"""
     integration = await get_elder_flow_quality_integration()
-    await integration.post_execution_quality_learning(task_description, execution_result, error_info)
+    await integration.post_execution_quality_learning(
+        task_description,
+        execution_result,
+        error_info
+    )
 
 if __name__ == "__main__":
     async def test_quality_integration():

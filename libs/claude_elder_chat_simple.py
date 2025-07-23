@@ -378,7 +378,11 @@ class ClaudeElderChatSimple:
             response += "✅ 進捗は定期的にお知らせします。"
         else:
             response = f"🧾 クロードエルダー: タスク委任中にエラーが発生しました。\n"
-            response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
+            response += f"⚠️ エラー詳細: {command_result.get(
+                'result',
+                {}).get('error',
+                'Unknown error'
+            )}"
 
         return {
             "success": command_result.get("success"),
@@ -408,7 +412,11 @@ class ClaudeElderChatSimple:
             response = (
                 f"🧾 クロードエルダー: ステータス取得中にエラーが発生しました。\n"
             )
-            response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
+            response += f"⚠️ エラー詳細: {command_result.get(
+                'result',
+                {}).get('error',
+                'Unknown error'
+            )}"
 
         return {
             "success": command_result.get("success"),
@@ -435,7 +443,11 @@ class ClaudeElderChatSimple:
             response = (
                 f"🧾 クロードエルダー: サーベント配備中にエラーが発生しました。\n"
             )
-            response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
+            response += f"⚠️ エラー詳細: {command_result.get(
+                'result',
+                {}).get('error',
+                'Unknown error'
+            )}"
 
         return {
             "success": command_result.get("success"),
@@ -456,7 +468,11 @@ class ClaudeElderChatSimple:
             response += f"🎯 関連情報: {query_result.get('related_info', 'なし')}"
         else:
             response = f"🧾 クロードエルダー: 知識検索中にエラーが発生しました。\n"
-            response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
+            response += f"⚠️ エラー詳細: {command_result.get(
+                'result',
+                {}).get('error',
+                'Unknown error'
+            )}"
 
         return {
             "success": command_result.get("success"),
@@ -480,7 +496,11 @@ class ClaudeElderChatSimple:
             response = (
                 f"🧾 クロードエルダー: エルダー評議会召集中にエラーが発生しました。\n"
             )
-            response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
+            response += f"⚠️ エラー詳細: {command_result.get(
+                'result',
+                {}).get('error',
+                'Unknown error'
+            )}"
 
         return {
             "success": command_result.get("success"),
@@ -504,7 +524,11 @@ class ClaudeElderChatSimple:
             response = (
                 f"🧾 クロードエルダー: サーベント状態取得中にエラーが発生しました。\n"
             )
-            response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
+            response += f"⚠️ エラー詳細: {command_result.get(
+                'result',
+                {}).get('error',
+                'Unknown error'
+            )}"
 
         return {
             "success": command_result.get("success"),
@@ -527,7 +551,11 @@ class ClaudeElderChatSimple:
             response = (
                 f"🧾 クロードエルダー: エルダー知恵検索中にエラーが発生しました。\n"
             )
-            response += f"⚠️ エラー詳細: {command_result.get('result', {}).get('error', 'Unknown error')}"
+            response += f"⚠️ エラー詳細: {command_result.get(
+                'result',
+                {}).get('error',
+                'Unknown error'
+            )}"
 
         return {
             "success": command_result.get("success"),

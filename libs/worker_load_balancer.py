@@ -288,7 +288,8 @@ class WorkerLoadBalancer:
                 # 自動最適化の閾値チェック
                 if metrics.total_workers > self.max_workers or metrics.system_load > 85:
                     logger.info(
-                        f"Auto-optimization triggered: {metrics.total_workers} workers, {metrics.system_load}% system load"
+                        f"Auto-optimization triggered: {metrics.total_workers} workers, " \
+                            "{metrics.system_load}% system load"
                     )
                     self.optimize_worker_distribution()
 

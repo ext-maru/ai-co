@@ -70,6 +70,7 @@ class ProcessWorker:
     """Individual process worker with health monitoring"""
     
     def __init__(self, worker_id: int, config: ProcessPoolConfig):
+        """初期化メソッド"""
         self.worker_id = worker_id
         self.config = config
         self.process: Optional[mp.Process] = None
@@ -132,6 +133,7 @@ class AdvancedProcessPool:
     """Advanced process pool with warm pool and health monitoring"""
     
     def __init__(self, config: ProcessPoolConfig):
+        """初期化メソッド"""
         self.config = config
         self.active_workers = 0
         self.warm_pool_size = config.warm_pool_size

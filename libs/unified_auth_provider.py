@@ -323,7 +323,8 @@ class UnifiedAuthProvider:
 
         # デバッグログ（権限チェック記録）
         logger.info(
-            f"権限チェック: user={user.username}, role={expected_role.value}, required={required_role.value}, granted={user_level >= required_level}"
+            f"権限チェック: user={user.username}, role={expected_role.value}, " \
+                "required={required_role.value}, granted={user_level >= required_level}"
         )
 
         return user_level >= required_level

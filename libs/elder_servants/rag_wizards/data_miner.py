@@ -29,6 +29,7 @@ import pandas as pd
 try:
     from scipy import stats
 except ImportError:
+    # Handle specific exception case
     print("Warning: scipy not available, using basic statistics")
     stats = None
 
@@ -37,6 +38,7 @@ try:
     from sklearn.decomposition import PCA
     from sklearn.preprocessing import StandardScaler
 except ImportError:
+    # Handle specific exception case
     print("Warning: sklearn not available, clustering features limited")
     StandardScaler = None
     PCA = None
@@ -73,6 +75,7 @@ class DataMiner(WizardServant):
     """
 
     def __init__(self, servant_id: str, name: str, specialization: str):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "data_analysis",
@@ -150,6 +153,7 @@ class DataMiner(WizardServant):
         """研究魔法詠唱 - データ分析実行"""
         # process_requestを呼び出して実際の分析を実行
         if isinstance(query, dict) and "task_id" in query:
+            # Complex condition - consider breaking down
             # ServantRequestに変換
             request = ServantRequest(
                 task_id=query["task_id"],
@@ -206,6 +210,7 @@ class DataMiner(WizardServant):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Request validation error: {str(e)}")
             return False
 
@@ -279,6 +284,7 @@ class DataMiner(WizardServant):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error processing data analysis request: {str(e)}")
             return ServantResponse(
                 task_id=request.task_id,
@@ -337,6 +343,7 @@ class DataMiner(WizardServant):
             return analysis_results
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Analysis execution error: {str(e)}")
             return {"error": str(e), "data_info": {"row_count": 0, "column_count": 0}}
 
@@ -379,6 +386,7 @@ class DataMiner(WizardServant):
         date_columns = []
 
         for column in df.columns:
+            # Process each item in collection
             dtype = df[column].dtype
 
             if pd.api.types.is_numeric_dtype(dtype):
@@ -441,6 +449,7 @@ class DataMiner(WizardServant):
 
         # 相関分析
         if "correlation" in metrics and len(numeric_columns) > 1:
+            # Complex condition - consider breaking down
             results["correlations"] = self._calculate_correlations(
                 df[numeric_columns], "pearson"
             )
@@ -471,6 +480,7 @@ class DataMiner(WizardServant):
 
         for column in value_columns:
             if column in df.columns and pd.api.types.is_numeric_dtype(df[column]):
+                # Complex condition - consider breaking down
                 # トレンド分析
                 trend_results = self._perform_trend_analysis(df, time_column, [column])
                 results["trends"][column] = trend_results.get(column, {})
@@ -514,6 +524,7 @@ class DataMiner(WizardServant):
                         series1 = df[var1].dropna()
                         series2 = df[var2].dropna()
                         if len(series1) > 3 and len(series2) > 3:
+                            # Complex condition - consider breaking down
                             corr, p_value = stats.pearsonr(series1, series2)
                             if p_value < significance_level:
                                 results["strong_correlations"].append(
@@ -571,6 +582,7 @@ class DataMiner(WizardServant):
         df_with_clusters["cluster"] = clusters
 
         for cluster_id in range(n_clusters):
+            # Process each item in collection
             cluster_data = df_with_clusters[df_with_clusters["cluster"] == cluster_id]
             cluster_stats = {
                 "size": len(cluster_data),
@@ -588,6 +600,7 @@ class DataMiner(WizardServant):
         anomalies = {}
 
         for column in numeric_columns:
+            # Process each item in collection
             series = df[column].dropna()
 
             if config.outlier_method == "iqr":
@@ -653,6 +666,7 @@ class DataMiner(WizardServant):
         numeric_columns = df.select_dtypes(include=[np.number]).columns
 
         for column in numeric_columns:
+            # Process each item in collection
             series = df[column].dropna()
             stats_dict = {}
 
@@ -683,6 +697,7 @@ class DataMiner(WizardServant):
         numeric_columns = df.select_dtypes(include=[np.number]).columns
 
         for column in numeric_columns:
+            # Process each item in collection
             series = df[column].dropna()
 
             # IQR method
@@ -714,6 +729,7 @@ class DataMiner(WizardServant):
         strong_correlations = []
         for i in range(len(corr_matrix.columns)):
             for j in range(i + 1, len(corr_matrix.columns)):
+                # Process each item in collection
                 corr_value = corr_matrix.iloc[i, j]
                 if abs(corr_value) > 0.7:  # 強い相関の閾値
                     strong_correlations.append(
@@ -742,6 +758,7 @@ class DataMiner(WizardServant):
 
         for column in value_columns:
             if column in df.columns and pd.api.types.is_numeric_dtype(df[column]):
+                # Complex condition - consider breaking down
                 # 線形回帰によるトレンド分析
                 x = np.arange(len(df))
                 y = df[column].values
@@ -783,6 +800,7 @@ class DataMiner(WizardServant):
 
         forecasts = []
         for i in range(1, periods + 1):
+            # Process each item in collection
             forecast_value = slope * (len(values) + i - 1) + intercept
             forecasts.append(float(forecast_value))
 
@@ -840,6 +858,7 @@ class DataMiner(WizardServant):
             return min(score, max_score)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error assessing analysis quality: {str(e)}")
             return 50.0
 
@@ -854,7 +873,9 @@ class DataMiner(WizardServant):
             if "summary_statistics" in analysis_results:
                 stats = analysis_results["summary_statistics"]
                 for column, column_stats in stats.items():
+                    # Process each item in collection
                     if "mean" in column_stats and "std" in column_stats:
+                        # Complex condition - consider breaking down
                         cv = (
                             column_stats["std"] / column_stats["mean"]
                             if column_stats["mean"] != 0
@@ -895,6 +916,7 @@ class DataMiner(WizardServant):
                     )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error generating insights: {str(e)}")
             insights.append("Analysis completed with some limitations")
 
@@ -954,6 +976,7 @@ class DataMiner(WizardServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error in research and analysis: {str(e)}")
             return {
                 "research_results": ["basic_analysis_patterns"],

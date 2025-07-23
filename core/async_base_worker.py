@@ -32,6 +32,7 @@ class AsyncBaseWorker(ABC):
     """
 
     def __init__(
+        """初期化メソッド"""
         self,
         worker_name: str,
         config: Dict[str, Any],

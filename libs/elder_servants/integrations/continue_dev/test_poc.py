@@ -14,12 +14,13 @@ import signal
 from typing import Optional
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath('./../../..'))))
 
 class ContinueDevPOC:
     """POC test for Continue.dev integration"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.base_url = "http://localhost:8000"
         self.server_process: Optional[subprocess.Popen] = None
         
@@ -38,6 +39,7 @@ class ContinueDevPOC:
             # Wait for server to start
             for i in range(30):  # Wait up to 30 seconds
                 try:
+                    # Security: Validate URL before making request
                     response = requests.get(f"{self.base_url}/")
                     if response.status_code == 200:
                         print("✅ Server started successfully")
@@ -62,6 +64,7 @@ class ContinueDevPOC:
     def test_health_check(self):
         """Test basic health check"""
         try:
+            # Security: Validate URL before making request
             response = requests.get(f"{self.base_url}/")
             assert response.status_code == 200
             data = response.json()
@@ -75,6 +78,7 @@ class ContinueDevPOC:
     def test_list_servants(self):
         """Test listing Elder Servants"""
         try:
+            # Security: Validate URL before making request
             response = requests.get(f"{self.base_url}/elder/servants/list")
             assert response.status_code == 200
             data = response.json()

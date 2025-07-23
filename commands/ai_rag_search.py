@@ -20,6 +20,7 @@ class AIRAGSearchCommand(BaseCommand):
     """RAG検索コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-rag-search", description="RAG検索", version="1.0.0")
         self.console = Console()
 
@@ -111,10 +112,12 @@ class AIRAGSearchCommand(BaseCommand):
             return CommandResult(success=True)
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"RAG検索エラー: {str(e)}")
 
 
 def main():
+    # Core functionality implementation
     command = AIRAGSearchCommand()
     sys.exit(command.run())
 

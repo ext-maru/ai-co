@@ -778,7 +778,10 @@ class TestEnhancedErrorRecovery:
             "backoff_multiplier": 1.1
         }
         
-        result = await self.recovery_manager._execute_retry_strategy(error_info, always_failing_function)
+        result = await self.recovery_manager._execute_retry_strategy(
+            error_info,
+            always_failing_function
+        )
         
         assert result["success"] is False
         assert result["action"] == "retry_exhausted"

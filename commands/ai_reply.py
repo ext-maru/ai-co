@@ -18,6 +18,7 @@ class AIReplyCommand(BaseCommand):
     """対話応答コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="reply", description="Elders Guild 対話への応答を送信", version="1.0.0"
         )
@@ -40,10 +41,12 @@ class AIReplyCommand(BaseCommand):
             )
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"❌ 応答送信エラー: {str(e)}")
 
 
 def main():
+    # Core functionality implementation
     command = AIReplyCommand()
     return command.run()
 

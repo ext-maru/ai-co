@@ -513,7 +513,8 @@ class ElderTreeVectorNetwork:
             }
 
             self.logger.info(
-                f"⚡ Knowledge distribution optimized: {len(applied_optimizations)} optimizations applied"
+                f"⚡ Knowledge distribution optimized: {len(applied_optimizations)} " \
+                    "optimizations applied"
             )
             return result
 

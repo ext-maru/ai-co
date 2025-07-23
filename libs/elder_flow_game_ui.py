@@ -153,7 +153,12 @@ class ElderFlowGameUI:
         header = f"""
 {UIElement.colorize('🏛️ Elder Flow Game Interface 🏛️', GameColor.ELDER_GOLD, True)}
 {UIElement.colorize('═' * 60, GameColor.ELDER_GOLD)}
-{UIElement.colorize(f'Developer: Lv.{self.player_stats.level}', GameColor.SAGE_BLUE)} | {UIElement.colorize(f'EXP: {self.player_stats.exp}', GameColor.GREEN)} | {UIElement.colorize(f'Elder Mood: {self.get_elder_mood_display()}', self.get_elder_mood_color())}
+{UIElement.colorize(
+    f'Developer: Lv.{self.player_stats.level}',
+    GameColor.SAGE_BLUE)} | {UIElement.colorize(f'EXP: {self.player_stats.exp}',
+    GameColor.GREEN)} | {UIElement.colorize(f'Elder Mood: {self.get_elder_mood_display()}',
+    self.get_elder_mood_color()
+)}
 {UIElement.colorize('═' * 60, GameColor.ELDER_GOLD)}
 """
         print(header)
@@ -224,10 +229,17 @@ class ElderFlowGameUI:
         success_rate = (passed_checks / total_checks) * 100
 
         print(
-            f"\n{UIElement.colorize('総合スコア:', GameColor.YELLOW)} {UIElement.progress_bar(passed_checks, total_checks)}"
+            f"\n{UIElement.colorize(
+                '総合スコア:',
+                GameColor.YELLOW)} {UIElement.progress_bar(passed_checks,
+                total_checks
+            )}"
         )
         print(
-            f"{UIElement.colorize(f'成功率: {success_rate:.1f}%', GameColor.GREEN if success_rate >= 80 else GameColor.RED)}"
+            f"{UIElement.colorize(
+                f'成功率: {success_rate:.1f}%',
+                GameColor.GREEN if success_rate >= 80 else GameColor.RED
+            )}"
         )
 
         # エルダーのコメント

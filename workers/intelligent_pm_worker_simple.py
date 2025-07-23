@@ -50,6 +50,7 @@ class IntelligentPMWorkerSimple:
             logger.info(f"✅ RabbitMQ connected: {self.queue_name}")
             return True
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"❌ RabbitMQ connection failed: {e}")
             return False
 
@@ -76,6 +77,7 @@ class IntelligentPMWorkerSimple:
             return result
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"❌ PM task processing failed: {e}")
             return {
                 'task_id': task_data.get('task_id', 'unknown'),
@@ -102,6 +104,7 @@ class IntelligentPMWorkerSimple:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"❌ Message processing failed: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
@@ -125,10 +128,12 @@ class IntelligentPMWorkerSimple:
             logger.info("⏳ Waiting for PM messages...")
             self.channel.start_consuming()
         except KeyboardInterrupt:
+            # Handle specific exception case
             logger.info("🛑 Stopping PM worker...")
             self.channel.stop_consuming()
         finally:
             if self.connection and not self.connection.is_closed:
+                # Complex condition - consider breaking down
                 self.connection.close()
                 logger.info("🔌 RabbitMQ connection closed")
 

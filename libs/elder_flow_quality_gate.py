@@ -510,7 +510,8 @@ class QualityGateSystem:
         context["adjusted_metrics"] = adjusted_metrics
 
         self.logger.info(
-            f"Starting quality gate with {len(check_types)} checks (priority: {priority}, phase: {phase})"
+            f"Starting quality gate with {len(check_types)} checks (priority: {priority}, " \
+                "phase: {phase})"
         )
 
         # 全チェック並列実行

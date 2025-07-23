@@ -19,6 +19,7 @@ class PMFeedbackToggleCommand(BaseCommand):
     """PMフィードバック機能の有効/無効を切り替える"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="pm-feedback-toggle",
             description="PMフィードバック機能の有効/無効を切り替え",
@@ -31,6 +32,7 @@ class PMFeedbackToggleCommand(BaseCommand):
             # パラメータ解析
             enable = True  # デフォルトは有効
             if args and len(args) > 0:
+                # Complex condition - consider breaking down
                 enable = args[0].lower() in [
                     "true",
                     "1",
@@ -59,6 +61,7 @@ class PMFeedbackToggleCommand(BaseCommand):
                 return CommandResult(success=False, message="❌ PMフィードバック設定の送信に失敗しました")
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"❌ エラー: {str(e)}")
 
     def _send_pm_command(self, task_data: dict) -> bool:
@@ -81,11 +84,13 @@ class PMFeedbackToggleCommand(BaseCommand):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ RabbitMQ送信エラー: {e}")
             return False
 
 
 def main():
+    # Core functionality implementation
     command = PMFeedbackToggleCommand()
     sys.exit(command.run())
 

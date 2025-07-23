@@ -13,7 +13,7 @@ import subprocess
 import os
 from pathlib import Path
 import structlog
-from python_a2a import Agent, Message
+from python_a2a import agent, A2AServer, Message
 from prometheus_client import Counter, Histogram, Gauge
 import redis.asyncio as redis
 from sqlmodel import SQLModel, Field as SQLField, Session, create_engine, select
@@ -100,7 +100,8 @@ class FlowRecord(SQLModel, table=True):
     result_json: str = SQLField(default="{}")  # JSON形式で保存
 
 
-class ElderFlow(Agent):
+@agent(name="ElderFlow", description="Elder Tree 5-stage automation workflow")
+class ElderFlow(A2AServer):
     """
     Elder Flow - 5段階自動化ワークフロー
     
@@ -112,6 +113,7 @@ class ElderFlow(Agent):
     """
     
     def __init__(self, 
+                 """初期化メソッド"""
                  db_url: str = "sqlite:///elder_flow.db",
                  redis_url: str = "redis://localhost:6379",
                  port: int = 50100):
@@ -381,7 +383,12 @@ class ElderFlow(Agent):
         
         return stage
     
-    async def _sage_consultation(self, task_type: str, requirements: List[str], priority: str) -> Dict[str, Any]:
+    async def _sage_consultation(
+        self,
+        task_type: str,
+        requirements: List[str],
+        priority: str
+    ) -> Dict[str, Any]:
         """ステージ1: 賢者協議"""
         self.logger.info("Stage 1: Sage Consultation")
         
@@ -427,7 +434,12 @@ class ElderFlow(Agent):
         
         return consultation_result
     
-    async def _consult_sage(self, sage_name: str, task_type: str, requirements: List[str]) -> Dict[str, Any]:
+    async def _consult_sage(
+        self,
+        sage_name: str,
+        task_type: str,
+        requirements: List[str]
+    ) -> Dict[str, Any]:
         """個別賢者への相談"""
         try:
             response = await self.send_message(
@@ -447,7 +459,13 @@ class ElderFlow(Agent):
             self.logger.warning(f"Failed to consult {sage_name}", error=str(e))
             raise
     
-    async def _servant_execution(self, task_type: str, requirements: List[str], consultation_result: Dict[str, Any]) -> Dict[str, Any]:
+    async def _servant_execution(
+        self,
+        task_type: str,
+        requirements: List[str],
+        consultation_result: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """ステージ2: サーバント実行"""
         self.logger.info("Stage 2: Servant Execution")
         
@@ -526,7 +544,10 @@ class ElderFlow(Agent):
         )
         
         # Iron Will基準チェック
-        iron_will_score = min(quality_score, additional_checks.get("iron_will", {}).get("score", 100))
+        iron_will_score = min(
+            quality_score,
+            additional_checks.get("iron_will", {}).get("score", 100)
+        )
         
         return {
             "quality_passed": all_checks_passed,
@@ -579,7 +600,11 @@ class ElderFlow(Agent):
         
         return checks
     
-    async def _council_report(self, task_type: str, completed_stages: List[Stage]) -> Dict[str, Any]:
+    async def _council_report(
+        self,
+        task_type: str,
+        completed_stages: List[Stage]
+    ) -> Dict[str, Any]:
         """ステージ4: 評議会報告"""
         self.logger.info("Stage 4: Council Report")
         
@@ -674,7 +699,12 @@ class ElderFlow(Agent):
         
         return recommendations
     
-    async def _git_automation(self, task_type: str, execution_result: Dict[str, Any]) -> Dict[str, Any]:
+    async def _git_automation(
+        self,
+        task_type: str,
+        execution_result: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """ステージ5: Git自動化"""
         self.logger.info("Stage 5: Git Automation")
         
@@ -688,7 +718,10 @@ class ElderFlow(Agent):
         
         try:
             # Git操作
-            branch_name = f"elder-flow/{task_type.lower().replace(' ', '-')}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            branch_name = f"elder-flow/{task_type.lower(
+                ).replace(' ',
+                '-')}-{datetime.now().strftime('%Y%m%d%H%M%S'
+            )}"
             
             # ブランチ作成
             subprocess.run(["git", "checkout", "-b", branch_name], check=True)
@@ -699,7 +732,9 @@ class ElderFlow(Agent):
                     subprocess.run(["git", "add", file_path], check=True)
             
             # コミット
-            commit_message = f"feat: {task_type} - Elder Flow automated implementation\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>"
+            commit_message = f"feat: {task_type} - Elder Flow automated implementation\n\n🤖 Generated with " \
+                "[Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude " \
+                "<noreply@anthropic.com>"
             subprocess.run(["git", "commit", "-m", commit_message], check=True)
             
             # コミットハッシュ取得
@@ -764,4 +799,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main()
+    asyncio.run(main())

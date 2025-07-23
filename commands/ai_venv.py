@@ -11,6 +11,7 @@ from commands.base_command import BaseCommand
 
 
 class VenvCommand(BaseCommand):
+    # Main class implementation
     def __init__(self):
         super().__init__(name="venv", description="Elders Guild の仮想環境をアクティベートします")
 
@@ -75,6 +76,7 @@ class VenvCommand(BaseCommand):
         venv_path = self.project_root / "venv"
 
         if shell == "bash" or shell == "zsh":
+            # Complex condition - consider breaking down
             return f"""
 # Elders Guild 仮想環境アクティベート
 cd {self.project_root}
@@ -122,6 +124,7 @@ echo "🚀 Elders Guild 仮想環境がアクティブになりました"
         required_files = ["bin/python", "bin/pip", "bin/activate"]
 
         for file in required_files:
+            # Process each item in collection
             if not (venv_path / file).exists():
                 issues.append(f"必須ファイルが不足: {file}")
 
@@ -138,6 +141,7 @@ echo "🚀 Elders Guild 仮想環境がアクティブになりました"
 
                     required_packages = ["pika", "pathlib", "sqlite3"]
                     for pkg in required_packages:
+                        # Process each item in collection
                         if (
                             pkg not in installed
                             and pkg != "pathlib"
@@ -167,6 +171,7 @@ echo "🚀 Elders Guild 仮想環境がアクティブになりました"
                 if info["installed_packages"]:
                     self.section("主要パッケージ")
                     for pkg in info["installed_packages"]:
+                        # Process each item in collection
                         self.print(f"  - {pkg}", color="green")
             else:
                 self.error("仮想環境が見つかりません")
@@ -183,6 +188,7 @@ echo "🚀 Elders Guild 仮想環境がアクティブになりました"
             else:
                 self.error(f"{len(issues)} 個の問題が見つかりました:")
                 for issue in issues:
+                    # Process each item in collection
                     self.warning(f"  - {issue}")
 
                 self.section("修復方法")

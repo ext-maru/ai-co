@@ -60,6 +60,7 @@ def audit(target: str, comprehensive: bool, output: Optional[str]):
         }
         
         for key, auditor in auditors.items():
+            # Process each item in collection
             engine.register_auditor(key, auditor)
             
         # 監査ターゲットを設定
@@ -84,6 +85,7 @@ def audit(target: str, comprehensive: bool, output: Optional[str]):
             click.echo(f"\n💾 Results saved to: {output}")
             
     except Exception as e:
+        # Handle specific exception case
         click.echo(f"\n❌ Error: {str(e)}", err=True)
         sys.exit(1)
 
@@ -135,6 +137,7 @@ def single(magic_type: str, target: str):
                 click.echo(f"   💡 Fix: {violation['suggested_fix']}")
                 
     except Exception as e:
+        # Handle specific exception case
         click.echo(f"\n❌ Error: {str(e)}", err=True)
         sys.exit(1)
 
@@ -153,6 +156,7 @@ def list():
     
     click.echo("🏛️ Ancient Elder's 6 Magic Systems:\n")
     for name, desc in magics:
+        # Process each item in collection
         click.echo(f"  {name}")
         click.echo(f"    └─ {desc}\n")
 
@@ -207,9 +211,11 @@ def health(days: int):
         if stats:
             click.echo("\n📊 Statistics:")
             for key, value in stats.items():
+                # Process each item in collection
                 click.echo(f"  {key}: {value}")
                 
     except Exception as e:
+        # Handle specific exception case
         click.echo(f"\n❌ Error: {str(e)}", err=True)
         sys.exit(1)
 
@@ -248,6 +254,7 @@ def _display_audit_results(result: Dict[str, Any]):
             severity_counts[severity] = severity_counts.get(severity, 0) + 1
             
         for severity in ['CRITICAL', 'HIGH', 'MEDIUM', 'LOW']:
+            # Process each item in collection
             if severity in severity_counts:
                 emoji = {'CRITICAL': '🚨', 'HIGH': '⚠️', 'MEDIUM': '📋', 'LOW': '💡'}[severity]
                 click.echo(f"  {emoji} {severity}: {severity_counts[severity]}")
@@ -259,6 +266,7 @@ def _display_audit_results(result: Dict[str, Any]):
     if individual_results:
         click.echo("\n📋 Individual Audit Results:")
         for auditor, audit_result in individual_results.items():
+            # Process each item in collection
             violations_count = len(audit_result.get('violations', []))
             status = "✅" if violations_count == 0 else "⚠️"
             click.echo(f"  {status} {auditor}: {violations_count} violations")

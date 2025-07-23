@@ -438,7 +438,8 @@ class ResourceIsolationManager:
                 cpu_cgroup.set_cpu_limit(context.resource_quota.cpu_percent)
 
                 self.logger.debug(
-                    f"📊 CPU limit set: {context.resource_quota.cpu_percent*100}% for {context.context_id}"
+                    f"📊 CPU limit set: {context.resource_quota.cpu_percent*100}% for " \
+                        "{context.context_id}"
                 )
 
             except Exception as e:
@@ -503,12 +504,16 @@ class ResourceIsolationManager:
                 # tc (traffic control) でネットワーク帯域制限
                 bandwidth = context.network_config["bandwidth_limit"]
 
-                # シンプルな帯域制限コマンド（実装例）
-                cmd = f"tc qdisc add dev eth0 root handle 1: htb default 12"
-                subprocess.run(cmd, shell=True, check=False)
+                # シンプルな帯域制限コマンド（実装例）- セキュリティ修正
+                subprocess.run(
+                    ["tc", "qdisc", "add", "dev", "eth0", "root", "handle", "1:", "htb", "default", "12"],
+                    check=False
+                )
 
-                cmd = f"tc class add dev eth0 parent 1: classid 1:12 htb rate {bandwidth//1024}kbit"
-                subprocess.run(cmd, shell=True, check=False)
+                subprocess.run(
+                    ["tc", "class", "add", "dev", "eth0", "parent", "1:", "classid", "1:12", "htb", "rate", f"{bandwidth//1024}kbit"],
+                    check=False
+                )
 
                 self.logger.debug(f"🌐 Network limits set for {context.context_id}")
 
@@ -591,7 +596,8 @@ class ResourceIsolationManager:
                     ),
                     threshold_exceeded=usage.cpu_percent / quota.cpu_percent,
                     current_usage=usage.cpu_percent,
-                    message=f"CPU usage exceeded: {usage.cpu_percent:.1%} > {quota.cpu_percent:.1%}",
+                    message=f"CPU usage exceeded: {usage.cpu_percent:.1%} > {quota.cpu_percent:.1%}" \
+                        "CPU usage exceeded: {usage.cpu_percent:.1%} > {quota.cpu_percent:.1%}",
                     timestamp=datetime.now(),
                 )
             )
@@ -625,7 +631,8 @@ class ResourceIsolationManager:
                     alert_level="warning",
                     threshold_exceeded=usage.process_count / quota.max_processes,
                     current_usage=float(usage.process_count),
-                    message=f"Process count exceeded: {usage.process_count} > {quota.max_processes}",
+                    message=f"Process count exceeded: {usage.process_count} > {quota.max_processes}" \
+                        "Process count exceeded: {usage.process_count} > {quota.max_processes}",
                     timestamp=datetime.now(),
                 )
             )

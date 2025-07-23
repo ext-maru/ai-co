@@ -12,6 +12,7 @@ Enhanced Autonomous Learning System - 強化版自律学習システム
 """
 
 import asyncio
+import secrets
 import json
 import logging
 import sqlite3
@@ -214,6 +215,7 @@ class EnhancedAutonomousLearningSystem:
     """強化版自律学習システム"""
 
     def __init__(self, learning_config: Optional[Dict[str, Any]] = None):
+        """初期化メソッド"""
         self.four_sages = FourSagesIntegration()
 
         # 学習データベース
@@ -682,7 +684,7 @@ class EnhancedAutonomousLearningSystem:
         # 実装簡略化：モックフィードバック
         import random
 
-        if random.random() < 0.3:  # 30%の確率でフィードバック
+        if secrets.token_hex(16) < 0.3:  # 30%の確率でフィードバック
             return {
                 "importance": random.uniform(0.3, 0.9),
                 "confidence": random.uniform(0.6, 0.95),

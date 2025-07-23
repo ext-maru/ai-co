@@ -3161,7 +3161,10 @@ class EvolutionController:
                 if not step_result.get("success", False):
                     return {
                         "success": False,
-                        "error": f"Step '{step['step']}' failed: {step_result.get('error', 'Unknown error')}",
+                        "error": f"Step '{step['step']}' failed: {step_result.get(
+                            'error',
+                            'Unknown error'
+                        )}",
                         "completed_steps": results,
                     }
 

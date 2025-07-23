@@ -31,6 +31,7 @@ class QualityWatcher(ElfServant):
     """品質監視専門サーバント"""
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "quality_monitoring",

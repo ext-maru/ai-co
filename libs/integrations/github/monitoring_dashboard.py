@@ -112,10 +112,12 @@ class MetricsDatabase:
 
             # インデックス作成
             conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_processing_timestamp ON processing_metrics(timestamp)"
+                "CREATE INDEX IF NOT EXISTS idx_processing_timestamp ON " \
+                    "processing_metrics(timestamp)"
             )
             conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_health_timestamp ON system_health_metrics(timestamp)"
+                "CREATE INDEX IF NOT EXISTS idx_health_timestamp ON " \
+                    "system_health_metrics(timestamp)"
             )
             conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_issue_number ON processing_metrics(issue_number)"

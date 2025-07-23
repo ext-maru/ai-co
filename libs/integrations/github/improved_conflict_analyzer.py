@@ -182,7 +182,12 @@ class ImprovedConflictAnalyzer:
                 "conflicts": []
             }
     
-    def _analyze_single_conflict(self, file_path: str, stages: List[Tuple[int, Any]]) -> ConflictInfo:
+    def _analyze_single_conflict(
+        self,
+        file_path: str,
+        stages: List[Tuple[int,
+        Any]]
+    ) -> ConflictInfo:
         """単一ファイルのコンフリクトを分析"""
         
         # ステージ情報を整理
@@ -194,7 +199,11 @@ class ImprovedConflictAnalyzer:
         conflict_type = self._determine_conflict_type(file_path, stage_info)
         
         # 解決戦略を決定
-        resolution_strategy = self._determine_resolution_strategy(file_path, conflict_type, stage_info)
+        resolution_strategy = self._determine_resolution_strategy(
+            file_path,
+            conflict_type,
+            stage_info
+        )
         
         # 自動解決可能性を判定
         auto_resolvable = self._is_auto_resolvable(file_path, conflict_type, stage_info)

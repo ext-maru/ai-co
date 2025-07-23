@@ -232,7 +232,8 @@ class PgVectorUnifiedManager:
             await self.setup_tables()
             
             # バッチマイグレーション
-            cursor = sqlite_conn.execute("SELECT * FROM knowledge_documents ORDER BY priority, category")
+            cursor = sqlite_conn.execute("SELECT * FROM knowledge_documents ORDER BY priority, category" \
+                "SELECT * FROM knowledge_documents ORDER BY priority, category")
             batch_size = 10  # より小さなバッチサイズ
             batch = []
             

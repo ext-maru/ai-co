@@ -416,7 +416,10 @@ except Exception as e:
             'elder_guild_compliance': average_score >= 85.0 and total_critical == 0
         }
     
-    def _generate_security_recommendations(self, results: List[SecurityValidationResult]) -> List[str]:
+    def _generate_security_recommendations(
+        self,
+        results: List[SecurityValidationResult]
+    ) -> List[str]:
         """セキュリティ推奨事項生成"""
         recommendations = []
         

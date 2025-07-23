@@ -330,7 +330,8 @@ class PostgreSQLConnectionManager:
                     # 同期的にクローズを試行（asyncio.run は避ける）
                     if hasattr(pool, "_con_count"):
                         logger.warning(
-                            f"Emergency: Abandoning pool {loop_id} with {pool._con_count} connections"
+                            f"Emergency: Abandoning pool {loop_id} with {pool._con_count} " \
+                                "connections"
                         )
                 except Exception as e:
                     logger.error(f"Emergency shutdown error: {e}")

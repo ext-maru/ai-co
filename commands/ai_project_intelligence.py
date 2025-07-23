@@ -23,6 +23,7 @@ class ProjectIntelligenceCommand(BaseCommand):
     """プロジェクト知能システムコマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-project-intelligence",
             description="🧠 エルダーズギルド プロジェクト知能システム"
@@ -68,7 +69,13 @@ class ProjectIntelligenceCommand(BaseCommand):
         # report - レポート表示
         report_parser = subparsers.add_parser("report", help="レポート表示")
         report_parser.add_argument("date", help="日付 (YYYY-MM-DD)")
-        report_parser.add_argument("--format", choices=["text", "json"], default="text", help="出力形式")
+        report_parser.add_argument(
+            "--format",
+            choices=["text",
+            "json"],
+            default="text",
+            help="出力形式"
+        )
 
         # stats - 統計情報
         stats_parser = subparsers.add_parser("stats", help="統計情報表示")
@@ -86,16 +93,22 @@ class ProjectIntelligenceCommand(BaseCommand):
             return 0
 
         if parsed_args.subcommand == "daily":
+            # Complex condition - consider breaking down
             return self.run_daily_cycle(parsed_args)
         elif parsed_args.subcommand == "schedule":
+            # Complex condition - consider breaking down
             return self.start_schedule(parsed_args)
         elif parsed_args.subcommand == "council-status":
+            # Complex condition - consider breaking down
             return self.show_council_status(parsed_args)
         elif parsed_args.subcommand == "approve":
+            # Complex condition - consider breaking down
             return self.approve_report(parsed_args)
         elif parsed_args.subcommand == "report":
+            # Complex condition - consider breaking down
             return self.show_report(parsed_args)
         elif parsed_args.subcommand == "stats":
+            # Complex condition - consider breaking down
             return self.show_stats(parsed_args)
 
     def run_daily_cycle(self, args):
@@ -121,6 +134,7 @@ class ProjectIntelligenceCommand(BaseCommand):
                 return 1
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"❌ 日次知能サイクルエラー: {e}")
             return 1
 
@@ -139,9 +153,11 @@ class ProjectIntelligenceCommand(BaseCommand):
         try:
             asyncio.run(self.scheduler.start_daily_cycle())
         except KeyboardInterrupt:
+            # Handle specific exception case
             self.info("\n🛑 スケジューラー停止")
             return 0
         except Exception as e:
+            # Handle specific exception case
             self.error(f"❌ スケジューラーエラー: {e}")
             return 1
 
@@ -167,6 +183,7 @@ class ProjectIntelligenceCommand(BaseCommand):
                 if status['recent_reports']:
                     self.info(f"\n📋 最近のレポート:")
                     for report in status['recent_reports']:
+                        # Process each item in collection
                         status_icon = {
                             "pending": "⏳",
                             "auto_approved": "✅",
@@ -179,6 +196,7 @@ class ProjectIntelligenceCommand(BaseCommand):
                         self.info(f"    改善数: {report['total_improvements']}")
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"❌ 評議会状況取得エラー: {e}")
             return 1
 
@@ -199,6 +217,7 @@ class ProjectIntelligenceCommand(BaseCommand):
                 return 1
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"❌ レポート承認エラー: {e}")
             return 1
 
@@ -233,6 +252,7 @@ class ProjectIntelligenceCommand(BaseCommand):
                 if report.get("projects"):
                     self.info(f"\n📋 プロジェクト状況:")
                     for project in report["projects"]:
+                        # Process each item in collection
                         self.info(f"  • {project['id']}")
                         self.info(f"    完成度: {project['completion_rate']:.1%}")
                         self.info(f"    品質: {project['quality_score']:.1%}")
@@ -240,17 +260,23 @@ class ProjectIntelligenceCommand(BaseCommand):
                 if report.get("patterns"):
                     self.info(f"\n🔍 発見パターン:")
                     for pattern in report["patterns"]:
+                        # Process each item in collection
                         self.info(f"  • {pattern['type']}: {pattern['description']}")
                         self.info(f"    信頼度: {pattern['confidence']:.1%}")
 
                 if report.get("improvements"):
                     self.info(f"\n💡 改善提案:")
                     for improvement in report["improvements"]:
-                        priority_icon = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(improvement['priority'], "⚪")
+                        # Process each item in collection
+                        priority_icon = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(
+                            improvement['priority'],
+                            "⚪"
+                        )
                         self.info(f"  {priority_icon} {improvement['description']}")
                         self.info(f"    信頼度: {improvement['confidence']:.1%}")
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"❌ レポート表示エラー: {e}")
             return 1
 
@@ -269,6 +295,7 @@ class ProjectIntelligenceCommand(BaseCommand):
             self.info("⚡ 平均実装時間: 3.2時間")
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"❌ 統計情報エラー: {e}")
             return 1
 

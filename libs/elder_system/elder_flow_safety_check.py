@@ -416,7 +416,8 @@ class ElderFlowSafetyChecker:
         # Elder Flow互換性警告
         compatibility = analysis.get("elder_flow_compatibility", 0)
         if compatibility < 0.3:
-            warnings.append("Low Elder Flow compatibility - manual implementation strongly recommended")
+            warnings.append("Low Elder Flow compatibility - manual implementation strongly recommended" \
+                "Low Elder Flow compatibility - manual implementation strongly recommended")
         elif compatibility < 0.5:
             warnings.append("Limited Elder Flow compatibility - proceed with caution")
         

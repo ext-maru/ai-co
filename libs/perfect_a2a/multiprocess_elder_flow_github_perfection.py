@@ -60,7 +60,8 @@ class MultiProcessA2AElderFlow:
         self.rag_sage = get_rag_sage_instance()
 
         logger.info(
-            f"🏛️ Multi-Process A2A Elder Flow initialized with {self.process_count} processes and A2A sage instances"
+            f"🏛️ Multi-Process A2A Elder Flow initialized with {self.process_count} " \
+                "processes and A2A sage instances"
         )
 
     async def execute_perfect_github_integration(self) -> Dict[str, Any]:

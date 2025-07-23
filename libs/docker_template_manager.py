@@ -193,7 +193,8 @@ class DockerTemplateManager:
                         "CHOWN_HOME": "yes",
                     },
                     health_check="curl -f http://localhost:8888/api || exit 1",
-                    startup_command="jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root",
+                    startup_command="jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root" \
+                        "jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root",
                     development_tools=["pytest", "black", "isort", "nbstripout"],
                     security_hardening=["--cap-drop=ALL"],
                     resource_limits={"memory": "8g", "cpus": "4.0", "gpus": "all"},

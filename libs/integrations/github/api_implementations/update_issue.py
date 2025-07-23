@@ -459,7 +459,8 @@ class GitHubUpdateIssueImplementation:
                 }
 
             response = self._make_api_request(
-                endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{issue_number}/comments",
+                endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{issue_number}/comments" \
+                    "/repos/{self.repo_owner}/{self.repo_name}/issues/{issue_number}/comments",
                 method="POST",
                 json_data={"body": body},
             )
@@ -541,7 +542,8 @@ class GitHubUpdateIssueImplementation:
             if response["success"]:
                 # 削除後の全ラベルを取得
                 labels_response = self._make_api_request(
-                    endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{issue_number}/labels",
+                    endpoint=f"/repos/{self.repo_owner}/{self.repo_name}/issues/{issue_number}/labels" \
+                        "/repos/{self.repo_owner}/{self.repo_name}/issues/{issue_number}/labels",
                     method="GET",
                 )
 

@@ -64,6 +64,7 @@ class HybridCodeCraftsman(ElderServant):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             servant_id="H01",
             servant_name="Hybrid Code Craftsman",
@@ -489,13 +490,15 @@ def hybrid_quality_check():
 
         # Iron Will品質チェック追加
         if "def " in code and "quality" not in code.lower():
-            enhanced_code += "\n\n# Elder Guild Quality Gate\ndef validate_quality():\n    return True  # Iron Will compliant"
+            enhanced_code += "\n\n# Elder Guild Quality Gate\ndef validate_quality():\n    return True  # " \
+                "Iron Will compliant"
             patterns_applied.append("Quality Gate")
             improvements.append("Added Iron Will quality validation")
 
         # Elder監視フック追加
         if "async def" in code and "monitoring" not in code.lower():
-            enhanced_code += "\n\n# Elder Monitoring Hook\ndef add_elder_monitoring():\n    pass  # Elder monitoring integration"
+            enhanced_code += "\n\n# Elder Monitoring Hook\ndef add_elder_monitoring():\n    pass  # Elder " \
+                "monitoring integration"
             patterns_applied.append("Monitoring Hook")
             improvements.append("Added Elder monitoring integration")
 
@@ -517,6 +520,7 @@ def hybrid_quality_check():
 # Elder Guild Enhancements
 class ElderRefactoredVersion:
     def __init__(self):
+        """初期化メソッド"""
         self.quality_threshold = 0.95
         self.elder_compliance = True
 
@@ -589,6 +593,7 @@ class HybridTestGuardian(ElderServant):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             servant_id="H02",
             servant_name="Hybrid Test Guardian",
@@ -837,6 +842,7 @@ class HybridQualityInspector(ElderServant):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             servant_id="H03",
             servant_name="Hybrid Quality Inspector",

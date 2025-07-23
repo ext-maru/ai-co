@@ -247,7 +247,8 @@ class ElderServantDispatcher:
 
         # Dwarfs handle building, optimization, and infrastructure
         dwarf_task_file = Path(
-            f"/home/aicompany/ai_co/tasks/dwarfs/{assignment.servant_id}_task_{assignment.task_id}.json"
+            f"/home/aicompany/ai_co/tasks/dwarfs/{assignment.servant_id}_task_{assignment." \
+                "task_id}.json"
         )
         dwarf_task_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -277,7 +278,8 @@ class ElderServantDispatcher:
 
         # Wizards handle analysis, automation, and monitoring
         wizard_task_file = Path(
-            f"/home/aicompany/ai_co/tasks/wizards/{assignment.servant_id}_task_{assignment.task_id}.json"
+            f"/home/aicompany/ai_co/tasks/wizards/{assignment.servant_id}_task_{assignment." \
+                "task_id}.json"
         )
         wizard_task_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -307,7 +309,8 @@ class ElderServantDispatcher:
 
         # Elfs handle monitoring, logging, and alerting
         elf_task_file = Path(
-            f"/home/aicompany/ai_co/tasks/elfs/{assignment.servant_id}_task_{assignment.task_id}.json"
+            f"/home/aicompany/ai_co/tasks/elfs/{assignment.servant_id}_task_{assignment." \
+                "task_id}.json"
         )
         elf_task_file.parent.mkdir(parents=True, exist_ok=True)
 

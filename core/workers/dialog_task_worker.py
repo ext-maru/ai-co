@@ -69,6 +69,7 @@ class DialogContext:
 
 class DialogTaskWorker(TaskWorker):
     def __init__(self, worker_id="dialog-worker-1"):
+        """初期化メソッド"""
         super().__init__(worker_id)
         self.conversation_manager = ConversationManager()
 
@@ -122,7 +123,8 @@ class DialogTaskWorker(TaskWorker):
             )
 
             logger.info(
-                f"📊 Dialog Analysis - Complexity: {dialog_context.complexity}, Sentiment: {dialog_context.sentiment}"
+                f"📊 Dialog Analysis - Complexity: {dialog_context.complexity}, Sentiment: " \
+                    "{dialog_context.sentiment}"
             )
 
             # Elder Tree統合処理
@@ -279,7 +281,10 @@ class DialogTaskWorker(TaskWorker):
 
             ch.basic_ack(delivery_tag=method.delivery_tag)
             logger.info(
-                f"✅ 対話応答送信: {conversation_id} (Elder Tree: {response.get('elder_tree_engaged', False)})"
+                f"✅ 対話応答送信: {conversation_id} (Elder Tree: {response.get(
+                    'elder_tree_engaged',
+                    False)}
+                )"
             )
 
         except Exception as e:
@@ -461,7 +466,9 @@ class DialogTaskWorker(TaskWorker):
                 category=TriggerCategory.STRATEGIC_DECISION,
                 urgency=UrgencyLevel.MEDIUM,
                 title=f"Dialog Policy Decision Required: {policy_question[:50]}",
-                description=f"Dialog worker requires policy guidance for conversation {conversation_id}",
+                description=f"Dialog worker requires policy guidance for conversation {conversation_id}" \
+                    "Dialog worker requires policy guidance for conversation {conversation_id}" \
+                    "Dialog worker requires policy guidance for conversation {conversation_id}",
                 triggered_at=datetime.now(),
                 metrics={
                     "conversation_length": len(

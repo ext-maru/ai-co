@@ -30,6 +30,7 @@ class AIEvolveDailyCommand:
     """AI日次進化コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.evolution_system = SelfEvolutionSystem()
         self.notifier = SlackNotifier()
 
@@ -48,6 +49,7 @@ class AIEvolveDailyCommand:
                 await self.run_daily_cycle()
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ エラー: {e}")
             await self.notifier.send_message(f"❌ AI進化システムエラー: {e}")
             raise
@@ -138,18 +140,21 @@ class AIEvolveDailyCommand:
             if consultation["proposals_summary"]["high_priority"]:
                 print("🎯 高優先度企画:")
                 for title in consultation["proposals_summary"]["high_priority"]:
+                    # Process each item in collection
                     print(f"  - {title}")
 
             # クイックウィン企画
             if consultation["proposals_summary"]["quick_wins"]:
                 print("⚡ クイックウィン企画:")
                 for title in consultation["proposals_summary"]["quick_wins"]:
+                    # Process each item in collection
                     print(f"  - {title}")
 
             # リソース集約型企画
             if consultation["proposals_summary"]["resource_intensive"]:
                 print("🔧 リソース集約型企画:")
                 for title in consultation["proposals_summary"]["resource_intensive"]:
+                    # Process each item in collection
                     print(f"  - {title}")
 
         print("\n💡 グランドエルダーに未来ビジョンをお聞きして、企画の優先順位を決定してください")

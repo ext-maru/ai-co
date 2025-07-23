@@ -36,6 +36,7 @@ def test_aider_simple():
             print(f"❌ Test 1: Aider help failed: {result.stderr}")
             return False
     except Exception as e:
+        # Handle specific exception case
         print(f"❌ Test 1: Error running aider help: {e}")
         return False
 
@@ -50,6 +51,7 @@ def test_aider_simple():
             print(f"❌ Test 2: Version check failed: {result.stderr}")
             return False
     except Exception as e:
+        # Handle specific exception case
         print(f"❌ Test 2: Error checking version: {e}")
         return False
 
@@ -98,6 +100,7 @@ def test_aider_simple():
             with open(test_file, "r") as f:
                 content = f.read()
             if '"""' in content or "'''" in content:
+                # Complex condition - consider breaking down
                 print("✅ Test 3: Aider successfully modified code")
             else:
                 print("❌ Test 3: Aider ran but didn't add docstring")
@@ -108,6 +111,7 @@ def test_aider_simple():
             return False
 
     except Exception as e:
+        # Handle specific exception case
         print(f"❌ Test 3: Error in modification test: {e}")
         return False
     finally:

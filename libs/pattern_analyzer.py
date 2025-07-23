@@ -648,7 +648,8 @@ class PatternAnalyzer:
             }
 
             logger.info(
-                f"Automated analysis completed: {patterns_discovered} patterns, {insights_generated} insights"
+                f"Automated analysis completed: {patterns_discovered} patterns, " \
+                    "{insights_generated} insights"
             )
 
             return analysis_result

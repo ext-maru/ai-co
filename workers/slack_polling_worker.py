@@ -38,6 +38,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logging.warning(f"Elder Tree integration not available: {e}")
     FourSagesIntegration = None
     ElderCouncilSummoner = None
@@ -146,9 +147,11 @@ class SlackPollingWorker(BaseWorker):
                 time.sleep(self.polling_interval)
 
             except KeyboardInterrupt:
+                # Handle specific exception case
                 self.logger.info(f"{EMOJI['warning']} ポーリング停止シグナルを受信")
                 break
             except Exception as e:
+                # Handle specific exception case
                 self.handle_error(e, "polling_loop")
                 time.sleep(self.polling_interval * 2)  # エラー時は間隔を延長
 
@@ -167,6 +170,7 @@ class SlackPollingWorker(BaseWorker):
                 self.logger.error(f"Bot ID取得エラー: {data.get('error', 'Unknown')}")
                 return None
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Bot ID取得例外: {str(e)}")
             return None
 
@@ -176,6 +180,7 @@ class SlackPollingWorker(BaseWorker):
         base_wait = 60  # 1分ベース
 
         for attempt in range(max_retries):
+            # Process each item in collection
             try:
                 url = "https://slack.com/api/conversations.history"
                 params = {
@@ -211,6 +216,7 @@ class SlackPollingWorker(BaseWorker):
                 return self._filter_unprocessed_messages(messages)
 
             except requests.exceptions.RequestException as e:
+                # Handle specific exception case
                 if "429" in str(e):
                     # 429エラーの場合は指数バックオフ
                     wait_time = base_wait * (2**attempt)
@@ -223,6 +229,7 @@ class SlackPollingWorker(BaseWorker):
                     self.logger.error(f"{EMOJI['error']} Slackメッセージ取得エラー: {str(e)}")
                     return []
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"{EMOJI['error']} Slackメッセージ取得エラー: {str(e)}")
                 return []
 
@@ -258,6 +265,7 @@ class SlackPollingWorker(BaseWorker):
 
             # botメッセージは無視
             if message.get("bot_id") or message.get("subtype") == "bot_message":
+                # Complex condition - consider breaking down
                 self.logger.debug("🤖 Botメッセージをスキップ")
                 return
 
@@ -269,6 +277,7 @@ class SlackPollingWorker(BaseWorker):
             if self.require_mention:
                 # メンションされていない場合は無視
                 if self.bot_user_id and f"<@{self.bot_user_id}>" not in text:
+                    # Complex condition - consider breaking down
                     self.logger.info(f"⏭️ メンションなしのメッセージをスキップ: {text[:50]}...")
                     return
                 else:
@@ -309,6 +318,7 @@ class SlackPollingWorker(BaseWorker):
                 self._publish_to_task_queue(task_data)
                 self.logger.info("✅ RabbitMQキューに送信成功")
             except Exception as queue_error:
+                # Handle specific exception case
                 self.logger.error(f"❌ RabbitMQキュー送信エラー: {queue_error}")
                 # キュー送信失敗でも続行
 
@@ -318,6 +328,7 @@ class SlackPollingWorker(BaseWorker):
                 self._mark_as_processed(message)
                 self.logger.info("✅ 処理済みDB記録成功")
             except Exception as db_error:
+                # Handle specific exception case
                 self.logger.error(f"❌ DB記録エラー: {db_error}")
 
             self.logger.info(
@@ -333,9 +344,11 @@ class SlackPollingWorker(BaseWorker):
                 self._send_simple_reaction(message)
                 self.logger.info("✅ Slack確認通知送信成功")
             except Exception as slack_error:
+                # Handle specific exception case
                 self.logger.error(f"❌ Slack確認通知エラー: {slack_error}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} メッセージ処理エラー: {str(e)}")
             import traceback
 
@@ -372,6 +385,7 @@ class SlackPollingWorker(BaseWorker):
         ]
 
         for keyword in code_keywords:
+            # Process each item in collection
             if keyword in text_lower:
                 return "code"
 
@@ -410,6 +424,7 @@ class SlackPollingWorker(BaseWorker):
             connection.close()
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} キュー送信エラー: {str(e)}")
             # 非致命的エラーとして扱う（処理は続行）
 
@@ -447,6 +462,7 @@ class SlackPollingWorker(BaseWorker):
             else:
                 self.logger.debug(f"リアクション追加失敗: {response.status_code}")
         except Exception as e:
+            # Handle specific exception case
             self.logger.debug(f"リアクション追加エラー: {e}")
 
     def _send_processing_notification(self, message, task_id):
@@ -484,6 +500,7 @@ class SlackPollingWorker(BaseWorker):
             self.logger.info(f"📤 受信確認メッセージ送信: {task_id}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.debug(f"通知送信失敗（非致命的）: {str(e)}")
 
     def process_message(self, ch, method, properties, body):
@@ -497,6 +514,7 @@ class SlackPollingWorker(BaseWorker):
             
             # Elder Tree終了通知
             if ELDER_TREE_AVAILABLE and self.elder_tree:
+                # Complex condition - consider breaking down
                 try:
                     self.elder_tree.notify_shutdown({
                         "worker_type": "slack_polling",
@@ -506,6 +524,7 @@ class SlackPollingWorker(BaseWorker):
                     })
                     self.logger.info("📢 Elder Tree終了通知完了")
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Elder Tree終了通知エラー: {e}")
             
             # Slack接続のクリーンアップ
@@ -514,12 +533,14 @@ class SlackPollingWorker(BaseWorker):
                 self.headers = {}
                 self.logger.info("🔌 Slack接続クリーンアップ完了")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Slack接続クリーンアップエラー: {e}")
             
             # データベース接続のクリーンアップ
             try:
                 # SQLite接続は自動でクローズされるが、念のため明示的にクリーンアップ
                 if hasattr(self, 'db_path') and self.db_path.exists():
+                    # Complex condition - consider breaking down
                     # 古いレコードを削除（7日以上前）
                     cutoff_date = datetime.now() - timedelta(days=7)
                     with sqlite3.connect(self.db_path) as conn:
@@ -530,6 +551,7 @@ class SlackPollingWorker(BaseWorker):
                         conn.commit()
                     self.logger.info("🗄️ データベースクリーンアップ完了")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"データベースクリーンアップエラー: {e}")
             
             # 統計情報の保存
@@ -556,11 +578,13 @@ class SlackPollingWorker(BaseWorker):
                     
                     self.logger.info(f"📊 統計情報保存完了: {getattr(self, 'messages_processed', 0)}件処理")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"統計情報保存エラー: {e}")
             
             self.logger.info("✅ SlackPollingWorker cleanup完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ Cleanup処理エラー: {e}")
             # クリーンアップエラーでも継続
 
@@ -586,11 +610,13 @@ class SlackPollingWorker(BaseWorker):
                 super().stop()
                 self.logger.info("⬆️  親クラスstop()完了")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"親クラスstop()エラー: {e}")
             
             self.logger.info("✅ SlackPollingWorker停止処理完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ 停止処理エラー: {e}")
             # 停止処理エラーでも継続
 
@@ -636,6 +662,7 @@ class SlackPollingWorker(BaseWorker):
                         })
                 
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Elder Tree統合エラー: {e}")
             
             # 統計カウンターの初期化
@@ -655,6 +682,7 @@ class SlackPollingWorker(BaseWorker):
                 else:
                     self.logger.warning("⚠️ Slack Token未設定")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Slack接続テストエラー: {e}")
             
             # データベース接続テスト
@@ -664,6 +692,7 @@ class SlackPollingWorker(BaseWorker):
                     count = cursor.fetchone()[0]
                     self.logger.info(f"📊 データベース接続確認: {count}件の処理済みメッセージ")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"データベース接続テストエラー: {e}")
             
             # Task Sageに初期化完了を報告
@@ -672,9 +701,11 @@ class SlackPollingWorker(BaseWorker):
             self.logger.info(f"✅ {self.__class__.__name__} 初期化完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ 初期化エラー: {e}")
             # 初期化エラーは重要なので、Incident Sageに報告
             if hasattr(self, 'four_sages') and self.four_sages:
+                # Complex condition - consider breaking down
                 try:
                     self.four_sages.report_to_incident_sage({
                         "type": "initialization_error",
@@ -683,6 +714,7 @@ class SlackPollingWorker(BaseWorker):
                         "severity": "medium"
                     })
                 except Exception:
+                    # Handle specific exception case
                     pass  # 報告エラーは無視
 
     def handle_error(self, error: Exception, context: str = None, severity: str = "medium") -> None:
@@ -719,6 +751,7 @@ class SlackPollingWorker(BaseWorker):
             
             # Incident Sageへの報告
             if ELDER_TREE_AVAILABLE and hasattr(self, 'four_sages') and self.four_sages:
+                # Complex condition - consider breaking down
                 try:
                     incident_report = {
                         "type": "worker_error",
@@ -738,16 +771,21 @@ class SlackPollingWorker(BaseWorker):
                     self.logger.info(f"📨 Incident Sage報告完了: {error_id}")
                     
                 except Exception as report_error:
+                    # Handle specific exception case
                     self.logger.warning(f"Incident Sage報告エラー: {report_error}")
             
             # Slack API関連エラーの特別処理
             if "slack" in str(error).lower() or "rate limit" in str(error).lower():
+                # Complex condition - consider breaking down
                 try:
                     # レート制限エラーの場合は自動調整
                     if "rate limit" in str(error).lower() or "429" in str(error):
+                        # Complex condition - consider breaking down
                         old_interval = self.polling_interval
                         self.polling_interval = min(self.polling_interval * 2, 300)  # 最大5分
-                        self.logger.info(f"⏰ ポーリング間隔自動調整: {old_interval}秒 → {self.polling_interval}秒")
+                        self.logger.info(f"⏰ ポーリング間隔自動調整: {old_interval}秒 → {self.polling_interval}秒" \
+                            "⏰ ポーリング間隔自動調整: {old_interval}秒 → {self.polling_interval}秒" \
+                            "⏰ ポーリング間隔自動調整: {old_interval}秒 → {self.polling_interval}秒")
                     
                     # Slack通知エラーファイルに記録
                     error_log_file = PROJECT_ROOT / "logs" / "slack_api_errors.json"
@@ -766,6 +804,7 @@ class SlackPollingWorker(BaseWorker):
                         json.dump(error_logs, f, indent=2)
                     
                 except Exception as log_error:
+                    # Handle specific exception case
                     self.logger.warning(f"エラーログ記録失敗: {log_error}")
             
             # 重要エラーの場合は追加処理
@@ -814,13 +853,27 @@ class SlackPollingWorker(BaseWorker):
                 },
                 "elder_integration": {
                     "elder_tree_available": ELDER_TREE_AVAILABLE,
-                    "four_sages_active": hasattr(self, 'four_sages') and self.four_sages is not None,
-                    "elder_council_active": hasattr(self, 'elder_council_summoner') and self.elder_council_summoner is not None,
-                    "elder_tree_connected": hasattr(self, 'elder_tree') and self.elder_tree is not None
+                    "four_sages_active": hasattr(
+                        self,
+                        'four_sages'
+                    ) and self.four_sages is not None,
+                    "elder_council_active": hasattr(
+                        self,
+                        'elder_council_summoner'
+                    ) and self.elder_council_summoner is not None,
+                    "elder_tree_connected": hasattr(
+                        self,
+                        'elder_tree'
+                    ) and self.elder_tree is not None
                 },
                 "database_info": {
                     "db_path": str(getattr(self, 'db_path', 'unknown')),
-                    "db_exists": getattr(self, 'db_path', Path('/')).exists() if hasattr(self, 'db_path') else False,
+                    "db_exists": getattr(
+                        self,
+                        'db_path',
+                        Path('/')).exists() if hasattr(self,
+                        'db_path'
+                    ) else False,
                     "processed_messages_count": self._get_processed_messages_count()
                 },
                 "health_status": self._determine_health_status(),
@@ -830,6 +883,7 @@ class SlackPollingWorker(BaseWorker):
             
             # Elder Tree詳細状態
             if hasattr(self, 'elder_tree') and self.elder_tree:
+                # Complex condition - consider breaking down
                 try:
                     status["elder_tree_details"] = {
                         "connection_status": "connected",
@@ -837,6 +891,7 @@ class SlackPollingWorker(BaseWorker):
                         "node_count": len(getattr(self.elder_tree, 'nodes', []))
                     }
                 except Exception as e:
+                    # Handle specific exception case
                     status["elder_tree_details"] = {
                         "connection_status": "error",
                         "error": str(e)
@@ -845,6 +900,7 @@ class SlackPollingWorker(BaseWorker):
             return status
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"状態取得エラー: {e}")
             return {
                 "error": f"状態取得失敗: {e}",
@@ -867,6 +923,7 @@ class SlackPollingWorker(BaseWorker):
         try:
             # Slack Token検証
             if not hasattr(self, 'slack_token') or not self.slack_token:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("Slack Bot Token が設定されていません")
                 validation_result["is_valid"] = False
                 validation_result["recommendations"].append("SLACK_BOT_TOKEN 環境変数を設定してください")
@@ -880,6 +937,7 @@ class SlackPollingWorker(BaseWorker):
             
             # チャンネルID検証
             if not hasattr(self, 'channel_id') or not self.channel_id:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("監視対象チャンネルIDが設定されていません")
                 validation_result["is_valid"] = False
                 validation_result["recommendations"].append("SLACK_POLLING_CHANNEL_ID を設定してください")
@@ -923,6 +981,7 @@ class SlackPollingWorker(BaseWorker):
             # RabbitMQ設定確認
             if hasattr(self, 'config'):
                 if not hasattr(self.config, 'RABBITMQ_HOST') or not self.config.RABBITMQ_HOST:
+                    # Complex condition - consider breaking down
                     validation_result["warnings"].append("RabbitMQ ホストが未設定です")
                     validation_result["recommendations"].append("RABBITMQ_HOST 環境変数を設定してください")
                 else:
@@ -931,26 +990,36 @@ class SlackPollingWorker(BaseWorker):
             # Elder Tree統合状態確認
             validation_result["config_details"]["elder_integration"] = {
                 "available": ELDER_TREE_AVAILABLE,
-                "four_sages_initialized": hasattr(self, 'four_sages') and self.four_sages is not None,
-                "elder_council_initialized": hasattr(self, 'elder_council_summoner') and self.elder_council_summoner is not None,
+                "four_sages_initialized": hasattr(
+                    self,
+                    'four_sages'
+                ) and self.four_sages is not None,
+                "elder_council_initialized": hasattr(
+                    self,
+                    'elder_council_summoner'
+                ) and self.elder_council_summoner is not None,
                 "elder_tree_connected": hasattr(self, 'elder_tree') and self.elder_tree is not None
             }
             
             if ELDER_TREE_AVAILABLE and not (hasattr(self, 'four_sages') and self.four_sages):
+                # Complex condition - consider breaking down
                 validation_result["warnings"].append("Elder Tree統合が利用可能ですが、初期化されていません")
                 validation_result["recommendations"].append("initialize()メソッドを実行してください")
             
             # パフォーマンス統計の妥当性
             if hasattr(self, 'messages_processed') and self.messages_processed < 0:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("処理済みメッセージ数が負の値です")
                 validation_result["is_valid"] = False
             
             if hasattr(self, 'errors_count') and self.errors_count < 0:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("エラー数が負の値です")
                 validation_result["is_valid"] = False
             
             # エラー率チェック
             if hasattr(self, 'messages_processed') and hasattr(self, 'errors_count'):
+                # Complex condition - consider breaking down
                 if self.messages_processed > 0:
                     error_rate = (self.errors_count / self.messages_processed) * 100
                     if error_rate > 20:
@@ -972,6 +1041,7 @@ class SlackPollingWorker(BaseWorker):
             return validation_result
             
         except Exception as e:
+            # Handle specific exception case
             validation_result["is_valid"] = False
             validation_result["errors"].append(f"設定検証中にエラー: {e}")
             validation_result["summary"] = "設定検証失敗"
@@ -981,6 +1051,7 @@ class SlackPollingWorker(BaseWorker):
     def _report_initialization_to_task_sage(self) -> None:
         """Task Sageに初期化完了を報告"""
         if not hasattr(self, 'four_sages') or not self.four_sages:
+            # Complex condition - consider breaking down
             return
         
         try:
@@ -1007,6 +1078,7 @@ class SlackPollingWorker(BaseWorker):
             self.logger.info("📋 Task Sage初期化報告完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Task Sage初期化報告エラー: {e}")
 
     def _determine_error_severity(self, error: Exception, context: str = None) -> str:
@@ -1041,6 +1113,7 @@ class SlackPollingWorker(BaseWorker):
         recommendations = []
         
         if "token" in error_str or "authentication" in error_str:
+            # Complex condition - consider breaking down
             recommendations.extend([
                 "Slack Bot Tokenを確認してください",
                 "Bot権限設定を確認してください",
@@ -1048,6 +1121,7 @@ class SlackPollingWorker(BaseWorker):
             ])
         
         if "rate limit" in error_str or "429" in error_str:
+            # Complex condition - consider breaking down
             recommendations.extend([
                 "ポーリング間隔を延長してください",
                 "APIコール頻度を下げてください",
@@ -1055,6 +1129,7 @@ class SlackPollingWorker(BaseWorker):
             ])
         
         if "network" in error_str or "connection" in error_str:
+            # Complex condition - consider breaking down
             recommendations.extend([
                 "ネットワーク接続を確認してください",
                 "プロキシ設定を確認してください",
@@ -1114,10 +1189,12 @@ class SlackPollingWorker(BaseWorker):
         """データベースから処理済みメッセージ数を取得"""
         try:
             if hasattr(self, 'db_path') and self.db_path.exists():
+                # Complex condition - consider breaking down
                 with sqlite3.connect(self.db_path) as conn:
                     cursor = conn.execute("SELECT COUNT(*) FROM processed_messages")
                     return cursor.fetchone()[0]
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"処理済みメッセージ数取得エラー: {e}")
         
         return 0
@@ -1141,6 +1218,7 @@ class SlackPollingWorker(BaseWorker):
         
         # Elder Tree統合チェック
         if ELDER_TREE_AVAILABLE and hasattr(self, 'four_sages') and self.four_sages:
+            # Complex condition - consider breaking down
             return "healthy"
         elif getattr(self, 'slack_token', None):
             return "degraded"
@@ -1158,10 +1236,12 @@ class SlackPollingWorker(BaseWorker):
         
         # ポーリング間隔チェック
         if hasattr(self, 'polling_interval') and self.polling_interval < 10:
+            # Complex condition - consider breaking down
             recommendations.append("レート制限を避けるため、ポーリング間隔を10秒以上に設定してください")
         
         # Elder Tree統合チェック
         if ELDER_TREE_AVAILABLE and not (hasattr(self, 'four_sages') and self.four_sages):
+            # Complex condition - consider breaking down
             recommendations.append("Elder Tree統合を有効化すると監視・エラーハンドリング機能が向上します")
         
         # データベースチェック
@@ -1215,6 +1295,7 @@ def main():
         # ポーリングワーカーなのでrun()を呼び出す（start()はRabbitMQコンシューマー用）
         worker.run()
     except KeyboardInterrupt:
+        # Handle specific exception case
         print(f"\n{EMOJI['warning']} Slack Polling Worker停止")
     finally:
         if hasattr(worker, "cleanup"):

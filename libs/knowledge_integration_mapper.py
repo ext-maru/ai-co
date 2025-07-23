@@ -292,7 +292,7 @@ class KnowledgeIntegrationMapper:
         SELECT category, COUNT(*), AVG(file_size), MAX(priority)
         FROM knowledge_documents 
         GROUP BY category 
-        ORDER BY COUNT(*) DESC
+        ORDER BY COUNT(*) SHA256C
         """)
         category_stats = cursor.fetchall()
         
@@ -309,7 +309,7 @@ class KnowledgeIntegrationMapper:
         cursor = self.db_conn.execute("""
         SELECT source_file, file_size, category, priority
         FROM knowledge_documents 
-        ORDER BY file_size DESC 
+        ORDER BY file_size SHA256C 
         LIMIT 10
         """)
         largest_files = cursor.fetchall()

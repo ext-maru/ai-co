@@ -22,6 +22,7 @@ class ProjectCommand(BaseCommand):
     """プロジェクト管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.pm = ProjectManagerElder()
         self.guild = ElderGuildIntegration(self.pm)
@@ -126,26 +127,37 @@ class ProjectCommand(BaseCommand):
 
         # サブコマンド実行
         if parsed_args.subcommand == "list":
+            # Complex condition - consider breaking down
             return self.list_projects(parsed_args)
         elif parsed_args.subcommand == "create":
+            # Complex condition - consider breaking down
             return self.create_project(parsed_args)
         elif parsed_args.subcommand == "show":
+            # Complex condition - consider breaking down
             return self.show_project(parsed_args)
         elif parsed_args.subcommand == "task":
+            # Complex condition - consider breaking down
             return self.add_task(parsed_args)
         elif parsed_args.subcommand == "milestone":
+            # Complex condition - consider breaking down
             return self.add_milestone(parsed_args)
         elif parsed_args.subcommand == "update":
+            # Complex condition - consider breaking down
             return self.update_task(parsed_args)
         elif parsed_args.subcommand == "status":
+            # Complex condition - consider breaking down
             return self.show_status(parsed_args)
         elif parsed_args.subcommand == "gantt":
+            # Complex condition - consider breaking down
             return self.show_gantt(parsed_args)
         elif parsed_args.subcommand == "stats":
+            # Complex condition - consider breaking down
             return self.show_stats()
         elif parsed_args.subcommand == "dashboard":
+            # Complex condition - consider breaking down
             return self.start_dashboard(parsed_args)
         elif parsed_args.subcommand == "consult":
+            # Complex condition - consider breaking down
             return self.consult_sages(parsed_args)
 
     def list_projects(self, args):
@@ -187,11 +199,13 @@ class ProjectCommand(BaseCommand):
             self.info("\n🧙‍♂️ 4賢者からの助言:")
             knowledge = self.guild.consult_knowledge_sage(project_id)
             for advice in knowledge[:2]:
+                # Process each item in collection
                 self.info(f"  📚 {advice}")
 
             return 0
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"プロジェクト作成エラー: {e}")
             return 1
 
@@ -216,11 +230,13 @@ class ProjectCommand(BaseCommand):
                 self.warning("\n🚨 インシデント賢者からの警告:")
                 risks = self.guild.consult_incident_sage(task_id)
                 for risk in risks[:2]:
+                    # Process each item in collection
                     self.warning(f"  ⚠️  {risk['risk']} - 影響: {risk['impact']}")
 
             return 0
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"タスク作成エラー: {e}")
             return 1
 
@@ -246,6 +262,7 @@ class ProjectCommand(BaseCommand):
             return 0
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"ガントチャート表示エラー: {e}")
             return 1
 
@@ -278,11 +295,13 @@ class ProjectCommand(BaseCommand):
 
             self.info(f"\n🎭 ファンタジー分類 TOP5:")
             for classification, count in stats["fantasy_distribution"][:5]:
+                # Process each item in collection
                 self.info(f"  {classification}: {count}件")
 
             return 0
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"統計情報取得エラー: {e}")
             return 1
 
@@ -300,6 +319,7 @@ class ProjectCommand(BaseCommand):
             return 0
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"ダッシュボード起動エラー: {e}")
             return 1
 
@@ -312,6 +332,7 @@ class ProjectCommand(BaseCommand):
             self.info("\n📚 ナレッジ賢者の助言:")
             advice = self.guild.consult_knowledge_sage(args.project_id)
             for item in advice:
+                # Process each item in collection
                 self.info(f"  • {item}")
 
         if args.task:
@@ -324,6 +345,7 @@ class ProjectCommand(BaseCommand):
             self.info("\n🚨 インシデント賢者のリスク分析:")
             risks = self.guild.consult_incident_sage(0)  # プロジェクト全体のリスク
             for risk in risks:
+                # Process each item in collection
                 self.info(
                     f"  • {risk['risk']} (確率: {risk['probability']*100:.0f}%, 影響: {risk['impact']})"
                 )

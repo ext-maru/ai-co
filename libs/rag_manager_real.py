@@ -436,7 +436,10 @@ class RAGManager(EldersAILegacy):
                 cursor.execute(
                     """
                     INSERT OR REPLACE INTO keyword_index (keyword, doc_id, frequency)
-                    VALUES (?, ?, COALESCE((SELECT frequency FROM keyword_index WHERE keyword = ? AND doc_id = ?), 0) + 1)
+                    VALUES (?, ?, COALESCE(
+                        (SELECT frequency FROM keyword_index WHERE keyword = ? AND doc_id = ?),
+                        0) + 1
+                    )
                 """,
                     (keyword, doc_id, keyword, doc_id),
                 )

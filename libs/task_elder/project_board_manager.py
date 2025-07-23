@@ -239,7 +239,8 @@ class ProjectBoardManager:
                         title=board_title,
                         description=f"計画書 '{plan_file}' から自動生成されたプロジェクトボード",
                         owner=client.owner,
-                        url=f"https://github.com/orgs/{client.owner}/projects/{len(existing_projects) + 1}",
+                        url=f"https://github.com/orgs/{client." \
+                            "owner}/projects/{len(existing_projects) + 1}",
                     )
 
                     # 同期マッピングを作成

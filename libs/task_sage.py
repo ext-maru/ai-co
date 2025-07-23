@@ -372,7 +372,13 @@ class TaskSage:
         
         return estimates
 
-    def _optimize_execution_order(self, subtasks: List[Dict[str, Any]], dependencies: Dict[str, List[str]]) -> List[str]:
+    def _optimize_execution_order(
+        self,
+        subtasks: List[Dict[str,
+        Any]],
+        dependencies: Dict[str,
+        List[str]]
+    ) -> List[str]:
         """実行順序を最適化（トポロジカルソート）"""
         # 簡易的なトポロジカルソート
         result = []

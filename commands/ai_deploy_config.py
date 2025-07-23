@@ -34,6 +34,7 @@ class DeployConfigCommand(BaseCommand):
     """プロジェクト別デプロイメント設定管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="deploy-config", description="プロジェクト別デプロイメント設定管理")
         self.manager = ProjectDeploymentManager()
         self.sages = FourSagesIntegration()
@@ -45,38 +46,49 @@ class DeployConfigCommand(BaseCommand):
             parsed_args = parser.parse_args(args)
 
             if parsed_args.command == "list":
+                # Complex condition - consider breaking down
                 return self._list_projects()
             elif parsed_args.command == "show":
+                # Complex condition - consider breaking down
                 return self._show_project(parsed_args.project, parsed_args.environment)
             elif parsed_args.command == "create":
+                # Complex condition - consider breaking down
                 return self._create_project(
                     parsed_args.project, parsed_args.template, parsed_args.type
                 )
             elif parsed_args.command == "update":
+                # Complex condition - consider breaking down
                 return self._update_project(parsed_args.project, parsed_args.file)
             elif parsed_args.command == "method":
+                # Complex condition - consider breaking down
                 return self._set_deployment_method(
                     parsed_args.project, parsed_args.environment, parsed_args.method
                 )
             elif parsed_args.command == "validate":
+                # Complex condition - consider breaking down
                 return self._validate_project(
                     parsed_args.project, parsed_args.environment
                 )
             elif parsed_args.command == "dry-run":
+                # Complex condition - consider breaking down
                 return self._dry_run_deployment(
                     parsed_args.project, parsed_args.environment
                 )
             elif parsed_args.command == "sages-optimize":
+                # Complex condition - consider breaking down
                 return self._sages_optimize(parsed_args.project)
             elif parsed_args.command == "sages-recommend":
+                # Complex condition - consider breaking down
                 return self._sages_recommend(parsed_args.project)
             elif parsed_args.command == "sages-analyze":
+                # Complex condition - consider breaking down
                 return self._sages_analyze(parsed_args.project)
             else:
                 parser.print_help()
                 return 1
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ エラー: {e}")
             return 1
 
@@ -177,11 +189,13 @@ class DeployConfigCommand(BaseCommand):
                     print(f"   🌍 環境: {', '.join(environments)}")
                     print(f"   📊 最終更新: {config.metadata.get('last_updated', 'N/A')}")
                 except Exception as e:
+                    # Handle specific exception case
                     print(f"📁 {project} (設定読み込みエラー: {e})")
                 print()
 
             return 0
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ プロジェクト一覧取得エラー: {e}")
             return 1
 
@@ -205,6 +219,7 @@ class DeployConfigCommand(BaseCommand):
                 env_config = config.environments[environment]
                 print("🌍 環境設定:")
                 for key, value in env_config.items():
+                    # Process each item in collection
                     print(f"   {key}: {value}")
                 print()
 
@@ -212,6 +227,7 @@ class DeployConfigCommand(BaseCommand):
             if config.four_sages_config:
                 print("🧙‍♂️ 4賢者設定:")
                 for sage, sage_config in config.four_sages_config.items():
+                    # Process each item in collection
                     print(f"   {sage}: {sage_config}")
                 print()
 
@@ -219,6 +235,7 @@ class DeployConfigCommand(BaseCommand):
             if config.knights_config:
                 print("🛡️ 騎士団設定:")
                 for key, value in config.knights_config.items():
+                    # Process each item in collection
                     print(f"   {key}: {value}")
                 print()
 
@@ -226,10 +243,12 @@ class DeployConfigCommand(BaseCommand):
             if config.metadata:
                 print("📊 メタデータ:")
                 for key, value in config.metadata.items():
+                    # Process each item in collection
                     print(f"   {key}: {value}")
 
             return 0
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ プロジェクト設定表示エラー: {e}")
             return 1
 
@@ -251,6 +270,7 @@ class DeployConfigCommand(BaseCommand):
                     self.manager.update_project_config(project, {})
                     print("✅ 初期最適化完了")
                 except Exception as e:
+                    # Handle specific exception case
                     print(f"⚠️ 初期最適化エラー: {e}")
 
                 # 作成された設定を表示
@@ -259,6 +279,7 @@ class DeployConfigCommand(BaseCommand):
                 print("❌ プロジェクト作成失敗")
                 return 1
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ プロジェクト作成エラー: {e}")
             return 1
 
@@ -292,6 +313,7 @@ class DeployConfigCommand(BaseCommand):
                 print("❌ プロジェクト設定更新失敗")
                 return 1
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ プロジェクト設定更新エラー: {e}")
             return 1
 
@@ -315,6 +337,7 @@ class DeployConfigCommand(BaseCommand):
                 print("❌ デプロイ方法設定失敗")
                 return 1
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ デプロイ方法設定エラー: {e}")
             return 1
 
@@ -337,8 +360,10 @@ class DeployConfigCommand(BaseCommand):
                     analysis = self.sages.analyze_deployment_config(config.to_dict())
 
                     for sage, result in analysis.items():
+                        # Process each item in collection
                         print(f"   {sage}: {result}")
                 except Exception as e:
+                    # Handle specific exception case
                     print(f"   ⚠️ 4賢者分析エラー: {e}")
 
                 return 0
@@ -346,9 +371,11 @@ class DeployConfigCommand(BaseCommand):
                 print("❌ 設定検証失敗")
                 print("\n🚨 検証エラー:")
                 for error in errors:
+                    # Process each item in collection
                     print(f"   • {error}")
                 return 1
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ 設定検証エラー: {e}")
             return 1
 
@@ -379,6 +406,7 @@ class DeployConfigCommand(BaseCommand):
             else:
                 print("❌ 設定検証: 失敗")
                 for error in errors:
+                    # Process each item in collection
                     print(f"   • {error}")
             print()
 
@@ -386,10 +414,12 @@ class DeployConfigCommand(BaseCommand):
             if "four_sages_analysis" in result:
                 print("🧙‍♂️ 4賢者分析:")
                 for sage, analysis in result["four_sages_analysis"].items():
+                    # Process each item in collection
                     print(f"   {sage}: {analysis}")
 
             return 0
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ デプロイドライランエラー: {e}")
             return 1
 
@@ -416,6 +446,7 @@ class DeployConfigCommand(BaseCommand):
                 print("❌ 4賢者による最適化失敗")
                 return 1
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ 4賢者最適化エラー: {e}")
             return 1
 
@@ -432,15 +463,18 @@ class DeployConfigCommand(BaseCommand):
 
             print("🧙‍♂️ 4賢者からの推奨事項:")
             for sage, recommendation in recommendations.items():
+                # Process each item in collection
                 print(f"\n{sage}:")
                 if isinstance(recommendation, dict):
                     for key, value in recommendation.items():
+                        # Process each item in collection
                         print(f"   {key}: {value}")
                 else:
                     print(f"   {recommendation}")
 
             return 0
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ 4賢者推奨エラー: {e}")
             return 1
 
@@ -469,6 +503,7 @@ class DeployConfigCommand(BaseCommand):
             else:
                 print("❌ 設定検証: 失敗")
                 for error in validation["errors"]:
+                    # Process each item in collection
                     print(f"   • {error}")
             print()
 
@@ -476,6 +511,7 @@ class DeployConfigCommand(BaseCommand):
             if "four_sages_analysis" in report:
                 print("🧙‍♂️ 4賢者分析:")
                 for sage, analysis in report["four_sages_analysis"].items():
+                    # Process each item in collection
                     print(f"   {sage}: {analysis}")
             print()
 
@@ -483,10 +519,12 @@ class DeployConfigCommand(BaseCommand):
             if "recommendations" in report:
                 print("💡 推奨事項:")
                 for sage, recommendation in report["recommendations"].items():
+                    # Process each item in collection
                     print(f"   {sage}: {recommendation}")
 
             return 0
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ 4賢者分析エラー: {e}")
             return 1
 

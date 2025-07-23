@@ -20,6 +20,7 @@ class AIVersionCommand(BaseCommand):
     """バージョン情報表示コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-version", description="バージョン情報表示", version="2.0.0")
         self.console = Console()
 
@@ -96,6 +97,7 @@ Claude CLI: {version_info['claude_cli_version']}
 
 
 def main():
+    # Core functionality implementation
     command = AIVersionCommand()
     sys.exit(command.run())
 

@@ -111,7 +111,10 @@ class AncientElderAuditEngine:
                 "guild_health_score": guild_health_score,
                 "evaluation": self._evaluate_health_score(guild_health_score),
                 "failed_audits": failed_audits,
-                "recommendations": self._generate_recommendations(all_violations, guild_health_score)
+                "recommendations": self._generate_recommendations(
+                    all_violations,
+                    guild_health_score
+                )
             }
             
             # 履歴に追加
@@ -137,7 +140,13 @@ class AncientElderAuditEngine:
                 "timestamp": datetime.now().isoformat()
             }
             
-    async def _run_single_audit(self, key: str, auditor: AncientElderBase, target: Dict[str, Any]) -> Dict[str, Any]:
+    async def _run_single_audit(
+        self,
+        key: str,
+        auditor: AncientElderBase,
+        target: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """
         単一の監査を実行
         
@@ -263,7 +272,13 @@ class AncientElderAuditEngine:
         else:
             return "CRITICAL - 即座の対応が必要です"
             
-    def _generate_recommendations(self, violations: List[Dict[str, Any]], health_score: Dict[str, Any]) -> List[str]:
+    def _generate_recommendations(
+        self,
+        violations: List[Dict[str,
+        Any]],
+        health_score: Dict[str,
+        Any]
+    ) -> List[str]:
         """
         改善提案を生成
         

@@ -109,7 +109,8 @@ class TestExtendedBackupRepository:
         memory_increase = memory_after - memory_before
         
         # Memory increase should be reasonable (< 10MB)
-        assert memory_increase < 10 * 1024 * 1024, f"Memory increase too high: {memory_increase} bytes"
+        assert memory_increase < 10 * 1024 * 1024, f"Memory increase too high: {memory_increase} bytes" \
+            "Memory increase too high: {memory_increase} bytes"
     
     @pytest.mark.asyncio
     async def test_backup_repository_error_recovery(self):

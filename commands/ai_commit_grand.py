@@ -54,6 +54,7 @@ class GrandCommitCLI:
     """Grand Commit コマンドラインインターフェース"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.harmony_engine = SagesHarmonyEngine()
         self.project_root = Path("/home/aicompany/ai_co")
         self.logs_dir = self.project_root / "logs"
@@ -99,6 +100,7 @@ class GrandCommitCLI:
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Git状態取得エラー: {e}")
             return {"staged": [], "unstaged": [], "untracked": [], "total_files": 0}
 
@@ -298,6 +300,7 @@ class GrandCommitCLI:
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Grand Protocol エラー: {e}")
             print(f"💥 予期しないエラーが発生しました: {e}")
             return False
@@ -305,6 +308,7 @@ class GrandCommitCLI:
     def display_sage_consultations(self, sage_results):
         """賢者相談結果の詳細表示"""
         for i, result in enumerate(sage_results, 1):
+            # Process each item in collection
             print(f"\n🧙‍♂️ {result.sage_name} (相談 {i}/4)")
             print("-" * 40)
             print(f"📊 判定: {'✅ 承認' if result.approval else '❌ 却下'}")
@@ -360,6 +364,7 @@ class GrandCommitCLI:
     def stage_specific_files(self, files: List[str]):
         """特定ファイルをステージング"""
         for file in files:
+            # Process each item in collection
             try:
                 subprocess.run(["git", "add", file], cwd=self.project_root, check=True)
                 print(f"✅ ステージング: {file}")
@@ -403,9 +408,11 @@ class GrandCommitCLI:
                 return False
 
         except subprocess.TimeoutExpired:
+            # Handle specific exception case
             print("❌ コミットタイムアウト（5分超過）")
             return False
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ コミットエラー: {e}")
             return False
 
@@ -535,9 +542,11 @@ def main():
         success = asyncio.run(cli.execute_grand_commit(args.message, args))
         sys.exit(0 if success else 1)
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n⚠️ Grand Protocol 中断")
         sys.exit(1)
     except Exception as e:
+        # Handle specific exception case
         print(f"💥 予期しないエラー: {e}")
         sys.exit(1)
 

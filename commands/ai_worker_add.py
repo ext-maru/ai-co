@@ -14,6 +14,7 @@ class AIWorkerAddCommand(BaseCommand):
     """ワーカー追加"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-worker-add", description="ワーカー追加", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -53,6 +54,7 @@ class AIWorkerAddCommand(BaseCommand):
             
             # 設定ファイルが指定されている場合は読み込み
             if config_file and Path(config_file).exists():
+                # Complex condition - consider breaking down
                 with open(config_file, 'r', encoding='utf-8') as f:
                     user_config = json.load(f)
                     config["config"].update(user_config)
@@ -68,6 +70,7 @@ class AIWorkerAddCommand(BaseCommand):
             )
             
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(
                 success=False, 
                 message=f"❌ ワーカー追加エラー: {e}"
@@ -75,6 +78,7 @@ class AIWorkerAddCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIWorkerAddCommand()
     sys.exit(command.run())
 

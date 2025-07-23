@@ -432,9 +432,12 @@ class CommandInterceptor:
             else:
                 logger.warning(f"違反検出: {interception.violation_type}")
 
-        # コマンドを実行
+        # コマンドを実行（セキュリティ修正）
         try:
-            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            # shell=Trueを避けて安全に実行
+            import shlex
+            cmd_list = shlex.split(command) if isinstance(command, str) else command
+            result = subprocess.run(cmd_list, capture_output=True, text=True)
 
             return type(
                 "obj",

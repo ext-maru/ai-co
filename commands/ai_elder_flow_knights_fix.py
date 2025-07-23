@@ -29,6 +29,7 @@ class KnightsErrorFixer:
     """騎士団エラー修正システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.orchestrator = ElderFlowOrchestrator()
         self.quality_gate = QualityGateSystem()
         self.git_automator = ElderFlowGitAutomator()
@@ -60,6 +61,7 @@ class KnightsErrorFixer:
             }
 
             for tool, version in required_for_knights.items():
+                # Process each item in collection
                 if f"{tool}==" not in content:
                     analysis_result["problems_detected"].append({
                         "type": "missing_dependency",
@@ -180,6 +182,7 @@ class KnightsErrorFixer:
         # 1. requirements.txt更新
         for fix in fix_plan["fixes_to_apply"]:
             if fix["file"] == "requirements.txt" and fix["action"] == "add_dependencies":
+                # Complex condition - consider breaking down
                 # すでに手動で修正済みの場合はスキップ
                 req_file = Path("requirements.txt")
                 if req_file.exists():
@@ -188,6 +191,7 @@ class KnightsErrorFixer:
 
                     all_present = True
                     for tool, version in fix["dependencies"].items():
+                        # Process each item in collection
                         if f"{tool}=={version}" not in content:
                             all_present = False
                             break
@@ -209,6 +213,7 @@ class KnightsErrorFixer:
                 content = f.read()
 
             if "FileNotFoundError" in content and "_check_dependencies" in content:
+                # Complex condition - consider breaking down
                 logger.info("✅ knights-github-action.py: エラーハンドリングは改善済み")
                 applied_fixes["fixes_applied"].append({
                     "file": str(script_file),
@@ -262,6 +267,7 @@ class KnightsErrorFixer:
                     "message": "Script runs without errors" if result.returncode == 0 else f"Script error: {result.stderr}"
                 })
             except Exception as e:
+                # Handle specific exception case
                 validation_result["validations"].append({
                     "test": "script_execution",
                     "status": "failed",
@@ -270,6 +276,7 @@ class KnightsErrorFixer:
 
         # 3. 全体ステータス判定
         if any(v["status"] == "failed" for v in validation_result["validations"]):
+            # Complex condition - consider breaking down
             validation_result["overall_status"] = "failed"
 
         return validation_result
@@ -348,6 +355,7 @@ Automated by Elder Flow System"""
                 subprocess.run(["git", "push", "origin", "main"], check=True)
                 print("  ✅ 変更をコミット・プッシュしました")
             except Exception as e:
+                # Handle specific exception case
                 print(f"  ⚠️  Git操作はスキップされました: {e}")
 
         print("\n" + "="*60)

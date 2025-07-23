@@ -14,6 +14,7 @@ class AIWebUICommand(BaseCommand):
     """WebUI コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-webui", description="Web UI起動", version="1.0.0")
 
     def setup_arguments(self):
@@ -49,13 +50,16 @@ class AIWebUICommand(BaseCommand):
             return CommandResult(success=True)
 
         except KeyboardInterrupt:
+            # Handle specific exception case
             print(f"\n🛑 WebUI サーバーを停止しました")
             return CommandResult(success=True)
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"WebUI起動エラー: {str(e)}")
 
 
 def main():
+    # Core functionality implementation
     command = AIWebUICommand()
     sys.exit(command.run())
 

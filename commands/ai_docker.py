@@ -21,6 +21,7 @@ class AIDockerCommand(BaseCommand):
     """Docker管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-docker", description="Dockerコンテナ管理", version="1.0.0")
         self.api_base_url = "http://localhost:8080"
 
@@ -86,27 +87,35 @@ class AIDockerCommand(BaseCommand):
 
         try:
             if args.subcommand == "create":
+                # Complex condition - consider breaking down
                 return self._create_container(args)
             elif args.subcommand == "list":
+                # Complex condition - consider breaking down
                 return self._list_containers(args)
             elif args.subcommand in ["start", "stop", "restart", "remove"]:
+                # Complex condition - consider breaking down
                 return self._execute_action(args)
             elif args.subcommand == "logs":
+                # Complex condition - consider breaking down
                 return self._get_logs(args)
             elif args.subcommand == "stats":
+                # Complex condition - consider breaking down
                 return self._get_stats(args)
             elif args.subcommand == "sages":
+                # Complex condition - consider breaking down
                 return self._get_sages_status()
             else:
                 return CommandResult(
                     success=False, message=f"不明なサブコマンド: {args.subcommand}"
                 )
         except requests.exceptions.ConnectionError:
+            # Handle specific exception case
             return CommandResult(
                 success=False,
                 message="Docker Management APIに接続できません。APIサーバーが起動していることを確認してください。",
             )
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"エラー: {str(e)}")
 
     def _create_container(self, args) -> CommandResult:
@@ -146,6 +155,7 @@ class AIDockerCommand(BaseCommand):
             lines = ["ID          NAME                    STATUS      IMAGE"]
             lines.append("-" * 60)
             for c in containers:
+                # Process each item in collection
                 lines.append(
                     f"{c['id']:<11} {c['name']:<23} {c['status']:<11} {c['image']}"
                 )
@@ -161,6 +171,7 @@ class AIDockerCommand(BaseCommand):
         data = {"action": args.subcommand}
 
         if args.subcommand == "remove":
+            # Complex condition - consider breaking down
             response = requests.delete(
                 f"{self.api_base_url}/containers/{args.container_id}"
             )
@@ -230,6 +241,7 @@ class AIDockerCommand(BaseCommand):
             }
 
             for sage_key, sage_name in sage_names.items():
+                # Process each item in collection
                 container = data["sages"].get(sage_key)
                 if container:
                     lines.append(f"\n{sage_name}:")
@@ -247,6 +259,7 @@ class AIDockerCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIDockerCommand()
     sys.exit(command.run())
 

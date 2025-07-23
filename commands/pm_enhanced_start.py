@@ -41,6 +41,7 @@ class PMEnhancedWorker:
     """PMフィードバック機能付きワーカー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.model = "claude-opus-4-20250514"
 
         # Git Flow対応
@@ -68,6 +69,7 @@ class PMEnhancedWorker:
         try:
             self.slack = SlackNotifier()
         except Exception as e:
+            # Handle specific exception case
             logging.warning(f"Slack通知の初期化に失敗: {e}")
             self.slack = None
 
@@ -107,6 +109,7 @@ class PMEnhancedWorker:
             self.logger.info("RabbitMQ接続成功")
             return True
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"RabbitMQ接続失敗: {e}")
             return False
 
@@ -182,6 +185,7 @@ class PMEnhancedWorker:
             self._send_to_result_worker(result_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"タスク完了処理エラー: {e}")
             traceback.print_exc()
 
@@ -238,6 +242,7 @@ class PMEnhancedWorker:
                     self._send_test_failure_notification(task_id, new_files)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Git Flow実行エラー: {e}")
 
     def _send_retry_notification(self, task_id: str, feedback_result: dict):
@@ -262,6 +267,7 @@ class PMEnhancedWorker:
                 response=message,
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"再試行通知エラー: {e}")
 
     def _send_rejection_notification(self, task_id: str, feedback_result: dict):
@@ -286,6 +292,7 @@ class PMEnhancedWorker:
                 response=message,
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"最終却下通知エラー: {e}")
 
     def _send_to_result_worker(self, result_data):
@@ -306,6 +313,7 @@ class PMEnhancedWorker:
             self.logger.info(f"📤 ResultWorkerへ転送: {result_data['task_id']}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"ResultWorker転送エラー: {e}")
 
     def _run_tests_for_files(self, files: list, task_id: str) -> bool:
@@ -324,6 +332,7 @@ class PMEnhancedWorker:
             test_results = []
 
             for py_file in python_files:
+                # Process each item in collection
                 file_path = Path(py_file)
                 test_file = None
 
@@ -334,6 +343,7 @@ class PMEnhancedWorker:
                     )
 
                 if test_file and test_file.exists():
+                    # Complex condition - consider breaking down
                     self.logger.info(f"テスト実行: {test_file}")
                     result = self.test_manager.run_specific_test(str(test_file))
                     test_results.append(result)
@@ -360,6 +370,7 @@ class PMEnhancedWorker:
             return all_passed
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"テスト実行エラー: {e}")
             return False
 
@@ -376,6 +387,7 @@ class PMEnhancedWorker:
                 "errors": result.stderr,
             }
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "output": "", "errors": str(e)}
 
     def detect_new_files(self):
@@ -411,10 +423,13 @@ class PMEnhancedWorker:
             ]
 
             for search_dir in search_dirs:
+                # Process each item in collection
                 if search_dir.exists():
                     for ext in extensions:
+                        # Process each item in collection
                         files = search_dir.rglob(ext)
                         for file_path in files:
+                            # Process each item in collection
                             if file_path.stat().st_mtime > recent_threshold:
                                 relative_path = file_path.relative_to(PROJECT_DIR)
                                 # __pycache__やvenvは除外
@@ -427,6 +442,7 @@ class PMEnhancedWorker:
             return list(set(new_files))  # 重複を削除
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"新規ファイル検出エラー: {e}")
             return []
 
@@ -443,6 +459,7 @@ class PMEnhancedWorker:
             self.logger.info(f"PMタスク受信: {task_id} コマンド: {command}")
 
             if command == "toggle_feedback":
+                # Complex condition - consider breaking down
                 # フィードバック機能のオン/オフ
                 self.feedback_enabled = params.get("enable", True)
                 self.logger.info(
@@ -458,6 +475,7 @@ class PMEnhancedWorker:
                     )
 
             elif command == "feedback_stats":
+                # Complex condition - consider breaking down
                 # フィードバック統計
                 stats = self.feedback_loop.get_feedback_statistics()
                 self.logger.info(f"フィードバック統計: {stats}")
@@ -478,12 +496,14 @@ class PMEnhancedWorker:
                     )
 
             elif command == "git_release":
+                # Complex condition - consider breaking down
                 # リリース実行
                 version = params.get("version")
                 success = self.git_flow.create_release(version)
                 self.logger.info(f"リリース処理: {'成功' if success else '失敗'}")
 
                 if success and self.slack:
+                    # Complex condition - consider breaking down
                     self.slack.send_task_completion_simple(
                         task_id=f"release_{version or datetime.now().strftime('%Y.%m.%d')}",
                         worker="pm_enhanced_worker",
@@ -492,6 +512,7 @@ class PMEnhancedWorker:
                     )
 
             elif command == "toggle_test":
+                # Complex condition - consider breaking down
                 # テスト実行のオン/オフ
                 self.test_before_commit = params.get("enable", True)
                 self.logger.info(f"テスト実行: {'有効' if self.test_before_commit else '無効'}")
@@ -501,6 +522,7 @@ class PMEnhancedWorker:
 
             ch.basic_ack(delivery_tag=method.delivery_tag)
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"PMタスク処理例外: {e}")
             traceback.print_exc()
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
@@ -518,6 +540,7 @@ class PMEnhancedWorker:
             message += f"ブランチ: {branch_name} → main\n"
 
             if test_passed and self.test_before_commit:
+                # Complex condition - consider breaking down
                 message += f"テスト: ✅ 成功\n"
 
             message += f"ファイル数: {len(files)}\n"
@@ -525,6 +548,7 @@ class PMEnhancedWorker:
             if len(files) <= 3:
                 message += "ファイル:\n"
                 for f in files:
+                    # Process each item in collection
                     message += f"  - {f}\n"
 
             self.slack.send_task_completion_simple(
@@ -534,6 +558,7 @@ class PMEnhancedWorker:
                 response=message,
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Slack通知エラー: {e}")
 
     def _send_test_failure_notification(self, task_id: str, files: list):
@@ -559,6 +584,7 @@ class PMEnhancedWorker:
                 response=message,
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Slack通知エラー: {e}")
 
     def _send_merge_failure_notification(self, task_id: str, branch_name: str):
@@ -579,6 +605,7 @@ class PMEnhancedWorker:
                 response=message,
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Slack通知エラー: {e}")
 
     def start(self):
@@ -621,6 +648,7 @@ class PMEnhancedWorker:
         try:
             self.channel.start_consuming()
         except KeyboardInterrupt:
+            # Handle specific exception case
             self.logger.info("Enhanced PMワーカー停止中...")
             self.channel.stop_consuming()
             self.connection.close()
@@ -630,6 +658,7 @@ class PMEnhancedStartCommand(BaseCommand):
     """Enhanced PM Worker起動コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="pm-enhanced-start",
             description="PMフィードバック機能付きワーカーを起動",
@@ -644,12 +673,14 @@ class PMEnhancedStartCommand(BaseCommand):
 
             return CommandResult(success=True, message="Enhanced PM Worker起動完了")
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(
                 success=False, message=f"Enhanced PM Worker起動失敗: {str(e)}"
             )
 
 
 def main():
+    # Core functionality implementation
     command = PMEnhancedStartCommand()
     sys.exit(command.run())
 

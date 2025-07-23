@@ -271,14 +271,16 @@ class AdaptiveScalingStrategy(ScalingStrategy):
                 int(current_concurrency * self.config["scale_factor"])
             )
             direction = ScalingDirection.UP
-            reason = f"Low resource pressure ({resource_pressure:.2f}) and good performance ({performance_score:.2f})"
+            reason = f"Low resource pressure ({resource_pressure:.2f}) and good performance " \
+                "({performance_score:.2f})"
             confidence = (1.0 - resource_pressure) * performance_score
             
         else:
             # 現状維持
             target = current_concurrency
             direction = ScalingDirection.STABLE
-            reason = f"Balanced state (pressure: {resource_pressure:.2f}, performance: {performance_score:.2f})"
+            reason = f"Balanced state (pressure: {resource_pressure:.2f}, performance: " \
+                "{performance_score:.2f})"
             confidence = 0.5
         
         return ScalingDecision(
@@ -367,7 +369,8 @@ class DynamicParallelProcessor:
         self._semaphore = asyncio.Semaphore(initial_concurrency)
         self._semaphore_lock = asyncio.Lock()
         
-        logger.info(f"Dynamic Parallel Processor initialized with concurrency: {initial_concurrency}")
+        logger.info(f"Dynamic Parallel Processor initialized with concurrency: {initial_concurrency}" \
+            "Dynamic Parallel Processor initialized with concurrency: {initial_concurrency}")
     
     async def start(self):
         """プロセッサー開始"""

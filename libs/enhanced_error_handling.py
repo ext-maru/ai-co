@@ -256,7 +256,8 @@ def smart_retry(
 
                     if attempt >= current_strategy.max_attempts:
                         logger.error(
-                            f"Max retries ({current_strategy.max_attempts}) exceeded for {func.__name__}"
+                            f"Max retries ({current_strategy.max_attempts}) exceeded for " \
+                                "{func.__name__}"
                         )
                         raise
 

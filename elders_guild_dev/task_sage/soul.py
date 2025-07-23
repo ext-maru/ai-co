@@ -168,7 +168,9 @@ class TaskSageSoul(BaseSoul):
                 new_status = message.payload.get("status", "")
                 
                 if not task_id or not new_status:
-                    return self._create_error_response(message, "task_id and status parameters are required")
+                    return self._create_error_response(message, "task_id and status parameters are required" \
+                        "task_id and status parameters are required" \
+                        "task_id and status parameters are required")
                 
                 result = await self.update_task_status(task_id, TaskStatus(new_status))
                 if result:
@@ -186,7 +188,9 @@ class TaskSageSoul(BaseSoul):
                 assignee = message.payload.get("assignee", "")
                 
                 if not task_id or not assignee:
-                    return self._create_error_response(message, "task_id and assignee parameters are required")
+                    return self._create_error_response(message, "task_id and assignee parameters are required" \
+                        "task_id and assignee parameters are required" \
+                        "task_id and assignee parameters are required")
                 
                 result = await self.assign_task(task_id, assignee)
                 if result:
@@ -746,7 +750,9 @@ class TaskSageSoul(BaseSoul):
             
             # ステータス変更検証
             if not self._validate_status_transition(old_status, new_status):
-                self.logger.error(f"Invalid status transition: {old_status.value} -> {new_status.value}")
+                self.logger.error(f"Invalid status transition: {old_status.value} -> {new_status.value}" \
+                    "Invalid status transition: {old_status.value} -> {new_status.value}" \
+                    "Invalid status transition: {old_status.value} -> {new_status.value}")
                 return False
             
             # ステータス更新
@@ -913,7 +919,9 @@ class TaskSageSoul(BaseSoul):
                         priority: Optional[TaskPriority] = None, limit: int = 50) -> List[Task]:
         """タスク一覧取得機能 - Task Sage核心機能"""
         try:
-            self.logger.debug(f"Listing tasks: status={status}, assignee={assignee}, priority={priority}, limit={limit}")
+            self.logger.debug(f"Listing tasks: status={status}, assignee={assignee}, priority={priority}, " \
+                "Listing tasks: status={status}, assignee={assignee}, priority={priority}, " \
+                "limit={limit}")
             
             # フィルタリング
             filtered_tasks = []
@@ -1116,7 +1124,9 @@ class TaskSageSoul(BaseSoul):
                 else:
                     self.logger.warning(f"Invalid dependency found: {dep_id}")
             
-            self.logger.debug(f"Found {len(validated_dependencies)} dependencies for task {task_id}")
+            self.logger.debug(f"Found {len(validated_dependencies)} dependencies for task {task_id}" \
+                "Found {len(validated_dependencies)} dependencies for task {task_id}" \
+                "Found {len(validated_dependencies)} dependencies for task {task_id}")
             return validated_dependencies
             
         except Exception as e:
@@ -1274,9 +1284,16 @@ class TaskSageSoul(BaseSoul):
         """タスク永続化"""
         self.logger.debug(f"Persisting task: {task.id}")
     
-    async def _notify_task_status_change(self, task: Task, old_status: TaskStatus, new_status: TaskStatus):
+    async def _notify_task_status_change(
+        self,
+        task: Task,
+        old_status: TaskStatus,
+        new_status: TaskStatus
+    ):
         """タスクステータス変更通知"""
-        self.logger.debug(f"Notifying status change: {task.id} {old_status.value} -> {new_status.value}")
+        self.logger.debug(f"Notifying status change: {task.id} {old_status.value} -> {new_status.value}" \
+            "Notifying status change: {task.id} {old_status.value} -> {new_status.value}" \
+            "Notifying status change: {task.id} {old_status.value} -> {new_status.value}")
 
 
 async def main():

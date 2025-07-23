@@ -220,7 +220,12 @@ class BaseSoul(ABC):
         
     # ユーティリティメソッド
     
-    def _create_error_response(self, original_message: Dict[str, Any], error: str) -> Dict[str, Any]:
+    def _create_error_response(
+        self,
+        original_message: Dict[str,
+        Any],
+        error: str
+    ) -> Dict[str, Any]:
         """エラーレスポンスの生成"""
         return {
             "type": "error",
@@ -230,7 +235,12 @@ class BaseSoul(ABC):
             "timestamp": datetime.now().isoformat()
         }
         
-    def _create_success_response(self, original_message: Dict[str, Any], result: Any) -> Dict[str, Any]:
+    def _create_success_response(
+        self,
+        original_message: Dict[str,
+        Any],
+        result: Any
+    ) -> Dict[str, Any]:
         """成功レスポンスの生成"""
         return {
             "type": "response",

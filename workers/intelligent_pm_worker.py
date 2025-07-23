@@ -142,6 +142,7 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
             self.elder_integration_enabled = True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ Elder Tree Integration failed: {e}")
             self.logger.warning(
                 "⚠️ Intelligent PM Worker operating without Elder guidance"
@@ -181,6 +182,7 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
 
             # 3.5. プロジェクト分析をKnowledge Sageに報告
             if self.elder_integration_enabled and command_result.get("executed"):
+                # Complex condition - consider breaking down
                 await self._report_to_knowledge_sage(task_id, analysis, command_result)
 
             # 4. 結果評価と次アクション決定（Elder評価含む）
@@ -211,6 +213,7 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ PM処理エラー: {task_id} - {str(e)}")
 
             # 重大なエラーの場合はIncident Sageに報告
@@ -261,7 +264,9 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
         prompt_lower = prompt.lower()
 
         for intent, config in self.ai_commands.items():
+            # Process each item in collection
             if any(pattern in prompt_lower for pattern in config["patterns"]):
+                # Complex condition - consider breaking down
                 return intent
 
         return "general_task"
@@ -294,7 +299,9 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
         prompt_lower = prompt.lower()
 
         for level, indicators in complexity_indicators.items():
+            # Process each item in collection
             if any(indicator in prompt_lower for indicator in indicators):
+                # Complex condition - consider breaking down
                 return level
 
         return "medium"
@@ -304,11 +311,13 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
 
         # コード生成要求だがコードが含まれていない
         if any(word in prompt.lower() for word in ["コード", "code", "実装", "implement"]):
+            # Complex condition - consider breaking down
             if "```" not in claude_output:
                 return True
 
         # 質問形式で終わっている
         if claude_output.strip().endswith("?") or claude_output.strip().endswith("？"):
+            # Complex condition - consider breaking down
             return True
 
         # 短すぎる応答
@@ -334,6 +343,7 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
 
         # Elder推奨がある場合は考慮
         if project_context and project_context.elder_recommendations:
+            # Complex condition - consider breaking down
             for recommendation in project_context.elder_recommendations:
                 if "use_command:" in recommendation:
                     recommended_cmd = recommendation.split("use_command:")[1].strip()
@@ -386,8 +396,10 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
 
             # AIコマンド実行
             if command == "ai-send":
+                # Complex condition - consider breaking down
                 result = await self._execute_ai_send(enhanced_prompt, command_config)
             elif command == "ai-tdd":
+                # Complex condition - consider breaking down
                 result = await self._execute_ai_tdd(enhanced_prompt, command_config)
             else:
                 result = await self._execute_generic_ai_command(
@@ -402,6 +414,7 @@ class IntelligentPMWorker(AsyncBaseWorkerV2):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ AIコマンド実行エラー: {str(e)}")
             return {
                 "executed": False,
@@ -536,6 +549,7 @@ Respond in {language}."""
 
         localized = output
         for en, jp in replacements.items():
+            # Process each item in collection
             localized = localized.replace(en, jp)
 
         return localized
@@ -573,11 +587,14 @@ Respond in {language}."""
                 self.logger.error(f"❌ HTTP Error: {response_obj.status_code}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ PM-Slack応答送信エラー: {str(e)}")
 
     async def _send_slack_error_response(self, task_id: str, error: str):
         """Slackエラー応答送信"""
-        error_message = f"🚨 **PM-AI エラー**\n\n申し訳ございません。処理中にエラーが発生しました。\n\nエラー: {error}\n\nタスクID: {task_id}"
+        error_message = f"🚨 **PM-AI エラー**\n\n申し訳ございません。処理中にエラーが発生しました。\n\nエラー: {error}\n\nタスクID: {task_id}" \
+            "🚨 **PM-AI エラー**\n\n申し訳ございません。処理中にエラーが発生しました。\n\nエラー: {error}\n\nタスクID: {task_id}" \
+            "🚨 **PM-AI エラー**\n\n申し訳ございません。処理中にエラーが発生しました。\n\nエラー: {error}\n\nタスクID: {task_id}"
         await self._send_slack_response(task_id, error_message)
 
     async def _create_project_context(
@@ -603,8 +620,10 @@ Respond in {language}."""
         prompt = analysis["original_prompt"]
         urgency = "normal"
         if any(word in prompt for word in ["緊急", "至急", "urgent", "critical", "ASAP"]):
+            # Complex condition - consider breaking down
             urgency = "critical"
         elif any(word in prompt for word in ["急ぎ", "早め", "soon", "quickly"]):
+            # Complex condition - consider breaking down
             urgency = "high"
 
         # Elder指導が必要かどうか
@@ -704,6 +723,7 @@ Respond in {language}."""
                 )
 
                 if council_result and council_result.get("decision"):
+                    # Complex condition - consider breaking down
                     project_context.sage_consultations["elder_council"] = council_result
                     project_context.elder_recommendations.insert(
                         0,
@@ -712,6 +732,7 @@ Respond in {language}."""
                     self.logger.info("🏛️ Elder Councilから戦略的指針を受領")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Elder consultation failed: {e}")
 
     async def _report_to_knowledge_sage(
@@ -746,6 +767,7 @@ Respond in {language}."""
                 self.logger.info(f"📚 Knowledge Sageへプロジェクト知識を報告: {task_id}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to report to Knowledge Sage: {e}")
 
     async def _report_critical_error_to_sage(self, task_id: str, error: Exception):
@@ -788,6 +810,7 @@ Respond in {language}."""
                     self.logger.info("🌟 Claude Elderへエスカレーション完了")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to report critical error to Sage: {e}")
 
 
@@ -805,4 +828,5 @@ if __name__ == "__main__":
     try:
         asyncio.run(worker.start())
     except KeyboardInterrupt:
+        # Handle specific exception case
         print(f"\n❌ Worker stopped by user")

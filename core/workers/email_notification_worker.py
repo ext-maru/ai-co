@@ -23,7 +23,8 @@ try:
     from googleapiclient.errors import HttpError
 except ImportError:
     print(
-        "Google APIs not installed. Install with: pip install google-api-python-client google-auth-httplib2 google-auth-oauthlib"
+        "Google APIs not installed. Install with: pip install google-api-python-client " \
+            "google-auth-httplib2 google-auth-oauthlib"
     )
     sys.exit(1)
 
@@ -46,6 +47,7 @@ class EmailNotificationWorker:
     SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
     def __init__(self, worker_id="email-worker-1"):
+        """初期化メソッド"""
         self.worker_id = worker_id
         self.gmail_service = None
         self.credentials = None

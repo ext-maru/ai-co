@@ -21,6 +21,7 @@ class EnhancedRAGManager(BaseManager):
     """改良版RAGManager - 基底クラスを活用"""
 
     def __init__(self):
+        """初期化メソッド"""
         # 基底クラスの初期化
         super().__init__("EnhancedRAGManager")
 

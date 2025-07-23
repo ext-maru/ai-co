@@ -648,7 +648,8 @@ DASHBOARD_HTML_TEMPLATE = """
                 const div = document.createElement('div');
                 div.className = `recent-item ${process.status}`;
                 div.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;" \
+                        "display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <strong>#${process.issue_number}</strong>
                             <span class="priority-badge priority-${process.priority}">${process.priority}</span>

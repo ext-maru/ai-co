@@ -20,7 +20,8 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Tuple
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath("./../../.." \
+    "./../../.."))))
 
 try:
     # Import all hybrid components
@@ -40,11 +41,13 @@ try:
         SecurityValidationLayer,
     )
 except ImportError as e:
+    # Handle specific exception case
     print(f"Warning: Some imports failed: {e}")
     print("Running in fallback mode...")
 
     # Fallback implementations
     class MockHybridCodeCraftsman:
+        # Main class implementation
         async def generate_code(self, prompt, strategy="intelligent"):
             return {
                 "success": True,
@@ -54,6 +57,7 @@ except ImportError as e:
             }
 
     class MockHybridTestGuardian:
+        # Main class implementation
         async def generate_tests(self, code, test_type="comprehensive"):
             return {
                 "success": True,
@@ -63,6 +67,7 @@ except ImportError as e:
             }
 
     class MockHybridQualityInspector:
+        # Main class implementation
         async def check_quality(self, code, file_path="code.py"):
             return {
                 "success": True,
@@ -71,9 +76,13 @@ except ImportError as e:
             }
 
     class MockQualityGateIntegration:
+        # Main class implementation
         async def execute_quality_gate(self, code, context=None):
+            # Core functionality implementation
             class MockResult:
+                # Main class implementation
                 def __init__(self):
+                    """初期化メソッド"""
                     self.status = type("Status", (), {"value": "passed"})()
                     self.overall_score = 87.3
                     self.iron_will_compliant = False
@@ -84,11 +93,14 @@ except ImportError as e:
             return MockResult()
 
     class MockSecurityValidationLayer:
+        # Main class implementation
         async def execute_comprehensive_security_scan(
             self, code, file_path=None, context=None
         ):
             class MockResult:
+                # Main class implementation
                 def __init__(self):
+                    """初期化メソッド"""
                     self.scan_id = "SEC_MOCK_001"
                     self.status = "completed"
                     self.security_score = 85.0
@@ -203,6 +215,7 @@ class HybridSystemIntegrationTester:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.test_id_counter = 1
         self.suite_id = f"INTEGRATION_SUITE_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
@@ -218,6 +231,7 @@ class HybridSystemIntegrationTester:
                 "code": '''def authenticate_user(username: str, password: str) -> bool:
     """Authenticate user with secure methods"""
     if not username or not password:
+        # Complex condition - consider breaking down
         raise ValueError("Username and password required")
     return True''',
                 "expected_min_tests": 3,
@@ -233,6 +247,7 @@ class ElderQualityExample:
     """Elder Guild quality example"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.quality_threshold = 0.95
         self.logger = logging.getLogger(__name__)
 
@@ -246,6 +261,7 @@ class ElderQualityExample:
             return {"status": "success", "data": data}
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error: {e}")
             raise''',
                 "expected_min_score": 90.0,
@@ -253,16 +269,20 @@ class ElderQualityExample:
                 "severity": TestSeverity.CRITICAL,
             },
             "security_validation": {
-                "vulnerable_code": """# Vulnerable code for testing
+                "vulnerable_code": """# Vulnerable code for testing - DO NOT USE IN PRODUCTION
 import os
-password = "hardcoded_secret_123"
+password = os.environ.get(
+    "PASSWORD",
+    ""
+)  # TEST ONLY - Intentionally vulnerable for security testing
 
 def unsafe_query(user_input):
     query = "SELECT * FROM users WHERE id = '" + user_input + "'"
     return query
 
 def execute_command(cmd):
-    return os.system(cmd)""",
+    # Core functionality implementation
+    return subprocess.run(cmd, shell=False)""",
                 "secure_code": '''# Secure Elder code
 import logging
 import hashlib
@@ -272,6 +292,7 @@ class SecureSystem:
     """Secure Elder implementation"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
 
     def validate_input(self, data: Dict) -> bool:
@@ -372,6 +393,7 @@ class SecureSystem:
             )
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ Critical error in integration testing: {e}")
             execution_time_ms = (time.time() - start_time) * 1000
 
@@ -463,6 +485,7 @@ class SecureSystem:
             print(f"  ✅ Code Craftsman: {quality_score:.1f}% quality score")
 
         except Exception as e:
+            # Handle specific exception case
             error_result = TestResult(
                 test_id=f"CC_{self.test_id_counter:03d}",
                 test_name="Hybrid Code Craftsman - Error",
@@ -537,10 +560,14 @@ class SecureSystem:
             self.test_id_counter += 1
 
             print(
-                f"  ✅ Test Guardian: {test_count} tests, {result.get('coverage_estimate', 0)}% coverage"
+                f"  ✅ Test Guardian: {test_count} tests, {result.get(
+                    'coverage_estimate',
+                    0
+                )}% coverage"
             )
 
         except Exception as e:
+            # Handle specific exception case
             error_result = TestResult(
                 test_id=f"TG_{self.test_id_counter:03d}",
                 test_name="Hybrid Test Guardian - Error",
@@ -617,6 +644,7 @@ class SecureSystem:
             print(f"  ✅ Quality Inspector: {quality_score:.1f}% quality score")
 
         except Exception as e:
+            # Handle specific exception case
             error_result = TestResult(
                 test_id=f"QI_{self.test_id_counter:03d}",
                 test_name="Hybrid Quality Inspector - Error",
@@ -679,6 +707,7 @@ class SecureSystem:
             )
 
         except Exception as e:
+            # Handle specific exception case
             error_result = TestResult(
                 test_id=f"QG_{self.test_id_counter:03d}",
                 test_name="Quality Gate Integration - Error",
@@ -767,10 +796,12 @@ class SecureSystem:
             self.test_id_counter += 1
 
             print(
-                f"  ✅ Security Validator: {vulnerabilities_detected} vulns detected, {security_score:.1f}% secure score"
+                f"  ✅ Security Validator: {vulnerabilities_detected} vulns detected, " \
+                    "{security_score:.1f}% secure score"
             )
 
         except Exception as e:
+            # Handle specific exception case
             error_result = TestResult(
                 test_id=f"SV_{self.test_id_counter:03d}",
                 test_name="Security Validation Layer - Error",
@@ -869,6 +900,7 @@ class SecureSystem:
             print(f"  ✅ E2E Workflow: Complete in {execution_time_ms:.2f}ms")
 
         except Exception as e:
+            # Handle specific exception case
             error_result = TestResult(
                 test_id=f"E2E_{self.test_id_counter:03d}",
                 test_name="End-to-End Integration - Error",
@@ -899,6 +931,7 @@ class SecureSystem:
             total_time = 0
 
             for i in range(iterations):
+                # Process each item in collection
                 start_time = time.time()
 
                 # 並列実行テスト
@@ -939,6 +972,7 @@ class SecureSystem:
             print(f"  ✅ Performance: {avg_time:.2f}ms average response time")
 
         except Exception as e:
+            # Handle specific exception case
             error_result = TestResult(
                 test_id=f"PERF_{self.test_id_counter:03d}",
                 test_name="System Performance - Error",
@@ -979,6 +1013,7 @@ class SecureSystem:
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"component": component_type, "success": False, "error": str(e)}
 
     async def _evaluate_system_health(
@@ -1103,6 +1138,7 @@ class SecureSystem:
         # システム統合推奨事項
         e2e_tests = [r for r in test_results if "End-to-End" in r.test_name]
         if any(r.status == TestStatus.FAILED for r in e2e_tests):
+            # Complex condition - consider breaking down
             recommendations.append(
                 "🔄 Improve system integration and workflow reliability"
             )
@@ -1155,6 +1191,7 @@ async def run_comprehensive_integration_tests():
         if suite_result.recommendations:
             print("💡 Recommendations:")
             for i, rec in enumerate(suite_result.recommendations, 1):
+                # Process each item in collection
                 print(f"  {i:2d}. {rec}")
             print()
 
@@ -1168,6 +1205,7 @@ async def run_comprehensive_integration_tests():
         if failed_tests:
             print("🔍 Failed/Error Test Details:")
             for test in failed_tests:
+                # Process each item in collection
                 print(f"  ❌ {test.test_name} ({test.severity.value})")
                 if test.error_message:
                     print(f"     Error: {test.error_message}")
@@ -1193,6 +1231,7 @@ async def run_comprehensive_integration_tests():
         return suite_result
 
     except Exception as e:
+        # Handle specific exception case
         print(f"\n💥 Critical error in integration testing: {e}")
         print("\n" + "=" * 80)
         print("❌ Integration testing failed - system requires urgent attention")

@@ -14,6 +14,7 @@ class AITaskRetryCommand(BaseCommand):
     """タスクリトライ"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-task-retry", description="タスクリトライ", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AITaskRetryCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AITaskRetryCommand()
     sys.exit(command.run())
 

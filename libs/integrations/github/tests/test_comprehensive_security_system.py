@@ -136,7 +136,8 @@ class TestGitHubSecurityManager:
         
         # Test length limits
         long_repo_name = "a" * 200
-        sanitized_repo = self.security_manager.validate_and_sanitize_input(long_repo_name, "repo_name")
+        sanitized_repo = self.security_manager.validate_and_sanitize_input(long_repo_name, "repo_name" \
+            "repo_name")
         assert len(sanitized_repo) == 100
         
         # Test dictionary sanitization
@@ -168,7 +169,12 @@ class TestGitHubSecurityManager:
         assert self.security_manager.verify_request_signature(signature, method, url, body)
         
         # Test invalid signature
-        assert not self.security_manager.verify_request_signature("invalid.signature", method, url, body)
+        assert not self.security_manager.verify_request_signature(
+            "invalid.signature",
+            method,
+            url,
+            body
+        )
         
         # Test expired signature (mock time)
         parts = signature.split(".")
@@ -178,7 +184,8 @@ class TestGitHubSecurityManager:
         
         # Test tampered data
         assert not self.security_manager.verify_request_signature(signature, "GET", url, body)
-        assert not self.security_manager.verify_request_signature(signature, method, "https://evil.com", body)
+        assert not self.security_manager.verify_request_signature(signature, method, "https://evil.com" \
+            "https://evil.com", body)
     
     def test_rate_limiting(self):
         """Test rate limiting functionality"""

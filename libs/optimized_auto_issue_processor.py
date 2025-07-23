@@ -229,7 +229,8 @@ class OptimizedAutoIssueProcessor:
         self.running = False
         self.worker_tasks = []
         
-        logger.info(f"OptimizedAutoIssueProcessor initialized (concurrency: {initial_concurrency}, max: {max_concurrency})")
+        logger.info(f"OptimizedAutoIssueProcessor initialized (concurrency: {initial_concurrency}, max: " \
+            "{max_concurrency})")
     
     async def start(self):
         """プロセッサー開始"""
@@ -311,7 +312,10 @@ class OptimizedAutoIssueProcessor:
         # 結果を分類
         for job in jobs:
             if job.job_id in self.completed_jobs:
-                results["successful"].append({"issue_number": job.issue.number, "job_id": job.job_id})
+                results["successful"].append(
+                    {"issue_number": job.issue.number,
+                    "job_id": job.job_id}
+                )
             elif job.job_id in self.failed_jobs:
                 results["failed"].append({"issue_number": job.issue.number, "job_id": job.job_id})
             else:
@@ -372,7 +376,8 @@ class OptimizedAutoIssueProcessor:
                 "start_time": start_time
             }
             
-            logger.debug(f"Worker {worker_id} processing job {job.job_id} (issue #{job.issue.number})")
+            logger.debug(f"Worker {worker_id} processing job {job.job_id} (issue #{job.issue.number})" \
+                "Worker {worker_id} processing job {job.job_id} (issue #{job.issue.number})")
             
             # 実際の処理実行
             result = await self._execute_issue_processing(job.issue)
@@ -491,7 +496,8 @@ class OptimizedAutoIssueProcessor:
         
         # エラー率チェック
         if performance["error_rate"] > 0.1:
-            recommendations.append("High error rate detected - review error handling and retry logic")
+            recommendations.append("High error rate detected - review error handling and retry logic" \
+                "High error rate detected - review error handling and retry logic")
         
         # キューサイズチェック
         total_queue_size = status["queue_status"]["total_size"]

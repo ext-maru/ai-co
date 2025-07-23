@@ -19,6 +19,7 @@ class AIWorkerRestartCommand(BaseCommand):
     """ワーカー再起動コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-worker-restart", description="ワーカー再起動", version="1.0.0"
         )
@@ -49,6 +50,7 @@ class AIWorkerRestartCommand(BaseCommand):
 
         results = []
         for worker_file in workers_to_restart:
+            # Process each item in collection
             self.console.print(f"🔄 {worker_file} を再起動中...", style="yellow")
 
             # プロセス停止
@@ -76,9 +78,11 @@ class AIWorkerRestartCommand(BaseCommand):
         """ワーカープロセス停止"""
         killed = False
         for proc in psutil.process_iter(["pid", "name", "cmdline"]):
+            # Process each item in collection
             try:
                 cmdline = proc.info.get("cmdline", [])
                 if cmdline and worker_file in " ".join(cmdline):
+                    # Complex condition - consider breaking down
                     if force:
                         proc.kill()
                     else:
@@ -86,6 +90,7 @@ class AIWorkerRestartCommand(BaseCommand):
                     proc.wait(timeout=5)
                     killed = True
             except (psutil.NoSuchProcess, psutil.TimeoutExpired, psutil.AccessDenied):
+                # Handle specific exception case
                 pass
         return killed
 
@@ -108,17 +113,20 @@ class AIWorkerRestartCommand(BaseCommand):
                     f"{session_name}:",
                     "-n",
                     window_name,
-                    f"cd /home/aicompany/ai_co && source venv/bin/activate && python3 workers/{worker_file}",
+                    f"cd /home/aicompany/ai_co && source venv/bin/activate && python3 " \
+                        "workers/{worker_file}",
                 ],
                 check=True,
             )
 
             return True
         except subprocess.CalledProcessError:
+            # Handle specific exception case
             return False
 
 
 def main():
+    # Core functionality implementation
     command = AIWorkerRestartCommand()
     sys.exit(command.run())
 

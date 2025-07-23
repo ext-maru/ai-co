@@ -585,7 +585,8 @@ class MultiProcessAncientElderAudit:
         ]
 
         logger.info(
-            f"🏛️ Multi-Process Ancient Elder Audit System initialized with {self.process_count} elders"
+            f"🏛️ Multi-Process Ancient Elder Audit System initialized with {self." \
+                "process_count} elders"
         )
 
     async def execute_parallel_audit(self, target_path: str) -> Dict[str, Any]:
@@ -886,7 +887,11 @@ class MultiProcessAncientElderAudit:
             f.write("## 📊 Consensus Results\n\n")
             f.write(f"- **Average Score**: {consensus.get('average_score', 0):.2%}\n")
             f.write(
-                f"- **Score Range**: {consensus.get('min_score', 0):.2%} - {consensus.get('max_score', 0):.2%}\n"
+                f"- **Score Range**: {consensus.get(
+                    'min_score',
+                    0):.2%} - {consensus.get('max_score',
+                    0
+                ):.2%}\n"
             )
             f.write(f"- **Total Findings**: {consensus.get('total_findings', 0)}\n\n")
 
@@ -896,7 +901,12 @@ class MultiProcessAncientElderAudit:
             f.write("|-------|---------------|----------|\n")
             for audit in results.get("elder_audits", []):
                 f.write(
-                    f"| {audit.get('elder_name', 'Unknown')} | {audit.get('specialization', 'N/A')} | {audit.get('verdict', 'ERROR')} |\n"
+                    f"| {audit.get(
+                        'elder_name',
+                        'Unknown')} | {audit.get('specialization',
+                        'N/A')} | {audit.get('verdict',
+                        'ERROR'
+                    )} |\n"
                 )
             f.write("\n")
 

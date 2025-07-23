@@ -194,7 +194,12 @@ class TDDCycleTracker:
         required_phases = [TDDCyclePhase.RED, TDDCyclePhase.GREEN]
         return all(phase in phases for phase in required_phases)
         
-    def _detect_cycle_violations(self, cycles: List[Dict[str, Any]], file_path: str) -> List[Dict[str, Any]]:
+    def _detect_cycle_violations(
+        self,
+        cycles: List[Dict[str,
+        Any]],
+        file_path: str
+    ) -> List[Dict[str, Any]]:
         """TDDサイクル違反を検出"""
         violations = []
         
@@ -321,7 +326,10 @@ class TestQualityAnalyzer:
                     "lineno": node.lineno,
                     "body_length": len(node.body),
                     "docstring": ast.get_docstring(node),
-                    "decorators": [d.id if isinstance(d, ast.Name) else str(d) for d in node.decorator_list],
+                    "decorators": [d.id if isinstance(
+                        d,
+                        ast.Name) else str(d
+                    ) for d in node.decorator_list],
                     "has_assertions": self._has_assertions(node)
                 })
                 
@@ -368,7 +376,12 @@ class TestQualityAnalyzer:
             
         return max(0.0, score)
         
-    def _detect_test_violations(self, content: str, test_functions: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def _detect_test_violations(
+        self,
+        content: str,
+        test_functions: List[Dict[str,
+        Any]]
+    ) -> List[Dict[str, Any]]:
         """テスト品質違反を検出"""
         violations = []
         
@@ -563,7 +576,11 @@ class CoverageManipulationDetector:
             
         return {"overall_coverage": 0.0, "files": {}}
         
-    def _detect_suspiciously_high_coverage(self, coverage_data: Dict[str, Any]) -> List[Dict[str, Any]]:
+    def _detect_suspiciously_high_coverage(
+        self,
+        coverage_data: Dict[str,
+        Any]
+    ) -> List[Dict[str, Any]]:
         """異常に高いカバレッジ率を検出"""
         violations = []
         
@@ -655,7 +672,10 @@ class CoverageManipulationDetector:
                     
                 # 偽テストパターンを検出
                 fake_patterns = [
-                    (re.compile(r'def\s+test_\w+\([^)]*\):\s*pass', re.MULTILINE), "Empty test function"),
+                    (re.compile(
+                        r'def\s+test_\w+\([^)]*\):\s*pass',
+                        re.MULTILINE), "Empty test function"
+                    ),
                     (re.compile(r'assert\s+True\s*#.*fake', re.IGNORECASE), "Fake assertion"),
                     (re.compile(r'assert\s+1\s*==\s*1', re.IGNORECASE), "Meaningless assertion"),
                 ]
@@ -1053,7 +1073,8 @@ class TDDGuardian(AncientElderBase):
             result.add_violation(
                 severity=ViolationSeverity.HIGH,
                 title="Low overall test quality",
-                description=f"Average test quality score: {avg_test_quality:.1f} < {self.quality_thresholds['minimum_test_quality_score']}",
+                description=f"Average test quality score: {avg_test_quality:.1f} < {self." \
+                    "quality_thresholds["minimum_test_quality_score']}",
                 suggested_fix="Improve test assertions, documentation, and remove empty tests",
                 metadata={
                     "category": "project_quality",
@@ -1114,7 +1135,8 @@ class TDDGuardian(AncientElderBase):
         violation_type = violation.get("type", "")
         
         fixes = {
-            TDDViolationType.NO_RED_PHASE: "Write a failing test first before implementing functionality",
+            TDDViolationType.NO_RED_PHASE: "Write a failing test first before implementing functionality" \
+                "Write a failing test first before implementing functionality",
             TDDViolationType.SKIPPED_GREEN_PHASE: "Implement minimal code to make the test pass",
             TDDViolationType.INSUFFICIENT_REFACTOR: "Refactor code after making tests pass",
             TDDViolationType.IMPLEMENTATION_BEFORE_TEST: "Always write tests before implementation"
@@ -1128,7 +1150,8 @@ class TDDGuardian(AncientElderBase):
         
         fixes = {
             TDDViolationType.POOR_TEST_QUALITY: "Add meaningful assertions and test logic",
-            TDDViolationType.FAKE_TEST_IMPLEMENTATION: "Remove fake implementations and write real tests"
+            TDDViolationType.FAKE_TEST_IMPLEMENTATION: "Remove fake implementations and write real tests" \
+                "Remove fake implementations and write real tests"
         }
         
         return fixes.get(violation_type, "Improve test quality and add proper assertions")

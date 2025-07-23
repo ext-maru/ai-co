@@ -34,6 +34,7 @@ class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "design_rest_api",
@@ -220,6 +221,7 @@ class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"API architecture failed for task {task_id}: {str(e)}")
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
 
@@ -269,6 +271,7 @@ class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             resource_models = []
 
             for resource in resource_definitions:
+                # Process each item in collection
                 resource_name = resource.get("name", "resource")
                 resource_endpoints = self.rest_designer.design_resource_endpoints(
                     resource
@@ -304,6 +307,7 @@ class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"REST API design failed: {e}")
             return {"api_design": {}, "error": str(e), "endpoint_count": 0}
 
@@ -365,6 +369,7 @@ class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"OpenAPI spec generation failed: {e}")
             return {"openapi_specification": {}, "error": str(e), "paths_count": 0}
 
@@ -416,6 +421,7 @@ class APIArchitect(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"API implementation failed: {e}")
             return {
                 "api_implementation": {},
@@ -486,6 +492,7 @@ schema {{
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"GraphQL schema design failed: {e}")
             return {"graphql_schema": {}, "error": str(e), "type_count": 0}
 
@@ -545,6 +552,7 @@ schema {{
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Authentication implementation failed: {e}")
             return {
                 "auth_implementation": {},
@@ -592,6 +600,7 @@ schema {{
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"API documentation generation failed: {e}")
             return {"api_documentation": {}, "error": str(e), "sections_count": 0}
 
@@ -617,6 +626,7 @@ schema {{
             if "api_implementation" in result_data:
                 implementation = result_data["api_implementation"]
                 if isinstance(implementation, dict) and implementation:
+                    # Complex condition - consider breaking down
                     quality_score += 20.0
 
             # セキュリティレベル評価
@@ -634,6 +644,7 @@ schema {{
                 quality_score += 10.0
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"API architecture quality validation error: {e}")
             quality_score = max(quality_score - 10.0, 0.0)
 
@@ -756,6 +767,7 @@ class GraphQLDesigner:
 
         field_definitions = []
         for field in fields:
+            # Process each item in collection
             field_name = field.get("name", "field")
             field_type = field.get("type", "String")
             required = "!" if field.get("required", False) else ""
@@ -769,6 +781,7 @@ class GraphQLDesigner:
         """クエリ型設計"""
         queries = []
         for req in requirements:
+            # Process each item in collection
             query_name = req.get("name", "query")
             return_type = req.get("return_type", "String")
             queries.append(f"  {query_name}: {return_type}")
@@ -781,6 +794,7 @@ class GraphQLDesigner:
         """ミューテーション型設計"""
         mutations = []
         for model in models:
+            # Process each item in collection
             model_name = model.get("name", "Model")
             mutations.append(
                 f"  create{model_name}(input: {model_name}Input!): {model_name}"
@@ -833,6 +847,7 @@ class OpenAPIGenerator:
         required = []
 
         for field in model.get("fields", []):
+            # Process each item in collection
             field_name = field.get("name", "field")
             field_type = field.get("type", "string")
             properties[field_name] = {"type": field_type.lower()}

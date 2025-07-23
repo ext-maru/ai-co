@@ -36,18 +36,21 @@ def test_critical_integrations():
     results = {}
 
     for integration in critical_integrations:
+        # Process each item in collection
         try:
             __import__(integration)
             print(f"✅ {integration} - OK")
             successful_imports += 1
             results[integration] = "SUCCESS"
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ {integration} - ERROR: {e}")
             results[integration] = f"ERROR: {e}"
 
     success_rate = successful_imports / len(critical_integrations) * 100
     print(
-        f"Critical integrations success rate: {successful_imports}/{len(critical_integrations)} ({success_rate:.1f}%)"
+        f"Critical integrations success rate: " \
+            "{successful_imports}/{len(critical_integrations)} ({success_rate:.1f}%)"
     )
 
     return results, success_rate
@@ -92,10 +95,12 @@ async def test_async_capabilities():
         result = await eth._summon_elder_council(test_message)
         return "Success", result
     except Exception as e:
+        # Handle specific exception case
         return "Error", str(e)
 
 
 def main():
+    # Core functionality implementation
     print("=" * 60)
     print("Phase C: Elder Tree Integration Health Check")
     print("=" * 60)
@@ -134,6 +139,7 @@ def main():
 
     # Overall health status
     if success_rate >= 100 and memory_increase < 50 and async_status == "Success":
+        # Complex condition - consider breaking down
         print("\n🌳 OVERALL HEALTH STATUS: EXCELLENT")
         print("Elder Tree Integration is fully operational and ready for Phase D")
     elif success_rate >= 75:

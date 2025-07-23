@@ -8,7 +8,6 @@ Emergency Cleanup Script for Elders Guild Root Directory
 
 import os
 import shutil
-<<<<<<< HEAD
 import subprocess
 from datetime import datetime
 from pathlib import Path
@@ -27,8 +26,6 @@ class EmergencyElderCleanup:
     def analyze_violations(self):
         """評議会令第34号違反状況分析"""
         print("🔍 エルダー評議会令第34号違反分析開始")
-
-=======
 from pathlib import Path
 import subprocess
 from datetime import datetime

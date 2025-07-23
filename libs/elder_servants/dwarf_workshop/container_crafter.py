@@ -99,6 +99,7 @@ class ContainerCrafter(DwarfServant):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "container_build",
@@ -202,6 +203,7 @@ class ContainerCrafter(DwarfServant):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ Failed to initialize ContainerCrafter: {e}")
             return False
 
@@ -255,6 +257,7 @@ class ContainerCrafter(DwarfServant):
 
                 # Empty instruction
                 if stripped and " " not in stripped and not stripped.startswith("#"):
+                    # Complex condition - consider breaking down
                     if stripped.upper() in ["WORKDIR", "COPY", "RUN"]:
                         result["errors"].append(
                             f"Line {line_num}: {stripped} instruction missing arguments"
@@ -262,6 +265,7 @@ class ContainerCrafter(DwarfServant):
 
                 # Best practice warnings
                 if stripped.upper().startswith("RUN ") and "apt-get" in stripped:
+                    # Complex condition - consider breaking down
                     if (
                         "apt-get update" in stripped
                         and "apt-get install" not in stripped
@@ -276,6 +280,7 @@ class ContainerCrafter(DwarfServant):
             return result
 
         except Exception as e:
+            # Handle specific exception case
             return {"valid": False, "errors": [f"Validation error: {str(e)}"]}
 
     async def build_container(self, build_request: Dict[str, Any]) -> Dict[str, Any]:
@@ -317,6 +322,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ Container build failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -334,6 +340,7 @@ class ContainerCrafter(DwarfServant):
             return result
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def optimize_image(
@@ -370,6 +377,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def scan_image_security(self, scan_request: Dict[str, Any]) -> Dict[str, Any]:
@@ -403,6 +411,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def optimize_dockerfile_layers(
@@ -432,6 +441,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def authenticate_registry(
@@ -455,6 +465,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def push_image(self, push_request: Dict[str, Any]) -> Dict[str, Any]:
@@ -477,6 +488,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def pull_image(self, pull_request: Dict[str, Any]) -> Dict[str, Any]:
@@ -498,6 +510,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def deploy_to_kubernetes(
@@ -533,6 +546,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def deploy_to_swarm(self, swarm_service: Dict[str, Any]) -> Dict[str, Any]:
@@ -553,6 +567,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def deploy_to_ecs(self, ecs_task: Dict[str, Any]) -> Dict[str, Any]:
@@ -574,6 +589,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def configure_autoscaling(self, hpa_config: Dict[str, Any]) -> Dict[str, Any]:
@@ -592,6 +608,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def configure_load_balancer(
@@ -613,6 +630,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def perform_rolling_update(
@@ -638,6 +656,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def perform_blue_green_deployment(
@@ -651,6 +670,7 @@ class ContainerCrafter(DwarfServant):
 
             traffic_shifts = []
             for i, percentage in enumerate(steps):
+                # Process each item in collection
                 traffic_shifts.append(
                     {
                         "step": i + 1,
@@ -668,6 +688,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def configure_health_checks(
@@ -680,6 +701,7 @@ class ContainerCrafter(DwarfServant):
 
             configured_checks = []
             for check in checks:
+                # Process each item in collection
                 configured_checks.append(
                     {
                         "type": check.get("type"),
@@ -697,6 +719,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def configure_logging(self, log_config: Dict[str, Any]) -> Dict[str, Any]:
@@ -714,6 +737,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def collect_metrics(self, metrics_config: Dict[str, Any]) -> Dict[str, Any]:
@@ -743,6 +767,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def configure_resources(
@@ -765,6 +790,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def configure_storage(self, storage_config: Dict[str, Any]) -> Dict[str, Any]:
@@ -786,6 +812,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def configure_network_policies(
@@ -806,6 +833,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def consult_sages(
@@ -853,6 +881,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def execute_workflow(
@@ -879,6 +908,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def validate_iron_will_compliance(
@@ -906,6 +936,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def migrate_containers(
@@ -927,6 +958,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def configure_disaster_recovery(
@@ -948,6 +980,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def debug_container(self, debug_request: Dict[str, Any]) -> Dict[str, Any]:
@@ -967,6 +1000,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def deploy_large_scale(
@@ -993,6 +1027,7 @@ class ContainerCrafter(DwarfServant):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"success": False, "error": str(e)}
 
     async def _check_docker_availability(self) -> bool:
@@ -1001,6 +1036,7 @@ class ContainerCrafter(DwarfServant):
             # In real implementation, would check docker socket/API
             return True
         except Exception:
+            # Handle specific exception case
             return False
 
     async def _check_k8s_availability(self) -> bool:
@@ -1009,6 +1045,7 @@ class ContainerCrafter(DwarfServant):
             # In real implementation, would check kubectl/API
             return True
         except Exception:
+            # Handle specific exception case
             return False
 
     async def _execute_docker_build(self, *args, **kwargs) -> Dict[str, Any]:
@@ -1159,6 +1196,7 @@ class ContainerCrafter(DwarfServant):
                 metadata={"crafted_by": "ContainerCrafter"}
             )
         except Exception as e:
+            # Handle specific exception case
             return TaskResult(
                 task_id=specifications.get("task_id", "container-craft"),
                 status=TaskStatus.FAILED,
@@ -1190,6 +1228,7 @@ class ContainerCrafter(DwarfServant):
                 metadata={"task_type": task_type}
             )
         except Exception as e:
+            # Handle specific exception case
             return ServantResponse(
                 request_id=request.request_id,
                 servant_id=self.servant_id,

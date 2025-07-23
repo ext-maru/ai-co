@@ -14,6 +14,7 @@ class AIConversationsCommand(BaseCommand):
     """会話一覧"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-conversations", description="会話一覧", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AIConversationsCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIConversationsCommand()
     sys.exit(command.run())
 

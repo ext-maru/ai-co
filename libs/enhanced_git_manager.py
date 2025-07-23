@@ -50,9 +50,9 @@ class EnhancedGitManager:
             "lib": r"libs/.*\.py$",
         }
 
-    def analyze_file_content(self, file_path: str) -> Dict[str, Any]:
-        """ファイル内容を分析して概要を生成"""
-        analysis = {
+    def _initialize_analysis_dict(self) -> Dict[str, Any]:
+        """分析結果の初期辞書を作成"""
+        return {
             "type": None,
             "purpose": None,
             "key_features": [],
@@ -61,72 +61,108 @@ class EnhancedGitManager:
             "functions": [],
         }
 
+    def _determine_file_type(self, file_path: str) -> Optional[str]:
+        """ファイルタイプを判定"""
+        for comp_type, pattern in self.component_patterns.items():
+            if re.match(pattern, file_path):
+                return comp_type
+        return None
+
+    def _extract_python_elements(self, content: str) -> Dict[str, Any]:
+        """Pythonファイルから要素を抽出"""
+        elements = {}
+        
+        # クラス抽出
+        elements["classes"] = re.findall(r"class\s+(\w+)", content)
+        
+        # 関数抽出（メソッド除く）
+        functions = re.findall(r"^def\s+(\w+)", content, re.MULTILINE)
+        elements["functions"] = [f for f in functions if not f.startswith("_")]
+        
+        # import文から依存関係抽出
+        imports = re.findall(r"(?:from|import)\s+([\w.]+)", content)
+        elements["dependencies"] = list(set(imports))
+        
+        # 目的推定（docstringから）
+        docstring_match = re.search(r'"""(.*?)"""', content, re.DOTALL)
+        if docstring_match:
+            purpose = docstring_match.group(1).strip().split("\n")[0]
+            elements["purpose"] = purpose[:100]
+            
+        return elements
+
+    def _detect_python_features(self, content: str) -> List[str]:
+        """Pythonファイルの主要機能を検出"""
+        features = []
+        feature_map = {
+            "BaseWorker": "RabbitMQワーカー実装",
+            "slack": "Slack通知機能",
+            "claude": "Claude API統合",
+            "git": "Git操作",
+            "database|db": "データベース操作",
+        }
+        
+        content_lower = content.lower()
+        for pattern, feature in feature_map.items():
+            if re.search(pattern.lower(), content_lower):
+                features.append(feature)
+                
+        return features
+
+    def _analyze_python_file(self, full_path: Path, analysis: Dict[str, Any]) -> None:
+        """Pythonファイルを分析"""
+        with open(full_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        
+        # 要素抽出
+        elements = self._extract_python_elements(content)
+        analysis.update(elements)
+        
+        # 機能検出
+        analysis["key_features"] = self._detect_python_features(content)
+
+    def _analyze_shell_script(
+        self,
+        full_path: Path,
+        file_path: str,
+        analysis: Dict[str,
+        Any]
+    ) -> None:
+        """シェルスクリプトを分析"""
+        with open(full_path, "r", encoding="utf-8") as f:
+            content = f.read()
+        
+        # コマンド抽出
+        if "ai-" in file_path:
+            analysis["purpose"] = "Elders Guildコマンドスクリプト"
+        
+        # 主要コマンドの検出
+        feature_commands = {"docker": "Docker操作", "python": "Python実行", "git": "Git操作"}
+        for cmd, feature in feature_commands.items():
+            if cmd in content:
+                analysis["key_features"].append(feature)
+
+    def analyze_file_content(self, file_path: str) -> Dict[str, Any]:
+        """ファイル内容を分析して概要を生成"""
+        analysis = self._initialize_analysis_dict()
+        
         try:
             full_path = self.project_dir / file_path
             if not full_path.exists():
                 return analysis
-
+            
             # ファイルタイプ判定
-            for comp_type, pattern in self.component_patterns.items():
-                if re.match(pattern, file_path):
-                    analysis["type"] = comp_type
-                    break
-
-            # Python ファイルの詳細分析
+            analysis["type"] = self._determine_file_type(file_path)
+            
+            # ファイルタイプ別分析
             if file_path.endswith(".py"):
-                with open(full_path, "r", encoding="utf-8") as f:
-                    content = f.read()
-
-                # クラス抽出
-                classes = re.findall(r"class\s+(\w+)", content)
-                analysis["classes"] = classes
-
-                # 関数抽出（メソッド除く）
-                functions = re.findall(r"^def\s+(\w+)", content, re.MULTILINE)
-                analysis["functions"] = [f for f in functions if not f.startswith("_")]
-
-                # import文から依存関係抽出
-                imports = re.findall(r"(?:from|import)\s+([\w.]+)", content)
-                analysis["dependencies"] = list(set(imports))
-
-                # 目的推定（docstringから）
-                docstring_match = re.search(r'"""(.*?)"""', content, re.DOTALL)
-                if docstring_match:
-                    purpose = docstring_match.group(1).strip().split("\n")[0]
-                    analysis["purpose"] = purpose[:100]
-
-                # 主要機能の抽出
-                if "BaseWorker" in content:
-                    analysis["key_features"].append("RabbitMQワーカー実装")
-                if "slack" in content.lower():
-                    analysis["key_features"].append("Slack通知機能")
-                if "claude" in content.lower():
-                    analysis["key_features"].append("Claude API統合")
-                if "git" in content.lower():
-                    analysis["key_features"].append("Git操作")
-                if "database" in content.lower() or "db" in content.lower():
-                    analysis["key_features"].append("データベース操作")
-
-            # シェルスクリプトの分析
+                self._analyze_python_file(full_path, analysis)
             elif file_path.endswith(".sh"):
-                with open(full_path, "r", encoding="utf-8") as f:
-                    content = f.read()
-
-                # コマンド抽出
-                if "ai-" in file_path:
-                    analysis["purpose"] = "Elders Guildコマンドスクリプト"
-
-                # 主要コマンドの検出
-                if "docker" in content:
-                    analysis["key_features"].append("Docker操作")
-                if "python" in content:
-                    analysis["key_features"].append("Python実行")
-                if "git" in content:
-                    analysis["key_features"].append("Git操作")
-
+                self._analyze_shell_script(full_path, file_path, analysis)
+                
         except Exception as e:
             self.logger.error(f"ファイル分析エラー: {e}")
-
+        
         return analysis
 
     def generate_detailed_commit_message(self, task_id: str, files: List[str]) -> str:

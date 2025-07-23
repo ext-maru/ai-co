@@ -33,6 +33,7 @@ class AIBackupCommand(BaseCommand):
     """システムバックアップ管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-backup", description="システムバックアップ管理", version="2.0.0")
         self.project_root = Path(__file__).parent.parent
         self.backup_dir = self.project_root / "backups"
@@ -210,6 +211,7 @@ class AIBackupCommand(BaseCommand):
                 return CommandResult(success=False, message=f"無効なアクション: {args.action}")
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Backup command error: {e}")
             return CommandResult(success=False, message=f"エラー: {str(e)}")
 
@@ -225,6 +227,7 @@ class AIBackupCommand(BaseCommand):
         try:
             self.elders = FourSagesIntegration()
         except Exception as e:
+            # Handle specific exception case
             logger.warning(f"Elders integration not available: {e}")
             self.elders = None
 
@@ -293,6 +296,7 @@ class AIBackupCommand(BaseCommand):
                         total_files += 1
 
                         if args.verbose and total_files % 100 == 0:
+                            # Complex condition - consider breaking down
                             logger.info(f"Processed {total_files} files...")
 
             # 結果情報
@@ -308,12 +312,14 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Full backup failed: {e}")
             return {"success": False, "error": str(e)}
 
     def _create_incremental_backup(self, args) -> Dict[str, Any]:
         """増分バックアップ作成"""
         if not args.base_backup and not args.since:
+            # Complex condition - consider breaking down
             return {
                 "success": False,
                 "error": "増分バックアップには --base-backup または --since が必要です",
@@ -326,6 +332,7 @@ class AIBackupCommand(BaseCommand):
             try:
                 since_date = datetime.strptime(args.since, "%Y-%m-%d")
             except ValueError:
+                # Handle specific exception case
                 return {
                     "success": False,
                     "error": f"無効な日付形式: {args.since} (YYYY-MM-DD形式で指定)",
@@ -353,6 +360,7 @@ class AIBackupCommand(BaseCommand):
             files_to_check = self._collect_backup_files(args)
 
             for file_path in files_to_check:
+                # Process each item in collection
                 if file_path.exists():
                     file_mtime = datetime.fromtimestamp(file_path.stat().st_mtime)
                     if file_mtime > since_date:
@@ -364,6 +372,7 @@ class AIBackupCommand(BaseCommand):
 
             with tarfile.open(backup_file, f"w:{compression}") as tar:
                 for file_path in changed_files:
+                    # Process each item in collection
                     arcname = file_path.relative_to(self.project_root)
                     tar.add(file_path, arcname=arcname)
 
@@ -381,6 +390,7 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Incremental backup failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -460,6 +470,7 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Restore failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -475,6 +486,7 @@ class AIBackupCommand(BaseCommand):
         message_lines = [f"{len(backups)}件のバックアップファイル:\n"]
 
         for backup in backups:
+            # Process each item in collection
             created_str = backup["created"].strftime("%Y-%m-%d %H:%M:%S")
             message_lines.append(f"📁 {backup['file']}")
             message_lines.append(f"   タイプ: {backup['type']}")
@@ -482,6 +494,7 @@ class AIBackupCommand(BaseCommand):
             message_lines.append(f"   作成日時: {created_str}")
 
             if args.verbose and "files_count" in backup:
+                # Complex condition - consider breaking down
                 message_lines.append(f"   ファイル数: {backup['files_count']}")
 
             message_lines.append("")
@@ -496,6 +509,7 @@ class AIBackupCommand(BaseCommand):
             return backups
 
         for backup_file in backup_dir.glob("*.tar.*"):
+            # Process each item in collection
             try:
                 stat_info = backup_file.stat()
 
@@ -519,6 +533,7 @@ class AIBackupCommand(BaseCommand):
                 )
 
             except Exception as e:
+                # Handle specific exception case
                 logger.warning(f"Failed to read backup info: {backup_file}, {e}")
 
         # 作成日時順でソート
@@ -552,6 +567,7 @@ class AIBackupCommand(BaseCommand):
                 message_lines.append(f"警告: {len(result['warnings'])}件")
                 if args.verbose:
                     for warning in result["warnings"]:
+                        # Process each item in collection
                         message_lines.append(f"  - {warning}")
 
             overall_status = (
@@ -587,6 +603,7 @@ class AIBackupCommand(BaseCommand):
             # 整合性チェック
             integrity_check = True
             if args.check_integrity or not hasattr(args, "check_content"):
+                # Complex condition - consider breaking down
                 try:
                     with tarfile.open(backup_file, "r:*") as tar:
                         # tar形式の整合性確認
@@ -596,6 +613,7 @@ class AIBackupCommand(BaseCommand):
                             if member.name.startswith("/"):
                                 warnings.append(f"絶対パスが含まれています: {member.name}")
                 except Exception as e:
+                    # Handle specific exception case
                     integrity_check = False
                     errors.append(f"整合性チェック失敗: {str(e)}")
 
@@ -611,9 +629,11 @@ class AIBackupCommand(BaseCommand):
                                 try:
                                     tar.extractfile(member).read(1024)  # 一部読み込み
                                 except Exception as e:
+                                    # Handle specific exception case
                                     content_check = False
                                     errors.append(f"ファイル読み込み失敗: {member.name}")
                 except Exception as e:
+                    # Handle specific exception case
                     content_check = False
                     errors.append(f"内容チェック失敗: {str(e)}")
 
@@ -627,6 +647,7 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Backup verification failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -645,8 +666,10 @@ class AIBackupCommand(BaseCommand):
             ]
 
             if args.verbose and result["deleted_files"]:
+                # Complex condition - consider breaking down
                 message_lines.append("\n削除されたファイル:")
                 for deleted_file in result["deleted_files"]:
+                    # Process each item in collection
                     message_lines.append(f"  - {deleted_file}")
 
             return CommandResult(success=True, message="\n".join(message_lines))
@@ -672,6 +695,7 @@ class AIBackupCommand(BaseCommand):
             if keep_days:
                 cutoff_date = datetime.now() - timedelta(days=keep_days)
                 for backup in backups:
+                    # Process each item in collection
                     if backup["created"] < cutoff_date:
                         backup_path = backup_dir / backup["file"]
                         if backup_path.exists():
@@ -682,10 +706,13 @@ class AIBackupCommand(BaseCommand):
 
             # 件数による削除
             if keep_count and len(backups) > keep_count:
+                # Complex condition - consider breaking down
                 excess_backups = backups[keep_count:]
                 for backup in excess_backups:
+                    # Process each item in collection
                     backup_path = backup_dir / backup["file"]
                     if backup_path.exists() and backup["file"] not in deleted_files:
+                        # Complex condition - consider breaking down
                         freed_space += backup_path.stat().st_size
                         if not args.dry_run:
                             backup_path.unlink()
@@ -701,6 +728,7 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Cleanup failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -772,6 +800,7 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Schedule setup failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -783,6 +812,7 @@ class AIBackupCommand(BaseCommand):
             message_lines = ["バックアップ設定:"]
 
             for key, value in result["config"].items():
+                # Process each item in collection
                 message_lines.append(f"  {key}: {value}")
 
             if args.set_option:
@@ -818,6 +848,7 @@ class AIBackupCommand(BaseCommand):
             return {"success": True, "config": config}
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Config management failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -835,6 +866,7 @@ class AIBackupCommand(BaseCommand):
             if args.verbose:
                 message_lines.append("\nバックアップ詳細:")
                 for db in result["backed_up_databases"]:
+                    # Process each item in collection
                     message_lines.append(f"  {db['name']}: {db['size']}")
 
             return CommandResult(success=True, message="\n".join(message_lines))
@@ -884,6 +916,7 @@ class AIBackupCommand(BaseCommand):
                         with sqlite3.connect(db_file) as conn:
                             with open(backup_path, "w") as f:
                                 for line in conn.iterdump():
+                                    # Process each item in collection
                                     f.write("%s\n" % line)
                     except Exception as e:
                         # ダンプ失敗時はファイルコピー
@@ -922,6 +955,7 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Database backup failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -987,6 +1021,7 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Cloud upload failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -1035,6 +1070,7 @@ class AIBackupCommand(BaseCommand):
                 knowledge_base_path = self.project_root / "knowledge_base"
                 if knowledge_base_path.exists():
                     for file_path in knowledge_base_path.rglob("*"):
+                        # Process each item in collection
                         if file_path.is_file():
                             knowledge_base_size += file_path.stat().st_size
 
@@ -1071,6 +1107,7 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Elders backup failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -1088,6 +1125,7 @@ class AIBackupCommand(BaseCommand):
             if result["alerts"]:
                 message_lines.append(f"アラート: {len(result['alerts'])}件")
                 for alert in result["alerts"]:
+                    # Process each item in collection
                     message_lines.append(f"  ⚠️ {alert}")
             else:
                 message_lines.append("アラート: なし")
@@ -1095,6 +1133,7 @@ class AIBackupCommand(BaseCommand):
             if result["recommendations"]:
                 message_lines.append(f"推奨事項: {len(result['recommendations'])}件")
                 for rec in result["recommendations"]:
+                    # Process each item in collection
                     message_lines.append(f"  💡 {rec}")
 
             return CommandResult(success=True, message="\n".join(message_lines))
@@ -1143,6 +1182,7 @@ class AIBackupCommand(BaseCommand):
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Backup monitoring failed: {e}")
             return {"success": False, "error": str(e)}
 
@@ -1205,6 +1245,7 @@ class AIBackupCommand(BaseCommand):
     def _get_compression_mode(self, args) -> str:
         """圧縮モード取得"""
         if hasattr(args, "compression") and args.compression:
+            # Complex condition - consider breaking down
             compression = args.compression
         elif getattr(args, "compress", False):
             compression = self.config.get("compression", "gzip")
@@ -1218,6 +1259,7 @@ class AIBackupCommand(BaseCommand):
     def _format_size(self, size_bytes: int) -> str:
         """ファイルサイズフォーマット"""
         for unit in ["B", "KB", "MB", "GB", "TB"]:
+            # Process each item in collection
             if size_bytes < 1024.0:
                 return f"{size_bytes:.1f}{unit}"
             size_bytes /= 1024.0
@@ -1229,6 +1271,7 @@ class AIBackupCommand(BaseCommand):
             try:
                 self.config = json.loads(self.config_file.read_text())
             except Exception as e:
+                # Handle specific exception case
                 logger.warning(f"Failed to load config: {e}")
                 self.config = self.default_config.copy()
         else:
@@ -1240,6 +1283,7 @@ class AIBackupCommand(BaseCommand):
             self.config_file.parent.mkdir(parents=True, exist_ok=True)
             self.config_file.write_text(json.dumps(config, indent=2))
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to save config: {e}")
 
     # 簡略化実装メソッド
@@ -1298,6 +1342,7 @@ from io import BytesIO
 
 
 def main():
+    # Core functionality implementation
     command = AIBackupCommand()
     sys.exit(command.run())
 

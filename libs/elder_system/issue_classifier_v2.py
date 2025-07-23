@@ -144,7 +144,10 @@ class IssueTypeClassifierV2:
             
             # その他
             "api": re.compile(r'\b(api|rest|graphql|endpoint|swagger)\b', re.I),
-            "auth": re.compile(r'\b(auth|oauth|jwt|sso|authentication|authorization|token)\b', re.I),
+            "auth": re.compile(
+                r'\b(auth|oauth|jwt|sso|authentication|authorization|token)\b',
+                re.I
+            ),
             "cache": re.compile(r'\b(cache|caching|memcached|cdn)\b', re.I),
             "performance": re.compile(r'\b(performance|optimize|speed|latency|throughput)\b', re.I),
             
@@ -287,7 +290,11 @@ class IssueTypeClassifierV2:
                 detected.append(tech_name)
         return detected
     
-    def _calculate_category_scores(self, text: str, labels: List[str]) -> Dict[IssueCategory, float]:
+    def _calculate_category_scores(
+        self,
+        text: str,
+        labels: List[str]
+    ) -> Dict[IssueCategory, float]:
         """カテゴリースコアの計算"""
         scores = defaultdict(float)
         

@@ -43,7 +43,11 @@ class ErrorIncidentBridge:
             incident_id = self.incident_manager.create_incident(
                 category="error",
                 priority=self._determine_priority(error),
-                title=f"{error.get('error_type', 'Unknown Error')} in {error.get('file', 'unknown')}",
+                title=f"{error.get(
+                    'error_type',
+                    'Unknown Error')} in {error.get('file',
+                    'unknown'
+                )}",
                 description=error.get("error_message", "No description"),
                 affected_components=[error.get("file", "unknown")],
                 impact="システムエラーによる処理中断",
@@ -174,7 +178,11 @@ def register_error_as_incident(error_data: Dict) -> str:
     incident_id = bridge.incident_manager.create_incident(
         category="error",
         priority=priority,
-        title=f"{error_data.get('error_type', 'Unknown Error')} - {error_data.get('pattern_id', 'NEW')}",
+        title=f"{error_data.get(
+            'error_type',
+            'Unknown Error')} - {error_data.get('pattern_id',
+            'NEW'
+        )}",
         description=error_data.get("error_message", "No description"),
         affected_components=[error_data.get("file", "unknown")],
         impact="エラーによる処理中断",

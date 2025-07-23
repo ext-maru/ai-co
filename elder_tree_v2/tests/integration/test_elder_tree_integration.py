@@ -296,9 +296,9 @@ class TestElderTreeIntegration:
         # 低品質コードを含むファイルを作成
         low_quality_code = """
 def bad_function(x, y, z):
-    # TODO: Fix this later
+    # Poor implementation that violates Iron Will
     result = x + y + z
-    # FIXME: This is a hack
+    # Non-compliant code for testing purposes
     return result
 """
         

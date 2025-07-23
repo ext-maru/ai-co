@@ -120,7 +120,11 @@ class InputValidator:
                 if not key_result["valid"] or not value_result["valid"]:
                     result["violations"].extend(key_result["violations"])
                     result["violations"].extend(value_result["violations"])
-                    result["severity"] = max(result["severity"], key_result["severity"], value_result["severity"])
+                    result["severity"] = max(
+                        result["severity"],
+                        key_result["severity"],
+                        value_result["severity"]
+                    )
                     result["valid"] = False
         
         elif isinstance(data, list):
@@ -207,7 +211,12 @@ class AuthenticationManager:
         """セキュアなシークレットキー生成"""
         return secrets.token_urlsafe(32)
     
-    def authenticate_user(self, user_id: str, token: str, mfa_code: str = None) -> Optional[SecurityContext]:
+    def authenticate_user(
+        self,
+        user_id: str,
+        token: str,
+        mfa_code: str = None
+    ) -> Optional[SecurityContext]:
         """ユーザー認証（MFA対応）"""
         try:
             # レート制限チェック
@@ -475,7 +484,10 @@ class VulnerabilityScanner:
         
         return vulnerabilities
     
-    def scan_dependencies(self, requirements_file: str = "requirements.txt") -> List[VulnerabilityResult]:
+    def scan_dependencies(
+        self,
+        requirements_file: str = "requirements.txt"
+    ) -> List[VulnerabilityResult]:
         """依存関係脆弱性スキャン"""
         vulnerabilities = []
         
@@ -533,7 +545,12 @@ class SecurityManager:
             "audit_retention_days": 90
         }
     
-    def validate_request(self, request: Dict[str, Any], security_context: SecurityContext) -> Dict[str, Any]:
+    def validate_request(
+        self,
+        request: Dict[str,
+        Any],
+        security_context: SecurityContext
+    ) -> Dict[str, Any]:
         """リクエスト包括検証"""
         result = {
             "valid": True,
@@ -566,7 +583,10 @@ class SecurityManager:
             
             # 脆弱性スキャン（コードが含まれる場合）
             if "code" in request:
-                vulnerabilities = self.vulnerability_scanner.scan_code(request["code"], "request_code")
+                vulnerabilities = self.vulnerability_scanner.scan_code(
+                    request["code"],
+                    "request_code"
+                )
                 if vulnerabilities:
                     critical_vulns = [v for v in vulnerabilities if v.severity == SecurityLevel.CRITICAL]
                     if critical_vulns:
@@ -594,7 +614,12 @@ class SecurityManager:
         required_permission = operation_mapping.get(operation, PermissionLevel.READ)
         return required_permission in context.permissions
     
-    def _check_security_policies(self, request: Dict[str, Any], context: SecurityContext) -> List[str]:
+    def _check_security_policies(
+        self,
+        request: Dict[str,
+        Any],
+        context: SecurityContext
+    ) -> List[str]:
         """セキュリティポリシーチェック"""
         violations = []
         
@@ -607,7 +632,8 @@ class SecurityManager:
         # ファイルサイズチェック
         if "file_content" in request:
             content = request["file_content"]
-            if isinstance(content, str) and len(content.encode()) > self.security_policies["max_file_size"]:
+            if isinstance(content, str) and len(content.encode()) > self.security_policies["max_file_size" \
+                "max_file_size"]:
                 violations.append("File size exceeds maximum allowed")
         
         return violations
@@ -666,7 +692,10 @@ class SecurityManager:
             "recent_events": recent_events
         }
     
-    def _generate_security_recommendations(self, vulnerabilities: List[VulnerabilityResult]) -> List[str]:
+    def _generate_security_recommendations(
+        self,
+        vulnerabilities: List[VulnerabilityResult]
+    ) -> List[str]:
         """セキュリティ推奨事項生成"""
         recommendations = []
         

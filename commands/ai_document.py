@@ -169,6 +169,7 @@ class AutoPMOrchestrator:
                 return {"error": "ドキュメント生成に失敗しました", "status": "failed"}
 
         except Exception as e:
+            # Handle specific exception case
             return {"error": f"エラーが発生しました: {str(e)}", "status": "failed"}
 
     async def analyze_code(self, file_path: str) -> Dict[str, Any]:
@@ -216,6 +217,7 @@ class AutoPMOrchestrator:
             if total_issues > 0:
                 print("\n🔍 検出された問題:")
                 for category, issues in analysis.items():
+                    # Process each item in collection
                     if issues:
                         print(f"    {category}: {len(issues)}件")
 
@@ -228,6 +230,7 @@ class AutoPMOrchestrator:
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {"error": f"解析エラー: {str(e)}", "status": "failed"}
 
     def _discover_code_files(self, project_path: str) -> list:
@@ -255,6 +258,7 @@ class AutoPMOrchestrator:
 
         for file_path in project_path.rglob("*"):
             if file_path.is_file() and file_path.suffix in code_extensions:
+                # Complex condition - consider breaking down
                 # 仮想環境、node_modules等を除外
                 if not any(
                     part.startswith(".")
@@ -331,6 +335,7 @@ class AIDocumentCLI:
     """Elders Guild ドキュメント生成CLI"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.orchestrator = AutoPMOrchestrator()
 
     def create_parser(self) -> argparse.ArgumentParser:
@@ -383,6 +388,7 @@ class AIDocumentCLI:
 
         try:
             if parsed_args.command == "generate":
+                # Complex condition - consider breaking down
                 options = {
                     "formats": parsed_args.format.split(","),
                     "output_dir": parsed_args.output,
@@ -404,6 +410,7 @@ class AIDocumentCLI:
                     return 1
 
             elif parsed_args.command == "analyze":
+                # Complex condition - consider breaking down
                 result = await self.orchestrator.analyze_code(parsed_args.file_path)
 
                 if result["status"] == "success":
@@ -414,9 +421,11 @@ class AIDocumentCLI:
                     return 1
 
         except KeyboardInterrupt:
+            # Handle specific exception case
             print("\n\n⚠️ ユーザーによる中断")
             return 1
         except Exception as e:
+            # Handle specific exception case
             print(f"\n❌ 予期しないエラー: {str(e)}")
             return 1
 

@@ -41,6 +41,7 @@ class LightningCommitCLI:
     """Lightning Commit コマンドラインインターフェース"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.lightning_system = LightningCommitSystem()
         self.project_root = Path("/home/aicompany/ai_co")
 
@@ -97,6 +98,7 @@ class LightningCommitCLI:
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Git状態取得エラー: {e}")
             return {"staged": [], "unstaged": [], "untracked": [], "total_files": 0}
 
@@ -117,6 +119,7 @@ class LightningCommitCLI:
             return result.returncode == 0
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Auto stage エラー: {e}")
             return False
 
@@ -146,6 +149,7 @@ class LightningCommitCLI:
 
             # コアシステム
             if "core/" in file or "libs/" in file:
+                # Complex condition - consider breaking down
                 complexity_factors["core_changes"] += 0.1
 
         # 複雑度計算（0.0-1.0）
@@ -168,6 +172,7 @@ class LightningCommitCLI:
         # ファイル情報
         files = context.get("files", [])
         if files and len(files) <= 5:
+            # Complex condition - consider breaking down
             enhanced_message += f"\n📁 Files: {', '.join(files)}"
         elif files:
             enhanced_message += f"\n📁 Files: {len(files)} files changed"
@@ -263,6 +268,7 @@ class LightningCommitCLI:
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             elapsed = asyncio.get_event_loop().time() - start_time
             print(f"💥 Lightning Protocol エラー ({elapsed:.1f}秒): {e}")
             return False
@@ -335,9 +341,11 @@ def main():
         success = asyncio.run(cli.execute_lightning_commit(args.message, args))
         sys.exit(0 if success else 1)
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n⚠️ Lightning Protocol中断")
         sys.exit(1)
     except Exception as e:
+        # Handle specific exception case
         print(f"💥 予期しないエラー: {e}")
         sys.exit(1)
 

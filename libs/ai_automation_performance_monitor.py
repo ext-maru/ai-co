@@ -633,7 +633,8 @@ class AIAutomationPerformanceMonitor:
 
         # ログ出力
         logger.warning(
-            f"🚨 ALERT TRIGGERED: {rule.description} (Value: {trigger_value}, Threshold: {rule.threshold})"
+            f"🚨 ALERT TRIGGERED: {rule.description} (Value: {trigger_value}, Threshold: " \
+                "{rule.threshold})"
         )
 
         # 自動対応実行
@@ -928,7 +929,8 @@ class AIAutomationPerformanceMonitor:
                 efficiency_trend = self._calculate_trend_slope(efficiency_scores)
 
                 logger.info(
-                    f"📈 Performance Trends: Health={health_trend:.3f}, Efficiency={efficiency_trend:.3f}"
+                    f"📈 Performance Trends: Health={health_trend:.3f}, " \
+                        "Efficiency={efficiency_trend:.3f}"
                 )
 
         except Exception as e:

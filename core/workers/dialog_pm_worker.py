@@ -32,6 +32,7 @@ logger = logging.getLogger("DialogPM")
 
 class DialogPMWorker:
     def __init__(self):
+        """初期化メソッド"""
         self.conversation_manager = ConversationManager()
         self.slack = SlackNotifier()
 

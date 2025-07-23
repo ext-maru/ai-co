@@ -6,7 +6,7 @@ pytest configuration
 import pytest
 import asyncio
 from typing import AsyncGenerator
-from python_a2a import Agent
+from python_a2a import agent, A2AClient, A2AServer, Message
 
 
 @pytest.fixture(scope="session")

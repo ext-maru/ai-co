@@ -45,6 +45,7 @@ class AutoCommitCLI:
     """Auto Commit 統合コマンドラインインターフェース"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.lightning_system = LightningCommitSystem()
         self.lightning_cli = LightningCommitCLI()
         self.council_cli = CouncilCommitCLI()
@@ -71,7 +72,9 @@ class AutoCommitCLI:
 
         detected_urgency = CommitUrgency.NORMAL
         for urgency, keywords in urgency_keywords.items():
+            # Process each item in collection
             if any(keyword in message.lower() for keyword in keywords):
+                # Complex condition - consider breaking down
                 detected_urgency = urgency
                 break
 
@@ -113,6 +116,7 @@ class AutoCommitCLI:
         # Lightning Protocol判定
         if urgency == CommitUrgency.EMERGENCY:
             if file_count <= 5 and complexity <= 0.5:
+                # Complex condition - consider breaking down
                 reasons.append("🚨 緊急事態のため Lightning Protocol が最適")
                 reasons.append(f"📁 ファイル数: {file_count} (≤5)")
                 reasons.append(f"🎯 複雑度: {complexity:.2f} (≤0.5)")
@@ -126,6 +130,7 @@ class AutoCommitCLI:
 
         elif urgency == CommitUrgency.HIGH:
             if file_count <= 3 and complexity <= 0.3:
+                # Complex condition - consider breaking down
                 reasons.append("🔥 高優先度で Lightning Protocol が適用可能")
                 reasons.append(f"📁 ファイル数: {file_count} (≤3)")
                 reasons.append(f"🎯 複雑度: {complexity:.2f} (≤0.3)")
@@ -133,6 +138,7 @@ class AutoCommitCLI:
 
         # Grand Protocol判定
         if complexity > 0.8 or file_count > 20:
+            # Complex condition - consider breaking down
             reasons.append("👑 Grand Protocol が必要な大規模変更")
             if complexity > 0.8:
                 reasons.append(f"🎯 高複雑度: {complexity:.2f} (>0.8)")
@@ -179,6 +185,7 @@ class AutoCommitCLI:
         )
         print("\n📋 推奨理由:")
         for reason in reasons:
+            # Process each item in collection
             if reason:  # 空文字列をスキップ
                 print(f"  {reason}")
 
@@ -226,6 +233,7 @@ class AutoCommitCLI:
             return False
 
         except Exception as e:
+            # Handle specific exception case
             print(f"💥 Auto Commit エラー: {e}")
             return False
 
@@ -289,9 +297,11 @@ def main():
         success = asyncio.run(cli.execute_auto_commit(args.message, args))
         sys.exit(0 if success else 1)
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n⚠️ Auto Commit 中断")
         sys.exit(1)
     except Exception as e:
+        # Handle specific exception case
         print(f"💥 予期しないエラー: {e}")
         sys.exit(1)
 

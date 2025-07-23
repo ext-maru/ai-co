@@ -24,21 +24,27 @@ try:
 except ImportError:
     # Fallback definitions for testing
     class ElderServantBase:
+        # Main class implementation
         pass
     
     class ServantCapability:
+        # Main class implementation
         pass
     
     class ServantCategory:
+        # Main class implementation
         pass
     
     class ServantRequest:
+        # Main class implementation
         pass
     
     class ServantResponse:
+        # Main class implementation
         pass
     
     class ServantDomain:
+        # Main class implementation
         pass
 
 
@@ -106,6 +112,7 @@ class ServantRegistry:
             instance = servant_class(name, domain)
             capabilities = instance.get_capabilities()
             for cap in capabilities:
+                # Process each item in collection
                 self._capability_map[cap].append(name)
 
             self._stats["total_registered"] += 1
@@ -115,6 +122,7 @@ class ServantRegistry:
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to register servant {name}: {str(e)}")
             return False
 
@@ -177,6 +185,7 @@ class ServantRegistry:
         servant_names = self._domain_map.get(domain, [])
         servants = []
         for name in servant_names:
+            # Process each item in collection
             servant = self.get_servant(name)
             if servant:
                 servants.append(servant)
@@ -189,6 +198,7 @@ class ServantRegistry:
         servant_names = self._capability_map.get(capability, [])
         servants = []
         for name in servant_names:
+            # Process each item in collection
             servant = self.get_servant(name)
             if servant:
                 servants.append(servant)
@@ -213,6 +223,7 @@ class ServantRegistry:
         if preferred_servant:
             servant = self.get_servant(preferred_servant)
             if servant and servant.validate_request(request):
+                # Complex condition - consider breaking down
                 return await servant.execute_with_quality_gate(request)
 
         # 高度なルーティングロジック実装
@@ -226,7 +237,10 @@ class ServantRegistry:
         best_servant = await self._select_optimal_servant(suitable_servants, request)
         
         if best_servant:
-            self.logger.info(f"Routing task {request.task_id} to {best_servant.name} (score: {best_servant.suitability_score:.2f})")
+            self.logger.info(f"Routing task {request.task_id} to {best_servant.name} (score: {best_servant." \
+                "Routing task {request.task_id} to {best_servant.name} (score: {best_servant." \
+                "Routing task {request.task_id} to {best_servant.name} (score: {best_servant." \
+                "suitability_score:.2f})")
             return await best_servant.servant.execute_with_quality_gate(request)
 
         self.logger.warning(f"No suitable servant found for task {request.task_id}")
@@ -237,6 +251,7 @@ class ServantRegistry:
         candidates = []
         
         for name, servant in self._instance_cache.items():
+            # Process each item in collection
             try:
                 if servant.validate_request(request):
                     # 適合度スコア計算
@@ -251,11 +266,16 @@ class ServantRegistry:
                         specialization_match=self._check_specialization_match(servant, request)
                     ))
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Error evaluating servant {name}: {e}")
         
         return candidates
     
-    async def _select_optimal_servant(self, candidates: List['ServantCandidate'], request) -> 'ServantCandidate':
+    async def _select_optimal_servant(
+        self,
+        candidates: List['ServantCandidate'],
+        request
+    ) -> 'ServantCandidate':
         """最適なサーバントを選択"""
         if not candidates:
             return None
@@ -279,10 +299,14 @@ class ServantRegistry:
         
         # 負荷分散: トップ候補が高負荷の場合は次候補も考慮
         if best_candidate.load_factor > 0.8 and len(candidates) > 1:
+            # Complex condition - consider breaking down
             second_candidate = candidates[1]
             if (second_candidate.composite_score >= best_candidate.composite_score * 0.9 and
                 second_candidate.load_factor < 0.6):
-                self.logger.info(f"Load balancing: choosing {second_candidate.name} over {best_candidate.name}")
+                self.logger.info(f"Load balancing: choosing {second_candidate.name} over {best_candidate." \
+                    "Load balancing: choosing {second_candidate.name} over {best_candidate." \
+                    "Load balancing: choosing {second_candidate.name} over {best_candidate." \
+                    "name}")
                 return second_candidate
         
         return best_candidate
@@ -355,6 +379,7 @@ class ServantRegistry:
             request_domain = getattr(request, 'domain', '')
             
             if not servant_specialization or not request_domain:
+                # Complex condition - consider breaking down
                 return 0.5
             
             # 完全マッチ
@@ -375,8 +400,10 @@ class ServantRegistry:
             }
             
             for domain, related in related_domains.items():
+                # Process each item in collection
                 if (domain in servant_specialization.lower() and 
                     any(r in request_domain.lower() for r in related)):
+                        # Process each item in collection
                     return 0.6
             
             return 0.3  # 汎用マッチ
@@ -388,11 +415,13 @@ class ServantRegistry:
         """レジストリの統計情報を取得"""
         domain_stats = {}
         for domain in ServantDomain:
+            # Process each item in collection
             count = len(self._domain_map.get(domain, []))
             domain_stats[domain.value] = count
 
         capability_stats = {}
         for cap in ServantCapability:
+            # Process each item in collection
             count = len(self._capability_map.get(cap, []))
             capability_stats[cap.value] = count
 
@@ -407,6 +436,7 @@ class ServantRegistry:
         """登録されているすべてのサーバントの情報をリスト"""
         servants_info = []
         for name in self._servants:
+            # Process each item in collection
             servant = self.get_servant(name)
             if servant:
                 info = {
@@ -428,6 +458,7 @@ class ServantRegistry:
         }
 
         for name in self._servants:
+            # Process each item in collection
             servant = self.get_servant(name)
             if servant:
                 try:
@@ -445,6 +476,7 @@ class ServantRegistry:
                         health_status["registry_healthy"] = False
 
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.error(f"Health check failed for {name}: {str(e)}")
                     health_status["servants_status"][name] = {
                         "healthy": False,

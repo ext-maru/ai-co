@@ -151,7 +151,8 @@ class IssueCompletionManager:
                     "CREATE INDEX IF NOT EXISTS idx_started_at ON issue_records(started_at)"
                 )
                 cursor.execute(
-                    "CREATE INDEX IF NOT EXISTS idx_completion_result ON issue_records(completion_result)"
+                    "CREATE INDEX IF NOT EXISTS idx_completion_result ON " \
+                        "issue_records(completion_result)"
                 )
 
                 conn.commit()

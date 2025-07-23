@@ -24,6 +24,7 @@ class PerformanceBenchmark:
     """OSS vs 独自実装のパフォーマンスベンチマーク"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.results = {}
         self.test_data_dir = None
 
@@ -43,12 +44,13 @@ def process_data(data):
         result.append(item * 2)
     return result
 """,
-            "medium.py": """
+            "medium.py": """\\
 import json
 import datetime
 
 class DataProcessor:
     def __init__(self):
+        """初期化メソッド"""
         self.data = []
 
     def add_item(self, item):
@@ -95,6 +97,7 @@ class Task:
 
 class TaskManager:
     def __init__(self):
+        """初期化メソッド"""
         self.tasks: typing.Dict[str, Task] = {}
         self.execution_order: typing.List[str] = []
 

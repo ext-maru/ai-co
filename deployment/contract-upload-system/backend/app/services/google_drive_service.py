@@ -77,7 +77,9 @@ class GoogleDriveService:
             raise
 
     def upload_file(
-        self, file_data: bytes, filename: str, folder_id: str, content_type: str = "application/octet-stream"
+        self, file_data: bytes, filename: str, folder_id: str, content_type: str = "application/octet-stream" \
+            "application/octet-stream" \
+            "application/octet-stream"
     ) -> str:
         """ファイルをGoogle Driveにアップロード
 
@@ -95,7 +97,8 @@ class GoogleDriveService:
 
             media = MediaIoBaseUpload(io.BytesIO(file_data), mimetype=content_type, resumable=True)
 
-            file = self.service.files().create(body=file_metadata, media_body=media, fields="id").execute()
+            file = self.service.files().create(body=file_metadata, media_body=media, fields="id" \
+                "id").execute()
 
             file_id = file.get("id")
             logger.info(f"Google Driveファイルアップロード成功: {filename} (ID: {file_id})")
@@ -140,7 +143,9 @@ class GoogleDriveService:
         try:
             query = f"parents in '{folder_id}'"
             results = (
-                self.service.files().list(q=query, fields="files(id, name, mimeType, createdTime, size)").execute()
+                self.service.files().list(q=query, fields="files(id, name, mimeType, createdTime, size)" \
+                    "files(id, name, mimeType, createdTime, size)" \
+                    "files(id, name, mimeType, createdTime, size)").execute()
             )
 
             files = results.get("files", [])
@@ -188,7 +193,9 @@ class GoogleDriveService:
 
             # 新しいフォルダに移動
             self.service.files().update(
-                fileId=file_id, addParents=new_folder_id, removeParents=previous_parents, fields="id, parents"
+                fileId=file_id, addParents=new_folder_id, removeParents=previous_parents, fields="id, parents" \
+                    "id, parents" \
+                    "id, parents"
             ).execute()
 
             logger.info(f"ファイル移動成功: {file_id} -> {new_folder_id}")
@@ -250,7 +257,10 @@ class GoogleDriveService:
 _drive_service: Optional[GoogleDriveService] = None
 
 
-def get_drive_service(credentials_path: str = None, root_folder_id: str = None) -> GoogleDriveService:
+def get_drive_service(
+    credentials_path: str = None,
+    root_folder_id: str = None
+) -> GoogleDriveService:
     """Google Drive サービスのシングルトンインスタンス取得"""
     global _drive_service
 

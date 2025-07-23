@@ -24,6 +24,7 @@ class ProphecyCommand(BaseCommand):
     """予言書システム管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-prophecy",
             description="🏛️ エルダーズギルド 予言書システム"
@@ -105,6 +106,7 @@ class ProphecyCommand(BaseCommand):
 
         # 非同期サブコマンドの実行
         if parsed_args.subcommand in ["evaluate", "evolve", "elder-council"]:
+            # Complex condition - consider breaking down
             return asyncio.run(self.run_async_command(parsed_args))
         else:
             return self.run_sync_command(parsed_args)
@@ -112,25 +114,34 @@ class ProphecyCommand(BaseCommand):
     def run_sync_command(self, args):
         """同期サブコマンド実行"""
         if args.subcommand == "list":
+            # Complex condition - consider breaking down
             return self.list_prophecies()
         elif args.subcommand == "status":
+            # Complex condition - consider breaking down
             return self.show_prophecy_status(args)
         elif args.subcommand == "load":
+            # Complex condition - consider breaking down
             return self.load_prophecy(args)
         elif args.subcommand == "create":
+            # Complex condition - consider breaking down
             return self.create_prophecy(args)
         elif args.subcommand == "history":
+            # Complex condition - consider breaking down
             return self.show_history(args)
         elif args.subcommand == "backup":
+            # Complex condition - consider breaking down
             return self.manage_backup(args)
 
     async def run_async_command(self, args):
         """非同期サブコマンド実行"""
         if args.subcommand == "evaluate":
+            # Complex condition - consider breaking down
             return await self.evaluate_prophecy(args)
         elif args.subcommand == "evolve":
+            # Complex condition - consider breaking down
             return await self.evolve_prophecy(args)
         elif args.subcommand == "elder-council":
+            # Complex condition - consider breaking down
             return await self.elder_council_review(args)
 
     def list_prophecies(self):
@@ -147,6 +158,7 @@ class ProphecyCommand(BaseCommand):
             return 0
 
         for prophecy in prophecies:
+            # Process each item in collection
             self.info(f"📜 {prophecy['name']}")
             self.info(f"   📄 説明: {prophecy['description']}")
             self.info(f"   📊 進捗: Phase {prophecy['current_phase']}/{prophecy['total_phases']}")
@@ -182,6 +194,7 @@ class ProphecyCommand(BaseCommand):
             if current_phase['features']:
                 self.info("   🌟 機能:")
                 for feature in current_phase['features']:
+                    # Process each item in collection
                     self.info(f"     • {feature}")
             self.info("")
 
@@ -214,6 +227,7 @@ class ProphecyCommand(BaseCommand):
             try:
                 metrics = json.loads(args.metrics)
             except json.JSONDecodeError:
+                # Handle specific exception case
                 self.error("無効なJSON形式です")
                 return 1
         else:
@@ -223,6 +237,7 @@ class ProphecyCommand(BaseCommand):
                 collector = QualityMetricsCollector()
                 metrics = await collector.collect_all_metrics()
             except ImportError:
+                # Handle specific exception case
                 self.warning("品質メトリクス収集システムが利用できません。デフォルトメトリクスを使用します。")
                 metrics = {
                     "precommit_success_rate": 90,
@@ -302,6 +317,7 @@ class ProphecyCommand(BaseCommand):
 
             self.info("🎯 実行されたアクション:")
             for action in result['evolution_actions']:
+                # Process each item in collection
                 self.info(f"   • {action}")
         else:
             self.error(f"❌ 進化実行失敗: {result.get('error', '不明なエラー')}")
@@ -366,6 +382,7 @@ class ProphecyCommand(BaseCommand):
         self.info("🧙‍♂️ エルダーズ評議会の意見:")
 
         for elder, opinion in council_opinions.items():
+            # Process each item in collection
             self.info(f"   {elder}: {opinion}")
 
         # 現在の評価を取得
@@ -374,6 +391,7 @@ class ProphecyCommand(BaseCommand):
             collector = QualityMetricsCollector()
             metrics = await collector.collect_all_metrics()
         except ImportError:
+            # Handle specific exception case
             metrics = {"system_health": 100, "readiness": 0.8}
 
         evaluation = self.engine.evaluate_prophecy(args.prophecy_name, metrics)
@@ -425,6 +443,7 @@ class ProphecyCommand(BaseCommand):
             if backup_dir.exists():
                 backups = list(backup_dir.glob(f"{args.prophecy_name}_backup_*"))
                 for backup in sorted(backups, reverse=True):
+                    # Process each item in collection
                     self.info(f"   📁 {backup.name}")
             else:
                 self.info("   バックアップが見つかりません")

@@ -198,8 +198,14 @@ class SearchPerformanceTester:
             structure_info = self.analyze_database_structure()
             
             # 性能分析
-            fts_avg = sum(v for k, v in fts_results.items() if k.startswith('fts_')) / len([k for k in fts_results.keys() if k.startswith('fts_')])
-            like_avg = sum(v for k, v in fts_results.items() if k.startswith('like_')) / len([k for k in fts_results.keys() if k.startswith('like_')])
+            fts_avg = sum(
+                v for k,
+                v in fts_results.items() if k.startswith('fts_')) / len([k for k in fts_results.keys() if k.startswith('fts_')]
+            )
+            like_avg = sum(
+                v for k,
+                v in fts_results.items() if k.startswith('like_')) / len([k for k in fts_results.keys() if k.startswith('like_')]
+            )
             
             report = {
                 'test_timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
@@ -214,7 +220,12 @@ class SearchPerformanceTester:
                     'basic_avg_time': sum(basic_results.values()) / len(basic_results),
                     'complex_avg_time': sum(complex_results.values()) / len(complex_results)
                 },
-                'recommendations': self.generate_recommendations(basic_results, fts_results, complex_results, structure_info)
+                'recommendations': self.generate_recommendations(
+                    basic_results,
+                    fts_results,
+                    complex_results,
+                    structure_info
+                )
             }
             
             logger.info("=== 検索性能総合テスト完了 ===")
@@ -227,12 +238,21 @@ class SearchPerformanceTester:
             if self.db_conn:
                 self.db_conn.close()
                 
-    def generate_recommendations(self, basic: Dict, fts: Dict, complex: Dict, structure: Dict) -> List[str]:
+    def generate_recommendations(
+        self,
+        basic: Dict,
+        fts: Dict,
+        complex: Dict,
+        structure: Dict
+    ) -> List[str]:
         """最適化推奨事項生成"""
         recommendations = []
         
         # FTS性能チェック
-        fts_avg = sum(v for k, v in fts.items() if k.startswith('fts_')) / len([k for k in fts.keys() if k.startswith('fts_')])
+        fts_avg = sum(
+            v for k,
+            v in fts.items() if k.startswith('fts_')) / len([k for k in fts.keys() if k.startswith('fts_')]
+        )
         if fts_avg > 0.1:
             recommendations.append("FTS検索が遅い可能性があります。インデックス再構築を検討してください。")
             
@@ -282,7 +302,8 @@ def main():
             
         # JSONレポート保存
         import json
-        report_path = f"/home/aicompany/ai_co/knowledge_base/performance_test_report_{int(time.time())}.json"
+        report_path = f"/home/aicompany/ai_co/knowledge_base/performance_test_report_{int(time.time())}." \
+            "json"
         with open(report_path, 'w', encoding='utf-8') as f:
             json.dump(report, f, indent=2, ensure_ascii=False)
         print(f"\n詳細レポート保存: {report_path}")

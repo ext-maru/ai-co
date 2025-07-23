@@ -14,6 +14,7 @@ class AIExportCommand(BaseCommand):
     """データエクスポート"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-export", description="データエクスポート", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AIExportCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIExportCommand()
     sys.exit(command.run())
 

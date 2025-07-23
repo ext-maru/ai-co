@@ -282,7 +282,11 @@ class ClaudeElderAutoFlowInterceptor:
         except Exception as e:
             logger.error(f"設定ファイル保存エラー: {e}")
 
-    async def _execute_elder_flow_lightweight(self, task_name: str, priority: str) -> Dict[str, Any]:
+    async def _execute_elder_flow_lightweight(
+        self,
+        task_name: str,
+        priority: str
+    ) -> Dict[str, Any]:
         """軽量版Elder Flow実行（依存関係最小化）"""
         import subprocess
         import uuid

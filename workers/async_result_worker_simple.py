@@ -50,6 +50,7 @@ class AsyncResultWorkerSimple:
             logger.info(f"✅ RabbitMQ connected: {self.queue_name}")
             return True
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"❌ RabbitMQ connection failed: {e}")
             return False
 
@@ -84,6 +85,7 @@ class AsyncResultWorkerSimple:
             return processed_result
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"❌ Result processing failed: {e}")
             return {
                 'task_id': result_data.get('task_id', 'unknown'),
@@ -110,6 +112,7 @@ class AsyncResultWorkerSimple:
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"❌ Message processing failed: {e}")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
@@ -133,10 +136,12 @@ class AsyncResultWorkerSimple:
             logger.info("⏳ Waiting for result messages...")
             self.channel.start_consuming()
         except KeyboardInterrupt:
+            # Handle specific exception case
             logger.info("🛑 Stopping result worker...")
             self.channel.stop_consuming()
         finally:
             if self.connection and not self.connection.is_closed:
+                # Complex condition - consider breaking down
                 self.connection.close()
                 logger.info("🔌 RabbitMQ connection closed")
 

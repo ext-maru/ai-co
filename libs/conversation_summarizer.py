@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 class ConversationSummarizer:
     def __init__(self, db_path="/home/aicompany/ai_co/conversations.db"):
+        """初期化メソッド"""
         self.db_path = db_path
         self.model = "claude-sonnet-4-20250514"
         self.summary_threshold = 10  # 10メッセージ以上で要約

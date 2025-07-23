@@ -44,6 +44,7 @@ class CouncilCommitCLI:
     """Council Commit コマンドラインインターフェース"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.lightning_system = LightningCommitSystem()
         self.project_root = EnvManager.get_project_root()
 
@@ -100,6 +101,7 @@ class CouncilCommitCLI:
             }
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Git状態取得エラー: {e}")
             return {"staged": [], "unstaged": [], "untracked": [], "total_files": 0}
 
@@ -120,6 +122,7 @@ class CouncilCommitCLI:
             return result.returncode == 0
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Auto stage エラー: {e}")
             return False
 
@@ -150,10 +153,12 @@ class CouncilCommitCLI:
 
             # コアシステム
             if "core/" in file or "libs/" in file:
+                # Complex condition - consider breaking down
                 complexity_factors["core_changes"] += 0.12
 
             # テストファイル（複雑度を下げる）
             if "test" in file.lower() or file.startswith("test_"):
+                # Complex condition - consider breaking down
                 complexity_factors["test_changes"] -= 0.05
 
         # 複雑度計算（0.0-1.0）
@@ -190,6 +195,7 @@ class CouncilCommitCLI:
         # ファイル情報
         files = context.get("files", [])
         if files and len(files) <= 8:
+            # Complex condition - consider breaking down
             enhanced_message += f"\n📁 Files: {', '.join(files)}"
         elif files:
             enhanced_message += f"\n📁 Files: {len(files)} files changed"
@@ -223,6 +229,7 @@ class CouncilCommitCLI:
         print("=" * 50)
 
         for result in sage_results:
+            # Process each item in collection
             status = "✅ 承認" if result.approval else "❌ 反対"
             risk_level = (
                 "🟢 低"
@@ -335,6 +342,7 @@ class CouncilCommitCLI:
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             elapsed = asyncio.get_event_loop().time() - start_time
             print(f"💥 Council Protocol エラー ({elapsed:.1f}秒): {e}")
             return False
@@ -409,6 +417,7 @@ def main():
             )
             cli.display_sage_consultation_details(sage_results)
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ シミュレーションエラー: {e}")
 
         return
@@ -418,9 +427,11 @@ def main():
         success = asyncio.run(cli.execute_council_commit(args.message, args))
         sys.exit(0 if success else 1)
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n⚠️ Council Protocol中断")
         sys.exit(1)
     except Exception as e:
+        # Handle specific exception case
         print(f"💥 予期しないエラー: {e}")
         sys.exit(1)
 

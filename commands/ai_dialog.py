@@ -11,7 +11,9 @@ from commands.base_command import BaseCommand
 
 
 class DialogCommand(BaseCommand):
+    # Main class implementation
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="dialog", description="Elders Guild で対話型タスクを開始します")
 
     def setup_arguments(self):
@@ -36,6 +38,7 @@ class DialogCommand(BaseCommand):
             return task_id, conv_id
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"会話管理エラー: {e}")
             return None, None
 
@@ -66,6 +69,7 @@ class DialogCommand(BaseCommand):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"タスク送信エラー: {e}")
             return False
 
@@ -86,6 +90,7 @@ class DialogCommand(BaseCommand):
         # RabbitMQ確認
         result = self.run_command(["systemctl", "is-active", "rabbitmq-server"])
         if not result or result.stdout.strip() != "active":
+            # Complex condition - consider breaking down
             self.error("RabbitMQが起動していません")
             return
 
@@ -136,6 +141,7 @@ class DialogCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     cmd = DialogCommand()
     return cmd.run()
 

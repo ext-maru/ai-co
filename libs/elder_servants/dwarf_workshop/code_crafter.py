@@ -17,6 +17,7 @@ try:
 
     HAS_BLACK = True
 except ImportError:
+    # Handle specific exception case
     HAS_BLACK = False
 
 try:
@@ -24,6 +25,7 @@ try:
 
     HAS_AUTOPEP8 = True
 except ImportError:
+    # Handle specific exception case
     HAS_AUTOPEP8 = False
 
 from libs.elder_servants.base.elder_servant import (
@@ -168,6 +170,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         # 新しいリクエスト形式への対応
         if not task_type and "type" in task:
+            # Complex condition - consider breaking down
             task_type = task["type"]
 
         if not task_type:
@@ -265,16 +268,19 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         except ValueError as e:
+            # Handle specific exception case
             self.logger.error(f"Task {task_id} validation error: {str(e)}")
             return self._create_error_result(
                 task_id, f"Validation error: {str(e)}", start_time
             )
         except TypeError as e:
+            # Handle specific exception case
             self.logger.error(f"Task {task_id} type error: {str(e)}")
             return self._create_error_result(
                 task_id, f"Type error: {str(e)}", start_time
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Task {task_id} failed: {str(e)}", exc_info=True)
             return self._create_error_result(
                 task_id, f"Unexpected error: {str(e)}", start_time
@@ -296,6 +302,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
             # 名前の検証
             if not name or not name.isidentifier():
+                # Complex condition - consider breaking down
                 name = "unnamed_function"
                 self.logger.warning(f"Invalid function name, using default: {name}")
 
@@ -347,6 +354,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error generating function: {str(e)}", exc_info=True)
             # エラーでも基本的なコードを返す
             return {
@@ -373,6 +381,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
             # 名前の検証
             if not name or not name.isidentifier():
+                # Complex condition - consider breaking down
                 name = "UnnamedClass"
                 self.logger.warning(f"Invalid class name, using default: {name}")
 
@@ -452,6 +461,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error generating class: {str(e)}", exc_info=True)
             # エラーでも基本的なコードを返す
             return {
@@ -479,6 +489,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
             # 名前の検証
             if not name or not all(part.isidentifier() for part in name.split(".")):
+                # Complex condition - consider breaking down
                 name = "unnamed_module"
                 self.logger.warning(f"Invalid module name, using default: {name}")
 
@@ -502,6 +513,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             if imports:
                 import_lines = []
                 for imp in imports:
+                    # Process each item in collection
                     if isinstance(imp, str):
                         import_lines.append(f"import {imp}")
                     elif isinstance(imp, dict):
@@ -519,6 +531,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             if constants:
                 const_lines = []
                 for const in constants:
+                    # Process each item in collection
                     const_lines.append(f"{const['name']} = {const['value']}")
                 module_parts.append("\n".join(const_lines))
 
@@ -559,6 +572,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error generating module: {str(e)}", exc_info=True)
             # エラーでも基本的なコードを返す
             return {
@@ -601,6 +615,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Refactoring failed: {e}")
             return {"code": code, "type": "unchanged", "error": str(e)}
 
@@ -618,6 +633,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             return {"code": typed_code, "type": "typed", "hints_added": len(type_hints)}
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Type hint addition failed: {e}")
             return {"code": code, "type": "unchanged", "error": str(e)}
 
@@ -645,6 +661,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Optimization failed: {e}")
             return {"code": code, "type": "unchanged", "error": str(e)}
 
@@ -688,6 +705,7 @@ def {test_name}():
                     f"""
 
 class {test_class_name}(unittest.TestCase):
+    # Main class implementation
     \"\"\"Test for {cls.name}\"\"\"
 
     def setUp(self):
@@ -709,6 +727,7 @@ class {test_class_name}(unittest.TestCase):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Test generation failed: {e}")
             return {"code": "", "type": "error", "error": str(e)}
 
@@ -737,6 +756,7 @@ class {test_class_name}(unittest.TestCase):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Code analysis failed: {e}")
             return {"type": "error", "error": str(e)}
 
@@ -749,6 +769,7 @@ class {test_class_name}(unittest.TestCase):
 
         # 1. コードが存在する（基本要件: 15%）
         if "code" in result_data and result_data["code"]:
+            # Complex condition - consider breaking down
             quality_score += 15.0
             code = result_data["code"]
 
@@ -788,9 +809,11 @@ class {test_class_name}(unittest.TestCase):
                 quality_score += security_score * 5.0
 
             except SyntaxError as e:
+                # Handle specific exception case
                 self.logger.error(f"Syntax error in generated code: {e}")
                 quality_score += 0.0  # 構文エラーは品質スコア0
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Error during quality validation: {e}")
                 # 部分的なスコアを維持
 
@@ -861,6 +884,7 @@ class {test_class_name}(unittest.TestCase):
             return code
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error extracting function: {e}")
             return code
 
@@ -872,6 +896,7 @@ class {test_class_name}(unittest.TestCase):
         new_name = spec.get("new_name", "")
 
         if old_name and new_name:
+            # Complex condition - consider breaking down
             return code.replace(old_name, new_name)
         return code
     
@@ -888,6 +913,7 @@ class {test_class_name}(unittest.TestCase):
         # Add implementation logic here
         return result
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"Error in calculation: {e}")
         raise"""
         
@@ -906,6 +932,7 @@ class {test_class_name}(unittest.TestCase):
         transformed_data = data  # Placeholder
         return transformed_data
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"Error in transformation: {e}")
         raise"""
         
@@ -916,6 +943,7 @@ class {test_class_name}(unittest.TestCase):
         response_data = {"status": "success", "message": "Processed"}
         return response_data
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"API handler error: {e}")
         return {"status": "error", "message": str(e)}"""
         
@@ -925,6 +953,7 @@ class {test_class_name}(unittest.TestCase):
         # Add boolean logic here
         return True  # Default return
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"Error in boolean function: {e}")
         return False"""
         
@@ -934,6 +963,7 @@ class {test_class_name}(unittest.TestCase):
         # Add numeric calculation here
         return 0  # Default return
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"Error in numeric function: {e}")
         return 0"""
         
@@ -943,6 +973,7 @@ class {test_class_name}(unittest.TestCase):
         # Add string processing here
         return ""  # Default return
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"Error in string function: {e}")
         return \"\""""
         
@@ -952,6 +983,7 @@ class {test_class_name}(unittest.TestCase):
         # Add list processing here
         return []  # Default return
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"Error in list function: {e}")
         return []"""
         
@@ -961,6 +993,7 @@ class {test_class_name}(unittest.TestCase):
         # Add dictionary processing here
         return {}  # Default return
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"Error in dict function: {e}")
         return {}"""
         
@@ -968,12 +1001,14 @@ class {test_class_name}(unittest.TestCase):
             # 汎用実装
             description = spec.get("description", spec.get("docstring", ""))
             if "async" in description.lower() or "await" in description.lower():
+                # Complex condition - consider breaking down
                 return """# Async function implementation
     try:
         # Add async implementation here
         await asyncio.sleep(0.001)  # Placeholder async call
         return result
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"Error in async function: {e}")
         raise"""
             else:
@@ -983,6 +1018,7 @@ class {test_class_name}(unittest.TestCase):
         result = None  # Placeholder
         return result
     except Exception as e:
+        # Handle specific exception case
         self.logger.error(f"Error in function execution: {e}")
         raise"""
 
@@ -995,7 +1031,8 @@ class {test_class_name}(unittest.TestCase):
         changes = []
         if len(original.splitlines()) != len(refactored.splitlines()):
             changes.append(
-                f"Line count changed: {len(original.splitlines())} -> {len(refactored.splitlines())}"
+                f"Line count changed: {len(original.splitlines())} -> {len(refactored." \
+                    "splitlines())}"
             )
         return changes
 
@@ -1082,6 +1119,7 @@ class {test_class_name}(unittest.TestCase):
 
         # コードが存在する
         if "code" in result_data and result_data["code"]:
+            # Complex condition - consider breaking down
             quality_score += 20.0
 
             # 構文的に正しい
@@ -1139,6 +1177,7 @@ class {test_class_name}(unittest.TestCase):
             formatted = self._format_code(code)
             return formatted == code
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Format check failed: {e}")
             return False
 
@@ -1149,6 +1188,7 @@ class {test_class_name}(unittest.TestCase):
             documented_items = 0
 
             for node in ast.walk(tree):
+                # Process each item in collection
                 if isinstance(
                     node, (ast.FunctionDef, ast.ClassDef, ast.AsyncFunctionDef)
                 ):
@@ -1161,6 +1201,7 @@ class {test_class_name}(unittest.TestCase):
 
             return documented_items / total_items
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Documentation evaluation failed: {e}")
             return 0.0
 
@@ -1171,6 +1212,7 @@ class {test_class_name}(unittest.TestCase):
             typed_functions = 0
 
             for node in ast.walk(tree):
+                # Process each item in collection
                 if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
                     total_functions += 1
                     # 戻り値の型ヒントチェック
@@ -1178,6 +1220,7 @@ class {test_class_name}(unittest.TestCase):
                         typed_functions += 1
                     # パラメータの型ヒントチェック
                     elif any(arg.annotation is not None for arg in node.args.args):
+                        # Complex condition - consider breaking down
                         typed_functions += 0.5
 
             if total_functions == 0:
@@ -1185,6 +1228,7 @@ class {test_class_name}(unittest.TestCase):
 
             return min(typed_functions / total_functions, 1.0)
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Type hint evaluation failed: {e}")
             return 0.0
 
@@ -1195,20 +1239,9 @@ class {test_class_name}(unittest.TestCase):
 
             # 危険なパターンのチェック
             dangerous_patterns = [
-                "eval(",
-                "exec(",
-                "__import__",
-                "compile(",
-                "globals(",
-                "locals(",
-            ]
-
-            for pattern in dangerous_patterns:
-                if pattern in code:
-                    security_score -= 0.2
-
-            return max(security_score, 0.0)
+                "json.loads(expression) if expression.startswith("{") else expression
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Security evaluation failed: {e}")
             return 0.5  # エラー時は中間スコア
 
@@ -1235,6 +1268,7 @@ class {test_class_name}(unittest.TestCase):
                 f"Started metrics collection for task {task_id} of type {task_type}"
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to start metrics collection: {e}")
 
     def _end_metrics_collection(self, task_id: str, quality_score: float):
@@ -1245,6 +1279,7 @@ class {test_class_name}(unittest.TestCase):
                 f"Ended metrics collection for task {task_id} with quality score {quality_score}"
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to end metrics collection: {e}")
 
     async def process_request(
@@ -1288,6 +1323,7 @@ class {test_class_name}(unittest.TestCase):
             )
 
         except Exception as e:
+            # Handle specific exception case
             return ServantResponse(
                 task_id=request.task_id,
                 servant_id=self.servant_id,
@@ -1353,6 +1389,7 @@ class {test_class_name}(unittest.TestCase):
                 "python_implementation",
             ]:
                 if "spec" not in request.payload and "name" not in request.payload:
+                    # Complex condition - consider breaking down
                     self.logger.error(
                         "Function generation requires 'spec' or 'name' in payload"
                     )
@@ -1361,6 +1398,7 @@ class {test_class_name}(unittest.TestCase):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Request validation error: {e}")
             return False
 

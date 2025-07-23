@@ -10,7 +10,12 @@ class ImageProcessor:
     """画像処理・最適化サービス"""
 
     @staticmethod
-    async def optimize_image(image_data: bytes, max_size: Tuple[int, int] = (1920, 1080), quality: int = 85) -> bytes:
+    async def optimize_image(
+        image_data: bytes,
+        max_size: Tuple[int,
+        int] = (1920, 1080),
+        quality: int = 85
+    ) -> bytes:
         """画像最適化"""
         # バイナリデータから画像を開く
         img = Image.open(io.BytesIO(image_data))
@@ -64,7 +69,8 @@ class ImageProcessor:
         return [{"rgb": color, "hex": "#{:02x}{:02x}{:02x}".format(*color)} for color, _ in most_common]
 
     @staticmethod
-    async def add_watermark(image_data: bytes, watermark_text: str, position: str = "bottom-right") -> bytes:
+    async def add_watermark(image_data: bytes, watermark_text: str, position: str = "bottom-right" \
+        "bottom-right") -> bytes:
         """ウォーターマーク追加"""
         from PIL import ImageDraw
         from PIL import ImageFont
@@ -104,7 +110,13 @@ class ImageProcessor:
         # 半透明の背景
         overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
         overlay_draw = ImageDraw.Draw(overlay)
-        overlay_draw.rectangle([x - 5, y - 5, x + text_width + 5, y + text_height + 5], fill=(0, 0, 0, 128))
+        overlay_draw.rectangle(
+            [x - 5,
+            y - 5,
+            x + text_width + 5,
+            y + text_height + 5],
+            fill=(0, 0, 0, 128)
+        )
         overlay_draw.text((x, y), watermark_text, fill=(255, 255, 255, 255), font=font)
 
         # 合成

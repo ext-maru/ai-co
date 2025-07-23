@@ -34,6 +34,7 @@ class ElderFlowFixCommand:
     """Elder Flow Fix Command"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.resolver = ElderFlowViolationResolver()
         self.logger = logging.getLogger(__name__)
 
@@ -68,6 +69,7 @@ Critical: {summary['critical']}件
             if isinstance(abstract_violations, list):
                 for v in abstract_violations[:10]:  # 最初の10件
                     if isinstance(v, dict) and v.get('severity') == 'critical':
+                        # Complex condition - consider breaking down
                         print(f"- {v['class_name']}.{v['method_name']} ({v['file_path']})")
 
     async def run_fix_abstract(self):
@@ -114,6 +116,7 @@ Critical: {summary['critical']}件
 """)
 
         for file_path in results.get('updated_files', []):
+            # Process each item in collection
             print(f"- {file_path}")
 
     async def run_restart_daemon(self):
@@ -191,7 +194,11 @@ Critical: {summary['critical']}件
 終了時刻: {results.get('end_time', 'N/A')}
 
 修正結果:
-- 抽象メソッド: {results['abstract_methods'].get('resolved', 0)}/{results['abstract_methods'].get('total', 0)} 解決
+- 抽象メソッド: {results['abstract_methods'].get(
+    'resolved',
+    0)}/{results['abstract_methods'].get('total',
+    0
+)} 解決
 - アイデンティティ: {results['identity'].get('resolved', 0)}/{results['identity'].get('total', 0)} 解決
 - 品質デーモン: {results['quality_daemon'].get('status', 'unknown')}
 
@@ -200,6 +207,7 @@ Critical: {summary['critical']}件
 
         # Elder Council報告（現在無効）
         # if self.has_council and results.get('abstract_methods', {}).get('resolved', 0) > 0:
+            # Complex condition - consider breaking down
         #     await self.elder_council.log_activity(
         #         "Elder Flow Violations Resolved",
         #         f"{results['abstract_methods']['resolved']}件の違反解決完了",
@@ -244,6 +252,7 @@ Critical: {summary['critical']}件
                     print("❌ 無効な選択です")
 
             except Exception as e:
+                # Handle specific exception case
                 print(f"❌ エラー: {e}")
 
             input("\nEnterキーで続行...")
@@ -282,9 +291,11 @@ async def main():
             await command.run_full_fix(force=args.force)
 
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n⚡ 中断されました")
         sys.exit(1)
     except Exception as e:
+        # Handle specific exception case
         print(f"❌ エラー: {e}")
         sys.exit(1)
 

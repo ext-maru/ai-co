@@ -33,6 +33,7 @@ try:
 
     ELDER_SYSTEM_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logging.warning(f"Elder system not available: {e}")
     ELDER_SYSTEM_AVAILABLE = False
     FourSagesIntegration = None
@@ -95,6 +96,7 @@ class CodeReviewPMWorker(AsyncBaseWorkerV2):
             self.elder_systems_initialized = True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to initialize Elder systems: {e}")
             self.four_sages = None
             self.council_summoner = None
@@ -119,6 +121,7 @@ class CodeReviewPMWorker(AsyncBaseWorkerV2):
                 raise ValueError(f"Unsupported message type: {message_type}")
 
         except Exception as e:
+            # Handle specific exception case
             if self.elder_systems_initialized:
                 await self._report_error_to_incident_sage(e, message)
             raise
@@ -142,6 +145,7 @@ class CodeReviewPMWorker(AsyncBaseWorkerV2):
             self.four_sages.store_knowledge("quality_metrics", metrics)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"Failed to report quality metrics to Knowledge Sage: {e}"
             )
@@ -165,6 +169,7 @@ class CodeReviewPMWorker(AsyncBaseWorkerV2):
             self.four_sages.consult_incident_sage(incident_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report error to Incident Sage: {e}")
 
     def get_elder_quality_status(self) -> Dict[str, Any]:
@@ -209,6 +214,7 @@ class CodeReviewPMWorker(AsyncBaseWorkerV2):
 
         # 品質判定とフロー制御
         if quality_score >= self.quality_threshold or iteration >= self.max_iterations:
+            # Complex condition - consider breaking down
             # 品質基準達成 or 反復上限 → 最終結果生成
             return await self._generate_final_result(message, quality_score, iteration)
         else:
@@ -442,6 +448,7 @@ class CodeReviewPMWorker(AsyncBaseWorkerV2):
 
         # docstring追加の模擬
         if any("docstring" in s["suggestion"] for s in suggestions):
+            # Complex condition - consider breaking down
             improved_code = improved_code.replace(
                 "def calc(l,w):",
                 'def calculate_area(length, width):\n    """Calculate rectangle area."""',
@@ -492,6 +499,7 @@ async def main():
             await asyncio.sleep(10)
             print("💓 CodeReview PMWorker heartbeat")
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\n🛑 CodeReview PMWorker stopping...")
         await worker.shutdown()
         print("✅ CodeReview PMWorker stopped")

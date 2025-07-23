@@ -317,7 +317,12 @@ class PriorityOptimizer:
             Priority.LOW: 25
         }
     
-    def optimize_priority(self, task: UnifiedTask, context: Dict[str, Any]) -> Tuple[Priority, float]:
+    def optimize_priority(
+        self,
+        task: UnifiedTask,
+        context: Dict[str,
+        Any]
+    ) -> Tuple[Priority, float]:
         """優先度最適化"""
         current_score = self.priority_scores[task.priority]
         
@@ -480,7 +485,8 @@ class EitmsAiEngine:
             skills_required=self._extract_required_skills(task)
         )
         
-        logger.info(f"🧠 AI分析完了: {task.title} (複雑度: {complexity_score:.2f}, 工数: {estimated_hours:.1f}h)")
+        logger.info(f"🧠 AI分析完了: {task.title} (複雑度: {complexity_score:.2f}, 工数: {estimated_hours:.1f}h)" \
+            "🧠 AI分析完了: {task.title} (複雑度: {complexity_score:.2f}, 工数: {estimated_hours:.1f}h)")
         return metrics
     
     async def generate_recommendations(self, task_id: str) -> List[AIRecommendation]:
@@ -641,7 +647,12 @@ class EitmsAiEngine:
         impact = len(dependencies) * 0.1 + len(sub_tasks) * 0.2
         return min(impact, 1.0)
     
-    def _predict_completion_probability(self, task: UnifiedTask, complexity: float, effort: float) -> float:
+    def _predict_completion_probability(
+        self,
+        task: UnifiedTask,
+        complexity: float,
+        effort: float
+    ) -> float:
         """完了確率予測"""
         base_probability = 0.8
         

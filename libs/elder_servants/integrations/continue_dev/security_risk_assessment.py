@@ -25,6 +25,7 @@ class SecurityRiskAssessment:
     """OSS導入セキュリティリスク評価"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.assessment_results = {}
         self.vulnerability_databases = {
             "python": "https://pypi.org/pypi/{package}/json",

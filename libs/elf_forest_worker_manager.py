@@ -77,6 +77,7 @@ class WorkerFlowElf:
     """ワーカーフロー監視エルフ"""
 
     def __init__(self, forest: "ElfForestWorkerManager"):
+        """初期化メソッド"""
         self.forest = forest
         self.name = "Flowkeeper"
         self.check_interval = 30  # 30秒ごと
@@ -162,6 +163,7 @@ class WorkerTimeElf:
     """ワーカー時間管理エルフ"""
 
     def __init__(self, forest: "ElfForestWorkerManager"):
+        """初期化メソッド"""
         self.forest = forest
         self.name = "Timekeeper"
         self.reminders: Dict[str, List[Dict]] = {}
@@ -213,6 +215,7 @@ class WorkerBalanceElf:
     """ワーカー負荷分散エルフ"""
 
     def __init__(self, forest: "ElfForestWorkerManager"):
+        """初期化メソッド"""
         self.forest = forest
         self.name = "Balancer"
 
@@ -287,6 +290,7 @@ class WorkerHealingElf:
     """ワーカー回復エルフ"""
 
     def __init__(self, forest: "ElfForestWorkerManager"):
+        """初期化メソッド"""
         self.forest = forest
         self.name = "Healer"
         self.restart_schedule: Dict[str, datetime] = {}
@@ -347,6 +351,7 @@ class WorkerWisdomElf:
     """ワーカー学習エルフ"""
 
     def __init__(self, forest: "ElfForestWorkerManager"):
+        """初期化メソッド"""
         self.forest = forest
         self.name = "Sage"
         self.patterns: List[Dict[str, Any]] = []
@@ -441,6 +446,7 @@ class ElfForestWorkerManager:
     """エルフの森ワーカー管理システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.worker_statuses: Dict[str, WorkerStatus] = {}
         self.flow_elf = WorkerFlowElf(self)
         self.time_elf = WorkerTimeElf(self)
@@ -520,8 +526,14 @@ class ElfForestWorkerManager:
             / f'{worker_name}_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
         )
 
-        cmd = f"nohup python3 {worker_path} > {log_path} 2>&1 &"
-        subprocess.run(cmd, shell=True)
+        # セキュリティ修正: shell=Trueを使わない安全な実装
+        with open(log_path, 'w') as log_file:
+            subprocess.Popen(
+                ['python3', str(worker_path)],
+                stdout=log_file,
+                stderr=subprocess.STDOUT,
+                start_new_session=True  # nohupの代わり
+            )
 
         logger.info(f"✅ {worker_name}を起動しました")
         await asyncio.sleep(2)

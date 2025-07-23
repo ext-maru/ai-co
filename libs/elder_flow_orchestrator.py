@@ -185,7 +185,10 @@ class SageCouncilSystem:
                 "risk_level": "unknown",
                 "recommended_approach": "Standard processing without 4 Sages consultation",
                 "fallback_active": True,
-                "fallback_reason": council_results.get("fallback_message", "4 Sages system unavailable"),
+                "fallback_reason": council_results.get(
+                    "fallback_message",
+                    "4 Sages system unavailable"
+                ),
                 "key_considerations": [
                     "4賢者システムが一時的に利用不可",
                     "基本的な処理規則を適用",
@@ -295,7 +298,11 @@ class ElderFlowOrchestrator:
                 "status": "success",
                 "flow_id": flow_id,
                 "sage_advice": task.sage_advice,
-                "recommendations": task.sage_advice.get("integrated_advice", {}).get("recommended_approach", [])
+                "recommendations": task.sage_advice.get(
+                    "integrated_advice",
+                    {}).get("recommended_approach",
+                    []
+                )
             }
         except Exception as e:
             self.logger.error(f"Sage council failed: {str(e)}")
@@ -533,7 +540,10 @@ class ElderFlowOrchestrator:
                     task.add_log(f"✅ Completed: {servant_task.description}")
                 else:
                     task.add_log(
-                        f"⚠️ Failed: {servant_task.description} - {result.get('error', 'Unknown error')}"
+                        f"⚠️ Failed: {servant_task.description} - {result.get(
+                            'error',
+                            'Unknown error'
+                        )}"
                     )
 
                 # 結果を保存
@@ -645,7 +655,10 @@ class ElderFlowOrchestrator:
                     task.add_log(f"✅ {quality_task.description} completed")
                 else:
                     task.add_log(
-                        f"⚠️ {quality_task.description} failed: {result.get('error', 'Unknown error')}"
+                        f"⚠️ {quality_task.description} failed: {result.get(
+                            'error',
+                            'Unknown error'
+                        )}"
                     )
 
             except Exception as e:
@@ -684,7 +697,10 @@ class ElderFlowOrchestrator:
             and quality_results.get("security_issues", 0) > 0
         ):
             task.add_log(
-                f"⚠️ Warning: Security issues detected: {quality_results.get('security_issues', 0)}",
+                f"⚠️ Warning: Security issues detected: {quality_results.get(
+                    'security_issues',
+                    0
+                )}",
                 "warning",
             )
 
@@ -1139,7 +1155,11 @@ class ElderFlowOrchestrator:
     async def execute_sage_council(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Phase 1: 4賢者会議実行"""
         task_id = str(uuid.uuid4())
-        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        task = ElderFlowTask(
+            task_id,
+            request.get("task_name", "Unknown task"),
+            request.get("priority", "medium")
+        )
         self.active_tasks[task_id] = task
         
         try:
@@ -1163,7 +1183,11 @@ class ElderFlowOrchestrator:
     async def execute_elder_servants(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Phase 2: エルダーサーバント実行"""
         task_id = str(uuid.uuid4())
-        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        task = ElderFlowTask(
+            task_id,
+            request.get("task_name", "Unknown task"),
+            request.get("priority", "medium")
+        )
         
         # 賢者の推奨事項を適用
         if "sage_recommendations" in request:
@@ -1191,7 +1215,11 @@ class ElderFlowOrchestrator:
     async def execute_quality_gate(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Phase 3: 品質ゲート実行"""
         task_id = str(uuid.uuid4())
-        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        task = ElderFlowTask(
+            task_id,
+            request.get("task_name", "Unknown task"),
+            request.get("priority", "medium")
+        )
         
         # 実装結果を適用
         if "implementation_results" in request:
@@ -1220,7 +1248,11 @@ class ElderFlowOrchestrator:
     async def execute_council_report(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Phase 4: 評議会報告実行"""
         task_id = str(uuid.uuid4())
-        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        task = ElderFlowTask(
+            task_id,
+            request.get("task_name", "Unknown task"),
+            request.get("priority", "medium")
+        )
         
         # 全ての結果を適用
         if "all_results" in request:
@@ -1228,7 +1260,10 @@ class ElderFlowOrchestrator:
             if "sage_council" in all_results:
                 task.sage_advice = all_results["sage_council"].get("sage_advice", {})
             if "servant_execution" in all_results:
-                task.execution_results = all_results["servant_execution"].get("execution_results", [])
+                task.execution_results = all_results["servant_execution"].get(
+                    "execution_results",
+                    []
+                )
             if "quality_gate" in all_results:
                 task.quality_results = all_results["quality_gate"].get("quality_results", {})
         
@@ -1255,7 +1290,11 @@ class ElderFlowOrchestrator:
     async def execute_git_automation(self, request: Dict[str, Any]) -> Dict[str, Any]:
         """Phase 5: Git自動化実行"""
         task_id = str(uuid.uuid4())
-        task = ElderFlowTask(task_id, request.get("task_name", "Unknown task"), request.get("priority", "medium"))
+        task = ElderFlowTask(
+            task_id,
+            request.get("task_name", "Unknown task"),
+            request.get("priority", "medium")
+        )
         
         # 実装結果を適用してGit操作の対象を設定
         if "implementation_results" in request:

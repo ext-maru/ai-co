@@ -232,10 +232,12 @@ class WorkflowController(BaseManager):
                 "CREATE INDEX IF NOT EXISTS idx_phase_states_project ON phase_states(project_id)"
             )
             conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_workflow_events_project ON workflow_events(project_id)"
+                "CREATE INDEX IF NOT EXISTS idx_workflow_events_project ON " \
+                    "workflow_events(project_id)"
             )
             conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_phase_deps_project ON phase_dependencies(project_id)"
+                "CREATE INDEX IF NOT EXISTS idx_phase_deps_project ON " \
+                    "phase_dependencies(project_id)"
             )
 
     def _connect_rabbitmq(self):

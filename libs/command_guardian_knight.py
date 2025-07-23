@@ -337,7 +337,8 @@ class CommandGuardianKnight(IncidentKnight):
                     if not await self._module_exists(module_name):
                         issues.append(
                             Issue(
-                                id=f"missing_from_import_{module_name}_{int(datetime.now().timestamp())}",
+                                id=f"missing_from_import_{module_name}_{int(datetime.now()." \
+                                    "timestamp())}",
                                 category=IssueCategory.DEPENDENCY_MISSING,
                                 severity=IssueSeverity.HIGH,
                                 title=f"Missing module: {module_name}",
@@ -395,7 +396,8 @@ class CommandGuardianKnight(IncidentKnight):
                         if not await self._package_installed(package_name):
                             issues.append(
                                 Issue(
-                                    id=f"missing_package_{package_name}_{int(datetime.now().timestamp())}",
+                                    id=f"missing_package_{package_name}_{int(datetime.now()." \
+                                        "timestamp())}",
                                     category=IssueCategory.DEPENDENCY_MISSING,
                                     severity=IssueSeverity.MEDIUM,
                                     title=f"Missing package: {package_name}",

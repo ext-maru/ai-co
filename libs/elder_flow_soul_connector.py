@@ -538,7 +538,10 @@ class ElderFlowSoulConnector:
             soul_id = soul["agent_id"]
             # 実際の実装では各エージェントとA2A通信
             proposals[soul_id] = {
-                "proposal": f"Proposal from {soul_id} for {task_details.get('description', 'task')}",
+                "proposal": f"Proposal from {soul_id} for {task_details.get(
+                    'description',
+                    'task'
+                )}",
                 "confidence": 0.8,
                 "estimated_time": 30,
                 "resources_needed": ["time", "compute"],

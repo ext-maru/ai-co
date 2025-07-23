@@ -203,7 +203,10 @@ class DistributedQueueManager:
         """Add item to queue"""
         with self._lock:
             # Check backpressure
-            if self.enable_backpressure and self._backpressure.check_pressure(len(self._queue), self.max_size):
+            if self.enable_backpressure and self._backpressure.check_pressure(
+                len(self._queue),
+                self.max_size
+            ):
                 self.metrics.backpressure_events += 1
                 raise Exception("Queue backpressure active - cannot enqueue")
             
@@ -272,7 +275,11 @@ class DistributedQueueManager:
                 break
         return items
     
-    async def dequeue_filtered(self, filter_func: Callable[[QueueItem], bool]) -> Optional[QueueItem]:
+    async def dequeue_filtered(
+        self,
+        filter_func: Callable[[QueueItem],
+        bool]
+    ) -> Optional[QueueItem]:
         """Dequeue item matching filter"""
         with self._lock:
             # Find matching item
@@ -466,7 +473,10 @@ class DistributedQueueManager:
         if 'wait_time' in self._alert_thresholds:
             if self.metrics.avg_wait_time > self._alert_thresholds['wait_time']:
                 self._active_alerts.append(
-                    Alert('wait_time_threshold', f'Avg wait time {self.metrics.avg_wait_time:.2f}s exceeds threshold')
+                    Alert(
+                        'wait_time_threshold',
+                        f'Avg wait time {self.metrics.avg_wait_time:.2f}s exceeds threshold'
+                    )
                 )
     
     async def _apply_rate_limit(self) -> None:

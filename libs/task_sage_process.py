@@ -187,7 +187,8 @@ class TaskSageProcess(ElderProcessBase):
 
                         self.tasks[task.task_id] = task
 
-                self.logger.info(f"Loaded {len(self.projects)} projects and {len(self.tasks)} tasks")
+                self.logger.info(f"Loaded {len(self.projects)} projects and {len(self.tasks)} tasks" \
+                    "Loaded {len(self.projects)} projects and {len(self.tasks)} tasks")
 
             except Exception as e:
                 self.logger.error(f"Failed to load projects: {e}")

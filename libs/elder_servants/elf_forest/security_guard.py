@@ -92,6 +92,7 @@ class SecurityGuard(ElfServant):
     """
 
     def __init__(self, servant_id: str, name: str, specialization: str):
+        """初期化メソッド"""
         super().__init__(servant_id, name, specialization)
         self.logger = logging.getLogger(f"elder_servant.{name}")
 
@@ -118,7 +119,8 @@ class SecurityGuard(ElfServant):
                 r"(?i)(debug|verbose|trace).*?true",
             ],
             SecurityCategory.INPUT_VALIDATION: [
-                r"(?i)(\$_GET|\$_POST|\$_REQUEST|\$_COOKIE)(?!.*?(filter|sanitize|validate|escape))",
+                r"(?i)(\$_GET|\$_POST|\$_REQUEST|\$_COOKIE)(?!.*?" \
+                    "(filter|sanitize|validate|escape))",
                 r"(?i)(eval|include|require|include_once|require_once)\s*\(\s*\$",
                 r"(?i)(file_get_contents|fopen|readfile)\s*\(\s*\$",
             ],
@@ -414,7 +416,8 @@ class SecurityGuard(ElfServant):
                             category=category,
                             severity=self._determine_severity(category, match.group()),
                             title=f"{category.value} vulnerability detected",
-                            description=f"Potential {category.value} vulnerability in line {line_num}",
+                            description=f"Potential {category.value} vulnerability in line {line_num}" \
+                                "Potential {category.value} vulnerability in line {line_num}",
                             location={
                                 "line": line_num,
                                 "column": match.start(),
@@ -442,13 +445,15 @@ class SecurityGuard(ElfServant):
                                 category=SecurityCategory.INJECTION,
                                 severity=SecuritySeverity.HIGH,
                                 title=f"Dangerous function usage: {vulnerable_func}",
-                                description=f"Use of potentially dangerous function {vulnerable_func}",
+                                description=f"Use of potentially dangerous function {vulnerable_func}" \
+                                    "Use of potentially dangerous function {vulnerable_func}",
                                 location={
                                     "line": line_num,
                                     "column": line.find(vulnerable_func),
                                     "code_snippet": line.strip(),
                                 },
-                                recommendation=f"Avoid using {vulnerable_func} or implement proper input validation",
+                                recommendation=f"Avoid using {vulnerable_func} or implement proper input " \
+                                    "validation",
                                 cwe_id="CWE-94",
                                 owasp_category="A03",
                             )
@@ -531,7 +536,10 @@ class SecurityGuard(ElfServant):
                     category=SecurityCategory.DEPENDENCY,
                     severity=vuln_info["severity"],
                     title=f"Vulnerable dependency: {dep_name}",
-                    description=f"Dependency {dep_name} {dep_info.get('version', 'unknown')} has known vulnerabilities",
+                    description=f"Dependency {dep_name} {dep_info.get(
+                        'version',
+                        'unknown'
+                    )} has known vulnerabilities",
                     location={
                         "dependency": dep_name,
                         "version": dep_info.get("version", "unknown"),
@@ -808,10 +816,14 @@ class SecurityGuard(ElfServant):
         """カテゴリに基づく推奨対策を取得"""
         recommendations = {
             SecurityCategory.INJECTION: "Use parameterized queries and input validation",
-            SecurityCategory.AUTHENTICATION: "Implement strong authentication with secure password policies",
-            SecurityCategory.CRYPTOGRAPHY: "Use strong cryptographic algorithms and proper key management",
-            SecurityCategory.DATA_EXPOSURE: "Remove debug output and implement proper error handling",
-            SecurityCategory.INPUT_VALIDATION: "Implement comprehensive input validation and sanitization",
+            SecurityCategory.AUTHENTICATION: "Implement strong authentication with secure password policies" \
+                "Implement strong authentication with secure password policies",
+            SecurityCategory.CRYPTOGRAPHY: "Use strong cryptographic algorithms and proper key management" \
+                "Use strong cryptographic algorithms and proper key management",
+            SecurityCategory.DATA_EXPOSURE: "Remove debug output and implement proper error handling" \
+                "Remove debug output and implement proper error handling",
+            SecurityCategory.INPUT_VALIDATION: "Implement comprehensive input validation and sanitization" \
+                "Implement comprehensive input validation and sanitization",
         }
         return recommendations.get(category, "Follow security best practices")
 

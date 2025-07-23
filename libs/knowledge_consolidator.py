@@ -442,10 +442,18 @@ class KnowledgeConsolidator(BaseManager):
     <meta charset="utf-8">
     <style>
         body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
-        .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }}
+        .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(
+            0,
+            0,
+            0,
+            0.1
+        ); }}
         h1 {{ color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; }}
         h2 {{ color: #34495e; margin-top: 30px; }}
-        .stats {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }}
+        .stats {{ display: grid; grid-template-columns: repeat(
+            auto-fit,
+            minmax(200px, 1fr)
+        ); gap: 20px; margin: 20px 0; }}
         .stat-card {{ background: #ecf0f1; padding: 15px; border-radius: 5px; text-align: center; }}
         .stat-value {{ font-size: 2em; font-weight: bold; color: #3498db; }}
         .stat-label {{ color: #7f8c8d; margin-top: 5px; }}
@@ -489,13 +497,19 @@ class KnowledgeConsolidator(BaseManager):
         <h3>Workers</h3>
         <table>
             <tr><th>Worker</th><th>Classes</th><th>Functions</th><th>Lines</th></tr>
-            {"".join(f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name, info in data['implementations']['workers'].items())}
+            {"".join(
+                f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,
+                info in data['implementations']['workers'].items()
+            )}
         </table>
 
         <h3>Managers</h3>
         <table>
             <tr><th>Manager</th><th>Classes</th><th>Functions</th><th>Lines</th></tr>
-            {"".join(f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name, info in data['implementations']['managers'].items())}
+            {"".join(
+                f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,
+                info in data['implementations']['managers'].items()
+            )}
         </table>
 
         <h2>📚 Knowledge Base</h2>

@@ -250,6 +250,7 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Request processing failed: {str(e)}")
             return ServantResponse(
                 task_id=request.task_id,
@@ -271,6 +272,7 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
             bool: 検証結果
         """
         if not request.task_id or not request.task_type:
+            # Complex condition - consider breaking down
             return False
         if not isinstance(request.payload, dict):
             return False
@@ -427,12 +429,14 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
 
         # エラーハンドリング確認
         if "error" not in result_data or result_data.get("error") is None:
+            # Complex condition - consider breaking down
             quality_score += 20
         checks += 1
 
         # 完全性確認
         required_fields = ["status", "data"]
         if all(field in result_data for field in required_fields):
+            # Complex condition - consider breaking down
             quality_score += 25
         checks += 1
 
@@ -496,7 +500,8 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         return f"{self.servant_name}({self.servant_id})"
 
     def __repr__(self) -> str:
-        return f"<ElderServant {self.servant_name} category={self.category.value} tasks={self.stats['tasks_executed']}>"
+        return f"<ElderServant {self.servant_name} category={self.category.value} tasks={self." \
+            "stats["tasks_executed']}>"
 
 
 class ServantRegistry:
@@ -550,6 +555,7 @@ class ServantRegistry:
         best_score = 0
 
         for servant in self.servants.values():
+            # Process each item in collection
             score = 0
 
             # 専門分野マッチング
@@ -599,15 +605,18 @@ class ServantRegistry:
         tasks = []
 
         for servant_id, servant in self.servants.items():
+            # Process each item in collection
             task = asyncio.create_task(
                 servant.process_request(request), name=f"{servant_id}_broadcast"
             )
             tasks.append((servant_id, task))
 
         for servant_id, task in tasks:
+            # Process each item in collection
             try:
                 results[servant_id] = await task
             except Exception as e:
+                # Handle specific exception case
                 results[servant_id] = {"success": False, "error": str(e)}
 
         return {
@@ -621,9 +630,11 @@ class ServantRegistry:
         health_results = {}
 
         for servant_id, servant in self.servants.items():
+            # Process each item in collection
             try:
                 health_results[servant_id] = await servant.health_check()
             except Exception as e:
+                # Handle specific exception case
                 health_results[servant_id] = {
                     "success": False,
                     "servant_id": servant_id,

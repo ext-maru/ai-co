@@ -69,7 +69,8 @@ class ConnectionPoolManager:
         self.health_check_interval = 60  # 秒
         self.health_check_task = None
         
-        logger.info(f"ConnectionPoolManager initialized: min={min_connections}, max={max_connections}")
+        logger.info(f"ConnectionPoolManager initialized: min={min_connections}, max={max_connections}" \
+            "ConnectionPoolManager initialized: min={min_connections}, max={max_connections}")
     
     async def get_connection(self, base_url: str, headers: Dict[str, str]) -> aiohttp.ClientSession:
         """
@@ -292,7 +293,8 @@ class ConnectionPoolManager:
                 self.idle_connections = healthy_connections
                 self._update_metrics()
                 
-                logger.debug(f"Health check completed: {len(healthy_connections)} healthy connections")
+                logger.debug(f"Health check completed: {len(healthy_connections)} healthy connections" \
+                    "Health check completed: {len(healthy_connections)} healthy connections")
                 
             except asyncio.CancelledError:
                 break

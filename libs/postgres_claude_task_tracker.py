@@ -223,8 +223,10 @@ class PostgreSQLClaudeTaskTracker:
 
             # インデックス作成（既存のインデックスは作成しない）
             indexes = [
-                "CREATE INDEX IF NOT EXISTS idx_task_dependencies_task_id ON task_dependencies(task_id);",
-                "CREATE INDEX IF NOT EXISTS idx_task_executions_task_id ON task_executions(task_id);",
+                "CREATE INDEX IF NOT EXISTS idx_task_dependencies_task_id ON " \
+                    "task_dependencies(task_id);",
+                "CREATE INDEX IF NOT EXISTS idx_task_executions_task_id ON " \
+                    "task_executions(task_id);",
             ]
 
             for index_sql in indexes:

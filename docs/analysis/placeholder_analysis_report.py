@@ -36,7 +36,10 @@ def filter_real_issues(scanner_results: Dict[str, List[str]]) -> Dict[str, List[
     
     return filtered_results
 
-def categorize_by_severity(filtered_results: Dict[str, List[str]]) -> Dict[str, Dict[str, List[str]]]:
+def categorize_by_severity(
+    filtered_results: Dict[str,
+    List[str]]
+) -> Dict[str, Dict[str, List[str]]]:
     """深刻度別に分類"""
     
     severity_classification = {
@@ -67,7 +70,10 @@ def categorize_by_severity(filtered_results: Dict[str, List[str]]) -> Dict[str, 
     
     return severity_classification
 
-def extract_real_implementation_gaps(filtered_results: Dict[str, List[str]]) -> List[Dict[str, str]]:
+def extract_real_implementation_gaps(
+    filtered_results: Dict[str,
+    List[str]]
+) -> List[Dict[str, str]]:
     """実際の実装ギャップを抽出"""
     
     real_gaps = []
@@ -161,7 +167,8 @@ def main():
         "libs/ai_priority_optimizer.py - NotImplementedError in production code",
         "libs/elders_guild_vector_search.py - NotImplementedError in production code",
         "libs/elder_flow_servant_executor.py - NotImplementedError in production code",
-        "libs/elder_servants/integrations/production/health_check.py - NotImplementedError in production code"
+        "libs/elder_servants/integrations/production/health_check.py - NotImplementedError " \
+            "in production code"
     ]
     
     print("\n🚨 CRITICAL: 実装が必要な主要ファイル")

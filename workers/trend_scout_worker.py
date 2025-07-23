@@ -176,6 +176,7 @@ class TrendScoutWorker:
 
             async with aiohttp.ClientSession() as session:
                 for query in queries:
+                    # Process each item in collection
                     params = {
                         "q": query,
                         "sort": "stars",
@@ -188,11 +189,16 @@ class TrendScoutWorker:
                         headers["Authorization"] = f"token {self.api_keys['github_token']}"
 
                     try:
-                        async with session.get(base_url, params=params, headers=headers) as response:
+                        async with session.get(
+                            base_url,
+                            params=params,
+                            headers=headers
+                        ) as response:
                             if response.status == 200:
                                 data = await response.json()
 
                                 for repo in data.get("items", []):
+                                    # Process each item in collection
                                     trend = self._parse_github_repo(repo)
                                     if trend:
                                         trends.append(trend)
@@ -200,12 +206,14 @@ class TrendScoutWorker:
                                 self.logger.warning(f"GitHub API error: {response.status}")
 
                     except Exception as e:
+                        # Handle specific exception case
                         self.logger.error(f"GitHub query error: {e}")
 
                     # レート制限対策
                     await asyncio.sleep(1)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"GitHub trends error: {e}")
 
         self.logger.info(f"📊 Found {len(trends)} GitHub trends")
@@ -244,6 +252,7 @@ class TrendScoutWorker:
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"GitHub repo parsing error: {e}")
             return None
 
@@ -297,18 +306,23 @@ class TrendScoutWorker:
             # Hacker News API
             async with aiohttp.ClientSession() as session:
                 # トップストーリー取得
-                async with session.get("https://hacker-news.firebaseio.com/v0/topstories.json") as response:
+                async with session.get("https://hacker-news.firebaseio.com/v0/topstories.json" \
+                    "https://hacker-news.firebaseio.com/v0/topstories.json") as response:
                     if response.status == 200:
                         story_ids = await response.json()
 
                         # 上位50件を分析
                         for story_id in story_ids[:50]:
                             try:
-                                async with session.get(f"https://hacker-news.firebaseio.com/v0/item/{story_id}.json") as story_response:
+                                async with session.get(f"https://hacker-news.firebaseio.com/v0/item/{story_id}.json" \
+                                    "https://hacker-news.firebaseio.com/v0/item/{story_id}.json" \
+                                    "https://hacker-news.firebaseio.com/v0/item/{story_id}." \
+                                        "json") as story_response:
                                     if story_response.status == 200:
                                         story = await story_response.json()
 
                                         if story and story.get("title"):
+                                            # Complex condition - consider breaking down
                                             # 技術関連ストーリーを抽出
                                             if self._is_tech_related(story["title"]):
                                                 trend = self._parse_hn_story(story)
@@ -320,9 +334,11 @@ class TrendScoutWorker:
                                 await asyncio.sleep(0.1)
 
                             except Exception as e:
+                                # Handle specific exception case
                                 self.logger.error(f"HN story error: {e}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Hacker News analysis error: {e}")
 
         return TrendAnalysis(
@@ -367,6 +383,7 @@ class TrendScoutWorker:
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"HN story parsing error: {e}")
             return None
 
@@ -381,6 +398,7 @@ class TrendScoutWorker:
 
             async with aiohttp.ClientSession() as session:
                 for subreddit in subreddits:
+                    # Process each item in collection
                     try:
                         url = f"https://www.reddit.com/r/{subreddit}/hot.json?limit=25"
                         headers = {"User-Agent": "TrendScout/1.0"}
@@ -390,6 +408,7 @@ class TrendScoutWorker:
                                 data = await response.json()
 
                                 for post in data["data"]["children"]:
+                                    # Process each item in collection
                                     post_data = post["data"]
 
                                     if self._is_tech_related(post_data["title"]):
@@ -401,9 +420,11 @@ class TrendScoutWorker:
                         await asyncio.sleep(2)
 
                     except Exception as e:
+                        # Handle specific exception case
                         self.logger.error(f"Reddit {subreddit} error: {e}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Reddit scan error: {e}")
 
         self.logger.info(f"📊 Found {len(trends)} Reddit trends")
@@ -440,6 +461,7 @@ class TrendScoutWorker:
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Reddit post parsing error: {e}")
             return None
 
@@ -450,21 +472,25 @@ class TrendScoutWorker:
         # フレームワーク
         framework_keywords = ["framework", "library", "react", "vue", "angular", "django", "flask"]
         if any(keyword in text_lower for keyword in framework_keywords):
+            # Complex condition - consider breaking down
             return TrendType.FRAMEWORK
 
         # プログラミング言語
         language_keywords = ["python", "javascript", "rust", "go", "java", "language"]
         if any(keyword in text_lower for keyword in language_keywords):
+            # Complex condition - consider breaking down
             return TrendType.LANGUAGE
 
         # ツール
         tool_keywords = ["tool", "cli", "editor", "ide", "deploy"]
         if any(keyword in text_lower for keyword in tool_keywords):
+            # Complex condition - consider breaking down
             return TrendType.TOOL
 
         # AI/ML
         ai_keywords = ["ai", "ml", "machine learning", "neural", "model"]
         if any(keyword in text_lower for keyword in ai_keywords):
+            # Complex condition - consider breaking down
             return TrendType.TECHNOLOGY
 
         # デフォルト
@@ -476,7 +502,9 @@ class TrendScoutWorker:
         text_lower = text.lower()
 
         for category, keywords in self.tech_keywords.items():
+            # Process each item in collection
             for keyword in keywords:
+                # Process each item in collection
                 if keyword in text_lower:
                     tags.append(keyword)
 
@@ -498,7 +526,9 @@ class TrendScoutWorker:
         tech_count = {}
 
         for trend in trends:
+            # Process each item in collection
             for tag in trend.tags:
+                # Process each item in collection
                 tech_count[tag] = tech_count.get(tag, 0) + trend.score
 
         # スコア順にソート
@@ -531,6 +561,7 @@ class TrendScoutWorker:
         tech_distribution = {}
         for trend in all_trends:
             for tag in trend.tags:
+                # Process each item in collection
                 tech_distribution[tag] = tech_distribution.get(tag, 0) + 1
 
         # レポート作成
@@ -565,7 +596,9 @@ class TrendScoutWorker:
 
         emerging = {}
         for trend in recent_trends:
+            # Process each item in collection
             for tag in trend.tags:
+                # Process each item in collection
                 if tag not in self.tech_keywords.get("frameworks", []):
                     emerging[tag] = emerging.get(tag, 0) + trend.score
 
@@ -609,6 +642,7 @@ async def demo_trend_scout():
 
     print(f"Found {len(github_trends)} GitHub trends:")
     for trend in github_trends[:3]:
+        # Process each item in collection
         print(f"  ⭐ {trend.title} ({trend.github_stars} stars)")
         print(f"     {trend.description[:80]}...")
         print(f"     Tags: {', '.join(trend.tags[:3])}")
@@ -619,6 +653,7 @@ async def demo_trend_scout():
 
     print(f"Found {len(reddit_trends)} Reddit trends:")
     for trend in reddit_trends[:2]:
+        # Process each item in collection
         print(f"  💬 {trend.title}")
         print(f"     Score: {trend.score:.2f}, Comments: {trend.discussions}")
 

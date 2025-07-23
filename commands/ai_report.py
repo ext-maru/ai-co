@@ -30,6 +30,7 @@ class AIReportCommand(BaseCommand):
     """システムレポート生成コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-report", description="システムレポート生成", version="2.0.0")
         self.project_root = Path(__file__).parent.parent
         self.reports_dir = self.project_root / "reports"
@@ -118,6 +119,7 @@ class AIReportCommand(BaseCommand):
             )
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Report generation failed: {e}")
             return CommandResult(success=False, message=f"レポート生成エラー: {str(e)}")
 
@@ -145,6 +147,7 @@ class AIReportCommand(BaseCommand):
         ]
 
         if args.visualize and args.format == "html":
+            # Complex condition - consider breaking down
             charts = self._generate_charts(metrics)
         else:
             charts = None
@@ -169,6 +172,7 @@ class AIReportCommand(BaseCommand):
         summary_lines = [f"期間: 過去{args.period}日間", "=== 4賢者ステータス ==="]
 
         for sage_name, data in sage_analytics.items():
+            # Process each item in collection
             sage_display = self._get_sage_display_name(sage_name)
             summary_lines.append(f"\n{sage_display}:")
             summary_lines.append(f"  状態: {data.get('status', 'unknown')}")
@@ -240,6 +244,7 @@ class AIReportCommand(BaseCommand):
         ]
 
         for incident_type, count in incident_data.get("incident_types", {}).items():
+            # Process each item in collection
             summary_lines.append(f"  {incident_type}: {count}件")
 
         return {
@@ -472,6 +477,7 @@ class AIReportCommand(BaseCommand):
                 "queue_status": {"pending": 5, "processing": 3},
             }
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to collect system metrics: {e}")
             return {}
 
@@ -508,6 +514,7 @@ class AIReportCommand(BaseCommand):
             else:
                 return {}
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to collect sage analytics: {e}")
             return {}
 
@@ -554,6 +561,7 @@ class AIReportCommand(BaseCommand):
                     },
                 }
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to collect incident data: {e}")
             return {}
 
@@ -578,6 +586,7 @@ class AIReportCommand(BaseCommand):
                     "knowledge_growth_rate": 0.15,
                 }
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"Failed to collect learning data: {e}")
             return {}
 
@@ -619,6 +628,7 @@ class AIReportCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIReportCommand()
     sys.exit(command.run())
 

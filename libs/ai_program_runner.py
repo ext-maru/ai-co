@@ -98,7 +98,8 @@ emoji = "$EMOJI"
 
 try:
     notifier = SlackNotifier()
-    message = f"{{emoji}} AIプログラム実行{{status}}: {{task_name}}\\nDescription: {description}\\nExit Code: {{exit_code}}"
+    message = f"{{emoji}} AIプログラム実行{{status}}: {{task_name}}\\nDescription: {description}\\nExit Code: " \
+        "{{exit_code}}"
     notifier.send_message(message)
 except Exception as e:
     print(f"Slack notification failed: {{e}}")

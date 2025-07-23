@@ -17,7 +17,7 @@ import hashlib
 import json
 import logging
 import mmap
-import pickle
+# import pickle  # セキュリティ: pickleの使用を廃止
 import sqlite3
 import threading
 import zlib
@@ -67,7 +67,7 @@ class BloomFilter:
 
     def _hash(self, item: str, seed: int) -> int:
         """ハッシュ関数"""
-        h = hashlib.md5(f"{item}{seed}".encode()).hexdigest()
+        h = hashlib.sha256(f"{item}{seed}".encode()).hexdigest()
         return int(h, 16) % self.size
 
     def add(self, item: str):
@@ -85,25 +85,28 @@ class BloomFilter:
         return True
 
     def save(self, path: Path):
-        """ファイル保存"""
-        with open(path, "wb") as f:
-            pickle.dump(
+        """ファイル保存（セキュア版）"""
+        import json
+        with open(path, "w") as f:
+            json.dump(
                 {
                     "size": self.size,
                     "num_hashes": self.num_hashes,
-                    "bit_array": self.bit_array,
+                    "bit_array": list(self.bit_array),  # bytearrayをリストに変換
                 },
                 f,
             )
 
     @classmethod
     def load(cls, path: Path) -> "BloomFilter":
-        """ファイルロード"""
-        with open(path, "rb") as f:
-            data = pickle.load(f)
+        """ファイルロード（セキュア版）"""
+        import json
+        with open(path, "r") as f:
+            data = json.load(f)
 
         bf = cls(data["size"], data["num_hashes"])
-        bf.bit_array = data["bit_array"]
+        # ビット配列をリストから復元
+        bf.bit_array = bytearray(data["bit_array"])
         return bf
 
 
@@ -135,7 +138,7 @@ class IndexShard:
 
         cursor.execute(
             """
-            CREATE INDEX IF NOT EXISTS idx_frequency ON index_entries(frequency DESC)
+            CREATE INDEX IF NOT EXISTS idx_frequency ON index_entries(frequency SHA256C)
         """
         )
 
@@ -148,12 +151,13 @@ class IndexShard:
             # Bloom Filterに追加
             self.bloom_filter.add(term)
 
-            # データ圧縮
-            doc_ids_bytes = pickle.dumps(sorted(doc_ids))
-            compressed_doc_ids = zlib.compress(doc_ids_bytes)
+            # データ圧縮（セキュア版）
+            import json
+            doc_ids_json = json.dumps(sorted(doc_ids))
+            compressed_doc_ids = zlib.compress(doc_ids_json.encode('utf-8'))
 
-            metadata_bytes = pickle.dumps(metadata or {})
-            compressed_metadata = zlib.compress(metadata_bytes)
+            metadata_json = json.dumps(metadata or {})
+            compressed_metadata = zlib.compress(metadata_json.encode('utf-8'))
 
             conn = sqlite3.connect(str(self.db_path))
             cursor = conn.cursor()
@@ -187,7 +191,9 @@ class IndexShard:
 
             if result:
                 decompressed = zlib.decompress(result[0])
-                doc_ids = pickle.loads(decompressed)
+                # セキュリティ修正: pickleの代わりにJSONを使用
+                import json
+                doc_ids = json.loads(decompressed.decode('utf-8'))
                 return set(doc_ids)
 
             return None
@@ -386,7 +392,7 @@ class KnowledgeIndexOptimizer:
                 "file_path": str(doc_path),
                 "title": self._extract_title(doc_path, content),
                 "size": stat.st_size,
-                "checksum": hashlib.md5(content.encode()).hexdigest(),
+                "checksum": hashlib.sha256(content.encode()).hexdigest(),
                 "indexed_at": datetime.now(),
             }
 

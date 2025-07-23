@@ -12,7 +12,9 @@ from commands.base_command import BaseCommand
 
 
 class SendCommand(BaseCommand):
+    # Main class implementation
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="send", description="Elders Guild にタスクを送信します")
 
     def setup_arguments(self):
@@ -45,6 +47,7 @@ class SendCommand(BaseCommand):
         # RabbitMQ確認
         result = self.run_command(["systemctl", "is-active", "rabbitmq-server"])
         if not result or result.stdout.strip() != "active":
+            # Complex condition - consider breaking down
             self.error("RabbitMQが起動していません")
             self.info("ai-start でシステムを起動してください")
             return False
@@ -117,6 +120,7 @@ class SendCommand(BaseCommand):
             return task_id
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"タスク送信エラー: {e}")
             return None
 
@@ -134,6 +138,7 @@ class SendCommand(BaseCommand):
                 break
 
             if result_path and result_path.exists():
+                # Complex condition - consider breaking down
                 print()  # 改行
                 return result_path
 
@@ -157,7 +162,9 @@ class SendCommand(BaseCommand):
             section_content = []
 
             for line in content.split("\n"):
+                # Process each item in collection
                 if line.startswith("===") and line.endswith("==="):
+                    # Complex condition - consider breaking down
                     if current_section:
                         sections[current_section] = "\n".join(section_content)
                     current_section = line.strip("= ")
@@ -172,6 +179,7 @@ class SendCommand(BaseCommand):
             self.section("タスク情報")
             if "Task Info" in sections:
                 for line in sections["Task Info"].strip().split("\n"):
+                    # Process each item in collection
                     if ":" in line:
                         key, value = line.split(":", 1)
                         self.info(f"{key.strip()}: {value.strip()}")
@@ -191,6 +199,7 @@ class SendCommand(BaseCommand):
             self.info(f"\n詳細: {result_path}")
 
         except Exception as e:
+            # Handle specific exception case
             self.error(f"結果表示エラー: {e}")
 
     def execute(self, args):

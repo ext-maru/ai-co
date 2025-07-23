@@ -36,6 +36,7 @@ class AutonomousSystemImplementer:
     """自律システム実装エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.orchestrator = ElderFlowOrchestrator()
         self.quality_gate = QualityGateSystem()
         self.git_automator = ElderFlowGitAutomator()
@@ -148,6 +149,7 @@ class AutonomousSystemImplementer:
 async def trigger_elder_flow_on_critical_issue(self, issue_severity: str, issue_type: str):
     """重要問題発生時のElder Flow自動実行"""
     if issue_severity == "critical" and issue_type in ["system_failure", "security_breach"]:
+        # Complex condition - consider breaking down
         logger.critical(f"🌊 Triggering Elder Flow for critical issue: {issue_type}")
 
         try:
@@ -162,6 +164,7 @@ async def trigger_elder_flow_on_critical_issue(self, issue_severity: str, issue_
             return {"success": True, "task_id": task_id}
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"❌ Elder Flow auto-trigger failed: {e}")
             return {"success": False, "error": str(e)}
 '''
@@ -223,7 +226,12 @@ async def trigger_elder_flow_on_critical_issue(self, issue_severity: str, issue_
         logger.info("✅ 品質ゲート完了: 自律システム検証通過")
         return validation_result
 
-    async def generate_council_report(self, sage_advice: dict, implementation: dict, validation: dict) -> dict:
+    async def generate_council_report(
+        self,
+        sage_advice: dict,
+        implementation: dict,
+        validation: dict
+    ) -> dict:
         """エルダー評議会向け自律システム報告書生成"""
         logger.info("📊 評議会報告書生成中...")
 
@@ -363,6 +371,7 @@ async def trigger_elder_flow_on_critical_issue(self, issue_severity: str, issue_
         print("🎉 Elder Flow 自律システム実装完了！")
         print("\n📋 次のステップ（手動実行推奨）:")
         for i, step in enumerate(deployment["deployment_steps"], 1):
+            # Process each item in collection
             print(f"  {i}. {step['step']}: {step['command']}")
             print(f"     説明: {step['description']}")
             print(f"     予想時間: {step['estimated_time']}")

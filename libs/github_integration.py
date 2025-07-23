@@ -122,7 +122,8 @@ class GitHubIntegrationManager:
 
         try:
             # 直接Blob APIを使用する代わりに、raw contentを取得
-            raw_url = f"https://raw.githubusercontent.com/{self.owner}/{self.repo}/master/{file_path}"
+            raw_url = f"https://raw.githubusercontent.com/{self.owner}/{self.repo}/master/{file_path}" \
+                "https://raw.githubusercontent.com/{self.owner}/{self.repo}/master/{file_path}"
             response = requests.get(raw_url, headers=headers)
 
             if response.status_code == 200:

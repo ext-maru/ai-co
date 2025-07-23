@@ -17,6 +17,7 @@ class AITaskInfoCommand(BaseCommand):
     """タスク詳細表示"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-task-info", description="タスク詳細表示", version="1.0.0")
 
     def add_arguments(self, parser: argparse.ArgumentParser):
@@ -62,8 +63,10 @@ class AITaskInfoCommand(BaseCommand):
                 return self._format_text(task, args.verbose)
 
         except ImportError:
+            # Handle specific exception case
             return CommandResult(success=False, message="タスクトラッカーが利用できません")
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"タスク情報取得エラー: {str(e)}")
 
     def _format_text(self, task, verbose=False) -> CommandResult:
@@ -116,6 +119,7 @@ class AITaskInfoCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AITaskInfoCommand()
     sys.exit(command.run())
 

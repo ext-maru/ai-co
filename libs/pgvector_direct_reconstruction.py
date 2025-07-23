@@ -267,8 +267,14 @@ class DirectPgVectorReconstructor:
                     
                     stats['processed_files'] += 1
                     stats['total_chunks'] += len(doc_data['chunks'])
-                    stats['categories'][doc_data['category']] = stats['categories'].get(doc_data['category'], 0) + 1
-                    stats['priorities'][doc_data['priority']] = stats['priorities'].get(doc_data['priority'], 0) + 1
+                    stats['categories'][doc_data['category']] = stats['categories'].get(
+                        doc_data['category'],
+                        0
+                    ) + 1
+                    stats['priorities'][doc_data['priority']] = stats['priorities'].get(
+                        doc_data['priority'],
+                        0
+                    ) + 1
                 else:
                     stats['skipped_files'] += 1
                     

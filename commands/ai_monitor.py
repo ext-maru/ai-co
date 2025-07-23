@@ -33,6 +33,7 @@ class AIMonitorCommand(BaseCommand):
     """Elders Guild 統合監視システム - 4賢者システム統合監視"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-monitor",
             description="Elders Guild 統合監視システム - リアルタイム監視と4賢者ステータス",
@@ -88,22 +89,29 @@ class AIMonitorCommand(BaseCommand):
 
         try:
             if args.subcommand == "dashboard":
+                # Complex condition - consider breaking down
                 return self._run_dashboard(args)
             elif args.subcommand == "status":
+                # Complex condition - consider breaking down
                 return self._show_status(args)
             elif args.subcommand == "alerts":
+                # Complex condition - consider breaking down
                 return self._show_alerts(args)
             elif args.subcommand == "health":
+                # Complex condition - consider breaking down
                 return self._run_health_check()
             elif args.subcommand == "metrics":
+                # Complex condition - consider breaking down
                 return self._collect_metrics(args)
             elif args.subcommand == "sages":
+                # Complex condition - consider breaking down
                 return self._monitor_sages(args)
             else:
                 return CommandResult(
                     success=False, message=f"不明なサブコマンド: {args.subcommand}"
                 )
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"監視エラー: {str(e)}")
 
     def _run_dashboard(self, args) -> CommandResult:
@@ -121,6 +129,7 @@ class AIMonitorCommand(BaseCommand):
                     live.update(self._generate_dashboard(args.sages))
 
         except KeyboardInterrupt:
+            # Handle specific exception case
             return CommandResult(success=True, message="\n監視終了")
 
     def _show_status(self, args) -> CommandResult:
@@ -179,6 +188,7 @@ class AIMonitorCommand(BaseCommand):
 
         lines = ["🚨 アラート履歴", "=" * 40]
         for alert in recent_alerts[-args.last :]:
+            # Process each item in collection
             timestamp = datetime.fromisoformat(alert["timestamp"]).strftime("%H:%M:%S")
             level_icon = {"error": "🔴", "warning": "🟡", "info": "🔵"}.get(
                 alert["level"], "⚪"
@@ -205,6 +215,7 @@ class AIMonitorCommand(BaseCommand):
         lines = ["🏥 Elders Guild システムヘルスチェック", "=" * 50]
 
         for component, result in health_results.items():
+            # Process each item in collection
             status_icon = "✅" if result.get("healthy") else "❌"
             lines.append(
                 f"{status_icon} {component.title()}: {result.get('message', 'OK')}"
@@ -212,6 +223,7 @@ class AIMonitorCommand(BaseCommand):
 
             if result.get("details"):
                 for detail in result["details"]:
+                    # Process each item in collection
                     lines.append(f"    - {detail}")
 
         lines.append(f"\n総合評価: {'✅ 健全' if overall_health else '⚠️ 要注意'}")
@@ -253,6 +265,7 @@ class AIMonitorCommand(BaseCommand):
             lines = [f"🔍 {args.sage.title()}賢者 詳細監視", "=" * 40]
 
             for key, value in sage_data.items():
+                # Process each item in collection
                 lines.append(f"{key}: {value}")
 
             return CommandResult(success=True, message="\n".join(lines), data=sage_data)
@@ -262,6 +275,7 @@ class AIMonitorCommand(BaseCommand):
 
             lines = ["🧙‍♂️ 4賢者システム監視", "=" * 40]
             for sage_key, data in sages_data.items():
+                # Process each item in collection
                 lines.append(f"\n{data['name']}:")
                 lines.append(f"  状態: {data['status']}")
                 lines.append(f"  最終活動: {data.get('last_activity', 'N/A')}")
@@ -328,10 +342,12 @@ class AIMonitorCommand(BaseCommand):
         }
 
         for proc in psutil.process_iter(["pid", "name", "cmdline"]):
+            # Process each item in collection
             try:
                 cmdline = proc.info.get("cmdline", [])
                 if cmdline:
                     for worker in workers:
+                        # Process each item in collection
                         if worker in " ".join(cmdline):
                             workers[worker] = True
             except:
@@ -361,6 +377,7 @@ class AIMonitorCommand(BaseCommand):
             total_messages = 0
 
             for queue_name in queues:
+                # Process each item in collection
                 try:
                     method = channel.queue_declare(queue=queue_name, passive=True)
                     count = method.method.message_count
@@ -527,6 +544,7 @@ CPU使用率: {metrics['cpu_percent']:.1f}% {'🔴' if metrics['cpu_percent'] > 
         table.add_column("状態", justify="center")
 
         for worker, running in workers.items():
+            # Process each item in collection
             status = "🟢 稼働中" if running else "🔴 停止"
             table.add_row(worker.replace("_", " ").title(), status)
 
@@ -547,6 +565,7 @@ CPU使用率: {metrics['cpu_percent']:.1f}% {'🔴' if metrics['cpu_percent'] > 
         table.add_column("メッセージ数", justify="right")
 
         for queue_name, count in queue_metrics["queues"].items():
+            # Process each item in collection
             table.add_row(queue_name, str(count))
 
         total = queue_metrics["total_messages"]
@@ -568,6 +587,7 @@ CPU使用率: {metrics['cpu_percent']:.1f}% {'🔴' if metrics['cpu_percent'] > 
         table.add_column("最終活動", justify="center", width=10)
 
         for sage_key, data in sages_data.items():
+            # Process each item in collection
             status_icon = "🟢" if data["status"] == "active" else "🔴"
             table.add_row(
                 data["name"],
@@ -585,6 +605,7 @@ CPU使用率: {metrics['cpu_percent']:.1f}% {'🔴' if metrics['cpu_percent'] > 
 
 
 def main():
+    # Core functionality implementation
     command = AIMonitorCommand()
     sys.exit(command.run())
 

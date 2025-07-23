@@ -391,7 +391,8 @@ class InformationHunterWizard:
         findings = []
         try:
             # GitHub検索API（認証不要の簡易版）
-            search_url = f"https://api.github.com/search/repositories?q={topic}+language:python&sort=stars&per_page=3"
+            search_url = f"https://api.github.com/search/repositories?q={topic}+language:" \
+                "python&sort=stars&per_page=3"
 
             headers = {
                 "Accept": "application/vnd.github.v3+json",

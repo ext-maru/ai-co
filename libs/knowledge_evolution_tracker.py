@@ -355,7 +355,13 @@ class KnowledgeEvolutionTracker(BaseManager):
                     )
                     stats = snapshot["statistics"]
                     f.write(
-                        f"| {date} | {stats.get('worker_count', 0)} | {stats.get('manager_count', 0)} | {stats.get('command_count', 0)} | {stats.get('total_lines', 0):,} |\n"
+                        f"| {date} | {stats.get(
+                            'worker_count',
+                            0)} | {stats.get('manager_count',
+                            0)} | {stats.get('command_count',
+                            0)} | {stats.get('total_lines',
+                            0
+                        ):,} |\n"
                     )
 
         return report_path

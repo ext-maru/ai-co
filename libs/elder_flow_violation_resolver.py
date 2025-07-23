@@ -320,7 +320,12 @@ class ElderFlowViolationResolver:
 
             elif method_name == "handle_error":
                 impl = '''
-    async def handle_error(self, error: Exception, context: Optional[Dict[str, Any]] = None) -> None:
+    async def handle_error(
+        self,
+        error: Exception,
+        context: Optional[Dict[str,
+        Any]] = None
+    ) -> None:
         """エラーハンドリング"""
         error_info = {
             "worker": self.__class__.__name__,
@@ -743,10 +748,18 @@ async def main():
 
         print("\n✅ 解決結果:")
         print(
-            f"- 抽象メソッド: {results['abstract_methods'].get('resolved', 0)}/{results['abstract_methods'].get('total', 0)} 解決"
+            f"- 抽象メソッド: {results['abstract_methods'].get(
+                'resolved',
+                0)}/{results['abstract_methods'].get('total',
+                0
+            )} 解決"
         )
         print(
-            f"- アイデンティティ: {results['identity'].get('resolved', 0)}/{results['identity'].get('total', 0)} 解決"
+            f"- アイデンティティ: {results['identity'].get(
+                'resolved',
+                0)}/{results['identity'].get('total',
+                0
+            )} 解決"
         )
         print(f"- 品質デーモン: {results['quality_daemon'].get('status', 'unknown')}")
 

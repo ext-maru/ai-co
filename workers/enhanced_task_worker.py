@@ -28,6 +28,7 @@ try:
 
     ELDER_INTEGRATION_AVAILABLE = True
 except ImportError:
+    # Handle specific exception case
     ELDER_INTEGRATION_AVAILABLE = False
 
 # 絵文字定義
@@ -85,6 +86,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 self.logger.info(f"🏛️ エルダー評議会システム統合完了")
                 self.logger.info(f"🌳 エルダーツリー階層システム統合完了")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"エルダーズギルド統合初期化エラー: {e}")
                 self.four_sages = None
                 self.elder_council = None
@@ -132,6 +134,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
 
             self.task_history_db = TaskHistoryDB()
         except ImportError:
+            # Handle specific exception case
             self.task_history_db = None
 
         # RAG Grimoire Integration
@@ -307,6 +310,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 f"{EMOJI['success']} RAG Grimoire Integration initialized successfully"
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"{EMOJI['error']} Failed to initialize RAG Grimoire Integration: {e}"
             )
@@ -319,12 +323,18 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             try:
                 rag_sage_results = self.four_sages.search_knowledge(user_prompt)
                 if rag_sage_results and rag_sage_results.get("results"):
+                    # Complex condition - consider breaking down
                     context = "\n\n## Elder RAG Sage Knowledge:\n"
                     for result in rag_sage_results["results"][:3]:
+                        # Process each item in collection
                         context += f"- {result.get('content', '')[:200]}...\n"
-                        context += f"  Source: Elder Knowledge Base (Score: {result.get('score', 0):.2f})\n"
+                        context += f"  Source: Elder Knowledge Base (Score: {result.get(
+                            'score',
+                            0):.2f}
+                        )\n"
                     return context
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"RAG賢者相談エラー: {e}")
 
         # 従来のRAG統合も使用
@@ -359,6 +369,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             return context
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"{EMOJI['warning']} RAG context retrieval failed: {e}")
             return ""
 
@@ -374,6 +385,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         # 高度なタスクの判定
         advanced_keywords = ["complex", "複雑", "advanced", "高度", "comprehensive"]
         if any(keyword in user_prompt.lower() for keyword in advanced_keywords):
+            # Complex condition - consider breaking down
             return "advanced"
 
         # デフォルト
@@ -413,8 +425,10 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         # 🌳 Elder Tree Integration: タスクコンテキストからElder推奨事項を取得
         elder_recommendations = ""
         if task_context and task_context.get("sage_advice"):
+            # Complex condition - consider breaking down
             sage_advice = task_context["sage_advice"]
             if sage_advice.get("available") and sage_advice.get("recommended_approach"):
+                # Complex condition - consider breaking down
                 elder_recommendations = f"\n\n🌳 Elder Tree Recommendations:\n"
                 elder_recommendations += (
                     f"- Recommended Approach: {sage_advice['recommended_approach']}\n"
@@ -516,6 +530,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 }
 
         except subprocess.TimeoutExpired:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} Claude execution timeout")
             return {
                 "success": False,
@@ -524,6 +539,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 "session_name": session_name,
             }
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} Claude execution error: {str(e)}")
             return {
                 "success": False,
@@ -547,6 +563,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                     request_content=generated_prompt,
                 )
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to record task start: {e}")
 
     def _handle_success(self, task_id: str, task: dict, result: dict):
@@ -578,6 +595,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 },
             )
         except Exception as notification_error:
+            # Handle specific exception case
             self.logger.warning(
                 f"Failed to send Slack success notification: {notification_error}"
             )
@@ -610,6 +628,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 f"Task {task_id} failed", error=result["error"]
             )
         except Exception as notification_error:
+            # Handle specific exception case
             self.logger.warning(
                 f"Failed to send Slack error notification: {notification_error}"
             )
@@ -644,6 +663,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                     self.logger.warning(f"Unable to access file {file_path}: {e}")
                     continue
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Error collecting files: {e}")
 
         return created_files
@@ -666,6 +686,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                     error=error,
                 )
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to update task history: {e}")
 
     def _extract_summary(self, response: str) -> str:
@@ -678,6 +699,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         summary_lines = []
 
         for line in lines[:5]:
+            # Process each item in collection
             if line.strip():
                 summary_lines.append(line.strip())
 
@@ -759,6 +781,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             return task_advice
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"タスク賢者相談エラー: {e}")
             return {"available": False, "error": str(e)}
 
@@ -815,6 +838,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             return learning_result.get("consensus_reached", False)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"ナレッジ賢者報告エラー: {e}")
             return False
 
@@ -886,6 +910,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             return escalation_result
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"インシデント賢者エスカレーションエラー: {e}")
             return {"escalated": False, "error": str(e)}
 
@@ -944,6 +969,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             return enhanced_prompt
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"RAG賢者プロンプト強化エラー: {e}")
             return user_prompt  # エラー時は元のプロンプトを返す
 
@@ -977,6 +1003,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             return success
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"エルダーツリー報告エラー: {e}")
             return False
 
@@ -1005,6 +1032,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"エルダー評議会エスカレーションエラー: {e}")
             return False
 
@@ -1034,6 +1062,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         ]
         prompt_lower = task_data.get("prompt", "").lower()
         for keyword in complex_keywords:
+            # Process each item in collection
             if keyword in prompt_lower:
                 complexity_score += 2
                 break
@@ -1086,8 +1115,10 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         prompt_length = len(task_data.get("prompt", ""))
 
         if complexity == "high" or prompt_length > 1000:
+            # Complex condition - consider breaking down
             return "10-30 minutes"
         elif complexity == "medium" or prompt_length > 500:
+            # Complex condition - consider breaking down
             return "5-15 minutes"
         else:
             return "2-10 minutes"
@@ -1140,6 +1171,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
 
         # 成功指標
         if any(word in output.lower() for word in ["completed", "success", "finished"]):
+            # Complex condition - consider breaking down
             base_score += 0.2
 
         return min(base_score, 1.0)
@@ -1168,6 +1200,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         challenges = []
 
         if "timeout" in output or "timeout" in error:
+            # Complex condition - consider breaking down
             challenges.append("Execution timeout")
         if "memory" in error:
             challenges.append("Memory constraints")
@@ -1236,8 +1269,10 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         error_message = error_data.get("error", "").lower()
 
         if any(word in error_message for word in ["critical", "fatal", "system"]):
+            # Complex condition - consider breaking down
             return "critical"
         elif any(word in error_message for word in ["timeout", "memory", "resource"]):
+            # Complex condition - consider breaking down
             return "high"
         elif any(
             word in error_message for word in ["permission", "access", "connection"]
@@ -1251,8 +1286,10 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         error_message = error_data.get("error", "").lower()
 
         if any(word in error_message for word in ["system", "service", "database"]):
+            # Complex condition - consider breaking down
             return "system_wide"
         elif any(word in error_message for word in ["worker", "process", "queue"]):
+            # Complex condition - consider breaking down
             return "service_level"
         else:
             return "task_level"
@@ -1286,16 +1323,19 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
 
         # RAGからの知識追加
         if isinstance(rag_outcome, dict) and "knowledge_enhancement" in rag_outcome:
+            # Complex condition - consider breaking down
             knowledge = rag_outcome["knowledge_enhancement"]
             enhanced_prompt += f"\n\n## Related Knowledge:\n{knowledge}"
 
         # ベストプラクティス追加
         if isinstance(rag_outcome, dict) and "best_practices" in rag_outcome:
+            # Complex condition - consider breaking down
             practices = rag_outcome["best_practices"]
             enhanced_prompt += f"\n\n## Best Practices:\n{practices}"
 
         # 例の追加
         if isinstance(rag_outcome, dict) and "examples" in rag_outcome:
+            # Complex condition - consider breaking down
             examples = rag_outcome["examples"]
             enhanced_prompt += f"\n\n## Examples:\n{examples}"
 
@@ -1314,6 +1354,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 loop.close()
                 self.logger.info(f"{EMOJI['info']} RAG Grimoire Integration cleaned up")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"{EMOJI['error']} Error during RAG cleanup: {e}")
 
         # Additional cleanup logic can be added here
@@ -1332,6 +1373,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 f"{EMOJI['info']} Enhanced TaskWorker stopped successfully"
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} Error during stop: {e}")
 
     def initialize(self) -> None:
@@ -1351,6 +1393,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 self.initialize_templates()
             self.logger.info(f"{EMOJI['success']} Template system initialized")
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(
                 f"{EMOJI['warning']} Template system initialization failed: {e}"
             )
@@ -1364,6 +1407,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 self.slack_notifier.test_connection()
             self.logger.info(f"{EMOJI['success']} Slack notifier initialized")
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(
                 f"{EMOJI['warning']} Slack notifier initialization failed: {e}"
             )
@@ -1400,10 +1444,13 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         ]
 
         for pattern in patterns:
+            # Process each item in collection
             matches = re.findall(pattern, output, re.IGNORECASE)
             for match in matches:
+                # Process each item in collection
                 filename = match.strip()
                 if filename and filename not in files:
+                    # Complex condition - consider breaking down
                     files.append(filename)
 
         return files
@@ -1424,12 +1471,14 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 f"Enhanced TaskWorker Error", error=str(error), context=context
             )
         except Exception as notification_error:
+            # Handle specific exception case
             self.logger.warning(
                 f"Failed to send Slack notification: {notification_error}"
             )
 
         # 重要度に応じた処理
         if severity and hasattr(severity, "value"):
+            # Complex condition - consider breaking down
             if severity.value >= 3:  # HIGH以上
                 self.logger.critical(f"High severity error: {str(error)}")
 
@@ -1464,6 +1513,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 }
                 elder_status.update(elder_tree_details)
             except Exception as e:
+                # Handle specific exception case
                 elder_status["elder_tree_error"] = str(e)
 
         # 4賢者統合ステータス
@@ -1478,6 +1528,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 }
                 elder_status.update(sage_status)
             except Exception as e:
+                # Handle specific exception case
                 elder_status["four_sages_error"] = str(e)
 
         # エルダー評議会ステータス
@@ -1490,6 +1541,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
                 }
                 elder_status.update(council_status)
             except Exception as e:
+                # Handle specific exception case
                 elder_status["elder_council_error"] = str(e)
 
         # 拡張ステータス情報を追加
@@ -1515,6 +1567,7 @@ class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
         required_attrs = ["ANTHROPIC_API_KEY"]
         for attr in required_attrs:
             if not hasattr(self.config, attr) or not getattr(self.config, attr):
+                # Complex condition - consider breaking down
                 validation_errors.append(f"Missing required config: {attr}")
 
         # モデルの妥当性確認
@@ -1609,7 +1662,9 @@ if __name__ == "__main__":
         try:
             worker.start()
         except KeyboardInterrupt:
+            # Handle specific exception case
             print(f"\n{EMOJI['warning']} Worker stopped by user")
         except Exception as e:
+            # Handle specific exception case
             print(f"{EMOJI['error']} Worker error: {str(e)}")
             raise

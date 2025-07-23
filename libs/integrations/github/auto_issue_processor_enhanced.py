@@ -338,7 +338,12 @@ class EnhancedAutoIssueProcessor(EldersServiceLegacy):
 
         raise Exception(f"Failed to process issue #{issue.number} after {max_retries} retries")
 
-    async def _handle_existing_pr(self, issue: Issue, existing_pr: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_existing_pr(
+        self,
+        issue: Issue,
+        existing_pr: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """既存PRの処理"""
         logger.info(f"PR already exists for issue #{issue.number}: PR #{existing_pr['number']}")
         
@@ -354,7 +359,14 @@ class EnhancedAutoIssueProcessor(EldersServiceLegacy):
             "pr_number": existing_pr['number']
         }
 
-    async def _handle_reopened_issue_with_pr(self, issue: Issue, existing_pr: Dict[str, Any], reopened_info: Dict[str, Any]):
+    async def _handle_reopened_issue_with_pr(
+        self,
+        issue: Issue,
+        existing_pr: Dict[str,
+        Any],
+        reopened_info: Dict[str,
+        Any]
+    ):
         """再オープンされたIssueの処理"""
         await self.reopened_tracker.record_reprocessing(issue.number, {
             "status": "pr_exists",
@@ -366,7 +378,13 @@ class EnhancedAutoIssueProcessor(EldersServiceLegacy):
         comment_text = self._create_reopened_issue_comment(existing_pr, reopened_info)
         issue.create_comment(comment_text)
 
-    async def _handle_processing_result(self, issue: Issue, result: Dict[str, Any], complexity: ComplexityScore) -> Dict[str, Any]:
+    async def _handle_processing_result(
+        self,
+        issue: Issue,
+        result: Dict[str,
+        Any],
+        complexity: ComplexityScore
+    ) -> Dict[str, Any]:
         """処理結果のハンドリング"""
         if result.get("status") == "success":
             await self._handle_successful_processing(issue, result, complexity)
@@ -375,7 +393,13 @@ class EnhancedAutoIssueProcessor(EldersServiceLegacy):
         
         return result
 
-    async def _handle_successful_processing(self, issue: Issue, result: Dict[str, Any], complexity: ComplexityScore):
+    async def _handle_successful_processing(
+        self,
+        issue: Issue,
+        result: Dict[str,
+        Any],
+        complexity: ComplexityScore
+    ):
         """成功時の処理"""
         pr_url = result.get("pr_url")
         
@@ -393,7 +417,14 @@ class EnhancedAutoIssueProcessor(EldersServiceLegacy):
                     f"({complexity.score:.2f}) and priority level."
                 )
 
-    async def _handle_reopened_issue_success(self, issue: Issue, result: Dict[str, Any], reopened_info: Dict[str, Any]):
+    async def _handle_reopened_issue_success(
+        self,
+        issue: Issue,
+        result: Dict[str,
+        Any],
+        reopened_info: Dict[str,
+        Any]
+    ):
         """再オープンIssueの成功処理"""
         await self.reopened_tracker.record_reprocessing(issue.number, {
             "status": "reprocessed_successfully",
@@ -419,7 +450,13 @@ class EnhancedAutoIssueProcessor(EldersServiceLegacy):
             f"手動での確認が必要です。"
         )
 
-    def _create_reopened_issue_comment(self, existing_pr: Dict[str, Any], reopened_info: Dict[str, Any]) -> str:
+    def _create_reopened_issue_comment(
+        self,
+        existing_pr: Dict[str,
+        Any],
+        reopened_info: Dict[str,
+        Any]
+    ) -> str:
         """再オープンIssue用のコメント作成"""
         comment_text = f"🔄 **再オープン検知**\n\n"
         comment_text += f"このIssueは再オープンされましたが、既にPR #{existing_pr['number']} が存在します。\n\n"

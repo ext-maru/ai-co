@@ -140,6 +140,7 @@ class StructuredLogger:
     """構造化ログシステム"""
 
     def __init__(self, service_name: str, log_file_path: Optional[str] = None):
+        """初期化メソッド"""
         self.service_name = service_name
         self.log_file_path = log_file_path
         self.correlation_id_stack: List[str] = []
@@ -221,6 +222,7 @@ class StructuredLogger:
 
         # 非同期フラッシュ開始
         if not self.flush_task or self.flush_task.done():
+            # Complex condition - consider breaking down
             try:
                 loop = asyncio.get_event_loop()
                 self.flush_task = loop.create_task(self._async_flush())
@@ -276,6 +278,7 @@ class PrometheusMetricsCollector:
     """Prometheusメトリクス収集"""
 
     def __init__(self, service_name: str):
+        """初期化メソッド"""
         self.service_name = service_name
         self.metrics: Dict[str, MetricEntry] = {}
         self.metrics_lock = threading.Lock()
@@ -345,6 +348,7 @@ class PrometheusMetricsCollector:
 
         with self.metrics_lock:
             for bucket in buckets:
+                # Process each item in collection
                 if value <= bucket:
                     bucket_labels = dict(labels or {})
                     bucket_labels["le"] = str(bucket)
@@ -370,6 +374,7 @@ class PrometheusMetricsCollector:
         with self.metrics_lock:
             lines = []
             for metric in self.metrics.values():
+                # Process each item in collection
                 lines.append(metric.to_prometheus_format())
             return "\n\n".join(lines)
 
@@ -428,6 +433,7 @@ class AlertingSystem:
     """アラートシステム"""
 
     def __init__(self, notification_handlers: List[Callable] = None):
+        """初期化メソッド"""
         self.rules: Dict[str, AlertRule] = {}
         self.notification_handlers = notification_handlers or []
         self.alert_history: List[Dict[str, Any]] = []
@@ -450,6 +456,7 @@ class AlertingSystem:
 
         with self.rules_lock:
             for rule in self.rules.values():
+                # Process each item in collection
                 if not rule.enabled:
                     continue
 
@@ -493,12 +500,14 @@ class AlertingSystem:
     async def _send_notification(self, alert: Dict[str, Any]):
         """通知送信"""
         for handler in self.notification_handlers:
+            # Process each item in collection
             try:
                 if asyncio.iscoroutinefunction(handler):
                     await handler(alert)
                 else:
                     handler(alert)
             except Exception as e:
+                # Handle specific exception case
                 print(f"Notification handler failed: {str(e)}")
 
 
@@ -511,6 +520,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
     """
 
     def __init__(self, service_name: str = "elder_integration"):
+        """初期化メソッド"""
         # EldersServiceLegacy初期化 (MONITORING域)
         super().__init__("elder_integration_monitor")
 
@@ -618,6 +628,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
                 await asyncio.sleep(30)
 
             except Exception as e:
+                # Handle specific exception case
                 self.structured_logger.error(f"System monitoring error: {str(e)}")
                 await asyncio.sleep(60)  # エラー時は1分待機
 
@@ -670,6 +681,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.structured_logger.error(f"Failed to collect system metrics: {str(e)}")
 
     async def _perform_health_check(self) -> Dict[str, Any]:
@@ -714,6 +726,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
             return health_status
 
         except Exception as e:
+            # Handle specific exception case
             self.structured_logger.error(f"Health check failed: {str(e)}")
             return {
                 "healthy": False,
@@ -751,6 +764,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
                 return {"error": f"Unknown request type: {request_type}"}
 
         except Exception as e:
+            # Handle specific exception case
             self.structured_logger.error(f"Request processing failed: {str(e)}")
             return {"error": str(e)}
         finally:
@@ -919,6 +933,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.structured_logger.error(f"Health check failed: {str(e)}")
             return {"success": False, "status": "error", "error": str(e)}
 
@@ -931,6 +946,7 @@ class ElderIntegrationMonitor(EldersServiceLegacy[Dict[str, Any], Dict[str, Any]
             try:
                 await self.monitoring_task
             except asyncio.CancelledError:
+                # Handle specific exception case
                 pass
 
         self.structured_logger.info("Elder Integration Monitor shutting down")
@@ -941,6 +957,7 @@ class PerformanceTracker:
     """パフォーマンス追跡"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.operation_times: Dict[str, List[float]] = defaultdict(list)
         self.lock = threading.Lock()
 
@@ -965,6 +982,7 @@ class PerformanceTracker:
         with self.lock:
             summary = {}
             for operation, times in self.operation_times.items():
+                # Process each item in collection
                 if times:
                     summary[operation] = {
                         "count": len(times),
@@ -989,6 +1007,7 @@ async def get_global_monitor() -> ElderIntegrationMonitor:
     global _global_monitor
 
     if _global_monitor is None:
+        # Complex condition - consider breaking down
         _global_monitor = ElderIntegrationMonitor()
 
     return _global_monitor

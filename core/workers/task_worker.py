@@ -36,6 +36,7 @@ logger = logging.getLogger("TaskWorker")
 
 class TaskWorker:
     def __init__(self, worker_id="worker-1"):
+        """初期化メソッド"""
         self.worker_id = worker_id
         self.model = "claude-sonnet-4-20250514"
         # RAG・Slack・自己進化統合
@@ -150,7 +151,8 @@ Task to complete:
                                 file_age = time.time() - os.path.getmtime(recent_file)
                                 if file_age < 30:  # 30秒以内
                                     logger.info(
-                                        f"📁 最近のファイル検出: {os.path.basename(recent_file)} ({file_age:.1f}秒前)"
+                                        f"📁 最近のファイル検出: {os.path.basename(recent_file)} " \
+                                            "({file_age:.1f}秒前)"
                                     )
                                     with open(recent_file, "r") as f:
                                         file_content = f.read()
@@ -206,7 +208,8 @@ Task to complete:
                     f.write(f"\n=== Response ===\n{output_text}\n")
                     if evolution_result:
                         f.write(
-                            f"\n=== Evolution Result ===\n{json.dumps(evolution_result, indent=2)}\n"
+                            f"\n=== Evolution Result ===\n{json.dumps(evolution_result, " \
+                                "indent=2)}\n"
                         )
                     f.write(f"=== End ===\n")
                 logger.info(f"💾 結果ファイル保存: {result_file}")

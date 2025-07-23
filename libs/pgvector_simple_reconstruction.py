@@ -203,7 +203,8 @@ class SimpleKnowledgeReconstructor:
             
             # 最終統計
             total_docs = await conn.fetchval("SELECT COUNT(*) FROM knowledge_documents")
-            unique_sources = await conn.fetchval("SELECT COUNT(DISTINCT source_file) FROM knowledge_documents")
+            unique_sources = await conn.fetchval("SELECT COUNT(DISTINCT source_file) FROM knowledge_documents" \
+                "SELECT COUNT(DISTINCT source_file) FROM knowledge_documents")
             
             logger.info(f"最適化完了 - 総ドキュメント: {total_docs}, ユニークソース: {unique_sources}")
             

@@ -20,13 +20,21 @@ async def upload_file(file: UploadFile = File(...), user=Depends(get_current_use
     if not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="画像ファイルのみ対応しています")
 
-    result = await upload_service.process_upload(await file.read(), file.filename, file.content_type, user_id=user.id)
+    result = await upload_service.process_upload(
+        await file.read(),
+        file.filename,
+        file.content_type,
+        user_id=user.id
+    )
 
     return result
 
 
 @router.post("/multiple", response_model=List[UploadResponse])
-async def upload_multiple_files(files: List[UploadFile] = File(...), user=Depends(get_current_user)):
+async def upload_multiple_files(
+    files: List[UploadFile] = File(...),
+    user=Depends(get_current_user)
+):
     """複数ファイルアップロード"""
     results = []
     for file in files:

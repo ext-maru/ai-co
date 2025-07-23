@@ -47,6 +47,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     print(f"Elder Tree system not available: {e}")
     FourSagesIntegration = None
     ElderCouncilSummoner = None
@@ -103,6 +104,7 @@ class MemoryManager:
         usage_percent = self.get_memory_percent()
 
         if force or usage_percent > self.cleanup_threshold:
+            # Complex condition - consider breaking down
             self.logger.info(
                 "Starting memory cleanup",
                 current_mb=current_usage,
@@ -158,6 +160,7 @@ class TaskPhaseManager:
                 results = {}
 
                 for phase in phases_to_run:
+                    # Process each item in collection
                     start_time = datetime.utcnow()
                     task_context.phase = phase
 
@@ -177,6 +180,7 @@ class TaskPhaseManager:
                 return results
 
             except Exception as e:
+                # Handle specific exception case
                 task_context.status = "failed"
                 task_context.error_count += 1
                 raise
@@ -291,9 +295,11 @@ class TaskPhaseManager:
     async def _cleanup_temp_files(self, context: TaskContext):
         """一時ファイルのクリーンアップ"""
         for temp_file in context.temp_files:
+            # Process each item in collection
             try:
                 Path(temp_file).unlink(missing_ok=True)
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(
                     "Failed to cleanup temp file", file=temp_file, error=str(e)
                 )
@@ -305,6 +311,7 @@ class TaskPhaseManager:
         stats = {}
 
         for phase, timings in self.phase_timings.items():
+            # Process each item in collection
             if timings:
                 stats[phase] = {
                     "avg_duration": sum(timings) / len(timings),
@@ -410,6 +417,7 @@ class AsyncPMWorker(AsyncBaseWorker):
             self.logger.info("🏛️ PM Worker は エルダーツリー階層に統合されました")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ エルダーシステム初期化失敗: {e}")
             self.elder_tree_enabled = False
             self.elder_tree = None
@@ -567,6 +575,7 @@ class AsyncPMWorker(AsyncBaseWorker):
                 "status": await self.github_manager.get_git_status(),
             }
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning("Failed to capture git state", error=str(e))
             return {}
 
@@ -590,6 +599,7 @@ class AsyncPMWorker(AsyncBaseWorker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error("Rollback failed", task_id=task_id, error=str(e))
 
     async def _periodic_cleanup(self):
@@ -609,6 +619,7 @@ class AsyncPMWorker(AsyncBaseWorker):
                 await asyncio.sleep(600)
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error("Periodic cleanup error", error=str(e))
                 await asyncio.sleep(60)
 
@@ -618,6 +629,7 @@ class AsyncPMWorker(AsyncBaseWorker):
 
         to_delete = []
         for task_id, checkpoint in self.checkpoints.items():
+            # Process each item in collection
             checkpoint_time = datetime.fromisoformat(
                 checkpoint["timestamp"].replace("Z", "+00:00")
             )
@@ -625,6 +637,7 @@ class AsyncPMWorker(AsyncBaseWorker):
                 to_delete.append(task_id)
 
         for task_id in to_delete:
+            # Process each item in collection
             del self.checkpoints[task_id]
 
         if to_delete:
@@ -718,6 +731,7 @@ async def main():
             self.logger.info("✅ エルダーガイダンス取得完了")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ エルダーガイダンス取得失敗: {e}")
 
     async def _consult_task_sage_for_optimization(
@@ -759,6 +773,7 @@ async def main():
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Task Sage相談失敗: {e}")
             return {"error": str(e), "recommendations": []}
 
@@ -795,6 +810,7 @@ async def main():
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Knowledge Sage pattern取得失敗: {e}")
             return {"error": str(e), "patterns": []}
 
@@ -833,6 +849,7 @@ async def main():
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Incident Sage監視設定失敗: {e}")
             return {"error": str(e), "monitoring_active": False}
 
@@ -872,6 +889,7 @@ async def main():
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"RAG Sage分析失敗: {e}")
             return {"error": str(e), "analysis": {}}
 
@@ -895,6 +913,7 @@ async def main():
             await self._send_elder_council_report(context, result)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"エルダー報告失敗: {e}")
 
     async def _report_to_knowledge_sage(
@@ -920,6 +939,7 @@ async def main():
             self.logger.info(f"📚 Knowledge Sage へのプロジェクト結果報告完了: {context.task_id}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Knowledge Sage報告失敗: {e}")
 
     async def _escalate_critical_issue(
@@ -960,6 +980,7 @@ async def main():
             self.logger.critical(f"🚨 Incident Sage へ重大問題エスカレーション: {task_id}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"重大問題エスカレーション失敗: {e}")
 
     async def _get_elder_system_statistics(self) -> Dict[str, Any]:
@@ -992,6 +1013,7 @@ async def main():
             return stats
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"エルダー統計取得失敗: {e}")
             return {"error": str(e), "elder_tree_active": False}
 
@@ -1011,6 +1033,7 @@ async def main():
         complexity = 0.0
 
         for indicator, weight in complexity_indicators.items():
+            # Process each item in collection
             if indicator.replace("_", " ") in prompt:
                 complexity += weight
 
@@ -1031,8 +1054,10 @@ async def main():
         prompt = message.get("prompt", "").lower()
 
         if "web" in prompt or "api" in prompt:
+            # Complex condition - consider breaking down
             return "web_development"
         elif "data" in prompt or "analysis" in prompt:
+            # Complex condition - consider breaking down
             return "data_analysis"
         elif "test" in prompt:
             return "testing"

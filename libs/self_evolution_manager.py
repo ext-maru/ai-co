@@ -1501,7 +1501,8 @@ class SelfEvolutionManager:
             conn.close()
 
             logger.debug(
-                f"Recorded placement learning: {filename} -> {target_dir} (confidence: {confidence:.2f})"
+                f"Recorded placement learning: {filename} -> {target_dir} (confidence: " \
+                    "{confidence:.2f})"
             )
         except Exception as e:
             logger.error(f"Failed to record placement learning: {e}")
@@ -2048,7 +2049,8 @@ class SelfEvolutionManager:
 
             conn.close()
             logger.info(
-                f"Loaded feature importance from {len(high_conf_features)} high-confidence placements"
+                f"Loaded feature importance from {len(high_conf_features)} high-confidence " \
+                    "placements"
             )
         except Exception as e:
             logger.error(f"Failed to load feature importance: {e}")
@@ -2176,7 +2178,8 @@ class SelfEvolutionManager:
         self._update_neural_weights_from_feedback(feedback)
 
         logger.debug(
-            f"Recorded placement feedback: {filename} -> {actual_directory} (score: {success_score})"
+            f"Recorded placement feedback: {filename} -> {actual_directory} (score: " \
+                "{success_score})"
         )
 
     def _update_neural_weights_from_feedback(self, feedback: Dict):
@@ -2499,30 +2502,35 @@ class SelfEvolutionManager:
             else candidates[0]
         )
 
-    def _determine_file_type_from_content(self, content):
-        """内容からファイルタイプを判定"""
-        # Shebang行チェック
+    def _check_shebang(self, content):
+        """Shebang行からファイルタイプを判定"""
         if content.startswith("#!/bin/bash") or content.startswith("#!/bin/sh"):
             return {"prefix": "script", "extension": ".sh"}
         elif content.startswith("#!/usr/bin/env python") or content.startswith(
             "#!/usr/bin/python"
         ):
             return {"prefix": "script", "extension": ".py"}
+        return None
 
-        # HTML/CSS/JS判定
+    def _check_web_content(self, content):
+        """HTML/CSS/JavaScript判定"""
         if re.search(r"<html|<head|<body|<!DOCTYPE", content, re.IGNORECASE):
             return {"prefix": "page", "extension": ".html"}
         elif re.search(r"\.css|styles?|@media|selector", content, re.IGNORECASE):
             return {"prefix": "styles", "extension": ".css"}
         elif re.search(r"function|var |let |const |=>", content):
             return {"prefix": "script", "extension": ".js"}
+        return None
 
-        # 設定ファイル判定
+    def _check_config_format(self, content):
+        """設定ファイル形式を判定"""
         if re.search(r"config|setting|environment|parameter", content.lower()):
             if re.search(r"^\s*\w+\s*=", content, re.MULTILINE):
                 return {"prefix": "config", "extension": ".conf"}
+        return None
 
-        # JSON判定
+    def _check_json_format(self, content):
+        """JSON形式を判定"""
         content_stripped = content.strip()
         if (content_stripped.startswith("{") and content_stripped.endswith("}")) or (
             content_stripped.startswith("[") and content_stripped.endswith("]")
@@ -2532,19 +2540,41 @@ class SelfEvolutionManager:
                 return {"prefix": "data", "extension": ".json"}
             except:
                 pass
+        return None
 
-        # SQL判定
+    def _check_sql_content(self, content):
+        """SQL判定"""
         if re.search(
             r"\b(SELECT|INSERT|UPDATE|DELETE|CREATE|ALTER|DROP)\b",
             content,
             re.IGNORECASE,
         ):
             return {"prefix": "query", "extension": ".sql"}
+        return None
 
-        # Markdown判定
+    def _check_markdown_format(self, content):
+        """Markdown判定"""
         if re.search(r"^#+ |^\* |\[.*\]\(.*\)|```", content, re.MULTILINE):
             return {"prefix": "doc", "extension": ".md"}
+        return None
 
+    def _determine_file_type_from_content(self, content):
+        """内容からファイルタイプを判定"""
+        # 各チェック関数を順番に実行
+        checks = [
+            self._check_shebang,
+            self._check_web_content,
+            self._check_config_format,
+            self._check_json_format,
+            self._check_sql_content,
+            self._check_markdown_format,
+        ]
+        
+        for check_func in checks:
+            result = check_func(content)
+            if result:
+                return result
+        
         # デフォルトはPython
         return {"prefix": "generated", "extension": ".py"}
 
@@ -2727,9 +2757,9 @@ class SelfEvolutionManager:
             ),
         }
 
-    def _apply_layer_analysis(self, layer_name, features):
-        """Apply layer-specific analysis similar to neural network layers"""
-        directory_mappings = {
+    def _get_directory_mappings(self):
+        """Get directory mappings for different analysis layers"""
+        return {
             "syntactic": {
                 "high_class_count": "libs/",
                 "high_function_count": "libs/",
@@ -2759,40 +2789,64 @@ class SelfEvolutionManager:
             },
         }
 
+    def _analyze_syntactic_layer(self, features):
+        """Analyze syntactic features"""
         predictions = []
+        if features.get("class_defs", 0) > 2:
+            predictions.append(("libs/", 0.7, "multiple class definitions"))
+        if features.get("async_keywords", 0) > 3:
+            predictions.append(("workers/", 0.8, "heavy async usage"))
+        if features.get("decorators", 0) > 2:
+            predictions.append(("web/", 0.6, "decorator patterns"))
+        return predictions
 
-        if layer_name == "syntactic":
-            if features.get("class_defs", 0) > 2:
-                predictions.append(("libs/", 0.7, "multiple class definitions"))
-            if features.get("async_keywords", 0) > 3:
-                predictions.append(("workers/", 0.8, "heavy async usage"))
-            if features.get("decorators", 0) > 2:
-                predictions.append(("web/", 0.6, "decorator patterns"))
+    def _analyze_semantic_layer(self, features, directory_mappings):
+        """Analyze semantic features"""
+        predictions = []
+        for domain, score in features.items():
+            if score > 2:
+                target_dir = directory_mappings["semantic"].get(domain, "libs/")
+                confidence = min(0.9, score * 0.1)
+                predictions.append(
+                    (target_dir, confidence, f"{domain} domain focus")
+                )
+        return predictions
 
-        elif layer_name == "semantic":
-            for domain, score in features.items():
-                if score > 2:
-                    target_dir = directory_mappings["semantic"].get(domain, "libs/")
-                    confidence = min(0.9, score * 0.1)
-                    predictions.append(
-                        (target_dir, confidence, f"{domain} domain focus")
-                    )
+    def _analyze_structural_layer(self, features):
+        """Analyze structural features"""
+        predictions = []
+        file_length = features.get("file_length", 0)
+        if file_length > 200:
+            predictions.append(("libs/", 0.6, "complex file structure"))
+        elif file_length < 50:
+            predictions.append(("scripts/", 0.7, "simple file structure"))
+        return predictions
 
-        elif layer_name == "structural":
-            file_length = features.get("file_length", 0)
-            if file_length > 200:
-                predictions.append(("libs/", 0.6, "complex file structure"))
-            elif file_length < 50:
-                predictions.append(("scripts/", 0.7, "simple file structure"))
+    def _analyze_behavioral_layer(self, features):
+        """Analyze behavioral features"""
+        predictions = []
+        if features.get("concurrency_usage", 0) > 1:
+            predictions.append(("workers/", 0.8, "concurrency patterns"))
+        if features.get("network_operations", 0) > 2:
+            predictions.append(("web/", 0.7, "network operations"))
+        if features.get("test_patterns", 0) > 3:
+            predictions.append(("tests/", 0.9, "test patterns"))
+        return predictions
 
-        elif layer_name == "behavioral":
-            if features.get("concurrency_usage", 0) > 1:
-                predictions.append(("workers/", 0.8, "concurrency patterns"))
-            if features.get("network_operations", 0) > 2:
-                predictions.append(("web/", 0.7, "network operations"))
-            if features.get("test_patterns", 0) > 3:
-                predictions.append(("tests/", 0.9, "test patterns"))
-
+    def _apply_layer_analysis(self, layer_name, features):
+        """Apply layer-specific analysis similar to neural network layers"""
+        directory_mappings = self._get_directory_mappings()
+        
+        # Layer-specific analysis
+        layer_analyzers = {
+            "syntactic": lambda: self._analyze_syntactic_layer(features),
+            "semantic": lambda: self._analyze_semantic_layer(features, directory_mappings),
+            "structural": lambda: self._analyze_structural_layer(features),
+            "behavioral": lambda: self._analyze_behavioral_layer(features),
+        }
+        
+        predictions = layer_analyzers.get(layer_name, lambda: [])()
+        
         # Return the highest confidence prediction
         if predictions:
             best_prediction = max(predictions, key=lambda x: x[1])
@@ -2801,5 +2855,5 @@ class SelfEvolutionManager:
                 "confidence": best_prediction[1],
                 "reasoning": best_prediction[2],
             }
-
+        
         return None

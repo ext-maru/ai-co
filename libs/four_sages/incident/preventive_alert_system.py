@@ -447,7 +447,8 @@ class PreventiveAlertSystem(EldersServiceLegacy):
         if "trend_warning" in alert_type:
             predicted = context.get("predicted_value", 0)
             minutes = context.get("time_to_threshold", 0)
-            base_message = f"{metric} trending up, will reach critical in {minutes} minutes (predicted: {predicted:.2f})"
+            base_message = f"{metric} trending up, will reach critical in {minutes} minutes (predicted: " \
+                "{predicted:.2f})"
 
         return f"[{severity.value.upper()}] {base_message}"
 

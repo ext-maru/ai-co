@@ -23,6 +23,7 @@ class ElderCouncilConsultCommand(BaseCommand):
     """エルダーズ評議会相談コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="elder-council-consult",
             description="🏛️ エルダーズ評議会への相談システム"
@@ -123,7 +124,11 @@ class ElderCouncilConsultCommand(BaseCommand):
             "status": "pending"
         }
 
-    async def consult_four_sages(self, consultation_record: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    async def consult_four_sages(
+        self,
+        consultation_record: Dict[str,
+        Any]
+    ) -> Dict[str, Dict[str, Any]]:
         """4賢者への相談"""
         topic = consultation_record["topic"]
         category = consultation_record["category"]
@@ -234,13 +239,19 @@ class ElderCouncilConsultCommand(BaseCommand):
         """RAG賢者の推奨事項"""
         return "最新技術の調査、業界標準の適用、継続的な改善を推奨します。"
 
-    def generate_council_decision(self, sage_responses: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+    def generate_council_decision(
+        self,
+        sage_responses: Dict[str,
+        Dict[str,
+        Any]]
+    ) -> Dict[str, Any]:
         """評議会決定の生成"""
         # 各賢者の推奨事項を統合
         recommendations = []
         total_confidence = 0
 
         for sage_id, response in sage_responses.items():
+            # Process each item in collection
             recommendations.append(response["recommendation"])
             total_confidence += response["confidence"]
 
@@ -300,11 +311,13 @@ class ElderCouncilConsultCommand(BaseCommand):
 
         self.info("  📋 優先アクション:")
         for action in council_decision['priority_actions']:
+            # Process each item in collection
             self.info(f"    • {action}")
         self.info("")
 
         self.info("  🎯 成功基準:")
         for criteria in council_decision['success_criteria']:
+            # Process each item in collection
             self.info(f"    • {criteria}")
         self.info("")
 
@@ -314,6 +327,7 @@ class ElderCouncilConsultCommand(BaseCommand):
 
         self.info("  🚀 次のステップ:")
         for step in council_decision['next_steps']:
+            # Process each item in collection
             self.info(f"    • {step}")
 
     def save_consultation_results(self, consultation_record: Dict[str, Any],

@@ -134,7 +134,12 @@ class CodeGenerationTemplateManager:
         base_path = f"base/{template_name}.j2"
         return (self.template_dir / base_path).exists()
 
-    def get_template(self, template_name: str, tech_stack: str = "base", use_enhanced: bool = True) -> Template:
+    def get_template(
+        self,
+        template_name: str,
+        tech_stack: str = "base",
+        use_enhanced: bool = True
+    ) -> Template:
         """
         指定された技術スタックのテンプレートを取得
         

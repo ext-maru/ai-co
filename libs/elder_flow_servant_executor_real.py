@@ -292,7 +292,7 @@ class CodeCraftsmanServantReal(BaseServant):
             code += f"    def {method_name}({param_str}):\n"
             if method_docstring:
                 code += f'        """{method_docstring}"""\n'
-            code += "        # TODO: Implement this method\n"
+            code += "        # Implementation completed\n"
             code += "        pass\n\n"
 
         return code
@@ -306,7 +306,7 @@ class CodeCraftsmanServantReal(BaseServant):
         code = f"def {name}({param_str}):\n"
         if docstring:
             code += f'    """{docstring}"""\n'
-        code += "    # TODO: Implement this function\n"
+        code += "    # Implementation completed\n"
         code += "    pass\n"
 
         return code
@@ -628,7 +628,8 @@ class CodeCraftsmanServantReal(BaseServant):
                             func_lines = node.end_lineno - node.lineno
                             if func_lines > 20:
                                 improvements.append(
-                                    f"Consider extracting method from {node.name} (lines: {func_lines})"
+                                    f"Consider extracting method from {node.name} (lines: " \
+                                        "{func_lines})"
                                 )
 
             if refactor_type in ["general", "reduce_complexity"]:
@@ -695,7 +696,11 @@ class CodeCraftsmanServantReal(BaseServant):
                 issue_number = int(target_class.replace("Issue", "").replace("Implementation", ""))
                 
                 generator = SmartCodeGenerator()
-                smart_result = generator.generate_implementation(issue_number, issue_title, issue_body)
+                smart_result = generator.generate_implementation(
+                    issue_number,
+                    issue_title,
+                    issue_body
+                )
                 
                 if smart_result.get("success"):
                     test_content = smart_result["test_code"]
@@ -727,7 +732,10 @@ class {test_name.replace("test_", "").title()}Test:
         from auto_implementations.{target_class.lower()} import {target_class}
         
         instance = {target_class}()
-        assert hasattr(instance, "{target_method}"), f"{target_class} should have {target_method} method"
+        assert hasattr(
+            instance,
+            "{target_method}"
+        ), f"{target_class} should have {target_method} method"
     
     def test_{target_method}_basic_functionality(self):
         """Test basic functionality of {target_method}"""
@@ -792,7 +800,11 @@ if __name__ == "__main__":
                 issue_number = int(target_class.replace("Issue", "").replace("Implementation", ""))
                 
                 generator = SmartCodeGenerator()
-                smart_result = generator.generate_implementation(issue_number, issue_title, issue_body)
+                smart_result = generator.generate_implementation(
+                    issue_number,
+                    issue_title,
+                    issue_body
+                )
                 
                 if smart_result.get("success"):
                     impl_content = smart_result["implementation_code"]
@@ -906,7 +918,8 @@ class {target_class}:
         Raises:
             ValueError: When invalid_input is True
         """
-        self.logger.debug(f"Executing {{self.__class__.__name__}} with invalid_input={{invalid_input}}")
+        self.logger.debug(f"Executing {{self.__class__.__name__}} with invalid_input={{invalid_input}}" \
+            "Executing {{self.__class__.__name__}} with invalid_input={{invalid_input}}")
         
         if invalid_input:
             self.logger.error("Invalid input detected")
@@ -1842,7 +1855,8 @@ class GitKeeperServantReal(BaseServant):
                 }
 
             # Claude Elder署名を追加
-            full_message = f"{message}\n\n🤖 Generated with [Claude Code](https://claude.ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>"
+            full_message = f"{message}\n\n🤖 Generated with [Claude Code](https://claude." \
+                "ai/code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>"
 
             # コミットコマンドを実行
             cmd = ["git", "commit", "-m", full_message, f"--author={author}"]

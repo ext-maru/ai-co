@@ -39,6 +39,9 @@ COPY scripts/ ./scripts/
 # Install application
 RUN poetry install --only-root
 
+# Set PYTHONPATH
+ENV PYTHONPATH=/app/src
+
 # Create non-root user
 RUN useradd -m -u 1000 elderuser && chown -R elderuser:elderuser /app
 USER elderuser

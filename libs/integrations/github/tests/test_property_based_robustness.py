@@ -193,7 +193,8 @@ class TestRateLimitRobustness:
                 assert rate_info.is_exhausted is False
                 
         except Exception as e:
-            pytest.fail(f"Unexpected exception with limit={limit}, remaining={remaining}, reset={reset}: {e}")
+            pytest.fail(f"Unexpected exception with limit={limit}, remaining={remaining}, reset={reset}: " \
+                "{e}")
     
     @given(st.text(min_size=1, max_size=20))
     @settings(max_examples=20)

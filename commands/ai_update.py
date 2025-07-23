@@ -14,6 +14,7 @@ class AIUpdateCommand(BaseCommand):
     """システム自動更新"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-update", description="システム自動更新", version="1.0.0")
 
     def execute(self, args) -> CommandResult:
@@ -23,6 +24,7 @@ class AIUpdateCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIUpdateCommand()
     sys.exit(command.run())
 

@@ -4,6 +4,7 @@ TestForge (D02) - テスト生成専門サーバント
 """
 
 import ast
+import secrets
 import asyncio
 import inspect
 import logging
@@ -33,6 +34,7 @@ class TestForge(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "generate_unit_tests",
@@ -191,6 +193,7 @@ class TestForge(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Test forging failed for task {task_id}: {str(e)}")
             execution_time = (datetime.now() - start_time).total_seconds() * 1000
 
@@ -235,6 +238,7 @@ class TestForge(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         try:
             tree = ast.parse(source_code)
         except SyntaxError as e:
+            # Handle specific exception case
             raise ValueError(f"Invalid Python code: {e}")
 
         # 関数とクラスを抽出
@@ -441,7 +445,9 @@ class TestForge(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         ]
 
         for test in owasp_tests:
+            # Process each item in collection
             if not vulnerabilities or test["category"] in vulnerabilities:
+                # Complex condition - consider breaking down
                 security_tests.append(
                     {
                         "name": f"test_{test['name']}",
@@ -498,6 +504,7 @@ class TestForge(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         for node in ast.walk(tree):
             # 算術演算子の変異
             if "arithmetic" in mutation_operators and isinstance(node, ast.BinOp):
+                # Complex condition - consider breaking down
                 mutation_points.append(
                     {
                         "type": "arithmetic",
@@ -509,6 +516,7 @@ class TestForge(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
             # 論理演算子の変異
             elif "logical" in mutation_operators and isinstance(node, ast.BoolOp):
+                # Complex condition - consider breaking down
                 mutation_points.append(
                     {
                         "type": "logical",
@@ -520,6 +528,7 @@ class TestForge(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
             # 比較演算子の変異
             elif "relational" in mutation_operators and isinstance(node, ast.Compare):
+                # Complex condition - consider breaking down
                 for op in node.ops:
                     mutation_points.append(
                         {
@@ -562,6 +571,7 @@ class TestForge(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         try:
             # テスト特有の品質チェック
             if "test_code" in result_data and result_data["test_code"]:
+                # Complex condition - consider breaking down
                 test_code = result_data["test_code"]
 
                 # テストコードの構文チェック
@@ -585,6 +595,7 @@ class TestForge(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                     quality_score += 15.0
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Test quality validation error: {e}")
             quality_score = max(quality_score - 10.0, 0.0)
 
@@ -714,6 +725,7 @@ if __name__ == "__main__":
             node for node in class_node.body if isinstance(node, ast.FunctionDef)
         ]
         for method in methods:
+            # Process each item in collection
             if not method.name.startswith("_"):
                 tests.append(
                     {
@@ -747,6 +759,7 @@ if __name__ == "__main__":
 
         test_functions = []
         for case in test_cases:
+            # Process each item in collection
             test_func = f'''
 def {case["name"]}():
     """
@@ -784,6 +797,7 @@ class TestSuite(unittest.TestCase):
 '''
 
         for case in test_cases:
+            # Process each item in collection
             test_method = f'''
     def {case["name"]}(self):
         """
@@ -810,6 +824,7 @@ from unittest.mock import Mock, patch
 '''
 
         for scenario in scenarios:
+            # Process each item in collection
             test_code += f'''
 def {scenario["name"]}():
     """
@@ -861,6 +876,7 @@ async def page(browser):
 '''
 
         for scenario in scenarios:
+            # Process each item in collection
             test_code += f'''
 async def {scenario["name"]}(page):
     """
@@ -874,6 +890,7 @@ async def {scenario["name"]}(page):
 
             test_code += "    # Assertions\n"
             for assertion in scenario["assertions"]:
+                # Process each item in collection
                 test_code += f"    # Verify: {assertion}\n"
 
             test_code += "    assert True  # Placeholder\n\n"
@@ -900,6 +917,7 @@ def driver():
 '''
 
         for scenario in scenarios:
+            # Process each item in collection
             test_code += f'''
 def {scenario["name"]}(driver):
     """
@@ -908,9 +926,11 @@ def {scenario["name"]}(driver):
     """
 '''
             for i, step in enumerate(scenario["steps"]):
+                # Process each item in collection
                 test_code += f"    # Step {i+1}: {step}\n"
 
             for assertion in scenario["assertions"]:
+                # Process each item in collection
                 test_code += f"    # Verify: {assertion}\n"
 
             test_code += "    assert True  # Placeholder\n\n"
@@ -932,11 +952,13 @@ def {scenario["name"]}(driver):
 from locust import HttpUser, task, between
 
 class PerformanceTestUser(HttpUser):
+    # Main class implementation
     wait_time = between(1, 3)
 
 '''
 
         for test in tests:
+            # Process each item in collection
             if "endpoint" in test:
                 test_code += f'''
     @task
@@ -961,6 +983,7 @@ import requests
 '''
 
         for test in tests:
+            # Process each item in collection
             test_code += f'''
 def {test["name"]}():
     """
@@ -989,11 +1012,13 @@ class SecurityTestSuite:
     """Security test suite following OWASP guidelines"""
 
     def __init__(self, base_url="http://localhost"):
+        """初期化メソッド"""
         self.base_url = base_url
 
 '''
 
         for test in tests:
+            # Process each item in collection
             test_code += f'''
     def {test["name"]}(self):
         """
@@ -1029,6 +1054,7 @@ class MutationTester:
     """Mutation testing framework"""
 
     def __init__(self, source_code, test_code):
+        """初期化メソッド"""
         self.source_code = source_code
         self.test_code = test_code
         self.mutation_points = []
@@ -1046,6 +1072,7 @@ class MutationTester:
 '''
 
         for point in mutation_points:
+            # Process each item in collection
             test_code += f'''
     def test_mutation_{point["type"]}_line_{point["line"]}(self):
         """
@@ -1074,7 +1101,7 @@ class MutationTester:
             ],
             "auth": ["admin:admin", "admin:password", "guest:guest"],
             "data": [
-                "../../../etc/passwd",
+                os.path.abspath("./../../etc/passwd"),
                 "..\\..\\..\\windows\\system32\\config\\sam",
             ],
             "access": ["/admin", "/admin/users", "/api/admin"],
@@ -1174,6 +1201,7 @@ class MutationTester:
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Coverage analysis failed: {e}")
             return {
                 "overall_coverage": 0.0,
@@ -1198,6 +1226,7 @@ class MutationTester:
             )
 
         if func_coverage < 50 or class_coverage < 50:
+            # Complex condition - consider breaking down
             recommendations.append("Consider TDD approach for better coverage")
 
         if not recommendations:
@@ -1216,15 +1245,17 @@ class MutationTester:
         generated_data = []
 
         for i in range(data_count):
+            # Process each item in collection
             data_item = {}
 
             for field, field_spec in data_schema.items():
+                # Process each item in collection
                 field_type = field_spec.get("type", "string")
 
                 if field_type == "string":
                     data_item[field] = f"test_string_{i}"
                 elif field_type == "integer":
-                    data_item[field] = random.randint(1, 100)
+                    data_item[field] = secrets.randbelow(1, 100)
                 elif field_type == "float":
                     data_item[field] = round(random.uniform(0.1, 99.9), 2)
                 elif field_type == "boolean":

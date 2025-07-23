@@ -10,6 +10,7 @@ class CliCommandTemplate:
     """CLIコマンドテンプレート"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.template_info = {
             "name": "CLI Command",
             "version": "1.0.0",

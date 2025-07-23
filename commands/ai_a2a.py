@@ -30,6 +30,7 @@ class A2ACommand(BaseCommand):
     """A2A通信管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.command_name = "ai_a2a"
         self.description = "A2A (Agent to Agent) Communication Management"
@@ -146,6 +147,7 @@ class A2ACommand(BaseCommand):
             await source_client.disconnect()
 
         except Exception as e:
+            # Handle specific exception case
             self.print_error(f"Communication test failed: {e}")
 
     async def _show_status(self, args):
@@ -175,6 +177,7 @@ class A2ACommand(BaseCommand):
                     await client.disconnect()
 
                 except Exception as e:
+                    # Handle specific exception case
                     self.print_error(f"❌ {agent_id}: Connection failed ({e})")
 
             # システム情報表示
@@ -185,6 +188,7 @@ class A2ACommand(BaseCommand):
             self.print_info(f"   Registered agents: {len(AGENT_REGISTRY)}")
 
         except Exception as e:
+            # Handle specific exception case
             self.print_error(f"Status check failed: {e}")
 
     async def _run_demo(self, args):
@@ -218,6 +222,7 @@ class A2ACommand(BaseCommand):
             self.print_success("✅ Collaboration demo completed successfully!")
 
         except Exception as e:
+            # Handle specific exception case
             self.print_error(f"Demo failed: {e}")
 
     async def _run_optimization_demo(self):
@@ -260,6 +265,7 @@ class A2ACommand(BaseCommand):
             metrics = await optimizer.get_optimization_metrics()
             self.print_info("\\nOptimization Metrics:")
             for key, value in metrics.items():
+                # Process each item in collection
                 if key != "servant_metrics":
                     self.print_info(f"   {key}: {value}")
 
@@ -269,11 +275,13 @@ class A2ACommand(BaseCommand):
             self.print_success("✅ Optimization demo completed successfully!")
 
         except Exception as e:
+            # Handle specific exception case
             self.print_error(f"Optimization demo failed: {e}")
 
     async def _handle_optimization(self, args):
         """最適化管理"""
         if args.enable or args.disable or args.metrics:
+            # Complex condition - consider breaking down
             try:
                 elder_client = await create_a2a_client("knowledge_sage")
                 optimizer = ElderServantOptimizer(elder_client)
@@ -296,6 +304,7 @@ class A2ACommand(BaseCommand):
                 await elder_client.disconnect()
 
             except Exception as e:
+                # Handle specific exception case
                 self.print_error(f"Optimization management failed: {e}")
         else:
             self.print_error("Specify --enable, --disable, or --metrics")
@@ -306,6 +315,7 @@ class A2ACommand(BaseCommand):
         self.print_info("=" * 30)
 
         for agent_id, agent_info in AGENT_REGISTRY.items():
+            # Process each item in collection
             self.print_info(f"\\n🤖 {agent_id}:")
             self.print_info(f"   Type: {agent_info.agent_type.value}")
             self.print_info(f"   Instance: {agent_info.instance_id}")
@@ -323,11 +333,13 @@ class A2ACommand(BaseCommand):
             initial_metrics = {}
 
             for agent_id in AGENT_REGISTRY.keys():
+                # Process each item in collection
                 try:
                     client = await create_a2a_client(agent_id)
                     clients[agent_id] = client
                     initial_metrics[agent_id] = await client.get_metrics()
                 except Exception as e:
+                    # Handle specific exception case
                     self.print_warning(f"Failed to connect to {agent_id}: {e}")
 
             # 監視期間待機
@@ -342,6 +354,7 @@ class A2ACommand(BaseCommand):
             total_errors = 0
 
             for agent_id, client in clients.items():
+                # Process each item in collection
                 try:
                     final_metrics = await client.get_metrics()
                     initial = initial_metrics[agent_id]
@@ -358,6 +371,7 @@ class A2ACommand(BaseCommand):
                     )
 
                     if sent_delta > 0 or received_delta > 0 or error_delta > 0:
+                        # Complex condition - consider breaking down
                         self.print_info(f"\\n📊 {agent_id}:")
                         self.print_info(f"   Sent: {sent_delta}")
                         self.print_info(f"   Received: {received_delta}")
@@ -371,6 +385,7 @@ class A2ACommand(BaseCommand):
                     await client.disconnect()
 
                 except Exception as e:
+                    # Handle specific exception case
                     self.print_error(f"Error getting metrics for {agent_id}: {e}")
 
             self.print_info(f"\\n📈 Total Traffic:")
@@ -382,6 +397,7 @@ class A2ACommand(BaseCommand):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.print_error(f"Traffic monitoring failed: {e}")
 
 
@@ -417,14 +433,17 @@ Examples:
     args = parser.parse_args()
 
     if not hasattr(args, "action") or args.action is None:
+        # Complex condition - consider breaking down
         parser.print_help()
         return
 
     try:
         asyncio.run(command.run_async(args))
     except KeyboardInterrupt:
+        # Handle specific exception case
         print("\\n🛑 Operation cancelled by user")
     except Exception as e:
+        # Handle specific exception case
         print(f"❌ Command failed: {e}")
         sys.exit(1)
 

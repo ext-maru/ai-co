@@ -471,7 +471,8 @@ class ElderProjectCLI:
             # 基本情報
             output.append(f"{status_icon} **{project.name}** ({project.id})")
             output.append(
-                f"   {priority_icon} {project.priority.value.upper()} | {elder_icon} {project.elder_role.value}"
+                f"   {priority_icon} {project.priority.value.upper()} | {elder_icon} " \
+                    "{project.elder_role.value}"
             )
             output.append(f"   📝 {project.description}")
             output.append(

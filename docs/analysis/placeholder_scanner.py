@@ -35,17 +35,29 @@ class PlaceholderScanner:
             file_results = {}
             
             # 1. キーワード検索
-            file_results['placeholder_keywords'] = self._find_placeholder_keywords(content, filepath)
+            file_results['placeholder_keywords'] = self._find_placeholder_keywords(
+                content,
+                filepath
+            )
             file_results['todo_markers'] = self._find_todo_markers(content, filepath)
-            file_results['mock_implementations'] = self._find_mock_implementations(content, filepath)
+            file_results['mock_implementations'] = self._find_mock_implementations(
+                content,
+                filepath
+            )
             
             # 2. AST分析
             try:
                 tree = ast.parse(content)
-                file_results['unimplemented_functions'] = self._find_unimplemented_functions(tree, filepath)
+                file_results['unimplemented_functions'] = self._find_unimplemented_functions(
+                    tree,
+                    filepath
+                )
                 file_results['pass_only_functions'] = self._find_pass_only_functions(tree, filepath)
                 file_results['empty_classes'] = self._find_empty_classes(tree, filepath)
-                file_results['not_implemented_errors'] = self._find_not_implemented_errors(tree, filepath)
+                file_results['not_implemented_errors'] = self._find_not_implemented_errors(
+                    tree,
+                    filepath
+                )
             except SyntaxError as e:
                 file_results['syntax_errors'] = [f"{filepath}:{e.lineno}: Syntax error: {e.msg}"]
             
@@ -174,12 +186,21 @@ class PlaceholderScanner:
             isinstance(node.body[0].value, ast.Constant) and 
             isinstance(node.body[0].value.value, str)):
             docstring = node.body[0].value.value.lower()
-            if any(keyword in docstring for keyword in ['abstract', 'override', 'implement', 'subclass']):
+            if any(
+                keyword in docstring for keyword in ['abstract',
+                'override',
+                'implement',
+                'subclass']
+            ):
                 return True
         
         return False
     
-    def scan_directory(self, directory: Path, exclude_patterns: List[str] = None) -> Dict[str, List[str]]:
+    def scan_directory(
+        self,
+        directory: Path,
+        exclude_patterns: List[str] = None
+    ) -> Dict[str, List[str]]:
         """ディレクトリ全体をスキャン"""
         if exclude_patterns is None:
             exclude_patterns = ['*env*', '*venv*', '__pycache__', '*.pyc']

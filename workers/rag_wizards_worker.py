@@ -50,6 +50,7 @@ try:
     ELDER_TREE_AVAILABLE = True
     logging.info("🌳 Elder Tree integration fully available for RAG Wizards Worker")
 except ImportError as e:
+    # Handle specific exception case
     logging.warning(f"Elder Tree integration not available: {e}")
     FourSagesIntegration = None
     ElderCouncilSummoner = None
@@ -83,6 +84,7 @@ class RAGWizardsWorker(BaseWorker):
         try:
             self.enhanced_rag = EnhancedRAGManager()
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Enhanced RAG initialization failed: {e}")
             self.enhanced_rag = None
 
@@ -122,6 +124,7 @@ class RAGWizardsWorker(BaseWorker):
             self.logger.info("🌳 RAG Wizards Worker Elder Tree integration complete")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder Tree integration error: {e}")
 
     def _add_wizard_to_elder_tree(self):
@@ -164,11 +167,13 @@ class RAGWizardsWorker(BaseWorker):
                 self.logger.warning("Failed to add RAG Wizard to Elder Tree")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Wizard node addition error: {e}")
 
     async def _establish_rag_sage_connection(self):
         """RAG賢者との協調接続確立"""
         if not self.soul_binding_system or not self.wizard_node:
+            # Complex condition - consider breaking down
             return
 
         try:
@@ -183,11 +188,13 @@ class RAGWizardsWorker(BaseWorker):
                 self.logger.info("🔗 RAG Sage collaboration established")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"RAG Sage connection error: {e}")
 
     async def send_message_to_rag_sage(self, message_content: Dict[str, Any]) -> bool:
         """RAG賢者にメッセージ送信"""
         if not self.elder_tree or not self.wizard_node:
+            # Complex condition - consider breaking down
             return False
 
         try:
@@ -209,6 +216,7 @@ class RAGWizardsWorker(BaseWorker):
             return success
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"RAG Sage message error: {e}")
             return False
 
@@ -229,10 +237,13 @@ class RAGWizardsWorker(BaseWorker):
             # 全賢者にブロードキャスト
             results = await self.four_sages_integration.broadcast_to_all_sages(enhanced_report)
 
-            self.logger.info(f"📡 Four Sages report completed: {sum(results.values())}/{len(results)} successful")
+            self.logger.info(f"📡 Four Sages report completed: {sum(results.values())}/{len(results)} " \
+                "📡 Four Sages report completed: {sum(results.values())}/{len(results)} " \
+                "successful")
             return results
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Four Sages report error: {e}")
             return {}
 
@@ -246,6 +257,7 @@ class RAGWizardsWorker(BaseWorker):
             await self.rag_integration.initialize()
             self.logger.info("🧙 RAG Grimoire Integration initialized for wizards")
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to initialize RAG Grimoire Integration: {e}")
             self.rag_integration = None
 
@@ -266,6 +278,7 @@ class RAGWizardsWorker(BaseWorker):
                 await self.rag_integration.cleanup()
                 self.logger.info("🧙 RAG Grimoire Integration cleaned up")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Error cleaning up RAG integration: {e}")
 
         # ウィザードオーケストレータを停止
@@ -314,9 +327,11 @@ class RAGWizardsWorker(BaseWorker):
 
             # Elder Tree統合の場合、賢者への報告
             if ELDER_TREE_AVAILABLE and self.wizard_node:
+                # Complex condition - consider breaking down
                 await self._report_activity_to_elder_tree(message, result)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error processing message: {e}")
             await self.send_result({
                 'task_id': message.get('task_id'),
@@ -346,6 +361,7 @@ class RAGWizardsWorker(BaseWorker):
                 await self.report_to_four_sages(report_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Elder Tree activity report error: {e}")
 
     async def _process_knowledge_gap(self, message: Dict) -> Dict:
@@ -383,6 +399,7 @@ class RAGWizardsWorker(BaseWorker):
 
         # Store the learning result in unified RAG system
         if result and self.rag_integration:
+            # Complex condition - consider breaking down
             try:
                 knowledge_content = f"Manual learning completed for topic: {topic}\n"
                 knowledge_content += f"Result: {str(result)}\n"
@@ -398,6 +415,7 @@ class RAGWizardsWorker(BaseWorker):
                     }
                 )
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Failed to store learning result: {e}")
 
         return {
@@ -452,6 +470,7 @@ class RAGWizardsWorker(BaseWorker):
                     threshold=self.rag_config.search_threshold
                 )
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Unified RAG search failed: {e}")
 
         # Fallback to legacy systems if unified search fails
@@ -467,6 +486,7 @@ class RAGWizardsWorker(BaseWorker):
                 try:
                     enhanced_results = await self._search_with_enhanced_rag(query)
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Enhanced RAG search failed: {e}")
 
         # ウィザードシステムにも問い合わせ
@@ -506,6 +526,7 @@ class RAGWizardsWorker(BaseWorker):
             return combined_results
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Enhanced RAG search error: {e}")
             return []
 
@@ -520,7 +541,9 @@ class RAGWizardsWorker(BaseWorker):
             related_gaps = []
 
             for gap_id, gap in detector.detected_gaps.items():
+                # Process each item in collection
                 if query.lower() in gap.topic.lower() or query.lower() in gap.description.lower():
+                    # Complex condition - consider breaking down
                     related_gaps.append({
                         'gap_id': gap.gap_id,
                         'topic': gap.topic,
@@ -535,6 +558,7 @@ class RAGWizardsWorker(BaseWorker):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Wizard insights error: {e}")
             return {}
 
@@ -556,6 +580,7 @@ class RAGWizardsWorker(BaseWorker):
             return spell_id
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to store wizard knowledge: {e}")
             return None
 
@@ -570,10 +595,16 @@ class RAGWizardsWorker(BaseWorker):
                     return False
             return True
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"設定検証エラー: {e}")
             return False
 
-    async def handle_error(self, error: Exception, context: Optional[Dict[str, Any]] = None) -> None:
+    async def handle_error(
+        self,
+        error: Exception,
+        context: Optional[Dict[str,
+        Any]] = None
+    ) -> None:
         """エラーハンドリング"""
         error_info = {
             "worker": self.__class__.__name__,
@@ -612,6 +643,7 @@ class RAGWizardsWorker(BaseWorker):
             }
 
         except Exception as e:
+            # Handle specific exception case
             await self.handle_error(e, {"message": message})
             return None
 
@@ -641,14 +673,17 @@ class RAGWizardsWorker(BaseWorker):
 
             # リソース解放
             if hasattr(self, 'connection') and self.connection:
+                # Complex condition - consider breaking down
                 await self.connection.close()
 
             # 一時ファイル削除
             if hasattr(self, 'temp_dir') and self.temp_dir.exists():
+                # Complex condition - consider breaking down
                 import shutil
                 shutil.rmtree(self.temp_dir)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"クリーンアップエラー: {e}")
 
         self.logger.info(f"{self.__class__.__name__} クリーンアップ完了")
@@ -676,6 +711,7 @@ class RAGWizardsWorker(BaseWorker):
                 self.work_dir.mkdir(parents=True, exist_ok=True)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"初期化エラー: {e}")
             raise
 
@@ -707,6 +743,7 @@ class RAGWizardsWorker(BaseWorker):
 
         # RAG賢者との接続状況確認
         if self.soul_binding_system and self.wizard_node:
+            # Complex condition - consider breaking down
             binding_status = self.soul_binding_system.get_soul_binding_status()
             status["active_bindings"] = binding_status.get("active_bindings", 0)
 

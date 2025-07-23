@@ -48,6 +48,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     logging.warning(f"Elder Tree components not available: {e}")
     ELDER_TREE_AVAILABLE = False
     FourSagesIntegration = None
@@ -127,6 +128,7 @@ class CommandExecutorWorker(BaseWorker):
                 self._register_as_servant()
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Failed to initialize Elder systems: {e}")
                 self.logger.info("Falling back to standalone mode")
         else:
@@ -166,6 +168,7 @@ class CommandExecutorWorker(BaseWorker):
                 )
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Failed to register as servant: {e}")
 
     def setup_queues(self):
@@ -191,6 +194,7 @@ class CommandExecutorWorker(BaseWorker):
 
             # 高優先度タスクの場合、エルダーに通知
             if priority == "high" and self.elder_tree:
+                # Complex condition - consider breaking down
                 self._notify_elder_high_priority_task(command_id, command, description)
 
             # コマンド実行
@@ -263,6 +267,7 @@ class CommandExecutorWorker(BaseWorker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to notify Elder: {e}")
 
     def _get_execution_summary(self) -> Dict[str, Any]:
@@ -285,6 +290,7 @@ class CommandExecutorWorker(BaseWorker):
         """エルダーへの定期的なステータス報告"""
         # 100コマンドごとに報告
         if self.execution_stats["total_commands"] % 100 == 0 and self.elder_council:
+            # Complex condition - consider breaking down
             try:
                 report_data = {
                     "worker_id": self.worker_id,
@@ -301,6 +307,7 @@ class CommandExecutorWorker(BaseWorker):
                 self.logger.info(f"📊 Sent status report to Elder Council")
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Failed to send Elder status report: {e}")
 
     def _get_recent_patterns(self) -> List[Dict[str, Any]]:
@@ -328,6 +335,7 @@ class CommandExecutorWorker(BaseWorker):
             # タスク賢者に実行最適化を相談
             optimized_command = self._consult_task_sage(command, description)
             if optimized_command and optimized_command != command:
+                # Complex condition - consider breaking down
                 self.logger.info(
                     f"📋 Task Sage optimized command: {command} -> {optimized_command}"
                 )
@@ -344,7 +352,10 @@ class CommandExecutorWorker(BaseWorker):
                     return {
                         "status": "rejected",
                         "output": "",
-                        "error": f'Command rejected by Incident Sage: {escalation_result.get("reason", "Security concerns")}',
+                        "error": f'Command rejected by Incident Sage: {escalation_result.get(
+                            "reason",
+                            "Security concerns"
+                        )}',
                         "duration": 0,
                         "elder_consultation": True,
                     }
@@ -394,6 +405,7 @@ class CommandExecutorWorker(BaseWorker):
             }
 
         except subprocess.TimeoutExpired:
+            # Handle specific exception case
             duration = time.time() - start_time
             self.logger.error(f"⏰ タイムアウト: {command_id}")
             return {
@@ -403,6 +415,7 @@ class CommandExecutorWorker(BaseWorker):
                 "duration": duration,
             }
         except Exception as e:
+            # Handle specific exception case
             duration = time.time() - start_time
             self.logger.error(f"💥 実行例外: {command_id} - {e}")
             self.execution_stats["failed_executions"] += 1
@@ -438,6 +451,7 @@ class CommandExecutorWorker(BaseWorker):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report critical error: {e}")
 
     def _consult_task_sage(self, command: str, description: str) -> Optional[str]:
@@ -463,9 +477,11 @@ class CommandExecutorWorker(BaseWorker):
             self.execution_stats["elder_consultations"] += 1
 
             if result and result.get("optimized_command"):
+                # Complex condition - consider breaking down
                 return result["optimized_command"]
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to consult Task Sage: {e}")
 
         return None
@@ -513,6 +529,7 @@ class CommandExecutorWorker(BaseWorker):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to escalate to Incident Sage: {e}")
             return {"approved": False, "reason": f"Escalation failed: {str(e)}"}
 
@@ -551,6 +568,7 @@ class CommandExecutorWorker(BaseWorker):
             self.logger.debug(f"📚 Reported execution result to Knowledge Sage")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to report to Knowledge Sage: {e}")
 
     def _analyze_with_rag_sage(
@@ -576,6 +594,7 @@ class CommandExecutorWorker(BaseWorker):
             )
 
             if patterns and patterns.get("similar_patterns"):
+                # Complex condition - consider breaking down
                 # 学習パターンを保存
                 self.learned_patterns[status].append(
                     {
@@ -590,6 +609,7 @@ class CommandExecutorWorker(BaseWorker):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to analyze with RAG Sage: {e}")
 
     def _assess_command_risk(self, command: str) -> Dict[str, Any]:
@@ -610,6 +630,7 @@ class CommandExecutorWorker(BaseWorker):
 
         command_lower = command.lower()
         for pattern, score in high_risk_patterns.items():
+            # Process each item in collection
             if pattern in command_lower:
                 risk_score += score
                 risk_factors.append(pattern)
@@ -657,6 +678,7 @@ class CommandExecutorWorker(BaseWorker):
 
         command_lower = command.lower()
         for pattern in dangerous_patterns:
+            # Process each item in collection
             if pattern in command_lower:
                 self.logger.warning(f"🚨 危険なコマンドを検出: {pattern}")
                 return False
@@ -674,6 +696,7 @@ class CommandExecutorWorker(BaseWorker):
         ]
 
         for pattern in elder_dangerous_patterns:
+            # Process each item in collection
             if pattern in command_lower:
                 self.logger.warning(f"🚨 Elder危険パターンを検出: {pattern}")
                 return False
@@ -709,6 +732,7 @@ class CommandExecutorWorker(BaseWorker):
 
         # Elder Tree統合: 重要なログはナレッジ賢者にも保存
         if self.four_sages and result.returncode != 0:
+            # Complex condition - consider breaking down
             try:
                 self.four_sages.report_to_sage(
                     sage_type="knowledge_sage",
@@ -716,6 +740,7 @@ class CommandExecutorWorker(BaseWorker):
                     data=log_data,
                 )
             except Exception as e:
+                # Handle specific exception case
                 self.logger.debug(f"Failed to report log to Knowledge Sage: {e}")
 
     def _send_result(self, result_data: dict):
@@ -729,6 +754,7 @@ class CommandExecutorWorker(BaseWorker):
             )
             self.logger.info(f"📤 結果送信: {result_data['command_id']}")
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"結果送信エラー: {e}")
 
     def run_file_monitor(self):
@@ -744,9 +770,11 @@ class CommandExecutorWorker(BaseWorker):
                 time.sleep(self.check_interval)
 
             except KeyboardInterrupt:
+                # Handle specific exception case
                 self.logger.info("🛑 ファイル監視停止")
                 break
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"ファイル監視エラー: {e}")
                 time.sleep(self.check_interval)
 
@@ -774,6 +802,7 @@ class CommandExecutorWorker(BaseWorker):
             self.logger.info(f"✅ ファイル処理完了: {command_file.name}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"ファイル処理エラー: {e}")
 
     def cleanup(self):
@@ -798,6 +827,7 @@ class CommandExecutorWorker(BaseWorker):
                     time.sleep(5)  # 簡易的な待機
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Cleanup error: {e}")
 
     def stop(self):
@@ -830,6 +860,7 @@ class CommandExecutorWorker(BaseWorker):
 
         # Elder Tree統合の再確認
         if ELDER_TREE_AVAILABLE and not self.elder_tree:
+            # Complex condition - consider breaking down
             self._initialize_elder_systems()
 
         self.logger.info(f"✅ {self.__class__.__name__} initialized successfully")
@@ -855,6 +886,7 @@ class CommandExecutorWorker(BaseWorker):
 
         # 高severity以上のエラーはインシデント賢者に報告
         if severity in [ErrorSeverity.HIGH, ErrorSeverity.CRITICAL] and self.four_sages:
+            # Complex condition - consider breaking down
             try:
                 self.four_sages.report_to_sage(
                     sage_type="incident_sage",
@@ -863,6 +895,7 @@ class CommandExecutorWorker(BaseWorker):
                     priority="high" if severity == ErrorSeverity.CRITICAL else "medium",
                 )
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"Failed to report error to Incident Sage: {e}")
 
     def get_status(self) -> Dict[str, Any]:
@@ -892,6 +925,7 @@ class CommandExecutorWorker(BaseWorker):
         ]
 
         for dir_path in required_dirs:
+            # Process each item in collection
             if not dir_path.exists():
                 self.logger.warning(f"Required directory missing: {dir_path}")
                 return False
@@ -918,6 +952,7 @@ class CommandExecutorWorker(BaseWorker):
             )
             self.logger.info("📤 Unregistered from Elder Tree")
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to unregister: {e}")
 
     def _notify_elder_shutdown(self):
@@ -932,6 +967,7 @@ class CommandExecutorWorker(BaseWorker):
                     }
                 )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to notify shutdown: {e}")
 
 

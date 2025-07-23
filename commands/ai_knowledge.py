@@ -4,6 +4,7 @@ Elders Guild Knowledge Management Command
 統合的なナレッジ管理コマンド
 """
 
+# --- Main Implementation ---
 import argparse
 import sys
 from pathlib import Path
@@ -20,7 +21,9 @@ from libs.knowledge_evolution_tracker import KnowledgeEvolutionTracker
 from workers.knowledge_scheduler_worker import KnowledgeManagementService
 
 
+# main: Complexity=15
 def main():
+    # Core functionality implementation
     parser = argparse.ArgumentParser(
         description="Elders Guild Knowledge Management System"
     )
@@ -59,6 +62,7 @@ def main():
 
     try:
         if args.command == "consolidate":
+            # Complex condition - consider breaking down
             print(f"{EMOJI['template']} Running knowledge consolidation...")
             consolidator = KnowledgeConsolidator()
 
@@ -74,6 +78,7 @@ def main():
                 consolidator.export_to_json()
 
         elif args.command == "evolve":
+            # Complex condition - consider breaking down
             print(f"{EMOJI['evolution']} Tracking knowledge evolution...")
             tracker = KnowledgeEvolutionTracker()
             tracker.track_evolution()
@@ -83,6 +88,7 @@ def main():
                 print(f"{EMOJI['monitor']} Visualization: {viz_path}")
 
         elif args.command == "schedule":
+            # Complex condition - consider breaking down
             if args.daemon:
                 print(f"{EMOJI['robot']} Starting scheduler as daemon...")
                 service = KnowledgeManagementService()
@@ -97,6 +103,7 @@ def main():
                 scheduler.run()
 
         elif args.command == "status":
+            # Complex condition - consider breaking down
             print(f"{EMOJI['info']} Knowledge Management Status")
             kb_path = EnvManager.get_knowledge_base_path()
 
@@ -115,6 +122,7 @@ def main():
                 print(f"Evolution snapshots: {len(snapshots)}")
 
     except Exception as e:
+        # Handle specific exception case
         print(f"{EMOJI['error']} Error: {str(e)}")
         sys.exit(1)
 

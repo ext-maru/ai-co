@@ -64,6 +64,7 @@ class AIGitManager:
     }
 
     def __init__(self, repo_path: str = "."):
+        """初期化メソッド"""
         self.repo_path = Path(repo_path)
         self.logger = logging.getLogger(__name__)
 

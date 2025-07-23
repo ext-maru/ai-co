@@ -106,7 +106,8 @@ class TDDGuardian(AncientElderBase):
                 result.add_violation(
                     severity=ViolationSeverity.MEDIUM,
                     title="TDD audit timeout",
-                    description=f"Audit timed out after {timeout} seconds. Consider using quick_mode=True",
+                    description=f"Audit timed out after {timeout} seconds. Consider using " \
+                        "quick_mode=True",
                     metadata={"category": "system", "timeout": timeout}
                 )
                 result.add_metric("tdd_compliance_score", 0.0)

@@ -81,6 +81,7 @@ class ElderTreeMonitor:
     """Elder Tree階層監視システム"""
 
     def __init__(self, config_path: str):
+        """初期化メソッド"""
         self.config = self._load_config(config_path)
         self.grand_elder_status = None
         self.elder_council_status = []

@@ -31,6 +31,7 @@ try:
     from libs.four_sages_integration import FourSagesIntegration
     ELDER_INTEGRATION_AVAILABLE = True
 except ImportError:
+    # Handle specific exception case
     ELDER_INTEGRATION_AVAILABLE = False
 
 # Celeryアプリケーション設定
@@ -107,6 +108,7 @@ class CeleryTaskWorkerConfig:
         ]
         
         for path in claude_paths:
+            # Process each item in collection
             try:
                 result = subprocess.run([path, "--version"], 
                                       capture_output=True, text=True, timeout=5)
@@ -159,6 +161,7 @@ def claude_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
         
         # 4賢者相談（オプション）
         if options.get('enable_sage_consultation', False) and task_config.elder_integration:
+            # Complex condition - consider breaking down
             sage_result = sage_consultation.delay({
                 'task_id': task_id,
                 'task_data': task_data,
@@ -175,6 +178,7 @@ def claude_task(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
         }
         
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"{EMOJI['error']} Claude task失敗: {task_id} - {str(e)}")
         
         # エラー通知
@@ -253,6 +257,7 @@ def sage_consultation(self, consultation_data: Dict[str, Any]) -> Dict[str, Any]
         }
         
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"{EMOJI['error']} 4賢者相談失敗: {task_id} - {str(e)}")
         return {
             'success': False,
@@ -301,6 +306,7 @@ def notification_task(self, notification_data: Dict[str, Any]) -> Dict[str, Any]
         }
         
     except Exception as e:
+        # Handle specific exception case
         logger.error(f"{EMOJI['error']} 通知タスク失敗: {notification_type} - {str(e)}")
         return {
             'success': False,
@@ -349,8 +355,10 @@ def _execute_claude_cli(task_id: str, prompt: str, context: Dict, options: Dict)
         }
         
     except subprocess.TimeoutExpired:
+        # Handle specific exception case
         raise Exception("Claude CLI実行がタイムアウトしました")
     except Exception as e:
+        # Handle specific exception case
         raise Exception(f"Claude CLI実行エラー: {str(e)}")
 
 
@@ -365,6 +373,7 @@ def _consult_knowledge_sage(request: Dict) -> Dict[str, Any]:
             'confidence': 0.85
         }
     except Exception as e:
+        # Handle specific exception case
         return {'sage': 'knowledge', 'status': 'error', 'error': str(e)}
 
 
@@ -378,6 +387,7 @@ def _consult_task_sage(request: Dict) -> Dict[str, Any]:
             'priority_score': 0.7
         }
     except Exception as e:
+        # Handle specific exception case
         return {'sage': 'task', 'status': 'error', 'error': str(e)}
 
 
@@ -391,6 +401,7 @@ def _consult_incident_sage(request: Dict) -> Dict[str, Any]:
             'mitigation': 'リスク軽減策'
         }
     except Exception as e:
+        # Handle specific exception case
         return {'sage': 'incident', 'status': 'error', 'error': str(e)}
 
 
@@ -404,6 +415,7 @@ def _consult_rag_sage(request: Dict) -> Dict[str, Any]:
             'relevance_score': 0.9
         }
     except Exception as e:
+        # Handle specific exception case
         return {'sage': 'rag', 'status': 'error', 'error': str(e)}
 
 

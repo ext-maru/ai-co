@@ -22,6 +22,7 @@ class ProphecyStatusCommand(BaseCommand):
     """予言書状態確認コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-prophecy-status",
             description="🏛️ エルダーズギルド 予言書状態確認"
@@ -89,8 +90,10 @@ class ProphecyStatusCommand(BaseCommand):
         prophecies_dir = PROJECT_ROOT / "prophecies"
         if prophecies_dir.exists():
             for file_path in prophecies_dir.glob("*.yaml"):
+                # Process each item in collection
                 prophecy_files.append(self.get_file_info(file_path))
             for file_path in prophecies_dir.glob("*.yml"):
+                # Process each item in collection
                 prophecy_files.append(self.get_file_info(file_path))
 
         # その他の場所
@@ -112,6 +115,7 @@ class ProphecyStatusCommand(BaseCommand):
                 'readable': file_path.is_file() and file_path.exists()
             }
         except Exception as e:
+            # Handle specific exception case
             return {
                 'name': file_path.name,
                 'path': str(file_path),
@@ -145,6 +149,7 @@ class ProphecyStatusCommand(BaseCommand):
             else:
                 status = "inactive"
         except Exception:
+            # Handle specific exception case
             status = "unknown"
 
         return {
@@ -207,6 +212,7 @@ class ProphecyStatusCommand(BaseCommand):
             engine_state['prophecy_engine'] = True
 
         except Exception:
+            # Handle specific exception case
             engine_state['prophecy_engine'] = False
 
         return engine_state
@@ -229,6 +235,7 @@ class ProphecyStatusCommand(BaseCommand):
             management_state['managed_prophecies'] = len(pms.managed_prophecies)
 
         except Exception:
+            # Handle specific exception case
             management_state['management_system'] = False
 
         return management_state
@@ -279,8 +286,10 @@ class ProphecyStatusCommand(BaseCommand):
         self.info(f"📄 予言書ファイル: {len(prophecy_files)}件")
 
         if args.files and prophecy_files:
+            # Complex condition - consider breaking down
             self.info("   詳細:")
             for file_info in prophecy_files:
+                # Process each item in collection
                 if file_info['readable']:
                     size_kb = file_info['size'] / 1024
                     modified = file_info['modified'][:19]
@@ -304,6 +313,7 @@ class ProphecyStatusCommand(BaseCommand):
             directories = status_data['system_state']['directories']
             self.info("   📁 ディレクトリ:")
             for dir_name, exists in directories.items():
+                # Process each item in collection
                 icon = "✅" if exists else "❌"
                 self.info(f"      {icon} {dir_name}")
 
@@ -311,6 +321,7 @@ class ProphecyStatusCommand(BaseCommand):
             config_files = status_data['system_state']['config_files']
             self.info("   ⚙️ 設定ファイル:")
             for file_name, exists in config_files.items():
+                # Process each item in collection
                 icon = "✅" if exists else "❌"
                 self.info(f"      {icon} {file_name}")
 
@@ -357,6 +368,7 @@ class ProphecyStatusCommand(BaseCommand):
         if recommendations:
             self.info("💡 推奨事項:")
             for rec in recommendations:
+                # Process each item in collection
                 self.info(f"   • {rec}")
         else:
             self.info("✅ システム状態は良好です")

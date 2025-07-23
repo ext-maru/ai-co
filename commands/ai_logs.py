@@ -25,6 +25,7 @@ class AILogsCommand(BaseCommand):
     """ログ表示コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="logs", description="Elders Guild のログを表示")
         self.logs_dir = self.project_root / "logs"
 
@@ -60,6 +61,7 @@ class AILogsCommand(BaseCommand):
             else:
                 return self._show_logs(args)
         except Exception as e:
+            # Handle specific exception case
             if args.debug:
                 import traceback
 
@@ -83,6 +85,7 @@ class AILogsCommand(BaseCommand):
         table.add_column("最終更新", style="white")
 
         for log_file in sorted(log_files):
+            # Process each item in collection
             stat = log_file.stat()
             size = self._format_size(stat.st_size)
             mtime = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
@@ -156,6 +159,7 @@ class AILogsCommand(BaseCommand):
                 console.print("[yellow]表示するログがありません[/yellow]")
 
         except Exception as e:
+            # Handle specific exception case
             console.print(f"[red]ログ読み込みエラー: {e}[/red]")
 
     def _tail_follow(self, log_file: Path, grep: str = None):
@@ -177,22 +181,27 @@ class AILogsCommand(BaseCommand):
                 tail_proc.stdout.close()
 
                 for line in grep_proc.stdout:
+                    # Process each item in collection
                     console.print(line.rstrip())
             else:
                 # tail -f のみ
                 proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, text=True)
 
                 for line in proc.stdout:
+                    # Process each item in collection
                     console.print(line.rstrip())
 
         except KeyboardInterrupt:
+            # Handle specific exception case
             console.print("\n[yellow]ログ表示を終了しました[/yellow]")
         except Exception as e:
+            # Handle specific exception case
             console.print(f"[red]リアルタイム表示エラー: {e}[/red]")
 
     def _format_size(self, size: int) -> str:
         """ファイルサイズをフォーマット"""
         for unit in ["B", "KB", "MB", "GB"]:
+            # Process each item in collection
             if size < 1024.0:
                 return f"{size:.1f} {unit}"
             size /= 1024.0

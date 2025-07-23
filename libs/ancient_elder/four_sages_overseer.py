@@ -72,7 +72,8 @@ class SageConsultationTracker:
         # 相談パターン
         self.consultation_patterns = {
             SageType.KNOWLEDGE: [
-                re.compile(r'knowledge.*sage|sage.*knowledge|knowledge.*consult|consult.*knowledge', re.IGNORECASE),
+                re.compile(r'knowledge.*sage|sage.*knowledge|knowledge.*consult|consult.*knowledge' \
+                    'knowledge.*sage|sage.*knowledge|knowledge.*consult|consult.*knowledge', re.IGNORECASE),
                 re.compile(r'知識.*相談|相談.*知識|知識.*賢者|ナレッジ.*賢者', re.IGNORECASE),
             ],
             SageType.TASK: [
@@ -80,7 +81,8 @@ class SageConsultationTracker:
                 re.compile(r'タスク.*相談|相談.*タスク|タスク.*賢者', re.IGNORECASE),
             ],
             SageType.INCIDENT: [
-                re.compile(r'incident.*sage|sage.*incident|incident.*consult|consult.*incident', re.IGNORECASE),
+                re.compile(r'incident.*sage|sage.*incident|incident.*consult|consult.*incident' \
+                    'incident.*sage|sage.*incident|incident.*consult|consult.*incident', re.IGNORECASE),
                 re.compile(r'インシデント.*相談|相談.*インシデント|インシデント.*賢者', re.IGNORECASE),
             ],
             SageType.RAG: [
@@ -125,7 +127,11 @@ class SageConsultationTracker:
                 "overall_consultation_score": 0.0
             }
             
-    def _get_consultation_records(self, file_path: str, time_window: timedelta) -> List[Dict[str, Any]]:
+    def _get_consultation_records(
+        self,
+        file_path: str,
+        time_window: timedelta
+    ) -> List[Dict[str, Any]]:
         """Git履歴から相談記録を取得"""
         try:
             since_date = (datetime.now() - time_window).strftime("%Y-%m-%d")
@@ -191,7 +197,12 @@ class SageConsultationTracker:
             
         return analysis
         
-    def _detect_consultation_violations(self, analysis: Dict[str, Any], file_path: str) -> List[Dict[str, Any]]:
+    def _detect_consultation_violations(
+        self,
+        analysis: Dict[str,
+        Any],
+        file_path: str
+    ) -> List[Dict[str, Any]]:
         """相談義務違反を検出"""
         violations = []
         
@@ -254,7 +265,11 @@ class SageActivityAnalyzer:
             collaboration_analysis = self._analyze_sage_collaboration(time_window)
             
             # 実質性違反を検出
-            violations = self._detect_activity_violations(activity_analysis, collaboration_analysis, target_path)
+            violations = self._detect_activity_violations(
+                activity_analysis,
+                collaboration_analysis,
+                target_path
+            )
             
             return {
                 "target_path": target_path,
@@ -262,7 +277,10 @@ class SageActivityAnalyzer:
                 "sage_activities": activity_analysis,
                 "collaboration_analysis": collaboration_analysis,
                 "violations": violations,
-                "overall_activity_score": self._calculate_activity_score(activity_analysis, collaboration_analysis)
+                "overall_activity_score": self._calculate_activity_score(
+                    activity_analysis,
+                    collaboration_analysis
+                )
             }
             
         except Exception as e:
@@ -492,7 +510,8 @@ class FourSagesOverseer(AncientElderBase):
         consultation_score = consultation_result.get("overall_consultation_score", 0)
         if consultation_score < 70:
             recommendations.append(
-                "Increase consultation frequency with all four sages (Knowledge, Task, Incident, RAG)"
+                "Increase consultation frequency with all four sages (Knowledge, Task, " \
+                    "Incident, RAG)"
             )
             
         # 活動実質性改善提案

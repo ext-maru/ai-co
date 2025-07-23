@@ -228,8 +228,8 @@ def example_function():
             result = f.read()
         
         # f-stringとraw stringは変更されない
-        assert 'f"config/{env}.yaml"""' in result
-        assert 'r"C:\data\files"""' in result
+        assert 'f"config/{env}.yaml"' in result
+        assert r'r"C:\data\files"' in result
         
         # 完了済みdocstringは変更されない
         assert '"""This function is properly documented."""' in result

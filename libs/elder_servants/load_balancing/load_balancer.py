@@ -702,7 +702,8 @@ class LoadBalancer:
                 # ステータス変更ログ
                 if node.health_status != new_status:
                     self.logger.info(
-                        f"Health status changed for {node.servant.name}: {node.health_status.value} -> {new_status.value}"
+                        f"Health status changed for {node.servant.name}: {node.health_status." \
+                            "value} -> {new_status.value}"
                     )
                     node.health_status = new_status
 

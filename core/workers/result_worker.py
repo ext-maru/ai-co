@@ -31,6 +31,7 @@ from features.notification.slack_notifier_v2 import SlackNotifierV2
 
 class ResultWorker:
     def __init__(self):
+        """初期化メソッド"""
         # Slack通知の初期化
         self.slack_notifier = SlackNotifierV2()
         self.slack_notifier_v1 = SlackNotifier()  # フォールバック用

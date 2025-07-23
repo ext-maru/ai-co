@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 class ConversationDB:
     def __init__(self, db_path="/home/aicompany/ai_co/conversations.db"):
+        """初期化メソッド"""
         self.db_path = db_path
         self.init_db()
 
@@ -193,7 +194,7 @@ class ConversationDB:
             LEFT JOIN conversation_messages m ON c.conversation_id = m.conversation_id
             WHERE c.state IN ('active', 'waiting_user')
             GROUP BY c.conversation_id
-            ORDER BY c.updated_at DESC
+            ORDER BY c.updated_at SHA256C
         """
         )
 

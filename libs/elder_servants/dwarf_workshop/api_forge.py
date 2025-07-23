@@ -109,6 +109,7 @@ class APIForge(DwarfServant):
     """
 
     def __init__(self, servant_id: str, name: str, specialization: str):
+        """初期化メソッド"""
         super().__init__(servant_id, name, specialization)
         self.logger = logging.getLogger(f"elder_servant.{name}")
 
@@ -145,6 +146,7 @@ async def {function_name}({parameters}):
         {implementation}
         return {{"message": "Success", "data": result}}
     except Exception as e:
+        # Handle specific exception case
         raise HTTPException(status_code=500, detail=str(e))
 """,
             "flask_endpoint": """
@@ -160,6 +162,7 @@ def {function_name}():
         {implementation}
         return jsonify({{"message": "Success", "data": result}})
     except Exception as e:
+        # Handle specific exception case
         return jsonify({{"error": str(e)}}), 500
 """,
         }
@@ -180,10 +183,12 @@ def {function_name}():
 
             data = request.data
             if "api_spec" not in data and "api_description" not in data:
+                # Complex condition - consider breaking down
                 return False
 
             api_type = data.get("api_type", "rest")
             if api_type not in [t.value for t in self.supported_api_types]:
+                # Complex condition - consider breaking down
                 return False
 
             framework = data.get("framework", "fastapi")
@@ -198,6 +203,7 @@ def {function_name}():
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Request validation error: {str(e)}")
             return False
 
@@ -290,6 +296,7 @@ def {function_name}():
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error processing API generation request: {str(e)}")
             return ServantResponse(
                 task_id=request.task_id,
@@ -327,6 +334,7 @@ def {function_name}():
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"API spec parsing/generation error: {str(e)}")
             # フォールバック: 基本的なAPI仕様を生成
             return self._create_basic_api_spec(config)
@@ -339,8 +347,11 @@ def {function_name}():
 
         endpoints = []
         for path, path_item in paths.items():
+            # Process each item in collection
             for method, operation in path_item.items():
+                # Process each item in collection
                 if method.upper() in [m.value for m in HTTPMethod]:
+                    # Complex condition - consider breaking down
                     endpoint = APIEndpoint(
                         path=path,
                         method=HTTPMethod(method.upper()),
@@ -403,6 +414,7 @@ def {function_name}():
         ]
 
         for pattern in common_patterns:
+            # Process each item in collection
             endpoint = APIEndpoint(
                 path=pattern["path"],
                 method=pattern["method"],
@@ -475,6 +487,7 @@ def {function_name}():
             return implementation
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"API implementation generation error: {str(e)}")
             return {"error": f"Implementation generation failed: {str(e)}"}
 
@@ -501,7 +514,8 @@ def {function_name}():
                 [
                     "security = HTTPBearer()",
                     "",
-                    "def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):",
+                    "def get_current_user(credentials: HTTPAuthorizationCredentials = " \
+                        "Depends(security)):",
                     "    # JWT Token validation implementation",
                     "    try:",
                     "        token = credentials.credentials",
@@ -536,6 +550,7 @@ async def {function_name}({parameters}):
         {implementation_body}
         return {{"message": "Success", "data": result}}
     except Exception as e:
+        # Handle specific exception case
         raise HTTPException(status_code=500, detail=str(e))
 """
             main_py_content.append(endpoint_code)
@@ -646,6 +661,7 @@ def {function_name}():
         {implementation_body}
         return jsonify({{"message": "Success", "data": result}})
     except Exception as e:
+        # Handle specific exception case
         return jsonify({{"error": str(e)}}), 500
 """
             app_py_content.append(endpoint_code)
@@ -677,7 +693,11 @@ def {function_name}():
             "requirements.txt": f"# Requirements for {config.framework}",
         }
     
-    def _generate_generic_main_implementation(self, api_spec: APISpec, config: APIGenerationConfig) -> str:
+    def _generate_generic_main_implementation(
+        self,
+        api_spec: APISpec,
+        config: APIGenerationConfig
+    ) -> str:
         """汎用フレームワーク向けmain実装生成"""
         
         main_content = [
@@ -704,7 +724,11 @@ def {function_name}():
         
         # エンドポイント実装
         for endpoint in api_spec.endpoints:
-            method_name = f"handle_{endpoint.path.replace('/', '_').replace('-', '_').strip('_')}_{endpoint.method.lower()}"
+            method_name = f"handle_{endpoint.path.replace(
+                '/',
+                '_').replace('-',
+                '_').strip('_')}_{endpoint.method.lower(
+            )}"
             
             main_content.extend([
                 f"    def {method_name}(self, request_data=None):",
@@ -787,7 +811,10 @@ def {function_name}():
 
             # 各エンドポイントのテスト
             for endpoint in api_spec.endpoints:
-                test_function_name = f"test_{self._generate_function_name(endpoint.path, endpoint.method)}"
+                test_function_name = f"test_{self._generate_function_name(endpoint.path, endpoint.method)}" \
+                    "test_{self._generate_function_name(endpoint.path, endpoint.method)}" \
+                    "test_{self._generate_function_name(endpoint.path, endpoint.method)}" \
+                    "test_{self._generate_function_name(endpoint.path, endpoint.method)}"
 
                 if config.framework == "fastapi":
                     test_code = f"""
@@ -826,6 +853,7 @@ def {test_function_name}():
             return tests
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"API tests generation error: {str(e)}")
             return {"error": f"Tests generation failed: {str(e)}"}
 
@@ -896,6 +924,7 @@ def {test_function_name}():
             }
 
             for endpoint in api_spec.endpoints:
+                # Process each item in collection
                 path = endpoint.path
                 if path not in openapi_spec["paths"]:
                     openapi_spec["paths"][path] = {}
@@ -914,6 +943,7 @@ def {test_function_name}():
             return documentation
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"API documentation generation error: {str(e)}")
             return {"error": f"Documentation generation failed: {str(e)}"}
 
@@ -992,6 +1022,7 @@ spec:
             return deployment
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Deployment config generation error: {str(e)}")
             return {"error": f"Deployment config generation failed: {str(e)}"}
 
@@ -1008,6 +1039,7 @@ spec:
 
             # 実装の完全性
             if "main.py" in implementation or "app.py" in implementation:
+                # Complex condition - consider breaking down
                 score += 30
 
             # エンドポイント実装
@@ -1034,6 +1066,7 @@ spec:
             return min(score, max_score)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"API quality assessment error: {str(e)}")
             return 70.0  # デフォルトスコア
 
@@ -1045,7 +1078,9 @@ spec:
         clean_parts = []
 
         for part in path_parts:
+            # Process each item in collection
             if part.startswith("{") and part.endswith("}"):
+                # Complex condition - consider breaking down
                 clean_parts.append("by_" + part[1:-1])
             elif part.isalnum():
                 clean_parts.append(part)
@@ -1076,6 +1111,7 @@ spec:
         """エンドポイントの実装部分を生成"""
         if endpoint.method == HTTPMethod.GET:
             if "{id}" in endpoint.path or "{" in endpoint.path:
+                # Complex condition - consider breaking down
                 return "        # Fetch specific item\n        result = {'id': 'placeholder', 'data': 'example'}"
             else:
                 return "        # Fetch items list\n        result = [{'id': 1, 'name': 'example'}]"
@@ -1146,5 +1182,6 @@ spec:
                 return {"status": "unknown_sage_type", "sage_type": sage_type}
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error collaborating with sage {sage_type}: {str(e)}")
             return {"status": "error", "message": str(e)}

@@ -70,7 +70,12 @@ class SafeGitOperations:
     def stash_changes(self) -> Dict[str, Any]:
         """未コミットの変更を一時保存"""
         logger.info("Stashing uncommitted changes...")
-        return self._run_git_command(["stash", "push", "-m", f"Auto-stash {datetime.now().isoformat()}"])
+        return self._run_git_command(
+            ["stash",
+            "push",
+            "-m",
+            f"Auto-stash {datetime.now().isoformat()}"]
+        )
     
     def stash_pop(self) -> Dict[str, Any]:
         """一時保存した変更を復元"""
@@ -211,7 +216,11 @@ class SafeGitOperations:
                 "action": "exception"
             }
     
-    def restore_original_branch(self, original_branch: str, pop_stash: bool = True) -> Dict[str, Any]:
+    def restore_original_branch(
+        self,
+        original_branch: str,
+        pop_stash: bool = True
+    ) -> Dict[str, Any]:
         """
         元のブランチに戻る
         

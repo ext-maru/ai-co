@@ -396,7 +396,12 @@ class StrictOutputValidator(AncientMagicBase):
             "details": {"patterns_checked": len(scalability_patterns)}
         }
     
-    def _comprehensive_evaluation(self, checks: List[Dict[str, Any]], code: str) -> ValidationResult:
+    def _comprehensive_evaluation(
+        self,
+        checks: List[Dict[str,
+        Any]],
+        code: str
+    ) -> ValidationResult:
         """包括的評価"""
         all_issues = []
         all_suggestions = []

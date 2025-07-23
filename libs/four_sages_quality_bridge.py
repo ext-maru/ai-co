@@ -89,7 +89,9 @@ class KnowledgeSageQualityBridge:
             knowledge = QualityKnowledge(
                 knowledge_id=pattern_uuid,
                 title=pattern.pattern_name,
-                content=f"Pattern: {pattern.description}\nBefore: {pattern.problematic_code}\nAfter: {pattern.improved_code}",
+                content=f"Pattern: {pattern.description}\nBefore: {pattern.problematic_code}\nAfter: " \
+                    "Pattern: {pattern.description}\nBefore: {pattern.problematic_code}\nAfter: " \
+                    "{pattern.improved_code}",
                 category="pattern",
                 confidence_score=pattern.improvement_score / 100.0,
                 usage_count=0,
@@ -99,7 +101,10 @@ class KnowledgeSageQualityBridge:
             )
             
             self.knowledge_base.append(knowledge)
-            self.patterns_cache[pattern.pattern_type] = self.patterns_cache.get(pattern.pattern_type, []) + [pattern]
+            self.patterns_cache[pattern.pattern_type] = self.patterns_cache.get(
+                pattern.pattern_type,
+                []
+            ) + [pattern]
             
             logger.info(f"📚 Knowledge Sage stored quality pattern: {pattern.pattern_name}")
             return pattern_uuid
@@ -125,7 +130,9 @@ class KnowledgeSageQualityBridge:
             guidance.append("🚨 Critical quality issues detected. Immediate refactoring required.")
             guidance.append("💡 Focus on reducing complexity and adding proper error handling.")
         elif quality_score < 70:
-            guidance.append("⚠️ Quality improvements needed. Consider following Elder Guild standards.")
+            guidance.append("⚠️ Quality improvements needed. Consider following Elder Guild standards." \
+                "⚠️ Quality improvements needed. Consider following Elder Guild standards." \
+                "⚠️ Quality improvements needed. Consider following Elder Guild standards.")
             guidance.append("📚 Review knowledge base for applicable patterns.")
         
         # 問題別ガイダンス
@@ -134,7 +141,9 @@ class KnowledgeSageQualityBridge:
             if issue_type == 'anti_pattern':
                 pattern_name = issue.get('name', '')
                 if pattern_name in self.patterns_cache:
-                    guidance.append(f"🎯 Apply {pattern_name} improvement pattern from knowledge base.")
+                    guidance.append(f"🎯 Apply {pattern_name} improvement pattern from knowledge base." \
+                        "🎯 Apply {pattern_name} improvement pattern from knowledge base." \
+                        "🎯 Apply {pattern_name} improvement pattern from knowledge base.")
                     
         return guidance
 
@@ -151,7 +160,11 @@ class IncidentSageQualityBridge:
             'low': 10        # Minor issues
         }
         
-    async def detect_quality_incident(self, file_analysis: Dict, file_path: str) -> Optional[QualityIncident]:
+    async def detect_quality_incident(
+        self,
+        file_analysis: Dict,
+        file_path: str
+    ) -> Optional[QualityIncident]:
         """品質インシデント検出"""
         quality_score = file_analysis.get('quality_score', 100)
         iron_will = file_analysis.get('iron_will_compliance', True)
@@ -225,7 +238,9 @@ class IncidentSageQualityBridge:
         
     async def escalate_incident(self, incident: QualityIncident):
         """インシデント エスカレーション"""
-        logger.warning(f"🚨 Quality incident escalated: {incident.severity} - {incident.description}")
+        logger.warning(f"🚨 Quality incident escalated: {incident.severity} - {incident.description}" \
+            "🚨 Quality incident escalated: {incident.severity} - {incident.description}" \
+            "🚨 Quality incident escalated: {incident.severity} - {incident.description}")
         
         # Critical/High incidents require immediate action
         if incident.severity in ['critical', 'high']:
@@ -421,12 +436,19 @@ class RAGSageQualityBridge:
             if hasattr(self.quality_engine, 'embedder'):
                 embedding = await self.quality_engine.embedder.generate_embedding(search_text)
                 similar_bugs = await self.quality_engine.db.search_similar_bugs(embedding, 0.7, 10)
-                similar_patterns = await self.quality_engine.db.search_similar_patterns(embedding, 0.7, 10)
+                similar_patterns = await self.quality_engine.db.search_similar_patterns(
+                    embedding,
+                    0.7,
+                    10
+                )
                 
                 results = {
                     'similar_bugs': similar_bugs,
                     'similar_patterns': similar_patterns,
-                    'recommendations': await self._generate_recommendations(similar_bugs, similar_patterns)
+                    'recommendations': await self._generate_recommendations(
+                        similar_bugs,
+                        similar_patterns
+                    )
                 }
                 
                 self.search_cache[cache_key] = results
@@ -438,7 +460,11 @@ class RAGSageQualityBridge:
             logger.error(f"❌ RAG Sage search failed: {e}")
             return {'similar_bugs': [], 'similar_patterns': [], 'recommendations': []}
             
-    async def _generate_recommendations(self, similar_bugs: List, similar_patterns: List) -> List[str]:
+    async def _generate_recommendations(
+        self,
+        similar_bugs: List,
+        similar_patterns: List
+    ) -> List[str]:
         """推奨事項生成"""
         recommendations = []
         
@@ -541,7 +567,10 @@ class FourSagesQualityOrchestrator:
             four_sages_analysis = {
                 'basic_analysis': analysis,
                 'knowledge_sage_guidance': await self.knowledge_sage.generate_quality_guidance(analysis),
-                'incident_sage_alert': await self.incident_sage.detect_quality_incident(analysis, file_path),
+                'incident_sage_alert': await self.incident_sage.detect_quality_incident(
+                    analysis,
+                    file_path
+                ),
                 'task_sage_planning': None,
                 'rag_sage_insights': await self.rag_sage.search_similar_quality_issues(analysis),
                 'orchestrated_recommendations': []

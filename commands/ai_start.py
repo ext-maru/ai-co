@@ -11,7 +11,9 @@ from commands.base_command import BaseCommand
 
 
 class StartCommand(BaseCommand):
+    # Main class implementation
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="start", description="Elders Guild システムを起動します")
 
     def setup_arguments(self):
@@ -35,6 +37,7 @@ class StartCommand(BaseCommand):
         # RabbitMQチェック
         result = self.run_command(["systemctl", "is-active", "rabbitmq-server"])
         if result and result.stdout.strip() != "active":
+            # Complex condition - consider breaking down
             self.warning("RabbitMQが起動していません")
             self.info("起動中...")
             # RabbitMQの起動（sudoが必要な場合は事前に起動しておく）
@@ -54,6 +57,7 @@ class StartCommand(BaseCommand):
                 # sudoなしでの起動を試みる（権限があれば成功）
                 self.run_command(["systemctl", "start", "rabbitmq-server"])
         except subprocess.CalledProcessError:
+            # Handle specific exception case
             self.console.print("[yellow]⚠️  RabbitMQ起動をスキップしました（権限不足）[/yellow]")
             time.sleep(2)
 
@@ -70,6 +74,7 @@ class StartCommand(BaseCommand):
         """既存のtmuxセッション確認"""
         result = self.run_command(["tmux", "has-session", "-t", "elders_guild"])
         if result and result.returncode == 0:
+            # Complex condition - consider breaking down
             self.warning("既存のセッションが見つかりました")
             self.info("ai-stop を実行してから再度お試しください")
             return True
@@ -151,7 +156,8 @@ class StartCommand(BaseCommand):
             log_dir = self.project_root / "logs"
             log_dir.mkdir(exist_ok=True)
 
-            cmd = f"cd {self.project_root} && source venv/bin/activate && nohup python3 workers/command_executor_worker.py > logs/command_executor.log 2>&1 &"
+            cmd = f"cd {self.project_root} && source venv/bin/activate && nohup python3 " \
+                "workers/command_executor_worker.py > logs/command_executor.log 2>&1 &"
             result = subprocess.run(cmd, shell=True)
 
             if result.returncode == 0:
@@ -228,6 +234,7 @@ class StartCommand(BaseCommand):
             headers = ["PID", "CPU%", "MEM%", "コマンド"]
             rows = []
             for proc in processes:
+                # Process each item in collection
                 cmd_short = proc["cmd"].split()[-1] if proc["cmd"] else "unknown"
                 rows.append([proc["pid"], proc["cpu"], proc["mem"], cmd_short])
             self.print_table(headers, rows)

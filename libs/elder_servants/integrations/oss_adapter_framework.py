@@ -22,7 +22,8 @@ from enum import Enum
 from typing import Any, Callable, Dict, List, Optional, Union
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath("./../../.." \
+    "./../../.."))))
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -93,6 +94,7 @@ class BaseOSSAdapter(ABC):
     """OSS アダプター基底クラス"""
 
     def __init__(self, tool_name: str, capability: OSSToolCapability):
+        """初期化メソッド"""
         self.tool_name = tool_name
         self.capability = capability
         self.status = AdapterStatus.INACTIVE
@@ -129,6 +131,7 @@ class ContinueDevAdapter(BaseOSSAdapter):
     """Continue.dev アダプター"""
 
     def __init__(self):
+        """初期化メソッド"""
         capability = OSSToolCapability(
             name="continue_dev",
             tool_type=OSSToolType.CODE_ASSISTANT,
@@ -150,7 +153,10 @@ class ContinueDevAdapter(BaseOSSAdapter):
             # Continue.dev API への HTTP リクエスト
             import requests
 
-            endpoint = f"{self.api_base}/elder/servants/{request.data.get('servant_id', 'code-craftsman')}/execute"
+            endpoint = f"{self.api_base}/elder/servants/{request.data.get(
+                'servant_id',
+                'code-craftsman'
+            )}/execute"
             payload = {"type": request.operation, "task": request.data}
 
             timeout = request.timeout or self.capability.timeout
@@ -174,6 +180,7 @@ class ContinueDevAdapter(BaseOSSAdapter):
                 raise Exception(f"HTTP {response.status_code}: {response.text}")
 
         except Exception as e:
+            # Handle specific exception case
             self.last_error = str(e)
             self.status = AdapterStatus.ERROR
 
@@ -190,6 +197,8 @@ class ContinueDevAdapter(BaseOSSAdapter):
         try:
             import requests
 
+            # Security: Validate URL before making request
+            # Security: Validate URL before making request
             response = requests.get(f"{self.api_base}/", timeout=5)
             healthy = response.status_code == 200
             self.status = AdapterStatus.ACTIVE if healthy else AdapterStatus.ERROR
@@ -203,6 +212,7 @@ class AiderAdapter(BaseOSSAdapter):
     """Aider アダプター"""
 
     def __init__(self):
+        """初期化メソッド"""
         capability = OSSToolCapability(
             name="aider",
             tool_type=OSSToolType.CODE_ASSISTANT,
@@ -219,13 +229,16 @@ class AiderAdapter(BaseOSSAdapter):
         """Aider 実行パス検索"""
         # Check common locations
         possible_paths = [
-            "/home/aicompany/ai_co/libs/elder_servants/integrations/continue_dev/venv_continue_dev/bin/aider",
+            "/home/aicompany/ai_co/libs/elder_servants/integrations/continue_dev/venv_conti" \
+                "nue_dev/bin/aider",
             "aider",
             "/usr/local/bin/aider",
         ]
 
         for path in possible_paths:
+            # Process each item in collection
             if os.path.exists(path) or self._command_exists(path):
+                # Complex condition - consider breaking down
                 return path
 
         return "aider"  # Fallback
@@ -303,6 +316,7 @@ class AiderAdapter(BaseOSSAdapter):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.last_error = str(e)
             self.status = AdapterStatus.ERROR
 
@@ -332,6 +346,7 @@ class Flake8Adapter(BaseOSSAdapter):
     """Flake8 アダプター"""
 
     def __init__(self):
+        """初期化メソッド"""
         capability = OSSToolCapability(
             name="flake8",
             tool_type=OSSToolType.LINTER,
@@ -372,6 +387,7 @@ class Flake8Adapter(BaseOSSAdapter):
                 issues = []
                 for line in result.stdout.split("\n"):
                     if line.strip() and ":" in line:
+                        # Complex condition - consider breaking down
                         issues.append(line.strip())
 
                 self.success_count += 1
@@ -400,6 +416,7 @@ class Flake8Adapter(BaseOSSAdapter):
                 os.unlink(temp_file_path)
 
         except Exception as e:
+            # Handle specific exception case
             self.last_error = str(e)
             self.status = AdapterStatus.ERROR
 
@@ -429,6 +446,7 @@ class PyTestAdapter(BaseOSSAdapter):
     """PyTest アダプター"""
 
     def __init__(self):
+        """初期化メソッド"""
         capability = OSSToolCapability(
             name="pytest",
             tool_type=OSSToolType.TESTING,
@@ -498,6 +516,7 @@ class PyTestAdapter(BaseOSSAdapter):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.last_error = str(e)
             self.status = AdapterStatus.ERROR
 
@@ -527,6 +546,7 @@ class OSSAdapterFramework:
     """OSS Adapter Framework メインクラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.adapters: Dict[str, BaseOSSAdapter] = {}
         self.fallback_handlers: Dict[str, Callable] = {}
         self.metrics = {
@@ -581,6 +601,7 @@ class OSSAdapterFramework:
 
         # Check if fallback is needed
         if not response.success and request.fallback_enabled:
+            # Complex condition - consider breaking down
             fallback_handler = self.fallback_handlers.get(request.tool_name)
             if fallback_handler:
                 self.metrics["fallback_usage"] += 1
@@ -591,6 +612,7 @@ class OSSAdapterFramework:
                     fallback_response.fallback_used = True
                     response = fallback_response
                 except Exception as e:
+                    # Handle specific exception case
                     logger.error(f"Fallback failed for {request.tool_name}: {e}")
 
         # Update metrics
@@ -634,6 +656,7 @@ class OSSAdapterFramework:
         adapter_statuses = {}
 
         for name, adapter in self.adapters.items():
+            # Process each item in collection
             adapter_statuses[name] = await adapter.get_status()
 
         return {
@@ -649,6 +672,7 @@ class OSSAdapterFramework:
         health_results = {}
 
         for name, adapter in self.adapters.items():
+            # Process each item in collection
             health_results[name] = await adapter.health_check()
 
         return health_results

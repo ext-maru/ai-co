@@ -193,7 +193,11 @@ class IssueAnalyzer:
         
         return sections
     
-    def _extract_requirements(self, sections: List[IssueSection], full_text: str) -> List[RequirementItem]:
+    def _extract_requirements(
+        self,
+        sections: List[IssueSection],
+        full_text: str
+    ) -> List[RequirementItem]:
         """要件を抽出"""
         requirements = []
         
@@ -285,7 +289,11 @@ class IssueAnalyzer:
         
         return details
     
-    def _is_duplicate_requirement(self, req: RequirementItem, existing: List[RequirementItem]) -> bool:
+    def _is_duplicate_requirement(
+        self,
+        req: RequirementItem,
+        existing: List[RequirementItem]
+    ) -> bool:
         """重複要件かチェック"""
         for existing_req in existing:
             # 説明文の類似度をチェック（簡易版）
@@ -294,7 +302,11 @@ class IssueAnalyzer:
                 return True
         return False
     
-    def _extract_api_specs(self, sections: List[IssueSection], full_text: str) -> List[Dict[str, Any]]:
+    def _extract_api_specs(
+        self,
+        sections: List[IssueSection],
+        full_text: str
+    ) -> List[Dict[str, Any]]:
         """API仕様を抽出"""
         api_specs = []
         
@@ -311,7 +323,10 @@ class IssueAnalyzer:
                 
                 # HTTPメソッドを検出
                 method_match = re.search(r'(GET|POST|PUT|DELETE|PATCH)', 
-                                       full_text[max(0, full_text.find(endpoint)-20):full_text.find(endpoint)+20])
+                                       full_text[max(
+                                           0,
+                                           full_text.find(endpoint)-20):full_text.find(endpoint)+20]
+                                       )
                 method = method_match.group(1) if method_match else 'GET'
                 
                 api_spec = {

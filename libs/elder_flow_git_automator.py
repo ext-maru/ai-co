@@ -241,7 +241,8 @@ class ElderFlowGitAutomator:
             formatted += f"\n\n{description}"
 
         # Claude Elder署名追加
-        formatted += "\n\n🤖 Generated with Elder Flow\n\nCo-Authored-By: Claude Elder <elder@elders-guild.ai>"
+        formatted += "\n\n🤖 Generated with Elder Flow\n\nCo-Authored-By: Claude Elder " \
+            "<elder@elders-guild.ai>"
 
         return formatted
 
@@ -434,7 +435,10 @@ class ElderFlowGitAutomator:
             # 成功
             results["success"] = True
             results["final_message"] = (
-                f"Successfully committed and pushed: {commit_result.get('commit_short_hash', 'unknown')}"
+                f"Successfully committed and pushed: {commit_result.get(
+                    'commit_short_hash',
+                    'unknown'
+                )}"
             )
             results["commit_hash"] = commit_result.get("commit_hash", "unknown")
 
@@ -447,7 +451,8 @@ class ElderFlowGitAutomator:
     def validate_commit_message(self, message: str) -> Dict:
         """コミットメッセージ検証"""
         # Conventional Commits形式チェック
-        conventional_pattern = r"^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\(.+\))?: .{1,50}"
+        conventional_pattern = r"^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\(.+\))?: .{1,50}" \
+            "^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\(.+\))?: .{1,50}"
 
         is_conventional = bool(re.match(conventional_pattern, message))
 

@@ -136,7 +136,7 @@ class KnowledgeGrimoireAdapter:
             SELECT spell_name, content, created_at
             FROM knowledge_grimoire
             WHERE content ILIKE '%{query}%'
-            ORDER BY created_at DESC
+            ORDER BY created_at SHA256C
             LIMIT {limit};
             """
 

@@ -256,7 +256,8 @@ class GitHubTestEnvironment:
             main_sha = ref_response.json()["object"]["sha"]
             
             # 新しいブランチ作成
-            create_url = f"{self.base_url}/repos/{self.test_repo_owner}/{self.test_repo_name}/git/refs"
+            create_url = f"{self.base_url}/repos/{self.test_repo_owner}/{self.test_repo_name}/git/refs" \
+                "{self.base_url}/repos/{self.test_repo_owner}/{self.test_repo_name}/git/refs"
             create_data = {
                 "ref": f"refs/heads/{branch_name}",
                 "sha": main_sha
@@ -278,7 +279,8 @@ class GitHubTestEnvironment:
         """テストIssueクローズ"""
         try:
             headers = {"Authorization": f"token {self.test_token}"}
-            url = f"{self.base_url}/repos/{self.test_repo_owner}/{self.test_repo_name}/issues/{issue_number}"
+            url = f"{self.base_url}/repos/{self.test_repo_owner}/{self." \
+                "test_repo_name}/issues/{issue_number}"
             
             data = {"state": "closed"}
             response = requests.patch(url, headers=headers, json=data)
@@ -293,7 +295,8 @@ class GitHubTestEnvironment:
         """テストPRクローズ"""
         try:
             headers = {"Authorization": f"token {self.test_token}"}
-            url = f"{self.base_url}/repos/{self.test_repo_owner}/{self.test_repo_name}/pulls/{pr_number}"
+            url = f"{self.base_url}/repos/{self.test_repo_owner}/{self." \
+                "test_repo_name}/pulls/{pr_number}"
             
             data = {"state": "closed"}
             response = requests.patch(url, headers=headers, json=data)
@@ -308,7 +311,8 @@ class GitHubTestEnvironment:
         """テストブランチ削除"""
         try:
             headers = {"Authorization": f"token {self.test_token}"}
-            url = f"{self.base_url}/repos/{self.test_repo_owner}/{self.test_repo_name}/git/refs/heads/{branch_name}"
+            url = f"{self.base_url}/repos/{self.test_repo_owner}/{self." \
+                "test_repo_name}/git/refs/heads/{branch_name}"
             
             response = requests.delete(url, headers=headers)
             
@@ -585,7 +589,8 @@ class A2AEndToEndTester:
             
             # GitHub APIアクセステスト
             headers = {"Authorization": f"token {self.github_env.test_token}"}
-            url = f"{self.github_env.base_url}/repos/{self.github_env.test_repo_owner}/{self.github_env.test_repo_name}/issues/{test_issue['number']}"
+            url = f"{self.github_env.base_url}/repos/{self.github_env.test_repo_owner}/{self." \
+                "github_env.test_repo_name}/issues/{test_issue["number']}"
             
             response = requests.get(url, headers=headers)
             

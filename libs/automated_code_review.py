@@ -720,7 +720,8 @@ class ReviewEngine:
         else:
             grade = "Needs Improvement"
 
-        return f"Code quality: {grade} ({score}/100). Found {issue_count} issues ({critical_count} critical)."
+        return f"Code quality: {grade} ({score}/100). Found {issue_count} issues ({critical_count} " \
+            "critical)."
 
     def _create_markdown_report(self, review_data: Dict[str, Any]) -> str:
         """Markdownレポート作成"""

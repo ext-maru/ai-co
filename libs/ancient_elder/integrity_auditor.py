@@ -399,9 +399,12 @@ class GitIntegrityAnalyzer:
                                         severity=ViolationSeverity.MEDIUM,
                                         file_path="git_commit",
                                         line_number=0,
-                                        evidence=f"Commit message claims major work but only {files_changed} files changed",
-                                        description="Commit message overstates the amount of work done",
-                                        suggestion="Make commit messages proportional to actual changes"
+                                        evidence=f"Commit message claims major work but only " \
+                                            "{files_changed} files changed",
+                                        description="Commit message overstates the amount of work done" \
+                                            "Commit message overstates the amount of work done",
+                                        suggestion="Make commit messages proportional to actual " \
+                                            "changes"
                                     ))
         
         except Exception as e:
@@ -489,7 +492,8 @@ class AncientElderIntegrityAuditor(BaseSoul):
                 processing_time_ms=processing_time
             )
             
-            logger.info(f"✅ Integrity audit completed. Score: {integrity_score}/100, Violations: {len(all_violations)}")
+            logger.info(f"✅ Integrity audit completed. Score: {integrity_score}/100, Violations: " \
+                "{len(all_violations)}")
             
             return result
             
@@ -602,7 +606,10 @@ class AncientElderIntegrityAuditor(BaseSoul):
         
         return violations
     
-    async def _verify_sage_consultations(self, claimed_consultations: List[str]) -> List[ViolationReport]:
+    async def _verify_sage_consultations(
+        self,
+        claimed_consultations: List[str]
+    ) -> List[ViolationReport]:
         """4賢者相談の検証"""
         violations = []
         
@@ -683,7 +690,8 @@ class AncientElderIntegrityAuditor(BaseSoul):
         violation_types = set(v.type for v in violations)
         
         if ViolationType.FALSE_COMPLETION in violation_types:
-            recommendations.append("Complete all TODO/FIXME items before claiming implementation finished")
+            recommendations.append("Complete all TODO/FIXME items before claiming implementation finished" \
+                "Complete all TODO/FIXME items before claiming implementation finished")
         
         if ViolationType.STUB_IMPLEMENTATION in violation_types:
             recommendations.append("Replace stub implementations with actual working code")
@@ -695,7 +703,8 @@ class AncientElderIntegrityAuditor(BaseSoul):
             recommendations.append("Follow TDD principles: write tests first, then implementation")
         
         if ViolationType.SAGE_FRAUD in violation_types:
-            recommendations.append("Ensure all claimed sage consultations are properly executed and logged")
+            recommendations.append("Ensure all claimed sage consultations are properly executed and logged" \
+                "Ensure all claimed sage consultations are properly executed and logged")
         
         if not recommendations:
             recommendations.append("Maintain current high standards of integrity")
@@ -713,7 +722,8 @@ class AncientElderIntegrityAuditor(BaseSoul):
             logger.critical(f"🔥 Critical violations detected: {len(critical_violations)}")
             
             # 緊急レポートファイル作成
-            emergency_report_path = Path(f"emergency_integrity_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+            emergency_report_path = Path(f"emergency_integrity_report_{datetime.now().strftime(" \
+                "emergency_integrity_report_{datetime.now().strftime("%Y%m%d_%H%M%S')}.json")
             with open(emergency_report_path, 'w') as f:
                 json.dump({
                     "timestamp": datetime.now().isoformat(),

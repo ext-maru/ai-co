@@ -13,13 +13,15 @@ import tempfile
 from pathlib import Path
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath("./../../.." \
+    "./../../.."))))
 
 
 class AiderElderIntegrationTest:
     """Test Aider integration with Elder System"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.test_dir = None
         # Get absolute path to aider
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -38,7 +40,9 @@ Basic service implementation for testing Aider integration
 """
 
 class ElderService:
+    # Main class implementation
     def __init__(self, name: str):
+        """初期化メソッド"""
         self.name = name
         self.active = False
 
@@ -60,6 +64,7 @@ import unittest
 from elder_service import ElderService
 
 class TestElderService(unittest.TestCase):
+    # Main class implementation
     def setUp(self):
         self.service = ElderService("test_service")
 
@@ -102,6 +107,7 @@ elder-api-endpoint: http://localhost:8000
         }
 
         for filename, content in test_files.items():
+            # Process each item in collection
             file_path = os.path.join(self.test_dir, filename)
             with open(file_path, "w") as f:
                 f.write(content)
@@ -133,6 +139,7 @@ elder-api-endpoint: http://localhost:8000
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ Aider basic test error: {e}")
             return False
 
@@ -167,6 +174,7 @@ coding standards with proper docstrings and type hints.
                     content = f.read()
 
                 if "def status(" in content and "dict" in content:
+                    # Complex condition - consider breaking down
                     print("✅ Aider code modification successful")
                     print(f"📝 Modified content includes status method")
                     return True
@@ -178,6 +186,7 @@ coding standards with proper docstrings and type hints.
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ Aider modification test error: {e}")
             return False
 
@@ -222,6 +231,7 @@ The test should verify the returned dictionary structure and values.
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ Aider test generation error: {e}")
             return False
 
@@ -271,6 +281,7 @@ Refactor the ElderService class to follow Elder Guild patterns:
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ Aider Elder integration error: {e}")
             return False
 
@@ -322,12 +333,14 @@ patterns, and scalability features while maintaining Elder Guild standards.
 
                 if found_improvements >= 3:
                     print(
-                        f"✅ Aider Sage consultation integration successful ({found_improvements}/5 improvements)"
+                        f"✅ Aider Sage consultation integration successful " \
+                            "({found_improvements}/5 improvements)"
                     )
                     return True
                 else:
                     print(
-                        f"❌ Aider Sage consultation insufficient ({found_improvements}/5 improvements)"
+                        f"❌ Aider Sage consultation insufficient ({found_improvements}/5 " \
+                            "improvements)"
                     )
                     return False
             else:
@@ -335,12 +348,14 @@ patterns, and scalability features while maintaining Elder Guild standards.
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ Aider Sage consultation error: {e}")
             return False
 
     def cleanup(self):
         """Cleanup test environment"""
         if self.test_dir and os.path.exists(self.test_dir):
+            # Complex condition - consider breaking down
             shutil.rmtree(self.test_dir)
             print(f"🧹 Cleaned up test directory: {self.test_dir}")
 
@@ -365,6 +380,7 @@ patterns, and scalability features while maintaining Elder Guild standards.
 
             results = []
             for test_name, test_func in tests:
+                # Process each item in collection
                 print(f"\n🧪 Running: {test_name}")
                 result = test_func()
                 results.append((test_name, result))
@@ -376,6 +392,7 @@ patterns, and scalability features while maintaining Elder Guild standards.
             total = len(results)
 
             for test_name, result in results:
+                # Process each item in collection
                 status = "✅ PASS" if result else "❌ FAIL"
                 print(f"  {status} {test_name}")
 
@@ -391,6 +408,7 @@ patterns, and scalability features while maintaining Elder Guild standards.
                 return False
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ Integration test error: {e}")
             return False
         finally:

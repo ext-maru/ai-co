@@ -31,6 +31,7 @@ class nWoVisionExtension(BaseCommand):
     """nWoビジョン拡張システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("ai_nwo_vision", "RAGエルダービジョンにnWo戦略展望を追加")
         self.nwo_council = nWoDailyCouncil()
 
@@ -369,14 +370,17 @@ class nWoVisionExtension(BaseCommand):
 
         print("📈 技術トレンド:")
         for trend in rag_vision["tech_trends"][:3]:
+            # Process each item in collection
             print(f"  {trend}")
 
         print("\n💰 市場予測:")
         for prediction in rag_vision["market_predictions"][:2]:
+            # Process each item in collection
             print(f"  {prediction}")
 
         print(f"\n🎯 推奨アクション:")
         for action in rag_vision["recommended_actions"][:2]:
+            # Process each item in collection
             print(f"  {action}")
 
         print("\n" + "=" * 60)
@@ -390,6 +394,7 @@ class nWoVisionExtension(BaseCommand):
 
         print("\n🚀 4大柱の進化ビジョン:")
         for pillar_name, vision_data in nwo_vision["pillar_visions"].items():
+            # Process each item in collection
             pillar_display = {
                 "mind_reading": "🧠 Mind Reading Protocol",
                 "instant_reality": "⚡ Instant Reality Engine",
@@ -403,14 +408,17 @@ class nWoVisionExtension(BaseCommand):
 
         print(f"\n📅 今日の戦略フォーカス:")
         for focus in nwo_vision["today_strategic_focus"]:
+            # Process each item in collection
             print(f"  {focus}")
 
         print(f"\n🔮 重大突破予測:")
         for breakthrough in nwo_vision["breakthrough_predictions"][:2]:
+            # Process each item in collection
             print(f"  {breakthrough}")
 
         print(f"\n💪 競合優位性:")
         for advantage in nwo_vision["competitive_advantages"][:2]:
+            # Process each item in collection
             print(f"  {advantage}")
 
         # 今日の具体的アクション表示
@@ -419,6 +427,7 @@ class nWoVisionExtension(BaseCommand):
         print("-" * 40)
 
         for action in nwo_vision["today_actions"]:
+            # Process each item in collection
             print(f"\n⏱️ {action['time']}")
             print(f"📋 {action['action']}")
             print(f"   詳細: {action['detail']}")

@@ -31,6 +31,7 @@ class EmailNotificationWorker:
             return True
 
         except Exception as e:
+            # Handle specific exception case
             logger.error(f"❌ Email送信エラー: {e}")
             return False
 

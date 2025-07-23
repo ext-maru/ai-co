@@ -112,12 +112,18 @@ class IssueTypeClassifier:
         """正規表現パターンの初期化"""
         self.patterns = {
             "architecture_marker": re.compile(r'\[(ARCHITECTURE|DESIGN|設計)\]', re.IGNORECASE),
-            "implementation_marker": re.compile(r'(implement|実装|develop|開発|create|作成)', re.IGNORECASE),
+            "implementation_marker": re.compile(
+                r'(implement|実装|develop|開発|create|作成)',
+                re.IGNORECASE
+            ),
             "bug_marker": re.compile(r'(\[BUG\]|\[FIX\]|【バグ】|【修正】)', re.IGNORECASE),
             "technical_terms": {
                 "oauth": re.compile(r'(oauth|jwt|token|認証)', re.IGNORECASE),
                 "api": re.compile(r'(api|rest|endpoint|エンドポイント)', re.IGNORECASE),
-                "performance": re.compile(r'(performance|cache|optimize|パフォーマンス|最適化)', re.IGNORECASE),
+                "performance": re.compile(
+                    r'(performance|cache|optimize|パフォーマンス|最適化)',
+                    re.IGNORECASE
+                ),
                 "database": re.compile(r'(database|db|sql|データベース)', re.IGNORECASE)
             }
         }
@@ -176,7 +182,11 @@ class IssueTypeClassifier:
         title = (issue.get("title") or "").lower()
         body = (issue.get("body") or "").lower()
         labels_raw = issue.get("labels") or []
-        labels = [label.lower() if isinstance(label, str) else label.get("name", "").lower() for label in labels_raw]
+        labels = [label.lower(
+            ) if isinstance(label,
+            str) else label.get("name",
+            "").lower(
+        ) for label in labels_raw]
         
         # タイトルとボディを結合してテキスト分析
         full_text = f"{title} {body}"
@@ -386,7 +396,11 @@ class IssueTypeClassifier:
     def _determine_priority(self, issue: Dict[str, Any]) -> str:
         """Issueの優先度を判定"""
         labels_raw = issue.get("labels") or []
-        labels = [label.lower() if isinstance(label, str) else label.get("name", "").lower() for label in labels_raw]
+        labels = [label.lower(
+            ) if isinstance(label,
+            str) else label.get("name",
+            "").lower(
+        ) for label in labels_raw]
         title = (issue.get("title") or "").lower()
         
         # ラベルに基づく優先度判定

@@ -75,7 +75,8 @@ class WorkerController:
                     time.sleep(0.5)
 
                 # 新しいウィンドウを作成して起動
-                cmd = f"cd {self.ai_company_root} && source venv/bin/activate && python3 workers/task_worker.py {worker_id}"
+                cmd = f"cd {self.ai_company_root} && source venv/bin/activate && python3 " \
+                    "workers/task_worker.py {worker_id}"
                 subprocess.run(
                     ["tmux", "new-window", "-t", "elders_guild", "-n", window_name, cmd]
                 )

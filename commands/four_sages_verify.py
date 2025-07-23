@@ -22,6 +22,7 @@ class FourSagesVerifyCommand(BaseCommand):
     """4賢者検証コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="four-sages-verify",
             description="🧙‍♂️ 4賢者による実装計画検証システム"
@@ -109,7 +110,11 @@ class FourSagesVerifyCommand(BaseCommand):
         verification_result = self.evaluate_verification_results(sage_verifications)
 
         # 結果の表示
-        self.display_verification_results(verification_record, sage_verifications, verification_result)
+        self.display_verification_results(
+            verification_record,
+            sage_verifications,
+            verification_result
+        )
 
         # 承認判定
         approval_decision = self.make_approval_decision(verification_result, args.auto_approve)
@@ -118,7 +123,12 @@ class FourSagesVerifyCommand(BaseCommand):
         self.display_approval_decision(approval_decision)
 
         # 結果の保存
-        self.save_verification_results(verification_record, sage_verifications, verification_result, approval_decision)
+        self.save_verification_results(
+            verification_record,
+            sage_verifications,
+            verification_result,
+            approval_decision
+        )
 
         return 0 if approval_decision["approved"] else 1
 
@@ -140,7 +150,11 @@ class FourSagesVerifyCommand(BaseCommand):
             "status": "pending"
         }
 
-    def verify_with_four_sages(self, verification_record: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    def verify_with_four_sages(
+        self,
+        verification_record: Dict[str,
+        Any]
+    ) -> Dict[str, Dict[str, Any]]:
         """4賢者による検証"""
         plan = verification_record["plan"]
         implementation = verification_record["implementation"]
@@ -190,7 +204,13 @@ class FourSagesVerifyCommand(BaseCommand):
 
         return sage_verifications
 
-    def knowledge_sage_verify(self, plan: str, implementation: str, timeline: str, tests: str) -> Dict[str, Any]:
+    def knowledge_sage_verify(
+        self,
+        plan: str,
+        implementation: str,
+        timeline: str,
+        tests: str
+    ) -> Dict[str, Any]:
         """ナレッジ賢者による検証"""
         # 過去の知識に基づく検証
         knowledge_coverage = 0.85
@@ -209,7 +229,13 @@ class FourSagesVerifyCommand(BaseCommand):
             "knowledge_gaps": self.identify_knowledge_gaps_for_plan(plan, implementation)
         }
 
-    def task_sage_verify(self, plan: str, implementation: str, timeline: str, dependencies: str) -> Dict[str, Any]:
+    def task_sage_verify(
+        self,
+        plan: str,
+        implementation: str,
+        timeline: str,
+        dependencies: str
+    ) -> Dict[str, Any]:
         """タスク賢者による検証"""
         # タスク管理の観点での検証
         timeline_feasibility = self.assess_timeline_feasibility(plan, timeline)
@@ -224,7 +250,13 @@ class FourSagesVerifyCommand(BaseCommand):
             "milestones": self.generate_milestones(plan, timeline)
         }
 
-    def incident_sage_verify(self, plan: str, implementation: str, risks: str, tests: str) -> Dict[str, Any]:
+    def incident_sage_verify(
+        self,
+        plan: str,
+        implementation: str,
+        risks: str,
+        tests: str
+    ) -> Dict[str, Any]:
         """インシデント賢者による検証"""
         # リスク管理の観点での検証
         risk_assessment = self.assess_identified_risks(risks)
@@ -260,10 +292,12 @@ class FourSagesVerifyCommand(BaseCommand):
 
         # 実装方法の妥当性をチェック
         if any(tech in implementation.lower() for tech in ["flask", "django", "fastapi"]):
+            # Complex condition - consider breaking down
             base_score += 0.1
 
         # テスト戦略の存在をチェック
         if tests != "未指定" and any(test in tests.lower() for test in ["pytest", "unittest", "test"]):
+            # Complex condition - consider breaking down
             base_score += 0.1
 
         return min(base_score, 1.0)
@@ -302,6 +336,7 @@ class FourSagesVerifyCommand(BaseCommand):
 
         # 技術選択の妥当性をチェック
         if any(tech in implementation.lower() for tech in ["api", "database", "framework"]):
+            # Complex condition - consider breaking down
             base_score += 0.1
 
         # リソース計画の存在をチェック
@@ -418,7 +453,12 @@ class FourSagesVerifyCommand(BaseCommand):
         """RAG賢者の懸念事項"""
         return ["技術的負債", "保守性の確保"]
 
-    def evaluate_verification_results(self, sage_verifications: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
+    def evaluate_verification_results(
+        self,
+        sage_verifications: Dict[str,
+        Dict[str,
+        Any]]
+    ) -> Dict[str, Any]:
         """検証結果の評価"""
         total_score = 0
         sage_count = len(sage_verifications)
@@ -427,6 +467,7 @@ class FourSagesVerifyCommand(BaseCommand):
         all_concerns = []
 
         for sage_id, verification in sage_verifications.items():
+            # Process each item in collection
             total_score += verification["score"]
             all_recommendations.extend(verification["recommendations"])
             all_concerns.extend(verification["concerns"])
@@ -453,12 +494,18 @@ class FourSagesVerifyCommand(BaseCommand):
         else:
             return "不十分 - 計画の見直しが必要"
 
-    def make_approval_decision(self, verification_result: Dict[str, Any], auto_approve: bool) -> Dict[str, Any]:
+    def make_approval_decision(
+        self,
+        verification_result: Dict[str,
+        Any],
+        auto_approve: bool
+    ) -> Dict[str, Any]:
         """承認判定"""
         meets_threshold = verification_result["meets_threshold"]
         average_score = verification_result["average_score"]
 
         if auto_approve and meets_threshold:
+            # Complex condition - consider breaking down
             approved = True
             approval_type = "自動承認"
         elif meets_threshold:
@@ -508,11 +555,13 @@ class FourSagesVerifyCommand(BaseCommand):
             if verification["recommendations"]:
                 self.info("    💡 推奨事項:")
                 for rec in verification["recommendations"]:
+                    # Process each item in collection
                     self.info(f"      • {rec}")
 
             if verification["concerns"]:
                 self.info("    ⚠️ 懸念事項:")
                 for concern in verification["concerns"]:
+                    # Process each item in collection
                     self.info(f"      • {concern}")
             self.info("")
 
@@ -537,6 +586,7 @@ class FourSagesVerifyCommand(BaseCommand):
 
         self.info("  🚀 次のステップ:")
         for step in approval_decision["next_steps"]:
+            # Process each item in collection
             self.info(f"    • {step}")
 
     def save_verification_results(self, verification_record: Dict[str, Any],

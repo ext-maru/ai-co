@@ -223,13 +223,16 @@ class ParallelExecutionManager(BaseManager):
 
             # インデックス作成
             conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_execution_groups_project ON execution_groups(project_id)"
+                "CREATE INDEX IF NOT EXISTS idx_execution_groups_project ON " \
+                    "execution_groups(project_id)"
             )
             conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_execution_history_task ON execution_history(task_id)"
+                "CREATE INDEX IF NOT EXISTS idx_execution_history_task ON " \
+                    "execution_history(task_id)"
             )
             conn.execute(
-                "CREATE INDEX IF NOT EXISTS idx_resource_usage_type ON resource_usage(resource_type)"
+                "CREATE INDEX IF NOT EXISTS idx_resource_usage_type ON " \
+                    "resource_usage(resource_type)"
             )
 
     def _connect_rabbitmq(self):
@@ -793,7 +796,8 @@ class ParallelExecutionManager(BaseManager):
             self.execution_stats["parallel_groups"] += 1
 
             logger.info(
-                f"📊 グループ実行完了: {group_id} ({duration:.1f}秒, 成功{len(results)-failed_count}/{len(results)})"
+                f"📊 グループ実行完了: {group_id} ({duration:.1f}秒, " \
+                    "成功{len(results)-failed_count}/{len(results)})"
             )
 
         except Exception as e:

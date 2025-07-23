@@ -35,8 +35,14 @@ class ReopenedIssueTracker:
                 if hasattr(event, 'event'):
                     events.append({
                         'event': event.event,
-                        'created_at': event.created_at.isoformat() if hasattr(event, 'created_at') else None,
-                        'actor': event.actor.login if hasattr(event, 'actor') and event.actor else None,
+                        'created_at': event.created_at.isoformat(
+                            ) if hasattr(event,
+                            'created_at'
+                        ) else None,
+                        'actor': event.actor.login if hasattr(
+                            event,
+                            'actor'
+                        ) and event.actor else None,
                         'commit_id': event.commit_id if hasattr(event, 'commit_id') else None,
                     })
             

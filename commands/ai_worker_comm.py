@@ -18,6 +18,7 @@ class AIWorkerCommCommand(BaseCommand):
     """ワーカー間通信管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-worker-comm", description="ワーカー間通信管理", version="1.0.0"
         )
@@ -46,6 +47,7 @@ class AIWorkerCommCommand(BaseCommand):
                 return self._monitor_communication(args)
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"ワーカー通信エラー: {str(e)}")
 
     def _show_status(self, args) -> CommandResult:
@@ -64,6 +66,7 @@ class AIWorkerCommCommand(BaseCommand):
 
         print(f"\n🤖 アクティブワーカー:")
         for worker in workers:
+            # Process each item in collection
             print(f"  - {worker}: ✅ 稼働中")
 
         print(f"\n📊 通信統計:")
@@ -81,6 +84,7 @@ class AIWorkerCommCommand(BaseCommand):
     def _send_message(self, args) -> CommandResult:
         """メッセージ送信"""
         if not args.worker or not args.message:
+            # Complex condition - consider breaking down
             return CommandResult(success=False, message="ワーカー名とメッセージを指定してください")
 
         print(f"📨 メッセージ送信")
@@ -120,6 +124,7 @@ class AIWorkerCommCommand(BaseCommand):
         ]
 
         for log in logs[: args.limit]:
+            # Process each item in collection
             print(f"\n⏰ {log['time']}")
             print(f"  {log['from']} → {log['to']}")
             print(f"  タイプ: {log['type']}")
@@ -144,6 +149,7 @@ class AIWorkerCommCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIWorkerCommCommand()
     sys.exit(command.run())
 

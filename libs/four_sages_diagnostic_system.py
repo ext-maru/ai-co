@@ -197,12 +197,13 @@ class FourSagesDiagnosticSystem:
         if pg_config_found:
             # Try to connect
             try:
-                # Default PostgreSQL connection attempt
+                # PostgreSQL connection attempt with environment variables
+                import os
                 conn = psycopg2.connect(
-                    host="localhost",
-                    database="ai_co",
-                    user="postgres",
-                    password="password"
+                    host=os.getenv("DB_HOST", "localhost"),
+                    database=os.getenv("DB_NAME", "ai_co"),
+                    user=os.getenv("DB_USER", "postgres"),
+                    password=os.getenv("DB_PASSWORD", "")  # 環境変数から取得
                 )
                 conn.close()
                 
@@ -289,7 +290,14 @@ class FourSagesDiagnosticSystem:
             try:
                 if proc.info['cmdline']:
                     cmdline = ' '.join(proc.info['cmdline'])
-                    if any(keyword in cmdline.lower() for keyword in ['sage', 'elder', 'rag', 'knowledge', 'task', 'incident']):
+                    if any(
+                        keyword in cmdline.lower() for keyword in ['sage',
+                        'elder',
+                        'rag',
+                        'knowledge',
+                        'task',
+                        'incident']
+                    ):
                         sage_processes.append({
                             'pid': proc.info['pid'],
                             'name': proc.info['name'],

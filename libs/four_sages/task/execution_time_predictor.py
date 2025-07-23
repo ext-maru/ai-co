@@ -219,7 +219,8 @@ class ExecutionTimePredictor:
 
             logger.info(
                 f"Predicted execution time for task {task.id}: "
-                f"{predicted_time:.0f}s ({confidence_interval[0]:.0f}s - {confidence_interval[1]:.0f}s)"
+                f"{predicted_time:.0f}s ({confidence_interval[0]:.0f}s - " \
+                    "{confidence_interval[1]:.0f}s)"
             )
 
             return predicted_time, confidence_interval

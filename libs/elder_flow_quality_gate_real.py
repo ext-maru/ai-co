@@ -324,7 +324,10 @@ class CodeQualityCheckerReal(BaseQualityChecker):
                         "severity": "high" if func["complexity"] > 15 else "medium",
                         "file": func.get("file", ""),
                         "line": func.get("line", 0),
-                        "message": f"Function '{func.get('name', '')}' has complexity {func.get('complexity', 0)}",
+                        "message": f"Function '{func.get(
+                            'name',
+                            '')}' has complexity {func.get('complexity', 0
+                        )}",
                     }
                 )
 

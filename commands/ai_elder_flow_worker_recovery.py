@@ -36,6 +36,7 @@ class WorkerRecoverySystem:
     """Worker復旧システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path(__file__).parent.parent
         self.workers = {
             "intelligent_pm_worker_simple.py": {
@@ -103,6 +104,7 @@ class WorkerRecoverySystem:
         status = {}
 
         for worker_name, worker_info in self.workers.items():
+            # Process each item in collection
             worker_path = self.project_root / worker_info["path"]
 
             # ファイル存在確認
@@ -118,6 +120,7 @@ class WorkerRecoverySystem:
                 is_running = bool(result.stdout.strip())
                 pid = result.stdout.strip() if is_running else None
             except Exception:
+                # Handle specific exception case
                 is_running = False
                 pid = None
 
@@ -139,6 +142,7 @@ class WorkerRecoverySystem:
         recovery_results = {}
 
         for worker_name, status in current_status.items():
+            # Process each item in collection
             if not status["is_running"]:
                 logger.info(f"🔧 復旧開始: {worker_name}")
 
@@ -191,6 +195,7 @@ class WorkerRecoverySystem:
                         logger.error(f"❌ {worker_name} ファイル不存在")
 
                 except Exception as e:
+                    # Handle specific exception case
                     recovery_results[worker_name] = {
                         "status": "exception",
                         "error": str(e)
@@ -226,6 +231,7 @@ class WorkerRecoverySystem:
 
         running_count = 0
         for worker_name, status in post_recovery_status.items():
+            # Process each item in collection
             worker_validation = {
                 "is_running": status["is_running"],
                 "file_exists": status["file_exists"],
@@ -252,7 +258,12 @@ class WorkerRecoverySystem:
         logger.info(f"✅ 品質ゲート完了: {running_count}/{len(self.workers)} Workers稼働中")
         return validation_result
 
-    async def generate_council_report(self, sage_advice: dict, recovery: dict, validation: dict) -> dict:
+    async def generate_council_report(
+        self,
+        sage_advice: dict,
+        recovery: dict,
+        validation: dict
+    ) -> dict:
         """エルダー評議会向けWorker復旧報告書生成"""
         logger.info("📊 評議会報告書生成中...")
 
@@ -270,7 +281,11 @@ class WorkerRecoverySystem:
                 "workers_processed": len(recovery),
                 "successful_recoveries": len([r for r in recovery.values() if r.get("status") == "recovered"]),
                 "already_running": len([r for r in recovery.values() if r.get("status") == "already_running"]),
-                "failed_recoveries": len([r for r in recovery.values() if r.get("status") in ["failed", "exception", "file_missing"]])
+                "failed_recoveries": len(
+                    [r for r in recovery.values() if r.get("status") in ["failed",
+                    "exception",
+                    "file_missing"]]
+                )
             },
             "quality_validation": {
                 "validation_passed": validation["overall_status"] in ["passed", "partial"],
@@ -334,6 +349,7 @@ class WorkerRecoverySystem:
         current_status = await self.check_worker_status()
         print(f"  現在のWorker状況:")
         for worker, status in current_status.items():
+            # Process each item in collection
             running_status = "🟢" if status["is_running"] else "🔴"
             print(f"    {running_status} {worker}: {'稼働中' if status['is_running'] else '停止中'}")
 
@@ -350,7 +366,11 @@ class WorkerRecoverySystem:
 
         # Phase 4: 評議会報告
         print("\n📊 Phase 4: 評議会報告書生成")
-        council_report = await self.generate_council_report(sage_advice, recovery_results, validation)
+        council_report = await self.generate_council_report(
+            sage_advice,
+            recovery_results,
+            validation
+        )
         print(f"  報告書ステータス: {council_report['recommendation']}")
 
         # Phase 5: 継続監視
@@ -387,6 +407,7 @@ class WorkerRecoverySystem:
         print("\n📋 最終Worker状況:")
         running_workers = 0
         for worker, status in final_status.items():
+            # Process each item in collection
             running_icon = "🟢" if status["is_running"] else "🔴"
             pid_info = f" (PID: {status['pid']})" if status["is_running"] and status["pid"] else ""
             print(f"  {running_icon} {worker}: {'稼働中' if status['is_running'] else '停止中'}{pid_info}")
@@ -401,12 +422,14 @@ class WorkerRecoverySystem:
     def cleanup_processes(self):
         """プロセスクリーンアップ"""
         for worker_name, process in self.running_processes.items():
+            # Process each item in collection
             try:
                 if process.poll() is None:  # まだ実行中
                     logger.info(f"🔄 {worker_name} プロセス継続稼働中 (PID: {process.pid})")
                 else:
                     logger.info(f"⚠️ {worker_name} プロセス終了済み")
             except Exception as e:
+                # Handle specific exception case
                 logger.error(f"❌ {worker_name} プロセス確認エラー: {e}")
 
 

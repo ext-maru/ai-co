@@ -542,7 +542,10 @@ class RealtimeMonitoringEnhancement:
             anomaly_score = min(1.0, z_score / 5)
 
             return AnomalyEvent(
-                event_id=f"anomaly_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{key.replace(':', '_')}",
+                event_id=f"anomaly_{datetime.now(
+                    ).strftime('%Y%m%d_%H%M%S')}_{key.replace(':',
+                    '_'
+                )}",
                 detected_at=datetime.now(),
                 anomaly_type=self._determine_anomaly_type(metric),
                 severity=self._determine_severity(anomaly_score),

@@ -37,6 +37,7 @@ try:
 
     ELDER_SYSTEM_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     print(f"Elder system not available: {e}")
     ELDER_SYSTEM_AVAILABLE = False
     FourSagesIntegration = None
@@ -91,6 +92,7 @@ class CommandExecutorWatchdog:
             self.elder_systems_initialized = True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to initialize Elder systems: {e}")
             self.four_sages = None
             self.council_summoner = None
@@ -120,6 +122,7 @@ class CommandExecutorWatchdog:
                 time.sleep(self.check_interval)
 
         except Exception as e:
+            # Handle specific exception case
             self._report_watchdog_error_to_incident_sage(e)
             self.logger.error(f"Watchdog error: {e}")
 
@@ -143,6 +146,7 @@ class CommandExecutorWatchdog:
                     self._escalate_to_claude_elder(failure_data)
 
             except Exception as e:
+                # Handle specific exception case
                 self.logger.error(f"Failed to report executor failure to Elders: {e}")
 
     def handle_signal(self, signum, frame):
@@ -158,9 +162,11 @@ class CommandExecutorWatchdog:
     def check_executor_running(self):
         """Command Executorが動作しているか確認"""
         for proc in psutil.process_iter(["pid", "cmdline"]):
+            # Process each item in collection
             try:
                 cmdline = proc.info.get("cmdline", [])
                 if cmdline and "command_executor_worker.py" in " ".join(cmdline):
+                    # Complex condition - consider breaking down
                     return True
             except:
                 pass
@@ -196,7 +202,9 @@ class CommandExecutorWatchdog:
             cmd = f"""
 cd {PROJECT_ROOT}
 source venv/bin/activate
-tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/command_executor_worker.py'
+tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/command_executor_worker.py' \
+    'python3 workers/command_executor_worker.py' \
+    'python3 workers/command_executor_worker.py'
 """
             subprocess.run(["bash", "-c", cmd], check=True)
 
@@ -221,6 +229,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
                 return False
 
         except subprocess.SubprocessError as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to restart Command Executor: {e}")
 
             # Report restart failure to Incident Sage
@@ -250,6 +259,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
             self.four_sages.report_to_task_sage(report)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report startup to Task Sage: {e}")
 
     def _report_shutdown_to_task_sage(self, signal_num):
@@ -270,6 +280,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
             self.four_sages.report_to_task_sage(report)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report shutdown to Task Sage: {e}")
 
     def _report_restart_attempt_to_task_sage(self):
@@ -288,6 +299,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
             self.four_sages.report_to_task_sage(report)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report restart attempt to Task Sage: {e}")
 
     def _report_successful_restart_to_task_sage(self):
@@ -305,6 +317,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
             self.four_sages.report_to_task_sage(report)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report successful restart to Task Sage: {e}")
 
     def _report_restart_failure_to_incident_sage(self, error):
@@ -323,6 +336,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
             self.four_sages.consult_incident_sage(incident_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report restart failure to Incident Sage: {e}")
 
     def _report_watchdog_error_to_incident_sage(self, error):
@@ -341,6 +355,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
             self.four_sages.consult_incident_sage(incident_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report watchdog error to Incident Sage: {e}")
 
     def _escalate_to_claude_elder(self, failure_data):
@@ -366,6 +381,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
             self.logger.info("Executor failure escalated to Claude Elder")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to escalate to Claude Elder: {e}")
 
     def _escalate_critical_failure_to_claude_elder(self):
@@ -393,6 +409,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
             self.logger.info("Critical executor failure escalated to Claude Elder")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"Failed to escalate critical failure to Claude Elder: {e}"
             )
@@ -426,6 +443,7 @@ tmux new-session -d -s command_executor_{self.restart_count} 'python3 workers/co
             try:
                 status["four_sages_status"] = self.four_sages.get_sages_status()
             except Exception as e:
+                # Handle specific exception case
                 status["four_sages_status"] = f"Error retrieving status: {e}"
 
         return status
@@ -436,6 +454,8 @@ if __name__ == "__main__":
     try:
         watchdog.run()
     except KeyboardInterrupt:
+        # Handle specific exception case
         watchdog.logger.info("Watchdog stopped by user")
     except Exception as e:
+        # Handle specific exception case
         watchdog.logger.error(f"Watchdog failed: {e}")

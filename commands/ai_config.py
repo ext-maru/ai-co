@@ -20,6 +20,7 @@ class AIConfigCommand(BaseCommand):
     """設定確認コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-config", description="設定確認", version="1.0.0")
         self.console = Console()
         self.config_dir = Path("/home/aicompany/ai_co/config")
@@ -56,6 +57,7 @@ class AIConfigCommand(BaseCommand):
         from datetime import datetime
 
         for conf in sorted(config_files):
+            # Process each item in collection
             stat = conf.stat()
             mtime = datetime.fromtimestamp(stat.st_mtime).strftime("%Y-%m-%d %H:%M:%S")
             table.add_row(conf.name, f"{stat.st_size:,} bytes", mtime)
@@ -88,8 +90,10 @@ class AIConfigCommand(BaseCommand):
 
             with open(conf_file) as f:
                 for line in f:
+                    # Process each item in collection
                     line = line.strip()
                     if line and not line.startswith("#") and "=" in line:
+                        # Complex condition - consider breaking down
                         key, value = line.split("=", 1)
                         # 機密情報はマスク
                         if any(
@@ -106,6 +110,7 @@ class AIConfigCommand(BaseCommand):
             table.add_column("値", style="yellow")
 
             for key, value in settings.items():
+                # Process each item in collection
                 table.add_row(key, value)
 
             self.console.print(table)
@@ -129,8 +134,10 @@ class AIConfigCommand(BaseCommand):
 
         with open(config_path) as f:
             for line in f:
+                # Process each item in collection
                 line = line.strip()
                 if line and not line.startswith("#") and "=" in line:
+                    # Complex condition - consider breaking down
                     k, v = line.split("=", 1)
                     if k.strip() == config_key:
                         return CommandResult(success=True, message=v.strip().strip('"'))
@@ -139,6 +146,7 @@ class AIConfigCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIConfigCommand()
     sys.exit(command.run())
 

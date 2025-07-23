@@ -212,7 +212,11 @@ class RequirementExtractor:
         
         return parameters
     
-    def _extract_request_body(self, api_spec: Dict, sections: List[Any]) -> Optional[Dict[str, Any]]:
+    def _extract_request_body(
+        self,
+        api_spec: Dict,
+        sections: List[Any]
+    ) -> Optional[Dict[str, Any]]:
         """リクエストボディの仕様を抽出"""
         method = api_spec.get('method', 'GET')
         

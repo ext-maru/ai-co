@@ -404,7 +404,8 @@ class AbstractMethodValidator:
             elif method == "process_message":
                 new_methods.extend(
                     [
-                        f"{method_indent}def process_message(self, message: Dict[str, Any]) -> Any:",
+                        f"{method_indent}def process_message(self, message: Dict[str, Any]) " \
+                            "-> Any:",
                         f'{method_indent}    """メッセージ処理"""',
                         f"{method_indent}    # TODO: メッセージ処理ロジックを実装してください",
                         f'{method_indent}    logger.info(f"Processing message: {{message}}")',

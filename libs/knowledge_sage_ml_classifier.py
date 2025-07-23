@@ -453,7 +453,8 @@ class KnowledgeSageMLClassifier(KnowledgeSagePostgreSQL):
             documents = await self._fetch_documents_for_clustering(max_documents)
             
             if len(documents) < n_clusters:
-                raise ValueError(f"Not enough documents ({len(documents)}) for {n_clusters} clusters")
+                raise ValueError(f"Not enough documents ({len(documents)}) for {n_clusters} clusters" \
+                    "Not enough documents ({len(documents)}) for {n_clusters} clusters")
             
             # Vectorize documents
             contents = [doc["content"] for doc in documents]

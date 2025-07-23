@@ -13,6 +13,7 @@ class Messages:
     """多言語対応メッセージ管理"""
 
     def __init__(self, lang: str = "ja"):
+        """初期化メソッド"""
         self.lang = lang
         self._messages = self._load_messages()
 

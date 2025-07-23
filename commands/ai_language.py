@@ -60,6 +60,7 @@ def change_language(new_language: str):
 
             print("設定ファイルを更新しました")
         except Exception as e:
+            # Handle specific exception case
             print(f"警告: 設定ファイルの更新に失敗しました: {e}")
 
         return True
@@ -107,9 +108,11 @@ def main():
     command = sys.argv[1].lower()
 
     if command in ["show", "status"]:
+        # Complex condition - consider breaking down
         show_current_language()
 
     elif command == "set":
+        # Complex condition - consider breaking down
         if len(sys.argv) < 3:
             print("エラー: 言語を指定してください")
             print("例: ai-language set ja")
@@ -119,9 +122,11 @@ def main():
         change_language(new_language)
 
     elif command == "test":
+        # Complex condition - consider breaking down
         test_messages()
 
     elif command in ["help", "-h", "--help"]:
+        # Complex condition - consider breaking down
         show_help()
 
     else:

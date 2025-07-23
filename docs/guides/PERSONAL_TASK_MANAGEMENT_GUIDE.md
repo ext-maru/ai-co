@@ -91,7 +91,6 @@ todo-tracker-sync status --user claude_elder
 ## 🔧 Python APIでの使用
 
 ```python
-from libs.todo_tracker_integration import TodoTrackerIntegration
 
 # 個人用統合システム初期化
 integration = TodoTrackerIntegration(

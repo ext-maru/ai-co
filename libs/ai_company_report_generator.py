@@ -64,7 +64,10 @@ class AICompanyReportGenerator:
 """
             
             # ファイル保存
-            filename = f"ai_adoption_{company_data.get('company_name', 'company')}_{datetime.now().strftime('%Y%m%d')}.md"
+            filename = f"ai_adoption_{company_data.get(
+                'company_name',
+                'company')}_{datetime.now().strftime('%Y%m%d'
+            )}.md"
             filepath = self.output_dir / filename
             
             with open(filepath, 'w', encoding='utf-8') as f:

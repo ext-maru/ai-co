@@ -19,6 +19,7 @@ class RabbitMQA2ACommand:
     """RabbitMQ A2A通信管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.command_name = "ai_a2a_rabbitmq"
 
     async def send_message(self, recipient: str, message: str, priority: str = "normal"):
@@ -65,11 +66,15 @@ class RabbitMQA2ACommand:
 
             print("\n📊 RabbitMQ Four Sages Consultation Results:")
             for sage, result in results.items():
+                # Process each item in collection
                 print(f"  🐰🧙‍♂️ {sage}:")
                 if isinstance(result, dict):
                     for key, value in result.items():
+                        # Process each item in collection
                         if key == "result" and isinstance(value, dict):
+                            # Complex condition - consider breaking down
                             for sub_key, sub_value in value.items():
+                                # Process each item in collection
                                 print(f"     {sub_key}: {sub_value}")
                         else:
                             print(f"     {key}: {value}")
@@ -122,6 +127,7 @@ class RabbitMQA2ACommand:
             print("   Type: Topic Exchange")
 
         except Exception as e:
+            # Handle specific exception case
             print(f"❌ RabbitMQ Server: Connection Failed - {e}")
             return
 
@@ -144,6 +150,7 @@ class RabbitMQA2ACommand:
         print("   - Auto-reconnection: Enabled")
 
 async def main():
+    # Core functionality implementation
     parser = argparse.ArgumentParser(description="RabbitMQ A2A Communication Command")
     subparsers = parser.add_subparsers(dest='action', help='Available actions')
 

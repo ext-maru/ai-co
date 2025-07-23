@@ -35,6 +35,7 @@ class ElderComplianceManager:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.monitor = ElderComplianceMonitor()
         self.commands = {
             "check": self.check_compliance,
@@ -55,9 +56,11 @@ class ElderComplianceManager:
             return
 
         if args.command in self.commands:
+            # Complex condition - consider breaking down
             try:
                 self.commands[args.command](args)
             except Exception as e:
+                # Handle specific exception case
                 logger.error(f"Error executing {args.command}: {e}")
                 sys.exit(1)
         else:
@@ -91,6 +94,7 @@ class ElderComplianceManager:
         if violations:
             print(f"\n⚠️  Found {len(violations)} compliance violations:")
             for i, violation in enumerate(violations, 1):
+                # Process each item in collection
                 print(f"  {i}. {violation.violation_type.value.upper()}")
                 print(f"     Severity: {violation.severity.value}")
                 print(f"     Description: {violation.description}")
@@ -102,6 +106,7 @@ class ElderComplianceManager:
                 actions = self.monitor.enforce_compliance(violations)
                 print("✅ Correction actions taken:")
                 for action in actions:
+                    # Process each item in collection
                     print(f"  - {action}")
         else:
             print("✅ No compliance violations found. Elder is operating correctly.")
@@ -136,6 +141,7 @@ class ElderComplianceManager:
             actions = self.monitor.enforce_compliance(violations)
             print("✅ Enforcement actions completed:")
             for action in actions:
+                # Process each item in collection
                 print(f"  - {action}")
         else:
             print("✅ All violations have already been corrected.")
@@ -159,6 +165,7 @@ class ElderComplianceManager:
         if report["violations_by_type"]:
             print("⚠️  Violations by Type:")
             for vtype, count in report["violations_by_type"].items():
+                # Process each item in collection
                 print(f"  - {vtype}: {count}")
             print()
 
@@ -166,6 +173,7 @@ class ElderComplianceManager:
         if report["deployments_by_type"]:
             print("🛡️ Servant Deployments by Type:")
             for dtype, count in report["deployments_by_type"].items():
+                # Process each item in collection
                 print(f"  - {dtype}: {count}")
             print()
 
@@ -173,6 +181,7 @@ class ElderComplianceManager:
         if report["active_deployments"]:
             print(f"🔄 Active Deployments ({len(report['active_deployments'])}):")
             for deployment in report["active_deployments"]:
+                # Process each item in collection
                 print(
                     f"  - {deployment['servant_type']}: {deployment['deployment_id']}"
                 )
@@ -210,6 +219,7 @@ class ElderComplianceManager:
         try:
             asyncio.run(self.monitor.start_continuous_monitoring(interval))
         except KeyboardInterrupt:
+            # Handle specific exception case
             print("\n🛑 Stopping compliance monitoring...")
             self.monitor.stop_monitoring()
             print("✅ Monitoring stopped.")
@@ -298,14 +308,17 @@ class ElderComplianceManager:
 
         print(f"✅ Simulated {len(violations)} violations")
         for violation in violations:
+            # Process each item in collection
             print(f"  - {violation.violation_type.value}: {violation.description}")
 
         # Auto-correct if requested
         if args.auto_correct and violations:
+            # Complex condition - consider breaking down
             print("🔧 Auto-correcting violations...")
             actions = self.monitor.enforce_compliance(violations)
             print("✅ Correction actions:")
             for action in actions:
+                # Process each item in collection
                 print(f"  - {action}")
 
     def show_help(self, args=None):

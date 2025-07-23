@@ -20,6 +20,7 @@ class AIDLQCommand(BaseCommand):
     """DLQ管理コマンド"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             name="ai-dlq", description="Dead Letter Queue (不達メッセージ) 管理", version="1.0.0"
         )
@@ -50,6 +51,7 @@ class AIDLQCommand(BaseCommand):
                 return self._clear_queue(args)
 
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"DLQ操作エラー: {str(e)}")
 
     def _list_messages(self, args) -> CommandResult:
@@ -101,6 +103,7 @@ class AIDLQCommand(BaseCommand):
 
 
 def main():
+    # Core functionality implementation
     command = AIDLQCommand()
     sys.exit(command.run())
 

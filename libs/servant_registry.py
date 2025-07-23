@@ -192,7 +192,8 @@ class ServantRegistry:
         # Check if servant has active tasks
         if servant_info.current_tasks:
             logger.error(
-                f"Cannot unregister {servant_id}: has {len(servant_info.current_tasks)} active tasks"
+                f"Cannot unregister {servant_id}: has {len(servant_info.current_tasks)} " \
+                    "active tasks"
             )
             return False
 
@@ -297,7 +298,8 @@ class ServantRegistry:
 
         status_emoji = "✅" if success else "❌"
         logger.info(
-            f"{status_emoji} Task {task_id} completed by {servant_info.servant_type.title()} {servant_id}"
+            f"{status_emoji} Task {task_id} completed by {servant_info.servant_type.title()} " \
+                "{servant_id}"
         )
         return True
 

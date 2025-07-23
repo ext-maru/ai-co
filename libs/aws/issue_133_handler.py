@@ -188,7 +188,10 @@ class Issue133Implementation:
                     'InstanceId': instance['InstanceId'],
                     'State': instance['State']['Name'],
                     'InstanceType': instance['InstanceType'],
-                    'LaunchTime': instance.get('LaunchTime', '').isoformat() if instance.get('LaunchTime') else None
+                    'LaunchTime': instance.get(
+                        'LaunchTime',
+                        '').isoformat() if instance.get('LaunchTime'
+                    ) else None
                 })
                 
         return {'instances': instances}
@@ -225,7 +228,10 @@ class Issue133Implementation:
                     'TableName': table_name,
                     'ItemCount': table.get('ItemCount', 0),
                     'TableStatus': table.get('TableStatus', 'Unknown'),
-                    'CreationDateTime': table.get('CreationDateTime', '').isoformat() if table.get('CreationDateTime') else None
+                    'CreationDateTime': table.get(
+                        'CreationDateTime',
+                        '').isoformat() if table.get('CreationDateTime'
+                    ) else None
                 })
                 
         return {'tables': tables}

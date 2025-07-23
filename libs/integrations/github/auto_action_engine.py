@@ -39,7 +39,10 @@ class ActionRecord:
         return {
             "pr_number": self.pr_number,
             "timestamp": self.timestamp.isoformat(),
-            "event_type": self.event_type.value if isinstance(self.event_type, StateChangeEvent) else str(self.event_type),
+            "event_type": self.event_type.value if isinstance(
+                self.event_type,
+                StateChangeEvent) else str(self.event_type
+            ),
             "action_type": self.action_type,
             "success": self.success,
             "result": self.result,
@@ -129,7 +132,13 @@ class AutoActionEngine:
                 }
             
             # アクション成功
-            self._record_action(pr_number, event, result.get("action_taken", "unknown"), True, result)
+            self._record_action(
+                pr_number,
+                event,
+                result.get("action_taken", "unknown"),
+                True,
+                result
+            )
             self._set_cooldown(pr_number, event.value)
             
         except Exception as e:
@@ -175,7 +184,12 @@ class AutoActionEngine:
                 "reason": f"PR not mergeable: state={pr.get('mergeable_state')}"
             }
     
-    async def _handle_review_approved(self, pr_number: int, event_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_review_approved(
+        self,
+        pr_number: int,
+        event_data: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """レビュー承認時の処理"""
         logger.info(f"Review approved for PR #{pr_number}, checking merge readiness")
         
@@ -208,7 +222,12 @@ class AutoActionEngine:
         
         return result
     
-    async def _handle_conflicts_detected(self, pr_number: int, event_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_conflicts_detected(
+        self,
+        pr_number: int,
+        event_data: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """コンフリクト検出時の処理"""
         logger.info(f"Conflicts detected for PR #{pr_number}")
         
@@ -228,14 +247,24 @@ class AutoActionEngine:
                 "reason": "No conflict resolver available"
             }
     
-    async def _handle_conflicts_resolved(self, pr_number: int, event_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_conflicts_resolved(
+        self,
+        pr_number: int,
+        event_data: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """コンフリクト解決時の処理"""
         logger.info(f"Conflicts resolved for PR #{pr_number}, restarting merge process")
         
         # マージプロセスを再開
         return await self._handle_ci_passed(pr_number, event_data)
     
-    async def _handle_ready_to_merge(self, pr_number: int, event_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_ready_to_merge(
+        self,
+        pr_number: int,
+        event_data: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """マージ準備完了時の処理"""
         logger.info(f"PR #{pr_number} is ready to merge")
         
@@ -248,7 +277,12 @@ class AutoActionEngine:
             "message": merge_result.get("message")
         }
     
-    async def _handle_merge_blocked(self, pr_number: int, event_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_merge_blocked(
+        self,
+        pr_number: int,
+        event_data: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """マージブロック時の処理"""
         logger.info(f"Merge blocked for PR #{pr_number}")
         
@@ -285,7 +319,12 @@ class AutoActionEngine:
             "retry_available": retry_available
         }
     
-    async def _handle_branch_updated(self, pr_number: int, event_data: Dict[str, Any]) -> Dict[str, Any]:
+    async def _handle_branch_updated(
+        self,
+        pr_number: int,
+        event_data: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """ブランチ更新時の処理"""
         logger.info(f"Branch updated for PR #{pr_number}")
         

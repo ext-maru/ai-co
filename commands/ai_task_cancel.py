@@ -15,6 +15,7 @@ class AITaskCancelCommand(BaseCommand):
     """タスクキャンセル"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ai-task-cancel", description="タスクキャンセル", version="1.0.0")
 
     def add_arguments(self, parser: argparse.ArgumentParser):
@@ -53,6 +54,7 @@ class AITaskCancelCommand(BaseCommand):
 
             # 実行中タスクのキャンセル
             if task.get("status") == "running" and not args.force:
+                # Complex condition - consider breaking down
                 return CommandResult(
                     success=False,
                     message=f"タスク '{args.task_id}' は実行中です。強制キャンセルする場合は --force を使用してください",
@@ -71,12 +73,15 @@ class AITaskCancelCommand(BaseCommand):
                 )
 
         except ImportError:
+            # Handle specific exception case
             return CommandResult(success=False, message="タスクトラッカーが利用できません")
         except Exception as e:
+            # Handle specific exception case
             return CommandResult(success=False, message=f"タスクキャンセルエラー: {str(e)}")
 
 
 def main():
+    # Core functionality implementation
     command = AITaskCancelCommand()
     sys.exit(command.run())
 

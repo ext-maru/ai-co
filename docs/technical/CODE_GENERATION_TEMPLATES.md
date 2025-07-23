@@ -198,6 +198,6 @@ generated/
 
 ## 🔗 関連リンク
 
-- [TDD開発ガイド](TDD_WITH_CLAUDE_CLI.md)
+- [TDD完全ガイド](../../knowledge_base/core/guides/CLAUDE_TDD_COMPLETE_GUIDE.md)
 - [ワーカーテンプレート](../templates/README.md)
 - [Elders Guild開発ガイド](DEVELOPMENT_GUIDE.md)

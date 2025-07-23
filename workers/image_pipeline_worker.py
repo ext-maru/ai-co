@@ -26,6 +26,7 @@ try:
 
     PIL_AVAILABLE = True
 except ImportError:
+    # Handle specific exception case
     PIL_AVAILABLE = False
     print("Warning: PIL not available, image processing disabled")
 import io
@@ -46,6 +47,7 @@ try:
 
     ELDER_TREE_AVAILABLE = True
 except ImportError as e:
+    # Handle specific exception case
     print(f"Elder Tree integration not available: {e}")
     FourSagesIntegration = None
     ElderCouncilSummoner = None
@@ -107,6 +109,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                 print("⚠️ Partial Elder Tree Integration - some systems unavailable")
 
         except Exception as e:
+            # Handle specific exception case
             print(f"Elder Tree initialization failed: {e}")
             self.elder_systems_initialized = False
 
@@ -213,6 +216,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
         except Exception as e:
+            # Handle specific exception case
             self.processing_errors += 1
 
             # Report error to Incident Sage
@@ -244,6 +248,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             return {"status": "success", "image_data": self._image_to_base64(image)}
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"{EMOJI['error']} Processing failed: {str(e)}")
             return {"status": "error", "message": str(e)}
 
@@ -262,6 +267,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             return {"status": "success", "output_path": output_path, "size": size}
 
         except Exception as e:
+            # Handle specific exception case
             return {"status": "error", "message": str(e)}
 
     def _image_to_base64(self, image):
@@ -293,6 +299,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             self.four_sages.report_to_task_sage(report)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report processing start to Task Sage: {e}")
 
     def _report_processing_success_to_task_sage(
@@ -326,6 +333,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                 self.four_sages.store_knowledge("image_patterns", pattern_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to report processing success to Task Sage: {e}")
 
     def _report_processing_error_to_incident_sage(
@@ -348,6 +356,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             self.four_sages.consult_incident_sage(incident_data)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(
                 f"Failed to report processing error to Incident Sage: {e}"
             )
@@ -388,6 +397,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             
             # Elder Tree終了通知
             if self.elder_systems_initialized and self.elder_tree:
+                # Complex condition - consider breaking down
                 try:
                     message = ElderMessage(
                         sender_rank=ElderRank.SERVANT,
@@ -422,6 +432,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                         pass
                     self.logger.info("🌳 Elder Tree終了通知送信完了")
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Elder Tree終了通知失敗: {e}")
             
             # 画像処理関連のリソース解放
@@ -446,11 +457,13 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                 stats_file.write_text(json.dumps(final_stats, indent=2))
                 self.logger.info(f"統計情報保存: {stats_file}")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"統計情報保存失敗: {e}")
             
             self.logger.info(f"✅ {self.__class__.__name__} cleanup完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ Cleanup処理中にエラー: {e}")
             import traceback
             self.logger.error(f"エラー詳細: {traceback.format_exc()}")
@@ -469,11 +482,13 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             self.logger.info(f"✅ {self.__class__.__name__} 停止完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ 停止処理中にエラー: {e}")
             # エラーが発生してもベースクラスの停止は実行
             try:
                 super().stop()
             except Exception as base_error:
+                # Handle specific exception case
                 self.logger.error(f"❌ ベースクラス停止エラー: {base_error}")
 
     def initialize(self) -> None:
@@ -512,6 +527,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                 try:
                     self._report_initialization_to_task_sage()
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Elder Tree初期化通知失敗: {e}")
             
             self.logger.info(f"✅ {self.__class__.__name__} 初期化完了")
@@ -521,10 +537,16 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             self.logger.info(f"   - 作業ディレクトリ: {self.work_dir}")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ 初期化処理中にエラー: {e}")
             raise RuntimeError(f"ImageProcessingWorker初期化失敗: {e}")
 
-    def handle_error(self, error: Exception, context: str = "unknown", task_data: dict = None) -> None:
+    def handle_error(
+        self,
+        error: Exception,
+        context: str = "unknown",
+        task_data: dict = None
+    ) -> None:
         """エラーハンドリング（Incident Sageへの報告、ログ記録）"""
         try:
             import time
@@ -561,6 +583,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             
             # Incident Sageへの報告
             if self.elder_systems_initialized and self.four_sages:
+                # Complex condition - consider breaking down
                 try:
                     incident_data = {
                         "type": "image_processing_error",
@@ -576,6 +599,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                     self.logger.info(f"🚨 Incident Sage報告送信: {error_id}")
                     
                 except Exception as sage_error:
+                    # Handle specific exception case
                     self.logger.error(f"Incident Sage報告失敗: {sage_error}")
             
             # エラーファイルに保存
@@ -597,6 +621,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                 error_file.write_text(json.dumps(errors, indent=2, ensure_ascii=False))
                 
             except Exception as file_error:
+                # Handle specific exception case
                 self.logger.warning(f"エラーファイル保存失敗: {file_error}")
             
             # 重要エラーの場合は追加処理
@@ -627,8 +652,14 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                     "images_processed": self.images_processed,
                     "processing_errors": self.processing_errors,
                     "total_bytes_processed": self.total_bytes_processed,
-                    "average_bytes_per_image": self.total_bytes_processed / max(1, self.images_processed),
-                    "error_rate_percent": (self.processing_errors / max(1, self.images_processed)) * 100,
+                    "average_bytes_per_image": self.total_bytes_processed / max(
+                        1,
+                        self.images_processed
+                    ),
+                    "error_rate_percent": (self.processing_errors / max(
+                        1,
+                        self.images_processed)
+                    ) * 100,
                     "processing_rate_per_minute": (self.images_processed / max(1, uptime / 60))
                 },
                 "capabilities": {
@@ -661,6 +692,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                         "connection_status": "connected"
                     }
                 except Exception as e:
+                    # Handle specific exception case
                     status["elder_tree_details"] = {
                         "connection_status": "error",
                         "error": str(e)
@@ -669,6 +701,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             return status
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"状態取得エラー: {e}")
             return {
                 "error": f"状態取得失敗: {e}",
@@ -698,12 +731,14 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             
             # キューの設定確認
             if not hasattr(self, 'input_queue') or not self.input_queue:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("入力キュー (input_queue) が設定されていません")
                 validation_result["is_valid"] = False
             else:
                 validation_result["config_details"]["input_queue"] = self.input_queue
             
             if not hasattr(self, 'output_queue') or not self.output_queue:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("出力キュー (output_queue) が設定されていません")
                 validation_result["is_valid"] = False
             else:
@@ -719,6 +754,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             }
             
             if ELDER_TREE_AVAILABLE and not self.elder_systems_initialized:
+                # Complex condition - consider breaking down
                 validation_result["warnings"].append("Elder Tree統合が利用可能ですが、初期化されていません")
                 validation_result["recommendations"].append("Elder Treeシステムの再初期化を検討してください")
             
@@ -732,6 +768,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                 validation_result["config_details"]["max_image_size"] = self.max_image_size
                 width, height = self.max_image_size
                 if width > 8192 or height > 8192:
+                    # Complex condition - consider breaking down
                     validation_result["warnings"].append(f"最大画像サイズが大きすぎます: {width}x{height}")
                     validation_result["recommendations"].append("メモリ使用量を考慮し4096x4096以下を推奨")
             
@@ -785,6 +822,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             return validation_result
             
         except Exception as e:
+            # Handle specific exception case
             validation_result["is_valid"] = False
             validation_result["errors"].append(f"設定検証中にエラー: {e}")
             validation_result["summary"] = "設定検証失敗"
@@ -813,6 +851,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
             self.four_sages.report_to_task_sage(report)
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Task Sage初期化報告失敗: {e}")
     
     def _determine_error_severity(self, error: Exception) -> str:
@@ -825,8 +864,10 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
         high_patterns = ['filenotfound', 'connection', 'timeout', 'authentication']
         
         if any(pattern in error_str for pattern in critical_patterns):
+            # Complex condition - consider breaking down
             return 'critical'
-        elif any(pattern in error_str for pattern in high_patterns) or error_type in ['IOError', 'OSError', 'ConnectionError']:
+        elif any(pattern in error_str for pattern in high_patterns) or error_type in ['IOError' \
+            'IOError', 'OSError', 'ConnectionError']:
             return 'high'
         elif error_type in ['ValueError', 'TypeError', 'AttributeError']:
             return 'medium'
@@ -846,6 +887,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                 "システムメモリを確認してください"
             ])
         elif 'disk' in error_str or 'space' in error_str:
+            # Complex condition - consider breaking down
             recommendations.extend([
                 "ディスク容量を確認してください",
                 "一時ファイルを削除してください",
@@ -863,6 +905,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                 "相対パスではなく絶対パスを使用してください"
             ])
         elif 'pil' in error_str or 'pillow' in error_str:
+            # Complex condition - consider breaking down
             recommendations.extend([
                 "PIL/Pillowライブラリをインストールしてください",
                 "pip install Pillow を実行してください",
@@ -902,6 +945,7 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                 return "warning"
         
         if self.elder_systems_initialized and PIL_AVAILABLE:
+            # Complex condition - consider breaking down
             return "healthy"
         elif PIL_AVAILABLE:
             return "degraded"
@@ -937,6 +981,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             ch.basic_ack(delivery_tag=method.delivery_tag)
 
         except Exception as e:
+            # Handle specific exception case
             self.handle_error(e, "process_message")
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
@@ -969,6 +1014,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             return {"status": "success", "thumbnail_path": thumb_path}
 
         except Exception as e:
+            # Handle specific exception case
             return {"status": "error", "message": str(e)}
 
     def create_thumbnail_task(self, task):
@@ -983,6 +1029,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             
             # Elder Tree終了通知
             if ELDER_TREE_AVAILABLE and hasattr(self, 'elder_tree') and self.elder_tree:
+                # Complex condition - consider breaking down
                 try:
                     self.elder_tree.notify_shutdown({
                         "worker_type": "thumbnail",
@@ -996,17 +1043,20 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                     })
                     self.logger.info("📢 Elder Tree終了通知完了")
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Elder Tree終了通知エラー: {e}")
             
             # 作業ディレクトリのクリーンアップ
             try:
                 if hasattr(self, 'work_dir') and self.work_dir.exists():
+                    # Complex condition - consider breaking down
                     # 一時ファイルの削除
                     import shutil
                     for temp_file in self.work_dir.glob("thumbnail_temp_*"):
                         temp_file.unlink()
                     self.logger.info("🗄️ 一時ファイルクリーンアップ完了")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"一時ファイルクリーンアップエラー: {e}")
             
             # キャッシュのクリア
@@ -1015,6 +1065,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                     self.thumbnail_cache.clear()
                     self.logger.info("📋 キャッシュクリア完了")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"キャッシュクリアエラー: {e}")
             
             # 統計情報の保存
@@ -1041,11 +1092,13 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                 
                 self.logger.info(f"📊 統計情報保存完了: {getattr(self, 'thumbnails_created', 0)}件作成")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"統計情報保存エラー: {e}")
             
             self.logger.info("✅ ThumbnailWorker cleanup完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ Cleanup処理エラー: {e}")
             # クリーンアップエラーでも継続
 
@@ -1056,6 +1109,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             
             # 処理中のタスクがある場合は完了を待つ
             if hasattr(self, 'current_task') and self.current_task:
+                # Complex condition - consider breaking down
                 self.logger.info("⏳ 処理中タスクの完了を待機...")
                 # 必要に応じてタスク完了待ちを実装
             
@@ -1067,11 +1121,13 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                 super().stop()
                 self.logger.info("⬆️  親クラスstop()完了")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"親クラスstop()エラー: {e}")
             
             self.logger.info("✅ ThumbnailWorker停止処理完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ 停止処理エラー: {e}")
             # 停止処理エラーでも継続
 
@@ -1110,13 +1166,18 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                             ],
                             "config": {
                                 "input_queue": getattr(self, 'input_queue', 'ai_thumbnail_tasks'),
-                                "output_queue": getattr(self, 'output_queue', 'ai_thumbnail_results'),
+                                "output_queue": getattr(
+                                    self,
+                                    'output_queue',
+                                    'ai_thumbnail_results'
+                                ),
                                 "pil_available": PIL_AVAILABLE
                             },
                             "timestamp": datetime.now().isoformat()
                         })
                 
                 except Exception as e:
+                    # Handle specific exception case
                     self.logger.warning(f"Elder Tree統合エラー: {e}")
             
             # 統計カウンターの初期化
@@ -1131,6 +1192,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                 self.work_dir.mkdir(parents=True, exist_ok=True)
                 self.logger.info(f"📁 作業ディレクトリ初期化: {self.work_dir}")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"作業ディレクトリ初期化エラー: {e}")
             
             # サムネイルキャッシュの初期化
@@ -1139,6 +1201,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                 self.cache_max_size = 100  # 最大1000件をキャッシュ
                 self.logger.info("📋 サムネイルキャッシュ初期化完了")
             except Exception as e:
+                # Handle specific exception case
                 self.logger.warning(f"キャッシュ初期化エラー: {e}")
             
             # PIL利用可能性確認
@@ -1158,9 +1221,11 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             self.logger.info(f"✅ {self.__class__.__name__} 初期化完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"❌ 初期化エラー: {e}")
             # 初期化エラーは重要なので、Incident Sageに報告
             if hasattr(self, 'four_sages') and self.four_sages:
+                # Complex condition - consider breaking down
                 try:
                     self.four_sages.report_to_incident_sage({
                         "type": "initialization_error",
@@ -1169,6 +1234,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                         "severity": "medium"
                     })
                 except Exception:
+                    # Handle specific exception case
                     pass  # 報告エラーは無視
 
     def handle_error(self, error: Exception, context: str = None, severity: str = "medium") -> None:
@@ -1205,6 +1271,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             
             # Incident Sageへの報告
             if ELDER_TREE_AVAILABLE and hasattr(self, 'four_sages') and self.four_sages:
+                # Complex condition - consider breaking down
                 try:
                     incident_report = {
                         "type": "worker_error",
@@ -1224,10 +1291,12 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                     self.logger.info(f"📨 Incident Sage報告完了: {error_id}")
                     
                 except Exception as report_error:
+                    # Handle specific exception case
                     self.logger.warning(f"Incident Sage報告エラー: {report_error}")
             
             # 画像処理関連エラーの特別処理
             if "pil" in str(error).lower() or "image" in str(error).lower():
+                # Complex condition - consider breaking down
                 try:
                     # 画像エラーログファイルに記録
                     error_log_file = PROJECT_ROOT / "logs" / "thumbnail_errors.json"
@@ -1246,6 +1315,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                         json.dump(error_logs, f, indent=2)
                     
                 except Exception as log_error:
+                    # Handle specific exception case
                     self.logger.warning(f"エラーログ記録失敗: {log_error}")
             
             # 重要エラーの場合は追加処理
@@ -1292,9 +1362,18 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                 },
                 "elder_integration": {
                     "elder_tree_available": ELDER_TREE_AVAILABLE,
-                    "four_sages_active": hasattr(self, 'four_sages') and self.four_sages is not None,
-                    "elder_council_active": hasattr(self, 'elder_council_summoner') and self.elder_council_summoner is not None,
-                    "elder_tree_connected": hasattr(self, 'elder_tree') and self.elder_tree is not None
+                    "four_sages_active": hasattr(
+                        self,
+                        'four_sages'
+                    ) and self.four_sages is not None,
+                    "elder_council_active": hasattr(
+                        self,
+                        'elder_council_summoner'
+                    ) and self.elder_council_summoner is not None,
+                    "elder_tree_connected": hasattr(
+                        self,
+                        'elder_tree'
+                    ) and self.elder_tree is not None
                 },
                 "resource_usage": {
                     "work_directory": str(getattr(self, 'work_dir', 'N/A')),
@@ -1312,6 +1391,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             
             # Elder Tree詳細状態
             if hasattr(self, 'elder_tree') and self.elder_tree:
+                # Complex condition - consider breaking down
                 try:
                     status["elder_tree_details"] = {
                         "connection_status": "connected",
@@ -1319,6 +1399,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                         "node_count": len(getattr(self.elder_tree, 'nodes', []))
                     }
                 except Exception as e:
+                    # Handle specific exception case
                     status["elder_tree_details"] = {
                         "connection_status": "error",
                         "error": str(e)
@@ -1327,6 +1408,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             return status
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"状態取得エラー: {e}")
             return {
                 "error": f"状態取得失敗: {e}",
@@ -1357,12 +1439,14 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             
             # キューの設定確認
             if not hasattr(self, 'input_queue') or not self.input_queue:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("入力キュー (input_queue) が設定されていません")
                 validation_result["is_valid"] = False
             else:
                 validation_result["config_details"]["input_queue"] = self.input_queue
             
             if not hasattr(self, 'output_queue') or not self.output_queue:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("出力キュー (output_queue) が設定されていません")
                 validation_result["is_valid"] = False
             else:
@@ -1372,11 +1456,15 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             validation_result["config_details"]["elder_integration"] = {
                 "available": ELDER_TREE_AVAILABLE,
                 "four_sages": hasattr(self, 'four_sages') and self.four_sages is not None,
-                "elder_council": hasattr(self, 'elder_council_summoner') and self.elder_council_summoner is not None,
+                "elder_council": hasattr(
+                    self,
+                    'elder_council_summoner'
+                ) and self.elder_council_summoner is not None,
                 "elder_tree": hasattr(self, 'elder_tree') and self.elder_tree is not None
             }
             
             if ELDER_TREE_AVAILABLE and not (hasattr(self, 'four_sages') and self.four_sages):
+                # Complex condition - consider breaking down
                 validation_result["warnings"].append("Elder Tree統合が利用可能ですが、初期化されていません")
                 validation_result["recommendations"].append("initialize()メソッドを実行してください")
             
@@ -1400,15 +1488,18 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                 validation_result["config_details"]["default_thumbnail_size"] = self.default_thumbnail_size
                 width, height = self.default_thumbnail_size
                 if width <= 0 or height <= 0:
+                    # Complex condition - consider breaking down
                     validation_result["errors"].append(f"サムネイルサイズが無効です: {width}x{height}")
                     validation_result["is_valid"] = False
                 elif width > 1000 or height > 1000:
+                    # Complex condition - consider breaking down
                     validation_result["warnings"].append(f"サムネイルサイズが大きすぎます: {width}x{height}")
                     validation_result["recommendations"].append("メモリ使用量を考慮し300x300以下を推奨")
             
             if hasattr(self, 'default_quality'):
                 validation_result["config_details"]["default_quality"] = self.default_quality
                 if self.default_quality < 1 or self.default_quality > 100:
+                    # Complex condition - consider breaking down
                     validation_result["errors"].append(f"品質設定が無効です: {self.default_quality} (1-100の範囲で設定)")
                     validation_result["is_valid"] = False
                 elif self.default_quality < 50:
@@ -1434,19 +1525,23 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             
             # 統計情報の妥当性
             if hasattr(self, 'thumbnails_created') and self.thumbnails_created < 0:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("作成済みサムネイル数が負の値です")
                 validation_result["is_valid"] = False
             
             if hasattr(self, 'processing_errors') and self.processing_errors < 0:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("エラー数が負の値です")
                 validation_result["is_valid"] = False
             
             if hasattr(self, 'total_bytes_processed') and self.total_bytes_processed < 0:
+                # Complex condition - consider breaking down
                 validation_result["errors"].append("処理済みバイト数が負の値です")
                 validation_result["is_valid"] = False
             
             # パフォーマンス警告
             if hasattr(self, 'thumbnails_created') and hasattr(self, 'processing_errors'):
+                # Complex condition - consider breaking down
                 if self.thumbnails_created > 0:
                     error_rate = (self.processing_errors / self.thumbnails_created) * 100
                     if error_rate > 20:
@@ -1468,6 +1563,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             return validation_result
             
         except Exception as e:
+            # Handle specific exception case
             validation_result["is_valid"] = False
             validation_result["errors"].append(f"設定検証中にエラー: {e}")
             validation_result["summary"] = "設定検証失敗"
@@ -1477,6 +1573,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
     def _report_initialization_to_task_sage(self) -> None:
         """Task Sageに初期化完了を報告"""
         if not hasattr(self, 'four_sages') or not self.four_sages:
+            # Complex condition - consider breaking down
             return
         
         try:
@@ -1504,6 +1601,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             self.logger.info("📋 Task Sage初期化報告完了")
             
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Task Sage初期化報告エラー: {e}")
 
     def _determine_error_severity(self, error: Exception, context: str = None) -> str:
@@ -1537,6 +1635,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
         recommendations = []
         
         if "pil" in error_str or "pillow" in error_str:
+            # Complex condition - consider breaking down
             recommendations.extend([
                 "PIL (Pillow) ライブラリを確認してください",
                 "pip install Pillow --upgrade を試してください",
@@ -1544,6 +1643,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             ])
         
         if "permission" in error_str or "access" in error_str:
+            # Complex condition - consider breaking down
             recommendations.extend([
                 "ファイル・ディレクトリの権限を確認してください", 
                 "作業ディレクトリの書き込み権限を確認してください",
@@ -1551,6 +1651,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             ])
         
         if "memory" in error_str or "size" in error_str:
+            # Complex condition - consider breaking down
             recommendations.extend([
                 "画像サイズが大きすぎる可能性があります",
                 "メモリ使用量を確認してください",
@@ -1558,6 +1659,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
             ])
         
         if "format" in error_str or "invalid" in error_str:
+            # Complex condition - consider breaking down
             recommendations.extend([
                 "入力画像の形式を確認してください",
                 "ファイルが破損していないか確認してください",
@@ -1632,10 +1734,12 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
         
         # 作業ディレクトリチェック
         if hasattr(self, 'work_dir') and not self.work_dir.exists():
+            # Complex condition - consider breaking down
             return "warning"
         
         # Elder Tree統合チェック
         if ELDER_TREE_AVAILABLE and hasattr(self, 'four_sages') and self.four_sages:
+            # Complex condition - consider breaking down
             return "healthy"
         elif PIL_AVAILABLE:
             return "degraded"
@@ -1657,14 +1761,17 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
         
         # Elder Tree統合チェック
         if ELDER_TREE_AVAILABLE and not (hasattr(self, 'four_sages') and self.four_sages):
+            # Complex condition - consider breaking down
             recommendations.append("Elder Tree統合を有効化すると監視・エラーハンドリング機能が向上します")
         
         # 作業ディレクトリチェック
         if hasattr(self, 'work_dir') and not self.work_dir.exists():
+            # Complex condition - consider breaking down
             recommendations.append(f"作業ディレクトリを作成してください: {self.work_dir}")
         
         # キャッシュサイズチェック
         if hasattr(self, 'thumbnail_cache') and hasattr(self, 'cache_max_size'):
+            # Complex condition - consider breaking down
             cache_size = len(self.thumbnail_cache)
             if cache_size > self.cache_max_size * 0.9:
                 recommendations.append("キャッシュサイズが上限に近づいています。クリーンアップを検討してください")
@@ -1673,6 +1780,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
         if hasattr(self, 'default_thumbnail_size'):
             width, height = self.default_thumbnail_size
             if width > 500 or height > 500:
+                # Complex condition - consider breaking down
                 recommendations.append("サムネイルサイズが大きいため、メモリ使用量とパフォーマンスを考慮してください")
         
         if not recommendations:

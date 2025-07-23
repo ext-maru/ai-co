@@ -441,7 +441,8 @@ class ErrorRecoverySystem:
                 
                 # 成功時はロールバックスタッククリア
                 if attempt > 1:
-                    logger.info(f"Operation succeeded after {attempt} attempts: {component}.{operation}")
+                    logger.info(f"Operation succeeded after {attempt} attempts: {component}.{operation}" \
+                        "Operation succeeded after {attempt} attempts: {component}.{operation}")
                 
                 return result
                 
@@ -569,7 +570,13 @@ class ErrorRecoverySystem:
         else:
             raise Exception(f"Unsupported recovery action: {action}")
     
-    async def _execute_alternative_path(self, component: str, operation: str, *args, **kwargs) -> Any:
+    async def _execute_alternative_path(
+        self,
+        component: str,
+        operation: str,
+        *args,
+        **kwargs
+    ) -> Any:
         """代替パス実行"""
         if component == "elder_flow" and operation == "execute":
             # Elder Flow失敗時はA2A実行
@@ -631,8 +638,10 @@ class ErrorRecoverySystem:
             except subprocess.CalledProcessError as e:
                 logger.warning(f"Failed to delete branch {branch_name}: {str(e)}")
         
-        self.rollback_manager.add_rollback_step(rollback_to_original_branch, f"Checkout {original_branch}")
-        self.rollback_manager.add_rollback_step(delete_failed_branch, f"Delete branch {branch_name}")
+        self.rollback_manager.add_rollback_step(rollback_to_original_branch, f"Checkout {original_branch}" \
+            "Checkout {original_branch}")
+        self.rollback_manager.add_rollback_step(delete_failed_branch, f"Delete branch {branch_name}" \
+            "Delete branch {branch_name}")
     
     def get_error_statistics(self) -> Dict[str, Any]:
         """エラー統計取得"""

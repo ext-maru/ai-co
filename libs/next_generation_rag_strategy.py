@@ -174,7 +174,7 @@ class HierarchicalContextManager:
         dependencies: List[str] = None,
     ) -> str:
         """コンテキストを階層に追加"""
-        context_id = hashlib.md5(
+        context_id = hashlib.sha256(
             f"{content[:100]}{datetime.now()}".encode()
         ).hexdigest()[:16]
 
@@ -308,7 +308,8 @@ class HierarchicalContextManager:
         self.contexts[new_tier][context.context_id] = context
 
         self.logger.info(
-            f"⬆️ Promoted context {context.context_id} from {current_tier.value} to {new_tier.value}"
+            f"⬆️ Promoted context {context.context_id} from {current_tier.value} to " \
+                "{new_tier.value}"
         )
 
 
@@ -400,7 +401,7 @@ class StreamingRAGEngine:
         source_system: str = "unknown",
     ):
         """更新をキューに追加"""
-        update_id = hashlib.md5(f"{document_id}{datetime.now()}".encode()).hexdigest()[
+        update_id = hashlib.sha256(f"{document_id}{datetime.now()}".encode()).hexdigest()[
             :16
         ]
 
@@ -560,7 +561,7 @@ class EvidenceTraceabilitySystem:
         self, query: str, response: str, sources: List[Dict[str, Any]]
     ) -> str:
         """証拠トレースの作成"""
-        trace_id = hashlib.md5(
+        trace_id = hashlib.sha256(
             f"{query}{response}{datetime.now()}".encode()
         ).hexdigest()[:16]
 

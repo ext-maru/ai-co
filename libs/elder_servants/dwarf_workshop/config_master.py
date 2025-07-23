@@ -73,6 +73,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "environment_management",
@@ -168,6 +169,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Configuration crafting failed: {e}")
             return {"success": False, "error": str(e), "type": "error"}
 
@@ -210,6 +212,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         if not task_type and "type" in task:
+            # Complex condition - consider breaking down
             task_type = task["type"]
 
         if not task_type:
@@ -272,11 +275,13 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         except ValueError as e:
+            # Handle specific exception case
             self.logger.error(f"Task {task_id} validation error: {str(e)}")
             return self._create_error_result(
                 task_id, f"Validation error: {str(e)}", start_time
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Task {task_id} failed: {str(e)}", exc_info=True)
             return self._create_error_result(
                 task_id, f"Unexpected error: {str(e)}", start_time
@@ -307,6 +312,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 raise ValueError(f"Unknown environment operation: {operation}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Environment management failed: {e}")
             return {"success": False, "error": str(e), "type": "environment_error"}
 
@@ -331,6 +337,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 raise ValueError(f"Unknown secret operation: {operation}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Secret management failed: {e}")
             return {"success": False, "error": str(e), "type": "secret_error"}
 
@@ -358,6 +365,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 raise ValueError(f"Unknown file operation: {operation}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Configuration file management failed: {e}")
             return {"success": False, "error": str(e), "type": "file_error"}
 
@@ -390,7 +398,8 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 if field in config_data:
                     actual_type = type(config_data[field]).__name__
                     if actual_type != expected_type:
-                        error_msg = f"Type mismatch for {field}: expected {expected_type}, got {actual_type}"
+                        error_msg = f"Type mismatch for {field}: expected {expected_type}, got " \
+                            "{actual_type}"
                         if strict_mode:
                             validation_results["errors"].append(error_msg)
                             validation_results["valid"] = False
@@ -406,11 +415,13 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                         min_val = range_spec.get("min")
                         max_val = range_spec.get("max")
                         if min_val is not None and value < min_val:
+                            # Complex condition - consider breaking down
                             validation_results["errors"].append(
                                 f"{field} below minimum: {value} < {min_val}"
                             )
                             validation_results["valid"] = False
                         if max_val is not None and value > max_val:
+                            # Complex condition - consider breaking down
                             validation_results["errors"].append(
                                 f"{field} above maximum: {value} > {max_val}"
                             )
@@ -434,6 +445,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Configuration validation failed: {e}")
             return {"success": False, "error": str(e), "type": "validation_error"}
 
@@ -474,6 +486,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Multi-environment management failed: {e}")
             return {"success": False, "error": str(e), "type": "multi_env_error"}
 
@@ -500,6 +513,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 raise ValueError(f"Unknown backup operation: {operation}")
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Backup/restore operation failed: {e}")
             return {"success": False, "error": str(e), "type": "backup_error"}
 
@@ -609,6 +623,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             decoded = base64.b64decode(encrypted_secret.encode()).decode()
             return decoded
         except Exception:
+            # Handle specific exception case
             return encrypted_secret  # 復号化失敗時は元の値を返す
 
     def _generate_secret_key(self) -> str:
@@ -626,8 +641,10 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             with open(file_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         except FileNotFoundError:
+            # Handle specific exception case
             return {}
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Failed to read JSON file {file_path}: {e}")
             return {}
 
@@ -642,12 +659,15 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             env_vars = {}
             with open(file_path, "r", encoding="utf-8") as f:
                 for line in f:
+                    # Process each item in collection
                     line = line.strip()
                     if line and not line.startswith("#") and "=" in line:
+                        # Complex condition - consider breaking down
                         key, value = line.split("=", 1)
                         env_vars[key.strip()] = value.strip()
             return env_vars
         except FileNotFoundError:
+            # Handle specific exception case
             return {}
 
     async def _write_env_file(self, file_path: str, env_vars: Dict[str, str]):
@@ -656,6 +676,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             f.write(f"# Environment variables for {os.path.basename(file_path)}\n")
             f.write(f"# Generated on {datetime.now().isoformat()}\n\n")
             for key, value in env_vars.items():
+                # Process each item in collection
                 f.write(f"{key}={value}\n")
 
     async def _write_yaml_file(self, file_path: str, data: Dict[str, Any]):
@@ -674,9 +695,11 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         config = configparser.ConfigParser()
 
         for section_name, section_data in data.items():
+            # Process each item in collection
             if isinstance(section_data, dict):
                 config.add_section(section_name)
                 for key, value in section_data.items():
+                    # Process each item in collection
                     config.set(section_name, key, str(value))
 
         with open(file_path, "w", encoding="utf-8") as f:
@@ -697,10 +720,12 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         # 2. データ完全性（20%）
         if "type" in result_data and result_data["type"] != "error":
+            # Complex condition - consider breaking down
             quality_score += 20.0
 
         # 3. セキュリティ（20%）
         if "secrets" in result_data or "encryption" in result_data:
+            # Complex condition - consider breaking down
             quality_score += 15.0  # セキュリティ関連操作
 
         # 4. 検証スコア（15%）
@@ -710,10 +735,12 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         # 5. ファイル操作成功（10%）
         if any(key in result_data for key in ["file_path", "config_file", "env_file"]):
+            # Complex condition - consider breaking down
             quality_score += 10.0
 
         # 6. 環境管理（10%）
         if "environment" in result_data or "environments_count" in result_data:
+            # Complex condition - consider breaking down
             quality_score += 10.0
 
         return min(quality_score, 100.0)
@@ -744,6 +771,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         deleted_vars = []
         for var_name in var_names:
+            # Process each item in collection
             if var_name in env_vars:
                 del env_vars[var_name]
                 deleted_vars.append(var_name)
@@ -779,6 +807,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         retrieved_secrets = {}
         for name in secret_names:
+            # Process each item in collection
             if name in secrets:
                 encrypted_value = secrets[name]["value"]
                 decrypted_value = self._decrypt_secret(encrypted_value)
@@ -804,6 +833,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         deleted_secrets = []
         for name in secret_names:
+            # Process each item in collection
             if name in secrets:
                 del secrets[name]
                 deleted_secrets.append(name)
@@ -874,6 +904,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": f"Failed to read config file: {str(e)}",
@@ -892,6 +923,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         # データをマージ
         existing_data = existing_result["config_data"]
         if isinstance(existing_data, dict) and isinstance(config_data, dict):
+            # Complex condition - consider breaking down
             existing_data.update(config_data)
         else:
             existing_data = config_data
@@ -923,6 +955,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": f"Failed to delete file: {str(e)}",
@@ -993,7 +1026,9 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         all_keys = set(config1.keys()) | set(config2.keys())
 
         for key in all_keys:
+            # Process each item in collection
             if key in config1 and key in config2:
+                # Complex condition - consider breaking down
                 if config1[key] == config2[key]:
                     differences["unchanged"][key] = config1[key]
                 else:
@@ -1038,6 +1073,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             issues = []
             if isinstance(data, dict):
                 for key, value in data.items():
+                    # Process each item in collection
                     current_path = f"{path}.{key}" if path else key
                     if isinstance(value, str):
                         # 疑わしいキー名
@@ -1059,6 +1095,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                         issues.extend(check_secrets(value, current_path))
             elif isinstance(data, list):
                 for i, item in enumerate(data):
+                    # Process each item in collection
                     issues.extend(check_secrets(item, f"{path}[{i}]"))
             return issues
 
@@ -1079,6 +1116,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
         ]
 
         for check in security_checks:
+            # Process each item in collection
             if check["key"] in config_data:
                 if not check["rule"](config_data[check["key"]]):
                     security_issues.append(
@@ -1140,6 +1178,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": f"Backup creation failed: {str(e)}",
@@ -1176,6 +1215,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": f"Backup restoration failed: {str(e)}",
@@ -1197,6 +1237,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
             backups = []
             for backup_name in os.listdir(backup_dir):
+                # Process each item in collection
                 backup_path = f"{backup_dir}/{backup_name}"
                 if os.path.isdir(backup_path):
                     metadata_file = f"{backup_path}/backup_metadata.json"
@@ -1227,6 +1268,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             }
 
         except Exception as e:
+            # Handle specific exception case
             return {
                 "success": False,
                 "error": f"Failed to list backups: {str(e)}",
@@ -1265,6 +1307,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             )
 
         except Exception as e:
+            # Handle specific exception case
             return ServantResponse(
                 task_id=request.task_id,
                 servant_id=self.servant_id,
@@ -1311,6 +1354,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Request validation error: {e}")
             return False
 
@@ -1377,6 +1421,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 return {"status": "unknown_sage_type", "sage_type": sage_type}
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error collaborating with sage {sage_type}: {str(e)}")
             return {"status": "error", "message": str(e)}
 
@@ -1402,13 +1447,16 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 f"Started metrics collection for configuration task {task_id} of type {task_type}"
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to start metrics collection: {e}")
 
     def _end_metrics_collection(self, task_id: str, quality_score: float):
         """メトリクス収集終了"""
         try:
             self.logger.debug(
-                f"Ended metrics collection for configuration task {task_id} with quality score {quality_score}"
+                f"Ended metrics collection for configuration task {task_id} with quality " \
+                    "score {quality_score}"
             )
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Failed to end metrics collection: {e}")

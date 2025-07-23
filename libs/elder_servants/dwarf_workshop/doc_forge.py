@@ -54,6 +54,7 @@ class DocForge(DwarfServant):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "documentation_generation",
@@ -241,6 +242,7 @@ class DocForge(DwarfServant):
             return True
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Request validation error: {str(e)}", exc_info=True)
             return False
 
@@ -313,6 +315,7 @@ class DocForge(DwarfServant):
             )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error processing documentation request: {str(e)}")
             return ServantResponse(
                 task_id=request.task_id,
@@ -350,9 +353,13 @@ class DocForge(DwarfServant):
                 )
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Documentation generation error: {str(e)}")
             # 部分的な結果でも返す
-            return f"# Documentation Generation Error\n\nError: {str(e)}\n\nPartial analysis may be available."
+            return f"# Documentation Generation Error\n\nError: {str(e)}\n\nPartial analysis may be " \
+                "# Documentation Generation Error\n\nError: {str(e)}\n\nPartial analysis may be " \
+                "# Documentation Generation Error\n\nError: {str(e)}\n\nPartial analysis may be " \
+                "available."
 
     async def _generate_api_documentation(
         self, source_code: str, language: str, context: Dict[str, Any]
@@ -411,6 +418,7 @@ class DocForge(DwarfServant):
             if class_structure:
                 doc_parts.append("### Classes\n")
                 for class_name, class_info in class_structure.items():
+                    # Process each item in collection
                     doc_parts.append(f"#### {class_name}\n")
                     if class_info.get("docstring"):
                         doc_parts.append(f"{class_info['docstring']}\n")
@@ -424,6 +432,7 @@ class DocForge(DwarfServant):
                     if class_info.get("methods"):
                         doc_parts.append("##### Methods\n")
                         for method in class_info["methods"]:
+                            # Process each item in collection
                             doc_parts.append(f"- `{method}` - Method description")
                         doc_parts.append("")
 
@@ -601,8 +610,10 @@ class DocForge(DwarfServant):
             doc_parts.append("## Project Structure\n")
             doc_parts.append("```")
             for directory, files in project_structure.items():
+                # Process each item in collection
                 doc_parts.append(f"{directory}")
                 for file in files:
+                    # Process each item in collection
                     doc_parts.append(f"├── {file}")
             doc_parts.append("```\n")
 
@@ -649,6 +660,7 @@ class DocForge(DwarfServant):
             if class_structure:
                 doc_parts.append("## Components\n")
                 for class_name, class_info in class_structure.items():
+                    # Process each item in collection
                     doc_parts.append(f"### {class_name}\n")
                     doc_parts.append(f"**Type:** Class\n")
                     if class_info.get("inheritance"):
@@ -668,6 +680,7 @@ class DocForge(DwarfServant):
         functions = self._extract_function_signatures(source_code)
         if functions:
             for func in functions:
+                # Process each item in collection
                 doc_parts.append(f"- `{func}`")
 
         return "\n".join(doc_parts)
@@ -711,6 +724,7 @@ class DocForge(DwarfServant):
             tree = ast.parse(source_code)
 
             for node in ast.walk(tree):
+                # Process each item in collection
                 if isinstance(
                     node, (ast.FunctionDef, ast.ClassDef, ast.AsyncFunctionDef)
                 ):
@@ -723,6 +737,7 @@ class DocForge(DwarfServant):
                         docstrings[node.name] = node.body[0].value.value
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Error extracting docstrings: {str(e)}")
 
         return docstrings
@@ -753,6 +768,7 @@ class DocForge(DwarfServant):
                     if defaults:
                         num_defaults = len(defaults)
                         for i, default in enumerate(defaults):
+                            # Process each item in collection
                             arg_index = len(args) - num_defaults + i
                             args[arg_index] += f" = {ast.unparse(default)}"
 
@@ -765,6 +781,7 @@ class DocForge(DwarfServant):
                     signatures.append(signature)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Error extracting function signatures: {str(e)}")
 
         return signatures
@@ -776,6 +793,7 @@ class DocForge(DwarfServant):
             tree = ast.parse(source_code)
 
             for node in ast.walk(tree):
+                # Process each item in collection
                 if isinstance(node, ast.ClassDef):
                     class_info = {"methods": [], "inheritance": [], "docstring": None}
 
@@ -802,6 +820,7 @@ class DocForge(DwarfServant):
                     class_structure[node.name] = class_info
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.warning(f"Error extracting class structure: {str(e)}")
 
         return class_structure
@@ -854,6 +873,7 @@ class DocForge(DwarfServant):
             return min(score, 100.0)
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error assessing documentation quality: {str(e)}")
             return 0.0  # エラー時は0点（Iron Will準拠）
 
@@ -898,6 +918,7 @@ class DocForge(DwarfServant):
                 return {"status": "unknown_sage_type", "sage_type": sage_type}
 
         except Exception as e:
+            # Handle specific exception case
             self.logger.error(f"Error collaborating with sage {sage_type}: {str(e)}")
             return {"status": "error", "message": str(e)}
 
@@ -924,6 +945,7 @@ class DocForge(DwarfServant):
 
             return min(score, 1.0)
         except Exception:
+            # Handle specific exception case
             return 0.0
 
     def _evaluate_documentation_completeness(
@@ -964,6 +986,7 @@ class DocForge(DwarfServant):
 
             return min(score, 1.0)
         except Exception:
+            # Handle specific exception case
             return 0.0
 
     def _evaluate_code_examples(self, documentation: str) -> float:
@@ -978,14 +1001,17 @@ class DocForge(DwarfServant):
 
             # 言語指定があるか
             if "```python" in documentation or "```javascript" in documentation:
+                # Complex condition - consider breaking down
                 score += 0.3
 
             # コメントが含まれているか
             if "# " in documentation or "// " in documentation:
+                # Complex condition - consider breaking down
                 score += 0.2
 
             return min(score, 1.0)
         except Exception:
+            # Handle specific exception case
             return 0.0
 
     def _evaluate_detail_level(self, documentation: str, detail_level: str) -> float:
@@ -1002,6 +1028,7 @@ class DocForge(DwarfServant):
 
             return 0.5
         except Exception:
+            # Handle specific exception case
             return 0.0
 
     def _evaluate_format_quality(self, documentation: str, format_type: str) -> float:
@@ -1014,16 +1041,20 @@ class DocForge(DwarfServant):
                 if "#" in documentation:
                     score += 0.3
                 if "[" in documentation and "]" in documentation:
+                    # Complex condition - consider breaking down
                     score += 0.2
                 if "*" in documentation or "_" in documentation:
+                    # Complex condition - consider breaking down
                     score += 0.2
                 if "`" in documentation:
                     score += 0.3
             elif format_type == "html":
                 # HTMLタグの存在
                 if "<h" in documentation and "</h" in documentation:
+                    # Complex condition - consider breaking down
                     score += 0.5
                 if "<p>" in documentation or "<div>" in documentation:
+                    # Complex condition - consider breaking down
                     score += 0.5
             else:
                 # その他のフォーマット
@@ -1031,6 +1062,7 @@ class DocForge(DwarfServant):
 
             return min(score, 1.0)
         except Exception:
+            # Handle specific exception case
             return 0.0
 
     def _evaluate_readability(self, documentation: str) -> float:
@@ -1058,6 +1090,7 @@ class DocForge(DwarfServant):
 
             return max(score, 0.0)
         except Exception:
+            # Handle specific exception case
             return 0.5
 
     def _generate_error_documentation(
@@ -1096,12 +1129,15 @@ Please contact support with the error details above.
 
         if changes:
             for version, version_changes in changes.items():
+                # Process each item in collection
                 doc_parts.append(
                     f"## [{version}] - {datetime.now().strftime('%Y-%m-%d')}\n"
                 )
                 for change_type, items in version_changes.items():
+                    # Process each item in collection
                     doc_parts.append(f"### {change_type}")
                     for item in items:
+                        # Process each item in collection
                         doc_parts.append(f"- {item}")
                     doc_parts.append("")
         else:
@@ -1169,7 +1205,8 @@ Please contact support with the error details above.
                 project_name.lower().replace(" ", "-") + " --version",
                 "```\n",
                 "## Troubleshooting",
-                "If you encounter any issues during installation, please check our troubleshooting guide.",
+                "If you encounter any issues during installation, please check our " \
+                    "troubleshooting guide.",
             ]
         )
 

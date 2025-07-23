@@ -98,19 +98,26 @@ class ContextEnhancer:
         enhanced_context["naming_guide"] = self._apply_naming_conventions(context, patterns)
         
         # 6. プロジェクト固有のコンテキスト
-        enhanced_context["project_context"] = await self._add_project_specific_context(context, patterns)
+        enhanced_context["project_context"] = await self._add_project_specific_context(
+            context,
+            patterns
+        )
         
         # 7. 類似実装の提案
         enhanced_context["similar_implementations"] = await self._suggest_similar_implementations(context)
         
         # 8. 品質改善提案
-        enhanced_context["quality_improvements"] = self._generate_quality_improvements(context, patterns)
+        enhanced_context["quality_improvements"] = self._generate_quality_improvements(
+            context,
+            patterns
+        )
         
         # 9. テストガイダンス（テスト生成時）
         if context.get("template_type") == "test":
             enhanced_context["test_guidance"] = self._provide_test_guidance(context, patterns)
         
-        logger.info(f"Context enhanced with {len(enhanced_context) - len(context)} additional fields")
+        logger.info(f"Context enhanced with {len(enhanced_context) - len(context)} additional fields" \
+            "Context enhanced with {len(enhanced_context) - len(context)} additional fields")
         return enhanced_context
     
     def _enhance_imports(self, context: Dict[str, Any], patterns: Dict[str, Any]) -> List[str]:
@@ -162,7 +169,13 @@ class ContextEnhancer:
             "error_handling": "specific_exceptions"
         }
     
-    def _enhance_error_handling(self, context: Dict[str, Any], patterns: Dict[str, Any]) -> Dict[str, Any]:
+    def _enhance_error_handling(
+        self,
+        context: Dict[str,
+        Any],
+        patterns: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """エラーハンドリングを強化"""
         error_patterns = patterns.get("error_handling", {})
         
@@ -206,7 +219,13 @@ class ContextEnhancer:
             "performance_logging": "log execution time for complex operations"
         }
     
-    def _apply_naming_conventions(self, context: Dict[str, Any], patterns: Dict[str, Any]) -> Dict[str, Any]:
+    def _apply_naming_conventions(
+        self,
+        context: Dict[str,
+        Any],
+        patterns: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """命名規則を適用"""
         naming = patterns.get("naming", {})
         
@@ -233,7 +252,8 @@ class ContextEnhancer:
         """クラス名を提案"""
         # キーワード抽出
         title_words = re.findall(r'[a-zA-Z]+', issue_title)
-        meaningful_words = [w.capitalize() for w in title_words if len(w) > 2 and w.lower() not in {"the", "and", "for", "with"}]
+        meaningful_words = [w.capitalize() for w in title_words if len(w) > 2 and w.lower() not in {"the" \
+            "the", "and", "for", "with"}]
         
         if meaningful_words:
             base_name = "".join(meaningful_words[:3])  # 最大3語
@@ -310,7 +330,13 @@ class ContextEnhancer:
         
         return f"{prefix}resource"
     
-    async def _add_project_specific_context(self, context: Dict[str, Any], patterns: Dict[str, Any]) -> Dict[str, Any]:
+    async def _add_project_specific_context(
+        self,
+        context: Dict[str,
+        Any],
+        patterns: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """プロジェクト固有のコンテキストを追加"""
         vocabulary = patterns.get("vocabulary", [])
         
@@ -337,7 +363,11 @@ class ContextEnhancer:
             }
         }
     
-    async def _suggest_similar_implementations(self, context: Dict[str, Any]) -> List[Dict[str, Any]]:
+    async def _suggest_similar_implementations(
+        self,
+        context: Dict[str,
+        Any]
+    ) -> List[Dict[str, Any]]:
         """類似実装を提案"""
         issue_title = context.get("issue_title", "")
         issue_body = context.get("issue_body", "")
@@ -401,7 +431,13 @@ class ContextEnhancer:
         
         return "general"
     
-    def _generate_quality_improvements(self, context: Dict[str, Any], patterns: Dict[str, Any]) -> List[str]:
+    def _generate_quality_improvements(
+        self,
+        context: Dict[str,
+        Any],
+        patterns: Dict[str,
+        Any]
+    ) -> List[str]:
         """品質改善提案を生成"""
         improvements = []
         
@@ -452,7 +488,13 @@ class ContextEnhancer:
         
         return improvements[:8]  # 最大8つの提案
     
-    def _provide_test_guidance(self, context: Dict[str, Any], patterns: Dict[str, Any]) -> Dict[str, Any]:
+    def _provide_test_guidance(
+        self,
+        context: Dict[str,
+        Any],
+        patterns: Dict[str,
+        Any]
+    ) -> Dict[str, Any]:
         """テストガイダンスを提供"""
         test_patterns = patterns.get("test_patterns", {})
         
