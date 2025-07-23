@@ -247,10 +247,8 @@ class ServantRegistry:
         # Check capacity
         if len(servant_info.current_tasks) >= servant_info.max_concurrent_tasks:
             logger.error(
-                (
-                    f"f"Servant {servant_id} is at capacity ({len(servant_info.current_tasks)}/"
-                    f"{servant_info.max_concurrent_tasks})""
-                )
+                f"Servant {servant_id} is at capacity ({len(servant_info.current_tasks)}/"
+                f"{servant_info.max_concurrent_tasks})"
             )
             return False
 

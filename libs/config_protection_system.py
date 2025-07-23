@@ -75,9 +75,8 @@ class ConfigFileProtectionHandler(FileSystemEventHandler):
 class ConfigProtectionSystem:
     """設定ファイル保護システム"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path = None):
         """初期化メソッド"""
-    Path = None):
         self.project_root = project_root or Path.cwd()
         self.config_dir = self.project_root / "config"
         self.protection_dir = self.project_root / ".config_protection"

@@ -128,9 +128,8 @@ class DimensionalProcessor:
 class MultidimensionalParallelEngine:
     """多次元並列処理エンジン"""
 
-    def __init__(self, max_dimensions:
+    def __init__(self, max_dimensions: int = 11):
         """初期化メソッド"""
-    int = 11):
         self.dimensions = [
             DimensionalProcessor(i) for i in range(1, max_dimensions + 1)
         ]

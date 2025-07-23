@@ -232,7 +232,7 @@ class PMEnhancedWorker:
                             )
                     else:
                         self.logger.warning(f"⚠️ main へのPR作成失敗")
-                                                if self.slack:
+                        if self.slack:
                             self._send_merge_failure_notification(task_id, branch_name)
                 else:
                     self.logger.warning(f"⚠️ コミット失敗")

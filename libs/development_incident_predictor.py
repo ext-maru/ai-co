@@ -66,9 +66,8 @@ class DevelopmentRisk:
 class ImportAnalyzer:
     """インポート分析器"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path):
         """初期化メソッド"""
-    Path):
         self.project_root = project_root
         self.import_graph = defaultdict(set)
         self.known_modules = set()
