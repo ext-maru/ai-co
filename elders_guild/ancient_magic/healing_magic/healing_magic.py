@@ -79,7 +79,7 @@ class HealingMagic(AncientMagic):
         self.healing_config = {
             "max_recovery_attempts": 3,
             "healing_timeout": timedelta(minutes=5),
-            "health_threshold_critical": 0.3,
+            "health_threshold_critical": 0.5,  # より敏感に
             "health_threshold_warning": 0.7,
             "auto_healing_enabled": True
         }
@@ -633,7 +633,7 @@ class HealingMagic(AncientMagic):
                 end_time=datetime.now(),
                 healing_type="performance_recovery",
                 target_component="system_performance",
-                success=performance_improvement >= 0.3,
+                success=performance_improvement >= 0.2,
                 healing_actions=optimization_actions,
                 recovery_percentage=min(1.0, performance_improvement)
             )
@@ -646,7 +646,7 @@ class HealingMagic(AncientMagic):
                     "session_id": session_id,
                     "optimization_actions": optimization_actions,
                     "estimated_improvement": performance_improvement,
-                    "recovery_successful": performance_improvement >= 0.3,
+                    "recovery_successful": performance_improvement >= 0.2,
                     "execution_time": (healing_session.end_time - healing_session.start_time).total_seconds()
                 }
             }
@@ -992,7 +992,7 @@ class HealingMagic(AncientMagic):
             "software_corruption": 0.85,
             "network_outage": 0.95,
             "cyber_attack": 0.7,
-            "data_corruption": 0.75,
+            "data_corruption": 0.8,
             "unknown": 0.6
         }
         
