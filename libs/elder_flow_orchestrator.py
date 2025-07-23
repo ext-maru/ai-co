@@ -44,9 +44,8 @@ class FlowStatus(Enum):
 # Elder Flow Task
 class ElderFlowTask:
     """ElderFlowTask - エルダーズギルド関連クラス"""
-    def __init__(self, task_id:
+    def __init__(self, task_id: str, description: str, priority: str = "medium"):
         """初期化メソッド"""
-    str, description: str, priority: str = "medium"):
         self.task_id = task_id
         self.description = description
         self.priority = priority
@@ -60,9 +59,8 @@ class ElderFlowTask:
         self.git_commit_id = None
         self.logs = []
 
-    def add_log(self, message:
+    def add_log(self, message: str, level: str = "info"):
         """log追加メソッド"""
-    str, level: str = "info"):
         self.logs.append(
             {
                 "timestamp": datetime.now().isoformat(),

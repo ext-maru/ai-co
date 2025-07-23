@@ -394,9 +394,8 @@ class TestExecutionPredictor:
 class DevelopmentIncidentPredictor:
     """開発インシデント予測器メインクラス"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Optional[Path] = None):
         """初期化メソッド"""
-    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.import_analyzer = ImportAnalyzer(self.project_root)
         self.test_predictor = TestExecutionPredictor(self.project_root)
