@@ -27,6 +27,7 @@ class IncidentSeverity(Enum):
 class IncidentStatus(Enum):
     """インシデントステータス"""
     DETECTED = "detected"         # 検知済み
+    OPEN = "open"                # オープン状態
     INVESTIGATING = "investigating"  # 調査中
     RESOLVING = "resolving"       # 解決中
     RESOLVED = "resolved"         # 解決済み
@@ -52,7 +53,7 @@ class Incident:
     title: str = ""
     description: str = ""
     severity: IncidentSeverity = IncidentSeverity.MEDIUM
-    status: IncidentStatus = IncidentStatus.DETECTED
+    status: IncidentStatus = IncidentStatus.OPEN
     category: IncidentCategory = IncidentCategory.QUALITY
     
     # メタデータ

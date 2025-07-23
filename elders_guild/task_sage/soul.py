@@ -274,6 +274,7 @@ class TaskSageSoul(BaseSoul):
         ordered_task_ids = []
         
         while queue:
+        # ループ処理
             current_id = queue.popleft()
             ordered_task_ids.append(current_id)
             
@@ -451,6 +452,7 @@ class TaskSageSoul(BaseSoul):
         depths = {}
         
         def calculate_depth(task_id: str, task_map: Dict[str, Task]) -> int:
+            """calculate_depthメソッド"""
             if task_id in depths:
                 return depths[task_id]
             

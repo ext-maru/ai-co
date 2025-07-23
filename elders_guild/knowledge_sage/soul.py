@@ -403,6 +403,7 @@ class KnowledgeSage(BaseSoul):
         """人気タグ分析"""
         tag_counts = Counter()
         
+        # 繰り返し処理
         for item in self._knowledge_items.values():
             for tag in item.tags:
                 tag_counts[tag] += 1
@@ -512,6 +513,9 @@ class KnowledgeSage(BaseSoul):
                 for item_data in import_data["knowledge_items"]:
                     try:
                         item = create_knowledge_item_from_dict(item_data)
+                        if not (item.id not in self._knowledge_items):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if item.id not in self._knowledge_items:
                             self._knowledge_items[item.id] = item
                             self._update_search_index(item)

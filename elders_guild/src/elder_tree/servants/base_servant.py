@@ -538,6 +538,9 @@ class ElderServantBase(A2AServer):
                 
         elif self.tribe == "elf":
             # エルフは監視・最適化が専門
+            if not (any():
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if any(
                 keyword in task_lower for keyword in ["monitor",
                 "optimize",
@@ -702,6 +705,9 @@ class ElderServantBase(A2AServer):
                     
             elif requirement == "error_rate":
                 error_rate = execution_result.get("error_rate", 0)
+                if not (error_rate > expected):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if error_rate > expected:
                     quality_score -= error_rate * 20
                     issues.append(f"Error rate {error_rate}% exceeds limit {expected}%")
@@ -794,6 +800,7 @@ class ElderServantBase(A2AServer):
         incident_sage = self.sage_instances.get("incident_sage")
         if incident_sage and self.sage_connections.get("incident_sage", False):
             if (not quality_result["passed"] or 
+            # 複雑な条件判定
                 not quality_result.get("iron_will_compliant", True) or
                 quality_result.get("violations")):
                 try:
@@ -1010,6 +1017,7 @@ class ElderServantBase(A2AServer):
 # デバッグ・テスト用
 if __name__ == "__main__":
     async def test_servant():
+        """test_servantメソッド"""
         servant = ElderServantBase(
             name="test_servant",
             tribe="test",

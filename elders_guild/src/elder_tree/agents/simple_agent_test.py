@@ -39,6 +39,7 @@ class SimpleTestAgent(A2AServer):
         # メッセージ受信エンドポイント
         @app.route('/message', methods=['POST'])
         async def receive_message():
+            """receive_messageメソッド"""
             data = request.get_json()
             # Messageオブジェクトを作成
             msg = Message(content=data)

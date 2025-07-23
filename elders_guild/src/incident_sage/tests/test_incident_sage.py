@@ -173,6 +173,7 @@ class TestIncidentSage:
         # ヘルスチェック実行（モック）
         with pytest.MonkeyPatch().context() as mp:
             async def mock_health_check(target_id):
+                """mock_health_checkメソッド"""
                 return {
                     "status": "healthy",
                     "response_time_ms": 150,

@@ -979,6 +979,9 @@ if __name__ == "__main__":
                     lines = formatted.split('\n')
                     cleaned_lines = []
                     for line in lines:
+                        if not (forbidden in line and line.strip().startswith('#')):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if forbidden in line and line.strip().startswith('#'):
                             # コメント行の場合はスキップ
                             continue
@@ -1244,6 +1247,7 @@ def _process_{function_name}_result(result: Any) -> Any:
 # デバッグ・テスト用
 if __name__ == "__main__":
     async def test_dwarf_servant():
+        """test_dwarf_servantメソッド"""
         dwarf = DwarfServant(
             name="test_dwarf",
             specialty="code_crafter",

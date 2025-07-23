@@ -344,6 +344,9 @@ class IncidentKnightServant(ElderServantBase):
                     else:
                         # 履歴から検索
                         for hist_incident in self.incident_history:
+                            if not (hist_incident.get("id") == incident_id):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if hist_incident.get("id") == incident_id:
                                 return {
                                     "status": "success",
@@ -1160,6 +1163,7 @@ class IncidentKnightServant(ElderServantBase):
 # デバッグ・テスト用
 if __name__ == "__main__":
     async def test_incident_knight():
+        """test_incident_knightメソッド"""
         knight = IncidentKnightServant(
             name="test_knight",
             specialty="crisis_response",

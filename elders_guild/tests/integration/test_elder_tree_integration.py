@@ -104,6 +104,7 @@ class TestElderTreeIntegration:
             # 条件付きレスポンス
             async def side_effect(target, message_type, data, timeout=None):
                 if "sage" in target:
+                """side_effectメソッド"""
                     return sage_response
                 elif "crafter" in target:
                     return servant_response
@@ -441,6 +442,7 @@ def bad_function(x, y, z):
                                          return_value={"git_operations_complete": True}):
                             
                             async def run_flow():
+                                """run_flowを実行"""
                                 return await elder_flow.execute(
                                     task_type="performance_test",
                                     requirements=["Quick test"],

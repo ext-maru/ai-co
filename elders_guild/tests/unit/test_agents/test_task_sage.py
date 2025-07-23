@@ -24,6 +24,7 @@ class TaskFactory(factory.Factory):
         model = dict
     
     title = factory.Faker('sentence', nb_words=5)
+        """Metaクラス"""
     description = factory.Faker('text', max_nb_chars=200)
     priority = factory.fuzzy.FuzzyChoice(['low', 'medium', 'high', 'critical'])
     assignee = factory.Faker('user_name')
@@ -278,6 +279,7 @@ class TestTaskSage:
         
         for i, (status, priority) in enumerate(zip(statuses, priorities)):
             message = Mock()
+        # 繰り返し処理
             message.data = {
                 "title": f"Task {i}",
                 "description": "Test task",
@@ -483,6 +485,7 @@ class TestTaskSage:
         
         async def create_bulk_tasks():
             results = []
+            """create_bulk_tasksを作成"""
             for task_data in tasks_data:
                 message = Mock()
                 message.data = task_data
@@ -579,6 +582,7 @@ class TestTaskSage:
             break
         
         async def update_status(status):
+            """update_statusを更新"""
             message = Mock()
             message.data = {
                 "task_id": task_id,

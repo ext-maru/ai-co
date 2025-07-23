@@ -53,7 +53,8 @@ class RAGSage(ElderTreeAgent):
         mock_documents = [
             {
                 "title": f"Technical Documentation for {query}",
-                "content": f"This is technical documentation about {query}. It contains detailed information and best practices.",
+                "content": f"This is technical documentation about {query}. It contains detailed information and \
+                    best practices.",
                 "score": 0.95,
                 "source": "technical_docs"
             },
@@ -139,6 +140,7 @@ class RAGSage(ElderTreeAgent):
 
 # 単体実行用
 def main():
+    """mainメソッド"""
     # Create RAG Sage
     port = int(os.getenv("RAG_SAGE_PORT", 50054))
     sage = RAGSage(port=port)

@@ -649,7 +649,8 @@ class ElderFlow(A2AServer):
         return {
             "report_generated": True,
             "report_id": report_id,
-            "summary": f"Elder Flow completed with {len([s for s in completed_stages if s.completed])} successful stages"
+            "summary": f"Elder Flow completed with 
+                f"{len([s for s in completed_stages if s.completed])} successful stages"
         }
     
     def _extract_key_results(self, stage: Stage) -> List[str]:

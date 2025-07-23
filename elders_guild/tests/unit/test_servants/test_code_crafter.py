@@ -316,6 +316,7 @@ def invalid_function(
     async def test_code_generation_performance(self, code_crafter, code_spec, benchmark):
         """コード生成パフォーマンステスト"""
         async def generate_code():
+            """generate_codeを生成"""
             return await code_crafter.execute_specialized_task(
                 "code_generation",
                 {"specification": code_spec, "use_tdd": True},

@@ -1026,6 +1026,7 @@ class IncidentSageSoul(BaseSoul):
         """共通影響コンポーネント抽出"""
         component_counts = {}
         for incident in incidents:
+        # 繰り返し処理
             for component in incident.affected_components:
                 component_counts[component] = component_counts.get(component, 0) + 1
         
@@ -1036,6 +1037,7 @@ class IncidentSageSoul(BaseSoul):
     def _find_common_tags(self, incidents: List[Incident]) -> List[str]:
         """共通タグ抽出"""
         tag_counts = {}
+        # 繰り返し処理
         for incident in incidents:
             for tag in incident.tags:
                 tag_counts[tag] = tag_counts.get(tag, 0) + 1

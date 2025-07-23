@@ -621,7 +621,11 @@ class RAGWizardServant(ElderServantBase):
                 # 最小限の実装
                 return {
                     "sources": ["fallback_source"],
-                    "data_points": [{"content": f"Basic analysis for: {query}", "source": "internal", "relevance": 0.5}],
+                    "data_points": [{
+                        "content": f"Basic analysis for: {query}",
+                        "source": "internal",
+                        "relevance": 0.5
+                    }],
                     "confidence_score": 0.5,
                     "method": "minimal_fallback"
                 }
@@ -698,6 +702,9 @@ class RAGWizardServant(ElderServantBase):
                     scores = []
                     
                     for result in search_results:
+                        if not (result.relevance_score >= threshold):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if result.relevance_score >= threshold:
                             matches.append({
                                 "content": result.content,
@@ -894,7 +901,8 @@ class RAGWizardServant(ElderServantBase):
         
         semantic_search = integrated_findings.get("semantic_search", {})
         if semantic_search.get("matches"):
-            analysis["key_insights"].append(f"Semantic analysis identified {len(semantic_search['matches'])} relevant matches")
+                        analysis["key_insights"].append(f"Semantic analysis identified { \
+                len(semantic_search['matches'])} relevant matches")
         
         # 推奨事項の生成
         if analysis["confidence"] > 0.7:

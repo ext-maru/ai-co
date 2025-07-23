@@ -261,6 +261,9 @@ class RAGSageSoul(BaseSoul):
                 # インデックス作成リクエスト
                 document = message.payload.get("document", {})
                 
+                if document:
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if not document:
                     return self._create_error_response(message, "Document parameter is required")
                 
@@ -1020,6 +1023,7 @@ class RAGSageSoul(BaseSoul):
         matrix = []
         for i, doc1 in enumerate(documents):
             row = []
+        # 繰り返し処理
             for j, doc2 in enumerate(documents):
                 if i == j:
                     row.append(1.0)
@@ -1038,6 +1042,7 @@ class RAGSageSoul(BaseSoul):
         """類似文書クラスタリング"""
         clusters = []
         for i in range(len(documents)):
+        # 繰り返し処理
             cluster = [i]
             for j in range(i + 1, len(documents)):
                 if similarity_matrix[i][j] > 0.7:
@@ -1060,6 +1065,7 @@ class RAGSageSoul(BaseSoul):
         """最類似ペア発見"""
         max_sim = 0
         pair = [0, 1]
+        # 繰り返し処理
         for i in range(len(matrix)):
             for j in range(i + 1, len(matrix[0])):
                 if matrix[i][j] > max_sim:

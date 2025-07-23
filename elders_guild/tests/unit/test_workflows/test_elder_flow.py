@@ -92,6 +92,7 @@ class TestElderFlow:
                         "report_generated": True,
                         "report_id": "REPORT-123"
                     })):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with patch.object(elder_flow, '_git_automation', new=AsyncMock(return_value={
                             "git_operations_complete": True,
                             "branch": "feature-test"
@@ -321,10 +322,13 @@ class TestElderFlow:
             with patch.object(elder_flow, '_servant_execution', new=mock_stage):
                 with patch.object(elder_flow, '_quality_gate', new=mock_stage):
                     with patch.object(elder_flow, '_council_report', new=mock_stage):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with patch.object(elder_flow, '_git_automation', new=mock_stage):
                             
                             # ベンチマーク実行
+                            # Deep nesting detected (depth: 5) - consider refactoring
                             async def run_flow():
+                                """run_flowを実行"""
                                 return await elder_flow.execute(
                                     task_type="perf_test",
                                     requirements=["req1"],
@@ -368,8 +372,10 @@ class TestElderFlow:
                     # 簡単な実行
                     with patch.object(elder_flow, '_sage_consultation', 
                                     side_effect=Exception("Test")):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with patch.object(elder_flow, '_report_failure_to_incident_sage', 
                                         new=AsyncMock()):
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             try:
                                 await elder_flow.execute(
                                     task_type="metrics_test",
@@ -443,10 +449,12 @@ class TestElderFlowErrorHandling:
             with patch.object(elder_flow, '_servant_execution', new=mock_stage):
                 with patch.object(elder_flow, '_quality_gate', new=mock_stage):
                     with patch.object(elder_flow, '_council_report', new=mock_stage):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with patch.object(elder_flow, '_git_automation', new=mock_stage):
                             
                             # 10個の並行タスク
                             tasks = []
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             for i in range(10):
                                 task = elder_flow.execute(
                                     task_type=f"concurrent_task_{i}",

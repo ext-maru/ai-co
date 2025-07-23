@@ -130,6 +130,7 @@ class TaskSage(ElderTreeAgent):
 
 # 単体実行用
 def main():
+    """mainメソッド"""
     # Create Task Sage
     port = int(os.getenv("TASK_SAGE_PORT", 50052))
     sage = TaskSage(port=port)

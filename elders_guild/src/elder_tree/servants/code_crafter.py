@@ -96,6 +96,7 @@ if __name__ == "__main__":
 
 # 単体実行用
 def main():
+    """mainメソッド"""
     # Create Code Crafter
     port = int(os.getenv("CODE_CRAFTER_PORT", 50201))
     crafter = CodeCrafter(port=port)

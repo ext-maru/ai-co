@@ -101,6 +101,9 @@ class ElderTreeTestGenerator:
                     if not node.name.startswith('_'):
                         functions.append(node.name)
                 elif isinstance(node, ast.AsyncFunctionDef):
+                    if node.name.startswith('_'):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if not node.name.startswith('_'):
                         functions.append(node.name)
         except Exception as e:

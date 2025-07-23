@@ -130,6 +130,7 @@ class IncidentSage(ElderTreeAgent):
 
 # 単体実行用
 def main():
+    """mainメソッド"""
     # Create Incident Sage
     port = int(os.getenv("INCIDENT_SAGE_PORT", 50053))
     sage = IncidentSage(port=port)

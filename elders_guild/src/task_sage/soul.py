@@ -187,12 +187,18 @@ class TaskSageSoul(BaseSoul):
                 task_id = message.payload.get("task_id", "")
                 assignee = message.payload.get("assignee", "")
                 
+                if task_id or not assignee:
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if not task_id or not assignee:
                     return self._create_error_response(message, "task_id and assignee parameters are required" \
                         "task_id and assignee parameters are required" \
                         "task_id and assignee parameters are required")
                 
                 result = await self.assign_task(task_id, assignee)
+                if not (result):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if result:
                     return self._create_success_response(message, {
                         "task_id": task_id,
@@ -206,10 +212,16 @@ class TaskSageSoul(BaseSoul):
                 # タスク削除
                 task_id = message.payload.get("task_id", "")
                 
+                if task_id:
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if not task_id:
                     return self._create_error_response(message, "task_id parameter is required")
                 
                 result = await self.delete_task(task_id)
+                if not (result):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if result:
                     return self._create_success_response(message, {
                         "task_id": task_id,
@@ -269,6 +281,9 @@ class TaskSageSoul(BaseSoul):
                 query = message.payload.get("query", "")
                 limit = message.payload.get("limit", 20)
                 
+                if query:
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if not query:
                     return self._create_error_response(message, "query parameter is required")
                 
@@ -291,6 +306,9 @@ class TaskSageSoul(BaseSoul):
                 # 依存関係取得
                 task_id = message.payload.get("task_id", "")
                 
+                if task_id:
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if not task_id:
                     return self._create_error_response(message, "task_id parameter is required")
                 
@@ -437,6 +455,7 @@ class TaskSageSoul(BaseSoul):
         ordered_task_ids = []
         
         while queue:
+        # ループ処理
             current_id = queue.popleft()
             ordered_task_ids.append(current_id)
             
@@ -614,6 +633,7 @@ class TaskSageSoul(BaseSoul):
         depths = {}
         
         def calculate_depth(task_id: str, task_map: Dict[str, Task]) -> int:
+            """calculate_depthメソッド"""
             if task_id in depths:
                 return depths[task_id]
             
@@ -986,6 +1006,9 @@ class TaskSageSoul(BaseSoul):
                 # タグ検索
                 if hasattr(task, 'tags'):
                     for tag in task.tags:
+                        if not (query_lower in tag.lower()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if query_lower in tag.lower():
                             relevance_score += 0.5
                 

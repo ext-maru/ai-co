@@ -77,6 +77,7 @@ class SimpleElderFlow(ElderTreeAgent):
 
 # 単体実行用
 def main():
+    """mainメソッド"""
     # Create Simple Elder Flow
     port = int(os.getenv("ELDER_FLOW_PORT", 50100))
     flow = SimpleElderFlow(port=port)

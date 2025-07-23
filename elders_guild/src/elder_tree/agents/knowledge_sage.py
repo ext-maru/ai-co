@@ -390,6 +390,7 @@ class KnowledgeSage(ElderTreeAgent):
 
 # 単体実行用
 def main():
+    """mainメソッド"""
     # Create Knowledge Sage with port
     port = int(os.getenv("KNOWLEDGE_SAGE_PORT", 50051))
     sage = KnowledgeSage(port=port)

@@ -33,6 +33,7 @@ def mock_message():
     from python_a2a import Message
     
     def _create_message(**kwargs):
+        """_create_messageを作成"""
         defaults = {
             "message_type": "test",
             "data": {"test": "data"}
