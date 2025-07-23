@@ -1093,10 +1093,21 @@ class IncidentProcessor:
         try:
             rule_data = data.get("alert_rule", {})
             
+            # alert_ruleが辞書でない場合はエラー
+            if not isinstance(rule_data, dict):
+                return {"success": False, "error": "alert_rule must be a dictionary"}
+            
+            # 必須フィールドチェック
+            if not rule_data.get("name"):
+                return {"success": False, "error": "alert_rule.name is required"}
+            
+            if not rule_data.get("condition_expression"):
+                return {"success": False, "error": "alert_rule.condition_expression is required"}
+            
             alert_rule = AlertRule(
-                name=rule_data.get("name", "Unknown Rule"),
+                name=rule_data.get("name"),
                 description=rule_data.get("description", ""),
-                condition_expression=rule_data.get("condition_expression", "metric > 1.0"),
+                condition_expression=rule_data.get("condition_expression"),
                 severity=IncidentSeverity(rule_data.get("severity", "medium")),
                 enabled=rule_data.get("enabled", True)
             )
@@ -1413,6 +1424,10 @@ class IncidentProcessor:
             
             if not query:
                 return {"success": False, "error": "query is required"}
+            
+            # クエリサイズ制限（10KB）
+            if len(query) > 10 * 1024:
+                return {"success": False, "error": f"Query too large: {len(query)} bytes (max 10KB)"}
             
             # 簡単な類似検索実装
             similar = []

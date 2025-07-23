@@ -508,8 +508,8 @@ class ServantRegistry:
             if servant_info.current_tasks:
                 logger.error(
                     (
-                        f"f"Cannot enable maintenance mode for {servant_id}: has "
-                        f"{len(servant_info.current_tasks)} active tasks""
+                        f"Cannot enable maintenance mode for {servant_id}: has "
+                        f"{len(servant_info.current_tasks)} active tasks"
                     )
                 )
                 return False

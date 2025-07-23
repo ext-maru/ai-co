@@ -234,9 +234,14 @@ class RAGProcessor:
         """知識検索アクション"""
         try:
             # SearchQuery構築
+            try:
+                search_type = SearchType(data.get("search_type", "full_text"))
+            except ValueError:
+                return {"success": False, "error": f"Invalid search_type: {data.get('search_type')}"}
+            
             query = SearchQuery(
                 query=data.get("query", ""),
-                search_type=SearchType(data.get("search_type", "full_text")),
+                search_type=search_type,
                 filters=data.get("filters", {}),
                 limit=data.get("limit", 10),
                 offset=data.get("offset", 0),
@@ -277,6 +282,11 @@ class RAGProcessor:
         try:
             # Document構築
             doc_data = data.get("document", {})
+            
+            # 必須フィールドチェック
+            if not doc_data.get("content"):
+                return {"success": False, "error": "content is required"}
+            
             document = Document(
                 id=doc_data.get("id", str(int(time.time() * 1000))),
                 content=doc_data.get("content", ""),
