@@ -38,21 +38,20 @@ class SimpleMetrics:
         return SimpleCounter(self.counters, key)
 
     def gauge(self, name: str, description: str = ""):
+        """gaugeメソッド"""
         key = f"{self.worker_name}_{name}"
         if key not in self.gauges:
-        """counterメソッド"""
             self.gauges[key] = 0
         return SimpleGauge(self.gauges, key)
 
     def histogram(self, name: str, description: str = ""):
+        """histogramメソッド"""
         key = f"{self.worker_name}_{name}"
-        """gaugeメソッド"""
         if key not in self.histograms:
             self.histograms[key] = []
         return SimpleHistogram(self.histograms, key)
 
     def get_metrics(self) -> Dict[str, Any]:
-        """histogramメソッド"""
         """全メトリクスの取得"""
         metrics = {"counters": self.counters.copy(), "gauges": self.gauges.copy()}
 
@@ -94,10 +93,11 @@ class SimpleCounter:
 
 
 class SimpleGauge:
+    """SimpleGaugeクラス"""
+    
     def __init__(self, storage: Dict, key: str):
         """初期化メソッド"""
         self.storage = storage
-    """SimpleGaugeクラス"""
         self.key = key
 
     def set(self, value: float):
@@ -110,16 +110,17 @@ class SimpleGauge:
         self.storage[self.key] -= amount
 
     def labels(self, **kwargs):
+        """labelsメソッド"""
         label_key = f"{self.key}_{hash(str(kwargs))}"
         if label_key not in self.storage:
-        """labelsメソッド"""
             self.storage[label_key] = 0
         return SimpleGauge(self.storage, label_key)
 
 
 class SimpleHistogram:
-    def __init__(self, storage: Dict, key: str):
     """SimpleHistogramクラス"""
+    
+    def __init__(self, storage: Dict, key: str):
         """初期化メソッド"""
         self.storage = storage
         self.key = key

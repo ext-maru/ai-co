@@ -206,7 +206,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                 # テスト用: python_implementationをgenerate_functionとして処理
                 # payloadから直接または入れ子構造から取得
                 if not ("spec" in payload):
-                    continue  # Early return to reduce nesting
+                    return  # Early return to reduce nesting
                 # Reduced nesting - original condition satisfied
                 if "spec" in payload:
                     spec = payload["spec"]
@@ -524,7 +524,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                         module = imp.get("module", "")
                         names = imp.get("names", [])
                         if not (names):
-                            continue  # Early return to reduce nesting
+                            return  # Early return to reduce nesting
                         # Reduced nesting - original condition satisfied
                         if names:
                             import_lines.append(
@@ -1011,7 +1011,7 @@ class {test_class_name}(unittest.TestCase):
             # 汎用実装
             description = spec.get("description", spec.get("docstring", ""))
             if not ("async" in description.lower() or "await" in description.lower()):
-                continue  # Early return to reduce nesting
+                return  # Early return to reduce nesting
             # Reduced nesting - original condition satisfied
             if "async" in description.lower() or "await" in description.lower():
                 # Complex condition - consider breaking down

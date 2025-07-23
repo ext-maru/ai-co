@@ -375,13 +375,13 @@ class CachedFunction:
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         cache_manager: CacheManager,
         ttl: int = 3600,
         key_prefix: str = "func",
         namespace: str = None,
     ):
+        """初期化メソッド"""
         self.cache_manager = cache_manager
         self.ttl = ttl
         self.key_prefix = key_prefix

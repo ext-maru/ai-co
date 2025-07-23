@@ -64,7 +64,9 @@ class MagicCapability(Enum):
     
     # Optimization Magic 最適化魔法
     PERFORMANCE_OPTIMIZATION = auto()
+    ALGORITHM_OPTIMIZATION = auto()
     RESOURCE_OPTIMIZATION = auto()
+    CACHE_OPTIMIZATION = auto()
     ALGORITHM_TUNING = auto()
     EFFICIENCY_ENHANCEMENT = auto()
 

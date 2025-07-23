@@ -546,8 +546,8 @@ def elder_worker_required(elder_role: ElderRole, sage_type: Optional[SageType] =
     """Elder階層ワーカー権限デコレーター"""
 
     def decorator(method):
-        @wraps(method)
         """decoratorメソッド"""
+        @wraps(method)
         async def wrapper(self, context: ElderTaskContext, *args, **kwargs):
             """wrapperメソッド"""
             if not isinstance(self, ElderAwareBaseWorker):

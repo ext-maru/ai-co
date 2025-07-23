@@ -25,13 +25,15 @@ except ImportError:
         # Main class implementation
         async def get(self, key):
             """getメソッド"""
-        return None
+            return None
+            
         async def set(self, key, value, ex=None):
             """setメソッド"""
-        pass
+            pass
+            
         async def delete(self, key):
             """deleteメソッド"""
-        pass
+            pass
     redis = MockRedis
 
 # EldersLegacy統合インポート
