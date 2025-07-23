@@ -32,9 +32,8 @@ logger = logging.getLogger(__name__)
 class ConfigGuardianKnight(IncidentKnight):
     """設定守護騎士 - 全設定ファイルの監視・保護"""
 
-    def __init__(self, knight_id:
+    def __init__(self, knight_id: str = "config_guardian_001"):
         """初期化メソッド"""
-    str = "config_guardian_001"):
         super().__init__(knight_id, KnightType.DIAGNOSTIC, "config_guardian")
 
         self.watched_namespaces = ["slack", "database", "worker"]

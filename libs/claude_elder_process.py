@@ -27,9 +27,8 @@ class TaskStatus(Enum):
 
 class DevelopmentTask:
     """開発タスク"""
-    def __init__(self, task_id:
+    def __init__(self, task_id: str, description: str, priority: int = 5):
         """初期化メソッド"""
-    str, description: str, priority: int = 5):
         self.task_id = task_id
         self.description = description
         self.priority = priority

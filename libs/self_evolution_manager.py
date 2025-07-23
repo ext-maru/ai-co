@@ -1752,10 +1752,7 @@ class SelfEvolutionManager:
                                 "dir": directory,
                                 "score": min(0.85, final_score),
                                 "method": "advanced_embedding",
-                                "reason": f"Embedding similarity: {
-                                    normalized_score:.3f},
-                                    success_rate: {success_rate:.2f
-                                }",
+                                "reason": f"Embedding similarity: {normalized_score:.3f}, success_rate: {success_rate:.2f}",
                             }
                         )
 

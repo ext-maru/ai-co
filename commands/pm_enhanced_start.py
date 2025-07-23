@@ -226,7 +226,7 @@ class PMEnhancedWorker:
                         self.logger.info(f"🔀 main へのPR作成成功")
 
                         # 成功通知
-                                                if self.slack:
+                        if self.slack:
                             self._send_success_notification(
                                 task_id, branch_name, new_files, test_passed
                             )

@@ -59,9 +59,8 @@ class DeploymentConfig:
 class ProjectDeploymentManager:
     """プロジェクト別デプロイメント管理システム"""
 
-    def __init__(self, config_dir:
+    def __init__(self, config_dir: str = "deployment-configs"):
         """初期化メソッド"""
-    str = "deployment-configs"):
         self.config_dir = Path(config_dir)
         self.sages = FourSagesIntegration()
         self.deployment_history = []
