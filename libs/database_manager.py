@@ -37,9 +37,9 @@ class TransactionError(DatabaseError):
 
 class ConnectionPool:
     """ConnectionPoolクラス"""
-    def __init__(self, config:
+    def __init__(self, config ConnectionConfig):
         """初期化メソッド"""
-    ConnectionConfig):
+
         self.config = config
         self._pool = Queue(maxsize=config.max_connections)
         self._lock = threading.Lock()

@@ -73,9 +73,9 @@ class CircuitBreakerConfig:
 class CircuitBreaker:
     """サーキットブレーカー実装"""
 
-    def __init__(self, config:
+    def __init__(self, config CircuitBreakerConfig):
         """初期化メソッド"""
-    CircuitBreakerConfig):
+
         self.config = config
         self.state = CircuitBreakerState.CLOSED
         self.failure_count = 0

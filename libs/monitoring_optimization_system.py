@@ -114,9 +114,9 @@ class PerformanceAlert:
 class SystemMonitor:
     """システム監視"""
 
-    def __init__(self, level:
+    def __init__(self, level MonitoringLevel = MonitoringLevel.DETAILED):
         """初期化メソッド"""
-    MonitoringLevel = MonitoringLevel.DETAILED):
+
         self.level = level
         self.metrics_history = deque(maxlen=1000)
         self.alerts = []

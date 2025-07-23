@@ -53,9 +53,9 @@ class ProcessingJob:
 class ProcessingQueue:
     """優先度ベース処理キュー"""
     
-    def __init__(self, max_size:
+    def __init__(self, max_size int = 1000):
         """初期化メソッド"""
-    int = 1000):
+
         self.max_size = max_size
         self.queues = {
             "critical": asyncio.Queue(),

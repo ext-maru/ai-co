@@ -1118,9 +1118,8 @@ class FailoverManager:
 class DockerRedundancySystem:
     """Docker冗長化システム統合クラス"""
 
-    def __init__(self, config:
+    def __init__(self, config: Optional[RedundancyConfig] = None):
         """初期化メソッド"""
-    Optional[RedundancyConfig] = None):
         self.config = config or RedundancyConfig()
         self.compose_manager = DockerComposeManager(self.config)
         self.health_monitor = ServiceHealthMonitor(self.config)

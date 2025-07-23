@@ -1488,9 +1488,8 @@ class {test_class_name}Integration:
 class QualityInspectorServantReal(BaseServant):
     """品質検査官サーバント - 実装版"""
 
-    def __init__(self, name:
+    def __init__(self, name: str = "QualityInspector"):
         """初期化メソッド"""
-    str = "QualityInspector"):
         super().__init__(ServantType.QUALITY_INSPECTOR, name)
         self.capabilities = [
             "code_quality_check",
@@ -1779,9 +1778,9 @@ class QualityInspectorServantReal(BaseServant):
 class GitKeeperServantReal(BaseServant):
     """Git管理者サーバント - 実装版"""
 
-    def __init__(self, name:
+    def __init__(self, name: str = "GitKeeper"):
         """初期化メソッド"""
-    str = "GitKeeper"):
+
         super().__init__(ServantType.GIT_KEEPER, name)
         self.capabilities = [
             "git_add",

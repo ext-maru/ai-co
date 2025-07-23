@@ -629,8 +629,7 @@ def main():
         for member_id, member_data in status["council_members"].items():
             print(
                 (
-                    f"f"   🧙‍♂️ {member_data['name']}: {member_data['wisdom_level']:.1f}% (重み: "
-                    f"{member_data['decision_weight']})""
+                    f"🧙‍♂️ {member_data['name']}: {member_data['wisdom_level']:.1f}% (重み: {member_data['decision_weight']})"
                 )
             )
 

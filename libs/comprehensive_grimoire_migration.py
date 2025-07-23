@@ -1030,8 +1030,7 @@ class ComprehensiveGrimoireMigration:
 
     async def generate_migration_report(self, report_data: Dict[str, Any]) -> str:
         """移行レポート生成"""
-        report_path = f"/home/aicompany/ai_co/migration_reports/grimoire_migration_{datetime." \
-            "now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_path = f"/home/aicompany/ai_co/migration_reports/grimoire_migration_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
 
         # レポートディレクトリ作成
         os.makedirs(os.path.dirname(report_path), exist_ok=True)

@@ -114,9 +114,8 @@ class RateLimiter:
 class ConnectionPool:
     """Intelligent connection pool"""
     
-    def __init__(self, max_size:
+    def __init__(self, max_size: int = 10):
         """初期化メソッド"""
-    int = 10):
         self.max_size = max_size
         self._connections: List[aiohttp.ClientSession] = []
         self._available: deque = deque()

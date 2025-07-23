@@ -133,9 +133,9 @@ class EvidenceTrace:
 class HierarchicalContextManager:
     """階層化コンテキスト管理システム"""
 
-    def __init__(self, max_contexts_per_tier:
+    def __init__(self, max_contexts_per_tier Dict[ContextTier, int] = None):
         """初期化メソッド"""
-    Dict[ContextTier, int] = None):
+
         self.logger = self._setup_logger("HierarchicalContext")
 
         # 階層別コンテキスト制限

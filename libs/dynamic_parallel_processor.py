@@ -78,9 +78,9 @@ class ScalingDecision:
 class ResourceMonitor:
     """システムリソースモニター"""
     
-    def __init__(self, sampling_interval:
+    def __init__(self, sampling_interval float = 1.0):
         """初期化メソッド"""
-    float = 1.0):
+
         self.sampling_interval = sampling_interval
         self.history: List[SystemResources] = []
         self.max_history = 60  # 60秒間の履歴

@@ -613,9 +613,8 @@ class NextGenAIIntegration:
         """calculate_learning_gain（内部メソッド）"""
         return 0.5
 
-    def _calculate_efficiency_modifier(self, sage_name:
+    def _calculate_efficiency_modifier(self, sage_name: str) -> float:
         """calculate_efficiency_modifier（内部メソッド）"""
-    str) -> float:
         return 0.1
 
     def _update_learning_memory(self):
@@ -839,9 +838,9 @@ class NextGenAIIntegration:
         """generate_creative_solutions（内部メソッド）"""
         return []
 
-    def _implement_innovation(self, innovation:
+    def _implement_innovation(self, innovation: Dict[str, Any]):
         """implement_innovation（内部メソッド）"""
-    Dict[str, Any]):
+
         pass
 
     def _calculate_coordination_bonus(self, sages:

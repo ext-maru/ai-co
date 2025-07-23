@@ -321,9 +321,8 @@ class IntervalBuilder:
 class CronBuilder:
     """Cronスケジュールビルダー"""
     
-    def __init__(self, scheduler:
+    def __init__(self, scheduler: ElderScheduler, cron_params: Dict[str, str]):
         """初期化メソッド"""
-    ElderScheduler, cron_params: Dict[str, str]):
         self.scheduler = scheduler
         self.cron_params = cron_params
         
@@ -341,9 +340,9 @@ class CronBuilder:
 class IntervalJobBuilder:
     """間隔ジョブビルダー"""
     
-    def __init__(self, scheduler:
+    def __init__(self, scheduler: ElderScheduler, trigger: str, **trigger_args):
         """初期化メソッド"""
-    ElderScheduler, trigger: str, **trigger_args):
+
         self.scheduler = scheduler
         self.trigger = trigger
         self.trigger_args = trigger_args
