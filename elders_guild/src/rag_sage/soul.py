@@ -15,7 +15,7 @@ from datetime import datetime, timedelta
 import time
 
 from shared_libs.soul_base import BaseSoul
-from shared_libs.a2a_protocol import A2AMessage, A2ACommunicator, MessageType, MessagePriority
+# A2A protocol removed - not needed for current implementation
 from .abilities.search_models import (
     SearchQuery, SearchResult, SearchResults, SearchType,
     Document, DocumentMetadata, DocumentChunk,
@@ -157,40 +157,41 @@ class RAGSageSoul(BaseSoul):
         # 将来的にはElasticsearchやSolrなどの外部検索エンジンとの統合
         pass
     
-    async def process_message(self, message: A2AMessage) -> Optional[A2AMessage]:
+    async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        A2Aメッセージを処理
+        メッセージを処理
         
         Args:
-            message: 受信したA2Aメッセージ
+            message: 受信したメッセージ
             
         Returns:
             応答メッセージ（必要な場合）
         """
-        logger.info(f"Processing message: {message.message_type}")
+        logger.info(f"Processing message: {message.get('type', 'unknown')}")
         
         try:
-            if message.message_type == MessageType.QUERY:
+            message_type = message.get('type')
+            if message_type == "QUERY":
                 return await self._handle_query(message)
-            elif message.message_type == MessageType.REQUEST:
+            elif message_type == "REQUEST":
                 return await self._handle_request(message)
-            elif message.message_type == MessageType.COMMAND:
+            elif message_type == "COMMAND":
                 return await self._handle_command(message)
             else:
-                logger.warning(f"Unknown message type: {message.message_type}")
+                logger.warning(f"Unknown message type: {message_type}")
                 return None
                 
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             return self._create_error_response(message, str(e))
     
-    async def _handle_query(self, message: A2AMessage) -> A2AMessage:
+    async def _handle_query(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """クエリ処理"""
-        action = message.payload.get("action")
+        action = message.get("action")
         
         if action == "search_knowledge":
-            query_text = message.payload.get("query", "")
-            context = message.payload.get("context", {})
+            query_text = message.get("query", "")
+            context = message.get("context", {})
             
             # 検索実行
             search_query = SearchQuery(
@@ -201,28 +202,26 @@ class RAGSageSoul(BaseSoul):
             
             results = await self.search(search_query)
             
-            return A2AMessage(
-                message_type=MessageType.RESPONSE,
-                sender="rag_sage",
-                recipient=message.sender,
-                payload={
-                    "results": [
-                        {
-                            "content": r.document.content,
-                            "source": r.document.source,
-                            "score": r.score,
-                            "highlights": r.highlights
-                        }
-                        for r in results.results
-                    ],
-                    "total_count": results.total_count,
-                    "search_time_ms": results.search_time_ms
-                }
-            )
+            return {
+                "type": "response",
+                "sender": "rag_sage",
+                "recipient": message.get("sender"),
+                "results": [
+                    {
+                        "content": r.document.content,
+                        "source": r.document.source,
+                        "score": r.score,
+                        "highlights": r.highlights
+                    }
+                    for r in results.results
+                ],
+                "total_count": results.total_count,
+                "search_time_ms": results.search_time_ms
+            }
         
         return self._create_error_response(message, f"Unknown action: {action}")
     
-    async def _handle_request(self, message: A2AMessage) -> A2AMessage:
+    async def _handle_request(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """リクエスト処理 - 他の賢者からの検索・分析要求"""
         try:
             request_type = message.payload.get("request_type", "search")
@@ -280,7 +279,7 @@ class RAGSageSoul(BaseSoul):
             self.logger.error(f"Error handling request: {e}")
             return self._create_error_response(message, f"Request processing failed: {str(e)}")
         
-    async def _handle_command(self, message: A2AMessage) -> A2AMessage:
+    async def _handle_command(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """コマンド処理 - システム管理・設定変更コマンド"""
         try:
             command = message.payload.get("command", "")

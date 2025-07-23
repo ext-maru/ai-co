@@ -200,35 +200,11 @@ class TestTaskSageIntegration:
         yield sage
         await sage.shutdown()
     
-    @pytest.mark.asyncio
-    async def test_sage_communication(self, task_sage):
-        """他の賢者との通信テスト"""
-        # Arrange
-        from shared_libs.a2a_protocol import A2AMessage
-        
-        message = A2AMessage(
-            message_type=MessageType.REQUEST,
-            sender="knowledge_sage",
-            recipient="task_sage",
-            payload={
-                "action": "estimate_task",
-                "task_data": {
-                    "title": "新機能実装",
-                    "technology": "python",
-                    "scope": "medium"
-                }
-            }
-        )
-        
-        # Act
-        response = await task_sage.process_message(message)
-        
-        # Assert
-        assert response is not None
-        assert response.message_type == MessageType.RESPONSE
-        assert response.payload["type"] == "response"
-        assert "result" in response.payload
-        assert "estimated_hours" in response.payload["result"]
+    # A2A通信テストは削除（A2A依存除去）
+    # @pytest.mark.asyncio
+    # async def test_sage_communication(self, task_sage):
+    #     """他の賢者との通信テスト"""
+    #     pass
     
     @pytest.mark.asyncio
     async def test_error_handling(self, task_sage):

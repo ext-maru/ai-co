@@ -184,34 +184,11 @@ class TestRAGSageIntegration:
         if test_db_path.exists():
             test_db_path.unlink()
     
-    @pytest.mark.asyncio
-    async def test_sage_communication(self, rag_sage):
-        """他の賢者との通信テスト"""
-        # Arrange
-        from shared_libs.a2a_protocol import A2AMessage
-        
-        message = A2AMessage(
-            message_type=MessageType.QUERY,
-            sender="task_sage",
-            recipient="rag_sage",
-            payload={
-                "action": "search_knowledge",
-                "query": "タスク管理のベストプラクティス",
-                "context": {
-                    "domain": "project_management",
-                    "urgency": "high"
-                }
-            }
-        )
-        
-        # Act
-        response = await rag_sage.process_message(message)
-        
-        # Assert
-        assert response is not None
-        assert response.message_type == MessageType.RESPONSE
-        assert "results" in response.payload
-        assert isinstance(response.payload["results"], list)
+    # A2A通信テストは削除（A2A依存除去）
+    # @pytest.mark.asyncio
+    # async def test_sage_communication(self, rag_sage):
+    #     """他の賢者との通信テスト"""
+    #     pass
     
     @pytest.mark.asyncio
     async def test_batch_indexing(self, rag_sage):

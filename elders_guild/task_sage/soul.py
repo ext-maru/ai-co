@@ -12,7 +12,7 @@ from datetime import datetime, timedelta
 from collections import defaultdict, deque
 
 from shared_libs.soul_base import BaseSoul
-from shared_libs.a2a_protocol import A2AMessage, A2ACommunicator, MessageType, MessagePriority
+# A2A protocol removed - not needed for current implementation
 from .abilities.task_models import (
     Task, TaskStatus, TaskPriority, TaskSpec, TaskUpdate,
     Project, ProjectSpec, ProjectPlan,
@@ -82,64 +82,62 @@ class TaskSageSoul(BaseSoul):
         # 将来的にはデータベース接続のクローズなどを行う
         logger.info("Task Sage shutdown complete")
         
-    async def process_message(self, message: A2AMessage) -> Optional[A2AMessage]:
+    async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        A2Aメッセージを処理
+        メッセージを処理
         
         Args:
-            message: 受信したA2Aメッセージ
+            message: 受信したメッセージ
             
         Returns:
             応答メッセージ（必要な場合）
         """
-        logger.info(f"Processing message: {message.message_type}")
+        logger.info(f"Processing message: {message.get('type', 'unknown')}")
         
         try:
             # メッセージタイプに応じた処理
-            if message.message_type == MessageType.REQUEST:
+            message_type = message.get('type')
+            if message_type == "REQUEST":
                 return await self._handle_request(message)
-            elif message.message_type == MessageType.COMMAND:
+            elif message_type == "COMMAND":
                 return await self._handle_command(message)
-            elif message.message_type == MessageType.QUERY:
+            elif message_type == "QUERY":
                 return await self._handle_query(message)
             else:
-                logger.warning(f"Unknown message type: {message.message_type}")
+                logger.warning(f"Unknown message type: {message_type}")
                 return None
                 
         except Exception as e:
             logger.error(f"Error processing message: {e}")
             return self._create_error_response(message, str(e))
     
-    async def _handle_request(self, message: A2AMessage) -> A2AMessage:
+    async def _handle_request(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """リクエスト処理"""
-        action = message.payload.get("action")
+        action = message.get("action")
         
         if action == "estimate_task":
-            task_data = message.payload.get("task_data", {})
+            task_data = message.get("task_data", {})
             # 簡易的な見積もり
             estimate = await self._estimate_from_data(task_data)
-            return A2AMessage(
-                message_type=MessageType.RESPONSE,
-                sender="task_sage",
-                recipient=message.sender,
-                payload={
-                    "type": "response",
-                    "result": {
-                        "estimated_hours": estimate.hours,
-                        "confidence": estimate.confidence,
-                        "breakdown": estimate.breakdown
-                    }
+            return {
+                "type": "response",
+                "sender": "task_sage",
+                "recipient": message.get("sender"),
+                "result": {
+                    "estimated_hours": estimate.hours,
+                    "confidence": estimate.confidence,
+                    "breakdown": estimate.breakdown
                 }
-            )
+            }
         
         return self._create_error_response(message, f"Unknown action: {action}")
         
-    async def _handle_command(self, message: A2AMessage) -> A2AMessage:
+    async def _handle_command(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """コマンド処理"""
         # 実装予定
         pass
         
-    async def _handle_query(self, message: A2AMessage) -> A2AMessage:
+    async def _handle_query(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """クエリ処理"""
         # 実装予定
         pass

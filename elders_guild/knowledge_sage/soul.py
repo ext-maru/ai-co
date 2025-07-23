@@ -15,7 +15,7 @@ from collections import defaultdict, Counter
 
 # 共通基盤
 from shared_libs.soul_base import BaseSoul
-from shared_libs.a2a_protocol import A2AMessage
+# A2A protocol removed - not needed for current implementation
 
 # Knowledge Sage専用モデル
 from knowledge_sage.abilities.knowledge_models import (
@@ -538,42 +538,7 @@ class KnowledgeSage(BaseSoul):
             return {"status": "error", "message": str(e)}
     
     # === A2A通信対応 ===
-    
-    async def handle_a2a_message(self, message: A2AMessage) -> Dict[str, Any]:
-        """A2A メッセージ処理"""
-        try:
-            action = message.payload.get("action")
-            
-            if action == "search_knowledge":
-                query = message.payload.get("query", "")
-                results = self.search_knowledge(query)
-                return {
-                    "success": True,
-                    "data": {"results": [item.to_dict() for item in results]}
-                }
-            
-            elif action == "get_best_practices":
-                domain = message.payload.get("domain")
-                practices = self.get_best_practices_by_domain(domain) if domain else list(self._best_practices.values())
-                return {
-                    "success": True,
-                    "data": {"practices": [p.to_dict() for p in practices]}
-                }
-            
-            elif action == "synthesize_knowledge":
-                topic = message.payload.get("topic")
-                synthesis = self.synthesize_knowledge(topic)
-                return {"success": True, "data": synthesis}
-            
-            else:
-                return {
-                    "success": False,
-                    "error": f"Unknown action: {action}"
-                }
-        
-        except Exception as e:
-            self.logger.error(f"Error handling A2A message: {e}")
-            return {"success": False, "error": str(e)}
+    # A2A communication methods removed - not needed for current implementation
     
     # === プライベートメソッド ===
     

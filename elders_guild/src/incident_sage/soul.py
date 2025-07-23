@@ -115,7 +115,7 @@ class IncidentSageSoul(BaseSoul):
             return False
     
     async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        """A2Aメッセージ処理"""
+        """メッセージ処理"""
         try:
             message_type = message.get("type", "unknown")
             self.logger.info(f"Processing message: {message_type}")
@@ -748,9 +748,9 @@ class IncidentSageSoul(BaseSoul):
         return correlations
     
     async def send_message_to_sage(self, sage_type: str, message: Dict[str, Any]) -> Dict[str, Any]:
-        """他賢者へのメッセージ送信（A2A通信）"""
+        """他賢者へのメッセージ送信"""
         try:
-            # A2A通信プロトコル使用
+            # 簡易メッセージ送信実装
             response = await self.send_a2a_message(sage_type, message)
             return {"status": "success", "response": response}
         except Exception as e:
@@ -1232,7 +1232,7 @@ class IncidentSageSoul(BaseSoul):
         
         self.logger.info(f"Quality standard registered: {standard.name}")
     
-    # === A2Aメッセージハンドラー ===
+    # === メッセージハンドラー ===
     
     async def _handle_incident_alert(self, message: Dict[str, Any]) -> Dict[str, Any]:
         """インシデントアラート処理"""
@@ -1402,12 +1402,11 @@ class IncidentSageSoul(BaseSoul):
         
         return guidelines.get(domain, guidelines["general"])
     
-    # === A2A通信用ユーティリティ ===
+    # === 通信用ユーティリティ ===
     
     async def send_a2a_message(self, target_sage: str, message: Dict[str, Any]) -> Dict[str, Any]:
-        """A2Aメッセージ送信（基本実装）"""
+        """メッセージ送信（基本実装）"""
         # 基本的なモック実装
-        # 実際の実装ではA2ACommunicatorを使用
         return {
             "status": "success",
             "message": f"Message sent to {target_sage}",
