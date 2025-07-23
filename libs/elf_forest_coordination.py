@@ -1017,8 +1017,7 @@ class ElfForestCoordinator:
             "timestamp": datetime.now().isoformat(),
             "mission_status": coordination_results["mission_status"],
             "overall_progress": coordination_results["overall_progress"],
-            "coverage_progress": f"{coordination_results['coverage_current']:." \
-                "1f}%/{coordination_results['coverage_target']}%",
+            "coverage_progress": f"{coordination_results['coverage_current']:.1f}%/{coordination_results['coverage_target']}%",
             "elves_status": {},
             "critical_issues": [],
             "recommendations": [],

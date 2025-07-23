@@ -78,9 +78,8 @@ logger = logging.getLogger(__name__)
 class CodeCraftsmanServantReal(BaseServant):
     """コード職人サーバント - 実装版"""
 
-    def __init__(self, name:
+    def __init__(self, name: str = "CodeCraftsman"):
         """初期化メソッド"""
-    str = "CodeCraftsman"):
         super().__init__(ServantType.CODE_CRAFTSMAN, name)
         self.capabilities = [
             "create_file",

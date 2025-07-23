@@ -27,9 +27,8 @@ logger = logging.getLogger(__name__)
 class DeploymentSafeguard:
     """デプロイメントセーフガードシステム"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path = None):
         """初期化メソッド"""
-    Path = None):
         self.project_root = project_root or Path.cwd()
         self.safeguard_dir = self.project_root / ".deployment_safeguard"
         self.safeguard_dir.mkdir(exist_ok=True)

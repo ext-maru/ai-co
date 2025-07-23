@@ -64,9 +64,8 @@ logger = logging.getLogger(__name__)
 class BloomFilter:
     """Bloom Filter実装 - 高速存在確認"""
 
-    def __init__(self, size:
+    def __init__(self, size: int = 1000000, num_hashes: int = 3):
         """初期化メソッド"""
-    int = 1000000, num_hashes: int = 3):
         self.size = size
         self.num_hashes = num_hashes
         self.bit_array = bitarray(size)

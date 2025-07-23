@@ -88,9 +88,8 @@ class PriorityQueueManager:
     API制限時の優先度付きキュー管理
     """
 
-    def __init__(self, config_path:
+    def __init__(self, config_path: str = None):
         """初期化メソッド"""
-    str = None):
         self.logger = logging.getLogger(__name__)
         self.config = self._load_config(config_path)
 

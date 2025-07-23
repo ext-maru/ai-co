@@ -243,9 +243,8 @@ class ElderScheduler:
 class ElderScheduleBuilder:
     """エルダーズギルド用スケジュール構築ヘルパー"""
     
-    def __init__(self, scheduler:
+    def __init__(self, scheduler: ElderScheduler):
         """初期化メソッド"""
-    ElderScheduler):
         self.scheduler = scheduler
         
     def every(self, interval: int):
@@ -364,9 +363,8 @@ class IntervalJobBuilder:
 class ElderScheduleDecorators:
     """エルダーズギルド用デコレータ"""
     
-    def __init__(self, scheduler:
+    def __init__(self, scheduler: ElderScheduler):
         """初期化メソッド"""
-    ElderScheduler):
         self.scheduler = scheduler
         
     def scheduled(self, trigger: str, **trigger_args):

@@ -30,9 +30,7 @@ from .abilities.incident_models import (
 
 
 class IncidentSageSoul(BaseSoul):
-
-
-"""
+    """
     インシデント対応・品質監視賢者
     
     責務:
@@ -42,7 +40,9 @@ class IncidentSageSoul(BaseSoul):
     - 監視対象ヘルスチェック
     - 自動修復・エスカレーション
     - パターン学習・予測的防止
-    """ Optional[Path] = None):
+    """
+    
+    def __init__(self, data_dir: Optional[Path] = None):
         """Incident Sage初期化"""
         super().__init__(
             soul_type="incident_sage",
@@ -88,9 +88,8 @@ class IncidentSageSoul(BaseSoul):
         self.logger.info(f"Incident Sage initialized: {self.soul_id}")
     
     async def initialize(self) -> bool:
-
-    
-    """魂の初期化処理"""
+        """魂の初期化処理"""
+        try:
             self.logger.info(f"Initializing Incident Sage: {self.soul_name}")
             
             # 能力登録
@@ -139,8 +138,8 @@ class IncidentSageSoul(BaseSoul):
             return self._create_error_response(message, str(e))
     
     async def shutdown(self):
-
-            """シャットダウン処理"""
+        """シャットダウン処理"""
+        try:
             self.logger.info(f"Shutting down Incident Sage: {self.soul_name}")
             
             # アクティブタスクの停止
@@ -156,9 +155,8 @@ class IncidentSageSoul(BaseSoul):
             self.logger.error(f"Error during shutdown: {e}")
     
     def _initialize_database(self):
-
-    
-    """データベース初期化"""
+        """データベース初期化"""
+        with sqlite3.connect(self.db_path) as conn:
             # インシデントテーブル
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS incidents (
@@ -266,8 +264,14 @@ class IncidentSageSoul(BaseSoul):
             conn.commit()
     
     def _load_default_quality_standards(self):
-
-            """デフォルト品質基準ロード""" QualityMetric(
+        """デフォルト品質基準ロード"""
+        # Elder Guild標準品質基準
+        elder_guild_standard = QualityStandard(
+            name="Elder Guild Quality Standard",
+            description="Elders Guildの基本品質基準",
+            category="general",
+            metrics={
+                "test_coverage": QualityMetric(
                     name="Test Coverage",
                     target_value=95.0,
                     threshold_min=90.0,
@@ -296,8 +300,8 @@ class IncidentSageSoul(BaseSoul):
         self.quality_standards[elder_guild_standard.standard_id] = elder_guild_standard
     
     def _load_all_data(self):
-
-                    """全データロード"""
+        """全データロード"""
+        try:
             with sqlite3.connect(self.db_path) as conn:
                 conn.row_factory = sqlite3.Row
                 
@@ -395,8 +399,8 @@ class IncidentSageSoul(BaseSoul):
         assessment_data: Dict[str,
         Any]
     ) -> QualityAssessment:
-
         """品質評価実行"""
+        if standard_id not in self.quality_standards:
             raise ValueError(f"Quality standard not found: {standard_id}")
         
         standard = self.quality_standards[standard_id]
@@ -616,8 +620,12 @@ class IncidentSageSoul(BaseSoul):
         return elapsed_minutes >= time_threshold
     
     async def learn_incident_patterns(self) -> List[Dict[str, Any]]:
-
-            """インシデントパターン学習"""
+        """インシデントパターン学習"""
+        patterns = []
+        
+        # カテゴリ別パターン学習
+        category_incidents = {}
+        for incident in self.incidents.values():
             category = incident.category.value
             if category not in category_incidents:
                 category_incidents[category] = []
@@ -708,8 +716,13 @@ class IncidentSageSoul(BaseSoul):
         return result
     
     async def analyze_incident_correlations(self) -> List[Dict[str, Any]]:
-
-            """インシデント相関分析"""
+        """インシデント相関分析"""
+        correlations = []
+        recent_incidents = [i for i in self.incidents.values() 
+                          if (datetime.now() - i.detected_at).total_seconds() < 3600]  # 1時間以内
+        
+        # 時系列相関
+        for i, incident in enumerate(recent_incidents):
             related_incidents = []
             
             for j, other_incident in enumerate(recent_incidents):
@@ -786,9 +799,12 @@ class IncidentSageSoul(BaseSoul):
         return sorted(similar, key=lambda x: x["similarity"], reverse=True)[:10]
     
     def get_operational_metrics(self) -> Dict[str, Union[int, float]]:
-
+        """運用メトリクス取得"""
+        return self.operational_metrics.copy()
     
-    """運用メトリクス取得""" Dict[str, Any]) -> IncidentSeverity:
+    # === プライベートメソッド ===
+    
+    def _determine_severity(self, anomaly_data: Dict[str, Any]) -> IncidentSeverity:
         """重要度判定"""
         severity_str = anomaly_data.get('severity', 'medium').lower()
         severity_map = {
@@ -852,8 +868,8 @@ class IncidentSageSoul(BaseSoul):
         float],
         standard: QualityStandard
     ) -> float:
-
-    """総合スコア計算"""
+        """総合スコア計算"""
+        if not metric_scores:
             return 0.0
         
         total_score = 0.0
@@ -977,8 +993,9 @@ class IncidentSageSoul(BaseSoul):
         metric_data: Dict[str,
         Any]
     ) -> Incident:
-
-        """アラートインシデント生成""" {rule.name}",
+        """アラートインシデント生成"""
+        incident = Incident(
+            title=f"Alert: {rule.name}",
             description=f"Alert rule '{rule.name}' triggered by condition: {rule.condition_expression}",
             severity=rule.severity,
             category=IncidentCategory.QUALITY,  # デフォルト
@@ -1079,17 +1096,50 @@ class IncidentSageSoul(BaseSoul):
         return random.random() > 0.3
     
     def _update_operational_metrics(self):
-
-        
         """運用メトリクス更新"""
+        self.operational_metrics["incidents_detected"] = len(self.incidents)
+        self.operational_metrics["incidents_resolved"] = len([
+            i for i in self.incidents.values() 
+            if i.status == IncidentStatus.RESOLVED
+        ])
+        self.operational_metrics["alert_rules_active"] = len([
+            r for r in self.alert_rules.values() if r.enabled
+        ])
+        
+        # 平均解決時間計算
+        resolved_incidents = [i for i in self.incidents.values() if i.resolution_time_ms]
+        if resolved_incidents:
             self.operational_metrics["average_resolution_time"] = mean([
                 i.resolution_time_ms for i in resolved_incidents
             ])
     
     # データベース行変換メソッド群
     def _row_to_incident(self, row) -> Incident:
-
-            """データベース行からIncidentオブジェクト変換"""
+        """データベース行からIncidentオブジェクト変換"""
+        return Incident(
+            incident_id=row['incident_id'],
+            title=row['title'],
+            description=row['description'] or "",
+            severity=IncidentSeverity(row['severity']),
+            status=IncidentStatus(row['status']),
+            category=IncidentCategory(row['category']),
+            source=row['source'] or "incident_sage",
+            affected_components=json.loads(row['affected_components'] or '[]'),
+            tags=json.loads(row['tags'] or '[]'),
+            detected_at=datetime.fromisoformat(row['detected_at']),
+            updated_at=datetime.fromisoformat(row['updated_at']),
+            resolved_at=datetime.fromisoformat(row['resolved_at']) if row['resolved_at'] else None,
+            root_cause=row['root_cause'] or "",
+            impact_assessment=row['impact_assessment'] or "",
+            resolution_steps=json.loads(row['resolution_steps'] or '[]'),
+            lessons_learned=row['lessons_learned'] or "",
+            detection_time_ms=row['detection_time_ms'],
+            resolution_time_ms=row['resolution_time_ms'],
+            impact_score=row['impact_score'] or 0.0,
+            confidence_score=row['confidence_score'] or 0.8
+        )
+    
+    def _row_to_quality_standard(self, row) -> QualityStandard:
         """データベース行からQualityStandardオブジェクト変換"""
         metrics_data = json.loads(row['metrics_json'] or '{}')
         metrics = {}
@@ -1112,8 +1162,27 @@ class IncidentSageSoul(BaseSoul):
         )
     
     def _row_to_alert_rule(self, row) -> AlertRule:
-
-            """データベース行からAlertRuleオブジェクト変換"""
+        """データベース行からAlertRuleオブジェクト変換"""
+        return AlertRule(
+            rule_id=row['rule_id'],
+            name=row['name'],
+            description=row['description'] or "",
+            condition_expression=row['condition_expression'],
+            threshold_value=row['threshold_value'] or 0.0,
+            comparison_operator=row['comparison_operator'] or ">",
+            severity=IncidentSeverity(row['severity']),
+            cooldown_minutes=row['cooldown_minutes'] or 5,
+            max_alerts_per_hour=row['max_alerts_per_hour'] or 12,
+            auto_response_enabled=bool(row['auto_response_enabled']),
+            escalation_rules=json.loads(row['escalation_rules'] or '[]'),
+            notification_targets=json.loads(row['notification_targets'] or '[]'),
+            enabled=bool(row['enabled']),
+            created_at=datetime.fromisoformat(row['created_at']),
+            last_triggered_at=datetime.fromisoformat(row['last_triggered_at']) if row['last_triggered_at'] else None,
+            trigger_count=row['trigger_count'] or 0
+        )
+    
+    def _row_to_monitoring_target(self, row) -> MonitoringTarget:
         """データベース行からMonitoringTargetオブジェクト変換"""
         return MonitoringTarget(
             target_id=row['target_id'],

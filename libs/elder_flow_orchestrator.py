@@ -833,9 +833,8 @@ class ElderFlowOrchestrator:
         """エラーリカバリー戦略を登録"""
 
         # 賢者相談エラーのリカバリー
-        async def sage_error_recovery(error:
+        async def sage_error_recovery(error: SageConsultationError):
             """sage_error_recoveryメソッド"""
-        SageConsultationError):
             self.logger.warning(f"Recovering from sage error: {error.sage_type}")
             # フォールバック賢者相談結果を返す
             return {
@@ -845,9 +844,8 @@ class ElderFlowOrchestrator:
             }
 
         # 品質ゲートエラーのリカバリー
-        def quality_gate_recovery(error:
+        def quality_gate_recovery(error: QualityGateError):
             """quality_gate_recoveryメソッド"""
-        QualityGateError):
             self.logger.warning(f"Quality gate failed: {error.gate_name}")
 
     def _create_servant_tasks_from_advice(self, task: ElderFlowTask) -> List:

@@ -761,9 +761,8 @@ class AutomatedLearningSystem:
 class LearningAgent:
     """学習エージェント基底クラス"""
 
-    def __init__(self, name:
+    def __init__(self, name: str):
         """初期化メソッド"""
-    str):
         self.name = name
         self.logger = logging.getLogger(f"{__name__}.{name}")
         self.initialized = False

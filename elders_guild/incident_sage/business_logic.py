@@ -24,7 +24,7 @@ from dataclasses import asdict
 # Incident Sage Models import (Elder Tree共通パス対応)
 import sys
 sys.path.append("/home/aicompany/ai_co/elders_guild")
-from src.incident_sage.abilities.incident_models import (
+from .abilities.incident_models import (
     Incident, IncidentSeverity, IncidentStatus, IncidentCategory,
     QualityMetric, QualityStandard, QualityAssessment,
     IncidentResponse, AlertRule, MonitoringTarget

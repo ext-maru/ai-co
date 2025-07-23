@@ -35,9 +35,8 @@ logger = logging.getLogger(__name__)
 class SyntaxRepairKnight(IncidentKnight):
     """構文修復騎士 - 構文エラーの完全自動修復"""
 
-    def __init__(self, knight_id:
+    def __init__(self, knight_id: str = "syntax_repair_001"):
         """初期化メソッド"""
-    str = "syntax_repair_001"):
         super().__init__(knight_id, KnightType.REPAIR, "syntax_repair")
 
         # 修復パターン定義

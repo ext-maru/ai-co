@@ -98,9 +98,8 @@ import requests
 class WebUITestFramework:
     """WebUI自動テストフレームワーク"""
 
-    def __init__(self, base_url:
+    def __init__(self, base_url: str = "http://localhost:5555", headless: bool = True):
         """初期化メソッド"""
-    str = "http://localhost:5555", headless: bool = True):
         self.base_url = base_url
         self.headless = headless
         self.driver = None
@@ -208,9 +207,8 @@ class WebUITestFramework:
 class DashboardGUITest:
     """ダッシュボードGUIテスト"""
 
-    def __init__(self, framework:
+    def __init__(self, framework: WebUITestFramework):
         """初期化メソッド"""
-    WebUITestFramework):
         self.framework = framework
         self.logger = logging.getLogger(__name__)
 
@@ -316,9 +314,8 @@ class DashboardGUITest:
 class WebUITestRunner:
     """GUI テストランナー"""
 
-    def __init__(self, base_url:
+    def __init__(self, base_url: str = "http://localhost:5555", headless: bool = True):
         """初期化メソッド"""
-    str = "http://localhost:5555", headless: bool = True):
         self.base_url = base_url
         self.headless = headless
         self.framework = None

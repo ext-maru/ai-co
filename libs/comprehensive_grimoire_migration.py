@@ -608,9 +608,8 @@ class DuplicateDetector:
 class ComprehensiveGrimoireMigration:
     """包括的魔法書移行システム"""
 
-    def __init__(self, database_url:
+    def __init__(self, database_url: Optional[str] = None):
         """初期化メソッド"""
-    Optional[str] = None):
         self.database_url = database_url or os.getenv(
             "GRIMOIRE_DATABASE_URL",
             "postgresql://aicompany@localhost:5432/ai_company_grimoire",
@@ -720,9 +719,8 @@ class ComprehensiveGrimoireMigration:
         # 並行分析
         semaphore = asyncio.Semaphore(10)  # 同時分析数制限
 
-        async def analyze_single_file(file_path:
+        async def analyze_single_file(file_path: str) -> Optional[FileAnalysis]:
             """analyze_single_file分析メソッド"""
-        str) -> Optional[FileAnalysis]:
             async with semaphore:
                 try:
                     # CPU集約的タスクなので同期実行

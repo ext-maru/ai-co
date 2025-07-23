@@ -51,9 +51,8 @@ class ApprovalStatus(Enum):
 class ProphecyTemplate:
     """予言書テンプレート"""
 
-    def __init__(self, template_id:
+    def __init__(self, template_id: str, name: str, description: str):
         """初期化メソッド"""
-    str, name: str, description: str):
         self.template_id = template_id
         self.name = name
         self.description = description

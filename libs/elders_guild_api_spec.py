@@ -290,9 +290,8 @@ def require_permission(permission: APIPermission):
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
     """リクエストログ記録ミドルウェア"""
 
-    async def dispatch(self, request:
+    async def dispatch(self, request: Request, call_next):
         """dispatchメソッド"""
-    Request, call_next):
         start_time = datetime.now()
 
         # リクエスト情報の記録
@@ -325,16 +324,14 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """レート制限ミドルウェア"""
 
-    def __init__(self, app, calls_per_minute:
+    def __init__(self, app, calls_per_minute: int = 60):
         """初期化メソッド"""
-    int = 60):
         super().__init__(app)
         self.calls_per_minute = calls_per_minute
         self.requests = {}
 
-    async def dispatch(self, request:
+    async def dispatch(self, request: Request, call_next):
         """dispatchメソッド"""
-    Request, call_next):
         client_ip = request.client.host
         current_time = datetime.now()
 

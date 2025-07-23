@@ -95,9 +95,8 @@ class Alert:
 class BackpressureController:
     """Controls backpressure mechanism"""
     
-    def __init__(self, threshold:
+    def __init__(self, threshold: float = 0.8):
         """初期化メソッド"""
-    float = 0.8):
         self.threshold = threshold
         self.is_active = False
         self.activation_count = 0
@@ -119,9 +118,8 @@ class BackpressureController:
 class CircuitBreaker:
     """Circuit breaker for downstream protection"""
     
-    def __init__(self, failure_threshold:
+    def __init__(self, failure_threshold: int = 5, recovery_timeout: float = 30.0):
         """初期化メソッド"""
-    int = 5, recovery_timeout: float = 30.0):
         self.failure_threshold = failure_threshold
         self.recovery_timeout = recovery_timeout
         self.failure_count = 0

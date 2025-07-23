@@ -1,0 +1,19 @@
+# Task Sage Configuration
+soul:
+  name: Task Sage
+  type: sage
+  domain: project_management
+  version: 1.0.0
+
+a2a:
+  broker_url: "redis://a2a-broker:6379"
+  timeout: 30
+  retry_count: 3
+
+logging:
+  level: INFO
+  format: json
+  
+monitoring:
+  metrics_port: 9102
+  health_check_interval: 30
