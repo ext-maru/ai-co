@@ -281,10 +281,7 @@ class DialogTaskWorker(TaskWorker):
 
             ch.basic_ack(delivery_tag=method.delivery_tag)
             logger.info(
-                f"✅ 対話応答送信: {conversation_id} (Elder Tree: {response.get(
-                    'elder_tree_engaged',
-                    False)}
-                )"
+                f"✅ 対話応答送信: {conversation_id} (Elder Tree: {response.get('elder_tree_engaged', False)})"
             )
 
         except Exception as e:

@@ -28,7 +28,6 @@ class RateLimiter:
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         rate: int = 10,
         period: int = 60,
@@ -164,7 +163,6 @@ class CacheManager:
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         redis_client: Optional[aioredis.Redis] = None,
         default_ttl: int = 3600,

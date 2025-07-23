@@ -58,7 +58,6 @@ class DwarfWorkshopServant(EnhancedElderServant[TRequest, TResponse]):
     """
     
     def __init__(
-        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,
@@ -253,7 +252,6 @@ class RAGWizardServant(EnhancedElderServant[TRequest, TResponse]):
     """
     
     def __init__(
-        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,
@@ -417,7 +415,6 @@ class ElfForestServant(EnhancedElderServant[TRequest, TResponse]):
     """
     
     def __init__(
-        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,

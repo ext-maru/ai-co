@@ -29,7 +29,6 @@ class DwarfServant(ElderServant, Generic[T_Request, T_Response]):
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,
@@ -116,7 +115,6 @@ class WizardServant(ElderServant, Generic[T_Request, T_Response]):
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,
@@ -227,7 +225,6 @@ class ElfServant(ElderServant, Generic[T_Request, T_Response]):
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         servant_id: str,
         servant_name: str,

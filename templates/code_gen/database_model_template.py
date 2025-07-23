@@ -117,15 +117,9 @@ class {model_name}(Base):
                 back_populates = rel.get("back_populates", f"{model_name.lower()}s")
 
                 if rel_type == "one-to-many":
-                    content += f"    {target.lower(
-                        )}s = relationship('{target}',
-                        back_populates='{model_name.lower()}'
-                    )\n"
+                    content += f"    {target.lower()}s = relationship('{target}', back_populates='{model_name.lower()}')\n"
                 elif rel_type == "many-to-one":
-                    content += f"    {target.lower(
-                        )} = relationship('{target}',
-                        back_populates='{model_name.lower()}s'
-                    )\n"
+                    content += f"    {target.lower()} = relationship('{target}', back_populates='{model_name.lower()}s')\n"
 
         # Add indexes
         if indexes:

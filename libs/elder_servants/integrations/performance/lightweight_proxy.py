@@ -120,7 +120,6 @@ class ProxyResponse(Generic[T]):
     """プロキシレスポンス"""
 
     def __init__(
-        """初期化メソッド"""
         self,
         request_id: str,
         success: bool,

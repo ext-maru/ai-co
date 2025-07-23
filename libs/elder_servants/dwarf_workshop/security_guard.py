@@ -867,7 +867,12 @@ class ThreatAnalyzer:
         threats = []
 
         # 簡易実装: 危険なパターンの検出
-        if "json.loads(expression) if expression.startswith("{") else expression function detected",
+        if "eval(" in code:
+            threats.append(
+                {
+                    "type": "code_injection",
+                    "severity": "critical",
+                    "description": "Use of eval() function detected",
                 }
             )
 

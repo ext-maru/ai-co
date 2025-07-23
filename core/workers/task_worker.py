@@ -208,8 +208,7 @@ Task to complete:
                     f.write(f"\n=== Response ===\n{output_text}\n")
                     if evolution_result:
                         f.write(
-                            f"\n=== Evolution Result ===\n{json.dumps(evolution_result, " \
-                                "indent=2)}\n"
+                            f"\n=== Evolution Result ===\n{json.dumps(evolution_result, indent=2)}\n"
                         )
                     f.write(f"=== End ===\n")
                 logger.info(f"💾 結果ファイル保存: {result_file}")

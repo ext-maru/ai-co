@@ -171,7 +171,6 @@ class AsyncBaseWorkerV2(ABC, LoggingMixin):
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         worker_name: str,
         config: Dict[str, Any],

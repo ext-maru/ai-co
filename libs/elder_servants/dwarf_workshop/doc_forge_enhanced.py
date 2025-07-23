@@ -235,10 +235,7 @@ class DocForgeEnhanced(DocForge):
         
         for rel in relationships:
             # Process each item in collection
-            doc_parts.append(f"| {rel.from_entity} | {rel.relationship_type} | {rel.to_entity} | {rel." \
-                "| {rel.from_entity} | {rel.relationship_type} | {rel.to_entity} | {rel." \
-                "| {rel.from_entity} | {rel.relationship_type} | {rel.to_entity} | {rel." \
-                "cardinality} |")
+            doc_parts.append(f"| {rel.from_entity} | {rel.relationship_type} | {rel.to_entity} | {rel.cardinality} |")
         doc_parts.append("")
         
         # データモデル図

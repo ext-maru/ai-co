@@ -103,7 +103,6 @@ class ElderIntegrationError(Exception):
     """Elder統合基盤エラー"""
 
     def __init__(
-        """初期化メソッド"""
         self,
         message: str,
         category: ErrorCategory = ErrorCategory.SYSTEM,

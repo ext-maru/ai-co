@@ -160,8 +160,7 @@ class ImprovedBaseWorker(ABC):
             duration = time.time() - start_time
             self.processed_count += 1
             self.logger.info(
-                f"Message processed: {task_id} (duration: {duration:.3f}s, total: {self." \
-                    "processed_count})"
+                f"Message processed: {task_id} (duration: {duration:.3f}s, total: {self.processed_count})"
             )
 
         except Exception as e:

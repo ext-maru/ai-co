@@ -692,10 +692,7 @@ class EnhancedElderServant(EldersLegacyBase[TRequest, TResponse], ABC):
                 # gRPCサーバー初期化
                 self.a2a_server = await self._create_grpc_server()
                 
-                self.logger.info(f"A2A communication initialized on {self.a2a_config.host}:{self.a2a_config." \
-                    "A2A communication initialized on {self.a2a_config.host}:{self.a2a_config." \
-                    "A2A communication initialized on {self.a2a_config.host}:{self.a2a_config." \
-                    "port}")
+                self.logger.info(f"A2A communication initialized on {self.a2a_config.host}:{self.a2a_config.port}")
         except Exception as e:
             # Handle specific exception case
             self.logger.error(f"A2A communication initialization failed: {str(e)}")

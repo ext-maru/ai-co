@@ -121,7 +121,6 @@ class AsyncOptimizationResponse:
     """非同期最適化レスポンス"""
 
     def __init__(
-        """初期化メソッド"""
         self,
         task_id: str,
         success: bool,

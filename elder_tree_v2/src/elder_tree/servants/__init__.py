@@ -1,3 +1,0 @@
-"""
-Elder Tree Servants
-"""

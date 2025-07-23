@@ -500,8 +500,7 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
         return f"{self.servant_name}({self.servant_id})"
 
     def __repr__(self) -> str:
-        return f"<ElderServant {self.servant_name} category={self.category.value} tasks={self." \
-            "stats["tasks_executed']}>"
+        return f"<ElderServant {self.servant_name} category={self.category.value} tasks={self.stats['tasks_executed']}>"
 
 
 class ServantRegistry:

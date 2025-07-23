@@ -83,7 +83,6 @@ class CacheRequest:
     """キャッシュリクエスト"""
 
     def __init__(
-        """初期化メソッド"""
         self,
         key_type: CacheKeyType,
         data: Dict[str, Any],
@@ -101,7 +100,6 @@ class CacheResponse:
     """キャッシュレスポンス"""
 
     def __init__(
-        """初期化メソッド"""
         self,
         success: bool,
         data: Optional[Dict[str, Any]] = None,
@@ -126,7 +124,6 @@ class ElderCacheManager(EldersServiceLegacy[CacheRequest, CacheResponse]):
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         redis_url: str = "redis://localhost:6379",
         strategy: CacheStrategy = CacheStrategy.BALANCED,

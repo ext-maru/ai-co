@@ -1031,8 +1031,7 @@ class {test_class_name}(unittest.TestCase):
         changes = []
         if len(original.splitlines()) != len(refactored.splitlines()):
             changes.append(
-                f"Line count changed: {len(original.splitlines())} -> {len(refactored." \
-                    "splitlines())}"
+                f"Line count changed: {len(original.splitlines())} -> {len(refactored.splitlines())}"
             )
         return changes
 
@@ -1239,7 +1238,20 @@ class {test_class_name}(unittest.TestCase):
 
             # 危険なパターンのチェック
             dangerous_patterns = [
-                "json.loads(expression) if expression.startswith("{") else expression
+                "eval(",
+                "exec(",
+                "compile(",
+                "__import__",
+                "subprocess.run(.*shell=True",
+                "os.system("
+            ]
+            
+            for pattern in dangerous_patterns:
+                if pattern in code:
+                    security_score -= 0.2
+                    
+            return max(0.0, security_score)
+            
         except Exception as e:
             # Handle specific exception case
             self.logger.error(f"Security evaluation failed: {e}")

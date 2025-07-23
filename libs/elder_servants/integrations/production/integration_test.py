@@ -932,14 +932,9 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
 
         # 分析結果
         if meets_target:
-            analysis = f"🎉 SUCCESS: {overall_improvement:.1f}% improvement achieved (target: {self." \
-                "🎉 SUCCESS: {overall_improvement:.1f}% improvement achieved (target: {self." \
-                "test_config["target_improvement']}%)"
+            analysis = f"🎉 SUCCESS: {overall_improvement:.1f}% improvement achieved (target: {self.test_config['target_improvement']}%)"
         else:
-            analysis = f"⚠️ PARTIAL: {overall_improvement:.1f}% improvement (target: {self.test_config[" \
-                "⚠️ PARTIAL: {overall_improvement:.1f}% improvement (target: {self.test_config[" \
-                "⚠️ PARTIAL: {overall_improvement:.1f}% improvement (target: {self." \
-                    "test_config["target_improvement']}%)"
+            analysis = f"⚠️ PARTIAL: {overall_improvement:.1f}% improvement (target: {self.test_config['target_improvement']}%)"
 
         return PerformanceComparison(
             baseline_result=baseline,

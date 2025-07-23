@@ -865,8 +865,7 @@ if __name__ == "__main__":
             # Process each item in collection
             if hasattr(result, "average_response_time_ms"):
                 print(
-                    f"{test_name}: {result.average_response_time_ms:.2f}ms avg, {result." \
-                        "throughput_rps:.2f} RPS"
+                    f"{test_name}: {result.average_response_time_ms:.2f}ms avg, {result.throughput_rps:.2f} RPS"
                 )
 
     asyncio.run(main())

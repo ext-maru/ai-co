@@ -54,7 +54,6 @@ class TemplateParameter:
     """テンプレートパラメータの定義"""
 
     def __init__(
-        """初期化メソッド"""
         self,
         name: str,
         param_type: str = None,
@@ -123,7 +122,6 @@ class TaskTemplateManager:
     """タスクテンプレート管理"""
 
     def __init__(
-        """初期化メソッド"""
         self, db_path: Optional[Path] = None, template_dir: Optional[Path] = None
     ):
         self.db_path = db_path or Path("/home/aicompany/ai_co/db/templates.db")

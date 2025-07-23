@@ -262,7 +262,6 @@ class ElderAwareBaseWorker(BaseWorker):
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         auth_provider: Optional[UnifiedAuthProvider] = None,
         required_elder_role: ElderRole = ElderRole.SERVANT,

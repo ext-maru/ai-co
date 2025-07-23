@@ -454,11 +454,7 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
             )
             
             # 実際の送信処理（暫定的にローカル処理）
-            self.logger.info(f"Incident Sage escalation A2A message sent: severity={incident_alert[" \
-                "Incident Sage escalation A2A message sent: severity={incident_alert[" \
-                "Incident Sage escalation A2A message sent: severity={incident_alert[" \
-                "Incident Sage escalation A2A message sent: severity={incident_alert[" \
-                "Incident Sage escalation A2A message sent: severity={incident_alert["severity']}")
+            self.logger.info(f"Incident Sage escalation A2A message sent: severity={incident_alert['severity']}")
             
         except Exception as e:
             # Handle specific exception case

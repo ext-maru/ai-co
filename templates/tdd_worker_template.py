@@ -25,7 +25,7 @@ class TDDWorkerTemplate:
 
         test_template = f"""
 def test_{test_name}():
-    """Test for {requirements}"""
+    \"\"\"Test for {requirements}\"\"\"
     # Arrange
     # Act
     # Assert
