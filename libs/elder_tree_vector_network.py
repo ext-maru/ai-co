@@ -68,9 +68,8 @@ class KnowledgeFlow:
 class ElderTreeVectorNetwork:
     """エルダーツリーベクトルネットワーク管理システム"""
 
-    def __init__(self, db_config:
+    def __init__(self, db_config: Dict[str, str] = None):
         """初期化メソッド"""
-    Dict[str, str] = None):
         self.logger = logging.getLogger(__name__)
         self.db_config = db_config or {
             "host": "localhost",

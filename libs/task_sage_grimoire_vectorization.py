@@ -59,9 +59,8 @@ class TaskVectorDimensions:
 class TaskSageGrimoireVectorization:
     """タスク賢者魔法書ベクトル化システム"""
 
-    def __init__(self, database_url:
+    def __init__(self, database_url: str = "postgresql://localhost/grimoire"):
         """初期化メソッド"""
-    str = "postgresql://localhost/grimoire"):
         self.database_url = database_url
         self.logger = logging.getLogger(__name__)
 
@@ -626,9 +625,8 @@ class TaskSageGrimoireVectorization:
         graph = {"nodes": {}, "edges": []}
         visited = set()
 
-        async def traverse(tid:
+        async def traverse(tid: str, current_depth: int):
             """traverseメソッド"""
-        str, current_depth: int):
             if tid in visited or current_depth > depth:
                 return
 

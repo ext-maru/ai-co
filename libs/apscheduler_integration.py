@@ -367,9 +367,8 @@ class ElderScheduleDecorators:
         
     def scheduled(self, trigger: str, **trigger_args):
         """スケジュール済みジョブデコレータ"""
-        def decorator(func:
+        def decorator(func: Callable):
             """decoratorメソッド"""
-        Callable):
             # Check if function is async
             import inspect
             if inspect.iscoroutinefunction(func):

@@ -1,3 +1,13 @@
+# 4賢者システム標準実装
+from task_sage.abilities.task_sage_models import *
+from task_sage.a2a_agent import TaskSageAgent
+import asyncio
+import logging
+from typing import Dict, List, Optional, Any
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
 #!/usr/bin/env python3
 """
 Task Sage Soul Implementation
@@ -23,7 +33,7 @@ from .abilities.task_models import (
 logger = logging.getLogger(__name__)
 
 
-class TaskSageSoul(BaseSoul):
+class TaskSageLogic:
     """
     Task Sage - タスク管理・進捗追跡・リソース最適化
     

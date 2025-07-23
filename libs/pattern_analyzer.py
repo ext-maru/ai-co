@@ -800,23 +800,20 @@ class PatternAnalyzer:
 
     # 簡易実装のヘルパーメソッド（実際の分析ロジックは省略）
 
-    def _analyze_performance_trends(self, data:
+    def _analyze_performance_trends(self, data: List[Dict]) -> Dict[str, str]:
         """analyze_performance_trends（内部メソッド）"""
-    List[Dict]) -> Dict[str, str]:
         return {
             "processing_time_trend": "improving",
             "success_rate_trend": "stable",
             "load_trend": "increasing",
         }
 
-    def _analyze_performance_correlations(self, data:
+    def _analyze_performance_correlations(self, data: List[Dict]) -> Dict[str, float]:
         """analyze_performance_correlations（内部メソッド）"""
-    List[Dict]) -> Dict[str, float]:
         return {"load_vs_performance": -0.75, "time_vs_success_rate": 0.65}
 
-    def _detect_performance_anomalies(self, data:
+    def _detect_performance_anomalies(self, data: List[Dict]) -> List[Dict]:
         """detect_performance_anomalies（内部メソッド）"""
-    List[Dict]) -> List[Dict]:
         return []
 
     def _identify_optimization_opportunities(

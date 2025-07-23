@@ -220,9 +220,8 @@ class MessageValidator:
 class SecurityManager:
     """セキュリティ管理"""
 
-    def __init__(self, secret_key:
+    def __init__(self, secret_key: str):
         """初期化メソッド"""
-    str):
         self.secret_key = secret_key
         self.fernet = Fernet(
             Fernet.generate_key()
@@ -260,9 +259,8 @@ class SecurityManager:
 class A2AClient:
     """A2A通信クライアント"""
 
-    def __init__(self, agent_info:
+    def __init__(self, agent_info: AgentInfo, config: Dict[str, Any] = None):
         """初期化メソッド"""
-    AgentInfo, config: Dict[str, Any] = None):
         self.agent_info = agent_info
         self.config = config or get_config()
         self.security_manager = SecurityManager(
@@ -725,9 +723,8 @@ if __name__ == "__main__":
             task_client = await create_a2a_client("task_sage")
 
             # Task Sageにハンドラー登録
-            async def handle_knowledge_query(message:
+            async def handle_knowledge_query(message: A2AMessage):
                 """handle_knowledge_queryメソッド"""
-            A2AMessage):
                 print(f"Task Sage received query: {message.payload.params}")
                 return {"status": "processed", "result": "sample data"}
 

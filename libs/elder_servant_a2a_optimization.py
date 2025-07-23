@@ -279,9 +279,8 @@ class LoadBalancer:
 class MessageBatcher:
     """メッセージバッチング"""
 
-    def __init__(self, batch_size:
+    def __init__(self, batch_size: int = 10, batch_timeout: float = 1.0):
         """初期化メソッド"""
-    int = 10, batch_timeout: float = 1.0):
         self.batch_size = batch_size
         self.batch_timeout = batch_timeout
         self.batches: Dict[str, List[A2AMessage]] = defaultdict(list)
@@ -330,9 +329,8 @@ class MessageBatcher:
 class CircuitBreaker:
     """サーキットブレーカー"""
 
-    def __init__(self, failure_threshold:
+    def __init__(self, failure_threshold: int = 5, timeout: float = 60.0):
         """初期化メソッド"""
-    int = 5, timeout: float = 60.0):
         self.failure_threshold = failure_threshold
         self.timeout = timeout
         self.failure_counts: Dict[str, int] = defaultdict(int)

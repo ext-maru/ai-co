@@ -58,7 +58,7 @@ class AdaptiveThresholds:
 class ElderFlowQualityGateOptimizer:
     """Elder Flow品質ゲート最適化システム"""
 
-    def __init__(self, config_path: str = "config/elder_flow_quality.json"):
+    def __init__(self, config_path: str = "configs/elder_flow_quality.json"):
         """初期化メソッド"""
         self.config_path = Path(config_path)
         self.logger = logging.getLogger(__name__)

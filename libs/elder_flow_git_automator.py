@@ -60,9 +60,8 @@ class CommitType(Enum):
 # Git Automator
 class ElderFlowGitAutomator:
     """ElderFlowGitAutomator - エルダーズギルド関連クラス"""
-    def __init__(self, repo_path:
+    def __init__(self, repo_path: str = "."):
         """初期化メソッド"""
-    str = "."):
         self.repo_path = Path(repo_path)
         self.logger = logging.getLogger(__name__)
 

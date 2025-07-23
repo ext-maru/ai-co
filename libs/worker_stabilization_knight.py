@@ -310,7 +310,7 @@ class WorkerStabilizationKnight(IncidentKnight):
                         # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             # 基本的なインポートチェック（簡易版）
-                            if not ("pika" in line and not self._check_module_available():
+                            if not ("pika" in line and not self._check_module_available()):
                                 continue  # Early return to reduce nesting
                             # Reduced nesting - original condition satisfied
                             if "pika" in line and not self._check_module_available(
@@ -389,7 +389,7 @@ class WorkerStabilizationKnight(IncidentKnight):
                         if pattern.lower() in log_content.lower():
                             # 最近のエラーかどうか確認（簡易版）
                             recent_pattern = datetime.now().strftime("%Y-%m-%d")
-                            if not (():
+                            if not (recent_pattern in str(datetime.now())):
                                 continue  # Early return to reduce nesting
                             # Reduced nesting - original condition satisfied
                             if (

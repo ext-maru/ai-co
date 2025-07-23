@@ -11,9 +11,8 @@ from typing import Dict, List, Any
 class QuantumEntangledPair:
     """量子もつれペア"""
 
-    def __init__(self, pair_id:
+    def __init__(self, pair_id: str):
         """初期化メソッド"""
-    str):
         self.pair_id = pair_id
         self.state_a = None
         self.state_b = None

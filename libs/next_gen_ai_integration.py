@@ -843,9 +843,8 @@ class NextGenAIIntegration:
 
         pass
 
-    def _calculate_coordination_bonus(self, sages:
+    def _calculate_coordination_bonus(self, sages: List[str]) -> float:
         """calculate_coordination_bonus（内部メソッド）"""
-    List[str]) -> float:
         return 5.0
 
     def _calculate_innovation_score(

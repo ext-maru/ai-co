@@ -24,7 +24,7 @@ class IncidentKnightsCommand:
 
     def __init__(self):
         """初期化メソッド"""
-        self.config_path = Path("config/incident_knights.json")
+        self.config_path = Path("configs/incident_knights.json")
         self.status_path = Path("data/knights_status.json")
 
     async def proposal_status(self):

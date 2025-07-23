@@ -37,7 +37,7 @@ class TransactionError(DatabaseError):
 
 class ConnectionPool:
     """ConnectionPoolクラス"""
-    def __init__(self, config ConnectionConfig):
+    def __init__(self, config: ConnectionConfig):
         """初期化メソッド"""
 
         self.config = config
@@ -75,9 +75,8 @@ class ConnectionPool:
         except sqlite3.Error as e:
             raise ConnectionPoolError(f"Failed to create database connection: {e}")
 
-    def get_connection(self, timeout:
+    def get_connection(self, timeout: Optional[float] = None) -> sqlite3.Connection:
         """connection取得メソッド"""
-    Optional[float] = None) -> sqlite3.Connection:
         timeout = timeout or self.config.timeout
 
         try:
@@ -89,9 +88,8 @@ class ConnectionPool:
                 else:
                     raise ConnectionPoolError("Connection pool exhausted")
 
-    def return_connection(self, conn:
+    def return_connection(self, conn: sqlite3.Connection):
         """return_connectionメソッド"""
-    sqlite3.Connection):
         if conn:
             try:
                 conn.rollback()
@@ -100,9 +98,8 @@ class ConnectionPool:
                 self._logger.warning(f"Failed to return connection to pool: {e}")
                 self._close_connection(conn)
 
-    def _close_connection(self, conn:
+    def _close_connection(self, conn: sqlite3.Connection):
         """close_connection（内部メソッド）"""
-    sqlite3.Connection):
         try:
             conn.close()
             with self._lock:
@@ -126,9 +123,8 @@ class ConnectionPool:
 
 class Transaction:
     """Transactionクラス"""
-    def __init__(self, connection:
+    def __init__(self, connection: sqlite3.Connection, pool: ConnectionPool):
         """初期化メソッド"""
-    sqlite3.Connection, pool: ConnectionPool):
         self.connection = connection
         self.pool = pool
         self._active = False

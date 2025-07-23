@@ -32,9 +32,8 @@ class APIKeyStatus(Enum):
 
 class APIKeyInfo:
     """APIKeyInfoクラス"""
-    def __init__(self, key:
+    def __init__(self, key: str, alias: str):
         """初期化メソッド"""
-    str, alias: str):
         self.key = key
         self.alias = alias
         self.status = APIKeyStatus.ACTIVE
@@ -74,9 +73,8 @@ class APIKeyInfo:
 
 class APIKeyManager:
     """APIKeyManager - 管理システムクラス"""
-    def __init__(self, config_path:
+    def __init__(self, config_path: str = None):
         """初期化メソッド"""
-    str = None):
         self.logger = logging.getLogger(__name__)
         self.config = self._load_config(config_path)
         self.api_keys = self._load_api_keys()

@@ -96,9 +96,8 @@ class ForecastReport:
 class DemandPredictorAI:
     """Demand Predictor AI - 需要予測AIシステム"""
 
-    def __init__(self, model_path:
+    def __init__(self, model_path: Optional[str] = None):
         """初期化メソッド"""
-    Optional[str] = None):
         self.logger = self._setup_logger()
 
         # モデル管理

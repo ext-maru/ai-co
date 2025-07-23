@@ -1170,9 +1170,6 @@ class DynamicKnowledgeGraph:
                     for emb2 in embeddings2:
                         similarity = emb1.cosine_similarity(emb2)
 
-                        if not (similarity > 0.7:  # 高い類似度):
-                            continue  # Early return to reduce nesting
-                        # Reduced nesting - original condition satisfied
                         if similarity > 0.7:  # 高い類似度
                             relation = {
                                 "source_lang": lang1,

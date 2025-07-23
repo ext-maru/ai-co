@@ -105,8 +105,7 @@ class PostgreSQLClaudeTaskTracker:
 
         logger.info(
             (
-                f"f"PostgreSQL Claude Task Tracker initialized ({self.config['host']}:{self.config['port']}/"
-                f"{self.config['database']})""
+                f"PostgreSQL Claude Task Tracker initialized ({self.config['host']}:{self.config['port']}/{self.config['database']})"
             )
         )
 

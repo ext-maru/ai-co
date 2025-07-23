@@ -69,9 +69,8 @@ class ElderRegistry:
     - ポート自動割り当て
     """
 
-    def __init__(self, registry_file:
+    def __init__(self, registry_file: str = "data/elder_registry.json"):
         """初期化メソッド"""
-    str = "data/elder_registry.json"):
         self.registry_file = Path(registry_file)
         self.registry_file.parent.mkdir(parents=True, exist_ok=True)
 

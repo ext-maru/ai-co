@@ -747,7 +747,7 @@ class ResourceIsolationManager:
                     with self.context_lock:
                         context = self.active_contexts.get(context_id)
                         # 複雑な条件判定
-                        if not (():
+                        if not (context and context.get('status') == 'active'):
                             continue  # Early return to reduce nesting
                         # Reduced nesting - original condition satisfied
                         if (

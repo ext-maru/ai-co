@@ -121,9 +121,8 @@ class PatternLearningModel:
 class PredictivePatternLearningSystem:
     """予測的パターン学習システム"""
 
-    def __init__(self, db_path:
+    def __init__(self, db_path: str = None):
         """初期化メソッド"""
-    str = None):
         self.logger = logging.getLogger(__name__)
         self.db_path = db_path or str(PROJECT_ROOT / "data" / "predictive_patterns.db")
 
@@ -364,8 +363,7 @@ class PredictivePatternLearningSystem:
                 predicted_pattern, predicted_completion_time, predicted_success_rate
             )
 
-            task_id = f"task_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{hashlib." \
-                "md5(task_type.encode()).hexdigest()[:8]}"
+            task_id = f"task_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{hashlib.md5(task_type.encode()).hexdigest()[:8]}"
 
             prediction_result = PredictionResult(
                 task_id=task_id,
@@ -566,8 +564,7 @@ class PredictivePatternLearningSystem:
 
             self.logger.info(
                 (
-                    f"f"🎯 Models trained: CT={completion_time_accuracy:.3f}, S={success_accuracy:.3f}, P="
-                    f"{pattern_accuracy:.3f}""
+                    f"🎯 Models trained: CT={completion_time_accuracy:.3f}, S={success_accuracy:.3f}, P={pattern_accuracy:.3f}"
                 )
             )
 

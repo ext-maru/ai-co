@@ -338,10 +338,9 @@ class CeleryIntegrationFramework:
 class CeleryBatchProcessor:
     """Celeryバッチプロセッサー"""
     
-    def __init__(self, framework:
-        """初期化メソッド"""
-    CeleryIntegrationFramework, 
+    def __init__(self, framework: CeleryIntegrationFramework, 
                  batch_size: int = 10, max_parallel: int = 5):
+        """初期化メソッド"""
         self.framework = framework
         self.batch_size = batch_size
         self.max_parallel = max_parallel

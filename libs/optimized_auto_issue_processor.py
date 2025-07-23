@@ -53,7 +53,7 @@ class ProcessingJob:
 class ProcessingQueue:
     """優先度ベース処理キュー"""
     
-    def __init__(self, max_size int = 1000):
+    def __init__(self, max_size: int = 1000):
         """初期化メソッド"""
 
         self.max_size = max_size
@@ -130,9 +130,8 @@ class ProcessingQueue:
 class PerformanceTracker:
     """パフォーマンス追跡"""
     
-    def __init__(self, window_size:
+    def __init__(self, window_size: int = 100):
         """初期化メソッド"""
-    int = 100):
         self.window_size = window_size
         self.processing_times = []
         self.success_count = 0

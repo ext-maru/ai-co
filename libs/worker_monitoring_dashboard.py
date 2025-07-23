@@ -94,9 +94,8 @@ class MetricsPoint:
 class MetricsCollector:
     """メトリクス収集システム"""
 
-    def __init__(self, config:
+    def __init__(self, config: DashboardConfig):
         """初期化メソッド"""
-    DashboardConfig):
         self.config = config
         self.db_path = PROJECT_ROOT / "data" / "dashboard_metrics.db"
 
@@ -1241,9 +1240,8 @@ document.addEventListener('DOMContentLoaded', () => {
 class WorkerMonitoringDashboard:
     """ワーカー監視ダッシュボード統合クラス"""
 
-    def __init__(self, config:
+    def __init__(self, config: Optional[DashboardConfig] = None):
         """初期化メソッド"""
-    Optional[DashboardConfig] = None):
         self.config = config or DashboardConfig()
 
         # コンポーネント初期化

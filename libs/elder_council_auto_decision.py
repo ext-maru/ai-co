@@ -582,14 +582,12 @@ class ElderCouncilAutoDecision:
         """load_decision_history（内部メソッド）"""
         pass
 
-    def _calculate_wisdom_gain(self, member:
+    def _calculate_wisdom_gain(self, member: CouncilMember) -> float:
         """calculate_wisdom_gain（内部メソッド）"""
-    CouncilMember) -> float:
         return 0.01
 
-    def _record_implementation_result(self, decision:
+    def _record_implementation_result(self, decision: Decision, success: bool):
         """record_implementation_result（内部メソッド）"""
-    Decision, success: bool):
         pass
 
     def _calculate_average_confidence(self) -> float:

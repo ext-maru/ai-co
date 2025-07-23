@@ -1,3 +1,13 @@
+# 4賢者システム標準実装
+from knowledge_sage.abilities.knowledge_sage_models import *
+from knowledge_sage.a2a_agent import KnowledgeSageAgent
+import asyncio
+import logging
+from typing import Dict, List, Optional, Any
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
 """
 📚 Knowledge Sage - 知識管理賢者
 
@@ -31,7 +41,7 @@ from knowledge_sage.abilities.knowledge_models import (
 )
 
 
-class KnowledgeSage(BaseSoul):
+class KnowledgeSageLogic:
     """
     📚 Knowledge Sage - 知識管理賢者
     

@@ -66,9 +66,8 @@ class GrimoireOptimizationResult:
 class AdvancedCacheManager:
     """階層化キャッシュマネージャー"""
 
-    def __init__(self, l1_size:
+    def __init__(self, l1_size: int = 1000, l2_size: int = 10000):
         """初期化メソッド"""
-    int = 1000, l2_size: int = 10000):
         self.l1_cache = {}  # インメモリ高速キャッシュ
         self.l2_cache = {}  # 拡張メモリキャッシュ
         self.l1_size = l1_size
@@ -669,14 +668,12 @@ async def main():
         print(f"  🧙‍♂️ {component['component']}: {component['improvement']} 向上")
         print(
             (
-                f"f"    ⏱️  処理時間: {component['before_performance']['processing_time']} → "
-                f"{component['after_performance']['processing_time']}""
+                f"    ⏱️  処理時間: {component['before_performance']['processing_time']} → {component['after_performance']['processing_time']}"
             )
         )
         print(
             (
-                f"f"    📊 QPS: {component['before_performance']['queries_per_second']} → "
-                f"{component['after_performance']['queries_per_second']}""
+                f"    📊 QPS: {component['before_performance']['queries_per_second']} → {component['after_performance']['queries_per_second']}"
             )
         )
 

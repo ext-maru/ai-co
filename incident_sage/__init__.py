@@ -12,6 +12,8 @@ Created: 2025-07-22
 __version__ = "1.0.0"
 __author__ = "Claude Elder"
 
-from .soul import IncidentSage, IncidentSageSoul
+# Soul系クラスは廃止済み - 4賢者システムに移行
+# from .business_logic import IncidentSageLogic
+# from .a2a_agent import IncidentSageAgent
 
-__all__ = ["IncidentSage", "IncidentSageSoul"]
+__all__ = []

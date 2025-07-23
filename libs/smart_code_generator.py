@@ -109,9 +109,8 @@ class TechStackDetector:
 class SmartTemplateSelector:
     """スマートテンプレート選択エンジン"""
     
-    def __init__(self, template_dir:
+    def __init__(self, template_dir: str = "templates/smart_generation"):
         """初期化メソッド"""
-    str = "templates/smart_generation"):
         self.template_dir = Path(template_dir)
         self.jinja_env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(str(self.template_dir)),
@@ -144,9 +143,8 @@ class SmartTemplateSelector:
 class SmartCodeGenerator:
     """スマートコード生成エンジン"""
     
-    def __init__(self, template_dir:
+    def __init__(self, template_dir: str = "templates/smart_generation"):
         """初期化メソッド"""
-    str = "templates/smart_generation"):
         self.tech_detector = TechStackDetector()
         self.template_selector = SmartTemplateSelector(template_dir)
         

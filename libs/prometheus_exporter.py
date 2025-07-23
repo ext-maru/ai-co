@@ -101,9 +101,8 @@ app_info = Info("app_info", "Application information")
 class PrometheusExporter:
     """Prometheusエクスポーター"""
 
-    def __init__(self, port:
+    def __init__(self, port: int = 8000):
         """初期化メソッド"""
-    int = 8000):
         self.port = port
         self.metrics: Dict[str, Any] = {}
 

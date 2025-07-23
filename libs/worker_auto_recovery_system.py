@@ -970,9 +970,8 @@ class WorkerHealthMonitor:
 class CrisisDetector:
     """危機検知システム"""
 
-    def __init__(self, thresholds:
+    def __init__(self, thresholds: Optional[Dict[str, float]] = None):
         """初期化メソッド"""
-    Optional[Dict[str, float]] = None):
         self.thresholds = thresholds or {
             "worker_failure_rate": 0.3,  # 30%以上の失敗率
             "queue_backlog": 50,  # 50件以上の蓄積
@@ -1326,9 +1325,8 @@ class AutoRecoveryFlow:
 class WorkerAutoRecoverySystem:
     """ワーカー自動復旧システム統合クラス"""
 
-    def __init__(self, config:
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
         """初期化メソッド"""
-    Optional[Dict[str, Any]] = None):
         self.config = config or self._default_config()
 
         # コンポーネント初期化

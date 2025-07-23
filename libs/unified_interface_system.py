@@ -181,9 +181,8 @@ class UnifiedInterfaceSystem:
 
         # WebUI Routes
         @self.app.get("/", response_class=HTMLResponse)
-        async def dashboard(request:
+        async def dashboard(request: Request):
             """dashboardメソッド"""
-        Request):
             self.interface_stats["web_ui_visits"] += 1
             return self.templates.TemplateResponse(
                 "dashboard.html",
@@ -195,27 +194,24 @@ class UnifiedInterfaceSystem:
             )
 
         @self.app.get("/search", response_class=HTMLResponse)
-        async def search_interface(request:
+        async def search_interface(request: Request):
             """interface検索メソッド"""
-        Request):
             return self.templates.TemplateResponse(
                 "search.html",
                 {"request": request, "title": "Advanced Search & Analytics"},
             )
 
         @self.app.get("/learning", response_class=HTMLResponse)
-        async def learning_interface(request:
+        async def learning_interface(request: Request):
             """learning_interfaceメソッド"""
-        Request):
             return self.templates.TemplateResponse(
                 "learning.html",
                 {"request": request, "title": "Automated Learning System"},
             )
 
         @self.app.get("/sages", response_class=HTMLResponse)
-        async def sages_interface(request:
+        async def sages_interface(request: Request):
             """sages_interfaceメソッド"""
-        Request):
             return self.templates.TemplateResponse(
                 "sages.html", {"request": request, "title": "Four Sages Integration"}
             )

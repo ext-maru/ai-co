@@ -407,9 +407,8 @@ class FileLockManager:
 class SafeIssueProcessor:
     """ロック機能付きセーフなIssueプロセッサ"""
     
-    def __init__(self, lock_manager:
+    def __init__(self, lock_manager: FileLockManager, processor_id: str = None):
         """初期化メソッド"""
-    FileLockManager, processor_id: str = None):
         self.lock_manager = lock_manager
         self.processor_id = processor_id or f"processor_{os.getpid()}_{int(time.time())}"
         logger.info(f"SafeIssueProcessor initialized: {self.processor_id}")

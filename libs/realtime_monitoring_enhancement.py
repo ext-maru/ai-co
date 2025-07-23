@@ -129,9 +129,8 @@ class SystemHealthReport:
 class RealtimeMonitoringEnhancement:
     """リアルタイム監視強化システム"""
 
-    def __init__(self, config:
+    def __init__(self, config: Dict[str, Any] = None):
         """初期化メソッド"""
-    Dict[str, Any] = None):
         self.logger = logging.getLogger(__name__)
         self.config = config or self._default_config()
 

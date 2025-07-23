@@ -1,3 +1,13 @@
+# 4賢者システム標準実装
+from incident_sage.abilities.incident_sage_models import *
+from incident_sage.a2a_agent import IncidentSageAgent
+import asyncio
+import logging
+from typing import Dict, List, Optional, Any
+from datetime import datetime
+
+logger = logging.getLogger(__name__)
+
 """
 Incident Sage - インシデント対応・品質監視賢者
 ============================================
@@ -20,8 +30,8 @@ from typing import Dict, List, Optional, Any, Union
 from statistics import mean, stdev
 from dataclasses import asdict
 
-from ..shared_libs.soul_base import BaseSoul
-from .abilities.incident_models import (
+from shared_libs.soul_base import BaseSoul
+from incident_sage.abilities.incident_models import (
     Incident, IncidentSeverity, IncidentStatus, IncidentCategory,
     QualityMetric, QualityStandard, QualityAssessment,
     IncidentResponse, AlertRule, MonitoringTarget
@@ -29,7 +39,7 @@ from .abilities.incident_models import (
 
 
 
-class IncidentSageSoul(BaseSoul):
+class IncidentSageLogic:
     """
     インシデント対応・品質監視賢者
     

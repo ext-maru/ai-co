@@ -55,18 +55,16 @@ class ServantTask:
     error: Optional[str] = None
     logs: List[str] = field(default_factory=list)
 
-    def add_log(self, message:
+    def add_log(self, message: str):
         """log追加メソッド"""
-    str):
         self.logs.append(f"[{datetime.now().isoformat()}] {message}")
 
 
 # Base Servant
 class BaseServant:
     """BaseServantクラス"""
-    def __init__(self, servant_type:
+    def __init__(self, servant_type: ServantType, name: str):
         """初期化メソッド"""
-    ServantType, name: str):
         self.servant_type = servant_type
         self.name = name
         self.status = ServantStatus.IDLE

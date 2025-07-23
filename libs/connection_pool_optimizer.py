@@ -180,10 +180,9 @@ class ConnectionPool:
 class ConnectionPoolOptimizer:
     """Advanced connection pool optimizer"""
     
-    def __init__(self, max_connections:
-        """初期化メソッド"""
-    int = 20, rate_limit_per_hour: int = 5000,
+    def __init__(self, max_connections: int = 20, rate_limit_per_hour: int = 5000,
                  retry_attempts: int = 3, connection_timeout: int = 30):
+        """初期化メソッド"""
         self.max_connections = max_connections
         self.rate_limit_per_hour = rate_limit_per_hour
         self.retry_attempts = retry_attempts

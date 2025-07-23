@@ -368,9 +368,8 @@ class MarketIntelligenceEngine:
 class StrategicPlanningEngine:
     """戦略立案エンジン"""
 
-    def __init__(self, intelligence_engine:
+    def __init__(self, intelligence_engine: MarketIntelligenceEngine):
         """初期化メソッド"""
-    MarketIntelligenceEngine):
         self.intelligence_engine = intelligence_engine
         self.logger = self._setup_logger()
 

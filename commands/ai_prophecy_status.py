@@ -173,7 +173,7 @@ class ProphecyStatusCommand(BaseCommand):
         """設定ファイル確認"""
         config_files = {
             'precommit_config': (PROJECT_ROOT / ".pre-commit-config.yaml").exists(),
-            'quality_config': (PROJECT_ROOT / "config/auto_quality_config.yaml").exists(),
+            'quality_config': (PROJECT_ROOT / "configs/auto_quality_config.yaml").exists(),
             'claude_md': (PROJECT_ROOT / "CLAUDE.md").exists(),
             'prophecy_system': (PROJECT_ROOT / "PROPHECY_SYSTEM.md").exists()
         }

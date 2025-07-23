@@ -36,9 +36,8 @@ logger = logging.getLogger(__name__)
 class AdaptiveQualityConfig(EnhancedQualityConfig):
     """Issue種別に応じて適応する品質設定"""
     
-    def __init__(self, issue_category:
+    def __init__(self, issue_category: IssueCategory = IssueCategory.UNKNOWN):
         """初期化メソッド"""
-    IssueCategory = IssueCategory.UNKNOWN):
         super().__init__()
         self.issue_category = issue_category
         self._apply_category_specific_config()

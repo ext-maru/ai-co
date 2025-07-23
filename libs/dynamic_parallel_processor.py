@@ -78,7 +78,7 @@ class ScalingDecision:
 class ResourceMonitor:
     """システムリソースモニター"""
     
-    def __init__(self, sampling_interval float = 1.0):
+    def __init__(self, sampling_interval: float = 1.0):
         """初期化メソッド"""
 
         self.sampling_interval = sampling_interval
@@ -219,9 +219,8 @@ class ScalingStrategy(ABC):
 class AdaptiveScalingStrategy(ScalingStrategy):
     """適応的スケーリング戦略"""
     
-    def __init__(self, config:
+    def __init__(self, config: Dict[str, Any] = None):
         """初期化メソッド"""
-    Dict[str, Any] = None):
         self.config = config or self._default_config()
         
     def _default_config(self) -> Dict[str, Any]:

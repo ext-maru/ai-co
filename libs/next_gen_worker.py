@@ -73,7 +73,7 @@ class CircuitBreakerConfig:
 class CircuitBreaker:
     """サーキットブレーカー実装"""
 
-    def __init__(self, config CircuitBreakerConfig):
+    def __init__(self, config: CircuitBreakerConfig):
         """初期化メソッド"""
 
         self.config = config
@@ -266,9 +266,8 @@ class NextGenWorker(BaseWorker):
     - 実装検証: 起動時の完全性チェック
     """
 
-    def __init__(self, worker_type:
+    def __init__(self, worker_type: str, worker_id: Optional[str] = None):
         """初期化メソッド"""
-    str, worker_id: Optional[str] = None):
         # 実装検証（起動時チェック）
         self._validate_implementation()
 
@@ -412,9 +411,8 @@ class NextGenWorker(BaseWorker):
 class NextGenTaskWorker(NextGenWorker):
     """次世代タスクワーカー実装例"""
 
-    def __init__(self, worker_id:
+    def __init__(self, worker_id: Optional[str] = None):
         """初期化メソッド"""
-    Optional[str] = None):
         super().__init__("task", worker_id)
 
     def process_message(self, ch, method, properties, body):

@@ -4,7 +4,7 @@
 知識管理賢者のメインパッケージ
 """
 
-from .soul import KnowledgeSage
+# Soul系クラスは廃止済み - 4賢者システムに移行
 
 __version__ = "1.0.0"
-__all__ = ["KnowledgeSage"]
+__all__ = []

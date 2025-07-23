@@ -128,9 +128,8 @@ class QualityGateConfig:
 # Base Quality Checker
 class BaseQualityChecker:
     """BaseQualityCheckerクラス"""
-    def __init__(self, check_type:
+    def __init__(self, check_type: QualityCheckType):
         """初期化メソッド"""
-    QualityCheckType):
         self.check_type = check_type
         self.logger = logging.getLogger(f"quality.{check_type.value}")
 
@@ -494,9 +493,8 @@ class SageReviewChecker(BaseQualityChecker):
 # Quality Gate System
 class QualityGateSystem:
     """QualityGateSystemクラス"""
-    def __init__(self, config:
+    def __init__(self, config: QualityGateConfig = None):
         """初期化メソッド"""
-    QualityGateConfig = None):
         self.config = config or QualityGateConfig()
         self.checkers: Dict[QualityCheckType, BaseQualityChecker] = {}
         self.logger = logging.getLogger(__name__)

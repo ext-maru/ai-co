@@ -133,7 +133,7 @@ class EvidenceTrace:
 class HierarchicalContextManager:
     """階層化コンテキスト管理システム"""
 
-    def __init__(self, max_contexts_per_tier Dict[ContextTier, int] = None):
+    def __init__(self, max_contexts_per_tier: Dict[ContextTier, int] = None):
         """初期化メソッド"""
 
         self.logger = self._setup_logger("HierarchicalContext")
@@ -322,9 +322,8 @@ class HierarchicalContextManager:
 class StreamingRAGEngine:
     """ストリーミングRAGエンジン"""
 
-    def __init__(self, update_interval_seconds:
+    def __init__(self, update_interval_seconds: int = 30):
         """初期化メソッド"""
-    int = 30):
         self.logger = self._setup_logger("StreamingRAG")
         self.update_interval = update_interval_seconds
         self.is_streaming = False

@@ -57,9 +57,8 @@ class QuantumGate:
 class QuantumCircuit:
     """量子回路"""
 
-    def __init__(self, num_qubits:
+    def __init__(self, num_qubits: int):
         """初期化メソッド"""
-    int):
         self.qubits = [QuantumBit() for _ in range(num_qubits)]
         self.operations = []
 

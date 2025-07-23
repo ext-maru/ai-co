@@ -59,9 +59,8 @@ class Dependency:
 class CircularDependencyError(Exception):
     """循環依存エラー"""
 
-    def __init__(self, cycle:
+    def __init__(self, cycle: List[str]):
         """初期化メソッド"""
-    List[str]):
         self.cycle = cycle
         super().__init__(f"循環依存を検出: {' -> '.join(cycle)} -> {cycle[0]}")
 

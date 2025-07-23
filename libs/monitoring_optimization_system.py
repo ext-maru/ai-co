@@ -114,7 +114,7 @@ class PerformanceAlert:
 class SystemMonitor:
     """システム監視"""
 
-    def __init__(self, level MonitoringLevel = MonitoringLevel.DETAILED):
+    def __init__(self, level: MonitoringLevel = MonitoringLevel.DETAILED):
         """初期化メソッド"""
 
         self.level = level
@@ -400,9 +400,8 @@ class SystemMonitor:
 class PerformanceOptimizer:
     """パフォーマンス最適化"""
 
-    def __init__(self, strategy:
+    def __init__(self, strategy: OptimizationStrategy = OptimizationStrategy.BALANCED):
         """初期化メソッド"""
-    OptimizationStrategy = OptimizationStrategy.BALANCED):
         self.strategy = strategy
         self.optimizations_applied = []
         self.performance_history = deque(maxlen=100)

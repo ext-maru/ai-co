@@ -43,9 +43,9 @@ class SelfEvolutionManager:
             r"setup_.*\.py$": "scripts/",
             r"test_.*\.py$": "tests/",
             # 設定ファイル系
-            r".*\.conf$": "config/",
-            r"config\..*": "config/",
-            r".*\.env$": "config/",
+            r".*\.conf$": "configs/",
+            r"config\..*": "configs/",
+            r".*\.env$": "configs/",
             # シェルスクリプト系
             r".*\.sh$": "scripts/",
             r"start_.*\.sh$": "scripts/",
@@ -582,7 +582,7 @@ class SelfEvolutionManager:
         similarities = []
 
         # 全プロジェクトファイルとの比較
-        for dir_path in ["workers/", "libs/", "scripts/", "config/", "data/"]:
+        for dir_path in ["workers/", "libs/", "scripts/", "configs/", "data/"]:
             target_dir = self.project_root / dir_path
             if not target_dir.exists():
                 continue
@@ -679,7 +679,7 @@ class SelfEvolutionManager:
         patterns = {}
 
         # 既存ファイルの命名パターンを学習
-        for dir_path in ["workers/", "libs/", "scripts/", "config/"]:
+        for dir_path in ["workers/", "libs/", "scripts/", "configs/"]:
             target_dir = self.project_root / dir_path
             if not target_dir.exists():
                 continue
@@ -991,7 +991,7 @@ class SelfEvolutionManager:
                     "parameter",
                     "option",
                 ],
-                "target": "config/",
+                "target": "configs/",
                 "weight": 0.1,
             },
             "script_cluster": {
@@ -1115,7 +1115,7 @@ class SelfEvolutionManager:
         """強化版類似ファイル検索"""
         similarities = []
 
-        for dir_path in ["workers/", "libs/", "scripts/", "config/", "data/", "web/"]:
+        for dir_path in ["workers/", "libs/", "scripts/", "configs/", "data/", "web/"]:
             target_dir = self.project_root / dir_path
             if not target_dir.exists():
                 continue
@@ -1643,7 +1643,7 @@ class SelfEvolutionManager:
                     "endpoint",
                     "server",
                 ],
-                "config/": [
+                "configs/": [
                     "config",
                     "configuration",
                     "settings",
@@ -1872,7 +1872,7 @@ class SelfEvolutionManager:
             )
             if config_matches > 3:
                 signals.append(
-                    ("config/", 0.7, f"configuration focus ({config_matches} matches)")
+                    ("configs/", 0.7, f"configuration focus ({config_matches} matches)")
                 )
 
         return signals
@@ -2773,7 +2773,7 @@ class SelfEvolutionManager:
                 "data": "libs/",
                 "worker": "workers/",
                 "api": "web/",
-                "config": "config/",
+                "config": "configs/",
                 "monitoring": "libs/",
             },
             "structural": {
