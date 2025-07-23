@@ -1802,10 +1802,7 @@ class SelfEvolutionManager:
                             "dir": directory,
                             "score": final_score,
                             "method": "contextual_pattern",
-                            "reason": f'Multi-signal consensus ({
-                                data["count"]} signals): {",
-                                ".join(data["details"][:2])
-                            }',
+                            "reason": f'Multi-signal consensus ({data["count"]} signals): {", ".join(data["details"][:2])}',
                         }
                     )
 

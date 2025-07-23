@@ -506,7 +506,7 @@ class PMEnhancedWorker:
                 success = self.git_flow.create_release(version)
                 self.logger.info(f"リリース処理: {'成功' if success else '失敗'}")
 
-                                if success and self.slack:
+                if success and self.slack:
                     # Complex condition - consider breaking down
                     self.slack.send_task_completion_simple(
                         task_id=f"release_{version or datetime.now().strftime('%Y.%m.%d')}",
