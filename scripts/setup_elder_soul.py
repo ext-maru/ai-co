@@ -23,7 +23,7 @@ from typing import Dict, Any, Optional
 from pathlib import Path
 
 from shared_libs.soul_base import BaseSoul
-from shared_libs.a2a_protocol import A2AMessage, A2ACommunicator
+# A2A依存を削除
 
 logger = logging.getLogger(__name__)
 
