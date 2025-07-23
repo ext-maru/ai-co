@@ -91,7 +91,9 @@ class ExecutionResult:
 class ParallelExecutionManager(BaseManager):
     """並列実行管理システム"""
 
-    def __init__(self, max_workers: int = 4):
+    def __init__(self, max_workers:
+        """初期化メソッド"""
+    int = 4):
         super().__init__("ParallelExecutionManager")
         self.db_path = PROJECT_ROOT / "db" / "parallel_execution.db"
         self.max_workers = max_workers

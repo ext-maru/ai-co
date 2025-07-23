@@ -17,6 +17,7 @@ class DwarfWorkshop:
     """Mass test production system for maximum coverage"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path(__file__).parent.parent
         self.tests_produced = 0
         self.syntax_errors_fixed = 0

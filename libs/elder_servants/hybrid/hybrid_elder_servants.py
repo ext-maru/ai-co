@@ -250,7 +250,8 @@ class HybridCodeCraftsman(ElderServant):
         else:
             # フォールバック: シンプルなテンプレート生成
             return {
-                "generated_code": f"# Generated code for: {prompt}\ndef implementation():\n    # TODO: Implement {prompt}\n    pass",
+                "generated_code": f"# Generated code for: 
+                    f"{prompt}\ndef implementation():\n    # TODO: Implement {prompt}\n    pass",
                 "source": "fallback_template",
                 "quality_score": 0.60,
                 "fallback_used": True,
@@ -268,7 +269,8 @@ class HybridCodeCraftsman(ElderServant):
             operation="code_enhancement",
             data={
                 "file_content": code,
-                "message": f"Enhance this Elder Guild code: {prompt}. Maintain Elder patterns while improving efficiency.",
+                "message": f"Enhance this Elder Guild code: 
+                    f"{prompt}. Maintain Elder patterns while improving efficiency.",
                 "file_path": "elder_implementation.py",
             },
             context={},

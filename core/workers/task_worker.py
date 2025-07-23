@@ -156,7 +156,8 @@ Task to complete:
                                     )
                                     with open(recent_file, "r") as f:
                                         file_content = f.read()
-                                    output_text = f"ファイルを生成しました: {os.path.basename(recent_file)}\n\n```python\n{file_content}\n```"
+                                    output_text = f"ファイルを生成しました: {os.path." \
+                                        "basename(recent_file)}\n\n```python\n{file_content}\n```"
                                     break
                             else:
                                 # ファイルが見つからない場合
@@ -202,7 +203,8 @@ Task to complete:
                     f.write(f"Model: {self.model}\n")
                     f.write(f"RAG Applied: {'Yes' if rag_applied else 'No'}\n")
                     f.write(
-                        f"Evolution Applied: {'Yes' if evolution_result and evolution_result.get('success') else 'No'}\n"
+                        f"Evolution Applied: {'Yes' if evolution_result and evolution_result.get('success') \
+                            else 'No'}\n"
                     )
                     f.write(f"\n=== Original Prompt ===\n{prompt}\n")
                     f.write(f"\n=== Response ===\n{output_text}\n")

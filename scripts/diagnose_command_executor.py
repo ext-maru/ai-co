@@ -23,6 +23,7 @@ from libs.slack_notifier import SlackNotifier
 
 
 class CommandExecutorDiagnostic:
+    """CommandExecutorDiagnosticクラス"""
     def __init__(self):
         self.base_dir = PROJECT_ROOT / "ai_commands"
         self.log_file = PROJECT_ROOT / "logs" / "command_executor.log"
@@ -150,6 +151,7 @@ class CommandExecutorDiagnostic:
                     ]
                     if error_lines:
                         print(f"   ⚠️ 最近のエラー: {len(error_lines)}件")
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for line in error_lines[-3:]:
                             print(f"      {line.strip()[:80]}...")
                         self.issues.append("RECENT_ERRORS")

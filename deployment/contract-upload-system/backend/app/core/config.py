@@ -5,6 +5,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "契約書類アップロードシステム"
+    """Settingsクラス"""
     VERSION: str = "2.0.0"
     API_V1_STR: str = "/api/v1"
 
@@ -30,6 +31,7 @@ class Settings(BaseSettings):
     UPLOAD_PATH: str = "/app/uploads"
 
     class Config:
+        """Config設定クラス"""
         env_file = ".env"
 
 

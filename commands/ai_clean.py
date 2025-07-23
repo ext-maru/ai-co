@@ -57,6 +57,9 @@ class AICleanCommand(BaseCommand):
                     if file_path.is_file():
                         size = file_path.stat().st_size
                         
+                        if dry_run:
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if not dry_run:
                             file_path.unlink()
                         
@@ -70,6 +73,9 @@ class AICleanCommand(BaseCommand):
                     elif file_path.is_dir() and not any(file_path.iterdir()):
                         # Complex condition - consider breaking down
                         # 空のディレクトリも削除
+                        if dry_run:
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if not dry_run:
                             file_path.rmdir()
                         
@@ -88,6 +94,7 @@ class AICleanCommand(BaseCommand):
             
             # サイズを人間に読みやすい形式に変換
             def human_readable_size(bytes_size):
+                """human_readable_sizeメソッド"""
                 for unit in ['B', 'KB', 'MB', 'GB']:
                     if bytes_size < 1024.0:
                         return f"{bytes_size:.1f} {unit}"

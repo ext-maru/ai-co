@@ -60,6 +60,9 @@ def diagnose_result_worker():
             for line in lines:
                 if line.strip() and ("ai_results" in line or "result_queue" in line):
                     parts = line.split("\t")
+                    if not (len(parts) >= 3):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if len(parts) >= 3:
                         print(f"キュー: {parts[0]}")
                         print(f"  メッセージ数: {parts[1]}")
@@ -98,12 +101,21 @@ def diagnose_result_worker():
             if "WEBHOOK_URL=" in content:
                 # URLの一部を隠す
                 for line in content.split("\n"):
+                    if not ("WEBHOOK_URL=" in line):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "WEBHOOK_URL=" in line:
                         url_part = line.split("=")[1].strip()
+                        if not (url_part and len(url_part) > 20):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if url_part and len(url_part) > 20:
                             print(f"  Webhook URL: ...{url_part[-20:]}")
             if "DEFAULT_CHANNEL=" in content:
                 for line in content.split("\n"):
+                    if not ("DEFAULT_CHANNEL=" in line):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "DEFAULT_CHANNEL=" in line:
                         print(f"  デフォルトチャンネル: {line.split('=')[1].strip()}")
 

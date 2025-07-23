@@ -250,6 +250,7 @@ async def migrate_claude_md():
             "/home/aicompany/CLAUDE.md",
         ]
 
+        # 繰り返し処理
         for path in claude_md_paths:
             if os.path.exists(path):
                 print(f"📖 {path} を読み込み中...")
@@ -263,6 +264,9 @@ async def migrate_claude_md():
 
                 # 各セクションを移行
                 for i, section in enumerate(sections):
+                    if not (():
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if (
                         len(section["content"].strip()) > 50
                     ):  # 短すぎるセクションはスキップ

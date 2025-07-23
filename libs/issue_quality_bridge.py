@@ -56,6 +56,7 @@ class QualityIssueGenerator:
     """品質Issue生成器"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.issue_templates = self._load_issue_templates()
         self.elder_guild_standards = self._load_elder_guild_standards()
         
@@ -681,6 +682,7 @@ class IssueQualityBridge:
     """Issue品質ブリッジメイン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.quality_engine = None
         self.four_sages = None
         self.issue_generator = QualityIssueGenerator()
@@ -854,10 +856,14 @@ async def generate_quality_issues_for_project(
     try:
         all_issues = []
         
+        # 繰り返し処理
         for base_path in project_paths:
             path = Path(base_path)
             if path.exists():
                 for py_file in path.rglob('*.py'):
+                    if not ('__pycache__' not in str(py_file) and not py_file.name.startswith('test_')):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if '__pycache__' not in str(py_file) and not py_file.name.startswith('test_'):
                         issues = await bridge.generate_quality_issues_for_file(str(py_file))
                         all_issues.extend(issues)

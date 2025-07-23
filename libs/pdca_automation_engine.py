@@ -71,6 +71,7 @@ class PDCAAutomationEngine:
     """PDCA自動化エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.four_sages = FourSagesIntegration()
         self.feedback_loop = FeedbackLoopSystem()
         self.performance_optimizer = PerformanceOptimizer()
@@ -421,6 +422,7 @@ def pdca_aware(func):
     """PDCA自動化対応デコレーター"""
 
     async def wrapper(*args, **kwargs):
+        """wrapperメソッド"""
         start_time = datetime.now()
         context = {
             "function": func.__name__,
@@ -485,6 +487,7 @@ def pdca_collector(cls):
     original_init = cls.__init__
 
     def new_init(self, *args, **kwargs):
+        """new_initメソッド"""
         original_init(self, *args, **kwargs)
         self._pdca_metrics = {}
         self._pdca_insights = []
@@ -517,6 +520,7 @@ if __name__ == "__main__":
     if args.update_tracking:
         # コミット後のトラッキング更新
         async def update_tracking():
+            """tracking更新メソッド"""
             engine = PDCAAutomationEngine()
             # Git情報取得
             try:

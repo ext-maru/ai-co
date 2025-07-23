@@ -27,11 +27,13 @@ class KnowledgeBaseWatcher(FileSystemEventHandler):
     """ナレッジベースファイル監視"""
     
     def __init__(self, callback, loop):
+        """初期化メソッド"""
         self.callback = callback
         self.loop = loop
         self.last_modified = {}
         
     def on_modified(self, event):
+        """on_modifiedメソッド"""
         if event.is_directory or not event.src_path.endswith('.md'):
             return
             
@@ -53,6 +55,7 @@ class KnowledgeBaseWatcher(FileSystemEventHandler):
             logger.error(f"❌ ファイル変更イベント処理エラー: {e}")
         
     def on_created(self, event):
+        """on_createdメソッド"""
         if event.is_directory or not event.src_path.endswith('.md'):
             return
         try:
@@ -64,6 +67,7 @@ class KnowledgeBaseWatcher(FileSystemEventHandler):
             logger.error(f"❌ ファイル作成イベント処理エラー: {e}")
         
     def on_deleted(self, event):
+        """on_deletedメソッド"""
         if event.is_directory or not event.src_path.endswith('.md'):
             return
         try:
@@ -78,6 +82,7 @@ class PgVectorAutoSystem:
     """pgvector自動化システム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.config = {
             'knowledge_base_path': '/home/aicompany/ai_co/knowledge_base',
             'sqlite_db': '/home/aicompany/ai_co/knowledge_base/integrated_knowledge.db',

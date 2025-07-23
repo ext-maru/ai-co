@@ -22,27 +22,37 @@ except ImportError:
 
     # Mock classes for when selenium is not available
     class webdriver:
+        """webdriverクラス"""
         class Chrome:
+            """Chromeクラス"""
             def __init__(self, *args, **kwargs):
+                """初期化メソッド"""
                 pass
 
         class Firefox:
+            """Firefoxクラス"""
             def __init__(self, *args, **kwargs):
+                """初期化メソッド"""
                 pass
 
     class By:
+        """Byクラス"""
         ID = "id"
         CLASS_NAME = "class"
         TAG_NAME = "tag"
         XPATH = "xpath"
 
     class WebDriverWait:
+        """WebDriverWaitクラス"""
         def __init__(self, *args, **kwargs):
+            """初期化メソッド"""
             pass
 
     class expected_conditions:
+        """expected_conditionsクラス"""
         @staticmethod
         def presence_of_element_located(locator):
+            """presence_of_element_locatedメソッド"""
             return None
 
 
@@ -53,20 +63,27 @@ try:
 except ImportError:
 
     class Options:
+        """Optionsクラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
 
         def add_argument(self, arg):
+            """argument追加メソッド"""
             pass
 
     class WebElement:
+        """WebElementクラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
 
     class TimeoutException(Exception):
+        """TimeoutExceptionクラス"""
         pass
 
     class WebDriverException(Exception):
+        """WebDriverExceptionクラス"""
         pass
 
 
@@ -81,7 +98,9 @@ import requests
 class WebUITestFramework:
     """WebUI自動テストフレームワーク"""
 
-    def __init__(self, base_url: str = "http://localhost:5555", headless: bool = True):
+    def __init__(self, base_url:
+        """初期化メソッド"""
+    str = "http://localhost:5555", headless: bool = True):
         self.base_url = base_url
         self.headless = headless
         self.driver = None
@@ -189,7 +208,9 @@ class WebUITestFramework:
 class DashboardGUITest:
     """ダッシュボードGUIテスト"""
 
-    def __init__(self, framework: WebUITestFramework):
+    def __init__(self, framework:
+        """初期化メソッド"""
+    WebUITestFramework):
         self.framework = framework
         self.logger = logging.getLogger(__name__)
 
@@ -295,7 +316,9 @@ class DashboardGUITest:
 class WebUITestRunner:
     """GUI テストランナー"""
 
-    def __init__(self, base_url: str = "http://localhost:5555", headless: bool = True):
+    def __init__(self, base_url:
+        """初期化メソッド"""
+    str = "http://localhost:5555", headless: bool = True):
         self.base_url = base_url
         self.headless = headless
         self.framework = None
@@ -397,7 +420,9 @@ class WebUITestRunner:
 class WebUITestServerManager:
     """WebUIテストサーバー管理"""
 
-    def __init__(self, server_script: str = "web/dashboard_final.py"):
+    def __init__(self, server_script:
+        """初期化メソッド"""
+    str = "web/dashboard_final.py"):
         self.server_script = server_script
         self.server_process = None
         self.logger = logging.getLogger(__name__)

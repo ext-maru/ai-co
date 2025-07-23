@@ -159,6 +159,9 @@ class EnhancedIncidentSage(IncidentSage):
 
                     # 高リスクアラートの場合、予測を実行
                     for alert in alert_result.get("alerts", []):
+                        if not (alert["severity"] in ["critical", "emergency"]):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if alert["severity"] in ["critical", "emergency"]:
                             await self._trigger_prediction(metrics)
 

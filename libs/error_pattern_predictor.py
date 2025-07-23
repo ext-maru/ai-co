@@ -68,6 +68,7 @@ class ErrorPatternPredictor(BaseManager):
     """エラーパターンを学習し予測するエンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.db_path = PROJECT_ROOT / "db" / "error_patterns_ml.db"
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -295,6 +296,7 @@ class ErrorPatternPredictor(BaseManager):
 
         with sqlite3.connect(self.db_path) as conn:
             for event in recent_events:
+            # 繰り返し処理
                 cursor = conn.execute(
                     """
                     SELECT effect_error, correlation_strength, avg_delay_minutes
@@ -773,6 +775,7 @@ if __name__ == "__main__":
     print("\n=== Error Predictions ===")
     predictions = predictor.predict_errors()
 
+    # 繰り返し処理
     for pred in predictions:
         print(f"\nError Type: {pred.error_type}")
         print(f"Probability: {pred.probability:.2%}")

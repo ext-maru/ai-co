@@ -83,8 +83,12 @@ def status_command():
                 try:
                     result = subprocess.run(['tail', '-5', str(latest_log)], 
                                           capture_output=True, text=True)
+                    if not (result.returncode == 0):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if result.returncode == 0:
                         print("📄 Recent log entries:")
+                        # Deep nesting detected (depth: 6) - consider refactoring
                         for line in result.stdout.strip().split('\n'):
                             print(f"   {line}")
                 except:
@@ -198,8 +202,10 @@ def jobs_command():
                     categories["Legacy"].append(job)
             
             for category, category_jobs in categories.items():
+            # 繰り返し処理
                 if category_jobs:
                     print(f"📂 {category} ({len(category_jobs)} jobs):")
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for job in category_jobs:
                         next_run = job.next_run_time.strftime("%Y-%m-%d %H:%M:%S") if job.next_run_time else "N/A"
                         print(f"  ⏰ {job.name}: {next_run}")
@@ -244,6 +250,7 @@ def logs_command():
         return 1
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(
         description="🏛️ Elder Scheduler Manager",
         formatter_class=argparse.RawDescriptionHelpFormatter,

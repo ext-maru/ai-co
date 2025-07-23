@@ -413,6 +413,9 @@ class ServantAutoSelector:
                     # Process each item in collection
                     if servant.name in self.servant_profiles_cache:
                         profile = self.servant_profiles_cache[servant.name]
+                        if not (profile not in candidates):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if profile not in candidates:
                             candidates.append(profile)
 

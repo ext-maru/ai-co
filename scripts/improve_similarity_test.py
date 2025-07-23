@@ -190,6 +190,7 @@ async def test_similarity_improvements():
 
         # 正規化とキーワード強調
         def preprocess_text(text):
+            """preprocess_textを処理"""
             # キーワードを強調
             keywords = [
                 "4賢者",

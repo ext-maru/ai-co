@@ -9,6 +9,7 @@ def calc(l, w):
 
 
 def main():
+    """mainメソッド"""
     # エラーハンドリングなし
     result = calc(5, 3)
     print("Result: " + str(result))  # 非効率的な文字列結合

@@ -55,6 +55,7 @@ def check_quality():
                         "severity": "critical"
                     })
                     
+                # 複雑な条件判定
                 if '"exec(' in line or "'exec(" in line or 'r"exec' in line or "r'exec" in line:
                     continue
                 if re.search(r'\bexec\s*\(', line):

@@ -74,6 +74,7 @@ def quick_start():
         result = subprocess.run(["ps", "aux"], capture_output=True, text=True)
         worker_count = 0
         for line in result.stdout.split("\n"):
+            # 複雑な条件判定
             if "worker" in line.lower() and "python" in line and "grep" not in line:
                 worker_count += 1
 

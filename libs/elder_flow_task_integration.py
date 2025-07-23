@@ -30,6 +30,7 @@ class ElderFlowTaskIntegration:
     """Elder FlowとTask Trackerの統合"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.task_tracker = get_task_tracker()
         self.active_flows = {}
         logger.info("Elder Flow Task Integration initialized")

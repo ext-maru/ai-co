@@ -50,6 +50,7 @@ def verify_imports():
         print(f"\n⚠️  Remaining Errors:")
         error_lines = []
         for line in result.stderr.split("\n"):
+            # 複雑な条件判定
             if (
                 "ERROR" in line
                 or "ImportError" in line

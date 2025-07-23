@@ -22,6 +22,7 @@ sys.path.insert(0, str(project_root))
 import logging
 
 def get_logger(name):
+    """logger取得メソッド"""
     return logging.getLogger(name)
 from libs.core.elders_legacy import (
     EldersFlowLegacy,
@@ -39,6 +40,7 @@ class ElderFlowEngine(EldersFlowLegacy):
     """Elder Flow実行エンジン（PIDロック機能付き）"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("ElderFlowEngine")
         self.orchestrator = ElderFlowOrchestrator()
         self.tracking_db = UnifiedTrackingDB()
@@ -502,6 +504,7 @@ class ElderFlowEngine(EldersFlowLegacy):
 
 # CLI実行用
 async def main():
+    """mainメソッド"""
     engine = ElderFlowEngine()
 
     if len(sys.argv) > 1:

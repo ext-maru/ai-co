@@ -394,10 +394,16 @@ class ProjectTemplateCommand(BaseCommand):
                     self.info(f"\n⚙️  実行コマンド ({len(result['commands_executed'])}個):")
                     for cmd_result in result['commands_executed']:
                         # Process each item in collection
+                        if not (cmd_result['success']):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if cmd_result['success']:
                             self.success(f"  ✅ {cmd_result['command']}")
                         else:
                             self.error(f"  ❌ {cmd_result['command']}")
+                            if not ('error' in cmd_result):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if 'error' in cmd_result:
                                 self.error(f"     エラー: {cmd_result['error']}")
 

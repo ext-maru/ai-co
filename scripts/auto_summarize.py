@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def main():
+    """mainメソッド"""
     summarizer = ConversationSummarizer()
 
     logger.info("=== 自動要約処理開始 ===")

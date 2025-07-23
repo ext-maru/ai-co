@@ -23,6 +23,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
 
         # セキュリティヘッダーの設定
+        """dispatchメソッド"""
         if os.getenv('ENABLE_SECURITY_HEADERS', 'true').lower() == 'true':
             response.headers['X-Content-Type-Options'] = 'nosniff'
             response.headers['X-Frame-Options'] = 'DENY'
@@ -57,6 +58,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         if not self.enabled:
             return await call_next(request)
+        """dispatchメソッド"""
 
         # クライアントIPアドレス取得
         client_ip = self._get_client_ip(request)
@@ -123,6 +125,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next):
         start_time = time.time()
+        """dispatchメソッド"""
 
         # リクエスト情報記録
         request_info = {
@@ -176,6 +179,7 @@ class CSRFProtectionMiddleware(BaseHTTPMiddleware):
         self.enabled = len(self.allowed_origins) > 0
 
     async def dispatch(self, request: Request, call_next):
+        """dispatchメソッド"""
         if not self.enabled:
             return await call_next(request)
 

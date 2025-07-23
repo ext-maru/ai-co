@@ -178,6 +178,7 @@ def main():
     print(f"🔧 BaseWorker修正: {'✅' if base_worker_fixed else '❌'}")
     print(f"📜 起動スクリプト: {'✅' if startup_script_created else '❌'}")
 
+    # 複雑な条件判定
     if fixed_files > 0 or base_worker_fixed or startup_script_created:
         print("\n🚀 次のステップ:")
         print("1. 修正内容をgitコミット")

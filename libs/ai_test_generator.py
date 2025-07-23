@@ -24,6 +24,7 @@ class AITestGenerator(BaseManager):
     """AI駆動でテストを生成するマネージャー"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("AITestGenerator")
         self.claude_executor = ClaudeCliExecutor()
         self.basic_generator = TestGenerator()
@@ -275,10 +276,14 @@ BDD形式も考慮し、Given-When-Thenパターンを使用してください�
             test_classes = []
             test_functions = []
 
+            # 繰り返し処理
             for node in ast.walk(tree):
                 if isinstance(node, ast.ClassDef) and node.name.startswith("Test"):
                     test_methods = []
                     for item in node.body:
+                        if not (isinstance(item, ast.FunctionDef) and item.name.startswith():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if isinstance(item, ast.FunctionDef) and item.name.startswith(
                             "test_"
                         ):

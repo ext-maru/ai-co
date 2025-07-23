@@ -132,6 +132,7 @@ class PerformanceRegression:
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description="Check for performance regressions")
     parser.add_argument(
         "--current", required=True, help="Current benchmark results file"

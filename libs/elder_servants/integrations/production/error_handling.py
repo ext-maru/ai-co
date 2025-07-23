@@ -724,9 +724,12 @@ def error_recovery(
 ):
     """エラー復旧デコレータ"""
 
-    def decorator(func: Callable):
+    def decorator(func:
+        """decoratorメソッド"""
+    Callable):
         @wraps(func)
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             try:
                 return await func(*args, **kwargs)
             except Exception as e:
@@ -764,9 +767,12 @@ def circuit_breaker_protected(failure_threshold: int = 5, timeout_duration: int 
     """サーキットブレーカー保護デコレータ"""
     circuit_breaker = CircuitBreaker(failure_threshold, timeout_duration)
 
-    def decorator(func: Callable):
+    def decorator(func:
+        """decoratorメソッド"""
+    Callable):
         @wraps(func)
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             if circuit_breaker.is_open():
                 raise ElderIntegrationError(
                     f"Circuit breaker open for {func.__name__}",

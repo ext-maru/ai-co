@@ -28,6 +28,7 @@ class ProjectIntelligenceSystem:
     """プロジェクト知能システム - 自動学習・改善"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.template_system = ProjectTemplateSystem()
         self.automation_engine = ProjectAutomationEngine()
         self.db_path = PROJECT_ROOT / "project_intelligence.db"
@@ -141,6 +142,9 @@ class ProjectIntelligenceSystem:
                         context = self.template_system.get_project_context(
                             project_dir.name
                         )
+                        if not (context):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if context:
                             # プロジェクトメトリクス収集
                             metrics = await self._collect_project_metrics(project_dir)
@@ -177,6 +181,7 @@ class ProjectIntelligenceSystem:
                 # コード行数カウント
                 if file_path.suffix in [".py", ".js", ".ts", ".sql"]:
                     try:
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(file_path, "r", encoding="utf-8") as f:
                             metrics["code_lines"] += len(f.readlines())
                     except:
@@ -586,6 +591,7 @@ class DailyIntelligenceScheduler:
     """日次知能スケジューラー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.intelligence_system = ProjectIntelligenceSystem()
 
     async def start_daily_cycle(self):

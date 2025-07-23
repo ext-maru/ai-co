@@ -18,7 +18,9 @@ logger = logging.getLogger(__name__)
 
 
 class TaskHistoryDB:
+    """TaskHistoryDBクラス"""
     def __init__(self, db_path=None):
+        """初期化メソッド"""
         if db_path is None:
             db_path = DB_FILE
 

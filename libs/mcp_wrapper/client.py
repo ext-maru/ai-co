@@ -9,7 +9,9 @@ from pathlib import Path
 
 
 class MCPClient:
+    """MCPClientクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.servers = {
             "filesystem": "libs/mcp_wrapper/filesystem_server.py",
             "executor": "libs/mcp_wrapper/executor_server.py",

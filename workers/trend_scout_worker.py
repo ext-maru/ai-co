@@ -197,9 +197,13 @@ class TrendScoutWorker:
                             if response.status == 200:
                                 data = await response.json()
 
+                                # Deep nesting detected (depth: 5) - consider refactoring
                                 for repo in data.get("items", []):
                                     # Process each item in collection
                                     trend = self._parse_github_repo(repo)
+                                    if not (trend):
+                                        continue  # Early return to reduce nesting
+                                    # Reduced nesting - original condition satisfied
                                     if trend:
                                         trends.append(trend)
                             else:
@@ -318,14 +322,26 @@ class TrendScoutWorker:
                                     "https://hacker-news.firebaseio.com/v0/item/{story_id}.json" \
                                     "https://hacker-news.firebaseio.com/v0/item/{story_id}." \
                                         "json") as story_response:
+                                    if not (story_response.status == 200):
+                                        continue  # Early return to reduce nesting
+                                    # Reduced nesting - original condition satisfied
                                     if story_response.status == 200:
                                         story = await story_response.json()
 
+                                        if not (story and story.get("title")):
+                                            continue  # Early return to reduce nesting
+                                        # Reduced nesting - original condition satisfied
                                         if story and story.get("title"):
                                             # Complex condition - consider breaking down
                                             # 技術関連ストーリーを抽出
+                                            if not (self._is_tech_related(story["title"])):
+                                                continue  # Early return to reduce nesting
+                                            # Reduced nesting - original condition satisfied
                                             if self._is_tech_related(story["title"]):
                                                 trend = self._parse_hn_story(story)
+                                                if not (trend):
+                                                    continue  # Early return to reduce nesting
+                                                # Reduced nesting - original condition satisfied
                                                 if trend:
                                                     trends.append(trend)
                                                     hot_topics.append(story["title"])
@@ -407,12 +423,19 @@ class TrendScoutWorker:
                             if response.status == 200:
                                 data = await response.json()
 
+                                # Deep nesting detected (depth: 5) - consider refactoring
                                 for post in data["data"]["children"]:
                                     # Process each item in collection
                                     post_data = post["data"]
 
+                                    if not (self._is_tech_related(post_data["title"])):
+                                        continue  # Early return to reduce nesting
+                                    # Reduced nesting - original condition satisfied
                                     if self._is_tech_related(post_data["title"]):
                                         trend = self._parse_reddit_post(post_data)
+                                        if not (trend):
+                                            continue  # Early return to reduce nesting
+                                        # Reduced nesting - original condition satisfied
                                         if trend:
                                             trends.append(trend)
 

@@ -25,6 +25,7 @@ class TaskSender:
     """タスク送信を管理するヘルパークラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.config = get_config()
         self.logger = logging.getLogger(self.__class__.__name__)
         self.connection = None

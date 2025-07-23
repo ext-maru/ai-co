@@ -583,7 +583,10 @@ class PredictiveAnalyzer:
             return "insufficient data"
 
         recent_values = [h.get(metric_name, 0) for h in self.history[-5:]]
-        avg_change = sum(recent_values[i] - recent_values[i-1] for i in range(1, len(recent_values))) / (len(recent_values) - 1)
+        avg_change = sum(
+            recent_values[i] - recent_values[i-1] for i in range(1,
+            len(recent_values))) / (len(recent_values) - 1
+        )
 
         if avg_change > 5:
             return "increasing"
@@ -1030,7 +1033,8 @@ if __name__ == "__main__":
         }
 
         # レポート保存
-        report_path = Path(f"knowledge_base/elder_flow_reports/complete_system_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+                report_path = \
+            Path(f"knowledge_base/elder_flow_reports/complete_system_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
         report_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(report_path, 'w') as f:

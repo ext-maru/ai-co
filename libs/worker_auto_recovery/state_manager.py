@@ -287,6 +287,9 @@ class StateManager:
                     with open(file_path, "r") as f:
                         state = json.load(f)
                         worker_name = state.get("worker_name")
+                        if not (worker_name):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if worker_name:
                             all_states[worker_name] = state
 

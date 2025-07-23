@@ -81,8 +81,13 @@ def main():
                 # モジュール別に集計
                 modules = {"commands": [], "libs": [], "workers": [], "core": []}
 
+                # 繰り返し処理
                 for filepath, info in files.items():
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for module in modules:
+                        if not (f"/{module}/" in filepath):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if f"/{module}/" in filepath:
                             modules[module].append(
                                 {
@@ -93,6 +98,9 @@ def main():
 
                 # モジュール別サマリー
                 for module, files in modules.items():
+                    if not (files):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if files:
                         avg_coverage = sum(f["percent"] for f in files) / len(files)
                         print(f"  {module}: {avg_coverage:.1f}% ({len(files)} files)")

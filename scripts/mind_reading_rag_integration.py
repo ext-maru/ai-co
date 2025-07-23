@@ -170,7 +170,8 @@ class MindReadingRAGIntegration:
             improvement=improvement
         )
 
-        self.logger.info(f"Enhanced confidence: {enhanced_confidence:.2%} (improvement: {improvement.improvement_factor:.2f}x)")
+                self.logger.info(f"Enhanced confidence: {enhanced_confidence:.2%} \
+            (improvement: {improvement.improvement_factor:.2f}x)")
 
         return enhanced_intent
 
@@ -283,7 +284,10 @@ class MindReadingRAGIntegration:
             # 2. 文脈知識の豊富さによる補正
             contextual_knowledge = rag_context.get("contextual_knowledge", [])
             if contextual_knowledge:
-                knowledge_confidence = sum(k.get("confidence", 0.5) for k in contextual_knowledge) / len(contextual_knowledge)
+                knowledge_confidence = sum(
+                    k.get("confidence",
+                    0.5) for k in contextual_knowledge) / len(contextual_knowledge
+                )
                 enhancement_factor *= (1 + knowledge_confidence * 0.15)  # 最大15%向上
 
             # 3. 歴史パターンマッチによる補正
@@ -370,7 +374,10 @@ class MindReadingRAGIntegration:
         # 文脈ヒット率の更新（簡易版）
         context_items = len(improvement.rag_context.get("contextual_knowledge", []))
         if context_items > 0:
-            hit_count = sum(1 for _ in self.improvement_history if len(_.rag_context.get("contextual_knowledge", [])) > 0)
+            hit_count = sum(
+                1 for _ in self.improvement_history if len(_.rag_context.get("contextual_knowledge",
+                [])) > 0
+            )
             self.integration_stats["context_hit_rate"] = hit_count / total
 
         # 履歴に追加
@@ -481,8 +488,10 @@ async def demo_integration():
             # RAG強化された意図理解
             enhanced_intent = await integration.enhanced_intent_understanding(test_case)
 
-            print(f"   🧠 Original: {enhanced_intent.original_intent.intent_type.value} ({enhanced_intent.original_intent.confidence:.2%})")
-            print(f"   🌟 Enhanced: {enhanced_intent.enhanced_confidence:.2%} (x{enhanced_intent.improvement.improvement_factor:.2f})")
+            print(f"   🧠 Original: {enhanced_intent.original_intent." \
+                "intent_type.value} ({enhanced_intent.original_intent.confidence:.2%})")
+            print(f"   🌟 Enhanced: {enhanced_intent.enhanced_confidence:." \
+                "2%} (x{enhanced_intent.improvement.improvement_factor:.2f})")
             print(f"   🔍 Context: {len(enhanced_intent.rag_context['contextual_knowledge'])} items")
             print(f"   📊 Keywords: {len(enhanced_intent.contextual_keywords)} contextual")
             print()

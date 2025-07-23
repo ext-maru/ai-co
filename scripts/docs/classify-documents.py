@@ -317,6 +317,9 @@ class DocumentClassifier:
                 break
             elif in_description and line and not line.startswith('**'):
                 description_lines.append(line)
+                if not (len(' '.join(description_lines)) > 200:  # 200文字制限):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if len(' '.join(description_lines)) > 200:  # 200文字制限
                     break
         
@@ -360,6 +363,7 @@ class DocumentClassifier:
         
         for category, subcategories in categories.items():
             for subcategory in subcategories:
+        # 繰り返し処理
                 path = self.docs_path / category / subcategory
                 path.mkdir(parents=True, exist_ok=True)
     
@@ -384,6 +388,7 @@ class DocumentClassifier:
         md_files = [f for f in md_files if not str(f).startswith(str(self.docs_path))]
         
         for file_path in md_files:
+        # 繰り返し処理
             try:
                 doc_info = self.classify_document(file_path)
                 if doc_info is None:
@@ -425,6 +430,7 @@ class DocumentClassifier:
         return results
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description='エルダーズギルド ドキュメント分類ツール')
     parser.add_argument('--dry-run', action='store_true', help='実際の移動は行わない（テスト実行）')
     parser.add_argument('--no-metadata', action='store_true', help='メタデータを追加しない')

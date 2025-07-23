@@ -297,6 +297,7 @@ class MetricsCollector:
         """システムメトリクス収集"""
 
         def _collect():
+            """collect（内部メソッド）"""
             cpu_info = {
                 "usage_percent": psutil.cpu_percent(interval=1),
                 "cores": psutil.cpu_count(),
@@ -774,6 +775,7 @@ class RealTimeUpdates:
         """WebSocketサーバー開始"""
 
         async def handle_client(websocket, path):
+            """handle_clientメソッド"""
             client_id = str(uuid.uuid4())
             self.client_websockets[client_id] = websocket
 

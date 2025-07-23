@@ -375,6 +375,9 @@ class A2ACommand(BaseCommand):
                         self.print_info(f"\\n📊 {agent_id}:")
                         self.print_info(f"   Sent: {sent_delta}")
                         self.print_info(f"   Received: {received_delta}")
+                        if not (error_delta > 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if error_delta > 0:
                             self.print_warning(f"   Errors: {error_delta}")
 

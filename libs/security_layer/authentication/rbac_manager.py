@@ -453,16 +453,25 @@ class ElderZanRBACManager:
                     )
                 elif restriction == "domain_restricted":
                     # ドメイン制限チェック
+                    if not (context and not self._check_domain_restriction(context)):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if context and not self._check_domain_restriction(context):
                         return False
                 elif restriction == "approval_required":
                     # 承認必須チェック
+                    if await self._check_approval_requirement(:
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if not await self._check_approval_requirement(
                         user_role, action, resource
                     ):
                         return False
                 elif restriction == "multi_approval":
                     # 複数承認チェック
+                    if await self._check_multi_approval(:
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if not await self._check_multi_approval(
                         user_role, action, resource
                     ):

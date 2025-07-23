@@ -49,6 +49,7 @@ class StrictIronWillValidator:
     """Advanced Iron Will violation detection system"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.workaround_patterns = {
             'explicit_todos': [
                 r'#\s*TODO[:\s]',
@@ -298,6 +299,7 @@ class EnhancedSecurityValidator:
     """Zero-tolerance security validation"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.security_patterns = {
             'critical': [
                 (r'eval\s*\(', 'Code injection via eval()'),
@@ -349,7 +351,8 @@ class EnhancedSecurityValidator:
                                 line_number=line_number,
                                 context=line_text.strip(),
                                 suggestion="Use secure alternatives or add proper validation",
-                                elder_guild_standard=f"Security: Maximum risk level 3 (this is level {7 if severity == 'critical' else 5 if severity == 'high' else 3})"
+                                elder_guild_standard=f"Security: Maximum risk level 3 (this " \
+                                    "is level {7 if severity == 'critical' else 5 if severity == 'high' else 3})"
                             ))
             
             risk_level = 0
@@ -376,7 +379,9 @@ class EnhancedSecurityValidator:
 class EnhancedQualityEvaluator:
     """Enhanced quality evaluator with Elder Guild 85+ standards"""
     
-    def __init__(self, config: Optional[EnhancedQualityConfig] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Optional[EnhancedQualityConfig] = None):
         self.config = config or EnhancedQualityConfig()
         self.iron_will_validator = StrictIronWillValidator()
         self.security_validator = EnhancedSecurityValidator()
@@ -505,7 +510,9 @@ class EnhancedQualityEvaluator:
 class QualityGateEnforcer:
     """Enforce Elder Guild quality gates"""
     
-    def __init__(self, config: Optional[EnhancedQualityConfig] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Optional[EnhancedQualityConfig] = None):
         self.config = config or EnhancedQualityConfig()
         self.evaluator = EnhancedQualityEvaluator(config)
     

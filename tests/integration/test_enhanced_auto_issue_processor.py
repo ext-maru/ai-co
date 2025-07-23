@@ -245,6 +245,7 @@ class TestEnhancedAutoIssueProcessor(unittest.TestCase):
     def setUp(self):
         # GITHUB_TOKEN環境変数をモック
         self.github_token_patch = patch.dict(os.environ, {"GITHUB_TOKEN": "mock_token"})
+        """setUpの値を設定"""
         self.github_token_patch.start()
 
         # GitHub APIをモック
@@ -348,6 +349,7 @@ class TestImplementationMethods(unittest.TestCase):
 
     def setUp(self):
         self.mock_github = Mock()
+        """setUpの値を設定"""
         self.mock_repo = Mock()
         self.pr_creator = EnhancedPRCreator(self.mock_github, self.mock_repo)
         self.temp_dir = tempfile.mkdtemp()
@@ -445,6 +447,7 @@ class TestEndToEndIntegration(unittest.TestCase):
     """エンドツーエンド統合テスト"""
 
     def setUp(self):
+        """setUpの値を設定"""
         # GITHUB_TOKEN環境変数をモック
         self.github_token_patch = patch.dict(os.environ, {"GITHUB_TOKEN": "mock_token"})
         self.github_token_patch.start()

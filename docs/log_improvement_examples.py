@@ -49,6 +49,7 @@ from libs.improved_slack_notifier import ImprovedSlackNotifier
 
 
 class TaskWorkerNew(BaseWorker, ImprovedLoggingMixin):
+    """TaskWorkerNewワーカークラス"""
     def __init__(self):
         BaseWorker.__init__(self, worker_type="task")
         ImprovedLoggingMixin.__init__(self)
@@ -178,7 +179,8 @@ Task completed: code_20250702_100000 | Duration: 2.34s | Worker: task-1 | Files:
 2025-07-02 10:05:00 ERROR: 🔥 code_20250702_100500 で問題発生: Connection timeout
 
 ### After:
-2025-07-02 10:05:00 WARNING: Task error: code_20250702_100500 in code task execution - ConnectionTimeout: Connection timeout (will retry)
+2025-07-02 10:05:00 WARNING: Task error: code_20250702_100500 in code task execution -  \
+    ConnectionTimeout: Connection timeout (will retry)
 2025-07-02 10:05:00 INFO: [ERROR] task_failure: Task code_20250702_100500 failed: ConnectionTimeout: Connection timeout
 """
 

@@ -45,6 +45,7 @@ from libs.elder_servants.dwarf_workshop.doc_forge_enhanced import DocForgeEnhanc
 
 # Integration Status
 class IntegrationStatus(Enum):
+    """IntegrationStatusクラス"""
     INITIALIZED = "initialized"
     ORCHESTRATING = "orchestrating"
     EXECUTING = "executing"
@@ -58,6 +59,7 @@ class IntegrationStatus(Enum):
 # Elder Flow Integration Task
 @dataclass
 class IntegratedTask:
+    """IntegratedTaskクラス"""
     task_id: str
     description: str
     priority: str = "medium"
@@ -77,6 +79,7 @@ class IntegratedTask:
     error_message: Optional[str] = None
 
     def to_dict(self) -> Dict:
+        """to_dictメソッド"""
         return {
             "task_id": self.task_id,
             "description": self.description,
@@ -98,7 +101,9 @@ class IntegratedTask:
 
 # Elder Flow Integration System
 class ElderFlowIntegration:
+    """ElderFlowIntegration - エルダーズギルド関連クラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
 
         # コンポーネント初期化
@@ -575,6 +580,7 @@ class ElderFlowWorkflow:
     """Elder Flow高度ワークフロー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.workflows: Dict[str, List[Dict]] = {}
         self.logger = logging.getLogger(f"{__name__}.workflow")
 
@@ -624,6 +630,7 @@ class ElderFlowWorkflow:
 if __name__ == "__main__":
 
     async def main():
+        """mainメソッド"""
         print("🌊 Elder Flow Integration Test")
 
         # 統合フロー実行

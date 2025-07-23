@@ -52,6 +52,7 @@ class ServantRequest(Generic[TRequest]):
     timestamp: datetime = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.timestamp is None:
             self.timestamp = datetime.now()
 
@@ -69,6 +70,7 @@ class ServantResponse(Generic[TResponse]):
     timestamp: datetime = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.timestamp is None:
             self.timestamp = datetime.now()
 
@@ -81,7 +83,9 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
     Iron Will品質基準に準拠した実装を行う。
     """
 
-    def __init__(self, name: str, domain: ServantDomain):
+    def __init__(self, name:
+        """初期化メソッド"""
+    str, domain: ServantDomain):
         # Core functionality implementation
         self.name = name
         self.domain = domain
@@ -510,13 +514,16 @@ class ElderServantBase(ABC, Generic[TRequest, TResponse]):
             self.logger.error(f"Failed to create follow-up tasks via A2A: {e}")
 
     def __repr__(self):
+        """オブジェクト表現取得"""
         return f"<{self.__class__.__name__}(name={self.name}, domain={self.domain})>"
 
 
 class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
     """ドワーフ工房専門サーバントの基底クラス"""
 
-    def __init__(self, servant_id: str, name: str, specialization: str):
+    def __init__(self, servant_id:
+        """初期化メソッド"""
+    str, name: str, specialization: str):
         super().__init__(name, ServantDomain.DWARF_WORKSHOP)
         self.servant_id = servant_id
         self.specialization = specialization
@@ -916,7 +923,9 @@ class DwarfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
 class WizardServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
     """RAGウィザーズ専門サーバントの基底クラス"""
 
-    def __init__(self, servant_id: str, name: str, specialization: str):
+    def __init__(self, servant_id:
+        """初期化メソッド"""
+    str, name: str, specialization: str):
         super().__init__(name, ServantDomain.RAG_WIZARDS)
         self.servant_id = servant_id
         self.specialization = specialization
@@ -931,7 +940,9 @@ class WizardServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
 class ElfServant(ElderServantBase[Dict[str, Any], Dict[str, Any]]):
     """エルフの森専門サーバントの基底クラス"""
 
-    def __init__(self, servant_id: str, name: str, specialization: str):
+    def __init__(self, servant_id:
+        """初期化メソッド"""
+    str, name: str, specialization: str):
         super().__init__(name, ServantDomain.ELF_FOREST)
         self.servant_id = servant_id
         self.specialization = specialization

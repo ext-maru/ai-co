@@ -325,7 +325,10 @@ class ElderTreeBenchmark:
             }
 
             print(
-                f"    {count} agents: {execution_time:.1f}ms, {memory_delta:.1f}MB, {scalability_results[count]['agents_per_second']:.1f} agents/sec"
+                (
+                    f"f"    {count} agents: {execution_time:.1f}ms, {memory_delta:.1f}MB, "
+                    f"{scalability_results[count]['agents_per_second']:.1f} agents/sec""
+                )
             )
 
             # クリーンアップ

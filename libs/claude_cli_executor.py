@@ -15,6 +15,7 @@ class ClaudeCLIExecutor:
     """Claude CLIの実行を管理するクラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.check_claude_cli()
 
     def check_claude_cli(self):

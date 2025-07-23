@@ -43,6 +43,7 @@ class ElderTreeStatisticsReporter:
     """Elder Tree統計レポーター"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.elder_tree = get_elder_tree()
         self.four_sages = FourSagesIntegration()
         self.performance_monitor = ElderTreePerformanceMonitor()
@@ -177,6 +178,7 @@ class ElderTreeStatisticsReporter:
         total_workers = 0
         active_workers = 0
 
+        # 繰り返し処理
         for worker_type, count in worker_types:
             for i in range(count):
                 worker_id = f"{worker_type}_{i}"
@@ -541,7 +543,8 @@ class ElderTreeStatisticsReporter:
             <div class="summary-card">
                 <div class="label">Total Workers</div>
                 <div class="metric">{stats['workers']['total_workers']}</div>
-                <div class="label">Active: {stats['workers']['active_workers']} ({stats['workers']['availability_rate']*100:.1f}%)</div>
+                <div class="label">Active: {stats['workers']['active_workers']} ({ \
+                    stats['workers']['availability_rate']*100:.1f}%)</div>
             </div>
             <div class="summary-card">
                 <div class="label">Messages Processed</div>
@@ -555,7 +558,8 @@ class ElderTreeStatisticsReporter:
             </div>
             <div class="summary-card">
                 <div class="label">System Health</div>
-                <div class="metric status-{stats['sages']['four_sages_health']}">{stats['sages']['four_sages_health'].upper()}</div>
+                <div class="metric status-{stats['sages']['four_sages_health']}">{ \
+                    stats['sages']['four_sages_health'].upper()}</div>
                 <div class="label">Collaboration Score: {stats['sages']['avg_collaboration_score']:.2f}</div>
             </div>
         </div>
@@ -690,7 +694,8 @@ class ElderTreeStatisticsReporter:
 
         <h2>🔮 Analysis & Recommendations</h2>
         <div style="margin-top: 20px;">
-            <h3>Overall Trend: <span class="status-good">{stats['trends']['analysis']['overall_trend'].upper()}</span></h3>
+            <h3>Overall Trend: <span class="status-good">{stats['trends']['analysis'][ \
+                'overall_trend'].upper()}</span></h3>
 
             <div style="margin: 20px 0;">
                 <h4>✅ Improvements:</h4>
@@ -820,6 +825,7 @@ class ElderTreeStatisticsReporter:
 if __name__ == "__main__":
 
     async def demo():
+        """demoメソッド"""
         reporter = ElderTreeStatisticsReporter()
 
         # レポート生成

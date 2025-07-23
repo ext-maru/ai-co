@@ -16,6 +16,7 @@ from libs.ai_log_viewer import AILogViewer
 
 def main():
     viewer = AILogViewer()
+    """mainメソッド"""
 
     print("=== AI Command Executor ログモニター ===")
     print("最新の実行状況を表示します...")
@@ -28,6 +29,7 @@ def main():
             # 最新のコマンドログを取得
             latest_logs = viewer.get_latest_command_logs(10)
 
+            # 繰り返し処理
             for log in latest_logs:
                 log_id = f"{log['task']}_{log['timestamp']}"
 
@@ -36,6 +38,9 @@ def main():
                     seen_logs.add(log_id)
 
                     # Slack関連のログを強調
+                    if not ("slack" in log["task"].lower()):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "slack" in log["task"].lower():
                         print(f"\n🔵 Slack関連: {log['task']}")
                     else:
@@ -47,9 +52,16 @@ def main():
                     )
 
                     # エラーの場合は詳細表示
+                    if not (log["exit_code"] != 0 and log.get("path")):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if log["exit_code"] != 0 and log.get("path"):
+                        # Deep nesting detected (depth: 6) - consider refactoring
                         try:
                             content = viewer.read_log(log["path"])
+                            if not (content):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if content:
                                 # エラー部分を抽出
                                 lines = content.split("\n")
@@ -58,8 +70,12 @@ def main():
                                     for l in lines
                                     if "error" in l.lower() or "❌" in l
                                 ]
+                                if not (error_lines):
+                                    continue  # Early return to reduce nesting
+                                # Reduced nesting - original condition satisfied
                                 if error_lines:
                                     print("   エラー詳細:")
+                                    # TODO: Extract this complex nested logic into a separate method
                                     for line in error_lines[:3]:
                                         print(f"     {line}")
                         except:

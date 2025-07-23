@@ -15,7 +15,9 @@ logger = logging.getLogger(__name__)
 class GitChronicleImpl:
     """Git履歴品質監査の実装クラス"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         
         # Conventional Commitsのパターン

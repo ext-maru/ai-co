@@ -43,6 +43,7 @@ class SimpleWebHandler(BaseHTTPRequestHandler):
     """シンプルWebハンドラー"""
 
     def __init__(self, *args, interface_system=None, **kwargs):
+        """初期化メソッド"""
         self.interface_system = interface_system
         super().__init__(*args, **kwargs)
 
@@ -745,6 +746,7 @@ class SimpleWebInterface:
         try:
             # カスタムハンドラーファクトリ
             def handler_factory(*args, **kwargs):
+                """handler_factoryメソッド"""
                 return SimpleWebHandler(*args, interface_system=self, **kwargs)
 
             self.server = HTTPServer((self.host, self.port), handler_factory)
@@ -813,7 +815,8 @@ async def demo_simple_web_interface():
         # サーバー起動可能性確認
         print("\n🚀 サーバー起動準備完了")
         print(
-            '   コマンド: python3 -c "import asyncio; from libs.simple_web_interface import SimpleWebInterface; web = SimpleWebInterface(); asyncio.run(web.initialize_system()); web.start_server()"'
+            '   コマンド: python3 -c "import asyncio; from libs.simple_web_interface import SimpleWebInterface;" \
+                " web = SimpleWebInterface(); asyncio.run(web.initialize_system()); web.start_server()"'
         )
 
     except Exception as e:

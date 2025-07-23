@@ -25,6 +25,7 @@ class ProjectAutomationEngine:
     """プロジェクト自動化エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.template_system = ProjectTemplateSystem()
         self.automation_rules = self._load_automation_rules()
 
@@ -320,7 +321,8 @@ TODO: 内容を記述してください
                 indent=2,
             )
         else:
-            return f"# {Path(file_path).name}\n# Created: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n# TODO: 内容を記述してください\n"
+                        return f"# {Path(file_path).name}\n# Created: { \
+                datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n# TODO: 内容を記述してください\n"
 
     def _generate_checklist_updates(
         self, template_name: str, phase_key: str

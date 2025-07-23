@@ -16,7 +16,10 @@ logger = logging.getLogger(__name__)
 
 
 class GitHubIntegrationManager:
-    def __init__(self, repo_url: str = None, token: str = None):
+    """GitHubIntegrationManager - 管理システムクラス"""
+    def __init__(self, repo_url:
+        """初期化メソッド"""
+    str = None, token: str = None):
         self.repo_url = repo_url or self._get_repo_url()
         self.token = token or os.getenv("GITHUB_TOKEN")
         self.api_base = "https://api.github.com"
@@ -184,7 +187,9 @@ class GitHubIntegrationManager:
         return analysis
 
     # 以下、既存のメソッドは変更なし...
-    def _extract_imports(self, content: str) -> set:
+    def _extract_imports(self, content:
+        """extract_imports（内部メソッド）"""
+    str) -> set:
         imports = set()
         lines = content.split("\n")
         for line in lines:
@@ -219,7 +224,9 @@ class GitHubIntegrationManager:
             logger.error(f"コミットエラー: {e}")
             return False
 
-    def _analyze_changes(self, files: List[str]) -> Dict[str, List[str]]:
+    def _analyze_changes(self, files:
+        """analyze_changes（内部メソッド）"""
+    List[str]) -> Dict[str, List[str]]:
         categories = {
             "workers": [],
             "libs": [],
@@ -240,7 +247,9 @@ class GitHubIntegrationManager:
                 categories["other"].append(Path(file).name)
         return categories
 
-    def get_code_context_for_ai(self, relevant_paths: List[str]) -> str:
+    def get_code_context_for_ai(self, relevant_paths:
+        """code_context_for_ai取得メソッド"""
+    List[str]) -> str:
         context = "【関連コード情報】\n\n"
         for path in relevant_paths:
             content = self.get_file_content(path)
@@ -255,7 +264,9 @@ class GitHubIntegrationManager:
         context += f"- 依存関係: {', '.join(analysis['dependencies'][:10])}\n"
         return context
 
-    def _extract_important_parts(self, content: str, max_lines: int = 50) -> str:
+    def _extract_important_parts(self, content:
+        """extract_important_parts（内部メソッド）"""
+    str, max_lines: int = 50) -> str:
         lines = content.split("\n")
         important_lines = []
         in_class = False
@@ -278,7 +289,9 @@ class GitHubIntegrationManager:
                 break
         return "\n".join(important_lines[:max_lines])
 
-    def get_recent_commits(self, limit: int = 10) -> List[Dict]:
+    def get_recent_commits(self, limit:
+        """recent_commits取得メソッド"""
+    int = 10) -> List[Dict]:
         if not self.api_repo_url:
             return []
         url = f"{self.api_repo_url}/commits"

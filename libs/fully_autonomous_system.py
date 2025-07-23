@@ -256,7 +256,7 @@ class FullyAutonomousSystem:
         """意思決定エンジン作成"""
 
         class DecisionEngine:
-            # Main class implementation
+            """意思決定エンジン - システムコンポーネント別の自動判断システム"""
             def __init__(self, component):
                 """初期化メソッド"""
                 self.component = component

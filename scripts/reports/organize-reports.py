@@ -149,6 +149,9 @@ class ReportOrganizer:
                 match = re.search(pattern, line)
                 if match:
                     try:
+                        if not (len(match.groups()) == 3):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(match.groups()) == 3:
                             year, month, day = match.groups()
                             return datetime(int(year), int(month), int(day))
@@ -163,6 +166,7 @@ class ReportOrganizer:
         text = (filename + " " + content[:1000]).lower()
         
         for category, keywords in self.categories.items():
+        # 繰り返し処理
             for keyword in keywords:
                 if keyword in text:
                     return category
@@ -310,6 +314,7 @@ class ReportOrganizer:
         return summary
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description='エルダーズギルド レポート整理ツール')
     parser.add_argument('--dry-run', action='store_true', help='実際の移動は行わない')
     parser.add_argument('--analyze-only', action='store_true', help='分析のみ実行')

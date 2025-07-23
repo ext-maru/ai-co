@@ -34,6 +34,7 @@ class ConfigCompatibilityLayer:
     """設定互換性レイヤー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path("/home/aicompany/ai_co")
         self.config_dir = self.project_root / "config"
         self.integrated_config = IntegratedConfigSystem()
@@ -405,6 +406,7 @@ def deprecated_config_warning(func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapperメソッド"""
         warnings.warn(
             f"Function {func.__name__} is deprecated. Use the integrated config system instead.",
             DeprecationWarning,

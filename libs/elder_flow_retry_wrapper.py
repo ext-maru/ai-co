@@ -31,6 +31,7 @@ class ElderFlowRetryWrapper:
     """リトライ機能付きElder Flowラッパー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.engine = ElderFlowEngine()
 
     async def execute_with_retry(
@@ -108,6 +109,9 @@ class ElderFlowRetryWrapper:
 
                         choice = input("\n選択してください [R/W/C/F]: ").strip().upper()
 
+                        if not (choice == "R"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if choice == "R":
                             print(f"\n⏳ {retry_interval}秒待機します...")
                             await asyncio.sleep(retry_interval)

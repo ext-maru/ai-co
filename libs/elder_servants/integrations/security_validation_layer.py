@@ -33,20 +33,26 @@ try:
 except ImportError:
     # Fallback for simplified testing
     class MockAdapterRequest:
+        """MockAdapterRequestクラス"""
         # Main class implementation
         def __init__(self, tool_name, operation, data, context):
+            """初期化メソッド"""
             self.tool_name = tool_name
             self.operation = operation
             self.data = data
             self.context = context
 
     class MockFramework:
+        """MockFrameworkクラス"""
         # Main class implementation
         async def execute_with_fallback(self, request):
+            """execute_with_fallback実行メソッド"""
             # Core functionality implementation
             class MockResponse:
+                """MockResponseクラス"""
                 # Main class implementation
                 def __init__(self):
+                    """初期化メソッド"""
                     self.success = True
                     self.data = {
                         "vulnerabilities": [],
@@ -59,6 +65,7 @@ except ImportError:
             return MockResponse()
 
     def create_oss_adapter_framework():
+        """oss_adapter_framework作成メソッド"""
         return MockFramework()
 
     AdapterRequest = MockAdapterRequest
@@ -119,6 +126,7 @@ class SecurityVulnerability:
     detected_at: datetime = field(default_factory=datetime.now)
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "id": self.id,
             "title": self.title,
@@ -154,6 +162,7 @@ class SecurityScanResult:
     timestamp: datetime = field(default_factory=datetime.now)
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "scan_id": self.scan_id,
             "scan_type": self.scan_type.value,
@@ -178,6 +187,7 @@ class SecurityValidationLayer:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.scan_id_prefix = "SEC"
         self.oss_framework = create_oss_adapter_framework()
 
@@ -558,6 +568,7 @@ class SecurityValidationLayer:
             "dangerous_functions": ["exec(", "eval(", "__import__"],
         }
         
+        # 繰り返し処理
         for pattern_group, patterns in semgrep_patterns.items():
             for pattern in patterns:
                 if pattern in code:

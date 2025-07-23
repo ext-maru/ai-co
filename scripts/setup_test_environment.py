@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 class TestEnvironmentSetup:
+    """TestEnvironmentSetupテストクラス"""
     def __init__(self):
         self.project_root = Path(__file__).parent.parent
         self.venv_path = self.project_root / "venv"

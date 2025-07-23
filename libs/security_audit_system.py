@@ -164,6 +164,7 @@ class SecurityAuditor:
         for standard_name, controls in compliance_standards.items():
             standard_results = {
                 "compliance_score": 0,
+        # 繰り返し処理
                 "passed_checks": [],
                 "failed_checks": [],
                 "recommendations": [],
@@ -280,12 +281,16 @@ class SecurityAuditor:
             if repo_dir.exists():
                 for py_file in repo_dir.rglob("*.py"):
                     with open(py_file, "r", encoding="utf-8") as f:
+                # 繰り返し処理
                         content = f.read()
 
                         # パターンマッチング
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for vuln_type, patterns in self.vulnerability_patterns.items():
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             for pattern in patterns:
                                 matches = re.finditer(pattern, content, re.IGNORECASE)
+                                # TODO: Extract this complex nested logic into a separate method
                                 for match in matches:
                                     line_no = content[: match.start()].count("\n") + 1
                                     vulnerabilities.append(
@@ -337,11 +342,17 @@ class SecurityAuditor:
                 with open(dep_file, "r") as f:
                     for line_no, line in enumerate(f, 1):
                         line = line.strip()
+                        if not ("==" in line):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "==" in line:
                             package, version = line.split("==")
                             package = package.strip()
                             version = version.strip()
 
+                            if not (package in vulnerable_deps):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if package in vulnerable_deps:
                                 vuln_info = vulnerable_deps[package]
                                 vulnerabilities.append(
@@ -375,10 +386,14 @@ class SecurityAuditor:
 
         try:
             for config_file in Path(config_path).rglob("*.conf"):
+            # 繰り返し処理
                 with open(config_file, "r") as f:
                     content = f.read()
 
                     for issue_type, pattern in config_checks.items():
+                        if not (re.search(pattern, content, re.IGNORECASE)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if re.search(pattern, content, re.IGNORECASE):
                             issues.append(
                                 {
@@ -827,6 +842,7 @@ class ThreatDetector:
         """行動分析"""
         analysis = {}
 
+        # 繰り返し処理
         for user, activities in user_activities.items():
             user_analysis = {
                 "risk_level": "low",

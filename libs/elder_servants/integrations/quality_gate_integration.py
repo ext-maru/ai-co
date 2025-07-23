@@ -30,6 +30,7 @@ try:
 except ImportError:
     # Fallback for simplified testing
     class MockAdapterRequest:
+        """MockAdapterRequestクラス"""
         # Main class implementation
         def __init__(self, tool_name, operation, data, context):
             """初期化メソッド"""
@@ -39,10 +40,13 @@ except ImportError:
             self.context = context
 
     class MockFramework:
+        """MockFrameworkクラス"""
         # Main class implementation
         async def execute_with_fallback(self, request):
+            """execute_with_fallback実行メソッド"""
             # Core functionality implementation
             class MockResponse:
+                """MockResponseクラス"""
                 # Main class implementation
                 def __init__(self):
                     """初期化メソッド"""
@@ -58,6 +62,7 @@ except ImportError:
             return MockResponse()
 
     def create_oss_adapter_framework():
+        """oss_adapter_framework作成メソッド"""
         return MockFramework()
 
     AdapterRequest = MockAdapterRequest
@@ -99,10 +104,12 @@ class QualityMetric:
 
     @property
     def weighted_score(self) -> float:
+        """weighted_scoreメソッド"""
         return self.score * self.weight
 
     @property
     def passes(self) -> bool:
+        """passesメソッド"""
         return self.score >= self.threshold
 
 
@@ -122,6 +129,7 @@ class QualityGateResult:
     timestamp: datetime = field(default_factory=datetime.now)
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "gate_id": self.gate_id,
             "status": self.status.value,

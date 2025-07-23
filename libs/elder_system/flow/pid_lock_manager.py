@@ -95,6 +95,9 @@ class PIDLockManager:
                         locked_pid = existing_lock_data.get("pid")
 
                         # PIDが生きているかチェック
+                        if not (locked_pid and self._is_process_alive(locked_pid)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if locked_pid and self._is_process_alive(locked_pid):
                             logger.warning(
                                 f"Task '{task_id}' is already running "
@@ -260,6 +263,7 @@ class PIDLockContext:
         self.acquired = False
 
     def __enter__(self):
+        """__enter__特殊メソッド"""
         self.acquired = self.lock_manager.acquire_lock(self.task_id, self.task_info)
         if not self.acquired:
             raise RuntimeError(
@@ -268,5 +272,6 @@ class PIDLockContext:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """__exit__特殊メソッド"""
         if self.acquired:
             self.lock_manager.release_lock(self.task_id)

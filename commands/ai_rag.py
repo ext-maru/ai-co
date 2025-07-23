@@ -455,6 +455,7 @@ class AIRagCommand(BaseCommand):
                     grimoire_stats = status["grimoire_stats"]
                     if "error" not in grimoire_stats:
                         lines.append("\n📚 魔法書統計:")
+                        # Deep nesting detected (depth: 6) - consider refactoring
                         for key, value in grimoire_stats.items():
                             # Process each item in collection
                             lines.append(f"  {key}: {value}")

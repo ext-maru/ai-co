@@ -54,7 +54,9 @@ try:
 except Exception as e:
     # Create placeholder classes if import fails
     class WorkerHealthMonitor:
+        """WorkerHealthMonitor - 監視クラス"""
         def __init__(self, config=None):
+            """初期化メソッド"""
             import logging
 
             logging.warning("Using placeholder WorkerHealthMonitor")
@@ -69,6 +71,7 @@ except Exception as e:
             self._monitoring_task = None
 
         def get_system_status(self):
+            """system_status取得メソッド"""
             return {
                 "total_workers": 0,
                 "health_summary": {"healthy": 0, "unhealthy": 0},
@@ -76,18 +79,23 @@ except Exception as e:
             }
 
         async def start_monitoring(self):
+            """start_monitoringメソッド"""
             self.is_monitoring = True
 
         async def stop_monitoring(self):
+            """stop_monitoringメソッド"""
             self.is_monitoring = False
 
         def get_tracked_workers(self):
+            """tracked_workers取得メソッド"""
             return []
 
         async def register_worker(self, worker_id, config):
+            """register_workerメソッド"""
             self._worker_configs[worker_id] = config
 
         async def check_worker_health(self, worker_id):
+            """check_worker_healthチェックメソッド"""
             from datetime import datetime
 
             return WorkerState(
@@ -97,12 +105,15 @@ except Exception as e:
             )
 
         def get_worker_state(self, worker_id):
+            """worker_state取得メソッド"""
             return self._worker_states.get(worker_id)
 
         def on_health_change(self, handler):
+            """on_health_changeメソッド"""
             self._health_change_handlers.append(handler)
 
     class AutoRecoveryEngine:
+        """AutoRecoveryEngine - エンジンクラス"""
         def __init__(
             self, strategies=None, max_recovery_attempts=3, backoff_multiplier=1.0
         ):
@@ -116,11 +127,13 @@ except Exception as e:
             self._strategy_manager = None
 
         async def attempt_recovery(self, worker_state):
+            """attempt_recoveryメソッド"""
             from dataclasses import dataclass
             from datetime import datetime
 
             @dataclass
             class RecoveryResult:
+                """RecoveryResultクラス"""
                 success: bool = False
                 worker_id: str = ""
                 action: str = "none"
@@ -131,42 +144,55 @@ except Exception as e:
             return RecoveryResult()
 
         def calculate_backoff_time(self, worker_state):
+            """calculate_backoff_timeメソッド"""
             base_time = 1.0
             return base_time * (self.backoff_multiplier**worker_state.recovery_attempts)
 
         async def handle_health_change(self, event):
+            """handle_health_changeメソッド"""
             pass
 
         def on_recovery_attempt(self, handler):
+            """on_recovery_attemptメソッド"""
             self._recovery_handlers.append(handler)
 
         def set_strategy_manager(self, manager):
+            """strategy_manager設定メソッド"""
             self._strategy_manager = manager
 
     class RecoveryStrategyManager:
+        """RecoveryStrategyManager - 管理システムクラス"""
         def __init__(self, *args, **kwargs):
+            """初期化メソッド"""
             import logging
 
             logging.warning("Using placeholder RecoveryStrategyManager")
             self.strategies = {}
 
         def get_available_strategies(self):
+            """available_strategies取得メソッド"""
             return []
 
         def register_strategy(self, strategy, handler, priority=0):
+            """register_strategyメソッド"""
             pass
 
         def get_strategies_by_priority(self):
+            """strategies_by_priority取得メソッド"""
             return []
 
         def select_strategy(self, worker_state):
+            """select_strategyメソッド"""
             return None
 
         async def execute_strategy(self, strategy, worker_state):
+            """execute_strategy実行メソッド"""
             return True
 
     class HealthCheckService:
+        """HealthCheckServiceクラス"""
         def __init__(self, port=8080, **kwargs):
+            """初期化メソッド"""
             import logging
 
             logging.warning("Using placeholder HealthCheckService")
@@ -177,18 +203,23 @@ except Exception as e:
             self.app = None
 
         async def start(self):
+            """startメソッド"""
             self.is_running = True
 
         async def stop(self):
+            """stopメソッド"""
             self.is_running = False
 
         def register_monitor(self, monitor):
+            """register_monitorメソッド"""
             self._monitors.append(monitor)
 
         def set_health_monitor(self, monitor):
+            """health_monitor設定メソッド"""
             self._health_monitor = monitor
 
         async def get_worker_status(self, worker_id):
+            """worker_status取得メソッド"""
             return {
                 "worker_id": worker_id,
                 "status": "unknown",
@@ -196,6 +227,7 @@ except Exception as e:
             }
 
         async def collect_metrics(self):
+            """collect_metricsメソッド"""
             return {
                 "workers": {},
                 "system": {"total_workers": 0, "healthy_workers": 0},
@@ -203,18 +235,23 @@ except Exception as e:
             }
 
         async def handle_health(self, request):
+            """handle_healthメソッド"""
             pass
 
         async def handle_worker_health(self, request):
+            """handle_worker_healthメソッド"""
             pass
 
         async def handle_metrics(self, request):
+            """handle_metricsメソッド"""
             pass
 
         async def handle_prometheus_metrics(self, request):
+            """handle_prometheus_metricsメソッド"""
             pass
 
         async def update_health_status(self, worker_id, status):
+            """health_status更新メソッド"""
             pass
 
     # Placeholder enums and dataclasses
@@ -224,18 +261,21 @@ except Exception as e:
     from typing import Any, Dict, Optional
 
     class HealthStatus(Enum):
+        """HealthStatusクラス"""
         HEALTHY = "healthy"
         UNHEALTHY = "unhealthy"
         DEGRADED = "degraded"
         UNKNOWN = "unknown"
 
     class RecoveryStrategy(Enum):
+        """RecoveryStrategyクラス"""
         RESTART = "restart"
         RESET = "reset"
         RECREATE = "recreate"
         CUSTOM = "custom"
 
     class RecoveryAction(Enum):
+        """RecoveryActionクラス"""
         RESTART = "restart"
         RESET = "reset"
         RECREATE = "recreate"
@@ -243,6 +283,7 @@ except Exception as e:
 
     @dataclass
     class WorkerState:
+        """WorkerStateクラス"""
         worker_id: str
         status: HealthStatus
         last_health_check: datetime

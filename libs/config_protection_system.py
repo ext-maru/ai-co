@@ -42,15 +42,18 @@ class ConfigFileProtectionHandler(FileSystemEventHandler):
     """設定ファイル保護ハンドラー"""
 
     def __init__(self, protection_system):
+        """初期化メソッド"""
         self.protection_system = protection_system
 
     def on_deleted(self, event):
+        """on_deletedメソッド"""
         if not event.is_directory:
             filepath = Path(event.src_path)
             if self.protection_system.is_protected_file(filepath):
                 asyncio.create_task(self.protection_system.handle_deletion(filepath))
 
     def on_modified(self, event):
+        """on_modifiedメソッド"""
         if not event.is_directory:
             filepath = Path(event.src_path)
             if self.protection_system.is_protected_file(filepath):
@@ -59,6 +62,7 @@ class ConfigFileProtectionHandler(FileSystemEventHandler):
                 )
 
     def on_moved(self, event):
+        """on_movedメソッド"""
         if not event.is_directory:
             src_path = Path(event.src_path)
             dest_path = Path(event.dest_path)
@@ -71,7 +75,9 @@ class ConfigFileProtectionHandler(FileSystemEventHandler):
 class ConfigProtectionSystem:
     """設定ファイル保護システム"""
 
-    def __init__(self, project_root: Path = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path = None):
         self.project_root = project_root or Path.cwd()
         self.config_dir = self.project_root / "config"
         self.protection_dir = self.project_root / ".config_protection"

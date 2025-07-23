@@ -20,6 +20,7 @@ class TaskMonitor:
         )
 
     def __getattr__(self, name):
+        """__getattr__特殊メソッド"""
         logger.warning(f"Accessing placeholder attribute: {name}")
         return lambda *args, **kwargs: None
 

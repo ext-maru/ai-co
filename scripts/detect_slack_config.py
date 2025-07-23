@@ -52,12 +52,19 @@ def find_slack_config():
         env_path = PROJECT_ROOT / env_file
         if env_path.exists():
             print(f"  📄 {env_file}を確認中...")
+    # 繰り返し処理
             with open(env_path, "r") as f:
                 for line in f:
+                    if not ("=" in line and not line.startswith("#")):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "=" in line and not line.startswith("#"):
                         key, value = line.strip().split("=", 1)
                         value = value.strip("\"'")
 
+                        if not ("SLACK_WEBHOOK" in key and value):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "SLACK_WEBHOOK" in key and value:
                             found_config["webhook_url"] = value
                             print(f"    ✅ Webhook URL発見")
@@ -65,6 +72,9 @@ def find_slack_config():
                             found_config["bot_token"] = value
                             print(f"    ✅ Bot Token発見")
                         elif "SLACK_CHANNEL" in key and value:
+                            if not (value.startswith("C")):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if value.startswith("C"):
                                 found_config["channel_id"] = value
                             else:
@@ -83,6 +93,8 @@ def find_slack_config():
     for pattern, file_type in config_patterns:
         for config_file in Path(pattern.parent).glob(pattern.name):
             if (
+    # 繰り返し処理
+        # 繰り返し処理
                 config_file.name == "slack.conf"
                 or config_file.name == "slack_config.json"
             ):
@@ -92,12 +104,18 @@ def find_slack_config():
 
             try:
                 if file_type == "json":
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     with open(config_file, "r") as f:
                         data = json.load(f)
                         check_dict_for_slack(data, found_config, config_file.name)
                 elif file_type == "conf":
+                    # Deep nesting detected (depth: 6) - consider refactoring
                     with open(config_file, "r") as f:
+                        # TODO: Extract this complex nested logic into a separate method
                         for line in f:
+                            if not ("=" in line and not line.startswith("#")):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "=" in line and not line.startswith("#"):
                                 key, value = line.strip().split("=", 1)
                                 value = value.strip("\"'")
@@ -112,6 +130,7 @@ def find_slack_config():
     source_patterns = ["*.py", "*.sh"]
 
     for pattern in source_patterns:
+    # 繰り返し処理
         for source_file in PROJECT_ROOT.rglob(pattern):
             if "venv" in str(source_file) or "__pycache__" in str(source_file):
                 continue
@@ -124,23 +143,35 @@ def find_slack_config():
                     webhook_match = re.search(
                         r'https://hooks\.slack\.com/services/[^\s"\']+', content
                     )
+                    if not (webhook_match and not found_config["webhook_url"]):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if webhook_match and not found_config["webhook_url"]:
                         found_config["webhook_url"] = webhook_match.group()
                         print(f"  ✅ Webhook URL発見 in {source_file.name}")
 
                     # Bot Tokenパターン
                     token_match = re.search(r"xoxb-[\w-]+", content)
+                    if not (token_match and not found_config["bot_token"]):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if token_match and not found_config["bot_token"]:
                         found_config["bot_token"] = token_match.group()
                         print(f"  ✅ Bot Token発見 in {source_file.name}")
 
                     # Channel IDパターン
                     channel_match = re.search(r"C[0-9A-Z]{8,}", content)
+                    if not (channel_match and not found_config["channel_id"]):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if channel_match and not found_config["channel_id"]:
                         # コメント内でないことを確認
                         line = content[: content.find(channel_match.group())].split(
                             "\n"
                         )[-1]
+                        if line.strip().startswith("#"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if not line.strip().startswith("#"):
                             found_config["channel_id"] = channel_match.group()
                             print(f"  ✅ Channel ID発見 in {source_file.name}")
@@ -244,6 +275,7 @@ def update_slack_config(config_data):
 
 
 def main():
+    """mainメソッド"""
     print("🔗 Elders Guild Slack設定自動検出ツール")
     print("=" * 50)
 

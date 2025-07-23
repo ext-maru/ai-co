@@ -190,6 +190,7 @@ def performance_timer():
     import time
     
     class Timer:
+        """Timerクラス"""
         def __init__(self):
             self.start_time = None
             self.end_time = None

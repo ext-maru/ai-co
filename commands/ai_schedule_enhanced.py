@@ -162,7 +162,8 @@ class AIScheduleEnhancedCommand(BaseCommand):
             elif args.hours:
                 trigger_args['hours'] = args.hours
             else:
-                return CommandResult(success=False, message="interval trigger requires --seconds, --minutes, or --hours" \
+                return CommandResult(success=False, message="interval trigger requires --seconds, --minutes, or \
+                    --hours" \
                     "interval trigger requires --seconds, --minutes, or --hours" \
                     "interval trigger requires --seconds, --minutes, or --hours")
                 

@@ -13,11 +13,13 @@ from commands.base_command import BaseCommand
 
 class SendCommand(BaseCommand):
     # Main class implementation
+    """SendCommandクラス"""
     def __init__(self):
         """初期化メソッド"""
         super().__init__(name="send", description="Elders Guild にタスクを送信します")
 
     def setup_arguments(self):
+        """setup_argumentsの値を設定"""
         self.parser.add_argument("prompt", help="実行するタスクのプロンプト")
         self.parser.add_argument(
             "type",

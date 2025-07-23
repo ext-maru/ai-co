@@ -344,6 +344,7 @@ class GitHubIntegrationStateMachine(RuleBasedStateMachine):
     """GitHub Integration の状態ベーステスト"""
     
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.manager = UnifiedGitHubManager(
             token="test-token",

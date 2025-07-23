@@ -19,11 +19,13 @@ class SimpleDialogWorker:
     def __init__(self):
         """初期化メソッド"""
         self.conversation_manager = ConversationManager()
+    """SimpleDialogWorkerワーカークラス"""
         logger.info("SimpleDialogWorker初期化")
 
     def connect(self):
         try:
             self.connection = pika.BlockingConnection(
+        """connectメソッド"""
                 pika.ConnectionParameters("localhost")
             )
             self.channel = self.connection.channel()
@@ -37,6 +39,7 @@ class SimpleDialogWorker:
 
     def process_dialog_task(self, ch, method, properties, body):
         try:
+        """process_dialog_taskを処理"""
             task_data = json.loads(body)
             conversation_id = task_data.get("conversation_id")
             instruction = task_data.get("instruction")
@@ -67,6 +70,7 @@ class SimpleDialogWorker:
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=True)
 
     def start(self):
+        """startメソッド"""
         if not self.connect():
             return
 

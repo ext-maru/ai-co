@@ -188,6 +188,7 @@ class ClassificationModel:
     """機械学習分類モデル"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.vectorizer = None
         self.classifier = None
         self.is_trained = False
@@ -352,6 +353,7 @@ class ErrorAnalyzer:
     """エラー分析クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.error_cache = {}
 
     def calculate_similarity(self, error1: str, error2: str) -> float:
@@ -448,6 +450,9 @@ class ErrorAnalyzer:
                             error1.get("message", ""), error2.get("message", "")
                         )
 
+                        if not (similarity > 0.3:  # 類似度30%以上):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if similarity > 0.3:  # 類似度30%以上
                             correlations.append(
                                 {
@@ -796,6 +801,9 @@ class ErrorClassificationSystem:
 
                     # 簡単なログパース（JSON形式を想定）
                     try:
+                        if not (line.startswith("{")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.startswith("{"):
                             error_data = json.loads(line)
                             errors.append(error_data)

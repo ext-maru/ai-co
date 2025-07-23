@@ -60,6 +60,7 @@ class SystemResourceMonitor:
     """システムリソースモニター"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.history = []
         self.max_history = 100
         self._last_disk_io = None
@@ -192,7 +193,9 @@ class SystemResourceMonitor:
 class ResourceOptimizationEngine:
     """リソース最適化エンジン"""
 
-    def __init__(self, task_sage, tracking_db: UnifiedTrackingDB):
+    def __init__(self, task_sage, tracking_db:
+        """初期化メソッド"""
+    UnifiedTrackingDB):
         self.task_sage = task_sage
         self.tracking_db = tracking_db
         self.resource_monitor = SystemResourceMonitor()

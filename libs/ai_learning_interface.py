@@ -15,7 +15,9 @@ from libs.conversation_search import ConversationSearchEngine
 
 
 class AILearningInterface:
+    """AILearningInterfaceクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.search_engine = ConversationSearchEngine()
         self.conversation_manager = ConversationManager()
 

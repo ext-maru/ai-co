@@ -1019,7 +1019,13 @@ class CacheOptimizationEngine(EldersServiceLegacy):
 
         return patterns
 
-    def _estimate_improvement_potential(self, access_frequency: Dict[str, int], temporal_patterns: Dict[str, Any]) -> float:
+    def _estimate_improvement_potential(
+        self,
+        access_frequency: Dict[str,
+        int],
+        temporal_patterns: Dict[str,
+        Any]
+    ) -> float:
         """改善可能性推定"""
         # 基本改善可能性
         base_improvement = 0.1
@@ -1797,7 +1803,8 @@ if __name__ == "__main__":
 
     def generate_implementation_report(self, results: Dict[str, Any]) -> str:
         """実装レポートの生成"""
-        report_path = f"reports/phase24_rag_sage_implementation_{self.implementation_timestamp.strftime('%Y%m%d_%H%M%S')}.md"
+        report_path = f"reports/phase24_rag_sage_implementation_
+            f"{self.implementation_timestamp.strftime('%Y%m%d_%H%M%S')}.md"
 
         report = f"""# 🔍 Phase 24: RAG Sage 実装レポート
 

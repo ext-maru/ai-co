@@ -244,7 +244,8 @@ class TestGitHubSecurityManager:
         -----BEGIN RSA PRIVATE KEY-----
         MIIEowIBAAKCAQEA...
         -----END RSA PRIVATE KEY-----
-        JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U
+        JWT: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4 \
+            J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U
         """
         
         secrets = self.security_manager.scan_for_secrets(content_with_secrets)
@@ -261,7 +262,9 @@ class TestGitHubSecurityManager:
         """Test secure decorator for sync functions"""
         
         @self.security_manager.secure_decorator(require_auth=True, rate_limit=10)
-        def test_function(self, test_input: str):
+        def test_function(self, test_input:
+            """test_functionテストメソッド"""
+        str):
             return f"Processed: {test_input}"
         
         # Create mock object with token
@@ -286,7 +289,9 @@ class TestGitHubSecurityManager:
         """Test secure decorator for async functions"""
         
         @self.security_manager.secure_decorator(require_auth=True, rate_limit=10)
-        async def test_async_function(self, test_input: str):
+        async def test_async_function(self, test_input:
+            """test_async_functionテストメソッド"""
+        str):
             await asyncio.sleep(0.01)
             return f"Processed: {test_input}"
         

@@ -24,6 +24,7 @@ class TaskElderMemoryMagic:
     """タスクエルダーによるセッション記憶魔法"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.retention_days = 2  # 2日間保持
         self.memory_dir = PROJECT_ROOT / "knowledge_base" / "task_memories"
         self.memory_dir.mkdir(parents=True, exist_ok=True)

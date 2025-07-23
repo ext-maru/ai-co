@@ -52,30 +52,35 @@ app.add_middleware(
 
 # Request/Response models
 class TaskRequest(BaseModel):
+    """TaskRequestクラス"""
     # Main class implementation
     type: str
     task: Dict[str, Any]
 
 
 class ElderFlowRequest(BaseModel):
+    """ElderFlowRequest - エルダーズギルド関連クラス"""
     # Main class implementation
     query: str
     context: Dict[str, Any]
 
 
 class SageConsultRequest(BaseModel):
+    """SageConsultRequest - 4賢者システム関連クラス"""
     # Main class implementation
     question: str
     context: Optional[Dict[str, Any]] = {}
 
 
 class QualityCheckRequest(BaseModel):
+    """QualityCheckRequestクラス"""
     # Main class implementation
     file_path: str
     content: str
 
 
 class KnowledgeSearchRequest(BaseModel):
+    """KnowledgeSearchRequestクラス"""
     # Main class implementation
     query: str
     limit: Optional[int] = 10
@@ -347,19 +352,26 @@ from fastapi import WebSocket
 
 
 class ConnectionManager:
+    """ConnectionManager - 管理システムクラス"""
     # Main class implementation
     def __init__(self):
         """初期化メソッド"""
         self.active_connections: Set[WebSocket] = set()
 
-    async def connect(self, websocket: WebSocket):
+    async def connect(self, websocket:
+        """connectメソッド"""
+    WebSocket):
         await websocket.accept()
         self.active_connections.add(websocket)
 
-    def disconnect(self, websocket: WebSocket):
+    def disconnect(self, websocket:
+        """disconnectメソッド"""
+    WebSocket):
         self.active_connections.remove(websocket)
 
-    async def broadcast(self, message: dict):
+    async def broadcast(self, message:
+        """broadcastメソッド"""
+    dict):
         for connection in self.active_connections:
             # Process each item in collection
             try:

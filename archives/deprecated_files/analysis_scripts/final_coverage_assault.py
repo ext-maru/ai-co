@@ -15,6 +15,7 @@ exec(open("setup_test_environment.py").read())
 class FinalCoverageAssault:
     def __init__(self):
         """初期化メソッド"""
+    """FinalCoverageAssaultクラス"""
         self.results = {"tests_created": 0, "modules_tested": 0, "errors_fixed": 0}
 
     def create_comprehensive_test(self, module_path, import_path, class_name):
@@ -142,6 +143,7 @@ class Test{class_name}:
         ]
 
         for dir_name, import_base in targets:
+        # 繰り返し処理
             print(f"\n📁 Processing {dir_name}/...")
 
             dir_path = Path(dir_name)
@@ -189,6 +191,7 @@ class Test{class_name}:
 
         modules = ["libs", "workers", "core", "commands"]
 
+        # 繰り返し処理
         for module in modules:
             print(f"\n  Testing {module}/...")
 

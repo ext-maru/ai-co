@@ -68,6 +68,7 @@ class ElderFlowSoulConnector:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.registry = ElderRegistry()
         self.enforcement = ElderTreeEnforcement()
         self.logger = self._setup_logger()

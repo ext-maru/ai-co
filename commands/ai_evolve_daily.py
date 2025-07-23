@@ -130,6 +130,7 @@ class AIEvolveDailyCommand:
             print("📭 現在、保留中の相談はありません")
             return
 
+        # 繰り返し処理
         for i, consultation in enumerate(
             self.evolution_system.pending_consultations, 1
         ):

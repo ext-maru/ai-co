@@ -61,7 +61,9 @@ class CompressedData:
 class ChunkBuffer:
     """Adaptive buffer for chunk management"""
     
-    def __init__(self, initial_size: int = 4096):
+    def __init__(self, initial_size:
+        """初期化メソッド"""
+    int = 4096):
         self._buffer = bytearray(initial_size)
         self._position = 0
         self._size = initial_size
@@ -100,7 +102,9 @@ class ChunkBuffer:
 class MemoryPool:
     """Memory pool for efficient allocation"""
     
-    def __init__(self, block_size: int = 4096, max_blocks: int = 100):
+    def __init__(self, block_size:
+        """初期化メソッド"""
+    int = 4096, max_blocks: int = 100):
         self.block_size = block_size
         self.max_blocks = max_blocks
         self._pool = deque()
@@ -136,6 +140,7 @@ class StreamProcessor:
     """Incremental stream processor"""
     
     def __init__(self):
+        """初期化メソッド"""
         self._queue = deque()
         self._processed = 0
     
@@ -161,7 +166,9 @@ class StreamProcessor:
 class MemoryStreamOptimizer:
     """Memory-efficient stream processing optimizer"""
     
-    def __init__(self, chunk_size: int = 4096, buffer_size: int = 16384,
+    def __init__(self, chunk_size:
+        """初期化メソッド"""
+    int = 4096, buffer_size: int = 16384,
                  enable_compression: bool = True, memory_limit_mb: int = 500):
         self.chunk_size = chunk_size
         self.buffer_size = buffer_size
@@ -421,7 +428,9 @@ class MemoryStreamOptimizer:
 class StreamPipeline:
     """Stream processing pipeline"""
     
-    def __init__(self, optimizer: MemoryStreamOptimizer, stages: List[str]):
+    def __init__(self, optimizer:
+        """初期化メソッド"""
+    MemoryStreamOptimizer, stages: List[str]):
         self.optimizer = optimizer
         self.stages = stages
     

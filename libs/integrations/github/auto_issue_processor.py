@@ -656,7 +656,10 @@ class AutoIssueProcessor(EldersServiceLegacy):
                         context={
                             "issue_title": issue.title,
                             "labels": [label.name for label in issue.labels],
-                            "complexity_score": (await self.evaluator.evaluate(issue)).score if hasattr(self, 'evaluator') else None
+                            "complexity_score": (
+                                await self.evaluator.evaluate(issue)).score if hasattr(self,
+                                'evaluator'
+                            ) else None
                         }
                     )
                     

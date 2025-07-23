@@ -153,6 +153,9 @@ class WorkerRecoverySystem:
                     if status["file_exists"]:
                         # 仮想環境でWorker起動
                         venv_python = self.project_root / "venv" / "bin" / "python3"
+                        if not (venv_python.exists()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if venv_python.exists():
                             cmd = [str(venv_python), str(worker_path)]
                         else:

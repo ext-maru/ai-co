@@ -36,7 +36,9 @@ logger = logging.getLogger(__name__)
 class AdaptiveQualityConfig(EnhancedQualityConfig):
     """Issue種別に応じて適応する品質設定"""
     
-    def __init__(self, issue_category: IssueCategory = IssueCategory.UNKNOWN):
+    def __init__(self, issue_category:
+        """初期化メソッド"""
+    IssueCategory = IssueCategory.UNKNOWN):
         super().__init__()
         self.issue_category = issue_category
         self._apply_category_specific_config()
@@ -81,6 +83,7 @@ class ElderFlowQualityGateV2:
     """Phase 3強化版品質ゲート"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.issue_classifier = IssueTypeClassifierV2()
         self.iron_will_validator = StrictIronWillValidator()
         self.security_validator = EnhancedSecurityValidator()
@@ -391,7 +394,9 @@ class ElderFlowQualityGateV2:
                 'total_checks': len(history),
                 'pass_rate': sum(1 for h in history if h['passed']) / len(history) * 100,
                 'average_score': sum(h['quality_score'] for h in history) / len(history),
-                'implementation_average': sum(implementation_scores) / len(implementation_scores) if implementation_scores else 0,
+                'implementation_average': sum(implementation_scores) / len(implementation_scores) \
+                    if implementation_scores \
+                    else 0,
                 'design_average': sum(design_scores) / len(design_scores) if design_scores else 0,
                 'iron_will_violation_rate': sum(h['iron_will_violations'] > 0 for h in history) / len(history) * 100,
                 'recent_improvements': self._calculate_recent_improvements(history)
@@ -429,6 +434,7 @@ class ElderFlowQualityIntegrationV2:
     """Elder Flowとの統合インターフェース"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.quality_gate = ElderFlowQualityGateV2()
     
     async def run_quality_gate(self, context: Dict[str, Any]) -> Dict[str, Any]:

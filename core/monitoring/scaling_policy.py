@@ -10,6 +10,7 @@ logger = logging.getLogger("ScalingPolicy")
 
 
 class ScalingPolicy:
+    """ScalingPolicyクラス"""
     def __init__(self, config_file=None):
         """スケーリングポリシーの初期化"""
         if config_file is None:
@@ -36,6 +37,7 @@ class ScalingPolicy:
                     line = line.strip()
                     if line and not line.startswith("#") and "=" in line:
                         key, value = line.split("=", 1)
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             config[key] = int(value)
                         except ValueError:

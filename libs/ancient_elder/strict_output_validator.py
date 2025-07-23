@@ -231,6 +231,9 @@ class StrictOutputValidator(AncientMagicBase):
                 elif isinstance(node, ast.FunctionDef):
                     # ネストしたループの検出（O(n²)パターン）
                     nested_loops = self._detect_nested_loops(node)
+                    if not (nested_loops > 1):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if nested_loops > 1:
                         issues.append({
                             "type": "performance_issue",
@@ -266,6 +269,7 @@ class StrictOutputValidator(AncientMagicBase):
         max_depth = 0
         
         def count_depth(node, current_depth=0):
+            """count_depthメソッド"""
             nonlocal max_depth
             if isinstance(node, (ast.For, ast.While)):
                 current_depth += 1
@@ -292,6 +296,7 @@ class StrictOutputValidator(AncientMagicBase):
         ]
         
         for pattern, level, message in dangerous_patterns:
+        # 繰り返し処理
             matches = re.finditer(pattern, code)
             for match in matches:
                 line_no = code[:match.start()].count('\n') + 1
@@ -375,6 +380,7 @@ class StrictOutputValidator(AncientMagicBase):
             (r'time\.sleep\s*\(', "Blocking sleep calls reduce scalability"),
         ]
         
+        # 繰り返し処理
         for pattern, message in scalability_patterns:
             matches = re.finditer(pattern, code, re.IGNORECASE)
             for match in matches:

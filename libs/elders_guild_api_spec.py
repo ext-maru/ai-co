@@ -138,6 +138,7 @@ class APIVersionManager:
     """API バージョン管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.versions = {
             APIVersion.V1: APIVersionInfo(
                 version=APIVersion.V1,
@@ -229,6 +230,7 @@ class AuthenticationService:
     """認証サービス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.security = HTTPBearer()
 
     async def authenticate(
@@ -265,7 +267,9 @@ def require_permission(permission: APIPermission):
     """権限チェックデコレータ"""
 
     def decorator(func):
+        """decoratorメソッド"""
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             # 認証情報の取得
             user = kwargs.get("current_user")
             if not user or not user.has_permission(permission):
@@ -286,7 +290,9 @@ def require_permission(permission: APIPermission):
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
     """リクエストログ記録ミドルウェア"""
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(self, request:
+        """dispatchメソッド"""
+    Request, call_next):
         start_time = datetime.now()
 
         # リクエスト情報の記録
@@ -319,12 +325,16 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """レート制限ミドルウェア"""
 
-    def __init__(self, app, calls_per_minute: int = 60):
+    def __init__(self, app, calls_per_minute:
+        """初期化メソッド"""
+    int = 60):
         super().__init__(app)
         self.calls_per_minute = calls_per_minute
         self.requests = {}
 
-    async def dispatch(self, request: Request, call_next):
+    async def dispatch(self, request:
+        """dispatchメソッド"""
+    Request, call_next):
         client_ip = request.client.host
         current_time = datetime.now()
 
@@ -791,7 +801,9 @@ class APIEndpointFactory:
 class ElderGuildAPI:
     """エルダーズギルド統合API"""
 
-    def __init__(self, event_bus: ElderGuildEventBus):
+    def __init__(self, event_bus:
+        """初期化メソッド"""
+    ElderGuildEventBus):
         self.event_bus = event_bus
         self.auth_service = AuthenticationService()
         self.endpoint_factory = APIEndpointFactory(event_bus, self.auth_service)

@@ -65,6 +65,7 @@ class SearchQualityEnhancer(EldersServiceLegacy):
     """検索品質向上システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="SearchQualityEnhancer")
         self.tracking_db = UnifiedTrackingDB()
         self.query_history = {}
@@ -478,6 +479,7 @@ def create_search_quality_enhancer() -> SearchQualityEnhancer:
 if __name__ == "__main__":
     # テスト実行
     async def test_enhancer():
+        """test_enhancerテストメソッド"""
         enhancer = create_search_quality_enhancer()
 
         # テスト検索品質向上

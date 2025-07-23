@@ -19,6 +19,7 @@ def check_syntax_errors(directory="."):
             if file.endswith('.py'):
                 file_path = os.path.join(root, file)
                 try:
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = f.read()
                     ast.parse(content)

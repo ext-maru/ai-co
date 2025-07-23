@@ -70,6 +70,7 @@ async def test_template_error_retry():
     
     async def counting_handle_error(error, context, operation_func, *args, **kwargs):
         nonlocal retry_count
+        """counting_handle_errorを処理"""
         print(f"\n🔄 リトライ {retry_count + 1}回目")
         retry_count += 1
         return await original_handle_error(error, context, operation_func, *args, **kwargs)
@@ -123,6 +124,7 @@ async def test_template_error_retry():
         
         # テンプレート生成を試行（エラーが発生するはず）
         async def generate_with_error():
+            """generate_with_errorを生成"""
             return template_manager.generate_code(
                 template_type='class',
                 tech_stack=broken_tech_stack,

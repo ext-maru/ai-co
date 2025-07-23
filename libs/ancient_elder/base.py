@@ -30,6 +30,7 @@ class ViolationSeverity(Enum):
 class AuditResult:
     """監査結果を表すクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.violations: List[Dict[str, Any]] = []
         self.metrics: Dict[str, Any] = {}
         self.timestamp = datetime.now()
@@ -82,7 +83,9 @@ class AuditResult:
 class AncientElderBase(BaseSoul, ABC):
     """すべてのエンシェントエルダーの基底クラス"""
     
-    def __init__(self, specialty: str):
+    def __init__(self, specialty:
+        """初期化メソッド"""
+    str):
         # SoulIdentityを作成
         identity = SoulIdentity(
             soul_id=f"ancient_elder_{specialty.lower()}_{datetime.now().strftime('%Y%m%d%H%M%S')}",

@@ -74,6 +74,7 @@ class AIProjectPlacementManager:
     """Intelligent project placement decision engine"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.config = get_config()
         self.auto_manager = AutoProjectManager()
         self.risk_analyzer = ProjectRiskAnalyzer()
@@ -830,6 +831,7 @@ if __name__ == "__main__":
         },
     ]
 
+    # 繰り返し処理
     for test_case in test_cases:
         print(f"\n=== Testing: {test_case['name']} ===")
 
@@ -849,6 +851,7 @@ if __name__ == "__main__":
 
             if recommendation.warnings:
                 print("Warnings:")
+                # Deep nesting detected (depth: 5) - consider refactoring
                 for warning in recommendation.warnings:
                     print(f"  - {warning}")
 

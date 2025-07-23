@@ -7,6 +7,7 @@ import pika
 
 def send_task(prompt, task_type="general"):
     connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
+    """send_taskメソッド"""
     channel = connection.channel()
     channel.queue_declare(queue="task_queue", durable=True)
 
@@ -19,6 +20,7 @@ def send_task(prompt, task_type="general"):
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(
         description="PM CLI - Project Manager Command Line Interface for task submission",
         formatter_class=argparse.RawDescriptionHelpFormatter,

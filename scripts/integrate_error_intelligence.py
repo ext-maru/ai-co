@@ -146,6 +146,7 @@ if __name__ == "__main__":
 
 
 def main():
+    """mainメソッド"""
     print("=== エラー智能判断システム統合セットアップ ===\n")
 
     # 1. BaseWorkerへのパッチ案内

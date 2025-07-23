@@ -271,6 +271,7 @@ class DataMapperRegistry:
     """データマッパー登録システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.mappings: Dict[str, DataMapping] = {}
         self.transformers = DataTransformers()
         self._register_default_mappings()
@@ -415,7 +416,9 @@ class DataMapperRegistry:
 class DataConversionEngine:
     """データ変換エンジン"""
 
-    def __init__(self, db_manager: EldersGuildDatabaseManager):
+    def __init__(self, db_manager:
+        """初期化メソッド"""
+    EldersGuildDatabaseManager):
         self.db_manager = db_manager
         self.mapper_registry = DataMapperRegistry()
         self.conversion_stats = {
@@ -555,7 +558,9 @@ class DataConversionEngine:
 class DataMigrationTool:
     """データ移行ツール"""
 
-    def __init__(self, conversion_engine: DataConversionEngine):
+    def __init__(self, conversion_engine:
+        """初期化メソッド"""
+    DataConversionEngine):
         self.conversion_engine = conversion_engine
         self.migration_history = []
 

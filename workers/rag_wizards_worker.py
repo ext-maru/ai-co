@@ -554,7 +554,9 @@ class RAGWizardsWorker(BaseWorker):
             return {
                 'related_gaps': related_gaps,
                 'total_gaps': len(detector.detected_gaps),
-                'recommendation': 'Consider triggering manual learning' if related_gaps else 'No immediate gaps detected'
+                'recommendation': 'Consider triggering manual learning' \
+                    if related_gaps \
+                    else 'No immediate gaps detected'
             }
 
         except Exception as e:

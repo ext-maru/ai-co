@@ -57,7 +57,9 @@ class SageViolationType:
 class SageConsultationTracker:
     """4賢者相談追跡システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("SageConsultationTracker")
         
@@ -223,7 +225,10 @@ class SageConsultationTracker:
                     "type": SageViolationType.MISSING_CONSULTATION,
                     "severity": "HIGH",
                     "sage_type": sage_type,
-                    "description": f"Insufficient consultation with {sage_type} sage (required: {min_count}, actual: {consultation_count})",
+                    "description": f"Insufficient consultation with {
+                        sage_type} sage (required: {min_count},
+                        actual: {consultation_count
+                    })",
                     "file_path": file_path,
                     "suggestion": f"Consult with {sage_type} sage for proper guidance"
                 })
@@ -246,7 +251,9 @@ class SageConsultationTracker:
 class SageActivityAnalyzer:
     """4賢者活動実質性評価システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("SageActivityAnalyzer")
         
@@ -410,7 +417,9 @@ class SageActivityAnalyzer:
 class FourSagesOverseer(AncientElderBase):
     """4賢者監督魔法 - 総合監査システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         super().__init__(specialty="four_sages_overseer")
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("FourSagesOverseer")

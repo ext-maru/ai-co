@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 class TemplateRegistry:
     """テンプレート登録・管理システム"""
     
-    def __init__(self, template_dir: str = "templates"):
+    def __init__(self, template_dir:
+        """初期化メソッド"""
+    str = "templates"):
         self.template_dir = Path(template_dir)
         self.template_dir.mkdir(exist_ok=True)
         self.templates = {}

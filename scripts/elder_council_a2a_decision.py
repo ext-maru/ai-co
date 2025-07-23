@@ -122,6 +122,7 @@ def elder_council_decision():
     print("\n📜 4賢者の投票結果:")
     print("-" * 60)
 
+    # 繰り返し処理
     for sage_id, sage_data in elder_votes.items():
         print(f"\n{sage_data['name']}: {sage_data['vote']}")
         print("  理由:")

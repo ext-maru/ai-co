@@ -35,6 +35,7 @@ class MockChannel:
         self.queues = {}
 
     def queue_declare(
+        """queue_declareメソッド"""
         self, queue="", durable=False, exclusive=False, auto_delete=False
     ):
         self.queues[queue] = {"durable": durable}

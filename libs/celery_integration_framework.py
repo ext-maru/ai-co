@@ -124,6 +124,7 @@ class CeleryIntegrationFramework:
         
         @task_prerun.connect
         def task_prerun_handler(sender=None, task_id=None, task=None, args=None, kwargs=None, **kw):
+            """task_prerun_handlerメソッド"""
             self.logger.info(f"Task {task_id} starting: {task.name}")
             self.task_results[task_id] = TaskResult(
                 task_id=task_id,
@@ -208,6 +209,7 @@ class CeleryIntegrationFramework:
             queue=queue
         )
         def celery_task(self, *args, **kwargs):
+            """celery_taskメソッド"""
             try:
                 return func(*args, **kwargs)
             except Exception as exc:
@@ -336,7 +338,9 @@ class CeleryIntegrationFramework:
 class CeleryBatchProcessor:
     """Celeryバッチプロセッサー"""
     
-    def __init__(self, framework: CeleryIntegrationFramework, 
+    def __init__(self, framework:
+        """初期化メソッド"""
+    CeleryIntegrationFramework, 
                  batch_size: int = 10, max_parallel: int = 5):
         self.framework = framework
         self.batch_size = batch_size

@@ -165,6 +165,7 @@ class AICommandCategorizer:
         """旧コマンドから新コマンドへのマッピング作成"""
         migration_map = {}
 
+        # 繰り返し処理
         for category, data in categorized_commands.items():
             prefix = data["prefix"]
 

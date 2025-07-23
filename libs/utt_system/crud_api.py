@@ -43,6 +43,7 @@ class EldersServiceLegacy:
     """暫定的なEldersServiceLegacy基底クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         pass
 
 
@@ -90,7 +91,9 @@ class UTTCRUDManager(EldersServiceLegacy):
     TDD準拠・Iron Will品質基準・Elder統合対応
     """
 
-    def __init__(self, database_url: str = "sqlite:///utt_crud.db"):
+    def __init__(self, database_url:
+        """初期化メソッド"""
+    str = "sqlite:///utt_crud.db"):
         super().__init__()
         self.engine = create_engine(database_url, echo=False)
         Base.metadata.create_all(self.engine)

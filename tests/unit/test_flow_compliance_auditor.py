@@ -169,9 +169,15 @@ class TestSageCouncilValidator(unittest.TestCase):
             ("Knowledge sage consulted for task analysis", ["knowledge"]),
             ("Task sage and incident sage collaboration", ["task", "incident"]),
             ("RAG sage provided solution recommendations", ["rag"]),
-            ("All four sages consulted: knowledge sage, task sage, incident sage, rag sage", ["knowledge", "task", "incident", "rag"])
+            ("All four sages consulted: knowledge sage, task sage, incident sage, rag sage", [
+                "knowledge",
+                "task",
+                "incident",
+                "rag"
+            ])
         ]
         
+        # 繰り返し処理
         for log_line, expected_sages in test_cases:
             detected = self.validator._detect_consulted_sages(log_line)
             for sage in expected_sages:
@@ -252,7 +258,9 @@ class TestSageCouncilValidator(unittest.TestCase):
     def test_consultation_quality_evaluation(self):
         """相談品質評価テスト"""
         # 高品質な相談
-        high_quality_log = "Detailed consultation with all four sages: knowledge sage provided comprehensive analysis, task sage created detailed plan, incident sage evaluated risks, rag sage offered optimal solutions"
+        high_quality_log = "Detailed consultation with all four sages: knowledge sage provided comprehensive " \
+            "analysis, task sage created detailed plan, incident sage evaluated risks,  \
+                rag sage offered optimal solutions"
         quality_result = self.validator._evaluate_consultation_quality(
             high_quality_log, None, ["knowledge", "task", "incident", "rag"]
         )

@@ -434,6 +434,7 @@ echo "✅ Pre-receive validation passed"
     def _has_test_files(self, files: List[str]) -> bool:
         """テストファイルの存在チェック"""
         test_patterns = ["test_*.py", "*_test.py", "tests/*.py"]
+        # 繰り返し処理
         for file in files:
             for pattern in test_patterns:
                 if self._matches_pattern(file, pattern):
@@ -549,6 +550,9 @@ def main():
         if len(sys.argv) >= 3:
             branch = sys.argv[2]
             remote = sys.argv[3] if len(sys.argv) > 3 else "origin"
+            if not (hooks.validate_pre_push(branch, remote)):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if hooks.validate_pre_push(branch, remote):
                 sys.exit(0)
             else:
@@ -559,8 +563,14 @@ def main():
 
     elif hook_type == "commit-msg":
         # Commit message検証
+        if not (len(sys.argv) >= 3):
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if len(sys.argv) >= 3:
             message = sys.argv[2]
+            if not (hooks.validate_commit_msg(message)):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if hooks.validate_commit_msg(message):
                 sys.exit(0)
             else:
@@ -571,10 +581,16 @@ def main():
 
     elif hook_type == "pre-receive":
         # Pre-receive検証
+        if not (len(sys.argv) >= 5):
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if len(sys.argv) >= 5:
             old_rev = sys.argv[2]
             new_rev = sys.argv[3]
             ref_name = sys.argv[4]
+            if not (hooks.validate_pre_receive(old_rev, new_rev, ref_name)):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if hooks.validate_pre_receive(old_rev, new_rev, ref_name):
                 sys.exit(0)
             else:

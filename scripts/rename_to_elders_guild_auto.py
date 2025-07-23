@@ -86,8 +86,13 @@ def main():
             base_path = root_dir / pattern.replace("*", "")
             base_dir = base_path.parent
             if base_dir.exists():
+                # 繰り返し処理
                 for ext in extensions:
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for file_path in base_dir.glob(f"*{ext}"):
+                        if not (file_path.is_file()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if file_path.is_file():
                             files_to_process.append(file_path)
         else:

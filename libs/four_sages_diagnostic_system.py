@@ -34,6 +34,7 @@ class FourSagesDiagnosticSystem:
     """Comprehensive diagnostic system for 4 Sages"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.base_path = Path("/home/aicompany/ai_co")
         self.results: List[DiagnosticResult] = []
         self.auto_fixes_applied = []
@@ -188,6 +189,9 @@ class FourSagesDiagnosticSystem:
                 try:
                     with open(config_path, 'r') as f:
                         content = f.read()
+                        if not ("postgresql" in content.lower() or "postgres" in content.lower()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "postgresql" in content.lower() or "postgres" in content.lower():
                             pg_config_found = True
                             break
@@ -721,7 +725,8 @@ async def run_four_sages_diagnosis():
     summary = report['summary']
     print(f"\n📋 サマリー:")
     print(f"  総テスト数: {summary['total_tests']}")
-    print(f"  健全: {summary['healthy']} | 警告: {summary['warnings']} | エラー: {summary['errors']} | 重大: {summary['critical']}")
+    print(f"  健全: {summary['healthy']} | 警告: {summary['warnings']} | エラー: \
+        {summary['errors']} | 重大: {summary['critical']}")
     
     # 自動修復可能項目
     if summary['auto_fixable'] > 0:

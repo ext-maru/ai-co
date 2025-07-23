@@ -398,7 +398,8 @@ class IntegrationArchitectureDesign:
 
 ## 🎯 Executive Summary
 
-本設計書は、エルダーズギルドシステムと選択されたOSSツール（Continue.dev、Aider、Flake8、PyTest等）の統合アーキテクチャを定義します。Elder Guild の独自性と階層構造を保持しながら、OSSコミュニティの力を活用し、開発効率を向上させることを目的としています。
+本設計書は、エルダーズギルドシステムと選択されたOSSツール（Continue.dev、Aider、Flake8、PyTest等）の統合アーキテクチャを定義します。Elder \
+    Guild の独自性と階層構造を保持しながら、OSSコミュニティの力を活用し、開発効率を向上させることを目的としています。
 
 ## 🏛️ 設計原則
 

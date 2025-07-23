@@ -48,6 +48,7 @@ class EldersServiceLegacy:
     """暫定的なEldersServiceLegacy基底クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         pass
 
 
@@ -55,6 +56,7 @@ class ServantRequest:
     """暫定的なServantRequestクラス"""
 
     def __init__(self, task_id, task_type, priority, payload, context):
+        """初期化メソッド"""
         self.task_id = task_id
         self.task_type = task_type
         self.priority = priority
@@ -410,7 +412,9 @@ class UTTDataManager(EldersServiceLegacy):
     EldersServiceLegacy準拠・Iron Will品質基準対応
     """
 
-    def __init__(self, database_url: str = "sqlite:///utt_system.db"):
+    def __init__(self, database_url:
+        """初期化メソッド"""
+    str = "sqlite:///utt_system.db"):
         super().__init__()
         self.engine = create_engine(database_url, echo=False)
         Base.metadata.create_all(self.engine)

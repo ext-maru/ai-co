@@ -14,6 +14,7 @@ class AICommandHelper:
     """AI Commandシステムのヘルパークラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.commands_dir = Path("/home/aicompany/ai_co/ai_commands")
         self.commands_dir.mkdir(exist_ok=True)
 

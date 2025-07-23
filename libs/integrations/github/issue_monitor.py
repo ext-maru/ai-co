@@ -163,7 +163,8 @@ class GitHubIssueMonitor:
             import requests
 
             # GitHub API直接呼び出し（secure_clientに無いメソッド）
-            url = f"{EnvManager.get_github_api_base_url()}/repos/{self.repo_owner}/{self.repo_name}/issues/{issue_number}/comments"
+            url = f"{EnvManager.get_github_api_base_url()}/repos/{self." \
+                "repo_owner}/{self.repo_name}/issues/{issue_number}/comments"
             headers = {
                 "Authorization": f"token {EnvManager.get_github_token()}",
                 "Accept": "application/vnd.github.v3+json",

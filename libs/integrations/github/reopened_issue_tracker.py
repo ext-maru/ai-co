@@ -20,6 +20,7 @@ class ReopenedIssueTracker:
     """再オープンされたIssueを追跡・管理するクラス"""
     
     def __init__(self, repo):
+        """初期化メソッド"""
         self.repo = repo
         self.reopened_history_file = Path("logs/reopened_issues_history.json")
         self.reopened_history_file.parent.mkdir(exist_ok=True)

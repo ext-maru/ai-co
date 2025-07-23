@@ -210,6 +210,7 @@ async def test_parametrized_services(integration_runner, service_type, expected_
 async def test_service_startup_performance(benchmark, integration_runner):
     """サービス起動パフォーマンステスト"""
     async def start_postgres():
+        """start_postgresメソッド"""
         service = await integration_runner.start_service("perf_test", {
             "type": "postgres"
         })

@@ -617,7 +617,8 @@ class IssueCompletionManager:
                     if day_stat["total"] > 0
                     else 0
                 )
-                report += f"- **{day_stat['date']}**: {day_stat['total']}件処理, {day_stat['completed']}件完了 ({success_rate:.1f}%)\n"
+                report += f"- **{day_stat['date']}**: {day_stat['total']}件処理, " \
+                    "{day_stat['completed']}件完了 ({success_rate:.1f}%)\n"
 
             report += f"""
 ---

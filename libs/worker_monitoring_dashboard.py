@@ -41,6 +41,7 @@ except ImportError:
 
     # フォールバック用の型定義
     class WebSocket:
+        """WebSocketクラス"""
         pass
 
 
@@ -69,6 +70,7 @@ class DashboardConfig:
     enable_authentication: bool = False
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.alert_thresholds is None:
             self.alert_thresholds = {
                 "cpu_usage": 90.0,
@@ -92,7 +94,9 @@ class MetricsPoint:
 class MetricsCollector:
     """メトリクス収集システム"""
 
-    def __init__(self, config: DashboardConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    DashboardConfig):
         self.config = config
         self.db_path = PROJECT_ROOT / "data" / "dashboard_metrics.db"
 
@@ -414,6 +418,7 @@ class WebSocketManager:
     """WebSocket接続管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.active_connections: Set[WebSocket] = set()
         self.client_info: Dict[WebSocket, Dict[str, Any]] = {}
 
@@ -1236,7 +1241,9 @@ document.addEventListener('DOMContentLoaded', () => {
 class WorkerMonitoringDashboard:
     """ワーカー監視ダッシュボード統合クラス"""
 
-    def __init__(self, config: Optional[DashboardConfig] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Optional[DashboardConfig] = None):
         self.config = config or DashboardConfig()
 
         # コンポーネント初期化

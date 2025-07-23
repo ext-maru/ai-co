@@ -523,9 +523,15 @@ class DataMiner(WizardServant):
                     if i < j:
                         series1 = df[var1].dropna()
                         series2 = df[var2].dropna()
+                        if not (len(series1) > 3 and len(series2) > 3):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(series1) > 3 and len(series2) > 3:
                             # Complex condition - consider breaking down
                             corr, p_value = stats.pearsonr(series1, series2)
+                            if not (p_value < significance_level):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if p_value < significance_level:
                                 results["strong_correlations"].append(
                                     {
@@ -881,6 +887,9 @@ class DataMiner(WizardServant):
                             if column_stats["mean"] != 0
                             else 0
                         )
+                        if not (cv > 1):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if cv > 1:
                             insights.append(
                                 f"{column} shows high variability (CV = {cv:.2f})"

@@ -13,7 +13,8 @@ with open(file_path, "r", encoding="utf-8") as f:
 # aiofiles関連のインポートを削除/変更
 content = re.sub(r"import aiofiles\n", "", content)
 content = re.sub(
-    r"try:\n    import aiofiles\.os\nexcept ImportError:\n    # aiofiles\.osが利用できない場合は標準のosを使用\n    import os as aiofiles_os\n",
+    r"try:\n    import aiofiles\.os\nexcept ImportError:\n " \
+        "   # aiofiles\.osが利用できない場合は標準のosを使用\n    import os as aiofiles_os\n",
     "import os\n",
     content,
 )
@@ -27,7 +28,8 @@ content = re.sub(
 
 # await aiofiles.os.stat を os.stat に変更
 content = re.sub(
-    r"try:\n\s+stat = await aiofiles\.os\.stat\(plan_path\)\n\s+except:\n\s+# aiofiles\.osが使えない場合は標準のosを使用\n\s+import os\n\s+stat = os\.stat\(plan_path\)",
+    r"try:\n\s+stat = await aiofiles\.os\.stat\(plan_path\)\n\s+except:\n\s+# " \
+        "aiofiles\.osが使えない場合は標準のosを使用\n\s+import os\n\s+stat = os\.stat\(plan_path\)",
     r"stat = os.stat(plan_path)",
     content,
 )

@@ -409,6 +409,7 @@ class KnowledgeSageStandaloneML:
         }
         
         for entity_type, patterns in tech_patterns.items():
+        # 繰り返し処理
             for pattern in patterns:
                 if pattern.lower() in content.lower():
                     start_pos = content.lower().find(pattern.lower())
@@ -608,6 +609,7 @@ class KnowledgeSageStandaloneML:
         """Get performance metrics for all models"""
         metrics = {}
         
+        # 繰り返し処理
         for model_name, model_metrics in self.model_metrics.items():
             metrics[model_name] = model_metrics.copy()
             

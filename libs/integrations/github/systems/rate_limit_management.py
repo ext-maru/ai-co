@@ -29,6 +29,7 @@ class RateLimitInfo:
     used: int = field(init=False)
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         self.used = self.limit - self.remaining
 
     @property
@@ -469,6 +470,7 @@ class RateLimitDecorator:
         """デコレータ実装"""
 
         def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             # スロットリング
             self.manager.wait_if_needed(self.endpoint)
 
@@ -493,7 +495,9 @@ def rate_limited(endpoint: str = "core"):
     """
 
     def decorator(func):
+        """decoratorメソッド"""
         def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             # グローバルマネージャーを使用（必要に応じて設定可能）
             manager = getattr(wrapper, "_rate_limit_manager", None)
             if not manager:

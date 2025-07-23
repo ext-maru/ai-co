@@ -200,6 +200,7 @@ class TestUtilities:
         
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             start_time = time.time()
             result = await func(*args, **kwargs)
             end_time = time.time()

@@ -28,6 +28,7 @@ class TaskWorkerProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="task_worker",
             elder_role=ElderRole.SERVANT,  # TODO: Adjust as needed

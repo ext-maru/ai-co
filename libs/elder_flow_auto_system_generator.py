@@ -52,6 +52,7 @@ class AutoSystemGenerator:
     """Elder Flow理論による自動システム生成器"""
 
     def __init__(self):
+        """初期化メソッド"""
         # Elder Flowコンポーネント統合
         self.consciousness = ConsciousnessInterface()
         self.causality_system = CausalityControlSystem()
@@ -370,6 +371,7 @@ class AutoSystemGenerator:
         total = {"cpu": 0, "memory": 0, "storage": 0}
 
         for comp in components:
+        # 繰り返し処理
             for resource, amount in comp.estimated_resources.items():
                 total[resource] = total.get(resource, 0) + amount
 
@@ -413,6 +415,7 @@ async def auto_system_demo():
         "Develop a data analytics dashboard with real-time charts",
     ]
 
+    # 繰り返し処理
     for i, description in enumerate(test_cases, 1):
         print(f"\n🎯 Test Case {i}: {description}")
         print("-" * 50)

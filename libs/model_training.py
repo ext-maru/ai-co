@@ -29,6 +29,7 @@ class ModelTrainer:
     """モデル学習クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.supported_models = {
             "linear_regression": self._create_linear_regression,
             "random_forest": self._create_random_forest,
@@ -200,11 +201,14 @@ class ModelTrainer:
 
         # scikit-learn がない場合の簡易実装
         class SimpleLinearRegression:
+            """SimpleLinearRegressionクラス"""
             def __init__(self):
+                """初期化メソッド"""
                 self.coef_ = None
                 self.intercept_ = None
 
             def fit(self, X, y):
+                """fitメソッド"""
                 # 正規方程式による解
                 X_with_bias = np.c_[np.ones(X.shape[0]), X]
                 self.theta = (
@@ -214,6 +218,7 @@ class ModelTrainer:
                 self.coef_ = self.theta[1:]
 
             def predict(self, X):
+                """predictメソッド"""
                 return X @ self.coef_ + self.intercept_
 
         return SimpleLinearRegression()
@@ -223,16 +228,20 @@ class ModelTrainer:
 
         # 簡易実装
         class SimpleRandomForest:
+            """SimpleRandomForestクラス"""
             def __init__(self, n_trees=10):
+                """初期化メソッド"""
                 self.n_trees = n_trees
                 self.trees = []
 
             def fit(self, X, y):
+                """fitメソッド"""
                 # 単純な平均予測器として実装
                 self.mean_prediction = np.mean(y)
                 self.feature_importance = np.random.rand(X.shape[1])
 
             def predict(self, X):
+                """predictメソッド"""
                 # ランダムな変動を加えた予測
                 base = np.full(X.shape[0], self.mean_prediction)
                 noise = np.random.randn(X.shape[0]) * 5
@@ -246,13 +255,16 @@ class ModelTrainer:
 
         # 簡易実装
         class SimpleGradientBoosting:
+            """SimpleGradientBoostingクラス"""
             def __init__(self, n_estimators=10, learning_rate=0.1):
+                """初期化メソッド"""
                 self.n_estimators = n_estimators
                 self.learning_rate = learning_rate
                 self.base_prediction = None
                 self.estimators = []
 
             def fit(self, X, y):
+                """fitメソッド"""
                 self.base_prediction = np.mean(y)
                 # 簡易的な実装
                 for _ in range(self.n_estimators):
@@ -260,6 +272,7 @@ class ModelTrainer:
                     self.estimators.append(np.random.randn(X.shape[1]))
 
             def predict(self, X):
+                """predictメソッド"""
                 predictions = np.full(X.shape[0], self.base_prediction)
                 # 各推定器の寄与を追加
                 for estimator in self.estimators:
@@ -276,15 +289,19 @@ class ModelTrainer:
 
         # 簡易実装
         class SimpleNeuralNetwork:
+            """SimpleNeuralNetworkクラス"""
             def __init__(self, hidden_size=10):
+                """初期化メソッド"""
                 self.hidden_size = hidden_size
                 self.W1 = None
                 self.W2 = None
 
             def _sigmoid(self, x):
+                """sigmoid（内部メソッド）"""
                 return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
 
             def fit(self, X, y):
+                """fitメソッド"""
                 input_size = X.shape[1]
                 self.W1 = np.random.randn(input_size, self.hidden_size) * 0.1
                 self.W2 = np.random.randn(self.hidden_size, 1) * 0.1
@@ -301,6 +318,7 @@ class ModelTrainer:
                     self.W1 += 0.01 * X.T @ (error @ self.W2.T * hidden * (1 - hidden))
 
             def predict(self, X):
+                """predictメソッド"""
                 hidden = self._sigmoid(X @ self.W1)
                 return (hidden @ self.W2).flatten()
 
@@ -312,12 +330,15 @@ class ModelTrainer:
 
         # ARIMAの簡易実装
         class SimpleARModel:
+            """SimpleARModelクラス"""
             def __init__(self, order=3):
+                """初期化メソッド"""
                 self.order = order
                 self.coefficients = None
                 self.mean = None
 
             def fit(self, X, y):
+                """fitメソッド"""
                 # AR(p)モデルの簡易実装
                 self.mean = np.mean(y)
                 # 最小二乗法で係数推定
@@ -327,10 +348,12 @@ class ModelTrainer:
                     self.coefficients = np.array([0.5, 0.3, 0.1])[: self.order]
 
             def predict(self, X):
+                """predictメソッド"""
                 if X.ndim == 1:
                     X = X.reshape(1, -1)
 
                 predictions = []
+                # 繰り返し処理
                 for row in X:
                     if len(row) >= self.order:
                         pred = self.mean
@@ -350,13 +373,16 @@ class ModelTrainer:
 
         # Isolation Forestの簡易実装
         class SimpleAnomalyDetector:
+            """SimpleAnomalyDetector - 検出器クラス"""
             def __init__(self, contamination=0.1):
+                """初期化メソッド"""
                 self.contamination = contamination
                 self.threshold = None
                 self.mean = None
                 self.std = None
 
             def fit(self, X, y=None):
+                """fitメソッド"""
                 # 統計的手法による簡易実装
                 flattened = X.flatten() if X.ndim > 1 else X
                 self.mean = np.mean(flattened)
@@ -365,6 +391,7 @@ class ModelTrainer:
                 self.threshold = 2.5 * self.std
 
             def predict(self, X):
+                """predictメソッド"""
                 # -1: 異常, 1: 正常
                 flattened = X.flatten() if X.ndim > 1 else X
                 distances = np.abs(flattened - self.mean)
@@ -379,6 +406,7 @@ class ModelEvaluator:
     """モデル評価クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.evaluation_history = []
 
     def evaluate_model(

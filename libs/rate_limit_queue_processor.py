@@ -17,6 +17,7 @@ class RateLimitQueueProcessor:
     """レート制限対応キュー処理クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.rate_limited = False
         self.processing = True
         self.stats = {"processed_tasks": 0, "rate_limited_tasks": 0, "failed_tasks": 0}

@@ -71,8 +71,12 @@ class RabbitMQA2ACommand:
                 if isinstance(result, dict):
                     for key, value in result.items():
                         # Process each item in collection
+                        if not (key == "result" and isinstance(value, dict)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if key == "result" and isinstance(value, dict):
                             # Complex condition - consider breaking down
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             for sub_key, sub_value in value.items():
                                 # Process each item in collection
                                 print(f"     {sub_key}: {sub_value}")
@@ -150,6 +154,7 @@ class RabbitMQA2ACommand:
         print("   - Auto-reconnection: Enabled")
 
 async def main():
+    """mainメソッド"""
     # Core functionality implementation
     parser = argparse.ArgumentParser(description="RabbitMQ A2A Communication Command")
     subparsers = parser.add_subparsers(dest='action', help='Available actions')

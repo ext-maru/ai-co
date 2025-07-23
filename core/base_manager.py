@@ -143,8 +143,12 @@ class BaseManager(ABC):
             elif config_path.suffix == ".conf":
                 config = {}
                 with open(config_path, "r", encoding="utf-8") as f:
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for line in f:
                         line = line.strip()
+                        if not (line and not line.startswith("#") and "=" in line):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line and not line.startswith("#") and "=" in line:
                             key, value = line.split("=", 1)
                             config[key.strip()] = value.strip()

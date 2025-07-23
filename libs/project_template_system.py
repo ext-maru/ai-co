@@ -30,7 +30,9 @@ logger = logging.getLogger(__name__)
 class ProjectTemplate:
     """プロジェクトテンプレート定義"""
 
-    def __init__(self, name: str, description: str = ""):
+    def __init__(self, name:
+        """初期化メソッド"""
+    str, description: str = ""):
         self.name = name
         self.description = description
         self.phases = []
@@ -85,7 +87,9 @@ class ProjectTemplate:
 class ProjectStatusManager:
     """プロジェクト状態管理"""
 
-    def __init__(self, db_path: str = "project_status.db"):
+    def __init__(self, db_path:
+        """初期化メソッド"""
+    str = "project_status.db"):
         self.db_path = db_path
         self._init_database()
 
@@ -338,7 +342,9 @@ class ProjectStatusManager:
 class ProjectTemplateSystem:
     """プロジェクトテンプレートシステム"""
 
-    def __init__(self, db_path: str = "project_status.db"):
+    def __init__(self, db_path:
+        """初期化メソッド"""
+    str = "project_status.db"):
         self.status_manager = ProjectStatusManager(db_path)
         self.templates = {}
         self.current_session_id = str(uuid.uuid4())
@@ -750,6 +756,7 @@ class ProjectTemplateCLI:
     """プロジェクトテンプレートCLI"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.system = ProjectTemplateSystem()
 
     def create_project(self, project_name: str, template_name: str) -> str:

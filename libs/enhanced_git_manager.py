@@ -18,6 +18,7 @@ class EnhancedGitManager:
     """詳細なコミットメッセージを生成する拡張Git管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.project_dir = Path(__file__).parent.parent
         self.task_db = TaskHistoryDB()
@@ -217,6 +218,7 @@ class EnhancedGitManager:
         # ファイルをカテゴリ別に分類
         categorized_files = self._categorize_files(files)
 
+        # 繰り返し処理
         for category, category_files in categorized_files.items():
             if category_files:
                 details.append(

@@ -29,6 +29,7 @@ class ClaudeElderRequestProcessor:
     """クロードエルダーリクエスト処理統合システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.interceptor = get_claude_elder_interceptor()
         self.processing_stats = {
             "total_requests": 0,
@@ -234,6 +235,7 @@ async def process_claude_elder_input(
 
 # CLI実行用
 async def main():
+    """mainメソッド"""
     import argparse
 
     parser = argparse.ArgumentParser(description="Claude Elder Request Processor")
@@ -279,6 +281,7 @@ async def main():
 
     elif args.action == "config":
         if args.config_file:
+            # Deep nesting detected (depth: 5) - consider refactoring
             with open(args.config_file, "r", encoding="utf-8") as f:
                 config = json.load(f)
             processor.configure_interceptor(config)

@@ -99,6 +99,7 @@ class PMDecisionSupport(BaseManager):
     """PM意思決定支援システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("PMDecisionSupport")
         self.db_path = PROJECT_ROOT / "db" / "pm_decisions.db"
 

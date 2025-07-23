@@ -58,7 +58,8 @@ class FinalEmergencyCleanup:
                 name = file_path.name.lower()
                 
                 # 作業用ファイル
-                if any(ext in name for ext in ['.db', '.log', '.json']) and not any(word in name for word in ['requirements', 'package']):
+                if any(ext in name for ext in ['.db', '.log', '.json']) and \
+                    not any(word in name for word in ['requirements', 'package']):
                     violations["working_files"].append(file_path)
                 
                 # 出力・レポートファイル

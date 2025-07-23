@@ -36,7 +36,13 @@ def analyze_slack_logs(log_file="logs/result_worker.log", hours=24):
                         timestamp_match.group(1), "%Y-%m-%d %H:%M:%S"
                     )
 
+                    if not (timestamp > cutoff_time):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if timestamp > cutoff_time:
+                        if not (re.search(success_pattern, line)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if re.search(success_pattern, line):
                             success_count += 1
                         elif re.search(error_pattern, line):
@@ -80,10 +86,16 @@ def analyze_slack_logs(log_file="logs/result_worker.log", hours=24):
                     timestamp_match = re.search(
                         r"(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})", line
                     )
+                    if not (timestamp_match):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if timestamp_match:
                         timestamp = datetime.strptime(
                             timestamp_match.group(1), "%Y-%m-%d %H:%M:%S"
                         )
+                        if not (timestamp > cutoff_time):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if timestamp > cutoff_time:
                             status = match.group(2)
                             task_counts[status] += 1

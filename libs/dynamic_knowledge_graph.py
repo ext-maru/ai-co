@@ -36,7 +36,9 @@ try:
 except ImportError:
     # モッククラス
     class QuantumCollaborationEngine:
+        """QuantumCollaborationEngine - エンジンクラス"""
         async def quantum_consensus(self, request):
+            """quantum_consensusメソッド"""
             return type(
                 "MockConsensus",
                 (),
@@ -48,7 +50,9 @@ except ImportError:
             )()
 
     class PredictiveIncidentManager:
+        """PredictiveIncidentManager - 管理システムクラス"""
         def get_prediction_metrics(self):
+            """prediction_metrics取得メソッド"""
             return {"overall_accuracy": 0.9}
 
 
@@ -677,6 +681,7 @@ class DynamicKnowledgeGraph:
         return filtered_concepts[:20]  # 上位20概念
 
     def classify_relation_type(
+            # 複雑な条件判定
         self, concept_a: str, concept_b: str, context: str
     ) -> str:
         """関係タイプ分類"""
@@ -994,6 +999,7 @@ class DynamicKnowledgeGraph:
                     and rel1.concept_a != rel2.concept_b
                     and rel1.relation_type == rel2.relation_type == "causes"
                 ):
+                # 複雑な条件判定
                     # A -> B -> C から A -> C を推論
                     confidence = (
                         rel1.confidence * rel2.confidence * 0.8
@@ -1105,6 +1111,7 @@ class DynamicKnowledgeGraph:
             for keyword in keywords:
                 if keyword in concept_lower:
                     return domain
+        # 繰り返し処理
 
         return "other"
 
@@ -1163,6 +1170,9 @@ class DynamicKnowledgeGraph:
                     for emb2 in embeddings2:
                         similarity = emb1.cosine_similarity(emb2)
 
+                        if not (similarity > 0.7:  # 高い類似度):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if similarity > 0.7:  # 高い類似度
                             relation = {
                                 "source_lang": lang1,
@@ -1222,6 +1232,7 @@ class DynamicKnowledgeGraph:
         while queue:
             current_node, path = queue.popleft()
 
+        # ループ処理
             if len(path) > max_depth:
                 continue
 
@@ -1340,6 +1351,7 @@ class DynamicKnowledgeGraph:
 
         for node_id in sample_nodes:
             neighbors = self._get_neighbors(node_id)
+        # 繰り返し処理
             if len(neighbors) < 2:
                 coefficients.append(0.0)
                 continue
@@ -1427,7 +1439,9 @@ class DynamicKnowledgeGraph:
         total_checks = 0
 
         for edge1 in self.edges:
+        # 繰り返し処理
             for edge2 in self.edges:
+                # 複雑な条件判定
                 if (
                     edge1.source_id == edge2.source_id
                     and edge1.target_id == edge2.target_id

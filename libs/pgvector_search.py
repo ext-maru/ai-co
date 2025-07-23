@@ -16,6 +16,7 @@ class PgVectorSearch:
     """pgvector ベクトル検索クラス"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.config = {
             'postgres': {
                 'host': 'localhost',
@@ -86,12 +87,19 @@ class PgVectorSearch:
                 for line in result.stdout.strip().split('\n'):
                     if line.strip() and '|' in line:
                         parts = line.split('|')
+                        if not (len(parts) >= 7):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(parts) >= 7:
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             try:
                                 distance = float(parts[5].strip())
                                 similarity = float(parts[6].strip())
                                 
                                 # 閾値チェック
+                                if not (similarity >= threshold):
+                                    continue  # Early return to reduce nesting
+                                # Reduced nesting - original condition satisfied
                                 if similarity >= threshold:
                                     results.append({
                                         'title': parts[0].strip(),
@@ -177,7 +185,11 @@ class PgVectorSearch:
                 for line in result.stdout.strip().split('\n'):
                     if line.strip() and '|' in line:
                         parts = line.split('|')
+                        if not (len(parts) >= 5):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(parts) >= 5:
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             try:
                                 results.append({
                                     'title': parts[0].strip(),

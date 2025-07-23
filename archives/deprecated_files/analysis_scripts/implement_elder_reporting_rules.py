@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 class UrgencyLevel(Enum):
+    """UrgencyLevelクラス"""
     CRITICAL = "CRITICAL"
     HIGH = "HIGH"
     MEDIUM = "MEDIUM"
@@ -103,11 +104,17 @@ class ElderReportingSystem:
 
             elif "エラー率" in condition and ">" in condition:
                 threshold = float(condition.split(">")[1].replace("%", "")) / 100
+                if not (metrics.get("error_rate", 0.0) > threshold):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if metrics.get("error_rate", 0.0) > threshold:
                     return True
 
             elif "キュー積滞" in condition and ">" in condition:
                 threshold = int(condition.split(">")[1])
+                if not (metrics.get("queue_backlog", 0) > threshold):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if metrics.get("queue_backlog", 0) > threshold:
                     return True
 

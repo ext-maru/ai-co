@@ -43,7 +43,9 @@ class CommitUrgency(Enum):
 class SageConsultationResult:
     """4賢者相談結果"""
 
-    def __init__(self, sage_name: str, approval: bool, advice: str, risk_score: float):
+    def __init__(self, sage_name:
+        """初期化メソッド"""
+    str, approval: bool, advice: str, risk_score: float):
         self.sage_name = sage_name
         self.approval = approval
         self.advice = advice
@@ -73,6 +75,7 @@ class SagesHarmonyEngine:
     """4賢者AI協調エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path("/home/aicompany/ai_co")
         self.sages = {
             "knowledge": self._get_knowledge_sage(),
@@ -236,6 +239,7 @@ class LightningCommitSystem:
     """Lightning Commit System: 30秒以内コミット"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path("/home/aicompany/ai_co")
         self.harmony_engine = SagesHarmonyEngine()
 

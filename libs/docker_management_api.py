@@ -120,6 +120,7 @@ class DockerManager:
     """Docker管理クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.client = docker.from_env()
         self.template_manager = DockerTemplateManager()
         self.containers_info: Dict[str, Dict[str, Any]] = {}
@@ -236,6 +237,9 @@ class DockerManager:
 
             elif action == ContainerAction.REMOVE:
                 container.remove(force=True)
+                if not (container_id in self.containers_info):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if container_id in self.containers_info:
                     del self.containers_info[container_id]
                 return {"status": "removed", "container_id": container_id}

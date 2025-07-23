@@ -173,6 +173,9 @@ class CoverageKnightsBrigade:
                     if class_end != -1:
                         # 次のクラス定義または最後まで
                         next_class = content.find("\nclass ", class_end + 1)
+                        if not (next_class == -1):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if next_class == -1:
                             # 最後に追加
                             content = content.rstrip() + "\n" + method_code + "\n"
@@ -210,6 +213,9 @@ class CoverageKnightsBrigade:
                         # markers セクションに追加
                         marker_line = f"    {mark}: marks tests as {mark} tests\n"
                         insert_pos = content.find("markers =")
+                        if not (insert_pos != -1):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if insert_pos != -1:
                             # 次の行に挿入
                             next_line = content.find("\n", insert_pos) + 1
@@ -436,7 +442,8 @@ class Test{module_name.replace('_', ' ').title().replace(' ', '')}:
 
 ## 📊 戦果概要
 
-- **カバレッジ向上**: {self.battle_report['coverage_before']:.1f}% → {self.battle_report['coverage_after']:.1f}% ({self.battle_report['coverage_after'] - self.battle_report['coverage_before']:+.1f}%)
+- **カバレッジ向上**: {self.battle_report['coverage_before']:.1f}% → {self.battle_report[ \
+    'coverage_after']:.1f}% ({self.battle_report['coverage_after'] - self.battle_report['coverage_before']:+.1f}%)
 - **勝利数**: {self.battle_report['victories']}
 - **失敗数**: {self.battle_report['failures']}
 - **攻略モジュール数**: {len(self.battle_report['targets'])}

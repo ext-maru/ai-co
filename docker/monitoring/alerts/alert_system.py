@@ -125,7 +125,11 @@ class AlertConditionEvaluator:
                     # ネストされたメトリクス (例: grand_elder.status)
                     parts = left.split(".")
                     left_value = metrics
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for part in parts:
+                        if not (isinstance(left_value, dict) and part in left_value):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if isinstance(left_value, dict) and part in left_value:
                             left_value = left_value[part]
                         else:
@@ -379,6 +383,7 @@ class AlertManager:
             "notification"
         ]
 
+        # 繰り返し処理
         for notification in notification_config:
             for channel, timing in notification.items():
                 if timing == "immediate":

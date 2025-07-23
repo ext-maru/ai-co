@@ -37,6 +37,7 @@ class WorkflowStage:
     error_info: Dict = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.input_data is None:
             self.input_data = {}
         if self.output_data is None:
@@ -63,6 +64,7 @@ class TaskFlow:
     metadata: Dict = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.created_at is None:
             self.created_at = datetime.now()
         if self.updated_at is None:
@@ -459,6 +461,7 @@ class TaskFlowTracker:
                 self.completed_flows.values()
             )
 
+            # 繰り返し処理
             for flow in all_flows:
                 for stage in flow.workflow_stages:
                     if stage.worker_id == worker_id:
@@ -472,6 +475,9 @@ class TaskFlowTracker:
                         total_processing_time += stage.processing_time
                         total_count += 1
 
+                        if not (stage.status == "completed"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if stage.status == "completed":
                             success_count += 1
 
@@ -733,6 +739,7 @@ class SimpleIntegratedMonitor:
     """シンプルな統合モニター（統合クラスが利用できない場合）"""
 
     def __init__(self, flow_tracker, status_monitor):
+        """初期化メソッド"""
         self.flow_tracker = flow_tracker
         self.status_monitor = status_monitor
 

@@ -51,6 +51,7 @@ class FlowElf:
     """テスト実行フローの統合監視と自動復旧"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.name = "Flow Elf"
         self.status = ElfStatus(
             name=self.name,
@@ -126,6 +127,7 @@ class TimeElf:
     """60%カバレッジ達成タイムラインの厳格管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.name = "Time Elf"
         self.status = ElfStatus(
             name=self.name,
@@ -209,6 +211,7 @@ class BalanceElf:
     """エルダーサーバント間のリソース最適配分"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.name = "Balance Elf"
         self.status = ElfStatus(
             name=self.name,
@@ -353,6 +356,7 @@ class HealingElf:
     """失敗テストの完全自動修復システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.name = "Healing Elf"
         self.status = ElfStatus(
             name=self.name,
@@ -598,6 +602,7 @@ class WisdomElf:
     """全体戦略の継続最適化と学習"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.name = "Wisdom Elf"
         self.status = ElfStatus(
             name=self.name,
@@ -778,6 +783,7 @@ class ElfForestCoordinator:
     """エルフの森統合指揮システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.flow_elf = FlowElf()
         self.time_elf = TimeElf()
         self.balance_elf = BalanceElf()
@@ -814,6 +820,7 @@ class ElfForestCoordinator:
         try:
             # 各エルフの並列実行
             async def run_elf_tasks():
+                """run_elf_tasksメソッド"""
                 tasks = [
                     self._execute_flow_elf_tasks(),
                     self._execute_time_elf_tasks(),
@@ -1010,7 +1017,8 @@ class ElfForestCoordinator:
             "timestamp": datetime.now().isoformat(),
             "mission_status": coordination_results["mission_status"],
             "overall_progress": coordination_results["overall_progress"],
-            "coverage_progress": f"{coordination_results['coverage_current']:.1f}%/{coordination_results['coverage_target']}%",
+            "coverage_progress": f"{coordination_results['coverage_current']:." \
+                "1f}%/{coordination_results['coverage_target']}%",
             "elves_status": {},
             "critical_issues": [],
             "recommendations": [],

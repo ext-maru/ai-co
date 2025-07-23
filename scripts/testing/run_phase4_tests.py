@@ -14,6 +14,7 @@ from pathlib import Path
 class Phase4TestRunner:
     def __init__(self):
         self.base_dir = Path(__file__).parent
+    """Phase4TestRunnerテストクラス"""
         self.test_dirs = [
             self.base_dir / "tests" / "integration",
             self.base_dir / "tests" / "edge_cases",
@@ -82,6 +83,7 @@ class Phase4TestRunner:
         valid_tests = 0
 
         for test_dir in self.test_dirs:
+        # 繰り返し処理
             if not test_dir.exists():
                 continue
 
@@ -129,6 +131,7 @@ Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}
 ## Test Files Created
 """
 
+        # 繰り返し処理
         for test_dir in self.test_dirs:
             if test_dir.exists():
                 files = list(test_dir.glob("test_*.py"))

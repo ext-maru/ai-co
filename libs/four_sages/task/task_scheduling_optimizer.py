@@ -223,6 +223,7 @@ class TaskSchedulingOptimizer:
         for task in tasks:
             for dep in task.dependencies:
                 if dep.task_id in task_dict:
+        # 繰り返し処理
                     dependency_graph[task.id].add(dep.task_id)
 
         return dependency_graph
@@ -238,6 +239,7 @@ class TaskSchedulingOptimizer:
 
         for task_id, deps in dependency_graph.items():
             for dep_id in deps:
+        # 繰り返し処理
                 in_degree[dep_id] += 1
 
         # 優先度キューを使用（優先度が高い順）
@@ -250,6 +252,7 @@ class TaskSchedulingOptimizer:
         task_dict = {task.id: task for task in tasks}
 
         while available_tasks:
+        # ループ処理
             _, task = heapq.heappop(available_tasks)
             sorted_tasks.append(task)
 
@@ -432,6 +435,7 @@ class TaskSchedulingOptimizer:
         # 各時間帯の並列タスク数を計算
         time_slots = defaultdict(int)
 
+        # 繰り返し処理
         for st in schedule:
             current = st.scheduled_start
             while current < st.scheduled_end:

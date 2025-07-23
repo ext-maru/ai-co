@@ -52,6 +52,7 @@ class ExtremeLoadTest:
                 try:
                     acquired = await lock_instance.acquire(key, ttl=5)
                     if acquired:
+                """acquire_and_releaseメソッド"""
                         await asyncio.sleep(random.uniform(0.001, 0.01))
                         await lock_instance.release(key)
                     return acquired
@@ -195,6 +196,7 @@ class ChaosTest:
         async def random_failing_function(issue):
             nonlocal failure_count
             if random.random() < 0.3:  # 30%の確率で失敗
+            """random_failing_functionメソッド"""
                 failure_count += 1
                 raise random.choice([
                     ConnectionError("Network error"),
@@ -459,6 +461,7 @@ class RealWorldTest:
         
         async def mock_api_call(*args, **kwargs):
             nonlocal api_call_count, rate_limit_hit
+            """mock_api_callメソッド"""
             api_call_count += 1
             
             # 50回目でレート制限
@@ -523,6 +526,7 @@ class RealWorldTest:
             
             # ファイル操作の並行性テスト
             async def concurrent_file_op(index):
+                """concurrent_file_opメソッド"""
                 file_path = test_dir / f"concurrent_{index}.txt"
                 for _ in range(10):
                     file_path.write_text(f"Update {_}")

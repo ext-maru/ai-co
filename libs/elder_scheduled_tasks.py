@@ -25,6 +25,7 @@ class ElderScheduledTasks:
     """エルダーズギルド定期実行タスク管理"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.scheduler = get_elder_scheduler()
         self.decorators = ElderScheduleDecorators(self.scheduler)
         self.project_root = Path(__file__).parent.parent
@@ -35,9 +36,11 @@ class ElderScheduledTasks:
     def _setup_sage_callbacks(self):
         """4賢者システムとの連携設定"""
         def task_sage_callback(event):
+            """task_sage_callbackメソッド"""
             logger.info(f"📋 タスク賢者: ジョブ {event.job_id} 完了")
             
         def incident_sage_callback(event):
+            """incident_sage_callbackメソッド"""
             logger.error(f"🚨 インシデント賢者: ジョブ {event.job_id} エラー - {event.exception}")
             
         register_sage_callback('task_sage', task_sage_callback)
@@ -692,7 +695,8 @@ def _register_github_automation_tasks(self):
     #                     for file in files[:3]:  # 最大3ファイルまでチェック
     #                         if file.filename.endswith('.py'):
     #                             patch_content = file.patch or ''
-    #                             if any(keyword in patch_content.upper() for keyword in ['TODO', 'FIXME', '# TODO', '# FIXME']):
+        #                             if any(keyword in \
+        patch_content.upper() for keyword in ['TODO', 'FIXME', '# TODO', '# FIXME']):
     #                                 quality_issues.append(f"Iron Will違反: {file.filename}にTODOコメントが残存")
     #                             if 'pass' in patch_content and patch_content.count('pass') > 2:
     #                                 quality_issues.append(f"不完全実装: {file.filename}にスタブ実装が多数存在")

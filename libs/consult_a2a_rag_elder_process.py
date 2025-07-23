@@ -28,6 +28,7 @@ class ConsultA2aRagElderProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="consult_a2a_rag_elder",
             elder_role=ElderRole.SERVANT,  # TODO: Adjust as needed

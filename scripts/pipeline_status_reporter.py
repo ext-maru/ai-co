@@ -287,12 +287,27 @@ class PipelineStatusReporter:
 <head>
     <title>Week 4 Strategic Infrastructure - Pipeline Status Report</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; margin: 40px; background: #f8f9fa; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        body {
+            font-family: -apple-system,
+            BlinkMacSystemFont,
+            'Segoe UI',
+            sans-serif; margin: 40px; background: #f8f9fa;
+        }
+        .container {
+            max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: \
+                8px; box-shadow: 0 2px 10px rgba(0,
+            0,
+            0,
+            0.1);
+        }
         .header { border-bottom: 3px solid #007bff; padding-bottom: 20px; margin-bottom: 30px; }
         h1 { color: #007bff; margin: 0; font-size: 2.5em; }
         .subtitle { color: #6c757d; margin: 10px 0 0 0; font-size: 1.1em; }
-        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0; }
+        .metrics-grid {
+            display: grid; grid-template-columns: repeat(auto-fit,
+            minmax(250px,
+            1fr)); gap: 20px; margin: 30px 0;
+        }
         .metric-card { background: #f8f9fa; padding: 20px; border-radius: 6px; border-left: 4px solid #28a745; }
         .metric-card.warning { border-left-color: #ffc107; }
         .metric-card.error { border-left-color: #dc3545; }
@@ -309,7 +324,8 @@ class PipelineStatusReporter:
         .test-suite { background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 4px; }
         .recommendations { background: #e7f3ff; padding: 20px; border-radius: 6px; border-left: 4px solid #007bff; }
         .recommendations ul { margin: 10px 0; }
-        .footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #e9ecef; text-align: center; color: #6c757d; }
+        .footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid \
+            #e9ecef; text-align: center; color: #6c757d; }
         table { width: 100%; border-collapse: collapse; margin: 20px 0; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e9ecef; }
         th { background: #f8f9fa; font-weight: 600; }
@@ -320,13 +336,15 @@ class PipelineStatusReporter:
         <div class="header">
             <h1>🎯 Week 4 Strategic Infrastructure</h1>
             <p class="subtitle">Pipeline Status Report - {{ pipeline_data.timestamp }}</p>
-            <p><strong>Commit:</strong> {{ pipeline_data.git_info.commit_hash }} on {{ pipeline_data.git_info.branch_name }}</p>
+            <p><strong>Commit:</strong> {{ pipeline_data.git_info.commit_hash \
+                }} on {{ pipeline_data.git_info.branch_name }}</p>
         </div>
 
         <!-- Key Metrics -->
         <div class="metrics-grid">
             <div class="metric-card{% if pipeline_data.coverage_metrics.total_coverage < 66.7 %} warning{% endif %}">
-                <div class="metric-value{% if pipeline_data.coverage_metrics.total_coverage < 66.7 %} warning{% endif %}">{{ "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}%</div>
+                <div class="metric-value{% if pipeline_data.coverage_metrics.total_coverage \
+                    < 66.7 %} warning{% endif %}">{{ "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}%</div>
                 <div class="metric-label">Total Coverage</div>
             </div>
             <div class="metric-card">
@@ -334,7 +352,10 @@ class PipelineStatusReporter:
                 <div class="metric-label">Total Tests</div>
             </div>
             <div class="metric-card{% if pipeline_data.test_results.failed_tests > 0 %} error{% endif %}">
-                <div class="metric-value{% if pipeline_data.test_results.failed_tests > 0 %} error{% endif %}">{{ pipeline_data.test_results.passed_tests }}/{{ pipeline_data.test_results.total_tests }}</div>
+                <div class="metric-value{% if pipeline_data." \
+                    "test_results.failed_tests " \
+                        "> 0 %} error{% endif %}">{{ pipeline_data.test_results.passed_tests \
+                            }}/{{ pipeline_data.test_results.total_tests }}</div>
                 <div class="metric-label">Tests Passed</div>
             </div>
             <div class="metric-card">
@@ -365,7 +386,9 @@ class PipelineStatusReporter:
                 <tr>
                     <td>Generated Tests</td>
                     <td>{{ "%.1f"|format(pipeline_data.coverage_metrics.generated_coverage) }}%</td>
-                    <td><span class="status-badge {% if pipeline_data.generated_tests.generation_completed %}status-success">✅ Generated{% else %}status-warning">⚠️ Pending{% endif %}</span></td>
+                    <td><span class="status-badge {% \
+                        if pipeline_data.generated_tests.generation_completed %}status-success">✅ Generated{% \
+                        else %}status-warning">⚠️ Pending{% endif %}</span></td>
                 </tr>
             </table>
         </div>
@@ -376,7 +399,8 @@ class PipelineStatusReporter:
             {% for suite in pipeline_data.test_results.test_suites %}
             <div class="test-suite">
                 <h4>{{ suite.name|title }} Tests</h4>
-                <p><strong>Tests:</strong> {{ suite.tests }} | <strong>Passed:</strong> {{ suite.passed }} | <strong>Failed:</strong> {{ suite.failed }} | <strong>Time:</strong> {{ "%.2f"|format(suite.time) }}s</p>
+                <p><strong>Tests:</strong> {{ suite.tests }} | <strong>Passed:</strong> \
+                    {{ suite.passed }} | <strong>Failed:</strong> {{ suite.failed }} | <strong>Time:</strong> {{ "%.2f"|format(suite.time) }}s</p>
             </div>
             {% endfor %}
         </div>
@@ -397,7 +421,8 @@ class PipelineStatusReporter:
         <div class="section">
             <h2>🤖 Automated Test Generation</h2>
             {% if pipeline_data.generated_tests.generation_completed %}
-            <p><span class="status-badge status-success">✅ Generated {{ pipeline_data.generated_tests.tests_generated }} tests</span></p>
+            <p><span class="status-badge status-success">✅ Generated {{ pipeline_data.genera \
+                ted_tests.tests_generated }} tests</span></p>
             <p><strong>Generated Files:</strong></p>
             <ul>
                 {% for file in pipeline_data.generated_tests.generated_files %}
@@ -417,16 +442,29 @@ class PipelineStatusReporter:
                 <ul>
                     <li>✅ CI/CD Pipeline: Operational</li>
                     <li>✅ Test Infrastructure: {{ pipeline_data.test_results.total_tests }} tests executed</li>
-                    <li>✅ Coverage Monitoring: {{ "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% tracked</li>
-                    <li>{% if pipeline_data.elder_council_review.review_completed %}✅{% else %}⚠️{% endif %} Elder Council Review: {% if pipeline_data.elder_council_review.review_completed %}Active{% else %}Pending{% endif %}</li>
-                    <li>{% if pipeline_data.generated_tests.generation_completed %}✅{% else %}⚠️{% endif %} Auto Test Generation: {% if pipeline_data.generated_tests.generation_completed %}{{ pipeline_data.generated_tests.tests_generated }} generated{% else %}Inactive{% endif %}</li>
+                                        <li>✅ Coverage Monitoring: {{ \
+                        "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% tracked</li>
+                    <li>{% \
+                        if pipeline_data.elder_council_review.review_completed %}✅{% \
+                        else %}⚠️{% endif %} Elder Council Review: {% \
+                            if pipeline_data.elder_council_review.review_completed %}Active{% \
+                            else %}Pending{% endif %}</li>
+                    <li>{% \
+                        if pipeline_data.generated_tests.generation_completed %}✅{% \
+                        else %}⚠️{% endif %} Auto Test Generation: {% \
+                            if pipeline_data.generated_tests.generation_completed %}{{ pipeline_data.generat \
+                                ed_tests.tests_generated }} generated{% \
+                            else %}Inactive{% endif %}</li>
                 </ul>
 
                 <h4>66.7% Coverage Achievement</h4>
                 {% if pipeline_data.coverage_metrics.total_coverage >= 66.7 %}
-                <p>🎯 <strong>TARGET ACHIEVED:</strong> Coverage at {{ "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% meets the 66.7% strategic target!</p>
+                <p>🎯 <strong>TARGET ACHIEVED:</strong> Coverage at {{ "%.1f"|format( \
+                    pipeline_data.coverage_metrics.total_coverage) }}% meets the 66.7% strategic target!</p>
                 {% else %}
-                <p>📈 <strong>PROGRESS:</strong> Coverage at {{ "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% - {{ "%.1f"|format(66.7 - pipeline_data.coverage_metrics.total_coverage) }}% to target</p>
+                                <p>📈 <strong>PROGRESS:</strong> Coverage at {{ \
+                    "%.1f"|format(pipeline_data.coverage_metrics.total_coverage) }}% - \
+                        {{ "%.1f"|format(66.7 - pipeline_data.coverage_metrics.total_coverage) }}% to target</p>
                 {% endif %}
             </div>
         </div>
@@ -540,7 +578,10 @@ def main():
     print(f"\n{target_met} Week 4 Strategic Infrastructure Status:")
     print(f"   Coverage: {coverage:.1f}% (Target: 66.7%)")
     print(
-        f"   Tests: {pipeline_data['test_results']['passed_tests']}/{pipeline_data['test_results']['total_tests']} passed"
+        (
+            f"f"   Tests: {pipeline_data['test_results']['passed_tests']}/"
+            f"{pipeline_data['test_results']['total_tests']} passed""
+        )
     )
     print(f"   Quality Score: {pipeline_data['quality_metrics']['quality_score']:.1f}")
 

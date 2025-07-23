@@ -83,6 +83,7 @@ class ConflictInfo:
     file_size: int
     
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "file_path": self.file_path,
             "conflict_type": self.conflict_type.value,

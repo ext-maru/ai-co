@@ -49,6 +49,7 @@ class ResourceMonitor:
     """Monitor system resources"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.cpu_history = deque(maxlen=60)  # 1 minute history
         self.memory_history = deque(maxlen=60)
         self.io_history = deque(maxlen=60)
@@ -102,6 +103,7 @@ class MLPredictor:
     """Machine learning based workload predictor"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.history = deque(maxlen=1000)
     
     def add_observation(self, metrics: ConcurrencyMetrics, decision: str):
@@ -146,7 +148,9 @@ class MLPredictor:
 class AdaptiveConcurrencyController:
     """Adaptive concurrency controller with ML-based optimization"""
     
-    def __init__(self, min_workers: int = 1, max_workers: int = 10,
+    def __init__(self, min_workers:
+        """初期化メソッド"""
+    int = 1, max_workers: int = 10,
                  target_cpu_percent: float = 70.0, target_memory_percent: float = 80.0):
         self.min_workers = min_workers
         self.max_workers = max_workers

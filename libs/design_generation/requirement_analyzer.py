@@ -18,8 +18,10 @@ try:
 except ImportError:
     # テスト環境用のモック
     class MockSpacy:
+        """MockSpacyクラス"""
         @staticmethod
         def blank(lang):
+            """blankメソッド"""
             return None
     spacy = MockSpacy()
 
@@ -28,6 +30,7 @@ try:
 except ImportError:
     # テスト環境用のモック
     def pipeline(*args, **kwargs):
+        """pipelineメソッド"""
         return None
 
 
@@ -78,6 +81,7 @@ class EnhancedRequirementAnalyzer:
     """
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self._initialize_nlp_models()
         self._load_domain_patterns()
@@ -200,10 +204,12 @@ class EnhancedRequirementAnalyzer:
             for pattern_list, entity_type in [
                 (actor_patterns, "actor"),
                 (object_patterns, "object"),
+            # 繰り返し処理
                 (concept_patterns, "concept")
             ]:
                 for pattern in pattern_list:
                     matches = re.finditer(pattern, text)
+                # 繰り返し処理
                     for match in matches:
                         entity = BusinessEntity(
                             name=match.group(1),
@@ -211,6 +217,9 @@ class EnhancedRequirementAnalyzer:
                             confidence=0.9,
                             source_text=match.group(0)
                         )
+                        if not (entity.name not in [e.name for e in entities]):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if entity.name not in [e.name for e in entities]:
                             entities.append(entity)
         
@@ -221,6 +230,9 @@ class EnhancedRequirementAnalyzer:
             for keyword in keywords:
                 if keyword.lower() in text.lower():
                     name = keyword.capitalize()
+                    if not (keyword.endswith("s")):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if keyword.endswith("s"):
                         name = keyword[:-1].capitalize()  # 複数形を単数形に
                     
@@ -234,8 +246,14 @@ class EnhancedRequirementAnalyzer:
             # 中国語処理
             zh_keywords = ["用户", "产品", "购物车", "结账", "用戶", "產品"]
             for keyword in zh_keywords:
+                if not (keyword in text):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if keyword in text:
                     # 中国語の基本エンティティ抽出
+                    if not (keyword in ["用户", "用戶"]):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if keyword in ["用户", "用戶"]:
                         entities.append(BusinessEntity(
                             name="用户",
@@ -398,6 +416,9 @@ class EnhancedRequirementAnalyzer:
                     threshold = match.group(1)
                     action = match.group(2)
                     
+                    if not ("送料無料" in action):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "送料無料" in action:
                         rules.append(BusinessRule(
                             condition=f"注文金額 >= {threshold}",
@@ -712,6 +733,8 @@ class EnhancedRequirementAnalyzer:
         relationships = []
         
         for cardinality, pattern_list in patterns.items():
+        # 繰り返し処理
+            # 繰り返し処理
             for pattern in pattern_list:
                 matches = re.finditer(pattern, text)
                 for match in matches:
@@ -720,6 +743,9 @@ class EnhancedRequirementAnalyzer:
                         to_entity = match.group(2)
                         
                         # エンティティが存在する場合のみ関係性を追加
+                        if not (from_entity in entity_names and to_entity in entity_names):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if from_entity in entity_names and to_entity in entity_names:
                             relationships.append(BusinessRelationship(
                                 from_entity=from_entity,

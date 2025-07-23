@@ -224,6 +224,7 @@ class ElderFlowSafetyChecker:
         # 複雑度キーワードによる評価
         keywords = [k.lower() for k in (data.get("keywords") or [])]
         
+        # 繰り返し処理
         for level, indicators in self.complexity_indicators.items():
             for indicator in indicators:
                 if any(indicator in keyword for keyword in keywords):

@@ -51,6 +51,7 @@ class BranchStatus:
     fast_forward_possible: bool
     
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "branch_name": self.branch_name,
             "commits_behind": self.commits_behind,
@@ -73,6 +74,7 @@ class UpdateAnalysis:
     safety_checks: Dict[str, bool]
     
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "branch_status": self.branch_status.to_dict(),
             "recommended_strategy": self.recommended_strategy.value,
@@ -394,6 +396,9 @@ class BranchUpdater:
                 elif 'changed in both' in line.lower():
                     # ファイルパスを抽出（簡略化）
                     parts = line.split()
+                    if not (parts):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if parts:
                         conflict_files.append(parts[-1])
             

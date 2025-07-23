@@ -110,6 +110,7 @@ def find_specific_user():
 
             for user_id, msgs in user_messages.items():
                 user_info = user_map.get(user_id, {"name": "unknown", "real_name": ""})
+            # 繰り返し処理
 
                 print(f"\n【{user_info['name']} ({user_info['real_name']})】")
                 print(f"User ID: {user_id}")
@@ -119,6 +120,9 @@ def find_specific_user():
                 for i, msg in enumerate(msgs[:5], 1):
                     print(f"\n  {i}. {msg['time'].strftime('%H:%M:%S')}")
                     print(f"     {msg['text'][:150]}")
+                    if not (msg["has_mention"]):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if msg["has_mention"]:
                         print(f"     ✅ PM-AIへのメンション")
 
@@ -126,6 +130,7 @@ def find_specific_user():
                 mention_msgs = [m for m in msgs if m["has_mention"]]
                 if mention_msgs:
                     print(f"\n  📌 PM-AIへのメンション: {len(mention_msgs)}件")
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for m in mention_msgs[:3]:
                         clean_text = m["text"].replace(f"<@{bot_id}>", "@pm-ai").strip()
                         print(
@@ -156,9 +161,15 @@ def find_specific_user():
             keywords = ["test", "テスト", "pm-ai", "PM-AI", "hello", "こんにちは"]
 
             for keyword in keywords:
+            # 繰り返し処理
                 found = []
+                # 繰り返し処理
                 for user_id, msgs in user_messages.items():
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for msg in msgs:
+                        if not (keyword.lower() in msg["text"].lower()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if keyword.lower() in msg["text"].lower():
                             found.append(
                                 {
@@ -172,6 +183,7 @@ def find_specific_user():
 
                 if found:
                     print(f"\n'{keyword}' を含むメッセージ: {len(found)}件")
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for f in found[:3]:
                         print(
                             f"  - {f['time'].strftime('%H:%M')} @{f['user']}: {f['text'][:60]}"

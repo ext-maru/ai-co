@@ -38,7 +38,11 @@ def split_long_string(line: str, max_length: int, indent: str) -> List[str]:
                 while len(current) > max_length - len(indent_str) - 10:
                     # スペースまたは句読点で分割
                     split_pos = max_length - len(indent_str) - 10
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for i in range(split_pos, 0, -1):
+                        if not (current[i] in ' ,.:;!?'):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if current[i] in ' ,.:;!?':
                             split_pos = i + 1
                             break
@@ -135,6 +139,7 @@ def fix_long_lines_in_file(file_path: Path, dry_run: bool = False) -> int:
                 # 文字列の分割を試みる
                 split_lines = split_long_string(line_content, MAX_LINE_LENGTH, indent)
                 if len(split_lines) > 1:
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for split_line in split_lines:
                         modified_lines.append(split_line + '\n')
                     modifications += 1
@@ -143,6 +148,7 @@ def fix_long_lines_in_file(file_path: Path, dry_run: bool = False) -> int:
                 # 関数呼び出しの分割を試みる
                 split_lines = split_function_call(line_content, MAX_LINE_LENGTH, indent)
                 if len(split_lines) > 1:
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for split_line in split_lines:
                         modified_lines.append(split_line + '\n')
                     modifications += 1
@@ -205,7 +211,8 @@ def main():
             total_modifications += modifications
             modified_files += 1
     
-    print(f"\nSummary: {total_modifications} long lines in {modified_files} files {'would be' if args.dry_run else 'were'} fixed")
+    print(f"\nSummary: {total_modifications} long lines " \
+        "in {modified_files} files {'would be' if args.dry_run else 'were'} fixed")
 
 
 if __name__ == "__main__":

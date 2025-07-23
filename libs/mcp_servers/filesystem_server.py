@@ -34,6 +34,7 @@ class AICompanyFileSystemServer:
     """Elders Guild専用FileSystem MCPサーバー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.server = Server("ai-company-filesystem")
         self.setup_tools()
 
@@ -100,7 +101,9 @@ class AICompanyFileSystemServer:
             """プロジェクト構造を取得"""
             structure = []
 
-            def scan_directory(path: Path, prefix: str = ""):
+            def scan_directory(path:
+                """scan_directoryメソッド"""
+            Path, prefix: str = ""):
                 for item in sorted(path.iterdir()):
                     if item.name.startswith(".") and item.name not in [
                         ".env",

@@ -584,7 +584,9 @@ def test_{module_name}_web_security():
                            if any(sensitive in attr.lower() for sensitive in sensitive_names)]
 
         # Should not expose sensitive attributes directly
-        assert len(exposed_sensitive) == 0 or all('test' in attr.lower() for attr in exposed_sensitive),  "Web module doesn't expose sensitive information"
+        assert len(exposed_sensitive) == 0 or \
+                        all('test' in \
+                attr.lower() for attr in exposed_sensitive),  "Web module doesn't expose sensitive information"
 
     except Exception as e:
         pytest.skip(f"Web security test failed: {{e}}")

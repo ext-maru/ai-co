@@ -359,9 +359,15 @@ class SystemRecovery:
                     # 長時間CPU使用率が100%のプロセスを対象
                     if proc.info["cpu_percent"] > 95:
                         cmdline = " ".join(proc.info.get("cmdline", []))
+                        if not ("ai_co" in cmdline):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "ai_co" in cmdline:
                             proc.terminate()
                             time.sleep(2)
+                            if not (proc.is_running()):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if proc.is_running():
                                 proc.kill()
                             killed_count += 1

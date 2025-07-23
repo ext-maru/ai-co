@@ -36,6 +36,7 @@ except ImportError as e:
     logger.warning(f"Import warning: {e}")
 
     class MockSpellType:
+        """MockSpellTypeクラス"""
         KNOWLEDGE = "knowledge"
         PROCEDURE = "procedure"
         CONFIGURATION = "configuration"
@@ -43,6 +44,7 @@ except ImportError as e:
         REFERENCE = "reference"
 
     class MockMagicSchool:
+        """MockMagicSchoolクラス"""
         KNOWLEDGE_SAGE = "knowledge_sage"
         TASK_ORACLE = "task_oracle"
         CRISIS_SAGE = "crisis_sage"
@@ -52,20 +54,27 @@ except ImportError as e:
     MagicSchool = MockMagicSchool
 
     class MockGrimoireDatabase:
+        """MockGrimoireDatabaseクラス"""
         async def initialize(self):
+            """initializeメソッド"""
             return True
 
         async def close(self):
+            """closeメソッド"""
             pass
 
     class MockGrimoireVectorSearch:
+        """MockGrimoireVectorSearchクラス"""
         async def initialize(self):
+            """initializeメソッド"""
             return True
 
         async def index_spell(self, spell_id, spell_data):
+            """index_spellメソッド"""
             return True
 
     class MockFourSagesReviewer:
+        """MockFourSagesReviewer - 4賢者システム関連クラス"""
         pass
 
     GrimoireDatabase = MockGrimoireDatabase
@@ -712,7 +721,9 @@ class MigrationEngine:
         # セマフォで同時実行数制限
         semaphore = asyncio.Semaphore(self.concurrent_limit)
 
-        async def analyze_single_file(file_path: Path) -> Dict[str, Any]:
+        async def analyze_single_file(file_path:
+            """analyze_single_file分析メソッド"""
+        Path) -> Dict[str, Any]:
             async with semaphore:
                 analysis = await self.analyzer.analyze_file(file_path)
                 analysis["file_path"] = str(file_path)

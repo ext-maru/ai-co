@@ -148,6 +148,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
         """修復魔法の適用"""
         results = {"fixed": 0, "failed": 0, "skipped": 0}
 
+        # 繰り返し処理
         for failure in failures:
             test_file = Path(failure["file"])
             fixed = False
@@ -156,6 +157,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
             for error in failure["errors"]:
                 for pattern, fix_func in self.common_fixes.items():
                     if pattern in error:
+                        if not (fix_func(test_file)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if fix_func(test_file):
                             fixed = True
                             break

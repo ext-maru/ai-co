@@ -50,8 +50,12 @@ def execute_task_1():
                 with open(log_file, "r", errors="ignore") as f:
                     content = f.read()
                     errors = re.findall(r"ERROR.*?(?=\n|$)", content)
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for error in errors:
                         # エラータイプを抽出
+                        if not ("ModuleNotFoundError" in error):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "ModuleNotFoundError" in error:
                             error_patterns["ModuleNotFoundError"] += 1
                         elif "FileNotFoundError" in error:

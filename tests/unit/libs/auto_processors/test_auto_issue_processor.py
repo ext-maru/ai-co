@@ -99,6 +99,7 @@ class TestProcessingLimiter(unittest.TestCase):
     def setUp(self):
         self.test_log_file = Path("logs/test_auto_issue_processing.json")
         self.limiter = ProcessingLimiter()
+        """setUpの値を設定"""
         self.limiter.processing_log_file = self.test_log_file
 
         # テスト用ディレクトリ作成
@@ -111,6 +112,7 @@ class TestProcessingLimiter(unittest.TestCase):
 
     def async_test(self, coro):
         loop = asyncio.new_event_loop()
+        """async_testメソッド"""
         asyncio.set_event_loop(loop)
         try:
             return loop.run_until_complete(coro)
@@ -185,6 +187,7 @@ class TestAutoIssueProcessor(unittest.TestCase):
         self.processor = AutoIssueProcessor()
 
     def async_test(self, coro):
+        """async_testメソッド"""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:

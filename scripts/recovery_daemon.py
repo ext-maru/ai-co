@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 def main():
+    """mainメソッド"""
     recovery = ConversationRecoveryManager()
     check_interval = 300  # 5分ごと
 

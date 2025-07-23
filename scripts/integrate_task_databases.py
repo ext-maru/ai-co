@@ -340,6 +340,7 @@ class TaskDatabaseIntegrator:
                         "data_tasks",
                     ]:
                         # タスク履歴として移行
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with sqlite3.connect(db_path) as source_conn:
                             count = self.migrate_task_history(
                                 source_conn, dest_conn, name

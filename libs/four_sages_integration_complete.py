@@ -140,6 +140,7 @@ class FourSagesIntegrationComplete:
 
             # ナレッジ賢者
             async def consult_knowledge():
+                """consult_knowledgeメソッド"""
                 self.metrics["sage_usage"]["knowledge"] += 1
                 # 関連知識を検索
                 if hasattr(self.knowledge_sage, "semantic_search"):
@@ -158,6 +159,7 @@ class FourSagesIntegrationComplete:
 
             # タスク賢者
             async def consult_task():
+                """consult_taskメソッド"""
                 self.metrics["sage_usage"]["task"] += 1
                 # タスク最適化提案
                 return {
@@ -168,6 +170,7 @@ class FourSagesIntegrationComplete:
 
             # インシデント賢者
             async def consult_incident():
+                """consult_incidentメソッド"""
                 self.metrics["sage_usage"]["incident"] += 1
                 # リスク分析
                 return {
@@ -178,6 +181,7 @@ class FourSagesIntegrationComplete:
 
             # RAG賢者
             async def consult_rag():
+                """consult_ragメソッド"""
                 self.metrics["sage_usage"]["rag"] += 1
                 # コンテキスト理解
                 return {
@@ -251,6 +255,7 @@ class FourSagesIntegrationComplete:
         # パフォーマンス強化付きで実行
         @self.performance_enhancer.optimizer.cached(ttl=300)
         async def enhanced_execution():
+            """enhanced_executionメソッド"""
             # 事前相談
             consultation = await self.consult_all_sages(task_description)
 

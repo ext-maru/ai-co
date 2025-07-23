@@ -258,6 +258,7 @@ Description of the elder system and its components.
         errors = []
         
         def search_worker(query):
+            """search_workerメソッド"""
             try:
                 result = knowledge_sage.search(query)
                 results.append(result)

@@ -41,6 +41,7 @@ class DocumentIndexOptimizer(EldersServiceLegacy):
     """文書インデックス最適化システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="DocumentIndexOptimizer")
         self.tracking_db = UnifiedTrackingDB()
         logger.info("📊 Document Index Optimizer初期化完了")
@@ -124,6 +125,7 @@ class DocumentIndexOptimizer(EldersServiceLegacy):
 if __name__ == "__main__":
 
     async def test_optimizer():
+        """test_optimizerテストメソッド"""
         optimizer = DocumentIndexOptimizer()
 
         result = await optimizer.process_request({"action": "optimize"})

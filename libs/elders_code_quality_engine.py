@@ -84,7 +84,9 @@ class BugLearningCase:
 class DatabaseManager:
     """PostgreSQL with pgvector database manager"""
     
-    def __init__(self, connection_params: Dict[str, str]):
+    def __init__(self, connection_params:
+        """初期化メソッド"""
+    Dict[str, str]):
         self.connection_params = connection_params
         self.connection = None
         
@@ -240,7 +242,9 @@ class DatabaseManager:
 class EmbeddingGenerator:
     """OpenAI embedding generator for semantic search"""
     
-    def __init__(self, api_key: Optional[str] = None):
+    def __init__(self, api_key:
+        """初期化メソッド"""
+    Optional[str] = None):
         if OPENAI_AVAILABLE and api_key:
             self.client = OpenAI(api_key=api_key)
             self.model = "text-embedding-3-small"
@@ -287,6 +291,7 @@ class CodeQualityAnalyzer:
     """Advanced code quality analyzer with Elder's wisdom"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.anti_patterns = self._load_anti_patterns()
         self.best_practices = self._load_best_practices()
         
@@ -634,7 +639,9 @@ class CodeQualityAnalyzer:
 class SmartCodingAssistant:
     """AI-powered coding assistant with learning capabilities"""
     
-    def __init__(self, db_manager: DatabaseManager, embedding_generator: EmbeddingGenerator):
+    def __init__(self, db_manager:
+        """初期化メソッド"""
+    DatabaseManager, embedding_generator: EmbeddingGenerator):
         self.db = db_manager
         self.embedder = embedding_generator
         self.analyzer = CodeQualityAnalyzer()
@@ -781,7 +788,9 @@ class SmartCodingAssistant:
 class EldersCodeQualityEngine:
     """Main engine class for Elders Guild Code Quality System"""
     
-    def __init__(self, db_params: Dict[str, str], openai_api_key: Optional[str] = None):
+    def __init__(self, db_params:
+        """初期化メソッド"""
+    Dict[str, str], openai_api_key: Optional[str] = None):
         self.db = DatabaseManager(db_params)
         self.embedder = EmbeddingGenerator(openai_api_key)
         self.assistant = None
@@ -838,6 +847,7 @@ async def quick_analyze(
 if __name__ == "__main__":
     # Example usage
     async def main():
+        """mainメソッド"""
         # Database connection parameters
         db_params = {
             'host': 'localhost',

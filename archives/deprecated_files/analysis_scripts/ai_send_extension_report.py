@@ -31,7 +31,10 @@ def generate_report():
                 print(f"\n登録されたタスクタイプ: {len(task_types)}個")
                 for task_type, info in task_types.items():
                     print(
-                        f"  - {task_type:<10} : {info.get('description', 'N/A')} (優先度: {info.get('default_priority', 5)})"
+                        (
+                            f"f"  - {task_type:<10} : {info.get('description', 'N/A')} (優先度: "
+                            f"{info.get('default_priority', 5)})""
+                        )
                     )
         except Exception as e:
             print(f"❌ エラー: {e}")

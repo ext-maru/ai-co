@@ -45,7 +45,9 @@ class FlowViolationType:
 class ElderFlowTracer:
     """Elder Flow実行トレーサー"""
     
-    def __init__(self, log_directory: Optional[Path] = None):
+    def __init__(self, log_directory:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.log_directory = log_directory or Path("logs")
         self.logger = logging.getLogger("ElderFlowTracer")
         
@@ -282,6 +284,7 @@ class SageCouncilValidator:
     """4賢者会議検証エンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.required_sages = ["knowledge", "task", "incident", "rag"]
         self.logger = logging.getLogger("SageCouncilValidator")
         
@@ -421,6 +424,7 @@ class QualityGateMonitor:
     """品質ゲート監視システム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger("QualityGateMonitor")
         
         # 品質ゲートのパターン
@@ -492,7 +496,9 @@ class FlowComplianceAuditor(AncientElderBase):
     プロセス遵守違反を検出する
     """
     
-    def __init__(self, log_directory: Optional[Path] = None):
+    def __init__(self, log_directory:
+        """初期化メソッド"""
+    Optional[Path] = None):
         super().__init__(specialty="flow_compliance_auditor")
         
         # コンポーネント初期化

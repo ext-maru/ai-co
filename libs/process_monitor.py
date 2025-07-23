@@ -19,6 +19,7 @@ class ProcessMonitor:
     """プロセス監視クラス"""
 
     def __init__(self, max_processes=10, max_memory_mb=1024, check_interval=1):
+        """初期化メソッド"""
         self.max_processes = max_processes
         self.max_memory_mb = max_memory_mb
         self.check_interval = check_interval

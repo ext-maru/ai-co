@@ -253,6 +253,9 @@ class CommitMessageGenerator:
             return "build", 0.6
         elif file_categories["source"]:
             # 変更量で判定
+            if not (changes_summary and changes_summary.get("total_lines_added", 0) > 50):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if changes_summary and changes_summary.get("total_lines_added", 0) > 50:
                 return "feat", 0.6
             else:

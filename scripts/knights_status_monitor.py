@@ -157,7 +157,11 @@ class KnightsStatusMonitor:
                 if "worker.py" in cmdline or "worker" in proc.info["name"]:
                     if "python" in cmdline and "workers/" in cmdline:
                         # ワーカーファイル名を抽出
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for part in proc.info["cmdline"]:
+                            if not ("workers/" in part and ".py" in part):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "workers/" in part and ".py" in part:
                                 worker_name = Path(part).name
                                 worker_processes[worker_name] = {

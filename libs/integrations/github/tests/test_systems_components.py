@@ -173,6 +173,7 @@ class TestGitHubErrorHandler:
         call_count = 0
         
         def failing_function():
+            """failing_functionメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -188,6 +189,7 @@ class TestGitHubErrorHandler:
     def test_retry_with_backoff_failure(self):
         """リトライ失敗テスト"""
         def always_failing_function():
+            """always_failing_functionメソッド"""
             raise ConnectionError("Permanent failure")
         
         with pytest.raises(ConnectionError):
@@ -198,6 +200,7 @@ class TestGitHubErrorHandler:
     def test_retry_with_backoff_non_retryable(self):
         """リトライ不可能エラーテスト"""
         def non_retryable_function():
+            """non_retryable_functionメソッド"""
             raise ValueError("Not retryable")
         
         with pytest.raises(ValueError):
@@ -208,6 +211,7 @@ class TestGitHubErrorHandler:
     def test_circuit_breaker_integration(self):
         """サーキットブレーカー統合テスト"""
         def failing_function():
+            """failing_functionメソッド"""
             raise Exception("Test failure")
         
         # 複数回失敗させてサーキットブレーカーをオープンにする
@@ -498,6 +502,7 @@ class TestRateLimitManager:
     def test_queue_request(self):
         """リクエストキューイングテスト"""
         def test_function(x):
+            """test_functionテストメソッド"""
             return x * 2
         
         # キュー処理を手動で無効化
@@ -505,6 +510,7 @@ class TestRateLimitManager:
         
         # 別スレッドでキュー処理を開始
         def start_processing():
+            """start_processing処理メソッド"""
             time.sleep(0.1)
             self.manager._process_queue()
         
@@ -518,6 +524,7 @@ class TestRateLimitManager:
     def test_queue_request_with_error(self):
         """エラーありキューリクエストテスト"""
         def failing_function():
+            """failing_functionメソッド"""
             raise ValueError("Test error")
         
         with pytest.raises(ValueError, match="Test error"):
@@ -603,6 +610,7 @@ class TestRateLimitDecorator:
         """デコレータ適用テスト"""
         @self.decorator
         def test_function(x):
+            """test_functionテストメソッド"""
             return x * 2
         
         # 最小間隔を短縮してテスト
@@ -617,6 +625,7 @@ class TestRateLimitDecorator:
         """ヘッダー付きデコレータテスト"""
         @self.decorator
         def test_function():
+            """test_functionテストメソッド"""
             return {
                 "data": "test",
                 "headers": {
@@ -666,6 +675,7 @@ class TestEnhancedErrorRecovery:
     def test_register_fallback(self):
         """フォールバックハンドラー登録テスト"""
         def custom_fallback(*args, **kwargs):
+            """custom_fallbackメソッド"""
             return {"fallback": True}
         
         self.recovery_manager.register_fallback("CustomError", custom_fallback)
@@ -688,6 +698,7 @@ class TestEnhancedErrorRecovery:
     async def test_handle_error_retry_strategy(self):
         """リトライ戦略エラーハンドリングテスト"""
         async def test_function():
+            """test_functionテストメソッド"""
             return {"success": True}
         
         error = ConnectionError("connection failed")
@@ -705,6 +716,7 @@ class TestEnhancedErrorRecovery:
         """フォールバック戦略エラーハンドリングテスト"""
         # カスタムフォールバックハンドラーを登録
         async def custom_fallback(*args, **kwargs):
+            """custom_fallbackメソッド"""
             return {"fallback_result": True}
         
         self.recovery_manager.register_fallback("ValueError", custom_fallback)
@@ -749,6 +761,7 @@ class TestEnhancedErrorRecovery:
         call_count = 0
         
         async def test_function():
+            """test_functionテストメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -771,6 +784,7 @@ class TestEnhancedErrorRecovery:
     async def test_execute_retry_strategy_exhausted(self):
         """リトライ戦略実行失敗テスト"""
         async def always_failing_function():
+            """always_failing_functionメソッド"""
             raise Exception("persistent failure")
         
         error_info = {
@@ -791,6 +805,7 @@ class TestEnhancedErrorRecovery:
     async def test_execute_fallback_strategy_with_handler(self):
         """フォールバックハンドラー付き戦略実行テスト"""
         async def custom_fallback():
+            """custom_fallbackメソッド"""
             return {"custom_fallback": True}
         
         pattern = ErrorPattern("TestError", EnhancedErrorSeverity.LOW, RecoveryStrategy.FALLBACK)
@@ -865,6 +880,7 @@ class TestEnhancedCircuitBreaker:
     def test_call_success(self):
         """呼び出し成功テスト"""
         def test_function(x):
+            """test_functionテストメソッド"""
             return x * 2
         
         result = self.circuit_breaker.call(test_function, 5)
@@ -875,6 +891,7 @@ class TestEnhancedCircuitBreaker:
     def test_call_failure(self):
         """呼び出し失敗テスト"""
         def failing_function():
+            """failing_functionメソッド"""
             raise Exception("test failure")
         
         with pytest.raises(Exception, match="test failure"):
@@ -886,6 +903,7 @@ class TestEnhancedCircuitBreaker:
     def test_circuit_open_after_threshold(self):
         """閾値後のサーキットオープンテスト"""
         def failing_function():
+            """failing_functionメソッド"""
             raise Exception("test failure")
         
         # 閾値まで失敗させる
@@ -902,9 +920,11 @@ class TestEnhancedCircuitBreaker:
     def test_half_open_recovery(self):
         """ハーフオープン回復テスト"""
         def failing_function():
+            """failing_functionメソッド"""
             raise Exception("test failure")
         
         def success_function():
+            """success_functionメソッド"""
             return "success"
         
         # オープン状態にする
@@ -952,6 +972,7 @@ class TestDecorators:
         """with_error_handlingデコレータテスト"""
         @with_error_handling(max_retries=2, backoff_factor=1.5)
         def test_function():
+            """test_functionテストメソッド"""
             return {"success": True}
         
         result = test_function()
@@ -963,6 +984,7 @@ class TestDecorators:
         
         @with_error_handling(max_retries=3, backoff_factor=1.1)
         def test_function():
+            """test_functionテストメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -978,6 +1000,7 @@ class TestDecorators:
         """enhanced_error_handlerデコレータテスト"""
         @enhanced_error_handler(circuit_name="test_circuit")
         async def test_function():
+            """test_functionテストメソッド"""
             return {"success": True}
         
         result = await test_function()
@@ -990,6 +1013,7 @@ class TestDecorators:
         
         @enhanced_error_handler(circuit_name="test_circuit")
         async def test_function():
+            """test_functionテストメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -1005,6 +1029,7 @@ class TestDecorators:
         """robust_github_api_callデコレータテスト"""
         @robust_github_api_call(circuit_name="github_test")
         async def test_api_call():
+            """test_api_callテストメソッド"""
             return {"api_response": True}
         
         result = await test_api_call()
@@ -1014,6 +1039,7 @@ class TestDecorators:
         """rate_limitedデコレータテスト"""
         @rate_limited(endpoint="test")
         def test_function():
+            """test_functionテストメソッド"""
             return {"limited": True}
         
         result = test_function()
@@ -1060,6 +1086,7 @@ class TestIntegrationScenarios:
         )
         
         def rate_limited_function():
+            """rate_limited_functionメソッド"""
             should_throttle, wait_time = self.rate_limit_manager.should_throttle("core")
             if should_throttle:
                 raise Exception("Rate limit exceeded")
@@ -1080,6 +1107,7 @@ class TestIntegrationScenarios:
         call_count = 0
         
         async def intermittent_failure():
+            """intermittent_failureメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count % 3 == 0:

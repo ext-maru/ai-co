@@ -155,6 +155,7 @@ class TechnicalPatternMatcher:
     }
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
     
     def extract_technical_requirements(self, text: str) -> List[TechnicalRequirement]:
@@ -176,10 +177,14 @@ class TechnicalPatternMatcher:
                         continue
                         
                     if isinstance(category_patterns, dict):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for service_name, service_keywords in category_patterns.items():
                             service_matches = sum(1 for keyword in service_keywords 
                                                 if keyword in text_lower)
                             
+                            if not (service_matches > 0):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if service_matches > 0:
                                 confidence = min(0.95, base_confidence + service_matches * 0.2)
                                 context = self._extract_context(text, service_keywords[0])
@@ -357,6 +362,7 @@ class IssueIntelligenceEngine:
     """Issue理解エンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.tech_matcher = TechnicalPatternMatcher()
         self.feature_extractor = FeatureExtractor()
         self.complexity_analyzer = ComplexityAnalyzer()

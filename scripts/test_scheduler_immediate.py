@@ -16,6 +16,7 @@ async def test_job():
     return "Success"
 
 async def main():
+    """mainメソッド"""
     scheduler = AsyncIOScheduler()
     
     # Add job to run every 10 seconds

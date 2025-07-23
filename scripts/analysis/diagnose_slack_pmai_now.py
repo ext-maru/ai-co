@@ -16,6 +16,7 @@ from libs.ai_command_helper import AICommandHelper
 
 
 def main():
+    """mainメソッド"""
     helper = AICommandHelper()
 
     print("Slack PM-AI連携の診断を開始します...")

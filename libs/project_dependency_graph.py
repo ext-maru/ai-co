@@ -59,7 +59,9 @@ class Dependency:
 class CircularDependencyError(Exception):
     """循環依存エラー"""
 
-    def __init__(self, cycle: List[str]):
+    def __init__(self, cycle:
+        """初期化メソッド"""
+    List[str]):
         self.cycle = cycle
         super().__init__(f"循環依存を検出: {' -> '.join(cycle)} -> {cycle[0]}")
 
@@ -68,6 +70,7 @@ class ProjectDependencyGraph:
     """プロジェクト依存関係グラフ（エルダーズギルド仕様）"""
 
     def __init__(self):
+        """初期化メソッド"""
         # グラフ構造
         self.nodes: Dict[str, ProjectNode] = {}
         self.graph: Dict[str, Set[str]] = defaultdict(set)

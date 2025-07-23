@@ -91,7 +91,10 @@ def implement_ai_send_extension():
                         if task_type in task_types:
                             info = task_types[task_type]
                             print(
-                                f"    - {task_type:<10} : {info.get('description', 'N/A')} (優先度: {info.get('default_priority', 5)})"
+                                (
+                                    f"f"    - {task_type:<10} : {info.get('description', 'N/A')} (優先度: "
+                                    f"{info.get('default_priority', 5)})""
+                                )
                             )
 
         except Exception as e:

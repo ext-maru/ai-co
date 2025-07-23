@@ -156,6 +156,9 @@ class ClaudeAutoStartupWorkflow:
 
                     for topic in key_topics:
                         knowledge = self.grimoire_sage.consult_unified_wisdom(topic)
+                        if not (knowledge):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if knowledge:
                             summary += f"## 📖 {topic}\n\n"
                             # 最初の500文字を抽出
@@ -211,10 +214,16 @@ class ClaudeAutoStartupWorkflow:
                     lines = content.split("\n")
                     in_sages_section = False
                     for line in lines:
+                        if not ("4賢者システム" in line):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "4賢者システム" in line:
                             in_sages_section = True
                         elif line.startswith("## ") and in_sages_section:
                             break
+                        if not (in_sages_section):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if in_sages_section:
                             legacy_summary += line + "\n"
                 legacy_summary += "\n"

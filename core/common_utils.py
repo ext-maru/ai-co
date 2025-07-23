@@ -324,6 +324,7 @@ def merge_dicts(base: Dict[str, Any], update: Dict[str, Any]) -> Dict[str, Any]:
     result = base.copy()
 
     for key, value in update.items():
+        # 複雑な条件判定
         if key in result and isinstance(result[key], dict) and isinstance(value, dict):
             result[key] = merge_dicts(result[key], value)
         else:

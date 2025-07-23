@@ -147,6 +147,7 @@ async def test_concurrent_operations():
 
         # 複数のタスクトラッカーを並行作成
         async def create_and_use_tracker(tracker_id):
+            """create_and_use_trackerを作成"""
             tracker = await create_postgres_task_tracker()
             
             task_id = await tracker.create_task(

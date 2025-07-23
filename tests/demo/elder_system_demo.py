@@ -202,10 +202,12 @@ async def demo_elder_hierarchy():
     grand_elder = auth_system.users.get("grand_elder")
     if grand_elder:
         print(
-            f"✅ Grand Elder can access Sage functions: {auth_system.check_elder_permission(grand_elder, ElderRole.SAGE)}"
+            f"✅ Grand Elder can access Sage functions: {auth_system.check_elder_permission(grand_elder,  \
+                ElderRole.SAGE)}"
         )
         print(
-            f"✅ Grand Elder can access Servant functions: {auth_system.check_elder_permission(grand_elder, ElderRole.SERVANT)}"
+            f"✅ Grand Elder can access Servant functions: {auth_system.check_elder_permission(grand_elder,  \
+                ElderRole.SERVANT)}"
         )
 
     # Servant → 制限された権限
@@ -215,7 +217,8 @@ async def demo_elder_hierarchy():
             f"❌ Servant cannot access Sage functions: {not auth_system.check_elder_permission(servant, ElderRole.SAGE)}"
         )
         print(
-            f"❌ Servant cannot access Elder functions: {not auth_system.check_elder_permission(servant, ElderRole.CLAUDE_ELDER)}"
+            f"❌ Servant cannot access Elder functions: {not auth_system.check_elder_permission(servant,  \
+                ElderRole.CLAUDE_ELDER)}"
         )
 
     # Sage専門分野
@@ -226,7 +229,8 @@ async def demo_elder_hierarchy():
             f"✅ Task Sage can access Task functions: {auth_system.check_sage_permission(task_sage, SageType.TASK)}"
         )
         print(
-            f"❌ Task Sage cannot access Knowledge functions: {not auth_system.check_sage_permission(task_sage, SageType.KNOWLEDGE)}"
+            f"❌ Task Sage cannot access Knowledge functions: {not auth_system.check_sage_permission(task_sage,  \
+                SageType.KNOWLEDGE)}"
         )
 
     print()

@@ -79,6 +79,9 @@ class ElderFlowQualityGateOptimizer:
                 # 基準メトリクス更新
                 if "base_metrics" in config:
                     for key, value in config["base_metrics"].items():
+                        if not (hasattr(self.base_metrics, key)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if hasattr(self.base_metrics, key):
                             setattr(self.base_metrics, key, value)
 

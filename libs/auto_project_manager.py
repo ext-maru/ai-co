@@ -40,6 +40,7 @@ class AutoProjectManager:
     """Automated project placement and management with security isolation"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.config = get_config()
         self.ai_company_root = Path("/home/aicompany/ai_co")
         self.workspace_root = Path("/home/aicompany/workspace")
@@ -823,6 +824,7 @@ secrets/
 
         projects_by_level = {}
 
+        # 繰り返し処理
         for security_level in SecurityLevel:
             level_dir = self.workspace_root / security_level.value
             projects = []
@@ -831,7 +833,11 @@ secrets/
                 for project_dir in level_dir.iterdir():
                     if project_dir.is_dir():
                         metadata_file = project_dir / ".elders_guild" / "project.json"
+                        if not (metadata_file.exists()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if metadata_file.exists():
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             with open(metadata_file, "r", encoding="utf-8") as f:
                                 metadata = json.load(f)
                             projects.append(

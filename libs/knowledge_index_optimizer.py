@@ -31,20 +31,25 @@ import numpy as np
 
 # bitarrayの代替実装
 class bitarray:
+    """bitarrayクラス"""
     def __init__(self, size):
+        """初期化メソッド"""
         self.size = size
         self.bytes = bytearray((size + 7) // 8)
 
     def __setitem__(self, index, value):
+        """__setitem__特殊メソッド"""
         if value:
             self.bytes[index // 8] |= 1 << (index % 8)
         else:
             self.bytes[index // 8] &= ~(1 << (index % 8))
 
     def __getitem__(self, index):
+        """__getitem__特殊メソッド"""
         return bool(self.bytes[index // 8] & (1 << (index % 8)))
 
     def setall(self, value):
+        """setallメソッド"""
         if value:
             self.bytes = bytearray(b"\xff" * len(self.bytes))
         else:
@@ -59,7 +64,9 @@ logger = logging.getLogger(__name__)
 class BloomFilter:
     """Bloom Filter実装 - 高速存在確認"""
 
-    def __init__(self, size: int = 1000000, num_hashes: int = 3):
+    def __init__(self, size:
+        """初期化メソッド"""
+    int = 1000000, num_hashes: int = 3):
         self.size = size
         self.num_hashes = num_hashes
         self.bit_array = bitarray(size)
@@ -113,7 +120,9 @@ class BloomFilter:
 class IndexShard:
     """インデックスシャード - 分散インデックス"""
 
-    def __init__(self, shard_id: int, base_path: Path):
+    def __init__(self, shard_id:
+        """初期化メソッド"""
+    int, base_path: Path):
         self.shard_id = shard_id
         self.db_path = base_path / f"shard_{shard_id}.db"
         self.bloom_filter = BloomFilter()

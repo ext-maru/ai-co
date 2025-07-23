@@ -98,6 +98,7 @@ def cleanup_old_logs(days: int = 7, log_type: Optional[str] = None):
 
     cutoff_date = datetime.now() - timedelta(days=days)
 
+    # 繰り返し処理
     for log_dir in log_dirs:
         if not log_dir.is_dir():
             continue

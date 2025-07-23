@@ -29,6 +29,7 @@ from libs.elder_flow_error_handler import (
 
 # Elder Flow Status
 class FlowStatus(Enum):
+    """FlowStatusクラス"""
     INITIALIZED = "initialized"
     SAGE_COUNCIL = "sage_council"
     PLANNING = "planning"
@@ -42,7 +43,10 @@ class FlowStatus(Enum):
 
 # Elder Flow Task
 class ElderFlowTask:
-    def __init__(self, task_id: str, description: str, priority: str = "medium"):
+    """ElderFlowTask - エルダーズギルド関連クラス"""
+    def __init__(self, task_id:
+        """初期化メソッド"""
+    str, description: str, priority: str = "medium"):
         self.task_id = task_id
         self.description = description
         self.priority = priority
@@ -56,7 +60,9 @@ class ElderFlowTask:
         self.git_commit_id = None
         self.logs = []
 
-    def add_log(self, message: str, level: str = "info"):
+    def add_log(self, message:
+        """log追加メソッド"""
+    str, level: str = "info"):
         self.logs.append(
             {
                 "timestamp": datetime.now().isoformat(),
@@ -66,6 +72,7 @@ class ElderFlowTask:
         )
 
     def to_dict(self) -> Dict:
+        """to_dictメソッド"""
         return {
             "task_id": self.task_id,
             "description": self.description,
@@ -83,7 +90,9 @@ class ElderFlowTask:
 
 # Sage Council Interface
 class SageCouncilSystem:
+    """SageCouncilSystem - 4賢者システム関連クラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.sages = {
             "knowledge": "Knowledge Sage - 知識の賢者",
             "task": "Task Sage - タスクの賢者",
@@ -210,7 +219,9 @@ class SageCouncilSystem:
 
 # Elder Flow Orchestrator
 class ElderFlowOrchestrator:
+    """ElderFlowOrchestrator - エルダーズギルド関連クラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.active_tasks: Dict[str, ElderFlowTask] = {}
         self.sage_council = SageCouncilSystem()
         self.logger = logging.getLogger(__name__)
@@ -465,6 +476,7 @@ class ElderFlowOrchestrator:
 
         @self.error_handler.retry_async(retry_config)
         async def council_with_retry():
+            """council_with_retryメソッド"""
             return await self.sage_council.hold_council_meeting(
                 task.description, {"task_id": task.task_id}
             )
@@ -823,7 +835,9 @@ class ElderFlowOrchestrator:
         """エラーリカバリー戦略を登録"""
 
         # 賢者相談エラーのリカバリー
-        async def sage_error_recovery(error: SageConsultationError):
+        async def sage_error_recovery(error:
+            """sage_error_recoveryメソッド"""
+        SageConsultationError):
             self.logger.warning(f"Recovering from sage error: {error.sage_type}")
             # フォールバック賢者相談結果を返す
             return {
@@ -833,7 +847,9 @@ class ElderFlowOrchestrator:
             }
 
         # 品質ゲートエラーのリカバリー
-        def quality_gate_recovery(error: QualityGateError):
+        def quality_gate_recovery(error:
+            """quality_gate_recoveryメソッド"""
+        QualityGateError):
             self.logger.warning(f"Quality gate failed: {error.gate_name}")
 
     def _create_servant_tasks_from_advice(self, task: ElderFlowTask) -> List:
@@ -1418,6 +1434,7 @@ async def elder_flow_consult(sage_type: str, query: str) -> Dict:
 if __name__ == "__main__":
 
     async def main():
+        """mainメソッド"""
         # Example execution
         print("🏛️ Elder Flow Orchestrator Test")
 

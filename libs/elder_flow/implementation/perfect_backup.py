@@ -21,6 +21,7 @@ class PerfectElderFlow(EldersFlowLegacy):
     """完璧なエルダーフロー実装 - Ancient System統合対応"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.orchestrator = ElderFlowOrchestrator()
         self.logger = logging.getLogger(__name__)

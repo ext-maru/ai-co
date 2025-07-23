@@ -132,9 +132,11 @@ class BaseSage(ABC):
         }
 
     def __str__(self) -> str:
+        """文字列表現取得"""
         return f"{self.sage_name}Sage(status={self.status})"
 
     def __repr__(self) -> str:
+        """オブジェクト表現取得"""
         return f"<{self.sage_name}Sage status={self.status} requests={self._metrics['requests_processed']}>"
 
 
@@ -142,6 +144,7 @@ class SageRegistry:
     """賢者レジストリ - 4賢者の管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self._sages: Dict[str, BaseSage] = {}
         self.logger = logging.getLogger("elders.registry")
 

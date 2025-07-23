@@ -53,6 +53,9 @@ class DwarfWorkshop:
                 if isinstance(node, ast.ClassDef):
                     methods = []
                     for item in node.body:
+                        if not (isinstance(item, ast.FunctionDef)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if isinstance(item, ast.FunctionDef):
                             methods.append(item.name)
                         elif isinstance(item, ast.AsyncFunctionDef):
@@ -63,9 +66,13 @@ class DwarfWorkshop:
                         {"name": node.name, "methods": methods}
                     )
                 elif isinstance(node, ast.Import):
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for alias in node.names:
                         worker_info["imports"].append(alias.name)
                 elif isinstance(node, ast.ImportFrom):
+                    if not (node.module):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if node.module:
                         worker_info["imports"].append(node.module)
 

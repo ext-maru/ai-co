@@ -105,6 +105,7 @@ def test_elder_rank_calculation(level, expected_rank):
     """レベルに応じたランク判定テスト"""
 
     def get_elder_rank(level: int) -> str:
+        """get_elder_rankの値を取得"""
         if level < 10:
             return "見習い"
         elif level < 40:

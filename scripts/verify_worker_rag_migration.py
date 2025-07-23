@@ -338,12 +338,14 @@ async def main():
     if report["details"]["verified_workers"]:
         print("\n✅ Verified Workers:")
         for worker in report["details"]["verified_workers"]:
+        # 繰り返し処理
             print(f"  • {worker['worker']} ({worker['class']})")
             for feature in worker["features"]:
                 print(f"    - {feature}")
 
     if report["details"]["failed_workers"]:
         print("\n❌ Failed Workers:")
+        # 繰り返し処理
         for worker in report["details"]["failed_workers"]:
             print(f"  • {worker['worker']}")
             if "issues" in worker:

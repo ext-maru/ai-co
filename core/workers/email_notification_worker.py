@@ -45,6 +45,7 @@ logger = logging.getLogger("EmailWorker")
 
 class EmailNotificationWorker:
     SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
+    """EmailNotificationWorkerワーカークラス"""
 
     def __init__(self, worker_id="email-worker-1"):
         """初期化メソッド"""
@@ -67,6 +68,7 @@ class EmailNotificationWorker:
                 )
 
             if not creds or not creds.valid:
+                # 複雑な条件判定
                 if creds and creds.expired and creds.refresh_token:
                     creds.refresh(Request())
                 else:
@@ -131,6 +133,7 @@ class EmailNotificationWorker:
             if attachments:
                 for attachment_path in attachments:
                     if os.path.exists(attachment_path):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(attachment_path, "rb") as attachment:
                             part = MIMEBase("application", "octet-stream")
                             part.set_payload(attachment.read())

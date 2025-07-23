@@ -208,6 +208,7 @@ class PostgreSQLTaskMigration:
                 # 日時フィールドの変換
                 def parse_datetime(dt_str):
                     if not dt_str:
+                    """parse_datetimeを解析"""
                         return None
                     try:
                         return datetime.fromisoformat(dt_str.replace('Z', '+00:00'))
@@ -216,6 +217,7 @@ class PostgreSQLTaskMigration:
 
                 # JSONフィールドの処理
                 def parse_json_field(field_value):
+                    """parse_json_fieldを解析"""
                     if not field_value:
                         return None
                     if isinstance(field_value, str):

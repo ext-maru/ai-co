@@ -50,7 +50,9 @@ class IncidentCategory(Enum):
 class IncidentSage(BaseSage):
     """インシデント賢者 - 障害対応とセキュリティ管理"""
 
-    def __init__(self, data_path: str = "data/incidents"):
+    def __init__(self, data_path:
+        """初期化メソッド"""
+    str = "data/incidents"):
         super().__init__("Incident")
 
         self.data_path = data_path
@@ -818,7 +820,10 @@ class IncidentSage(BaseSage):
                         else IncidentSeverity.MEDIUM.value
                     ),
                     "title": f"High CPU Usage on {source_system}",
-                    "message": f"CPU usage is {metric_value}%, exceeding threshold of {self.alert_rules['cpu_usage_threshold']}%",
+                    "message": f"CPU usage is {
+                        metric_value}%,
+                        exceeding threshold of {self.alert_rules['cpu_usage_threshold']
+                    }%",
                     "source_system": source_system,
                     "metadata": {
                         "metric_value": metric_value,
@@ -842,7 +847,10 @@ class IncidentSage(BaseSage):
                         else IncidentSeverity.MEDIUM.value
                     ),
                     "title": f"High Memory Usage on {source_system}",
-                    "message": f"Memory usage is {metric_value}%, exceeding threshold of {self.alert_rules['memory_usage_threshold']}%",
+                    "message": f"Memory usage is {
+                        metric_value}%,
+                        exceeding threshold of {self.alert_rules['memory_usage_threshold']
+                    }%",
                     "source_system": source_system,
                     "metadata": {
                         "metric_value": metric_value,
@@ -866,7 +874,10 @@ class IncidentSage(BaseSage):
                         else IncidentSeverity.HIGH.value
                     ),
                     "title": f"High Disk Usage on {source_system}",
-                    "message": f"Disk usage is {metric_value}%, exceeding threshold of {self.alert_rules['disk_usage_threshold']}%",
+                    "message": f"Disk usage is {
+                        metric_value}%,
+                        exceeding threshold of {self.alert_rules['disk_usage_threshold']
+                    }%",
                     "source_system": source_system,
                     "metadata": {
                         "metric_value": metric_value,

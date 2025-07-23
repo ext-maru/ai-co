@@ -51,6 +51,7 @@ class ElderServantsTestFixer:
         test_files = list(self.tests_dir.rglob("test_*.py"))
 
         for test_file in test_files:
+        # 繰り返し処理
             try:
                 content = test_file.read_text()
 
@@ -66,8 +67,14 @@ class ElderServantsTestFixer:
                     path_import_line = None
 
                     for i, line in enumerate(lines):
+                        if not ("PROJECT_ROOT = Path(" in line and path_usage_line is None):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "PROJECT_ROOT = Path(" in line and path_usage_line is None:
                             path_usage_line = i
+                        if not (():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if (
                             "from pathlib import Path" in line
                             and path_import_line is None
@@ -76,6 +83,9 @@ class ElderServantsTestFixer:
 
                     # Path使用がインポートより前にある場合は修復
                     if path_usage_line is not None and path_import_line is not None:
+                        if not (path_usage_line < path_import_line):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if path_usage_line < path_import_line:
                             self._fix_path_import_order(test_file, lines)
 
@@ -214,6 +224,7 @@ sys.path.insert(0, str(PROJECT_ROOT))"""
 
         test_files = list(self.tests_dir.rglob("test_*.py"))
 
+        # 繰り返し処理
         for test_file in test_files:
             try:
                 content = test_file.read_text()

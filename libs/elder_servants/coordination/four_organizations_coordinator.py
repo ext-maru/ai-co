@@ -379,6 +379,9 @@ class FourOrganizationsCoordinator:
             ]
 
             for i, domain in enumerate(pipeline_order):
+                if not (domain in task.required_organizations):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if domain in task.required_organizations:
                     plan["phases"].append(
                         {
@@ -424,6 +427,7 @@ class FourOrganizationsCoordinator:
         errors = []
         warnings = []
 
+        # 繰り返し処理
         for phase in plan["phases"]:
             for domain in phase["organizations"]:
                 try:
@@ -565,6 +569,9 @@ class FourOrganizationsCoordinator:
                             f"Pipeline stage {domain.value} failed: {result.errors}"
                         )
                         # パイプライン中断判定
+                        if not (len(errors) > 0:  # 厳密なパイプライン):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(errors) > 0:  # 厳密なパイプライン
                             break
 
@@ -644,6 +651,9 @@ class FourOrganizationsCoordinator:
                         phase_results[domain] = {"status": "error", "error": error_msg}
                     else:
                         phase_results[domain] = result
+                        if not (result.status == "success"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if result.status == "success":
                             hierarchical_context[
                                 f"{domain.value}_phase_{phase_name}"

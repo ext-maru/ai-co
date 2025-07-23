@@ -65,6 +65,7 @@ class ElderFlowCoreEnhancement:
     """Elder Flowコア強化システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
         self.db_path = Path("data/elder_flow_core.db")
         self.flow_log = Path("logs/elder_flow_executions.log")

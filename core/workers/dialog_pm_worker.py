@@ -31,6 +31,7 @@ logger = logging.getLogger("DialogPM")
 
 
 class DialogPMWorker:
+    """DialogPMWorkerワーカークラス"""
     def __init__(self):
         """初期化メソッド"""
         self.conversation_manager = ConversationManager()

@@ -299,7 +299,10 @@ class BaselineMetrics:
                 f"   行数: {lines.get('total_lines', 0)} (コード: {lines.get('code_lines', 0)})"
             )
             print(
-                f"   構造: クラス {structure.get('classes', 0)}, 関数 {structure.get('functions', 0)}, メソッド {structure.get('methods', 0)}"
+                (
+                    f"f"   構造: クラス {structure.get('classes', 0)}, 関数 {structure.get('functions', 0)}, メソッド "
+                    f"{structure.get('methods', 0)}""
+                )
             )
             print(
                 f"   テスト: {'✅' if tests.get('test_file_exists') else '❌'} {tests.get('test_functions', 0)} 個"

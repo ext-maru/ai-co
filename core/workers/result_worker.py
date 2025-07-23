@@ -33,6 +33,7 @@ class ResultWorker:
     def __init__(self):
         """初期化メソッド"""
         # Slack通知の初期化
+    """ResultWorkerワーカークラス"""
         self.slack_notifier = SlackNotifierV2()
         self.slack_notifier_v1 = SlackNotifier()  # フォールバック用
         logger.info(f"Slack通知: {'有効' if self.slack_notifier.enabled else '無効'}")
@@ -40,6 +41,7 @@ class ResultWorker:
     def connect(self):
         try:
             self.connection = pika.BlockingConnection(
+        """connectメソッド"""
                 pika.ConnectionParameters("localhost")
             )
             self.channel = self.connection.channel()
@@ -134,6 +136,7 @@ class ResultWorker:
 
     def process_result(self, ch, method, properties, body):
         try:
+        """process_resultを処理"""
             result = json.loads(body)
             logger.info(f"結果受信: {result['task_id']} - {result['status']}")
 
@@ -150,6 +153,7 @@ class ResultWorker:
             ch.basic_nack(delivery_tag=method.delivery_tag, requeue=False)
 
     def start(self):
+        """startメソッド"""
         if not self.connect():
             return
 

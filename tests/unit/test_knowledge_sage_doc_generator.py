@@ -31,7 +31,10 @@ def sample_knowledge_base():
         {
             "id": "doc1",
             "title": "Python Async Programming",
-            "content": "Asyncio is a library to write concurrent code using async/await syntax. It provides event loops, coroutines, and tasks for efficient I/O operations.",
+            "content": "Asyncio is a library to write concurrent code using async/await \
+                syntax. It provides event loops, coroutines, and \
+                \
+                tasks for efficient I/O operations.",
             "category": "development",
             "tags": ["python", "async", "concurrency", "performance"],
             "created_at": "2024-01-01T10:00:00",
@@ -40,7 +43,8 @@ def sample_knowledge_base():
         {
             "id": "doc2", 
             "title": "Docker Best Practices",
-            "content": "Docker containers should be lightweight, use multi-stage builds, and follow security best practices. Always use specific image tags and minimize layers.",
+            "content": "Docker containers should be lightweight, use multi-stage builds, and \
+                follow security best practices. Always use specific image tags and minimize layers.",
             "category": "devops",
             "tags": ["docker", "containers", "best-practices", "security"],
             "created_at": "2024-01-02T11:00:00",
@@ -49,7 +53,8 @@ def sample_knowledge_base():
         {
             "id": "doc3",
             "title": "RESTful API Design",
-            "content": "REST APIs should follow HTTP semantics, use proper status codes, implement pagination, and provide clear error messages. Version your APIs appropriately.",
+            "content": "REST APIs should follow HTTP semantics, use proper status codes, implement pagination, and \
+                provide clear error messages. Version your APIs appropriately.",
             "category": "architecture",
             "tags": ["api", "rest", "design", "http"],
             "created_at": "2024-01-03T12:00:00",

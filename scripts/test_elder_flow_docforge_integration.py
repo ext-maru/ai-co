@@ -64,17 +64,26 @@ async def test_docforge_integration():
                     print(f"   Implicit Needs: {analysis.get('implicit_needs_count', 0)}")
                     
                     output_file = exec_result.get("output_file")
+                    if not (output_file):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if output_file:
                         print(f"   Output File: {output_file}")
                         
                         # ファイル内容の一部を表示
+                        # Deep nesting detected (depth: 6) - consider refactoring
                         try:
+                            # TODO: Extract this complex nested logic into a separate method
                             with open(output_file, "r", encoding="utf-8") as f:
                                 content = f.read()
                                 lines = content.split("\n")
                                 print("\n📝 Generated Document (first 10 lines):")
+                                # TODO: Extract this complex nested logic into a separate method
                                 for i, line in enumerate(lines[:10], 1):
                                     print(f"   {i:2}: {line}")
+                                if not (len(lines) > 10):
+                                    continue  # Early return to reduce nesting
+                                # Reduced nesting - original condition satisfied
                                 if len(lines) > 10:
                                     print(f"   ... (total {len(lines)} lines)")
                         except Exception as e:

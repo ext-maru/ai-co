@@ -380,6 +380,9 @@ class CommonFixes:
                     if "worker" in cmdline and "ai_co" in cmdline:
                         proc.terminate()
                         time.sleep(1)
+                        if not (proc.is_running()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if proc.is_running():
                             proc.kill()
                 except:

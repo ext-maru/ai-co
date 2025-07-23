@@ -118,6 +118,9 @@ class MonitoringDashboard:
                     if "worker" in cmdline and "python" in cmdline:
                         worker_name = "unknown"
 
+                        if not ("task_worker" in cmdline):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "task_worker" in cmdline:
                             worker_name = "task_worker"
                         elif "pm_worker" in cmdline:
@@ -125,6 +128,9 @@ class MonitoringDashboard:
                         elif "result_worker" in cmdline:
                             worker_name = "result_worker"
                         elif "async" in cmdline:
+                            if not ("task" in cmdline):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "task" in cmdline:
                                 worker_name = "async_task_worker"
                             elif "result" in cmdline:
@@ -132,6 +138,9 @@ class MonitoringDashboard:
                             elif "pm" in cmdline:
                                 worker_name = "async_pm_worker"
 
+                        if not (worker_name not in worker_processes):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if worker_name not in worker_processes:
                             worker_processes[worker_name] = []
 

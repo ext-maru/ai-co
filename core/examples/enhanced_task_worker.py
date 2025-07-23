@@ -215,6 +215,7 @@ Task to complete:
 
         patterns = ["*.py", "*.js", "*.html", "*.sh", "*.json"]
 
+        # 繰り返し処理
         for pattern in patterns:
             for file_path in glob.glob(os.path.join(directory, pattern)):
                 if os.path.isfile(file_path):

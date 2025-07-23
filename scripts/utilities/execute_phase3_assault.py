@@ -97,6 +97,7 @@ class ElderCouncilPhase3Coordinator:
         target_dirs = ["core", "workers", "commands", "web"]
         generated_tests = 0
 
+        # 繰り返し処理
         for target_dir in target_dirs:
             if os.path.exists(target_dir):
                 self.log_progress(f"Generating tests for {target_dir}/")
@@ -109,8 +110,12 @@ class ElderCouncilPhase3Coordinator:
                     if test_content:
                         test_file = f"tests/unit/test_{py_file.stem}_simple.py"
 
+                        if os.path.exists(test_file):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if not os.path.exists(test_file):
                             os.makedirs(os.path.dirname(test_file), exist_ok=True)
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             with open(test_file, "w") as f:
                                 f.write(test_content)
                             generated_tests += 1

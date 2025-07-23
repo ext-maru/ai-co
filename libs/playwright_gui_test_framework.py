@@ -31,7 +31,9 @@ except ImportError:
 
     # フォールバック用のダミークラス
     class DummyPlaywright:
+        """DummyPlaywrightクラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
 
     Page = Browser = BrowserContext = Playwright = DummyPlaywright
@@ -40,7 +42,9 @@ except ImportError:
 class PlaywrightGUITestFramework:
     """Playwright ベースの高機能GUIテストフレームワーク"""
 
-    def __init__(self, base_url: str = "http://localhost:5555", headless: bool = True):
+    def __init__(self, base_url:
+        """初期化メソッド"""
+    str = "http://localhost:5555", headless: bool = True):
         if not PLAYWRIGHT_AVAILABLE:
             raise ImportError(
                 "Playwright not installed. Run: pip install playwright && playwright install"
@@ -188,7 +192,9 @@ class PlaywrightGUITestFramework:
 class EldersGuildDashboardTest:
     """Elders Guild ダッシュボード専用テストクラス"""
 
-    def __init__(self, framework: PlaywrightGUITestFramework):
+    def __init__(self, framework:
+        """初期化メソッド"""
+    PlaywrightGUITestFramework):
         self.framework = framework
         self.logger = logging.getLogger(__name__)
 
@@ -328,7 +334,9 @@ class EldersGuildDashboardTest:
 class PlaywrightTestRunner:
     """Playwright テストランナー"""
 
-    def __init__(self, base_url: str = "http://localhost:5555", headless: bool = True):
+    def __init__(self, base_url:
+        """初期化メソッド"""
+    str = "http://localhost:5555", headless: bool = True):
         self.base_url = base_url
         self.headless = headless
         self.framework = None
@@ -436,7 +444,9 @@ class PlaywrightTestRunner:
 class PlaywrightTestServerManager:
     """Playwright用テストサーバー管理"""
 
-    def __init__(self, server_script: str = "web/dashboard_final.py"):
+    def __init__(self, server_script:
+        """初期化メソッド"""
+    str = "web/dashboard_final.py"):
         self.server_script = server_script
         self.server_process = None
         self.logger = logging.getLogger(__name__)

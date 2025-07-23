@@ -65,6 +65,7 @@ class LearningOptimizer(BaseManager):
     """修復戦略を学習し最適化するエンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.logger = logging.getLogger(self.__class__.__name__)
 

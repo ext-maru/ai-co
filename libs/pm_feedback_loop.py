@@ -30,6 +30,7 @@ class PMFeedbackLoop(BaseManager):
     """PM満足度ベースのフィードバックループ管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("PMFeedbackLoop")
         self.quality_evaluator = PMQualityEvaluator()
 

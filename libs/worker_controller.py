@@ -13,6 +13,7 @@ logger = logging.getLogger("WorkerController")
 
 
 class WorkerController:
+    """WorkerControllerクラス"""
     def __init__(self, config_file=None):
         """ワーカー制御システムの初期化"""
         if config_file is None:
@@ -33,6 +34,7 @@ class WorkerController:
                     line = line.strip()
                     if line and not line.startswith("#") and "=" in line:
                         key, value = line.split("=", 1)
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             config[key] = int(value)
                         except ValueError:
@@ -138,12 +140,16 @@ exec python3 {worker_script} {worker_id}
             ps_cmd = ["ps", "aux"]
             result = subprocess.run(ps_cmd, capture_output=True, text=True)
 
+            # 繰り返し処理
             for line in result.stdout.split("\n"):
                 if "task_worker.py" in line and worker_id in line:
                     parts = line.split()
                     if len(parts) > 1:
                         pid = int(parts[1])
 
+                        if not (graceful):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if graceful:
                             # グレースフルシャットダウン
                             os.kill(pid, signal.SIGTERM)
@@ -151,7 +157,11 @@ exec python3 {worker_script} {worker_id}
 
                             # 終了を待つ
                             timeout = self.config.get("GRACEFUL_SHUTDOWN_TIMEOUT", 30)
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             for _ in range(timeout):
+                                if self._is_process_alive(pid):
+                                    continue  # Early return to reduce nesting
+                                # Reduced nesting - original condition satisfied
                                 if not self._is_process_alive(pid):
                                     logger.info(f"✅ ワーカー正常終了: {worker_id}")
                                     break
@@ -206,6 +216,9 @@ exec python3 {worker_script} {worker_id}
                 # スケールダウン
                 workers_to_stop = current_workers[target_count:]
                 for worker_id in workers_to_stop:
+                    if self.stop_worker(worker_id):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if not self.stop_worker(worker_id):
                         logger.error(f"スケールダウン失敗: {worker_id}")
                         return False

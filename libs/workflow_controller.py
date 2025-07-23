@@ -81,6 +81,7 @@ class WorkflowController(BaseManager):
     """ワークフロー自動制御システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("WorkflowController")
         self.db_path = PROJECT_ROOT / "db" / "workflow_control.db"
         self.task_splitter = IntelligentTaskSplitter()
@@ -489,6 +490,7 @@ class WorkflowController(BaseManager):
 
             templates = phase_templates.get(phase, ["汎用タスク"])
 
+            # 繰り返し処理
             for i, template in enumerate(templates):
                 task_description = f"{phase.title()}フェーズ: {template}"
 
@@ -567,6 +569,9 @@ class WorkflowController(BaseManager):
                         project_id, condition_expr, completed_phase
                     ):
                         # 遅延がある場合は遅延実行
+                        if not (delay_minutes > 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if delay_minutes > 0:
                             self._schedule_delayed_advance(
                                 project_id, to_phase, delay_minutes

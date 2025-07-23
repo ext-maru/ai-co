@@ -7,6 +7,7 @@ import pika
 
 
 def send_test_task():
+    """send_test_taskメソッド"""
     try:
         connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
         channel = connection.channel()

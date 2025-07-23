@@ -19,7 +19,9 @@ from libs.elder_process_base import (
 
 class KnowledgeEntry:
     """知識エントリ"""
-    def __init__(self, entry_id: str, category: str, content: Dict[str, Any]):
+    def __init__(self, entry_id:
+        """初期化メソッド"""
+    str, category: str, content: Dict[str, Any]):
         self.entry_id = entry_id
         self.category = category
         self.content = content
@@ -41,6 +43,7 @@ class KnowledgeSageProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="knowledge_sage",
             elder_role=ElderRole.SAGE,

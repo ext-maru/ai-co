@@ -11,7 +11,9 @@ from typing import Dict, List, Any
 class QuantumEntangledPair:
     """量子もつれペア"""
 
-    def __init__(self, pair_id: str):
+    def __init__(self, pair_id:
+        """初期化メソッド"""
+    str):
         self.pair_id = pair_id
         self.state_a = None
         self.state_b = None
@@ -40,6 +42,7 @@ class QuantumCommunicationNetwork:
     """量子通信ネットワーク"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.entangled_pairs = {}
         self.communication_log = []
 
@@ -119,6 +122,7 @@ class QuantumCommunicationNetwork:
 
 # デモ実行
 async def quantum_communication_demo():
+    """quantum_communication_demoメソッド"""
     network = QuantumCommunicationNetwork()
 
     # もつれペア生成

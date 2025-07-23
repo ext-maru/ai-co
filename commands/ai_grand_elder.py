@@ -127,6 +127,9 @@ class AIGrandElderCommand:
                             .strip()
                             .lower()
                         )
+                        if not (decision in ["approved", "rejected", "deferred"]):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if decision in ["approved", "rejected", "deferred"]:
                             decisions[proposal["id"]] = decision
                             break

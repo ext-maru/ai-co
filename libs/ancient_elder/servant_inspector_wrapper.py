@@ -20,6 +20,7 @@ class ServantInspector(AncientElderBase):
     """
     
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(specialty="servant_inspection")
         
     async def audit(self, target: Dict[str, Any]) -> AuditResult:

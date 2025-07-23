@@ -10,7 +10,9 @@ from pathlib import Path
 
 
 class RealTimeMonitor:
+    """RealTimeMonitor - 監視クラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.metrics = {}
         self.alerts = []
         self.running = False
@@ -64,7 +66,9 @@ class RealTimeMonitor:
 
 # 予測分析システム
 class PredictiveAnalyzer:
+    """PredictiveAnalyzer - 分析クラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.history = []
 
     def add_datapoint(self, metrics):

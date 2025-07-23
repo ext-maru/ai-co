@@ -74,6 +74,7 @@ class WorkerMonitor:
             cmd = ["ps", "aux"]
             result = subprocess.run(cmd, capture_output=True, text=True)
 
+            # 繰り返し処理
             for line in result.stdout.split("\n"):
                 if "task_worker.py" in line and "worker-" in line:
                     parts = line.split()

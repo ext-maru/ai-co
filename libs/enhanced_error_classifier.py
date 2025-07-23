@@ -45,6 +45,7 @@ class EnhancedErrorClassifier:
     """強化エラー分類システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.patterns = self._initialize_patterns()
         self.statistics = defaultdict(int)
         self.classified_cache = {}

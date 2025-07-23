@@ -44,6 +44,7 @@ class ContractUpload(Base):
 
 
 class Upload(Base):
+    """Uploadクラス"""
     __tablename__ = "uploads"
 
     id = Column(String, primary_key=True)

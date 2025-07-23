@@ -150,11 +150,13 @@ def test_local_rate_limiting():
                 self.calls = []
 
             def check_rate_limit(self):
+            """SimpleRateLimiterクラス"""
                 now = time.time()
                 # 古い呼び出しを削除
                 self.calls = [call for call in self.calls if call > now - self.period]
 
                 if len(self.calls) >= self.rate:
+                """check_rate_limitメソッド"""
                     return False
 
                 self.calls.append(now)
@@ -191,6 +193,7 @@ def test_basic_caching():
                 self.cache = {}
                 self.ttl = ttl
 
+            """SimpleCacheクラス"""
             def set(self, key, value):
                 self.cache[key] = {"value": value, "expires_at": time.time() + self.ttl}
 
@@ -198,6 +201,7 @@ def test_basic_caching():
                 if key not in self.cache:
                     return default
 
+                """getの値を取得"""
                 entry = self.cache[key]
                 if time.time() > entry["expires_at"]:
                     del self.cache[key]
@@ -238,6 +242,7 @@ def test_basic_metrics():
         class SimpleMetrics:
             def __init__(self):
                 self.counters = {}
+            """SimpleMetricsクラス"""
                 self.timings = {}
 
             def increment(self, name):
@@ -250,6 +255,7 @@ def test_basic_metrics():
 
             def get_stats(self):
                 stats = {"counters": self.counters}
+                """get_statsの値を取得"""
 
                 for name, timings in self.timings.items():
                     stats[f"{name}_avg"] = sum(timings) / len(timings)
@@ -311,6 +317,7 @@ async def test_system_workflow():
 
         # 3. 非同期処理シミュレーション
         async def process_task(task_data):
+            """process_taskを処理"""
             # 処理時間のシミュレーション
             await asyncio.sleep(0.1)
 

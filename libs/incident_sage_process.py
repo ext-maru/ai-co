@@ -83,6 +83,7 @@ class IncidentSageProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="incident_sage",
             elder_role=ElderRole.SAGE,
@@ -189,6 +190,9 @@ class IncidentSageProcess(ElderProcessBase):
                             affected_systems=inc_data['affected_systems']
                         )
 
+                        if not (inc_data.get('resolved_at')):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if inc_data.get('resolved_at'):
                             incident.resolved_at = datetime.fromisoformat(inc_data['resolved_at'])
 

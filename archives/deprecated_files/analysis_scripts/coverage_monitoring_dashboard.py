@@ -996,7 +996,8 @@ class CoverageMonitoringDashboard:
     <div class="metrics">
         <div class="metric">
             <h3>Current Coverage</h3>
-            <h2 class="{'status-good' if dashboard_data['current_status']['coverage'] >= 66.7 else 'status-warning'}">{dashboard_data['current_status']['coverage']:.1f}%</h2>
+            <h2 class="{'status-good' if dashboard_data['current_status']['coverage'] " \
+                ">= 66.7 else 'status-warning'}">{dashboard_data['current_status']['coverage']:.1f}%</h2>
         </div>
         <div class="metric">
             <h3>Strategic Target</h3>
@@ -1004,7 +1005,9 @@ class CoverageMonitoringDashboard:
         </div>
         <div class="metric">
             <h3>Active Alerts</h3>
-            <h2 class="{'status-critical' if len(dashboard_data['active_alerts']) > 0 else 'status-good'}">{len(dashboard_data['active_alerts'])}</h2>
+            <h2 class="{'status-critical' if " \
+                "len(dashboard_data['active_alerts']) " \
+                    "> 0 else 'status-good'}">{len(dashboard_data['active_alerts'])}</h2>
         </div>
     </div>
 
@@ -1013,11 +1016,18 @@ class CoverageMonitoringDashboard:
         '.png'
     )}" alt="Coverage Dashboard Charts" style="max-width: 100%;">
 
-    {'<div class="alerts"><h3>🚨 Active Alerts</h3>' + '<br>'.join([f"<strong>{alert['severity'].upper()}</strong>: {alert['message']}" for alert in dashboard_data['active_alerts']]) + '</div>' if dashboard_data['active_alerts'] else ''}
+    {'<div class="alerts"><h3>🚨 Active Alerts</h3>' + \
+        '<br>'.join([f"<strong>{alert['severity'].upper()}</strong>: " \
+            "{alert['message']}" for alert in dashboard_data['active_alerts']]) + \
+            \
+        '</div>' if dashboard_data['active_alerts'] else ''}
 
     <h3>📊 Quality Gates Status</h3>
     <ul>
-    {''.join([f"<li>{'✅' if gate['passed'] else '❌'} {gate['gate_name']}: {gate['score']:.1f} ({'PASS' if gate['passed'] else 'FAIL'})</li>" for gate in dashboard_data['quality_gates']])}
+    {''.join([f"<li>{'✅' if gate['passed'] else '❌'} {gate['gate_name']}: " \
+        "{gate['score']:.1f} ({'PASS' \
+            if gate['passed'] \
+            else 'FAIL'})</li>" for gate in dashboard_data['quality_gates']])}
     </ul>
 
     <p><em>Week 4 Strategic Infrastructure - Coverage Monitoring Dashboard</em></p>

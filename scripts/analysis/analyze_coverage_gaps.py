@@ -14,6 +14,7 @@ def get_libs_modules():
     """Get all libs modules"""
     libs_modules = []
     for root, dirs, files in os.walk("libs"):
+    # 繰り返し処理
         for file in files:
             if file.endswith(".py") and file != "__init__.py":
                 module_name = file[:-3]  # Remove .py extension
@@ -24,6 +25,7 @@ def get_libs_modules():
 def get_existing_libs_tests():
     """Get existing test files for libs"""
     test_files = []
+    # 繰り返し処理
     for root, dirs, files in os.walk("tests"):
         for file in files:
             if file.startswith("test_") and file.endswith(".py"):

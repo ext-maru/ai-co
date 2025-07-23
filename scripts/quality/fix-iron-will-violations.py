@@ -148,6 +148,9 @@ def main():
             if any(pattern in content.upper() for pattern in ['TODO', 'FIXME', 'XXX', 'HACK']):
                 modifications = fix_iron_will_violations_in_file(file_path, dry_run=args.dry_run)
                 if modifications > 0:
+                    if not (args.verbose or args.dry_run):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if args.verbose or args.dry_run:
                         print(f"{file_path}: {modifications} violations {'would be' if args.dry_run else 'were'} fixed")
                     total_modifications += modifications
@@ -155,7 +158,8 @@ def main():
         except:
             continue
     
-    print(f"\nSummary: {total_modifications} violations in {modified_files} files {'would be' if args.dry_run else 'were'} fixed")
+    print(f"\nSummary: {total_modifications} violations " \
+        "in {modified_files} files {'would be' if args.dry_run else 'were'} fixed")
 
 
 if __name__ == "__main__":

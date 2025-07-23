@@ -34,7 +34,9 @@ try:
 except ImportError:
     # フォールバック設定
     class MockConfig:
+        """MockConfigクラス"""
         class SecurityConfig:
+            """SecurityConfigクラス"""
             jwt_secret = "elders-guild-secret-key"
             encryption_key = None
 
@@ -193,7 +195,9 @@ class RabbitMQA2AMessage:
 class RabbitMQA2AClient:
     """RabbitMQ A2A通信クライアント"""
 
-    def __init__(self, agent_id: str, use_encryption: bool = True):
+    def __init__(self, agent_id:
+        """初期化メソッド"""
+    str, use_encryption: bool = True):
         self.agent_id = agent_id
         self.use_encryption = use_encryption
 
@@ -335,7 +339,9 @@ class RabbitMQA2AClient:
 
         self._running = True
 
-        async def message_handler(message: aio_pika.IncomingMessage):
+        async def message_handler(message:
+            """message_handlerメソッド"""
+        aio_pika.IncomingMessage):
             async with message.process():
                 try:
                     # A2Aメッセージに復元
@@ -381,6 +387,7 @@ class RabbitMQFourSagesA2A:
     SAGE_IDS = ["knowledge_sage", "task_sage", "incident_sage", "rag_sage"]
 
     def __init__(self):
+        """初期化メソッド"""
         self.clients = {}
         for sage_id in self.SAGE_IDS:
             self.clients[sage_id] = RabbitMQA2AClient(sage_id)
@@ -445,7 +452,9 @@ class RabbitMQFourSagesA2A:
         response_received = asyncio.Event()
         response_data = None
 
-        async def response_handler(message: RabbitMQA2AMessage):
+        async def response_handler(message:
+            """response_handlerメソッド"""
+        RabbitMQA2AMessage):
             nonlocal response_data
             if (
                 message.message_type == MessageType.SAGE_RESPONSE
@@ -496,6 +505,7 @@ async def create_rabbitmq_a2a_client(
 if __name__ == "__main__":
 
     async def test_rabbitmq_a2a():
+        """test_rabbitmq_a2aテストメソッド"""
         # テスト実行
         print("🐰 Testing RabbitMQ A2A Communication")
 
@@ -504,7 +514,9 @@ if __name__ == "__main__":
         client2 = await create_rabbitmq_a2a_client("test_agent_2")
 
         # メッセージハンドラー登録
-        async def response_handler(message: RabbitMQA2AMessage):
+        async def response_handler(message:
+            """response_handlerメソッド"""
+        RabbitMQA2AMessage):
             print(f"📩 Received: {message.payload}")
 
             # レスポンス送信

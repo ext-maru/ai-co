@@ -455,6 +455,7 @@ class TestElderAuthenticationSecurity:
 
         cross_sage_violations = 0
 
+        # 繰り返し処理
         for username, sage_type in sage_users:
             auth_request = AuthRequest(
                 username=username, password=f"{username.split('_')[0]}_password"

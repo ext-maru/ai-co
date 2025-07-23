@@ -14,13 +14,18 @@ from libs.mcp_wrapper import MCPServer
 
 
 class FileSystemMCPServer:
+    """FileSystemMCPServerクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.server = MCPServer("filesystem")
         self.setup_tools()
 
     def setup_tools(self):
+        """setup_toolsメソッド"""
         @self.server.tool()
-        async def create_worker(name: str, worker_type: str):
+        async def create_worker(name:
+            """worker作成メソッド"""
+        str, worker_type: str):
             # Simplified implementation
             file_path = PROJECT_ROOT / "workers" / f"{name}_worker.py"
             # Generate worker template
@@ -31,7 +36,9 @@ class FileSystemMCPServer:
             return f"Worker created: {file_path}"
 
         @self.server.tool()
-        async def deploy_file(file_name: str, content: str):
+        async def deploy_file(file_name:
+            """deploy_fileメソッド"""
+        str, content: str):
             # Auto-deploy based on file name
             import re
 
@@ -54,7 +61,9 @@ class FileSystemMCPServer:
                 file_path.chmod(0o755)
             return f"File deployed: {file_path}"
 
-    def _generate_worker_template(self, name: str, worker_type: str) -> str:
+    def _generate_worker_template(self, name:
+        """generate_worker_template（内部メソッド）"""
+    str, worker_type: str) -> str:
         return f"""#!/usr/bin/env python3
 '''
 Elders Guild {name.title()} Worker
@@ -85,6 +94,7 @@ if __name__ == "__main__":
 """
 
     async def process_request(self, request_json):
+        """process_request処理メソッド"""
         request = json.loads(request_json)
         return await self.server.handle_request(request)
 

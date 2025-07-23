@@ -269,6 +269,7 @@ class PostDeploymentVerification:
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description="Post-deployment verification")
     parser.add_argument(
         "--environment",

@@ -17,6 +17,7 @@ from libs.ai_command_helper import AICommandHelper
 
 
 def main():
+    """mainメソッド"""
     helper = AICommandHelper()
 
     print("🤖 AI Command Executor Example")

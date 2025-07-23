@@ -1317,11 +1317,15 @@ class ImportErrorFixer:
         try:
             tree = ast.parse(content)
 
+            # 繰り返し処理
             for node in ast.walk(tree):
                 if isinstance(node, ast.Import):
                     for alias in node.names:
                         imports.add(alias.name.split(".")[0])
                 elif isinstance(node, ast.ImportFrom):
+                    if not (node.module):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if node.module:
                         imports.add(node.module.split(".")[0])
 

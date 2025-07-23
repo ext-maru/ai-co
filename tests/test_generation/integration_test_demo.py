@@ -275,11 +275,21 @@ def generate_final_report() -> str:
             "",
             "## Conclusion",
             "",
-            f"The automated test generation system successfully demonstrates the ability to maintain and expand the 66.7% coverage achievement through intelligent, pattern-based test generation. With {quality_analysis['total_files']} generated test files containing {quality_analysis['total_test_methods']} test methods, the system provides a scalable foundation for continuous coverage improvement.",
+            (
+                f"f"The automated test generation system successfully demonstrates the \
+                    ability to maintain and expand the 66.7% coverage achievement \
+                        through intelligent, pattern-based test generation. With "
+                f"{quality_analysis['total_files']} generated test files containing "
+                f"{quality_analysis['total_test_methods']} test methods,  \
+                    the system provides a scalable foundation for continuous coverage improvement.","
+            )
             "",
-            "**Key Innovation**: The system learns from proven successful patterns (98.6% and 100% coverage modules) rather than generating generic tests, ensuring high-quality, maintainable test suites.",
+            "**Key Innovation**: The system learns from proven successful patterns (98.6% " \
+                "and 100% coverage modules) rather than generating generic tests, ensuring high-quality,  \
+                    maintainable test suites.",
             "",
-            f"**Files Generated**: {quality_analysis['total_files']} test files ready for execution and coverage measurement.",
+            f"**Files Generated**: {quality_analysis['total_files']} test files ready \
+                for execution and coverage measurement.",
         ]
     )
 

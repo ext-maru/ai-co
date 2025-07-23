@@ -101,7 +101,9 @@ app_info = Info("app_info", "Application information")
 class PrometheusExporter:
     """Prometheusエクスポーター"""
 
-    def __init__(self, port: int = 8000):
+    def __init__(self, port:
+        """初期化メソッド"""
+    int = 8000):
         self.port = port
         self.metrics: Dict[str, Any] = {}
 
@@ -242,6 +244,7 @@ class MonitoringDashboardAdapter:
     """既存のMonitoringDashboardとの互換性アダプター"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.exporter = PrometheusExporter()
         self.exporter.start()
 

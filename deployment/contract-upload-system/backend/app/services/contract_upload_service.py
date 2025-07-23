@@ -329,7 +329,10 @@ class ContractUploadService:
         return [ContractUploadResponse.from_orm(u) for u in uploads]
 
     async def update_contract_status(
-        self, contract_upload_id: str, status: UploadStatus, admin_notes: Optional[str] = None, admin_user_id: Optional[str] = None
+        self, contract_upload_id: str, status: UploadStatus, admin_notes: Optional[
+            str] = None,
+            admin_user_id: Optional[str
+        ] = None
     ) -> ContractUploadResponse:
         """契約ステータス更新（管理者用）"""
         contract_upload = (

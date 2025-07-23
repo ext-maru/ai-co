@@ -29,23 +29,27 @@ logger = logging.getLogger("SecurityManager")
 
 
 class SecurityLevel(Enum):
+    """SecurityLevelクラス"""
     LOW = 1
     MEDIUM = 2
     HIGH = 3
     CRITICAL = 4
     
     def __lt__(self, other):
+        """__lt__特殊メソッド"""
         if isinstance(other, SecurityLevel):
             return self.value < other.value
         return NotImplemented
     
     def __gt__(self, other):
+        """__gt__特殊メソッド"""
         if isinstance(other, SecurityLevel):
             return self.value > other.value
         return NotImplemented
 
 
 class PermissionLevel(Enum):
+    """PermissionLevelクラス"""
     READ = "read"
     WRITE = "write"
     ADMIN = "admin"
@@ -54,6 +58,7 @@ class PermissionLevel(Enum):
 
 @dataclass
 class SecurityContext:
+    """SecurityContextクラス"""
     user_id: str
     session_id: str
     permissions: List[PermissionLevel]
@@ -65,6 +70,7 @@ class SecurityContext:
 
 @dataclass
 class VulnerabilityResult:
+    """VulnerabilityResultクラス"""
     severity: SecurityLevel
     vulnerability_type: str
     description: str
@@ -91,6 +97,7 @@ class InputValidator:
     ALLOWED_EXTENSIONS = {'.py', '.md', '.txt', '.json', '.yaml', '.yml', '.cfg', '.ini'}
     
     def __init__(self):
+        """初期化メソッド"""
         self.patterns = [re.compile(pattern, re.IGNORECASE) for pattern in self.DANGEROUS_PATTERNS]
     
     def validate_input(self, data: Any, context: str = "general") -> Dict[str, Any]:
@@ -200,7 +207,9 @@ class InputValidator:
 class AuthenticationManager:
     """認証・認可システム（RBAC対応）"""
     
-    def __init__(self, secret_key: str = None):
+    def __init__(self, secret_key:
+        """初期化メソッド"""
+    str = None):
         self.secret_key = secret_key or os.getenv("A2A_SECRET_KEY", self._generate_secret_key())
         self.sessions: Dict[str, SecurityContext] = {}
         self.failed_attempts: Dict[str, List[datetime]] = {}
@@ -378,7 +387,9 @@ class AuthenticationManager:
 class DataProtectionManager:
     """データ保護・暗号化システム"""
     
-    def __init__(self, master_key: str = None):
+    def __init__(self, master_key:
+        """初期化メソッド"""
+    str = None):
         self.master_key = master_key or os.getenv("A2A_MASTER_KEY")
         if not self.master_key:
             self.master_key = self._generate_master_key()
@@ -443,6 +454,7 @@ class VulnerabilityScanner:
     """脆弱性スキャンシステム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.known_vulnerabilities = self._load_vulnerability_database()
     
     def _load_vulnerability_database(self) -> Dict[str, Any]:
@@ -531,6 +543,7 @@ class SecurityManager:
     """包括的セキュリティマネージャー"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.input_validator = InputValidator()
         self.auth_manager = AuthenticationManager()
         self.data_protection = DataProtectionManager()

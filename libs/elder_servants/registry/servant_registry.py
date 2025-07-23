@@ -24,26 +24,32 @@ try:
 except ImportError:
     # Fallback definitions for testing
     class ElderServantBase:
+        """ElderServantBase - エルダーズギルド関連クラス"""
         # Main class implementation
         pass
     
     class ServantCapability:
+        """ServantCapabilityクラス"""
         # Main class implementation
         pass
     
     class ServantCategory:
+        """ServantCategoryクラス"""
         # Main class implementation
         pass
     
     class ServantRequest:
+        """ServantRequestクラス"""
         # Main class implementation
         pass
     
     class ServantResponse:
+        """ServantResponseクラス"""
         # Main class implementation
         pass
     
     class ServantDomain:
+        """ServantDomainクラス"""
         # Main class implementation
         pass
 
@@ -69,6 +75,7 @@ class ServantRegistry:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger("elder_servant.registry")
         self._servants: Dict[str, ElderServantBase] = {}
         self._domain_map: Dict[ServantDomain, List[str]] = defaultdict(list)
@@ -237,7 +244,8 @@ class ServantRegistry:
         best_servant = await self._select_optimal_servant(suitable_servants, request)
         
         if best_servant:
-            self.logger.info(f"Routing task {request.task_id} to {best_servant.servant.name} (score: {best_servant.composite_score:.2f})")
+            self.logger.info(f"Routing task {request.task_id} to " \
+                "{best_servant.servant.name} (score: {best_servant.composite_score:.2f})")
             return await best_servant.servant.execute_with_quality_gate(request)
 
         self.logger.warning(f"No suitable servant found for task {request.task_id}")

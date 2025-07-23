@@ -14,6 +14,7 @@ from libs.ai_command_helper import AICommandHelper
 
 
 def main():
+    """mainメソッド"""
     helper = AICommandHelper()
 
     print("🚀 Starting Commit Message Best Practices Implementation")
@@ -62,7 +63,8 @@ rm -f test_file.txt
 
 echo ""
 echo "Test 2: Command availability"
-ai-git best-practices > /dev/null 2>&1 && echo "✅ best-practices command works" || echo "❌ best-practices command failed"
+ai-git best-practices > /dev/null 2>&1 && echo "✅ best-practices command \
+    works" || echo "❌ best-practices command failed"
 ai-git analyze > /dev/null 2>&1 && echo "✅ analyze command works" || echo "❌ analyze command failed"
 
 echo ""

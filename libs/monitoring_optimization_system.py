@@ -114,7 +114,9 @@ class PerformanceAlert:
 class SystemMonitor:
     """システム監視"""
 
-    def __init__(self, level: MonitoringLevel = MonitoringLevel.DETAILED):
+    def __init__(self, level:
+        """初期化メソッド"""
+    MonitoringLevel = MonitoringLevel.DETAILED):
         self.level = level
         self.metrics_history = deque(maxlen=1000)
         self.alerts = []
@@ -215,7 +217,8 @@ class SystemMonitor:
 
             # 遅いクエリ数（推定）
             slow_queries = await conn.fetchval(
-                "SELECT count(*) FROM pg_stat_activity WHERE state = 'active' AND query_start < NOW() - INTERVAL '30 seconds'"
+                "SELECT count(*) FROM pg_stat_activity WHERE state =  \
+                    'active' AND query_start < NOW() - INTERVAL '30 seconds'"
             )
 
             # キャッシュヒット率
@@ -248,7 +251,8 @@ class SystemMonitor:
             # テーブルサイズ
             table_sizes = {}
             size_stats = await conn.fetch(
-                "SELECT schemaname, tablename, pg_total_relation_size(schemaname||'.'||tablename) as size FROM pg_tables WHERE schemaname = 'public'"
+                "SELECT schemaname, tablename, pg_total_relation_size(schemaname||'." \
+                    "'||tablename) as size FROM pg_tables WHERE schemaname = 'public'"
             )
 
             for row in size_stats:
@@ -396,7 +400,9 @@ class SystemMonitor:
 class PerformanceOptimizer:
     """パフォーマンス最適化"""
 
-    def __init__(self, strategy: OptimizationStrategy = OptimizationStrategy.BALANCED):
+    def __init__(self, strategy:
+        """初期化メソッド"""
+    OptimizationStrategy = OptimizationStrategy.BALANCED):
         self.strategy = strategy
         self.optimizations_applied = []
         self.performance_history = deque(maxlen=100)

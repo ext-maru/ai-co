@@ -29,6 +29,8 @@ except ImportError:
 
     class MockPikaExceptions:
         class AMQPConnectionError(Exception):
+        """MockPikaExceptionsクラス"""
+            """AMQPConnectionErrorクラス"""
             pass
 
     pika_exceptions = MockPikaExceptions()

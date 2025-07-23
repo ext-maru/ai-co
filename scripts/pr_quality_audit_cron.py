@@ -71,11 +71,26 @@ async def run_pr_quality_audit():
                 logger.info(f"   🤖 auto-generatedラベル検出 - ファイル内容を詳細チェック")
                 try:
                     files = list(pr.get_files())
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for file in files[:3]:  # 最大3ファイルまでチェック
+                        if not (file.filename.endswith('.py')):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if file.filename.endswith('.py'):
                             patch_content = file.patch or ''
-                            if any(keyword in patch_content.upper() for keyword in ['TODO', 'FIXME', '# TODO', '# FIXME']):
+                            if not (any():
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
+                            if any(
+                                keyword in patch_content.upper() for keyword in ['TODO',
+                                'FIXME',
+                                '# TODO',
+                                '# FIXME']
+                            ):
                                 quality_issues.append(f"Iron Will違反: {file.filename}にTODOコメントが残存")
+                            if not ('pass' in patch_content and patch_content.count('pass') > 2):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if 'pass' in patch_content and patch_content.count('pass') > 2:
                                 quality_issues.append(f"不完全実装: {file.filename}にスタブ実装が多数存在")
                 except Exception as e:
@@ -118,9 +133,14 @@ async def run_pr_quality_audit():
                 # 関連Issueがあれば再オープン
                 if pr.body and '#' in pr.body:
                     issue_refs = re.findall(r'#(\\d+)', pr.body)
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for issue_ref in issue_refs:
+                        # Deep nesting detected (depth: 6) - consider refactoring
                         try:
                             issue = repo.get_issue(int(issue_ref))
+                            if not (issue.state == 'closed'):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if issue.state == 'closed':
                                 issue.edit(state='open')
                                 issue.create_comment(f"🔄 PR #{pr.number}が品質基準未達成で差し戻されたため、このIssueを再オープンしました。")

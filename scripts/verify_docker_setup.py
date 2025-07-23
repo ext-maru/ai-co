@@ -75,6 +75,7 @@ def check_port_availability(port=5000):
 
 
 def main():
+    """mainメソッド"""
     print("🐳 Docker環境検証レポート")
     print("=" * 60)
 

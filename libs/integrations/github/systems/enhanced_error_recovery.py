@@ -547,9 +547,12 @@ def enhanced_error_handler(
 ):
     """拡張エラーハンドリングデコレータ"""
 
-    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+    def decorator(func:
+        """decoratorメソッド"""
+    Callable[..., T]) -> Callable[..., T]:
         @wraps(func)
         async def async_wrapper(*args, **kwargs):
+            """async_wrapperメソッド"""
             context = {
                 "function": func.__name__,
                 "circuit_name": circuit_name,
@@ -596,6 +599,7 @@ def enhanced_error_handler(
 
         @wraps(func)
         def sync_wrapper(*args, **kwargs):
+            """sync_wrapperメソッド"""
             # 同期関数用のラッパー
             return asyncio.run(async_wrapper(*args, **kwargs))
 

@@ -47,6 +47,7 @@ def test_knowledge_node_operations():
             and node.content == "Machine Learning"
             and node.node_type == "concept"
         ):
+        # 複雑な条件判定
             print("  ✅ 基本作成")
             tests_passed += 1
         else:
@@ -234,6 +235,7 @@ def test_knowledge_edge_operations():
             edge.source_id == "node_001"
             and edge.target_id == "node_002"
             and edge.relation_type == "is_related_to"
+        # 複雑な条件判定
             and edge.strength == 0.8
         ):
             print("  ✅ 基本作成")
@@ -343,6 +345,7 @@ def test_knowledge_edge_operations():
         if 0.0 <= weight <= 1.0:
             print("  ✅ エッジ重み計算")
             tests_passed += 1
+        # 複雑な条件判定
         else:
             print("  ❌ エッジ重み計算失敗")
     except Exception as e:
@@ -378,6 +381,7 @@ def test_semantic_embedding_operations():
         )
         if (
             embedding.text == "machine learning algorithms"
+        # 複雑な条件判定
             and len(embedding.vector) == 5
             and embedding.model_name == "simplified_embedding"
         ):
@@ -425,6 +429,7 @@ def test_semantic_embedding_operations():
             embedding2 = SemanticEmbedding("content2", [0.2, 0.3, 0.4, 0.5, 0.6])
             similarity = embedding.cosine_similarity(embedding2)
             if 0.0 <= similarity <= 1.0:
+            # 複雑な条件判定
                 print("  ✅ 類似度計算")
                 tests_passed += 1
             else:
@@ -517,6 +522,7 @@ def test_knowledge_cluster_operations():
         cluster = KnowledgeCluster(
             cluster_id="cluster_001", nodes=nodes, centroid=[0.1, 0.2, 0.3]
         )
+        # 複雑な条件判定
         if (
             cluster.cluster_id == "cluster_001"
             and len(cluster.nodes) == 3

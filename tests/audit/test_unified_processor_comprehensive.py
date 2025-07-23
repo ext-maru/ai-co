@@ -49,6 +49,7 @@ class ComprehensiveTest:
             async def try_lock(index):
                 lock = ProcessLock("file", lock_dir=lock_dir)
                 key = f"concurrent_key_{index % 3}"  # 3つのキーで競合
+                """try_lockメソッド"""
                 acquired = await lock.acquire(key, ttl=2)
                 if acquired:
                     await asyncio.sleep(0.1)
@@ -109,6 +110,7 @@ class ComprehensiveTest:
         
         async def failing_function(issue):
             nonlocal error_count
+            """failing_functionメソッド"""
             error_count += 1
             if error_count <= 2:  # 最初の2回は失敗
                 raise ConnectionError("Simulated error")
@@ -174,6 +176,7 @@ class ComprehensiveTest:
             tasks = []
             
             async def file_operation(index):
+                """file_operationメソッド"""
                 file_path = test_dir / f"test_{index}.json"
                 data = {"index": index, "timestamp": datetime.now().isoformat()}
                 

@@ -25,22 +25,26 @@ def training_documents():
     """Sample training documents for ML models"""
     return [
         {
-            "content": "Python asyncio provides concurrent programming using async/await syntax. It's great for I/O bound tasks.",
+            "content": "Python asyncio provides concurrent programming using async/await \
+                syntax. It's great for I/O bound tasks.",
             "category": "development",
             "tags": ["python", "async", "concurrency"]
         },
         {
-            "content": "Django REST framework makes it easy to build Web APIs. It provides serialization and authentication.",
+            "content": "Django REST framework makes it easy to build Web APIs. It provides serialization and \
+                authentication.",
             "category": "development", 
             "tags": ["python", "django", "api", "rest"]
         },
         {
-            "content": "Docker containers provide isolated environments. Use docker-compose for multi-container applications.",
+            "content": "Docker containers provide isolated environments. Use docker-compose \
+                for multi-container applications.",
             "category": "devops",
             "tags": ["docker", "containers", "deployment"]
         },
         {
-            "content": "Kubernetes orchestrates containerized applications. It handles scaling, load balancing, and self-healing.",
+            "content": "Kubernetes orchestrates containerized applications. It handles scaling, load balancing, and \
+                self-healing.",
             "category": "devops",
             "tags": ["kubernetes", "k8s", "orchestration", "containers"]
         },
@@ -55,7 +59,8 @@ def training_documents():
             "tags": ["security", "sql", "vulnerability", "prevention"]
         },
         {
-            "content": "Neural networks learn patterns from data. Deep learning uses multiple layers for complex tasks.",
+            "content": "Neural networks learn patterns from data. Deep learning uses \
+                multiple layers for complex tasks.",
             "category": "ai",
             "tags": ["ml", "neural-networks", "deep-learning", "ai"]
         },

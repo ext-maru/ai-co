@@ -79,6 +79,7 @@ class AbstractMethodValidator:
     """抽象メソッド実装検証システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = PROJECT_ROOT
         self.workers_dir = self.project_root / "workers"
         self.libs_dir = self.project_root / "libs"
@@ -504,6 +505,7 @@ class EmergencyRecoveryScript:
     """緊急復旧スクリプト"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = PROJECT_ROOT
         self.recovery_db = self.project_root / "data" / "emergency_recovery.db"
         self.recovery_history = []
@@ -764,6 +766,7 @@ class WorkerHealthMonitor:
     """ワーカー健康監視システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = PROJECT_ROOT
         self.monitoring = False
         self.monitor_thread = None
@@ -967,7 +970,9 @@ class WorkerHealthMonitor:
 class CrisisDetector:
     """危機検知システム"""
 
-    def __init__(self, thresholds: Optional[Dict[str, float]] = None):
+    def __init__(self, thresholds:
+        """初期化メソッド"""
+    Optional[Dict[str, float]] = None):
         self.thresholds = thresholds or {
             "worker_failure_rate": 0.3,  # 30%以上の失敗率
             "queue_backlog": 50,  # 50件以上の蓄積
@@ -1079,6 +1084,7 @@ class AutoRecoveryFlow:
     """自動復旧フロー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.recovery_strategies = self._init_recovery_strategies()
         self.execution_history = []
 
@@ -1320,7 +1326,9 @@ class AutoRecoveryFlow:
 class WorkerAutoRecoverySystem:
     """ワーカー自動復旧システム統合クラス"""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Optional[Dict[str, Any]] = None):
         self.config = config or self._default_config()
 
         # コンポーネント初期化

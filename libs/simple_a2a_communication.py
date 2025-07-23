@@ -79,6 +79,7 @@ class A2AMessage:
     reply_to: Optional[str] = None
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "id": self.id,
             "sender": self.sender,
@@ -93,7 +94,9 @@ class A2AMessage:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "A2AMessage":
+    def from_dict(cls, data:
+        """from_dictメソッド"""
+    Dict[str, Any]) -> "A2AMessage":
         return cls(
             id=data["id"],
             sender=data["sender"],
@@ -115,7 +118,9 @@ class A2AMessage:
 class SimpleA2AClient:
     """シンプルA2A通信クライアント"""
 
-    def __init__(self, agent_id: str):
+    def __init__(self, agent_id:
+        """初期化メソッド"""
+    str):
         self.agent_id = agent_id
         self.inbox_dir = A2A_STORAGE_DIR / "inbox" / agent_id
         self.outbox_dir = A2A_STORAGE_DIR / "outbox" / agent_id
@@ -284,6 +289,7 @@ class FourSagesA2A:
     SAGE_IDS = ["knowledge_sage", "task_sage", "incident_sage", "rag_sage"]
 
     def __init__(self):
+        """初期化メソッド"""
         self.clients = {}
         for sage_id in self.SAGE_IDS:
             self.clients[sage_id] = SimpleA2AClient(sage_id)
@@ -358,6 +364,7 @@ async def create_a2a_client(agent_id: str) -> SimpleA2AClient:
 if __name__ == "__main__":
 
     async def test_a2a():
+        """test_a2aテストメソッド"""
         # テスト実行
         client1 = SimpleA2AClient("test_agent_1")
         client2 = SimpleA2AClient("test_agent_2")

@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 class CoverageImprover:
+    """CoverageImproverクラス"""
     def __init__(self):
         self.start_time = datetime.now()
         self.results = {

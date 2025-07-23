@@ -59,7 +59,10 @@ class RepositoryValidator:
                         "is_primary": True,
                     }
                 ],
-                "default_repository": {"owner": EnvManager.get_github_repo_owner(), "name": EnvManager.get_github_repo_name()},
+                "default_repository": {
+                    "owner": EnvManager.get_github_repo_owner(),
+                    "name": EnvManager.get_github_repo_name()
+                },
                 "forbidden_repositories": [
                     {
                         "owner": "anthropics",

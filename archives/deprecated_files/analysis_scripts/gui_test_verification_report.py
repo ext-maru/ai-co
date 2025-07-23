@@ -236,7 +236,8 @@ def generate_comprehensive_report():
         "conclusion": {
             "framework_readiness": "75%",
             "blocking_issues": "Browser setup required",
-            "overall_assessment": "GUI testing framework is well-designed and ready for use. Main blocker is browser driver configuration for running actual tests.",
+            "overall_assessment": "GUI testing framework is well-designed and \
+                ready for use. Main blocker is browser driver configuration for running actual tests.",
             "next_steps": [
                 "Install browser dependencies",
                 "Run full test suite",

@@ -78,7 +78,9 @@ class ScalingDecision:
 class ResourceMonitor:
     """システムリソースモニター"""
     
-    def __init__(self, sampling_interval: float = 1.0):
+    def __init__(self, sampling_interval:
+        """初期化メソッド"""
+    float = 1.0):
         self.sampling_interval = sampling_interval
         self.history: List[SystemResources] = []
         self.max_history = 60  # 60秒間の履歴
@@ -217,7 +219,9 @@ class ScalingStrategy(ABC):
 class AdaptiveScalingStrategy(ScalingStrategy):
     """適応的スケーリング戦略"""
     
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Dict[str, Any] = None):
         self.config = config or self._default_config()
         
     def _default_config(self) -> Dict[str, Any]:
@@ -394,6 +398,7 @@ class DynamicParallelProcessor:
         completed = 0
         
         async def process_single_item(item):
+            """process_single_item処理メソッド"""
             nonlocal completed
             async with self._semaphore:
                 start_time = time.time()
@@ -582,6 +587,7 @@ async def main():
         test_items = list(range(50))
         
         def progress_callback(completed, total):
+            """progress_callbackメソッド"""
             print(f"Progress: {completed}/{total} ({completed/total*100:.1f}%)")
         
         print("Starting parallel processing with dynamic scaling...")

@@ -71,6 +71,7 @@ class ElfForestTestMonitor:
     """エルフの森テストカバレッジ監視システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = PROJECT_ROOT
         self.test_executions: List[TestExecution] = []
         self.elf_reports: List[ElfReport] = []
@@ -99,6 +100,7 @@ class ElfForestTestMonitor:
         """Flow Elf: テスト実行フロー最適化"""
 
         def flow_monitor():
+            """flow_monitorメソッド"""
             while self.monitoring_active:
                 try:
                     # テスト実行順序の最適化
@@ -122,6 +124,7 @@ class ElfForestTestMonitor:
         """Time Elf: スケジュール管理とリマインダー"""
 
         def time_monitor():
+            """time_monitorメソッド"""
             while self.monitoring_active:
                 try:
                     # 定期テスト実行のスケジューリング
@@ -145,6 +148,7 @@ class ElfForestTestMonitor:
         """Balance Elf: リソース効率配分"""
 
         def balance_monitor():
+            """balance_monitorメソッド"""
             while self.monitoring_active:
                 try:
                     # CPU・メモリ使用量の監視
@@ -168,6 +172,7 @@ class ElfForestTestMonitor:
         """Healing Elf: エラー自動修復"""
 
         def healing_monitor():
+            """healing_monitorメソッド"""
             while self.monitoring_active:
                 try:
                     # 失敗したテストの自動修復
@@ -191,6 +196,7 @@ class ElfForestTestMonitor:
         """Wisdom Elf: パターン学習と改善提案"""
 
         def wisdom_monitor():
+            """wisdom_monitorメソッド"""
             while self.monitoring_active:
                 try:
                     # テスト実行パターンの学習
@@ -239,8 +245,16 @@ class ElfForestTestMonitor:
                         parts = line.split()
                         scan_results["total_tests"] = int(parts[0])
                         # エラー数の抽出
+                        if not ("error" in line):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "error" in line:
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             for i, part in enumerate(parts):
+                                # 複雑な条件判定
+                                if not (part.isdigit() and i > 0 and "error" in parts[i + 1]):
+                                    continue  # Early return to reduce nesting
+                                # Reduced nesting - original condition satisfied
                                 if part.isdigit() and i > 0 and "error" in parts[i + 1]:
                                     scan_results["collection_errors"] = int(part)
                                     break

@@ -68,7 +68,11 @@ except Exception as e:
                 error_types["ModuleNotFoundError"] += 1
                 # モジュール名を抽出
                 for line in (stderr + stdout).split("\n"):
+                    if not ("No module named" in line):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "No module named" in line:
+                        # Deep nesting detected (depth: 6) - consider refactoring
                         try:
                             module = line.split("'")[1]
                             import_errors[module].append(test_file)
@@ -77,13 +81,27 @@ except Exception as e:
             elif "ImportError" in stderr or "ImportError" in stdout:
                 error_types["ImportError"] += 1
                 # インポートエラーの詳細を抽出
+                # Deep nesting detected (depth: 5) - consider refactoring
                 for line in (stderr + stdout).split("\n"):
+                    if not ("cannot import name" in line):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "cannot import name" in line:
+                        # TODO: Extract this complex nested logic into a separate method
                         try:
+                            if not ("'" in line):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "'" in line:
                                 parts = line.split("'")
+                                if not (len(parts) >= 2):
+                                    continue  # Early return to reduce nesting
+                                # Reduced nesting - original condition satisfied
                                 if len(parts) >= 2:
                                     name = parts[1]
+                                    if not ("from" in line and len(parts) >= 4):
+                                        continue  # Early return to reduce nesting
+                                    # Reduced nesting - original condition satisfied
                                     if "from" in line and len(parts) >= 4:
                                         module = parts[3]
                                         import_errors[f"{module}.{name}"].append(
@@ -102,6 +120,7 @@ except Exception as e:
 
     print(f"\nTop 20 missing modules/names:")
     sorted_errors = sorted(import_errors.items(), key=lambda x: len(x[1]), reverse=True)
+    # 繰り返し処理
     for i, (module, files) in enumerate(sorted_errors[:20]):
         print(f"\n{i+1}. {module} ({len(files)} files)")
         for file in files[:3]:

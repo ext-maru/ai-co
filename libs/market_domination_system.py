@@ -139,6 +139,7 @@ class MarketIntelligenceEngine:
     """市場情報エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
 
         # 市場データベース
@@ -367,7 +368,9 @@ class MarketIntelligenceEngine:
 class StrategicPlanningEngine:
     """戦略立案エンジン"""
 
-    def __init__(self, intelligence_engine: MarketIntelligenceEngine):
+    def __init__(self, intelligence_engine:
+        """初期化メソッド"""
+    MarketIntelligenceEngine):
         self.intelligence_engine = intelligence_engine
         self.logger = self._setup_logger()
 
@@ -941,6 +944,7 @@ class MarketDominationSystem:
     """市場制覇システム統合"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.intelligence_engine = MarketIntelligenceEngine()
         self.planning_engine = StrategicPlanningEngine(self.intelligence_engine)
         self.execution_engine = RealTimeExecutionEngine(
@@ -1125,7 +1129,8 @@ async def demo_market_domination():
 
     print(f"\n📈 Performance Summary:")
     print(
-        f"   Market Segments Dominated: {len([d for d in final_status.get('segment_dominance', {}).values() if d > 0.5])}"
+        f"   Market Segments Dominated: {len([d for d in final_status.get('segment_dominance',  \
+            {}).values() if d > 0.5])}"
     )
     print(
         f"   Overall Market Control: {final_status.get('overall_domination_level', 0):.1%}"

@@ -209,6 +209,7 @@ class Phase3BenchmarkSuite:
         # Create integrated processor
         class Phase3IntegratedProcessor:
             def __init__(self, memory_opt, conn_opt, concurrency_ctrl):
+            """Phase3IntegratedProcessor処理クラス"""
                 self.memory_opt = memory_opt
                 self.conn_opt = conn_opt
                 self.concurrency_ctrl = concurrency_ctrl
@@ -220,6 +221,7 @@ class Phase3BenchmarkSuite:
                 
                 # Generate test issues
                 async def issue_generator():
+                    """issue_generatorメソッド"""
                     for i in range(issue_count):
                         issue_data = {
                             'id': i,

@@ -351,6 +351,7 @@ class IssueTypeClassifier:
             "security": ["security", "セキュリティ", "encryption", "暗号化"]
         }
         
+        # 繰り返し処理
         for req_name, patterns in tech_patterns.items():
             for pattern in patterns:
                 if pattern in body:

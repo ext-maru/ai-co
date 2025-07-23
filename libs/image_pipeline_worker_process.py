@@ -28,6 +28,7 @@ class ImagePipelineWorkerProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="image_pipeline_worker",
             elder_role=ElderRole.SERVANT,  # TODO: Adjust as needed

@@ -82,6 +82,7 @@ class MessageBroker:
     """高性能メッセージブローカー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.queues: Dict[str, asyncio.Queue] = {}
         self.handlers: Dict[str, List[Callable]] = defaultdict(list)
         self.metrics = {
@@ -145,6 +146,7 @@ class EventBus:
     """イベントバス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.handlers: Dict[str, List[Callable]] = defaultdict(list)
         self.event_history: deque = deque(maxlen=1000)
 
@@ -173,6 +175,7 @@ class KnowledgeGraph:
     """知識グラフ"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.nodes: Dict[str, KnowledgeNode] = {}
         self.edges: Dict[str, List[KnowledgeEdge]] = defaultdict(list)
         self.lock = threading.RLock()
@@ -197,6 +200,7 @@ class KnowledgeGraph:
             result = []
             queue = [(start_node, 0)]
 
+            # ループ処理
             while queue:
                 node_id, depth = queue.pop(0)
                 if node_id in visited or depth > max_depth:
@@ -477,7 +481,8 @@ class FourSagesCollaborationEnhanced:
             "reached": consensus_reached,
             "recommendation": best_rec,
             "confidence": best_score,
-            "reasoning": f"Supported by {len(recommendations[best_rec])} sages with average confidence {statistics.mean(recommendations[best_rec]):.2f}",
+            "reasoning": f"Supported by {len(recommendations[best_rec])} " \
+                "sages with average confidence {statistics.mean(recommendations[best_rec]):.2f}",
         }
 
     # ========== イベント駆動連携 ==========
@@ -1004,6 +1009,7 @@ class FourSagesCollaborationEnhanced:
 if __name__ == "__main__":
     # テスト実行
     async def test():
+        """testテストメソッド"""
         system = FourSagesCollaborationEnhanced()
         await system.initialize()
 

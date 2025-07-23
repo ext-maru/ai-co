@@ -49,6 +49,7 @@ class CodeAnalyzer:
     """コード分析・テスト対象抽出"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
     
     def analyze_implementation(self, code: str) -> Dict[str, Any]:
@@ -258,6 +259,7 @@ class CodeAnalyzer:
         max_depth = 0
         
         def walk_with_depth(node, current_depth=0):
+            """walk_with_depthメソッド"""
             nonlocal max_depth
             max_depth = max(max_depth, current_depth)
             
@@ -342,6 +344,7 @@ class UnitTestGenerator:
     """ユニットテスト生成器"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
     
     def generate_unit_tests(self, analysis: Dict[str, Any], intelligence=None) -> List[TestCase]:
@@ -452,7 +455,11 @@ def test_{class_name.lower()}_{method_name}():
     {arg_setup}
     
     # Execute
-    {"result = " if method_info.get('has_return') else ""}{f"await " if method_info.get('is_async') else ""}instance.{method_name}({', '.join(args[1:] if args and args[0] == 'self' else args)})
+    {"result = " if method_info.get('has_return') " \
+        "else ""}{f"await " if  \
+            method_info.get('is_async') else ""}instance.{method_name}({', '.join(args[1:] if args and \
+        \
+        args[0] == 'self' else args)})
     
     # Assert
     {assertions}
@@ -489,7 +496,9 @@ def test_{func_name}():
     {arg_setup}
     
     # Execute
-    {"result = " if func_info.get('has_return') else ""}{f"await " if func_info.get('is_async') else ""}{func_name}({', '.join(args)})
+    {"result = " \
+        if func_info.get('has_return') \
+        else ""}{f"await " if func_info.get('is_async') else ""}{func_name}({', '.join(args)})
     
     # Assert
     {assertions}
@@ -555,6 +564,7 @@ class PropertyTestGenerator:
     """プロパティベーステスト生成器"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
     
     def generate_property_tests(
@@ -632,6 +642,7 @@ class IntegrationTestGenerator:
     """統合テスト生成器"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
     
     def generate_integration_tests(
@@ -748,6 +759,7 @@ class IntelligentTestGenerator:
     """インテリジェントテスト生成メインクラス (Phase 4)"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.code_analyzer = CodeAnalyzer()
         self.unit_generator = UnitTestGenerator()
         self.property_generator = PropertyTestGenerator()
@@ -766,7 +778,8 @@ class IntelligentTestGenerator:
         
         # 1. コード分析
         analysis = self.code_analyzer.analyze_implementation(implementation_code)
-        self.logger.info(f"Code analysis complete: {len(analysis.get('classes', []))} classes, {len(analysis.get('functions', []))} functions")
+        self.logger.info(f"Code analysis complete: {len(analysis." \
+            "get('classes', []))} classes, {len(analysis.get('functions', []))} functions")
         
         # 2. ユニットテスト生成
         unit_tests = self.unit_generator.generate_unit_tests(analysis, intelligence)

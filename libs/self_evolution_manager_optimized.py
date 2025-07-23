@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 
 class OptimizedSelfEvolutionManager:
+    """OptimizedSelfEvolutionManager - 管理システムクラス"""
     def __init__(self, timeout_seconds=180):
         """
         最適化版の初期化

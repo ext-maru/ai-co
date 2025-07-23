@@ -454,8 +454,10 @@ def elder_auth_required(required_role: ElderRole = ElderRole.SERVANT):
     """Elder階層認証デコレーター"""
 
     def decorator(func):
+        """decoratorメソッド"""
         @wraps(func)
         def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             # 実装は実際の使用時に認証プロバイダーと連携
             return func(*args, **kwargs)
 
@@ -468,8 +470,10 @@ def sage_auth_required(required_sage_type: SageType):
     """賢者専門認証デコレーター"""
 
     def decorator(func):
+        """decoratorメソッド"""
         @wraps(func)
         def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             # 実装は実際の使用時に認証プロバイダーと連携
             return func(*args, **kwargs)
 

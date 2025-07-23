@@ -162,6 +162,7 @@ def consult_elders_about_challenges():
     print("-" * 60)
 
     for sage_id, sage_data in elder_proposals.items():
+    # 繰り返し処理
         print(f"\n{sage_data['name']}の見解:")
         print("  レイテンシ対策:")
         for solution in sage_data["latency_solution"][:2]:
@@ -177,6 +178,7 @@ def consult_elders_about_challenges():
     print("\n🏛️ エルダーズ評議会の最終判断:")
     print("=" * 60)
 
+    # 繰り返し処理
     for challenge, data in integrated_solution["elder_consensus"].items():
         print(f"\n{challenge.upper()} 問題:")
         print(f"  判定: {data['verdict']}")

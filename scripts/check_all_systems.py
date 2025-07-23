@@ -18,6 +18,7 @@ def check_mark(status):
 
 def check_system(sections=None, output_format="text"):
     results = {"core": {}, "features": {}, "workers": {}, "libraries": {}}
+    """check_systemメソッド"""
 
     # デフォルトで全セクションをチェック
     if sections is None:
@@ -164,6 +165,7 @@ def check_system(sections=None, output_format="text"):
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(
         description="Elders Guild system health check tool - Comprehensive system diagnostics",
         formatter_class=argparse.RawDescriptionHelpFormatter,

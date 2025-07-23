@@ -66,7 +66,9 @@ class DevelopmentRisk:
 class ImportAnalyzer:
     """インポート分析器"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path):
         self.project_root = project_root
         self.import_graph = defaultdict(set)
         self.known_modules = set()
@@ -244,7 +246,9 @@ class ImportAnalyzer:
 class TestExecutionPredictor:
     """テスト実行予測器"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path):
         self.project_root = project_root
         self.test_history = {}
         self.dependency_map = {}
@@ -392,7 +396,9 @@ class TestExecutionPredictor:
 class DevelopmentIncidentPredictor:
     """開発インシデント予測器メインクラス"""
 
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.import_analyzer = ImportAnalyzer(self.project_root)
         self.test_predictor = TestExecutionPredictor(self.project_root)

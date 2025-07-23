@@ -53,6 +53,7 @@ class ContainerMetrics:
     timestamp: datetime = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.timestamp is None:
             self.timestamp = datetime.now()
 

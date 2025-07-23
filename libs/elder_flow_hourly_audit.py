@@ -181,6 +181,7 @@ class AuditSchedule:
     """監査スケジュール管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         # デフォルトのスケジュール（分）
         self.comprehensive_scan_minute = 0  # 00分: 包括的スキャン
         self.active_check_minute = 15  # 15分: アクティブ違反チェック
@@ -234,6 +235,7 @@ class HourlyAuditSystem:
     """毎時間自動監査システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.schedule = AuditSchedule()
         self.db = ElderFlowViolationDB()
         self.detector = OriginalDetector()
@@ -803,7 +805,9 @@ class HourlyAuditSystem:
         </ul>
     </div>
 
-    {f'<div class="section critical"><h2>⚠️ エスカレーション</h2><p>{report.escalation_reason}</p></div>' if report.escalation_required else ''}
+    {f'<div class="section critical"><h2>⚠️ エスカレーション</h2><p>{report.escalation_reason}</p></div>' \
+        if report.escalation_required \
+        else ''}
 </body>
 </html>
 """

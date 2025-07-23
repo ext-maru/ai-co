@@ -21,10 +21,17 @@ try:
 except ImportError:
     # Mock redis for testing environments
     class MockRedis:
+        """MockRedisクラス"""
         # Main class implementation
-        async def get(self, key): return None
-        async def set(self, key, value, ex=None): pass
-        async def delete(self, key): pass
+        async def get(self, key):
+            """getメソッド"""
+        return None
+        async def set(self, key, value, ex=None):
+            """setメソッド"""
+        pass
+        async def delete(self, key):
+            """deleteメソッド"""
+        pass
     redis = MockRedis
 
 # EldersLegacy統合インポート

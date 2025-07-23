@@ -71,6 +71,7 @@ class ElderServantDeployment:
     progress_reports: List[Dict] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.progress_reports is None:
             self.progress_reports = []
 
@@ -81,7 +82,9 @@ class ElderComplianceMonitor:
     Automatically enforces Universal Claude Elder Standards
     """
 
-    def __init__(self, data_dir: str = "data/compliance"):
+    def __init__(self, data_dir:
+        """初期化メソッド"""
+    str = "data/compliance"):
         self.data_dir = Path(data_dir)
         self.data_dir.mkdir(parents=True, exist_ok=True)
 
@@ -657,7 +660,17 @@ class ElderComplianceMonitor:
             conn.execute(
                 """
                 INSERT INTO violations
-                (violation_type, severity, description, detected_at, elder_instance, evidence, auto_corrected, escalated)
+                 \
+                    (
+                        violation_type,
+                        severity,
+                        description,
+                        detected_at,
+                        elder_instance,
+                        evidence,
+                        auto_corrected,
+                        escalated
+                    )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (

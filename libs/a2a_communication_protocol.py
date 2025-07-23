@@ -145,6 +145,7 @@ class MessageRouter:
     """メッセージルーター"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.routing_table: Dict[str, SoulNode] = {}
         self.groups: Dict[str, Set[str]] = {}
         self.message_cache: Dict[str, A2AMessage] = {}
@@ -282,7 +283,9 @@ class MessageRouter:
 class A2ACommunicationProtocol:
     """A2A通信プロトコル"""
 
-    def __init__(self, soul_identity: SoulIdentity, port: int = 0):
+    def __init__(self, soul_identity:
+        """初期化メソッド"""
+    SoulIdentity, port: int = 0):
         self.soul_identity = soul_identity
         self.process_id = os.getpid()
         self.router = MessageRouter()

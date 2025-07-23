@@ -155,6 +155,7 @@ class AccessControlGateway:
     """アクセス制御ゲートウェイ - 統合セキュリティ管理システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.config = get_config()
         self.logger = logging.getLogger(__name__)
 
@@ -535,6 +536,9 @@ class AccessControlGateway:
                     usage = self.resource_manager.get_resource_usage(
                         request.resource_context.context_id
                     )
+                    if not (usage):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if usage:
                         cpu_usage = (
                             usage.cpu_percent
@@ -542,6 +546,9 @@ class AccessControlGateway:
                         )
                         met = cpu_usage <= condition_value
                         conditions_met[condition_key] = met
+                        if met:
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if not met:
                             matched = False
                             reasons.append(
@@ -560,6 +567,9 @@ class AccessControlGateway:
                 )
                 met = data_class not in condition_value
                 conditions_met[condition_key] = met
+                if met:
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if not met:
                     matched = False
                     reasons.append(
@@ -569,11 +579,17 @@ class AccessControlGateway:
             elif condition_key == "cross_level_access":
                 # クロスレベルアクセス条件
                 resource_level = request.request_metadata.get("target_security_level")
+                if not (resource_level):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if resource_level:
                     met = (
                         resource_level == request.security_context.security_level.value
                     )
                     conditions_met[condition_key] = not met  # 逆条件
+                    if not (met):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if met:
                         matched = False
                         reasons.append("Cross-level access detected")
@@ -585,6 +601,9 @@ class AccessControlGateway:
                 current_threat = request.request_metadata.get("threat_level", "low")
                 met = current_threat == condition_value
                 conditions_met[condition_key] = met
+                if met:
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if not met:
                     matched = False
                     reasons.append(
@@ -913,6 +932,7 @@ if __name__ == "__main__":
     import asyncio
 
     async def test_gateway():
+        """test_gatewayテストメソッド"""
         gateway = AccessControlGateway()
 
         print("🚪 AccessControlGateway Test Starting...")

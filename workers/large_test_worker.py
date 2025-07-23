@@ -408,6 +408,7 @@ class LargeTestWorker:
             return
 
         def callback(ch, method, properties, body):
+            """callbackメソッド"""
             try:
                 task_data = json.loads(body)
                 result = self.process_task(task_data)
@@ -487,10 +488,12 @@ def main():
     # Display Elder Tree test status
     elder_status = worker.get_elder_test_status()
     print(
-        f"🧙‍♂️ Four Sages Integration: {'✅ Available' if elder_status['elder_systems']['four_sages_active'] else '❌ Unavailable'}"
+        f"🧙‍♂️ Four Sages Integration: {'✅ Available' if elder_status['elder_systems'][' \
+            four_sages_active'] else '❌ Unavailable'}"
     )
     print(
-        f"🏛️ Elder Council: {'✅ Available' if elder_status['elder_systems']['council_summoner_active'] else '❌ Unavailable'}"
+        f"🏛️ Elder Council: {'✅ Available' if elder_status['elder_systems']['council_sum \
+            moner_active'] else '❌ Unavailable'}"
     )
     print(
         f"🌳 Elder Tree: {'✅ Available' if elder_status['elder_systems']['elder_tree_connected'] else '❌ Unavailable'}"

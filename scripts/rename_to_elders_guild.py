@@ -16,6 +16,8 @@ def find_files_with_pattern(
     results = []
 
     for ext in extensions:
+    # 繰り返し処理
+        # 繰り返し処理
         for file_path in root_dir.rglob(f"*{ext}"):
             if ".git" in str(file_path) or "__pycache__" in str(file_path):
                 continue
@@ -27,6 +29,9 @@ def find_files_with_pattern(
 
                 matching_lines = []
                 for i, line in enumerate(lines, 1):
+                    if not (re.search(pattern, line, re.IGNORECASE)):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if re.search(pattern, line, re.IGNORECASE):
                         matching_lines.append(i)
 

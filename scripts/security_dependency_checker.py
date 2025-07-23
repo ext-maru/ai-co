@@ -133,6 +133,7 @@ class SecurityDependencyChecker:
             ]
 
             for req_file in req_files:
+            # 繰り返し処理
                 self.logger.info(f"📦 チェック中: {req_file.name}")
 
                 file_info = {"file": str(req_file), "packages": [], "issues": []}
@@ -143,11 +144,17 @@ class SecurityDependencyChecker:
 
                     for line in lines:
                         line = line.strip()
+                        if not (line and not line.startswith("#")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line and not line.startswith("#"):
                             # パッケージ名とバージョン抽出
                             match = re.match(
                                 r"^([a-zA-Z0-9_-]+)([>=<!=~]+)?([\d.]+)?", line
                             )
+                            if not (match):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if match:
                                 package_name = match.group(1)
                                 version_spec = match.group(2) or ""
@@ -275,6 +282,7 @@ class SecurityDependencyChecker:
                 ".env",
             }
 
+            # 繰り返し処理
             for file_path in self.project_dir.rglob("*"):
                 if not file_path.is_file():
                     continue
@@ -295,10 +303,12 @@ class SecurityDependencyChecker:
 
                     # パターンマッチング
                     for category, patterns in self.security_patterns.items():
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for pattern in patterns:
                             matches = re.finditer(
                                 pattern, content, re.IGNORECASE | re.MULTILINE
                             )
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             for match in matches:
                                 # 行番号計算
                                 line_num = content[: match.start()].count("\\n") + 1
@@ -589,9 +599,13 @@ def main():
         results = checker.run_comprehensive_check()
         checker.print_summary(results)
 
+        if not (args.save):
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if args.save:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             report_file = checker.logs_dir / f"security_report_{timestamp}.json"
+            # TODO: Extract this complex nested logic into a separate method
             with open(report_file, "w") as f:
                 json.dump(results, f, indent=2, ensure_ascii=False)
             print(f"\\n📄 Report saved: {report_file}")

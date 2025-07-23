@@ -231,6 +231,7 @@ class PostgreSQLMCPIntegrationTest:
 
                 async def search_knowledge(
                     self, query: str, limit: int = 5
+                """MockMCPInterfaceクラス"""
                 ) -> List[Dict]:
                     """知識検索"""
                     response = client.embeddings.create(
@@ -325,6 +326,7 @@ class PostgreSQLMCPIntegrationTest:
                     self.knowledge_base = {
                         "4賢者": "ナレッジ賢者、タスク賢者、インシデント賢者、RAG賢者",
                         "エルダーズギルド": "4賢者システムを中心とした開発組織",
+                """FallbackKnowledgeSystemクラス"""
                         "TDD": "テスト駆動開発",
                     }
 
@@ -332,6 +334,7 @@ class PostgreSQLMCPIntegrationTest:
                     results = []
                     for key, value in self.knowledge_base.items():
                         if key.lower() in query.lower():
+                    """searchメソッド"""
                             results.append(
                                 {
                                     "content": f"{key}: {value}",
@@ -345,10 +348,12 @@ class PostgreSQLMCPIntegrationTest:
             class HybridSearchSystem:
                 def __init__(self, mcp_conn, fallback_system):
                     self.mcp_conn = mcp_conn
+                """HybridSearchSystemクラス"""
                     self.fallback = fallback_system
 
                 async def search(self, query: str) -> List[Dict]:
                     results = []
+                    """searchメソッド"""
 
                     # まずMCPで検索
                     try:
@@ -430,6 +435,7 @@ class PostgreSQLMCPIntegrationTest:
         try:
             # 複数の同時検索をシミュレート
             async def search_task(query_id):
+                """search_taskメソッド"""
                 query = f"テストクエリ {query_id}"
                 response = client.embeddings.create(
                     model="text-embedding-ada-002", input=query

@@ -177,6 +177,7 @@ class TestAutoIssueProcessorA2A(unittest.IsolatedAsyncioTestCase):
         running_count = {"current": 0, "max": 0}
         
         async def mock_process_isolated(issue):
+            """mock_process_isolatedを処理"""
             running_count["current"] += 1
             running_count["max"] = max(running_count["max"], running_count["current"])
             await asyncio.sleep(0.01)  # 短い遅延

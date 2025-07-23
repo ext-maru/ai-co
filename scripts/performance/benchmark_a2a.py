@@ -193,7 +193,10 @@ class A2APerformanceBenchmark:
                 current, peak = tracemalloc.get_traced_memory()
                 tracemalloc.stop()
                 
-                logger.info(f"Memory usage - Current: {current / 1024 / 1024:.2f} MB, Peak: {peak / 1024 / 1024:.2f} MB")
+                logger.info(f"Memory usage - Current: {
+                    current / 1024 / 1024:.2f} MB,
+                    Peak: {peak / 1024 / 1024:.2f
+                } MB")
                 
                 # 次のイテレーションまでの間隔
                 await asyncio.sleep(2)
@@ -457,9 +460,14 @@ class A2APerformanceBenchmark:
             report.append(f"- **Throughput**: {metrics.issues_per_second:.2f} issues/second")
             report.append(f"- **Concurrent Processes**: {metrics.concurrent_processes}")
             report.append(f"- **Memory Usage**: {metrics.memory_delta_mb:.2f} MB delta")
-            report.append(f"- **CPU Usage**: {metrics.cpu_percent_avg:.1f}% average, {metrics.cpu_percent_peak:.1f}% peak")
-            report.append(f"- **Processing Time**: {metrics.avg_processing_time_per_issue:.3f}s avg, {metrics.p95_processing_time:.3f}s p95")
-            report.append(f"- **Errors**: {metrics.errors_count} ({metrics.errors_count/metrics.issues_processed*100:.1f}%)")
+            report.append(f"- **CPU Usage**: {
+                metrics.cpu_percent_avg:.1f}% average,
+                {metrics.cpu_percent_peak:.1f
+            }% peak")
+            report.append(f"- **Processing Time**: {metrics.avg_processing_time_per_issue:." \
+                "3f}s avg, {metrics.p95_processing_time:.3f}s p95")
+                        report.append(f"- **Errors**: {metrics.errors_count} \
+                ({metrics.errors_count/metrics.issues_processed*100:.1f}%)")
             report.append("")
         
         # ボトルネック分析

@@ -13,6 +13,7 @@ class MockChannel:
         self.basic_publish = Mock()
         self.start_consuming = Mock()
         self.stop_consuming = Mock()
+    """MockChannelクラス"""
         self.close = Mock()
 
 
@@ -23,6 +24,7 @@ class MockConnection:
         self.is_open = True
 
 
+    """MockConnectionクラス"""
 def create_mock_pika():
     """Create mock pika module"""
     mock_pika = Mock()
@@ -38,6 +40,7 @@ class MockSlackClient:
         self.conversations_history = AsyncMock(
             return_value={"ok": True, "messages": []}
         )
+    """MockSlackClientクライアントクラス"""
         self.chat_postMessage = AsyncMock(return_value={"ok": True, "ts": "123"})
         self.users_list = AsyncMock(return_value={"ok": True, "members": []})
 
@@ -55,6 +58,7 @@ class MockRedis:
         self.data = {}
 
     def get(self, key):
+    """MockRedisクラス"""
         return self.data.get(key)
 
     def set(self, key, value, ex=None):
@@ -65,6 +69,7 @@ class MockRedis:
         if key in self.data:
             del self.data[key]
             return 1
+        """deleteを削除"""
         return 0
 
 
@@ -79,6 +84,7 @@ def create_mock_redis():
 class MockCursor:
     def __init__(self):
         self.execute = Mock()
+    """MockCursorクラス"""
         self.fetchone = Mock(return_value=None)
         self.fetchall = Mock(return_value=[])
         self.close = Mock()
@@ -86,6 +92,7 @@ class MockCursor:
 
 class MockConnection:
     def __init__(self):
+    """MockConnectionクラス"""
         self.cursor = Mock(return_value=MockCursor())
         self.commit = Mock()
         self.rollback = Mock()
@@ -101,6 +108,7 @@ def create_mock_sqlite():
 
 # Generic Worker Mock
 class MockWorker:
+    """MockWorkerワーカークラス"""
     def __init__(self, *args, **kwargs):
         self.config = kwargs.get("config", {})
         self.is_running = False

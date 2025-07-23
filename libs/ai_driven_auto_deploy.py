@@ -94,6 +94,7 @@ class AIDeploymentPlanner:
     """AI駆動デプロイプランナー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
 
         # AI学習データ
@@ -281,6 +282,7 @@ class AutoDeployExecutor:
     """自動デプロイ実行エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
 
         # Docker クライアント
@@ -692,6 +694,7 @@ class AIAutoDeploy:
     """AI駆動自動デプロイシステム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.planner = AIDeploymentPlanner()
         self.executor = AutoDeployExecutor()
         self.logger = self._setup_logger()

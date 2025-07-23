@@ -159,6 +159,7 @@ def test_quantum_superposition_operations():
             superposition.states == states
             and len(superposition.amplitudes) == 3
             and superposition.amplitudes[0].real == 0.6
+        # 複雑な条件判定
         ):
             print("  ✅ 基本作成")
             tests_passed += 1
@@ -240,6 +241,7 @@ def test_quantum_superposition_operations():
             if 0 <= coherence <= 1:
                 print(f"  ✅ コヒーレンス: {coherence:.3f}")
                 tests_passed += 1
+            # 複雑な条件判定
             else:
                 print(f"  ❌ コヒーレンス範囲外: {coherence}")
         else:
@@ -315,6 +317,7 @@ def test_quantum_engine_comprehensive():
         engine = QuantumCollaborationEngine(entanglement_strength=0.8)
         if (
             engine.entanglement_strength == 0.8
+        # 複雑な条件判定
             and hasattr(engine, "quantum_states")
             and hasattr(engine, "metrics")
         ):
@@ -400,6 +403,7 @@ def test_quantum_engine_comprehensive():
             )
             coherence = engine._calculate_quantum_coherence(test_superposition)
             if 0 <= coherence <= 1:
+            # 複雑な条件判定
                 print(f"  ✅ コヒーレンス計算: {coherence:.3f}")
                 tests_passed += 1
             else:
@@ -465,6 +469,7 @@ def test_quantum_engine_comprehensive():
             correlation_high = engine._calculate_insight_correlation(insight1, insight2)
             correlation_low = engine._calculate_insight_correlation(insight1, insight3)
 
+            # 複雑な条件判定
             if (
                 0 <= correlation_high <= 1
                 and 0 <= correlation_low <= 1

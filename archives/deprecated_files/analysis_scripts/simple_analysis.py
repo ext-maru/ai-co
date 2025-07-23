@@ -10,6 +10,7 @@ import pandas as pd
 
 def analyze_data():
     # Load data
+    """analyze_dataメソッド"""
     data = pd.read_csv("sample_data.csv")
 
     # Basic info
@@ -37,6 +38,7 @@ def analyze_data():
     correlations = []
     if len(numeric_columns) > 1:
         corr_matrix = data[numeric_columns].corr()
+        # 繰り返し処理
         for i in range(len(corr_matrix.columns)):
             for j in range(i + 1, len(corr_matrix.columns)):
                 corr_value = corr_matrix.iloc[i, j]

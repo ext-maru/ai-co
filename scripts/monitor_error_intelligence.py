@@ -17,6 +17,7 @@ from libs.error_intelligence_manager import ErrorIntelligenceManager
 
 
 def main():
+    """mainメソッド"""
     manager = ErrorIntelligenceManager()
 
     print("=" * 60)

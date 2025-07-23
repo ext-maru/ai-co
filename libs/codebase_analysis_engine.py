@@ -67,6 +67,7 @@ class ASTAnalyzer:
     """AST解析エンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
     
     def _is_external_library_file(self, file_path: str) -> bool:
@@ -370,6 +371,7 @@ class PatternExtractor:
     """パターン抽出エンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
     
     def extract_import_patterns(self, analyses: List[Dict[str, Any]]) -> List[ImportPattern]:
@@ -524,7 +526,9 @@ class PatternExtractor:
 class CodebaseAnalysisEngine:
     """コードベース分析エンジン (Phase 3)"""
     
-    def __init__(self, project_root: str = "."):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    str = "."):
         self.project_root = Path(project_root)
         self.ast_analyzer = ASTAnalyzer()
         self.pattern_extractor = PatternExtractor()

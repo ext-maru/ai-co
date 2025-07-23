@@ -170,7 +170,9 @@ class AuditCache:
 class CachedAuditEngine:
     """キャッシュ機能付き監査エンジンラッパー"""
     
-    def __init__(self, engine, cache: Optional[AuditCache] = None):
+    def __init__(self, engine, cache:
+        """初期化メソッド"""
+    Optional[AuditCache] = None):
         self.engine = engine
         self.cache = cache or AuditCache()
         

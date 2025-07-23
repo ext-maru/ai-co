@@ -65,6 +65,7 @@ class NextGenAIIntegration:
     """次世代AI統合システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path("/home/aicompany/ai_co")
         self.db_path = self.project_root / "db" / "next_gen_integration.db"
         self.knowledge_base = self.project_root / "knowledge_base"
@@ -608,10 +609,14 @@ class NextGenAIIntegration:
         except Exception as e:
             print(f"⚠️ 相乗効果記録エラー: {e}")
 
-    def _calculate_learning_gain(self, sage_name: str) -> float:
+    def _calculate_learning_gain(self, sage_name:
+        """calculate_learning_gain（内部メソッド）"""
+    str) -> float:
         return 0.5
 
-    def _calculate_efficiency_modifier(self, sage_name: str) -> float:
+    def _calculate_efficiency_modifier(self, sage_name:
+        """calculate_efficiency_modifier（内部メソッド）"""
+    str) -> float:
         return 0.1
 
     def _update_learning_memory(self):
@@ -832,12 +837,17 @@ class NextGenAIIntegration:
             print(f"⚠️ 集合知記録エラー: {e}")
 
     def _generate_creative_solutions(self) -> List[str]:
+        """generate_creative_solutions（内部メソッド）"""
         return []
 
-    def _implement_innovation(self, innovation: Dict[str, Any]):
+    def _implement_innovation(self, innovation:
+        """implement_innovation（内部メソッド）"""
+    Dict[str, Any]):
         pass
 
-    def _calculate_coordination_bonus(self, sages: List[str]) -> float:
+    def _calculate_coordination_bonus(self, sages:
+        """calculate_coordination_bonus（内部メソッド）"""
+    List[str]) -> float:
         return 5.0
 
     def _calculate_innovation_score(
@@ -851,15 +861,19 @@ class NextGenAIIntegration:
         pass
 
     def _record_evolution_milestone(self):
+        """record_evolution_milestone（内部メソッド）"""
         pass
 
     def _calculate_adaptation_rate(self) -> float:
+        """calculate_adaptation_rate（内部メソッド）"""
         return 0.8
 
     def _calculate_innovation_index(self) -> float:
+        """calculate_innovation_index（内部メソッド）"""
         return 0.7
 
     def _calculate_stability_metric(self) -> float:
+        """calculate_stability_metric（内部メソッド）"""
         return 0.92
 
 

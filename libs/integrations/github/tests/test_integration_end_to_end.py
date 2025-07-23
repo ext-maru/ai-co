@@ -83,6 +83,7 @@ class TestEndToEndIssueWorkflow:
         call_count = 0
         
         def failing_then_success(*args, **kwargs):
+            """failing_then_successメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -165,6 +166,7 @@ class TestEndToEndIssueWorkflow:
         
         # 一部のIssueで異なる結果を返す
         def mock_get_issues_side_effect(*args, **kwargs):
+            """mock_get_issues_side_effectメソッド"""
             issue_num = kwargs.get('issue_number', 1)
             if issue_num == 3:
                 raise Exception("Issue not found")
@@ -345,6 +347,7 @@ class TestEndToEndErrorHandlingWorkflow:
         call_count = 0
         
         def failing_function():
+            """failing_functionメソッド"""
             nonlocal call_count
             call_count += 1
             raise Exception(f"Failure {call_count}")
@@ -387,6 +390,7 @@ class TestEndToEndErrorHandlingWorkflow:
             # カスタムフォールバックハンドラーを登録
             if expected_strategy == RecoveryStrategy.FALLBACK:
                 def custom_fallback():
+                    """custom_fallbackメソッド"""
                     return {"fallback": True, "data": "fallback_data"}
                 recovery_manager.register_fallback("ValueError", custom_fallback)
             
@@ -522,6 +526,7 @@ class TestEndToEndPerformanceWorkflow:
         ]
         
         async def mock_stream():
+            """mock_streamメソッド"""
             for issue in test_issues:
                 yield issue
         
@@ -779,6 +784,7 @@ class TestEndToEndIntegrationScenarios:
         errors = []
         
         def worker(worker_id):
+            """workerメソッド"""
             try:
                 # 各ワーカーで異なる操作を実行
                 with patch.object(self.manager.issues_api, 'get_issues') as mock_get:

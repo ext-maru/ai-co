@@ -565,6 +565,7 @@ class Test{target.function_name.title()}:
                     if self.coverage_targets.empty():
                         # Scan for new targets
                         targets = self.scan_for_coverage_targets()
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for i, target in enumerate(targets[:10]):  # Limit to top 10
                             priority = (
                                 0
@@ -585,6 +586,9 @@ class Test{target.function_name.title()}:
                         # Implement improvement
                         improvement = self.implement_coverage_improvement(target)
 
+                        if not (improvement.success):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if improvement.success:
                             self.completed_improvements.append(improvement)
                         else:

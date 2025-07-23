@@ -46,6 +46,7 @@ class ClaudeElderChatAPI:
     """Claude Elder Chat API - エルダーズとの統合対話システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.config = get_config()
 
@@ -795,7 +796,9 @@ class ClaudeElderChatAPI:
 class ClaudeElderWebSocketServer:
     """Claude Elder WebSocket サーバー"""
 
-    def __init__(self, host: str = "0.0.0.0", port: int = 8765):
+    def __init__(self, host:
+        """初期化メソッド"""
+    str = "0.0.0.0", port: int = 8765):
         self.host = host
         self.port = port
         self.chat_api = ClaudeElderChatAPI()

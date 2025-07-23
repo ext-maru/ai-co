@@ -28,6 +28,7 @@ class GitMasterProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="git_master",
             elder_role=ElderRole.SERVANT,  # TODO: Adjust as needed

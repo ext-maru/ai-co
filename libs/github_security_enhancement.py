@@ -50,10 +50,13 @@ except ImportError as e:
 
     # フォールバック実装
     class SecurityModule:
+        """SecurityModuleクラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
 
     class SecurityError(Exception):
+        """SecurityErrorクラス"""
         pass
 
 
@@ -145,7 +148,9 @@ class SecurityConfiguration:
 class CryptographicService:
     """暗号化サービス"""
 
-    def __init__(self, config: SecurityConfiguration):
+    def __init__(self, config:
+        """初期化メソッド"""
+    SecurityConfiguration):
         self.config = config
         self.logger = logging.getLogger(f"{__name__}.CryptographicService")
         self._master_key = self._generate_master_key()
@@ -382,7 +387,9 @@ class AuthenticationService:
 class InputValidationService:
     """入力検証サービス"""
 
-    def __init__(self, config: SecurityConfiguration):
+    def __init__(self, config:
+        """初期化メソッド"""
+    SecurityConfiguration):
         self.config = config
         self.logger = logging.getLogger(f"{__name__}.InputValidationService")
 
@@ -554,7 +561,9 @@ class InputValidationService:
 class SecurityMonitoringService:
     """セキュリティ監視サービス"""
 
-    def __init__(self, config: SecurityConfiguration):
+    def __init__(self, config:
+        """初期化メソッド"""
+    SecurityConfiguration):
         self.config = config
         self.logger = logging.getLogger(f"{__name__}.SecurityMonitoringService")
         self.audit_events: List[SecurityAuditEvent] = []
@@ -782,7 +791,9 @@ class SecurityMonitoringService:
 class NetworkSecurityService:
     """ネットワークセキュリティサービス"""
 
-    def __init__(self, config: SecurityConfiguration):
+    def __init__(self, config:
+        """初期化メソッド"""
+    SecurityConfiguration):
         self.config = config
         self.logger = logging.getLogger(f"{__name__}.NetworkSecurityService")
         self.request_history: Dict[str, List[datetime]] = {}
@@ -953,7 +964,9 @@ class NetworkSecurityService:
 class VulnerabilityManagementService:
     """脆弱性管理サービス"""
 
-    def __init__(self, config: SecurityConfiguration):
+    def __init__(self, config:
+        """初期化メソッド"""
+    SecurityConfiguration):
         self.config = config
         self.logger = logging.getLogger(f"{__name__}.VulnerabilityManagementService")
         self.vulnerability_db: Dict[str, Dict[str, Any]] = {}

@@ -66,7 +66,9 @@ class GrimoireOptimizationResult:
 class AdvancedCacheManager:
     """階層化キャッシュマネージャー"""
 
-    def __init__(self, l1_size: int = 1000, l2_size: int = 10000):
+    def __init__(self, l1_size:
+        """初期化メソッド"""
+    int = 1000, l2_size: int = 10000):
         self.l1_cache = {}  # インメモリ高速キャッシュ
         self.l2_cache = {}  # 拡張メモリキャッシュ
         self.l1_size = l1_size
@@ -146,7 +148,9 @@ class AdvancedCacheManager:
 class BatchEmbeddingProcessor:
     """バッチ埋め込み処理エンジン"""
 
-    def __init__(self, batch_size: int = 50, max_workers: int = 4):
+    def __init__(self, batch_size:
+        """初期化メソッド"""
+    int = 50, max_workers: int = 4):
         self.batch_size = batch_size
         self.max_workers = max_workers
         self.processing_queue = []
@@ -221,7 +225,9 @@ class BatchEmbeddingProcessor:
 class DistributedGrimoireSystem:
     """分散魔法書システム"""
 
-    def __init__(self, node_count: int = 3):
+    def __init__(self, node_count:
+        """初期化メソッド"""
+    int = 3):
         self.node_count = node_count
         self.nodes = {}
         self.load_balancer = DistributedLoadBalancer()
@@ -268,6 +274,7 @@ class DistributedLoadBalancer:
     """分散ロードバランサー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.node_loads = defaultdict(int)
 
     def distribute_tasks(
@@ -288,6 +295,7 @@ class GrimoireElderFlowBridge:
     """魔法書 ⟷ Elder Flow 統合ブリッジ"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.cache_manager = AdvancedCacheManager()
         self.batch_processor = BatchEmbeddingProcessor()
         self.distributed_system = DistributedGrimoireSystem()
@@ -377,6 +385,7 @@ class ComprehensiveGrimoireOptimizer:
     """魔法書包括最適化システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.bridge = GrimoireElderFlowBridge()
         self.optimization_history = []
         self.performance_baseline = None
@@ -659,10 +668,16 @@ async def main():
     for component in optimization_report["component_results"]:
         print(f"  🧙‍♂️ {component['component']}: {component['improvement']} 向上")
         print(
-            f"    ⏱️  処理時間: {component['before_performance']['processing_time']} → {component['after_performance']['processing_time']}"
+            (
+                f"f"    ⏱️  処理時間: {component['before_performance']['processing_time']} → "
+                f"{component['after_performance']['processing_time']}""
+            )
         )
         print(
-            f"    📊 QPS: {component['before_performance']['queries_per_second']} → {component['after_performance']['queries_per_second']}"
+            (
+                f"f"    📊 QPS: {component['before_performance']['queries_per_second']} → "
+                f"{component['after_performance']['queries_per_second']}""
+            )
         )
 
     print(f"\n🚀 ネクストステップ:")

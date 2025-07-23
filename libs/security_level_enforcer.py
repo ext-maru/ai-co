@@ -129,6 +129,7 @@ class SecurityLevelEnforcer:
     """セキュリティレベル間の境界を厳格に管理するエンフォーサー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.config = get_config()
         self.logger = logging.getLogger(__name__)
 
@@ -694,6 +695,7 @@ class AnomalyDetector:
     """セキュリティ異常検知システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.baseline_patterns = {}
         self.suspicious_patterns = [
             "unusual_time_access",

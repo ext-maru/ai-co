@@ -51,7 +51,9 @@ class ApprovalStatus(Enum):
 class ProphecyTemplate:
     """予言書テンプレート"""
 
-    def __init__(self, template_id: str, name: str, description: str):
+    def __init__(self, template_id:
+        """初期化メソッド"""
+    str, name: str, description: str):
         self.template_id = template_id
         self.name = name
         self.description = description
@@ -96,6 +98,7 @@ class ProphecyVersionControl:
     """予言書バージョン管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.version_history = {}
         self.branches = {}
         self.tags = {}
@@ -261,6 +264,7 @@ class ProphecyRiskAssessment:
     """予言書リスク評価"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.risk_factors = {
             "impact_scope": 0.3,
             "rollback_difficulty": 0.2,
@@ -362,6 +366,7 @@ class ProphecyQualityAssurance:
     """予言書品質保証"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.quality_criteria = {
             "completeness": 0.25,
             "consistency": 0.25,
@@ -436,6 +441,7 @@ class ProphecyDependencyAnalyzer:
     """予言書依存関係分析"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.dependency_graph = {}
 
     def analyze_dependencies(self, prophecy_name: str, prophecy_data: Dict) -> Dict:
@@ -491,6 +497,7 @@ class ProphecyGovernanceSystem:
     """予言書ガバナンスシステム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.approval_workflows = {
             "creation": self.creation_approval_workflow,
             "evolution": self.evolution_approval_workflow,
@@ -576,6 +583,7 @@ class ProphecyManagementSystem:
     """予言書統合管理システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.version_control = ProphecyVersionControl()
         self.risk_assessment = ProphecyRiskAssessment()
         self.quality_assurance = ProphecyQualityAssurance()

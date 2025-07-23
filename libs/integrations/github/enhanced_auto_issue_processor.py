@@ -66,7 +66,9 @@ def retry_on_github_error(max_retries=3, base_delay=1.0):
     """GitHub APIエラー時のリトライデコレータ"""
 
     def decorator(func):
+        """decoratorメソッド"""
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             logger = logging.getLogger(__name__)
 
             for attempt in range(max_retries):
@@ -111,7 +113,9 @@ def retry_on_github_error(max_retries=3, base_delay=1.0):
 class IssueCache:
     """GitHub Issueのキャッシュ管理"""
 
-    def __init__(self, ttl=300):  # デフォルト5分
+    def __init__(self, ttl=300):
+        """初期化メソッド"""
+    # デフォルト5分
         self.ttl = ttl
         self.cache = {}
         self.logger = logging.getLogger(__name__)
@@ -144,7 +148,9 @@ class IssueCache:
 class GitOperations:
     """Git操作を管理するクラス"""
 
-    def __init__(self, repo_path: str = None):
+    def __init__(self, repo_path:
+        """初期化メソッド"""
+    str = None):
         self.repo_path = repo_path or os.getcwd()
         self.logger = logging.getLogger(__name__)
 
@@ -299,7 +305,9 @@ class GitOperations:
 class EnhancedPRCreator:
     """強化されたPR作成クラス"""
 
-    def __init__(self, github_client: Github, repository: Repository):
+    def __init__(self, github_client:
+        """初期化メソッド"""
+    Github, repository: Repository):
         self.github = github_client
         self.repo = repository
         self.logger = logging.getLogger(__name__)
@@ -535,6 +543,7 @@ class EnhancedFourSagesIntegration:
     """4賢者システムとの統合（強化版）"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.logger.info("🏛️ 4賢者統合システム初期化開始")
         self.sages_available = FOUR_SAGES_AVAILABLE
@@ -780,6 +789,7 @@ class EnhancedAutoIssueProcessor(AutoIssueProcessor):
     """PR作成機能を追加した拡張版Auto Issue Processor"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.logger.info("🏗️ Enhanced Auto Issue Processor初期化開始")
 
@@ -1374,7 +1384,8 @@ This document addresses issue #{issue.number}: {issue.title}
 - Best practices documented
 
 ## Content
-This auto-generated documentation provides the foundation for addressing the documentation request in issue #{issue.number}.
+This auto-generated documentation provides the foundation for addressing \
+    the documentation request in issue #{issue.number}.
 
 ## Next Steps
 1. Review and expand content as needed

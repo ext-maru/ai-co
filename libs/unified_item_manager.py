@@ -91,6 +91,7 @@ class LegacySystemConnector:
     """既存システムとの連携コネクタ"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.weapon_sharing = None
         self.knight_brigade = None
         self.dwarf_workshop = None
@@ -207,7 +208,9 @@ class LegacySystemConnector:
 class UnifiedItemManager:
     """統一アイテム管理システム - Elder Council承認済み設計"""
 
-    def __init__(self, data_file: str = "data/unified_inventory.json"):
+    def __init__(self, data_file:
+        """初期化メソッド"""
+    str = "data/unified_inventory.json"):
         self.data_file = data_file
         self.items: Dict[str, ItemInfo] = {}
         self.allocations: Dict[str, AllocationRecord] = {}

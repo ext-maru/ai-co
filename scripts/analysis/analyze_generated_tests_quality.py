@@ -337,7 +337,8 @@ class GeneratedTestsQualityAnalysis:
         success_rate = high_compliance_count / total_count if total_count > 0 else 0
 
         if avg_compliance >= 0.8 and success_rate >= 0.7:
-            return "Excellent - Generated tests successfully applied proven patterns from 98.6% and 100% coverage modules"
+            return "Excellent - Generated tests successfully applied proven patterns from 98.6% and \
+                100% coverage modules"
         elif avg_compliance >= 0.7 and success_rate >= 0.5:
             return "Good - Most generated tests show good pattern compliance with room for improvement"
         elif avg_compliance >= 0.6:
@@ -536,7 +537,10 @@ class GeneratedTestsQualityAnalysis:
         # Estimate coverage impact
         if avg_score >= 0.8:
             estimated_impact = "High positive impact"
-            impact_description = f"High-quality {test_method_count} test methods strongly support coverage maintenance and growth"
+            impact_description = f"High-quality 
+                f"{test_method_count} test methods strongly support coverage maintenance and \
+                \
+                growth"
         elif avg_score >= 0.7:
             estimated_impact = "Moderate positive impact"
             impact_description = f"Good-quality {test_method_count} test methods provide solid coverage support"

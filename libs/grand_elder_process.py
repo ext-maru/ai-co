@@ -27,6 +27,7 @@ class GrandElderProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="grand_elder_maru",
             elder_role=ElderRole.GRAND_ELDER,

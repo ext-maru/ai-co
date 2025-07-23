@@ -23,6 +23,7 @@ class ProjectDesignManager(BaseManager):
     """プロジェクト全体のライフサイクル管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.db_path = PROJECT_ROOT / "db" / "project_designs.db"
         self.design_folder = PROJECT_ROOT / "project_designs"

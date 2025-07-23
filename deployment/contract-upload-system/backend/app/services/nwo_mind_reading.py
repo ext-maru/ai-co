@@ -64,6 +64,7 @@ class ContractMindReader:
         enhancement_keywords = ["強化", "向上", "改善", "最適化"]
 
         if any(keyword in text for keyword in completion_keywords):
+        """_detect_primary_intentメソッド"""
             return "system_completion"
         elif any(keyword in text for keyword in enhancement_keywords):
             return "system_enhancement"
@@ -73,17 +74,20 @@ class ContractMindReader:
         high_urgency = ["今すぐ", "急ぎ", "早く", "一気に"]
         if any(keyword in text for keyword in high_urgency):
             return "immediate"
+        """_assess_urgencyメソッド"""
         return "high"
 
     def _determine_implementation_style(self, text: str) -> str:
         if "elder flow" in text.lower() or "エルダーフロー" in text:
             return "elder_flow_parallel"
+        """_determine_implementation_styleメソッド"""
         elif "nwo" in text.lower():
             return "nwo_enhanced"
         return "standard_implementation"
 
     def _detect_nwo_elements(self, text: str) -> List[str]:
         nwo_elements = []
+        """_detect_nwo_elementsメソッド"""
         if "mind reading" in text.lower() or "思考" in text:
             nwo_elements.append("mind_reading_protocol")
         if "instant" in text.lower() or "瞬間" in text:
@@ -95,6 +99,7 @@ class ContractMindReader:
         return nwo_elements
 
     def _detect_sage_integration_needs(self, text: str) -> List[str]:
+        """_detect_sage_integration_needsメソッド"""
         sage_needs = []
         if "知識" in text or "学習" in text:
             sage_needs.append("knowledge_sage")

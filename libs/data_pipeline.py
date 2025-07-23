@@ -28,6 +28,7 @@ class DataProcessingPipeline:
     """データ処理パイプライン"""
 
     def __init__(self):
+        """初期化メソッド"""
         # 処理ステージ
         self.stages = []
 

@@ -517,6 +517,7 @@ class ABTestingFramework:
 
             # 優先度でソート（criticalを最優先に）
             def sort_key(exp):
+                """sort_keyメソッド"""
                 if exp.get("priority") == "critical":
                     return (2.0, exp["priority_score"])  # criticalは最高優先
                 else:
@@ -951,8 +952,14 @@ class ABTestingFramework:
                         # 簡易的な標準偏差計算
                         std = abs(agg.get("max", 0) - agg.get("min", 0)) / 4  # 近似
 
+                        if not (std > 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if std > 0:
                             z_score = abs(value - mean) / std
+                            if not (z_score > self.default_config["anomaly_threshold"]):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if z_score > self.default_config["anomaly_threshold"]:
                                 anomaly_detected = True
                                 anomaly_details[metric_name] = {
@@ -1547,6 +1554,7 @@ class SafetyMonitor:
     """実験の安全性監視"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.alert_history = deque(maxlen=100)
         self.safety_thresholds = {
             "error_rate": 0.05,

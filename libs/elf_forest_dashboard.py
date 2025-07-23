@@ -28,6 +28,7 @@ class ElfForestDashboard:
     """エルフの森統合ダッシュボード"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = PROJECT_ROOT
         self.test_monitor = ElfForestTestMonitor()
         self.dashboard_data = {}
@@ -41,6 +42,7 @@ class ElfForestDashboard:
 
         # ダッシュボード更新スレッド開始
         def dashboard_updater():
+            """dashboard_updaterメソッド"""
             while self.monitoring_active:
                 try:
                     self.update_dashboard_data()

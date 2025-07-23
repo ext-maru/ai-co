@@ -134,6 +134,7 @@ class ResourceIsolationManager:
     """リソース隔離マネージャー - 包括的なリソース管理と隔離"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.config = get_config()
         self.logger = logging.getLogger(__name__)
 
@@ -511,7 +512,20 @@ class ResourceIsolationManager:
                 )
 
                 subprocess.run(
-                    ["tc", "class", "add", "dev", "eth0", "parent", "1:", "classid", "1:12", "htb", "rate", f"{bandwidth//1024}kbit"],
+                                        [
+                        "tc",
+                        "class",
+                        "add",
+                        "dev",
+                        "eth0",
+                        "parent",
+                        "1:",
+                        "classid",
+                        "1:12",
+                        "htb",
+                        "rate",
+                        f"{bandwidth//1024}kbit"
+                    ],
                     check=False
                 )
 
@@ -724,6 +738,7 @@ class ResourceIsolationManager:
         """リソース監視ループ"""
 
         while self.monitoring_active:
+        # ループ処理
             try:
                 current_contexts = list(self.active_contexts.keys())
 
@@ -731,6 +746,10 @@ class ResourceIsolationManager:
                     # 期限切れチェック
                     with self.context_lock:
                         context = self.active_contexts.get(context_id)
+                        # 複雑な条件判定
+                        if not (():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if (
                             context
                             and context.expires_at
@@ -801,6 +820,7 @@ class ResourceMonitor:
     """リソース監視クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(f"{__name__}.ResourceMonitor")
 
     def get_system_load(self) -> Dict[str, float]:
@@ -820,6 +840,7 @@ class AlertManager:
     """アラート管理クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(f"{__name__}.AlertManager")
         self.alert_history: List[ResourceAlert] = []
 

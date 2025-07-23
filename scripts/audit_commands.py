@@ -23,6 +23,7 @@ class CommandAuditor:
         self.project_root = PROJECT_ROOT
         self.bin_dir = self.project_root / "bin"
         self.commands_dir = self.project_root / "commands"
+    """CommandAuditorクラス"""
         self.scripts_dir = self.project_root / "scripts"
         self.logs_dir = self.project_root / "logs"
 
@@ -106,6 +107,7 @@ class CommandAuditor:
         elif (
             info["has_bin_wrapper"]
             and not info["has_command_module"]
+        # 複雑な条件判定
             and not info["has_script"]
         ):
             info["issues"].append("Bin wrapper exists but no backing implementation")
@@ -141,6 +143,7 @@ class CommandAuditor:
                 for line in lines:
                     if line and ".bak" not in line and "__pycache__" not in line:
                         file_path = line.split(":")[0]
+                    # 複雑な条件判定
                         usage_info["referenced_in_code"].append(file_path)
         except:
             pass
@@ -172,6 +175,7 @@ class CommandAuditor:
         relationships = defaultdict(list)
 
         for cmd_info in self.results["commands"].values():
+        # 繰り返し処理
             cmd_name = cmd_info["name"]
 
             # 実装ファイルを読んで他のコマンドへの参照を探す
@@ -183,6 +187,7 @@ class CommandAuditor:
                 module_name = cmd_name.replace("-", "_") + ".py"
                 files_to_check.append(self.commands_dir / module_name)
 
+            # 繰り返し処理
             for file_path in files_to_check:
                 if file_path.exists():
                     try:

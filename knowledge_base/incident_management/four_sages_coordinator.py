@@ -308,6 +308,9 @@ class FourSagesCoordinator:
                     with open(md_file, "r") as f:
                         content = f.read().lower()
                         relevance = sum(1 for keyword in keywords if keyword in content)
+                        if not (relevance > 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if relevance > 0:
                             relevant_docs.append(
                                 {"file": str(md_file.name), "relevance": relevance}
@@ -955,6 +958,7 @@ class FourSagesCoordinator:
 
 def main():
     import argparse
+    """mainメソッド"""
 
     parser = argparse.ArgumentParser(description="Four Sages Coordination System")
     parser.add_argument(
@@ -972,6 +976,7 @@ def main():
     elif args.action == "test":
         # テスト用緊急対応シミュレーション
         async def test_emergency():
+            """test_emergencyメソッド"""
             test_incident = {
                 "incident_id": "TEST-001",
                 "category": "failure",

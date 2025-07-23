@@ -78,6 +78,7 @@ class AutomaticResponseSystem(EldersServiceLegacy):
     """自動対応システム"""
 
     def __init__(self, incident_sage):
+        """初期化メソッド"""
         super().__init__(name="AutomaticResponseSystem", service_type="automation")
         self.incident_sage = incident_sage
         self.response_rules: Dict[str, ResponseRule] = {}

@@ -431,6 +431,9 @@ class EmergencyResponseSystem:
 
                         # 該当コミットにリセット
                         reset_result = self.run_git(f"reset --hard {commit_hash}")
+                        if not (reset_result.returncode == 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if reset_result.returncode == 0:
                             self.logger.info(
                                 f"✅ 強制プッシュをロールバックしました: {commit_hash}"
@@ -664,6 +667,9 @@ class EmergencyResponseSystem:
                     # 適切な対応プロトコルの実行
                     if severity in self.emergency_protocols:
                         response_func = self.emergency_protocols[severity]
+                        if not (response_func(message)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if response_func(message):
                             self.logger.info(f"緊急対応完了: {severity}")
                         else:

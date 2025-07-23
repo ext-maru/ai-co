@@ -393,6 +393,7 @@ class IncidentSageGrimoireVectorization:
     async def _classify_incident_type(self, error_message: str) -> IncidentCategory:
         """インシデントタイプ分類"""
         for category, patterns in self.error_patterns.items():
+        # 繰り返し処理
             for pattern in patterns:
                 if re.search(pattern, error_message, re.IGNORECASE):
                     return category
@@ -440,6 +441,7 @@ class IncidentSageGrimoireVectorization:
             + incident_data.get("error_message", "")
         ).lower()
 
+        # 繰り返し処理
         for severity, indicators in severity_indicators.items():
             for indicator in indicators:
                 if indicator in description:

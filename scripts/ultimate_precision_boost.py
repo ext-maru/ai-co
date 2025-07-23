@@ -237,15 +237,18 @@ async def training_data_approach():
         training_data = [
             {
                 "context": "エルダーズギルド 4賢者 ナレッジ賢者 タスク賢者 インシデント賢者 RAG賢者",
-                "content": "エルダーズギルドの4賢者システムは、ナレッジ賢者（Knowledge Sage）、タスク賢者（Task Oracle）、インシデント賢者（Crisis Sage）、RAG賢者（Search Mystic）で構成される高度な開発組織システムです。4賢者 4賢者 4賢者",
+                "content": "エルダーズギルドの4賢者システムは、ナレッジ賢者（Knowledge Sage）、タスク賢者（Task Oracle）、インシデント賢者（Crisis \
+                    Sage）、RAG賢者（Search Mystic）で構成される高度な開発組織システムです。4賢者 4賢者 4賢者",
             },
             {
                 "context": "ナレッジ賢者 知識管理 Knowledge Sage 4賢者 エルダーズギルド",
-                "content": "ナレッジ賢者（Knowledge Sage）は4賢者の一員として、エルダーズギルドの知識管理を専門に担当する重要な役割を持つ賢者システムです。ナレッジ賢者 ナレッジ賢者 Knowledge Sage",
+                "content": "ナレッジ賢者（Knowledge Sage）は4賢者の一員として、エルダーズギルドの知識管理を専門に担当する重要な役割を持つ賢者システムです。ナレッジ賢者 \
+                    ナレッジ賢者 Knowledge Sage",
             },
             {
                 "context": "pgvector ベクトル検索 PostgreSQL 埋め込み エルダーズギルド",
-                "content": "pgvectorは、PostgreSQLにベクトル検索機能を追加する革新的な拡張機能で、エルダーズギルドの知識検索システムの中核を担っています。pgvector pgvector ベクトル検索",
+                "content": "pgvectorは、PostgreSQLにベクトル検索機能を追加する革新的な拡張機能で、エルダーズギルドの知識検索システムの中核を担って \
+                    います。pgvector pgvector ベクトル検索",
             },
         ]
 

@@ -353,7 +353,9 @@ def with_error_handling(severity: str = ErrorSeverity.MEDIUM):
 
     def decorator(func):
         @wraps(func)
+        """decoratorメソッド"""
         def wrapper(self, *args, **kwargs):
+            """wrapperメソッド"""
             try:
                 return func(self, *args, **kwargs)
             except Exception as e:

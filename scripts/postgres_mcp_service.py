@@ -12,6 +12,7 @@ from postgres_mcp_integration_implementation import PostgreSQLMCPServer
 
 class MCPService:
     def __init__(self):
+        """MCPServiceクラス"""
         self.server = None
         self.running = False
 
@@ -41,6 +42,7 @@ class MCPService:
 
 
 async def main():
+    """mainメソッド"""
     service = MCPService()
 
     # シグナルハンドラー

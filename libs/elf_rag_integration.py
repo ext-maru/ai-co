@@ -14,6 +14,7 @@ class ElfRAGIntegration:
     """エルフとRAGウィザーズの連携クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.rag_manager = EnhancedRAGManager()
         self.test_patterns_db = Path("knowledge_base/test_patterns.json")
         self.success_patterns = []

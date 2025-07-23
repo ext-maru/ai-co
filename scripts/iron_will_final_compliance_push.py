@@ -56,6 +56,7 @@ class IronWillFinalCompliancePush:
         test_files = list(self.github_integration_path.glob("tests/test_*.py"))
 
         for test_file in test_files:
+        # 繰り返し処理
             try:
                 content = test_file.read_text()
 
@@ -414,6 +415,7 @@ if __name__ == "__main__":
         lines = content.split("\n")
         result_lines = []
 
+        # 繰り返し処理
         for i, line in enumerate(lines):
             result_lines.append(line)
 

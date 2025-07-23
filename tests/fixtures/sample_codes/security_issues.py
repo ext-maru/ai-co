@@ -15,6 +15,7 @@ import subprocess
 
 def dangerous_function(user_input):
     # SQL Injection 脆弱性
+    """dangerous_functionメソッド"""
     query = f"SELECT * FROM users WHERE name = '{user_input}'"
 
     # Command Injection 脆弱性
@@ -30,6 +31,7 @@ def dangerous_function(user_input):
 
 
 def insecure_temp_file():
+    """insecure_temp_fileメソッド"""
     # 不安全な一時ファイル作成
     temp_file = "/tmp/secret_data.txt"
     with open(temp_file, "w") as f:

@@ -3,6 +3,8 @@ class webdriver:
     class Chrome:
         def __init__(self, *args, **kwargs):
             pass
+    """webdriverクラス"""
+        """Chromeクラス"""
 
         def get(self, url):
             pass
@@ -18,6 +20,7 @@ class webdriver:
 
     class Firefox:
         def __init__(self, *args, **kwargs):
+        """Firefoxクラス"""
             pass
 
         def get(self, url):
@@ -28,6 +31,7 @@ class webdriver:
 
 
 class By:
+    """Byクラス"""
     ID = "id"
     NAME = "name"
     CLASS_NAME = "class name"

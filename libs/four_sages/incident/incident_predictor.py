@@ -109,6 +109,7 @@ class FeatureExtractor:
     """特徴量抽出器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.feature_names = [
             "error_rate",
             "response_time",
@@ -185,7 +186,9 @@ class FeatureExtractor:
 class IncidentPredictor(EldersAILegacy):
     """インシデント予測システム"""
 
-    def __init__(self, pattern_detector: FailurePatternDetector):
+    def __init__(self, pattern_detector:
+        """初期化メソッド"""
+    FailurePatternDetector):
         super().__init__(name="IncidentPredictor", model_type="prediction-v1")
         self.pattern_detector = pattern_detector
         self.prediction_model = None
@@ -504,6 +507,7 @@ class IncidentPredictor(EldersAILegacy):
         # 確率分布が偏っているほど信頼度が高い
 
         def entropy(proba):
+            """entropyメソッド"""
             # 小さな値を追加してlog(0)を回避
             proba = proba + 1e-10
             return -np.sum(proba * np.log(proba))

@@ -64,7 +64,8 @@ echo ""
 cp config/slack.conf config/slack.conf.bak
 
 # Bot Tokenを更新
-sed -i 's/^SLACK_BOT_TOKEN=.*/SLACK_BOT_TOKEN="xoxb-9133957021265-9120858383298-GzfwMNHREdN7oU4Amd6rVGHv"/' config/slack.conf
+sed -i 's/^SLACK_BOT_TOKEN=.*/SLACK_BOT_TOKEN="xoxb-9133957021265-9120858383298- \
+    GzfwMNHREdN7oU4Amd6rVGHv"/' config/slack.conf
 
 echo "✅ Token更新完了"
 echo ""

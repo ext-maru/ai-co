@@ -78,11 +78,13 @@ except ImportError as e:
 
     class ProactiveGuidanceType:
         # Main class implementation
+        """ProactiveGuidanceTypeクラス"""
         STRATEGIC_GUIDANCE = "strategic_guidance"
         PREVENTIVE_ACTION = "preventive_action"
         IMPROVEMENT_OPPORTUNITY = "improvement_opportunity"
 
     class UrgencyLevel:
+        """UrgencyLevelクラス"""
         # Main class implementation
         IMMEDIATE = "immediate"
         HIGH = "high"

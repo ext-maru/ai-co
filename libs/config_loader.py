@@ -59,6 +59,7 @@ class ConfigLoader:
         pattern = r'\$\{([^}:]+)(?::([^}]*))?\}'
         
         def replace_var(match):
+            """replace_varメソッド"""
             var_name = match.group(1)
             default_value = match.group(2) or ''
             

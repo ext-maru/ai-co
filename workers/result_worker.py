@@ -1336,6 +1336,9 @@ ai-git flow --files "{','.join(files_created)}" --type {branch_type}
                     import asyncio
                     try:
                         loop = asyncio.get_event_loop()
+                        if not (loop.is_running()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if loop.is_running():
                             loop.create_task(self.elder_tree.send_message(message))
                         else:

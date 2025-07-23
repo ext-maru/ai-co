@@ -109,7 +109,9 @@ class TechStackDetector:
 class SmartTemplateSelector:
     """スマートテンプレート選択エンジン"""
     
-    def __init__(self, template_dir: str = "templates/smart_generation"):
+    def __init__(self, template_dir:
+        """初期化メソッド"""
+    str = "templates/smart_generation"):
         self.template_dir = Path(template_dir)
         self.jinja_env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(str(self.template_dir)),
@@ -142,7 +144,9 @@ class SmartTemplateSelector:
 class SmartCodeGenerator:
     """スマートコード生成エンジン"""
     
-    def __init__(self, template_dir: str = "templates/smart_generation"):
+    def __init__(self, template_dir:
+        """初期化メソッド"""
+    str = "templates/smart_generation"):
         self.tech_detector = TechStackDetector()
         self.template_selector = SmartTemplateSelector(template_dir)
         
@@ -436,10 +440,14 @@ class SmartCodeGenerator:
                 intelligence.complexity_indicators.values()) / max(1,
                 len(intelligence.complexity_indicators)
             )
-            context['complexity_level'] = 'high' if complexity_score > 0.6 else 'medium' if complexity_score > 0.3 else 'low'
+            context['complexity_level'] = 'high' \
+                if complexity_score > 0.6 \
+                else 'medium' if complexity_score > 0.3 else 'low'
             context['include_monitoring'] = complexity_score > 0.4
-            context['include_caching'] = 'performance' in intelligence.complexity_indicators and intelligence.complexity_indicators['performance'] > 0.3
-            context['include_async'] = 'real_time' in intelligence.complexity_indicators and intelligence.complexity_indicators['real_time'] > 0.3
+            context['include_caching'] = 'performance' in intelligence.complexity_indicators and \
+                intelligence.complexity_indicators['performance'] > 0.3
+            context['include_async'] = 'real_time' in intelligence.complexity_indicators and \
+                intelligence.complexity_indicators['real_time'] > 0.3
             
             # キーエンティティの活用
             context['key_entities'] = intelligence.key_entities

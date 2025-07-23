@@ -36,13 +36,17 @@ except Exception as e:
 
 # モッククラス定義（Redis無しでも動作）
 class MockPubSub:
+    """MockPubSubクラス"""
     async def subscribe(self, *args):
+        """subscribeメソッド"""
         pass
 
     async def unsubscribe(self, *args):
+        """unsubscribeメソッド"""
         pass
 
     async def get_message(self):
+        """message取得メソッド"""
         return None
 
 
@@ -93,6 +97,7 @@ class ElderMessage:
     requires_ack: bool = False
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.timestamp is None:
             self.timestamp = datetime.now().isoformat()
 
@@ -456,6 +461,7 @@ def run_elder_process(elder_class, *args, **kwargs):
     """エルダープロセスを起動"""
 
     async def main():
+        """mainメソッド"""
         elder = elder_class(*args, **kwargs)
         await elder.start()
 

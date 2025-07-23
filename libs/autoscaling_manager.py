@@ -228,6 +228,7 @@ class AutoScalingManager:
         self.connect()
         self.logger.info("🎯 AutoScaling Manager started")
 
+        # ループ処理
         while not self.stop_event.is_set():
             try:
                 for config in worker_configs:

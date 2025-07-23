@@ -485,7 +485,9 @@ class UnifiedGitHubManager:
         Returns:
             作成結果リスト
         """
-        async def create_single_issue(issue_data: Dict[str, Any]) -> Dict[str, Any]:
+        async def create_single_issue(issue_data:
+            """single_issue作成メソッド"""
+        Dict[str, Any]) -> Dict[str, Any]:
             return await self.create_issue(**issue_data)
         
         results = await self.parallel_processor.map_async(
@@ -523,7 +525,9 @@ class UnifiedGitHubManager:
         Returns:
             更新結果リスト
         """
-        def update_single_issue(update_data: Dict[str, Any]) -> Dict[str, Any]:
+        def update_single_issue(update_data:
+            """single_issue更新メソッド"""
+        Dict[str, Any]) -> Dict[str, Any]:
             issue_number = update_data.pop("issue_number")
             return self.update_issue(issue_number, **update_data)
         

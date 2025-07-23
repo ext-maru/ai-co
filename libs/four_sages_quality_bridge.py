@@ -75,6 +75,7 @@ class KnowledgeSageQualityBridge:
     """📚 ナレッジ賢者品質ブリッジ"""
     
     def __init__(self, quality_engine):
+        """初期化メソッド"""
         self.quality_engine = quality_engine
         self.knowledge_base = []
         self.patterns_cache = {}
@@ -151,6 +152,7 @@ class IncidentSageQualityBridge:
     """🚨 インシデント賢者品質ブリッジ"""
     
     def __init__(self, quality_engine):
+        """初期化メソッド"""
         self.quality_engine = quality_engine
         self.incident_history = []
         self.severity_thresholds = {
@@ -282,6 +284,7 @@ class TaskSageQualityBridge:
     """📋 タスク賢者品質ブリッジ"""
     
     def __init__(self, quality_engine):
+        """初期化メソッド"""
         self.quality_engine = quality_engine
         self.quality_tasks = []
         self.priority_matrix = {
@@ -312,6 +315,7 @@ class TaskSageQualityBridge:
     async def prioritize_quality_tasks(self) -> List[QualityTask]:
         """品質タスク優先順位付け"""
         def priority_score(task):
+            """priority_scoreメソッド"""
             base_weight = self.priority_matrix.get(task.priority, {}).get('weight', 0)
             impact_bonus = task.improvement_impact * 10
             urgency_bonus = max(0, 100 - (datetime.now() - task.created_at).days * 5)
@@ -413,6 +417,7 @@ class RAGSageQualityBridge:
     """🔍 RAG賢者品質ブリッジ"""
     
     def __init__(self, quality_engine):
+        """初期化メソッド"""
         self.quality_engine = quality_engine
         self.search_cache = {}
         self.recommendation_engine = None
@@ -516,6 +521,7 @@ class FourSagesQualityOrchestrator:
     """🏛️ 4賢者品質オーケストレーター"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.quality_engine = None
         self.knowledge_sage = None
         self.incident_sage = None
@@ -612,7 +618,8 @@ class FourSagesQualityOrchestrator:
         # Task Sage からの計画
         task_planning = analysis.get('task_sage_planning')
         if task_planning:
-            recommendations.append(f"📋 Task: {task_planning['description']} (Est: {task_planning['estimated_effort']}min)")
+                        recommendations.append(f"📋 Task: {task_planning['description']} \
+                (Est: {task_planning['estimated_effort']}min)")
             
         # RAG Sage からの洞察
         rag_insights = analysis.get('rag_sage_insights', {})

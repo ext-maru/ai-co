@@ -90,7 +90,9 @@ class ElderFlowMessage:
 class ElderFlowRabbitMQReal:
     """Elder Flow本物RabbitMQ実装 - 魂の力"""
 
-    def __init__(self, config: ElderFlowRabbitMQConfig = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    ElderFlowRabbitMQConfig = None):
         self.config = config or ElderFlowRabbitMQConfig()
         self.connection: Optional[AbstractRobustConnection] = None
         self.channel: Optional[AbstractRobustChannel] = None
@@ -558,6 +560,7 @@ async def get_elder_flow_rabbitmq(
 if __name__ == "__main__":
     # Elder Flow Soul Demo
     async def soul_demo():
+        """soul_demoメソッド"""
         print("🌊 Elder Flow RabbitMQ Real Implementation - Soul Power Demo")
 
         try:

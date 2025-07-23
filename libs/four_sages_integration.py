@@ -160,6 +160,9 @@ class FourSagesIntegration:
                     # 賢者の魂紐づけ確認
                     if not self.sage_nodes[sage_key].soul_bound:
                         success = self.elder_tree.bind_soul_to_elder(node_id)
+                        if not (success):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if success:
                             logger.info(f"✨ Sage soul bound: {sage_key}")
                         else:
@@ -1711,6 +1714,7 @@ class FourSagesIntegration:
     ):
         """最適化設定のマージ"""
         for key, value in optimization.items():
+            # 複雑な条件判定
             if (
                 isinstance(value, dict)
                 and key in base_config

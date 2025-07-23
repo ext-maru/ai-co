@@ -102,6 +102,7 @@ def fix_test_file(file_path):
     ]
 
     for j in range(i, len(lines)):
+    # 繰り返し処理
         line = lines[j]
 
         # スキップパターンに一致するか確認
@@ -138,6 +139,7 @@ def fix_critical_test_files():
 
     fixed_count = 0
 
+    # 繰り返し処理
     for test_file in test_files:
         file_path = Path(test_file)
         if file_path.exists():
@@ -152,8 +154,12 @@ def fix_critical_test_files():
                 else:
                     # バックアップが既に存在する場合は番号を付ける
                     i = 1
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     while True:
                         backup_path = file_path.with_suffix(f".py.backup{i}")
+                        if backup_path.exists():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if not backup_path.exists():
                             break
                         i += 1

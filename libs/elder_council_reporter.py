@@ -23,6 +23,7 @@ class ElderCouncilReporter:
     """エルダー評議会報告システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.council_dir = PROJECT_ROOT / "knowledge_base" / "elder_council_reports"
         self.council_dir.mkdir(parents=True, exist_ok=True)
         self.auto_approval_rules = self._load_auto_approval_rules()

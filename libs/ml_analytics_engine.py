@@ -64,6 +64,7 @@ class FeatureEngineer:
     """特徴量エンジニアリング"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.scalers = {}
         self.encoders = {}
 
@@ -174,6 +175,7 @@ class ModelTrainer:
     """モデル訓練エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.models = {
             ModelType.REGRESSION: {
                 "random_forest": RandomForestRegressor,
@@ -265,6 +267,7 @@ class PredictionEngine:
     """予測エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.active_models: Dict[str, MLModel] = {}
 
     async def predict(
@@ -311,6 +314,7 @@ class AnomalyDetector:
     """異常検知エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.threshold_multiplier = 3  # 標準偏差の倍数
 
     async def detect_anomalies(
@@ -394,7 +398,9 @@ class AnomalyDetector:
 class MLAnalyticsEngine:
     """機械学習分析エンジン統合"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path):
         self.project_root = Path(project_root)
         self.models_dir = self.project_root / "ml_models"
         self.models_dir.mkdir(exist_ok=True)

@@ -496,6 +496,7 @@ class RAGManager(EldersAILegacy):
                 # キーワード検索
                 query_keywords = self._extract_keywords(query)
 
+                # 繰り返し処理
                 for keyword in query_keywords:
                     cursor.execute(
                         """

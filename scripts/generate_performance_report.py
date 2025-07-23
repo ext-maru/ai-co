@@ -27,7 +27,8 @@ def generate_html_report(benchmark_data: Dict[str, Any]) -> str:
         <title>Performance Report - {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</title>
         <style>
             body {{
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,  \
+                    'Open Sans', 'Helvetica Neue', sans-serif;
                 margin: 0;
                 padding: 20px;
                 background-color: #f5f5f5;
@@ -189,6 +190,7 @@ def generate_text_report(benchmark_data: Dict[str, Any]) -> str:
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(
         description="Generate performance report from benchmark data"
     )

@@ -12,6 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class ConversationDB:
+    """ConversationDBクラス"""
     def __init__(self, db_path="/home/aicompany/ai_co/conversations.db"):
         """初期化メソッド"""
         self.db_path = db_path

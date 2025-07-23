@@ -108,7 +108,8 @@ class TestUnifiedGitHubManager:
             assert result["success"] is True
             mock_report.assert_called_once()
     
-    @patch('libs.integrations.github.api_implementations.create_pull_request.GitHubCreatePullRequestImplementation.create_pull_request')
+    @patch('libs.integrations.github.api_implementations.' \
+        'create_pull_request.GitHubCreatePullRequestImplementation.create_pull_request')
     def test_create_pull_request_full_features(self, mock_create_pr):
         """完全機能付きPR作成テスト"""
         mock_create_pr.return_value = {
@@ -138,7 +139,8 @@ class TestUnifiedGitHubManager:
         assert result["pull_request"]["number"] == 789
         assert not result["conflict_status"]["has_conflicts"]
     
-    @patch('libs.integrations.github.api_implementations.get_pull_requests.GitHubGetPullRequestsImplementation.get_pull_requests')
+    @patch('libs.integrations.github.api_implementations.' \
+        'get_pull_requests.GitHubGetPullRequestsImplementation.get_pull_requests')
     def test_get_pull_requests_with_statistics(self, mock_get_prs):
         """統計付きPR取得テスト"""
         mock_get_prs.return_value = {
@@ -165,6 +167,7 @@ class TestUnifiedGitHubManager:
         call_count = 0
         
         def failing_function():
+            """failing_functionメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -362,7 +365,8 @@ class TestAPIImplementations:
     
     def test_create_pull_request_conflict_detection(self):
         """PR作成のコンフリクト検出テスト"""
-        from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
+        from libs.integrations.github.api_implementations.create_pull_request import \
+            GitHubCreatePullRequestImplementation
         
         impl = GitHubCreatePullRequestImplementation(
             token="test-token",

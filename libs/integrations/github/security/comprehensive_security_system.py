@@ -421,6 +421,7 @@ class ComprehensiveSecuritySystem:
                 "jwt": r"(eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*)",
             }
 
+            # 繰り返し処理
             for secret_type, pattern in secret_patterns.items():
                 matches = re.finditer(pattern, content, re.IGNORECASE)
                 for match in matches:
@@ -478,8 +479,10 @@ class ComprehensiveSecuritySystem:
         """Decorator for securing functions"""
 
         def decorator(func):
+            """decoratorメソッド"""
             @wraps(func)
             async def async_wrapper(*args, **kwargs):
+                """async_wrapperメソッド"""
                 try:
                     # Extract context (assuming first arg is self with token attribute)
                     if args and hasattr(args[0], "token"):
@@ -517,6 +520,7 @@ class ComprehensiveSecuritySystem:
 
             @wraps(func)
             def sync_wrapper(*args, **kwargs):
+                """sync_wrapperメソッド"""
                 try:
                     # Similar logic for sync functions
                     if args and hasattr(args[0], "token"):

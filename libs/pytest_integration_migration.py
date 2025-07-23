@@ -84,6 +84,7 @@ class TestContainerManager:
     """testcontainers統合管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         if not TESTCONTAINERS_AVAILABLE:
             raise ImportError(
                 "testcontainers is not available. Install with: pip install testcontainers"
@@ -269,6 +270,7 @@ def test_data_factory():
     """テストデータ生成ファクトリ"""
 
     class TestDataFactory:
+        """TestDataFactoryクラス"""
         @staticmethod
         def create_elder_data(count: int = 1) -> List[Dict]:
             """エルダーテストデータ生成"""
@@ -305,7 +307,9 @@ def test_data_factory():
 class PytestAPITester:
     """pytest用API テストユーティリティ"""
 
-    def __init__(self, base_url: str):
+    def __init__(self, base_url:
+        """初期化メソッド"""
+    str):
         self.base_url = base_url
         self.session_data = {}  # ステップ間でのデータ共有
 

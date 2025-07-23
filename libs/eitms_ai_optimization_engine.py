@@ -44,18 +44,21 @@ else:
     from dataclasses import dataclass
     
     class TaskType(Enum):
+        """TaskTypeクラス"""
         TODO = "todo"
         PROJECT_TASK = "project_task" 
         ISSUE = "issue"
         PLANNING = "planning"
     
     class TaskStatus(Enum):
+        """TaskStatusクラス"""
         CREATED = "created"
         IN_PROGRESS = "in_progress"
         COMPLETED = "completed"
         BLOCKED = "blocked"
     
     class Priority(Enum):
+        """Priorityクラス"""
         HIGH = "high"
         MEDIUM = "medium"
         LOW = "low"
@@ -63,6 +66,7 @@ else:
     
     @dataclass
     class UnifiedTask:
+        """UnifiedTaskクラス"""
         id: str = "mock-id"
         title: str = ""
         task_type: TaskType = TaskType.TODO
@@ -101,6 +105,7 @@ class TaskMetrics:
     historical_accuracy: float = 0.0
     
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             'task_id': self.task_id,
             'complexity_score': self.complexity_score,
@@ -128,6 +133,7 @@ class AIRecommendation:
     generated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             'task_id': self.task_id,
             'recommendation_type': self.recommendation_type,
@@ -144,6 +150,7 @@ class ComplexityAnalyzer:
     """複雑度分析エンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.keywords_weights = {
             # 高複雑度キーワード
             'system': 1.5, 'architecture': 2.0, 'integration': 1.8, 'optimization': 1.6,
@@ -197,6 +204,7 @@ class EffortEstimator:
     """工数見積もりエンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.historical_data = defaultdict(list)
         self.base_estimates = {
             TaskType.TODO: 0.5,      # 30分
@@ -302,6 +310,7 @@ class PriorityOptimizer:
     """優先度最適化エンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.urgency_factors = {
             'deadline': 2.0,
             'blocking': 1.8,
@@ -430,6 +439,7 @@ class EitmsAiEngine:
     """EITMS AI最適化エンジン - メインオーケストレーター"""
     
     def __init__(self, unified_manager):
+        """初期化メソッド"""
         self.unified_manager = unified_manager
         self.complexity_analyzer = ComplexityAnalyzer()
         self.effort_estimator = EffortEstimator()
@@ -727,7 +737,9 @@ class EitmsAiEngine:
             'learning_enabled': self.learning_enabled,
             'auto_optimization': self.auto_optimization,
             'recent_optimizations': len(recent_optimizations),
-            'average_confidence': statistics.mean([opt['confidence'] for opt in recent_optimizations]) if recent_optimizations else 0.0,
+            'average_confidence': statistics.mean([opt['confidence'] for opt in recent_optimizations]) \
+                if recent_optimizations \
+                else 0.0,
             'generated_at': datetime.now(timezone.utc).isoformat()
         }
     
@@ -747,14 +759,18 @@ async def main():
     """テスト実行"""
     # モック統一管理システム
     class MockUnifiedManager:
+        """MockUnifiedManager - 管理システムクラス"""
         def __init__(self):
+            """初期化メソッド"""
             self.tasks = {}
         
         async def create_task(self, **kwargs):
+            """task作成メソッド"""
             return "ai-test-task"
         
         @property
         def db(self):
+            """dbメソッド"""
             return type('MockDB', (), {
                 'get_task': lambda self, task_id: UnifiedTask(
                     id=task_id,

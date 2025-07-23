@@ -136,7 +136,9 @@ class SoulProcessInfo:
 class SoulProcessManager:
     """魂プロセス管理システム"""
 
-    def __init__(self, max_processes: int = None):
+    def __init__(self, max_processes:
+        """初期化メソッド"""
+    int = None):
         self.max_processes = max_processes or mp.cpu_count() * 2
         self.processes: Dict[str, SoulProcessInfo] = {}
         self.running_processes: Dict[str, mp.Process] = {}
@@ -703,6 +705,7 @@ class SoulProcessManager:
 
             # A2A通信プロトコル（簡略版）
             async def run_soul():
+                """run_soulメソッド"""
                 protocol = await create_a2a_protocol(soul_identity, a2a_port)
 
                 # シンプルなメッセージループ

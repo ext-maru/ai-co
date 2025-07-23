@@ -192,6 +192,9 @@ class KnightsErrorFixer:
                     all_present = True
                     for tool, version in fix["dependencies"].items():
                         # Process each item in collection
+                        if not (f"{tool}=={version}" not in content):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if f"{tool}=={version}" not in content:
                             all_present = False
                             break
@@ -264,7 +267,9 @@ class KnightsErrorFixer:
                 validation_result["validations"].append({
                     "test": "script_execution",
                     "status": "passed" if result.returncode == 0 else "failed",
-                    "message": "Script runs without errors" if result.returncode == 0 else f"Script error: {result.stderr}"
+                    "message": "Script runs without errors" \
+                        if result.returncode == 0 \
+                        else f"Script error: {result.stderr}"
                 })
             except Exception as e:
                 # Handle specific exception case
@@ -318,7 +323,9 @@ class KnightsErrorFixer:
             "fix_plan": fix_plan,
             "applied_fixes": applied,
             "validation": validation,
-            "conclusion": "騎士団のGitHub Actionsエラーは根本的に解決されました" if validation['overall_status'] == 'passed' else "追加の対応が必要です"
+            "conclusion": "騎士団のGitHub Actionsエラーは根本的に解決されました" \
+                if validation['overall_status'] == 'passed' \
+                else "追加の対応が必要です"
         }
 
         # レポート保存

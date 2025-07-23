@@ -27,6 +27,7 @@ class KnowledgeConsolidator(BaseManager):
     """設計・ナレッジ・実装の統合管理システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(manager_name="knowledge_consolidator")
         self.config = get_config()
         self.project_root = Path("/home/aicompany/ai_co")
@@ -370,6 +371,7 @@ class KnowledgeConsolidator(BaseManager):
         file_types = {}
 
         def count_in_dir(dir_info):
+            """count_in_dirメソッド"""
             nonlocal total_files, total_lines
 
             for file_info in dir_info.get("files", []):
@@ -442,7 +444,8 @@ class KnowledgeConsolidator(BaseManager):
     <meta charset="utf-8">
     <style>
         body {{ font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }}
-        .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(
+        .container {{ max-width: 1200px; margin: 0 auto; background: white; padding: \
+            20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(
             0,
             0,
             0,
@@ -498,7 +501,10 @@ class KnowledgeConsolidator(BaseManager):
         <table>
             <tr><th>Worker</th><th>Classes</th><th>Functions</th><th>Lines</th></tr>
             {"".join(
-                f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,
+                (
+                    f"f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
+                    f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,"
+                )
                 info in data['implementations']['workers'].items()
             )}
         </table>
@@ -507,7 +513,10 @@ class KnowledgeConsolidator(BaseManager):
         <table>
             <tr><th>Manager</th><th>Classes</th><th>Functions</th><th>Lines</th></tr>
             {"".join(
-                f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,
+                (
+                    f"f"<tr><td>{name}</td><td>{', '.join(info.get('classes', []))}</td><td>"
+                    f"{len(info.get('functions', []))}</td><td>{info.get('lines', 0)}</td></tr>" for name,"
+                )
                 info in data['implementations']['managers'].items()
             )}
         </table>
@@ -515,7 +524,9 @@ class KnowledgeConsolidator(BaseManager):
         <h2>📚 Knowledge Base</h2>
         <table>
             <tr><th>Document</th><th>Lines</th><th>Modified</th></tr>
-            {"".join(f"<tr><td>{f['filename']}</td><td>{f['lines']}</td><td>{f['modified']}</td></tr>" for f in data['knowledge']['files'])}
+                        { \
+                "".join(f"<tr><td>{f['filename']}</td><td>{f['lines']}<" \
+                    f"/td><td>{f['modified']}</td></tr>" for f in data['knowledge']['files'])}
         </table>
     </div>
 </body>

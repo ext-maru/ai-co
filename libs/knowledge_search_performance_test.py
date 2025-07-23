@@ -17,7 +17,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class SearchPerformanceTester:
+    """SearchPerformanceTesterクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.db_conn = None
         
     def connect_db(self):
@@ -93,7 +95,10 @@ class SearchPerformanceTester:
             results[f'fts_{term}'] = fts_time
             results[f'like_{term}'] = like_time
             
-            logger.info(f"'{term}' - FTS: {fts_time:.4f}秒 ({len(fts_rows)}件), LIKE: {like_time:.4f}秒 ({len(like_rows)}件)")
+            logger.info(f"'{
+                term}' - FTS: {fts_time:.4f}秒 ({len(fts_rows)}件),
+                LIKE: {like_time:.4f}秒 ({len(like_rows)
+            }件)")
             
         return results
         
@@ -200,11 +205,15 @@ class SearchPerformanceTester:
             # 性能分析
             fts_avg = sum(
                 v for k,
-                v in fts_results.items() if k.startswith('fts_')) / len([k for k in fts_results.keys() if k.startswith('fts_')]
+                v in fts_results.items() if k.startswith('fts_')) / len([k for  \
+                    k in fts_results.keys() if  \
+                    if k.startswith('fts_')]
             )
             like_avg = sum(
                 v for k,
-                v in fts_results.items() if k.startswith('like_')) / len([k for k in fts_results.keys() if k.startswith('like_')]
+                v in fts_results.items() if k.startswith('like_')) / len([k for  \
+                    k in fts_results.keys() if  \
+                    if k.startswith('like_')]
             )
             
             report = {

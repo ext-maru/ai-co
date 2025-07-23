@@ -266,7 +266,14 @@ class ElderFlowMindReading:
         await asyncio.sleep(0.5)  # 実行時間シミュレーション
         return f"Command executed: {command}"
 
-    async def _record_execution(self, maru_text: str, intent_result, parsed_command, command: str, execution_result: Dict):
+    async def _record_execution(
+        self,
+        maru_text: str,
+        intent_result,
+        parsed_command,
+        command: str,
+        execution_result: Dict
+    ):
         """実行履歴の記録"""
         if not self.learning_collector:
             return

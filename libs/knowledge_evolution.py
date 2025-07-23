@@ -34,6 +34,7 @@ class KnowledgeAnalyzer:
     """知識分析器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.analysis_cache = {}
 
     def analyze_knowledge_quality(
@@ -62,6 +63,7 @@ class GraphBuilder:
     """知識グラフ構築器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.semantic_threshold = 0.7
 
     def build_knowledge_graph(self, elements: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -100,6 +102,7 @@ class GraphBuilder:
                 similarity = self._calculate_semantic_similarity(node1, node2)
                 if similarity > self.semantic_threshold:
                     edges.append(
+        # 繰り返し処理
                         {
                             "source": node1["id"],
                             "target": node2["id"],
@@ -188,6 +191,7 @@ class GraphBuilder:
             current_id = to_process.pop(0)
             for edge in edges:
                 next_id = None
+        # ループ処理
                 if edge["source"] == current_id:
                     next_id = edge["target"]
                 elif edge["target"] == current_id:
@@ -196,6 +200,7 @@ class GraphBuilder:
                 if next_id and next_id not in visited and next_id not in processed:
                     next_node = next(n for n in all_nodes if n["id"] == next_id)
                     cluster.append(next_node)
+                # 複雑な条件判定
                     to_process.append(next_id)
                     visited.add(next_id)
 
@@ -227,6 +232,7 @@ class ConsistencyChecker:
     """一貫性チェッカー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.contradiction_patterns = [
             "enable.*disable",
             "always.*never",
@@ -264,6 +270,7 @@ class ConsistencyChecker:
 
         for area_name, area_data in knowledge_base.items():
             patterns = area_data.get("patterns", {})
+        # 繰り返し処理
             rules = area_data.get("rules", [])
 
             # パターン間の矛盾チェック
@@ -516,9 +523,11 @@ class KnowledgeEvolutionMechanism:
             }
 
             for source in knowledge_sources:
+            # 繰り返し処理
                 merge_stats["sources_processed"] += 1
                 source_id = source["source_id"]
 
+                # 繰り返し処理
                 for knowledge_item in source.get("knowledge_items", []):
                     topic = knowledge_item["topic"]
                     patterns = knowledge_item.get("patterns", [])
@@ -535,6 +544,9 @@ class KnowledgeEvolutionMechanism:
 
                     # パターン統合
                     for pattern in patterns:
+                        if not (pattern not in integrated_knowledge[topic]["patterns"]):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if pattern not in integrated_knowledge[topic]["patterns"]:
                             integrated_knowledge[topic]["patterns"].append(pattern)
                             merge_stats["patterns_merged"] += 1

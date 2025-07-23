@@ -26,6 +26,7 @@ class ConfigValidator:
     """設定ファイル検証・自動修正システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path("/home/aicompany/ai_co")
         self.env_file = self.project_root / ".env"
         self.logger = logging.getLogger(__name__)

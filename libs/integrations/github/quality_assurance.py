@@ -43,6 +43,7 @@ class AutoIssueQualityGate(EldersServiceLegacy):
     """Auto Issue Processor専用品質ゲート"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="AutoIssueQualityGate")
         self.quality_log_path = Path("logs/auto_issue_quality.json")
         self.quality_log_path.parent.mkdir(exist_ok=True)
@@ -534,6 +535,7 @@ async def validate_auto_issue_quality(
 if __name__ == "__main__":
     # テスト実行
     async def test_quality_gate():
+        """test_quality_gateテストメソッド"""
         quality_gate = AutoIssueQualityGate()
 
         test_request = {

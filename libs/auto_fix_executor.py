@@ -26,6 +26,7 @@ class AutoFixExecutor(BaseManager):
     """エラーの自動修正を実行するクラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("AutoFixExecutor")
         self.project_root = PROJECT_ROOT
         self.stats = {

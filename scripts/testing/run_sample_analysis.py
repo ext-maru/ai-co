@@ -11,6 +11,7 @@ from data_analysis import DataAnalyzer
 
 
 def main():
+    """mainメソッド"""
     # Run analysis on sample data
     analyzer = DataAnalyzer("sample_data.csv")
     success = analyzer.run_complete_analysis()

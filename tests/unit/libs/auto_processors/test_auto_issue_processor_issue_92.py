@@ -49,6 +49,7 @@ class MockAutoIssueProcessor:
         
     def get_capabilities(self):
         return {
+        """get_capabilitiesの値を取得"""
             "service": "AutoIssueProcessor",
             "version": "1.0.0",
             "capabilities": [
@@ -66,6 +67,7 @@ class MockAutoIssueProcessor:
         }
     
     def validate_request(self, request):
+        """validate_requestを検証"""
         if 'mode' in request and request['mode'] not in ['scan', 'process', 'dry_run']:
             return False
         if 'issue_number' in request:

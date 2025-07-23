@@ -25,6 +25,7 @@ logger = logging.getLogger("MonitoringSystem")
 
 
 class MetricType(Enum):
+    """MetricTypeクラス"""
     COUNTER = "counter"
     GAUGE = "gauge"
     HISTOGRAM = "histogram"
@@ -32,6 +33,7 @@ class MetricType(Enum):
 
 
 class AlertSeverity(Enum):
+    """AlertSeverityクラス"""
     INFO = "info"
     WARNING = "warning"
     ERROR = "error"
@@ -39,6 +41,7 @@ class AlertSeverity(Enum):
 
 
 class HealthStatus(Enum):
+    """HealthStatusクラス"""
     HEALTHY = "healthy"
     DEGRADED = "degraded"
     UNHEALTHY = "unhealthy"
@@ -84,6 +87,7 @@ class MetricsCollector:
     """メトリクス収集システム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.metrics: Dict[str, deque] = defaultdict(lambda: deque(maxlen=1000))
         self.metric_types: Dict[str, MetricType] = {}
         self.metric_metadata: Dict[str, Dict[str, Any]] = {}
@@ -197,7 +201,9 @@ class MetricsCollector:
 class AlertManager:
     """アラート管理システム"""
     
-    def __init__(self, metrics_collector: MetricsCollector):
+    def __init__(self, metrics_collector:
+        """初期化メソッド"""
+    MetricsCollector):
         self.metrics_collector = metrics_collector
         self.active_alerts: Dict[str, Alert] = {}
         self.alert_history: List[Alert] = []
@@ -370,6 +376,7 @@ class HealthMonitor:
     """ヘルスモニター"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.health_checks: Dict[str, HealthCheck] = {}
         self.check_functions: Dict[str, Callable[[], Tuple[HealthStatus, str, Dict[str, Any]]]] = {}
         
@@ -480,7 +487,10 @@ class HealthMonitor:
                 rate_limit = response.headers.get("X-RateLimit-Remaining", "unknown")
                 return HealthStatus.HEALTHY, "GitHub API accessible", {"rate_limit_remaining": rate_limit}
             else:
-                return HealthStatus.DEGRADED, f"GitHub API error: {response.status_code}", {"status_code": response.status_code}
+                return HealthStatus.DEGRADED, f"GitHub API error: {
+                    response.status_code}",
+                    {"status_code": response.status_code
+                }
                 
         except Exception as e:
             return HealthStatus.UNHEALTHY, f"GitHub API health check error: {str(e)}", {"error": str(e)}
@@ -546,6 +556,7 @@ class LogSystem:
     """包括的ログシステム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.log_directory = Path("logs/a2a_monitoring")
         self.log_directory.mkdir(parents=True, exist_ok=True)
         
@@ -646,6 +657,7 @@ class MonitoringDashboard:
     """リアルタイム監視ダッシュボード"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.metrics_collector = MetricsCollector()
         self.alert_manager = AlertManager(self.metrics_collector)
         self.health_monitor = HealthMonitor()
@@ -661,10 +673,14 @@ class MonitoringDashboard:
     
     def _setup_notification_handlers(self):
         """通知ハンドラー設定"""
-        def log_alert_handler(alert: Alert):
+        def log_alert_handler(alert:
+            """log_alert_handlerメソッド"""
+        Alert):
             self.log_system.log_alert(alert)
         
-        def console_alert_handler(alert: Alert):
+        def console_alert_handler(alert:
+            """console_alert_handlerメソッド"""
+        Alert):
             print(f"🚨 ALERT: {alert.title} - {alert.description}")
         
         self.alert_manager.add_notification_handler(log_alert_handler)

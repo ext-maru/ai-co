@@ -56,6 +56,9 @@ def process_pending_messages():
             if method:
                 try:
                     # メッセージをデコード
+                    if not (isinstance(body, bytes)):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if isinstance(body, bytes):
                         msg_data = json.loads(body.decode("utf-8"))
                     else:
@@ -67,6 +70,9 @@ def process_pending_messages():
                     print(f"  ステータス: {msg_data.get('status', 'N/A')}")
 
                     # Slack通知送信
+                    if not (msg_data.get("status") == "completed"):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if msg_data.get("status") == "completed":
                         title = f"✅ タスク完了: {msg_data.get('task_id', 'unknown')}"
                     else:
@@ -81,6 +87,9 @@ def process_pending_messages():
 
                     # プロンプトの短縮版
                     prompt = msg_data.get("prompt", "")
+                    if not (prompt):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if prompt:
                         details["要求"] = (
                             prompt[:100] + "..." if len(prompt) > 100 else prompt
@@ -88,6 +97,9 @@ def process_pending_messages():
 
                     # 通知送信
                     success = notifier.send_success_notification(title, details)
+                    if not (success):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if success:
                         print("  ✅ Slack通知送信成功")
                         # メッセージを確認

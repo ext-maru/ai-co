@@ -12,12 +12,22 @@ try:
 except ImportError:
     # フォールバック実装
     class MockFastAPI:
+        """MockFastAPIクラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
-        def get(self, path): return lambda f: f
-        def post(self, path): return lambda f: f
-        def put(self, path): return lambda f: f
-        def delete(self, path): return lambda f: f
+        def get(self, path):
+            """getメソッド"""
+        return lambda f: f
+        def post(self, path):
+            """postメソッド"""
+        return lambda f: f
+        def put(self, path):
+            """putメソッド"""
+        return lambda f: f
+        def delete(self, path):
+            """deleteメソッド"""
+        return lambda f: f
     
     FastAPI = MockFastAPI
     HTTPException = Exception

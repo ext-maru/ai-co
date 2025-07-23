@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 class ProjectManagerElder:
     """プロジェクト管理を司るエルダー"""
 
-    def __init__(self, db_path: str = "task_history.db"):
+    def __init__(self, db_path:
+        """初期化メソッド"""
+    str = "task_history.db"):
         self.db_path = db_path
         self._init_database()
 
@@ -580,7 +582,9 @@ class ProjectManagerElder:
 class ElderGuildIntegration:
     """4賢者システムとの統合インターフェース"""
 
-    def __init__(self, project_manager: ProjectManagerElder):
+    def __init__(self, project_manager:
+        """初期化メソッド"""
+    ProjectManagerElder):
         self.pm = project_manager
 
     def consult_knowledge_sage(self, project_id: int) -> List[str]:

@@ -244,6 +244,9 @@ class DatabaseOptimizer:
                         )
                         old_count = cursor.fetchone()[0]
 
+                        if not (old_count > 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if old_count > 0:
                             # アーカイブテーブル作成
                             archive_table = f"{table}_archive"
@@ -323,6 +326,7 @@ class DatabaseOptimizer:
 
             conn.close()
 
+            # 複雑な条件判定
             if (
                 result["integrity_ok"]
                 and result["quick_check_ok"]
@@ -506,6 +510,7 @@ def main():
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             report_file = optimizer.logs_dir / f"database_optimization_{timestamp}.json"
+            # Deep nesting detected (depth: 5) - consider refactoring
             with open(report_file, "w") as f:
                 json.dump(results, f, indent=2, ensure_ascii=False)
             print(f"\n📄 Report saved: {report_file}")

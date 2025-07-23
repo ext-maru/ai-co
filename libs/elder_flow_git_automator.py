@@ -19,6 +19,7 @@ from libs.elder_flow_pre_commit_handler import ElderFlowPreCommitHandler
 
 # Git Operation Types
 class GitOperation(Enum):
+    """GitOperationクラス"""
     STATUS = "status"
     ADD = "add"
     COMMIT = "commit"
@@ -33,6 +34,7 @@ class GitOperation(Enum):
 
 # Git Status
 class GitStatus(Enum):
+    """GitStatusクラス"""
     CLEAN = "clean"
     MODIFIED = "modified"
     STAGED = "staged"
@@ -42,6 +44,7 @@ class GitStatus(Enum):
 
 # Commit Types (Conventional Commits)
 class CommitType(Enum):
+    """CommitTypeクラス"""
     FEAT = "feat"  # 新機能
     FIX = "fix"  # バグ修正
     DOCS = "docs"  # ドキュメント
@@ -56,7 +59,10 @@ class CommitType(Enum):
 
 # Git Automator
 class ElderFlowGitAutomator:
-    def __init__(self, repo_path: str = "."):
+    """ElderFlowGitAutomator - エルダーズギルド関連クラス"""
+    def __init__(self, repo_path:
+        """初期化メソッド"""
+    str = "."):
         self.repo_path = Path(repo_path)
         self.logger = logging.getLogger(__name__)
 
@@ -539,6 +545,7 @@ def get_repository_info() -> Dict:
 if __name__ == "__main__":
 
     def main():
+        """mainメソッド"""
         print("📤 Elder Flow Git Automator Test")
 
         # リポジトリ情報表示

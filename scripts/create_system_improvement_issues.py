@@ -56,7 +56,8 @@ Elder Flow Phase 1（4賢者会議）で非同期処理のエラーが発生し�
 ## エラー詳細
 ```
 ERROR:libs.elder_flow_orchestrator:Sage consultation failed: object NoneType can't be used in 'await' expression
-WARNING:ElderFlowErrorHandler:Attempt 1/3 failed: Sage consultation failed: knowledge - object NoneType can't be used in 'await' expression
+WARNING:ElderFlowErrorHandler:Attempt 1/3 failed: Sage consultation failed: knowledge -  \
+    object NoneType can't be used in 'await' expression
 ```
 
 ## 影響

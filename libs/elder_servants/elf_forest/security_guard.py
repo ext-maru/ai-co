@@ -407,6 +407,7 @@ class SecurityGuard(ElfServant):
             for pattern in patterns:
                 for line_num, line in enumerate(lines, 1):
                     matches = re.finditer(pattern, line)
+                # 繰り返し処理
                     for match in matches:
                         issue_id = self._generate_issue_id(
                             category, line_num, match.group()
@@ -436,6 +437,9 @@ class SecurityGuard(ElfServant):
             for vulnerable_func in self.vulnerable_patterns[language]:
                 if vulnerable_func in code:
                     for line_num, line in enumerate(lines, 1):
+                        if not (vulnerable_func in line):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if vulnerable_func in line:
                             issue_id = self._generate_issue_id(
                                 SecurityCategory.INJECTION, line_num, vulnerable_func
@@ -616,6 +620,7 @@ class SecurityGuard(ElfServant):
             compliance_results = {}
 
             for standard in config.compliance_standards or ["OWASP"]:
+            # 繰り返し処理
                 if standard in self.compliance_standards:
                     standard_results = {
                         "compliant": True,
@@ -632,6 +637,9 @@ class SecurityGuard(ElfServant):
                             or issue.get("cwe_id") == requirement
                         ]
 
+                        if not (violations):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if violations:
                             standard_results["compliant"] = False
                             standard_results["violations"].extend(violations)
@@ -885,6 +893,7 @@ class SecurityGuard(ElfServant):
             r"pip\s+install\s+(\w+)",
         ]
 
+        # 繰り返し処理
         for pattern in import_patterns:
             matches = re.finditer(pattern, code)
             for match in matches:

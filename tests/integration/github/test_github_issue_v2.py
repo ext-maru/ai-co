@@ -87,7 +87,8 @@ except ImportError as e:
     
     data = {
         "title": "🗡️ Iron Will 95% Compliance Test - Direct API",
-        "body": "Testing GitHub API access directly after implementing security improvements.\n\n- Token: ✅ Set\n- API: ✅ Working\n- Security: ✅ Implemented",
+        "body": "Testing GitHub API access directly after implementing security \
+            improvements.\n\n- Token: ✅ Set\n- API: ✅ Working\n- Security: ✅ Implemented",
         "labels": ["test"]
     }
     

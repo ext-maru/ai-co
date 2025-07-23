@@ -65,6 +65,7 @@ def start_worker(worker_path, log_name):
 
 
 def main():
+    """mainメソッド"""
     print("=" * 60)
     print("🏥 Elders Guild 緊急ワーカー診断＆修復")
     print(f"実行時刻: {datetime.now().strftime('%Y年%m月%d日 %H:%M:%S')}")

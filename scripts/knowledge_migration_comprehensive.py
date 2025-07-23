@@ -152,6 +152,7 @@ class ComprehensiveKnowledgeMigrator:
         elif (
             "learning" in path_str or "feedback" in path_str or "evolution" in path_str
         ):
+        # 複雑な条件判定
             return "ai_learning"
         elif "archive" in path_str or "daily_log" in path_str:
             return "archives"
@@ -340,16 +341,19 @@ class ComprehensiveKnowledgeMigrator:
 
         if (
             "incident" in path_str
+        # 複雑な条件判定
             or "error" in content_lower
             or "crisis" in content_lower
         ):
             return MagicSchool.CRISIS_SAGE
         elif (
+        # 複雑な条件判定
             "task" in path_str
             or "project" in content_lower
             or "workflow" in content_lower
         ):
             return MagicSchool.TASK_ORACLE
+        # 複雑な条件判定
         elif "search" in path_str or "rag" in content_lower or "query" in content_lower:
             return MagicSchool.SEARCH_MYSTIC
         else:

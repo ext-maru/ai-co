@@ -58,10 +58,12 @@ class ErrorHandlingFixer:
                 def __init__(self, target_func):
                     self.target_func = target_func
                     self.modified = False
+                """ErrorHandlingTransformerクラス"""
 
                 def visit_FunctionDef(self, node):
                     if (
                         node.name == self.target_func
+                    """visit_FunctionDefメソッド"""
                         and not check_function_has_try_except(node)
                     ):
                         # Wrap function body in try-except
@@ -126,6 +128,7 @@ class ErrorHandlingFixer:
 
             def check_function_has_try_except(node):
                 for item in node.body:
+                """check_function_has_try_exceptメソッド"""
                     if isinstance(item, ast.Try):
                         return True
                 return False
@@ -177,6 +180,7 @@ class ErrorHandlingFixer:
 
                             in_function = True
                             for i, line in enumerate(lines[1:], 1):
+                                # 複雑な条件判定
                                 if (
                                     line.strip()
                                     and not line.startswith(base_indent)

@@ -45,6 +45,7 @@ class PerformanceMetric:
     unit: str = ""
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "metric_name": self.metric_name,
             "value": self.value,
@@ -92,7 +93,9 @@ class AlertRule:
 class AIAutomationPerformanceMonitor:
     """AI自動化パフォーマンス監視システム"""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Optional[Dict[str, Any]] = None):
         self.config = {
             "collection_interval": 30,  # 30秒間隔
             "retention_days": 30,
@@ -1306,6 +1309,7 @@ class AIAutomationPerformanceMonitor:
 if __name__ == "__main__":
 
     async def demo():
+        """demoメソッド"""
         print("🚀 AI Automation Performance Monitor Demo")
         print("=" * 50)
 

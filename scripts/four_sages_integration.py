@@ -1174,6 +1174,7 @@ if __name__ == "__main__":
     import asyncio
 
     async def main():
+        """mainメソッド"""
         integration = FourSagesQualityIntegration()
 
         # Example quality consultation

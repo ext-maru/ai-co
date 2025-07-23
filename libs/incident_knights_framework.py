@@ -70,7 +70,9 @@ class Issue:
 class Diagnosis:
     """Diagnosis of an issue"""
 
-    def __init__(self, issue: Issue, root_cause: str):
+    def __init__(self, issue:
+        """初期化メソッド"""
+    Issue, root_cause: str):
         self.issue = issue
         self.root_cause = root_cause
         self.timestamp = datetime.now()
@@ -79,7 +81,9 @@ class Diagnosis:
 class Resolution:
     """Resolution for an issue"""
 
-    def __init__(self, diagnosis: Diagnosis, action: str, result: str):
+    def __init__(self, diagnosis:
+        """初期化メソッド"""
+    Diagnosis, action: str, result: str):
         self.diagnosis = diagnosis
         self.action = action
         self.result = result
@@ -118,6 +122,7 @@ class IncidentKnightsFramework:
     """Emergency deployment system for maximum coverage"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path(__file__).parent.parent
         self.knights_deployed = 0
         self.issues_fixed = 0

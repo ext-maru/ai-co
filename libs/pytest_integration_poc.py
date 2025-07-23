@@ -240,6 +240,7 @@ class IntegrationTestFrameworkCompat:
     """既存のintegration_test_frameworkとの互換性レイヤー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.runner = PytestIntegrationRunner()
 
     async def run_service_tests(self, services: Dict[str, Dict]) -> Dict[str, Any]:

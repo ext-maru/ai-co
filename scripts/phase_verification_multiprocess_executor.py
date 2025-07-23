@@ -659,12 +659,15 @@ class PhaseVerificationExecutor:
 - **未実装コンポーネント**: {results['summary']['missing_components']}
 
 ## 🎯 実装完成度
-- **実装率**: {results['summary']['real_components'] / results['summary']['total_components'] * 100 if results['summary']['total_components'] > 0 else 0:.1f}%
+- **実装率**: {results['summary']['real_components'] / results['summary']['total_components'] * 100 \
+    if results['summary']['total_components'] > 0 \
+    else 0:.1f}%
 
 ## 📋 Phase別検証結果
 
 """
 
+        # 繰り返し処理
         for phase, data in results["phases"].items():
             completion_rate = data.get("implementation_reality", {}).get(
                 "completion_rate", 0
@@ -750,7 +753,8 @@ async def main():
         print("=" * 60)
         print(f"全体ステータス: {results['overall_status']}")
         print(
-            f"実装率: {results['summary']['real_components'] / results['summary']['total_components'] * 100 if results['summary']['total_components'] > 0 else 0:.1f}%"
+            f"実装率: {results['summary']['real_components'] / results['summary']['total_components'] \
+                * 100 if results['summary']['total_components'] > 0 else 0:.1f}%"
         )
         print(f"検証レポート: {report_path}")
         print("=" * 60)

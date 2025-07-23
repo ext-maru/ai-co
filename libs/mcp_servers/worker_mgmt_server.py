@@ -22,11 +22,13 @@ class WorkerManagementMCPServer:
     """ワーカー管理MCPサーバー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.server = MCPServer("workers")
         self.workers_dir = PROJECT_ROOT / "workers"
         self.setup_tools()
 
     def setup_tools(self):
+        """setup_toolsメソッド"""
         @self.server.tool()
         async def list_workers():
             """利用可能なワーカーをリスト"""
@@ -197,6 +199,7 @@ class WorkerManagementMCPServer:
             return metrics
 
     async def process_request(self, request_json):
+        """process_request処理メソッド"""
         request = json.loads(request_json)
         return await self.server.handle_request(request)
 

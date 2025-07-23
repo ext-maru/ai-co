@@ -50,6 +50,7 @@ class SecureGitHubContext:
     authorized_operations: List[str] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.authorized_operations is None:
             self.authorized_operations = []
 

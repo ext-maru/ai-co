@@ -14,6 +14,7 @@ from typing import Dict, List, Optional
 
 class GitHubIssueDashboard:
     def __init__(self):
+    """GitHubIssueDashboardクラス"""
         self.repo = "ext-maru/ai-co"
 
     def get_issue_with_comments(self, issue_number: int) -> Dict:
@@ -181,6 +182,7 @@ class GitHubIssueDashboard:
 
 
 def main():
+    """mainメソッド"""
     dashboard = GitHubIssueDashboard()
 
     if len(sys.argv) < 2:

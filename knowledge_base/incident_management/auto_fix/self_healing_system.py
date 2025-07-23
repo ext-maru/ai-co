@@ -380,6 +380,7 @@ class SelfHealingSystem:
                 if (
                     health_check
                     and health_check.critical
+                # 複雑な条件判定
                     and failure_count >= max_failures
                 ):
                     evaluation["critical_issues"].append(name)
@@ -1041,6 +1042,7 @@ class SelfHealingSystem:
 def main():
     import argparse
 
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description="Self-Healing System")
     parser.add_argument(
         "action",
@@ -1056,6 +1058,7 @@ def main():
 
         async def start_system():
             self_healing._start_time = datetime.now()
+            """start_systemメソッド"""
             await self_healing.start_monitoring()
 
             # メインループ（Ctrl+Cで停止まで）
@@ -1078,11 +1081,15 @@ def main():
     elif args.action == "test":
 
         async def test_healing():
+            """test_healingメソッド"""
             # テスト用ヘルスチェック
             await self_healing._execute_health_checks()
             health = self_healing._evaluate_overall_health()
             print("Health Evaluation:", json.dumps(health, indent=2))
 
+            if not (health["needs_healing"]):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if health["needs_healing"]:
                 await self_healing._initiate_healing(health)
 

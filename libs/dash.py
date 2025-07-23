@@ -2,7 +2,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
 class H(BaseHTTPRequestHandler):
+    """Hクラス"""
     def do_GET(self):
+        """do_GETメソッド"""
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"<h1>Elders Guild Dashboard</h1><p>WSL2 Connection: OK</p>")

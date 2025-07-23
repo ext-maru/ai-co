@@ -367,6 +367,7 @@ class EnhancedAutonomousLearningSystem:
         while True:
             try:
                 if not self.config["real_time_optimization"]:
+        # ループ処理
                     await asyncio.sleep(60)
                     continue
 
@@ -421,6 +422,7 @@ class EnhancedAutonomousLearningSystem:
         """予測分析ループ"""
         while True:
             try:
+        # ループ処理
                 if not self.config["predictive_mode"]:
                     await asyncio.sleep(120)
                     continue
@@ -719,6 +721,7 @@ class EnhancedAutonomousLearningSystem:
         remaining_patterns = pattern_ids.copy()
 
         while remaining_patterns:
+        # ループ処理
             current_cluster = [remaining_patterns.pop(0)]
             current_pattern = self.learning_patterns[current_cluster[0]]
 
@@ -743,6 +746,7 @@ class EnhancedAutonomousLearningSystem:
 
         patterns_to_remove = []
         for pattern_id, pattern in self.learning_patterns.items():
+            # 複雑な条件判定
             if (
                 pattern.importance_score < threshold
                 and pattern.usage_count < 5
@@ -1334,6 +1338,7 @@ class EnhancedAutonomousLearningSystem:
 if __name__ == "__main__":
 
     async def demo():
+        """demoメソッド"""
         print("🚀 Enhanced Autonomous Learning System Demo")
         print("=" * 50)
 

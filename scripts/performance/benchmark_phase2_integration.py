@@ -253,6 +253,7 @@ class Phase2BenchmarkSuite:
         
         # Create integrated processor (mock)
         class IntegratedProcessor:
+            """IntegratedProcessor処理クラス"""
             def __init__(self, controller, pool, queue):
                 self.controller = controller
                 self.pool = pool

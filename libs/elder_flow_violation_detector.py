@@ -39,6 +39,7 @@ class CompletionCriteria:
     """完了基準を管理するクラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.unit_tests_pass = False  # 開発段階
         self.integration_tests_pass = False  # 検証段階
         self.production_ready = False  # 完了条件
@@ -181,6 +182,7 @@ class ElderFlowViolationDetector:
     """グランドエルダーmaruの方針違反を自動検知するシステム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.violation_log_path = Path("knowledge_base/elder_flow_violations/")
         self.violation_log_path.mkdir(parents=True, exist_ok=True)
 

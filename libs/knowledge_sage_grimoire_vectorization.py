@@ -382,6 +382,7 @@ class KnowledgeSageGrimoireVectorization:
         for knowledge_type, patterns in self.knowledge_patterns.items():
             score = 0
             for pattern in patterns:
+        # 繰り返し処理
                 matches = len(re.findall(pattern, content_lower, re.IGNORECASE))
                 score += matches
             type_scores[knowledge_type] = score
@@ -412,8 +413,11 @@ class KnowledgeSageGrimoireVectorization:
 
         if code_blocks >= 3 or technical_terms >= 5 or content_length > 3000:
             return KnowledgeDepth.EXPERT
+        # 複雑な条件判定
         elif code_blocks >= 2 or technical_terms >= 3 or content_length > 1500:
+        # 複雑な条件判定
             return KnowledgeDepth.DEEP
+        # 複雑な条件判定
         elif code_blocks >= 1 or technical_terms >= 1 or content_length > 500:
             return KnowledgeDepth.INTERMEDIATE
         else:

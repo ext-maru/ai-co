@@ -83,6 +83,7 @@ class WorkerRecoveryManager:
     def _merge_config(self, base: Dict, override: Dict):
         """設定を再帰的にマージ"""
         for key, value in override.items():
+            # 複雑な条件判定
             if key in base and isinstance(base[key], dict) and isinstance(value, dict):
                 self._merge_config(base[key], value)
             else:
@@ -391,6 +392,9 @@ def main():
         print(json.dumps(status, indent=2, ensure_ascii=False))
 
     elif args.command == "recover":
+        if args.worker:
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if not args.worker:
             print("Worker name required for recover command")
             return

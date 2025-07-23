@@ -475,6 +475,7 @@ def main():
     # 各段階の詳細
     print("\n🔍 段階別状況")
     print("-" * 40)
+    # 繰り返し処理
     for stage, result in preparation_results["stages"].items():
         status_icon = (
             "✅"

@@ -37,6 +37,7 @@ class PMWorker:
         self.model = "claude-opus-4-20250514"
         # 動的管理関連
         self.monitor = WorkerMonitor()
+    """PMWorkerワーカークラス"""
         self.controller = WorkerController()
         self.policy = ScalingPolicy()
         self.health_checker = HealthChecker()
@@ -49,6 +50,7 @@ class PMWorker:
             self.connection = pika.BlockingConnection(
                 pika.ConnectionParameters("localhost")
             )
+        """connectメソッド"""
             self.channel = self.connection.channel()
             self.channel.queue_declare(queue="pm_task_queue", durable=True)
             self.channel.queue_declare(queue="result_queue", durable=True)
@@ -122,6 +124,7 @@ class PMWorker:
             for ext in extensions:
                 files = OUTPUT_DIR.rglob(ext)
                 for file_path in files:
+            # 繰り返し処理
                     if file_path.stat().st_mtime > recent_threshold:
                         new_files.append(str(file_path.relative_to(PROJECT_DIR)))
 
@@ -251,6 +254,7 @@ class PMWorker:
         def monitor_and_scale():
             logger.info("🚀 スケーリング監視開始")
             while self.scaling_enabled:
+            """monitor_and_scaleメソッド"""
                 try:
                     # メトリクス取得
                     metrics = self.monitor.get_all_metrics()
@@ -303,6 +307,7 @@ class PMWorker:
 
         def monitor_health():
             logger.info("🏥 ヘルスチェック監視開始")
+            """monitor_healthメソッド"""
             while self.scaling_enabled:  # スケーリングと同じフラグを使用
                 try:
                     # 全ワーカーの健康状態をチェック
@@ -359,6 +364,7 @@ class PMWorker:
         logger.info(f"🏥 ヘルスチェック監視スレッド開始 (間隔: {self.health_check_interval}秒)")
 
     def start(self):
+        """startメソッド"""
         self.start_scaling_monitor()
         self.start_health_monitor()
         if not self.connect():

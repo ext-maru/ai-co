@@ -220,9 +220,11 @@ class ConnectionPoolManager:
         trace_config = aiohttp.TraceConfig()
         
         async def on_request_start(session, context, params):
+            """on_request_startメソッド"""
             context.start = time.time()
         
         async def on_request_end(session, context, params):
+            """on_request_endメソッド"""
             elapsed = time.time() - context.start
             self._update_response_time(elapsed)
         
@@ -270,6 +272,7 @@ class ConnectionPoolManager:
     
     async def _health_check_loop(self):
         """ヘルスチェックループ"""
+        # ループ処理
         while True:
             try:
                 await asyncio.sleep(self.health_check_interval)

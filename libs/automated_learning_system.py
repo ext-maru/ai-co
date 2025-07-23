@@ -761,7 +761,9 @@ class AutomatedLearningSystem:
 class LearningAgent:
     """学習エージェント基底クラス"""
 
-    def __init__(self, name: str):
+    def __init__(self, name:
+        """初期化メソッド"""
+    str):
         self.name = name
         self.logger = logging.getLogger(f"{__name__}.{name}")
         self.initialized = False
@@ -776,6 +778,7 @@ class PatternDiscoveryAgent(LearningAgent):
     """パターン発見エージェント"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("PatternDiscovery")
 
     async def discover_patterns(
@@ -796,6 +799,7 @@ class OptimizationAgent(LearningAgent):
     """最適化エージェント"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("Optimization")
 
     async def optimize_knowledge_base(self, low_quality_items: List[str]):
@@ -810,6 +814,7 @@ class RecommendationAgent(LearningAgent):
     """推薦エージェント"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("Recommendation")
 
     async def generate_recommendations(self, user_data: Dict[str, Any]) -> List[str]:
@@ -828,6 +833,7 @@ class QualityImprovementAgent(LearningAgent):
     """品質改善エージェント"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("QualityImprovement")
 
     async def improve_data_quality(self, data: List[Dict[str, Any]]) -> Dict[str, Any]:

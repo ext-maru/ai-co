@@ -14,7 +14,9 @@ logger = logging.getLogger(__name__)
 
 
 class ConversationSearchEngine:
+    """ConversationSearchEngine - エンジンクラス"""
     def __init__(self, db_path="/home/aicompany/ai_co/conversations.db"):
+        """初期化メソッド"""
         self.db_path = db_path
 
     def search_by_keywords(self, keywords: List[str], limit: int = 10) -> List[Dict]:

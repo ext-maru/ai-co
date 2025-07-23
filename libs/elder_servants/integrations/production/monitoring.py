@@ -484,6 +484,9 @@ class AlertingSystem:
                         self.alert_history.append(alert)
 
                         # 履歴サイズ制限
+                        if not (len(self.alert_history) > 1000):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(self.alert_history) > 1000:
                             self.alert_history = self.alert_history[-1000:]
 
@@ -1065,7 +1068,9 @@ def track_performance(operation_name: str = None):
     """パフォーマンス追跡デコレータ"""
 
     def decorator(func):
+        """decoratorメソッド"""
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             monitor = await get_global_monitor()
             op_name = operation_name or f"{func.__module__}.{func.__name__}"
 

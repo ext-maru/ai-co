@@ -71,6 +71,7 @@ class ElderFlowAdvancedTemplates:
     """Elder Flow高度テンプレートシステム - 魂の実装"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.templates: Dict[str, ElderFlowTemplate] = {}
         self.soul_patterns: Dict[str, Any] = {}
         self._initialize_soul_templates()
@@ -463,6 +464,7 @@ def get_soul_wisdom() -> Dict[str, Any]:
 if __name__ == "__main__":
     # Elder Flow Soul Demo
     async def soul_demo():
+        """soul_demoメソッド"""
         print("🌊 Elder Flow Advanced Templates - Soul Power Demo")
 
         # 利用可能テンプレート表示

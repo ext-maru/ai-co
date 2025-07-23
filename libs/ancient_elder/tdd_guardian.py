@@ -45,7 +45,9 @@ class TDDViolationType:
 class TDDCycleTracker:
     """TDDサイクル実行トラッカー"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("TDDCycleTracker")
         
@@ -196,8 +198,7 @@ class TDDCycleTracker:
         
     def _detect_cycle_violations(
         self,
-        cycles: List[Dict[str,
-        Any]],
+        cycles: List[Dict[str, Any]],
         file_path: str
     ) -> List[Dict[str, Any]]:
         """TDDサイクル違反を検出"""
@@ -251,6 +252,7 @@ class TestQualityAnalyzer:
     """テスト品質・実質性評価システム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger("TestQualityAnalyzer")
         
         # 低品質テストのパターン
@@ -326,10 +328,7 @@ class TestQualityAnalyzer:
                     "lineno": node.lineno,
                     "body_length": len(node.body),
                     "docstring": ast.get_docstring(node),
-                    "decorators": [d.id if isinstance(
-                        d,
-                        ast.Name) else str(d
-                    ) for d in node.decorator_list],
+                    "decorators": [d.id if isinstance(d, ast.Name) else str(d) for d in node.decorator_list],
                     "has_assertions": self._has_assertions(node)
                 })
                 
@@ -379,8 +378,7 @@ class TestQualityAnalyzer:
     def _detect_test_violations(
         self,
         content: str,
-        test_functions: List[Dict[str,
-        Any]]
+        test_functions: List[Dict[str, Any]]
     ) -> List[Dict[str, Any]]:
         """テスト品質違反を検出"""
         violations = []
@@ -476,7 +474,9 @@ class TestQualityAnalyzer:
 class CoverageManipulationDetector:
     """カバレッジ操作検出システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("CoverageManipulationDetector")
         
@@ -578,8 +578,7 @@ class CoverageManipulationDetector:
         
     def _detect_suspiciously_high_coverage(
         self,
-        coverage_data: Dict[str,
-        Any]
+        coverage_data: Dict[str, Any]
     ) -> List[Dict[str, Any]]:
         """異常に高いカバレッジ率を検出"""
         violations = []
@@ -638,7 +637,8 @@ class CoverageManipulationDetector:
                         violations.append({
                             "type": TDDViolationType.COVERAGE_MANIPULATION,
                             "severity": "MEDIUM",
-                            "description": f"Excessive coverage exclusions in {py_file.name}: {file_exclusions} exclusions",
+                            "description": f"Excessive coverage exclusions in 
+                                f"{py_file.name}: {file_exclusions} exclusions",
                             "location": str(py_file),
                             "exclusion_count": file_exclusions
                         })
@@ -725,7 +725,9 @@ class TDDGuardian(AncientElderBase):
     TDD違反を検出する
     """
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         super().__init__(specialty="tdd_guardian")
         
         # コンポーネント初期化
@@ -1073,8 +1075,8 @@ class TDDGuardian(AncientElderBase):
             result.add_violation(
                 severity=ViolationSeverity.HIGH,
                 title="Low overall test quality",
-                description=f"Average test quality score: {avg_test_quality:.1f} < {self." \
-                    "quality_thresholds["minimum_test_quality_score']}",
+                description=f"Average test quality score: {avg_test_quality:." \
+                    "1f} < {self.quality_thresholds['minimum_test_quality_score']}",
                 suggested_fix="Improve test assertions, documentation, and remove empty tests",
                 metadata={
                     "category": "project_quality",
@@ -1135,8 +1137,7 @@ class TDDGuardian(AncientElderBase):
         violation_type = violation.get("type", "")
         
         fixes = {
-            TDDViolationType.NO_RED_PHASE: "Write a failing test first before implementing functionality" \
-                "Write a failing test first before implementing functionality",
+            TDDViolationType.NO_RED_PHASE: "Write a failing test first before implementing functionality",
             TDDViolationType.SKIPPED_GREEN_PHASE: "Implement minimal code to make the test pass",
             TDDViolationType.INSUFFICIENT_REFACTOR: "Refactor code after making tests pass",
             TDDViolationType.IMPLEMENTATION_BEFORE_TEST: "Always write tests before implementation"
@@ -1150,8 +1151,7 @@ class TDDGuardian(AncientElderBase):
         
         fixes = {
             TDDViolationType.POOR_TEST_QUALITY: "Add meaningful assertions and test logic",
-            TDDViolationType.FAKE_TEST_IMPLEMENTATION: "Remove fake implementations and write real tests" \
-                "Remove fake implementations and write real tests"
+            TDDViolationType.FAKE_TEST_IMPLEMENTATION: "Remove fake implementations and write real tests"
         }
         
         return fixes.get(violation_type, "Improve test quality and add proper assertions")

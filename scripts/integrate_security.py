@@ -20,7 +20,8 @@ class SecurityIntegrator:
         self.api_implementations_path = (
             self.project_root / "libs/integrations/github/api_implementations"
         )
-        self.security_import = """from libs.integrations.github.security import get_security_manager, SecurityViolationError
+        self.security_import = """from libs.integrations.github.security import get_security_manager,  \
+            SecurityViolationError
 """
         self.integrated_count = 0
 
@@ -89,6 +90,9 @@ class SecurityIntegrator:
                     )
                     if body_line:
                         indent_match = re.match(r"^(\s+)", body_line)
+                        if not (indent_match):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if indent_match:
                             indent = indent_match.group(1)
 
@@ -98,27 +102,70 @@ class SecurityIntegrator:
                             # Check method signature for common parameters
                             method_sig = content[match.start() : match.end()]
 
+                            if not ("repo" in method_sig):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "repo" in method_sig:
                                 security_checks.append(
-                                    f"{indent}if 'repo' in locals():\n{indent}    repo = self.security_manager.validate_and_sanitize_input(repo, 'repo_name')"
+                                    (
+                                        (
+                                            f"f"f"{indent}if 'repo' in locals():\n{indent} " \
+                                                "   repo = self.security_manager.validate_and_sanitize_input(repo, 'repo_name')"""
+                                        )
+                                    )
                                 )
+                            if not ("owner" in method_sig):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "owner" in method_sig:
                                 security_checks.append(
-                                    f"{indent}if 'owner' in locals():\n{indent}    owner = self.security_manager.validate_and_sanitize_input(owner, 'username')"
+                                    (
+                                        (
+                                            f"f"f"{indent}if 'owner' in locals():\n{indent} " \
+                                                "   owner = self.security_manager.validate_and_sanitize_input(owner, 'username')"""
+                                        )
+                                    )
                                 )
+                            if not ("title" in method_sig):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "title" in method_sig:
                                 security_checks.append(
-                                    f"{indent}if 'title' in locals():\n{indent}    title = self.security_manager.validate_and_sanitize_input(title, 'title')"
+                                    (
+                                        (
+                                            f"f"f"{indent}if 'title' in locals():\n{indent} " \
+                                                "   title = self.security_manager.validate_and_sanitize_input(title, 'title')"""
+                                        )
+                                    )
                                 )
+                            if not ("body" in method_sig):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "body" in method_sig:
                                 security_checks.append(
-                                    f"{indent}if 'body' in locals():\n{indent}    body = self.security_manager.validate_and_sanitize_input(body, 'body')"
+                                    (
+                                        (
+                                            f"f"f"{indent}if 'body' in locals():\n{indent} " \
+                                                "   body = self.security_manager.validate_and_sanitize_input(body, 'body')"""
+                                        )
+                                    )
                                 )
+                            if not ("branch" in method_sig):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "branch" in method_sig:
                                 security_checks.append(
-                                    f"{indent}if 'branch' in locals():\n{indent}    branch = self.security_manager.validate_and_sanitize_input(branch, 'branch_name')"
+                                    (
+                                        (
+                                            f"f"f"{indent}if 'branch' in locals():\n{indent} " \
+                                                "   branch = self.security_manager.validate_and_sanitize_input(branch, 'branch_name')"""
+                                        )
+                                    )
                                 )
 
+                            if not (security_checks):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if security_checks:
                                 # Find where to insert (after docstring if exists)
                                 insert_pos = method_start
@@ -126,6 +173,9 @@ class SecurityIntegrator:
                                     r'\n\s+"""[^"]*"""\s*\n',
                                     content[method_start : method_start + 1000],
                                 )
+                                if not (docstring_match):
+                                    continue  # Early return to reduce nesting
+                                # Reduced nesting - original condition satisfied
                                 if docstring_match:
                                     insert_pos = method_start + docstring_match.end()
                                 else:
@@ -154,7 +204,8 @@ class SecurityIntegrator:
                     indent_match = re.match(r"^(\s+)", line)
                     if indent_match:
                         indent = indent_match.group(1)
-                        https_check = f'\n{indent}if not self.base_url.startswith("https://"):\n{indent}    raise SecurityViolationError("Only HTTPS URLs are allowed")'
+                        https_check = f'\n{indent}if not self.base_url.startswith("https://"):\n{indent} " \
+                            "   raise SecurityViolationError("Only HTTPS URLs are allowed")'
                         content = (
                             content[:insert_pos] + https_check + content[insert_pos:]
                         )

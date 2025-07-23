@@ -110,7 +110,11 @@ class CodeQualityAnalyzer:
             },
             'imports': {
                 'standard_lib': len(re.findall(r'^import\s+(?:os|sys|re|json|time|datetime)', code, re.MULTILINE)),
-                'third_party': len(re.findall(r'^(?:import|from)\s+(?:pandas|numpy|requests|aiohttp)', code, re.MULTILINE)),
+                'third_party': len(
+                    re.findall(r'^(?:import|from)\s+(?:pandas|numpy|requests|aiohttp)',
+                    code,
+                    re.MULTILINE)
+                ),
                 'project_imports': len(re.findall(r'^from\s+(?:libs|workers|commands)', code, re.MULTILINE)),
             }
         }
@@ -187,6 +191,7 @@ def main():
     
     results = []
     
+    # 繰り返し処理
     for file_path in python_files:
         print(f"\n📄 分析中: {file_path.name}")
         
@@ -236,7 +241,9 @@ def main():
         
         # 詳細レポート保存
         report = {
-            'timestamp': Path("processing_summary.json").read_text() if Path("processing_summary.json").exists() else "N/A",
+            'timestamp': Path("processing_summary.json").read_text() \
+                if Path("processing_summary.json").exists() \
+                else "N/A",
             'files_analyzed': len(results),
             'average_score': avg_score,
             'grade': grade,

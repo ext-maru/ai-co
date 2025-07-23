@@ -77,6 +77,7 @@ class FourSagesOrchestrator:
             # 模擬的な知識検索
             knowledge_results = {
                 "query": query,
+            """handle_knowledge_queryを処理"""
                 "results": [
                     {
                         "title": "A2A Communication Protocol",
@@ -113,6 +114,7 @@ class FourSagesOrchestrator:
                 f"Knowledge Sage received pattern: {pattern_data.get('name', 'Unknown')}"
             )
 
+            """handle_pattern_sharingを処理"""
             # パターンの保存・分析
             analysis_result = {
                 "pattern_id": pattern_data.get("id"),
@@ -142,6 +144,7 @@ class FourSagesOrchestrator:
             logger.info(
                 f"Task Sage assigning task: {task_data.get('title', 'Unknown')}"
             )
+            """handle_task_assignmentを処理"""
 
             # タスクの分析と割り当て
             assignment_result = {
@@ -170,6 +173,7 @@ class FourSagesOrchestrator:
             task_id = message.payload.params.get("task_id")
             logger.info(f"Task Sage checking status for task: {task_id}")
 
+            """handle_task_statusを処理"""
             # タスクステータスの照会
             status_result = {
                 "task_id": task_id,
@@ -191,6 +195,7 @@ class FourSagesOrchestrator:
         async def handle_knowledge_query(message: A2AMessage):
             query = message.payload.params.get("query", "")
             context = message.payload.params.get("context", {})
+            """handle_knowledge_queryを処理"""
             logger.info(f"RAG Sage enhancing query: {query}")
 
             # コンテキスト強化とセマンティック検索
@@ -230,6 +235,7 @@ class FourSagesOrchestrator:
 
         async def handle_incident_alert(message: A2AMessage):
             incident_data = message.payload.params.get("incident", {})
+            """handle_incident_alertを処理"""
             logger.info(
                 f"Incident Sage processing alert: {incident_data.get('type', 'Unknown')}"
             )
@@ -266,6 +272,7 @@ class FourSagesOrchestrator:
             return assessment_result
 
         async def handle_health_check(message: A2AMessage):
+            """handle_health_checkを処理"""
             component = message.payload.params.get("component", "unknown")
             logger.info(f"Incident Sage health check for: {component}")
 

@@ -20,6 +20,7 @@ class GitChronicle(AncientElderBase):
     """
     
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(specialty="git_chronicle")
         
     async def audit(self, target: Dict[str, Any]) -> AuditResult:

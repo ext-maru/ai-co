@@ -17,6 +17,7 @@ from libs.slack_notifier import SlackNotifier
 
 
 def main():
+    """mainメソッド"""
     helper = AICommandHelper()
 
     print("🔧 Slack PM-AI修復開始...")
@@ -64,7 +65,8 @@ source venv/bin/activate
 tmux kill-window -t ai_company:slack_polling 2>/dev/null || true
 
 # 新しくslack_pollingウィンドウを作成
-tmux new-window -t ai_company -n slack_polling "cd /home/aicompany/ai_co && source venv/bin/activate && python3 workers/slack_polling_worker.py"
+tmux new-window -t ai_company -n slack_polling "cd /home/aicompany/ai_co && " \
+    "source venv/bin/activate && python3 workers/slack_polling_worker.py"
 
 echo "✅ Slack Polling Worker起動完了"
 

@@ -133,7 +133,8 @@ class TestGitHubGetIssuesImplementation:
             "success": True,
             "data": [{"number": 1, "title": "Issue 1"}],
             "headers": {
-                "Link": '<https://api.github.com/repos/test/test/issues?page=2>; rel="next", <https://api.github.com/repos/test/test/issues?page=3>; rel="last"'
+                "Link": '<https://api.github.com/repos/test/test/issues?page=2>; rel="next",  \
+                    <https://api.github.com/repos/test/test/issues?page=3>; rel="last"'
             }
         }
         
@@ -142,7 +143,8 @@ class TestGitHubGetIssuesImplementation:
             "success": True,
             "data": [{"number": 2, "title": "Issue 2"}],
             "headers": {
-                "Link": '<https://api.github.com/repos/test/test/issues?page=3>; rel="next", <https://api.github.com/repos/test/test/issues?page=3>; rel="last"'
+                "Link": '<https://api.github.com/repos/test/test/issues?page=3>; rel="next",  \
+                    <https://api.github.com/repos/test/test/issues?page=3>; rel="last"'
             }
         }
         
@@ -455,7 +457,8 @@ class TestGitHubGetIssuesImplementation:
     
     def test_parse_link_header(self):
         """Linkヘッダーパーステスト"""
-        link_header = '<https://api.github.com/repos/test/test/issues?page=2>; rel="next", <https://api.github.com/repos/test/test/issues?page=5>; rel="last"'
+        link_header = '<https://api.github.com/repos/test/test/issues?page=2>; rel="next",  \
+            <https://api.github.com/repos/test/test/issues?page=5>; rel="last"'
         
         result = self.implementation._parse_link_header(link_header)
         
@@ -959,7 +962,12 @@ class TestGitHubCreatePullRequestImplementation:
             {"success": True, "data": {"name": "feature"}},  # head branch
             {"success": True, "data": []},  # existing PR check
             {"success": True, "data": {"ahead_by": 5}},  # diff check
-            {"success": True, "data": {"number": 123, "title": "Test PR", "html_url": "https://github.com/test/repo/pull/123"}},  # create PR
+            {
+                "success": True,
+                "data": {"number": 123,
+                "title": "Test PR",
+                "html_url": "https://github.com/test/repo/pull/123"}
+            },  # create PR
             {"success": True},  # configure PR (labels/assignees)
             {"success": True},  # configure PR (reviewers)
             {"success": True, "data": {"number": 123, "mergeable_state": "clean"}},  # conflict check

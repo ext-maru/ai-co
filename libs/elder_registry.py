@@ -69,7 +69,9 @@ class ElderRegistry:
     - ポート自動割り当て
     """
 
-    def __init__(self, registry_file: str = "data/elder_registry.json"):
+    def __init__(self, registry_file:
+        """初期化メソッド"""
+    str = "data/elder_registry.json"):
         self.registry_file = Path(registry_file)
         self.registry_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -594,6 +596,7 @@ class PortAllocator:
     """ポート自動割り当て"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.port_ranges = {
             AgentType.GRAND_ELDER: (5000, 5000),  # 固定
             AgentType.ELDER: (5001, 5099),

@@ -22,6 +22,7 @@ from libs.unified_auth_provider import User, create_demo_auth_system
 
 
 def main():
+    """mainメソッド"""
     # 認証システム初期化（デモユーザーを使用）
     auth_system = create_demo_auth_system()
 

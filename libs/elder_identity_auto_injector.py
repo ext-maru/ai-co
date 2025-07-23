@@ -37,6 +37,7 @@ class ElderIdentity:
     timestamp: datetime = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.authority is None:
             self.authority = [
                 "4賢者との橋渡し",

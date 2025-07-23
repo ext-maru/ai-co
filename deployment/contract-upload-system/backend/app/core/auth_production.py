@@ -236,6 +236,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
 def require_role(required_role: str):
     """権限チェックデコレータ"""
     def role_checker(current_user: Dict = Depends(get_current_user)):
+        """role_checkerメソッド"""
         if current_user["role"] != required_role and current_user["role"] != "admin":
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,

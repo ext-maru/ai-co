@@ -11,6 +11,7 @@ class QuantumBit:
     """量子ビット実装"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.alpha = 1.0  # |0⟩の振幅
         self.beta = 0.0  # |1⟩の振幅
 
@@ -56,7 +57,9 @@ class QuantumGate:
 class QuantumCircuit:
     """量子回路"""
 
-    def __init__(self, num_qubits: int):
+    def __init__(self, num_qubits:
+        """初期化メソッド"""
+    int):
         self.qubits = [QuantumBit() for _ in range(num_qubits)]
         self.operations = []
 
@@ -89,6 +92,7 @@ class QuantumElderFlowProcessor:
     """量子Elder Flow処理器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.quantum_memory = {}
 
     def quantum_task_scheduling(self, tasks: List[str]) -> Dict[str, Any]:

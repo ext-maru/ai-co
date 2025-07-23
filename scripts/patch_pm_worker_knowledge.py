@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 def patch_pm_worker():
+    """patch_pm_workerメソッド"""
     pm_worker_path = Path("/home/aicompany/ai_co/workers/pm_worker.py")
 
     if not pm_worker_path.exists():

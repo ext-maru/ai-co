@@ -346,6 +346,7 @@ class LightweightElderProxy(EldersServiceLegacy[ProxyRequest, ProxyResponse]):
 
         # 最適化実行リクエスト作成
         async def optimized_execution():
+            """optimized_executionメソッド"""
             return await self._process_direct(request)
 
         # リソースタイプ決定
@@ -676,9 +677,12 @@ def lightweight_proxy(
 ):
     """軽量プロキシデコレータ"""
 
-    def decorator(func: Callable):
+    def decorator(func:
+        """decoratorメソッド"""
+    Callable):
         @wraps(func)
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             # プロキシ経由で実行
             proxy = LightweightElderProxy(
                 ProxyConfig(

@@ -116,6 +116,9 @@ class ProjectLister:
                         last_update = datetime.fromisoformat(last_cycle["timestamp"])
                         days_ago = (datetime.now() - last_update).days
 
+                        if not (days_ago < 7):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if days_ago < 7:
                             info["status"] = "active"
                         elif days_ago < 30:
@@ -191,6 +194,7 @@ class ProjectLister:
 
     def display_projects_tree(self, projects: List[Dict]):
         """プロジェクト詳細ツリー表示"""
+        # 繰り返し処理
         for project in projects:
             tree = Tree(f"📁 [bold cyan]{project['name']}[/bold cyan]")
 
@@ -299,7 +303,11 @@ class ProjectLister:
 
                 if project["tech_stack"]:
                     md_content += "- **技術スタック**:\n"
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for key, value in project["tech_stack"].items():
+                        if not (value):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if value:
                             md_content += f"  - {key}: {value}\n"
 

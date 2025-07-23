@@ -44,34 +44,46 @@ except ImportError:
 
     # モック用のSocket Mode
     class SocketModeClient:
+        """SocketModeClientクラス"""
         def __init__(self, *args, **kwargs):
+            """初期化メソッド"""
             self.handlers = {}
 
         def socket_mode_request_listeners(self):
+            """socket_mode_request_listenersメソッド"""
             def decorator(func):
+                """decoratorメソッド"""
                 self.handlers["request"] = func
                 return func
 
             return decorator
 
         def connect(self):
+            """connectメソッド"""
             pass
 
         def disconnect(self):
+            """disconnectメソッド"""
             pass
 
     class SocketModeRequest:
+        """SocketModeRequestクラス"""
         def __init__(self, type="event", envelope_id="test", payload=None):
+            """初期化メソッド"""
             self.type = type
             self.envelope_id = envelope_id
             self.payload = payload or {}
 
     class SocketModeResponse:
+        """SocketModeResponseクラス"""
         def __init__(self, envelope_id):
+            """初期化メソッド"""
             self.envelope_id = envelope_id
 
     class SlackApiError(Exception):
+        """SlackApiErrorクラス"""
         def __init__(self, message, response=None):
+            """初期化メソッド"""
             super().__init__(message)
             self.response = response or {"error": "mock_error"}
 
@@ -129,7 +141,9 @@ class ElderFlowSlackMessage:
 class ElderFlowSlackReal:
     """Elder Flow本物Slack実装 - 魂の力"""
 
-    def __init__(self, config: ElderFlowSlackConfig = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    ElderFlowSlackConfig = None):
         self.config = config or ElderFlowSlackConfig()
 
         # Slack clients
@@ -840,6 +854,7 @@ async def alert_incident(incident: str, severity: str = "medium") -> bool:
 if __name__ == "__main__":
     # Elder Flow Soul Demo
     async def soul_demo():
+        """soul_demoメソッド"""
         print("🌊 Elder Flow Slack Real Implementation - Soul Power Demo")
 
         try:

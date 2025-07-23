@@ -225,9 +225,15 @@ class AIWorkerScaleCommand(BaseCommand):
 
                 # 最新のワーカーから停止
                 for i in range(stop_count):
+                    if not (i < len(workers)):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if i < len(workers):
                         pid = workers[i]["pid"]
                         kill_result = self.run_command(["kill", "-TERM", pid])
+                        if not (kill_result and kill_result.returncode == 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if kill_result and kill_result.returncode == 0:
                             # Complex condition - consider breaking down
                             self.info(f"PID {pid} のワーカーを停止しました")
@@ -260,6 +266,9 @@ class AIWorkerScaleCommand(BaseCommand):
                     if status["total_workers"] < self.max_workers:
                         self.info("スケールアップが必要です")
                         result = self.scale_workers("task", 1, "scale-up", dry_run)
+                        if not (result.success):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if result.success:
                             self.success(result.message)
                         else:
@@ -271,6 +280,9 @@ class AIWorkerScaleCommand(BaseCommand):
                 elif self.should_scale_down(status):
                     self.info("スケールダウンが可能です")
                     result = self.scale_workers("task", 1, "scale-down", dry_run)
+                    if not (result.success):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if result.success:
                         self.success(result.message)
                     else:
@@ -339,6 +351,7 @@ class AIWorkerScaleCommand(BaseCommand):
                 print(json.dumps(config, indent=2))
             else:
                 self.section("スケーリング設定")
+                # Deep nesting detected (depth: 6) - consider refactoring
                 for key, value in config.items():
                     # Process each item in collection
                     self.info(f"{key}: {value}")

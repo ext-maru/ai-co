@@ -169,6 +169,7 @@ class TestUnifiedGitHubManager:
         call_count = 0
         
         def failing_function():
+            """failing_functionメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 3:
@@ -270,6 +271,7 @@ class TestUnifiedGitHubManager:
         """リクエストキューイングテスト"""
         # キューに複数のリクエストを追加
         def dummy_request(n):
+            """dummy_requestメソッド"""
             return {"number": n}
         
         # キューイングはバックグラウンドで処理されるため、
@@ -366,7 +368,8 @@ class TestAPIImplementations:
     
     def test_create_pull_request_conflict_detection(self):
         """PR作成のコンフリクト検出テスト"""
-        from libs.integrations.github.api_implementations.create_pull_request import GitHubCreatePullRequestImplementation
+        from libs.integrations.github.api_implementations.create_pull_request import \
+            GitHubCreatePullRequestImplementation
         
         impl = GitHubCreatePullRequestImplementation(
             token="test-token",
@@ -588,6 +591,7 @@ class TestUnifiedGitHubManagerPerformance:
         ]
         
         async def mock_stream():
+            """mock_streamメソッド"""
             for issue in test_issues:
                 yield issue
         
@@ -797,6 +801,7 @@ class TestUnifiedGitHubManagerEdgeCases:
         results = []
         
         def worker(worker_id):
+            """workerメソッド"""
             with patch.object(self.manager.issues_api, 'get_issues') as mock_get_issues:
                 mock_get_issues.return_value = {"success": True, "issues": [], "worker_id": worker_id}
                 result = self.manager.get_issues()
@@ -909,6 +914,7 @@ class TestUnifiedGitHubManagerIntegration:
         call_count = 0
         
         def failing_then_success():
+            """failing_then_successメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 3:

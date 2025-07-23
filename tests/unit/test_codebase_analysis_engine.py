@@ -206,8 +206,23 @@ class TestPatternExtractor:
                         'name': 'TestClass',
                         'base_classes': [],
                         'methods': [
-                            {'name': '__init__', 'args': ['self'], 'is_async': False, 'decorators': [], 'docstring': None, 'returns': None},
-                            {'name': 'test_method', 'args': ['self', 'param'], 'is_async': True, 'decorators': [], 'docstring': 'Test method', 'returns': 'Dict'}
+                            {
+                                'name': '__init__',
+                                'args': ['self'],
+                                'is_async': False,
+                                'decorators': [],
+                                'docstring': None,
+                                'returns': None
+                            },
+                            {
+                                'name': 'test_method',
+                                'args': ['self',
+                                'param'],
+                                'is_async': True,
+                                'decorators': [],
+                                'docstring': 'Test method',
+                                'returns': 'Dict'
+                            }
                         ],
                         'attributes': ['initialized'],
                         'docstring': 'Test class',
@@ -235,12 +250,27 @@ class TestPatternExtractor:
                 'classes': [
                     {
                         'methods': [
-                            {'name': 'async_method', 'args': ['self'], 'is_async': True, 'decorators': ['property'], 'docstring': None, 'returns': None}
+                            {
+                                'name': 'async_method',
+                                'args': ['self'],
+                                'is_async': True,
+                                'decorators': ['property'],
+                                'docstring': None,
+                                'returns': None
+                            }
                         ]
                     }
                 ],
                 'functions': [
-                    {'name': 'sync_function', 'args': ['param'], 'is_async': False, 'decorators': [], 'docstring': 'Test function', 'returns': 'str', 'error_handling': ['ValueError']}
+                    {
+                        'name': 'sync_function',
+                        'args': ['param'],
+                        'is_async': False,
+                        'decorators': [],
+                        'docstring': 'Test function',
+                        'returns': 'str',
+                        'error_handling': ['ValueError']
+                    }
                 ]
             }
         ]

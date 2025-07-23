@@ -92,6 +92,7 @@ class ElderProjectManager:
     """Elder階層プロジェクト管理システム"""
 
     def __init__(self, auth_provider=None):
+        """初期化メソッド"""
         self.auth_provider = auth_provider
         self.projects_root = Path("/home/aicompany/ai_co/projects")
         self.project_index_file = Path("/home/aicompany/ai_co/data/project_index.json")
@@ -187,6 +188,9 @@ class ElderProjectManager:
                     # 最初の段落を説明として使用
                     lines = content.split("\n")
                     for line in lines:
+                        if not (line.strip() and not line.startswith("#")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.strip() and not line.startswith("#"):
                             description = line.strip()
                             break
@@ -421,6 +425,7 @@ class ElderProjectCLI:
     """Elder階層プロジェクト管理CLI"""
 
     def __init__(self, auth_provider=None):
+        """初期化メソッド"""
         self.manager = ElderProjectManager(auth_provider)
         self.auth_provider = auth_provider
 

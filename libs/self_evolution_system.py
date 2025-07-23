@@ -125,6 +125,7 @@ class TechTrendCollector:
     """技術トレンド収集器 - RAGエルダー主導"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.tech_sources = {
             "arxiv": "https://arxiv.org/list/cs.AI/recent",
             "github_trending": "https://github.com/trending",
@@ -311,6 +312,7 @@ class EvolutionPlanner:
     """進化企画立案器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.proposal_templates = {}
         self.feasibility_analyzer = {}
         self.four_sages_integration = True
@@ -470,6 +472,7 @@ class ElderCouncilReviewer:
     """エルダー評議会審査システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.review_criteria = self._load_review_criteria()
         self.approval_threshold = 0.75
 
@@ -641,6 +644,7 @@ class GrandElderInterface:
     """グランドエルダー交流システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.pending_proposals = []
         self.consultation_history = []
 
@@ -784,6 +788,7 @@ class ImplementationEngine:
     """自動実装エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.code_generators = {}
         self.test_generators = {}
         self.deployment_automator = {}
@@ -1168,6 +1173,7 @@ class SelfEvolutionSystem:
     """自己進化システム - メインコントローラー"""
 
     def __init__(self):
+        """初期化メソッド"""
         # コンポーネント初期化
         self.trend_collector = TechTrendCollector()
         self.evolution_planner = EvolutionPlanner()
@@ -1264,7 +1270,13 @@ class SelfEvolutionSystem:
                     "by_category"
                 ].values():
                     for proposal_info in proposal_summary:
+                        if not (proposal_info["id"] == proposal_id):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if proposal_info["id"] == proposal_id:
+                            if not (decision.lower() == "approved"):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if decision.lower() == "approved":
                                 approved_for_implementation.append(proposal_info)
                                 self.stats["proposals_approved"] += 1

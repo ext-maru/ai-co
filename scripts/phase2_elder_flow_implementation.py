@@ -797,7 +797,8 @@ if __name__ == "__main__":
 
     def generate_implementation_report(self, results: Dict[str, Any]) -> str:
         """実装レポートの生成"""
-        report_path = f"reports/phase2_elder_flow_implementation_{self.implementation_timestamp.strftime('%Y%m%d_%H%M%S')}.md"
+        report_path = f"reports/phase2_elder_flow_implementation_
+            f"{self.implementation_timestamp.strftime('%Y%m%d_%H%M%S')}.md"
 
         report = f"""# 🌊 Phase 2: Elder Flow 実装レポート
 

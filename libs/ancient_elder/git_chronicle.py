@@ -61,7 +61,9 @@ class GitViolationType:
 class GitBranchAnalyzer:
     """Gitブランチ戦略分析システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("GitBranchAnalyzer")
         
@@ -149,7 +151,8 @@ class GitBranchAnalyzer:
                 ).replace("* ",
                 "") for b in local_result.stdout.split('\n') if b.strip(
             )]
-            remote_branches = [b.strip() for b in remote_result.stdout.split('\n') if b.strip() and not b.startswith("origin/HEAD")]
+            remote_branches = [b.strip() for b in remote_result.stdout.split('\n') if b.strip() and \
+                not b.startswith("origin/HEAD")]
             current_branch = current_result.stdout.strip()
             
             return {
@@ -274,7 +277,14 @@ class GitBranchAnalyzer:
             since_date = (datetime.now() - time_window).strftime("%Y-%m-%d")
             
             # 期間内に作成されたブランチを取得
-            cmd = ["git", "for-each-ref", "--format=%(refname:short)|%(committerdate)", "--since", since_date, "refs/heads/"]
+            cmd = [
+                "git",
+                "for-each-ref",
+                "--format=%(refname:short)|%(committerdate)",
+                "--since",
+                since_date,
+                "refs/heads/"
+            ]
             result = subprocess.run(cmd, cwd=self.project_root, capture_output=True, text=True)
             
             feature_branches = []
@@ -345,7 +355,9 @@ class GitBranchAnalyzer:
 class GitCommitAnalyzer:
     """Gitコミットメッセージ・規約分析システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("GitCommitAnalyzer")
         
@@ -607,7 +619,9 @@ class GitCommitAnalyzer:
 class GitChronicle(AncientElderBase):
     """Git年代記魔法 - 総合Git監査システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         super().__init__(specialty="git_chronicle")
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("GitChronicle")

@@ -13,6 +13,7 @@ from enum import Enum
 
 
 class UniversalScale(Enum):
+    """UniversalScaleクラス"""
     PLANCK = 1e-35  # プランク長
     ATOMIC = 1e-10  # 原子スケール
     MOLECULAR = 1e-9  # 分子スケール
@@ -27,6 +28,7 @@ class UniversalScale(Enum):
 
 @dataclass
 class UniversalNode:
+    """UniversalNodeクラス"""
     node_id: str
     scale: UniversalScale
     processing_capacity: float
@@ -40,6 +42,7 @@ class UniversalComputingGrid:
     """宇宙規模コンピューティンググリッド"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.nodes = {}
         self.processing_clusters = {}
         self.universal_tasks = []
@@ -90,6 +93,7 @@ class UniversalComputingGrid:
         """宇宙接続構築"""
         node_list = list(self.nodes.keys())
 
+        # 繰り返し処理
         for i, node_id in enumerate(node_list):
             node = self.nodes[node_id]
 
@@ -265,6 +269,7 @@ class DarkEnergyProcessor:
     """ダークエネルギー処理器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.energy_level = 68.3  # 宇宙の68.3%はダークエネルギー
         self.energy_consumption_history = []
 
@@ -307,6 +312,7 @@ class DarkEnergyProcessor:
 
 # デモ実行
 async def universal_demo():
+    """universal_demoメソッド"""
     universal_system = UniversalComputingGrid()
     universal_system.initialize_universal_grid()
 

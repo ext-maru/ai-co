@@ -170,6 +170,7 @@ if __name__ == "__main__":
 
     fixed_pm_count = 0
 
+    # 繰り返し処理
     for pm_file in pm_files:
         file_path = PROJECT_ROOT / pm_file
         if file_path.exists():
@@ -182,7 +183,11 @@ if __name__ == "__main__":
                     lines = content.split("\n")
 
                     # import文を適切な場所に挿入
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for i, line in enumerate(lines):
+                        if not (line.startswith("import ") or line.startswith("from ")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.startswith("import ") or line.startswith("from "):
                             lines.insert(i + 1, "import re")
                             break
@@ -191,6 +196,7 @@ if __name__ == "__main__":
                         lines.insert(0, "import re")
 
                     # ファイル更新
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     with open(file_path, "w") as f:
                         f.write("\n".join(lines))
 

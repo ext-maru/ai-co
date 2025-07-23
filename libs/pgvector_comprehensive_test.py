@@ -22,6 +22,7 @@ class PgVectorComprehensiveTest:
     """pgvector総合テスト・検証システム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.base_path = '/home/aicompany/ai_co'
         self.test_results = {
             'timestamp': datetime.now().isoformat(),
@@ -341,8 +342,14 @@ class PgVectorComprehensiveTest:
             results['vector_search'] = {
                 'queries_tested': len(test_queries),
                 'successful_queries': len([r for r in vector_results if 'error' not in r]),
-                'average_response_time': sum(r.get('response_time', 0) for r in vector_results) / len(vector_results) if vector_results else 0,
-                'average_results': sum(r.get('results_count', 0) for r in vector_results) / len(vector_results) if vector_results else 0,
+                'average_response_time': sum(
+                    r.get('response_time',
+                    0) for r in vector_results) / len(vector_results
+                ) if vector_results else 0,
+                'average_results': sum(
+                    r.get('results_count',
+                    0) for r in vector_results) / len(vector_results
+                ) if vector_results else 0,
                 'details': vector_results
             }
             
@@ -607,7 +614,14 @@ class PgVectorComprehensiveTest:
         
         try:
             # 統合管理システム経由の全機能テスト
-            cmd = ['python3', f'{self.base_path}/libs/pgvector_unified_manager.py', 'search', 'Elder Flow', '--limit', '3']
+            cmd = [
+                'python3',
+                f'{self.base_path}/libs/pgvector_unified_manager.py',
+                'search',
+                'Elder Flow',
+                '--limit',
+                '3'
+            ]
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
             
             search_success = result.returncode == 0
@@ -759,7 +773,12 @@ class PgVectorComprehensiveTest:
 ## 🎯 品質評価
 
 - **総合スコア**: {self.test_results['overall_score']}/100
-- **評価ランク**: {"S" if self.test_results['overall_score'] >= 90 else "A" if self.test_results['overall_score'] >= 80 else "B" if self.test_results['overall_score'] >= 70 else "C" if self.test_results['overall_score'] >= 60 else "D"}
+- **評価ランク**: {"S" \
+    if self.test_results['overall_score'] >= 90 \
+    else "A" \
+        if self.test_results['overall_score'] >= 80 \
+        else "B" if  \
+            self.test_results['overall_score'] >= 70 else "C" if self.test_results['overall_score'] >= 60 else "D"}
 
 ## 📊 推奨アクション
 

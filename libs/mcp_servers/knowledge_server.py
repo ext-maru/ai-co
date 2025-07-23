@@ -20,11 +20,13 @@ class KnowledgeBaseMCPServer:
     """ナレッジベース管理MCPサーバー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.server = MCPServer("knowledge")
         self.kb_dir = PROJECT_ROOT / "knowledge_base"
         self.setup_tools()
 
     def setup_tools(self):
+        """setup_toolsメソッド"""
         @self.server.tool()
         async def search_knowledge(query: str, category: str = None):
             """ナレッジベースを検索"""
@@ -149,6 +151,7 @@ class KnowledgeBaseMCPServer:
             # 通常のナレッジも検索
             all_kb_files = list(self.kb_dir.glob("*.md"))
 
+            # 繰り返し処理
             for kb_file in set(error_kb_files + all_kb_files):
                 try:
                     content = kb_file.read_text(encoding="utf-8")
@@ -158,6 +161,9 @@ class KnowledgeBaseMCPServer:
                         # 関連セクションを抽出
                         lines = content.split("\n")
                         for i, line in enumerate(lines):
+                            if not (error_message.lower() in line.lower()):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if error_message.lower() in line.lower():
                                 # 解決策を探す
                                 start = max(0, i - 5)
@@ -189,6 +195,7 @@ class KnowledgeBaseMCPServer:
             }
 
     async def process_request(self, request_json):
+        """process_request処理メソッド"""
         request = json.loads(request_json)
         return await self.server.handle_request(request)
 

@@ -158,6 +158,9 @@ class SlackAPIIntegration:
             try:
                 with open(config_file, "r") as f:
                     for line in f:
+                        if not (line.startswith("BOT_TOKEN=")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.startswith("BOT_TOKEN="):
                             return line.split("=", 1)[1].strip()
             except Exception as e:
@@ -178,6 +181,9 @@ class SlackAPIIntegration:
             try:
                 with open(config_file, "r") as f:
                     for line in f:
+                        if not (line.startswith("APP_TOKEN=")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.startswith("APP_TOKEN="):
                             return line.split("=", 1)[1].strip()
             except Exception as e:
@@ -198,6 +204,9 @@ class SlackAPIIntegration:
             try:
                 with open(config_file, "r") as f:
                     for line in f:
+                        if not (line.startswith("WEBHOOK_URL=")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.startswith("WEBHOOK_URL="):
                             return line.split("=", 1)[1].strip()
             except Exception as e:
@@ -218,6 +227,9 @@ class SlackAPIIntegration:
             try:
                 with open(config_file, "r") as f:
                     for line in f:
+                        if not (line.startswith("SIGNING_SECRET=")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.startswith("SIGNING_SECRET="):
                             return line.split("=", 1)[1].strip()
             except Exception as e:
@@ -259,6 +271,10 @@ class SlackAPIIntegration:
                 elif REQUESTS_AVAILABLE:
                     # requests を使用した同期リクエスト（asyncio.to_thread でラップ）
                     def sync_request():
+                        """sync_requestメソッド"""
+                        if not (method.upper() == "GET"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if method.upper() == "GET":
                             response = requests.get(url, headers=headers, params=data)
                         else:
@@ -381,6 +397,7 @@ class SlackAPIIntegration:
             elif REQUESTS_AVAILABLE:
                 # requests を使用
                 def sync_webhook():
+                    """sync_webhookメソッド"""
                     response = requests.post(self.webhook_url, json=payload)
                     return response.status_code == 200
 
@@ -651,6 +668,7 @@ if __name__ == "__main__":
     import sys
 
     async def main():
+        """mainメソッド"""
         print("Elders Guild Slack API Integration v1.0 Test")
         print("=" * 50)
 

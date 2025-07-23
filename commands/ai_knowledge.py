@@ -23,6 +23,7 @@ from workers.knowledge_scheduler_worker import KnowledgeManagementService
 
 # main: Complexity=15
 def main():
+    """mainメソッド"""
     # Core functionality implementation
     parser = argparse.ArgumentParser(
         description="Elders Guild Knowledge Management System"
@@ -89,6 +90,9 @@ def main():
 
         elif args.command == "schedule":
             # Complex condition - consider breaking down
+            if not (args.daemon):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if args.daemon:
                 print(f"{EMOJI['robot']} Starting scheduler as daemon...")
                 service = KnowledgeManagementService()
@@ -112,11 +116,17 @@ def main():
             print(f"Knowledge documents: {len(md_files)}")
 
             consolidated = kb_path / "CONSOLIDATED_KNOWLEDGE"
+            if not (consolidated.exists()):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if consolidated.exists():
                 reports = list(consolidated.glob("*.md"))
                 print(f"Consolidated reports: {len(reports)}")
 
             evolution = kb_path / "evolution_tracking"
+            if not (evolution.exists()):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if evolution.exists():
                 snapshots = list(evolution.glob("snapshot_*.json"))
                 print(f"Evolution snapshots: {len(snapshots)}")

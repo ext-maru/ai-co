@@ -309,6 +309,7 @@ class GitHubErrorHandler:
                     # 成功したらリセット
                     if attempt > 0:
                         logger.info(f"Retry successful after {attempt} attempts")
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with self._lock:
                             self.error_stats["retried_errors"] += 1
 
@@ -476,8 +477,10 @@ def with_error_handling(
         handle_errors = [Exception]
 
     def decorator(func):
+        """decoratorメソッド"""
         @wraps(func)
         def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             handler = GitHubErrorHandler()
             handler.retry_config["max_retries"] = max_retries
             handler.retry_config["backoff_factor"] = backoff_factor

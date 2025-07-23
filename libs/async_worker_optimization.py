@@ -40,6 +40,7 @@ class TaskItem:
     created_at: datetime = field(default_factory=datetime.now)
 
     def __lt__(self, other):
+        """__lt__特殊メソッド"""
         return self.priority > other.priority  # 高優先度が先
 
 
@@ -54,6 +55,7 @@ class WorkerMetrics:
 
     @property
     def average_processing_time(self) -> float:
+        """average_processing_time処理メソッド"""
         if self.tasks_processed == 0:
             return 0.0
         return self.total_processing_time / self.tasks_processed
@@ -81,6 +83,7 @@ class AsyncWorkerOptimizer:
         semaphore = asyncio.Semaphore(max_concurrent)
 
         async def process_batch(batch):
+            """process_batch処理メソッド"""
             async with semaphore:
                 batch_results = []
                 tasks = [task_func(item) for item in batch]
@@ -309,6 +312,7 @@ class PerformanceProfiler:
 
         @functools.wraps(func)
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             if not self._profiling:
                 return await func(*args, **kwargs)
 
@@ -781,19 +785,24 @@ class MemoryOptimizer:
 class _RepeatedString:
     """繰り返し文字列の最適化表現"""
 
-    def __init__(self, string: str, count: int):
+    def __init__(self, string:
+        """初期化メソッド"""
+    str, count: int):
         self.string = string
         self.count = count
 
     def __getitem__(self, index):
+        """__getitem__特殊メソッド"""
         if 0 <= index < self.count:
             return self.string
         raise IndexError
 
     def __len__(self):
+        """__len__特殊メソッド"""
         return self.count
 
     def __iter__(self):
+        """__iter__特殊メソッド"""
         for _ in range(self.count):
             yield self.string
 
@@ -801,16 +810,20 @@ class _RepeatedString:
 class _SparseList:
     """スパースリストの最適化表現"""
 
-    def __init__(self, size: int, non_none_items: List[Tuple[int, Any]]):
+    def __init__(self, size:
+        """初期化メソッド"""
+    int, non_none_items: List[Tuple[int, Any]]):
         self.size = size
         self.data = dict(non_none_items)
 
     def __getitem__(self, index):
+        """__getitem__特殊メソッド"""
         if 0 <= index < self.size:
             return self.data.get(index, None)
         raise IndexError
 
     def __len__(self):
+        """__len__特殊メソッド"""
         return self.size
 
 

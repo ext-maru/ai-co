@@ -84,7 +84,9 @@ class BenchmarkResults:
 class IntegratedPerformanceBenchmark:
     """統合パフォーマンスベンチマーク"""
 
-    def __init__(self, config: BenchmarkConfig = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    BenchmarkConfig = None):
         self.config = config or BenchmarkConfig()
         self.logger = logging.getLogger("elder_servants.integrated_benchmark")
 
@@ -370,6 +372,7 @@ class IntegratedPerformanceBenchmark:
 
         # 非同期最適化リクエスト作成
         async def optimized_task():
+            """optimized_taskメソッド"""
             data_size = secrets.randbelow(*self.config.data_size_range)
 
             # リソースタイプをランダム選択
@@ -544,6 +547,7 @@ class IntegratedPerformanceBenchmark:
 
         # 2. キャッシュミス - 非同期最適化で処理
         async def integrated_task():
+            """integrated_taskメソッド"""
             # 3. プロキシ経由でサービス呼び出し
             proxy_request = ProxyRequest(
                 request_id=f"integrated_{worker_id}_{request_num}",
@@ -857,6 +861,7 @@ async def run_quick_benchmark(
 if __name__ == "__main__":
     # サンプル実行
     async def main():
+        """mainメソッド"""
         # Core functionality implementation
         results = await run_quick_benchmark(duration_seconds=15, concurrent_requests=10)
 

@@ -33,6 +33,7 @@ def isolated_test(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """wrapperメソッド"""
         # Clear any running threads
         for thread in threading.enumerate():
             if thread.name.startswith("test_"):

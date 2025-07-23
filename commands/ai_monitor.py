@@ -348,6 +348,9 @@ class AIMonitorCommand(BaseCommand):
                 if cmdline:
                     for worker in workers:
                         # Process each item in collection
+                        if not (worker in " ".join(cmdline)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if worker in " ".join(cmdline):
                             workers[worker] = True
             except:
@@ -528,7 +531,9 @@ class AIMonitorCommand(BaseCommand):
         metrics = self._get_system_metrics()
 
         info = f"""
-CPU使用率: {metrics['cpu_percent']:.1f}% {'🔴' if metrics['cpu_percent'] > 80 else '🟡' if metrics['cpu_percent'] > 50 else '🟢'}
+CPU使用率: {metrics['cpu_percent']:.1f}% {'🔴' \
+    if metrics['cpu_percent'] > 80 \
+    else '🟡' if metrics['cpu_percent'] > 50 else '🟢'}
 メモリ: {metrics['memory_percent']:.1f}% ({metrics['memory_used_mb']}MB / {metrics['memory_total_mb']}MB)
 ディスク: {metrics['disk_percent']:.1f}% ({metrics['disk_used_gb']}GB / {metrics['disk_total_gb']}GB)
 監視時間: {datetime.now() - self.start_time}

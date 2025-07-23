@@ -159,7 +159,12 @@ class PredictiveQualityEngine(AncientMagicBase):
                 # 複雑度指標
                 "cyclomatic_complexity": self._calculate_complexity(tree),
                 "nesting_depth": self._calculate_nesting_depth(tree),
-                "conditional_statements": len([n for n in ast.walk(tree) if isinstance(n, (ast.If, ast.While, ast.For))]),
+                "conditional_statements": len(
+                    [n for n in ast.walk(tree) if isinstance(n,
+                    (ast.If,
+                    ast.While,
+                    ast.For))]
+                ),
                 
                 # コード品質指標
                 "comments_ratio": self._calculate_comments_ratio(code),
@@ -495,6 +500,7 @@ class PredictiveQualityEngine(AncientMagicBase):
         max_depth = 0
         
         def get_depth(node, current_depth=0):
+            """depth取得メソッド"""
             nonlocal max_depth
             if isinstance(node, (ast.If, ast.While, ast.For, ast.Try, ast.With, ast.FunctionDef)):
                 current_depth += 1
@@ -521,6 +527,7 @@ class PredictiveQualityEngine(AncientMagicBase):
         
         documented = 0
         for func in functions:
+            # 複雑な条件判定
             if (func.body and isinstance(func.body[0], ast.Expr) and 
                 isinstance(func.body[0].value, ast.Constant) and 
                 isinstance(func.body[0].value.value, str)):
@@ -563,6 +570,7 @@ class PredictiveQualityEngine(AncientMagicBase):
         max_depth = 0
         
         def count_depth(node, current_depth=0):
+            """count_depthメソッド"""
             nonlocal max_depth
             if isinstance(node, (ast.For, ast.While)):
                 current_depth += 1

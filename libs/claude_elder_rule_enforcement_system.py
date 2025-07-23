@@ -68,7 +68,9 @@ class RuleDefinition:
 class ClaudeElderRuleEnforcementSystem:
     """クロードエルダー ルール遵守強制システム"""
 
-    def __init__(self, project_dir: str = "/home/aicompany/ai_co"):
+    def __init__(self, project_dir:
+        """初期化メソッド"""
+    str = "/home/aicompany/ai_co"):
         self.project_dir = Path(project_dir)
         self.rules_config = self.project_dir / "config" / "elder_rules.json"
         self.violation_log = self.project_dir / "logs" / "rule_violations.json"
@@ -584,6 +586,7 @@ def rule_enforced(func: Callable):
     @wraps(func)
     @incident_aware
     async def async_wrapper(*args, **kwargs):
+        """async_wrapperメソッド"""
         rule_system = get_rule_enforcement_system()
         if not rule_system.monitoring_active:
             rule_system.start_monitoring()
@@ -592,6 +595,7 @@ def rule_enforced(func: Callable):
     @wraps(func)
     @incident_aware
     def sync_wrapper(*args, **kwargs):
+        """sync_wrapperメソッド"""
         rule_system = get_rule_enforcement_system()
         if not rule_system.monitoring_active:
             rule_system.start_monitoring()

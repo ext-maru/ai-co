@@ -47,8 +47,10 @@ except ImportError as e:
 
     # Fallback implementations
     class MockHybridCodeCraftsman:
+        """MockHybridCodeCraftsmanクラス"""
         # Main class implementation
         async def generate_code(self, prompt, strategy="intelligent"):
+            """generate_code生成メソッド"""
             return {
                 "success": True,
                 "generated_code": "# Mock generated code",
@@ -57,8 +59,10 @@ except ImportError as e:
             }
 
     class MockHybridTestGuardian:
+        """MockHybridTestGuardian - 守護システムクラス"""
         # Main class implementation
         async def generate_tests(self, code, test_type="comprehensive"):
+            """generate_tests生成メソッド"""
             return {
                 "success": True,
                 "test_code": "# Mock test code",
@@ -67,8 +71,10 @@ except ImportError as e:
             }
 
     class MockHybridQualityInspector:
+        """MockHybridQualityInspectorクラス"""
         # Main class implementation
         async def check_quality(self, code, file_path="code.py"):
+            """check_qualityチェックメソッド"""
             return {
                 "success": True,
                 "overall_quality_score": 92.5,
@@ -76,10 +82,13 @@ except ImportError as e:
             }
 
     class MockQualityGateIntegration:
+        """MockQualityGateIntegrationクラス"""
         # Main class implementation
         async def execute_quality_gate(self, code, context=None):
+            """execute_quality_gate実行メソッド"""
             # Core functionality implementation
             class MockResult:
+                """MockResultクラス"""
                 # Main class implementation
                 def __init__(self):
                     """初期化メソッド"""
@@ -93,11 +102,14 @@ except ImportError as e:
             return MockResult()
 
     class MockSecurityValidationLayer:
+        """MockSecurityValidationLayerクラス"""
         # Main class implementation
         async def execute_comprehensive_security_scan(
+            """execute_comprehensive_security_scanを実行"""
             self, code, file_path=None, context=None
         ):
             class MockResult:
+                """MockResultクラス"""
                 # Main class implementation
                 def __init__(self):
                     """初期化メソッド"""
@@ -157,6 +169,7 @@ class TestResult:
     timestamp: datetime = field(default_factory=datetime.now)
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "test_id": self.test_id,
             "test_name": self.test_name,
@@ -191,6 +204,7 @@ class IntegrationTestSuite:
     timestamp: datetime = field(default_factory=datetime.now)
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "suite_id": self.suite_id,
             "suite_name": self.suite_name,

@@ -284,6 +284,7 @@ class ClaudeTaskTracker:
                 except RuntimeError:
                     # イベントループが利用できない場合は直接クリーンアップ
                     if hasattr(self.postgres_tracker, "_connection_manager"):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             self.postgres_tracker._connection_manager.emergency_shutdown()
                         except Exception:

@@ -232,6 +232,7 @@ class GitHubInputValidator:
             if branch_name.startswith(".") or branch_name.endswith("."):
                 raise ValidationError("Branch name cannot start or end with a dot")
 
+            # 複雑な条件判定
             if (
                 "//" in branch_name
                 or branch_name.startswith("/")

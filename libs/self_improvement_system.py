@@ -9,7 +9,9 @@ from pathlib import Path
 
 
 class SelfImprovementSystem:
+    """SelfImprovementSystemクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.optimization_history = []
 
     async def analyze_system_performance(self):

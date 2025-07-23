@@ -77,6 +77,7 @@ class RedundancyConfig:
     alert_enabled: bool = True
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.min_replicas is None:
             self.min_replicas = {
                 "pm-worker": 1,
@@ -131,7 +132,9 @@ class FailoverEvent:
 class DockerComposeManager:
     """Docker Compose管理クラス"""
 
-    def __init__(self, config: RedundancyConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    RedundancyConfig):
         self.config = config
         self.compose_path = PROJECT_ROOT / self.config.compose_file_path
         self.template_cache = {}
@@ -490,7 +493,9 @@ class DockerComposeManager:
 class ServiceHealthMonitor:
     """サービスヘルス監視クラス"""
 
-    def __init__(self, config: RedundancyConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    RedundancyConfig):
         self.config = config
         self.docker_client = self._get_docker_client()
         self.service_cache = {}
@@ -686,7 +691,9 @@ class ServiceHealthMonitor:
 class FailoverManager:
     """フェイルオーバー管理クラス"""
 
-    def __init__(self, config: RedundancyConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    RedundancyConfig):
         self.config = config
         self.failure_counts = defaultdict(int)
         self.failure_history = defaultdict(deque)
@@ -1114,7 +1121,9 @@ class FailoverManager:
 class DockerRedundancySystem:
     """Docker冗長化システム統合クラス"""
 
-    def __init__(self, config: Optional[RedundancyConfig] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Optional[RedundancyConfig] = None):
         self.config = config or RedundancyConfig()
         self.compose_manager = DockerComposeManager(self.config)
         self.health_monitor = ServiceHealthMonitor(self.config)

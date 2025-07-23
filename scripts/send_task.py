@@ -8,6 +8,7 @@ import pika
 
 def send_task(prompt, task_type="general"):
     try:
+    """send_taskメソッド"""
         connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
         channel = connection.channel()
         channel.queue_declare(queue="task_queue", durable=True)
@@ -37,6 +38,7 @@ def send_task(prompt, task_type="general"):
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(
         description="Task submission tool - Send tasks to the Elders Guild task queue",
         formatter_class=argparse.RawDescriptionHelpFormatter,

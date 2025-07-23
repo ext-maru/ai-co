@@ -36,7 +36,9 @@ class TaskPriority(Enum):
 class TaskSage(BaseSage):
     """タスク賢者 - プロジェクト管理とタスク追跡"""
 
-    def __init__(self, data_path: str = "data/tasks"):
+    def __init__(self, data_path:
+        """初期化メソッド"""
+    str = "data/tasks"):
         super().__init__("Task")
 
         self.data_path = data_path

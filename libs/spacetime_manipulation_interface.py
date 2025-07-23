@@ -122,6 +122,7 @@ class TemporalEngine:
     """時間操作エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.time_streams = {}
         self.temporal_buffers = {}
         self.causality_violations = []
@@ -216,6 +217,7 @@ class SpatialManipulator:
     """空間操作システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.spatial_anchors = []
         self.wormholes = {}
         self.pocket_dimensions = {}
@@ -318,6 +320,7 @@ class SpacetimeManipulationInterface:
     """時空間操作統合インターフェース"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.spacetime_matrix = SpacetimeMatrix()
         self.temporal_engine = TemporalEngine()
         self.spatial_manipulator = SpatialManipulator()
@@ -414,6 +417,7 @@ class CausalityMonitor:
     """因果律監視システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.violation_threshold = 0.8
         self.causality_graph = {}
         self.timeline_integrity = 1.0

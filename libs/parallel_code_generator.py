@@ -91,7 +91,9 @@ class GenerationResult:
 class ParallelCodeGenerator:
     """Parallel Code Generator - 瞬間コード生成システム"""
 
-    def __init__(self, max_workers: int = 8, use_process_pool: bool = False):
+    def __init__(self, max_workers:
+        """初期化メソッド"""
+    int = 8, use_process_pool: bool = False):
         self.max_workers = max_workers
         self.use_process_pool = use_process_pool
 
@@ -260,6 +262,7 @@ if __name__ == "__main__":
         order = []
 
         def visit(path):
+            """visitメソッド"""
             if path in temp_visited:
                 return  # 循環依存は無視
             if path in visited:

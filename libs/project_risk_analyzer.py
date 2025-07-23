@@ -74,6 +74,7 @@ class ProjectRiskAnalyzer:
     """Advanced risk analysis engine for project security assessment"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.risk_patterns = self._initialize_risk_patterns()
         self.dependency_risks = self._load_dependency_risks()
         self.analysis_cache = {}
@@ -359,6 +360,9 @@ class ProjectRiskAnalyzer:
         for category, pattern_groups in self.risk_patterns.items():
             for group in pattern_groups:
                 for pattern in group["patterns"]:
+        # 繰り返し処理
+            # 繰り返し処理
+                # 繰り返し処理
                     matches = re.finditer(pattern, content_lower, re.IGNORECASE)
                     for match in matches:
                         factor = RiskFactor(
@@ -420,6 +424,7 @@ class ProjectRiskAnalyzer:
             "web_scraping": 0.4,
         }
 
+        # 繰り返し処理
         for feature in features:
             feature_lower = feature.lower()
             for risky_feature, severity in risky_features.items():

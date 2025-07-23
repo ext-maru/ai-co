@@ -33,6 +33,7 @@ logger = logging.getLogger(__name__)
 
 # タスクステータス定義
 class TaskStatus(Enum):
+    """TaskStatusクラス"""
     PENDING = "pending"
     IN_PROGRESS = "in_progress"
     COMPLETED = "completed"
@@ -44,6 +45,7 @@ class TaskStatus(Enum):
 
 # タスク優先度定義
 class TaskPriority(Enum):
+    """TaskPriorityクラス"""
     CRITICAL = "critical"
     HIGH = "high"
     MEDIUM = "medium"
@@ -52,6 +54,7 @@ class TaskPriority(Enum):
 
 # タスクタイプ定義
 class TaskType(Enum):
+    """TaskTypeクラス"""
     FEATURE = "feature"
     BUG_FIX = "bug_fix"
     REFACTOR = "refactor"
@@ -101,7 +104,10 @@ class PostgreSQLClaudeTaskTracker:
         self._task_locks = {}
 
         logger.info(
-            f"PostgreSQL Claude Task Tracker initialized ({self.config['host']}:{self.config['port']}/{self.config['database']})"
+            (
+                f"f"PostgreSQL Claude Task Tracker initialized ({self.config['host']}:{self.config['port']}/"
+                f"{self.config['database']})""
+            )
         )
 
     async def initialize(self):

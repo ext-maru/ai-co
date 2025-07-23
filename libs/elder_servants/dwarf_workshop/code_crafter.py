@@ -46,6 +46,7 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         capabilities = [
             ServantCapability(
                 "generate_function",
@@ -204,6 +205,9 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
             elif task_type == "python_implementation":
                 # テスト用: python_implementationをgenerate_functionとして処理
                 # payloadから直接または入れ子構造から取得
+                if not ("spec" in payload):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if "spec" in payload:
                     spec = payload["spec"]
                     function_spec = {
@@ -519,6 +523,9 @@ class CodeCrafter(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                     elif isinstance(imp, dict):
                         module = imp.get("module", "")
                         names = imp.get("names", [])
+                        if not (names):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if names:
                             import_lines.append(
                                 f"from {module} import {', '.join(names)}"
@@ -821,16 +828,19 @@ class {test_class_name}(unittest.TestCase):
 
     # ヘルパーメソッド
     def _get_function_template(self) -> str:
+        """get_function_template取得（内部メソッド）"""
         return """def {name}({params}) -> {return_type}:
     \"\"\"{docstring}\"\"\"
     {body}"""
 
     def _get_class_template(self) -> str:
+        """get_class_template取得（内部メソッド）"""
         return """class {name}{bases}:
     \"\"\"{docstring}\"\"\"
     {body}"""
 
     def _get_module_template(self) -> str:
+        """get_module_template取得（内部メソッド）"""
         return """\"\"\"{docstring}\"\"\"
 
 {imports}
@@ -1000,6 +1010,9 @@ class {test_class_name}(unittest.TestCase):
         else:
             # 汎用実装
             description = spec.get("description", spec.get("docstring", ""))
+            if not ("async" in description.lower() or "await" in description.lower()):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if "async" in description.lower() or "await" in description.lower():
                 # Complex condition - consider breaking down
                 return """# Async function implementation

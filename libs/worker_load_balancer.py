@@ -50,7 +50,9 @@ class LoadMetrics:
 class WorkerLoadBalancer:
     """ワーカー負荷分散システム"""
 
-    def __init__(self, max_workers: int = 20, target_cpu: float = 70.0):
+    def __init__(self, max_workers:
+        """初期化メソッド"""
+    int = 20, target_cpu: float = 70.0):
         self.max_workers = max_workers
         self.target_cpu = target_cpu
         self.workers: Dict[int, WorkerProcess] = {}

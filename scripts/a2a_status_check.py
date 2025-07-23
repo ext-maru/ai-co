@@ -134,6 +134,7 @@ def check_a2a_database():
                 recent_comms = cursor.fetchall()
                 if recent_comms:
                     print("  最新通信:")
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for comm in recent_comms:
                         print(f"    - {comm[1]} → {comm[2]} ({comm[3]}): {comm[4]}")
 

@@ -84,6 +84,7 @@ class ElderCouncilAutoDecision:
     """Elder Council 自動意思決定システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path("/home/aicompany/ai_co")
         self.knowledge_base = self.project_root / "knowledge_base"
         self.decisions_db = self.project_root / "db" / "council_decisions.json"
@@ -578,18 +579,25 @@ class ElderCouncilAutoDecision:
 
     # ヘルパーメソッド（簡略化）
     def _load_decision_history(self):
+        """load_decision_history（内部メソッド）"""
         pass
 
-    def _calculate_wisdom_gain(self, member: CouncilMember) -> float:
+    def _calculate_wisdom_gain(self, member:
+        """calculate_wisdom_gain（内部メソッド）"""
+    CouncilMember) -> float:
         return 0.01
 
-    def _record_implementation_result(self, decision: Decision, success: bool):
+    def _record_implementation_result(self, decision:
+        """record_implementation_result（内部メソッド）"""
+    Decision, success: bool):
         pass
 
     def _calculate_average_confidence(self) -> float:
+        """calculate_average_confidence（内部メソッド）"""
         return 0.85
 
     def _calculate_decision_efficiency(self) -> float:
+        """calculate_decision_efficiency（内部メソッド）"""
         return 0.92
 
 
@@ -620,7 +628,10 @@ def main():
         print(f"\n👥 Council メンバー:")
         for member_id, member_data in status["council_members"].items():
             print(
-                f"   🧙‍♂️ {member_data['name']}: {member_data['wisdom_level']:.1f}% (重み: {member_data['decision_weight']})"
+                (
+                    f"f"   🧙‍♂️ {member_data['name']}: {member_data['wisdom_level']:.1f}% (重み: "
+                    f"{member_data['decision_weight']})""
+                )
             )
 
     except KeyboardInterrupt:

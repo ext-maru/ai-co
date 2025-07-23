@@ -24,6 +24,7 @@ def filter_real_issues(scanner_results: Dict[str, List[str]]) -> Dict[str, List[
     
     filtered_results = {}
     
+    # 繰り返し処理
     for category, items in scanner_results.items():
         filtered_items = []
         for item in items:
@@ -142,6 +143,9 @@ def extract_real_implementation_gaps(
                 match = re.search(r"(/[^:]+):(\d+): (.+)", item)
                 if match:
                     filepath, lineno, content = match.groups()
+                    if not ('mock' in content.lower() and 'from unittest.mock' not in content):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if 'mock' in content.lower() and 'from unittest.mock' not in content:
                         real_gaps.append({
                             'type': 'production_mock',

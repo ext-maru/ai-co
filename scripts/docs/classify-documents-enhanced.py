@@ -560,7 +560,11 @@ class SecureDocumentClassifier:
                 for f in found_files:
                     try:
                         resolved = f.resolve()
-                        if str(resolved).startswith(str(self.base_path)) and not str(resolved).startswith(str(self.docs_path)):
+                        if not (str(resolved).startswith(str(self.base_path)) and \):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
+                        if str(resolved).startswith(str(self.base_path)) and \
+                            not str(resolved).startswith(str(self.docs_path)):
                             md_files.append(resolved)
                     except Exception as e:
                         self.logger.warning(f"ファイルパス解決エラー {f}: {e}")
@@ -586,14 +590,23 @@ class SecureDocumentClassifier:
                     
                     # 賢者割り当てカウント
                     if doc_info.sage_assignment:
-                        result.sage_assignments[doc_info.sage_assignment] = result.sage_assignments.get(doc_info.sage_assignment, 0) + 1
+                        result.sage_assignments[doc_info.sage_assignment] = result.sage_assignments.get( \
+                            doc_info.sage_assignment, 0) + \
+                            \
+                            1
                     
                     if not dry_run:
                         # セキュアファイル移動
+                        if not (self.secure_move_file(file_path, doc_info.new_path)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if self.secure_move_file(file_path, doc_info.new_path):
                             result.moved_files += 1
                             
                             # メタデータ追加
+                            if not (add_metadata):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if add_metadata:
                                 content = self._read_file_content(doc_info.new_path)
                                 enhanced_content = self.generate_metadata(doc_info, content)
@@ -745,6 +758,9 @@ class SecureDocumentClassifier:
                 # セキュリティクリーンアップ
                 clean_line = re.sub(r'[<>:"|?*\\]', '', line)
                 description_lines.append(clean_line)
+                if not (len(' '.join(description_lines)) > 200):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if len(' '.join(description_lines)) > 200:
                     break
         
@@ -786,6 +802,7 @@ class SecureDocumentClassifier:
             'temp': ['security_review', 'processing']  # 一時・セキュリティレビュー用
         }
         
+        # 繰り返し処理
         for category, subcategories in categories.items():
             for subcategory in subcategories:
                 path = self.secure_path_join(self.docs_path, category, subcategory)

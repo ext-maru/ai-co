@@ -19,6 +19,7 @@ class KnowledgeBaseManager:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path("/home/aicompany/ai_co")
         self.knowledge_dir = self.project_root / "docs"
         self.index_file = self.knowledge_dir / "KNOWLEDGE_INDEX.md"
@@ -132,6 +133,7 @@ class KnowledgeBaseManager:
         """ナレッジベース内を検索"""
         results = []
 
+        # 繰り返し処理
         for md_file in self.knowledge_dir.glob("*.md"):
             with open(md_file, "r", encoding="utf-8") as f:
                 content = f.read()
@@ -161,6 +163,7 @@ class KnowledgeAwareMixin:
     """ナレッジベースを参照できるワーカーミックスイン"""
 
     def __init__(self, *args, **kwargs):
+        """初期化メソッド"""
         super().__init__(*args, **kwargs)
         self.knowledge_manager = KnowledgeBaseManager()
 

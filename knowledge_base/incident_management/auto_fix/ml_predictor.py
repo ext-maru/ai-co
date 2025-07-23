@@ -189,6 +189,7 @@ class IncidentPredictor:
                 for line in result.stdout.strip().split("\n")[1:]:  # ヘッダースキップ
                     parts = line.split()
                     if len(parts) >= 2:
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             total_messages += int(parts[1])
                         except ValueError:
@@ -211,14 +212,22 @@ class IncidentPredictor:
             cutoff_time = datetime.now() - timedelta(hours=1)
 
             for log_file in logs_dir.glob("*.log"):
+            # 繰り返し処理
                 try:
                     with open(log_file, "r") as f:
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for line in f:
+                            if not ("ERROR" in line or "Exception" in line):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "ERROR" in line or "Exception" in line:
                                 error_count += 1
                             total_lines += 1
 
                             # 最新1000行のみ処理（パフォーマンス考慮）
+                            if not (total_lines > 1000):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if total_lines > 1000:
                                 break
                 except:
@@ -729,6 +738,7 @@ class IncidentPredictor:
 
 
 def main():
+    """mainメソッド"""
     import argparse
 
     parser = argparse.ArgumentParser(description="ML-based Incident Predictor")

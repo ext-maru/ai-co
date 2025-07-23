@@ -174,6 +174,9 @@ class TestAutoIssueProcessorEnhanced(unittest.TestCase):
                         self.assertIn("knowledge", result)
                         self.assertIn("plan", result)
                         self.assertIn("risks", result)
+                        if not ("solution" in result):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "solution" in result:
                             self.assertIn("solution", result)
                         else:

@@ -182,6 +182,7 @@ class WorkerBenchmark:
         def simulate_task_processing():
             nonlocal completed_tasks
             # 模擬的なタスク処理（実際のワーカーの代わり）
+            """simulate_task_processingを処理"""
             time.sleep(0.01)  # 10ms の処理時間を模擬
             completed_tasks += 1
 
@@ -190,6 +191,7 @@ class WorkerBenchmark:
         tasks_per_worker = task_count // concurrent_workers
 
         for _ in range(concurrent_workers):
+        # 繰り返し処理
             for _ in range(tasks_per_worker):
                 thread = threading.Thread(target=simulate_task_processing)
                 threads.append(thread)
@@ -340,6 +342,7 @@ class PerformanceReporter:
             <h2>Benchmark Results</h2>
         """
 
+        # 繰り返し処理
         for name, result in data["benchmarks"].items():
             html += f"""
             <div class="benchmark">

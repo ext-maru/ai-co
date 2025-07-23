@@ -1295,6 +1295,9 @@ class ElderCouncilSummoner:
 
                 elif action["type"] == "RESOURCE_OPTIMIZATION":
                     current_memory = self._get_current_memory_usage()
+                    if not (current_memory < 80:  # 80%未満なら安全):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if current_memory < 80:  # 80%未満なら安全
                         validation["status"] = "SAFE"
                         validation["feasibility"] = 0.90

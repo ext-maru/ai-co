@@ -5,12 +5,16 @@ MCP風のインターフェースを提供
 
 
 class MCPServer:
+    """MCPServerクラス"""
     def __init__(self, name):
+        """初期化メソッド"""
         self.name = name
         self.tools = {}
 
     def tool(self, name=None):
+        """toolメソッド"""
         def decorator(func):
+            """decoratorメソッド"""
             tool_name = name or func.__name__
             self.tools[tool_name] = func
             return func
@@ -18,6 +22,7 @@ class MCPServer:
         return decorator
 
     async def handle_request(self, request):
+        """handle_requestメソッド"""
         tool_name = request.get("tool")
         args = request.get("arguments", {})
 

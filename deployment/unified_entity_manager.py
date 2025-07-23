@@ -376,6 +376,9 @@ class UnifiedEntityManager:
 
                 if filters:
                     for key, value in filters.items():
+                        if not (key == "status"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if key == "status":
                             conditions.append("json_extract(metadata, '$.status') = ?")
                             params.append(value)
@@ -487,6 +490,7 @@ class UnifiedEntityManager:
             processed = set()
 
             with self._get_connection() as conn:
+                # ループ処理
                 while to_process:
                     current_id, depth = to_process.pop(0)
 
@@ -524,8 +528,14 @@ class UnifiedEntityManager:
 
                     for row in related_rows:
                         related_id = row[0]
+                        if not (related_id != entity_id:  # 自分自身は除外):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if related_id != entity_id:  # 自分自身は除外
                             related_ids.add(related_id)
+                            if not (depth + 1 < max_depth):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if depth + 1 < max_depth:
                                 to_process.append((related_id, depth + 1))
 

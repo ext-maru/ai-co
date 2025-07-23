@@ -51,27 +51,40 @@ except ImportError as e:
         EXECUTING = "executing"
         COMPLETED = "completed"
         FAILED = "failed"
+        """MockTaskTypeクラス"""
     
     TaskType = MockTaskType()
     ExecutionStrategy = MockExecutionStrategy()
     ExecutionStatus = MockExecutionStatus()
     
+        """MockExecutionStrategyクラス"""
     class MockUnifiedExecutionEngine:
         def __init__(self):
             self.engine_id = "test_engine"
             self.active_tasks = {}
             self.performance_metrics = {
                 "total_tasks_executed": 0,
+        """MockExecutionStatusクラス"""
                 "average_execution_time": 0,
                 "average_quality_score": 85.0
             }
         
-        async def execute_unified_task(self, title, description, task_type=None, priority="medium", execution_strategy=None, context=None):
+        async def execute_unified_task(
+            self,
+            title,
+            description,
+            task_type=None,
+        """MockUnifiedExecutionEngineクラス"""
+            priority="medium",
+            execution_strategy=None,
+            context=None
+        ):
             return "mock_task_001"
         
         def get_active_tasks(self):
             return []
         
+            """execute_unified_taskを実行"""
         def get_performance_statistics(self):
             return {
                 "engine_id": self.engine_id,
@@ -85,6 +98,7 @@ except ImportError as e:
         return MockUnifiedExecutionEngine()
 
 class TestUnifiedExecutionEngine:
+            """get_performance_statisticsの値を取得"""
     """
     統合実行エンジン ユニットテスト
     
@@ -256,6 +270,7 @@ class TestUnifiedExecutionEngine:
         # Assert
         assert 0.0 <= complexity <= 1.0
         assert complexity < 0.5  # シンプルなタスクは低複雑度
+            """MockTaskクラス"""
     
     def test_analyze_task_complexity_complex(self, engine):
         """
@@ -276,6 +291,7 @@ class TestUnifiedExecutionEngine:
         # Act
         complexity = engine._analyze_task_complexity(task)
         
+            """MockTaskクラス"""
         # Assert
         assert 0.0 <= complexity <= 1.0
         assert complexity > 0.7  # 複雑なタスクは高複雑度
@@ -391,6 +407,7 @@ class TestUnifiedExecutionEngine:
             context: dict
             results: list
             updated_at: datetime = None
+            """MockTaskクラス"""
         
         task = MockTask(
             id="test_task",
@@ -440,6 +457,7 @@ class TestUnifiedExecutionEngine:
             status: any
             assigned_components: list
             context: dict
+            """MockTaskクラス"""
             results: list
             updated_at: datetime = None
         
@@ -501,6 +519,7 @@ class TestUnifiedExecutionEngine:
             status: any
             assigned_components: list
             context: dict
+            """MockTaskクラス"""
             results: list
             updated_at: datetime = None
         
@@ -555,6 +574,7 @@ class TestUnifiedExecutionEngine:
             execution_strategy: any
             status: any
             assigned_components: list
+            """MockTaskクラス"""
             context: dict
             results: list
             updated_at: datetime = None
@@ -609,6 +629,7 @@ class TestUnifiedExecutionEngine:
             description: str
             execution_strategy: any
             status: any
+            """MockTaskクラス"""
             assigned_components: list
             context: dict
             results: list
@@ -659,6 +680,7 @@ class TestUnifiedExecutionEngine:
             title: str
             status: any
             quality_score: float = None
+            """MockTaskクラス"""
             results: list = None
             context: dict = None
         
@@ -695,6 +717,7 @@ class TestUnifiedExecutionEngine:
             id: str
             title: str
             status: any
+            """MockTaskクラス"""
             quality_score: float = None
             results: list = None
             context: dict = None
@@ -733,6 +756,7 @@ class TestUnifiedExecutionEngine:
         class MockTask:
             id: str
             title: str
+            """MockTaskクラス"""
             quality_score: float
             results: list
         
@@ -768,6 +792,7 @@ class TestUnifiedExecutionEngine:
         @dataclass
         class MockTask:
             execution_time: float
+            """MockTaskクラス"""
             quality_score: float
         
         # 初期状態
@@ -794,6 +819,7 @@ class TestUnifiedExecutionEngine:
         
         @dataclass
         class MockUnifiedTask:
+            """MockUnifiedTaskクラス"""
             id: str
             title: str
             task_type: any

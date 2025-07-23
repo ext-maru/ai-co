@@ -163,6 +163,9 @@ class TestStep82FinalQualityAssurance(unittest.TestCase):
                 for attr_name in dir(cls):
                     try:
                         attr_value = getattr(cls, attr_name)
+                        if not (attr_value is cls):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if attr_value is cls:
                             self.fail(f"循環参照検出: {cls.__name__}.{attr_name}")
                     except Exception:
@@ -197,6 +200,7 @@ class TestStep82FinalQualityAssurance(unittest.TestCase):
                 for func_name in security_functions:
                     func = getattr(module, func_name)
                     if callable(func):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             sig = inspect.signature(func)
                             self.assertIsNotNone(sig)
@@ -222,6 +226,7 @@ class TestStep82FinalQualityAssurance(unittest.TestCase):
             classes = [obj for name, obj in inspect.getmembers(module) 
                       if inspect.isclass(obj)]
             
+            # 繰り返し処理
             for cls in classes:
                 if cls.__doc__:
                     self.assertGreater(len(cls.__doc__), 10, f"{cls.__name__} のドキュメントが短すぎます")
@@ -264,6 +269,7 @@ class TestStep82FinalQualityAssurance(unittest.TestCase):
                 for func_name in config_functions:
                     func = getattr(module, func_name)
                     if callable(func):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             sig = inspect.signature(func)
                             self.assertIsNotNone(sig)

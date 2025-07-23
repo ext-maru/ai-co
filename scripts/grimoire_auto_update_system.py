@@ -575,6 +575,7 @@ if __name__ == "__main__":
                 if exists:
                     # ファイル読み取り可能チェック
                     try:
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(file_path, "r", encoding="utf-8") as f:
                             content = f.read()
                         health_status["checks"][f"{sage_name}_readable"] = True

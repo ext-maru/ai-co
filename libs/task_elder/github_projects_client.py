@@ -54,6 +54,7 @@ class ProjectItem:
     updated_at: Optional[str] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.assignees is None:
             self.assignees = []
         if self.labels is None:
@@ -77,6 +78,7 @@ class ProjectBoard:
     updated_at: Optional[str] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.items is None:
             self.items = []
         if not self.created_at:
@@ -283,6 +285,7 @@ class GitHubProjectsClient:
             result = await self._make_graphql_request(query, variables)
 
             items = []
+            # 繰り返し処理
             for node in result["data"]["node"]["items"]["nodes"]:
                 content = node.get("content", {})
 
@@ -295,11 +298,13 @@ class GitHubProjectsClient:
                     value_name = field_value.get("name", "")
 
                     if field_name == "Status":
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             status = ProjectItemStatus(value_name)
                         except ValueError:
                             pass
                     elif field_name == "Priority":
+                        # Deep nesting detected (depth: 6) - consider refactoring
                         try:
                             priority = ProjectItemPriority(value_name)
                         except ValueError:

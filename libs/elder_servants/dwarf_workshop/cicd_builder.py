@@ -691,6 +691,9 @@ class CICDBuilder(DwarfServant):
                     if hasattr(job, "resources") and job.resources:
                         # Complex condition - consider breaking down
                         cpu = job.resources.get("cpu", "")
+                        if not (cpu and int(cpu.replace("GB", "").replace("MB", "")) > 8):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if cpu and int(cpu.replace("GB", "").replace("MB", "")) > 8:
                             # Complex condition - consider breaking down
                             warnings.append(
@@ -1067,6 +1070,7 @@ class CICDBuilder(DwarfServant):
         rec_stack = set()
 
         def has_cycle(job_name):
+            """cycle存在確認メソッド"""
             if job_name in rec_stack:
                 return True
             if job_name in visited:

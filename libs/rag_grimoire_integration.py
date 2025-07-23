@@ -42,7 +42,9 @@ class RagGrimoireConfig:
 class RagGrimoireIntegration:
     """RAG Grimoire統合クラス - 既存RAGシステムと魔法書システムの橋渡し"""
 
-    def __init__(self, config: Optional[RagGrimoireConfig] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Optional[RagGrimoireConfig] = None):
         self.config = config or RagGrimoireConfig()
         self.logger = logging.getLogger(__name__)
 

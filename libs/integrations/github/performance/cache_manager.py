@@ -343,6 +343,7 @@ class CacheManager:
         cache_key = self._generate_cache_key(key)
         
         async def warming_task():
+            """warming_taskメソッド"""
             while True:
                 try:
                     value = await fetch_func() if asyncio.iscoroutinefunction(fetch_func) else fetch_func()
@@ -418,9 +419,11 @@ def cached(ttl: int = 3600, key_func: Optional[Callable] = None):
         key_func: カスタムキー生成関数
     """
     def decorator(func):
+        """decoratorメソッド"""
         cache_manager = CacheManager()
         
         async def async_wrapper(*args, **kwargs):
+            """async_wrapperメソッド"""
             # キー生成
             if key_func:
                 cache_key = key_func(*args, **kwargs)
@@ -435,6 +438,7 @@ def cached(ttl: int = 3600, key_func: Optional[Callable] = None):
             )
         
         def sync_wrapper(*args, **kwargs):
+            """sync_wrapperメソッド"""
             # 同期関数用（簡易実装）
             if key_func:
                 cache_key = key_func(*args, **kwargs)
@@ -462,7 +466,9 @@ async def example_usage():
     cache = CacheManager(memory_size=100)
     
     # 基本的な使用
-    async def fetch_user_data(user_id: int):
+    async def fetch_user_data(user_id:
+        """fetch_user_dataメソッド"""
+    int):
         # 実際のAPI呼び出しをシミュレート
         await asyncio.sleep(1)
         return {"id": user_id, "name": f"User {user_id}"}

@@ -129,6 +129,7 @@ def check_env_variables():
 
 
 def main():
+    """mainメソッド"""
     print("🔍 RabbitMQ Connection Diagnostics")
     print("=" * 50)
 

@@ -91,6 +91,7 @@ class TemplateParameter:
         }
 
         expected_type = type_map.get(self.param_type)
+        # 複雑な条件判定
         if expected_type and value is not None and not isinstance(value, expected_type):
             return False
 

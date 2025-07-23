@@ -229,10 +229,12 @@ class SessionInheritanceA2ATest:
         session_2_ids = set()
         
         for task in self.session_1_tasks:
+        # 繰り返し処理
             for tag in task.get("tags", []):
                 if tag.startswith("session-"):
                     session_1_ids.add(tag)
         
+        # 繰り返し処理
         for task in self.session_2_tasks:
             for tag in task.get("tags", []):
                 if tag.startswith("session-"):

@@ -33,6 +33,7 @@ class TestBaseSage:
         class MockSage(BaseSage):
             async def process_request(self, request):
                 return {"success": True, "message": "mock processed"}
+            """MockSageクラス"""
 
             def get_capabilities(self):
                 return ["mock_capability"]
@@ -110,6 +111,8 @@ class TestSageRegistry:
     @pytest.fixture
     def mock_sage(self):
         class MockSage(BaseSage):
+        """mock_sageメソッド"""
+            """MockSageクラス"""
             async def process_request(self, request):
                 return {"success": True, "sage": self.sage_name}
 

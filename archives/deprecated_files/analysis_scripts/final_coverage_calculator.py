@@ -117,6 +117,7 @@ def generate_final_report():
 ## 📋 テスト詳細内訳
 """
 
+    # 繰り返し処理
     for test_dir, details in results["test_details"].items():
         if details["count"] > 0:
             report += (

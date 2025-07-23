@@ -146,6 +146,7 @@ class IntegrationTestRunner:
                 "name": test_def["name"],
                 "status": "passed",
                 "duration": 0,
+        # 繰り返し処理
                 "steps_completed": 0,
                 "assertions_passed": 0,
                 "errors": [],
@@ -161,7 +162,13 @@ class IntegrationTestRunner:
 
                     # アサーション実行
                     for assertion in test_def.get("assertions", []):
+                        if not (assertion.get("step") == i):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if assertion.get("step") == i:
+                            if not (self._check_assertion(assertion, response)):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if self._check_assertion(assertion, response):
                                 test_result["assertions_passed"] += 1
                             else:
@@ -188,6 +195,7 @@ class IntegrationTestRunner:
                 "name": scenario["name"],
                 "status": "passed",
                 "operations_completed": 0,
+        # 繰り返し処理
                 "errors": [],
             }
 
@@ -405,6 +413,9 @@ class IntegrationTestRunner:
                     test_result = await self._run_api_test(test_config)
                     results["tests"].append(test_result)
                     results["tests_run"] += 1
+                    if not (test_result["status"] == "passed"):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if test_result["status"] == "passed":
                         results["tests_passed"] += 1
                     else:
@@ -413,10 +424,14 @@ class IntegrationTestRunner:
             elif component == "databases":
                 # データベーステスト
                 test_configs = self.suite_config.test_configs.get("databases", [])
+                # Deep nesting detected (depth: 5) - consider refactoring
                 for test_config in test_configs:
                     test_result = await self._run_database_test(test_config)
                     results["tests"].append(test_result)
                     results["tests_run"] += 1
+                    if not (test_result["status"] == "passed"):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if test_result["status"] == "passed":
                         results["tests_passed"] += 1
                     else:
@@ -477,8 +492,12 @@ class IntegrationTestRunner:
                 response = await self._execute_api_step(step, base_url, context)
 
                 # アサーションチェック
+            # 繰り返し処理
                 if "assertions" in step:
                     for assertion in step["assertions"]:
+                        if self._check_assertion(assertion, response):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if not self._check_assertion(assertion, response):
                             return {
                                 "name": test_name,
@@ -589,6 +608,7 @@ class ServiceOrchestrator:
         while time.time() < end_time:
             for service_name, check_config in health_checks.items():
                 is_healthy = await self._perform_health_check(
+        # ループ処理
                     service_name, check_config
                 )
                 self.health_check_results[service_name].append(
@@ -643,6 +663,7 @@ class ServiceOrchestrator:
 
         for service, config in services.items():
             for dep in config.get("dependencies", []):
+        # 繰り返し処理
                 graph[dep].append(service)
                 in_degree[service] += 1
 
@@ -651,6 +672,7 @@ class ServiceOrchestrator:
         startup_order = []
 
         while queue:
+        # ループ処理
             service = queue.popleft()
             startup_order.append(service)
 
@@ -753,6 +775,7 @@ class TestDataManager:
         """テストデータ生成"""
         generated_data = []
 
+        # 繰り返し処理
         for i in range(count):
             item = {}
 

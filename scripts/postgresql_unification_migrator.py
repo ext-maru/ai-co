@@ -202,6 +202,7 @@ class PostgreSQLUnificationMigrator:
                         "timestamp", datetime.now()
                     )
                     if isinstance(created_at, str):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             # 簡単な日時パース
                             created_at = datetime.fromisoformat(
@@ -310,6 +311,7 @@ class PostgreSQLUnificationMigrator:
                         "created_at", datetime.now()
                     )
                     if isinstance(timestamp, str):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             # 簡単な日時パース
                             timestamp = datetime.fromisoformat(

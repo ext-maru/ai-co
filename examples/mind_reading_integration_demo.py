@@ -108,7 +108,10 @@ async def main():
         if intent_result.intent_type.value == scenario['expected_intent']:
             print(f"\n   🎉 Intent match! Expected: {scenario['expected_intent']}")
         else:
-            print(f"\n   ⚠️  Intent mismatch. Expected: {scenario['expected_intent']}, Got: {intent_result.intent_type.value}")
+            print(f"\n   ⚠️  Intent mismatch. Expected: {
+                scenario['expected_intent']},
+                Got: {intent_result.intent_type.value
+            }")
 
         if scenario['expected_command'] in command:
             print(f"   🎉 Command match! Contains: {scenario['expected_command']}")

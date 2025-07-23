@@ -53,7 +53,8 @@ ai-logs code_20250702_143256
 **File Operations:**
 ```bash
 # List all created files
-ls -la /home/aicompany/ai_co/src/api/main.py /home/aicompany/ai_co/src/api/auth.py /home/aicompany/ai_co/src/api/models.py
+ls -la /home/aicompany/ai_co/src/api/main.py /home/aicompany/ai_co/src/api/auth.py \
+    /home/aicompany/ai_co/src/api/models.py
 
 # Run if executable
 chmod +x /home/aicompany/ai_co/scripts/start_api.sh && /home/aicompany/ai_co/scripts/start_api.sh
@@ -160,7 +161,12 @@ Type: `template` | Duration: `2.15s` | Files: `1`
 
 **Request:** Execute template: daily_report with params: {'date': '2025-07-02'}
 
-**Summary:** Daily report generated successfully. Analyzed 156 tasks, identified 3 error patterns, generated performance insights and recommendations...
+**Summary:** Daily report generated successfully. Analyzed 156 tasks, \
+    identified 3 error patterns, generated performance insights and \
+    \
+    \
+    \
+    recommendations...
 
 **Performance Metrics:**
 • Success Rate: `99.1%` (224/226)

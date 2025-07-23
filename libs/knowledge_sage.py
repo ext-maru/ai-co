@@ -16,6 +16,7 @@ class KnowledgeSage:
     """知識賢者 - 過去の知識の蓄積と検索"""
 
     def __init__(self, *args, **kwargs):
+        """初期化メソッド"""
         self.name = "Knowledge"
         self.knowledge_base_path = Path("/home/aicompany/ai_co/knowledge_base")
         logger.info("Knowledge Sage initialized")

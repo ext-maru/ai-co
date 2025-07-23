@@ -47,6 +47,7 @@ class RequirementExtractor:
     """Issue から詳細な要件を抽出"""
     
     def __init__(self):
+        """初期化メソッド"""
         # データ型のパターン
         self.data_type_patterns = {
             'string': r'(?i)\b(string|text|varchar|char)\b',

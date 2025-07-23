@@ -32,6 +32,7 @@ class DocForgeEnhanced(DocForge):
     """
     
     def __init__(self):
+        """DocForge Enhanced初期化メソッド"""
         super().__init__()
         self.servant_id = "D03E"
         self.servant_name = "DocForgeEnhanced"
@@ -362,7 +363,8 @@ class DocForgeEnhanced(DocForge):
         risks = self._analyze_project_risks(implicit_needs, business_rules)
         for risk in risks:
             # Process each item in collection
-            doc_parts.append(f"| {risk['description']} | {risk['impact']} | {risk['probability']} | {risk['mitigation']} |")
+             \
+                doc_parts.append(f"| {risk['description']} | {risk['impact']} | {risk['probability']} | {risk['mitigation']} |")
         doc_parts.append("")
         
         # 付録

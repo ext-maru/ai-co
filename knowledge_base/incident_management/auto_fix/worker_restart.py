@@ -528,6 +528,7 @@ class WorkerRestart:
 
 
 def main():
+    """mainメソッド"""
     import argparse
 
     parser = argparse.ArgumentParser(description="Elders Guild Worker Restart System")

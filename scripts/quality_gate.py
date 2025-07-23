@@ -1077,6 +1077,7 @@ def main():
     quality_gate = QualityGate()
 
     async def run_async():
+        """run_asyncを実行"""
         if args.file:
             # Check single file
             result = await quality_gate.enforce_quality_gate(args.file)

@@ -96,6 +96,7 @@ class TechnicalRequirementsExtractor:
     """技術要件抽出エンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         # 技術キーワードデータベース
         self.tech_keywords = {
             'languages': {
@@ -630,7 +631,8 @@ class TechnicalRequirementsExtractor:
             if stack.frameworks:
                 prompt_parts.append(f"- Frameworks: {', '.join(stack.frameworks)}")
             if stack.databases:
-                prompt_parts.append(f"- Databases: {', '.join([db.capitalize() if db in ['redis', 'mongodb', 'postgresql', 'mysql'] else db for db in stack.databases])}")
+                prompt_parts.append(f"- Databases: {', '.join([db.capitalize() if db " \
+                    "in ['redis', 'mongodb', 'postgresql', 'mysql'] else db for db in stack.databases])}")
             prompt_parts.append("")
         
         # 要件

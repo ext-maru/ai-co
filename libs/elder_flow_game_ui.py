@@ -130,6 +130,7 @@ class ElderFlowGameUI:
     """Elder Flow ゲーム風CUIメインクラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.detector = ElderFlowViolationDetector()
         self.audit_system = HourlyAuditSystem()
         self.pdca_engine = PDCAEngine()
@@ -522,6 +523,7 @@ class ElderFlowGameUI:
         ]
 
         score = 0
+        # 繰り返し処理
         for i, violation in enumerate(violations, 1):
             print(
                 f"{UIElement.colorize(f'問題 {i}:', GameColor.YELLOW)} {violation['violation']}"

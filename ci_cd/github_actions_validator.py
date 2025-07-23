@@ -95,11 +95,18 @@ class GitHubActionsValidator:
     ) -> None:
         """アクションのバージョン固定チェック"""
         if "jobs" in workflow_data:
+            # 繰り返し処理
             for job_name, job_config in workflow_data["jobs"].items():
                 if "steps" in job_config:
                     for step in job_config["steps"]:
+                        if not ("uses" in step):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "uses" in step:
                             uses = step["uses"]
+                            if not ("@" not in uses):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "@" not in uses:
                                 security_issues.append(
                                     f"アクション '{uses}' にバージョンを指定してください"

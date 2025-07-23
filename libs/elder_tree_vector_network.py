@@ -47,6 +47,7 @@ class ElderNode:
     connection_strength: Dict[str, float] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.connection_strength is None:
             self.connection_strength = {}
 
@@ -67,7 +68,9 @@ class KnowledgeFlow:
 class ElderTreeVectorNetwork:
     """エルダーツリーベクトルネットワーク管理システム"""
 
-    def __init__(self, db_config: Dict[str, str] = None):
+    def __init__(self, db_config:
+        """初期化メソッド"""
+    Dict[str, str] = None):
         self.logger = logging.getLogger(__name__)
         self.db_config = db_config or {
             "host": "localhost",
@@ -146,10 +149,12 @@ class ElderTreeVectorNetwork:
             cursor.execute(
                 """
                 CREATE INDEX IF NOT EXISTS idx_elder_nodes_rank ON elder_nodes(rank);
-                CREATE INDEX IF NOT EXISTS idx_elder_nodes_vector ON elder_nodes USING hnsw (knowledge_vector vector_cosine_ops);
+                CREATE INDEX IF NOT EXISTS idx_elder_nodes_vector ON elder_nodes USING \
+                    hnsw (knowledge_vector vector_cosine_ops);
                 CREATE INDEX IF NOT EXISTS idx_knowledge_flows_source ON knowledge_flows(source_id);
                 CREATE INDEX IF NOT EXISTS idx_knowledge_flows_target ON knowledge_flows(target_id);
-                CREATE INDEX IF NOT EXISTS idx_knowledge_flows_vector ON knowledge_flows USING hnsw (flow_vector vector_cosine_ops);
+                CREATE INDEX IF NOT EXISTS idx_knowledge_flows_vector ON knowledge_flows \
+                    USING hnsw (flow_vector vector_cosine_ops);
             """
             )
 

@@ -398,7 +398,8 @@ def bad_function():
         result = await auditor.audit(target)
         
         assert len(result.violations) > 0
-        assert any("not exist" in v["description"].lower() or "not found" in v["description"].lower() for v in result.violations)
+        assert any("not exist" in v["description"].lower() or \
+            "not found" in v["description"].lower() for v in result.violations)
         
     @pytest.mark.asyncio
     async def test_unsupported_target_type(self, auditor):

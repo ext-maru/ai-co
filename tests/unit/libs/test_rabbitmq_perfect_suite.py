@@ -106,6 +106,7 @@ class MockQueue:
     async def get(self, no_ack=False):
         # メッセージ取得のモック
         if self.messages:
+            """getの値を取得"""
             return self.messages.pop(0)
         return None, None
 
@@ -137,7 +138,6 @@ class MockMessage:
 # Perfect Mock for aio_pika module
 class MockAioPika:
     """完璧なaio_pikaモック"""
-    
     @staticmethod
     async def connect_robust(url, **kwargs):
         """堅牢接続のモック"""
@@ -156,18 +156,19 @@ class MockAioPika:
     
     class ExchangeType:
         DIRECT = 'direct'
+        """ExchangeTypeクラス"""
         FANOUT = 'fanout'
         TOPIC = 'topic'
         HEADERS = 'headers'
     
     class DeliveryMode:
+        """DeliveryModeクラス"""
         NOT_PERSISTENT = 1
         PERSISTENT = 2
 
 # Test Suite Classes
 class TestPerfectRabbitMQManager:
     """Perfect RabbitMQ Manager テストスイート"""
-    
     @pytest.fixture
     def mock_aio_pika(self):
         """aio_pikaの完璧なモック"""
@@ -195,7 +196,6 @@ class TestPerfectRabbitMQManager:
 
 class MockRabbitMQManager:
     """RabbitMQ Manager のモック実装"""
-    
     def __init__(self):
         self.config = {
             'host': 'localhost',
@@ -282,7 +282,6 @@ class MockRabbitMQManager:
 
 class TestPerfectRabbitMQSuite:
     """Perfect RabbitMQ テストスイート"""
-    
     @pytest_asyncio.fixture
     async def rabbit_manager(self):
         """RabbitMQ Manager テストインスタンス"""
@@ -451,7 +450,6 @@ class TestPerfectRabbitMQSuite:
 # Integration Tests
 class TestRabbitMQIntegration:
     """RabbitMQ統合テスト"""
-    
     @pytest.mark.asyncio
     async def test_real_rabbitmq_connection(self):
         """実RabbitMQ接続テスト"""
@@ -474,7 +472,6 @@ class TestRabbitMQIntegration:
 # Performance Tests
 class TestRabbitMQPerformance:
     """RabbitMQパフォーマンステスト"""
-    
     @pytest.mark.asyncio
     async def test_message_throughput(self):
         """メッセージスループットテスト"""

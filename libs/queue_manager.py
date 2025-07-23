@@ -17,6 +17,7 @@ class QueueManager:
     """RabbitMQキュー管理クラス"""
 
     def __init__(self, host="localhost", port=5672):
+        """初期化メソッド"""
         self.host = host
         self.port = port
         self.connection = None
@@ -57,8 +58,12 @@ class QueueManager:
                 for line in lines[1:]:
                     if line.strip():
                         parts = line.split("\t")
+                        if not (len(parts) >= 3):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(parts) >= 3:
                             queue_name = parts[0]
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             try:
                                 messages = int(parts[1])
                                 consumers = int(parts[2])

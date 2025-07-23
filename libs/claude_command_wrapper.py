@@ -15,6 +15,7 @@ class ClaudeCommandWrapper:
     """Claudeのコマンド実行を安全化するラッパー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.execution_log = []
         self.blocked_count = 0
         self.safe_count = 0
@@ -121,6 +122,7 @@ def apply_claude_protection():
     original_system = os.system
 
     def protected_system(command):
+        """protected_systemメソッド"""
         result = safe_bash_execute(command, "os.system call")
         if result["blocked"]:
             raise EnvironmentError(f"危険なコマンドがブロックされました: {command}")
@@ -134,6 +136,7 @@ def apply_claude_protection():
     original_run = subprocess.run
 
     def protected_run(cmd, *args, **kwargs):
+        """protected_runメソッド"""
         if isinstance(cmd, str) and kwargs.get("shell"):
             check_result = guardian.check_command(cmd)
             if not check_result[0]:  # 危険なコマンド

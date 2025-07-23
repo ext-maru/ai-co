@@ -494,7 +494,10 @@ class PostgreSQLMCPIntegrationTest:
                 {
                     "test": test_name,
                     "status": "PASS",
-                    "message": f'データ整合性OK - 総件数: {integrity_check["total_count"]}, 平均長: {quality_check["avg_length"]:.0f}',
+                    "message": f'データ整合性OK - 総件数: {
+                        integrity_check["total_count"]},
+                        平均長: {quality_check["avg_length"]:.0f
+                    }',
                 }
             )
             print(f"✅ {test_name} - 成功")

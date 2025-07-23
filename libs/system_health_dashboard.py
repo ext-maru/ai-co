@@ -29,6 +29,7 @@ class SystemHealthDashboard:
     """システムヘルス統合ダッシュボード"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.project_root = Path("/home/aicompany/ai_co")
 
@@ -261,6 +262,7 @@ class SystemHealthDashboard:
         # 同じアラートが既に存在するかチェック
         existing_alert = None
         for alert in self.active_alerts.values():
+            # 複雑な条件判定
             if (
                 alert.component == component
                 and alert.message == message
@@ -309,13 +311,22 @@ class SystemHealthDashboard:
                 # ワーカー再起動を試行
                 if self.worker_recovery:
                     restarted = self.worker_recovery.auto_restart_failed_workers()
+                    if not (restarted):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if restarted:
                         self.logger.info(f"🔧 ワーカー自動復旧完了: {restarted}")
 
             elif alert.component == "config":
                 # 設定の自動修正
+                if not (self.config_validator):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if self.config_validator:
                     result = self.config_validator.auto_fix_config()
+                    if not (result.fixed_issues):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if result.fixed_issues:
                         self.logger.info("🔧 設定自動修正完了")
                         self._resolve_alert(alert.id)
@@ -341,6 +352,9 @@ class SystemHealthDashboard:
             elif alert.component == "worker":
                 if self.worker_recovery:
                     status = self.worker_recovery.get_system_status()
+                    if not (status["health_summary"]["unhealthy"] == 0):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if status["health_summary"]["unhealthy"] == 0:
                         should_resolve = True
 

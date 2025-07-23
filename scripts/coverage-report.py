@@ -161,7 +161,8 @@ class CoverageReporter:
                         if coverage_percent >= 80
                         else "⚠️" if coverage_percent >= 60 else "❌"
                     )
-                    report += f"| {emoji} {module} | {coverage_percent:.1f}% | {data['covered_lines']} | {data['missing_lines']} |\n"
+                    report += f"| {emoji} {module} | {coverage_percent:.1f}% " \
+                        "| {data['covered_lines']} | {data['missing_lines']} |\n"
 
         # 改善が必要なモジュール
         low_coverage = [

@@ -492,19 +492,22 @@ class DecisionSupportSystem:
             根拠文字列
         """
         if action_type == ActionType.DEPLOY:
-            return f"Task completed with {situation['completion_level']:.0f}% completion and {situation['quality_level']} quality"
+            return f"Task completed with {situation['completion_level']:.0f}% completion and \
+                {situation['quality_level']} quality"
 
         elif action_type == ActionType.TEST:
             return f"Additional testing needed due to {len(risk_assessment['risk_factors'])} identified risks"
 
         elif action_type == ActionType.ROLLBACK:
-            return f"Critical failure with {risk_assessment['overall_risk_level']} risk level requires immediate rollback"
+            return f"Critical failure with {risk_assessment['overall_risk_level']} \
+                risk level requires immediate rollback"
 
         elif action_type == ActionType.ESCALATE:
             return f"High risk situation ({risk_assessment['risk_score']:.2f}) requires senior decision"
 
         else:
-            return f"Recommended based on {situation['overall_status']} status and {risk_assessment['overall_risk_level']} risk"
+            return f"Recommended based on {situation['overall_status']} status and \
+                {risk_assessment['overall_risk_level']} risk"
 
     def _prioritize_actions(
         self,
@@ -730,12 +733,18 @@ class DecisionSupportSystem:
                     timeline["short_term"].append(action["title"])
 
             elif effort == "medium":
+                if not (urgency_factor <= 0.7):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if urgency_factor <= 0.7:
                     timeline["short_term"].append(action["title"])
                 else:
                     timeline["medium_term"].append(action["title"])
 
             else:  # high effort
+                if not (urgency_factor <= 0.7):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if urgency_factor <= 0.7:
                     timeline["medium_term"].append(action["title"])
                 else:

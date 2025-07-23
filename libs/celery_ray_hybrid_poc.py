@@ -64,6 +64,7 @@ class HybridWorkerOptimizer:
         # Rayリモート関数の定義
         @ray.remote
         def ray_process_item(item):
+            """ray_process_item処理メソッド"""
             return func(item)
 
         # 並列実行
@@ -139,7 +140,9 @@ class HybridWorkerOptimizer:
 class AdaptivePipeline:
     """適応的パイプライン（Celery + Ray）"""
 
-    def __init__(self, optimizer: HybridWorkerOptimizer):
+    def __init__(self, optimizer:
+        """初期化メソッド"""
+    HybridWorkerOptimizer):
         self.optimizer = optimizer
         self.stages = []
 
@@ -202,7 +205,9 @@ def orchestrate_hybrid_job(job_config: Dict[str, Any]) -> Dict[str, Any]:
 class RayWorkerPool:
     """Rayワーカープール"""
 
-    def __init__(self, size: int = 4):
+    def __init__(self, size:
+        """初期化メソッド"""
+    int = 4):
         self.size = size
         self.tasks_processed = 0
 
@@ -225,6 +230,7 @@ class PerformanceComparator:
     """パフォーマンス比較ツール"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.results = []
 
     async def compare_methods(self, items: List[Any], iterations: int = 3):

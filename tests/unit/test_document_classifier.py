@@ -80,7 +80,10 @@ class TestSecurityValidation:
         normal_file = temp_base_dir / "normal.md"
         normal_file.write_text("# Normal Document\nThis is safe content.")
         
-        is_secure, violations, score = classifier.validate_security(normal_file, "# Normal Document\nThis is safe content.")
+        is_secure, violations, score = classifier.validate_security(
+            normal_file,
+            "# Normal Document\nThis is safe content."
+        )
         
         assert is_secure is True
         assert len(violations) == 0

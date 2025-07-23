@@ -225,6 +225,7 @@ class ImplementationIssueDetector:
         if "database" in body and ("migration" in body or "schema" in body):
             risk_factors.append("database_migration")
         
+        # 複雑な条件判定
         if "performance" in title or "パフォーマンス" in title or "最適化" in title:
             risk_factors.append("performance_optimization")
         
@@ -430,6 +431,9 @@ class ImplementationIssueDetector:
         elif warning_level == WarningLevel.MEDIUM:
             return ImplementationRecommendation.MANUAL_REVIEW
         elif warning_level == WarningLevel.LOW:
+            if not (analysis.get("complexity_score", 0) < 0.3):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if analysis.get("complexity_score", 0) < 0.3:
                 return ImplementationRecommendation.PROCEED_WITH_CAUTION
             else:

@@ -23,16 +23,22 @@ try:
 except ImportError:
     # Fallback for simplified testing
     class MockAdapterRequest:
+        """MockAdapterRequestクラス"""
         def __init__(self, tool_name, operation, data, context):
+            """初期化メソッド"""
             self.tool_name = tool_name
             self.operation = operation
             self.data = data
             self.context = context
 
     class MockFramework:
+        """MockFrameworkクラス"""
         async def execute_with_fallback(self, request):
+            """execute_with_fallback実行メソッド"""
             class MockResponse:
+                """MockResponseクラス"""
                 def __init__(self):
+                    """初期化メソッド"""
                     self.success = True
                     self.data = {
                         "modified_content": "# Mock OSS enhancement",
@@ -45,6 +51,7 @@ except ImportError:
             return MockResponse()
 
     def create_oss_adapter_framework():
+        """oss_adapter_framework作成メソッド"""
         return MockFramework()
 
     AdapterRequest = MockAdapterRequest
@@ -54,6 +61,7 @@ class SimpleHybridCodeCraftsman:
     """簡略版ハイブリッドコードクラフトマン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.servant_id = "H01"
         self.servant_name = "Hybrid Code Craftsman"
         self.oss_framework = create_oss_adapter_framework()
@@ -203,6 +211,7 @@ class SimpleHybridTestGuardian:
     """簡略版ハイブリッドテストガーディアン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.servant_id = "H02"
         self.servant_name = "Hybrid Test Guardian"
         self.oss_framework = create_oss_adapter_framework()
@@ -460,6 +469,7 @@ class SimpleHybridQualityInspector:
     """簡略版ハイブリッド品質インスペクター"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.servant_id = "H03"
         self.servant_name = "Hybrid Quality Inspector"
         self.oss_framework = create_oss_adapter_framework()

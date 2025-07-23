@@ -50,6 +50,9 @@ def run_coverage_test(test_path, module_name):
             if module_name in line and "%" in line:
                 parts = line.split()
                 for i, part in enumerate(parts):
+                    if not ("%" in part):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "%" in part:
                         percent = float(part.rstrip("%"))
                         return {

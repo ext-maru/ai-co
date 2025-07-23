@@ -374,6 +374,7 @@ class TestFourSagesIntegration:
         # 大量メッセージ投入
         start_time = time.time()
         
+        # 繰り返し処理
         for i in range(1000):
             for sage in integration_system.message_queues.keys():
                 integration_system.message_queues[sage].append({
@@ -583,8 +584,14 @@ class TestFourSagesIntegration:
         
         integration_system._update_performance_metrics(session_data)
         
-        assert integration_system.performance_metrics["total_collaborations"] == initial_metrics["total_collaborations"] + 1
-        assert integration_system.performance_metrics["successful_consensus"] == initial_metrics["successful_consensus"] + 1
+        assert integration_system.performance_metrics["total_collaborations"] \
+            == initial_metrics["total_collaborations"] + \
+            \
+            1
+        assert integration_system.performance_metrics["successful_consensus"] \
+            == initial_metrics["successful_consensus"] + \
+            \
+            1
         assert integration_system.performance_metrics["avg_response_time"] > 0
 
     def test_sage_performance_tracking(self, integration_system):

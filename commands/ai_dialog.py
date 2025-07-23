@@ -11,6 +11,7 @@ from commands.base_command import BaseCommand
 
 
 class DialogCommand(BaseCommand):
+    """DialogCommandクラス"""
     # Main class implementation
     def __init__(self):
         """初期化メソッド"""

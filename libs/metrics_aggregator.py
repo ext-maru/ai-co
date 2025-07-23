@@ -26,6 +26,7 @@ class MetricsAggregator:
     """メトリクス収集・統合クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.metrics_sources = {
             "knowledge_sage": self._get_knowledge_metrics,
             "task_sage": self._get_task_metrics,
@@ -294,6 +295,7 @@ if __name__ == "__main__":
     # 現在のメトリクス取得
     current = aggregator.get_current_metrics()
     print("\n現在のメトリクス:")
+    # 繰り返し処理
     for source, metrics in current.items():
         print(f"\n{source}:")
         for key, value in metrics.items():

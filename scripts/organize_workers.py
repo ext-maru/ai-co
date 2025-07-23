@@ -12,6 +12,7 @@ class WorkerOrganizer:
     def __init__(self):
         self.workers_dir = Path("/home/aicompany/ai_co/workers")
         self.archive_dir = (
+    """WorkerOrganizerワーカークラス"""
             self.workers_dir / "_archived" / datetime.now().strftime("%Y%m%d")
         )
         self.worker_mapping = {}
@@ -19,6 +20,7 @@ class WorkerOrganizer:
     def organize(self):
         print("🔧 ワーカー整理を開始します...")
 
+        """organizeメソッド"""
         # アーカイブディレクトリ作成
         self.archive_dir.mkdir(parents=True, exist_ok=True)
 
@@ -77,6 +79,7 @@ class WorkerOrganizer:
         archived_count = 0
 
         for group_name, group_info in self.worker_mapping.items():
+        # 繰り返し処理
             primary = group_info["primary"]
 
             for duplicate in group_info["duplicates"]:
@@ -113,6 +116,7 @@ class WorkerOrganizer:
 
         updates_needed = []
 
+        # 繰り返し処理
         for core_file in core_files:
             if Path(core_file).exists():
                 with open(core_file, "r") as f:

@@ -18,6 +18,7 @@ from dataclasses import dataclass, field
 
 # Servant Types
 class ServantType(Enum):
+    """ServantTypeクラス"""
     CODE_CRAFTSMAN = "code_craftsman"  # コード職人
     TEST_GUARDIAN = "test_guardian"  # テスト守護者
     QUALITY_INSPECTOR = "quality_inspector"  # 品質検査官
@@ -27,6 +28,7 @@ class ServantType(Enum):
 
 # Servant Status
 class ServantStatus(Enum):
+    """ServantStatusクラス"""
     IDLE = "idle"
     WORKING = "working"
     COMPLETED = "completed"
@@ -37,6 +39,7 @@ class ServantStatus(Enum):
 # Task Definition
 @dataclass
 class ServantTask:
+    """ServantTaskクラス"""
     task_id: str
     servant_type: ServantType
     description: str
@@ -52,13 +55,18 @@ class ServantTask:
     error: Optional[str] = None
     logs: List[str] = field(default_factory=list)
 
-    def add_log(self, message: str):
+    def add_log(self, message:
+        """log追加メソッド"""
+    str):
         self.logs.append(f"[{datetime.now().isoformat()}] {message}")
 
 
 # Base Servant
 class BaseServant:
-    def __init__(self, servant_type: ServantType, name: str):
+    """BaseServantクラス"""
+    def __init__(self, servant_type:
+        """初期化メソッド"""
+    ServantType, name: str):
         self.servant_type = servant_type
         self.name = name
         self.status = ServantStatus.IDLE
@@ -112,7 +120,10 @@ class BaseServant:
 
 # Code Craftsman Servant
 class CodeCraftsmanServant(BaseServant):
-    def __init__(self, name: str = "CodeCraftsman"):
+    """CodeCraftsmanServantクラス"""
+    def __init__(self, name:
+        """初期化メソッド"""
+    str = "CodeCraftsman"):
         super().__init__(ServantType.CODE_CRAFTSMAN, name)
         self.capabilities = [
             "create_file",
@@ -430,7 +441,10 @@ class {class_name}:
 
 # Test Guardian Servant
 class TestGuardianServant(BaseServant):
-    def __init__(self, name: str = "TestGuardian"):
+    """TestGuardianServant - 守護システムクラス"""
+    def __init__(self, name:
+        """初期化メソッド"""
+    str = "TestGuardian"):
         super().__init__(ServantType.TEST_GUARDIAN, name)
         self.capabilities = [
             "create_test",
@@ -635,7 +649,10 @@ class TestGenerated:
 
 # Quality Inspector Servant
 class QualityInspectorServant(BaseServant):
-    def __init__(self, name: str = "QualityInspector"):
+    """QualityInspectorServantクラス"""
+    def __init__(self, name:
+        """初期化メソッド"""
+    str = "QualityInspector"):
         super().__init__(ServantType.QUALITY_INSPECTOR, name)
         self.capabilities = [
             "code_quality_check",
@@ -1461,7 +1478,9 @@ class QualityInspectorServant(BaseServant):
 
 # Servant Executor
 class ServantExecutor:
+    """ServantExecutorクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.servants: Dict[ServantType, BaseServant] = {}
         self.task_queue: List[ServantTask] = []
         self.completed_tasks: List[ServantTask] = []
@@ -1578,6 +1597,7 @@ def create_quality_task(task_id: str, command: str, **kwargs) -> ServantTask:
 if __name__ == "__main__":
 
     async def main():
+        """mainメソッド"""
         print("🤖 Elder Flow Servant Executor Test")
 
         executor = ServantExecutor()

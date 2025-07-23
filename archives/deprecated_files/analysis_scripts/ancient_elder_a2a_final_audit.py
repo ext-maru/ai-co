@@ -124,6 +124,7 @@ class AncientElderA2AAudit:
             api_found = False
             implementation_complete = False
 
+        # 繰り返し処理
             for file_path in github_files:
                 try:
                     content = file_path.read_text()
@@ -133,6 +134,9 @@ class AncientElderA2AAudit:
                         api_found = True
 
                         # 実装完全性チェック
+                        if not (():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if (
                             "raise NotImplementedError" not in content
                             and "TODO" not in content
@@ -179,6 +183,7 @@ class AncientElderA2AAudit:
         for file_path in github_files:
             try:
                 content = file_path.read_text()
+        # 繰り返し処理
 
                 # 関数定義の検索
                 import re
@@ -200,8 +205,14 @@ class AncientElderA2AAudit:
                     if func_start != -1:
                         # 関数の終了位置を推定
                         func_end = content.find("\ndef ", func_start + 1)
+                        if not (func_end == -1):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if func_end == -1:
                             func_end = content.find("\nasync def ", func_start + 1)
+                        if not (func_end == -1):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if func_end == -1:
                             func_end = len(content)
 
@@ -219,8 +230,12 @@ class AncientElderA2AAudit:
                             "Exception" in func_content or "Error" in func_content
                         )
 
+                        if not (has_try_except or has_error_logging or has_proper_exception):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if has_try_except or has_error_logging or has_proper_exception:
                             results["functions_with_error_handling"] += 1
+                        # 複雑な条件判定
                         else:
                             results["missing_error_handling"].append(
                                 f"{file_path.name}::{func}"
@@ -275,6 +290,7 @@ class AncientElderA2AAudit:
         }
 
         for file_path in github_files:
+        # 繰り返し処理
             try:
                 content = file_path.read_text()
 
@@ -361,6 +377,7 @@ class AncientElderA2AAudit:
 
         github_files = list(self.github_integration_path.rglob("*.py"))
 
+        # 繰り返し処理
         for file_path in github_files:
             try:
                 content = file_path.read_text()
@@ -666,21 +683,33 @@ class AncientElderA2AAudit:
                     missing_handling = elder_results[elder_name][
                         "missing_error_handling"
                     ]
+                    if not (missing_handling):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if missing_handling:
                         report.append(f"  - エラー処理不足: {len(missing_handling)}個の関数")
 
                 elif elder_name == "SECURITY":
                     violations = elder_results[elder_name]["security_violations"]
+                    if not (violations):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if violations:
                         report.append(f"  - セキュリティ違反: {len(violations)}件")
 
                 elif elder_name == "PERFORMANCE":
                     issues = elder_results[elder_name]["performance_issues"]
+                    if not (issues):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if issues:
                         report.append(f"  - パフォーマンス問題: {len(issues)}件")
 
                 elif elder_name == "TEST_COVERAGE":
                     missing_tests = elder_results[elder_name]["missing_tests"]
+                    if not (missing_tests):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if missing_tests:
                         report.append(f"  - テストカバレッジ不足: {len(missing_tests)}ファイル")
 

@@ -134,6 +134,7 @@ class ExampleWorker(ImprovedLoggingMixin):
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def process_task(self, task_id: str, data: Dict):
+        """process_taskを処理"""
         # タスク開始
         self.log_task_start(task_id, "example")
 

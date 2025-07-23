@@ -98,6 +98,9 @@ async def authenticate_user(token: str) -> Dict[str, Any]:
                 elif status_code == 403:
                     # Rate limiting
                     retry_after = None
+                    if not ("X-RateLimit-Reset" in response.headers):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "X-RateLimit-Reset" in response.headers:
                         retry_after = int(response.headers["X-RateLimit-Reset"])
                     

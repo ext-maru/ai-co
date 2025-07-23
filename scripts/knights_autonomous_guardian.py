@@ -259,6 +259,9 @@ class KnightsAutonomousGuardian:
                         analysis_result["actions_taken"].append(action_result)
                         self.stats["total_auto_repairs"] += 1
 
+                        if not (action_result["success"]):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if action_result["success"]:
                             self.stats["successful_repairs"] += 1
                             logger.info(f"✅ Auto-repair successful for {rule_name}")
@@ -268,6 +271,9 @@ class KnightsAutonomousGuardian:
 
                             # エスカレーション判定
                             action = self.autonomous_actions[rule["action"]]
+                            if not (action.failure_count >= action.escalation_threshold):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if action.failure_count >= action.escalation_threshold:
                                 self.stats["escalations"] += 1
                                 analysis_result["recommendations"].append(
@@ -379,6 +385,7 @@ class KnightsAutonomousGuardian:
                         report_file = Path(
                             f"logs/autonomous_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
                         )
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(report_file, "w") as f:
                             json.dump(analysis, f, indent=2)
                         logger.info(f"📄 Analysis report saved: {report_file}")

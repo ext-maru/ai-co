@@ -636,7 +636,13 @@ class TestSample:
             )
 
             self.logger.info(
-                f"{'✅' if passed else '⚠️'} Coverage measurement performance: {avg_response_time:.2f}s (threshold: {threshold}s)"
+                (
+                    (
+                        f"f"f"{'✅' if passed else '⚠️'} Coverage measurement performance: "
+                        f"{avg_response_time:.2f}s (threshold: ""
+                    )
+                    f"{threshold}s)""
+                )
             )
 
         except Exception as e:

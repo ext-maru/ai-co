@@ -150,6 +150,9 @@ class Flake8Linter:
                 for line in result.stdout.strip().split("\n"):
                     if line:
                         parts = line.split(":")
+                        if not (len(parts) >= 4):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(parts) >= 4:
                             issues.append(
                                 {
@@ -395,6 +398,7 @@ class AutomatedCodeReviewCompat:
     """既存のautomated_code_reviewとの互換性レイヤー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.unified_review = UnifiedCodeReview()
 
     def analyze_code_quality(

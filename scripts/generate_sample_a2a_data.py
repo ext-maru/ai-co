@@ -75,13 +75,17 @@ def generate_sample_data():
         # コンテンツ生成
         content = ""
         if message_type == "error_report":
-            content = f"Error in {random.choice(['module_A', 'module_B', 'module_C'])}: {random.choice(['Connection timeout', 'Memory overflow', 'Invalid input', 'Permission denied'])}"
+            content = f"Error in {random.choice(['module_A', 'module_B', 'module_C'])}: " \
+                "{random.choice(['Connection timeout', 'Memory overflow', 'Invalid input', 'Permission denied'])}"
         elif message_type == "performance_metric":
-            content = f"CPU: {random.randint(10, 90)}%, Memory: {random.randint(20, 80)}%, Response time: {random.randint(50, 500)}ms"
+            content = f"CPU: {random.randint(10, 90)}%, Memory: " \
+                "{random.randint(20, 80)}%, Response time: {random.randint(50, 500)}ms"
         elif message_type == "task_assignment":
-            content = f"Task #{random.randint(1000, 9999)}: {random.choice(['Process data batch', 'Run backup', 'Execute test suite', 'Deploy update'])}"
+            content = f"Task #{random.randint(1000, 9999)}: {random.choice(['Process " \
+                "data batch', 'Run backup', 'Execute test suite', 'Deploy update'])}"
         elif message_type == "alert_notification":
-            content = f"Alert: {random.choice(['High CPU usage', 'Low disk space', 'Service degradation', 'Security threat detected'])}"
+            content = f"Alert: {random.choice(['High CPU usage'," \
+                " 'Low disk space', 'Service degradation', 'Security threat detected'])}"
         else:
             content = f"{message_type} from {sender} to {receiver}"
 

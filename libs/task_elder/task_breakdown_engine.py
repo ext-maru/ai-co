@@ -34,6 +34,7 @@ class TaskBreakdown:
     created_at: str
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if not self.created_at:
             self.created_at = datetime.now().isoformat()
         if not self.task_id:
@@ -44,6 +45,7 @@ class TaskBreakdownEngine:
     """タスク分解エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.base_path = Path("/home/aicompany/ai_co")
         self.plans_path = self.base_path / "docs" / "plans"
 
@@ -159,6 +161,7 @@ class TaskBreakdownEngine:
         for pattern in self.task_patterns:
             matches = re.findall(pattern, content, re.MULTILINE)
             for match in matches:
+        # 繰り返し処理
                 if isinstance(match, str):
                     task_text = match.strip()
                     if task_text and len(task_text) > 3:
@@ -237,6 +240,7 @@ class TaskBreakdownEngine:
 
         for priority, keywords in self.priority_keywords.items():
             for keyword in keywords:
+        # 繰り返し処理
                 if keyword in task_lower:
                     return priority
 
@@ -248,6 +252,7 @@ class TaskBreakdownEngine:
         task_lower = task_text.lower()
 
         for category, keywords in self.category_keywords.items():
+        # 繰り返し処理
             for keyword in keywords:
                 if keyword in task_lower:
                     return category
@@ -279,6 +284,7 @@ class TaskBreakdownEngine:
             r"(?:依存|必要|前提|後)\s*[:：]\s*(.+?)(?:\n|$|[,.])",
         ]
 
+        # 繰り返し処理
         for pattern in dependency_patterns:
             matches = re.findall(pattern, task_text, re.IGNORECASE)
             for match in matches:

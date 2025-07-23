@@ -53,6 +53,7 @@ class DockerTemplateManager:
     """Advanced Docker template management system"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.config = get_config()
         self.workspace_root = Path("/home/aicompany/workspace")
         self.templates_dir = self.workspace_root / "docker" / "templates"

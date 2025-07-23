@@ -73,6 +73,7 @@ class AsyncWorkerTestCase(WorkerTestCase):
     """Base test class for async workers"""
 
     def setUp(self):
+        """setUpの値を設定"""
         super().setUp()
         # Additional async-specific setup
         self.mock_aio_channel = Mock()

@@ -15,7 +15,9 @@ logger = logging.getLogger(__name__)
 class StringContext:
     """文字列のコンテキスト情報"""
 
-    def __init__(self, line: str, line_number: int, surrounding_lines: List[str]):
+    def __init__(self, line:
+        """初期化メソッド"""
+    str, line_number: int, surrounding_lines: List[str]):
         self.line = line
         self.line_number = line_number
         self.surrounding_lines = surrounding_lines
@@ -134,6 +136,7 @@ class ImprovedStringDetector:
     """改良版文字列検出クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
 
     def should_fix_docstring(

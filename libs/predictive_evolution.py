@@ -61,6 +61,7 @@ class FutureTrendAnalyzer:
     """未来トレンド分析器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.trend_models = {}
         self.historical_patterns = {}
         self.analysis_cache = {}
@@ -517,6 +518,7 @@ class EvolutionPredictor:
     """進化パス予測器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.evolution_models = {}
         self.path_cache = {}
         self.scenario_templates = {}
@@ -1098,6 +1100,7 @@ class ProactiveOptimizer:
     """事前最適化器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.optimization_strategies = {}
         self.action_queue = deque()
         self.resource_pool = {}
@@ -1453,6 +1456,7 @@ class PredictionValidator:
     """予測精度検証器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.validation_history = {}
         self.accuracy_metrics = {}
         self.calibration_data = {}
@@ -1532,6 +1536,7 @@ class PredictionValidator:
             pred_metrics = pred["predicted_metrics"]
             actual_metrics = actual["actual_metrics"]
 
+        # 繰り返し処理
             for metric_name in pred_metrics:
                 if metric_name in actual_metrics:
                     pred_val = pred_metrics[metric_name]
@@ -1582,6 +1587,7 @@ class PredictionValidator:
         for pred in predictions:
             pred_id = pred["prediction_id"]
             actual = next(
+        # 繰り返し処理
                 (a for a in actual_results if a["prediction_id"] == pred_id), None
             )
 
@@ -1677,6 +1683,7 @@ class PredictionValidator:
 
         for i in range(len(confidence_bins) - 1):
             bin_start = confidence_bins[i]
+        # 繰り返し処理
             bin_end = confidence_bins[i + 1]
 
             # この信頼度区間の予測を抽出
@@ -1916,6 +1923,7 @@ class RiskAssessment:
     """リスク評価器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.risk_models = {}
         self.mitigation_strategies = {}
         self.incident_history = {}
@@ -2139,7 +2147,9 @@ class RiskAssessment:
             high_impact = impact_score > 0.5
             high_probability = probability > 0.4
 
-            category_key = f"{'high' if high_impact else 'low'}_impact_{'high' if high_probability else 'low'}_probability"
+            category_key = f"{'high' \
+                if high_impact \
+                else 'low'}_impact_{'high' if high_probability else 'low'}_probability"
             risk_matrix[category_key].append(
                 {
                     "scenario_id": scenario["scenario_id"],
@@ -2451,6 +2461,7 @@ class PredictiveEvolutionSystem:
     """Predictive Evolution System - 予測進化システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         # コンポーネントの初期化
         self.trend_analyzer = FutureTrendAnalyzer()
         self.evolution_predictor = EvolutionPredictor()
@@ -3015,6 +3026,7 @@ class PredictiveEvolutionSystem:
         """スケジューリング競合解決"""
         conflicts = []
         for i, action1 in enumerate(schedule):
+        # 繰り返し処理
             for action2 in schedule[i + 1 :]:
                 if (
                     action1["scheduled_start_date"] <= action2["scheduled_end_date"]
@@ -3076,6 +3088,7 @@ class PredictiveEvolutionSystem:
         """リアルタイム精度計算"""
         accuracy_scores = []
 
+        # 繰り返し処理
         for prediction in predictions:
             predicted_metrics = prediction.get("monitoring_metrics", [])
             for metric in predicted_metrics:

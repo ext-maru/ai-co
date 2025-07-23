@@ -63,7 +63,9 @@ class ServantViolationType:
 class ServantImplementationAnalyzer:
     """サーバント実装品質分析システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("ServantImplementationAnalyzer")
         
@@ -81,7 +83,8 @@ class ServantImplementationAnalyzer:
         
         # 手抜き実装パターン
         self.lazy_patterns = {
-            "hardcoded_values": re.compile(r'return\s+["\'].*["\']|return\s+\d+|return\s+True|return\s+False', re.MULTILINE),
+            "hardcoded_values": " \
+                "re.compile(r'return\s+["\'].*["\']|return\s+\d+|return\s+True|return\s+False', re.MULTILINE),
             "no_error_handling": re.compile(r'def\s+\w+.*?(?=def|\Z)', re.DOTALL),
             "copy_paste": re.compile(r'(.{20,})\s*\n.*?\1', re.MULTILINE),
             "minimal_logic": re.compile(r'def\s+\w+[^:]*:\s*return\s+[^;\n]*$', re.MULTILINE),
@@ -441,7 +444,9 @@ class ServantImplementationAnalyzer:
 class ServantCollaborationAnalyzer:
     """サーバント間協調分析システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("ServantCollaborationAnalyzer")
         
@@ -587,7 +592,9 @@ class ServantCollaborationAnalyzer:
 class ServantInspector(AncientElderBase):
     """サーバント査察魔法 - 総合サーバント監査システム"""
     
-    def __init__(self, project_root: Optional[Path] = None):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Optional[Path] = None):
         super().__init__(specialty="servant_inspector")
         self.project_root = project_root or Path.cwd()
         self.logger = logging.getLogger("ServantInspector")

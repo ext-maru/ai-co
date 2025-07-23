@@ -63,7 +63,8 @@ class TestEnhancedKnowledgeSage:
         return [
             {
                 "title": "TDD Best Practices",
-                "content": "Test-Driven Development improves code quality and reduces bugs through red-green-refactor cycles.",
+                "content": "Test-Driven Development improves code quality and \
+                    reduces bugs through red-green-refactor cycles.",
                 "category": "development",
                 "tags": ["tdd", "testing", "best_practices"],
                 "source": "elders_guild_guide",
@@ -71,7 +72,8 @@ class TestEnhancedKnowledgeSage:
             },
             {
                 "title": "Elder Flow Architecture",
-                "content": "Elder Flow provides automated development workflow with 4 Sages integration and quality gates.",
+                "content": "Elder Flow provides automated development workflow with 4 Sages integration and \
+                    quality gates.",
                 "category": "architecture", 
                 "tags": ["elder_flow", "architecture", "automation"],
                 "source": "technical_documentation",

@@ -733,7 +733,8 @@ class IntegratedReportGenerator:
                 {
                     "source": "Trend Analysis",
                     "priority": "medium",
-                    "recommendation": f"予測される成長率{trends['capacity_planning']['predicted_growth']}に対応するため、リソース拡張計画の策定を推奨",
+                    "recommendation": f"予測される成長率{trends['capacity_" \
+                        "planning']['predicted_growth']}に対応するため、リソース拡張計画の策定を推奨",
                     "category": "planning",
                 }
             )
@@ -782,7 +783,10 @@ class IntegratedReportGenerator:
     <meta charset="UTF-8">
     <title>Elder Tree System Report - {{ report.report_id }}</title>
     <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        body {
+            font-family: Arial,
+            sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px;
+        }
         h1, h2, h3 { color: #1a237e; }
         .header { background: #f5f5f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
         .summary-box { background: #e3f2fd; padding: 15px; border-radius: 5px; margin: 10px 0; }
@@ -804,7 +808,8 @@ class IntegratedReportGenerator:
     <div class="header">
         <h1>Elder Tree System Integrated Report</h1>
         <p><strong>Report ID:</strong> {{ report.report_id }}</p>
-        <p><strong>Period:</strong> {{ report.period_start.strftime('%Y-%m-%d %H:%M') }} - {{ report.period_end.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p><strong>Period:</strong> {{ \
+            report.period_start.strftime('%Y-%m-%d %H:%M') }} - {{ report.period_end.strftime('%Y-%m-%d %H:%M') }}</p>
         <p><strong>Generated:</strong> {{ report.generation_time.strftime('%Y-%m-%d %H:%M:%S' \
             '%Y-%m-%d %H:%M:%S') }}</p>
     </div>
@@ -858,12 +863,16 @@ class IntegratedReportGenerator:
         <tr>
             <td>Worker Pool</td>
             <td class="status-healthy">Active</td>
-            <td>{{ report.system_health.worker_pool_status.active_workers }}/{{ report.system_health.worker_pool_status.total_workers }} workers active</td>
+            <td>{{ report.system_health.worker_pool_status.active_workers }}/{ \
+                { report.system_health.worker_pool_status.total_workers }} workers active</td>
         </tr>
         <tr>
             <td>Resource Utilization</td>
             <td class="status-warning">Normal</td>
-            <td>CPU: {{ report.system_health.resource_utilization.cpu }}%, Memory: {{ report.system_health.resource_utilization.memory }}%</td>
+            <td>CPU: {
+                { report.system_health.resource_utilization.cpu }}%,
+                Memory: {{ report.system_health.resource_utilization.memory }
+            }%</td>
         </tr>
     </table>
 

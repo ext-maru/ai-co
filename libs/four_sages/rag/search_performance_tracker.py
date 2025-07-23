@@ -59,6 +59,7 @@ class QueryPatternAnalyzer:
     """クエリパターン分析器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.pattern_cache = {}
         self.term_frequency = {}
 
@@ -196,7 +197,9 @@ class QueryPatternAnalyzer:
 class SearchPerformanceTracker(EldersServiceLegacy):
     """検索パフォーマンス追跡システム"""
 
-    def __init__(self, rag_sage: RAGSage, tracking_db: UnifiedTrackingDB):
+    def __init__(self, rag_sage:
+        """初期化メソッド"""
+    RAGSage, tracking_db: UnifiedTrackingDB):
         super().__init__(name="SearchPerformanceTracker")
         self.rag_sage = rag_sage
         self.tracking_db = tracking_db

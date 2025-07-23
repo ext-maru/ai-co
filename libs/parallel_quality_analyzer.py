@@ -49,7 +49,9 @@ class BatchAnalysisResult:
 class ResourceManager:
     """Resource usage monitoring and limiting"""
     
-    def __init__(self, max_memory_mb: int = 500, max_processes: int = None):
+    def __init__(self, max_memory_mb:
+        """初期化メソッド"""
+    int = 500, max_processes: int = None):
         self.max_memory_bytes = max_memory_mb * 1024 * 1024
         self.max_processes = max_processes or min(4, multiprocessing.cpu_count())
         self.start_time = time.time()
@@ -93,7 +95,9 @@ class ResourceManager:
 class AnalysisCache:
     """File analysis caching system"""
     
-    def __init__(self, cache_dir: Path, ttl_hours: int = 24):
+    def __init__(self, cache_dir:
+        """初期化メソッド"""
+    Path, ttl_hours: int = 24):
         self.cache_dir = cache_dir
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self.ttl_seconds = ttl_hours * 3600
@@ -592,6 +596,7 @@ if __name__ == "__main__":
     import asyncio
     
     async def test_analyzer():
+        """test_analyzer分析メソッド"""
         project_root = Path("/home/aicompany/ai_co")
         
         print("🚀 Testing Parallel Quality Analyzer...")

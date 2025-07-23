@@ -24,6 +24,7 @@ class AICompanyProjectScope:
     """Elders Guild専用のProjectScope拡張"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = PROJECT_ROOT
         self.ps = ProjectScope(str(self.project_root))
         self.notifier = SlackNotifier()
@@ -187,10 +188,14 @@ class AICompanyProjectScope:
             "email": r"smtp|email|mail",
         }
 
+        # 繰り返し処理
         for pattern_name, pattern in patterns.items():
             for py_file in self.project_root.rglob("*.py"):
                 try:
                     if re.search(pattern, py_file.read_text(), re.IGNORECASE):
+                        if not (pattern_name not in integrations["external_services"]):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if pattern_name not in integrations["external_services"]:
                             integrations["external_services"].append(pattern_name)
                         break

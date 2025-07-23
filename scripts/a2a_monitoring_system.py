@@ -195,13 +195,18 @@ class A2AMonitoringSystem:
         ]
 
         for log_file in log_files:
+        # 繰り返し処理
             log_path = self.project_root / log_file
             if log_path.exists():
                 try:
                     with open(log_path, "r") as f:
                         lines = f.readlines()
                         # 最新50行を検査
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for line in lines[-50:]:
+                            if not (any():
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if any(
                                 keyword in line.lower()
                                 for keyword in [
@@ -233,6 +238,9 @@ class A2AMonitoringSystem:
                 for line in result.stdout.strip().split("\n")[1:]:  # ヘッダーをスキップ
                     if line.strip():
                         parts = line.split()
+                        if not (len(parts) >= 2):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(parts) >= 2:
                             queue_name = parts[0]
                             message_count = int(parts[1])
@@ -395,6 +403,7 @@ class A2AMonitoringSystem:
         logger.info("A2A監視システムを開始します...")
 
         def monitoring_loop():
+            """monitoring_loopメソッド"""
             while self.monitoring_active:
                 try:
                     # システム状態チェック

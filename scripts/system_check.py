@@ -5,6 +5,7 @@ from libs.unified_config_manager import UnifiedConfigManager
 
 
 def main():
+    """mainメソッド"""
     print("=== システム総合ヘルスチェック ===")
     ucm = UnifiedConfigManager()
 

@@ -272,7 +272,8 @@ class ContextAssembler:
 
         # メタデータ
         if self.config.include_metadata and entity.metadata:
-            formatted += f"**作成日**: {entity.created_at.strftime('%Y-%m-%d %H:%M') if entity.created_at else 'unknown'}\n"
+            formatted += f"**作成日**: {entity.created_at.strftime('%Y-%m-%d " \
+                "%H:%M') if entity.created_at else 'unknown'}\n"
             if entity.metadata.get("tags"):
                 formatted += f"**タグ**: {', '.join(entity.metadata['tags'])}\n"
 
@@ -485,6 +486,9 @@ class UnifiedRAGManager:
                     e for e in filtered if e.metadata.get("category") == filter_value
                 ]
             elif filter_key == "tags":
+                if not (isinstance(filter_value, list)):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if isinstance(filter_value, list):
                     filtered = [
                         e

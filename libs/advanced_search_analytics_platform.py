@@ -468,6 +468,7 @@ class AdvancedSearchAnalyticsPlatform:
         integrated = []
         seen_ids = set()
 
+        # 繰り返し処理
         for result_set in search_results:
             if isinstance(result_set, Exception):
                 continue
@@ -476,6 +477,9 @@ class AdvancedSearchAnalyticsPlatform:
                 for item in result_set:
                     if isinstance(item, dict):
                         item_id = item.get("id")
+                        if not (item_id and item_id not in seen_ids):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if item_id and item_id not in seen_ids:
                             seen_ids.add(item_id)
                             integrated.append(

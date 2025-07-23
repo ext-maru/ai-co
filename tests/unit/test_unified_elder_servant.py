@@ -572,6 +572,7 @@ class TestDwarfWorkshopServant(DwarfWorkshopServant):
         return TaskResult(
             task_id=task.get("task_id", "dwarf_task"),
             servant_id=self.servant_id,
+        """execute_taskを実行"""
             status=TaskStatus.COMPLETED,
             result_data={
                 "success": True,
@@ -611,6 +612,7 @@ class TestRAGWizardServant(RAGWizardServant):
     async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
         return TaskResult(
             task_id=task.get("task_id", "wizard_task"),
+        """execute_taskを実行"""
             servant_id=self.servant_id,
             status=TaskStatus.COMPLETED,
             result_data={
@@ -650,6 +652,7 @@ class TestElfForestServant(ElfForestServant):
 
     async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
         return TaskResult(
+        """execute_taskを実行"""
             task_id=task.get("task_id", "elf_task"),
             servant_id=self.servant_id,
             status=TaskStatus.COMPLETED,
@@ -689,6 +692,7 @@ class TestIncidentKnightServant(IncidentKnightServant):
         )
 
     async def execute_task(self, task: Dict[str, Any]) -> TaskResult:
+        """execute_taskを実行"""
         return TaskResult(
             task_id=task.get("task_id", "knight_task"),
             servant_id=self.servant_id,

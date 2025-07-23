@@ -281,6 +281,7 @@ class GoogleA2ASoulAgent:
 
     async def _peer_discovery_loop(self):
         """ピア探索ループ"""
+        # ループ処理
         while self.is_running.value:
             try:
                 if GOOGLE_A2A_AVAILABLE and self.service_registry:
@@ -290,6 +291,9 @@ class GoogleA2ASoulAgent:
                     )
 
                     for peer in peers:
+                        if not (peer["service_id"] != self.service_definition.service_id):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if peer["service_id"] != self.service_definition.service_id:
                             await self._connect_to_peer(peer)
 
@@ -705,6 +709,7 @@ class GoogleA2ASoulManager:
     """Google A2A魂管理システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.agents: Dict[str, GoogleA2ASoulAgent] = {}
         self.is_running = mp.Value("b", False)
         self.logger = get_logger("google_a2a_soul_manager")

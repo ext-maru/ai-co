@@ -1350,7 +1350,10 @@ def factorial(n):
             f"  🔧 個別機能: {individual['successful_tests']}/{individual['total_servants']} 成功"
         )
         self.logger.info(
-            f"  🤝 協調テスト: {collaboration['successful_collaborations']}/{collaboration['successful_collaborations'] + collaboration['failed_collaborations']} 成功"
+            (
+                f"f"  🤝 協調テスト: {collaboration['successful_collaborations']}/"
+                f"{collaboration['successful_collaborations'] + collaboration['failed_collaborations']} 成功""
+            )
         )
         self.logger.info(
             f"  🗡️ Iron Will: {'準拠' if iron_will['overall_compliance'] else '非準拠'}"

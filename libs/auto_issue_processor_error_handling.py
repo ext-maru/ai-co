@@ -148,6 +148,7 @@ class ErrorContext:
     retry_count: int = 0
     
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.files_created is None:
             self.files_created = []
         if self.timestamp is None:
@@ -164,6 +165,7 @@ class RecoveryResult:
     cleaned_resources: List[str] = None
     
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.cleaned_resources is None:
             self.cleaned_resources = []
 
@@ -228,6 +230,7 @@ class ResourceCleaner:
     """リソースクリーンアップ"""
     
     def __init__(self, git_ops=None):
+        """初期化メソッド"""
         self.git_ops = git_ops
         
     async def cleanup_partial_resources(self, context: ErrorContext) -> List[str]:
@@ -416,10 +419,12 @@ class CircuitBreaker:
         """デコレーターとして使用"""
         @wraps(func)
         async def async_wrapper(*args, **kwargs) -> T:
+            """async_wrapperメソッド"""
             return await self.call(func, *args, **kwargs)
         
         @wraps(func)
         def sync_wrapper(*args, **kwargs) -> T:
+            """sync_wrapperメソッド"""
             return asyncio.run(self.call(func, *args, **kwargs))
         
         return async_wrapper if asyncio.iscoroutinefunction(func) else sync_wrapper
@@ -484,10 +489,14 @@ class RecoveryStrategy(ABC):
 class GitHubAPIRecoveryStrategy(RecoveryStrategy):
     """GitHub API エラー回復戦略"""
     
-    async def can_handle(self, context: ErrorContext) -> bool:
+    async def can_handle(self, context:
+        """handle可能性判定メソッド"""
+    ErrorContext) -> bool:
         return context.error_type == ErrorType.GITHUB_API_ERROR
     
-    async def recover(self, context: ErrorContext) -> RecoveryResult:
+    async def recover(self, context:
+        """recoverメソッド"""
+    ErrorContext) -> RecoveryResult:
         error_str = str(context.original_error).lower()
         
         # レート制限エラー
@@ -528,12 +537,17 @@ class GitOperationRecoveryStrategy(RecoveryStrategy):
     """Git操作エラー回復戦略"""
     
     def __init__(self, git_ops=None):
+        """初期化メソッド"""
         self.git_ops = git_ops
     
-    async def can_handle(self, context: ErrorContext) -> bool:
+    async def can_handle(self, context:
+        """handle可能性判定メソッド"""
+    ErrorContext) -> bool:
         return context.error_type == ErrorType.GIT_OPERATION_ERROR
     
-    async def recover(self, context: ErrorContext) -> RecoveryResult:
+    async def recover(self, context:
+        """recoverメソッド"""
+    ErrorContext) -> RecoveryResult:
         error_str = str(context.original_error).lower()
         
         # マージコンフリクト
@@ -607,10 +621,14 @@ class GitOperationRecoveryStrategy(RecoveryStrategy):
 class NetworkRecoveryStrategy(RecoveryStrategy):
     """ネットワークエラー回復戦略"""
     
-    async def can_handle(self, context: ErrorContext) -> bool:
+    async def can_handle(self, context:
+        """handle可能性判定メソッド"""
+    ErrorContext) -> bool:
         return context.error_type == ErrorType.NETWORK_ERROR
     
-    async def recover(self, context: ErrorContext) -> RecoveryResult:
+    async def recover(self, context:
+        """recoverメソッド"""
+    ErrorContext) -> RecoveryResult:
         if context.retry_count < RetryStrategy.get_max_retries(context.error_type):
             delay = RetryStrategy.get_retry_delay(context.error_type, context.retry_count)
             return RecoveryResult(
@@ -631,6 +649,7 @@ class AutoIssueProcessorErrorHandler:
     """Auto Issue Processor 統合エラーハンドラー"""
     
     def __init__(self, git_ops=None):
+        """初期化メソッド"""
         self.git_ops = git_ops
         self.resource_cleaner = ResourceCleaner(git_ops)
         self.circuit_breakers = {}  # operation -> CircuitBreaker
@@ -725,7 +744,9 @@ def with_error_recovery(git_ops=None):
     error_handler = AutoIssueProcessorErrorHandler(git_ops)
     
     def decorator(func):
+        """decoratorメソッド"""
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             operation = f"{func.__name__}"
             retry_count = 0
             max_retries = 3
@@ -763,7 +784,9 @@ def with_error_recovery(git_ops=None):
 class ErrorReporter:
     """エラーレポート機能"""
     
-    def __init__(self, report_dir: str = "/tmp/error_reports"):
+    def __init__(self, report_dir:
+        """初期化メソッド"""
+    str = "/tmp/error_reports"):
         self.report_dir = report_dir
         self.error_history: List[ErrorReport] = []
         
@@ -954,6 +977,7 @@ class ErrorAnalytics:
     """エラー分析機能"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.error_data: List[Dict[str, Any]] = []
         self.recovery_data: List[Dict[str, Any]] = []
     

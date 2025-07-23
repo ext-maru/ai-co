@@ -299,6 +299,7 @@ class TestGitHubAsyncManager:
                         'stream_all_issues_async',
                         return_value=iter([{"number": 1}])
                     ):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with patch.object(
                             self.manager,
                             'stream_all_pull_requests_async',
@@ -702,6 +703,7 @@ class TestGitHubCacheManager:
     async def test_warm_cache_async(self):
         """非同期キャッシュウォーミングテスト"""
         async def mock_fetch_func(identifier):
+            """mock_fetch_funcメソッド"""
             return {"id": identifier, "data": f"data_{identifier}"}
         
         identifiers = ["item1", "item2", "item3"]
@@ -991,6 +993,7 @@ class TestBatchProcessor:
     async def test_process_batch(self):
         """バッチ処理テスト"""
         async def mock_process_func(item):
+            """mock_process_func処理メソッド"""
             return f"processed_{item}"
         
         items = [1, 2, 3, 4, 5, 6, 7]
@@ -1006,6 +1009,7 @@ class TestBatchProcessor:
     async def test_process_batch_with_errors(self):
         """エラーありバッチ処理テスト"""
         async def mock_process_func(item):
+            """mock_process_func処理メソッド"""
             if item == 3:
                 raise ValueError("Test error")
             return f"processed_{item}"
@@ -1282,6 +1286,7 @@ class TestPerformanceDecorator:
         """パフォーマンスモニター成功テスト"""
         @performance_monitor
         async def test_func(self):
+            """test_funcテストメソッド"""
             await asyncio.sleep(0.01)
             return "success"
         
@@ -1296,6 +1301,7 @@ class TestPerformanceDecorator:
         """パフォーマンスモニター例外テスト"""
         @performance_monitor
         async def test_func(self):
+            """test_funcテストメソッド"""
             raise ValueError("Test error")
         
         with pytest.raises(ValueError, match="Test error"):

@@ -36,6 +36,7 @@ class QualityMetric:
     @property
     def status_emoji(self) -> str:
         if self.is_met:
+        """status_emojiメソッド"""
             return "✅"
         elif self.progress >= 0.8:
             return "🟡"
@@ -420,6 +421,7 @@ class QualityGateChecker:
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(
         description="🚪 エルダーズギルド品質ゲートチェッカー"
     )

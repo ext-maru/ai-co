@@ -43,23 +43,27 @@ except ImportError:
     # Elder Components未利用時の型定義
     @dataclass
     class IntentResult:
+        """IntentResultクラス"""
         intent_type: str
         confidence: float
         parameters: Dict[str, Any] = None
 
     class IntentType:
+        """IntentTypeクラス"""
         DEVELOPMENT = "development"
         SEARCH = "search"
         OPTIMIZATION = "optimization"
 
     @dataclass
     class SearchResult:
+        """SearchResultクラス"""
         content: str
         score: float
         source: str
 
     @dataclass
     class RAGASMetrics:
+        """RAGASMetricsクラス"""
         faithfulness: float
         answer_relevancy: float
         context_precision: float
@@ -129,7 +133,9 @@ class EvidenceTrace:
 class HierarchicalContextManager:
     """階層化コンテキスト管理システム"""
 
-    def __init__(self, max_contexts_per_tier: Dict[ContextTier, int] = None):
+    def __init__(self, max_contexts_per_tier:
+        """初期化メソッド"""
+    Dict[ContextTier, int] = None):
         self.logger = self._setup_logger("HierarchicalContext")
 
         # 階層別コンテキスト制限
@@ -316,7 +322,9 @@ class HierarchicalContextManager:
 class StreamingRAGEngine:
     """ストリーミングRAGエンジン"""
 
-    def __init__(self, update_interval_seconds: int = 30):
+    def __init__(self, update_interval_seconds:
+        """初期化メソッド"""
+    int = 30):
         self.logger = self._setup_logger("StreamingRAG")
         self.update_interval = update_interval_seconds
         self.is_streaming = False
@@ -486,6 +494,7 @@ class EvidenceTraceabilitySystem:
     """証拠トレーサビリティシステム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger("EvidenceTrace")
 
         # 証拠データベース
@@ -793,6 +802,7 @@ class NextGenerationRAGStrategy:
     """次世代RAG戦略統合システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger("NextGenRAG")
 
         # 3つの戦略コンポーネント
@@ -1164,7 +1174,8 @@ async def demo_next_generation_rag():
             f"   ⚡ Avg Response Time: {strategy_data['overall_performance']['average_response_time']:.2f}s"
         )
         print(
-            f"   🛡️ Hallucination Prevention: {strategy_data['overall_performance']['hallucination_prevention_rate']:.1%}"
+            f"   🛡️ Hallucination Prevention: {strategy_data['overall_performance']['halluci \
+                nation_prevention_rate']:.1%}"
         )
 
         # 革新要素まとめ

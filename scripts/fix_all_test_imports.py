@@ -42,7 +42,10 @@ class ImportFixKnight:
                 ),
                 # Pattern for os.path.dirname variations
                 (
-                    r"sys\.path\.insert\(0,\s*os\.path\.dirname\(os\.path\.dirname\(os\.path\.abspath\(__file__\)\)\)\)",
+                    r"sys\.path\.insert\(
+                        0,
+                        \s*os\.path\.dirname\(os\.path\.dirname\(os\.path\.abspath\(__file__\)\)\)\
+                    )",
                     "PROJECT_ROOT = Path(__file__).resolve().parent.parent\nsys.path.insert(0, str(PROJECT_ROOT))",
                 ),
                 # Pattern for direct path insertions

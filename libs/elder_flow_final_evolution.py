@@ -22,6 +22,7 @@ class ElderFlowFinalEvolution:
     """Elder Flow最終進化システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.elder_flow = ElderFlowFourSagesComplete(max_workers=16)
         self.evolution_paths = [
             {

@@ -30,6 +30,7 @@ class ClaudeElderChatSimple:
     """Claude Elder Chat API - Simple Version"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.config = get_config()
 
@@ -516,6 +517,7 @@ class ClaudeElderChatSimple:
         if command_result.get("success"):
             servant_status = command_result.get("status", {})
             response = f"🧾 クロードエルダー: サーベント状態レポート\n\n"
+            # 繰り返し処理
             for servant_type, servants in servant_status.items():
                 response += f"{servant_type}: {len(servants)}体稼働中\n"
                 for servant_name, status in servants.items():

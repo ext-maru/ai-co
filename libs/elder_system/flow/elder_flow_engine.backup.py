@@ -31,6 +31,7 @@ class ElderFlowEngine(EldersFlowLegacy):
     """Elder Flow実行エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ElderFlowEngine")
         self.orchestrator = ElderFlowOrchestrator()
         self.tracking_db = UnifiedTrackingDB()
@@ -325,6 +326,7 @@ def create_elder_flow_engine() -> ElderFlowEngine:
 if __name__ == "__main__":
     # テスト実行
     async def test_engine():
+        """test_engineテストメソッド"""
         engine = create_elder_flow_engine()
 
         # テストタスク実行

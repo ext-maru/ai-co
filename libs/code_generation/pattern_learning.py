@@ -124,7 +124,9 @@ class PatternLearningEngine:
         # ドキュメント頻度
         if "has_docstrings" in style_stats:
             docstring_ratio = sum(style_stats["has_docstrings"]) / len(style_stats["has_docstrings"])
-            learned_style["docstring_usage"] = "high" if docstring_ratio > 0.7 else "medium" if docstring_ratio > 0.3 else "low"
+            learned_style["docstring_usage"] = "high" \
+                if docstring_ratio > 0.7 \
+                else "medium" if docstring_ratio > 0.3 else "low"
         
         self.learned_patterns["coding_style"] = learned_style
         logger.info(f"Learned coding style: {learned_style}")
@@ -319,7 +321,34 @@ class PatternLearningEngine:
         words = re.findall(r'[a-zA-Z]{3,}', text.lower())
         
         # 一般的な単語を除外
-        stop_words = {"the", "and", "for", "are", "but", "not", "you", "all", "can", "her", "was", "one", "our", "had", "but", "what", "use", "your", "how", "now", "may", "say", "each", "new", "has", "two"}
+                stop_words = {
+            "the",
+            "and",
+            "for",
+            "are",
+            "but",
+            "not",
+            "you",
+            "all",
+            "can",
+            "her",
+            "was",
+            "one",
+            "our",
+            "had",
+            "but",
+            "what",
+            "use",
+            "your",
+            "how",
+            "now",
+            "may",
+            "say",
+            "each",
+            "new",
+            "has",
+            "two"
+        }
         
         return [w for w in words if w not in stop_words and len(w) > 3]
     

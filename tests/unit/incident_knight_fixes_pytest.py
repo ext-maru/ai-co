@@ -59,11 +59,13 @@ def test_{test_name}():
 
             if stripped == '"""' and i > 0:
                 prev_lines = []
+        # 繰り返し処理
                 for j in range(max(0, i - 5), i):
                     prev_lines.append(lines[j])
 
                 prev_text = "\n".join(prev_lines)
                 if any(
+            # 複雑な条件判定
                     pattern in prev_text
                     for pattern in ['f"""', 'r"""', 'b"""', "=", "return", "yield"]
                 ):
@@ -98,11 +100,13 @@ def regex_pattern():
             if "=" in line or "(" in line or "{" in line:
                 continue
 
+        # 繰り返し処理
             if stripped == '"""' and i > 0:
                 prev_lines = []
                 for j in range(max(0, i - 5), i):
                     prev_lines.append(lines[j])
 
+            # 複雑な条件判定
                 prev_text = "\n".join(prev_lines)
                 if any(
                     pattern in prev_text
@@ -137,11 +141,13 @@ def get_docstring():
                 continue
 
             if "=" in line or "(" in line or "{" in line:
+        # 繰り返し処理
                 continue
 
             if stripped == '"""' and i > 0:
                 prev_lines = []
                 for j in range(max(0, i - 5), i):
+            # 複雑な条件判定
                     prev_lines.append(lines[j])
 
                 prev_text = "\n".join(prev_lines)
@@ -176,11 +182,13 @@ def broken_function():
 
             if len(stripped) < 3:
                 continue
+        # 繰り返し処理
 
             if "=" in line or "(" in line or "{" in line:
                 continue
 
             if stripped == '"""' and i > 0:
+            # 複雑な条件判定
                 prev_lines = []
                 for j in range(max(0, i - 5), i):
                     prev_lines.append(lines[j])
@@ -217,11 +225,13 @@ def normal_function():
         for i, line in enumerate(lines):
             stripped = line.strip()
 
+        # 繰り返し処理
             if len(stripped) < 3:
                 continue
 
             if "=" in line or "(" in line or "{" in line:
                 continue
+            # 複雑な条件判定
 
             if stripped == '"""' and i > 0:
                 prev_lines = []
@@ -271,11 +281,13 @@ def special_string():
         modified = False
 
         for i, line in enumerate(lines):
+        # 繰り返し処理
             stripped = line.strip()
 
             if len(stripped) < 3:
                 continue
 
+            # 複雑な条件判定
             if "=" in line or "(" in line or "{" in line:
                 continue
 

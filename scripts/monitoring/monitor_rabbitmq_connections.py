@@ -131,7 +131,11 @@ def monitor_connections(duration_seconds=300, interval=10):
     success_rate = (
         ((check_count - failure_count) / check_count) * 100 if check_count > 0 else 0
     )
-    summary = f"Monitoring complete. Checks: {check_count}, Failures: {failure_count}, Success rate: {success_rate:.1f}%"
+    summary = f"Monitoring complete. Checks: {
+        check_count},
+        Failures: {failure_count},
+        Success rate: {success_rate:.1f
+    }%"
 
     print("\n" + "=" * 60)
     print(f"📊 {summary}")

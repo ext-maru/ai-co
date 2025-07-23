@@ -809,6 +809,9 @@ class KnowledgeSageAnalyticsAPI(KnowledgeSageDocGenerator):
                         avg_quality = statistics.mean([
                             doc.get("quality_score", 0.5) for doc in self.documents
                         ])
+                        if not (avg_quality < 0.7):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if avg_quality < 0.7:
                             triggered = True
                 
@@ -928,7 +931,11 @@ class KnowledgeSageAnalyticsAPI(KnowledgeSageDocGenerator):
                         std_val = statistics.stdev(values)
                         threshold = mean_val + (1.0 * std_val)  # 1 standard deviation for sensitive detection
                         
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for i, (entry, value) in enumerate(zip(data, values)):
+                            if not (value > threshold):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if value > threshold:
                                 anomalies.append({
                                     "index": i,
@@ -1389,6 +1396,7 @@ class MockTaskSage:
     """Mock Task Sage for testing"""
     
     async def get_active_tasks(self):
+        """active_tasks取得メソッド"""
         return {
             "success": True,
             "tasks": [
@@ -1402,6 +1410,7 @@ class MockIncidentSage:
     """Mock Incident Sage for testing"""
     
     async def get_recent_incidents(self):
+        """recent_incidents取得メソッド"""
         return {
             "success": True,
             "incidents": [
@@ -1415,6 +1424,7 @@ class MockRAGSage:
     """Mock RAG Sage for testing"""
     
     async def get_search_trends(self):
+        """search_trends取得メソッド"""
         return {
             "success": True,
             "trends": ["python", "security", "api", "docker"]

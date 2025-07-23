@@ -158,6 +158,7 @@ class TestDatabaseManager:
     def db_manager(self):
         return DatabaseManager({
             'host': 'localhost',
+        """db_managerメソッド"""
             'database': 'test_db',
             'user': 'test_user',
             'password': 'test_pass'
@@ -240,6 +241,7 @@ class TestEmbeddingGenerator:
     @pytest.fixture
     def mock_openai_client(self):
         mock_client = Mock()
+        """mock_openai_clientメソッド"""
         mock_response = Mock()
         mock_response.data = [Mock()]
         mock_response.data[0].embedding = [0.1] * 1536
@@ -401,6 +403,7 @@ class TestEldersCodeQualityEngine:
     
     @pytest.fixture
     def engine_config(self):
+        """engine_configメソッド"""
         return {
             'host': 'localhost',
             'database': 'test_db',

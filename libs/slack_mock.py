@@ -59,6 +59,7 @@ class MockWebClient:
     """Mock Slack WebClient"""
 
     def __init__(self, token=None):
+        """初期化メソッド"""
         self.token = token
         self.messages = defaultdict(list)
         self.channels = {}
@@ -113,6 +114,7 @@ class MockWebClient:
         if not channel:
             raise ValueError("channel is required")
 
+        # 複雑な条件判定
         if not text and not blocks and not attachments:
             raise ValueError("One of text, blocks, or attachments is required")
 
@@ -342,6 +344,7 @@ class MockWebhookClient:
     """Mock Slack WebhookClient"""
 
     def __init__(self, url):
+        """初期化メソッド"""
         self.url = url
         self.messages_sent = []
         logger.info(f"Mock WebhookClient initialized with URL: {url}")
@@ -366,6 +369,7 @@ class MockAsyncWebClient:
     """Mock Async Slack WebClient"""
 
     def __init__(self, token=None):
+        """初期化メソッド"""
         self.sync_client = MockWebClient(token)
 
     async def chat_postMessage(self, **kwargs):
@@ -403,6 +407,7 @@ class MockRTMClient:
     """Mock Slack RTMClient"""
 
     def __init__(self, token=None):
+        """初期化メソッド"""
         self.token = token
         self.handlers = defaultdict(list)
         self.running = False
@@ -412,6 +417,7 @@ class MockRTMClient:
         """Decorator to register event handlers"""
 
         def decorator(func):
+            """decoratorメソッド"""
             self.handlers[event].append(func)
             return func
 
@@ -454,15 +460,19 @@ class SlackResponse:
     """Mock Slack API response"""
 
     def __init__(self, data):
+        """初期化メソッド"""
         self.data = data
 
     def get(self, key, default=None):
+        """getメソッド"""
         return self.data.get(key, default)
 
     def __getitem__(self, key):
+        """__getitem__特殊メソッド"""
         return self.data[key]
 
     def __contains__(self, key):
+        """__contains__特殊メソッド"""
         return key in self.data
 
 

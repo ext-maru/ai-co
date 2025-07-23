@@ -69,7 +69,9 @@ class TestSageConsultationTracker(unittest.TestCase):
         ]
         
         for message, expected_sage in test_messages:
+        # 繰り返し処理
             detected_sages = []
+            # 繰り返し処理
             for sage_type, patterns in self.tracker.consultation_patterns.items():
                 for pattern in patterns:
                     if pattern.search(message):

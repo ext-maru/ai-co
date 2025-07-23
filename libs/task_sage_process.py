@@ -37,7 +37,9 @@ class TaskPriority(Enum):
 
 class Project:
     """プロジェクト"""
-    def __init__(self, project_id: str, name: str, description: str):
+    def __init__(self, project_id:
+        """初期化メソッド"""
+    str, name: str, description: str):
         self.project_id = project_id
         self.name = name
         self.description = description
@@ -50,7 +52,9 @@ class Project:
 
 class Task:
     """タスク"""
-    def __init__(self, task_id: str, project_id: str, title: str,
+    def __init__(self, task_id:
+        """初期化メソッド"""
+    str, project_id: str, title: str,
                  priority: TaskPriority = TaskPriority.MEDIUM):
         self.task_id = task_id
         self.project_id = project_id
@@ -78,6 +82,7 @@ class TaskSageProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="task_sage",
             elder_role=ElderRole.SAGE,

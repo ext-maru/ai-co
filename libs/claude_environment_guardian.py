@@ -17,6 +17,7 @@ class EnvironmentGuardian:
     """Claudeの環境破壊を防ぐ守護者"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.violation_log = []
         self.safe_commands_cache = set()
 
@@ -205,6 +206,7 @@ def hook_claude_commands():
     original_run = subprocess.run
 
     def safe_run(cmd, *args, **kwargs):
+        """safe_runメソッド"""
         if isinstance(cmd, str):
             cmd = safe_execute(cmd)
         elif isinstance(cmd, list):

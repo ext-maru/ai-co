@@ -59,6 +59,7 @@ class PlanSnapshot:
     created_at: str
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if not self.created_at:
             self.created_at = datetime.now().isoformat()
 
@@ -78,6 +79,7 @@ class SyncEvent:
     error_message: Optional[str] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if not self.timestamp:
             self.timestamp = datetime.now().isoformat()
         if not self.event_id:
@@ -101,7 +103,9 @@ class SyncSchedule:
 class PlanProjectsSync:
     """計画書→Projects同期システム"""
 
-    def __init__(self, github_token: Optional[str] = None):
+    def __init__(self, github_token:
+        """初期化メソッド"""
+    Optional[str] = None):
         self.base_path = Path("/home/aicompany/ai_co")
         self.plans_path = self.base_path / "docs" / "plans"
         self.data_path = self.base_path / "data" / "plan_sync"
@@ -367,7 +371,10 @@ class PlanProjectsSync:
                 if result.get("success"):
                     sync_result = result["sync_result"]
                     sync_results.append(
-                        f"同期完了: 新規{len(sync_result.get('created_items', []))}, 更新{len(sync_result.get('updated_items', []))}"
+                        (
+                            f"f"同期完了: 新規{len(sync_result.get('created_items', []))}, 更新"
+                            f"{len(sync_result.get('updated_items', []))}""
+                        )
                     )
                 else:
                     sync_results.append(f"同期エラー: {result.get('error')}")

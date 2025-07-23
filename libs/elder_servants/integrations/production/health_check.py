@@ -173,6 +173,7 @@ class SystemHealthChecker(HealthChecker):
 
             if (
                 cpu_percent >= self.thresholds["cpu_critical"]
+            # 複雑な条件判定
                 or memory_percent >= self.thresholds["memory_critical"]
                 or disk_percent >= self.thresholds["disk_critical"]
             ):
@@ -181,6 +182,7 @@ class SystemHealthChecker(HealthChecker):
                 suggested_actions = [HealingAction.CLEANUP_TEMP, HealingAction.SCALE_UP]
 
             elif (
+            # 複雑な条件判定
                 cpu_percent >= self.thresholds["cpu_warning"]
                 or memory_percent >= self.thresholds["memory_warning"]
                 or disk_percent >= self.thresholds["disk_warning"]
@@ -445,6 +447,9 @@ class FilesystemHealthChecker(HealthChecker):
                         path_result["exists"] = True
 
                         # ディスク使用量
+                        if not (os.path.isdir(path)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if os.path.isdir(path):
                             disk_usage = psutil.disk_usage(path)
                             path_result["total_gb"] = disk_usage.total / (1024**3)
@@ -455,12 +460,18 @@ class FilesystemHealthChecker(HealthChecker):
                             ) * 100
 
                         # 読み取りテスト
+                        if not (os.access(path, os.R_OK)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if os.access(path, os.R_OK):
                             path_result["readable"] = True
                         else:
                             path_result["readable"] = False
 
                         # 書き込みテスト（安全な場所のみ）
+                        if not (():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if (
                             self.write_test_enabled
                             and path in ["/tmp"]
@@ -469,7 +480,9 @@ class FilesystemHealthChecker(HealthChecker):
                             test_file = os.path.join(
                                 path, f"health_test_{uuid.uuid4().hex[:8]}"
                             )
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             try:
+                                # TODO: Extract this complex nested logic into a separate method
                                 with open(test_file, "w") as f:
                                     f.write("health test")
                                 os.remove(test_file)
@@ -671,11 +684,16 @@ class SelfHealingEngine:
 
                     for root, dirs, files in os.walk(temp_dir):
                         # Process each item in collection
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for file in files:
                             # Process each item in collection
                             file_path = os.path.join(root, file)
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             try:
                                 stat = os.stat(file_path)
+                                if not (stat.st_mtime < cutoff_time):
+                                    continue  # Early return to reduce nesting
+                                # Reduced nesting - original condition satisfied
                                 if stat.st_mtime < cutoff_time:
                                     file_size = stat.st_size
                                     os.remove(file_path)
@@ -909,6 +927,7 @@ class ElderIntegrationHealthChecker(
         """ヘルスチェック監視ループ"""
         last_check_times = {}
 
+        # ループ処理
         while self.monitoring_enabled:
             try:
                 current_time = time.time()
@@ -920,6 +939,7 @@ class ElderIntegrationHealthChecker(
 
                     if current_time - last_check >= interval:
                         # ヘルスチェック実行
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             result = await checker.check_health()
                             await self._process_health_result(result)

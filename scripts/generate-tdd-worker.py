@@ -102,6 +102,7 @@ def generate_worker(worker_name, worker_type):
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(
         description="TDDワーカー生成ツール",
         formatter_class=argparse.RawDescriptionHelpFormatter,

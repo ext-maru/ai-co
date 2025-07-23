@@ -747,7 +747,10 @@ class IncidentKnightServant(EnhancedElderServant[TRequest, TResponse]):
                 "containment_success": containment_result.get("success", False),
                 "recovery_success": recovery_result.get("success", False),
                 "escalation": escalation_result,
-                "response_time_seconds": (datetime.now() - datetime.fromisoformat(incident.get("timestamp", datetime.now().isoformat()))).total_seconds(),
+                "response_time_seconds": (
+                    datetime.now() - datetime.fromisoformat(incident.get("timestamp",
+                    datetime.now().isoformat()))).total_seconds(
+                ),
                 "timestamp": datetime.now().isoformat(),
             }
             

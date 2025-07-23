@@ -87,6 +87,7 @@ def test_node_importance_scoring():
     if 0 <= importance <= 1:
         print(f"  ✅ 重要度範囲OK: {importance:.3f}")
         tests_passed += 1
+    # 複雑な条件判定
     else:
         print(f"  ❌ Invalid importance: {importance}")
 
@@ -206,6 +207,7 @@ def test_edge_strength_calculation():
 
     if 0 <= strength <= 1:
         print(f"  ✅ 強度範囲OK: {strength:.3f}")
+    # 複雑な条件判定
         tests_passed += 1
     else:
         print(f"  ❌ Invalid strength: {strength}")
@@ -422,6 +424,7 @@ def test_cluster_coherence_measurement():
     tests_total = 2
 
     if 0 <= coherence <= 1:
+    # 複雑な条件判定
         print(f"  ✅ 一貫性範囲OK: {coherence:.3f}")
         tests_passed += 1
     else:
@@ -683,6 +686,7 @@ def test_graph_statistics():
     ]
 
     for metric in expected_metrics:
+        # 複雑な条件判定
         if (
             metric in stats
             and isinstance(stats[metric], (int, float))

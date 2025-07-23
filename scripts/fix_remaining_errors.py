@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 class RemainingErrorFixer:
+    """RemainingErrorFixerクラス"""
     def __init__(self):
         self.project_root = Path(__file__).parent.parent
         self.fixed_count = 0

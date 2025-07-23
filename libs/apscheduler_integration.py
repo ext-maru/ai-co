@@ -27,6 +27,7 @@ class ElderSchedulerConfig:
     """エルダーズギルド用スケジューラー設定"""
     
     def __init__(self):        
+        """初期化メソッド"""
         # 基本設定
         self.timezone = os.getenv('SCHEDULER_TIMEZONE', 'Asia/Tokyo')
         self.max_workers = int(os.getenv('SCHEDULER_MAX_WORKERS', '20'))
@@ -242,7 +243,9 @@ class ElderScheduler:
 class ElderScheduleBuilder:
     """エルダーズギルド用スケジュール構築ヘルパー"""
     
-    def __init__(self, scheduler: ElderScheduler):
+    def __init__(self, scheduler:
+        """初期化メソッド"""
+    ElderScheduler):
         self.scheduler = scheduler
         
     def every(self, interval: int):
@@ -294,27 +297,35 @@ class ElderScheduleBuilder:
 class IntervalBuilder:
     """間隔スケジュールビルダー"""
     
-    def __init__(self, scheduler: ElderScheduler, interval: int):
+    def __init__(self, scheduler:
+        """初期化メソッド"""
+    ElderScheduler, interval: int):
         self.scheduler = scheduler
         self.interval = interval
         
     def seconds(self):
+        """secondsメソッド"""
         return IntervalJobBuilder(self.scheduler, 'interval', seconds=self.interval)
         
     def minutes(self):
+        """minutesメソッド"""
         return IntervalJobBuilder(self.scheduler, 'interval', minutes=self.interval)
         
     def hours(self):
+        """hoursメソッド"""
         return IntervalJobBuilder(self.scheduler, 'interval', hours=self.interval)
         
     def days(self):
+        """daysメソッド"""
         return IntervalJobBuilder(self.scheduler, 'interval', days=self.interval)
 
 
 class CronBuilder:
     """Cronスケジュールビルダー"""
     
-    def __init__(self, scheduler: ElderScheduler, cron_params: Dict[str, str]):
+    def __init__(self, scheduler:
+        """初期化メソッド"""
+    ElderScheduler, cron_params: Dict[str, str]):
         self.scheduler = scheduler
         self.cron_params = cron_params
         
@@ -332,7 +343,9 @@ class CronBuilder:
 class IntervalJobBuilder:
     """間隔ジョブビルダー"""
     
-    def __init__(self, scheduler: ElderScheduler, trigger: str, **trigger_args):
+    def __init__(self, scheduler:
+        """初期化メソッド"""
+    ElderScheduler, trigger: str, **trigger_args):
         self.scheduler = scheduler
         self.trigger = trigger
         self.trigger_args = trigger_args
@@ -351,12 +364,16 @@ class IntervalJobBuilder:
 class ElderScheduleDecorators:
     """エルダーズギルド用デコレータ"""
     
-    def __init__(self, scheduler: ElderScheduler):
+    def __init__(self, scheduler:
+        """初期化メソッド"""
+    ElderScheduler):
         self.scheduler = scheduler
         
     def scheduled(self, trigger: str, **trigger_args):
         """スケジュール済みジョブデコレータ"""
-        def decorator(func: Callable):
+        def decorator(func:
+            """decoratorメソッド"""
+        Callable):
             # Check if function is async
             import inspect
             if inspect.iscoroutinefunction(func):
@@ -443,6 +460,7 @@ if __name__ == "__main__":
     import time
     
     def test_job():
+        """test_jobテストメソッド"""
         print(f"🎯 Test job executed at {datetime.now()}")
         
     # スケジューラー作成・開始

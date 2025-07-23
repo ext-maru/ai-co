@@ -337,7 +337,10 @@ class A2APerformanceBenchmark:
         print("\n🔄 並行通信:")
         for result in report["concurrent_communication"]:
             print(
-                f"  {result['num_concurrent']}件同時: {result['throughput_per_second']:.1f} req/sec (成功率: {result['success_rate']:.1f}%)"
+                (
+                    f"f"  {result['num_concurrent']}件同時: {result['throughput_per_second']:.1f} req/sec (成功率: "
+                    f"{result['success_rate']:.1f}%)""
+                )
             )
 
         print("\n🧙‍♂️ 4賢者協調:")

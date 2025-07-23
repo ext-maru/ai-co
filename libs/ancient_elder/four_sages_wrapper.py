@@ -20,6 +20,7 @@ class FourSagesOverseer(AncientElderBase):
     """
     
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(specialty="four_sages_oversight")
         
     async def audit(self, target: Dict[str, Any]) -> AuditResult:

@@ -313,18 +313,21 @@ class EnhancedMergeSystem:
         """監視用イベントコールバックの設定"""
         
         async def on_ci_passed(pr_num, event_type, event_data):
+            """on_ci_passedメソッド"""
             await self.progress_reporter.update_progress(
                 pr_num, "in_progress", "CI実行が完了しました - マージを再試行中",
                 {"event": event_type, "event_data": event_data}
             )
         
         async def on_conflicts_resolved(pr_num, event_type, event_data):
+            """on_conflicts_resolvedメソッド"""
             await self.progress_reporter.update_progress(
                 pr_num, "in_progress", "コンフリクトが解決されました - マージを再試行中",
                 {"event": event_type, "event_data": event_data}
             )
         
         async def on_ready_to_merge(pr_num, event_type, event_data):
+            """on_ready_to_mergeメソッド"""
             await self.progress_reporter.update_progress(
                 pr_num, "in_progress", "マージ準備が完了しました",
                 {"event": event_type, "event_data": event_data}

@@ -42,21 +42,29 @@ try:
 except ImportError:
     # テスト環境での代替実装
     class FourSagesOrchestrator:
+        """FourSagesOrchestrator - 4賢者システム関連クラス"""
         async def consult_all_sages(self, topic, context):
+            """consult_all_sagesメソッド"""
             return {"knowledge": {}, "task": {}, "incident": {}, "rag": {}}
 
     class ElderCouncilSummoner:
+        """ElderCouncilSummoner - エルダーズギルド関連クラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
 
     class ElderCouncilAutoDecision:
+        """ElderCouncilAutoDecision - エルダーズギルド関連クラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
 
     class SageConsultationType:
+        """SageConsultationType - 4賢者システム関連クラス"""
         STRATEGIC_PLANNING = "strategic_planning"
 
     class TriggerCategory:
+        """TriggerCategoryクラス"""
         CRITICAL = "critical"
 
 
@@ -131,6 +139,7 @@ class ProactiveTrendAnalyzer:
     """先制的トレンド分析器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.metric_history = defaultdict(deque)
         self.pattern_library = {}
         self.prediction_models = {}
@@ -253,6 +262,7 @@ class ProactiveOpportunityDetector:
     """先制的機会検出器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.opportunity_rules = self._load_opportunity_rules()
         self.success_patterns = {}
 
@@ -320,7 +330,8 @@ class ProactiveOpportunityDetector:
                         {
                             "type": "performance_optimization",
                             "title": "Response Time Optimization Opportunity",
-                            "description": f"{trend.metric_name}が増加傾向。最適化により{(trend.predicted_value - trend.current_value):.1f}ms改善可能",
+                            "description": f"{trend.metric_name}が増加傾向。最適化により{(trend.predicted_value " \
+                                "- trend.current_value):.1f}ms改善可能",
                             "predicted_impact": 0.8,
                             "confidence": trend.confidence,
                             "recommended_actions": [
@@ -430,6 +441,7 @@ class ProactiveGuidanceEngine:
     """先制的ガイダンスエンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.trend_analyzer = ProactiveTrendAnalyzer()
         self.opportunity_detector = ProactiveOpportunityDetector()
         self.four_sages = FourSagesOrchestrator()
@@ -669,6 +681,7 @@ class ElderCouncilProactiveSystem:
     """エルダー評議会先制的システム統合"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.guidance_engine = ProactiveGuidanceEngine()
         self.elder_council_summoner = ElderCouncilSummoner()
         self.active_insights = {}

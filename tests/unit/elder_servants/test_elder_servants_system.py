@@ -372,7 +372,8 @@ async def test_workflow_integration():
     ) / 3
     
     print(f"✓ ワークフロー全体品質: {overall_quality:.1f}%")
-    print(f"✓ 総実行時間: {func_response.execution_time_ms + test_response.execution_time_ms + coverage_response.execution_time_ms:.2f}ms")
+    print(f"✓ 総実行時間: {func_response.execution_time_ms " \
+        "+ test_response.execution_time_ms + coverage_response.execution_time_ms:.2f}ms")
     
     assert overall_quality >= 95.0
     

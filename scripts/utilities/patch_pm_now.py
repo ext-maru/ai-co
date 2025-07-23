@@ -33,7 +33,8 @@ content = pm_worker_path.read_text()
 # 旧: if self.git_flow.commit_changes(commit_message, new_files):
 # 新: if self.git_flow.commit_changes(use_best_practices=True):
 
-old_pattern = r'commit_message = f"Task \{task_id\}: \{result_data\[\'summary\'\]\}"\s*\n\s*if self\.git_flow\.commit_changes\(commit_message, new_files\):'
+old_pattern = r'commit_message = f"Task \
+    f"{task_id\}: \{result_data\[\'summary\'\]\}"\s*\n\s*if self\.git_flow\.commit_changes\(commit_message, new_files\):'
 new_code = '''# ベストプラクティスモードでコミット（メッセージ自動生成）
                     if self.git_flow.commit_changes(use_best_practices=True):'''
 

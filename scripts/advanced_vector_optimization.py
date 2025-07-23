@@ -75,11 +75,16 @@ class AdvancedVectorOptimizer:
 
         # インデックス作成
         indexes = [
-            "CREATE INDEX IF NOT EXISTS idx_adv_title_embedding ON knowledge_base.advanced_documents USING ivfflat (title_embedding vector_cosine_ops) WITH (lists = 100)",
-            "CREATE INDEX IF NOT EXISTS idx_adv_content_embedding ON knowledge_base.advanced_documents USING ivfflat (content_embedding vector_cosine_ops) WITH (lists = 100)",
-            "CREATE INDEX IF NOT EXISTS idx_adv_summary_embedding ON knowledge_base.advanced_documents USING ivfflat (summary_embedding vector_cosine_ops) WITH (lists = 100)",
-            "CREATE INDEX IF NOT EXISTS idx_adv_hybrid_embedding ON knowledge_base.advanced_documents USING ivfflat (hybrid_embedding vector_cosine_ops) WITH (lists = 100)",
-            "CREATE INDEX IF NOT EXISTS idx_adv_search_vector ON knowledge_base.advanced_documents USING gin(search_vector)",
+            "CREATE INDEX IF NOT EXISTS idx_adv_title_embedding ON knowledge_base." \
+                "advanced_documents USING ivfflat (title_embedding vector_cosine_ops) WITH (lists = 100)",
+            "CREATE INDEX IF NOT EXISTS idx_adv_content_embedding ON knowledge_base." \
+                "advanced_documents USING ivfflat (content_embedding vector_cosine_ops) WITH (lists = 100)",
+            "CREATE INDEX IF NOT EXISTS idx_adv_summary_embedding ON knowledge_base." \
+                "advanced_documents USING ivfflat (summary_embedding vector_cosine_ops) WITH (lists = 100)",
+            "CREATE INDEX IF NOT EXISTS idx_adv_hybrid_embedding ON knowledge_base." \
+                "advanced_documents USING ivfflat (hybrid_embedding vector_cosine_ops) WITH (lists = 100)",
+            "CREATE INDEX IF NOT EXISTS idx_adv_search_vector " \
+                "ON knowledge_base.advanced_documents USING gin(search_vector)",
         ]
 
         for idx in indexes:
@@ -327,6 +332,7 @@ async def test_advanced_optimization():
 
         all_scores = []
 
+        # 繰り返し処理
         for query in test_queries:
             print(f"\n📝 クエリ: '{query}'")
             results = await optimizer.advanced_search(query, limit=3)

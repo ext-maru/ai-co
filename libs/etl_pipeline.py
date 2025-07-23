@@ -51,6 +51,7 @@ class ETLJob:
     created_at: datetime = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.created_at is None:
             self.created_at = datetime.now()
 
@@ -58,7 +59,9 @@ class ETLJob:
 class DataExtractor:
     """データ抽出エンジン"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path):
         self.project_root = Path(project_root)
         self.cache_dir = self.project_root / ".etl_cache"
         self.cache_dir.mkdir(exist_ok=True)
@@ -176,6 +179,7 @@ class DataTransformer:
     """データ変換エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.transformations = {
             "normalize": self._normalize,
             "aggregate": self._aggregate,
@@ -277,7 +281,9 @@ class DataTransformer:
 class DataLoader:
     """データロードエンジン"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path):
         self.project_root = Path(project_root)
         self.output_dir = self.project_root / "etl_output"
         self.output_dir.mkdir(exist_ok=True)
@@ -327,7 +333,9 @@ class DataLoader:
 class ETLPipeline:
     """ETLパイプライン統合"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path):
         self.project_root = Path(project_root)
         self.extractor = DataExtractor(project_root)
         self.transformer = DataTransformer()

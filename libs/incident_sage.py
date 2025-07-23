@@ -15,6 +15,7 @@ class IncidentSage:
     """インシデント賢者 - 危機対応とリスク評価"""
 
     def __init__(self, *args, **kwargs):
+        """初期化メソッド"""
         self.name = "Incident"
         logger.info("Incident Sage initialized")
         logger.info("Incident Sage ready for crisis management")

@@ -78,7 +78,9 @@ class VectorSearchConfig:
 class EmbeddingGenerator:
     """埋め込みベクター生成基底クラス"""
 
-    def __init__(self, config: VectorSearchConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    VectorSearchConfig):
         self.config = config
 
     async def generate_embedding(self, text: str) -> np.ndarray:
@@ -97,7 +99,9 @@ class EmbeddingGenerator:
 class OpenAIEmbeddingGenerator(EmbeddingGenerator):
     """OpenAI埋め込み生成器"""
 
-    def __init__(self, config: VectorSearchConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    VectorSearchConfig):
         super().__init__(config)
         if config.openai_api_key:
             openai.api_key = config.openai_api_key
@@ -135,7 +139,9 @@ class OpenAIEmbeddingGenerator(EmbeddingGenerator):
 class SentenceTransformerEmbeddingGenerator(EmbeddingGenerator):
     """Sentence Transformers埋め込み生成器"""
 
-    def __init__(self, config: VectorSearchConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    VectorSearchConfig):
         super().__init__(config)
         self.model = SentenceTransformer(
             config.sentence_transformer_model, device=config.sentence_transformer_device

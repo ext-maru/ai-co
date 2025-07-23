@@ -121,6 +121,7 @@ def add_comments_to_file(file_path: Path, dry_run: bool = False) -> int:
             added_comments += 3
         
         i = 0
+        # ループ処理
         while i < len(lines):
             line = lines[i]
             
@@ -214,7 +215,9 @@ def main():
             total_comments += comments_added
             modified_files += 1
     
-    print(f"\nSummary: {total_comments} comments in {modified_files} files {'would be' if args.dry_run else 'were'} added")
+    print(f"\nSummary: {total_comments} comments in {modified_files} files {'would be' \
+        if args.dry_run \
+        else 'were'} added")
 
 
 if __name__ == "__main__":

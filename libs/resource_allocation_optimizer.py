@@ -92,6 +92,7 @@ class ResourceAllocationOptimizer:
     """Strategic resource allocation optimization system"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = PROJECT_ROOT
         self.allocation_history = []
         self.competing_priorities = []

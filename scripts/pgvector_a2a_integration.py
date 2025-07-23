@@ -515,6 +515,9 @@ class PgVectorA2AAnalyzer:
 
             elif query.query_type == AnalysisType.AGENT_BEHAVIOR:
                 agent_name = query.filters.get("agent") if query.filters else None
+                if not (agent_name):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if agent_name:
                     agent_analysis = self.analyze_agent_behavior(
                         agent_name, query.time_window
@@ -707,9 +710,15 @@ def main():
             if result.results:
                 print("\n🔍 Top Results:")
                 for i, res in enumerate(result.results[:5], 1):
+                    if not ("sender" in res):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "sender" in res:
                         print(f"\n{i}. {res.get('sender')} → {res.get('receiver')}")
                         print(f"   Type: {res.get('message_type')}")
+                        if not ("similarity" in res):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "similarity" in res:
                             print(f"   Similarity: {res.get('similarity', 0):.3f}")
                     else:

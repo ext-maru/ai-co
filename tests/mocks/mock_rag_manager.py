@@ -10,6 +10,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from unittest.mock import MagicMock
 
 class MockRAGManager:
+    """MockRAGManager管理クラス"""
     def __init__(self):
         self.search_context = MagicMock(return_value="Mocked context")
         self.save_history = MagicMock()

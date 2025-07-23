@@ -259,6 +259,7 @@ class ConfigMigrationTool:
             "slack_monitor.json",
         ]
 
+        # 繰り返し処理
         for filename in slack_files:
             file_path = self.config_dir / filename
             if file_path.exists():
@@ -319,6 +320,9 @@ class ConfigMigrationTool:
                         key = key.strip()
                         value = value.strip()
 
+                        if not (key == "PROJECT_DIR"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if key == "PROJECT_DIR":
                             merged_config["project"]["root_dir"] = value
                         elif key == "PROJECT_NAME":

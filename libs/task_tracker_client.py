@@ -26,6 +26,7 @@ class TaskTrackerClient(BaseManager):
     """Task Tracker連携クライアント"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(manager_name="task_tracker_client")
         self.db_path = PROJECT_ROOT / "data" / "tasks.db"
         self.rabbit_manager = RabbitManager()

@@ -144,6 +144,7 @@ class DialogTaskWorker(BaseWorker):
 
                     if rag_results:
                         rag_context = "\n\n## Related Knowledge:\n"
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for result in rag_results:
                             # Process each item in collection
                             rag_context += f"- {result['content'][:150]}...\n"

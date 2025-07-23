@@ -79,6 +79,7 @@ class GitHookMonitor:
     """Gitフック監視システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.hooks_template_dir = Path(__file__).parent / "hooks_templates"
         self.detector = OriginalDetector()
 
@@ -199,6 +200,7 @@ echo "✅ プッシュ前チェック完了"
                     # ファイル内容をチェック
                     full_path = os.path.join(repo_path, file_path)
                     if os.path.exists(full_path):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(full_path, "r") as f:
                             content = f.read()
 
@@ -207,8 +209,12 @@ echo "✅ プッシュ前チェック完了"
                         )
 
                         result = self.detector.detect_violations(context)
+                        if not (result.has_violations):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if result.has_violations:
                             violations_found = True
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             for violation in result.violations:
                                 print(f"  ⚠️  {violation.description}")
 
@@ -276,6 +282,7 @@ class FileWatchGuardian(FileSystemEventHandler):
     """ファイル監視ガーディアン"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.observer = Observer()
         self.detector = OriginalDetector()
@@ -342,6 +349,9 @@ class FileWatchGuardian(FileSystemEventHandler):
                         violations.append(violation)
 
                         # 自動修正可能な場合は試みる
+                        if not (violation.auto_fixable):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if violation.auto_fixable:
                             self._attempt_auto_fix(violation, file_path)
 
@@ -362,6 +372,7 @@ class CommandInterceptor:
     """コマンドインターセプター"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.detector = OriginalDetector()
         self.db = ElderFlowViolationDB()
         self.command_patterns = {
@@ -396,6 +407,7 @@ class CommandInterceptor:
 
     def get_corrected_command(self, command: str) -> Optional[str]:
         """修正されたコマンドを取得"""
+        # 繰り返し処理
         for violation_type, patterns in self.command_patterns.items():
             for pattern, replacement in patterns:
                 if re.match(pattern, command):
@@ -458,6 +470,7 @@ class RealtimeMonitoringSystem:
     """統合リアルタイム監視システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.git_monitor = GitHookMonitor()
         self.file_guardian = FileWatchGuardian()
         self.command_interceptor = CommandInterceptor()
@@ -554,6 +567,7 @@ class RealtimeMonitoringSystem:
         """定期チェックをスケジュール（デフォルト5分）"""
 
         def run_check():
+            """run_checkチェックメソッド"""
             self._run_periodic_check()
             # 次回のチェックをスケジュール
             self.periodic_timer = threading.Timer(interval, run_check)

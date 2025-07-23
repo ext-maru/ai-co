@@ -134,6 +134,7 @@ class CouncilReviewCriteria:
     }
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(f"{__name__}.{self.__class__.__name__}")
 
     def evaluate_report(self, report: Dict) -> ReviewResult:
@@ -366,6 +367,7 @@ class ElderCouncilReviewSystem:
     """エルダー評議会報告審査システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.criteria = CouncilReviewCriteria()
         self.enhancer = ReportEnhancer()
         self.propagation_engine = SagePropagationEngine()

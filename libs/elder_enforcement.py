@@ -42,6 +42,7 @@ class ElderTreeEnforcement:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.registry = ElderRegistry()
         self.logger = self._setup_logger()
 
@@ -194,9 +195,12 @@ class ElderTreeEnforcement:
             pass
         """
 
-        def decorator(func: Callable) -> Callable:
+        def decorator(func:
+            """decoratorメソッド"""
+        Callable) -> Callable:
             @wraps(func)
             async def wrapper(*args, **kwargs):
+                """wrapperメソッド"""
                 # 関数の情報を取得
                 func_info = {
                     "name": func.__name__,
@@ -354,7 +358,10 @@ class ElderTreeEnforcement:
             else:
                 # 猶予期間内 - 再警告
                 self.logger.warning(
-                    f"Grace period remaining for {process_name}: {self.enforcement_config['grace_period'] - elapsed:.0f}s"
+                    (
+                        f"f"Grace period remaining for {process_name}: "
+                        f"{self.enforcement_config['grace_period'] - elapsed:.0f}s""
+                    )
                 )
         else:
             # 初回警告
@@ -866,13 +873,16 @@ def require_elder_registration(agent_type: AgentType = AgentType.SERVANT):
     """エルダー登録必須デコレーター"""
 
     async def async_decorator(func):
+        """async_decoratorメソッド"""
         enforcement = await get_enforcement()
         return enforcement.require_elder_registration(agent_type)(func)
 
     # 同期版対応
     def sync_decorator(func):
+        """sync_decoratorメソッド"""
         @wraps(func)
         def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             # 非同期での登録チェックを同期的に実行
             import asyncio
 

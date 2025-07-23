@@ -41,7 +41,9 @@ class ElderFlowError(Exception):
 class SageConsultationError(ElderFlowError):
     """賢者相談エラー"""
 
-    def __init__(self, sage_type: str, message: str, details: Optional[Dict] = None):
+    def __init__(self, sage_type:
+        """初期化メソッド"""
+    str, message: str, details: Optional[Dict] = None):
         super().__init__(
             f"Sage consultation failed: {sage_type} - {message}", "EF001", details
         )
@@ -51,7 +53,9 @@ class SageConsultationError(ElderFlowError):
 class QualityGateError(ElderFlowError):
     """品質ゲートエラー"""
 
-    def __init__(self, gate_name: str, message: str, score: float = 0.0):
+    def __init__(self, gate_name:
+        """初期化メソッド"""
+    str, message: str, score: float = 0.0):
         super().__init__(
             f"Quality gate failed: {gate_name} - {message}",
             "EF002",
@@ -64,7 +68,9 @@ class QualityGateError(ElderFlowError):
 class ServantExecutionError(ElderFlowError):
     """サーバント実行エラー"""
 
-    def __init__(self, servant_type: str, message: str, task_id: Optional[str] = None):
+    def __init__(self, servant_type:
+        """初期化メソッド"""
+    str, message: str, task_id: Optional[str] = None):
         super().__init__(
             f"Servant execution failed: {servant_type} - {message}",
             "EF003",
@@ -76,7 +82,9 @@ class ServantExecutionError(ElderFlowError):
 class GitAutomationError(ElderFlowError):
     """Git自動化エラー"""
 
-    def __init__(self, operation: str, message: str, repository: Optional[str] = None):
+    def __init__(self, operation:
+        """初期化メソッド"""
+    str, message: str, repository: Optional[str] = None):
         super().__init__(
             f"Git automation failed: {operation} - {message}",
             "EF004",
@@ -88,7 +96,9 @@ class GitAutomationError(ElderFlowError):
 class CouncilReportError(ElderFlowError):
     """評議会報告エラー"""
 
-    def __init__(self, report_type: str, message: str):
+    def __init__(self, report_type:
+        """初期化メソッド"""
+    str, message: str):
         super().__init__(
             f"Council report failed: {report_type} - {message}",
             "EF005",
@@ -226,6 +236,7 @@ class ElderFlowErrorHandler:
     """Elder Flowエラーハンドラー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger("ElderFlowErrorHandler")
         self.error_history = []
         self.recovery_strategies = {}
@@ -236,9 +247,12 @@ class ElderFlowErrorHandler:
         if config is None:
             config = RetryConfig()
 
-        def decorator(func: Callable[..., T]) -> Callable[..., T]:
+        def decorator(func:
+            """decoratorメソッド"""
+        Callable[..., T]) -> Callable[..., T]:
             @wraps(func)
             async def wrapper(*args, **kwargs) -> T:
+                """wrapperメソッド"""
                 last_exception = None
 
                 for attempt in range(config.max_attempts):
@@ -349,6 +363,7 @@ def with_error_handling(func: Callable[..., T]) -> Callable[..., T]:
 
     @wraps(func)
     async def wrapper(*args, **kwargs) -> T:
+        """wrapperメソッド"""
         try:
             return await func(*args, **kwargs)
         except Exception as e:

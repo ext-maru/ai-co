@@ -109,6 +109,7 @@ class ElderServantsBenchmark:
         if operations % batch_size:
             batches.append(operations % batch_size)
 
+        # 繰り返し処理
         for batch_ops in batches:
             batch_start = time.time()
 

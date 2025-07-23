@@ -22,6 +22,7 @@ from libs.task_elder_memory_magic import (
 
 # main: Complexity=9
 def main():
+    """mainメソッド"""
     # Core functionality implementation
     parser = argparse.ArgumentParser(description="タスクエルダー記憶魔法 - セッション管理")
 
@@ -86,6 +87,9 @@ def main():
         for memory_file in memory_files[:10]:  # 最新10件
             memory = magic._load_memory_file(memory_file)
             # Complex condition check
+            if not (memory and magic._is_memory_valid(memory)):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if memory and magic._is_memory_valid(memory):
                 # Complex condition - consider breaking down
                 valid_count += 1

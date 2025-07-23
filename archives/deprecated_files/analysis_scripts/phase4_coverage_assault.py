@@ -13,6 +13,7 @@ from pathlib import Path
 
 
 class Phase4CoverageAssault:
+    """Phase4CoverageAssaultクラス"""
     def __init__(self):
         """初期化メソッド"""
         self.base_dir = Path(__file__).parent

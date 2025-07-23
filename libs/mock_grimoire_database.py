@@ -14,7 +14,9 @@ from typing import Any, Dict, List, Optional
 class MockGrimoireDatabase:
     """ファイルベースのモックGrimoireデータベース"""
 
-    def __init__(self, database_url: Optional[str] = None):
+    def __init__(self, database_url:
+        """初期化メソッド"""
+    Optional[str] = None):
         self.logger = logging.getLogger(__name__)
         self.database_url = database_url or "mock://localhost/grimoire"
 
@@ -170,7 +172,9 @@ class MockGrimoireDatabase:
 class MockGrimoireVectorSearch:
     """ベクトル検索のモック実装"""
 
-    def __init__(self, database: MockGrimoireDatabase):
+    def __init__(self, database:
+        """初期化メソッド"""
+    MockGrimoireDatabase):
         self.database = database
         self.logger = logging.getLogger(__name__)
 

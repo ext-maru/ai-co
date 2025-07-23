@@ -11,6 +11,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 @dataclass
 class ConnectionConfig:
+    """ConnectionConfigクラス"""
     database_path: str
     max_connections: int = 10
     timeout: float = 30.0
@@ -20,19 +21,25 @@ class ConnectionConfig:
 
 
 class DatabaseError(Exception):
+    """DatabaseErrorクラス"""
     pass
 
 
 class ConnectionPoolError(DatabaseError):
+    """ConnectionPoolErrorクラス"""
     pass
 
 
 class TransactionError(DatabaseError):
+    """TransactionErrorクラス"""
     pass
 
 
 class ConnectionPool:
-    def __init__(self, config: ConnectionConfig):
+    """ConnectionPoolクラス"""
+    def __init__(self, config:
+        """初期化メソッド"""
+    ConnectionConfig):
         self.config = config
         self._pool = Queue(maxsize=config.max_connections)
         self._lock = threading.Lock()
@@ -42,11 +49,13 @@ class ConnectionPool:
         self._initialize_pool()
 
     def _initialize_pool(self):
+        """initialize_pool（内部メソッド）"""
         for _ in range(min(3, self.config.max_connections)):
             conn = self._create_connection()
             self._pool.put(conn)
 
     def _create_connection(self) -> sqlite3.Connection:
+        """create_connection作成（内部メソッド）"""
         try:
             conn = sqlite3.connect(
                 self.config.database_path,
@@ -66,7 +75,9 @@ class ConnectionPool:
         except sqlite3.Error as e:
             raise ConnectionPoolError(f"Failed to create database connection: {e}")
 
-    def get_connection(self, timeout: Optional[float] = None) -> sqlite3.Connection:
+    def get_connection(self, timeout:
+        """connection取得メソッド"""
+    Optional[float] = None) -> sqlite3.Connection:
         timeout = timeout or self.config.timeout
 
         try:
@@ -78,7 +89,9 @@ class ConnectionPool:
                 else:
                     raise ConnectionPoolError("Connection pool exhausted")
 
-    def return_connection(self, conn: sqlite3.Connection):
+    def return_connection(self, conn:
+        """return_connectionメソッド"""
+    sqlite3.Connection):
         if conn:
             try:
                 conn.rollback()
@@ -87,7 +100,9 @@ class ConnectionPool:
                 self._logger.warning(f"Failed to return connection to pool: {e}")
                 self._close_connection(conn)
 
-    def _close_connection(self, conn: sqlite3.Connection):
+    def _close_connection(self, conn:
+        """close_connection（内部メソッド）"""
+    sqlite3.Connection):
         try:
             conn.close()
             with self._lock:
@@ -96,6 +111,7 @@ class ConnectionPool:
             self._logger.warning(f"Error closing connection: {e}")
 
     def close_all(self):
+        """close_allメソッド"""
         connections = []
         while not self._pool.empty():
             try:
@@ -109,13 +125,17 @@ class ConnectionPool:
 
 
 class Transaction:
-    def __init__(self, connection: sqlite3.Connection, pool: ConnectionPool):
+    """Transactionクラス"""
+    def __init__(self, connection:
+        """初期化メソッド"""
+    sqlite3.Connection, pool: ConnectionPool):
         self.connection = connection
         self.pool = pool
         self._active = False
         self._logger = logging.getLogger(__name__)
 
     def __enter__(self):
+        """__enter__特殊メソッド"""
         try:
             self.connection.execute("BEGIN")
             self._active = True
@@ -126,6 +146,7 @@ class Transaction:
             raise TransactionError(f"Failed to start transaction: {e}")
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """__exit__特殊メソッド"""
         try:
             if exc_type is None:
                 self.connection.commit()
@@ -141,7 +162,9 @@ class Transaction:
 
         return False
 
-    def execute(self, query: str, parameters: Optional[Tuple] = None) -> sqlite3.Cursor:
+    def execute(self, query:
+        """execute実行メソッド"""
+    str, parameters: Optional[Tuple] = None) -> sqlite3.Cursor:
         if not self._active:
             raise TransactionError("Transaction is not active")
 
@@ -150,7 +173,9 @@ class Transaction:
         except sqlite3.Error as e:
             raise DatabaseError(f"Query execution failed: {e}")
 
-    def executemany(self, query: str, parameters: List[Tuple]) -> sqlite3.Cursor:
+    def executemany(self, query:
+        """executemany実行メソッド"""
+    str, parameters: List[Tuple]) -> sqlite3.Cursor:
         if not self._active:
             raise TransactionError("Transaction is not active")
 
@@ -161,7 +186,10 @@ class Transaction:
 
 
 class DatabaseManager:
-    def __init__(self, config: ConnectionConfig):
+    """DatabaseManager - 管理システムクラス"""
+    def __init__(self, config:
+        """初期化メソッド"""
+    ConnectionConfig):
         self.config = config
         self._pool = ConnectionPool(config)
         self._logger = logging.getLogger(__name__)
@@ -169,12 +197,14 @@ class DatabaseManager:
         self._ensure_database_exists()
 
     def _ensure_database_exists(self):
+        """ensure_database_exists（内部メソッド）"""
         db_path = Path(self.config.database_path)
         if not db_path.parent.exists():
             db_path.parent.mkdir(parents=True, exist_ok=True)
 
     @contextmanager
     def get_connection(self):
+        """connection取得メソッド"""
         conn = None
         try:
             conn = self._pool.get_connection()
@@ -184,10 +214,13 @@ class DatabaseManager:
                 self._pool.return_connection(conn)
 
     def transaction(self) -> Transaction:
+        """transactionメソッド"""
         conn = self._pool.get_connection()
         return Transaction(conn, self._pool)
 
-    def execute(self, query: str, parameters: Optional[Tuple] = None) -> sqlite3.Cursor:
+    def execute(self, query:
+        """execute実行メソッド"""
+    str, parameters: Optional[Tuple] = None) -> sqlite3.Cursor:
         with self.get_connection() as conn:
             try:
                 cursor = conn.execute(query, parameters or ())
@@ -197,7 +230,9 @@ class DatabaseManager:
                 conn.rollback()
                 raise DatabaseError(f"Query execution failed: {e}")
 
-    def executemany(self, query: str, parameters: List[Tuple]) -> sqlite3.Cursor:
+    def executemany(self, query:
+        """executemany実行メソッド"""
+    str, parameters: List[Tuple]) -> sqlite3.Cursor:
         with self.get_connection() as conn:
             try:
                 cursor = conn.executemany(query, parameters)
@@ -237,7 +272,9 @@ class DatabaseManager:
             except sqlite3.Error as e:
                 raise DatabaseError(f"Select query failed: {e}")
 
-    def insert(self, table: str, data: Dict[str, Any]) -> int:
+    def insert(self, table:
+        """insertメソッド"""
+    str, data: Dict[str, Any]) -> int:
         columns = list(data.keys())
         placeholders = ", ".join(["?" for _ in columns])
         values = list(data.values())
@@ -247,7 +284,9 @@ class DatabaseManager:
         cursor = self.execute(query, tuple(values))
         return cursor.lastrowid
 
-    def insert_many(self, table: str, data: List[Dict[str, Any]]) -> int:
+    def insert_many(self, table:
+        """insert_manyメソッド"""
+    str, data: List[Dict[str, Any]]) -> int:
         if not data:
             return 0
 
@@ -298,42 +337,56 @@ class DatabaseManager:
         query = f"CREATE TABLE IF NOT EXISTS {table_name} ({', '.join(column_defs)})"
         self.execute(query)
 
-    def drop_table(self, table_name: str):
+    def drop_table(self, table_name:
+        """drop_tableメソッド"""
+    str):
         query = f"DROP TABLE IF EXISTS {table_name}"
         self.execute(query)
 
-    def table_exists(self, table_name: str) -> bool:
+    def table_exists(self, table_name:
+        """table_existsメソッド"""
+    str) -> bool:
         query = "SELECT name FROM sqlite_master WHERE type='table' AND name=?"
         result = self.select_one(query, (table_name,))
         return result is not None
 
-    def get_table_info(self, table_name: str) -> List[sqlite3.Row]:
+    def get_table_info(self, table_name:
+        """table_info取得メソッド"""
+    str) -> List[sqlite3.Row]:
         query = f"PRAGMA table_info({table_name})"
         return self.select_all(query)
 
     def vacuum(self):
+        """vacuumメソッド"""
         with self.get_connection() as conn:
             conn.execute("VACUUM")
 
     def analyze(self):
+        """analyze分析メソッド"""
         with self.get_connection() as conn:
             conn.execute("ANALYZE")
 
     def get_connection_count(self) -> int:
+        """connection_count取得メソッド"""
         return self._pool._created_connections
 
     def close(self):
+        """closeメソッド"""
         self._pool.close_all()
         self._logger.info("Database manager closed")
 
     def __enter__(self):
+        """__enter__特殊メソッド"""
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """__exit__特殊メソッド"""
         self.close()
 
 
-def create_database_manager(database_path: str, **kwargs) -> DatabaseManager:
+def create_database_manager(database_path:
+    """database_manager作成メソッド"""
+str, **kwargs) -> DatabaseManager:
     config = ConnectionConfig(database_path=database_path, **kwargs)
     return DatabaseManager(config)
 

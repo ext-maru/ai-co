@@ -38,6 +38,7 @@ class ServantRegistry:
     """🏛️ Elder Servant Registry and Management System"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.registry_file = Path("/home/aicompany/ai_co/data/servant_registry.json")
         self.registry_file.parent.mkdir(parents=True, exist_ok=True)
 
@@ -246,7 +247,10 @@ class ServantRegistry:
         # Check capacity
         if len(servant_info.current_tasks) >= servant_info.max_concurrent_tasks:
             logger.error(
-                f"Servant {servant_id} is at capacity ({len(servant_info.current_tasks)}/{servant_info.max_concurrent_tasks})"
+                (
+                    f"f"Servant {servant_id} is at capacity ({len(servant_info.current_tasks)}/"
+                    f"{servant_info.max_concurrent_tasks})""
+                )
             )
             return False
 
@@ -505,7 +509,10 @@ class ServantRegistry:
             # Check if servant has active tasks
             if servant_info.current_tasks:
                 logger.error(
-                    f"Cannot enable maintenance mode for {servant_id}: has {len(servant_info.current_tasks)} active tasks"
+                    (
+                        f"f"Cannot enable maintenance mode for {servant_id}: has "
+                        f"{len(servant_info.current_tasks)} active tasks""
+                    )
                 )
                 return False
 

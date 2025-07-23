@@ -31,6 +31,7 @@ class EnhancedRAGSage(EldersServiceLegacy):
     """強化版RAG賢者 - 全コンポーネント統合"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="EnhancedRAGSage")
         self.tracking_db = UnifiedTrackingDB()
 
@@ -294,6 +295,7 @@ class EnhancedRAGSage(EldersServiceLegacy):
 if __name__ == "__main__":
 
     async def test_enhanced_rag_sage():
+        """test_enhanced_rag_sageテストメソッド"""
         sage = EnhancedRAGSage()
 
         result = await sage.process_request(

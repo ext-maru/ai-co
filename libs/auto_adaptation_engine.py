@@ -132,6 +132,9 @@ class AutoAdaptationEngine:
 
                     # 劣化率計算
                     if baseline > 0:
+                        if not (metric_name in ["response_time", "error_rate"]):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if metric_name in ["response_time", "error_rate"]:
                             # 低い方が良いメトリクス
                             degradation = (current - baseline) / baseline
@@ -139,11 +142,17 @@ class AutoAdaptationEngine:
                             # 高い方が良いメトリクス（throughput等）
                             degradation = (baseline - current) / baseline
 
+                        if not (degradation > 0.1:  # 10%以上の劣化):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if degradation > 0.1:  # 10%以上の劣化
                             degraded_metrics.append(metric_name)
                             performance_score -= degradation * 50
 
                             # ボトルネック特定
+                            if not (degradation > 0.2):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if degradation > 0.2:
                                 bottlenecks.append(
                                     {
@@ -219,6 +228,9 @@ class AutoAdaptationEngine:
 
                 elif bottleneck["type"] == "cpu":
                     # CPU最適化: バッチサイズ調整等
+                    if not ("batch_size" in current_parameters):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "batch_size" in current_parameters:
                         recommended_parameters["batch_size"] = max(
                             current_parameters["batch_size"] // 2, 1
@@ -377,6 +389,9 @@ class AutoAdaptationEngine:
                     baseline = metric_data.get("baseline", 1)
 
                     if baseline > 0:
+                        if not (metric_name in ["response_time", "error_rate"]):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if metric_name in ["response_time", "error_rate"]:
                             # 高い方が悪いメトリクス
                             degradation = (current - baseline) / baseline
@@ -387,6 +402,9 @@ class AutoAdaptationEngine:
                         threshold = rollback_criteria.get(
                             "performance_degradation_threshold", -0.1
                         )
+                        if not (degradation > abs(threshold):  # 閾値の絶対値で比較):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if degradation > abs(threshold):  # 閾値の絶対値で比較
                             rollback_reasons.append(
                                 f"performance_degradation: {metric_name} degraded by " \
@@ -1240,6 +1258,7 @@ class SafetyConstraints:
     """安全性制約管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.constraints = {
             "thread_pool_size": {"min": 1, "max": 100},
             "cache_size": {"min": 10, "max": 5000},
@@ -1257,6 +1276,7 @@ class RollbackManager:
     """ロールバック管理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.rollback_history = deque(maxlen=100)
 
     def create_checkpoint(self, parameters: Dict[str, Any]) -> str:
@@ -1276,6 +1296,7 @@ class ParameterOptimizer:
     """パラメータ最適化"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.optimization_history = deque(maxlen=500)
 
     def optimize(

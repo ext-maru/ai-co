@@ -78,7 +78,10 @@ def run_coverage_analysis():
         for i, item in enumerate(file_impacts[:20], 1):
             print(f"{i:2d}. {item['file']}")
             print(
-                f"    Coverage: {item['covered']:.1f}% | Missing: {item['missing']} lines | Impact: {item['impact']:.0f}"
+                (
+                    f"f"    Coverage: {item['covered']:.1f}% | Missing: {item['missing']} lines | Impact: "
+                    f"{item['impact']:.0f}""
+                )
             )
 
     else:

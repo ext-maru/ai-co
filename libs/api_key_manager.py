@@ -16,12 +16,14 @@ from anthropic import Anthropic, APIError, RateLimitError
 
 
 class RotationStrategy(Enum):
+    """RotationStrategyクラス"""
     ROUND_ROBIN = "round_robin"
     RATE_LIMIT_AWARE = "rate_limit_aware"
     RANDOM = "random"
 
 
 class APIKeyStatus(Enum):
+    """APIKeyStatusクラス"""
     ACTIVE = "active"
     RATE_LIMITED = "rate_limited"
     ERROR = "error"
@@ -29,7 +31,10 @@ class APIKeyStatus(Enum):
 
 
 class APIKeyInfo:
-    def __init__(self, key: str, alias: str):
+    """APIKeyInfoクラス"""
+    def __init__(self, key:
+        """初期化メソッド"""
+    str, alias: str):
         self.key = key
         self.alias = alias
         self.status = APIKeyStatus.ACTIVE
@@ -68,7 +73,10 @@ class APIKeyInfo:
 
 
 class APIKeyManager:
-    def __init__(self, config_path: str = None):
+    """APIKeyManager - 管理システムクラス"""
+    def __init__(self, config_path:
+        """初期化メソッド"""
+    str = None):
         self.logger = logging.getLogger(__name__)
         self.config = self._load_config(config_path)
         self.api_keys = self._load_api_keys()

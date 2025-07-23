@@ -22,7 +22,10 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
         
         # 1. hardcoded credentials/secrets
         secret_patterns = [
-            (r'password\s*=\s*["\'](?!test-|dummy-|placeholder)[^"\']{6,}["\']', 'password = os.environ.get("PASSWORD", "")'),
+            (r'password\s*=\s*[
+                "\'](?!test-|dummy-|placeholder)[^"\']{6,
+                }["\'
+            ]', 'password = os.environ.get("PASSWORD", "")'),
             (r'api_key\s*=\s*["\'][^"\']{20,}["\']', 'api_key = os.environ.get("API_KEY", "")'),
             (r'secret\s*=\s*["\'][^"\']{10,}["\']', 'secret = os.environ.get("SECRET", "")'),
             (r'token\s*=\s*["\'](?!test-)[^"\']{10,}["\']', 'token = os.environ.get("TOKEN", "")')
@@ -119,7 +122,8 @@ def fix_security_issues(file_path: str) -> Tuple[int, List[str]]:
             modified = True
         
         # 7. SQL injection prevention
-        if 'execute(' in content and ('SELECT' in content or 'INSERT' in content or 'UPDATE' in content or 'DELETE' in content):
+        if 'execute(' in content and \
+            ('SELECT' in content or 'INSERT' in content or 'UPDATE' in content or 'DELETE' in content):
             # パラメータ化クエリのチェック
             lines = content.splitlines()
             for i, line in enumerate(lines):

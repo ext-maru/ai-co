@@ -181,7 +181,9 @@ class UnifiedInterfaceSystem:
 
         # WebUI Routes
         @self.app.get("/", response_class=HTMLResponse)
-        async def dashboard(request: Request):
+        async def dashboard(request:
+            """dashboardメソッド"""
+        Request):
             self.interface_stats["web_ui_visits"] += 1
             return self.templates.TemplateResponse(
                 "dashboard.html",
@@ -193,21 +195,27 @@ class UnifiedInterfaceSystem:
             )
 
         @self.app.get("/search", response_class=HTMLResponse)
-        async def search_interface(request: Request):
+        async def search_interface(request:
+            """interface検索メソッド"""
+        Request):
             return self.templates.TemplateResponse(
                 "search.html",
                 {"request": request, "title": "Advanced Search & Analytics"},
             )
 
         @self.app.get("/learning", response_class=HTMLResponse)
-        async def learning_interface(request: Request):
+        async def learning_interface(request:
+            """learning_interfaceメソッド"""
+        Request):
             return self.templates.TemplateResponse(
                 "learning.html",
                 {"request": request, "title": "Automated Learning System"},
             )
 
         @self.app.get("/sages", response_class=HTMLResponse)
-        async def sages_interface(request: Request):
+        async def sages_interface(request:
+            """sages_interfaceメソッド"""
+        Request):
             return self.templates.TemplateResponse(
                 "sages.html", {"request": request, "title": "Four Sages Integration"}
             )
@@ -215,32 +223,42 @@ class UnifiedInterfaceSystem:
         # API Routes
         @self.app.get("/api/status")
         async def api_status():
+            """api_statusメソッド"""
             self.interface_stats["api_calls"] += 1
             return await self.get_system_status()
 
         @self.app.post("/api/search")
-        async def api_search(request: dict):
+        async def api_search(request:
+            """api_searchメソッド"""
+        dict):
             self.interface_stats["api_calls"] += 1
             return await self.handle_search_request(request)
 
         @self.app.post("/api/sages/collaborative-analysis")
-        async def api_sages_analysis(request: dict):
+        async def api_sages_analysis(request:
+            """api_sages_analysisメソッド"""
+        dict):
             self.interface_stats["api_calls"] += 1
             return await self.handle_sages_analysis(request)
 
         @self.app.post("/api/learning/create-task")
-        async def api_learning_task(request: dict):
+        async def api_learning_task(request:
+            """api_learning_taskメソッド"""
+        dict):
             self.interface_stats["api_calls"] += 1
             return await self.handle_learning_task(request)
 
         # WebSocket Route
         @self.app.websocket("/ws/{session_id}")
-        async def websocket_endpoint(websocket: WebSocket, session_id: str):
+        async def websocket_endpoint(websocket:
+            """websocket_endpointメソッド"""
+        WebSocket, session_id: str):
             await self.handle_websocket_connection(websocket, session_id)
 
         # Health Check
         @self.app.get("/health")
         async def health_check():
+            """health_checkチェックメソッド"""
             return {"status": "healthy", "timestamp": datetime.now().isoformat()}
 
     async def initialize_system(self) -> Dict[str, Any]:

@@ -40,6 +40,7 @@ class WorkerDiscoveryService:
     """Worker発見サービス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.discovered_workers = {}
         self.discovery_cache = {}
         self.last_discovery_time = None
@@ -167,6 +168,7 @@ class KnowledgeSharingManager:
     """知識共有マネージャー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.shared_knowledge = {}
         self.sharing_protocols = {}
         self.knowledge_version_control = {}
@@ -285,6 +287,7 @@ class LearningSync:
     """学習同期システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.sync_protocols = {}
         self.learning_states = {}
         self.synchronization_queue = deque()
@@ -375,6 +378,7 @@ class LearningSync:
 
             # 精度が高いWorkerの投票に重みを付ける
             weight = accuracy
+        # 繰り返し処理
             for pattern in patterns:
                 pattern_votes[pattern] += weight
 
@@ -408,6 +412,7 @@ class LearningSync:
 
             total_weight += accuracy
             for param_name, value in params.items():
+        # 繰り返し処理
                 weighted_params[param_name] += value * accuracy
 
         # 正規化
@@ -491,6 +496,7 @@ class DistributedLearningProtocol:
     """分散学習プロトコル"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.learning_sessions = {}
         self.privacy_protocols = {}
         self.federated_models = {}
@@ -674,6 +680,7 @@ class DistributedLearningProtocol:
             data_points = result["privacy_metrics"]["data_points_used"]
             weight = data_points / total_data_points
 
+        # 繰り返し処理
             # モデル更新の集約
             for layer, update in result["model_updates"].items():
                 aggregated_updates[layer] += update * weight
@@ -730,6 +737,7 @@ class SkillSpecializationTracker:
     """スキル特化追跡システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.skill_profiles = {}
         self.specialization_history = {}
         self.skill_evolution_patterns = {}
@@ -988,6 +996,7 @@ class CollaborationOptimizer:
     """協調最適化システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.collaboration_patterns = {}
         self.team_formations = {}
         self.optimization_history = {}
@@ -1066,6 +1075,7 @@ class CollaborationOptimizer:
             worker_id = worker["worker_id"]
             specializations = worker.get("specializations", {})
             load = worker.get("current_load", 0.5)
+        # 繰り返し処理
 
             capability_matrix[worker_id] = {
                 "skills": specializations,
@@ -1118,6 +1128,7 @@ class CollaborationOptimizer:
         for team_idx in range(team_count):
             if not remaining_workers:
                 break
+        # 繰り返し処理
 
             team_size = min(optimal_team_size, len(remaining_workers))
             team_members = []
@@ -1156,6 +1167,7 @@ class CollaborationOptimizer:
 
             for member in team_members:
                 for skill, level in member.get("specializations", {}).items():
+            # 繰り返し処理
                     team_skills[skill].append(level)
                 total_availability += 1.0 - member.get("current_load", 0.5)
 
@@ -1394,6 +1406,7 @@ class SecurityGuard:
     """セキュリティガードシステム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.security_policies = {}
         self.threat_detection = {}
         self.encryption_protocols = {}
@@ -1764,6 +1777,7 @@ class PerformanceMonitor:
     """パフォーマンス監視システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.performance_history = {}
         self.monitoring_metrics = {}
         self.alert_thresholds = {}
@@ -2503,6 +2517,7 @@ class CrossWorkerLearningSystem:
     """Cross-Worker Learning System - Worker間学習システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         # コンポーネントの初期化
         self.worker_discovery_service = WorkerDiscoveryService()
         self.knowledge_sharing_manager = KnowledgeSharingManager()
@@ -2955,6 +2970,7 @@ class CrossWorkerLearningSystem:
         worker_ids = list(worker_capability_map.keys())
 
         for i, worker1 in enumerate(worker_ids):
+        # 繰り返し処理
             for worker2 in worker_ids[i + 1 :]:
                 caps1 = set(worker_capability_map[worker1]["capabilities"])
                 caps2 = set(worker_capability_map[worker2]["capabilities"])
@@ -3026,6 +3042,7 @@ class CrossWorkerLearningSystem:
         knowledge_base = worker.get("knowledge_base", {})
         knowledge_items = []
 
+        # 繰り返し処理
         for domain, domain_data in knowledge_base.items():
             patterns = domain_data.get("patterns", [])
             for pattern in patterns:

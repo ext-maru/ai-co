@@ -14,11 +14,13 @@ class CommonFixes:
     """Auto-generated placeholder class"""
 
     def __init__(self, *args, **kwargs):
+        """初期化メソッド"""
         logger.warning(
             f"Using auto-generated placeholder for {self.__class__.__name__}"
         )
 
     def __getattr__(self, name):
+        """__getattr__特殊メソッド"""
         logger.warning(f"Accessing placeholder attribute: {name}")
         return lambda *args, **kwargs: None
 

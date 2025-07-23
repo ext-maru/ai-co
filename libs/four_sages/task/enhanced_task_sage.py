@@ -35,6 +35,7 @@ class EnhancedTaskSage(TaskSage):
     """追跡システム統合版 Task Sage"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
 
         # 追跡データベース初期化

@@ -947,16 +947,28 @@ async def main():
         print(f"🤖 テスト対象サーバント数: {results['test_summary']['total_servants_tested']}")
 
         print(
-            f"\n🔧 個別サーバントテスト: {results['individual_servant_tests']['successful']}/{results['individual_servant_tests']['total_tested']} 成功"
+            (
+                f"f"\n🔧 個別サーバントテスト: {results['individual_servant_tests']['successful']}/"
+                f"{results['individual_servant_tests']['total_tested']} 成功""
+            )
         )
         print(
-            f"🤝 組織間協調テスト: {results['organization_coordination_tests']['successful_collaborations']}/{len(results['organization_coordination_tests']['coordination_tests'])} 成功"
+            (
+                f"f"🤝 組織間協調テスト: {results['organization_coordination_tests']['successful_collaborations']}/"
+                f"{len(results['organization_coordination_tests']['coordination_tests'])} 成功""
+            )
         )
         print(
-            f"🌊 Elder Flow統合: {results['elder_flow_integration_tests']['successful_flows']}/{len(results['elder_flow_integration_tests']['flow_tests'])} 成功"
+            (
+                f"f"🌊 Elder Flow統合: {results['elder_flow_integration_tests']['successful_flows']}/"
+                f"{len(results['elder_flow_integration_tests']['flow_tests'])} 成功""
+            )
         )
         print(
-            f"⚖️ 負荷分散テスト: {results['load_balancing_tests']['successful_tasks']}/{results['load_balancing_tests']['concurrent_tasks']} 成功"
+            (
+                f"f"⚖️ 負荷分散テスト: {results['load_balancing_tests']['successful_tasks']}/"
+                f"{results['load_balancing_tests']['concurrent_tasks']} 成功""
+            )
         )
 
         print(f"\n🏛️ Iron Will品質基準")

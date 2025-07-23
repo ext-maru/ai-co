@@ -29,7 +29,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class SimpleKnowledgeReconstructor:
+    """SimpleKnowledgeReconstructorクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.rag_manager = None
         self.db_integration = None
         

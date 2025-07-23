@@ -152,6 +152,7 @@ class WorkerStabilizationKnight(IncidentKnight):
             ]
 
             for worker in self.target_workers:
+            # 繰り返し処理
                 worker_running = False
 
                 # プロセス名でワーカーを探索
@@ -238,6 +239,7 @@ class WorkerStabilizationKnight(IncidentKnight):
                 # 設定ファイルの内容検証
                 try:
                     if config_path.suffix == ".json":
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(config_path) as f:
                             config_data = json.load(f)
 
@@ -247,6 +249,9 @@ class WorkerStabilizationKnight(IncidentKnight):
                             key for key in required_keys if key not in config_data
                         ]
 
+                        if not (missing_keys):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if missing_keys:
                             issues.append(
                                 Issue(
@@ -302,8 +307,12 @@ class WorkerStabilizationKnight(IncidentKnight):
 
                     missing_modules = []
                     for line in import_lines:
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             # 基本的なインポートチェック（簡易版）
+                            if not ("pika" in line and not self._check_module_available():
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if "pika" in line and not self._check_module_available(
                                 "pika"
                             ):
@@ -366,6 +375,7 @@ class WorkerStabilizationKnight(IncidentKnight):
             ("Traceback", "runtime_error"),
         ]
 
+        # 繰り返し処理
         for log_path in self.log_paths:
             if log_path.exists() and log_path.is_file():
                 try:
@@ -373,9 +383,15 @@ class WorkerStabilizationKnight(IncidentKnight):
                         log_content = f.read()
 
                     for pattern, error_type in error_patterns:
+                        if not (pattern.lower() in log_content.lower()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if pattern.lower() in log_content.lower():
                             # 最近のエラーかどうか確認（簡易版）
                             recent_pattern = datetime.now().strftime("%Y-%m-%d")
+                            if not (():
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if (
                                 recent_pattern in log_content
                                 or len(log_content.split(pattern)) > 2
@@ -828,6 +844,7 @@ if __name__ == "__main__":
     import asyncio
 
     async def test_worker_knight():
+        """test_worker_knightテストメソッド"""
         knight = WorkerStabilizationKnight()
 
         # 巡回テスト

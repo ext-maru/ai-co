@@ -43,7 +43,9 @@ class CleanupStats:
 class LogCleanupSystem:
     """ログファイル自動クリーンアップシステム"""
 
-    def __init__(self, logs_dir: str = "/home/aicompany/ai_co/logs"):
+    def __init__(self, logs_dir:
+        """初期化メソッド"""
+    str = "/home/aicompany/ai_co/logs"):
         self.logs_dir = Path(logs_dir)
         self.cleanup_rules = self._initialize_cleanup_rules()
 

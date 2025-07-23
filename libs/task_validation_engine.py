@@ -33,6 +33,7 @@ class TaskValidationEngine:
     """🏛️ Elder Hierarchy Task Validation System"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.validation_log_path = Path(
             "/home/aicompany/ai_co/logs/task_validation.log"
         )
@@ -259,6 +260,7 @@ class TaskValidationEngine:
         task_lower = task_description.lower()
 
         for elder, specialties in self.elder_specialties.items():
+        # 繰り返し処理
             if elder not in consulted_elders:
                 for specialty in specialties:
                     if specialty in task_lower:
@@ -454,6 +456,9 @@ class TaskValidationEngine:
                 "information",
             ]
 
+            if not (any(keyword in task_lower for keyword in search_keywords)):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if any(keyword in task_lower for keyword in search_keywords):
                 return {
                     "elder": elder,
@@ -585,6 +590,9 @@ class TaskValidationEngine:
                         entry = json.loads(line.strip())
 
                         # Apply servant filter if specified
+                        if not (servant_id and entry.get("servant_id") != servant_id):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if servant_id and entry.get("servant_id") != servant_id:
                             continue
 
@@ -613,6 +621,7 @@ class TaskValidationEngine:
 
         history = await self.get_validation_history(limit=1000)
 
+        # 繰り返し処理
         for entry in history:
             stats["total_validations"] += 1
 

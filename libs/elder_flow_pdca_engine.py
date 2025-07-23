@@ -178,6 +178,7 @@ class PDCACycle:
     """PDCAサイクルの実装"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.db = ElderFlowViolationDB()
         self.current_metrics = PDCAMetrics()
         self.improvement_actions: List[ImprovementAction] = []

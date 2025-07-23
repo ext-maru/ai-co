@@ -40,6 +40,7 @@ class RealtimeDashboard:
     """リアルタイム監視ダッシュボード"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.metrics_db = MetricsDatabase()
         self.is_running = False
         self.update_interval = 5  # 5秒間隔で更新
@@ -622,13 +623,16 @@ DASHBOARD_HTML_TEMPLATE = """
             };
             
             document.getElementById('auto-processor-status').textContent = systemStatus.auto_processor || 'unknown';
-            document.getElementById('auto-processor-status').className = 'metric-value ' + (statusColors[systemStatus.auto_processor] || 'info');
+            document.getElementById('auto-processor-status').className = 'metric-value ' + \
+                (statusColors[systemStatus.auto_processor] || 'info');
             
             document.getElementById('github-api-status').textContent = systemStatus.github_api || 'unknown';
-            document.getElementById('github-api-status').className = 'metric-value ' + (statusColors[systemStatus.github_api] || 'info');
+            document.getElementById('github-api-status').className = 'metric-value ' + \
+                (statusColors[systemStatus.github_api] || 'info');
             
             document.getElementById('four-sages-status').textContent = systemStatus.four_sages || 'unknown';
-            document.getElementById('four-sages-status').className = 'metric-value ' + (statusColors[systemStatus.four_sages] || 'info');
+            document.getElementById('four-sages-status').className = 'metric-value ' + \
+                (statusColors[systemStatus.four_sages] || 'info');
             
             // Update hourly chart
             if (hourlyChart && Object.keys(hourlyStats).length > 0) {
@@ -656,7 +660,8 @@ DASHBOARD_HTML_TEMPLATE = """
                             ${process.issue_title}
                         </div>
                         <div>
-                            ${process.pr_url ? `<a href="${process.pr_url}" target="_blank" style="color: #4CAF50;">PR</a>` : ''}
+                            ${process.pr_url ? `<a href="${process.pr_url}" target="_blank" style= \
+                                "color: #4CAF50;">PR</a>` : ''}
                             <span class="timestamp">${new Date(process.timestamp).toLocaleString()}</span>
                         </div>
                     </div>

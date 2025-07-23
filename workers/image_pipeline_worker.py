@@ -421,6 +421,9 @@ class ImageProcessingWorker(BaseWorker, CommunicationMixin):
                     import asyncio
                     try:
                         loop = asyncio.get_event_loop()
+                        if not (loop.is_running()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if loop.is_running():
                             # Create task for running loop
                             loop.create_task(self.elder_tree.send_message(message))
@@ -1304,6 +1307,7 @@ class ThumbnailWorker(BaseWorker, CommunicationMixin):
                     
                     error_logs = []
                     if error_log_file.exists():
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(error_log_file, 'r') as f:
                             error_logs = json.load(f)
                     

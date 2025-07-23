@@ -24,6 +24,7 @@ class PgVectorUnifiedManager:
     """pgvector統合管理システム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.config = {
             'postgres': {
                 'host': 'localhost',
@@ -90,7 +91,8 @@ class PgVectorUnifiedManager:
         try:
             cmd = self.config['docker_command_prefix'] + [
                 f"docker exec elders-guild-postgres-new psql -U admin "
-                f"-d {self.config['postgres']['database']} -c \"SELECT extname FROM pg_extension WHERE extname = 'vector';\""
+                f"-d {self.config['postgres']['database']} -c \"SELECT extname FROM pg_extension WHERE extname =  \
+                    'vector';\""
             ]
             result = subprocess.run(cmd, capture_output=True, text=True)
             
@@ -285,7 +287,9 @@ class PgVectorUnifiedManager:
         """バッチデータのマイグレーション"""
         try:
             # 簡易埋め込みベクトル生成（384次元）
-            def generate_simple_embedding(text: str) -> str:
+            def generate_simple_embedding(text:
+                """generate_simple_embedding生成メソッド"""
+            str) -> str:
                 # 文字頻度ベースの簡易ベクトル
                 vector = [0.0] * 384
                 for i, char in enumerate(text.lower()[:384]):

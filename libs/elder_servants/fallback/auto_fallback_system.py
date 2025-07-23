@@ -935,8 +935,7 @@ class AutoFallbackSystem:
 
         if final_status == "success":
             lessons.append(
-                f"Strategy {plan.strategy.value} successful for {plan.failure_context." \
-                    "failure_type.value}"
+                f"Strategy {plan.strategy.value} successful for {plan.failure_context.failure_type.value}"
             )
 
             if result.get("alternative_used"):

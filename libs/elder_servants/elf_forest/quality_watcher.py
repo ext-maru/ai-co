@@ -588,7 +588,8 @@ class QualityWatcher(ElfServant):
                 {
                     "type": "high_response_time",
                     "severity": "warning",
-                    "message": f"Average response time {performance_summary['avg_response_time']}ms exceeds 200ms threshold",
+                    "message": f"Average response time "
+                        f"{performance_summary['avg_response_time']}ms exceeds 200ms threshold",
                 }
             )
 

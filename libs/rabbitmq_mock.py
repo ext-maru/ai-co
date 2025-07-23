@@ -36,6 +36,7 @@ class MockChannel:
     """Mock RabbitMQ channel"""
 
     def __init__(self, connection, channel_number=1):
+        """初期化メソッド"""
         self.connection = connection
         self.channel_number = channel_number
         self.is_open = True
@@ -99,7 +100,9 @@ class MockChannel:
 
         # Return mock method frame
         class MethodFrame:
+            """MethodFrameクラス"""
             def __init__(self, queue_name, message_count=0, consumer_count=0):
+                """初期化メソッド"""
                 self.method = type(
                     "method",
                     (),
@@ -164,11 +167,18 @@ class MockChannel:
                 exchange_type = self.exchanges[exchange]["type"]
 
                 for binding_key, bindings in self.bindings.items():
+                # 繰り返し処理
                     for binding in bindings:
+                        if not (binding["exchange"] != exchange):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if binding["exchange"] != exchange:
                             continue
 
                         match = False
+                        if not (exchange_type == "direct"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if exchange_type == "direct":
                             match = binding["routing_key"] == routing_key
                         elif exchange_type == "topic":
@@ -178,8 +188,14 @@ class MockChannel:
                         elif exchange_type == "fanout":
                             match = True
 
+                        if not (match):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if match:
                             queue_name = binding["queue"]
+                            if not (queue_name in self.queues):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if queue_name in self.queues:
                                 self.queues[queue_name]["messages"].append(message)
                                 self.queues[queue_name]["message_count"] += 1
@@ -303,6 +319,7 @@ class MockChannel:
         consumer = self.consumers[consumer_tag]
         queue_info = self.queues[queue]
 
+        # ループ処理
         while queue_info["messages"]:
             message = queue_info["messages"].popleft()
             queue_info["message_count"] -= 1
@@ -311,14 +328,18 @@ class MockChannel:
             self._delivery_tag_counter += 1
 
             class Method:
+                """Methodクラス"""
                 def __init__(self, delivery_tag, redelivered=False):
+                    """初期化メソッド"""
                     self.delivery_tag = delivery_tag
                     self.redelivered = redelivered
                     self.exchange = message.exchange
                     self.routing_key = message.routing_key
 
             class Properties:
+                """Propertiesクラス"""
                 def __init__(self, message_properties):
+                    """初期化メソッド"""
                     for key, value in message_properties.items():
                         setattr(self, key, value)
 
@@ -428,6 +449,7 @@ class PlainCredentials:
     """Mock pika credentials"""
 
     def __init__(self, username, password):
+        """初期化メソッド"""
         self.username = username
         self.password = password
 

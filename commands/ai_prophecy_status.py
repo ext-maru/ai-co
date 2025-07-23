@@ -203,6 +203,7 @@ class ProphecyStatusCommand(BaseCommand):
                 # 状態ファイルから情報取得
                 if state_file.exists():
                     try:
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(state_file, 'r', encoding='utf-8') as f:
                             state_data = json.load(f)
                             engine_state['loaded_prophecies'] = len(state_data)

@@ -48,6 +48,7 @@ class StrategyContext:
     additional_data: Dict[str, Any] = None
     
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.additional_data is None:
             self.additional_data = {}
 

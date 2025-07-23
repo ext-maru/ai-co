@@ -25,6 +25,7 @@ class PromptTemplateManager(BaseManager):
     """プロンプトテンプレート管理マネージャー"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("PromptTemplateManager")
         self.config = get_config()
         self.db_path = Path(self.config.get("prompt.db_path", "db/prompt_templates.db"))

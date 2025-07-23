@@ -129,7 +129,9 @@ class SystemHealthReport:
 class RealtimeMonitoringEnhancement:
     """リアルタイム監視強化システム"""
 
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Dict[str, Any] = None):
         self.logger = logging.getLogger(__name__)
         self.config = config or self._default_config()
 
@@ -405,6 +407,7 @@ class RealtimeMonitoringEnhancement:
         try:
 
             async def handle_client(websocket, path):
+                """handle_clientメソッド"""
                 self.ws_clients.add(websocket)
                 try:
                     await websocket.wait_closed()

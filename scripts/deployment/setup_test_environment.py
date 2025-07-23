@@ -19,12 +19,14 @@ class MockPika:
         AMQPChannelError = Exception
         ConnectionClosed = Exception
         ChannelClosed = Exception
+        """exceptionsクラス"""
         StreamLostError = Exception
 
     class BlockingConnection:
         def __init__(self, *args, **kwargs):
             self.is_open = True
 
+        """BlockingConnectionクラス"""
         def channel(self):
             return MockChannel()
 
@@ -34,12 +36,15 @@ class MockPika:
     class ConnectionParameters:
         def __init__(self, **kwargs):
             pass
+        """ConnectionParametersクラス"""
 
     class PlainCredentials:
         def __init__(self, username, password):
+            """PlainCredentialsクラス"""
             pass
 
     class BasicProperties:
+        """BasicPropertiesクラス"""
         def __init__(self, **kwargs):
             pass
 

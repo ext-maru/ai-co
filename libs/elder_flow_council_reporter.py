@@ -16,6 +16,7 @@ from pathlib import Path
 
 # Report Types
 class ReportType(Enum):
+    """ReportTypeクラス"""
     TASK_COMPLETION = "task_completion"
     QUALITY_ASSESSMENT = "quality_assessment"
     SECURITY_AUDIT = "security_audit"
@@ -27,6 +28,7 @@ class ReportType(Enum):
 
 # Report Priority
 class ReportPriority(Enum):
+    """ReportPriorityクラス"""
     LOW = "low"
     MEDIUM = "medium"
     HIGH = "high"
@@ -35,6 +37,7 @@ class ReportPriority(Enum):
 
 # Report Status
 class ReportStatus(Enum):
+    """ReportStatusクラス"""
     DRAFT = "draft"
     PENDING_REVIEW = "pending_review"
     APPROVED = "approved"
@@ -45,6 +48,7 @@ class ReportStatus(Enum):
 # Council Member
 @dataclass
 class CouncilMember:
+    """CouncilMemberクラス"""
     name: str
     title: str
     role: str
@@ -55,6 +59,7 @@ class CouncilMember:
 # Report Section
 @dataclass
 class ReportSection:
+    """ReportSectionクラス"""
     title: str
     content: str
     priority: ReportPriority = ReportPriority.MEDIUM
@@ -65,6 +70,7 @@ class ReportSection:
 # Elder Council Report
 @dataclass
 class ElderCouncilReport:
+    """ElderCouncilReport - エルダーズギルド関連クラス"""
     report_id: str
     report_type: ReportType
     title: str
@@ -192,7 +198,10 @@ class ElderCouncilReport:
 
 # Council Reporter System
 class ElderCouncilReporter:
-    def __init__(self, reports_dir: str = "knowledge_base/council_reports"):
+    """ElderCouncilReporter - エルダーズギルド関連クラス"""
+    def __init__(self, reports_dir:
+        """初期化メソッド"""
+    str = "knowledge_base/council_reports"):
         self.reports_dir = Path(reports_dir)
         self.reports_dir.mkdir(parents=True, exist_ok=True)
 
@@ -696,6 +705,7 @@ def save_report(report_id: str) -> bool:
 if __name__ == "__main__":
 
     def main():
+        """mainメソッド"""
         print("📊 Elder Council Reporter Test")
 
         # タスク完了報告

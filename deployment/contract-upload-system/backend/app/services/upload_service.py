@@ -14,6 +14,7 @@ from PIL import Image
 
 
 class UploadService:
+    """UploadServiceクラス"""
     def __init__(self):
         self.storage = StorageService()
         self.upload_path = settings.UPLOAD_PATH

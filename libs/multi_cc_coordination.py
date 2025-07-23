@@ -77,6 +77,7 @@ class DistributedTask:
     created_at: datetime = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.created_at is None:
             self.created_at = datetime.now()
 
@@ -113,6 +114,7 @@ class CCMessage:
     message_id: Optional[str] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.message_id is None:
             self.message_id = str(uuid.uuid4())
 
@@ -319,6 +321,7 @@ class CCInstanceManager:
         """Start background cleanup thread"""
 
         def cleanup_loop():
+            """cleanup_loopメソッド"""
             while True:
                 try:
                     import time
@@ -696,6 +699,7 @@ class CCCommunicator:
         """Process incoming messages asynchronously"""
         self._processing = True
 
+        # ループ処理
         while self._processing:
             try:
                 messages = self.receive_messages(instance_id, only_unread=True)
@@ -703,6 +707,9 @@ class CCCommunicator:
                 for message in messages:
                     if message.message_type in self.message_handlers:
                         handler = self.message_handlers[message.message_type]
+                        if not (asyncio.iscoroutinefunction(handler)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if asyncio.iscoroutinefunction(handler):
                             await handler(message)
                         else:
@@ -954,6 +961,7 @@ class MultiCCCoordinator:
         """Start heartbeat thread"""
 
         def heartbeat_loop():
+            """heartbeat_loopメソッド"""
             while True:
                 try:
                     import time

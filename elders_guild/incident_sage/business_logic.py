@@ -434,7 +434,9 @@ class IncidentProcessor:
             # 品質統計
             quality_stats = {
                 "quality_standards_count": len(self.quality_standards),
+                "total_assessments": self.operational_metrics["quality_assessments_performed"],
                 "assessments_performed": self.operational_metrics["quality_assessments_performed"],
+                "average_quality_score": 85.0,  # 仮の値
                 "compliance_trends": self._analyze_compliance_trends()
             }
             

@@ -214,6 +214,7 @@ class FailurePatternDetector(EldersAILegacy):
         """エラーメッセージパターン抽出"""
         error_groups = defaultdict(list)
 
+        # 繰り返し処理
         for failure in failures:
             stderr = failure.get("stderr", "")
             if not stderr:

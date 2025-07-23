@@ -28,13 +28,19 @@ except ImportError as e:
     print(f"既存システムインポートエラー: {e}")
     # フォールバック用のダミークラス
     class ElderCouncil:
+        """ElderCouncil - エルダーズギルド関連クラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
     class NwoDailyCouncil:
+        """NwoDailyCouncilクラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
     class FourSagesCouncil:
+        """FourSagesCouncil - 4賢者システム関連クラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
 
 class CouncilType(Enum):
@@ -84,6 +90,7 @@ class UnifiedElderCouncil:
     """
     
     def __init__(self):
+        """初期化メソッド"""
         self.council_id = "unified_elder_council_001"
         self.created_at = datetime.now()
         
@@ -526,6 +533,7 @@ def main():
         priority = Priority(sys.argv[4]) if len(sys.argv) > 4 else Priority.MEDIUM
         
         async def submit_async():
+            """submit_asyncメソッド"""
             matter_id = await council.submit_matter(title, description, priority)
             print(f"案件提出完了: {matter_id}")
         

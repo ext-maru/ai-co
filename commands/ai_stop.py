@@ -10,11 +10,13 @@ from commands.base_command import BaseCommand
 
 class StopCommand(BaseCommand):
     # Main class implementation
+    """StopCommandクラス"""
     def __init__(self):
         """初期化メソッド"""
         super().__init__(name="stop", description="Elders Guild システムを停止します")
 
     def setup_arguments(self):
+        """setup_argumentsの値を設定"""
         self.parser.add_argument(
             "--force", action="store_true", help="強制終了（プロセスをkillする）"
         )
@@ -153,6 +155,9 @@ class StopCommand(BaseCommand):
                     # Process each item in collection
                     try:
                         method = channel.queue_declare(queue=queue, passive=True)
+                        if not (method.method.message_count > 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if method.method.message_count > 0:
                             queue_info.append(f"{queue}: {method.method.message_count}")
                     except:

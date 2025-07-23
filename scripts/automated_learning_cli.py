@@ -346,6 +346,7 @@ def main():
     cli = AutomatedLearningCLI()
 
     async def run_cli():
+        """run_cliを実行"""
         try:
             if args.status:
                 await cli.show_status()

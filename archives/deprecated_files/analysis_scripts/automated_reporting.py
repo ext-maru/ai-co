@@ -308,7 +308,9 @@ class AutomatedReportingSystem:
                         {{ "%.1f"|format(weekly_metrics.coverage_end) }}%
                     </div>
                     <div class="change {{ 'positive' if weekly_metrics.coverage_change >= 0 else 'negative' }}">
-                        {{ "+" if weekly_metrics.coverage_change >= 0 else "" }}{{ "%.1f"|format(weekly_metrics.coverage_change) }}% this week
+                        {{ "+" \
+                            if weekly_metrics.coverage_change >= 0 \
+                            else "" }}{{ "%.1f"|format(weekly_metrics.coverage_change) }}% this week
                     </div>
                 </div>
                 <div class="metric-card">
@@ -324,7 +326,9 @@ class AutomatedReportingSystem:
                 <div class="metric-card">
                     <h3>System Health</h3>
                     <div class="value {{ 'positive' if weekly_metrics.alerts_triggered < 5 else 'negative' }}">
-                        {{ "✅ Excellent" if weekly_metrics.alerts_triggered < 3 else "⚠️ Monitoring" if weekly_metrics.alerts_triggered < 10 else "🚨 Attention" }}
+                        {{ "✅ Excellent" \
+                            if weekly_metrics.alerts_triggered < 3 \
+                            else "⚠️ Monitoring" if weekly_metrics.alerts_triggered < 10 else "🚨 Attention" }}
                     </div>
                     <div class="change neutral">{{ weekly_metrics.alerts_triggered }} alerts this week</div>
                 </div>
@@ -336,7 +340,8 @@ class AutomatedReportingSystem:
             <h2>📊 Coverage Analysis</h2>
             {% if coverage_charts %}
             <div class="chart-container">
-                <img src="data:image/png;base64,{{ coverage_charts.trend }}" alt="Coverage Trend" style="max-width: 100%; height: auto;">
+                <img src="data:image/png;base64,{{ coverage_charts.trend }}" alt="Coverage \
+                    Trend" style="max-width: 100%; height: auto;">
             </div>
             {% endif %}
             <table>
@@ -350,7 +355,9 @@ class AutomatedReportingSystem:
                     <td>Total Coverage</td>
                     <td>{{ "%.1f"|format(weekly_metrics.coverage_end) }}%</td>
                     <td class="{{ 'positive' if weekly_metrics.coverage_change >= 0 else 'negative' }}">
-                        {{ "+" if weekly_metrics.coverage_change >= 0 else "" }}{{ "%.1f"|format(weekly_metrics.coverage_change) }}%
+                        {{ "+" \
+                            if weekly_metrics.coverage_change >= 0 \
+                            else "" }}{{ "%.1f"|format(weekly_metrics.coverage_change) }}%
                     </td>
                     <td class="{{ 'status-excellent' if weekly_metrics.coverage_end >= 66.7 else 'status-warning' }}">
                         {{ "Target Achieved" if weekly_metrics.coverage_end >= 66.7 else "Below Target" }}
@@ -372,13 +379,17 @@ class AutomatedReportingSystem:
                 </div>
                 <div class="metric-card">
                     <h3>Quality Score</h3>
-                    <div class="value {{ 'positive' if quality_assessment.average_quality_score >= 0.8 else 'negative' }}">
+                    <div class="value {{ 'positive' \
+                        if quality_assessment.average_quality_score >= 0.8 \
+                        else 'negative' }}">
                         {{ "%.2f"|format(quality_assessment.average_quality_score) }}
                     </div>
                 </div>
                 <div class="metric-card">
                     <h3>Pattern Compliance</h3>
-                    <div class="value {{ 'positive' if quality_assessment.pattern_compliance_rate >= 0.7 else 'negative' }}">
+                    <div class="value {{ 'positive' \
+                        if quality_assessment.pattern_compliance_rate >= 0.7 \
+                        else 'negative' }}">
                         {{ "%.1f"|format(quality_assessment.pattern_compliance_rate * 100) }}%
                     </div>
                 </div>
@@ -427,7 +438,9 @@ class AutomatedReportingSystem:
                 </div>
                 <div class="metric-card">
                     <h3>Deployment Success</h3>
-                    <div class="value {{ 'positive' if productivity_metrics.deployment_success_rate >= 0.95 else 'negative' }}">
+                    <div class="value {{ 'positive' \
+                        if productivity_metrics.deployment_success_rate >= 0.95 \
+                        else 'negative' }}">
                         {{ "%.1f"|format(productivity_metrics.deployment_success_rate * 100) }}%
                     </div>
                     <div class="change neutral">Success rate</div>
@@ -492,7 +505,8 @@ class AutomatedReportingSystem:
                     <td>{{ sage }}</td>
                     <td>{{ data.sessions }}</td>
                     <td>{{ data.recommendations }}</td>
-                    <td class="{{ 'status-excellent' if data.effectiveness >= 0.8 else 'status-good' if data.effectiveness >= 0.6 else 'status-warning' }}">
+                    <td class="{{ 'status-excellent' if data.effectiveness " \
+                        ">= 0.8 else 'status-good' if data.effectiveness >= 0.6 else 'status-warning' }}">
                         {{ "%.1f"|format(data.effectiveness * 100) }}%
                     </td>
                 </tr>
@@ -522,15 +536,21 @@ class AutomatedReportingSystem:
 
 ## 📊 Key Achievements
 
-- **Coverage Achievement**: {{ "%.1f"|format(weekly_metrics.coverage_end) }}% ({{ "+" if weekly_metrics.coverage_change >= 0 else "" }}{{ "%.1f"|format(weekly_metrics.coverage_change) }}% this week)
+- **Coverage Achievement**: {{ "%.1f"|format(weekly_metrics.coverage_end) }}% ({{ "+" \
+    if weekly_metrics.coverage_change >= 0 \
+    else "" }}{{ "%.1f"|format(weekly_metrics.coverage_change) }}% this week)
 - **Strategic Target**: {{ "✅ ACHIEVED" if weekly_metrics.coverage_end >= 66.7 else "📈 IN PROGRESS" }}
 - **Tests Generated**: {{ weekly_metrics.tests_generated }} new automated tests
 - **Quality Reviews**: {{ weekly_metrics.quality_reviews }} Elder Council sessions
-- **System Health**: {{ "🟢 Excellent" if weekly_metrics.alerts_triggered < 3 else "🟡 Monitoring" if weekly_metrics.alerts_triggered < 10 else "🔴 Attention Required" }}
+- **System Health**: {{ "🟢 Excellent" \
+    if weekly_metrics.alerts_triggered < 3 \
+    else "🟡 Monitoring" if weekly_metrics.alerts_triggered < 10 else "🔴 Attention Required" }}
 
 ## 🎯 Strategic Status
 
-The Week 4 Strategic Infrastructure continues to {{ "maintain" if weekly_metrics.coverage_end >= 66.7 else "progress toward" }} the 66.7% coverage target through:
+The Week 4 Strategic Infrastructure continues to {{ "maintain" \
+    if weekly_metrics.coverage_end >= 66.7 \
+    else "progress toward" }} the 66.7% coverage target through:
 
 1. **Comprehensive CI/CD Pipeline**: Automated testing and quality gates
 2. **Real-time Coverage Monitoring**: Continuous tracking and alerting
@@ -539,9 +559,15 @@ The Week 4 Strategic Infrastructure continues to {{ "maintain" if weekly_metrics
 
 ## 📈 Performance Metrics
 
-- **Quality Approval Rate**: {{ "%.1f"|format(quality_assessment.approval_rate * 100) if quality_assessment else "N/A" }}%
-- **Developer Productivity**: {{ "%.1f"|format(productivity_metrics.manual_test_time_saved) if productivity_metrics else "N/A" }} hours saved
-- **Deployment Success**: {{ "%.1f"|format(productivity_metrics.deployment_success_rate * 100) if productivity_metrics else "N/A" }}%
+- **Quality Approval Rate**: {{ "%.1f"|format(quality_assessment.approval_rate * 100) \
+    if quality_assessment \
+    else "N/A" }}%
+- **Developer Productivity**: {{ "%.1f"|format(productivity_metrics.manual_test_time_saved) \
+    if productivity_metrics \
+    else "N/A" }} hours saved
+- **Deployment Success**: {{ "%.1f"|format(productivity_metrics.deployment_success_rate * 100) \
+    if productivity_metrics \
+    else "N/A" }}%
 
 ## 🔮 Week Ahead Focus
 
@@ -1007,6 +1033,7 @@ The Week 4 Strategic Infrastructure continues to {{ "maintain" if weekly_metrics
                 output_path = self.reports_dir / f"{filename_base}.md"
                 md_content = self.templates["executive_summary"].render(**template_data)
 
+                # Deep nesting detected (depth: 5) - consider refactoring
                 with open(output_path, "w", encoding="utf-8") as f:
                     f.write(md_content)
 
@@ -1028,6 +1055,7 @@ The Week 4 Strategic Infrastructure continues to {{ "maintain" if weekly_metrics
                     stat = test_file.stat()
                     file_date = date.fromtimestamp(stat.st_mtime)
                     if week_start <= file_date <= week_end:
+                    # 複雑な条件判定
                         count += 1
                 return count
             return 0
@@ -1209,6 +1237,7 @@ if __name__ == "__main__":
     import asyncio
 
     async def main():
+        """mainメソッド"""
         # Generate weekly report
         reporting_system = AutomatedReportingSystem()
         reports = await reporting_system.generate_weekly_report()

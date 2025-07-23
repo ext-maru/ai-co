@@ -34,12 +34,16 @@ class AITestSuggestionsGenerator:
             files_coverage = []
             for package in root.findall(".//package"):
                 for class_elem in package.findall(".//class"):
+                # 繰り返し処理
                     filename = class_elem.attrib.get("filename", "")
                     file_line_rate = float(class_elem.attrib.get("line-rate", 0))
 
                     # Find uncovered lines
                     uncovered_lines = []
                     for line in class_elem.findall(".//line"):
+                        if not (line.attrib.get("hits", "0") == "0"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.attrib.get("hits", "0") == "0":
                             uncovered_lines.append(int(line.attrib.get("number", 0)))
 
@@ -310,6 +314,7 @@ class Test{filename.title().replace('_', '')}:
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description="Generate AI-powered test suggestions")
     parser.add_argument(
         "--coverage-reports",

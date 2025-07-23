@@ -247,8 +247,7 @@ class ElderServantDispatcher:
 
         # Dwarfs handle building, optimization, and infrastructure
         dwarf_task_file = Path(
-            f"/home/aicompany/ai_co/tasks/dwarfs/{assignment.servant_id}_task_{assignment." \
-                "task_id}.json"
+            f"/home/aicompany/ai_co/tasks/dwarfs/{assignment.servant_id}_task_{assignment.task_id}.json"
         )
         dwarf_task_file.parent.mkdir(parents=True, exist_ok=True)
 

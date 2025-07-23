@@ -434,7 +434,10 @@ class OptimizedIssueOrchestrator:
             # リソース状況確認
             resource_status, resource_metrics = self.get_resource_status()
             logger.info(
-                f"💻 リソース状況: {resource_status.value} (CPU: {resource_metrics.cpu_percent:.1f}%, Memory: {resource_metrics.memory_percent:.1f}%)"
+                (
+                    f"f"💻 リソース状況: {resource_status.value} (CPU: {resource_metrics.cpu_percent:.1f}%, Memory: "
+                    f"{resource_metrics.memory_percent:.1f}%)""
+                )
             )
 
             # 処理可能かチェック

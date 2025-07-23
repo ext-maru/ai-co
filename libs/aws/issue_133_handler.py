@@ -183,6 +183,7 @@ class Issue133Implementation:
         response = self.ec2_client.describe_instances()
         
         for reservation in response.get('Reservations', []):
+        # 繰り返し処理
             for instance in reservation.get('Instances', []):
                 instances.append({
                     'InstanceId': instance['InstanceId'],
@@ -202,6 +203,7 @@ class Issue133Implementation:
         functions = []
         paginator = self.lambda_client.get_paginator('list_functions')
         
+        # 繰り返し処理
         for page in paginator.paginate():
             for func in page.get('Functions', []):
                 functions.append({

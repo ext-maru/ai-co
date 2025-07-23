@@ -41,6 +41,7 @@ class RabbitMQMonitor:
     """RabbitMQ 監視システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.project_root = Path("/home/aicompany/ai_co")
 
@@ -339,7 +340,9 @@ class RabbitMQMonitor:
 def create_slack_alert_handler():
     """Slack通知ハンドラー作成"""
 
-    def slack_handler(alert_type: str, message: str):
+    def slack_handler(alert_type:
+        """slack_handlerメソッド"""
+    str, message: str):
         try:
             from libs.slack_notifier import SlackNotifier
 

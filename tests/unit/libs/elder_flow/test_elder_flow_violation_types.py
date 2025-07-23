@@ -213,6 +213,7 @@ class TestViolationDefinition:
         """定義された全ての違反に必須フィールドがあることのテスト"""
         required_fields = ['severity', 'description', 'detection_patterns', 'remediation']
 
+        # 繰り返し処理
         for violation_type, definition in ViolationDefinition.DEFINITIONS.items():
             for field in required_fields:
                 assert field in definition, f"{violation_type.value}に{field}が定義されていません"
@@ -262,7 +263,8 @@ class TestViolationTypeCompleteness:
         assert any('mock' in pattern for pattern in mock_patterns)
 
         # TODO/FIXME関連の検出パターン
-        incomplete_patterns = ViolationDefinition.DEFINITIONS[ViolationType.INCOMPLETE_IMPLEMENTATION]['detection_patterns']
+        incomplete_patterns = ViolationDefinition.DEFINITIONS[ViolationType.INCOMPLETE_IMPLEMENTATION][ \
+            'detection_patterns']
         assert any('TODO' in pattern for pattern in incomplete_patterns)
         assert any('FIXME' in pattern for pattern in incomplete_patterns)
 

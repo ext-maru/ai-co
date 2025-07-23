@@ -16,6 +16,7 @@ from libs.worker_load_balancer import WorkerLoadBalancer
 
 
 def main():
+    """mainメソッド"""
     print("⚡ Worker Optimization - プロセス削減実行")
     print("=" * 60)
 
@@ -63,6 +64,9 @@ def main():
                     proc.terminate()
                     time.sleep(1)
 
+                    if not (proc.is_running()):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if proc.is_running():
                         proc.kill()
 

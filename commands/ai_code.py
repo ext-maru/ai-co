@@ -25,6 +25,7 @@ class CodeCommand(SendCommand):
 
     def setup_arguments(self):
         # プロンプトのみ必須、タイプは自動的に'code'
+        """setup_argumentsの値を設定"""
         self.parser.add_argument("prompt", help="生成するコードの説明")
         # タイプ引数は削除（常に'code'）
         self.parser.add_argument(
@@ -41,6 +42,7 @@ class CodeCommand(SendCommand):
         self.parser.add_argument("--json", action="store_true", help="JSON形式で結果を出力")
 
     def execute(self, args):
+        """executeを実行"""
         # Core functionality implementation
         # タイプを'code'に固定
         args.type = "code"

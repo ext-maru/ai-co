@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class RAGElderDockerMission:
+    """RAGElderDockerMissionクラス"""
     def __init__(self):
         self.knowledge_base_dir = Path("/home/aicompany/ai_co/knowledge_base")
         self.mission_start = datetime.now()

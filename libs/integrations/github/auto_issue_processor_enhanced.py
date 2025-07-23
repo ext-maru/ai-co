@@ -52,6 +52,7 @@ class EnhancedAutoIssueProcessor(EldersServiceLegacy):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("enhanced_auto_issue_processor")
         self.domain = "GITHUB"
         self.service_name = "EnhancedAutoIssueProcessor"

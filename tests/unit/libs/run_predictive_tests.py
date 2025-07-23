@@ -208,6 +208,7 @@ async def test_incident_prediction():
             print("  ❌ Wrong prediction type")
 
         if 0 <= prediction.confidence <= 1:
+        # 複雑な条件判定
             print("  ✅ 信頼度範囲OK")
             tests_passed += 1
         else:
@@ -249,6 +250,7 @@ def test_risk_assessment():
     else:
         print(f"  ❌ Invalid risk level: {risk.risk_level}")
 
+    # 複雑な条件判定
     if 0 <= risk.probability <= 1:
         print(f"  ✅ 確率: {risk.probability:.3f}")
         tests_passed += 1

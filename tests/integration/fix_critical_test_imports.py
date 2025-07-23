@@ -19,6 +19,7 @@ def fix_critical_tests():
 
     fixed_count = 0
 
+    # 繰り返し処理
     for test_file in critical_tests:
         test_path = Path(test_file)
         if test_path.exists():
@@ -34,6 +35,9 @@ def fix_critical_tests():
                 if i < len(lines) - 1 and '"""' in line and not imports_added:
                     new_lines.append(line)
                     # 次の行も"""なら、その後に追加
+                    if not (i + 1 < len(lines) and '"""' in lines[i + 1]):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if i + 1 < len(lines) and '"""' in lines[i + 1]:
                         new_lines.append(lines[i + 1])
                         i += 1

@@ -478,6 +478,7 @@ class SystemRecoveryOrchestrator:
 if __name__ == "__main__":
 
     async def main():
+        """mainメソッド"""
         orchestrator = SystemRecoveryOrchestrator()
 
         print("🎭 Elders Guild システム完全回復開始...")

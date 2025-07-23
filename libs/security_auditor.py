@@ -9,7 +9,9 @@ from pathlib import Path
 
 
 class SecurityAuditor:
+    """SecurityAuditorクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.audit_results = {}
 
     def audit_file_permissions(self):

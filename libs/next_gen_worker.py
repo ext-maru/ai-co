@@ -73,7 +73,9 @@ class CircuitBreakerConfig:
 class CircuitBreaker:
     """サーキットブレーカー実装"""
 
-    def __init__(self, config: CircuitBreakerConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    CircuitBreakerConfig):
         self.config = config
         self.state = CircuitBreakerState.CLOSED
         self.failure_count = 0
@@ -134,6 +136,7 @@ class HealthMonitor:
     """ヘルス監視システム"""
 
     def __init__(self, worker):
+        """初期化メソッド"""
         self.worker = worker
         self.metrics = HealthMetrics()
         self.running = False
@@ -198,6 +201,7 @@ class AutoRecovery:
     """自動復旧システム"""
 
     def __init__(self, worker):
+        """初期化メソッド"""
         self.worker = worker
         self.recovery_strategies: Dict[str, Callable] = {
             "connection_lost": self._recover_connection,
@@ -262,7 +266,9 @@ class NextGenWorker(BaseWorker):
     - 実装検証: 起動時の完全性チェック
     """
 
-    def __init__(self, worker_type: str, worker_id: Optional[str] = None):
+    def __init__(self, worker_type:
+        """初期化メソッド"""
+    str, worker_id: Optional[str] = None):
         # 実装検証（起動時チェック）
         self._validate_implementation()
 
@@ -406,7 +412,9 @@ class NextGenWorker(BaseWorker):
 class NextGenTaskWorker(NextGenWorker):
     """次世代タスクワーカー実装例"""
 
-    def __init__(self, worker_id: Optional[str] = None):
+    def __init__(self, worker_id:
+        """初期化メソッド"""
+    Optional[str] = None):
         super().__init__("task", worker_id)
 
     def process_message(self, ch, method, properties, body):

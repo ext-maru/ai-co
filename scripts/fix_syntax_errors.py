@@ -9,6 +9,7 @@ from pathlib import Path
 
 class SyntaxErrorFixer:
     def __init__(self):
+    """SyntaxErrorFixerクラス"""
         self.project_root = Path(__file__).parent.parent
         self.fixed_count = 0
 
@@ -92,6 +93,7 @@ class SyntaxErrorFixer:
                 if stripped.startswith(("def ", "class ", "async def ")):
                     in_function = True
                     indent_level = len(line) - len(line.lstrip())
+                # 複雑な条件判定
                 elif (
                     in_function
                     and line.strip()

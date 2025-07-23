@@ -298,7 +298,9 @@ class ParallelProcessor:
         Returns:
             API応答リスト
         """
-        async def execute_api_call(call_def: Dict[str, Any]) -> Dict[str, Any]:
+        async def execute_api_call(call_def:
+            """execute_api_call実行メソッド"""
+        Dict[str, Any]) -> Dict[str, Any]:
             try:
                 session = await session_provider()
                 
@@ -413,12 +415,16 @@ async def example_usage():
     processor = ParallelProcessor(max_workers=5)
     
     # 非同期関数の並列実行
-    async def fetch_data(item_id: int):
+    async def fetch_data(item_id:
+        """fetch_dataメソッド"""
+    int):
         await asyncio.sleep(0.1)  # API呼び出しシミュレート
         return {"id": item_id, "data": f"Data for {item_id}"}
     
     # 進捗表示コールバック
-    def show_progress(progress: float, current: int, total: int):
+    def show_progress(progress:
+        """show_progressメソッド"""
+    float, current: int, total: int):
         print(f"Progress: {progress:.1f}% ({current}/{total})")
     
     # 並列実行

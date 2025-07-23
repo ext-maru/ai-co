@@ -48,34 +48,49 @@ except ImportError as e:
     print(f"既存システムインポートエラー: {e}")
     # フォールバック用のダミークラス
     class ElderFlowOrchestrator:
+        """ElderFlowOrchestrator - エルダーズギルド関連クラス"""
         def __init__(self):
+            """初期化メソッド"""
             self.name = "ElderFlow Fallback"
         async def execute_task(self, task):
+            """execute_task実行メソッド"""
             return {"status": "fallback_executed", "result": "Elder Flowフォールバック"}
     
     class QualityGateOptimizer:
+        """QualityGateOptimizerクラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
         async def check_quality(self, code):
+            """check_qualityチェックメソッド"""
             return {"score": 85, "passed": True}
     
     class BaseAgent:
+        """BaseAgentクラス"""
         def __init__(self, name):
+            """初期化メソッド"""
             self.name = name
         async def process(self, task):
+            """process処理メソッド"""
             return f"{self.name} processed: {task}"
     
     class BaseServant:
+        """BaseServantクラス"""
         def __init__(self, name, tribe):
+            """初期化メソッド"""
             self.name = name
             self.tribe = tribe
         async def execute(self, task):
+            """execute実行メソッド"""
             return f"{self.tribe} {self.name} executed: {task}"
     
     class ElderTreeFlow:
+        """ElderTreeFlow - エルダーズギルド関連クラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
         async def run_workflow(self, workflow_config):
+            """run_workflowメソッド"""
             return {"status": "completed", "result": "Elder Treeフロー実行"}
 
 class TaskType(Enum):
@@ -132,6 +147,7 @@ class UnifiedExecutionEngine:
     """
     
     def __init__(self):
+        """初期化メソッド"""
         self.engine_id = "unified_execution_engine_001"
         self.created_at = datetime.now()
         
@@ -715,6 +731,7 @@ def main():
         priority = sys.argv[5] if len(sys.argv) > 5 else "medium"
         
         async def execute_async():
+            """execute_async実行メソッド"""
             task_id = await engine.execute_unified_task(title, description, task_type, priority)
             print(f"統合タスク実行完了: {task_id}")
         
@@ -739,6 +756,7 @@ def main():
     elif command == "tasks":
         tasks = engine.get_active_tasks()
         print(f"\n📋 アクティブタスク: {len(tasks)}件")
+        # Deep nesting detected (depth: 5) - consider refactoring
         for task in tasks[-10:]:  # 最新10件表示
             print(f"  {task['id']}: {task['title']} [{task['status']}]")
             print(f"    戦略: {task['execution_strategy']}, 品質: {task['quality_score']}")

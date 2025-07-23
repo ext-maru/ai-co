@@ -569,6 +569,7 @@ class SlackPollingWorker(BaseWorker):
                     
                     existing_stats = []
                     if stats_file.exists():
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(stats_file, 'r') as f:
                             existing_stats = json.load(f)
                     
@@ -793,6 +794,7 @@ class SlackPollingWorker(BaseWorker):
                     
                     error_logs = []
                     if error_log_file.exists():
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(error_log_file, 'r') as f:
                             error_logs = json.load(f)
                     

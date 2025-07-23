@@ -114,6 +114,7 @@ class GeneticOperators:
     """遺伝的操作子"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
 
         # 突然変異操作マップ
@@ -470,6 +471,7 @@ class FitnessEvaluator:
     """適応度評価器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
 
         # メトリック重み
@@ -722,7 +724,9 @@ class FitnessEvaluator:
 class SelfEvolvingCodeGenerator:
     """自己進化コードジェネレーター"""
 
-    def __init__(self, population_size: int = 50, max_generations: int = 100):
+    def __init__(self, population_size:
+        """初期化メソッド"""
+    int = 50, max_generations: int = 100):
         self.population_size = population_size
         self.max_generations = max_generations
 

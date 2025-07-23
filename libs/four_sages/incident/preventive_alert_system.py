@@ -105,7 +105,9 @@ class PreventiveAlert:
 class PreventiveAlertSystem(EldersServiceLegacy):
     """予防的アラートシステム"""
 
-    def __init__(self, incident_sage: IncidentSage):
+    def __init__(self, incident_sage:
+        """初期化メソッド"""
+    IncidentSage):
         super().__init__(name="PreventiveAlertSystem", service_type="monitoring")
         self.incident_sage = incident_sage
         self.alert_rules: Dict[str, Dict[str, Any]] = {}

@@ -1273,6 +1273,9 @@ All notable changes to this project will be documented in this file.
                     if tags1 and tags2:
                         similarity = len(tags1.intersection(tags2)) / len(tags1.union(tags2))
                         
+                        if not (similarity >= reference_threshold):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if similarity >= reference_threshold:
                             references.append({
                                 "source": entry1.get("title", "Unknown"),
@@ -1307,7 +1310,9 @@ All notable changes to this project will be documented in this file.
             comparison = {
                 "words_added": len(added_words),
                 "words_removed": len(removed_words),
-                "similarity": len(old_words.intersection(new_words)) / len(old_words.union(new_words)) if old_words.union(new_words) else 0
+                "similarity": len(old_words.intersection(new_words)) / len(old_words.union(new_words)) \
+                    if old_words.union(new_words) \
+                    else 0
             }
             
             changes_summary = []

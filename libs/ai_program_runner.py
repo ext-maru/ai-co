@@ -20,6 +20,7 @@ class AIProgramRunner:
     """プログラムファイルの自動実行ヘルパー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.helper = AICommandHelper()
         self.base_dir = Path("/home/aicompany/ai_co/ai_programs")
         self.inbox_dir = self.base_dir / "inbox"

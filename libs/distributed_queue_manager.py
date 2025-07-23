@@ -95,7 +95,9 @@ class Alert:
 class BackpressureController:
     """Controls backpressure mechanism"""
     
-    def __init__(self, threshold: float = 0.8):
+    def __init__(self, threshold:
+        """初期化メソッド"""
+    float = 0.8):
         self.threshold = threshold
         self.is_active = False
         self.activation_count = 0
@@ -117,7 +119,9 @@ class BackpressureController:
 class CircuitBreaker:
     """Circuit breaker for downstream protection"""
     
-    def __init__(self, failure_threshold: int = 5, recovery_timeout: float = 30.0):
+    def __init__(self, failure_threshold:
+        """初期化メソッド"""
+    int = 5, recovery_timeout: float = 30.0):
         self.failure_threshold = failure_threshold
         self.recovery_timeout = recovery_timeout
         self.failure_count = 0
@@ -156,7 +160,9 @@ class CircuitBreaker:
 class DistributedQueueManager:
     """Advanced queue manager with priority, DLQ, and backpressure"""
     
-    def __init__(self, max_size: int = 10000, 
+    def __init__(self, max_size:
+        """初期化メソッド"""
+    int = 10000, 
                  enable_dead_letter: bool = True,
                  enable_backpressure: bool = True):
         self.max_size = max_size

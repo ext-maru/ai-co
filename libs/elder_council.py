@@ -20,6 +20,7 @@ class ElderCouncil:
     """エルダーズ評議会"""
 
     def __init__(self, prophecy_engine):
+        """初期化メソッド"""
         self.prophecy_engine = prophecy_engine
         self.review_schedule = "09:00"  # 毎日9時
         self.review_history = []

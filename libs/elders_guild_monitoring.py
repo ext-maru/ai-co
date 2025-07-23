@@ -138,6 +138,7 @@ class DatabaseMetrics:
     """データベースメトリクス"""
 
     def __init__(self):
+        """初期化メソッド"""
         # Prometheus メトリクス
         self.registry = CollectorRegistry()
 
@@ -492,7 +493,9 @@ class MetricsCollector:
 class AlertManager:
     """アラートマネージャー"""
 
-    def __init__(self, config: NotificationConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    NotificationConfig):
         self.config = config
         self.alert_rules: List[AlertRule] = []
         self.active_alerts: Dict[str, AlertRule] = {}

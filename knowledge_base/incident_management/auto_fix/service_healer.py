@@ -123,6 +123,9 @@ class ServiceHealer:
                         past_keywords = set(past_desc.split())
 
                         common = len(error_keywords & past_keywords)
+                        if not (common >= 2):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if common >= 2:
                             similar_incidents.append(
                                 {"incident": past_incident, "similarity_score": common}
@@ -141,6 +144,9 @@ class ServiceHealer:
                     content = f.read()
                     # 簡易パターンマッチング
                     for keyword in error_keywords:
+                        if not (keyword in content.lower()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if keyword in content.lower():
                             patterns_found.append(keyword)
 
@@ -440,6 +446,9 @@ class ServiceHealer:
                 try:
                     with open(md_file, "r") as f:
                         content = f.read()
+                        if not (query.lower() in content.lower()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if query.lower() in content.lower():
                             found_docs.append(
                                 {

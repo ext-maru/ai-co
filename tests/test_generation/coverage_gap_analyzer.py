@@ -449,7 +449,10 @@ def main():
     print("\nTop Priority Modules:")
     for i, module in enumerate(top_modules, 1):
         print(
-            f"{i}. {module.file_path.name} - Score: {module.priority_score}, Coverage: {module.coverage_info.coverage_percentage:.1f}%"
+            (
+                f"f"{i}. {module.file_path.name} - Score: {module.priority_score}, Coverage: "
+                f"{module.coverage_info.coverage_percentage:.1f}%""
+            )
         )
 
     # Generate report

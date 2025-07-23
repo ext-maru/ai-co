@@ -127,7 +127,8 @@ class ElderFlowCLI:
             print(f"\n{i}. {session['timestamp']}")
             print(f"   📝 Request: {session['request'][:50]}...")
             print(f"   ⚡ 効率: {execution_results.get('parallel_efficiency', 0):.1f}%")
-            print(f"   🎯 成功率: {(execution_results.get('completed', 0) / max(execution_results.get('total_tasks', 1), 1)) * 100:.1f}%")
+            print(f"   🎯 成功率: {(execution_results.get('completed'," \
+                " 0) / max(execution_results.get('total_tasks', 1), 1)) * 100:.1f}%")
             print(f"   🧙‍♂️ 英知レベル: {result['wisdom_evolution']['wisdom_level']}")
 
     def dashboard_command(self, args):
@@ -163,7 +164,12 @@ class ElderFlowCLI:
 
         print(f"⚡ 実行時間: {session_info['total_time']:.2f}秒")
         print(f"📊 並列効率: {execution_results.get('parallel_efficiency', 0):.1f}%")
-        print(f"🎯 成功率: {(execution_results.get('completed', 0) / max(execution_results.get('total_tasks', 1), 1)) * 100:.1f}%")
+        print(f"🎯 成功率: {
+            (execution_results.get('completed',
+            0) / max(execution_results.get('total_tasks',
+            1),
+            1)) * 100:.1f
+        }%")
 
         print(f"\n🧙‍♂️ 4賢者の貢献:")
         print(f"  📚 ナレッジ: {sages_contributions['knowledge_sage']['knowledge_entries_found']}件活用")

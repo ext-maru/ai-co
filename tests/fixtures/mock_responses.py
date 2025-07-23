@@ -232,6 +232,7 @@ class TestHelpers:
 
         class LogCapture:
             def __enter__(self):
+            """LogCaptureクラス"""
                 return log_capture
 
             def __exit__(self, exc_type, exc_val, exc_tb):
@@ -246,6 +247,7 @@ class TestHelpers:
         outputs_iter = iter(outputs)
 
         def mock_run(*args, **kwargs):
+            """mock_runを実行"""
             try:
                 return next(outputs_iter)
             except StopIteration:

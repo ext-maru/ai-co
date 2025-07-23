@@ -516,6 +516,7 @@ class AIShellCommand(BaseCommand):
         """自動補完設定"""
 
         def completer(text, state):
+            """completerメソッド"""
             options = [cmd for cmd in self.ai_commands if cmd.startswith(text)]
             if state < len(options):
                 return options[state]

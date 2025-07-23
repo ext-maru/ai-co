@@ -45,6 +45,7 @@ class PracticalAutoSystemGenerator:
     """実用的な自動システム生成器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.tech_patterns = {
             "todo_app": {
                 "frontend": ["React", "TypeScript", "Tailwind CSS"],
@@ -571,7 +572,10 @@ Auto-generated system with Elder Flow technology.
 {system["system_id"]}
 
 ## Components
-{chr(10).join(f"- {comp['name']}: {comp['type']} ({', '.join(comp['technology_stack'])})" for comp in system["components"])}
+{
+    chr(10).join(f"- {comp['name']}: {comp['type']} ({',
+    '.join(comp['technology_stack'])})" for comp in system["components"])
+}
 
 ## Quick Start
 
@@ -623,7 +627,10 @@ async def practical_demo():
         print(f"Components: {len(result['components'])}")
         print(f"Total Development Time: {result['estimated_completion_time']} hours")
         print(
-            f"Total Resources: CPU={result['estimated_total_resources']['cpu']}, Memory={result['estimated_total_resources']['memory']}GB"
+            (
+                f"f"Total Resources: CPU={result['estimated_total_resources']['cpu']}, Memory="
+                f"{result['estimated_total_resources']['memory']}GB""
+            )
         )
 
         # プロジェクトファイル生成

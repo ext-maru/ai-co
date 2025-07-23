@@ -18,6 +18,7 @@ import pika
 
 
 class TaskPriority(Enum):
+    """TaskPriorityクラス"""
     CRITICAL = 1  # システム重要タスク
     HIGH = 3  # 緊急性高
     NORMAL = 5  # 通常
@@ -26,6 +27,7 @@ class TaskPriority(Enum):
 
 
 class TaskStatus(Enum):
+    """TaskStatusクラス"""
     QUEUED = "queued"
     PROCESSING = "processing"
     RATE_LIMITED = "rate_limited"
@@ -36,6 +38,7 @@ class TaskStatus(Enum):
 
 @dataclass
 class QueuedTask:
+    """QueuedTaskクラス"""
     task_id: str
     priority: int
     prompt: str
@@ -49,6 +52,7 @@ class QueuedTask:
     requester: str = "unknown"
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.metadata is None:
             self.metadata = {}
         if self.expires_at is None:
@@ -56,6 +60,7 @@ class QueuedTask:
             self.expires_at = self.created_at + timedelta(hours=24)
 
     def __lt__(self, other):
+        """__lt__特殊メソッド"""
         # 優先度による比較（数値が小さいほど高優先度）
         if self.priority != other.priority:
             return self.priority < other.priority
@@ -63,12 +68,15 @@ class QueuedTask:
         return self.created_at < other.created_at
 
     def is_expired(self) -> bool:
+        """expired判定メソッド"""
         return datetime.now() > self.expires_at
 
     def can_retry(self) -> bool:
+        """retry可能性判定メソッド"""
         return self.retry_count < self.max_retries
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         data = asdict(self)
         data["created_at"] = self.created_at.isoformat()
         data["expires_at"] = self.expires_at.isoformat() if self.expires_at else None
@@ -80,7 +88,9 @@ class PriorityQueueManager:
     API制限時の優先度付きキュー管理
     """
 
-    def __init__(self, config_path: str = None):
+    def __init__(self, config_path:
+        """初期化メソッド"""
+    str = None):
         self.logger = logging.getLogger(__name__)
         self.config = self._load_config(config_path)
 

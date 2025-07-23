@@ -266,6 +266,9 @@ class EnvManager:
                     line = line.strip()
                     if line and not line.startswith("#") and "=" in line:
                         key, value = line.split("=", 1)
+                        if not (key not in os.environ):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if key not in os.environ:
                             os.environ[key] = value
         

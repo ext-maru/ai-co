@@ -16,7 +16,9 @@ from ..base_sage import BaseSage
 class KnowledgeSage(BaseSage):
     """ナレッジ賢者 - 知識管理と学習"""
 
-    def __init__(self, knowledge_base_path: str = "knowledge_base"):
+    def __init__(self, knowledge_base_path:
+        """初期化メソッド"""
+    str = "knowledge_base"):
         super().__init__("Knowledge")
 
         self.knowledge_base_path = knowledge_base_path

@@ -193,25 +193,31 @@ class GitHubPullRequestMerger:
             raise APIError(f"API call failed: {str(e)}")
 
     async def __aenter__(self):
+        """__aenter__特殊メソッド"""
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """__aexit__特殊メソッド"""
         if self.session:
             await self.session.close()
 
 
 # Custom exceptions
 class ValidationError(Exception):
+    """ValidationErrorクラス"""
     pass
 
 
 class AuthenticationError(Exception):
+    """AuthenticationErrorクラス"""
     pass
 
 
 class APIError(Exception):
+    """APIErrorクラス"""
     pass
 
 
 class SecurityError(Exception):
+    """SecurityErrorクラス"""
     pass

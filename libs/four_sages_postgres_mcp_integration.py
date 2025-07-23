@@ -727,6 +727,7 @@ class FourSagesPostgresMCPIntegration(FourSagesIntegration):
         integrated = []
         seen_ids = set()
 
+        # 繰り返し処理
         for result in search_results:
             if isinstance(result, Exception):
                 continue

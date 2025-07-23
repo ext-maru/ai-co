@@ -91,6 +91,7 @@ class ElderServantRegistry:
     """エルダーサーバントレジストリ"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.servants: Dict[str, ElderServantMetrics] = {}
         self.servant_groups: Dict[str, Set[str]] = defaultdict(set)
         self.lock = asyncio.Lock()
@@ -278,7 +279,9 @@ class LoadBalancer:
 class MessageBatcher:
     """メッセージバッチング"""
 
-    def __init__(self, batch_size: int = 10, batch_timeout: float = 1.0):
+    def __init__(self, batch_size:
+        """初期化メソッド"""
+    int = 10, batch_timeout: float = 1.0):
         self.batch_size = batch_size
         self.batch_timeout = batch_timeout
         self.batches: Dict[str, List[A2AMessage]] = defaultdict(list)
@@ -327,7 +330,9 @@ class MessageBatcher:
 class CircuitBreaker:
     """サーキットブレーカー"""
 
-    def __init__(self, failure_threshold: int = 5, timeout: float = 60.0):
+    def __init__(self, failure_threshold:
+        """初期化メソッド"""
+    int = 5, timeout: float = 60.0):
         self.failure_threshold = failure_threshold
         self.timeout = timeout
         self.failure_counts: Dict[str, int] = defaultdict(int)
@@ -380,7 +385,9 @@ class CircuitBreaker:
 class ElderServantOptimizer:
     """エルダーサーバント通信最適化管理"""
 
-    def __init__(self, elder_client: A2AClient, policy: CommunicationPolicy = None):
+    def __init__(self, elder_client:
+        """初期化メソッド"""
+    A2AClient, policy: CommunicationPolicy = None):
         self.elder_client = elder_client
         self.policy = policy or CommunicationPolicy()
         self.registry = ElderServantRegistry()

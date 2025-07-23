@@ -156,6 +156,7 @@ class SQLiteAdapter:
             loop = asyncio.get_event_loop()
 
             def _save():
+                """save（内部メソッド）"""
                 conn = self._get_connection()
                 conn.execute(
                     """
@@ -198,6 +199,7 @@ class SQLiteAdapter:
             loop = asyncio.get_event_loop()
 
             def _load():
+                """load（内部メソッド）"""
                 conn = self._get_connection()
                 row = conn.execute(
                     "SELECT * FROM session_metadata WHERE session_id = ?", (session_id,)
@@ -249,6 +251,7 @@ class SQLiteAdapter:
             loop = asyncio.get_event_loop()
 
             def _save():
+                """save（内部メソッド）"""
                 conn = self._get_connection()
 
                 # 既存データ削除
@@ -295,6 +298,7 @@ class SQLiteAdapter:
             loop = asyncio.get_event_loop()
 
             def _load():
+                """load（内部メソッド）"""
                 conn = self._get_connection()
                 rows = conn.execute(
                     "SELECT * FROM sage_interactions WHERE session_id = ? ORDER BY timestamp",
@@ -334,6 +338,7 @@ class SQLiteAdapter:
             loop = asyncio.get_event_loop()
 
             def _delete():
+                """delete（内部メソッド）"""
                 conn = self._get_connection()
                 conn.execute(
                     "DELETE FROM sage_interactions WHERE session_id = ?", (session_id,)
@@ -356,6 +361,7 @@ class SQLiteAdapter:
             loop = asyncio.get_event_loop()
 
             def _search():
+                """search（内部メソッド）"""
                 conn = self._get_connection()
                 rows = conn.execute(
                     "SELECT session_id FROM session_metadata WHERE user_id = ? ORDER BY " \
@@ -391,6 +397,7 @@ class JSONAdapter:
             loop = asyncio.get_event_loop()
 
             def _save():
+                """save（内部メソッド）"""
                 file_path = self._get_session_path(session_id)
 
                 # データに保存時刻追加
@@ -414,6 +421,7 @@ class JSONAdapter:
             loop = asyncio.get_event_loop()
 
             def _load():
+                """load（内部メソッド）"""
                 file_path = self._get_session_path(session_id)
 
                 if not file_path.exists():
@@ -445,6 +453,7 @@ class JSONAdapter:
             loop = asyncio.get_event_loop()
 
             def _delete():
+                """delete（内部メソッド）"""
                 file_path = self._get_session_path(session_id)
 
                 if file_path.exists():
@@ -492,6 +501,7 @@ class VectorAdapter:
             loop = asyncio.get_event_loop()
 
             def _save():
+                """save（内部メソッド）"""
                 self._vectors[session_id] = vector
                 self._metadata[session_id] = metadata or {}
 
@@ -512,6 +522,7 @@ class VectorAdapter:
             loop = asyncio.get_event_loop()
 
             def _load():
+                """load（内部メソッド）"""
                 if session_id not in self._vectors:
                     self._load_from_disk()
 
@@ -531,6 +542,7 @@ class VectorAdapter:
             loop = asyncio.get_event_loop()
 
             def _search():
+                """search（内部メソッド）"""
                 if not self._vectors:
                     self._load_from_disk()
 
@@ -563,6 +575,7 @@ class VectorAdapter:
             loop = asyncio.get_event_loop()
 
             def _delete():
+                """delete（内部メソッド）"""
                 if session_id in self._vectors:
                     del self._vectors[session_id]
 
@@ -674,7 +687,6 @@ class HybridStorage:
     """
 
     def __init__(
-        """初期化メソッド"""
         self,
         sqlite_path: str = "data/session_storage/sessions.db",
         json_path: str = "data/session_storage/json",

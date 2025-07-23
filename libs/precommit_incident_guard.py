@@ -184,6 +184,7 @@ class PreCommitIncidentGuard:
         risks = []
 
         for risk_type, patterns in self.WARNING_PATTERNS.items():
+        # 繰り返し処理
             for pattern in patterns:
                 if re.search(pattern, diff_content, re.IGNORECASE | re.MULTILINE):
                     risks.append(risk_type)
@@ -195,6 +196,7 @@ class PreCommitIncidentGuard:
         """セキュリティ問題を分析"""
         issues = []
 
+        # 繰り返し処理
         for issue_type, patterns in self.CRITICAL_PATTERNS.items():
             for pattern in patterns:
                 if re.search(pattern, diff_content, re.IGNORECASE | re.MULTILINE):

@@ -591,7 +591,10 @@ class ElfForestWorkerManager:
         for worker_name, status in self.worker_statuses.items():
             state_icon = "✅" if status.status == "running" else "❌"
             print(
-                f"│ {worker_name:<18} │ {state_icon}{status.status:<6} │{status.cpu_percent:4.0f}%│{status.memory_mb:6.0f}MB│{status.queue_size:9}│"
+                (
+                    f"f"│ {worker_name:<18} │ {state_icon}{status.status:<6} │{status.cpu_percent:4.0f}%│"
+                    f"{status.memory_mb:6.0f}MB│{status.queue_size:9}│""
+                )
             )
 
         print("└─────────────────────┴────────┴─────┴────────┴──────────┘")

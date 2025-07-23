@@ -351,6 +351,9 @@ class DailyReportGenerator:
                     total_files += 1
                     try:
                         content = file_path.read_text()
+                        if not (any(pattern in content for pattern in ['TODO', 'FIXME', 'HACK'])):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if any(pattern in content for pattern in ['TODO', 'FIXME', 'HACK']):
                             violations += 1
                     except:
@@ -400,6 +403,7 @@ class DailyReportGenerator:
         
         try:
             for py_file in self.base_path.rglob("*.py"):
+            # 繰り返し処理
                 if 'venv' in str(py_file):
                     continue
                 try:
@@ -643,8 +647,16 @@ sage_assignment: "task_sage"
 | メトリクス | 値 | 状態 |
 |----------|-----|------|
 | CPU使用率 | {report.system_metrics.cpu_usage:.1f}% | {self._status_indicator(report.system_metrics.cpu_usage, 80, 90)} |
-| メモリ使用率 | {report.system_metrics.memory_usage:.1f}% | {self._status_indicator(report.system_metrics.memory_usage, 85, 95)} |
-| ディスク使用率 | {report.system_metrics.disk_usage:.1f}% | {self._status_indicator(report.system_metrics.disk_usage, 85, 95)} |
+| メモリ使用率 | {
+    report.system_metrics.memory_usage:.1f}% | {self._status_indicator(report.system_metrics.memory_usage,
+    85,
+    95)
+} |
+| ディスク使用率 | {
+    report.system_metrics.disk_usage:.1f}% | {self._status_indicator(report.system_metrics.disk_usage,
+    85,
+    95)
+} |
 | アクティブプロセス | {report.system_metrics.active_processes} | ✅ |
 | システム稼働時間 | {report.system_metrics.system_uptime} | ✅ |
 
@@ -671,12 +683,32 @@ sage_assignment: "task_sage"
 
 | メトリクス | 値 | 基準 | 評価 |
 |----------|-----|------|------|
-| コード品質スコア | {report.quality_metrics.code_quality_score:.1f}/100 | 80 | {self._quality_indicator(report.quality_metrics.code_quality_score, 80)} |
-| テストカバレッジ | {report.quality_metrics.test_coverage:.1f}% | 80% | {self._quality_indicator(report.quality_metrics.test_coverage, 80)} |
-| Iron Will準拠率 | {report.quality_metrics.iron_will_compliance:.1f}% | 95% | {self._quality_indicator(report.quality_metrics.iron_will_compliance, 95)} |
-| セキュリティスコア | {report.quality_metrics.security_score:.1f}/100 | 85 | {self._quality_indicator(report.quality_metrics.security_score, 85)} |
-| ドキュメントカバレッジ | {report.quality_metrics.documentation_coverage:.1f}% | 70% | {self._quality_indicator(report.quality_metrics.documentation_coverage, 70)} |
-| 技術負債 | {report.quality_metrics.technical_debt_hours:.0f}時間 | <100 | {self._debt_indicator(report.quality_metrics.technical_debt_hours)} |
+| コード品質スコア | {
+    report.quality_metrics.code_quality_score:.1f}/100 | 80 | {self._quality_indicator( \
+        report.quality_metrics.code_quality_score,
+    80)
+} |
+| テストカバレッジ | {
+    report.quality_metrics.test_coverage:.1f}% | 80% | {self._quality_indicator(report.quality_metrics.test_coverage,
+    80)
+} |
+| Iron Will準拠率 | {
+    report.quality_metrics.iron_will_compliance:.1f}% | 95% | {self._quality_indicator( \
+        report.quality_metrics.iron_will_compliance,
+    95)
+} |
+| セキュリティスコア | {
+    report.quality_metrics.security_score:.1f}/100 | 85 | {self._quality_indicator( \
+        report.quality_metrics.security_score,
+    85)
+} |
+| ドキュメントカバレッジ | {
+    report.quality_metrics.documentation_coverage:.1f}% | 70% | {self._quality_indicator( \
+        report.quality_metrics.documentation_coverage,
+    70)
+} |
+| 技術負債 | {report.quality_metrics.technical_debt_hours:.0f}時間 | <100 \
+    | {self._debt_indicator(report.quality_metrics.technical_debt_hours)} |
 
 ---
 
@@ -684,10 +716,12 @@ sage_assignment: "task_sage"
 
 | メトリクス | 値 | 状態 |
 |----------|-----|------|
-| 新規インシデント | {report.incident_metrics.new_incidents} | {self._incident_indicator(report.incident_metrics.new_incidents)} |
+| 新規インシデント | {report.incident_metrics.new_incidents} | {self._incident_indicator( \
+    report.incident_metrics.new_incidents)} |
 | 解決済み | {report.incident_metrics.resolved_incidents} | ✅ |
 | 未解決 | {report.incident_metrics.open_incidents} | {self._incident_indicator(report.incident_metrics.open_incidents)} |
-| クリティカル | {report.incident_metrics.critical_incidents} | {self._critical_indicator(report.incident_metrics.critical_incidents)} |
+| クリティカル | {report.incident_metrics.critical_incidents} | {self._critical_indicator( \
+    report.incident_metrics.critical_incidents)} |
 | 平均解決時間 | {report.incident_metrics.mttr:.1f}時間 | {self._mttr_indicator(report.incident_metrics.mttr)} |
 
 ### カテゴリ別分布
@@ -836,6 +870,7 @@ sage_assignment: "task_sage"
         return '\n\n'.join(sections)
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description='エルダーズギルド日次レポート生成')
     parser.add_argument('--date', help='レポート日付 (YYYY-MM-DD)')
     parser.add_argument('--email', action='store_true', help='メール送信')

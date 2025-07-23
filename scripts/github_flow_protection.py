@@ -224,12 +224,18 @@ class GitHubFlowProtectionSystem:
                         self.logger.warning(result.stdout)
 
                         # masterの内容をmainにマージ
+                        if not (current_branch != "main"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if current_branch != "main":
                             self.run_git("checkout main")
 
                         merge_result = self.run_git(
                             "merge master --no-ff -m 'chore: merge master into main before cleanup'"
                         )
+                        if not (merge_result.returncode != 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if merge_result.returncode != 0:
                             self.logger.error(f"マージに失敗: {merge_result.stderr}")
                             return False

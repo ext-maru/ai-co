@@ -35,7 +35,9 @@ logger = logging.getLogger(__name__)
 class MemoryPool:
     """メモリプール管理"""
 
-    def __init__(self, max_size_mb: int = 500):
+    def __init__(self, max_size_mb:
+        """初期化メソッド"""
+    int = 500):
         self.max_size_bytes = max_size_mb * 1024 * 1024
         self.pools = defaultdict(list)
         self.allocated = 0
@@ -81,7 +83,9 @@ class MemoryPool:
 class AsyncTaskPool:
     """非同期タスクプール"""
 
-    def __init__(self, max_workers: int = 10):
+    def __init__(self, max_workers:
+        """初期化メソッド"""
+    int = 10):
         self.max_workers = max_workers
         self.semaphore = asyncio.Semaphore(max_workers)
         self.active_tasks = weakref.WeakSet()
@@ -134,7 +138,9 @@ class AsyncTaskPool:
 class SmartCache:
     """スマートキャッシュ"""
 
-    def __init__(self, max_size: int = 1000, ttl_seconds: int = 3600):
+    def __init__(self, max_size:
+        """初期化メソッド"""
+    int = 1000, ttl_seconds: int = 3600):
         self.max_size = max_size
         self.ttl_seconds = ttl_seconds
         self.cache = {}
@@ -201,6 +207,7 @@ class ResourceMonitor:
     """リソース監視"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.process = psutil.Process()
         self.history = {
             "cpu": deque(maxlen=100),
@@ -275,6 +282,7 @@ class PerformanceOptimizer:
     """パフォーマンス最適化"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.memory_pool = MemoryPool()
         self.task_pool = AsyncTaskPool()
         self.cache = SmartCache()
@@ -303,6 +311,7 @@ class PerformanceOptimizer:
         """自動チューニング開始"""
 
         def tune_loop():
+            """tune_loopメソッド"""
             while self.settings["auto_tune"]:
                 try:
                     self._perform_tuning()
@@ -370,8 +379,10 @@ class PerformanceOptimizer:
         """キャッシュデコレータ"""
 
         def decorator(func):
+            """decoratorメソッド"""
             @wraps(func)
             async def async_wrapper(*args, **kwargs):
+                """async_wrapperメソッド"""
                 # キャッシュキー生成
                 key = f"{func.__name__}:{str(args)}:{str(kwargs)}"
 
@@ -390,6 +401,7 @@ class PerformanceOptimizer:
 
             @wraps(func)
             def sync_wrapper(*args, **kwargs):
+                """sync_wrapperメソッド"""
                 # キャッシュキー生成
                 key = f"{func.__name__}:{str(args)}:{str(kwargs)}"
 
@@ -469,6 +481,7 @@ class SystemPerformanceEnhancer:
     """システムパフォーマンス強化統合"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.optimizer = PerformanceOptimizer()
         self.start_time = time.time()
 
@@ -497,6 +510,7 @@ class SystemPerformanceEnhancer:
         # キャッシュとパフォーマンス監視を追加
         @wraps(func)
         async def async_enhanced(*args, **kwargs):
+            """async_enhancedメソッド"""
             start_time = time.time()
 
             try:
@@ -516,6 +530,7 @@ class SystemPerformanceEnhancer:
 
         @wraps(func)
         def sync_enhanced(*args, **kwargs):
+            """sync_enhancedメソッド"""
             start_time = time.time()
 
             try:
@@ -554,6 +569,7 @@ class SystemPerformanceEnhancer:
         semaphore = asyncio.Semaphore(max_concurrent)
 
         async def run_with_semaphore(op):
+            """run_with_semaphoreメソッド"""
             async with semaphore:
                 if asyncio.iscoroutinefunction(op):
                     return await op()
@@ -585,11 +601,13 @@ def performance_enhanced(func: Callable) -> Callable:
 if __name__ == "__main__":
     # テスト実行
     async def test():
+        """testテストメソッド"""
         enhancer = get_performance_enhancer()
 
         # キャッシュテスト
         @enhancer.optimizer.cached(ttl=60)
         async def expensive_operation(n):
+            """expensive_operationメソッド"""
             await asyncio.sleep(0.1)
             return n * n
 

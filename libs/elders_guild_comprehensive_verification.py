@@ -225,8 +225,12 @@ class FourSagesCouncilVerifier:
                     scores = []
                     for r in search_result["search_results"]:
                         score = r.get("relevance_score", 0.0)
+                        if not (score is None):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if score is None:
                             score = 0.0
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             score = float(score)
                         except (ValueError, TypeError):
@@ -880,8 +884,12 @@ class FourSagesCouncilVerifier:
                     scores = []
                     for r in search_result["enhanced_results"]:
                         score = r.get("relevance_score", 0.0)
+                        if not (score is None):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if score is None:
                             score = 0.0
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             score = float(score)
                         except (ValueError, TypeError):

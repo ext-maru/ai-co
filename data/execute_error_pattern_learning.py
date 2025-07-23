@@ -15,6 +15,9 @@ for log_file in sorted(log_dir.glob("*.log"), key=lambda x: x.stat().st_mtime)[-
             errors = re.findall(r"ERROR.*?(?=\n|$)", content)
             for error in errors:
                 # エラータイプを抽出
+                if not ("ModuleNotFoundError" in error):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if "ModuleNotFoundError" in error:
                     error_patterns["ModuleNotFoundError"] += 1
                 elif "FileNotFoundError" in error:

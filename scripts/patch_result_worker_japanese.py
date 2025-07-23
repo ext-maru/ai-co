@@ -85,9 +85,15 @@ MESSAGES_JA = {
             f"",
             f"**{MESSAGES_JA['task_id']}:** `{task_id}`",
             f"**{MESSAGES_JA['worker_info']}:** `{worker_id}`",
-            f"**{MESSAGES_JA['rag_info']}:** `{MESSAGES_JA['rag_applied'] if rag_applied else MESSAGES_JA['rag_not_applied']}`",
+            (
+                f"f"**{MESSAGES_JA['rag_info']}:** `"
+                f"{MESSAGES_JA['rag_applied'] if rag_applied else MESSAGES_JA['rag_not_applied']}`","
+            )
             f"",
-            f"**{MESSAGES_JA['task_type']}:** `{task_type}` | **{MESSAGES_JA['duration']}:** `{duration:.2f}秒` | **{MESSAGES_JA['files']}:** `{files_count}`",
+            (
+                f"f"**{MESSAGES_JA['task_type']}:** `{task_type}` | **{MESSAGES_JA['duration']}:** `"
+                f"{duration:.2f}秒` | **{MESSAGES_JA['files']}:** `{files_count}`","
+            )
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         ]
 
@@ -121,7 +127,10 @@ MESSAGES_JA = {
 
             message_parts.extend([
                 f"**{MESSAGES_JA['performance_metrics']}:**",
-                f"• {MESSAGES_JA['success_rate']}: `{success_rate:.1f}%` ({self.stats['successful_tasks']}/{self.stats['total_tasks']})",
+                (
+                    f"f"• {MESSAGES_JA['success_rate']}: `{success_rate:.1f}%` ("
+                    f"{self.stats['successful_tasks']}/{self.stats['total_tasks']})","
+                )
                 f"• {MESSAGES_JA['average_duration']}: `{avg_duration:.2f}秒`",
                 ""
             ])
@@ -163,7 +172,8 @@ MESSAGES_JA = {
 
         # エラートレース（最初の500文字）
         if kwargs.get('error_trace'):
-            trace_preview = kwargs['error_trace'][:500] + "..." if len(kwargs['error_trace']) > 500 else kwargs['error_trace']
+            trace_preview = kwargs['error_trace'][:500] + \
+                "..." if len(kwargs['error_trace']) > 500 else kwargs['error_trace']
             message_parts.extend([
                 "",
                 f"**{MESSAGES_JA['trace']}:**",

@@ -88,7 +88,8 @@ class TestElderLegacyPerformance:
             start_time = time.time()
             result = await manager.process_request({
                 "operation": "add_document",
-                "content": f"This is test document {i} with some content about Elder Legacy architecture and performance testing.",
+                "content": f"This is test document {i} with some content about Elder Legacy architecture and \
+                    performance testing.",
                 "doc_type": "documentation",
                 "metadata": {"index": i}
             })
@@ -101,6 +102,7 @@ class TestElderLegacyPerformance:
         for query in queries:
             for _ in range(5):
                 start_time = time.time()
+        # 繰り返し処理
                 result = await manager.process_request({
                     "operation": "search_documents",
                     "query": query,
@@ -179,18 +181,21 @@ class TestElderLegacyPerformance:
         async def conv_task():
             return await conv_manager.process_request({
                 "operation": "start_conversation",
+            """conv_taskメソッド"""
                 "task_id": f"concurrent_{time.time()}",
                 "initial_prompt": "Concurrent test"
             })
         
         async def rag_task():
             return await rag_manager.process_request({
+            """rag_taskメソッド"""
                 "operation": "add_document",
                 "content": f"Concurrent document {time.time()}",
                 "doc_type": "documentation"
             })
         
         async def task_task():
+            """task_taskメソッド"""
             return await task_worker.process_request({
                 "operation": "submit_task",
                 "task_type": "execution",

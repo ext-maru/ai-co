@@ -12,6 +12,7 @@ exec(open("setup_test_environment.py").read())
 
 class QuickCoverageBooster:
     def __init__(self):
+    """QuickCoverageBoosterクラス"""
         self.test_template = '''"""Minimal test for {module_name}"""
 import pytest
 from unittest.mock import Mock, patch
@@ -57,6 +58,7 @@ class Test{class_name}:
 
         tests_created = 0
 
+        # 繰り返し処理
         for dir_name, import_base in targets:
             dir_path = Path(dir_name)
             test_dir = Path(f"tests/unit/{dir_name}")

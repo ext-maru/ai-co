@@ -366,7 +366,10 @@ class WorkerHealthMonitorService:
                 )
             elif action == "scale_down":
                 self.logger.info(
-                    f"{EMOJI['scaling']} Recommending scale down for {worker_name}: {current_count} → {recommended_count}"
+                    (
+                        f"f"{EMOJI['scaling']} Recommending scale down for {worker_name}: {current_count} → "
+                        f"{recommended_count}""
+                    )
                 )
 
     def _should_perform_performance_check(self) -> bool:

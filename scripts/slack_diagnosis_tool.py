@@ -278,6 +278,9 @@ def continuous_monitor():
                         bot_user_id and f"<@{bot_user_id}>" in text
                     ) or "@pm-ai" in text.lower()
 
+                    if not (has_mention):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if has_mention:
                         log(f"\n[新規メンション検出!]")
                         log(f"  Time: {datetime.now()}")

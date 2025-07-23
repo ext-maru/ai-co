@@ -103,6 +103,7 @@ def check_knights_status():
                 try:
                     import ast
 
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     with open(file_path) as f:
                         ast.parse(f.read())
                     syntax_ok_count += 1

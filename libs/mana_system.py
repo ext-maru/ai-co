@@ -21,6 +21,7 @@ class ManaSystem:
     """5大契約精霊のマナ（エネルギー）管理システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         # マナの初期値と最大値
         self.max_mana = 100
         self.mana_regen_rate = 0.5  # 毎秒の回復量

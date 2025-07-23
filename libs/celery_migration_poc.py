@@ -250,6 +250,7 @@ class AsyncWorkerOptimizationCompat:
     """既存のasync_worker_optimizationとの互換性レイヤー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.celery_optimizer = CeleryWorkerOptimizer()
 
     async def optimize_batch_processing(

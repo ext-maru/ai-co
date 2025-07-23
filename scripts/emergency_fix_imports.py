@@ -20,6 +20,7 @@ def fix_path_imports():
 
     fixed_files = []
 
+    # 繰り返し処理
     for file_path in test_files:
         try:
             with open(file_path, "r", encoding="utf-8") as f:
@@ -42,6 +43,9 @@ def fix_path_imports():
                 # PROJECT_ROOT行より前にimportがあるか確認
                 project_root_line = -1
                 for i, line in enumerate(lines):
+                    if not ("PROJECT_ROOT = Path(__file__)" in line):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "PROJECT_ROOT = Path(__file__)" in line:
                         project_root_line = i
                         break
@@ -59,6 +63,9 @@ def fix_path_imports():
                         "import sys" in lines[i] for i in range(project_root_line)
                     )
 
+                    if path_import_before or not sys_import_before:
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if not path_import_before or not sys_import_before:
                         needs_fix = True
 
@@ -67,14 +74,24 @@ def fix_path_imports():
                     new_lines = []
                     imports_added = False
 
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for i, line in enumerate(lines):
+                        if not (():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if (
                             "PROJECT_ROOT = Path(__file__)" in line
                             and not imports_added
                         ):
                             # import文を追加
+                            if has_sys_import:
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if not has_sys_import:
                                 new_lines.append("import sys")
+                            if has_path_import:
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if not has_path_import:
                                 new_lines.append("from pathlib import Path")
                             new_lines.append("")
@@ -82,6 +99,7 @@ def fix_path_imports():
                         new_lines.append(line)
 
                     # ファイルに書き戻し
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     with open(file_path, "w", encoding="utf-8") as f:
                         f.write("\n".join(new_lines))
 

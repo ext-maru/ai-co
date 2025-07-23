@@ -157,6 +157,7 @@ class TestSecurityValidator:
         
         # 簡易的なサニタイゼーション関数
         def sanitize_log(text):
+            """sanitize_logメソッド"""
             import re
             patterns = [
                 (r'password\s*=\s*["\']?[^"\'\s]+["\']?', 'password=****'),

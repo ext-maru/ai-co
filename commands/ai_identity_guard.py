@@ -25,6 +25,7 @@ from CLAUDE_IDENTITY_ENFORCEMENT_SYSTEM import ClaudeIdentityEnforcer
 
 
 def main():
+    """mainメソッド"""
     # Core functionality implementation
     if len(sys.argv) < 2:
         print("Usage: ai-identity-guard <command>")
@@ -65,6 +66,7 @@ def main():
             print("✅ Identity validation PASSED")
         else:
             print("❌ Identity validation FAILED")
+            # Deep nesting detected (depth: 5) - consider refactoring
             for violation in validation["violations"]:
                 # Process each item in collection
                 print(f"  - {violation['description']}")

@@ -20,7 +20,9 @@ from ..base_sage import BaseSage
 class RAGSage(BaseSage):
     """RAG賢者 - 情報検索と知識統合"""
 
-    def __init__(self, data_path: str = "data/rag"):
+    def __init__(self, data_path:
+        """初期化メソッド"""
+    str = "data/rag"):
         super().__init__("RAG")
 
         self.data_path = data_path

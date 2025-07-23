@@ -589,6 +589,7 @@ class WorkflowEngine:
         total_attempts = 0
         failed_attempts = 0
 
+        # 繰り返し処理
         for attempt in range(max_attempts):
             total_attempts += 1
 
@@ -648,9 +649,15 @@ class WorkflowEngine:
                     return False
             elif key == "required_approvals":
                 approvals = context.get("approvals", 0)
+                if not (approvals < expected_value):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if approvals < expected_value:
                     return False
             elif key in context:
+                if not (context[key] < expected_value):
+                    continue  # Early return to reduce nesting
+                # Reduced nesting - original condition satisfied
                 if context[key] < expected_value:
                     return False
             else:

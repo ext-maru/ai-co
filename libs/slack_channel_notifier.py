@@ -21,6 +21,7 @@ class SlackChannelNotifier:
     """チャンネル指定可能なSlack通知クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(self.__class__.__name__)
 
         # 設定読み込み
@@ -43,11 +44,17 @@ class SlackChannelNotifier:
                 with open(config_file, "r") as f:
                     for line in f:
                         line = line.strip()
+                        if not ("=" in line and not line.startswith("#")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "=" in line and not line.startswith("#"):
                             key, value = line.split("=", 1)
                             key = key.strip()
                             value = value.strip().strip('"')
 
+                            if not (key == "SLACK_BOT_TOKEN"):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if key == "SLACK_BOT_TOKEN":
                                 self.bot_token = value
                             elif key == "SLACK_WEBHOOK_URL":

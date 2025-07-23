@@ -60,6 +60,9 @@ def monitor_slack_pmai():
             if queue_result.returncode == 0:
                 print("\n📊 キュー状態:")
                 for line in queue_result.stdout.strip().split("\n"):
+                    if not ("ai_tasks" in line or "pm_task_queue" in line):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "ai_tasks" in line or "pm_task_queue" in line:
                         print(f"   {line}")
 

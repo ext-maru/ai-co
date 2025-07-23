@@ -17,6 +17,7 @@ from libs.ai_log_viewer import AILogViewer
 
 
 def main():
+    """mainメソッド"""
     helper = AICommandHelper()
     viewer = AILogViewer()
 
@@ -75,7 +76,8 @@ fi
 echo ""
 echo "4. 処理されたメッセージ:"
 if [ -f db/slack_messages.db ]; then
-    sqlite3 db/slack_messages.db "SELECT COUNT(*) as total FROM processed_messages WHERE text LIKE '%pm-ai%';" 2>/dev/null
+    sqlite3 db/slack_messages.db "SELECT COUNT(*) as total FROM processed_messages \
+        WHERE text LIKE '%pm-ai%';" 2>/dev/null
 fi
 """
 

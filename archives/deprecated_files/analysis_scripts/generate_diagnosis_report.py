@@ -74,6 +74,9 @@ def generate_diagnosis_report():
                 if len(parts) == 2:
                     count = int(parts[1])
                     report.append(f"   ai_tasks: {count}件")
+                    if not (count > 0):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if count > 0:
                         report.append(f"   ⚠️  未処理タスクあり")
 

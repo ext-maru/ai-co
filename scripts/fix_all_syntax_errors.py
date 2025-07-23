@@ -5,9 +5,36 @@ from pathlib import Path
 
 # Create mock dependencies first
 mock_libs = {
-    "redis": "class Redis:\n    def __init__(self, *args, **kwargs): pass\n    def get(self, key): return None\n    def set(self, key, value): return True\n    def pipeline(self): return self\n    def execute(self): return []\n",
-    "aioredis": "class Redis:\n    def __init__(self, *args, **kwargs): pass\n    async def get(self, key): return None\n    async def set(self, key, value): return True\nasync def create_redis(*args, **kwargs): return Redis()\nfrom_url = create_redis\n",
-    "prometheus_client": "class Counter:\n    def __init__(self, *args, **kwargs): pass\n    def inc(self, amount=1): pass\n    def labels(self, **kwargs): return self\nclass Histogram:\n    def __init__(self, *args, **kwargs): pass\n    def observe(self, value): pass\n    def labels(self, **kwargs): return self\nclass Gauge:\n    def __init__(self, *args, **kwargs): pass\n    def set(self, value): pass\n    def labels(self, **kwargs): return self\n",
+    "redis": "class Redis:\n    def __init__(self, *args, **kwargs): pass\n    def get(self, key): " \
+        "return None\n    def set(
+            self,
+            key,
+            value): return True\n    def pipeline(self): return self\n    def execute(self
+        ): return []\n",
+    "aioredis": "class Redis:\n    def __init__(
+        self,
+        *args,
+        **kwargs): pass\n    async def get(self,
+        key): return None\n    async def set(self,
+        key,
+        value): return True\nasync def create_redis(*args,
+        **kwargs): return Redis(
+    )\nfrom_url = create_redis\n",
+    "prometheus_client": "class Counter:\n    def __init__(
+        self,
+        *args,
+        **kwargs): pass\n    def inc(self,
+        amount=1): pass\n    def labels(self,
+        **kwargs): return self\nclass Histogram:\n    def __init__(self,
+        *args,
+        **kwargs): pass\n    def observe(self,
+        value): pass\n    def labels(self,
+        **kwargs): return self\nclass Gauge:\n    def __init__(self,
+        *args,
+        **kwargs): pass\n    def set(self,
+        value): pass\n    def labels(self,
+        **kwargs
+    ): return self\n",
 }
 
 # Create mocks

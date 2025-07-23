@@ -43,6 +43,7 @@ class LimitedExtremeTest:
             tasks = []
             
             async def acquire_and_release(index):
+                """acquire_and_releaseメソッド"""
                 lock = ProcessLock("file", lock_dir=lock_dir)
                 key = f"test_key_{index % 10}"  # 10種類のキー
                 try:

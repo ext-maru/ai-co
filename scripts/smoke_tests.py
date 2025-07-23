@@ -275,6 +275,7 @@ class SmokeTest:
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description="Run smoke tests")
     parser.add_argument(
         "--environment",

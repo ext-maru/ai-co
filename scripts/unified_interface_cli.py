@@ -312,6 +312,7 @@ def main():
     cli = UnifiedInterfaceCLI()
 
     async def run_cli():
+        """run_cliを実行"""
         try:
             if args.start_server:
                 await cli.start_server()

@@ -513,6 +513,7 @@ class ElderCouncilReview:
 
         def visit_node(current_node, depth=0):
             nonlocal max_depth
+            """visit_nodeメソッド"""
             max_depth = max(max_depth, depth)
 
             for child in ast.iter_child_nodes(current_node):
@@ -1414,6 +1415,7 @@ if __name__ == "__main__":
     import asyncio
 
     async def main():
+        """mainメソッド"""
         elder_council = ElderCouncilReview()
 
         # Example: Review a single test file

@@ -52,6 +52,9 @@ class ElfForest:
                 if "TOTAL" in line and "%" in line:
                     parts = line.split()
                     for part in parts:
+                        if not (part.endswith("%")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if part.endswith("%"):
                             return float(part.rstrip("%"))
 
@@ -169,6 +172,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
                 for i, line in enumerate(lines):
                     if line.startswith("import") or line.startswith("from"):
                         insert_pos = i + 1
+                    # 複雑な条件判定
                     elif (
                         insert_pos > 0
                         and line

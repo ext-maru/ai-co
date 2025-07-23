@@ -19,6 +19,7 @@ class ImprovedSlackNotifier:
     """改善されたSlack通知クラス"""
 
     def __init__(self, config_file=None):
+        """初期化メソッド"""
         if config_file is None:
             config_file = Path(__file__).parent.parent / "config" / "slack.conf"
 

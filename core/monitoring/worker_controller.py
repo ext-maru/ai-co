@@ -13,6 +13,7 @@ logger = logging.getLogger("WorkerController")
 
 
 class WorkerController:
+    """WorkerControllerワーカークラス"""
     def __init__(self, config_file=None):
         """ワーカー制御システムの初期化"""
         if config_file is None:
@@ -29,6 +30,7 @@ class WorkerController:
                     line = line.strip()
                     if line and not line.startswith("#") and "=" in line:
                         key, value = line.split("=", 1)
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             config[key] = int(value)
                         except ValueError:
@@ -135,6 +137,7 @@ class WorkerController:
                     # 終了待機
                     timeout = self.config.get("GRACEFUL_SHUTDOWN_TIMEOUT", 30)
                     for _ in range(timeout):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         try:
                             os.kill(pid, 0)  # プロセス存在確認
                             time.sleep(1)

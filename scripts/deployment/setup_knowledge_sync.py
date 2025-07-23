@@ -299,6 +299,7 @@ class KnowledgeSyncSystem:
 
         sync_results = {"synced": 0, "elevated": 0, "errors": 0, "candidates": []}
 
+        # 繰り返し処理
         for project_str in self.config.get("projects", []):
             project_path = Path(project_str)
             knowledge_file = project_path / "PROJECT_KNOWLEDGE.md"

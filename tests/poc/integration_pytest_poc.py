@@ -175,6 +175,7 @@ class TestPerformanceBenchmark:
 
         def run_dummy_tests():
             results = []
+            """run_dummy_testsを実行"""
             for i in range(100):
                 results.append({"test": f"test_{i}", "status": "passed"})
             return results
@@ -187,6 +188,7 @@ class TestPerformanceBenchmark:
         """非同期処理パフォーマンス"""
 
         async def async_operation():
+            """async_operationメソッド"""
             tasks = []
             for i in range(10):
                 tasks.append(asyncio.create_task(asyncio.sleep(0.001)))

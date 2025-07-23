@@ -33,7 +33,9 @@ def retry(
 
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
+        """decoratorメソッド"""
         def wrapper(*args, **kwargs) -> Any:
+            """wrapperメソッド"""
             last_exception = None
 
             for attempt in range(max_attempts):

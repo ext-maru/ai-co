@@ -24,6 +24,7 @@ logger = logging.getLogger("ErrorRecoverySystem")
 
 
 class ErrorType(Enum):
+    """ErrorTypeクラス"""
     TRANSIENT = "transient"          # 再試行で解決可能
     PERMANENT = "permanent"          # 手動介入必要
     SYSTEM = "system"               # インフラ・環境問題
@@ -34,6 +35,7 @@ class ErrorType(Enum):
 
 
 class RecoveryAction(Enum):
+    """RecoveryActionクラス"""
     RETRY = "retry"
     ROLLBACK = "rollback"
     ESCALATE = "escalate"
@@ -78,6 +80,7 @@ class RecoveryResult:
 
 
 class CircuitBreakerState(Enum):
+    """CircuitBreakerStateクラス"""
     CLOSED = "closed"       # 正常動作
     OPEN = "open"          # 回路開放（呼び出し停止）
     HALF_OPEN = "half_open"  # 部分復旧テスト中
@@ -85,6 +88,7 @@ class CircuitBreakerState(Enum):
 
 @dataclass
 class CircuitBreakerConfig:
+    """CircuitBreakerConfigクラス"""
     failure_threshold: int = 5
     recovery_timeout: float = 60.0
     success_threshold: int = 3
@@ -94,7 +98,9 @@ class CircuitBreakerConfig:
 class CircuitBreaker:
     """サーキットブレーカーパターン実装"""
     
-    def __init__(self, config: CircuitBreakerConfig):
+    def __init__(self, config:
+        """初期化メソッド"""
+    CircuitBreakerConfig):
         self.config = config
         self.state = CircuitBreakerState.CLOSED
         self.failure_count = 0
@@ -200,7 +206,9 @@ class RetryStrategy(ABC):
 class ExponentialBackoffStrategy(RetryStrategy):
     """指数バックオフ戦略"""
     
-    def __init__(self, base_delay: float = 1.0, max_delay: float = 60.0, max_attempts: int = 5):
+    def __init__(self, base_delay:
+        """初期化メソッド"""
+    float = 1.0, max_delay: float = 60.0, max_attempts: int = 5):
         self.base_delay = base_delay
         self.max_delay = max_delay
         self.max_attempts = max_attempts
@@ -224,6 +232,7 @@ class ErrorClassifier:
     """エラー分類器"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.error_patterns = {
             ErrorType.TRANSIENT: [
                 r'connection.*timeout',
@@ -294,6 +303,7 @@ class RollbackManager:
     """ロールバック管理"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.rollback_stack: List[Callable] = []
         self.rollback_history: List[Dict[str, Any]] = []
     
@@ -375,6 +385,7 @@ class ErrorRecoverySystem:
     """エラー回復システム本体"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.error_classifier = ErrorClassifier()
         self.retry_strategy = ExponentialBackoffStrategy()
         self.rollback_manager = RollbackManager()
@@ -625,6 +636,7 @@ class ErrorRecoverySystem:
     def add_git_rollback_steps(self, branch_name: str, original_branch: str):
         """Git操作用ロールバック手順追加"""
         def rollback_to_original_branch():
+            """rollback_to_original_branchメソッド"""
             try:
                 subprocess.run(["git", "checkout", original_branch], check=True)
                 logger.info(f"Rolled back to original branch: {original_branch}")
@@ -632,6 +644,7 @@ class ErrorRecoverySystem:
                 logger.error(f"Failed to rollback to original branch: {str(e)}")
         
         def delete_failed_branch():
+            """failed_branch削除メソッド"""
             try:
                 subprocess.run(["git", "branch", "-D", branch_name], check=True)
                 logger.info(f"Deleted failed branch: {branch_name}")
@@ -678,8 +691,10 @@ class ErrorRecoverySystem:
 def with_error_recovery(component: str, operation: str):
     """エラー回復デコレーター"""
     def decorator(func):
+        """decoratorメソッド"""
         @wraps(func)
         async def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             recovery_system = get_error_recovery_system()
             return await recovery_system.execute_with_recovery(
                 func, component, operation, *args, **kwargs

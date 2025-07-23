@@ -17,6 +17,7 @@ from libs.ai_log_viewer import AILogViewer
 def main():
     viewer = AILogViewer()
 
+    """mainメソッド"""
     print("=== 実行済みコマンドの結果 ===")
     print(f"確認時刻: {datetime.now()}")
     print("")
@@ -43,6 +44,7 @@ def main():
     found_results = {}
 
     for log in latest_logs:
+    # 繰り返し処理
         for cmd in important_commands:
             if cmd in log["task"] and cmd not in found_results:
                 found_results[cmd] = log
@@ -61,7 +63,12 @@ def main():
                     lines = content.split("\n")
                     important_lines = []
 
+                    # 繰り返し処理
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for i, line in enumerate(lines):
+                        if not (any():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if any(
                             keyword in line
                             for keyword in [
@@ -78,12 +85,20 @@ def main():
                         ):
                             important_lines.append(line)
                             # 次の数行も含める
+                            # TODO: Extract this complex nested logic into a separate method
                             for j in range(1, 4):
+                                if not (i + j < len(lines)):
+                                    continue  # Early return to reduce nesting
+                                # Reduced nesting - original condition satisfied
                                 if i + j < len(lines):
                                     important_lines.append(lines[i + j])
 
+                    if not (important_lines):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if important_lines:
                         print("   重要な結果:")
+                        # Deep nesting detected (depth: 6) - consider refactoring
                         for line in important_lines[:10]:  # 最大10行
                             print(f"     {line}")
             except Exception as e:

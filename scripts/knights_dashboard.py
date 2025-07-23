@@ -43,6 +43,7 @@ class KnightsDashboard:
         """自動更新スレッドを開始"""
 
         def update_loop():
+            """update_loopを更新"""
             global latest_status
             while auto_refresh:
                 try:
@@ -277,7 +278,9 @@ DASHBOARD_TEMPLATE = """
                 <h3>🐰 RabbitMQ</h3>
                 <div class="status-item">
                     <span>接続:</span>
-                    <span>{{ "✅" if status.rabbitmq.status == "connected" else "❌" }} {{ status.rabbitmq.status }}</span>
+                    <span>{{ "✅" \
+                        if status.rabbitmq.status == "connected" \
+                        else "❌" }} {{ status.rabbitmq.status }}</span>
                 </div>
                 {% if status.rabbitmq.queues %}
                 {% for queue, info in status.rabbitmq.queues.items() %}

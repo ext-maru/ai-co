@@ -148,6 +148,7 @@ def list_pending_approvals():
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(
         description="グランドエルダーmaruへの承認申請システム"
     )

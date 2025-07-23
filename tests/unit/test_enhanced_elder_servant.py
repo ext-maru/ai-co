@@ -237,6 +237,7 @@ class TestEnhancedElderServantCore:
         """エラーハンドリングテスト"""
         # エラーが発生するリクエスト（実際のタスク実行でエラーを発生させる）
         class FailingTestServant(TestEnhancedElderServant):
+            """FailingTestServantテストクラス"""
             async def _execute_specialized_task(self, request: Dict[str, Any]) -> Dict[str, Any]:
                 raise ValueError("Test error")
         

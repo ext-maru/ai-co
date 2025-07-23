@@ -36,7 +36,9 @@ logger = logging.getLogger(__name__)
 class SlackGuardianKnight(IncidentKnight):
     """Slack守護騎士 - Slack統合システムの完全修復"""
 
-    def __init__(self, knight_id: str = "slack_guardian_001"):
+    def __init__(self, knight_id:
+        """初期化メソッド"""
+    str = "slack_guardian_001"):
         super().__init__(knight_id, KnightType.REPAIR, "slack_guardian")
 
         # Slack関連問題の分類
@@ -880,6 +882,7 @@ class SlackWorker:
 if __name__ == "__main__":
 
     async def main():
+        """mainメソッド"""
         # Slack Guardian Knightのテスト
         knight = SlackGuardianKnight()
 

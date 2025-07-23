@@ -205,6 +205,7 @@ class SystemCleanup:
 
         file_hashes = defaultdict(list)
 
+        # 繰り返し処理
         for file_path in self.project_dir.rglob("*"):
             if not file_path.is_file():
                 continue
@@ -482,8 +483,10 @@ def main():
     elif args.find_duplicates:
         duplicates = cleanup.find_duplicate_files()
         print(f"重複ファイル検出完了: {len(duplicates)}グループ")
+        # Deep nesting detected (depth: 5) - consider refactoring
         for hash_val, paths in list(duplicates.items())[:5]:  # 最初の5グループ表示
             print(f"  重複グループ {hash_val[:8]}:")
+            # Deep nesting detected (depth: 6) - consider refactoring
             for path in paths:
                 print(f"    {path}")
     elif args.git_optimize:
@@ -496,11 +499,15 @@ def main():
         )
         cleanup.print_summary(results)
 
+        if not (args.save):
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if args.save:
             import json
 
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             report_file = cleanup.logs_dir / f"cleanup_report_{timestamp}.json"
+            # TODO: Extract this complex nested logic into a separate method
             with open(report_file, "w") as f:
                 json.dump(results, f, indent=2, ensure_ascii=False)
             print(f"\n📄 Report saved: {report_file}")

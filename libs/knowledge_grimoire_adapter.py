@@ -18,7 +18,9 @@ from libs.rag_grimoire_integration import RagGrimoireConfig, RagGrimoireIntegrat
 class KnowledgeGrimoireAdapter:
     """Knowledge Grimoire アダプター - 既存の知識管理と魔法書システムの連携"""
 
-    def __init__(self, grimoire_enabled: bool = True):
+    def __init__(self, grimoire_enabled:
+        """初期化メソッド"""
+    bool = True):
         self.logger = logging.getLogger(__name__)
         self.grimoire_enabled = grimoire_enabled
         self.use_mock_grimoire = False
@@ -412,6 +414,7 @@ class KnowledgeSageGrimoireIntegration(KnowledgeGrimoireAdapter):
     """ナレッジ賢者 + 魔法書システム統合"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(grimoire_enabled=True)
         self.sage_type = "Knowledge Sage + Grimoire"
         self.wisdom_level = "unified_knowledge_system"
@@ -503,6 +506,7 @@ class KnowledgeSageGrimoireIntegration(KnowledgeGrimoireAdapter):
 if __name__ == "__main__":
     # テスト実行
     async def test_adapter():
+        """test_adapterテストメソッド"""
         adapter = KnowledgeGrimoireAdapter()
         await adapter.initialize_async()
 
@@ -524,6 +528,7 @@ if __name__ == "__main__":
 
     # 統合テスト
     async def test_sage_integration():
+        """test_sage_integrationテストメソッド"""
         sage = KnowledgeSageGrimoireIntegration()
         await sage.initialize_async()
 

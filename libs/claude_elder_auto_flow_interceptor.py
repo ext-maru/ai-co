@@ -29,6 +29,7 @@ class ClaudeElderAutoFlowInterceptor:
     """クロードエルダー自動Elder Flow適用システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.auto_flow_patterns = self._load_auto_flow_patterns()
         self.config_file = Path.home() / ".claude_elder_auto_flow_config.json"
         self._load_config()
@@ -242,6 +243,7 @@ class ClaudeElderAutoFlowInterceptor:
         results = []
         text_lower = text.lower()
 
+        # 繰り返し処理
         for pattern_group in self.auto_flow_patterns:
             matches = []
             for pattern in pattern_group["patterns"]:
@@ -361,6 +363,7 @@ def get_claude_elder_interceptor() -> ClaudeElderAutoFlowInterceptor:
 
 # CLI実行用
 async def main():
+    """mainメソッド"""
     import argparse
 
     parser = argparse.ArgumentParser(description="Claude Elder Auto Flow Interceptor")

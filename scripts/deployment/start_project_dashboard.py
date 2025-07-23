@@ -13,6 +13,7 @@ from pathlib import Path
 
 # カラー出力
 class Colors:
+    """Colorsクラス"""
     GREEN = "\033[92m"
     YELLOW = "\033[93m"
     RED = "\033[91m"

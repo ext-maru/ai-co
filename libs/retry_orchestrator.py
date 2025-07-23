@@ -37,6 +37,7 @@ class RetryOrchestrator(BaseManager):
     """修正後のリトライを管理するオーケストレーター"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("RetryOrchestrator")
         self.config = get_config()
         self.slack_notifier = SlackNotifier()

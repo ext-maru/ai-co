@@ -379,7 +379,8 @@ class OptimizedMetricsCollector:
             if valid_results:
                 metrics.update({
                     'code_quality_score': result.average_quality_score,
-                    'iron_will_compliance_rate': sum(1 for r in valid_results if r.iron_will_compliant) / len(valid_results),
+                                        'iron_will_compliance_rate': \
+                        sum(1 for r in valid_results if r.iron_will_compliant) / len(valid_results),
                     'average_complexity': sum(r.complexity_score for r in valid_results) / len(valid_results),
                     'total_issues': sum(r.issues_count for r in valid_results),
                     'files_with_issues': sum(1 for r in valid_results if r.issues_count > 0),
@@ -554,7 +555,10 @@ class OptimizedQualityDaemon:
     async def run_forever(self):
         """Main daemon loop with optimizations"""
         logger.info("🚀 Optimized Elder Guild Quality Daemon starting")
-        logger.info(f"⚙️ Configuration: {self.monitoring_interval}s interval, differential={self.differential_analysis}")
+        logger.info(f"⚙️ Configuration: {
+            self.monitoring_interval}s interval,
+            differential={self.differential_analysis
+        }")
         
         while True:
             try:

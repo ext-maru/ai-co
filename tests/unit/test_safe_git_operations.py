@@ -95,6 +95,7 @@ class TestSafeGitOperations(unittest.TestCase):
             mock_result.returncode = 0
             mock_result.stderr = ""
             
+            """mock_run_side_effectを実行"""
             # git status --porcelain の場合
             if "status" in args[0] and "--porcelain" in args[0]:
                 mock_result.stdout = " M test.py"  # 変更あり
@@ -123,6 +124,7 @@ class TestSafeGitOperations(unittest.TestCase):
             mock_result = MagicMock()
             mock_result.returncode = 0
             mock_result.stderr = ""
+            """mock_run_side_effectを実行"""
             
             if "status" in args[0]:
                 mock_result.stdout = ""  # clean状態
@@ -153,6 +155,7 @@ class TestSafeGitOperations(unittest.TestCase):
         def mock_run_side_effect(*args, **kwargs):
             mock_result = MagicMock()
             mock_result.returncode = 0
+            """mock_run_side_effectを実行"""
             mock_result.stderr = ""
             
             if "branch" in args[0] and "-a" in args[0]:
@@ -203,6 +206,7 @@ class TestSafeGitOperations(unittest.TestCase):
         # Mock設定
         def mock_run_side_effect(*args, **kwargs):
             mock_result = MagicMock()
+            """mock_run_side_effectを実行"""
             mock_result.returncode = 0
             mock_result.stderr = ""
             
@@ -231,6 +235,7 @@ class TestSafeGitOperations(unittest.TestCase):
         """PR用ブランチ作成ワークフロー（成功）のテスト"""
         # Mock設定
         def mock_run_side_effect(*args, **kwargs):
+            """mock_run_side_effectを実行"""
             mock_result = MagicMock()
             mock_result.returncode = 0
             mock_result.stderr = ""

@@ -19,8 +19,10 @@ try:
 except ImportError:
     # セキュリティモジュールが利用できない場合の簡易実装
     class InputValidator:
+        """InputValidatorクラス"""
         @staticmethod
         def validate_text(text, field_name, max_length=None):
+            """validate_text検証メソッド"""
             if not text:
                 raise ValueError(f"{field_name} cannot be empty")
             if max_length and len(text) > max_length:
@@ -29,17 +31,22 @@ except ImportError:
 
         @staticmethod
         def validate_labels(labels):
+            """validate_labels検証メソッド"""
             if not isinstance(labels, list):
                 raise ValueError("Labels must be a list")
             return [str(label) for label in labels]
 
     class AuditLogger:
+        """AuditLoggerクラス"""
         @staticmethod
         def log_operation(operation, details):
+            """log_operationメソッド"""
             logging.info(f"Audit: {operation} - {details}")
 
     class RateLimiter:
+        """RateLimiterクラス"""
         def check_rate_limit(self):
+            """check_rate_limitチェックメソッド"""
             return True
 
 

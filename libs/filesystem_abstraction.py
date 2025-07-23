@@ -20,7 +20,9 @@ logger = logging.getLogger(__name__)
 class VirtualFileSystem:
     """仮想ファイルシステム実装"""
 
-    def __init__(self, root_path: Optional[str] = None):
+    def __init__(self, root_path:
+        """初期化メソッド"""
+    Optional[str] = None):
         self.root = Path(root_path) if root_path else Path(tempfile.mkdtemp())
         self.files: Dict[str, bytes] = {}
         self.directories: set = {"/"}
@@ -239,7 +241,9 @@ class VirtualFileSystem:
 class FileSystemAbstraction:
     """ファイルシステム操作の抽象化レイヤー"""
 
-    def __init__(self, use_virtual: bool = False, root_path: Optional[str] = None):
+    def __init__(self, use_virtual:
+        """初期化メソッド"""
+    bool = False, root_path: Optional[str] = None):
         self.use_virtual = use_virtual
         self.vfs = VirtualFileSystem(root_path) if use_virtual else None
         self.root = Path(root_path) if root_path else Path.cwd()

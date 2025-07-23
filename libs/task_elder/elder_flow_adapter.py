@@ -28,6 +28,7 @@ class ElderFlowTaskRequest:
     created_at: str
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if not self.created_at:
             self.created_at = datetime.now().isoformat()
 
@@ -45,6 +46,7 @@ class ElderFlowResult:
     sage_consultations: Dict[str, Any] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.sage_consultations is None:
             self.sage_consultations = {}
 
@@ -53,6 +55,7 @@ class TaskElderFlowAdapter:
     """タスクエルダー・エルダーフロー統合アダプター"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.base_path = Path("/home/aicompany/ai_co")
         self.integration_log = (
             self.base_path / "data" / "task_elder_flow_integration.json"

@@ -308,7 +308,9 @@ class RetryIssueReporter:
             ) else None,
             "attempt_count": len(session["attempts"]),
             "final_status": session.get("final_status"),
-            "duration_seconds": (session["end_time"] - session["start_time"]).total_seconds() if session.get("end_time") else None
+            "duration_seconds": (session["end_time"] - session["start_time"]).total_seconds() \
+                if session.get("end_time") \
+                else None
         }
 
 
@@ -359,6 +361,7 @@ if __name__ == "__main__":
         
         # テスト用の失敗する関数
         async def failing_function(fail_count=2):
+            """failing_functionメソッド"""
             if hasattr(failing_function, 'call_count'):
                 failing_function.call_count += 1
             else:

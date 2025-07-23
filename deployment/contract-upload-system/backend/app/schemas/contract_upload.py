@@ -65,6 +65,7 @@ class ContractUploadResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        """Config設定クラス"""
 
 
 class ContractUploadDetail(ContractUploadResponse):
@@ -97,6 +98,7 @@ class FileUploadResponse(BaseModel):
     thumbnail_url: Optional[str] = None
 
     class Config:
+        """Config設定クラス"""
         from_attributes = True
 
 

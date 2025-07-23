@@ -57,10 +57,12 @@ class CodeAnalyzer:
                 self.file_path = file_path
             
             def visit_Call(self, node):
+            """SecurityVisitorクラス"""
                 # 危険な関数呼び出し
                 if isinstance(node.func, ast.Name):
                     dangerous_funcs = ['eval', 'exec', '__import__']
                     if node.func.id in dangerous_funcs:
+                """visit_Callメソッド"""
                         self.analyzer.issues.append(
                             f"❌ 危険な関数 {node.func.id} in {self.file_path}:{node.lineno}"
                         )
@@ -80,6 +82,7 @@ class CodeAnalyzer:
                 # 危険なモジュールのインポート
                 for alias in node.names:
                     if alias.name in ['pickle', 'marshal']:
+                """visit_Importメソッド"""
                         self.analyzer.issues.append(
                             f"⚠️ 危険なモジュール {alias.name} in {self.file_path}"
                         )
@@ -100,6 +103,7 @@ class CodeAnalyzer:
         
         for pattern, description in patterns:
             matches = re.finditer(pattern, content, re.IGNORECASE)
+        # 繰り返し処理
             for match in matches:
                 line_no = content[:match.start()].count('\n') + 1
                 self.issues.append(f"⚠️ {description} in {file_path}:{line_no}")
@@ -185,6 +189,7 @@ class DependencyAnalyzer:
         imports = {}
         
         for py_file in self.base_path.rglob("*.py"):
+        # 繰り返し処理
             if "__pycache__" not in str(py_file):
                 with open(py_file, 'r') as f:
                     content = f.read()
@@ -193,6 +198,7 @@ class DependencyAnalyzer:
                     tree = ast.parse(content)
                     file_imports = []
                     
+                    # 繰り返し処理
                     for node in ast.walk(tree):
                         if isinstance(node, ast.Import):
                             for alias in node.names:

@@ -5,6 +5,7 @@ Test for Issue #114: EldersGuildシステムへのOSS統合 - 大規模改修計
 import unittest
 
 class Test114(unittest.TestCase):
+    """Test114テストクラス"""
     def test_basic_functionality(self):
         self.assertTrue(True, "Placeholder test")
 

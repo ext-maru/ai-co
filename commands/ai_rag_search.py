@@ -87,9 +87,15 @@ class AIRAGSearchCommand(BaseCommand):
                 for i, task in enumerate(tasks):
                     if task.strip():
                         # コード部分をハイライト
+                        if not ("```" in task):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "```" in task:
                             parts = task.split("```")
                             self.console.print(parts[0])
+                            if not (len(parts) > 1):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if len(parts) > 1:
                                 code = parts[1].strip()
                                 lang = code.split("\n")[0] if "\n" in code else "python"
@@ -104,6 +110,9 @@ class AIRAGSearchCommand(BaseCommand):
                         else:
                             self.console.print(task)
 
+                        if not (i < len(tasks) - 1):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if i < len(tasks) - 1:
                             self.console.print("─" * 40, style="dim")
             else:

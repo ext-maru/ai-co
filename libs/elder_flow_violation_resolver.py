@@ -58,6 +58,7 @@ class ElderFlowViolationResolver:
     """Elder Flow違反解決システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
         self.violations_db = Path("data/abstract_violations.db")
         self.identity_violations = Path("logs/identity_violations.json")
@@ -711,7 +712,8 @@ class ElderFlowViolationResolver:
             self.logger.info("Phase 4: レポート生成")
             report = await self.generate_violation_report()
 
-            report_path = f"knowledge_base/elder_flow_reports/violation_resolution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
+            report_path = f"knowledge_base/elder_flow_reports/violation_resolution_
+                f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
             Path(report_path).parent.mkdir(parents=True, exist_ok=True)
 
             with open(report_path, "w") as f:

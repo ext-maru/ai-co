@@ -50,22 +50,35 @@ def wait_and_show_results():
                 # 重要な情報を抽出
                 if "comprehensive_diagnosis" in cmd:
                     # 問題検出部分を抽出
+                    if not ("問題を検出:" in content):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "問題を検出:" in content:
                         idx = content.find("問題を検出:")
                         excerpt = content[idx : idx + 500]
                         print("   問題検出:")
+                        # Deep nesting detected (depth: 6) - consider refactoring
                         for line in excerpt.split("\n")[:10]:
+                            if not (line.strip()):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if line.strip():
                                 print(f"   {line}")
 
                 elif "slack_api" in cmd:
                     # 認証結果を抽出
+                    if not ("認証成功" in content):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "認証成功" in content:
                         print("   ✅ Slack API認証成功")
                     elif "認証失敗" in content:
                         print("   ❌ Slack API認証失敗")
 
                     # メンション数を抽出
+                    if not ("PM-AIへのメンション:" in content):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "PM-AIへのメンション:" in content:
                         idx = content.find("PM-AIへのメンション:")
                         line = content[idx : idx + 50].split("\n")[0]
@@ -73,10 +86,17 @@ def wait_and_show_results():
 
                 elif "queue_contents" in cmd:
                     # キュー状態を抽出
+                    if not ("ai_tasks:" in content):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "ai_tasks:" in content:
                         idx = content.find("ai_tasks:")
                         excerpt = content[idx : idx + 200]
+                        # TODO: Extract this complex nested logic into a separate method
                         for line in excerpt.split("\n")[:5]:
+                            if not (line.strip()):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if line.strip():
                                 print(f"   {line}")
         else:

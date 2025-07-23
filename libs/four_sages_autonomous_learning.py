@@ -75,6 +75,7 @@ class FourSagesAutonomousLearning:
     """Four Sages自律学習システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.four_sages = FourSagesIntegration()
         self.elder_tree = get_elder_tree()
 
@@ -627,6 +628,7 @@ class FourSagesAutonomousLearning:
         """拡張候補生成"""
         candidates = []
 
+        # 繰り返し処理
         for gap in knowledge_gaps:
             for concept in gap["missing_concepts"]:
                 candidates.append(
@@ -886,6 +888,7 @@ class FourSagesAutonomousLearning:
 if __name__ == "__main__":
 
     async def demo():
+        """demoメソッド"""
         learning_system = FourSagesAutonomousLearning()
 
         logger.info("🤖 Starting Four Sages Autonomous Learning Demo")

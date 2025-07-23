@@ -123,6 +123,7 @@ class TestAutoIssueProcessorA2AQuality:
                 def mock_execute(prompt, **kwargs):
                     nonlocal error_count
                     if "Issue 1" in prompt:
+                    """mock_executeを実行"""
                         error_count += 1
                         raise Exception("Simulated error")
                     return json.dumps({"status": "success"})
@@ -181,6 +182,7 @@ class TestAutoIssueProcessorA2AQuality:
             # Issue 401には既存PRがある
             async def mock_check_pr(issue_number):
                 if issue_number == 401:
+                """mock_check_prメソッド"""
                     return {
                         "number": 501,
                         "html_url": "https://github.com/test/repo/pull/501"
@@ -191,6 +193,7 @@ class TestAutoIssueProcessorA2AQuality:
             
             # process_issue_isolatedをモック化して、実際のClaude CLI呼び出しを避ける
             async def mock_process_isolated(issue):
+                """mock_process_isolatedを処理"""
                 # 既存PRチェックを先に行う
                 existing_pr = await processor._check_existing_pr_for_issue(issue.number)
                 if existing_pr:

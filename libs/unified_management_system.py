@@ -46,31 +46,45 @@ except ImportError as e:
     
     # フォールバック実装
     class TaskTracker:
+        """TaskTracker - トラッカークラス"""
         def __init__(self):
+            """初期化メソッド"""
             self.tasks = {}
         def create_task(self, title, description, priority="medium"):
+            """task作成メソッド"""
             return f"task_{len(self.tasks)}"
         def get_tasks(self):
+            """tasks取得メソッド"""
             return []
         def update_task_status(self, task_id, status):
+            """task_status更新メソッド"""
             pass
     
     class IncidentManager:
+        """IncidentManager - 管理システムクラス"""
         def __init__(self):
+            """初期化メソッド"""
             self.incidents = {}
         def create_incident(self, title, description, severity="medium"):
+            """incident作成メソッド"""
             return f"incident_{len(self.incidents)}"
         def get_incidents(self):
+            """incidents取得メソッド"""
             return []
         def resolve_incident(self, incident_id, resolution):
+            """resolve_incidentメソッド"""
             pass
     
     class QualityGateOptimizer:
+        """QualityGateOptimizerクラス"""
         def __init__(self):
+            """初期化メソッド"""
             pass
         async def check_quality(self, content):
+            """check_qualityチェックメソッド"""
             return {"score": 85, "passed": True}
         def get_quality_metrics(self):
+            """quality_metrics取得メソッド"""
             return {"average_score": 85}
 
 class ManagementType(Enum):
@@ -137,6 +151,7 @@ class UnifiedManagementSystem:
     """
     
     def __init__(self):
+        """初期化メソッド"""
         self.system_id = "unified_management_system_001"
         self.created_at = datetime.now()
         
@@ -249,6 +264,7 @@ class UnifiedManagementSystem:
     def _start_monitoring(self):
         """リアルタイム監視開始"""
         def monitoring_loop():
+            """monitoring_loopメソッド"""
             while self.monitoring_active:
                 try:
                     # システムメトリクス収集
@@ -284,7 +300,8 @@ class UnifiedManagementSystem:
         
         全管理システムで共通のエントリ作成インターフェース
         """
-        entry_id = f"mgmt_{management_type.value}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{len(self.management_entries)}"
+        entry_id = f"mgmt_{management_type.value}_{datetime." \
+            "now().strftime('%Y%m%d_%H%M%S')}_{len(self.management_entries)}"
         
         entry = UnifiedManagementEntry(
             id=entry_id,
@@ -677,7 +694,9 @@ class UnifiedManagementSystem:
             "total_entries": total_entries,
             "active_entries": active_entries,
             "completed_entries": completed_entries,
-            "system_load": active_entries / self.config["max_concurrent_entries"] if self.config["max_concurrent_entries"] > 0 else 0
+            "system_load": active_entries / self.config["max_concurrent_entries"] \
+                if self.config["max_concurrent_entries"] > 0 \
+                else 0
         })
     
     def _check_alerts(self):
@@ -746,7 +765,21 @@ class UnifiedManagementSystem:
             self.conn.execute(
                 """
                 INSERT OR REPLACE INTO management_entries 
-                (id, management_type, title, description, status, priority, created_at, updated_at, metadata, metrics, related_entries, tags)
+                 \
+                    (
+                        id,
+                        management_type,
+                        title,
+                        description,
+                        status,
+                        priority,
+                        created_at,
+                        updated_at,
+                        metadata,
+                        metrics,
+                        related_entries,
+                        tags
+                    )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
@@ -774,7 +807,19 @@ class UnifiedManagementSystem:
             self.conn.execute(
                 """
                 INSERT OR REPLACE INTO management_reports
-                (id, title, report_type, generated_at, time_range, summary, details, metrics, recommendations, attachments)
+                 \
+                    (
+                        id,
+                        title,
+                        report_type,
+                        generated_at,
+                        time_range,
+                        summary,
+                        details,
+                        metrics,
+                        recommendations,
+                        attachments
+                    )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
@@ -805,7 +850,11 @@ class UnifiedManagementSystem:
             entries = [e for e in entries if e.management_type == management_type]
         
         # アクティブなステータスのみフィルタリング
-        active_entries = [e for e in entries if e.status in [ManagementStatus.ACTIVE, ManagementStatus.MONITORING, ManagementStatus.PROCESSING]]
+        active_entries = [
+            e for e in entries if e.status in [ManagementStatus.ACTIVE,
+            ManagementStatus.MONITORING,
+            ManagementStatus.PROCESSING]
+        ]
         
         return [
             {
@@ -939,6 +988,7 @@ def main():
         priority = Priority(sys.argv[5]) if len(sys.argv) > 5 else Priority.MEDIUM
         
         async def create_async():
+            """async作成メソッド"""
             entry_id = await management_system.create_management_entry(
                 mgmt_type,
                 title,
@@ -958,6 +1008,7 @@ def main():
         status = ManagementStatus(sys.argv[3])
         
         async def update_async():
+            """async更新メソッド"""
             success = await management_system.update_entry_status(entry_id, status)
             if success:
                 print(f"ステータス更新完了: {entry_id}")
@@ -988,6 +1039,7 @@ def main():
         hours = int(sys.argv[2]) if len(sys.argv) > 2 else 24
         
         async def dashboard_async():
+            """dashboard_asyncメソッド"""
             report = await management_system.generate_unified_dashboard_report(hours)
             print(f"\n📊 ダッシュボードレポート生成: {report.id}")
             print(f"  期間: 過去{hours}時間")

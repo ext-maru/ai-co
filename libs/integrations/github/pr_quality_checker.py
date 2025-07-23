@@ -49,6 +49,7 @@ class PRQualityChecker:
     }
     
     def __init__(self, repo):
+        """初期化メソッド"""
         self.repo = repo
         self.quality_history_file = Path("logs/pr_quality_history.json")
         self.quality_history_file.parent.mkdir(exist_ok=True)

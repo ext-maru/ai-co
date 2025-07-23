@@ -40,6 +40,7 @@ def main():
         '/home/aicompany/ai_co/docs/plans/PHASE_STABILIZATION_PLAN_2025.md'
     ]
     
+    # 繰り返し処理
     for file_path in test_files:
         if Path(file_path).exists():
             print(f"\n📋 ファイル: {Path(file_path).name}")

@@ -17,5 +17,6 @@ for i, line in enumerate(lines):
     print(f"  endswith('\"\"\"'): {stripped.endswith('"""')}")
     print(f"  count('\"\"\"'): {line.count('"""')}")
     print(f"  '=' in line: {'=' in line}")
-    print(f"  starts with f/r/b: {any(stripped.startswith(prefix + '"""') for prefix in ['f', 'r', 'b', 'fr', 'rf', 'br', 'rb'])}")
+    print(f"  starts with f/r/b: {any(stripped.startswith(prefix + \
+        '"""') for prefix in ['f', 'r', 'b', 'fr', 'rf', 'br', 'rb'])}")
     print()

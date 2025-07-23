@@ -284,7 +284,8 @@ class StrictQualityAuditor:
                     line_number=0,
                     violation_type="insufficient_comments",
                     severity="medium",
-                    message=f"Comment ratio {comment_ratio:.1%} below minimum {self.quality_rules['min_comment_ratio']:.0%}",
+                    message=f"Comment ratio {comment_ratio:.1%} below minimum {self.quality_rules[ \
+                        'min_comment_ratio']:.0%}",
                     suggestion="Add more explanatory comments"
                 ))
     

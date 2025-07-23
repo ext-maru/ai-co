@@ -32,6 +32,7 @@ class ElderFlowEngine(EldersFlowLegacy):
     """Elder Flow実行エンジン（PIDロック機能付き）"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="ElderFlowEngine")
         self.orchestrator = ElderFlowOrchestrator()
         self.tracking_db = UnifiedTrackingDB()
@@ -429,6 +430,7 @@ class ElderFlowEngine(EldersFlowLegacy):
 
 # CLI実行用
 async def main():
+    """mainメソッド"""
     engine = ElderFlowEngine()
 
     if len(sys.argv) > 1:

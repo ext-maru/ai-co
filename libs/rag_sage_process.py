@@ -60,6 +60,7 @@ class RAGSageProcess(ElderProcessBase):
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(
             elder_name="rag_sage",
             elder_role=ElderRole.SAGE,
@@ -152,6 +153,9 @@ class RAGSageProcess(ElderProcessBase):
                         doc.tags = doc_data.get('tags', [])
                         doc.access_count = doc_data.get('access_count', 0)
 
+                        if not (doc_data.get('embedding')):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if doc_data.get('embedding'):
                             doc.embedding = doc_data['embedding']
                             self.embeddings_cache[doc.doc_id] = doc.embedding

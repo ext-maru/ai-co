@@ -511,10 +511,16 @@ if __name__ == "__main__":
             print(f"❌ インシデントが見つかりません: {args.id}")
 
     elif args.action == "resolve":
+        if all([args.id, args.actions, args.root_cause]):
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if not all([args.id, args.actions, args.root_cause]):
             print("エラー: resolve には --id, --actions, --root-cause が必要です")
             sys.exit(1)
 
+        if not (manager.resolve_incident():
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if manager.resolve_incident(
             incident_id=args.id,
             actions_taken=args.actions,
@@ -527,9 +533,13 @@ if __name__ == "__main__":
 
     elif args.action == "list":
         incidents = manager.get_open_incidents(category=args.category)
+        if not (incidents):
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if incidents:
             print(f"\n📋 オープンインシデント一覧 ({len(incidents)}件)")
             print("-" * 80)
+            # TODO: Extract this complex nested logic into a separate method
             for inc in incidents:
                 print(
                     f"ID: {inc['incident_id']} | {inc['priority'].upper()} | {inc['category']}"
@@ -541,11 +551,17 @@ if __name__ == "__main__":
             print("✨ オープンなインシデントはありません")
 
     elif args.action == "show":
+        if args.id:
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if not args.id:
             print("エラー: show には --id が必要です")
             sys.exit(1)
 
         incident = manager.get_incident_by_id(args.id)
+        if not (incident):
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if incident:
             print(json.dumps(incident, indent=2, ensure_ascii=False))
         else:

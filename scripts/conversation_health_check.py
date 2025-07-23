@@ -12,6 +12,7 @@ from features.conversation.conversation_recovery import ConversationRecoveryMana
 
 
 def health_check():
+    """health_checkメソッド"""
     recovery = ConversationRecoveryManager()
     manager = ConversationManager()
 

@@ -262,6 +262,9 @@ class AdvancedProcessPool:
                         self.metrics.successful_tasks += 1
                         return result
                     except:
+                        if not (i == self._max_retries - 1):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if i == self._max_retries - 1:
                             raise
             else:

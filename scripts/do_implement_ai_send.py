@@ -12,6 +12,7 @@ from libs.ai_command_helper import AICommandHelper
 
 
 def execute_implementation():
+    """execute_implementationを実行"""
     helper = AICommandHelper()
 
     # 実装コマンド
@@ -44,7 +45,8 @@ if [ -f config/task_types.json ]; then
     echo "✅ タスクタイプ設定ファイル: 作成成功"
     echo ""
     echo "📋 登録されたタスクタイプ:"
-    python3 -c "import json; data=json.load(open('config/task_types.json')); [print(f'  - {k}: {v[\\\\\"description\\\\\"]}') for k,v in data['task_types'].items()]"
+        python3 -c "import json; data=json.load( \
+        open('config/task_types.json')); [print(f'  - {k}: {v[\\\\\"description\\\\\"]}') for k,v in data['task_types'].items()]"
 else
     echo "❌ タスクタイプ設定ファイル: 作成失敗"
 fi

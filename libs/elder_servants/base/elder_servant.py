@@ -70,6 +70,7 @@ class ServantCapability:
         self.complexity = complexity  # 1-10 (実行複雑度)
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "name": self.name,
             "description": self.description,
@@ -102,6 +103,7 @@ class TaskResult:
         self.completed_at = datetime.now()
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "task_id": self.task_id,
             "servant_id": self.servant_id,
@@ -497,9 +499,11 @@ class ElderServant(EldersServiceLegacy[ServantRequest, ServantResponse]):
             }
 
     def __str__(self) -> str:
+        """文字列表現取得"""
         return f"{self.servant_name}({self.servant_id})"
 
     def __repr__(self) -> str:
+        """オブジェクト表現取得"""
         return f"<ElderServant {self.servant_name} category={self.category.value} tasks={self.stats['tasks_executed']}>"
 
 
@@ -507,6 +511,7 @@ class ServantRegistry:
     """エルダーサーバント管理レジストリ"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.servants: Dict[str, ElderServant] = {}
         self.category_index: Dict[ServantCategory, List[str]] = {
             ServantCategory.DWARF: [],

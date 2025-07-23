@@ -33,6 +33,7 @@ class RabbitMQKnowledgeSage:
     """RabbitMQ ナレッジ賢者"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.client = RabbitMQA2AClient("knowledge_sage")
         self.knowledge_base = {}
         self._setup_handlers()
@@ -97,6 +98,7 @@ class RabbitMQTaskSage:
     """RabbitMQ タスク賢者"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.client = RabbitMQA2AClient("task_sage")
         self.tasks = {}
         self._setup_handlers()
@@ -181,6 +183,7 @@ class RabbitMQIncidentSage:
     """RabbitMQ インシデント賢者"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.client = RabbitMQA2AClient("incident_sage")
         self.incidents = {}
         self._setup_handlers()
@@ -313,6 +316,7 @@ class RabbitMQRAGSage:
     """RabbitMQ RAG賢者"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.client = RabbitMQA2AClient("rag_sage")
         self._setup_handlers()
 
@@ -387,6 +391,7 @@ class RabbitMQFourSagesController:
     """RabbitMQ 4賢者統制システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.knowledge_sage = RabbitMQKnowledgeSage()
         self.task_sage = RabbitMQTaskSage()
         self.incident_sage = RabbitMQIncidentSage()
@@ -481,6 +486,7 @@ rabbitmq_four_sages_controller = RabbitMQFourSagesController()
 if __name__ == "__main__":
 
     async def test_rabbitmq_four_sages():
+        """test_rabbitmq_four_sagesテストメソッド"""
         # RabbitMQ 4賢者システムテスト
         print("🐰🧙‍♂️ Testing RabbitMQ Four Sages System")
 

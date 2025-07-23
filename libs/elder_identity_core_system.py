@@ -39,6 +39,7 @@ class ElderIdentity:
     required_phrases: List[str] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.powers is None:
             self.powers = [
                 "エルダーサーバントへの指令権",
@@ -82,6 +83,7 @@ class ElderIdentityCoreSystem:
     """エルダーアイデンティティコアシステム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
         self.identity = ElderIdentity()
         self.status = IdentityStatus.STRONG

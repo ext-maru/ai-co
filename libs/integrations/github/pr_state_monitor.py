@@ -78,6 +78,7 @@ class MonitoringConfig:
     auto_stop_on_close: bool = True
     
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.event_callbacks is None:
             self.event_callbacks = {}
 

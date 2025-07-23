@@ -160,6 +160,7 @@ class IncidentKnightsCommand:
 
 
 async def main():
+    """mainメソッド"""
     # Core functionality implementation
     parser = argparse.ArgumentParser(
         description="インシデント騎士団管理システム（提案段階）",

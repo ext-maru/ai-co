@@ -24,6 +24,7 @@ warnings.filterwarnings("ignore")
 
 
 class DataAnalyzer:
+    """DataAnalyzerクラス"""
     def __init__(self, csv_path):
         """Initialize the data analyzer with a CSV file path."""
         self.csv_path = csv_path
@@ -531,12 +532,17 @@ class DataAnalyzer:
 - **File:** {self.csv_path}
 - **Dimensions:** {self.data.shape[0]} rows × {self.data.shape[1]} columns
 - **Memory Usage:** {self.data.memory_usage(deep=True).sum() / 1024 / 1024:.1f} MB
-- **Missing Values:** {self.data.isnull().sum().sum()} ({(self.data.isnull().sum().sum() / (self.data.shape[0] * self.data.shape[1]) * 100):.1f}%)
+- **Missing Values:** {self.data.isnull().sum().sum()} ({( \
+    self.data.isnull().sum().sum() / (self.data.shape[0] * self.data.shape[1]) * 100):.1f}%)
 - **Duplicate Rows:** {self.data.duplicated().sum()}
 
 ## Column Types
-- **Numeric Columns:** {len(self.numeric_columns)} ({', '.join(self.numeric_columns[:5])}{'...' if len(self.numeric_columns) > 5 else ''})
-- **Categorical Columns:** {len(self.categorical_columns)} ({', '.join(self.categorical_columns[:5])}{'...' if len(self.categorical_columns) > 5 else ''})
+- **Numeric Columns:** {len(self.numeric_columns)} ({', '.join(self.numeric_columns[:5])}{'...' \
+    if len(self.numeric_columns) > 5 \
+    else ''})
+- **Categorical Columns:** {len(self.categorical_columns)} ({', '.join(self.categorical_columns[:5])}{'...' \
+    if len(self.categorical_columns) > 5 \
+    else ''})
 
 ## Summary Statistics
 
@@ -573,7 +579,8 @@ class DataAnalyzer:
             if outliers:
                 report += "### Outliers Detected\n"
                 for col, info in outliers.items():
-                    report += f"- **{col}:** {info['count']} outliers ({info['percentage']:.1f}%) using {info['method']}\n"
+                    report += f"- **{col}:** {info['count']} " \
+                        "outliers ({info['percentage']:.1f}%) using {info['method']}\n"
                 report += "\n"
 
         # Categorical patterns
@@ -582,7 +589,8 @@ class DataAnalyzer:
             if patterns:
                 report += "### Categorical Patterns\n"
                 for col, pattern in patterns.items():
-                    report += f"- **{col}:** {pattern['type']} - {pattern['dominant_category']} dominates ({pattern['percentage']:.1f}%)\n"
+                    report += f"- **{col}:** {pattern['type']} - {pattern['dominant_category']} " \
+                        "dominates ({pattern['percentage']:.1f}%)\n"
                 report += "\n"
 
         # Visualizations

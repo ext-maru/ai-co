@@ -20,11 +20,13 @@ class SlackIntegrationMCPServer:
     """Slack連携MCPサーバー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.server = MCPServer("slack")
         self.notifier = SlackNotifier()
         self.setup_tools()
 
     def setup_tools(self):
+        """setup_toolsメソッド"""
         @self.server.tool()
         async def send_message(message: str, channel: str = None):
             """Slackにメッセージを送信"""
@@ -186,6 +188,7 @@ class SlackIntegrationMCPServer:
                 return {"status": "error", "error": str(e)}
 
     async def process_request(self, request_json):
+        """process_request処理メソッド"""
         request = json.loads(request_json)
         return await self.server.handle_request(request)
 

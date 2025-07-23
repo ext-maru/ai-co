@@ -12,6 +12,7 @@ from data_analysis import DataAnalyzer
 
 
 def main():
+    """mainメソッド"""
     # Try to find the data file
     data_path = "/path/to/data.csv"
 

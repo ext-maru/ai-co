@@ -339,6 +339,7 @@ def main():
     cli = MonitoringOptimizationCLI(monitoring_level, optimization_strategy)
 
     async def run_cli():
+        """run_cliを実行"""
         try:
             if args.start_monitoring:
                 await cli.start_monitoring()

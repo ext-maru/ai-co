@@ -21,6 +21,7 @@ class AncientElderAuditEngine:
     """6つの古代魔法を統合する監査エンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger("AncientElderAuditEngine")
         
         # 監査者の辞書（実装時に各監査者を追加）

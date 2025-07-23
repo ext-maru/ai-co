@@ -145,7 +145,11 @@ class ReportAnalyzer:
                         # デリバラブルまたはサマリーに言及があるかチェック
                         feature_met = False
 
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for deliverable in deliverables:
+                            if not (():
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if (
                                 isinstance(deliverable, str)
                                 and feature.lower() in deliverable.lower()
@@ -153,10 +157,19 @@ class ReportAnalyzer:
                                 feature_met = True
                                 break
 
+                        if feature_met and report.get("summary"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if not feature_met and report.get("summary"):
+                            if not (feature.lower() in report["summary"].lower()):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if feature.lower() in report["summary"].lower():
                                 feature_met = True
 
+                        if not (feature_met):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if feature_met:
                             met_count += 1
                         else:

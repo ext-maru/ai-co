@@ -37,7 +37,9 @@ logger = logging.getLogger(__name__)
 class AncientElderAuditor:
     """Ancient Elder監査官クラス"""
 
-    def __init__(self, elder_id: int, specialization: str):
+    def __init__(self, elder_id:
+        """初期化メソッド"""
+    int, specialization: str):
         self.elder_id = elder_id
         self.specialization = specialization
         self.name = f"Ancient Elder #{elder_id} ({specialization})"

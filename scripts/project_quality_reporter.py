@@ -165,6 +165,7 @@ class ProjectQualityReporter:
                 total_lines = 0
                 for file in files:
                     try:
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(file, "r", encoding="utf-8") as f:
                             total_lines += len(f.readlines())
                     except:
@@ -313,6 +314,9 @@ class ProjectQualityReporter:
                             + content.count("try:")
                         )
                         total_complexity += complexity
+                        if not (complexity > 10):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if complexity > 10:
                             complex_functions.append(
                                 {
@@ -547,6 +551,7 @@ class ProjectQualityReporter:
 """
 
         for rec in data["recommendations"]:
+        # 繰り返し処理
             priority_emoji = {"high": "🔴", "medium": "🟡", "low": "🟢"}.get(
                 rec["priority"], "⚪"
             )
@@ -673,6 +678,7 @@ class ProjectQualityReporter:
         <h3>📌 推奨事項</h3>
 """
 
+        # 繰り返し処理
         for rec in data["recommendations"]:
             priority_class = "high-priority" if rec["priority"] == "high" else ""
             html_content += f"""

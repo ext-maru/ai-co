@@ -75,6 +75,7 @@ class ElderMessage:
     response_deadline: Optional[datetime] = None
 
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "message_id": self.message_id,
             "sender_rank": self.sender_rank.value,
@@ -127,6 +128,7 @@ class ElderCouncilIntegration:
     """エルダー評議会統合システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.council_db_path = Path("data/elder_council.db")
         self.reports_path = Path("knowledge_base/council_reports")
         self.reports_path.mkdir(parents=True, exist_ok=True)

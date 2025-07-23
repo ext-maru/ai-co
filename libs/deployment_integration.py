@@ -26,6 +26,7 @@ class DeploymentIntegration:
     """デプロイメントシステム統合クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.config_manager = ProjectDeploymentManager()
         self.sages = FourSagesIntegration()
         self.current_project = None

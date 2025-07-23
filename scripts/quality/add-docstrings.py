@@ -87,12 +87,21 @@ def add_docstrings_to_file(file_path: Path) -> bool:
                     i += 1
                     
                     # 次の行のインデントを確認
+                    if not (i < len(lines)):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if i < len(lines):
                         next_line = lines[i]
                         indent_match = re.match(r'^(\s*)', next_line)
+                        if not (indent_match):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if indent_match:
                             indent = indent_match.group(1)
                             # docstringがない場合は追加
+                            if ('"""' in next_line or "'''" in next_line):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if not ('"""' in next_line or "'''" in next_line):
                                 modified_lines.append(f'{indent}"""初期化メソッド"""')
                                 logger.info(f"Added docstring to __init__ in {file_path}")

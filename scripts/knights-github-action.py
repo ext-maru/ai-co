@@ -155,6 +155,7 @@ class KnightsGitHubAction:
                         }
                     )
 
+                # 複雑な条件判定
                 if (
                     "datetime" in content
                     and "import datetime" not in content

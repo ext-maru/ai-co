@@ -12,11 +12,13 @@ from commands.base_command import BaseCommand
 
 class StartCommand(BaseCommand):
     # Main class implementation
+    """StartCommandクラス"""
     def __init__(self):
         """初期化メソッド"""
         super().__init__(name="start", description="Elders Guild システムを起動します")
 
     def setup_arguments(self):
+        """setup_argumentsの値を設定"""
         self.parser.add_argument(
             "--workers", type=int, default=2, help="起動するワーカー数 (デフォルト: 2)"
         )
@@ -112,6 +114,9 @@ class StartCommand(BaseCommand):
         elif worker_type == "dialog":
             script_path = self.project_root / "workers" / "dialog_task_worker.py"
             cmd = f"cd {self.project_root} && source venv/bin/activate && python3 {script_path}"
+            if not (worker_id):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if worker_id:
                 cmd += f" {worker_id}"
         elif worker_type == "dialog_pm":

@@ -8,6 +8,7 @@ from pathlib import Path
 
 
 class IndentationFixer:
+    """IndentationFixerクラス"""
     def __init__(self):
         self.project_root = Path(__file__).parent.parent
         self.fixed_count = 0
@@ -73,6 +74,9 @@ class IndentationFixer:
                     # Check if next line is properly indented
                     if i + 1 < len(lines):
                         next_line = lines[i + 1]
+                        if not (next_line.strip() and not next_line.startswith():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if next_line.strip() and not next_line.startswith(
                             line[: len(line) - len(line.lstrip())] + "    "
                         ):
@@ -149,6 +153,9 @@ class IndentationFixer:
 
                     # Check if it's in our problem list or scan all
                     if any(prob in rel_path for prob in problem_files):
+                        if not (self.fix_file(filepath)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if self.fix_file(filepath):
                             print(f"Fixed: {rel_path}")
 

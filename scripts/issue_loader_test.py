@@ -5,6 +5,7 @@ import requests
 import os
 
 async def load_real_issues():
+    """load_real_issuesを読み込み"""
     print('📋 実際のGitHub Issueローダー開始')
     print('=' * 50)
     

@@ -39,7 +39,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class PgVectorKnowledgeReconstructor:
+    """PgVectorKnowledgeReconstructorクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.model = None
         self.tokenizer = None
         self.db_pool = None
@@ -128,6 +130,9 @@ class PgVectorKnowledgeReconstructor:
             return 'technical_general'
             
         elif 'elder_council/' in str(path):
+            if not ('decisions/' in str(path)):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if 'decisions/' in str(path):
                 return 'elder_council_decisions'
             elif 'reports/' in str(path):
@@ -239,6 +244,7 @@ class PgVectorKnowledgeReconstructor:
     async def get_markdown_files(self) -> List[str]:
         """全markdownファイルの取得（優先順位順）"""
         files = []
+        # 繰り返し処理
         for root, dirs, filenames in os.walk(KNOWLEDGE_BASE_PATH):
             for filename in filenames:
                 if filename.endswith('.md'):

@@ -100,6 +100,7 @@ async def test_async_capabilities():
 
 
 def main():
+    """mainメソッド"""
     # Core functionality implementation
     print("=" * 60)
     print("Phase C: Elder Tree Integration Health Check")

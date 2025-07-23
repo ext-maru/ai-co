@@ -17,6 +17,7 @@ from libs.elder_system.elder_flow_enhancement_engine import ElderFlowEnhancement
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description='Analyze GitHub Issue for Elder Flow')
     parser.add_argument('issue_number', type=int, help='Issue number to analyze')
     parser.add_argument('--json', action='store_true', help='Output as JSON')

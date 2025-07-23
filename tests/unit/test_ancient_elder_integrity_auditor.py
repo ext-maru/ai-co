@@ -143,6 +143,7 @@ class TestGitIntegrityAnalyzer(unittest.TestCase):
 
     def setUp(self):
         self.temp_dir = Path(tempfile.mkdtemp())
+        """setUpの値を設定"""
         # Git リポジトリを初期化
         subprocess.run(["git", "init"], cwd=self.temp_dir, capture_output=True)
         subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=self.temp_dir)
@@ -627,6 +628,7 @@ if __name__ == "__main__":
     print("\n🧪 Running async integration tests...")
     
     async def run_async_tests():
+        """run_async_testsを実行"""
         # 簡単な統合テスト
         auditor = AncientElderIntegrityAuditor()
         

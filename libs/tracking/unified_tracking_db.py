@@ -17,7 +17,9 @@ from typing import Any, Dict, List, Optional
 class UnifiedTrackingDB:
     """統合トラッキングデータベース"""
 
-    def __init__(self, db_path: Optional[str] = None):
+    def __init__(self, db_path:
+        """初期化メソッド"""
+    Optional[str] = None):
         if db_path is None:
             # デフォルトパス
             self.db_path = Path.home() / ".elder_flow" / "tracking.db"

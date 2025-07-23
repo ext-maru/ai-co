@@ -198,6 +198,7 @@ class AICodeReviewer:
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description="AI-powered code review")
     parser.add_argument(
         "--pr-number", type=int, required=True, help="Pull request number"

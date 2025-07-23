@@ -10,6 +10,7 @@ from pathlib import Path
 
 
 class AIThreatDetector:
+    """AIThreatDetector - 検出器クラス"""
     def __init__(self):
         """初期化メソッド"""
         self.threat_patterns = [
@@ -60,12 +61,16 @@ class AIThreatDetector:
             import psutil
 
             suspicious_processes = []
+            # 繰り返し処理
             for proc in psutil.process_iter(["pid", "name", "cmdline"]):
                 try:
                     cmdline = " ".join(proc.info["cmdline"] or [])
 
                     # 怪しいコマンドパターンチェック
                     for pattern in self.threat_patterns:
+                        if not (re.search(pattern, cmdline, re.IGNORECASE)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if re.search(pattern, cmdline, re.IGNORECASE):
                             suspicious_processes.append(
                                 {
@@ -112,6 +117,7 @@ class AIThreatDetector:
 
 # ゼロトラスト認証システム
 class ZeroTrustAuth:
+    """ZeroTrustAuthクラス"""
     def __init__(self):
         """初期化メソッド"""
         self.verified_entities = {}

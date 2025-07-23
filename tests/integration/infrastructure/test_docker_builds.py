@@ -149,7 +149,8 @@ class TestDockerBuilds:
             assert "HEALTHCHECK" in content, f"{dockerfile_path.name}: No healthcheck specified"
             
             # マルチステージビルド確認
-            assert "as builder" in content or "as production" in content, f"{dockerfile_path.name}: Not multi-stage build"
+            assert "as builder" in content or \
+                "as production" in content, f"{dockerfile_path.name}: Not multi-stage build"
     
     def test_docker_compose_configuration(self):
         """
@@ -306,6 +307,9 @@ class TestDockerIntegration:
                 # 直接パスでも検索
                 if not found:
                     for sub_dir in infrastructure_path.rglob("*"):
+                        if not (sub_dir.is_file() and sub_dir.name == file_name):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if sub_dir.is_file() and sub_dir.name == file_name:
                             found = True
                             break

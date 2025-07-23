@@ -32,6 +32,7 @@ class KnowledgeSage:
     """ナレッジ賢者"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.client = SimpleA2AClient("knowledge_sage")
         self.knowledge_base = {}
         self._setup_handlers()
@@ -84,6 +85,7 @@ class TaskSage:
     """タスク賢者"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.client = SimpleA2AClient("task_sage")
         self.tasks = {}
         self._setup_handlers()
@@ -150,6 +152,7 @@ class IncidentSage:
     """インシデント賢者"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.client = SimpleA2AClient("incident_sage")
         self.incidents = {}
         self._setup_handlers()
@@ -242,6 +245,7 @@ class RAGSage:
     """RAG賢者"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.client = SimpleA2AClient("rag_sage")
         self._setup_handlers()
 
@@ -298,6 +302,7 @@ class FourSagesController:
     """4賢者統制システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.knowledge_sage = KnowledgeSage()
         self.task_sage = TaskSage()
         self.incident_sage = IncidentSage()
@@ -374,6 +379,7 @@ four_sages_controller = FourSagesController()
 if __name__ == "__main__":
 
     async def test_four_sages():
+        """test_four_sagesテストメソッド"""
         # 4賢者システムテスト
         controller = FourSagesController()
         controller.start_all_sages()

@@ -36,7 +36,10 @@ except ImportError:
     except ImportError:
         # モック実装（テスト用）
         class MockSage:
-            async def process_request(self, request: Dict[str, Any]) -> Dict[str, Any]:
+            """MockSage - 4賢者システム関連クラス"""
+            async def process_request(self, request:
+                """process_request処理メソッド"""
+            Dict[str, Any]) -> Dict[str, Any]:
                 return {"status": "mock_success", "mock": True}
 
         EnhancedKnowledgeSage = MockSage

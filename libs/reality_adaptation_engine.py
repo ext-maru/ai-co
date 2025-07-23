@@ -41,7 +41,9 @@ try:
 except ImportError:
     # モッククラス（テスト用）
     class GenesisCore:
+        """GenesisCoreクラス"""
         async def genesis_invocation(self, intent, mode):
+            """genesis_invocationメソッド"""
             return type(
                 "MockInvocation",
                 (),
@@ -53,27 +55,39 @@ except ImportError:
             )()
 
     class TemporalLoopSystem:
+        """TemporalLoopSystemクラス"""
         async def execute_temporal_optimization(self, target, params, loop_type):
+            """execute_temporal_optimization実行メソッド"""
             return {"optimization_achieved": True, "temporal_stability": 0.9}
 
     class LivingKnowledgeMatrix:
+        """LivingKnowledgeMatrixクラス"""
         async def spawn_knowledge_entity(self, content, personality, ecosystem):
+            """spawn_knowledge_entityメソッド"""
             return type("MockEntity", (), {"entity_id": "mock_entity"})()
 
     class EnhancedIncidentElder:
+        """EnhancedIncidentElder - エルダーズギルド関連クラス"""
         async def cast_future_sight(self, metrics, horizon):
+            """cast_future_sightメソッド"""
             return [type("MockPrediction", (), {"prediction": "future_event"})()]
 
     class EnhancedKnowledgeElder:
+        """EnhancedKnowledgeElder - エルダーズギルド関連クラス"""
         async def cast_auto_learning(self, knowledge, context):
+            """cast_auto_learningメソッド"""
             return [type("MockEvolution", (), {"evolution": "knowledge_growth"})()]
 
     class EnhancedTaskElder:
+        """EnhancedTaskElder - エルダーズギルド関連クラス"""
         async def cast_hyper_efficiency(self, tasks, target):
+            """cast_hyper_efficiencyメソッド"""
             return [type("MockTask", (), {"task": "optimized_task"})()]
 
     class EnhancedRAGElder:
+        """EnhancedRAGElder - エルダーズギルド関連クラス"""
         async def cast_hyper_precision_search(self, query, mode):
+            """cast_hyper_precision_searchメソッド"""
             return [type("MockResult", (), {"result": "search_result"})()]
 
 

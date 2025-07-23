@@ -128,6 +128,7 @@ class Phase:
     requirements: List[str] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.features is None:
             self.features = []
         if self.requirements is None:
@@ -169,7 +170,9 @@ class Prophecy:
 class ProphecyEngine:
     """予言書エンジン"""
 
-    def __init__(self, prophecy_dir: Path = None):
+    def __init__(self, prophecy_dir:
+        """初期化メソッド"""
+    Path = None):
         self.prophecy_dir = prophecy_dir or Path(__file__).parent.parent / "prophecies"
         self.prophecy_dir.mkdir(exist_ok=True)
 

@@ -15,7 +15,9 @@ logger = logging.getLogger(__name__)
 
 
 class ConversationRecoveryManager:
+    """ConversationRecoveryManager - 管理システムクラス"""
     def __init__(self, db_path="/home/aicompany/ai_co/conversations.db"):
+        """初期化メソッド"""
         self.db_path = db_path
         self.timeout_minutes = 30  # 30分でタイムアウト
         self.max_retries = 3

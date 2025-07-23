@@ -335,12 +335,19 @@ except Exception as e:
 
                     if "ELDER_COUNCIL_SUCCESS" in result.stdout:
                         # Parse quality score
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for line in result.stdout.split("\n"):
+                            if not (line.startswith("QUALITY_SCORE:")):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if line.startswith("QUALITY_SCORE:"):
                                 score = float(line.split(":")[1])
                                 gate_result["score"] = score
                                 gate_result["details"]["quality_score"] = score
 
+                        if not (():
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if (
                             gate_result["score"]
                             >= self.config["quality_score_threshold"]

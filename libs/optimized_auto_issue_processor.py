@@ -53,7 +53,9 @@ class ProcessingJob:
 class ProcessingQueue:
     """優先度ベース処理キュー"""
     
-    def __init__(self, max_size: int = 1000):
+    def __init__(self, max_size:
+        """初期化メソッド"""
+    int = 1000):
         self.max_size = max_size
         self.queues = {
             "critical": asyncio.Queue(),
@@ -128,7 +130,9 @@ class ProcessingQueue:
 class PerformanceTracker:
     """パフォーマンス追跡"""
     
-    def __init__(self, window_size: int = 100):
+    def __init__(self, window_size:
+        """初期化メソッド"""
+    int = 100):
         self.window_size = window_size
         self.processing_times = []
         self.success_count = 0
@@ -529,7 +533,9 @@ async def main():
     try:
         # テスト用のモックイシューを作成（実際のGitHubイシューの代わり）
         class MockIssue:
+            """MockIssueクラス"""
             def __init__(self, number):
+                """初期化メソッド"""
                 self.number = number
                 self.title = f"Test Issue #{number}"
                 self.body = f"Body for issue {number}"
@@ -538,6 +544,7 @@ async def main():
         test_issues = [MockIssue(i) for i in range(20)]
         
         def progress_callback(completed, total):
+            """progress_callbackメソッド"""
             print(f"Progress: {completed}/{total} ({completed/total*100:.1f}%)")
         
         print("Starting optimized batch processing...")

@@ -402,6 +402,7 @@ def main():
     cli = AdvancedSearchAnalyticsCLI()
 
     async def run_cli():
+        """run_cliを実行"""
         try:
             if args.status:
                 await cli.show_platform_status()
@@ -439,7 +440,8 @@ def main():
                     "   python3 scripts/advanced_search_analytics_cli.py --analytics statistical 'PostgreSQL MCP'"
                 )
                 print(
-                    "   python3 scripts/advanced_search_analytics_cli.py --personalized-search user123 --user-query 'データベース'"
+                    "   python3 scripts/advanced_search_analytics_cli.py --personalized-search \
+                        user123 --user-query 'データベース'"
                 )
 
         except KeyboardInterrupt:

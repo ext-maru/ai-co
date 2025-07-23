@@ -59,7 +59,9 @@ class SystemHealthMetrics:
 class MetricsDatabase:
     """メトリクス専用データベース"""
 
-    def __init__(self, db_path: str = "logs/auto_issue_metrics.db"):
+    def __init__(self, db_path:
+        """初期化メソッド"""
+    str = "logs/auto_issue_metrics.db"):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(exist_ok=True)
         self._init_database()
@@ -254,7 +256,9 @@ class MetricsDatabase:
 class AlertingSystem:
     """アラートシステム"""
 
-    def __init__(self, alert_config: Dict[str, Any] = None):
+    def __init__(self, alert_config:
+        """初期化メソッド"""
+    Dict[str, Any] = None):
         self.alert_config = alert_config or {
             "success_rate_threshold": 80.0,  # 成功率80%未満でアラート
             "avg_processing_time_threshold": 300.0,  # 平均処理時間5分以上でアラート
@@ -277,7 +281,8 @@ class AlertingSystem:
                 {
                     "type": "low_success_rate",
                     "severity": "warning",
-                    "message": f"Success rate is {stats['success_rate']:.1f}% (threshold: {self.alert_config['success_rate_threshold']}%)",
+                    "message": f"Success rate is {stats['success_rate']:.1f}% " \
+                        "(threshold: {self.alert_config['success_rate_threshold']}%)",
                     "timestamp": datetime.now().isoformat(),
                     "details": {
                         "current_rate": stats["success_rate"],
@@ -296,7 +301,8 @@ class AlertingSystem:
                 {
                     "type": "high_processing_time",
                     "severity": "warning",
-                    "message": f"Average processing time is {stats['avg_processing_time']:.1f}s (threshold: {self.alert_config['avg_processing_time_threshold']}s)",
+                    "message": f"Average processing time is 
+                        f"{stats['avg_processing_time']:.1f}s (threshold: {self.alert_config['avg_processing_time_threshold']}s)",
                     "timestamp": datetime.now().isoformat(),
                     "details": {
                         "current_time": stats["avg_processing_time"],
@@ -312,7 +318,8 @@ class AlertingSystem:
                 {
                     "type": "consecutive_failures",
                     "severity": "critical",
-                    "message": f"Consecutive failures detected: {recent_failures} (threshold: {self.alert_config['consecutive_failures_threshold']})",
+                    "message": f"Consecutive failures detected: 
+                        f"{recent_failures} (threshold: {self.alert_config['consecutive_failures_threshold']})",
                     "timestamp": datetime.now().isoformat(),
                     "details": {
                         "consecutive_failures": recent_failures,
@@ -353,6 +360,7 @@ class AutoIssueMonitoringDashboard:
     """Auto Issue Processor監視ダッシュボード"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.metrics_db = MetricsDatabase()
         self.alerting = AlertingSystem()
         self.is_monitoring = False
@@ -551,7 +559,8 @@ class AutoIssueMonitoringDashboard:
                 if metric["processing_status"] == "completed"
                 else "❌" if metric["processing_status"] == "failed" else "⏭️"
             )
-            report += f"- {status_emoji} Issue #{metric['issue_number']}: {metric['issue_title']} ({metric['processing_time_seconds']:.1f}s)\n"
+            report += f"- {status_emoji} Issue #{metric['issue_number']}: " \
+                "{metric['issue_title']} ({metric['processing_time_seconds']:.1f}s)\n"
 
         return report
 

@@ -71,7 +71,9 @@ class RetryStrategy:
 class RateLimiter:
     """Intelligent rate limiter"""
     
-    def __init__(self, limit_per_hour: int = 5000):
+    def __init__(self, limit_per_hour:
+        """初期化メソッド"""
+    int = 5000):
         self.limit_per_hour = limit_per_hour
         self._current_usage = 0
         self._usage_window = deque()
@@ -113,7 +115,9 @@ class RateLimiter:
 class ConnectionPool:
     """Intelligent connection pool"""
     
-    def __init__(self, max_size: int = 10):
+    def __init__(self, max_size:
+        """初期化メソッド"""
+    int = 10):
         self.max_size = max_size
         self._connections: List[aiohttp.ClientSession] = []
         self._available: deque = deque()
@@ -178,7 +182,9 @@ class ConnectionPool:
 class ConnectionPoolOptimizer:
     """Advanced connection pool optimizer"""
     
-    def __init__(self, max_connections: int = 20, rate_limit_per_hour: int = 5000,
+    def __init__(self, max_connections:
+        """初期化メソッド"""
+    int = 20, rate_limit_per_hour: int = 5000,
                  retry_attempts: int = 3, connection_timeout: int = 30):
         self.max_connections = max_connections
         self.rate_limit_per_hour = rate_limit_per_hour
@@ -290,6 +296,7 @@ class ConnectionPoolOptimizer:
         semaphore = asyncio.Semaphore(self.max_connections)
         
         async def bounded_request(url):
+            """bounded_requestメソッド"""
             async with semaphore:
                 return await self._make_request(url)
         

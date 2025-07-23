@@ -479,8 +479,14 @@ class ElderFlowSystemAuditor:
             f"生成日時: {self.audit_results['timestamp']}",
             "",
             "## 📊 総合評価",
-            f"- **総合スコア**: {self.audit_results['overall_score']['percentage']}% (Grade: {self.audit_results['overall_score']['grade']})",
-            f"- **稼働コンポーネント**: {self.audit_results['overall_score']['operational_components']}/{self.audit_results['overall_score']['total_components']}",
+            (
+                f"f"- **総合スコア**: {self.audit_results['overall_score']['percentage']}% (Grade: "
+                f"{self.audit_results['overall_score']['grade']})","
+            )
+            (
+                f"f"- **稼働コンポーネント**: {self.audit_results['overall_score']['operational_components']}/"
+                f"{self.audit_results['overall_score']['total_components']}","
+            )
             "",
             "## 🔍 コンポーネント別監査結果",
             ""

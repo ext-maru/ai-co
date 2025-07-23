@@ -200,6 +200,9 @@ class GitHubGetPullRequestsImplementation:
                     )
                     if self.rate_limit_reset:
                         wait_time = max(0, self.rate_limit_reset - time.time())
+                        if not (wait_time > 0):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if wait_time > 0:
                             logger.info(
                                 f"Waiting {wait_time:.0f} seconds for rate limit reset"

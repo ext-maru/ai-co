@@ -13,6 +13,7 @@ from pathlib import Path
 class TestStabilityMeasurer:
     def __init__(self):
         self.project_root = Path(__file__).parent.parent
+    """TestStabilityMeasurerテストクラス"""
         self.results = {
             "timestamp": datetime.now().isoformat(),
             "collection_errors": 0,
@@ -98,6 +99,7 @@ class TestStabilityMeasurer:
         total_passed = 0
 
         for test_file in test_samples:
+        # 繰り返し処理
             test_path = self.project_root / test_file
             if not test_path.exists():
                 continue
@@ -186,6 +188,7 @@ class TestStabilityMeasurer:
                 "Other": 0,
             }
 
+            # 繰り返し処理
             for line in output.split("\n"):
                 for error_type in error_patterns:
                     if error_type in line:
@@ -228,7 +231,8 @@ class TestStabilityMeasurer:
         print(f"  • Total Tests Collected: {self.results['total_tests']}")
         print(f"  • Collection Errors: {self.results['collection_errors']}")
         print(
-            f"  • Tests Run: {self.results['passed_tests'] + self.results['failed_tests'] + self.results['error_tests']}"
+            f"  • Tests Run: {self.results['passed_tests'] + self.results['failed_tests'] +  \
+                self.results['error_tests']}"
         )
         print(f"  • Tests Passed: {self.results['passed_tests']}")
         print(f"  • Tests Failed: {self.results['failed_tests']}")

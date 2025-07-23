@@ -185,17 +185,26 @@ def456|2025-01-20 11:00:00|Another direct commit|developer"""
     def test_branch_score_calculation(self):
         """ブランチスコア計算テスト"""
         # 違反なしのケース
-        no_violations_score = self.analyzer._calculate_branch_score([], [], {"feature_branch_usage": {"compliance_score": 90}})
+                no_violations_score = \
+            self.analyzer._calculate_branch_score([], [], {"feature_branch_usage": {"compliance_score": 90}})
         self.assertGreaterEqual(no_violations_score, 85.0)
         
         # 命名違反ありのケース
         naming_violations = [{"type": GitViolationType.BRANCH_NAMING_VIOLATION}] * 3
-        naming_violation_score = self.analyzer._calculate_branch_score(naming_violations, [], {"feature_branch_usage": {"compliance_score": 80}})
+        naming_violation_score = self.analyzer._calculate_branch_score(
+            naming_violations,
+            [],
+            {"feature_branch_usage": {"compliance_score": 80}}
+        )
         self.assertLess(naming_violation_score, no_violations_score)
         
         # 保護ブランチ違反ありのケース
         protected_violations = [{"type": GitViolationType.DIRECT_MAIN_COMMIT}]
-        protected_violation_score = self.analyzer._calculate_branch_score([], protected_violations, {"feature_branch_usage": {"compliance_score": 80}})
+        protected_violation_score = self.analyzer._calculate_branch_score(
+            [],
+            protected_violations,
+            {"feature_branch_usage": {"compliance_score": 80}}
+        )
         self.assertLess(protected_violation_score, no_violations_score)
 
 
@@ -285,9 +294,21 @@ class TestGitCommitAnalyzer(unittest.TestCase):
         """コミット品質分析統合テスト"""
         # モックコミット履歴
         mock_get_commits.return_value = [
-            {"hash": "abc123", "date": "2025-01-20", "message": "feat: add user auth", "author": "dev", "email": "dev@example.com"},
+            {
+                "hash": "abc123",
+                "date": "2025-01-20",
+                "message": "feat: add user auth",
+                "author": "dev",
+                "email": "dev@example.com"
+            },
             {"hash": "def456", "date": "2025-01-20", "message": "fix bug", "author": "dev", "email": "dev@example.com"},
-            {"hash": "ghi789", "date": "2025-01-20", "message": "Update readme", "author": "dev", "email": "dev@example.com"},
+            {
+                "hash": "ghi789",
+                "date": "2025-01-20",
+                "message": "Update readme",
+                "author": "dev",
+                "email": "dev@example.com"
+            },
         ]
         
         result = self.analyzer.analyze_commit_quality()
@@ -560,7 +581,8 @@ class TestGitChronicleIntegration(unittest.TestCase):
                 # ワークフロー違反が検出されることを確認
                 workflow_violations = [
                     v for v in result.violations 
-                    if v.get("type") in [GitViolationType.DIRECT_MAIN_COMMIT, GitViolationType.COMMIT_CONVENTION_VIOLATION]
+                                        if \
+                        v.get("type") in [GitViolationType.DIRECT_MAIN_COMMIT, GitViolationType.COMMIT_CONVENTION_VIOLATION]
                 ]
                 self.assertGreater(len(workflow_violations), 0)
                 

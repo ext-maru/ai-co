@@ -657,6 +657,7 @@ class FeedbackLoopSystem:
         now = datetime.now()
         if 9 <= now.hour <= 17:
             context["time_of_day"] = "business_hours"
+        # 複雑な条件判定
         elif 18 <= now.hour <= 22:
             context["time_of_day"] = "peak_hours"
         else:
@@ -844,6 +845,9 @@ class FeedbackLoopSystem:
                     last_val = last[metric]
 
                     if first_val > 0:
+                        if not (metric == "response_time"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if metric == "response_time":
                             # 低い方が良い
                             rate = (first_val - last_val) / first_val
@@ -1635,6 +1639,7 @@ class MetricsCollector:
     """メトリクス収集"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.collection_history = deque(maxlen=1000)
 
     def collect_metrics(self, source: Dict[str, Any]) -> Dict[str, Any]:
@@ -1656,6 +1661,7 @@ class PerformanceEvaluator:
     """パフォーマンス評価"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.evaluation_history = deque(maxlen=500)
 
     def evaluate(self, metrics: Dict[str, Any]) -> Dict[str, Any]:
@@ -1678,6 +1684,7 @@ class LearningDataPipeline:
     """学習データパイプライン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.pipeline_history = deque(maxlen=200)
 
     def process(self, data: Dict[str, Any]) -> Dict[str, Any]:
@@ -1699,6 +1706,7 @@ class RealTimeProcessor:
     """リアルタイム処理"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.processing_queue = deque(maxlen=1000)
 
     def process_event(self, event: Dict[str, Any]) -> Dict[str, Any]:
@@ -1716,6 +1724,7 @@ class FeedbackAnomalyDetector:
     """フィードバック異常検出"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.detection_history = deque(maxlen=500)
         self.thresholds = {
             "performance_degradation": -0.3,

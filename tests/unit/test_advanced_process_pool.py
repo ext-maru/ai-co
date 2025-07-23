@@ -288,6 +288,7 @@ class TestAdvancedProcessPool:
         def flaky_task():
             nonlocal error_count
             error_count += 1
+            """flaky_taskメソッド"""
             if error_count < 3:
                 raise Exception("Temporary error")
             return "success"
@@ -306,6 +307,7 @@ class TestAdvancedProcessPool:
         
         def memory_intensive_task():
             # Try to allocate large array
+            """memory_intensive_taskメソッド"""
             import numpy as np
             try:
                 arr = np.zeros((1000, 1000, 100))  # ~800MB
@@ -340,6 +342,7 @@ class TestAdvancedProcessPool:
         lock = pool.create_lock('counter_lock')
         
         def increment_counter():
+            """increment_counterメソッド"""
             with lock:
                 current = counter.value
                 time.sleep(0.01)  # Simulate work

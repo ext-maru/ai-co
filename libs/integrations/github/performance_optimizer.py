@@ -28,6 +28,7 @@ logger = logging.getLogger("PerformanceOptimizer")
 
 
 class ResourceType(Enum):
+    """ResourceTypeクラス"""
     CPU = "cpu"
     MEMORY = "memory"
     DISK_IO = "disk_io"
@@ -36,6 +37,7 @@ class ResourceType(Enum):
 
 
 class OptimizationStrategy(Enum):
+    """OptimizationStrategyクラス"""
     SCALE_UP = "scale_up"
     SCALE_DOWN = "scale_down"
     LOAD_BALANCE = "load_balance"
@@ -80,7 +82,9 @@ class OptimizationResult:
 class ResourceMonitor:
     """リソース監視システム"""
     
-    def __init__(self, monitoring_interval: float = 1.0):
+    def __init__(self, monitoring_interval:
+        """初期化メソッド"""
+    float = 1.0):
         self.monitoring_interval = monitoring_interval
         self.metrics_history: Deque[ResourceMetrics] = deque(maxlen=1000)
         self.is_monitoring = False
@@ -181,7 +185,9 @@ class ResourceMonitor:
 class ClaudeCLIExecutionPool:
     """Claude CLI実行プール"""
     
-    def __init__(self, max_workers: int = None):
+    def __init__(self, max_workers:
+        """初期化メソッド"""
+    int = None):
         self.max_workers = max_workers or min(8, multiprocessing.cpu_count())
         self.current_workers = 2  # 初期値
         
@@ -388,7 +394,9 @@ class ClaudeCLIExecutionPool:
 class DynamicScaler:
     """動的スケーリングシステム"""
     
-    def __init__(self, resource_monitor: ResourceMonitor, execution_pool: ClaudeCLIExecutionPool):
+    def __init__(self, resource_monitor:
+        """初期化メソッド"""
+    ResourceMonitor, execution_pool: ClaudeCLIExecutionPool):
         self.resource_monitor = resource_monitor
         self.execution_pool = execution_pool
         self.performance_target = PerformanceTarget()
@@ -503,7 +511,9 @@ class DynamicScaler:
                 execution_time = time.time() - start_time
                 improvement = ((new_workers - old_workers) / old_workers) * 100
                 
-                strategy = OptimizationStrategy.SCALE_UP if new_workers > old_workers else OptimizationStrategy.SCALE_DOWN
+                strategy = OptimizationStrategy.SCALE_UP if \
+                    new_workers > old_workers else \
+                    OptimizationStrategy.SCALE_DOWN
                 
                 return OptimizationResult(
                     strategy=strategy,
@@ -569,6 +579,7 @@ class PerformanceOptimizer:
     """包括的パフォーマンス最適化システム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.resource_monitor = ResourceMonitor()
         self.execution_pool = ClaudeCLIExecutionPool()
         self.dynamic_scaler = DynamicScaler(self.resource_monitor, self.execution_pool)
@@ -679,6 +690,7 @@ class PerformanceOptimizer:
             semaphore = asyncio.Semaphore(max_concurrent)
             
             async def process_single_issue(issue):
+                """process_single_issue処理メソッド"""
                 async with semaphore:
                     # Issue処理の実装（モック）
                     await asyncio.sleep(0.1)  # 処理時間シミュレート

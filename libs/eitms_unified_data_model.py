@@ -195,7 +195,9 @@ class SystemSync:
 class EitmsUnifiedDatabase:
     """EITMS統一データベース"""
     
-    def __init__(self, db_path: str = "/home/aicompany/ai_co/data/eitms_unified.db"):
+    def __init__(self, db_path:
+        """初期化メソッド"""
+    str = "/home/aicompany/ai_co/data/eitms_unified.db"):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._connection: Optional[sqlite3.Connection] = None
@@ -441,7 +443,9 @@ class EitmsUnifiedDatabase:
 class EitmsUnifiedManager:
     """EITMS統一管理クラス"""
     
-    def __init__(self, db_path: str = "/home/aicompany/ai_co/data/eitms_unified.db"):
+    def __init__(self, db_path:
+        """初期化メソッド"""
+    str = "/home/aicompany/ai_co/data/eitms_unified.db"):
         self.db = EitmsUnifiedDatabase(db_path)
     
     async def initialize(self):

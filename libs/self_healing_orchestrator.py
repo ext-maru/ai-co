@@ -57,6 +57,7 @@ class SelfHealingOrchestrator(BaseManager):
     """自己修復システムの中央オーケストレーター"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__()
         self.config = get_config()
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -754,6 +755,7 @@ if __name__ == "__main__":
     import asyncio
 
     async def test_orchestrator():
+        """test_orchestratorテストメソッド"""
         orchestrator = get_orchestrator()
 
         print("=== Self-Healing Orchestrator Test ===")

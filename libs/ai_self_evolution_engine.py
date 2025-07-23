@@ -150,6 +150,7 @@ class AISelfEvolutionEngine:
     """AI自己進化エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.project_root = Path("/home/aicompany/ai_co")
         self.evolution_db = self.project_root / "db" / "self_evolution.db"
         self.genetic_pool = self.project_root / "evolution" / "genetic_pool.json"
@@ -666,7 +667,9 @@ class AISelfEvolutionEngine:
         }
 
     # ヘルパーメソッド（簡略化）
-    def _generate_gene_id(self, base_name: str) -> str:
+    def _generate_gene_id(self, base_name:
+        """generate_gene_id（内部メソッド）"""
+    str) -> str:
         return hashlib.md5(f"{base_name}_{time.time()}".encode()).hexdigest()[:12]
 
     def _save_genetic_pool(self):
@@ -853,13 +856,17 @@ class AISelfEvolutionEngine:
             logger.error(f"プール復元エラー: {e}")
             print(f"⚠️ プール復元エラー: {e}")
 
-    def _evaluate_gene_fitness(self, gene: EvolutionGene) -> float:
+    def _evaluate_gene_fitness(self, gene:
+        """evaluate_gene_fitness（内部メソッド）"""
+    EvolutionGene) -> float:
         return min(1.0, gene.fitness_score + random.uniform(-0.02, 0.03))
 
     def _update_evolution_metrics(self):
+        """update_evolution_metrics（内部メソッド）"""
         self.current_metrics.intelligence_quotient += random.uniform(-0.5, 1.0)
 
     def _evaluate_stage_progression(self) -> Optional[EvolutionStage]:
+        """evaluate_stage_progression（内部メソッド）"""
         if self.current_metrics.intelligence_quotient > 150:
             return EvolutionStage.TRANSCENDING
         elif self.current_metrics.intelligence_quotient > 140:
@@ -1351,6 +1358,7 @@ class AISelfEvolutionEngine:
             return []
 
     def _discover_new_knowledge(self) -> List[str]:
+        """discover_new_knowledge（内部メソッド）"""
         return []
 
     def _integrate_knowledge(self, knowledge: str):
@@ -1911,6 +1919,7 @@ class AISelfEvolutionEngine:
             return {"total_knowledge": 0, "types": {}, "average_quality": 0.0}
 
     def _optimize_learning_efficiency(self):
+        """optimize_learning_efficiency（内部メソッド）"""
         pass
 
     def _record_mutation(
@@ -1923,9 +1932,11 @@ class AISelfEvolutionEngine:
         pass
 
     def _calculate_evolution_velocity(self) -> float:
+        """calculate_evolution_velocity（内部メソッド）"""
         return 0.85
 
     def _estimate_next_stage_time(self) -> str:
+        """estimate_next_stage_time（内部メソッド）"""
         return "2.5時間"
 
     # 4賢者統合メソッド
@@ -2080,6 +2091,7 @@ class LearningPatternAnalyzer:
     """学習パターン分析器"""
 
     def __init__(self, evolution_engine):
+        """初期化メソッド"""
         self.evolution_engine = evolution_engine
         self.pattern_database = {}
         self.pattern_clusters = {}
@@ -2307,6 +2319,7 @@ class AdaptiveStrategyGenerator:
     """適応戦略生成器"""
 
     def __init__(self, evolution_engine):
+        """初期化メソッド"""
         self.evolution_engine = evolution_engine
         self.strategy_database = {}
         self.strategy_templates = self._initialize_strategy_templates()
@@ -2532,6 +2545,7 @@ class PerformanceTracker:
     """パフォーマンストラッカー"""
 
     def __init__(self, evolution_engine):
+        """初期化メソッド"""
         self.evolution_engine = evolution_engine
         self.metrics_database = {}
         self.baseline_metrics = {}
@@ -2770,6 +2784,7 @@ class KnowledgeSynthesizer:
     """知識合成器"""
 
     def __init__(self, evolution_engine):
+        """初期化メソッド"""
         self.evolution_engine = evolution_engine
         self.knowledge_fragments = {}
         self.synthesis_cache = {}
@@ -3041,6 +3056,7 @@ class EvolutionController:
     """進化制御器"""
 
     def __init__(self, evolution_engine):
+        """初期化メソッド"""
         self.evolution_engine = evolution_engine
         self.active_processes = {}
         self.process_queue = deque()
@@ -3222,6 +3238,7 @@ class SafetyMonitor:
     """安全監視器"""
 
     def __init__(self, evolution_engine):
+        """初期化メソッド"""
         self.evolution_engine = evolution_engine
         self.safety_rules = self._initialize_safety_rules()
         self.violation_history = []

@@ -32,6 +32,7 @@ try:
     import asyncio
     
     async def test_sages():
+        """test_sagesメソッド"""
         # 各賢者のテスト
         task_result = await task.process_request({'type': 'create_plan', 'title': 'Test'})
         print(f"   Task結果: {task_result['status']}")

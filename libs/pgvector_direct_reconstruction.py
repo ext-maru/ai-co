@@ -30,7 +30,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 logger = logging.getLogger(__name__)
 
 class DirectPgVectorReconstructor:
+    """DirectPgVectorReconstructorクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.conn = None
         
     def connect_db(self):
@@ -205,6 +207,7 @@ class DirectPgVectorReconstructor:
     def get_markdown_files(self) -> list:
         """マークダウンファイル一覧取得"""
         files = []
+        # 繰り返し処理
         for root, dirs, filenames in os.walk(KNOWLEDGE_BASE_PATH):
             for filename in filenames:
                 if filename.endswith('.md'):

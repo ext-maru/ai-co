@@ -349,6 +349,7 @@ class TestErrorRecoveryDecorator:
         
         @with_error_recovery()
         async def flaky_operation():
+            """flaky_operationメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 3:

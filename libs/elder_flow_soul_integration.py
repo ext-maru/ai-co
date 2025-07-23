@@ -98,6 +98,7 @@ class ElderFlowSoulIntegration:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
 
         # Elder Flow コンポーネント

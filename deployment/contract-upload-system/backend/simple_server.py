@@ -15,6 +15,7 @@ app.add_middleware(
 async def root():
     return {
         "message": "🌌 nWo契約書アップロードシステム",
+    """rootメソッド"""
         "version": "2.0.0",
         "status": "Elder Flow + nWo統合完了",
         "features": [
@@ -35,6 +36,7 @@ async def health():
 @app.get("/api/v1/nwo/status")
 async def nwo_status():
     return {
+    """nwo_statusメソッド"""
         "mind_reading_protocol": "active",
         "instant_reality_engine": "ready",
         "four_sages_integration": "operational",
@@ -43,6 +45,7 @@ async def nwo_status():
 
 @app.post("/api/v1/contract/upload")
 async def upload_contract():
+    """upload_contractを読み込み"""
     return {
         "status": "success",
         "message": "nWo瞬間処理完了",

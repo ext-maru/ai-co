@@ -209,7 +209,8 @@ class MindReadingRAGIntegrationEnhanced:
             improvement=improvement
         )
 
-        self.logger.info(f"Enhanced confidence: {enhanced_confidence:.2%} (improvement: {improvement.improvement_factor:.2f}x)")
+                self.logger.info(f"Enhanced confidence: {enhanced_confidence:.2%} \
+            (improvement: {improvement.improvement_factor:.2f}x)")
 
         return enhanced_intent
 
@@ -911,8 +912,10 @@ async def demo_enhanced_integration():
             total_original_confidence += enhanced_intent.original_intent.confidence
             total_enhanced_confidence += enhanced_intent.enhanced_confidence
 
-            print(f"   🧠 Original: {enhanced_intent.original_intent.intent_type.value} ({enhanced_intent.original_intent.confidence:.2%})")
-            print(f"   🌟 Enhanced: {enhanced_intent.enhanced_confidence:.2%} (x{enhanced_intent.improvement.improvement_factor:.2f})")
+            print(f"   🧠 Original: {enhanced_intent.original_intent." \
+                "intent_type.value} ({enhanced_intent.original_intent.confidence:.2%})")
+            print(f"   🌟 Enhanced: {enhanced_intent.enhanced_confidence:." \
+                "2%} (x{enhanced_intent.improvement.improvement_factor:.2f})")
             print(f"   🔍 Context: {len(enhanced_intent.rag_context)} context types")
             print(f"   📊 Keywords: {len(enhanced_intent.contextual_keywords)} extracted")
             print(f"   🎯 Patterns: {len(enhanced_intent.related_patterns)} discovered")
@@ -928,7 +931,9 @@ async def demo_enhanced_integration():
         print(f"   Max Improvement: {report['max_improvement']:.2f}x")
 
         # 全体的な改善度
-        overall_improvement = total_enhanced_confidence / total_original_confidence if total_original_confidence > 0 else 1.0
+        overall_improvement = total_enhanced_confidence / total_original_confidence if \
+            total_original_confidence > 0 else \
+            1.0
         print(f"   Overall System Improvement: {overall_improvement:.2f}x")
         print()
 

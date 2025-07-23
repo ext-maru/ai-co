@@ -85,7 +85,9 @@ class ElderFlowSession:
 class ElderFlowFourSagesIntegration:
     """Elder Flow + 4賢者統合システム"""
 
-    def __init__(self, max_workers: int = 8):
+    def __init__(self, max_workers:
+        """初期化メソッド"""
+    int = 8):
         self.logger = logging.getLogger(__name__)
 
         # Elder Flow コンポーネント

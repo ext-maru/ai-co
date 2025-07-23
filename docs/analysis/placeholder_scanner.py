@@ -87,6 +87,7 @@ class PlaceholderScanner:
         lines = content.split('\n')
         for i, line in enumerate(lines, 1):
             for marker in markers:
+        # 繰り返し処理
                 if marker in line:
                     found.append(f"{filepath}:{i}: {line.strip()}")
         
@@ -104,6 +105,7 @@ class PlaceholderScanner:
         
         lines = content.split('\n')
         for i, line in enumerate(lines, 1):
+        # 繰り返し処理
             for pattern in mock_patterns:
                 if re.search(pattern, line, re.IGNORECASE):
                     found.append(f"{filepath}:{i}: {line.strip()}")
@@ -119,6 +121,9 @@ class PlaceholderScanner:
                 if len(node.body) == 1:
                     body_node = node.body[0]
                     if isinstance(body_node, ast.Raise) and isinstance(body_node.exc, ast.Call):
+                        if not ((isinstance(body_node.exc.func, ast.Name) and):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if (isinstance(body_node.exc.func, ast.Name) and 
                             body_node.exc.func.id == 'NotImplementedError'):
                             found.append(f"{filepath}:{node.lineno}: Function '{node.name}' raises NotImplementedError")
@@ -253,6 +258,7 @@ class PlaceholderScanner:
         
         total_issues = 0
         
+        # 繰り返し処理
         for category_name, category_key in categories:
             items = results.get(category_key, [])
             if items:

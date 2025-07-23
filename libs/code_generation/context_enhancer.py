@@ -17,7 +17,9 @@ logger = logging.getLogger(__name__)
 class SimilarImplementation:
     """類似実装データ"""
     
-    def __init__(self, file_path: str, similarity_score: float, 
+    def __init__(self, file_path:
+        """初期化メソッド"""
+    str, similarity_score: float, 
                  patterns: Dict[str, Any], code_snippet: str = "", 
                  usage_example: str = ""):
         self.file_path = file_path
@@ -27,6 +29,7 @@ class SimilarImplementation:
         self.usage_example = usage_example
     
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             "file_path": self.file_path,
             "similarity_score": self.similarity_score,
@@ -54,15 +57,58 @@ class ContextEnhancer:
             # API関連
             {"keywords": ["api", "endpoint", "rest", "http"], "category": "api", "tech_hints": ["fastapi", "flask"]},
             # データ処理
-            {"keywords": ["data", "csv", "json", "pandas", "process"], "category": "data", "tech_hints": ["pandas", "numpy"]},
+            {
+                "keywords": ["data",
+                "csv",
+                "json",
+                "pandas",
+                "process"],
+                "category": "data",
+                "tech_hints": ["pandas",
+                "numpy"]
+            },
             # ファイル操作
-            {"keywords": ["file", "read", "write", "path", "directory"], "category": "file", "tech_hints": ["pathlib", "os"]},
+            {
+                "keywords": ["file",
+                "read",
+                "write",
+                "path",
+                "directory"],
+                "category": "file",
+                "tech_hints": ["pathlib",
+                "os"]
+            },
             # 非同期処理
-            {"keywords": ["async", "await", "concurrent", "asyncio"], "category": "async", "tech_hints": ["asyncio", "aiohttp"]},
+            {
+                "keywords": ["async",
+                "await",
+                "concurrent",
+                "asyncio"],
+                "category": "async",
+                "tech_hints": ["asyncio",
+                "aiohttp"]
+            },
             # データベース
-            {"keywords": ["database", "sql", "orm", "query"], "category": "database", "tech_hints": ["sqlalchemy", "asyncpg"]},
+            {
+                "keywords": ["database",
+                "sql",
+                "orm",
+                "query"],
+                "category": "database",
+                "tech_hints": ["sqlalchemy",
+                "asyncpg"]
+            },
             # 認証・セキュリティ
-            {"keywords": ["auth", "jwt", "token", "login", "security"], "category": "auth", "tech_hints": ["jwt", "bcrypt"]},
+            {
+                "keywords": ["auth",
+                "jwt",
+                "token",
+                "login",
+                "security"],
+                "category": "auth",
+                "tech_hints": ["jwt",
+                "bcrypt"]
+            },
         ]
     
     async def enhance_context(self, context: Dict[str, Any]) -> Dict[str, Any]:

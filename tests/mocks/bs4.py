@@ -1,5 +1,6 @@
 # Mock BeautifulSoup for testing
 class BeautifulSoup:
+    """BeautifulSoupクラス"""
     def __init__(self, html, parser=None):
         self.html = html
         self.parser = parser

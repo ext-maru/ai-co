@@ -46,6 +46,7 @@ class ErrorSignature:
     frequency: int = 1
 
     def __str__(self):
+        """文字列表現取得"""
         return f"{self.error_type}_{self.message_pattern[:20]}_{self.context_hash[:8]}"
 
 
@@ -571,6 +572,7 @@ class FailurePredictionSystem:
     def _extract_common_precursors(self, history: List[Dict]) -> List[str]:
         """共通前兆抽出"""
         precursor_counts = defaultdict(int)
+        # 繰り返し処理
         for failure in history:
             for precursor in failure.get("precursors", []):
                 precursor_counts[precursor] += 1

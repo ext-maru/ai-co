@@ -13,7 +13,9 @@ logger = logging.getLogger(__name__)
 
 
 class ConversationManager:
+    """ConversationManager - 管理システムクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.db = ConversationDB()
         self.state_transitions = {
             "active": ["waiting_user", "completed", "failed"],

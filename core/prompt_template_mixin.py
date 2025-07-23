@@ -96,6 +96,7 @@ if __name__ == "__main__":
     from core import BaseWorker
 
     class EnhancedTaskWorker(BaseWorker, PromptTemplateMixin):
+        """EnhancedTaskWorkerワーカークラス"""
         def __init__(self):
             """初期化メソッド"""
             BaseWorker.__init__(self, worker_type="task")

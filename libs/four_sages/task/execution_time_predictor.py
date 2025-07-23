@@ -48,7 +48,9 @@ class TimeFeatures:
 class PredictionModel:
     """タスクタイプ別の予測モデル"""
 
-    def __init__(self, task_type: TaskType):
+    def __init__(self, task_type:
+        """初期化メソッド"""
+    TaskType):
         self.task_type = task_type
         self.coefficients = {
             "base_time": 300.0,  # 5分（秒）
@@ -174,7 +176,9 @@ class PredictionModel:
 class ExecutionTimePredictor:
     """実行時間予測エンジン"""
 
-    def __init__(self, tracking_db: UnifiedTrackingDB):
+    def __init__(self, tracking_db:
+        """初期化メソッド"""
+    UnifiedTrackingDB):
         self.tracking_db = tracking_db
         self.prediction_models = {}
         self.feature_cache = {}

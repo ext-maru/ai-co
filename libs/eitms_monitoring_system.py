@@ -38,18 +38,21 @@ else:
     from dataclasses import dataclass
     
     class TaskType(Enum):
+        """TaskTypeクラス"""
         TODO = "todo"
         PROJECT_TASK = "project_task" 
         ISSUE = "issue"
         PLANNING = "planning"
     
     class TaskStatus(Enum):
+        """TaskStatusクラス"""
         CREATED = "created"
         IN_PROGRESS = "in_progress"
         COMPLETED = "completed"
         BLOCKED = "blocked"
     
     class Priority(Enum):
+        """Priorityクラス"""
         HIGH = "high"
         MEDIUM = "medium"
         LOW = "low"
@@ -57,6 +60,7 @@ else:
     
     @dataclass
     class UnifiedTask:
+        """UnifiedTaskクラス"""
         id: str = "mock-id"
         title: str = ""
         task_type: TaskType = TaskType.TODO
@@ -102,6 +106,7 @@ class SystemIncident:
     auto_resolved: bool = False
     
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             'id': self.id,
             'severity': self.severity.value,
@@ -130,6 +135,7 @@ class ConsistencyCheck:
     timestamp: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     
     def to_dict(self) -> Dict[str, Any]:
+        """to_dictメソッド"""
         return {
             'check_id': self.check_id,
             'check_type': self.check_type,
@@ -147,6 +153,7 @@ class DataConsistencyChecker:
     """データ整合性チェッカー"""
     
     def __init__(self, unified_manager):
+        """初期化メソッド"""
         self.unified_manager = unified_manager
         self.consistency_rules = [
             self._check_task_status_consistency,
@@ -354,7 +361,9 @@ class DataConsistencyChecker:
         visited = set()
         task_map = {t.id: t for t in all_tasks}
         
-        def dfs(current_id: str, path: set) -> bool:
+        def dfs(current_id:
+            """dfsメソッド"""
+        str, path: set) -> bool:
             if current_id in path:
                 return True  # 循環検出
             if current_id in visited:
@@ -380,6 +389,7 @@ class AutoRecoveryEngine:
     """自動復旧エンジン"""
     
     def __init__(self, unified_manager):
+        """初期化メソッド"""
         self.unified_manager = unified_manager
         self.recovery_strategies = {
             'database_corruption': self._recover_database_corruption,
@@ -570,6 +580,7 @@ class EitmsMonitoringSystem:
     """EITMS監視システム - メインオーケストレーター"""
     
     def __init__(self, unified_manager):
+        """初期化メソッド"""
         self.unified_manager = unified_manager
         self.consistency_checker = DataConsistencyChecker(unified_manager)
         self.recovery_engine = AutoRecoveryEngine(unified_manager)
@@ -766,11 +777,14 @@ async def main():
     """テスト実行"""
     # モック統一管理システム
     class MockUnifiedManager:
+        """MockUnifiedManager - 管理システムクラス"""
         def __init__(self):
+            """初期化メソッド"""
             self.tasks = {}
         
         @property
         def db(self):
+            """dbメソッド"""
             return type('MockDB', (), {
                 'list_tasks': lambda self, limit=100: [
                     UnifiedTask(

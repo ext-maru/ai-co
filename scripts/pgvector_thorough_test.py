@@ -168,6 +168,7 @@ async def thorough_test():
             "動物について",
         ]
 
+        # 繰り返し処理
         for query in test_queries:
             print(f"\n🔍 クエリ: '{query}'")
 

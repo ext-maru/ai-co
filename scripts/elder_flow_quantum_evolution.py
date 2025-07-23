@@ -304,7 +304,11 @@ class QuantumCommunicationNetwork:
         return {
             "active_pairs": len(self.entangled_pairs),
             "total_communications": len(self.communication_log),
-            "average_fidelity": sum(log.get("fidelity", 0) for log in self.communication_log) / max(len(self.communication_log), 1),
+            "average_fidelity": sum(
+                log.get("fidelity",
+                0) for log in self.communication_log) / max(len(self.communication_log),
+                1
+            ),
             "network_nodes": list(set([pair["node_a"] for pair in self.entangled_pairs.values()] +
                                    [pair["node_b"] for pair in self.entangled_pairs.values()]))
         }
@@ -1357,7 +1361,8 @@ if __name__ == "__main__":
         }
 
         # レポート保存
-        report_path = Path(f"knowledge_base/elder_flow_reports/quantum_evolution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json")
+        report_path = Path(f"knowledge_base/elder_flow_reports/quantum_evolution_{datetime." \
+            "now().strftime('%Y%m%d_%H%M%S')}.json")
         report_path.parent.mkdir(parents=True, exist_ok=True)
 
         with open(report_path, 'w') as f:

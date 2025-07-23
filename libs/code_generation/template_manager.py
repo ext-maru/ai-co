@@ -287,6 +287,9 @@ class CodeGenerationTemplateManager:
                     if 'framework' in detected_stacks and detected_stacks['framework']:
                         framework = detected_stacks['framework'][0]
                         # FastAPI, Flask, Django -> web に統一
+                        if not (framework in ['fastapi', 'flask', 'django']):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if framework in ['fastapi', 'flask', 'django']:
                             tech_stack = 'web'
                         else:

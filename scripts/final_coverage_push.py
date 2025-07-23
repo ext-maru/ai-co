@@ -97,6 +97,7 @@ class TestSimple{class_name}:
         ["python3", "analyze_test_coverage.py"], capture_output=True, text=True
     )
 
+    # 複雑な条件判定
     if (
         "26.5%" in result.stdout
         or "27" in result.stdout

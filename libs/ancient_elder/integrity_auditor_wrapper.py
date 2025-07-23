@@ -21,6 +21,7 @@ class AncientElderIntegrityAuditor(AncientElderBase):
     """
     
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(specialty="integrity_audit")
         self.original_auditor = OriginalIntegrityAuditor()
         
@@ -63,6 +64,7 @@ class AncientElderIntegrityAuditor(AncientElderBase):
                 
                 for file_path in files_to_check:
                     try:
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with open(file_path, 'r', encoding='utf-8') as f:
                             content = f.read()
                             todo_count += content.count('TODO')

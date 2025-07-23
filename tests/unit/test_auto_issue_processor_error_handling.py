@@ -349,6 +349,7 @@ class TestErrorRecoveryDecorator:
         
         @with_error_recovery()
         async def failing_then_succeeding_function():
+            """failing_then_succeeding_functionメソッド"""
             nonlocal call_count
             call_count += 1
             if call_count < 2:

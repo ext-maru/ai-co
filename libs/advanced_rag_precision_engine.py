@@ -65,6 +65,7 @@ class AdvancedRAGPrecisionEngine:
     """Advanced RAG Precision Engine - 最新手法統合システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = self._setup_logger()
 
         # データベース設定
@@ -637,6 +638,7 @@ class AdvancedRAGPrecisionEngine:
             thinking_steps.append("ボトルネック分析、改善手法、測定方法が重要です。")
 
         if "エラー" in query or "バグ" in query or "修正" in query:
+        # 複雑な条件判定
             thinking_steps.append("これは問題解決に関する質問です。")
             thinking_steps.append("原因分析、解決策、予防策が必要です。")
 
@@ -927,19 +929,22 @@ async def demo_advanced_rag_precision():
         {
             "id": "doc_elder_flow",
             "title": "Elder Flow開発ガイド",
-            "content": "Elder Flowは自動化開発フローシステムです。4賢者との連携によりMind Reading Protocolと統合し、グランドエルダーmaruの意図を理解して自動実行します。OAuth2.0認証システムやWebSocket通信の実装を支援します。",
+            "content": "Elder Flowは自動化開発フローシステムです。4賢者との連携によりMind Reading Protocolと統合し、グランドエル \
+                ダーmaruの意図を理解して自動実行します。OAuth2.0認証システムやWebSocket通信の実装を支援します。",
             "metadata": {"category": "development", "importance": "high"},
         },
         {
             "id": "doc_rag_system",
             "title": "RAG検索システム実装",
-            "content": "RAGシステムはRetrieval-Augmented Generationの略で、検索技術と生成AIを組み合わせたシステムです。ベクトル検索とキーワード検索を統合し、文脈理解を深化させます。BM25アルゴリズムとコサイン類似度を併用します。",
+            "content": "RAGシステムはRetrieval-Augmented Generationの略で、検索技術と生成AIを組み合わせたシステムです。ベクト \
+                ル検索とキーワード検索を統合し、文脈理解を深化させます。BM25アルゴリズムとコサイン類似度を併用します。",
             "metadata": {"category": "rag", "importance": "high"},
         },
         {
             "id": "doc_performance",
             "title": "パフォーマンス最適化ガイド",
-            "content": "システムのパフォーマンス最適化には複数のアプローチがあります。データベースクエリの最適化、キャッシュの活用、非同期処理の導入などが効果的です。監視システムでボトルネックを特定し、段階的に改善します。",
+            "content": "システムのパフォーマンス最適化には複数のアプローチがあります。データベースクエリの最適化、キャッシュの活用、非同期処理の導入などが効果的 \
+                です。監視システムでボトルネックを特定し、段階的に改善します。",
             "metadata": {"category": "optimization", "importance": "medium"},
         },
         {
@@ -973,6 +978,7 @@ async def demo_advanced_rag_precision():
 
     all_results = []
 
+    # 繰り返し処理
     for i, query in enumerate(test_queries, 1):
         print(f"\n[Query {i}] {query}")
 

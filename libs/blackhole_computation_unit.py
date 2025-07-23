@@ -108,6 +108,7 @@ class GravitationalRedshiftCalculator:
     """重力赤方偏移計算器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.speed_of_light = 299792458.0  # m/s
         self.gravitational_constant = 6.67430e-11  # m³/kg/s²
         self.solar_mass = 1.989e30  # kg
@@ -151,6 +152,7 @@ class HawkingRadiationProcessor:
     """ホーキング放射処理器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.boltzmann_constant = 1.380649e-23  # J/K
         self.planck_constant = 6.62607015e-34  # J⋅s
         self.speed_of_light = 299792458.0  # m/s
@@ -210,6 +212,7 @@ class QuantumBlackHoleProcessor:
     """量子ブラックホール処理器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.planck_length = 1.616255e-35  # m
         self.planck_time = 5.391247e-44  # s
         self.planck_mass = 2.176434e-8  # kg
@@ -331,6 +334,7 @@ class InformationParadoxResolver:
     """情報パラドックス解決器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.resolution_methods = [
             "black_hole_complementarity",
             "firewall_hypothesis",
@@ -441,6 +445,7 @@ class BlackHoleComputationUnit:
     """ブラックホール計算ユニット統合システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.black_holes = {}
         self.computation_history = []
         self.quantum_processor = QuantumBlackHoleProcessor()
@@ -828,7 +833,8 @@ async def blackhole_computation_demo():
 
     horizon_result = await unit.execute_blackhole_computation(stellar_bh, horizon_task)
     print(
-        f"Event horizon computation: {horizon_result['result']['quantum_result']['computational_advantage']:.2f}x speedup"
+        f"Event horizon computation: {horizon_result['result']['quantum_result']['comput \
+            ational_advantage']:.2f}x speedup"
     )
 
     # 3. エルゴ領域でのペンローズ過程計算
@@ -866,7 +872,10 @@ async def blackhole_computation_demo():
     hawking_result = await unit.execute_blackhole_computation(micro_bh, hawking_task)
     radiation_data = hawking_result["result"]["radiation_data"]
     print(
-        f"Hawking radiation: {radiation_data['temperature']:.2e} K, {radiation_data['particle_creation_rate']:.2e} particles/s"
+        (
+            f"f"Hawking radiation: {radiation_data['temperature']:.2e} K, "
+            f"{radiation_data['particle_creation_rate']:.2e} particles/s""
+        )
     )
 
     # 5. 特異点計算（理論的）

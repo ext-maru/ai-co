@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 # マナタイプ
 class ManaType(Enum):
+    """ManaTypeクラス"""
     FLOW = "flow"
     TIME = "time"
     BALANCE = "balance"
@@ -29,6 +30,7 @@ class ManaType(Enum):
 
 # タスク状態
 class TaskState(Enum):
+    """TaskStateクラス"""
     PENDING = "pending"
     RUNNING = "running"
     COMPLETED = "completed"
@@ -64,6 +66,7 @@ class ManaPool:
 
     @property
     def total(self) -> float:
+        """totalメソッド"""
         return (self.flow + self.time + self.balance + self.heal + self.wisdom) / 5
 
     def consume(self, mana_type: ManaType, amount: float):
@@ -80,7 +83,9 @@ class ManaPool:
 class BaseElf(ABC):
     """エルフ基底クラス"""
 
-    def __init__(self, name: str, forest: "ElfForest"):
+    def __init__(self, name:
+        """初期化メソッド"""
+    str, forest: "ElfForest"):
         self.name = name
         self.forest = forest
         self.mana_consumption = 5.0
@@ -106,7 +111,9 @@ class BaseElf(ABC):
 class FlowElf(BaseElf):
     """フローエルフ - タスクの流れを監視"""
 
-    def __init__(self, name: str, forest: "ElfForest", specialty: str = "queue"):
+    def __init__(self, name:
+        """初期化メソッド"""
+    str, forest: "ElfForest", specialty: str = "queue"):
         super().__init__(name, forest)
         self.specialty = specialty
 
@@ -180,7 +187,9 @@ class FlowElf(BaseElf):
 class TimeElf(BaseElf):
     """タイムエルフ - 時間管理とリマインダー"""
 
-    def __init__(self, name: str, forest: "ElfForest", precision: str = "minute"):
+    def __init__(self, name:
+        """初期化メソッド"""
+    str, forest: "ElfForest", precision: str = "minute"):
         super().__init__(name, forest)
         self.precision = precision
         self.reminders: List[Dict[str, Any]] = []
@@ -369,7 +378,9 @@ class HealingElf(BaseElf):
 class WisdomElf(BaseElf):
     """ウィズダムエルフ - 学習と知識蓄積"""
 
-    def __init__(self, name: str, forest: "ElfForest", domain: str = "general"):
+    def __init__(self, name:
+        """初期化メソッド"""
+    str, forest: "ElfForest", domain: str = "general"):
         super().__init__(name, forest)
         self.domain = domain
         self.learned_patterns: List[Dict[str, Any]] = []
@@ -455,6 +466,7 @@ class ElfForest:
     """エルフの森 - 中央管理システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.mana_pool = ManaPool()
         self.elves: List[BaseElf] = []
         self.task_queue: List[Task] = []

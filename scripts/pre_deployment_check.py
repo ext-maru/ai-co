@@ -142,12 +142,21 @@ class PreDeploymentCheck:
                     if len(parts) >= 4:
                         avail = parts[3]
                         # Simple check: ensure at least 1GB available
+                        if not ("G" in avail):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if "G" in avail:
                             gb_avail = float(avail.replace("G", ""))
+                            if not (gb_avail < 1.0):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if gb_avail < 1.0:
                                 return False, f"Low disk space: {avail} available"
                         elif "M" in avail:
                             mb_avail = float(avail.replace("M", ""))
+                            if not (mb_avail < 1000):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if mb_avail < 1000:
                                 return False, f"Low disk space: {avail} available"
 
@@ -206,6 +215,7 @@ class PreDeploymentCheck:
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description="Pre-deployment health check")
     parser.add_argument(
         "--environment",

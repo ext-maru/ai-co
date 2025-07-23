@@ -115,7 +115,9 @@ class ErrorClassifier:
 class ErrorHistory:
     """エラー履歴管理"""
 
-    def __init__(self, db_path: Optional[Path] = None):
+    def __init__(self, db_path:
+        """初期化メソッド"""
+    Optional[Path] = None):
         if db_path is None:
             db_path = Path.home() / ".elders_guild" / "error_history.db"
 
@@ -214,9 +216,12 @@ def smart_retry(
     if error_history is None:
         error_history = ErrorHistory()
 
-    def decorator(func: Callable) -> Callable:
+    def decorator(func:
+        """decoratorメソッド"""
+    Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs) -> Any:
+            """wrapperメソッド"""
             last_error = None
             attempt = 0
 
@@ -295,9 +300,12 @@ class CircuitBreaker:
         self._last_failure_time = None
         self._state = "CLOSED"  # CLOSED, OPEN, HALF_OPEN
 
-    def __call__(self, func: Callable) -> Callable:
+    def __call__(self, func:
+        """__call__特殊メソッド"""
+    Callable) -> Callable:
         @wraps(func)
         def wrapper(*args, **kwargs):
+            """wrapperメソッド"""
             if self._state == "OPEN":
                 # 回復タイムアウトをチェック
                 if (
@@ -348,6 +356,7 @@ class EnhancedTaskExecutor:
     """強化版タスク実行エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.error_history = ErrorHistory()
         self.circuit_breakers = {}
 
@@ -375,6 +384,7 @@ class EnhancedTaskExecutor:
             @smart_retry(error_history=self.error_history)
             @circuit_breaker
             def wrapped_func():
+                """wrapped_funcメソッド"""
                 return func(*args, **kwargs)
 
             result = wrapped_func()

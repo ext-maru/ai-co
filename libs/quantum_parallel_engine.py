@@ -83,7 +83,9 @@ class EntanglementPair:
 class QuantumCircuit:
     """量子回路シミュレーター"""
 
-    def __init__(self, num_qubits: int):
+    def __init__(self, num_qubits:
+        """初期化メソッド"""
+    int):
         self.num_qubits = num_qubits
         self.qubits = np.zeros(2**num_qubits, dtype=complex)
         self.qubits[0] = 1.0  # |0...0⟩ 状態で初期化
@@ -196,7 +198,9 @@ class QuantumCircuit:
 class QuantumProcessor:
     """量子プロセッサ"""
 
-    def __init__(self, num_qubits: int = 10):
+    def __init__(self, num_qubits:
+        """初期化メソッド"""
+    int = 10):
         self.num_qubits = num_qubits
         self.circuit = QuantumCircuit(num_qubits)
         self.logger = self._setup_logger()
@@ -474,7 +478,9 @@ class QuantumProcessor:
 class ParallelExecutionEngine:
     """並列実行エンジン"""
 
-    def __init__(self, max_classical_workers: int = 8, max_quantum_workers: int = 4):
+    def __init__(self, max_classical_workers:
+        """初期化メソッド"""
+    int = 8, max_quantum_workers: int = 4):
         self.max_classical_workers = max_classical_workers
         self.max_quantum_workers = max_quantum_workers
 
@@ -556,6 +562,7 @@ class ParallelExecutionEngine:
         self.logger.info("💻 Executing classical parallel tasks")
 
         async def execute_task(task):
+            """execute_task実行メソッド"""
             loop = asyncio.get_event_loop()
 
             if task.get("cpu_intensive", False):
@@ -595,6 +602,7 @@ class ParallelExecutionEngine:
         self.logger.info("⚛️ Executing quantum parallel tasks")
 
         async def execute_quantum_task(task, processor):
+            """execute_quantum_task実行メソッド"""
             async with self.quantum_semaphore:
                 algorithm = task.get("algorithm", "generic_quantum_computation")
                 input_data = task.get("input_data", [])
@@ -677,6 +685,7 @@ class ParallelExecutionEngine:
 
         # エンタングルされたタスクペアを並列実行
         async def execute_entangled_pair(pair_tasks, processor1, processor2):
+            """execute_entangled_pair実行メソッド"""
             task1, task2 = pair_tasks
 
             # 量子エンタングルメント状態の作成
@@ -793,7 +802,9 @@ class ParallelExecutionEngine:
 class QuantumParallelEngine:
     """量子並列エンジン統合システム"""
 
-    def __init__(self, max_classical_workers: int = 8, max_quantum_workers: int = 4):
+    def __init__(self, max_classical_workers:
+        """初期化メソッド"""
+    int = 8, max_quantum_workers: int = 4):
         self.execution_engine = ParallelExecutionEngine(
             max_classical_workers, max_quantum_workers
         )

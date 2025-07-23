@@ -30,6 +30,7 @@ class MetricsCollector:
     """メトリクス収集器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.metrics_history = deque(maxlen=1000)
         self._lock = threading.RLock()
 
@@ -81,6 +82,7 @@ class HealthChecker:
     """ヘルスチェッカー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.health_thresholds = {
             "cpu_critical": 90,
             "cpu_warning": 70,
@@ -128,6 +130,7 @@ class ScalingEngine:
     """スケーリングエンジン（軽量版）"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.scaling_rules = {
             "cpu_scale_up": 80,
             "cpu_scale_down": 30,
@@ -177,6 +180,7 @@ class WorkerHealthMonitor:
     """ワーカーヘルスモニター本体"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.metrics_collector = MetricsCollector()
         self.health_checker = HealthChecker()
         self.scaling_engine = ScalingEngine()
@@ -263,6 +267,7 @@ class WorkerPerformanceAnalyzer:
     """パフォーマンス分析器（プレースホルダー）"""
 
     def __init__(self):
+        """初期化メソッド"""
         logger.info("WorkerPerformanceAnalyzer initialized (placeholder)")
 
 
@@ -270,6 +275,7 @@ class WorkerAutoScaler:
     """自動スケーラー（プレースホルダー）"""
 
     def __init__(self):
+        """初期化メソッド"""
         logger.info("WorkerAutoScaler initialized (placeholder)")
 
 

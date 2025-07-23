@@ -608,7 +608,10 @@ async def run_coordination_integration_test():
             )
 
             print(
-                f"   {status}: 品質={result.quality_metrics.get('average_quality', 0):.1f}%, 効率={result.coordination_efficiency:.1%}"
+                (
+                    f"f"   {status}: 品質={result.quality_metrics.get('average_quality', 0):.1f}%, 効率="
+                    f"{result.coordination_efficiency:.1%}""
+                )
             )
 
         except Exception as e:

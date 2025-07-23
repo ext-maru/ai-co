@@ -79,6 +79,7 @@ class AITasksCommand(BaseCommand):
         import asyncio
         
         async def async_execute():
+            """async_executeを実行"""
             # Core functionality implementation
             from libs.postgres_claude_task_tracker import create_postgres_task_tracker
             

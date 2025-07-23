@@ -155,7 +155,9 @@ def require_permission(resource: str, action: str):
     def decorator(f):
         @wraps(f)
         def decorated_function(*args, **kwargs):
+        """decoratorメソッド"""
             sage_type = auth.get_sage_from_request(request)
+            """decorated_functionメソッド"""
 
             if not sage_type:
                 raise APIError("Authentication required", 401)
@@ -177,6 +179,7 @@ def handle_async(f):
 
     @wraps(f)
     def wrapper(*args, **kwargs):
+        """wrapperメソッド"""
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:

@@ -27,6 +27,7 @@ class AICompanyExecutorServer:
     """Elders Guild Command Executor MCPサーバー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.server = Server("ai-company-executor")
         self.setup_tools()
 

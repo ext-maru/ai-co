@@ -22,7 +22,9 @@ logger = logging.getLogger(__name__)
 
 
 class SelfEvolutionManager:
+    """SelfEvolutionManager - 管理システムクラス"""
     def __init__(self):
+        """初期化メソッド"""
         # プロジェクトルートを相対パスで特定
         self.project_root = Path(__file__).parent.parent
 
@@ -1750,7 +1752,10 @@ class SelfEvolutionManager:
                                 "dir": directory,
                                 "score": min(0.85, final_score),
                                 "method": "advanced_embedding",
-                                "reason": f"Embedding similarity: {normalized_score:.3f}, success_rate: {success_rate:.2f}",
+                                "reason": f"Embedding similarity: {
+                                    normalized_score:.3f},
+                                    success_rate: {success_rate:.2f
+                                }",
                             }
                         )
 
@@ -1800,7 +1805,10 @@ class SelfEvolutionManager:
                             "dir": directory,
                             "score": final_score,
                             "method": "contextual_pattern",
-                            "reason": f'Multi-signal consensus ({data["count"]} signals): {", ".join(data["details"][:2])}',
+                            "reason": f'Multi-signal consensus ({
+                                data["count"]} signals): {",
+                                ".join(data["details"][:2])
+                            }',
                         }
                     )
 

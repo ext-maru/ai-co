@@ -46,6 +46,7 @@ class TestAncientMagicFast:
         async def mock_audit(target):
             result = AuditResult()
             result.auditor_name = "MockAuditor"
+            """mock_auditメソッド"""
             result.add_violation(
                 severity=ViolationSeverity.LOW,
                 title="Test violation",
@@ -61,6 +62,7 @@ class TestAncientMagicFast:
         # process_requestのモック（非同期）
         async def mock_process_request(request):
             if request.get("type") == "audit":
+            """mock_process_requestを処理"""
                 audit_result = await mock_audit(request.get("target", {}))
                 return {
                     "status": "success",
@@ -121,6 +123,7 @@ class TestAncientMagicFast:
             auditor.name = f"MockAuditor{i}"
             
             async def process_request(request):
+                """process_requestを処理"""
                 await asyncio.sleep(0.1)  # 短い遅延
                 return {
                     "status": "success",

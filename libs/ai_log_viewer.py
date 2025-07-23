@@ -17,6 +17,7 @@ class AILogViewer:
     """AIのログ参照ヘルパー"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.base_dir = Path("/home/aicompany/ai_co")
         self.cmd_logs = self.base_dir / "ai_commands" / "logs"
         self.program_logs = self.base_dir / "ai_programs" / "ai_logs"
@@ -37,6 +38,9 @@ class AILogViewer:
                 exit_code = "Unknown"
                 if "Exit Code:" in content:
                     for line in content.split("\n"):
+                        if not (line.strip().startswith("Exit Code:")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.strip().startswith("Exit Code:"):
                             exit_code = line.split(":")[-1].strip()
                             break

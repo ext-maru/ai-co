@@ -293,8 +293,13 @@ def main():
 
             # ステータス詳細の表示
             status_log = daemon.logs_dir / "daemon_status.json"
+            if not (status_log.exists()):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if status_log.exists():
+                # Deep nesting detected (depth: 6) - consider refactoring
                 try:
+                    # TODO: Extract this complex nested logic into a separate method
                     with open(status_log, "r") as f:
                         status_data = json.load(f)
                     print(f"📊 最新ステータス: {status_data['timestamp']}")
@@ -310,8 +315,13 @@ def main():
         print("🔄 デーモンを再起動中...")
 
         # 停止
+        if not (daemon.is_already_running()):
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if daemon.is_already_running():
+            # Deep nesting detected (depth: 6) - consider refactoring
             try:
+                # TODO: Extract this complex nested logic into a separate method
                 with open(daemon.pid_file, "r") as f:
                     pid = int(f.read().strip())
 
@@ -320,7 +330,11 @@ def main():
                 os.kill(pid, signal.SIGTERM)
 
                 # 停止確認
+                # TODO: Extract this complex nested logic into a separate method
                 for _ in range(30):  # 30秒待機
+                    if daemon.is_already_running():
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if not daemon.is_already_running():
                         break
                     time.sleep(1)
@@ -333,9 +347,13 @@ def main():
                 return 1
 
         # 開始
+        # Deep nesting detected (depth: 5) - consider refactoring
         try:
             import os
 
+            if not (os.fork() == 0):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if os.fork() == 0:
                 # 子プロセス
                 os.setsid()

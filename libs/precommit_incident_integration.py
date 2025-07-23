@@ -64,6 +64,7 @@ class GitFileAnalyzer:
     """Git変更ファイル分析器"""
 
     def __init__(self):
+        """初期化メソッド"""
         pass
 
     def get_staged_files(self) -> List[Path]:
@@ -133,7 +134,9 @@ class GitFileAnalyzer:
 class QuickTestRunner:
     """クイックテスト実行器"""
 
-    def __init__(self, timeout: int = 30):
+    def __init__(self, timeout:
+        """初期化メソッド"""
+    int = 30):
         self.timeout = timeout
 
     def run_quick_tests(self, target_files: List[Path]) -> Dict[str, Any]:
@@ -282,7 +285,9 @@ class QuickTestRunner:
 class PreCommitIncidentIntegration:
     """pre-commitインシデント統合メインクラス"""
 
-    def __init__(self, config: Optional[HookConfig] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Optional[HookConfig] = None):
         self.config = config or HookConfig()
         self.git_analyzer = GitFileAnalyzer()
         self.quick_test_runner = QuickTestRunner(timeout=self.config.timeout_seconds)

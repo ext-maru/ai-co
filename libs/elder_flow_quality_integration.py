@@ -36,6 +36,7 @@ class ElderFlowQualityGate:
     """Elder Flow品質ゲート"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.db_params = {
             'host': 'localhost',
             'database': 'elders_guild_pgvector',
@@ -302,6 +303,7 @@ class ElderFlowQualityIntegration:
     """Elder Flow品質システム統合メイン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.quality_gate = ElderFlowQualityGate()
         self.enabled = True
         
@@ -350,6 +352,7 @@ class ElderFlowQualityIntegration:
         # 主要ディレクトリのみスキャン
         scan_dirs = ['libs', 'scripts', 'tests']
         
+        # 繰り返し処理
         for dir_name in scan_dirs:
             dir_path = project_root / dir_name
             if dir_path.exists():

@@ -178,6 +178,7 @@ class ElderProcessManager:
         print("-" * 60)
 
         try:
+            # ループ処理
             while True:
                 status_lines = []
                 all_running = True

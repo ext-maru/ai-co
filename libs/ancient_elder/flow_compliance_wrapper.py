@@ -20,6 +20,7 @@ class FlowComplianceAuditor(AncientElderBase):
     """
     
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(specialty="flow_compliance")
         
     async def audit(self, target: Dict[str, Any]) -> AuditResult:

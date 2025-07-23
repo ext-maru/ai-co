@@ -16,6 +16,7 @@ class TestCoverageAnalyzer:
     def __init__(self, project_root: str = "."):
         self.project_root = Path(project_root)
         self.critical_modules = ["workers", "libs", "core", "commands", "ci_cd"]
+    """TestCoverageAnalyzerテストクラス"""
 
     def find_python_files(self, directory: str) -> List[Path]:
         """Find all Python files in a directory"""
@@ -119,6 +120,7 @@ class TestCoverageAnalyzer:
 
         for worker in critical_workers:
             has_test = any(worker in test for test in all_tests)
+        # 繰り返し処理
             if not has_test:
                 worker_file = None
                 for module in ["workers", "libs", "core"]:
@@ -222,6 +224,7 @@ class TestCoverageAnalyzer:
         report.append("-" * 60)
 
         for location, tests in test_files.items():
+        # 繰り返し処理
             if tests:
                 report.append(f"\n{location}: {len(tests)} test files")
                 for test in tests[:5]:  # Show first 5:
@@ -270,6 +273,7 @@ class TestCoverageAnalyzer:
 
 
 def main():
+    """mainメソッド"""
     analyzer = TestCoverageAnalyzer()
 
     print("Analyzing test coverage...")

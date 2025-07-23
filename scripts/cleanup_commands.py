@@ -18,6 +18,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 
 class CommandCleaner:
     def __init__(self, dry_run=True):
+    """CommandCleanerクラス"""
         self.project_root = PROJECT_ROOT
         self.dry_run = dry_run
         self.backup_dir = (
@@ -146,6 +147,7 @@ class CommandCleaner:
             },
         }
 
+        # 繰り返し処理
         for cmd, paths in dialog_implementations.items():
             print(f"\n  {cmd}:")
             has_implementation = False

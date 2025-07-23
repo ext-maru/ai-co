@@ -54,6 +54,7 @@ class ElderGuildSecurityValidator:
     """Elder Guild セキュリティ検証システム"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(f"{__name__}.SecurityValidator")
         self.security_patterns = self._load_security_patterns()
         self.temp_dir = self._create_secure_temp_dir()
@@ -310,6 +311,9 @@ except Exception as e:
                     pattern = pattern_info['pattern']
                     
                     for line_num, line in enumerate(lines, 1):
+                        if not (re.search(pattern, line)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if re.search(pattern, line):
                             violations.append(SecurityViolation(
                                 violation_type='security_pattern',

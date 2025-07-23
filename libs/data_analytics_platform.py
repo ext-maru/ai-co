@@ -53,7 +53,9 @@ class AnalyticsResult:
 class DataCollector:
     """データ収集エンジン"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path):
         self.project_root = Path(project_root)
         self.logs_dir = self.project_root / "logs"
         self.db_path = self.project_root / "elder_dashboard.db"
@@ -165,6 +167,7 @@ class PredictionModel:
     """高度な予測モデル"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.time_series_models = {}
         self.anomaly_detectors = {}
         self.trained = False
@@ -287,6 +290,7 @@ class AnalyticsEngine:
     """分析エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.ml_models = {}  # 機械学習モデル格納用
         self.prediction_model = PredictionModel()  # 予測モデル
 
@@ -784,6 +788,7 @@ class PredictiveAnalytics:
     """予測分析エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.models = {}
 
     async def train_models(self, commit_df: pd.DataFrame, sage_df: pd.DataFrame):
@@ -834,7 +839,9 @@ class PredictiveAnalytics:
 class AnalyticsReporter:
     """分析レポート生成器"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path):
         self.project_root = Path(project_root)
         self.reports_dir = self.project_root / "analytics_reports"
         self.reports_dir.mkdir(exist_ok=True)
@@ -1192,7 +1199,9 @@ class AnalyticsReporter:
 class DataAnalyticsPlatform:
     """高度データアナリティクスプラットフォーム メインクラス"""
 
-    def __init__(self, project_root: Path):
+    def __init__(self, project_root:
+        """初期化メソッド"""
+    Path):
         self.project_root = Path(project_root)
         self.collector = DataCollector(self.project_root)
         self.analytics = AnalyticsEngine()

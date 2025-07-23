@@ -185,7 +185,10 @@ def generate_detailed_report():
     print(f"\n📂 カテゴリ別統計:")
     for category, stats in category_stats.items():
         print(
-            f"   {category}: {stats['count']}個 (平均CPU: {stats['total_cpu']/stats['count']:.1f}%, 平均メモリ: {stats['total_memory']/stats['count']:.1f}MB)"
+            (
+                f"f"   {category}: {stats['count']}個 (平均CPU: {stats['total_cpu']/stats['count']:.1f}%, 平均メモリ: "
+                f"{stats['total_memory']/stats['count']:.1f}MB)""
+            )
         )
 
     print(f"\n🎯 終了推奨ワーカー:")

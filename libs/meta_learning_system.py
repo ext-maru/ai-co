@@ -9,7 +9,9 @@ from pathlib import Path
 
 
 class MetaLearningSystem:
+    """MetaLearningSystemクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.learning_history = []
         self.performance_patterns = {}
 

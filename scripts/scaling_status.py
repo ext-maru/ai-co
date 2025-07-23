@@ -101,6 +101,7 @@ def show_scaling_status(output_format="text", sections=None):
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(
         description="Worker scaling status monitor - View current scaling state and predictions",
         formatter_class=argparse.RawDescriptionHelpFormatter,

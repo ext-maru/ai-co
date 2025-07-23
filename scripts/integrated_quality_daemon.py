@@ -105,7 +105,8 @@ class IntegratedQualityDaemon(OptimizedQualityDaemon):
         logger.warning("⚠️ Quality gate failure detected - taking corrective action")
         
         # Save detailed quality report
-        report_file = self.project_root / "logs" / f"quality_gate_failure_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_file = self.project_root / "logs" / f" \
+            quality_gate_failure_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         
         try:
             with open(report_file, 'w') as f:

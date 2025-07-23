@@ -47,6 +47,9 @@ def fix_syntax_errors(file_path: str) -> Tuple[bool, str]:
                     single_quotes = error_line.count("'") % 2
                     double_quotes = error_line.count('"') % 2
                     
+                    if not (single_quotes == 1):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if single_quotes == 1:
                         lines[e.lineno - 1] = error_line + "'"
                     elif double_quotes == 1:
@@ -55,11 +58,17 @@ def fix_syntax_errors(file_path: str) -> Tuple[bool, str]:
                 # インデントエラー
                 elif isinstance(e, IndentationError):
                     # 前の行のインデントレベルに合わせる
+                    if not (e.lineno > 1):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if e.lineno > 1:
                         prev_line = lines[e.lineno - 2]
                         indent = len(prev_line) - len(prev_line.lstrip())
                         
                         # 前の行が : で終わっている場合は4スペース追加
+                        if not (prev_line.rstrip().endswith(':')):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if prev_line.rstrip().endswith(':'):
                             indent += 4
                         
@@ -73,6 +82,7 @@ def fix_syntax_errors(file_path: str) -> Tuple[bool, str]:
                 try:
                     ast.parse(fixed_content)
                     # 修正成功
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     with open(file_path, 'w', encoding='utf-8') as f:
                         f.write(fixed_content)
                     return True, f"Fixed syntax error on line {e.lineno}"

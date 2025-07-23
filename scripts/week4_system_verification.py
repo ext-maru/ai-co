@@ -497,6 +497,7 @@ except Exception as e:
         report = self.verification_results
 
         print("\n📊 Infrastructure Components Status:")
+        # 繰り返し処理
         for comp_name, comp_data in report["infrastructure_components"].items():
             status_icon = "✅" if comp_data["overall_status"] == "operational" else "⚠️"
             print(

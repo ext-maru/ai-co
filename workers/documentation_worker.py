@@ -819,7 +819,9 @@ print(result)
 ## Elder Tree Integration
 - **Initialization**: {'✅ Success' if status['elder_tree_integration']['initialization_success'] else '❌ Failed'}
 - **Four Sages**: {'🧙‍♂️ Available' if status['elder_tree_integration']['four_sages_available'] else '❌ Unavailable'}
-- **Elder Council**: {'🏛️ Available' if status['elder_tree_integration']['elder_council_available'] else '❌ Unavailable'}
+- **Elder Council**: {'🏛️ Available' \
+    if status['elder_tree_integration']['elder_council_available'] \
+    else '❌ Unavailable'}
 - **Elder Tree**: {'🌳 Available' if status['elder_tree_integration']['elder_tree_available'] else '❌ Unavailable'}
 
 ## Documentation Metrics
@@ -837,7 +839,8 @@ print(result)
 - **Last Health Check**: {status['elder_hierarchy_health']['last_health_check']}
 
 ## Knowledge Recording Mission
-The Documentation Worker serves as the **Knowledge Recorder** of the Elder Tree hierarchy system, ensuring that all generated documentation is:
+The Documentation Worker serves as the **Knowledge Recorder** of the Elder Tree hierarchy system,  \
+    ensuring that all generated documentation is:
 
 1. **Guided by Elder Wisdom** - Consultation with Knowledge Sage for patterns
 2. **Enhanced by RAG Intelligence** - Semantic improvements from RAG Sage
@@ -893,13 +896,16 @@ async def main():
         # Display Elder Tree hierarchy status
         elder_status = await worker.get_elder_documentation_status()
         print(
-            f"🧙‍♂️ Four Sages Integration: {'✅ Available' if elder_status['elder_tree_integration']['four_sages_available'] else '❌ Unavailable'}"
+            f"🧙‍♂️ Four Sages Integration: {'✅ Available' if elder_status['elder_tree_integr \
+                ation']['four_sages_available'] else '❌ Unavailable'}"
         )
         print(
-            f"🏛️ Elder Council: {'✅ Available' if elder_status['elder_tree_integration']['elder_council_available'] else '❌ Unavailable'}"
+            f"🏛️ Elder Council: {'✅ Available' if elder_status['elder_tree_integration']['el \
+                der_council_available'] else '❌ Unavailable'}"
         )
         print(
-            f"🌳 Elder Tree: {'✅ Available' if elder_status['elder_tree_integration']['elder_tree_available'] else '❌ Unavailable'}"
+            f"🌳 Elder Tree: {'✅ Available' if elder_status['elder_tree_integration']['elder_ \
+                tree_available'] else '❌ Unavailable'}"
         )
     else:
         print("⚠️ Elder Tree systems not available - running in standalone mode")
@@ -938,7 +944,8 @@ async def main():
                 f"  • Total Documents Generated: {final_status['documentation_metrics']['total_documents_generated']}"
             )
             print(
-                f"  • Knowledge Sage Interactions: {final_status['documentation_metrics']['knowledge_sage_interactions']}"
+                f"  • Knowledge Sage Interactions: {final_status['documentation_metrics']['knowl \
+                    edge_sage_interactions']}"
             )
             print(
                 f"  • RAG Sage Enhancements: {final_status['documentation_metrics']['rag_sage_enhancements']}"

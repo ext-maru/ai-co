@@ -142,6 +142,7 @@ class SimpleA2ACommand:
         print("   - RAG Sage: Available")
 
 async def main():
+    """mainメソッド"""
     # Core functionality implementation
     parser = argparse.ArgumentParser(description="Simple A2A Communication Command")
     subparsers = parser.add_subparsers(dest='action', help='Available actions')

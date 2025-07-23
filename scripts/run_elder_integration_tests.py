@@ -211,9 +211,19 @@ def generate_markdown_report(report):
 
 | テスト種別 | 総数 | 成功 | 失敗 | 成功率 |
 |-----------|------|------|------|--------|
-| ユニットテスト | {report['summary']['total_unit_tests']} | {report['summary']['passed_unit_tests']} | {report['summary']['total_unit_tests'] - report['summary']['passed_unit_tests']} | {(report['summary']['passed_unit_tests'] / report['summary']['total_unit_tests'] * 100):.1f}% |
-| 統合テスト | 1 | {'1' if report['summary']['integration_test_passed'] else '0'} | {'0' if report['summary']['integration_test_passed'] else '1'} | {'100.0' if report['summary']['integration_test_passed'] else '0.0'}% |
-| セキュリティテスト | {report['summary']['total_security_tests']} | {report['summary']['security_tests_passed']} | {report['summary']['total_security_tests'] - report['summary']['security_tests_passed']} | {(report['summary']['security_tests_passed'] / report['summary']['total_security_tests'] * 100):.1f}% |
+| ユニットテスト | {report['summary']['total_unit_tests']} | {report['summary'][ \
+    'passed_unit_tests']} | {report['summary']['total_unit_tests'] \
+        - report['summary']['passed_unit_tests']} | {(report['summary'][ \
+            'passed_unit_tests'] / report['summary']['total_unit_tests'] * 100):.1f}% |
+| 統合テスト | 1 | {'1' \
+    if report['summary']['integration_test_passed'] \
+    else '0'} | {'0' \
+        if report['summary']['integration_test_passed'] \
+        else '1'} | {'100.0' if report['summary']['integration_test_passed'] else '0.0'}% |
+| セキュリティテスト | {report['summary']['total_security_tests']} | {report[ \
+    'summary']['security_tests_passed']} | {report['summary']['total_security_tests'] \
+        - report['summary']['security_tests_passed']} | {(report['summary'][ \
+            'security_tests_passed'] / report['summary']['total_security_tests'] * 100):.1f}% |
 
 ## 🧪 ユニットテスト詳細
 

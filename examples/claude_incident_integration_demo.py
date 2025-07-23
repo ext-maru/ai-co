@@ -154,8 +154,14 @@ def demo_learning_records():
                 content = learning_file.read_text(encoding="utf-8")
                 lines = content.split("\n")
                 for line in lines[:10]:  # 最初の10行
+                    if not (line.strip()):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if line.strip():
                         print(f"    {line}")
+                        if not (line.startswith("## 🚨 Error Details")):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if line.startswith("## 🚨 Error Details"):
                             break
             except Exception as e:

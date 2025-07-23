@@ -217,6 +217,7 @@ def add_imports_if_needed(content):
     for i, line in enumerate(lines):
         if line.startswith("import ") or line.startswith("from "):
             import_index = i + 1
+        # 複雑な条件判定
         elif import_index > 0 and line and not line.startswith(" "):
             break
 

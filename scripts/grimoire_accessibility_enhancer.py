@@ -182,6 +182,9 @@ class GrimoireAccessibilityEnhancer:
                         }
                         entries.append(entry)
 
+                        if not (level == 1):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if level == 1:
                             current_section = title
                         elif level == 2 and current_section:

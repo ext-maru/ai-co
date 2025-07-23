@@ -12,6 +12,7 @@ from pathlib import Path
 
 
 def main():
+    """mainメソッド"""
     parser = argparse.ArgumentParser(description="Elders Guild 自動テストランナー")
     parser.add_argument("files", nargs="*", help="テスト対象のファイル")
     parser.add_argument("--no-slack", action="store_true", help="Slack通知を無効化")

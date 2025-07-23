@@ -76,7 +76,9 @@ class EnrichmentResult:
 class KnowledgeGapDetector:
     """知識ギャップ検出ウィザード"""
 
-    def __init__(self, knowledge_base_path: Path):
+    def __init__(self, knowledge_base_path:
+        """初期化メソッド"""
+    Path):
         self.knowledge_base_path = knowledge_base_path
         self.detected_gaps: Dict[str, KnowledgeGap] = {}
         self._analysis_cache: Dict[str, Any] = {}
@@ -159,7 +161,9 @@ class KnowledgeGapDetector:
 class InformationHunterWizard:
     """情報収集ウィザード"""
 
-    def __init__(self, wizard_id: str):
+    def __init__(self, wizard_id:
+        """初期化メソッド"""
+    str):
         self.wizard_id = wizard_id
         self.state = WizardState.IDLE
         self.current_hunt: Optional[KnowledgeGap] = None
@@ -488,7 +492,9 @@ class InformationHunterWizard:
 class KnowledgeEnricher:
     """知識拡充ウィザード"""
 
-    def __init__(self, knowledge_base_path: Path):
+    def __init__(self, knowledge_base_path:
+        """初期化メソッド"""
+    Path):
         self.knowledge_base_path = knowledge_base_path
         self.enrichment_history: List[EnrichmentResult] = []
 
@@ -574,7 +580,9 @@ class KnowledgeEnricher:
 class ProactiveLearningEngine:
     """主体的学習エンジン"""
 
-    def __init__(self, idle_threshold_minutes: int = 5):
+    def __init__(self, idle_threshold_minutes:
+        """初期化メソッド"""
+    int = 5):
         self.idle_threshold = timedelta(minutes=idle_threshold_minutes)
         self.last_activity = datetime.now()
         self.learning_queue: List[KnowledgeGap] = []
@@ -642,6 +650,7 @@ class RAGElderWizardsOrchestrator:
     """RAGエルダーウィザードシステムの統括"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.gap_detector = KnowledgeGapDetector(
             Path("/home/aicompany/ai_co/knowledge_base")
         )

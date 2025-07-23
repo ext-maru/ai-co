@@ -48,6 +48,7 @@ def analyze_test_report():
     print("Error Pattern Analysis")
     print("=" * 50)
 
+    # 繰り返し処理
     for pattern, files in sorted(
         error_patterns.items(), key=lambda x: len(x[1]), reverse=True
     ):

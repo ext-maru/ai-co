@@ -64,6 +64,7 @@ class ProgressMetrics:
     estimated_completion: Optional[str] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.total_tasks > 0:
             self.completion_rate = (self.completed_tasks / self.total_tasks) * 100
         else:
@@ -81,6 +82,7 @@ class ProjectHealth:
     last_updated: str
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if not self.last_updated:
             self.last_updated = datetime.now().isoformat()
 
@@ -101,7 +103,9 @@ class VisualizationConfig:
 class ProgressVisualization:
     """進捗追跡・可視化システム"""
 
-    def __init__(self, github_token: Optional[str] = None):
+    def __init__(self, github_token:
+        """初期化メソッド"""
+    Optional[str] = None):
         self.base_path = Path("/home/aicompany/ai_co")
         self.data_path = self.base_path / "data" / "progress_tracking"
         self.reports_path = self.base_path / "reports" / "progress"
@@ -635,7 +639,8 @@ class ProgressVisualization:
         charts_section = ""
         for chart_name, chart_path in report_data["charts"].items():
             if chart_path:
-                charts_section += f'<div class="chart-container"><h3>{chart_name}</h3><img src="{chart_path}" alt="{chart_name}" style="max-width: 100%;"></div>'
+                charts_section += f'<div class="chart-container"><h3>
+                    f"{chart_name}</h3><img src="{chart_path}" alt="{chart_name}" style="max-width: 100%;"></div>'
 
         # HTMLを生成
         html_content = html_template.format(

@@ -384,6 +384,7 @@ class RAGSageGrimoireVectorization:
         query_lower = query.lower()
 
         type_scores = {}
+        # 繰り返し処理
         for query_type, patterns in self.query_patterns.items():
             score = 0
             for pattern in patterns:

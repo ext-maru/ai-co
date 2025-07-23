@@ -15,6 +15,7 @@ class TestFailureKnight(IncidentKnight):
     """テスト失敗専門の騎士"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("TestFailureKnight", ["test", "import", "mock"])
         self.fix_strategies = {
             "import_error": self._fix_import_error,
@@ -120,6 +121,7 @@ class ElfKnightCoordinator:
     """エルフとナイトの協調コーディネーター"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.test_knight = TestFailureKnight()
         self.knight_brigade = KnightBrigade()
         self.knight_brigade.register_knight(self.test_knight)

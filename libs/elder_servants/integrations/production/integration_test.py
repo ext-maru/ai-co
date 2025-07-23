@@ -136,6 +136,7 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
     """
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(EldersLegacyDomain.EXECUTION)
         self.logger = logging.getLogger("elder_integration_test")
 
@@ -444,7 +445,9 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
         errors = 0
 
         # 非同期最適化テスト
-        async def test_operation(task_id: int):
+        async def test_operation(task_id:
+            """test_operationテストメソッド"""
+        int):
             op_start = time.time()
 
             request = AsyncOptimizationRequest(
@@ -932,9 +935,11 @@ class ElderIntegrationTestSuite(EldersServiceLegacy[Dict[str, Any], Dict[str, An
 
         # 分析結果
         if meets_target:
-            analysis = f"🎉 SUCCESS: {overall_improvement:.1f}% improvement achieved (target: {self.test_config['target_improvement']}%)"
+            analysis = f"🎉 SUCCESS: {overall_improvement:.1f}% " \
+                "improvement achieved (target: {self.test_config['target_improvement']}%)"
         else:
-            analysis = f"⚠️ PARTIAL: {overall_improvement:.1f}% improvement (target: {self.test_config['target_improvement']}%)"
+            analysis = f"⚠️ PARTIAL: {overall_improvement:.1f}% " \
+                "improvement (target: {self.test_config['target_improvement']}%)"
 
         return PerformanceComparison(
             baseline_result=baseline,

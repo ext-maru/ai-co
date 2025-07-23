@@ -81,7 +81,9 @@ class EnhancedClassificationResult:
 class IssueTypeClassifierV2:
     """Phase 2強化版Issue種別判定システム"""
     
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    Optional[Dict[str, Any]] = None):
         self.config = config or {}
         self._initialize_enhanced_keywords()
         self._initialize_technology_patterns()

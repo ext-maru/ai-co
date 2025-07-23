@@ -185,12 +185,14 @@ class TestDistributedQueueManager:
         """Test thread-safe concurrent access"""
         async def producer(prefix: str, count: int):
             for i in range(count):
+            """producerメソッド"""
                 await queue_manager.enqueue(
                     QueueItem(f"{prefix}-{i}", {})
                 )
                 await asyncio.sleep(0.01)
         
         async def consumer(count: int):
+            """consumerメソッド"""
             items = []
             for _ in range(count):
                 item = await queue_manager.dequeue()

@@ -113,6 +113,7 @@ class GitHubActionsKnight:
         data = json.loads(result.stdout)
         failed_jobs = [job for job in data["jobs"] if job["conclusion"] == "failure"]
 
+        # 繰り返し処理
         for job in failed_jobs:
             print(f"\n🚨 失敗ジョブ: {job['name']}")
 

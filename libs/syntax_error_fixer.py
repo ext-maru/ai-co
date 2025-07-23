@@ -24,6 +24,7 @@ class SyntaxErrorFixer(BaseManager):
     """SyntaxError自動修正クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("SyntaxErrorFixer")
 
         # 安全に修正可能なSyntaxError パターン
@@ -225,6 +226,7 @@ class SyntaxErrorFixer(BaseManager):
         line_match = re.search(r"line (\d+)", error_text)
         if line_match:
             error_line = int(line_match.group(1)) - 1
+            # 複雑な条件判定
             if 0 <= error_line < len(lines):
                 line = lines[error_line].rstrip()
 

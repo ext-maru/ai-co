@@ -1,5 +1,6 @@
 # Mock matplotlib for testing
 class pyplot:
+    """pyplotクラス"""
     @staticmethod
     def plot(*args, **kwargs):
         pass

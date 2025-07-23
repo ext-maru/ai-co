@@ -142,11 +142,13 @@ def test_insight_correlation():
     if 0 <= correlation_high <= 1:
         print("  ✅ 高相関値が範囲内")
         tests_passed += 1
+    # 複雑な条件判定
     else:
         print(f"  ❌ High correlation out of range: {correlation_high}")
 
     if 0 <= correlation_low <= 1:
         print("  ✅ 低相関値が範囲内")
+    # 複雑な条件判定
         tests_passed += 1
     else:
         print(f"  ❌ Low correlation out of range: {correlation_low}")
@@ -218,11 +220,13 @@ async def test_quantum_consensus():
         print("  ❌ No solution generated")
 
     if 0 <= consensus.confidence <= 1:
+    # 複雑な条件判定
         print(f"  ✅ 信頼度範囲OK: {consensus.confidence:.3f}")
         tests_passed += 1
     else:
         print(f"  ❌ Confidence out of range: {consensus.confidence}")
 
+    # 複雑な条件判定
     if 0 <= consensus.coherence <= 1:
         print(f"  ✅ コヒーレンス範囲OK: {consensus.coherence:.3f}")
         tests_passed += 1

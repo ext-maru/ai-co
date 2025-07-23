@@ -147,10 +147,12 @@ class RecoveryStrategies:
                 subprocess.run(cmd, shell=True)
                 time.sleep(2)
 
-                cmd = f"tmux send-keys -t {session_name}:{window_name} 'cd /home/aicompany/ai_co && python3 {script_path}' Enter"
+                cmd = f"tmux send-keys -t {session_name}:{window_name} " \
+                    "'cd /home/aicompany/ai_co && python3 {script_path}' Enter"
             else:
                 # 新規ウィンドウで起動
-                cmd = f"tmux new-window -t {session_name} -n {window_name} 'cd /home/aicompany/ai_co && python3 {script_path}'"
+                cmd = f"tmux new-window -t {session_name} " \
+                    "-n {window_name} 'cd /home/aicompany/ai_co && python3 {script_path}'"
 
             result = subprocess.run(cmd, shell=True, capture_output=True)
 

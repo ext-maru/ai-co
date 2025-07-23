@@ -24,6 +24,7 @@ class TDDGuardian(AncientElderBase):
     """
     
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(specialty="tdd_guardian")
         self.original_guardian = OriginalTDDGuardian()
         
@@ -76,6 +77,9 @@ class TDDGuardian(AncientElderBase):
                 if hasattr(original_result, 'violations'):
                     for violation in original_result.violations:
                         severity = violation.get("severity", "MEDIUM")
+                        if not (isinstance(severity, str) and hasattr(ViolationSeverity, severity)):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if isinstance(severity, str) and hasattr(ViolationSeverity, severity):
                             severity_enum = ViolationSeverity[severity]
                         else:

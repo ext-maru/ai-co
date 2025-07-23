@@ -20,6 +20,7 @@ from libs.elder_flow_integration import execute_elder_flow, get_elder_flow_statu
 
 # Task Detection Patterns
 class TaskType(Enum):
+    """TaskTypeクラス"""
     FEATURE_IMPLEMENTATION = "feature_implementation"
     BUG_FIX = "bug_fix"
     REFACTORING = "refactoring"
@@ -33,6 +34,7 @@ class TaskType(Enum):
 # Auto Integration Configuration
 @dataclass
 class AutoIntegrationConfig:
+    """AutoIntegrationConfigクラス"""
     # Elder Flow適用の閾値
     auto_apply_threshold: float = 0.5
 
@@ -49,6 +51,7 @@ class AutoIntegrationConfig:
     priority_mapping: Dict[str, str] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if self.auto_apply_task_types is None:
             self.auto_apply_task_types = [
                 TaskType.FEATURE_IMPLEMENTATION,
@@ -76,6 +79,7 @@ class TaskAnalyzer:
     """タスク分析器"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
 
         # タスクタイプ検出パターン
@@ -201,7 +205,9 @@ class TaskAnalyzer:
 class ElderFlowAutoIntegration:
     """Elder Flow自動統合システム"""
 
-    def __init__(self, config: AutoIntegrationConfig = None):
+    def __init__(self, config:
+        """初期化メソッド"""
+    AutoIntegrationConfig = None):
         self.config = config or AutoIntegrationConfig()
         self.analyzer = TaskAnalyzer()
         self.logger = logging.getLogger(__name__)
@@ -382,6 +388,7 @@ async def claude_auto_elder_flow(user_request: str) -> Optional[Dict]:
 if __name__ == "__main__":
 
     async def main():
+        """mainメソッド"""
         print("🔮 Elder Flow Auto Integration Test")
 
         # テストケース
@@ -400,7 +407,10 @@ if __name__ == "__main__":
             should_apply, decision = await should_use_elder_flow(test_case)
             print(f"🤖 Should apply: {should_apply}")
             print(
-                f"📊 Analysis: {decision['analysis']['task_type'].value} (confidence: {decision['analysis']['confidence']:.2f})"
+                (
+                    f"f"📊 Analysis: {decision['analysis']['task_type'].value} (confidence: "
+                    f"{decision['analysis']['confidence']:.2f})""
+                )
             )
 
             # 自動実行テスト（実際には実行しない）

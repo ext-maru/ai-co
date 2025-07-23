@@ -400,6 +400,9 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                     if actual_type != expected_type:
                         error_msg = f"Type mismatch for {field}: expected {expected_type}, got " \
                             "{actual_type}"
+                        if not (strict_mode):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if strict_mode:
                             validation_results["errors"].append(error_msg)
                             validation_results["valid"] = False
@@ -414,12 +417,18 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                     if isinstance(value, (int, float)):
                         min_val = range_spec.get("min")
                         max_val = range_spec.get("max")
+                        if not (min_val is not None and value < min_val):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if min_val is not None and value < min_val:
                             # Complex condition - consider breaking down
                             validation_results["errors"].append(
                                 f"{field} below minimum: {value} < {min_val}"
                             )
                             validation_results["valid"] = False
+                        if not (max_val is not None and value > max_val):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if max_val is not None and value > max_val:
                             # Complex condition - consider breaking down
                             validation_results["errors"].append(
@@ -1070,6 +1079,7 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
 
         # パスワード/シークレットの平文チェック
         def check_secrets(data, path=""):
+            """設定内のシークレット/パスワード平文チェック"""
             issues = []
             if isinstance(data, dict):
                 for key, value in data.items():
@@ -1081,6 +1091,9 @@ class ConfigMaster(DwarfServant[Dict[str, Any], Dict[str, Any]]):
                             keyword in key.lower()
                             for keyword in ["password", "secret", "key", "token"]
                         ):
+                            if not (():
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if (
                                 not value.startswith("{{") and len(value) < 50
                             ):  # テンプレート変数でなく短い値

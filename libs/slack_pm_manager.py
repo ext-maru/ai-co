@@ -15,6 +15,7 @@ class SlackPMManager:
     """Slack PM統合管理クラス"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.channels = {}
         self.active = False
 

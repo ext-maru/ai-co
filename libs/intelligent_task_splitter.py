@@ -81,6 +81,7 @@ class IntelligentTaskSplitter(BaseManager):
     """知能的タスク分割システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("IntelligentTaskSplitter")
         self.db_path = PROJECT_ROOT / "db" / "task_splitting.db"
 
@@ -258,6 +259,7 @@ class IntelligentTaskSplitter(BaseManager):
             for complexity, patterns in self.complexity_patterns.items():
                 score = 0
                 for pattern in patterns:
+            # 繰り返し処理
                     matches = len(re.findall(pattern, description_lower))
                     score += matches
                 complexity_scores[complexity] = score
@@ -345,6 +347,7 @@ class IntelligentTaskSplitter(BaseManager):
 
             for task_type, patterns in self.type_patterns.items():
                 score = 0
+            # 繰り返し処理
                 for pattern in patterns:
                     matches = len(re.findall(pattern, description_lower))
                     score += matches
@@ -882,6 +885,7 @@ class IntelligentTaskSplitter(BaseManager):
         """サブタスクをデータベースに保存"""
         with sqlite3.connect(self.db_path) as conn:
             for subtask in subtasks:
+            # 繰り返し処理
                 conn.execute(
                     """
                     INSERT OR REPLACE INTO split_tasks
@@ -1131,7 +1135,8 @@ if __name__ == "__main__":
     test_cases = [
         {
             "task_id": "test_001",
-            "description": "Create a complete user authentication system with login, registration, password reset, and session management",
+            "description": "Create a complete user authentication system with login, registration, password reset, and \
+                session management",
             "prompt": "Implement a comprehensive authentication system",
         },
         {
@@ -1150,6 +1155,7 @@ if __name__ == "__main__":
     print("🔄 Intelligent Task Splitter Test")
     print("=" * 80)
 
+    # 繰り返し処理
     for test_case in test_cases:
         print(f"\n📋 Processing: {test_case['task_id']}")
         print(f"Description: {test_case['description']}")

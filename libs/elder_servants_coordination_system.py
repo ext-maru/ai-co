@@ -78,6 +78,7 @@ class ElderServantsCoordinationSystem:
     """エルダーサーバント協調システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.test_guardian = TestGuardianKnight()
         self.council_system = ElderCouncilReviewSystem()

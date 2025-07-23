@@ -340,6 +340,7 @@ class UnitProgressTracker:
             "metrics": defaultdict(list),
         }
 
+        # 繰り返し処理
         for activity in unit_activities:
             stats["by_action"][activity.action_type] += 1
             for key, value in activity.metrics.items():

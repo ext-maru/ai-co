@@ -56,6 +56,7 @@ def test_threat_pattern_operations():
             print("  ✅ 基本作成")
             tests_passed += 1
         else:
+        # 複雑な条件判定
             print("  ❌ 基本作成失敗")
     except Exception as e:
         print(f"  ❌ 基本作成エラー: {e}")
@@ -72,6 +73,7 @@ def test_threat_pattern_operations():
         ):
             print("  ✅ デフォルト値")
             tests_passed += 1
+        # 複雑な条件判定
         else:
             print("  ❌ デフォルト値失敗")
     except Exception as e:
@@ -198,6 +200,7 @@ def test_prediction_model_operations():
             and default_model.f1_score == 0.0
             and default_model.training_data_size == 0
             and len(default_model.feature_importance) == 0
+        # 複雑な条件判定
         ):
             print("  ✅ デフォルト値")
             tests_passed += 1
@@ -320,6 +323,7 @@ def test_preventive_action_operations():
             and action.target == "web_server"
             and action.effectiveness == 0.85
         ):
+        # 複雑な条件判定
             print("  ✅ 基本作成")
             tests_passed += 1
         else:
@@ -371,6 +375,7 @@ def test_preventive_action_operations():
             default_action.execution_time == 0.0
             and default_action.cost_impact == "low"
             and default_action.automation_level == "manual"
+        # 複雑な条件判定
             and default_action.success_rate == 0.8
         ):
             print("  ✅ デフォルト値")
@@ -443,6 +448,7 @@ def test_risk_assessment_operations():
         if (
             len(levels) == 4
             and RiskLevel.LOW.value == "low"
+        # 複雑な条件判定
             and RiskLevel.CRITICAL.value == "critical"
         ):
             print("  ✅ RiskLevel列挙型")
@@ -466,6 +472,7 @@ def test_risk_assessment_operations():
         ]
         if (
             len(types) == 8
+        # 複雑な条件判定
             and IncidentType.MEMORY_LEAK.value == "memory_leak"
             and IncidentType.SECURITY_BREACH.value == "security_breach"
         ):
@@ -643,6 +650,7 @@ def test_incident_forecast_operations():
     try:
         confidence = forecast_data["confidence"]
         if 0.0 <= confidence <= 1.0:
+        # 複雑な条件判定
             print("  ✅ 予測信頼度")
             tests_passed += 1
         else:
@@ -722,6 +730,7 @@ def test_incident_forecast_operations():
             actual_incidents
         )
 
+        # 複雑な条件判定
         if 0.0 <= accuracy <= 1.0:
             print(f"  ✅ 予測精度評価: {accuracy:.2f}")
             tests_passed += 1

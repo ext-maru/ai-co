@@ -21,8 +21,10 @@ try:
 except ImportError:
     # Fallback for semver functionality
     class semver:
+        """semverクラス"""
         @staticmethod
         def parse(ver):
+            """parseメソッド"""
             parts = ver.split(".")
             return {
                 "major": int(parts[0]) if len(parts) > 0 else 0,
@@ -36,8 +38,10 @@ try:
 except ImportError:
     # Mock requests for testing
     class requests:
+        """requestsクラス"""
         @staticmethod
         def get(url, timeout=10):
+            """getメソッド"""
             raise Exception("requests not available")
 
 
@@ -46,34 +50,44 @@ try:
 except ImportError:
     # Fallback version comparison
     class version:
+        """versionクラス"""
         @staticmethod
         def parse(ver):
+            """parseメソッド"""
             return SimpleVersion(ver)
 
     class SimpleVersion:
+        """SimpleVersionクラス"""
         def __init__(self, ver):
+            """初期化メソッド"""
             self.version = ver
             self.parts = [int(x) for x in ver.split(".")]
 
         def __gt__(self, other):
+            """__gt__特殊メソッド"""
             return self.parts > other.parts
 
         def __lt__(self, other):
+            """__lt__特殊メソッド"""
             return self.parts < other.parts
 
         def __eq__(self, other):
+            """__eq__特殊メソッド"""
             return self.parts == other.parts
 
         @property
         def major(self):
+            """majorメソッド"""
             return self.parts[0] if len(self.parts) > 0 else 0
 
         @property
         def minor(self):
+            """minorメソッド"""
             return self.parts[1] if len(self.parts) > 1 else 0
 
         @property
         def patch(self):
+            """patchメソッド"""
             return self.parts[2] if len(self.parts) > 2 else 0
 
 
@@ -130,7 +144,9 @@ class UpdatePlan:
 class nWoLibraryUpdateStrategy:
     """nWo Library Update Strategy System"""
 
-    def __init__(self, config_path: str = "config/nwo_update_config.json"):
+    def __init__(self, config_path:
+        """初期化メソッド"""
+    str = "config/nwo_update_config.json"):
         self.config_path = Path(config_path)
         self.logger = self._setup_logger()
         self.config = self._load_config()

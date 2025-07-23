@@ -19,6 +19,7 @@ class SimplePgVectorMigrator:
     """シンプルなpgvectorマイグレーター"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.sqlite_db = '/home/aicompany/ai_co/knowledge_base/integrated_knowledge.db'
         self.postgres_config = {
             'host': 'localhost',
@@ -128,7 +129,10 @@ INSERT INTO knowledge_documents (
             # PostgreSQLでSQL実行
             cmd = [
                 'sg', 'docker', '-c',
-                f'docker exec -i elders-guild-postgres-new psql -U admin -d {self.postgres_config["database"]} < {sql_file}'
+                (
+                    f"f'docker exec -i elders-guild-postgres-new psql -U admin -d "
+                    f"{self.postgres_config["database"]} < {sql_file}'"
+                )
             ]
             
             result = subprocess.run(cmd, capture_output=True, text=True)

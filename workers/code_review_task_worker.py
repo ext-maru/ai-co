@@ -268,6 +268,9 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
                     ]
                     for param in param_names:
                         # Process each item in collection
+                        if not (len(param) == 1 and param.isalpha()):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(param) == 1 and param.isalpha():
                             # Complex condition - consider breaking down
                             issues.append(
@@ -424,6 +427,7 @@ class CodeReviewTaskWorker(AsyncBaseWorkerV2):
             total_issues = 0
             issue_types = {}
 
+            # 繰り返し処理
             for category in [
                 "syntax_issues",
                 "logic_issues",

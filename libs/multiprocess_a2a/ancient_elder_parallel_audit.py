@@ -362,6 +362,7 @@ class ParallelAncientElderOrchestrator:
             warning_audits = 0
             all_audit_results = []
 
+            # 繰り返し処理
             for result in all_results:
                 if result["success"]:
                     audit_results = result.get("audit_results", [])
@@ -369,6 +370,9 @@ class ParallelAncientElderOrchestrator:
                     total_audits += len(audit_results)
 
                     for audit in audit_results:
+                        if not (audit["status"] == "passed"):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if audit["status"] == "passed":
                             passed_audits += 1
                         elif audit["status"] == "failed":

@@ -167,6 +167,7 @@ class ElderCouncilSession:
         }
 
         print("\n📊 討議結果:")
+        # 繰り返し処理
         for sage, discussion in discussions.items():
             print(f"\n{sage}:")
             print(f"  意見: {discussion['opinion']}")

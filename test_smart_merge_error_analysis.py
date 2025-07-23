@@ -129,6 +129,7 @@ class ErrorAnalysisTestSuite:
             def mock_get_pr_with_retry(pr_number):
                 nonlocal call_count
                 call_count += 1
+                """mock_get_pr_with_retryの値を取得"""
                 
                 if call_count <= 2:  # 最初の2回は失敗
                     return {
@@ -264,6 +265,7 @@ class ErrorAnalysisTestSuite:
             response_index = 0
             def mock_api_failure(pr_number):
                 nonlocal response_index
+                """mock_api_failureメソッド"""
                 response = api_failure_responses[response_index % len(api_failure_responses)]
                 response_index += 1
                 
@@ -365,6 +367,7 @@ class ErrorAnalysisTestSuite:
             
             error_count = 0
             def high_error_rate_mock(pr_number):
+                """high_error_rate_mockメソッド"""
                 nonlocal error_count
                 error_count += 1
                 

@@ -44,13 +44,12 @@ def process_data(data):
         result.append(item * 2)
     return result
 """,
-            "medium.py": """\\
+            "medium.py": """
 import json
 import datetime
 
 class DataProcessor:
     def __init__(self):
-        """初期化メソッド"""
         self.data = []
 
     def add_item(self, item):
@@ -97,7 +96,6 @@ class Task:
 
 class TaskManager:
     def __init__(self):
-        """初期化メソッド"""
         self.tasks: typing.Dict[str, Task] = {}
         self.execution_order: typing.List[str] = []
 
@@ -476,6 +474,7 @@ def test_to_json():
 
             all_results = {}
 
+            # 繰り返し処理
             for category, funcs in benchmarks:
                 print(f"\n📈 Running: {category}")
                 category_results = []

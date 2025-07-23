@@ -364,6 +364,7 @@ class TestEnhancedKnowledgeSage:
         """Test thread-safe concurrent operations"""
 
         async def store_knowledge_task(i):
+            """store_knowledge_taskメソッド"""
             return await sage.store_knowledge(
                 title=f"Concurrent Entry {i}",
                 content=f"Content {i}",

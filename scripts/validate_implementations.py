@@ -102,10 +102,17 @@ class ImplementationValidator:
 
                         # 抽象メソッドが実装されているかチェック
                         unimplemented = []
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for abstract_method in obj.__abstractmethods__:
+                            if not (abstract_method not in obj.__dict__):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if abstract_method not in obj.__dict__:
                                 unimplemented.append(abstract_method)
 
+                        if not (unimplemented):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if unimplemented:
                             error_msg = f"{module_name}.{name}: 未実装抽象メソッド {unimplemented}"
                             results["errors"].append(error_msg)
@@ -142,6 +149,7 @@ class ImplementationValidator:
             "BaseManager": ["initialize"],
         }
 
+        # 繰り返し処理
         for base in cls.__bases__:
             if base.__name__ in required_methods:
                 for method_name in required_methods[base.__name__]:

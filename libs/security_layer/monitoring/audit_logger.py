@@ -81,6 +81,7 @@ class AuditEvent:
     sage_witness: Optional[Dict[str, Any]] = None
 
     def __post_init__(self):
+        """__post_init__特殊メソッド"""
         if not self.event_id:
             self.event_id = str(uuid.uuid4())
         if not self.integrity_hash:
@@ -456,6 +457,7 @@ class ComplianceAuditLogger:
         """自動フラッシュ開始"""
 
         async def auto_flush():
+            """auto_flushメソッド"""
             while True:
                 try:
                     await asyncio.sleep(30)  # 30秒間隔
@@ -510,6 +512,9 @@ class ComplianceAuditLogger:
                     ):
                         filtered_events.append(event)
 
+                        if not (len(filtered_events) >= limit):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if len(filtered_events) >= limit:
                             break
 

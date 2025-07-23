@@ -170,6 +170,7 @@ class IncidentKnightsDeployer:
         repaired_count = 0
         failed_count = 0
 
+        # 繰り返し処理
         for severity in ["critical", "high", "medium", "low"]:
             if severity not in categorized_issues:
                 continue
@@ -186,6 +187,9 @@ class IncidentKnightsDeployer:
                     if not diagnosis.requires_approval:
                         resolution = await repair_knight.resolve(diagnosis)
 
+                        if not (resolution.success):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if resolution.success:
                             repaired_count += 1
                             logger.info(f"✅ 修復完了: {issue.title}")

@@ -36,7 +36,8 @@ async def test_tracking_data_integrator():
             print(f"  抽出パターン数: {len(patterns)}")
             
             for pattern in patterns[:3]:  # 最初の3パターンを表示
-                print(f"  - {pattern.pattern_type}: {pattern.pattern_name if hasattr(pattern, 'pattern_name') else 'Pattern'} (信頼度: {pattern.confidence:.2f})")
+                print(f"  - {pattern.pattern_type}: {pattern.pattern_name " \
+                    "if hasattr(pattern, 'pattern_name') else 'Pattern'} (信頼度: {pattern.confidence:.2f})")
             
             # メトリクス抽出テスト
             print("\n📏 メトリクス抽出テスト")

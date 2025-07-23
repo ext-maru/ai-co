@@ -25,6 +25,7 @@ class ErrorIntelligenceManager(BaseManager):
     """エラー智能判断を行うマネージャー"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("ErrorIntelligenceManager")
         self.db_path = PROJECT_ROOT / "db" / "error_patterns.db"
         self.patterns_cache = {}
@@ -456,6 +457,7 @@ if __name__ == "__main__":
     ]
 
     print("=== Error Intelligence Manager Test ===")
+    # 繰り返し処理
     for error in test_errors:
         print(f"\nAnalyzing: {error}")
         result = manager.analyze_error(error)

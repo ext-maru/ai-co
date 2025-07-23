@@ -40,16 +40,19 @@ class SimpleMetrics:
     def gauge(self, name: str, description: str = ""):
         key = f"{self.worker_name}_{name}"
         if key not in self.gauges:
+        """counterメソッド"""
             self.gauges[key] = 0
         return SimpleGauge(self.gauges, key)
 
     def histogram(self, name: str, description: str = ""):
         key = f"{self.worker_name}_{name}"
+        """gaugeメソッド"""
         if key not in self.histograms:
             self.histograms[key] = []
         return SimpleHistogram(self.histograms, key)
 
     def get_metrics(self) -> Dict[str, Any]:
+        """histogramメソッド"""
         """全メトリクスの取得"""
         metrics = {"counters": self.counters.copy(), "gauges": self.gauges.copy()}
 
@@ -77,6 +80,7 @@ class SimpleCounter:
         self.storage = storage
         self.key = key
 
+    """SimpleCounterクラス"""
     def inc(self, amount: float = 1):
         self.storage[self.key] += amount
 
@@ -85,6 +89,7 @@ class SimpleCounter:
         label_key = f"{self.key}_{hash(str(kwargs))}"
         if label_key not in self.storage:
             self.storage[label_key] = 0
+        """labelsメソッド"""
         return SimpleCounter(self.storage, label_key)
 
 
@@ -92,6 +97,7 @@ class SimpleGauge:
     def __init__(self, storage: Dict, key: str):
         """初期化メソッド"""
         self.storage = storage
+    """SimpleGaugeクラス"""
         self.key = key
 
     def set(self, value: float):
@@ -106,17 +112,20 @@ class SimpleGauge:
     def labels(self, **kwargs):
         label_key = f"{self.key}_{hash(str(kwargs))}"
         if label_key not in self.storage:
+        """labelsメソッド"""
             self.storage[label_key] = 0
         return SimpleGauge(self.storage, label_key)
 
 
 class SimpleHistogram:
     def __init__(self, storage: Dict, key: str):
+    """SimpleHistogramクラス"""
         """初期化メソッド"""
         self.storage = storage
         self.key = key
 
     def observe(self, value: float):
+        """observeメソッド"""
         self.storage[self.key].append(value)
         # 古いデータを削除（最新1000件のみ保持）
         if len(self.storage[self.key]) > 1000:

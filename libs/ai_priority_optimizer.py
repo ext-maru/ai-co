@@ -67,7 +67,9 @@ class PriorityScore:
 class SageEvaluator:
     """賢者評価基底クラス"""
 
-    def __init__(self, name: str):
+    def __init__(self, name:
+        """初期化メソッド"""
+    str):
         self.name = name
         self.learning_data = []
 
@@ -80,6 +82,7 @@ class TaskSage(SageEvaluator):
     """タスク賢者 - ビジネス価値評価"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("📋 タスク賢者")
 
     async def evaluate(self, task: Task, context: Dict[str, Any]) -> Dict[str, float]:
@@ -114,6 +117,7 @@ class KnowledgeSage(SageEvaluator):
     """ナレッジ賢者 - 技術的負債評価"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("📚 ナレッジ賢者")
 
     async def evaluate(self, task: Task, context: Dict[str, Any]) -> Dict[str, float]:
@@ -150,6 +154,7 @@ class IncidentSage(SageEvaluator):
     """インシデント賢者 - リスク評価"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("🚨 インシデント賢者")
 
     async def evaluate(self, task: Task, context: Dict[str, Any]) -> Dict[str, float]:
@@ -186,6 +191,7 @@ class RAGSage(SageEvaluator):
     """RAG賢者 - リソース最適化評価"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("🔍 RAG賢者")
 
     async def evaluate(self, task: Task, context: Dict[str, Any]) -> Dict[str, float]:
@@ -228,6 +234,7 @@ class AIPriorityOptimizer:
     """AI駆動型優先順位最適化システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.task_sage = TaskSage()
         self.knowledge_sage = KnowledgeSage()
         self.incident_sage = IncidentSage()

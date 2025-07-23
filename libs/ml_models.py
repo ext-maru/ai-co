@@ -27,6 +27,7 @@ class ModelRegistry:
     """モデルレジストリ"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.models = {}
         self.model_metadata = {}
         self.model_dir = Path(__file__).parent.parent / "models"
@@ -91,7 +92,9 @@ class ModelRegistry:
 class BasePredictor:
     """予測モデル基底クラス"""
 
-    def __init__(self, name: str):
+    def __init__(self, name:
+        """初期化メソッド"""
+    str):
         self.name = name
         self.prediction_count = 0
         self.last_used = None
@@ -173,7 +176,9 @@ class BasePredictor:
 class TimeSeriesPredictor(BasePredictor):
     """時系列予測モデル"""
 
-    def __init__(self, metric_name: str):
+    def __init__(self, metric_name:
+        """初期化メソッド"""
+    str):
         super().__init__(f"time_series_{metric_name}")
         self.metric_name = metric_name
         self.history_window = 168  # 1週間（時間単位）
@@ -274,6 +279,7 @@ class AnomalyDetector(BasePredictor):
     """異常検知モデル"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("anomaly_detector")
         self.threshold_multiplier = 3.0  # 標準偏差の倍数
         self.min_samples = 100
@@ -369,7 +375,9 @@ class AnomalyDetector(BasePredictor):
 class LoadPredictor(BasePredictor):
     """負荷予測モデル"""
 
-    def __init__(self, resource_type: str):
+    def __init__(self, resource_type:
+        """初期化メソッド"""
+    str):
         super().__init__(f"load_predictor_{resource_type}")
         self.resource_type = resource_type
         self.patterns = self._initialize_patterns()
@@ -567,6 +575,7 @@ class IncidentPredictor(BasePredictor):
     """インシデント予測モデル"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__("incident_predictor")
         self.incident_history = deque(maxlen=1000)
         self.risk_factors = {

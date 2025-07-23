@@ -682,6 +682,7 @@ volumes:
     # その他の必要なメソッド...
     def get_config_file(self, config: Dict) -> str:
         return """from pydantic_settings import BaseSettings
+        """get_config_fileの値を取得"""
 from typing import List
 
 class Settings(BaseSettings):
@@ -808,6 +809,7 @@ ai-project pdca {config['name']}
         return "\n".join(f"- {integration_names.get(i, i)}" for i in integrations)
 
     def get_upload_model(self, config):
+        """get_upload_modelの値を取得"""
         return """from sqlalchemy import Column, String, DateTime, Integer, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime

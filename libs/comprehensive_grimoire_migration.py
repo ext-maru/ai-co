@@ -106,6 +106,7 @@ class ContentAnalyzer:
     """コンテンツ分析・分類システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
 
         # 4賢者分類キーワード
@@ -533,6 +534,7 @@ class DuplicateDetector:
     """重複・類似コンテンツ検出システム"""
 
     def __init__(self):
+        """初期化メソッド"""
         self.logger = logging.getLogger(__name__)
         self.similarity_threshold = 0.8
 
@@ -606,7 +608,9 @@ class DuplicateDetector:
 class ComprehensiveGrimoireMigration:
     """包括的魔法書移行システム"""
 
-    def __init__(self, database_url: Optional[str] = None):
+    def __init__(self, database_url:
+        """初期化メソッド"""
+    Optional[str] = None):
         self.database_url = database_url or os.getenv(
             "GRIMOIRE_DATABASE_URL",
             "postgresql://aicompany@localhost:5432/ai_company_grimoire",
@@ -716,7 +720,9 @@ class ComprehensiveGrimoireMigration:
         # 並行分析
         semaphore = asyncio.Semaphore(10)  # 同時分析数制限
 
-        async def analyze_single_file(file_path: str) -> Optional[FileAnalysis]:
+        async def analyze_single_file(file_path:
+            """analyze_single_file分析メソッド"""
+        str) -> Optional[FileAnalysis]:
             async with semaphore:
                 try:
                     # CPU集約的タスクなので同期実行
@@ -935,7 +941,9 @@ class ComprehensiveGrimoireMigration:
             # セマフォアで同時実行数制御
             semaphore = asyncio.Semaphore(self.max_concurrent_migrations)
 
-            async def migrate_single_batch(batch: MigrationBatch) -> MigrationResult:
+            async def migrate_single_batch(batch:
+                """migrate_single_batchメソッド"""
+            MigrationBatch) -> MigrationResult:
                 async with semaphore:
                     return await self.migrate_batch(batch)
 
@@ -1025,7 +1033,8 @@ class ComprehensiveGrimoireMigration:
 
     async def generate_migration_report(self, report_data: Dict[str, Any]) -> str:
         """移行レポート生成"""
-        report_path = f"/home/aicompany/ai_co/migration_reports/grimoire_migration_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+        report_path = f"/home/aicompany/ai_co/migration_reports/grimoire_migration_{datetime." \
+            "now().strftime('%Y%m%d_%H%M%S')}.json"
 
         # レポートディレクトリ作成
         os.makedirs(os.path.dirname(report_path), exist_ok=True)

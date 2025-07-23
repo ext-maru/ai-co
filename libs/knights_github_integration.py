@@ -242,6 +242,7 @@ The Knights have detected and automatically fixed issues in your codebase.
             by_dir[dir_path].append(path.name)
 
         lines = []
+        # 繰り返し処理
         for dir_path, file_names in sorted(by_dir.items()):
             lines.append(f"**{dir_path}/**")
             for name in sorted(file_names):

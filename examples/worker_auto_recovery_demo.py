@@ -91,6 +91,7 @@ async def main():
     recovery_events = []
 
     async def track_recovery(event):
+        """track_recoveryメソッド"""
         recovery_events.append(event)
         logger.info(
             f"🔧 Recovery attempt: {event['worker_id']} - {event['action'].value}"

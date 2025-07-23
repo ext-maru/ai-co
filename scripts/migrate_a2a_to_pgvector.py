@@ -672,10 +672,16 @@ def main():
         print("\n📊 Migration Summary")
         print("-" * 40)
         print(
-            f"Communications migrated: {report['statistics']['migrated_communications']}/{report['statistics']['total_communications']}"
+            (
+                f"f"Communications migrated: {report['statistics']['migrated_communications']}/"
+                f"{report['statistics']['total_communications']}""
+            )
         )
         print(
-            f"Anomaly patterns migrated: {report['statistics']['migrated_anomalies']}/{report['statistics']['total_anomalies']}"
+            (
+                f"f"Anomaly patterns migrated: {report['statistics']['migrated_anomalies']}/"
+                f"{report['statistics']['total_anomalies']}""
+            )
         )
         print(f"Embeddings generated: {report['statistics']['embeddings_generated']}")
         print(f"Errors: {len(report['statistics']['errors'])}")

@@ -96,7 +96,9 @@ class ImprovementAction:
 class EldersGuildPrecisionImprovement:
     """エルダーズギルド精度向上システム"""
 
-    def __init__(self, strategy: ImprovementStrategy = ImprovementStrategy.SYSTEMATIC):
+    def __init__(self, strategy:
+        """初期化メソッド"""
+    ImprovementStrategy = ImprovementStrategy.SYSTEMATIC):
         self.strategy = strategy
         self.logger = logging.getLogger(__name__)
 
@@ -806,7 +808,10 @@ async def demo_elders_guild_precision_improvement():
                     "sage_improvements"
                 ].items():
                     print(
-                        f"   {sage_name}: {sage_improvement['score']:.3f} ({sage_improvement['passed_tests']}/{sage_improvement['total_tests']})"
+                        (
+                            f"f"   {sage_name}: {sage_improvement['score']:.3f} ("
+                            f"{sage_improvement['passed_tests']}/{sage_improvement['total_tests']})""
+                        )
                     )
 
             # 統計情報

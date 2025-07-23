@@ -63,6 +63,7 @@ class ClaudeUsageOptimizer:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.cache = {}  # シンプルなメモリキャッシュ
         self.usage_stats = {
             "total_requests": 0,
@@ -142,6 +143,7 @@ class ElderClaudeOrchestrator:
     """
 
     def __init__(self):
+        """初期化メソッド"""
         self.anthropic = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
         self.openai = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))  # 埋め込み用
         self.optimizer = ClaudeUsageOptimizer()
@@ -315,7 +317,9 @@ class ElderClaudeOrchestrator:
 class KnowledgeClaudeSage:
     """知識の賢者 - Claude駆動"""
 
-    def __init__(self, orchestrator: ElderClaudeOrchestrator):
+    def __init__(self, orchestrator:
+        """初期化メソッド"""
+    ElderClaudeOrchestrator):
         self.orchestrator = orchestrator
         self.name = "Knowledge Sage"
 
@@ -343,7 +347,9 @@ class KnowledgeClaudeSage:
 class TaskClaudeSage:
     """タスクの賢者 - Claude駆動"""
 
-    def __init__(self, orchestrator: ElderClaudeOrchestrator):
+    def __init__(self, orchestrator:
+        """初期化メソッド"""
+    ElderClaudeOrchestrator):
         self.orchestrator = orchestrator
         self.name = "Task Sage"
 
@@ -376,7 +382,9 @@ class TaskClaudeSage:
 class IncidentClaudeSage:
     """インシデントの賢者 - Claude駆動"""
 
-    def __init__(self, orchestrator: ElderClaudeOrchestrator):
+    def __init__(self, orchestrator:
+        """初期化メソッド"""
+    ElderClaudeOrchestrator):
         self.orchestrator = orchestrator
         self.name = "Incident Sage"
 
@@ -409,7 +417,9 @@ class IncidentClaudeSage:
 class RAGClaudeSage:
     """RAGの賢者 - Claude + Vector Search"""
 
-    def __init__(self, orchestrator: ElderClaudeOrchestrator):
+    def __init__(self, orchestrator:
+        """初期化メソッド"""
+    ElderClaudeOrchestrator):
         self.orchestrator = orchestrator
         self.name = "RAG Sage"
 

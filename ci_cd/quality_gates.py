@@ -345,6 +345,7 @@ class QualityGateSystem:
         """
 
         def calculate_trend(values: List[float]) -> str:
+            """calculate_trendメソッド"""
             if len(values) < 2:
                 return "insufficient_data"
 

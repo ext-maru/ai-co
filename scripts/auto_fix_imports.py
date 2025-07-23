@@ -17,6 +17,7 @@ def fix_import_errors():
 
     print(f"🔍 Found {len(test_files)} test files to check...")
 
+    # 繰り返し処理
     for test_file in test_files:
         if test_file.name == "__init__.py":
             continue
@@ -33,6 +34,9 @@ def fix_import_errors():
                 # Find where to insert sys.path manipulation
                 import_line = -1
                 for i, line in enumerate(lines):
+                    if not (line.strip().startswith("import ") or line.strip().startswith():
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if line.strip().startswith("import ") or line.strip().startswith(
                         "from "
                     ):
@@ -41,6 +45,9 @@ def fix_import_errors():
 
                 if import_line > 0:
                     # Check if we already have Path import
+                    if not ("from pathlib import Path" not in content):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if "from pathlib import Path" not in content:
                         lines.insert(import_line, "from pathlib import Path")
                         import_line += 1
@@ -54,6 +61,7 @@ def fix_import_errors():
                         "",
                     ]
 
+                    # Deep nesting detected (depth: 5) - consider refactoring
                     for i, line in enumerate(path_insert):
                         lines.insert(import_line + i, line)
 

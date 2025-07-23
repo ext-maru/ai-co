@@ -36,6 +36,7 @@ class ElderFlowEnhancementEngine:
     """Elder Flow強化エンジン"""
     
     def __init__(self):
+        """初期化メソッド"""
         self.issue_classifier = IssueTypeClassifierV2()
         self.requirements_extractor = TechnicalRequirementsExtractor()
         self.logger = logging.getLogger(__name__)
@@ -69,7 +70,8 @@ class ElderFlowEnhancementEngine:
                 # 実装系: 技術要件を抽出
                 extraction_result = self.requirements_extractor.extract_requirements(issue_data)
                 result['technical_analysis'] = self._format_technical_analysis(extraction_result)
-                result['implementation_prompt'] = self.requirements_extractor.generate_implementation_prompt(extraction_result)
+                result['implementation_prompt'] = self.requirements_extractor.generate_implementation_prompt( \
+                    extraction_result)
                 result['recommended_approach'] = 'technical_implementation'
                 
             elif classification.category == IssueCategory.DESIGN_ORIENTED:

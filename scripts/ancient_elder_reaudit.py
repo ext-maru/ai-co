@@ -131,6 +131,7 @@ class AncientElderReaudit:
                 content = f.read()
             
             if "try:" in content and "except ImportError:" in content and "ElderServantBase" in content:
+            # 複雑な条件判定
                 self.passed_validations.append("Integration Test Fix: Import fallback implemented")
                 self.score += 15
                 logger.info("✅ 統合テスト修正確認完了")
@@ -149,6 +150,7 @@ class AncientElderReaudit:
             with open(cache_file, 'r', encoding='utf-8') as f:
                 content = f.read()
             
+            # 複雑な条件判定
             if "try:" in content and "import redis.asyncio" in content and "MockRedis" in content:
                 self.passed_validations.append("Redis Integration: Fallback mock implemented")
                 self.score += 10

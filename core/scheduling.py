@@ -199,6 +199,7 @@ class ScheduledWorker:
         """スケジューラーのメインループ"""
         while not self.stop_event.is_set():
             now = datetime.now()
+        # ループ処理
 
             for task in self.scheduled_tasks:
                 if not task.enabled:
@@ -579,6 +580,7 @@ def calculate_next_cron_run(cron_expr: str, current_time: datetime) -> datetime:
         # Convert Python weekday (0=Monday) to cron weekday (0=Sunday, 1=Monday)
         cron_weekday = (next_time.weekday() + 1) % 7
 
+        # 複雑な条件判定
         if (
             next_time.minute in minutes
             and next_time.hour in hours

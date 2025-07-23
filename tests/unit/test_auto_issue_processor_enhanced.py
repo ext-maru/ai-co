@@ -45,7 +45,9 @@ class TestEnhancedAutoIssueProcessor:
             with patch('libs.integrations.github.auto_issue_processor_enhanced.TaskSage'):
                 with patch('libs.integrations.github.auto_issue_processor_enhanced.IncidentSage'):
                     with patch('libs.integrations.github.auto_issue_processor_enhanced.KnowledgeSage'):
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with patch('libs.integrations.github.auto_issue_processor_enhanced.RagManager'):
+                            # Deep nesting detected (depth: 6) - consider refactoring
                             with patch('libs.integrations.github.auto_issue_processor_enhanced.ReopenedIssueTracker'):
                                 processor = EnhancedAutoIssueProcessor()
                                 return processor
@@ -152,6 +154,7 @@ class TestEnhancedAutoIssueProcessor:
                     with patch.object(processor, 'consult_four_sages', new_callable=AsyncMock) as mock_sages:
                         mock_sages.return_value = {"advice": "test"}
                         
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         with patch.object(processor.elder_flow, 'execute_flow', new_callable=AsyncMock) as mock_flow:
                             # 最初は失敗、次に成功
                             mock_flow.side_effect = [
@@ -163,9 +166,15 @@ class TestEnhancedAutoIssueProcessor:
                                 }
                             ]
                             
-                            with patch.object(processor, '_handle_processing_result', new_callable=AsyncMock) as mock_handle:
+                            # Deep nesting detected (depth: 6) - consider refactoring
+                            with patch.object(
+                                processor,
+                                '_handle_processing_result',
+                                new_callable=AsyncMock
+                            ) as mock_handle:
                                 mock_handle.return_value = {"status": "success"}
                                 
+                                # TODO: Extract this complex nested logic into a separate method
                                 with patch('asyncio.sleep', new_callable=AsyncMock):
                                     result = await processor._execute_auto_processing_with_recovery(mock_issue)
                                     

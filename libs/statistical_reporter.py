@@ -9,7 +9,9 @@ from pathlib import Path
 
 
 class StatisticalReporter:
+    """StatisticalReporterクラス"""
     def __init__(self):
+        """初期化メソッド"""
         self.data_sources = []
 
     def generate_performance_report(self):

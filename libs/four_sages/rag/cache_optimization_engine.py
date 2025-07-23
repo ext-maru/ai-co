@@ -75,7 +75,9 @@ class OptimizationStrategy:
 class LRUCache:
     """LRU + 予測キャッシュ"""
 
-    def __init__(self, max_size: int = 1000):
+    def __init__(self, max_size:
+        """初期化メソッド"""
+    int = 1000):
         self.max_size = max_size
         self.cache = OrderedDict()
         self.access_patterns = defaultdict(int)
@@ -141,6 +143,7 @@ class CacheOptimizationEngine(EldersServiceLegacy):
     """キャッシュ最適化エンジン"""
 
     def __init__(self):
+        """初期化メソッド"""
         super().__init__(name="CacheOptimizationEngine")
         self.tracking_db = UnifiedTrackingDB()
         self.cache_instances = {}
@@ -581,6 +584,7 @@ def create_cache_optimization_engine() -> CacheOptimizationEngine:
 if __name__ == "__main__":
     # テスト実行
     async def test_cache_optimizer():
+        """test_cache_optimizerテストメソッド"""
         optimizer = create_cache_optimization_engine()
 
         # テストキャッシュ最適化

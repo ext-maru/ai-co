@@ -353,6 +353,7 @@ class WeaponSharingCoordinator:
 
     def _track_deliveries_loop(self):
         """配送追跡ループ"""
+        # ループ処理
         while self._running:
             current_time = datetime.now()
 
@@ -361,6 +362,9 @@ class WeaponSharingCoordinator:
                     if current_time >= delivery.estimated_delivery:
                         self._complete_crafting(delivery)
                 elif delivery.status == DeliveryStatus.IN_TRANSIT:
+                    if not (current_time >= delivery.estimated_delivery):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if current_time >= delivery.estimated_delivery:
                         self._complete_delivery(delivery)
 

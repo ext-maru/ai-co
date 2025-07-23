@@ -97,7 +97,9 @@ class InsightReport:
 class LearningDataCollector:
     """Learning Data Collector - 指示と結果のペア収集・学習"""
 
-    def __init__(self, db_path: str = "data/learning_data.db"):
+    def __init__(self, db_path:
+        """初期化メソッド"""
+    str = "data/learning_data.db"):
         self.db_path = Path(db_path)
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
 

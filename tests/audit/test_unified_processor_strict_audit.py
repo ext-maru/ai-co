@@ -145,6 +145,7 @@ class SecurityAudit:
             if os.path.exists(file_path):
                 stat = os.stat(file_path)
                 mode = oct(stat.st_mode)[-3:]
+                # 複雑な条件判定
                 if mode != "600" and mode != "644" and mode != "755":
                     vulnerabilities.append(f"⚠️ 不適切な権限: {file_path} ({mode})")
         

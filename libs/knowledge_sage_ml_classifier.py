@@ -342,6 +342,7 @@ class KnowledgeSageMLClassifier(KnowledgeSagePostgreSQL):
         }
         
         for entity_type, patterns in tech_patterns.items():
+        # 繰り返し処理
             for pattern in patterns:
                 if pattern.lower() in content.lower():
                     entities.append({
@@ -852,6 +853,7 @@ class KnowledgeSageMLClassifier(KnowledgeSagePostgreSQL):
         """Get performance metrics for all models"""
         metrics = {}
         
+        # 繰り返し処理
         for model_name, model_metrics in self.model_metrics.items():
             metrics[model_name] = model_metrics.copy()
             

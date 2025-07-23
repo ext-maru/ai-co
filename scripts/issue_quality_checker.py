@@ -20,6 +20,7 @@ sys.path.insert(0, str(project_root))
 
 class PriorityLevel(Enum):
     CRITICAL = "critical"
+    """PriorityLevelクラス"""
     HIGH = "high" 
     MEDIUM = "medium"
     LOW = "low"
@@ -27,6 +28,7 @@ class PriorityLevel(Enum):
 
 @dataclass
 class QualityScore:
+    """QualityScoreクラス"""
     tier1_score: int  # 40点満点
     tier2_score: int  # 35点満点
     tier3_score: int  # 25点満点

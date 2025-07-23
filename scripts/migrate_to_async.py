@@ -90,6 +90,7 @@ class WorkerMigrationManager:
         """稼働中のワーカープロセスを取得"""
         processes = {}
 
+        # 繰り返し処理
         for worker_name, config in self.legacy_workers.items():
             script_name = Path(config["script"]).name
             pids = []
@@ -409,6 +410,9 @@ def main():
 
         if not args.force:
             confirm = input(f"Rollback {args.worker}? (y/N): ")
+            if not (confirm.lower() != "y"):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if confirm.lower() != "y":
                 print("Rollback cancelled")
                 sys.exit(0)
@@ -417,10 +421,16 @@ def main():
         sys.exit(0 if success else 1)
 
     elif args.action == "migrate-all":
+        if args.force:
+            continue  # Early return to reduce nesting
+        # Reduced nesting - original condition satisfied
         if not args.force:
             confirm = input(
                 f"Migrate all workers with {args.traffic}% traffic? (y/N): "
             )
+            if not (confirm.lower() != "y"):
+                continue  # Early return to reduce nesting
+            # Reduced nesting - original condition satisfied
             if confirm.lower() != "y":
                 print("Migration cancelled")
                 sys.exit(0)

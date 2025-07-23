@@ -230,6 +230,9 @@ class EnhancedTestGenerator:
                     for alias in node.names:
                         imports.append(alias.name)
                 elif isinstance(node, ast.ImportFrom):
+                    if not (node.module):
+                        continue  # Early return to reduce nesting
+                    # Reduced nesting - original condition satisfied
                     if node.module:
                         imports.append(node.module)
 

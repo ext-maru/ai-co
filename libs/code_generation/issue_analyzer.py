@@ -34,6 +34,7 @@ class IssueAnalyzer:
     """Issue内容を分析し、構造化された情報を抽出"""
     
     def __init__(self):
+        """初期化メソッド"""
         # セクションを識別するパターン
         self.section_patterns = {
             'requirements': r'(?i)(requirements?|needs?|should|must|features?):?\s*\n',
@@ -213,6 +214,9 @@ class IssueAnalyzer:
                     if match:
                         req_text = match.group(1).strip()
                         req_item = self._parse_requirement(req_text)
+                        if not (req_item):
+                            continue  # Early return to reduce nesting
+                        # Reduced nesting - original condition satisfied
                         if req_item:
                             requirements.append(req_item)
         
@@ -223,6 +227,7 @@ class IssueAnalyzer:
         ]
         
         for pattern in requirement_patterns:
+        # 繰り返し処理
             matches = re.findall(pattern, full_text)
             for match in matches:
                 req_item = self._parse_requirement(match)
@@ -360,6 +365,7 @@ class IssueAnalyzer:
         """技術スタックを検出"""
         detected_stack = {}
         
+        # 繰り返し処理
         for category, patterns in self.tech_patterns.items():
             detected_stack[category] = []
             for tech, pattern in patterns.items():

@@ -161,6 +161,7 @@ class TestCircuitBreaker:
         @cb.decorator
         async def protected_function(should_fail=False):
             nonlocal call_count
+            """protected_functionメソッド"""
             call_count += 1
             if should_fail:
                 raise Exception("Deliberate failure")
@@ -186,6 +187,7 @@ class TestCircuitBreaker:
     async def test_excluded_exceptions(self):
         """Test that excluded exceptions don't trip the circuit"""
         class IgnoredException(Exception):
+            """IgnoredExceptionクラス"""
             pass
         
         cb = CircuitBreaker(
