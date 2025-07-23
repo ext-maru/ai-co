@@ -95,9 +95,8 @@ class FullTextSearchConfig:
 class LanguageDetector:
     """言語検出器"""
 
-    def __init__(self, config:
+    def __init__(self, config: FullTextSearchConfig):
         """初期化メソッド"""
-    FullTextSearchConfig):
         self.config = config
 
     def detect_language(self, text: str) -> TextLanguage:
@@ -164,9 +163,8 @@ class LanguageDetector:
 class JapaneseTokenizer:
     """日本語トークナイザー"""
 
-    def __init__(self, config:
+    def __init__(self, config: FullTextSearchConfig):
         """初期化メソッド"""
-    FullTextSearchConfig):
         self.config = config
         self.mecab_tagger = None
         self.sudachi_tokenizer = None

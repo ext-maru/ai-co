@@ -18,9 +18,8 @@ from libs.rag_grimoire_integration import RagGrimoireConfig, RagGrimoireIntegrat
 class KnowledgeGrimoireAdapter:
     """Knowledge Grimoire アダプター - 既存の知識管理と魔法書システムの連携"""
 
-    def __init__(self, grimoire_enabled:
+    def __init__(self, grimoire_enabled: bool = True):
         """初期化メソッド"""
-    bool = True):
         self.logger = logging.getLogger(__name__)
         self.grimoire_enabled = grimoire_enabled
         self.use_mock_grimoire = False

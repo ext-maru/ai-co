@@ -18,9 +18,8 @@ logger = logging.getLogger(__name__)
 class AICompanyReportGenerator:
     """AI企業レポート生成エンジン"""
     
-    def __init__(self, output_dir:
+    def __init__(self, output_dir: str = "reports"):
         """初期化メソッド"""
-    str = "reports"):
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
         

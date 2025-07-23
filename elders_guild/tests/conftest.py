@@ -6,7 +6,7 @@ pytest configuration
 import pytest
 import asyncio
 from typing import AsyncGenerator
-from python_a2a import agent, A2AClient, A2AServer, Message
+# A2A imports removed - using mock implementation
 
 
 @pytest.fixture(scope="session")
@@ -21,7 +21,19 @@ def event_loop():
 @pytest.fixture
 async def test_agent():
     """テスト用エージェントフィクスチャ"""
-    agent = Agent(name="test_agent", port=59999)
+    # Mock agent for testing
+    class MockAgent:
+        def __init__(self):
+            self.name = "test_agent"
+            self.port = 59999
+            
+        async def start(self):
+            pass
+            
+        async def stop(self):
+            pass
+            
+    agent = MockAgent()
     await agent.start()
     yield agent
     await agent.stop()
@@ -30,7 +42,12 @@ async def test_agent():
 @pytest.fixture
 def mock_message():
     """モックメッセージフィクスチャ"""
-    from python_a2a import Message
+    class MockMessage:
+        def __init__(self, **kwargs):
+            self.message_type = kwargs.get("message_type", "test")
+            self.data = kwargs.get("data", {"test": "data"})
+            for key, value in kwargs.items():
+                setattr(self, key, value)
     
     def _create_message(**kwargs):
         """_create_messageを作成"""
@@ -39,6 +56,6 @@ def mock_message():
             "data": {"test": "data"}
         }
         defaults.update(kwargs)
-        return Message(**defaults)
+        return MockMessage(**defaults)
     
     return _create_message

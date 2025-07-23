@@ -356,8 +356,7 @@ class KnowledgeIntegrationMapper:
             logger.info(f"優先度別: {stats['priorities']}")
             
             # レポートファイル保存
-            report_path = f"/home/aicompany/ai_co/knowledge_base/integration_report_
-                f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+            report_path = f"/home/aicompany/ai_co/knowledge_base/integration_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
             with open(report_path, 'w', encoding='utf-8') as f:
                 json.dump(report, f, indent=2, ensure_ascii=False)
             logger.info(f"レポート保存: {report_path}")

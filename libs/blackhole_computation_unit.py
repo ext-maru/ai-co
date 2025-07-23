@@ -872,10 +872,8 @@ async def blackhole_computation_demo():
     hawking_result = await unit.execute_blackhole_computation(micro_bh, hawking_task)
     radiation_data = hawking_result["result"]["radiation_data"]
     print(
-        (
-            f"f"Hawking radiation: {radiation_data['temperature']:.2e} K, "
-            f"{radiation_data['particle_creation_rate']:.2e} particles/s""
-        )
+        f"Hawking radiation: {radiation_data['temperature']:.2e} K, "
+        f"{radiation_data['particle_creation_rate']:.2e} particles/s"
     )
 
     # 5. 特異点計算（理論的）

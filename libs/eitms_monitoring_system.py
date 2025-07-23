@@ -361,9 +361,8 @@ class DataConsistencyChecker:
         visited = set()
         task_map = {t.id: t for t in all_tasks}
         
-        def dfs(current_id:
+        def dfs(current_id: str, path: set) -> bool:
             """dfsメソッド"""
-        str, path: set) -> bool:
             if current_id in path:
                 return True  # 循環検出
             if current_id in visited:

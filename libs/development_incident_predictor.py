@@ -245,9 +245,8 @@ class ImportAnalyzer:
 class TestExecutionPredictor:
     """テスト実行予測器"""
 
-    def __init__(self, project_root:
+    def __init__(self, project_root: Path):
         """初期化メソッド"""
-    Path):
         self.project_root = project_root
         self.test_history = {}
         self.dependency_map = {}

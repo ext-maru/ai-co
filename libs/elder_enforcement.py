@@ -195,9 +195,8 @@ class ElderTreeEnforcement:
             pass
         """
 
-        def decorator(func:
+        def decorator(func: Callable) -> Callable:
             """decoratorメソッド"""
-        Callable) -> Callable:
             @wraps(func)
             async def wrapper(*args, **kwargs):
                 """wrapperメソッド"""

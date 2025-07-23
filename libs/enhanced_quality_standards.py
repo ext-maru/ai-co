@@ -379,9 +379,8 @@ class EnhancedSecurityValidator:
 class EnhancedQualityEvaluator:
     """Enhanced quality evaluator with Elder Guild 85+ standards"""
     
-    def __init__(self, config:
+    def __init__(self, config: Optional[EnhancedQualityConfig] = None):
         """初期化メソッド"""
-    Optional[EnhancedQualityConfig] = None):
         self.config = config or EnhancedQualityConfig()
         self.iron_will_validator = StrictIronWillValidator()
         self.security_validator = EnhancedSecurityValidator()
@@ -510,9 +509,8 @@ class EnhancedQualityEvaluator:
 class QualityGateEnforcer:
     """Enforce Elder Guild quality gates"""
     
-    def __init__(self, config:
+    def __init__(self, config: Optional[EnhancedQualityConfig] = None):
         """初期化メソッド"""
-    Optional[EnhancedQualityConfig] = None):
         self.config = config or EnhancedQualityConfig()
         self.evaluator = EnhancedQualityEvaluator(config)
     
