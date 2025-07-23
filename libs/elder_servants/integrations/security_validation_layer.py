@@ -23,8 +23,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
 # Add project root to path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.abspath("./../../.." \
-    "./../../.."))))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../..")))
 
 try:
     from libs.elder_servants.integrations.oss_adapter_framework import (
@@ -556,9 +555,10 @@ class SecurityValidationLayer:
 
         # Semgrep 基本パターンマッチング (簡略化)
         semgrep_patterns = {
-            "dangerous_functions": ["# Security risk: exec() disabled
-# # Security risk: exec() disabled
- #  exec(", "json.loads(expression) if expression.startswith("{") else expression:
+            "dangerous_functions": ["exec(", "eval(", "__import__"],
+        }
+        
+        for pattern_group, patterns in semgrep_patterns.items():
             for pattern in patterns:
                 if pattern in code:
                     line_num = (

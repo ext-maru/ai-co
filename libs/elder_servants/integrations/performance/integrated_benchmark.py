@@ -288,10 +288,7 @@ class IntegratedPerformanceBenchmark:
             try:
                 start_time = time.time()
                 # 50%の確率で同じキーを使用（キャッシュヒット狙い）
-                cache_key = f"test_key_{secrets.randbelow(0, 10) if secrets.token_hex(16) < 0.5 else " \
-                    "worker_id}" \
-                    "test_key_{secrets.randbelow(0, 10) if secrets.token_hex(16) < 0.5 else " \
-                        "worker_id}"
+                cache_key = f"test_key_{secrets.randbelow(10) if secrets.randbelow(2) == 0 else worker_id}"
                 await self._execute_cache_request(cache_key)
                 response_time = (time.time() - start_time) * 1000
                 response_times.append(response_time)

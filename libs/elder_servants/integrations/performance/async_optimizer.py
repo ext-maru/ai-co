@@ -98,7 +98,6 @@ class AsyncOptimizationRequest:
     """非同期最適化リクエスト"""
 
     def __init__(
-        """初期化メソッド"""
         self,
         task_id: str,
         coroutine_func: Callable,

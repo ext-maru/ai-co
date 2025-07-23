@@ -100,7 +100,6 @@ class ProxyRequest(Generic[T]):
     """プロキシリクエスト"""
 
     def __init__(
-        """初期化メソッド"""
         self,
         request_id: str,
         target_service: str,

@@ -520,7 +520,7 @@ def hybrid_quality_check():
 # Elder Guild Enhancements
 class ElderRefactoredVersion:
     def __init__(self):
-        """初期化メソッド"""
+        \"\"\"初期化メソッド\"\"\"
         self.quality_threshold = 0.95
         self.elder_compliance = True
 

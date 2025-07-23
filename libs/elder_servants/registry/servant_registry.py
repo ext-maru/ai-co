@@ -237,10 +237,7 @@ class ServantRegistry:
         best_servant = await self._select_optimal_servant(suitable_servants, request)
         
         if best_servant:
-            self.logger.info(f"Routing task {request.task_id} to {best_servant.name} (score: {best_servant." \
-                "Routing task {request.task_id} to {best_servant.name} (score: {best_servant." \
-                "Routing task {request.task_id} to {best_servant.name} (score: {best_servant." \
-                "suitability_score:.2f})")
+            self.logger.info(f"Routing task {request.task_id} to {best_servant.servant.name} (score: {best_servant.composite_score:.2f})")
             return await best_servant.servant.execute_with_quality_gate(request)
 
         self.logger.warning(f"No suitable servant found for task {request.task_id}")
@@ -303,10 +300,7 @@ class ServantRegistry:
             second_candidate = candidates[1]
             if (second_candidate.composite_score >= best_candidate.composite_score * 0.9 and
                 second_candidate.load_factor < 0.6):
-                self.logger.info(f"Load balancing: choosing {second_candidate.name} over {best_candidate." \
-                    "Load balancing: choosing {second_candidate.name} over {best_candidate." \
-                    "Load balancing: choosing {second_candidate.name} over {best_candidate." \
-                    "name}")
+                self.logger.info(f"Load balancing: choosing {second_candidate.name} over {best_candidate.name}")
                 return second_candidate
         
         return best_candidate
