@@ -417,9 +417,8 @@ class WebUITestRunner:
 class WebUITestServerManager:
     """WebUIテストサーバー管理"""
 
-    def __init__(self, server_script:
+    def __init__(self, server_script: str = "web/dashboard_final.py"):
         """初期化メソッド"""
-    str = "web/dashboard_final.py"):
         self.server_script = server_script
         self.server_process = None
         self.logger = logging.getLogger(__name__)

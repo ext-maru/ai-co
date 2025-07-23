@@ -978,9 +978,8 @@ class {target_class}:
 class TestGuardianServantReal(BaseServant):
     """テスト守護者サーバント - 実装版"""
 
-    def __init__(self, name:
+    def __init__(self, name: str = "TestGuardian"):
         """初期化メソッド"""
-    str = "TestGuardian"):
         super().__init__(ServantType.TEST_GUARDIAN, name)
         self.capabilities = [
             "create_test",

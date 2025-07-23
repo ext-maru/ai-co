@@ -724,9 +724,8 @@ class FitnessEvaluator:
 class SelfEvolvingCodeGenerator:
     """自己進化コードジェネレーター"""
 
-    def __init__(self, population_size:
+    def __init__(self, population_size: int = 50, max_generations: int = 100):
         """初期化メソッド"""
-    int = 50, max_generations: int = 100):
         self.population_size = population_size
         self.max_generations = max_generations
 

@@ -119,9 +119,8 @@ class BloomFilter:
 class IndexShard:
     """インデックスシャード - 分散インデックス"""
 
-    def __init__(self, shard_id:
+    def __init__(self, shard_id: int, base_path: Path):
         """初期化メソッド"""
-    int, base_path: Path):
         self.shard_id = shard_id
         self.db_path = base_path / f"shard_{shard_id}.db"
         self.bloom_filter = BloomFilter()

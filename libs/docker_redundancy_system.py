@@ -132,9 +132,8 @@ class FailoverEvent:
 class DockerComposeManager:
     """Docker Compose管理クラス"""
 
-    def __init__(self, config:
+    def __init__(self, config: RedundancyConfig):
         """初期化メソッド"""
-    RedundancyConfig):
         self.config = config
         self.compose_path = PROJECT_ROOT / self.config.compose_file_path
         self.template_cache = {}
@@ -493,9 +492,8 @@ class DockerComposeManager:
 class ServiceHealthMonitor:
     """サービスヘルス監視クラス"""
 
-    def __init__(self, config:
+    def __init__(self, config: RedundancyConfig):
         """初期化メソッド"""
-    RedundancyConfig):
         self.config = config
         self.docker_client = self._get_docker_client()
         self.service_cache = {}
@@ -691,9 +689,8 @@ class ServiceHealthMonitor:
 class FailoverManager:
     """フェイルオーバー管理クラス"""
 
-    def __init__(self, config:
+    def __init__(self, config: RedundancyConfig):
         """初期化メソッド"""
-    RedundancyConfig):
         self.config = config
         self.failure_counts = defaultdict(int)
         self.failure_history = defaultdict(deque)

@@ -296,9 +296,8 @@ class ElderScheduleBuilder:
 class IntervalBuilder:
     """間隔スケジュールビルダー"""
     
-    def __init__(self, scheduler:
+    def __init__(self, scheduler: ElderScheduler, interval: int):
         """初期化メソッド"""
-    ElderScheduler, interval: int):
         self.scheduler = scheduler
         self.interval = interval
         

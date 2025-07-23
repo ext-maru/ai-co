@@ -71,9 +71,8 @@ class RetryStrategy:
 class RateLimiter:
     """Intelligent rate limiter"""
     
-    def __init__(self, limit_per_hour:
+    def __init__(self, limit_per_hour: int = 5000):
         """初期化メソッド"""
-    int = 5000):
         self.limit_per_hour = limit_per_hour
         self._current_usage = 0
         self._usage_window = deque()

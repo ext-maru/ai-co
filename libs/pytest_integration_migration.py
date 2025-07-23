@@ -307,9 +307,8 @@ def test_data_factory():
 class PytestAPITester:
     """pytest用API テストユーティリティ"""
 
-    def __init__(self, base_url:
+    def __init__(self, base_url: str):
         """初期化メソッド"""
-    str):
         self.base_url = base_url
         self.session_data = {}  # ステップ間でのデータ共有
 

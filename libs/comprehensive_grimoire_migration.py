@@ -939,9 +939,8 @@ class ComprehensiveGrimoireMigration:
             # セマフォアで同時実行数制御
             semaphore = asyncio.Semaphore(self.max_concurrent_migrations)
 
-            async def migrate_single_batch(batch:
+            async def migrate_single_batch(batch: MigrationBatch) -> MigrationResult:
                 """migrate_single_batchメソッド"""
-            MigrationBatch) -> MigrationResult:
                 async with semaphore:
                     return await self.migrate_batch(batch)
 

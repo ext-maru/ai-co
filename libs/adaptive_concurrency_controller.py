@@ -148,10 +148,9 @@ class MLPredictor:
 class AdaptiveConcurrencyController:
     """Adaptive concurrency controller with ML-based optimization"""
     
-    def __init__(self, min_workers:
-        """初期化メソッド"""
-    int = 1, max_workers: int = 10,
+    def __init__(self, min_workers: int = 1, max_workers: int = 10,
                  target_cpu_percent: float = 70.0, target_memory_percent: float = 80.0):
+        """初期化メソッド"""
         self.min_workers = min_workers
         self.max_workers = max_workers
         self.current_workers = min_workers

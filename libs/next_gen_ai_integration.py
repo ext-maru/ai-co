@@ -609,9 +609,8 @@ class NextGenAIIntegration:
         except Exception as e:
             print(f"⚠️ 相乗効果記録エラー: {e}")
 
-    def _calculate_learning_gain(self, sage_name:
+    def _calculate_learning_gain(self, sage_name: str) -> float:
         """calculate_learning_gain（内部メソッド）"""
-    str) -> float:
         return 0.5
 
     def _calculate_efficiency_modifier(self, sage_name:

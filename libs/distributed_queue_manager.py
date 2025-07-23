@@ -158,11 +158,9 @@ class CircuitBreaker:
 class DistributedQueueManager:
     """Advanced queue manager with priority, DLQ, and backpressure"""
     
-    def __init__(self, max_size:
-        """初期化メソッド"""
-    int = 10000, 
-                 enable_dead_letter: bool = True,
+    def __init__(self, max_size: int = 10000, enable_dead_letter: bool = True,
                  enable_backpressure: bool = True):
+        """初期化メソッド"""
         self.max_size = max_size
         self.enable_dead_letter = enable_dead_letter
         self.enable_backpressure = enable_backpressure

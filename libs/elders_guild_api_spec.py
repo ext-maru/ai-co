@@ -798,9 +798,8 @@ class APIEndpointFactory:
 class ElderGuildAPI:
     """エルダーズギルド統合API"""
 
-    def __init__(self, event_bus:
+    def __init__(self, event_bus: ElderGuildEventBus):
         """初期化メソッド"""
-    ElderGuildEventBus):
         self.event_bus = event_bus
         self.auth_service = AuthenticationService()
         self.endpoint_factory = APIEndpointFactory(event_bus, self.auth_service)
