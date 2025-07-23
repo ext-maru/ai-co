@@ -351,10 +351,12 @@ class HealthCommand(BaseCommand):
                 f"CPU: {resources['cpu']['usage_percent']}% ({resources['cpu']['cores']}コア)"
             )
             self.info(
-                f"メモリ: {resources['memory']['used_gb']}GB / {resources['memory']['total_gb']}GB ({resources['memory']['percent']}%)"
+                f"メモリ: {resources['memory']['used_gb']}GB / {resources['memory']['total_gb']}GB ("
+                f"{resources['memory']['percent']}%)"
             )
             self.info(
-                f"ディスク: {resources['disk']['used_gb']}GB / {resources['disk']['total_gb']}GB ({resources['disk']['percent']}%)"
+                f"ディスク: {resources['disk']['used_gb']}GB / {resources['disk']['total_gb']}GB ("
+                f"{resources['disk']['percent']}%)"
             )
 
         # サービス

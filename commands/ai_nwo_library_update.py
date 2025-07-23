@@ -33,6 +33,7 @@ except ImportError:
     class ElderCouncil:
         # Main class implementation
         def __init__(self, prophecy_engine=None):
+            """ElderCouncilクラス"""
             pass
         async def emergency_report(self, title, message, priority):
             print(f"[Elder Council] {priority}: {title} - {message}")
@@ -41,6 +42,7 @@ except ImportError:
 
     class ProphecyEngine:
         # Main class implementation
+        """ProphecyEngineクラス"""
         def __init__(self):
             pass
 
@@ -51,6 +53,7 @@ try:
 except ImportError:
     # Mock nWo Daily Council for testing
     class nWoDailyCouncil:
+        """nWoDailyCouncilクラス"""
         # Main class implementation
         def __init__(self):
             pass

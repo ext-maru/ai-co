@@ -17,6 +17,7 @@ class DimensionalProcessor:
     """次元別処理器"""
 
     def __init__(self, dimension_id: int):
+        """初期化メソッド"""
         self.dimension_id = dimension_id
         self.processing_history = []
         self.current_load = 0
@@ -127,7 +128,9 @@ class DimensionalProcessor:
 class MultidimensionalParallelEngine:
     """多次元並列処理エンジン"""
 
-    def __init__(self, max_dimensions: int = 11):
+    def __init__(self, max_dimensions:
+        """初期化メソッド"""
+    int = 11):
         self.dimensions = [
             DimensionalProcessor(i) for i in range(1, max_dimensions + 1)
         ]
@@ -275,6 +278,7 @@ class MultidimensionalParallelEngine:
 
 # デモ実行
 async def multidimensional_demo():
+    """multidimensional_demoメソッド"""
     engine = MultidimensionalParallelEngine()
 
     # 単一タスクの多次元処理

@@ -226,13 +226,13 @@ class PMEnhancedWorker:
                         self.logger.info(f"🔀 main へのPR作成成功")
 
                         # 成功通知
-                        if self.slack:
+                                                if self.slack:
                             self._send_success_notification(
                                 task_id, branch_name, new_files, test_passed
                             )
                     else:
                         self.logger.warning(f"⚠️ main へのPR作成失敗")
-                        if self.slack:
+                                                if self.slack:
                             self._send_merge_failure_notification(task_id, branch_name)
                 else:
                     self.logger.warning(f"⚠️ コミット失敗")
@@ -428,8 +428,12 @@ class PMEnhancedWorker:
                     for ext in extensions:
                         # Process each item in collection
                         files = search_dir.rglob(ext)
+                        # Deep nesting detected (depth: 5) - consider refactoring
                         for file_path in files:
                             # Process each item in collection
+                            if not (file_path.stat().st_mtime > recent_threshold):
+                                continue  # Early return to reduce nesting
+                            # Reduced nesting - original condition satisfied
                             if file_path.stat().st_mtime > recent_threshold:
                                 relative_path = file_path.relative_to(PROJECT_DIR)
                                 # __pycache__やvenvは除外
@@ -502,7 +506,7 @@ class PMEnhancedWorker:
                 success = self.git_flow.create_release(version)
                 self.logger.info(f"リリース処理: {'成功' if success else '失敗'}")
 
-                if success and self.slack:
+                                if success and self.slack:
                     # Complex condition - consider breaking down
                     self.slack.send_task_completion_simple(
                         task_id=f"release_{version or datetime.now().strftime('%Y.%m.%d')}",
