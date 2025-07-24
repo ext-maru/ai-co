@@ -9,6 +9,7 @@ import asyncio
 import json
 import logging
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, List, Optional, Any
 from enum import Enum
 import uuid
@@ -356,32 +357,93 @@ class ElderFlowOrchestrator:
             }
 
     async def execute_quality_gate(self, request: Dict[str, Any]) -> Dict[str, Any]:
-        """Phase 3: 品質ゲート実行"""
+        """Phase 3: 品質ゲート実行（品質エンジン統合版）"""
         flow_id = request.get("flow_id", str(uuid.uuid4()))
+        task_name = request.get("task_name", "unknown")
+        implementation_results = request.get("implementation_results", {})
         
-        if flow_id not in self.active_tasks:
-            return {
-                "status": "error",
-                "flow_id": flow_id,
-                "error": "Task not found. Please execute elder servants first."
-            }
-        
-        task = self.active_tasks[flow_id]
+        # 品質エンジン統合が有効化されているかチェック
+        quality_engines_integration = request.get("quality_engines_integration", 
+                                                 request.get("quality_engines_enabled", False))
         
         try:
-            await self._phase_4_quality(task)
+            self.logger.info(f"🔍 Phase 3: 品質ゲート実行開始: {task_name}")
             
-            return {
-                "status": "success",
-                "flow_id": flow_id,
-                "quality_results": task.quality_results,
-                "overall_score": task.quality_results.get("overall_score", 0)
-            }
+            # 品質エンジン統合が有効な場合
+            if quality_engines_integration:
+                self.logger.info("⚡ 品質エンジン統合モード: 3エンジン統合品質チェック実行")
+                
+                # 品質エンジン統合システムをインポート・実行
+                from libs.elder_flow_quality_integration import ElderFlowQualityIntegration
+                
+                integration_system = ElderFlowQualityIntegration()
+                
+                # Elder Flow統合インターフェースを追加
+                integration_system.add_elder_flow_interface_to_engines()
+                
+                # タスクコンテキスト作成
+                task_context = {
+                    "task_name": task_name,
+                    "priority": request.get("priority", "medium"),
+                    "flow_id": flow_id,
+                    "project_path": request.get("project_path", str(Path.cwd()))
+                }
+                
+                # 統合品質チェック実行
+                integrated_results = await integration_system.execute_integrated_quality_check(
+                    task_context=task_context,
+                    implementation_results=implementation_results
+                )
+                
+                # 結果をElderFlowTaskに保存（既存システムとの互換性維持）
+                if flow_id in self.active_tasks:
+                    task = self.active_tasks[flow_id]
+                    task.quality_results = integrated_results
+                    task.add_log(f"✅ 品質エンジン統合完了: スコア {integrated_results.get('overall_quality_score', 0)}")
+                
+                return {
+                    "status": "success",
+                    "flow_id": flow_id,
+                    "task_name": task_name,
+                    "quality_engines_integration": True,
+                    "quality_results": integrated_results,
+                    "overall_score": integrated_results.get("overall_quality_score", 0),
+                    "iron_will_compliance_score": integrated_results.get("iron_will_compliance", {}).get("compliance_score", 0),
+                    "overall_project_quality_score": integrated_results.get("overall_quality_score", 0),
+                    "engines_successful": integrated_results.get("engines_successful", 0),
+                    "recommendations": integrated_results.get("recommendations", [])
+                }
+            
+            # 従来の品質チェック（品質エンジン統合無効時のフォールバック）
+            else:
+                self.logger.info("🔧 従来モード: 標準品質チェック実行")
+                
+                if flow_id not in self.active_tasks:
+                    return {
+                        "status": "error",
+                        "flow_id": flow_id,
+                        "error": "Task not found. Please execute elder servants first."
+                    }
+                
+                task = self.active_tasks[flow_id]
+                await self._phase_4_quality(task)
+                
+                return {
+                    "status": "success",
+                    "flow_id": flow_id,
+                    "task_name": task_name,
+                    "quality_engines_integration": False,
+                    "quality_results": task.quality_results,
+                    "overall_score": task.quality_results.get("overall_score", 0)
+                }
+                
         except Exception as e:
             self.logger.error(f"Quality gate failed: {str(e)}")
             return {
                 "status": "error",
                 "flow_id": flow_id,
+                "task_name": task_name,
+                "quality_engines_integration": quality_engines_integration,
                 "error": str(e)
             }
 
@@ -1225,11 +1287,19 @@ class ElderFlowOrchestrator:
             }
 
     async def execute_quality_gate(self, request: Dict[str, Any]) -> Dict[str, Any]:
-        """Phase 3: 品質ゲート実行"""
+        """Phase 3: 品質ゲート実行（品質エンジン統合版）"""
         task_id = str(uuid.uuid4())
+        task_name = request.get("task_name", "unknown")
+        implementation_results = request.get("implementation_results", {})
+        
+        # 品質エンジン統合が有効化されているかチェック
+        quality_engines_integration = request.get("quality_engines_integration", 
+                                                 request.get("quality_engines_enabled", False))
+        
+        # 従来のFlowタスク作成（後方互換性のため）
         task = ElderFlowTask(
             task_id,
-            request.get("task_name", "Unknown task"),
+            task_name,
             request.get("priority", "medium")
         )
         
@@ -1240,20 +1310,78 @@ class ElderFlowOrchestrator:
         self.active_tasks[task_id] = task
         
         try:
-            await self._phase_4_quality(task)
-            return {
-                "success": True,
-                "task_id": task_id,
-                "quality_results": task.quality_results,
-                "overall_score": task.quality_results.get("overall_score", 0),
-                "phase": "quality_gate_completed"
-            }
+            self.logger.info(f"🔍 Phase 3: 品質ゲート実行開始: {task_name}")
+            
+            # 品質エンジン統合が有効な場合
+            if quality_engines_integration:
+                self.logger.info("⚡ 品質エンジン統合モード: 3エンジン統合品質チェック実行")
+                
+                # 品質エンジン統合システムをインポート・実行
+                from libs.elder_flow_quality_integration import ElderFlowQualityIntegration
+                
+                integration_system = ElderFlowQualityIntegration()
+                
+                # Elder Flow統合インターフェースを追加
+                integration_system.add_elder_flow_interface_to_engines()
+                
+                # タスクコンテキスト作成
+                task_context = {
+                    "task_name": task_name,
+                    "priority": request.get("priority", "medium"),
+                    "flow_id": task_id,
+                    "project_path": request.get("project_path", str(Path.cwd()))
+                }
+                
+                # 統合品質チェック実行
+                integrated_results = await integration_system.execute_integrated_quality_check(
+                    task_context=task_context,
+                    implementation_results=implementation_results
+                )
+                
+                # 結果をElderFlowTaskに保存（既存システムとの互換性維持）
+                task.quality_results = integrated_results
+                task.add_log(f"✅ 品質エンジン統合完了: スコア {integrated_results.get('overall_quality_score', 0)}")
+                
+                return {
+                    "status": "success",
+                    "success": True,
+                    "task_id": task_id,
+                    "task_name": task_name,
+                    "quality_engines_integration": True,
+                    "quality_results": integrated_results,
+                    "overall_score": integrated_results.get("overall_quality_score", 0),
+                    "iron_will_compliance_score": integrated_results.get("iron_will_compliance", {}).get("compliance_score", 0),
+                    "overall_project_quality_score": integrated_results.get("overall_quality_score", 0),
+                    "engines_successful": integrated_results.get("engines_successful", 0),
+                    "recommendations": integrated_results.get("recommendations", []),
+                    "phase": "quality_gate_completed"
+                }
+            
+            # 従来の品質チェック（品質エンジン統合無効時のフォールバック）
+            else:
+                self.logger.info("🔧 従来モード: 標準品質チェック実行")
+                
+                await self._phase_4_quality(task)
+                return {
+                    "status": "success",
+                    "success": True,
+                    "task_id": task_id,
+                    "task_name": task_name,
+                    "quality_engines_integration": False,
+                    "quality_results": task.quality_results,
+                    "overall_score": task.quality_results.get("overall_score", 0),
+                    "phase": "quality_gate_completed"
+                }
+                
         except Exception as e:
-            self.logger.error(f"Quality gate execution failed: {e}")
+            self.logger.error(f"Quality gate failed: {str(e)}")
             return {
+                "status": "error",
                 "success": False,
-                "error": str(e),
                 "task_id": task_id,
+                "task_name": task_name,
+                "quality_engines_integration": quality_engines_integration,
+                "error": str(e),
                 "phase": "quality_gate_failed"
             }
 
